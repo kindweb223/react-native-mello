@@ -1,13 +1,19 @@
 import React from 'react'
-import { View, Text } from 'react-native'
-import styles from './styles.js'
+import {
+  SafeAreaView,
+  View,
+  Text
+} from 'react-native'
+import styles from './styles'
 
 class HomeScreen extends React.Component {
   render () {
     return (
-      <View style={styles.container}>
+      <SafeAreaView style={styles.container}>
         <Text>Test</Text>
-      </View>
+        <Text>Test</Text>
+        <Text>Test</Text>
+      </SafeAreaView>
     )
   }
 }
