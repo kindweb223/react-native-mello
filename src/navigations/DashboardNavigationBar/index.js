@@ -3,11 +3,13 @@ import {
   View,
   Text,
   Platform,
-  StatusBar
+  StatusBar,
+  TouchableOpacity
 } from 'react-native'
 
 import PropTypes from 'prop-types'
 import styles from './styles'
+import { FontAwesome } from 'react-native-vector-icons'
 
 class DashboardNavigationBar extends React.Component {
   render () {
@@ -26,6 +28,9 @@ class DashboardNavigationBar extends React.Component {
               </View>
               <View style={styles.titleView}>
                 <Text style={styles.title}>My feeds</Text>
+                <TouchableOpacity style={styles.settingButton}>
+                  <FontAwesome name="cog" style={styles.setting} />
+                </TouchableOpacity>
               </View>
             </View>
           : <View style={styles.subContainer}>
@@ -33,6 +38,9 @@ class DashboardNavigationBar extends React.Component {
               </View>
               <View style={styles.miniTitleView}>
                 <Text style={styles.minilTitle}>My feeds</Text>
+                <TouchableOpacity style={styles.settingButton}>
+                  <FontAwesome name="cog" style={styles.setting} />
+                </TouchableOpacity>
               </View>
             </View>
         }

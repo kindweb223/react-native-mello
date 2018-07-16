@@ -4,7 +4,7 @@ import COLORS from '../../service/colors'
 const styles = StyleSheet.create({
   safeArea: {
     flex: 1,
-    backgroundColor: 'white'
+    backgroundColor: '#fff'
   },
   container: {
     flex: 1

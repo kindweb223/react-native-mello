@@ -15,7 +15,7 @@ const styles = StyleSheet.create({
   },
   statusBarUnderlay: {
     height: 24,
-    backgroundColor: 'white',
+    backgroundColor: '#fff',
   },
   subContainer: {
     flex: 1,
@@ -41,6 +41,15 @@ const styles = StyleSheet.create({
     fontSize: 16,
     color: COLORS.PRIMARY_BLACK,
   },
+  settingButton: {
+    position: 'absolute',
+    bottom: 5,
+    right: 0
+  },
+  setting: {
+    fontSize: 30,
+    color: COLORS.LIGHT_GREY,
+  }
 })
 
 export default styles
