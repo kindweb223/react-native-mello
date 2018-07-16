@@ -5,9 +5,11 @@ import {
 } from 'react-native'
 import ScrollableTabView from 'react-native-scrollable-tab-view'
 import TabBar from 'react-native-underline-tabbar'
+import Modal from "react-native-modal";
 import DashboardNavigationBar from '../../navigations/DashboardNavigationBar'
 import DashboardActionBar from '../../navigations/DashboardActionBar'
 import FeedoListContainer from '../FeedoListContainer'
+import NewFeedScreen from '../NewFeedScreen'
 import COLORS from '../../service/colors'
 import styles from './styles'
 
@@ -17,7 +19,15 @@ const TAB_STYLES = {
   paddingHorizontal: 10,
 }
 
+
 class HomeScreen extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      isModalVisible: false,
+    };
+  }
+
   render () {
     return (
       <SafeAreaView style={styles.safeArea}>
@@ -43,9 +53,18 @@ class HomeScreen extends React.Component {
         </View>
 
         <DashboardActionBar />
+        <Modal 
+          isVisible={this.state.isModalVisible}
+          style={styles.newFeedModalContainer}
+        >
+          <NewFeedScreen 
+            onClose={() => this.setState({isModalVisible: false})}
+          />
+        </Modal>
       </SafeAreaView>
     )
   }
 }
+
 
 export default HomeScreen
