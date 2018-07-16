@@ -11,8 +11,6 @@ const styles = StyleSheet.create({
     paddingVertical: 8,
     position: 'absolute',
     bottom: 0,
-    borderTopWidth: 1,
-    borderColor: COLORS.PURPLE
   },
   filterContainer: {
     justifyContent: 'space-between',

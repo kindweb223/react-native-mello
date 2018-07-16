@@ -1,5 +1,4 @@
 import { StyleSheet } from 'react-native'
-import COLORS from '../../service/colors'
 
 const styles = StyleSheet.create({
   safeArea: {
@@ -10,11 +9,9 @@ const styles = StyleSheet.create({
     flex: 1
   },
   tabBarStyle: {
-    borderTopWidth: 1,
-    borderBottomWidth: 1,
-    borderTopColor: COLORS.PURPLE,
-    borderBottomColor: COLORS.PURPLE,
-    height: 62,
+    borderTopWidth: 0,
+    borderBottomWidth: 0,
+    height: 60,
     alignItems: 'center',
     marginTop: 0,
   },

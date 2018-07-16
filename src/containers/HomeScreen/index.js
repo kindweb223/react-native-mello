@@ -6,7 +6,8 @@ import {
 import ScrollableTabView from 'react-native-scrollable-tab-view'
 import TabBar from 'react-native-underline-tabbar'
 import DashboardNavigationBar from '../../navigations/DashboardNavigationBar'
-import DashboardActionBar from '../../navigations/DashboardActionBar';
+import DashboardActionBar from '../../navigations/DashboardActionBar'
+import FeedoListContainer from '../FeedoListContainer'
 import COLORS from '../../service/colors'
 import styles from './styles'
 
@@ -15,10 +16,6 @@ const TAB_STYLES = {
   paddingTop: 10,
   paddingHorizontal: 10,
 }
-
-const AllFeed = () => (
-  <View />
-)
 
 class HomeScreen extends React.Component {
   render () {
@@ -39,9 +36,9 @@ class HomeScreen extends React.Component {
                                   tabStyles={{ 'tab': TAB_STYLES }}
                                 />}
           >
-            <AllFeed tabLabel={{label: 'All'}} />
-            <AllFeed tabLabel={{label: 'Pinned'}} />
-            <AllFeed tabLabel={{label: 'Shared with me'}} />
+            <FeedoListContainer tabLabel={{label: 'All'}} data={[]} />
+            <FeedoListContainer tabLabel={{label: 'Pinned'}} data={[]} />
+            <FeedoListContainer tabLabel={{label: 'Shared with me'}} data={[]} />
           </ScrollableTabView>
         </View>
 
