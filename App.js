@@ -5,7 +5,7 @@ import axios from 'axios'
 import axiosMiddleware from 'redux-axios-middleware'
 import { Actions, Scene, Router } from 'react-native-router-flux';
 
-import HomeScreen from './src/containers/home_screen'
+import HomeScreen from './src/containers/HomeScreen'
 import { BASE_URL } from './src/service'
 import reducers from './src/redux/reducers'
 
