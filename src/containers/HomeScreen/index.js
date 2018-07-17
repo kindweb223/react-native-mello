@@ -3,19 +3,21 @@ import {
   SafeAreaView,
   View,
 } from 'react-native'
+
 import { connect } from 'react-redux'
+import PropTypes from 'prop-types'
 import ScrollableTabView from 'react-native-scrollable-tab-view'
 import TabBar from 'react-native-underline-tabbar'
 import Modal from "react-native-modal"
-import PropTypes from 'prop-types'
-import { getFeedoList } from '../../redux/feedo/actions'
 import DashboardNavigationBar from '../../navigations/DashboardNavigationBar'
-import FeedNavigationBar from '../../navigations/FeedNavigationBar'
+// import FeedNavigationBar from '../../navigations/FeedNavigationBar'
 import DashboardActionBar from '../../navigations/DashboardActionBar'
 import FeedoListContainer from '../FeedoListContainer'
 import NewFeedScreen from '../NewFeedScreen'
 import COLORS from '../../service/colors'
 import styles from './styles'
+
+import { getFeedoList } from '../../redux/feedo/actions'
 
 const TAB_STYLES = {
   height: '100%',
@@ -28,21 +30,22 @@ class HomeScreen extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
+      feedoList: [],
+      loading: false,
       isModalVisible: false,
-      feedoList: {},
-      loading: false
+      tabIndex: 0
     };
   }
 
   componentDidMount() {
     this.setState({ loading: true })
-    this.props.getFeedoList()
+    this.props.getFeedoList(this.state.tabIndex)
   }
 
   static getDerivedStateFromProps(nextProps, prevState) {
     const { feedo } = nextProps
+  
     if (prevState.loading === true && feedo.loading === 'GET_FEEDO_LIST_FULFILLED') {
-      console.log('FEEDO: ', feedo.feedoList)
       return {
         feedoList: feedo.feedoList,
         loading: false
@@ -52,6 +55,11 @@ class HomeScreen extends React.Component {
     return {
       loading: true
     }
+  }
+
+  onChangeTab = ({ i }) => {
+    this.setState({ tabIndex: i, loading: true })
+    this.props.getFeedoList(i)
   }
 
   render () {
@@ -65,6 +73,7 @@ class HomeScreen extends React.Component {
           <ScrollableTabView
             tabBarActiveTextColor={COLORS.PURPLE}
             tabBarInactiveTextColor={COLORS.MEDIUM_GREY}
+            onChangeTab={this.onChangeTab}
             renderTabBar={() => <TabBar
                                   underlineHeight={0}
                                   underlineBottomPosition={0}
@@ -74,9 +83,9 @@ class HomeScreen extends React.Component {
                                   tabStyles={{ 'tab': TAB_STYLES }}
                                 />}
           >
-            <FeedoListContainer tabLabel={{label: 'All'}} data={feedoList} loading={loading} />
-            <FeedoListContainer tabLabel={{label: 'Pinned'}} data={feedoList} loading={loading} />
-            <FeedoListContainer tabLabel={{label: 'Shared with me'}} data={feedoList} loading={loading} />
+            <FeedoListContainer loading={loading} feedoList={feedoList} tabLabel={{ label: 'All' }} />
+            <FeedoListContainer loading={loading} feedoList={feedoList} tabLabel={{ label: 'Pinned' }} />
+            <FeedoListContainer loading={loading} feedoList={feedoList} tabLabel={{ label: 'Shared with me' }} />
           </ScrollableTabView>
         </View>
 
@@ -94,21 +103,21 @@ class HomeScreen extends React.Component {
   }
 }
 
-
 const mapStateToProps = ({ feedo }) => ({
   feedo
 })
 
 const mapDispatchToProps = dispatch => ({
-  getFeedoList: () => dispatch(getFeedoList()),
+  getFeedoList: (index) => dispatch(getFeedoList(index)),
 })
 
 HomeScreen.propTypes = {
-  feedo: PropTypes.objectOf(PropTypes.any),
-  getFeedoList: PropTypes.func.isRequired
+  getFeedoList: PropTypes.func.isRequired,
+  feedo: PropTypes.objectOf(PropTypes.any)
 }
 
 export default connect(
   mapStateToProps,
-  mapDispatchToProps,
+  mapDispatchToProps
 )(HomeScreen)
+

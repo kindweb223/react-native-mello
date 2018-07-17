@@ -23,7 +23,7 @@ const styles = StyleSheet.create({
   },
   feedIcon: {
     marginRight: 5,
-    fontSize: 14
+    fontSize: 15
   },
   feedText: {
     fontSize: 14
@@ -33,6 +33,9 @@ const styles = StyleSheet.create({
   },
   inActive: {
     color: COLORS.LIGHT_GREY
+  },
+  inActiveText: {
+    color: COLORS.MEDIUM_GREY
   }
 })
 

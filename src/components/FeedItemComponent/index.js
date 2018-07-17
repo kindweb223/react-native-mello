@@ -1,21 +1,27 @@
 import React from 'react'
 import {
-  View
+  View,
+  Image
 } from 'react-native'
 
+import PropTypes from 'prop-types'
 import styles from './styles'
-import FeedItemTitleComponent from '../FeedItemTitleComponent'
+import FeedItemInviteeComponent from '../FeedItemInviteeComponent'
 
-class FeedItemComponent extends React.Component {
-  render() {
-    return (
-      <View style={styles.container}>
-        <View style={styles.thumbnails} />
-        <FeedItemTitleComponent />
-        <FeedItemTitleComponent />
+const FeedItemComponent = ({ item }) => (
+  <View style={styles.container}>
+    {item.owner.imageUrl && (
+      <View style={styles.thumbnailsView}>
+        <Image  style={styles.thumbnails} source={{ uri: item.owner.imageUrl }} />
       </View>
-    )
-  }
+    )}
+
+    <FeedItemInviteeComponent data={item} />
+  </View>
+)
+
+FeedItemComponent.propTypes = {
+  item: PropTypes.objectOf(PropTypes.any)
 }
 
 export default FeedItemComponent
