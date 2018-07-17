@@ -13,7 +13,6 @@ class FeedoListContainer extends React.Component {
     const { loading, data } = this.props
     
     if (loading) return <ActivityIndicator />
-    console.log('FEEDO_DATA: ', data)
 
     return (
       <ScrollView>
