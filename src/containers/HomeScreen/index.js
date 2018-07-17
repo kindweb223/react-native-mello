@@ -3,9 +3,12 @@ import {
   SafeAreaView,
   View,
 } from 'react-native'
+import { connect } from 'react-redux'
 import ScrollableTabView from 'react-native-scrollable-tab-view'
 import TabBar from 'react-native-underline-tabbar'
-import Modal from "react-native-modal";
+import Modal from "react-native-modal"
+import PropTypes from 'prop-types'
+import { getFeedoList } from '../../redux/feedo/actions'
 import DashboardNavigationBar from '../../navigations/DashboardNavigationBar'
 import DashboardActionBar from '../../navigations/DashboardActionBar'
 import FeedoListContainer from '../FeedoListContainer'
@@ -25,10 +28,33 @@ class HomeScreen extends React.Component {
     super(props);
     this.state = {
       isModalVisible: false,
+      feedoList: {},
+      loading: false
     };
   }
 
+  componentDidMount() {
+    this.setState({ loading: true })
+    this.props.getFeedoList()
+  }
+
+  static getDerivedStateFromProps(nextProps, prevState) {
+    const { feedo } = nextProps
+    if (prevState.loading === true && feedo.loading === 'GET_FEEDO_LIST_FULFILLED') {
+      return {
+        feedoList: nextProps.feedo.feedoList,
+        loading: false
+      }
+    }
+
+    return {
+      loading: true
+    }
+  }
+
   render () {
+    const { loading, feedoList } = this.state
+
     return (
       <SafeAreaView style={styles.safeArea}>
         <DashboardNavigationBar />
@@ -46,9 +72,9 @@ class HomeScreen extends React.Component {
                                   tabStyles={{ 'tab': TAB_STYLES }}
                                 />}
           >
-            <FeedoListContainer tabLabel={{label: 'All'}} data={[]} />
-            <FeedoListContainer tabLabel={{label: 'Pinned'}} data={[]} />
-            <FeedoListContainer tabLabel={{label: 'Shared with me'}} data={[]} />
+            <FeedoListContainer tabLabel={{label: 'All'}} data={feedoList} loading={loading} />
+            <FeedoListContainer tabLabel={{label: 'Pinned'}} data={feedoList} loading={loading} />
+            <FeedoListContainer tabLabel={{label: 'Shared with me'}} data={feedoList} loading={loading} />
           </ScrollableTabView>
         </View>
 
@@ -67,4 +93,20 @@ class HomeScreen extends React.Component {
 }
 
 
-export default HomeScreen
+const mapStateToProps = ({ feedo }) => ({
+  feedo
+})
+
+const mapDispatchToProps = dispatch => ({
+  getFeedoList: () => dispatch(getFeedoList()),
+})
+
+HomeScreen.propTypes = {
+  feedo: PropTypes.objectOf(PropTypes.any),
+  getFeedoList: PropTypes.func.isRequired
+}
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps,
+)(HomeScreen)
