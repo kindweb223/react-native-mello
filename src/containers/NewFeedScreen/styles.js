@@ -37,6 +37,39 @@ const styles = StyleSheet.create({
     fontWeight: '500',
     textAlign: 'center',
   },
+  mainContentContainer: {
+    // backgroundColor: 'green',
+  },
+  textInputFeedName: {
+    fontSize: 24,
+    fontWeight: '500',
+    lineHeight: 26,
+    marginHorizontal: 20,
+    marginVertical: 13,
+  },
+  textInputNote: {
+    fontSize: 16,
+    lineHeight: 23,
+    marginHorizontal: 20,
+  },
+  bottomContainer: {
+    flexDirection: 'row',
+    marginHorizontal: 12,
+    marginVertical: 20,
+  },
+  bottomItemContainer: {
+    width: 32,
+    height: 32,
+    marginRight: 8,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  attachment: {
+    transform: [
+      { rotate: '135deg' }, 
+      { rotateY: '180deg' },
+    ],
+  },
 })
 
 
