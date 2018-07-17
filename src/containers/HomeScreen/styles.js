@@ -18,7 +18,10 @@ const styles = StyleSheet.create({
   tabBarTextStyle: {
     fontSize: 16,
     fontWeight: 'bold'
-  }
+  },
+  newFeedModalContainer: {
+    margin: 0,
+  },
 })
 
 export default styles

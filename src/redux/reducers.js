@@ -1,5 +1,5 @@
 import { combineReducers } from 'redux'
-import feedoData from './feedo/reducer'
+import feedoData from './Feedo/reducer'
 
 export default combineReducers({
   feedoData
