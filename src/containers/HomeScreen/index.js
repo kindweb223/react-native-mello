@@ -10,6 +10,7 @@ import Modal from "react-native-modal"
 import PropTypes from 'prop-types'
 import { getFeedoList } from '../../redux/feedo/actions'
 import DashboardNavigationBar from '../../navigations/DashboardNavigationBar'
+import FeedNavigationBar from '../../navigations/FeedNavigationBar'
 import DashboardActionBar from '../../navigations/DashboardActionBar'
 import FeedoListContainer from '../FeedoListContainer'
 import NewFeedScreen from '../NewFeedScreen'
@@ -41,8 +42,9 @@ class HomeScreen extends React.Component {
   static getDerivedStateFromProps(nextProps, prevState) {
     const { feedo } = nextProps
     if (prevState.loading === true && feedo.loading === 'GET_FEEDO_LIST_FULFILLED') {
+      console.log('FEEDO: ', feedo.feedoList)
       return {
-        feedoList: nextProps.feedo.feedoList,
+        feedoList: feedo.feedoList,
         loading: false
       }
     }

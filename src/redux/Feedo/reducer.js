@@ -18,6 +18,7 @@ export default function feedo(state = initialState, action = {}) {
       }
     case GET_FEEDO_LIST_FULFILLED: {
       const { data } = action.result
+      console.log('RESULT: ', action.result)
       return {
         ...state,
         feedoList: data,

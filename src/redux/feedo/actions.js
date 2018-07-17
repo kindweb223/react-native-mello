@@ -1,4 +1,4 @@
-import { BASE_URL, AXIOS_CONFIG } from '../../service/api';
+import { BASE_URL } from '../../service/api';
 import axios from 'axios';
 
 import {
@@ -17,8 +17,7 @@ export const getFeedoList = () => {
     promise:
       axios({
           method: 'get',
-          url: `${BASE_URL}/hunts`,
-          AXIOS_CONFIG
+          url: `${BASE_URL}/hunts`
       })  
   };
 }

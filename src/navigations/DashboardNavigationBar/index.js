@@ -24,7 +24,8 @@ class DashboardNavigationBar extends React.Component {
 
         {mode === 'normal'
           ? <View style={styles.subContainer}>
-              <View style={styles.searchView}>
+              <View style={styles.navbarView}>
+                <FontAwesome name="search" style={styles.searchIcon} />
               </View>
               <View style={styles.titleView}>
                 <Text style={styles.title}>My feeds</Text>
@@ -34,10 +35,8 @@ class DashboardNavigationBar extends React.Component {
               </View>
             </View>
           : <View style={styles.subContainer}>
-              <View style={styles.searchView}>
-              </View>
-              <View style={styles.miniTitleView}>
-                <Text style={styles.minilTitle}>My feeds</Text>
+              <View style={styles.miniNavbarView}>
+                <Text style={styles.miniTitle}>My feeds</Text>
                 <TouchableOpacity style={styles.settingButton}>
                   <FontAwesome name="cog" style={styles.setting} />
                 </TouchableOpacity>

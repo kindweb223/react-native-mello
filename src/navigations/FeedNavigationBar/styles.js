@@ -20,44 +20,46 @@ const styles = StyleSheet.create({
   subContainer: {
     flex: 1,
   },
-  navbarView: {
-    justifyContent: 'flex-end',
-    paddingVertical: 16,
-    width: '100%',
+  navView: {
     height: CONSTANTS.MINI_NAVIGATION_BAR_HEIGTH,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    paddingVertical: 16,
+    alignItems: 'flex-end',
   },
-  searchIcon: {
-    fontSize: 30,
-    color: COLORS.LIGHT_GREY,
+  backView: {
+    flexDirection: 'row',
+    alignItems: 'center'
+  },
+  backIcon: {
+    fontSize: 35,
+    color: COLORS.PURPLE,
+    marginRight: 6
+  },
+  backTitle: {
+    fontSize: 20,
+    color: COLORS.PURPLE,
   },
   titleView: {
     flex: 1,
-    justifyContent: 'flex-end',
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'flex-end'
   },
   title: {
     fontSize: 28,
     fontWeight: 'bold',
     color: COLORS.PRIMARY_BLACK,
   },
-  miniNavbarView: {
+  miniTitleView: {
     flex: 1,
-    alignItems: 'center',
-    justifyContent: 'flex-end',
-    paddingVertical: 16,
+    flexDirection: 'row',
+    alignItems: 'flex-end',
+    justifyContent: 'space-between'
   },
   miniTitle: {
     fontSize: 16,
     color: COLORS.PRIMARY_BLACK,
-    fontWeight: 'bold'
-  },
-  settingButton: {
-    position: 'absolute',
-    bottom: 5,
-    right: 0
-  },
-  setting: {
-    fontSize: 30,
-    color: COLORS.LIGHT_GREY,
   },
 })
 
