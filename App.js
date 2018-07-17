@@ -1,20 +1,14 @@
 import React from 'react'
 import { createStore, applyMiddleware } from 'redux'
 import { Provider } from 'react-redux'
-import axios from 'axios'
-import axiosMiddleware from 'redux-axios-middleware'
-import { Actions, Scene, Router } from 'react-native-router-flux';
+import thunk from 'redux-thunk'
+import promiseMiddleware from './src/service/promiseMiddleware'
+import { Actions, Scene, Router } from 'react-native-router-flux'
 
-import HomeScreen from './src/containers/HomeScreen'
-import { BASE_URL } from './src/service'
 import reducers from './src/redux/reducers'
+import HomeScreen from './src/containers/HomeScreen'
 
-const client = axios.create({
-  baseURL: BASE_URL,
-  responseType: 'json'
-})
-
-const store = createStore(reducers, applyMiddleware(axiosMiddleware(client)))
+const store = createStore(reducers, applyMiddleware(thunk, promiseMiddleware))
 
 export default class Root extends React.Component {
   render() {
