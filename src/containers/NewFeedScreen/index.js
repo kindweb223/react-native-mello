@@ -10,6 +10,7 @@ import {
 import PropTypes from 'prop-types'
 import { MaterialCommunityIcons, Ionicons, Entypo } from '@expo/vector-icons';
 import Tags from "react-native-tags";
+import ActionSheet from 'react-native-actionsheet'
 
 import COLORS from '../../service/colors'
 import styles from './styles'
@@ -41,7 +42,7 @@ class NewFeedScreen extends React.Component {
         <TouchableOpacity 
           style={styles.closeContainer}
           activeOpacity={0.6}
-          onPress={this.onClose.bind(this)}
+          onPress={this.onOpenActionSheet.bind(this)}
         >
           <MaterialCommunityIcons name="close" size={32} color={COLORS.PURPLE} />
         </TouchableOpacity>
@@ -106,6 +107,11 @@ class NewFeedScreen extends React.Component {
   onInsertAttachment() {
   }
   
+  onOpenActionSheet() {
+    this.ActionSheet.show();
+    return;
+  };
+
   get renderBottomContent() {
     return (
       <View style={styles.bottomContainer}>
@@ -134,13 +140,19 @@ class NewFeedScreen extends React.Component {
     );
   }
 
+  onTapActionSheet(index) {
+    if (index === 1) {
+      this.onClose();
+    }
+  }
+
   render () {
     return (
       <SafeAreaView style={styles.container}>
         <TouchableOpacity 
           style={styles.backgroundContainer}
           activeOpacity={1}
-          onPress={this.onClose.bind(this)}
+          onPress={this.onOpenActionSheet.bind(this)}
         />
         <View style={styles.contentContainer}>
           {this.renderTopContent}
@@ -150,7 +162,16 @@ class NewFeedScreen extends React.Component {
         <TouchableOpacity 
           style={styles.backgroundContainer}
           activeOpacity={1}
-          onPress={this.onClose.bind(this)}
+          onPress={this.onOpenActionSheet.bind(this)}
+        />
+        <ActionSheet
+          ref={o => this.ActionSheet = o}
+          title='Are you sure that you wish to leave?'
+          options={['Continue editing', 'Leave and discard', 'Cancel']}
+          cancelButtonIndex={2}
+          destructiveButtonIndex={1}
+          tintColor={COLORS.PURPLE}
+          onPress={(index) => this.onTapActionSheet(index)}
         />
       </SafeAreaView>
     )
