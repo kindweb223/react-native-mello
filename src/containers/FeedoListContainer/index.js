@@ -1,36 +1,38 @@
 import React from 'react'
 import {
   ScrollView,
+  FlatList,
   View,
-  Text,
   ActivityIndicator,
 } from 'react-native'
 
 import PropTypes from 'prop-types'
+import styles from './styles'
+import FeedItemComponent from '../../components/FeedItemComponent'
 
-class FeedoListContainer extends React.Component {
-  render () {
-    const { loading, data } = this.props
-    
-    if (loading) return <ActivityIndicator />
+const FeedoListContainer = ({ loading, feedoList }) => {
+  if (loading) return <ActivityIndicator animating />
 
-    return (
-      <ScrollView>
-        <View>
-          <Text>Feeo List</Text>
-        </View>
-      </ScrollView>
-    )
-  }
-}
-
-FeedoListContainer.defaultProps = {
-  loading: false
+  return (
+    <ScrollView>
+      <View style={styles.feedContainer}>
+        <FlatList
+          data={feedoList}
+          keyExtractor={item => item.id}
+          renderItem={({ item }) => (
+            <FeedItemComponent
+              item={item}
+            />
+          )}
+        />
+      </View>
+    </ScrollView>
+  )
 }
 
 FeedoListContainer.propTypes = {
-  data: PropTypes.objectOf(PropTypes.any),
-  loading: PropTypes.bool
+  loading: PropTypes.bool.isRequired,
+  feedoList: PropTypes.arrayOf(PropTypes.any).isRequired,
 }
 
 export default FeedoListContainer

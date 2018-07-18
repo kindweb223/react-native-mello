@@ -1,4 +1,4 @@
-import { BASE_URL, AXIOS_CONFIG } from '../../service/api';
+import { BASE_URL } from '../../service/api';
 import axios from 'axios';
 
 import {
@@ -11,14 +11,21 @@ import {
 /**
  * Get feedo list
  */
-export const getFeedoList = () => {
+export const getFeedoList = (index) => {
+  let url = `${BASE_URL}/hunts`
+
+  if (index === 1) {
+    url = `${BASE_URL}/hunts?pinned=true`
+  } else if (index === 2) {
+    url = `${BASE_URL}/hunts?owner=false`
+  }
+
   return {
     types: [GET_FEEDO_LIST_PENDING, GET_FEEDO_LIST_FULFILLED, GET_FEEDO_LIST_REJECTED],
     promise:
       axios({
           method: 'get',
-          url: `${BASE_URL}/hunts`,
-          AXIOS_CONFIG
+          url: url
       })  
   };
 }
