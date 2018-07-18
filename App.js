@@ -8,7 +8,7 @@ import axios from 'axios'
 axios.defaults.headers.get['Content-Type'] = 'application/json'
 axios.defaults.headers.get.Accept = 'application/json'
 axios.defaults.withCredentials = true
-axios.defaults.headers['x-auth-token'] = '3ee75cb0-bccc-4fe1-8ceb-c779f2c05e1a'
+axios.defaults.headers['x-auth-token'] = '6d78204d-6239-4b40-8441-377790c6f968'
 axios.defaults.headers['x-mobile-api'] = true
 
 import reducers from './src/redux/reducers'

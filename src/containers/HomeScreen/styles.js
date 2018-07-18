@@ -21,7 +21,7 @@ const styles = StyleSheet.create({
   },
   newFeedModalContainer: {
     margin: 0,
-  },
+  }
 })
 
 export default styles
