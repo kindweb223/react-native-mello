@@ -17,11 +17,11 @@ const FeedItemInviteeComponent = ({ data }) => (
     <View style={styles.statsView}>
       <View style={styles.statsItemView}>
         <Ionicons name="md-person" style={[styles.feedIcon, styles.inActive]} />
-        <Text style={[styles.feedText, styles.inActiveText]}>5</Text>
+        <Text style={[styles.feedText, styles.inActiveText]}>1</Text>
       </View>
       <View style={styles.statsItemView}>
         <Foundation name="credit-card"  style={[styles.feedIcon, styles.inActive]} />
-        <Text style={[styles.feedText, styles.inActiveText]}>2</Text>
+        <Text style={[styles.feedText, styles.inActiveText]}>1</Text>
       </View>
     </View>
 
