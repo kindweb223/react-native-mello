@@ -1,22 +1,21 @@
 import React from 'react'
 import {
-  View,
-  Image
+  View
 } from 'react-native'
 
 import PropTypes from 'prop-types'
 import styles from './styles'
-import FeedItemInviteeComponent from '../FeedItemInviteeComponent'
+import FeedCoverImageComponent from '../FeedCoverImageComponent'
+import FeedItemTitleComponent from '../FeedItemTitleComponent'
 
 const FeedItemComponent = ({ item }) => (
   <View style={styles.container}>
-    {item.owner.imageUrl && (
+    {item.coverImages && (
       <View style={styles.thumbnailsView}>
-        <Image  style={styles.thumbnails} source={{ uri: item.owner.imageUrl }} />
+        <FeedCoverImageComponent data={item.coverImages} />
       </View>
     )}
-
-    <FeedItemInviteeComponent data={item} />
+    <FeedItemTitleComponent data={item} />
   </View>
 )
 

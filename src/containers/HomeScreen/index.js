@@ -9,11 +9,14 @@ import PropTypes from 'prop-types'
 import ScrollableTabView from 'react-native-scrollable-tab-view'
 import TabBar from 'react-native-underline-tabbar'
 import Modal from "react-native-modal"
+import * as R from 'ramda'
 import DashboardNavigationBar from '../../navigations/DashboardNavigationBar'
 // import FeedNavigationBar from '../../navigations/FeedNavigationBar'
+
 import DashboardActionBar from '../../navigations/DashboardActionBar'
 import FeedoListContainer from '../FeedoListContainer'
 import NewFeedScreen from '../NewFeedScreen'
+import FeedMenuScreen from '../FeedMenuScreen'
 import COLORS from '../../service/colors'
 import styles from './styles'
 
@@ -33,6 +36,8 @@ class HomeScreen extends React.Component {
       feedoList: [],
       loading: false,
       isModalVisible: false,
+      isFeedMenuVisible: false,
+      selectedFeedData: {},
       tabIndex: 0
     };
   }
@@ -45,9 +50,36 @@ class HomeScreen extends React.Component {
   static getDerivedStateFromProps(nextProps, prevState) {
     const { feedo } = nextProps
   
-    if (prevState.loading === true && feedo.loading === 'GET_FEEDO_LIST_FULFILLED') {
+    if (prevState.loading === true && (feedo.loading === 'GET_FEEDO_LIST_FULFILLED' || feedo.loading === 'GET_FEEDO_LIST_REJECTED')) {
+      const coverImages = [
+        {
+          date: '2018-1-5',
+          url: 'https://placeimg.com/140/148/any',
+        },
+        {
+          date: '2018-1-2',
+          url: 'https://placeimg.com/140/144/any',
+        },
+        {
+          date: '2018-1-9',
+          url: 'https://placeimg.com/140/142/any',
+        },
+      ]
+
+      let feedoList = []
+
+      if (feedo.feedoList) {
+        feedoList = feedo.feedoList.map(item => {
+          return Object.assign(
+            {},
+            item,
+            { coverImages: R.slice(0, coverImages.length > 4 ? 4 : coverImages.length, R.sort(R.ascend(R.prop('date')), coverImages)) }
+          )
+        })
+      }
+      
       return {
-        feedoList: feedo.feedoList,
+        feedoList,
         loading: false
       }
     }
@@ -60,6 +92,11 @@ class HomeScreen extends React.Component {
   onChangeTab = ({ i }) => {
     this.setState({ tabIndex: i, loading: true })
     this.props.getFeedoList(i)
+  }
+
+  handleFeedMenu = (selectedFeedData) => {
+    this.setState({ selectedFeedData })
+    this.setState({ isFeedMenuVisible: true })
   }
 
   render () {
@@ -83,19 +120,47 @@ class HomeScreen extends React.Component {
                                   tabStyles={{ 'tab': TAB_STYLES }}
                                 />}
           >
-            <FeedoListContainer loading={loading} feedoList={feedoList} tabLabel={{ label: 'All' }} />
-            <FeedoListContainer loading={loading} feedoList={feedoList} tabLabel={{ label: 'Pinned' }} />
-            <FeedoListContainer loading={loading} feedoList={feedoList} tabLabel={{ label: 'Shared with me' }} />
+            <FeedoListContainer
+              loading={loading}
+              feedoList={feedoList}
+              tabLabel={{ label: 'All' }}
+              handleFeedMenu={this.handleFeedMenu}
+            />
+            <FeedoListContainer
+              loading={loading}
+              feedoList={feedoList}
+              tabLabel={{ label: 'Pinned' }}
+              handleFeedMenu={this.handleFeedMenu}
+            />
+            <FeedoListContainer
+              loading={loading}
+              feedoList={feedoList}
+              tabLabel={{ label: 'Shared with me' }}
+              handleFeedMenu={this.handleFeedMenu}
+            />
           </ScrollableTabView>
         </View>
 
         <DashboardActionBar />
+
         <Modal 
           isVisible={this.state.isModalVisible}
           style={styles.newFeedModalContainer}
         >
           <NewFeedScreen 
-            onClose={() => this.setState({isModalVisible: false})}
+            onClose={() => this.setState({ isModalVisible: false })}
+          />
+        </Modal>
+
+        <Modal 
+          isVisible={this.state.isFeedMenuVisible}
+          style={styles.newFeedModalContainer}
+          backdropColor='#c0c0c0'
+          backdropOpacity={0.9}
+          onBackdropPress={() => this.setState({ isFeedMenuVisible: false })}
+        >
+          <FeedMenuScreen
+            feedData={this.state.selectedFeedData}
           />
         </Modal>
       </SafeAreaView>
