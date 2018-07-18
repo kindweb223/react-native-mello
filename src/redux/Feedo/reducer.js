@@ -20,7 +20,7 @@ export default function feedo(state = initialState, action = {}) {
       const { data } = action.result
       return {
         ...state,
-        feedoList: data,
+        feedoList: data.content,
         loading: 'GET_FEEDO_LIST_FULFILLED',
       }
     }
