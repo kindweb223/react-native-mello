@@ -1,4 +1,5 @@
 import * as types from './types'
+import { filter, omit } from 'lodash'
 
 const initialState = {
   loading: null,
@@ -17,36 +18,105 @@ export default function feedo(state = initialState, action = {}) {
       const { data } = action.result
       return {
         ...state,
-        loading: 'GET_FEEDO_LIST_FULFILLED',
+        loading: types.GET_FEEDO_LIST_FULFILLED,
         feedoList: data.content,
       }
     }
     case types.GET_FEEDO_LIST_REJECTED: {
       return {
         ...state,
-        loading: 'GET_FEEDO_LIST_REJECTED',
+        loading: types.GET_FEEDO_LIST_REJECTED,
         error: action.error,
       }
     }
+    /**
+     * Pin Feed
+     */
     case types.PIN_FEED_PENDING: {
       return {
         ...state,
-        pinResult: null,
-        erro: null,
+        error: null,
       }
     }
     case types.PIN_FEED_FULFILLED: {
-      const { data } = action.result
+      const { feedoList } = state
+      const feedId = action.payload
+      const currentFeed = filter(feedoList, feed => feed.id === feedId)
+      const restFeedoList = filter(feedoList, feed => feed.id !== feedId)
+
       return {
         ...state,
-        loading: 'PIN_FEED_FULFILLED',
-        pinResult: data,
+        loading: 'FEED_FULFILLED',
+        feedoList: [
+          ...restFeedoList,
+          Object.assign({}, currentFeed[0], { pinned: { pinned: true } })
+        ]
       }
     }
     case types.PIN_FEED_REJECTED: {
       return {
         ...state,
-        loading: 'PIN_FEED_REJECTED',
+        loading: types.PIN_FEED_REJECTED,
+        error: action.error,
+      }
+    }
+    /**
+     * UnPin Feed
+     */
+    case types.UNPIN_FEED_PENDING: {
+      return {
+        ...state,
+        erro: null,
+      }
+    }
+    case types.UNPIN_FEED_FULFILLED: {
+      const { feedoList } = state
+      const feedId = action.payload
+      const currentFeed = filter(feedoList, feed => feed.id === feedId)
+      const restFeedoList = filter(feedoList, feed => feed.id !== feedId)
+      return {
+        ...state,
+        loading: 'FEED_FULFILLED',
+        feedoList: [
+          ...restFeedoList,
+          Object.assign({}, currentFeed[0], { pinned: null })
+        ]
+      }
+    }
+    case types.UNPIN_FEED_REJECTED: {
+      return {
+        ...state,
+        loading: types.UNPIN_FEED_REJECTED,
+        error: action.error,
+      }
+    }
+    /**
+     * Delete Feed
+     */
+    case types.DEL_FEED_PENDING: {
+      return {
+        ...state,
+        erro: null,
+      }
+    }
+    case types.DEL_FEED_FULFILLED: {
+      // const { feedoList } = state
+      // const feedId = action.payload
+      // const currentFeed = filter(feedoList, feed => feed.id === feedId)
+      // const restFeedoList = filter(feedoList, feed => feed.id !== feedId)
+      
+      return {
+        ...state,
+        // loading: 'FEED_FULFILLED',
+        // feedoList: [
+        //   ...restFeedoList,
+        // ]
+      }
+    }
+    case types.DEL_FEED_REJECTED: {
+      return {
+        ...state,
+        loading: types.DEL_FEED_REJECTED,
         error: action.error,
       }
     }

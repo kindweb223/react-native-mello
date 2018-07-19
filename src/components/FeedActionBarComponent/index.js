@@ -12,8 +12,11 @@ import styles from './styles'
 const MENU_ITMS = ['Duplicate', 'Edit', 'Archive', 'Delete']
 
 class FeedActionBarComponent extends React.Component {
-  state = {
-    isSettingMenu: false
+  constructor(props) {
+    super(props)
+    this.state = {
+      isSettingMenu: false,
+    }
   }
 
   onPressPin = () => {
@@ -36,7 +39,7 @@ class FeedActionBarComponent extends React.Component {
       <View style={styles.container}>
         <View style={styles.innerContainer}>
           {this.state.isSettingMenu && (
-            <View key="3" style={styles.settingMenuView}>
+            <View style={styles.settingMenuView}>
               <FlatList
                 data={MENU_ITMS}
                 keyExtractor={item => item}
@@ -60,7 +63,7 @@ class FeedActionBarComponent extends React.Component {
             <TouchableOpacity onPress={this.onPressPin}>
               <View style={styles.buttonView}>
                 <Octicons name="pin" style={styles.pinIcon} />
-                <Text style={styles.buttonText}>Pin</Text>
+                <Text style={styles.buttonText}>{this.props.pinFlag ? 'Unpin' : 'Pin'}</Text>
               </View>
             </TouchableOpacity>
             <TouchableOpacity onPress={this.onPressShare}>
@@ -85,6 +88,8 @@ FeedActionBarComponent.propTypes = {
   handlePin: PropTypes.func.isRequired,
   handleShare: PropTypes.func.isRequired,
   handleSetting: PropTypes.func.isRequired,
+  data: PropTypes.objectOf(PropTypes.any).isRequired,
+  pinFlag: PropTypes.bool.isRequired
 }
 
 export default FeedActionBarComponent

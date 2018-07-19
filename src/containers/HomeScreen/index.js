@@ -1,6 +1,7 @@
 import React from 'react'
 import {
   SafeAreaView,
+  ScrollView,
   View,
 } from 'react-native'
 
@@ -10,6 +11,7 @@ import ScrollableTabView from 'react-native-scrollable-tab-view'
 import TabBar from 'react-native-underline-tabbar'
 import Modal from "react-native-modal"
 import * as R from 'ramda'
+import { filter, sortBy } from 'lodash'
 import DashboardNavigationBar from '../../navigations/DashboardNavigationBar'
 // import FeedNavigationBar from '../../navigations/FeedNavigationBar'
 
@@ -38,7 +40,8 @@ class HomeScreen extends React.Component {
       isModalVisible: false,
       isFeedMenuVisible: false,
       selectedFeedData: {},
-      tabIndex: 0
+      tabIndex: 0,
+      headerMode: 'normal'
     };
   }
 
@@ -50,7 +53,8 @@ class HomeScreen extends React.Component {
   static getDerivedStateFromProps(nextProps, prevState) {
     const { feedo } = nextProps
   
-    if (prevState.loading === true && (feedo.loading === 'GET_FEEDO_LIST_FULFILLED' || feedo.loading === 'GET_FEEDO_LIST_REJECTED')) {
+    if ((prevState.loading === true && (feedo.loading === 'GET_FEEDO_LIST_FULFILLED' || feedo.loading === 'GET_FEEDO_LIST_REJECTED')) ||
+      (feedo.loading === 'FEED_FULFILLED')) {
       const coverImages = [
         {
           date: '2018-1-5',
@@ -77,6 +81,9 @@ class HomeScreen extends React.Component {
           )
         })
       }
+
+      feedoList = sortBy(filter(feedoList, item => item.status === 'PUBLISHED'), item => item.dateCreated)
+      // console.log('FEEDO_LIST: ', feedoList)
       
       return {
         feedoList,
@@ -84,9 +91,7 @@ class HomeScreen extends React.Component {
       }
     }
 
-    return {
-      loading: true
-    }
+    return null
   }
 
   onChangeTab = ({ i }) => {
@@ -99,46 +104,55 @@ class HomeScreen extends React.Component {
     this.setState({ isFeedMenuVisible: true })
   }
 
+  handleFeedScroll = (e) => {
+    const scrollPos = e.nativeEvent.contentOffset.y
+    this.setState({ headerMode: scrollPos > 0.5 ? 'mini' : 'normal'})
+  }
+
   render () {
-    const { loading, feedoList } = this.state
+    const { loading, feedoList, headerMode } = this.state
 
     return (
       <SafeAreaView style={styles.safeArea}>
-        <DashboardNavigationBar />
+        <DashboardNavigationBar mode={headerMode} />
         
         <View style={styles.container}>
-          <ScrollableTabView
-            tabBarActiveTextColor={COLORS.PURPLE}
-            tabBarInactiveTextColor={COLORS.MEDIUM_GREY}
-            onChangeTab={this.onChangeTab}
-            renderTabBar={() => <TabBar
-                                  underlineHeight={0}
-                                  underlineBottomPosition={0}
-                                  tabBarStyle={styles.tabBarStyle}
-                                  tabBarTextStyle={styles.tabBarTextStyle}
-                                  tabMargin={10}
-                                  tabStyles={{ 'tab': TAB_STYLES }}
-                                />}
+          <ScrollView
+            onScroll={(e) => this.handleFeedScroll(e)}
           >
-            <FeedoListContainer
-              loading={loading}
-              feedoList={feedoList}
-              tabLabel={{ label: 'All' }}
-              handleFeedMenu={this.handleFeedMenu}
-            />
-            <FeedoListContainer
-              loading={loading}
-              feedoList={feedoList}
-              tabLabel={{ label: 'Pinned' }}
-              handleFeedMenu={this.handleFeedMenu}
-            />
-            <FeedoListContainer
-              loading={loading}
-              feedoList={feedoList}
-              tabLabel={{ label: 'Shared with me' }}
-              handleFeedMenu={this.handleFeedMenu}
-            />
-          </ScrollableTabView>
+            <ScrollableTabView
+              tabBarActiveTextColor={COLORS.PURPLE}
+              tabBarInactiveTextColor={COLORS.MEDIUM_GREY}
+              onChangeTab={this.onChangeTab}
+              renderTabBar={() => <TabBar
+                                    underlineHeight={0}
+                                    underlineBottomPosition={0}
+                                    tabBarStyle={styles.tabBarStyle}
+                                    tabBarTextStyle={styles.tabBarTextStyle}
+                                    tabMargin={10}
+                                    tabStyles={{ 'tab': TAB_STYLES }}
+                                  />}
+            >
+              <FeedoListContainer
+                loading={loading}
+                feedoList={feedoList}
+                tabLabel={{ label: 'All' }}
+                handleFeedMenu={this.handleFeedMenu}
+              />
+              <FeedoListContainer
+                loading={loading}
+                feedoList={feedoList}
+                tabLabel={{ label: 'Pinned' }}
+                handleFeedMenu={this.handleFeedMenu}
+              />
+              <FeedoListContainer
+                loading={loading}
+                feedoList={feedoList}
+                tabLabel={{ label: 'Shared with me' }}
+                handleFeedMenu={this.handleFeedMenu}
+              />
+            </ScrollableTabView>
+          </ScrollView>
         </View>
 
         <DashboardActionBar />
@@ -161,6 +175,7 @@ class HomeScreen extends React.Component {
         >
           <FeedMenuScreen
             feedData={this.state.selectedFeedData}
+            closeFeedMenu={() => this.setState({ isFeedMenuVisible: false })}
           />
         </Modal>
       </SafeAreaView>
