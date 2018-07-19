@@ -110,7 +110,7 @@ class NewFeedScreen extends React.Component {
   onOpenActionSheet() {
     this.ActionSheet.show();
     return;
-  };
+  }
 
   get renderBottomContent() {
     return (

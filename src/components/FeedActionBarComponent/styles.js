@@ -1,4 +1,4 @@
-import { StyleSheet } from 'react-native'
+import { StyleSheet, Platform } from 'react-native'
 import COLORS from '../../service/colors'
 import CONSTANTS from '../../service/constants'
 
@@ -64,7 +64,18 @@ const styles = StyleSheet.create({
     width: 130,
     position: 'absolute',
     bottom: 70,
-    right: 0
+    right: 0,
+    ...Platform.select({
+      ios: {
+        shadowColor: 'black',
+        shadowOffset: { height: 5 },
+        shadowOpacity: 0.3,
+        shadowRadius: 5
+      },
+      android: {
+        elevation: 20
+      }
+    })
   },
   settingItem: {
     width: '100%',

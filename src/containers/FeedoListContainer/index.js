@@ -15,13 +15,14 @@ const FeedoListContainer = ({ loading, feedoList, handleFeedMenu }) => {
     <FlatList
       data={feedoList}
       keyExtractor={item => item.id}
+      scrollEnabled={false}
       renderItem={({ item }) => (
         <TouchableOpacity
           deplayLongPress={1000}
           onLongPress={() => handleFeedMenu(item)}
           activeOpacity={0.8}
         >
-          <FeedItemComponent item={item} />
+          <FeedItemComponent item={item} pinFlag={item.pinned ? true : false} />
         </TouchableOpacity>
       )}
     />

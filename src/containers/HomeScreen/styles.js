@@ -1,4 +1,5 @@
 import { StyleSheet } from 'react-native'
+import CONSTANTS from '../../service/constants'
 
 const styles = StyleSheet.create({
   safeArea: {
@@ -6,7 +7,8 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff'
   },
   container: {
-    flex: 1
+    flex: 1,
+    paddingBottom: CONSTANTS.ACTION_BAR_HEIGHT,
   },
   tabBarStyle: {
     borderTopWidth: 0,
