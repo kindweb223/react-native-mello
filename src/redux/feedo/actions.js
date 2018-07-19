@@ -1,11 +1,7 @@
 import { BASE_URL } from '../../service/api';
 import axios from 'axios';
 
-import {
-  GET_FEEDO_LIST_PENDING,
-  GET_FEEDO_LIST_FULFILLED,
-  GET_FEEDO_LIST_REJECTED
-} from './types'
+import * as types from './types'
 
 
 /**
@@ -21,10 +17,26 @@ export const getFeedoList = (index) => {
   }
 
   return {
-    types: [GET_FEEDO_LIST_PENDING, GET_FEEDO_LIST_FULFILLED, GET_FEEDO_LIST_REJECTED],
+    types: [types.GET_FEEDO_LIST_PENDING, types.GET_FEEDO_LIST_FULFILLED, types.GET_FEEDO_LIST_REJECTED],
     promise:
       axios({
           method: 'get',
+          url: url
+      })  
+  };
+}
+
+/**
+ * Pin feedo
+ */
+export const pinFeed = (huntId) => {
+  let url = `${BASE_URL}/hunts/${huntId}/pin`
+
+  return {
+    types: [types.PIN_FEED_PENDING, types.PIN_FEED_FULFILLED, types.PIN_FEED_REJECTED],
+    promise:
+      axios({
+          method: 'post',
           url: url
       })  
   };

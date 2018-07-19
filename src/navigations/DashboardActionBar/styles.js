@@ -10,6 +10,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: CONSTANTS.PADDING,
     paddingVertical: 8,
     position: 'absolute',
+    backgroundColor: 'rgba(255, 255, 255, 0.5)',
     bottom: 0,
   },
   filterContainer: {

@@ -1,19 +1,17 @@
 import { StyleSheet } from 'react-native'
+import CONSTANTS from '../../service/constants'
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1
+    backgroundColor: '#fff',
+    borderRadius: 10,
+    padding: CONSTANTS.PADDING,
   },
   thumbnailsView: {
     width: '100%',
-    height: 135,
+    height: 150,
     marginBottom: 6,
   },
-  thumbnails: {
-    width: '100%',
-    height: '100%',
-    borderRadius: 10,
-  }
 })
 
 export default styles
