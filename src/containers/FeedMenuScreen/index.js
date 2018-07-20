@@ -39,9 +39,8 @@ class FeedMenuScreen extends React.Component {
   }
 
   onTapActionSheet = (index) => {
-    if (index === 1) {
+    if (index === 0) {
       this.props.deleteFeed(this.props.feedData.id)
-    } else {
       this.props.closeFeedMenu()
     }
   }

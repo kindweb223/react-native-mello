@@ -1,5 +1,5 @@
 import * as types from './types'
-import { filter, omit } from 'lodash'
+import { filter } from 'lodash'
 
 const initialState = {
   loading: null,
@@ -100,17 +100,16 @@ export default function feedo(state = initialState, action = {}) {
       }
     }
     case types.DEL_FEED_FULFILLED: {
-      // const { feedoList } = state
-      // const feedId = action.payload
-      // const currentFeed = filter(feedoList, feed => feed.id === feedId)
-      // const restFeedoList = filter(feedoList, feed => feed.id !== feedId)
+      const { feedoList } = state
+      const feedId = action.payload
+      const restFeedoList = filter(feedoList, feed => feed.id !== feedId)
       
       return {
         ...state,
-        // loading: 'FEED_FULFILLED',
-        // feedoList: [
-        //   ...restFeedoList,
-        // ]
+        loading: types.DEL_FEED_FULFILLED,
+        feedoList: [
+          ...restFeedoList,
+        ]
       }
     }
     case types.DEL_FEED_REJECTED: {
