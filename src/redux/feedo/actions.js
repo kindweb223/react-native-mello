@@ -68,3 +68,20 @@ export const deleteFeed = (feedId) => {
     payload: feedId
   };
 }
+
+/**
+ * Archive Feed
+ */
+export const archiveFeed = (feedId) => {
+  let url = `${BASE_URL}/hunts/${feedId}`
+
+  return {
+    types: [types.ARCHIVE_FEED_PENDING, types.ARCHIVE_FEED_FULFILLED, types.ARCHIVE_FEED_REJECTED],
+    promise: axios({
+      method: 'put',
+      url: url,
+      data: { status: 'ENDED' }
+    }),
+    payload: feedId
+  };
+}

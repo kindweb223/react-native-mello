@@ -1,5 +1,5 @@
 import * as types from './types'
-import { filter, omit } from 'lodash'
+import { filter } from 'lodash'
 
 const initialState = {
   loading: null,
@@ -66,7 +66,7 @@ export default function feedo(state = initialState, action = {}) {
     case types.UNPIN_FEED_PENDING: {
       return {
         ...state,
-        erro: null,
+        error: null,
       }
     }
     case types.UNPIN_FEED_FULFILLED: {
@@ -96,27 +96,56 @@ export default function feedo(state = initialState, action = {}) {
     case types.DEL_FEED_PENDING: {
       return {
         ...state,
-        erro: null,
+        error: null,
       }
     }
     case types.DEL_FEED_FULFILLED: {
-      // const { feedoList } = state
-      // const feedId = action.payload
-      // const currentFeed = filter(feedoList, feed => feed.id === feedId)
-      // const restFeedoList = filter(feedoList, feed => feed.id !== feedId)
+      const { feedoList } = state
+      const feedId = action.payload
+      const restFeedoList = filter(feedoList, feed => feed.id !== feedId)
       
       return {
         ...state,
-        // loading: 'FEED_FULFILLED',
-        // feedoList: [
-        //   ...restFeedoList,
-        // ]
+        loading: types.DEL_FEED_FULFILLED,
+        feedoList: [
+          ...restFeedoList,
+        ]
       }
     }
     case types.DEL_FEED_REJECTED: {
       return {
         ...state,
         loading: types.DEL_FEED_REJECTED,
+        error: action.error,
+      }
+    }
+    /**
+     * Archive Feed
+     */
+    case types.ARCHIVE_FEED_PENDING: {
+      return {
+        ...state,
+        error: null,
+      }
+    }
+    case types.ARCHIVE_FEED_FULFILLED: {
+      const { feedoList } = state
+      const feedId = action.payload
+      const currentFeed = filter(feedoList, feed => feed.id === feedId)
+      const restFeedoList = filter(feedoList, feed => feed.id !== feedId)
+      return {
+        ...state,
+        loading: types.ARCHIVE_FEED_FULFILLED,
+        feedoList: [
+          ...restFeedoList,
+          Object.assign({}, currentFeed[0], { status: 'ENDED' })
+        ]
+      }
+    }
+    case types.ARCHIVE_FEED_REJECTED: {
+      return {
+        ...state,
+        loading: types.ARCHIVE_FEED_REJECTED,
         error: action.error,
       }
     }
