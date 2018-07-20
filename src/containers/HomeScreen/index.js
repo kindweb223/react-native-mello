@@ -3,7 +3,9 @@ import {
   SafeAreaView,
   ScrollView,
   View,
-  Animated
+  Text,
+  Animated,
+  ActivityIndicator
 } from 'react-native'
 
 import { connect } from 'react-redux'
@@ -121,8 +123,8 @@ class HomeScreen extends React.Component {
               <DashboardNavigationBar mode="normal" />
             </View>
 
-            {feedoList.length > 0 && (
-              <ScrollableTabView
+            {feedoList.length > 0 && !loading
+            ? <ScrollableTabView
                 tabBarActiveTextColor={COLORS.PURPLE}
                 tabBarInactiveTextColor={COLORS.MEDIUM_GREY}
                 onChangeTab={this.onChangeTab}
@@ -154,7 +156,13 @@ class HomeScreen extends React.Component {
                   handleFeedMenu={this.handleFeedMenu}
                 />
               </ScrollableTabView>
-            )}
+            : <View style={styles.emptyView}>
+                {loading
+                  ? <ActivityIndicator animating />
+                  : <Text style={styles.emptyText}>Feedo is more fun with feeds</Text>
+                }
+              </View>
+            }
           </ScrollView>
 
         </View>

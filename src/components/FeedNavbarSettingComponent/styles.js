@@ -3,7 +3,10 @@ import COLORS from '../../service/colors'
 
 const styles = StyleSheet.create({
   settingView: {
-    flexDirection: 'row'
+    flex: 1,
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'flex-end'
   },
   button: {
     width: 34,
