@@ -14,6 +14,8 @@ import {
 import COLORS from '../../service/colors'
 import SnackBarComponent from '../../components/SnackbarComponent';
 
+const ARCHIVE_DURATION = 5000   // 5s
+
 class FeedMenuScreen extends React.Component {
   constructor(props) {
     super(props)
@@ -44,7 +46,7 @@ class FeedMenuScreen extends React.Component {
         setTimeout(() => {
           this.setState({ isShowToaster: false })
           this.archiveFeed()
-        }, 6000)
+        }, ARCHIVE_DURATION)
         return
     }
   }
