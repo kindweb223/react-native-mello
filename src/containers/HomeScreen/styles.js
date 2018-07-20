@@ -6,6 +6,16 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#fff'
   },
+  normalHeader: {
+    height: 100,
+  },
+  miniHeader: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    overflow: 'hidden'
+  },
   container: {
     flex: 1,
     paddingBottom: CONSTANTS.ACTION_BAR_HEIGHT,

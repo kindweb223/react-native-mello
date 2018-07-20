@@ -3,6 +3,7 @@ import {
   SafeAreaView,
   ScrollView,
   View,
+  Animated
 } from 'react-native'
 
 import { connect } from 'react-redux'
@@ -41,7 +42,7 @@ class HomeScreen extends React.Component {
       isFeedMenuVisible: false,
       selectedFeedData: {},
       tabIndex: 0,
-      headerMode: 'normal'
+      scrollY: new Animated.Value(0)
     };
   }
 
@@ -104,22 +105,34 @@ class HomeScreen extends React.Component {
     this.setState({ isFeedMenuVisible: true })
   }
 
-  handleFeedScroll = (e) => {
-    const scrollPos = e.nativeEvent.contentOffset.y
-    this.setState({ headerMode: scrollPos > 0.5 ? 'mini' : 'normal'})
-  }
-
   render () {
-    const { loading, feedoList, headerMode } = this.state
+    const { loading, feedoList } = this.state
+
+    const miniHeaderHeight = this.state.scrollY.interpolate({
+      inputRange: [40, 140],
+      outputRange: [0, 60],
+      extrapolate: 'clamp'
+    })
 
     return (
       <SafeAreaView style={styles.safeArea}>
-        <DashboardNavigationBar mode={headerMode} />
-        
         <View style={styles.container}>
+            <Animated.View style={styles.miniHeader, { height: miniHeaderHeight }}>
+              <DashboardNavigationBar mode="mini" />
+            </Animated.View>
+
+
           <ScrollView
-            onScroll={(e) => this.handleFeedScroll(e)}
+            scrollEventThrottle={16}
+            onScroll={
+              Animated.event(
+                [{ nativeEvent: { contentOffset: { y: this.state.scrollY } } }]
+              )
+            }
           >
+            <View style={styles.normalHeader}>
+              <DashboardNavigationBar mode="normal" />
+            </View>
             <ScrollableTabView
               tabBarActiveTextColor={COLORS.PURPLE}
               tabBarInactiveTextColor={COLORS.MEDIUM_GREY}
@@ -153,6 +166,7 @@ class HomeScreen extends React.Component {
               />
             </ScrollableTabView>
           </ScrollView>
+
         </View>
 
         <DashboardActionBar />
