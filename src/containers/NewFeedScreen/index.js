@@ -8,12 +8,23 @@ import {
   YellowBox,
 } from 'react-native'
 import PropTypes from 'prop-types'
+import { connect } from 'react-redux'
+
 import { MaterialCommunityIcons, Ionicons, Entypo } from '@expo/vector-icons';
 import Tags from "react-native-tags";
 import ActionSheet from 'react-native-actionsheet'
+import { Actions } from 'react-native-router-flux'
+
+import { 
+  createFeed,
+  updateFeed,
+  deleteFeed,
+} from '../../redux/feed/actions'
+import * as types from '../../redux/feed/types'
 
 import COLORS from '../../service/colors'
 import styles from './styles'
+import LoadingScreen from '../LoadingScreen';
 
 
 class NewFeedScreen extends React.Component {
@@ -23,8 +34,32 @@ class NewFeedScreen extends React.Component {
       feedName: 'Feedo UX improvements',
       note: 'Please submit ideas for Toffee sugar plum jelly beans cheesecake soufflé muffin. Oat cake dragée bear claw candy canes pastry.',
       tags: ['UX', 'Solvers'],
+      loading: false,
     };
     YellowBox.ignoreWarnings(['Warning: Unsafe legacy lifecycles']);
+  }
+
+  static getDerivedStateFromProps(nextProps, prevState) {
+    const { feed } = nextProps;
+    console.log('feed : ', feed);
+    let loading = false;
+    if (feed.status == types.CREATE_FEED_PENDING) {
+      loading = true;
+    } else if (feed.status == types.UPDATE_FEED_PENDING) {
+      loading = true;
+    } else if (feed.status == types.DELETE_FEED_PENDING) {
+      loading = true;
+    } else if (feed.status == types.DELETE_FEED_FULFILLED) {
+      // this.onClose();
+    }
+
+    return {
+      loading,
+    }
+  }
+
+  componentDidMount() {
+    // this.props.createFeed();
   }
 
   onClose() {
@@ -34,6 +69,7 @@ class NewFeedScreen extends React.Component {
   }
 
   onCreate() {
+    this.props.createFeed();
   }
 
   get renderTopContent() {
@@ -142,7 +178,7 @@ class NewFeedScreen extends React.Component {
 
   onTapActionSheet(index) {
     if (index === 1) {
-      this.onClose();
+      this.props.deleteFeed('020675a4-2ad8-490d-8816-ff12e5049a43')
     }
   }
 
@@ -173,6 +209,7 @@ class NewFeedScreen extends React.Component {
           tintColor={COLORS.PURPLE}
           onPress={(index) => this.onTapActionSheet(index)}
         />
+        {this.state.loading && <LoadingScreen />}
       </SafeAreaView>
     )
   }
@@ -180,15 +217,30 @@ class NewFeedScreen extends React.Component {
 
 
 NewFeedScreen.defaultProps = {
+  feed: {},
   onClose: () => {},
-  onCreate: () => {},
 }
 
 
 NewFeedScreen.propTypes = {
+  feed: PropTypes.object,
   onClose: PropTypes.func,
-  onCreate: PropTypes.func,
+  createFeed: PropTypes.func,
+  updateFeed: PropTypes.func,
+  deleteFeed: PropTypes.func,
 }
 
 
-export default NewFeedScreen
+const mapStateToProps = ({ feed }) => ({
+  feed,
+})
+
+
+const mapDispatchToProps = dispatch => ({
+  createFeed: () => dispatch(createFeed()),
+  updateFeed: (id, name, note, tags, files) => dispatch(updateFeed(id, name, note, tags, files)),
+  deleteFeed: (id) => dispatch(deleteFeed(id)),
+})
+
+
+export default connect(mapStateToProps, mapDispatchToProps)(NewFeedScreen)
