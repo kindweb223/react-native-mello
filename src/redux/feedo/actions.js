@@ -27,10 +27,10 @@ export const getFeedoList = (index) => {
 }
 
 /**
- * Pin feedo
+ * Pin Feed
  */
-export const pinFeed = (huntId) => {
-  let url = `${BASE_URL}/hunts/${huntId}/pin`
+export const pinFeed = (feedId) => {
+  let url = `${BASE_URL}/hunts/${feedId}/pin`
 
   return {
     types: [types.PIN_FEED_PENDING, types.PIN_FEED_FULFILLED, types.PIN_FEED_REJECTED],
@@ -38,6 +38,33 @@ export const pinFeed = (huntId) => {
       axios({
           method: 'post',
           url: url
-      })  
+      }),
+    payload: feedId
+  };
+}
+
+/**
+ * UnPin Feed
+ */
+export const unpinFeed = (feedId) => {
+  let url = `${BASE_URL}/hunts/${feedId}/pin`
+
+  return {
+    types: [types.UNPIN_FEED_PENDING, types.UNPIN_FEED_FULFILLED, types.UNPIN_FEED_REJECTED],
+    promise: axios.delete(url),
+    payload: feedId
+  };
+}
+
+/**
+ * Delete Feed
+ */
+export const deleteFeed = (feedId) => {
+  let url = `${BASE_URL}/hunts/${feedId}`
+
+  return {
+    types: [types.DEL_FEED_PENDING, types.DEL_FEED_FULFILLED, types.DEL_FEED_REJECTED],
+    promise: axios.delete(url),
+    payload: feedId
   };
 }

@@ -29,7 +29,6 @@ const styles = StyleSheet.create({
     borderRadius: 17,
     backgroundColor: COLORS.PURPLE,
     justifyContent: 'center',
-    justifyContent: 'center',
   },
   textButton: {
     color: '#fff',

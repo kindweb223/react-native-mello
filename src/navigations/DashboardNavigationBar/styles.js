@@ -4,14 +4,15 @@ import CONSTANTS from '../../service/constants'
 
 const styles = StyleSheet.create({
   container: {
-    height: CONSTANTS.NORMAL_NAVIGATION_BAR_HEIGTH,
+    height: 100,
     width: '100%',
-    paddingHorizontal: CONSTANTS.PADDING
+    paddingHorizontal: CONSTANTS.PADDING,
+    zIndex: 999,
   },
   miniContainer: {
     height: CONSTANTS.MINI_NAVIGATION_BAR_HEIGTH,
     width: '100%',
-    paddingHorizontal: CONSTANTS.PADDING
+    paddingHorizontal: CONSTANTS.PADDING,
   },
   statusBarUnderlay: {
     height: 24,
@@ -22,17 +23,19 @@ const styles = StyleSheet.create({
   },
   navbarView: {
     justifyContent: 'flex-end',
-    paddingVertical: 16,
     width: '100%',
-    height: CONSTANTS.MINI_NAVIGATION_BAR_HEIGTH,
+    paddingTop: 16,
+    height: 50,
   },
   searchIcon: {
     fontSize: 30,
     color: COLORS.LIGHT_GREY,
   },
   titleView: {
-    flex: 1,
     justifyContent: 'flex-end',
+    backgroundColor: '#fff',
+    width: '100%',
+    height: 50,
   },
   title: {
     fontSize: 28,
@@ -41,9 +44,9 @@ const styles = StyleSheet.create({
   },
   miniNavbarView: {
     flex: 1,
-    alignItems: 'center',
+    alignItems: 'flex-start',
     justifyContent: 'flex-end',
-    paddingVertical: 16,
+    paddingBottom: 10
   },
   miniTitle: {
     fontSize: 16,
