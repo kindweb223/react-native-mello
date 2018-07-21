@@ -14,6 +14,7 @@ axios.defaults.headers['x-mobile-api'] = true
 import reducers from './src/redux/reducers'
 import HomeScreen from './src/containers/HomeScreen'
 import LoadingScreen from './src/containers/LoadingScreen';
+import FeedDetailScreen from './src/containers/FeedDetailScreen'
 
 const store = createStore(reducers, applyMiddleware(thunk, promiseMiddleware))
 
@@ -22,7 +23,8 @@ export default class Root extends React.Component {
     const scenes = Actions.create(
       <Lightbox>
         <Scene key="root">
-          <Scene key="Home" component={ HomeScreen } initial hideNavBar panHandlers={null} />
+          <Scene key="HomeScreen" component={ HomeScreen } initial hideNavBar panHandlers={null} />
+          <Scene key="FeedDetailScreen" component={ FeedDetailScreen } hideNavBar panHandlers={null} />
         </Scene>
         <Scene key="LoadingScreen" component={ LoadingScreen } hideNavBar />
       </Lightbox>

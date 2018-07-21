@@ -4,31 +4,27 @@ import CONSTANTS from '../../service/constants'
 
 const styles = StyleSheet.create({
   container: {
-    height: CONSTANTS.NORMAL_NAVIGATION_BAR_HEIGTH,
-    width: '100%',
-    paddingHorizontal: CONSTANTS.PADDING
-  },
-  miniContainer: {
-    height: CONSTANTS.MINI_NAVIGATION_BAR_HEIGTH,
-    width: '100%',
+    flex: 1,
     paddingHorizontal: CONSTANTS.PADDING
   },
   statusBarUnderlay: {
     height: 24,
     backgroundColor: '#fff',
   },
-  subContainer: {
-    flex: 1,
-  },
   navView: {
-    height: CONSTANTS.MINI_NAVIGATION_BAR_HEIGTH,
+    height: '50%',
     flexDirection: 'row',
     justifyContent: 'space-between',
-    paddingVertical: 16,
-    alignItems: 'flex-end',
+    alignItems: 'flex-end'
   },
   backView: {
+    flex: 1,
     flexDirection: 'row',
+    alignItems: 'center'
+  },
+  backButton: {
+    flexDirection: 'row',
+    justifyContent: 'flex-start',
     alignItems: 'center'
   },
   backIcon: {
@@ -41,26 +37,26 @@ const styles = StyleSheet.create({
     color: COLORS.PURPLE,
   },
   titleView: {
-    flex: 1,
     flexDirection: 'row',
     justifyContent: 'space-between',
-    alignItems: 'flex-end'
+    alignItems: 'flex-end',
+    height: '50%',
+    width: '100%',
   },
   title: {
     fontSize: 28,
     fontWeight: 'bold',
     color: COLORS.PRIMARY_BLACK,
+    marginRight: 10,
+    flex: 1
   },
-  miniTitleView: {
-    flex: 1,
+  miniNavView: {
+    height: '100%',
     flexDirection: 'row',
+    justifyContent: 'space-between',
     alignItems: 'flex-end',
-    justifyContent: 'space-between'
-  },
-  miniTitle: {
-    fontSize: 16,
-    color: COLORS.PRIMARY_BLACK,
-  },
+    paddingBottom: 10,
+  }
 })
 
 export default styles

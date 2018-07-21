@@ -21,20 +21,6 @@ const styles = StyleSheet.create({
     flex: 1,
     paddingBottom: CONSTANTS.ACTION_BAR_HEIGHT,
   },
-  tabBarStyle: {
-    borderTopWidth: 0,
-    borderBottomWidth: 0,
-    height: 60,
-    alignItems: 'center',
-    marginTop: 0,
-  },
-  tabBarTextStyle: {
-    fontSize: 16,
-    fontWeight: 'bold'
-  },
-  newFeedModalContainer: {
-    margin: 0,
-  },
   emptyView: {
     flex: 1,
     justifyContent: 'center',
@@ -46,6 +32,30 @@ const styles = StyleSheet.create({
     fontSize: 18,
     color: COLORS.MEDIUM_GREY,
     marginVertical: 20
+  },
+  detailView: {
+    flex: 1,
+    paddingHorizontal: CONSTANTS.PADDING,
+    paddingVertical: 10
+  },
+  collapseHeader: {
+    height: 40,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between'
+  },
+  collapseHeaderText: {
+    color: COLORS.MEDIUM_GREY,
+    flex: 1,
+    marginRight: 10,
+    fontSize: 18,
+  },
+  arrowDownIcon: {
+    fontSize: 20,
+    color: COLORS.MEDIUM_GREY
+  },
+  contentText:{
+    fontSize: 18
   }
 })
 
