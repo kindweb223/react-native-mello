@@ -11,6 +11,7 @@ import PropTypes from 'prop-types'
 import { Ionicons } from 'react-native-vector-icons'
 import { Actions } from 'react-native-router-flux'
 import FeedNavbarSettingComponent from '../../components/FeedNavbarSettingComponent'
+import AvatarPileComponent from '../../components/AvatarPileComponent'
 import styles from './styles'
 
 class FeedNavigationBar extends React.Component {
@@ -36,6 +37,7 @@ class FeedNavigationBar extends React.Component {
                     <Ionicons name="ios-arrow-back" style={styles.backIcon} />
                     {/* <Text style={styles.backTitle}>My feedos</Text> */}
                   </TouchableOpacity>
+                  <AvatarPileComponent />
                 </View>
               </View>,
               <View key="2" style={styles.titleView}>
@@ -46,13 +48,14 @@ class FeedNavigationBar extends React.Component {
               </View>
             ]
           : <View style={styles.miniNavView}>
-              <View style={styles.backView}>
+              <View>
                 <TouchableOpacity onPress={this.backToDashboard} style={styles.backButton}>
                   <Ionicons name="ios-arrow-back" style={styles.backIcon} />
                   {/* <Text style={styles.backTitle}>My feedos</Text> */}
                 </TouchableOpacity>
               </View>
-              <View>
+              <View style={styles.avatarView}>
+                <AvatarPileComponent />
                 <FeedNavbarSettingComponent />
               </View>
             </View>

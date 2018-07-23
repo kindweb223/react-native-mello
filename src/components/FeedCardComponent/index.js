@@ -6,15 +6,20 @@ import {
 } from 'react-native'
 import { FontAwesome, Feather } from 'react-native-vector-icons'
 import PropTypes from 'prop-types'
+import UserAvatar from 'react-native-user-avatar'
 import styles from './styles'
 
 const CardBottomComponent = () => (
   <View style={styles.bottomContainer}>
     <View style={styles.subView}>
-      <Image
-        style={styles.avatar}
-        source={{ uri: 'https://randomuser.me/api/portraits/men/74.jpg' }}
-      />
+      <View style={styles.avatar}>
+        <UserAvatar
+          size="30"
+          name="Sergery Pahm"
+          colors={['#fff', '#000']}
+          src="https://randomuser.me/api/portraits/men/74.jpg"
+        />
+      </View>
       <Text style={styles.text}>@Val</Text>
       <Text style={styles.text}>- 3h</Text>
     </View>

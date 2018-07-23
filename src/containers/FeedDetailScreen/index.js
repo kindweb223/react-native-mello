@@ -46,7 +46,7 @@ class FeedDetailScreen extends React.Component {
     const { feedData } = this.props
 
     const miniHeaderHeight = this.state.scrollY.interpolate({
-      inputRange: [40, 140],
+      inputRange: [80, 140],
       outputRange: [0, 60],
       extrapolate: 'clamp'
     })
@@ -58,7 +58,7 @@ class FeedDetailScreen extends React.Component {
       }
     ]
 
-    console.log('DAT: ',feedData.ideas);
+    // console.log('FEED_DATA: ',feedData.ideas);
 
     return (
       <SafeAreaView style={styles.safeArea}>
