@@ -5,11 +5,15 @@ const initialState = {
   loading: null,
   error: null,
   feedoList: null,
+  feedDetailData: null,
   pinResult: null,
 };
 
 export default function feedo(state = initialState, action = {}) {
   switch (action.type) {
+    /**
+     * Get Feed List
+     */
     case types.GET_FEEDO_LIST_PENDING:
       return {
         ...initialState,
@@ -26,6 +30,29 @@ export default function feedo(state = initialState, action = {}) {
       return {
         ...state,
         loading: types.GET_FEEDO_LIST_REJECTED,
+        error: action.error,
+      }
+    }
+    /**
+     * Get Feed Detail
+     */
+    case types.GET_FEED_DETAIL_PENDING:
+      return {
+        ...state,
+        error: null
+      }
+    case types.GET_FEED_DETAIL_FULFILLED: {
+      const { data } = action.result
+      return {
+        ...state,
+        loading: types.GET_FEED_DETAIL_FULFILLED,
+        feedDetailData: data,
+      }
+    }
+    case types.GET_FEED_DETAIL_REJECTED: {
+      return {
+        ...state,
+        loading: types.GET_FEED_DETAIL_REJECTED,
         error: action.error,
       }
     }

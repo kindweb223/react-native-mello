@@ -97,7 +97,7 @@ class HomeScreen extends React.Component {
   }
 
   render () {
-    const { loading, feedoList, emptyState } = this.state
+    const { loading, feedoList, emptyState, tabIndex } = this.state
 
     const miniHeaderHeight = this.state.scrollY.interpolate({
       inputRange: [40, 140],
@@ -125,8 +125,14 @@ class HomeScreen extends React.Component {
               <DashboardNavigationBar mode="normal" />
             </View>
 
-            {!emptyState > 0 && !loading
-            ? <ScrollableTabView
+            {emptyState > 0 && tabIndex === 0
+            ? <View style={styles.emptyView}>
+                {loading
+                  ? <ActivityIndicator animating />
+                  : <Text style={styles.emptyText}>Feedo is more fun with feeds</Text>
+                }
+              </View>
+            : <ScrollableTabView
                 tabBarActiveTextColor={COLORS.PURPLE}
                 tabBarInactiveTextColor={COLORS.MEDIUM_GREY}
                 onChangeTab={this.onChangeTab}
@@ -158,18 +164,14 @@ class HomeScreen extends React.Component {
                   handleFeedMenu={this.handleFeedMenu}
                 />
               </ScrollableTabView>
-            : <View style={styles.emptyView}>
-                {loading
-                  ? <ActivityIndicator animating />
-                  : <Text style={styles.emptyText}>Feedo is more fun with feeds</Text>
-                }
-              </View>
             }
           </ScrollView>
 
         </View>
 
-        <DashboardActionBar />
+        {!this.state.isFeedMenuVisible && (
+          <DashboardActionBar />
+        )}
 
         <Modal 
           isVisible={this.state.isModalVisible}
@@ -183,8 +185,11 @@ class HomeScreen extends React.Component {
         <Modal 
           isVisible={this.state.isFeedMenuVisible}
           style={styles.newFeedModalContainer}
-          backdropColor='#c0c0c0'
+          backdropColor='#e0e0e0'
           backdropOpacity={0.9}
+          animationIn="fadeIn"
+          animationOut="fadeOut"
+          animationInTiming={1000}
           onBackdropPress={() => this.setState({ isFeedMenuVisible: false })}
         >
           <FeedMenuScreen

@@ -26,6 +26,22 @@ export const getFeedoList = (index) => {
   };
 }
 
+
+/**
+ * Get Feed detail
+ */
+export const getFeedDetailData = (feedId) => {
+  let url = `${BASE_URL}/hunts/${feedId}`
+
+  return {
+    types: [types.GET_FEED_DETAIL_PENDING, types.GET_FEED_DETAIL_FULFILLED, types.GET_FEED_DETAIL_REJECTED],
+    promise: axios({
+      method: 'get',
+      url: url
+    })
+  };
+}
+
 /**
  * Pin Feed
  */
