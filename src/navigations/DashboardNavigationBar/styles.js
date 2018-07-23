@@ -7,7 +7,7 @@ const styles = StyleSheet.create({
     height: 100,
     width: '100%',
     paddingHorizontal: CONSTANTS.PADDING,
-    zIndex: 999,
+    // zIndex: 999,
   },
   miniContainer: {
     height: CONSTANTS.MINI_NAVIGATION_BAR_HEIGTH,

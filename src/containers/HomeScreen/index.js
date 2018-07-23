@@ -37,7 +37,7 @@ class HomeScreen extends React.Component {
     this.state = {
       feedoList: [],
       loading: false,
-      isModalVisible: false,
+      isModalVisible: true,
       isFeedMenuVisible: false,
       selectedFeedData: {},
       tabIndex: 0,
@@ -157,14 +157,22 @@ class HomeScreen extends React.Component {
 
         <DashboardActionBar />
 
-        <Modal 
+        {/* <Modal 
           isVisible={this.state.isModalVisible}
           style={styles.newFeedModalContainer}
         >
           <NewFeedScreen 
             onClose={() => this.setState({ isModalVisible: false })}
           />
-        </Modal>
+        </Modal> */}
+        {
+          this.state.isModalVisible && 
+          <View style={styles.newFeedContainer}>
+            <NewFeedScreen 
+              onClose={() => this.setState({ isModalVisible: false })}
+            />
+          </View>
+        }
 
         <Modal 
           isVisible={this.state.isFeedMenuVisible}

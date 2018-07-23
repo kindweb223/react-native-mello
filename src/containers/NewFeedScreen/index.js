@@ -1,6 +1,5 @@
 import React from 'react'
 import {
-  SafeAreaView,
   Text,
   TextInput,
   View,
@@ -16,6 +15,7 @@ import Tags from "react-native-tags";
 import ActionSheet from 'react-native-actionsheet'
 import { Actions } from 'react-native-router-flux'
 import { ImagePicker, Permissions } from 'expo';
+import * as mime from 'react-native-mime-types';
 
 import { 
   createFeed,
@@ -23,12 +23,14 @@ import {
   deleteFeed,
   getFileUploadUrl,
   uploadFileToS3,
+  deleteFile,
 } from '../../redux/feed/actions'
 import * as types from '../../redux/feed/types'
 
 import COLORS from '../../service/colors'
 import styles from './styles'
 import LoadingScreen from '../LoadingScreen';
+import NewFeedImage from '../../components/NewFeedImageComponent';
 
 
 class NewFeedScreen extends React.Component {
@@ -36,12 +38,13 @@ class NewFeedScreen extends React.Component {
     super(props);
     this.state = {
       feedName: 'Feedo UX improvements',
-      note: 'Please submit ideas for Toffee sugar plum jelly beans cheesecake soufflé muffin. Oat cake dragée bear claw candy canes pastry.',
+      comments: 'Please submit ideas for Toffee sugar plum jelly beans cheesecake soufflé muffin. Oat cake dragée bear claw candy canes pastry.',
       tags: ['UX', 'Solvers'],
       loading: false,
     };
     this.selectedFile = null;
-    this.selectedFileType = 'image';
+    this.selectedFileMimeType = null;
+    this.selectedFileName = null;
     YellowBox.ignoreWarnings(['Warning: Unsafe legacy lifecycles']);
   }
 
@@ -52,34 +55,75 @@ class NewFeedScreen extends React.Component {
       // creating a feed
       loading = true;
     } else if (this.props.feed.status !== types.UPDATE_FEED_PENDING && nextProps.feed.status === types.UPDATE_FEED_PENDING) {
-      //upating a feed
+      // upating a feed
       loading = true;
     } else if (this.props.feed.status !== types.DELETE_FEED_PENDING && nextProps.feed.status === types.DELETE_FEED_PENDING) {
-      //deleting a feed
+      // deleting a feed
       loading = true;
     } else if (this.props.feed.status !== types.DELETE_FEED_FULFILLED && nextProps.feed.status === types.DELETE_FEED_FULFILLED) {
-      //fullfilled in deleting a feed
+      // fullfilled in deleting a feed
       this.onClose();
       return;
     } else if (this.props.feed.status !== types.GET_FILE_UPLOAD_URL_PENDING && nextProps.feed.status === types.GET_FILE_UPLOAD_URL_PENDING) {
-      //getting a file upload url
+      // getting a file upload url
       loading = true;
     } else if (this.props.feed.status !== types.GET_FILE_UPLOAD_URL_FULFILLED && nextProps.feed.status === types.GET_FILE_UPLOAD_URL_FULFILLED) {
-      //fullfilled in getting a file upload url
+      // fullfilled in getting a file upload url
       loading = true;
-      this.props.uploadFileToS3(nextProps.feed.fileUploadUrl.uploadUrl, this.selectedFile, this.selectedFileType);
+      this.props.uploadFileToS3(nextProps.feed.fileUploadUrl.uploadUrl, this.selectedFile, this.selectedFileName, this.selectedFileMimeType);
     } else if (this.props.feed.status !== types.UPLOAD_FILE_PENDING && nextProps.feed.status === types.UPLOAD_FILE_PENDING) {
-      //uploading a file
+      // uploading a file
       loading = true;
     } else if (this.props.feed.status !== types.UPLOAD_FILE_FULFILLED && nextProps.feed.status === types.UPLOAD_FILE_FULFILLED) {
-      //fullfilled in uploading a file
-    } 
+      // fullfilled in uploading a file
+      loading = true;
+      let {
+        id, 
+        headline,
+        comments,
+        tags,
+        files,
+      } = this.props.feed.feed;
+      const {
+        objectKey
+      } = this.props.feed.fileUploadUrl;
+
+      if (files) {
+        files = [
+          ...files,
+          {
+            contentType: this.selectedFileMimeType,
+            name: this.selectedFileName,
+            objectKey,
+          }
+        ]
+      } else {
+        files = [
+          {
+            contentType: this.selectedFileMimeType,
+            name: this.selectedFileName,
+            objectKey,
+          }
+        ]
+      }
+      this.props.updateFeed(id, headline, comments, tags, files)
+    } else if (this.props.feed.status !== types.UPDATE_FEED_PENDING && nextProps.feed.status === types.UPDATE_FEED_PENDING) {
+      // updating a feed
+      loading = true;
+    } else if (this.props.feed.status !== types.UPDATE_FEED_FULFILLED && nextProps.feed.status === types.UPDATE_FEED_FULFILLED) {
+      // fullfilled in updating a feed
+    } else if (this.props.feed.status !== types.DELETE_FILE_PENDING && nextProps.feed.status === types.DELETE_FILE_PENDING) {
+      // deleting a file
+      loading = true;
+    } else if (this.props.feed.status !== types.DELETE_FILE_FULFILLED && nextProps.feed.status === types.DELETE_FILE_FULFILLED) {
+      // fullfilled in deleting a file
+    }
 
     this.setState({
       loading,
     });
 
-    //showing error alert
+    // showing error alert
     if (nextProps.feed.error) {
       let error = null;
       if (nextProps.feed.error.error) {
@@ -136,6 +180,10 @@ class NewFeedScreen extends React.Component {
   }
 
   async onTapImagePickerActionSheet(index) {
+    if (index === 2) {
+      return;
+    }
+    
     let result;
     if (index === 0) {
       // from camera
@@ -159,13 +207,9 @@ class NewFeedScreen extends React.Component {
       });
     }
     if (!result.cancelled) {
-      console.log('ImagePicker : ', result);
       this.selectedFile = result.uri;
-      this.selectedFileType = result.type;
-      // this.props.getFileUploadUrl('71269dba-bd4a-4ead-950f-88215a959618');
-      // const uploadUrl = "https://solvers-hunt.s3.amazonaws.com/solvers-dev/hunts/fa0aa987-6435-4061-b83a-567965d15e73/e1f92f01-c85b-4b2e-8c35-f8072f45ce16?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Date=20180720T223017Z&X-Amz-SignedHeaders=host&X-Amz-Expires=3600&X-Amz-Credential=AKIAJWOLNJ6JUTX6P2CQ%2F20180720%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Signature=df27e570c5e07594a929f76695dc421d5532172152fe852bc55f277badafe9f2";
-      // this.props.uploadFileToS3(uploadUrl, this.selectedFile, this.selectedFileType);
-      // return;
+      this.selectedFileMimeType = mime.lookup(result.uri);
+      this.selectedFileName = result.uri.replace(/^.*[\\\/]/, '');
       if (this.props.feed.feed.id) {
         this.props.getFileUploadUrl(this.props.feed.feed.id);
       }
@@ -193,6 +237,30 @@ class NewFeedScreen extends React.Component {
     );
   }
 
+  onRemoveImage(index) {
+    const {
+      id,
+      files
+    } = this.props.feed.feed;
+    this.props.deleteFile(id, files[index].id);
+    // this.state.files.splice(index, 1);
+    // this.setState({
+    //   files: this.state.files,
+    // });
+  }
+
+  get renderImages() {
+    const {
+      files
+    } = this.props.feed.feed;
+    return (
+      <NewFeedImage 
+        files={files}
+        onRemove={(index) => this.onRemoveImage(index)}
+      />
+    )
+  }
+
   get renderCenterContent() {
     return (
       <View style={styles.mainContentContainer}>
@@ -208,8 +276,8 @@ class NewFeedScreen extends React.Component {
           placeholder='Note'
           multiline={true}
           underlineColorAndroid='transparent'
-          value={this.state.note}
-          onChangeText={(value) => this.setState({note: value})}
+          value={this.state.comments}
+          onChangeText={(value) => this.setState({comments: value})}
         />
         <Tags
           initialTags={this.state.tags}
@@ -230,6 +298,7 @@ class NewFeedScreen extends React.Component {
             fontSize: 16,
           }}
         />
+        {this.renderImages}
       </View>
     );
   }
@@ -264,7 +333,7 @@ class NewFeedScreen extends React.Component {
 
   render () {
     return (
-      <SafeAreaView style={styles.container}>
+      <View style={styles.container}>
         <TouchableOpacity 
           style={styles.backgroundContainer}
           activeOpacity={1}
@@ -298,7 +367,7 @@ class NewFeedScreen extends React.Component {
           onPress={(index) => this.onTapImagePickerActionSheet(index)}
         />
         {this.state.loading && <LoadingScreen />}
-      </SafeAreaView>
+      </View>
     )
   }
 }
@@ -326,10 +395,11 @@ const mapStateToProps = ({ feed }) => ({
 
 const mapDispatchToProps = dispatch => ({
   createFeed: () => dispatch(createFeed()),
-  updateFeed: (id, name, note, tags, files) => dispatch(updateFeed(id, name, note, tags, files)),
+  updateFeed: (id, name, comments, tags, files) => dispatch(updateFeed(id, name, comments, tags, files)),
   deleteFeed: (id) => dispatch(deleteFeed(id)),
   getFileUploadUrl: (id) => dispatch(getFileUploadUrl(id)),
-  uploadFileToS3: (url, file, type) => dispatch(uploadFileToS3(url, file, type)),
+  uploadFileToS3: (signedUrl, file, fileName, mimeType) => dispatch(uploadFileToS3(signedUrl, file, fileName, mimeType)),
+  deleteFile: (feedId, fileId) => dispatch(deleteFile(feedId, fileId)),
 })
 
 

@@ -78,22 +78,44 @@ export const getFileUploadUrl = (id) => {
 /**
  * Upload a file
  */
-export const uploadFileToS3 = (url, file, type) => {
+export const uploadFileToS3 = (signedUrl, file, fileName, mimeType) => {
   const fileData = {
     uri: file,
-    name: 'mytestphoto.jpg',
-    type: 'image/jpeg'
+    name: fileName,
+    type: mimeType,
   };
   console.log('File : ', fileData);
   return {
     types: [types.UPLOAD_FILE_PENDING, types.UPLOAD_FILE_FULFILLED, types.UPLOAD_FILE_REJECTED],
     promise:
-      axios({
-        method: 'put',
-        url: url,
-        data: {file: fileData},
-        headers: {'Content-Type': 'image/jpeg'},
-        //  withCredentials: false}
+      new Promise((resolve, reject) => {
+        const xhr = new XMLHttpRequest();
+        xhr.open('PUT', signedUrl);
+        xhr.onreadystatechange = function() {
+          if (xhr.readyState === 4) {
+            if (xhr.status === 200) {
+              resolve('success');
+            } else {
+              reject('Could not upload file.');
+            }
+          }
+        };
+        xhr.send(fileData);
       })
+  };
+}
+
+/**
+ * Delete a file
+ */
+export const deleteFile = (feedId, fileId) => {
+  let url = `hunts/${feedId}/files/${fileId}`
+  return {
+    types: [types.DELETE_FILE_PENDING, types.DELETE_FILE_FULFILLED, types.DELETE_FILE_REJECTED],
+    promise:
+      axios({
+        method: 'delete',
+        url: url,
+      })  
   };
 }

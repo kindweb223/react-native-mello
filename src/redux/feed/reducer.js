@@ -5,7 +5,6 @@ const initialState = {
   error: null,
   feed: {},
   fileUploadUrl: {},
-  file: {},
 };
 
 export default function feed(state = initialState, action = {}) {
@@ -28,6 +27,7 @@ export default function feed(state = initialState, action = {}) {
       }
     }
     case types.CREATE_FEED_REJECTED: {
+      console.log('CREATE_FEED_REJECTED : ', JSON.stringify(action.error));
       const { data } = action.error.response
       return {
         ...state,
@@ -113,27 +113,45 @@ export default function feed(state = initialState, action = {}) {
       return {
         ...state,
         status: types.UPLOAD_FILE_PENDING,
-        file: {},
         error: null,
       }
     case types.UPLOAD_FILE_FULFILLED: {
-      const { data } = action.result
-      console.log('Upload Success : ', JSON.stringify(action.result));
       return {
         ...state,
         status: types.UPLOAD_FILE_FULFILLED,
-        file: data
       }
     }
     case types.UPLOAD_FILE_REJECTED: {
-      // const { data } = action.error.response
-      console.log('Upload Error : ', JSON.stringify(action.error));
       return {
         ...state,
         status: types.UPLOAD_FILE_REJECTED,
         error: action.error,
       }
     }
+
+    // delete a file
+    case types.DELETE_FILE_PENDING:
+      return {
+        ...state,
+        status: types.DELETE_FILE_PENDING,
+        error: null,
+      }
+    case types.DELETE_FILE_FULFILLED: {
+      const { data } = action.result
+      return {
+        ...state,
+        status: types.DELETE_FILE_FULFILLED,
+      }
+    }
+    case types.DELETE_FILE_REJECTED: {
+      const { data } = action.error.response
+      return {
+        ...state,
+        status: types.DELETE_FILE_REJECTED,
+        error: data,
+      }
+    }
+
     default:
       return state;
   }
