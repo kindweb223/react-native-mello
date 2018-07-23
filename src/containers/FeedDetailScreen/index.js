@@ -14,6 +14,7 @@ import Accordion from 'react-native-collapsible/Accordion'
 import { Ionicons } from '@expo/vector-icons'
 import FeedNavigationBar from '../../navigations/FeedNavigationBar'
 import DashboardActionBar from '../../navigations/DashboardActionBar'
+import FeedCardComponent from '../../components/FeedCardComponent'
 import styles from './styles'
 
 class FeedDetailScreen extends React.Component {
@@ -50,13 +51,14 @@ class FeedDetailScreen extends React.Component {
       extrapolate: 'clamp'
     })
 
-    // console.log('feedData: ', feedData)
-    const SECTIONS = [
+    const ACCORDION_SECTIONS = [
       {
         title: feedData.summary,
         content: feedData.summary
       }
     ]
+
+    console.log('DAT: ',feedData.ideas);
 
     return (
       <SafeAreaView style={styles.safeArea}>
@@ -79,20 +81,20 @@ class FeedDetailScreen extends React.Component {
             
             <View style={styles.detailView}>
               <Accordion
-                sections={SECTIONS}
+                sections={ACCORDION_SECTIONS}
                 renderHeader={this.renderHeader}
                 renderContent={this.renderContent}
                 touchableComponent={TouchableOpacity}
               />
 
-              {/* {feedData.ideas > 0
-                ? <View>
-                    <Text>{feedData.summary}</Text>
-                  </View>
+              {feedData.ideas.length > 0
+                ? feedData.ideas.map(data => (
+                    <FeedCardComponent key={data.id} data={data} />
+                  ))
                 : <View style={styles.emptyView}>
                     <Text style={styles.emptyText}>It is lonely here</Text>
                   </View>
-              } */}
+              }
             </View>
           </ScrollView>
 

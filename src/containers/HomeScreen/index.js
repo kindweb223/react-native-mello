@@ -44,6 +44,7 @@ class HomeScreen extends React.Component {
       isFeedMenuVisible: false,
       selectedFeedData: {},
       tabIndex: 0,
+      emptyState: true,
       scrollY: new Animated.Value(0)
     };
   }
@@ -77,7 +78,8 @@ class HomeScreen extends React.Component {
 
       return {
         feedoList,
-        loading: false
+        loading: false,
+        emptyState: false
       }
     }
 
@@ -95,7 +97,7 @@ class HomeScreen extends React.Component {
   }
 
   render () {
-    const { loading, feedoList } = this.state
+    const { loading, feedoList, emptyState } = this.state
 
     const miniHeaderHeight = this.state.scrollY.interpolate({
       inputRange: [40, 140],
@@ -123,7 +125,7 @@ class HomeScreen extends React.Component {
               <DashboardNavigationBar mode="normal" />
             </View>
 
-            {feedoList.length > 0 && !loading
+            {!emptyState > 0 && !loading
             ? <ScrollableTabView
                 tabBarActiveTextColor={COLORS.PURPLE}
                 tabBarInactiveTextColor={COLORS.MEDIUM_GREY}
