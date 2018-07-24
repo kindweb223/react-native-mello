@@ -4,16 +4,17 @@ import Modal from 'react-native-modal'
 import PropTypes from 'prop-types'
 import styles from './styles'
 
-class SnackBarComponent extends React.Component {
+class ToasterComponent extends React.Component {
   render() {
     const { title, buttonTitle, isVisible } = this.props
     return (
       <Modal 
-        isVisible={isVisible}
-        backdropOpacity={0.5}
-        style={styles.modalContainer}
-        animationIn={'slideInDown'}
-        animationOut={'slideOutUp'}
+          isVisible={isVisible}
+          backdropOpacity={0}
+          animationIn="fadeIn"
+          animationOut="fadeOut"
+          animationInTiming={500}
+          animationOutTiming={500}
       >
         <View style={styles.container}>
           <Text style={styles.title}>{title}</Text>
@@ -28,16 +29,18 @@ class SnackBarComponent extends React.Component {
   }
 }
 
-SnackBarComponent.defaultProps = {
+ToasterComponent.defaultProps = {
   onPressButton: () => {},
+  title: '',
+  buttonTitle: 'Undo',
   isVisible: false
 }
 
-SnackBarComponent.propTypes = {
-  title: PropTypes.string.isRequired,
-  buttonTitle: PropTypes.string.isRequired,
+ToasterComponent.propTypes = {
+  title: PropTypes.string,
+  buttonTitle: PropTypes.string,
   onPressButton: PropTypes.func,
   isVisible: PropTypes.bool
 }
 
-export default SnackBarComponent
+export default ToasterComponent

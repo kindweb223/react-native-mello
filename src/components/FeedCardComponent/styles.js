@@ -4,12 +4,12 @@ import COLORS from '../../service/colors'
 const styles = StyleSheet.create({
   container: {
     backgroundColor: '#fff',
-    marginVertical: 10,
+    marginBottom: 22,
   },
   title: {
    fontSize: 18,
    fontWeight: 'bold',
-   marginVertical: 10, 
+   marginBottom: 10, 
   },
   thumbnailsView: {
     width: '100%',
@@ -21,7 +21,7 @@ const styles = StyleSheet.create({
     borderRadius: 10,
   },
   bottomContainer: {
-    marginVertical: 10,
+    marginTop: 10,
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center'

@@ -6,7 +6,7 @@ import {
 import PropTypes from 'prop-types'
 import styles from './styles'
 import FeedCoverImageComponent from '../FeedCoverImageComponent'
-import FeedItemTitleComponent from '../FeedItemTitleComponent'
+import FeedItemContentComponent from '../FeedItemContentComponent'
 
 const FeedItemComponent = ({ item, pinFlag }) => (
   <View style={styles.container}>
@@ -15,7 +15,7 @@ const FeedItemComponent = ({ item, pinFlag }) => (
         <FeedCoverImageComponent data={item.coverImages} />
       </View>
     )}
-    <FeedItemTitleComponent data={item} pinFlag={pinFlag} />
+    <FeedItemContentComponent data={item} pinFlag={pinFlag} />
   </View>
 )
 
