@@ -36,7 +36,7 @@ class FeedDetailScreen extends React.Component {
     if (nextProps.feedo.feedDetailData === prevState.feedDetailData) {
       return null;
     }
-    console.log('FEED_DATA: ', nextProps.feedo.feedDetailData)
+    // console.log('FEED_DATA: ', nextProps.feedo.feedDetailData)
     return {
       feedDetailData: nextProps.feedo.feedDetailData
     };
