@@ -1,5 +1,4 @@
 import { StyleSheet } from 'react-native'
-import CONSTANTS from '../../service/constants'
 import COLORS from '../../service/colors'
 
 const styles = StyleSheet.create({
@@ -15,11 +14,12 @@ const styles = StyleSheet.create({
     top: 0,
     left: 0,
     right: 0,
+    width: '100%',
+    backgroundColor: '#fff',
     overflow: 'hidden'
   },
   container: {
     flex: 1,
-    paddingBottom: CONSTANTS.ACTION_BAR_HEIGHT,
   },
   tabBarStyle: {
     borderTopWidth: 0,

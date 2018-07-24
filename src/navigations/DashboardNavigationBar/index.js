@@ -1,7 +1,9 @@
+/* global require */
 import React from 'react'
 import {
   View,
   Text,
+  Image,
   Platform,
   StatusBar,
   TouchableOpacity,
@@ -10,7 +12,8 @@ import {
 
 import PropTypes from 'prop-types'
 import styles from './styles'
-import { FontAwesome } from 'react-native-vector-icons'
+const SEARCH_ICON = require('../../../assets/images/Search/Grey.png')
+const SETTING_ICON = require('../../../assets/images/Settings/Grey.png')
 
 class DashboardNavigationBar extends React.Component {
   constructor(props) {
@@ -21,21 +24,12 @@ class DashboardNavigationBar extends React.Component {
     }
   }
 
-  // static getDerivedStateFromProps(nextProps, prevState) {
-  //   if (prevState.mode !== nextProps.mode) {
-  //     Animated.spring(prevState.animation, {toValue: nextProps.mode === 'mini' ? 0 : 100}).start()
-  //   }
-  //   return {
-  //     mode: nextProps.mode
-  //   }
-  // }
-
   render () {
     const { mode } = this.props
 
     return (
       <View style={styles.container}>
-        {Platform.OS === 'ios' && <StatusBar barStyle="default" />}
+        {Platform.OS === 'ios' && <StatusBar barStyle="dark-content" backgroundColor="blue" />}
         {Platform.OS === 'android' && (
           <View style={styles.statusBarUnderlay} />
         )}
@@ -43,12 +37,12 @@ class DashboardNavigationBar extends React.Component {
         {mode === 'normal' && (
           [
             <View key="1" style={styles.navbarView}>
-              <FontAwesome name="search" style={styles.searchIcon} />
+              <Image source={SEARCH_ICON} />
             </View>,
             <View key="2" style={styles.titleView}>
               <Text style={styles.title}>My feeds</Text>
               <TouchableOpacity>
-                <FontAwesome name="cog" style={styles.setting} />
+                <Image source={SETTING_ICON} />
               </TouchableOpacity>
             </View>
           ]
@@ -56,10 +50,10 @@ class DashboardNavigationBar extends React.Component {
 
         {mode === 'mini' && (
           <View style={styles.miniNavbarView}>
-            <FontAwesome name="search" style={styles.searchIcon} />
+            <Image source={SEARCH_ICON} />
             <Text style={styles.miniTitle}>My feeds</Text>
             <TouchableOpacity>
-              <FontAwesome name="cog" style={styles.setting} />
+              <Image source={SETTING_ICON} />
             </TouchableOpacity>
           </View>
         )}
