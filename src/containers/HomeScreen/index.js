@@ -40,7 +40,7 @@ class HomeScreen extends React.Component {
     this.state = {
       feedoList: [],
       loading: false,
-      isModalVisible: true,
+      isModalVisible: false,
       isFeedMenuVisible: false,
       selectedFeedData: {},
       tabIndex: 0,
