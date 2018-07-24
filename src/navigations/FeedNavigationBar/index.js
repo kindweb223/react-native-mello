@@ -10,7 +10,9 @@ import {
 import PropTypes from 'prop-types'
 import { Ionicons } from 'react-native-vector-icons'
 import { Actions } from 'react-native-router-flux'
+import { isEmpty } from 'lodash'
 import FeedNavbarSettingComponent from '../../components/FeedNavbarSettingComponent'
+// import AvatarPileComponent from '../../components/AvatarPileComponent'
 import styles from './styles'
 
 class FeedNavigationBar extends React.Component {
@@ -19,7 +21,20 @@ class FeedNavigationBar extends React.Component {
   }
 
   render () {
-    const { mode, title } = this.props
+    const { mode, title, data } = this.props
+
+    let avatars = []
+    if (!isEmpty(data)) {
+      data.invitees.forEach((item, key) => {
+        avatars = [
+          ...avatars,
+          {
+            id: key,
+            imageUrl: item.imageUrl
+          }
+        ]
+      })
+    }
 
     return (
       <View style={styles.container}>
@@ -34,8 +49,9 @@ class FeedNavigationBar extends React.Component {
                 <View style={styles.backView}>
                   <TouchableOpacity onPress={this.backToDashboard} style={styles.backButton}>
                     <Ionicons name="ios-arrow-back" style={styles.backIcon} />
-                    <Text style={styles.backTitle}>My Feedos</Text>
+                    {/* <Text style={styles.backTitle}>My feedos</Text> */}
                   </TouchableOpacity>
+                  {/* <AvatarPileComponent avatars={avatars} /> */}
                 </View>
               </View>,
               <View key="2" style={styles.titleView}>
@@ -46,11 +62,14 @@ class FeedNavigationBar extends React.Component {
               </View>
             ]
           : <View style={styles.miniNavView}>
-              <View style={styles.backView}>
-                <Ionicons name="ios-arrow-back" style={styles.backIcon} />
-                <Text style={styles.backTitle}>My Feedos</Text>
-              </View>
               <View>
+                <TouchableOpacity onPress={this.backToDashboard} style={styles.backButton}>
+                  <Ionicons name="ios-arrow-back" style={styles.backIcon} />
+                  {/* <Text style={styles.backTitle}>My feedos</Text> */}
+                </TouchableOpacity>
+              </View>
+              <View style={styles.avatarView}>
+                {/* <AvatarPileComponent avatars={avatars} /> */}
                 <FeedNavbarSettingComponent />
               </View>
             </View>
@@ -62,12 +81,14 @@ class FeedNavigationBar extends React.Component {
 
 FeedNavigationBar.defaultProps = {
   mode: 'normal',
-  title: ''
+  title: '',
+  data: {}
 }
 
 FeedNavigationBar.propTypes = {
   mode: PropTypes.string,
-  title: PropTypes.string
+  title: PropTypes.string,
+  data: PropTypes.objectOf(PropTypes.any)
 }
 
 export default FeedNavigationBar

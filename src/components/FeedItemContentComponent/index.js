@@ -10,7 +10,7 @@ import Tags from "../../components/FeedTags";
 import styles from './styles'
 import COLORS from '../../service/colors'
 
-const FeedItemTitleComponent = ({ data, pinFlag }) => {
+const FeedItemContentComponent = ({ data, pinFlag }) => {
   return (
     <View style={styles.container}>
       <View style={styles.titleView}>
@@ -60,9 +60,9 @@ const FeedItemTitleComponent = ({ data, pinFlag }) => {
   )
 }
 
-FeedItemTitleComponent.propTypes = {
+FeedItemContentComponent.propTypes = {
   data: PropTypes.objectOf(PropTypes.any).isRequired,
   pinFlag: PropTypes.bool.isRequired
 }
 
-export default FeedItemTitleComponent
+export default FeedItemContentComponent

@@ -14,18 +14,23 @@ import ScrollableTabView from 'react-native-scrollable-tab-view'
 import TabBar from 'react-native-underline-tabbar'
 import Modal from "react-native-modal"
 import * as R from 'ramda'
-import { filter, sortBy } from 'lodash'
+import { filter, orderBy } from 'lodash'
 import DashboardNavigationBar from '../../navigations/DashboardNavigationBar'
-// import FeedNavigationBar from '../../navigations/FeedNavigationBar'
-
 import DashboardActionBar from '../../navigations/DashboardActionBar'
 import FeedoListContainer from '../FeedoListContainer'
 import NewFeedScreen from '../NewFeedScreen'
-import FeedMenuScreen from '../FeedMenuScreen'
+import FeedLongHoldMenuScreen from '../FeedLongHoldMenuScreen'
+import ToasterComponent from '../../components/ToasterComponent'
 import COLORS from '../../service/colors'
 import styles from './styles'
 
-import { getFeedoList } from '../../redux/feedo/actions'
+import {
+  getFeedoList,
+  pinFeed,
+  unpinFeed,
+  deleteFeed,
+  archiveFeed
+} from '../../redux/feedo/actions'
 
 const TAB_STYLES = {
   height: '100%',
@@ -33,6 +38,7 @@ const TAB_STYLES = {
   paddingHorizontal: 10,
 }
 
+const TOASTER_DURATION = 5000
 
 class HomeScreen extends React.Component {
   constructor(props) {
@@ -41,9 +47,11 @@ class HomeScreen extends React.Component {
       feedoList: [],
       loading: false,
       isModalVisible: false,
-      isFeedMenuVisible: false,
+      isLongHoldMenuVisible: false,
       selectedFeedData: {},
       tabIndex: 0,
+      emptyState: true,
+      isShowToaster: false,
       scrollY: new Animated.Value(0)
     };
   }
@@ -72,12 +80,21 @@ class HomeScreen extends React.Component {
           )
         })
       }
-
-      feedoList = sortBy(filter(feedoList, item => item.status === 'PUBLISHED'), item => item.dateCreated)
+      // feedoList = filter(feedoList, item => item.status === 'PUBLISHED')
+      feedoList = orderBy(
+        filter(feedoList, item => item.status === 'PUBLISHED'),
+        ['pinned.pinned', 'pinned.pinnedDate', 'publishedDate'],
+        ['desc', 'desc', 'desc']
+      )
 
       return {
         feedoList,
-        loading: false
+        loading: false,
+        emptyState: false,
+        isArchive: false,
+        isDelete: false,
+        isPin: false,
+        isUnPin: false
       }
     }
 
@@ -89,13 +106,79 @@ class HomeScreen extends React.Component {
     this.props.getFeedoList(i)
   }
 
-  handleFeedMenu = (selectedFeedData) => {
+  handleLongHoldMenu = (selectedFeedData) => {
     this.setState({ selectedFeedData })
-    this.setState({ isFeedMenuVisible: true })
+    this.setState({ isLongHoldMenuVisible: true })
+  }
+
+  handleArchiveFeed = (feedId) => {
+    this.setState({ isLongHoldMenuVisible: false })
+    this.setState({ isArchive: true, toasterTitle: 'Feed archived' })
+    setTimeout(() => {
+      this.setState({ isShowToaster: false })
+      this.archiveFeed(feedId)
+    }, TOASTER_DURATION)
+  }
+
+  archiveFeed = (feedId) => {
+    if (this.state.isArchive) {
+      this.props.archiveFeed(feedId)
+    }
+  }
+
+  handleDeleteFeed = (feedId) => {
+    this.setState({ isLongHoldMenuVisible: false })
+    this.setState({ isDelete: true, toasterTitle: 'Feed deleted' })
+    setTimeout(() => {
+      this.setState({ isShowToaster: false })
+      this.deleteFeed(feedId)
+    }, TOASTER_DURATION)
+  }
+
+  deleteFeed = (feedId) => {
+    if (this.state.isDelete) {
+      this.props.deleteFeed(feedId)
+    }
+  }
+
+  handlePinFeed = (feedId) => {
+    this.setState({ isLongHoldMenuVisible: false })
+    this.setState({ isPin: true, toasterTitle: 'Feed pinned' })
+    setTimeout(() => {
+      this.setState({ isShowToaster: false })
+      this.pinFeed(feedId)
+    }, TOASTER_DURATION)
+  }
+
+  pinFeed = (feedId) => {
+    if (this.state.isPin) {
+      this.props.pinFeed(feedId)
+    }
+  }
+
+  handleUnpinFeed = (feedId) => {
+    this.setState({ isLongHoldMenuVisible: false })
+    this.setState({ isUnPin: true, toasterTitle: 'Feed unpinned' })
+    setTimeout(() => {
+      this.setState({ isShowToaster: false })
+      this.unpinFeed(feedId)
+    }, TOASTER_DURATION)
+  }
+
+  unpinFeed = (feedId) => {
+    if (this.state.isUnPin) {
+      this.props.unpinFeed(feedId)
+    }
+  }
+  onLongHoldMenuHide = () => {
+    const { isArchive, isDelete, isPin, isUnPin } = this.state
+    if (isArchive || isDelete || isPin || isUnPin) {
+      this.setState({ isShowToaster: true })
+    }
   }
 
   render () {
-    const { loading, feedoList } = this.state
+    const { loading, feedoList, emptyState, tabIndex } = this.state
 
     const miniHeaderHeight = this.state.scrollY.interpolate({
       inputRange: [40, 140],
@@ -123,8 +206,14 @@ class HomeScreen extends React.Component {
               <DashboardNavigationBar mode="normal" />
             </View>
 
-            {feedoList.length > 0 && !loading
-            ? <ScrollableTabView
+            {emptyState > 0 && tabIndex === 0
+            ? <View style={styles.emptyView}>
+                {loading
+                  ? <ActivityIndicator animating />
+                  : <Text style={styles.emptyText}>Feedo is more fun with feeds</Text>
+                }
+              </View>
+            : <ScrollableTabView
                 tabBarActiveTextColor={COLORS.PURPLE}
                 tabBarInactiveTextColor={COLORS.MEDIUM_GREY}
                 onChangeTab={this.onChangeTab}
@@ -141,33 +230,29 @@ class HomeScreen extends React.Component {
                   loading={loading}
                   feedoList={feedoList}
                   tabLabel={{ label: 'All' }}
-                  handleFeedMenu={this.handleFeedMenu}
+                  handleFeedMenu={this.handleLongHoldMenu}
                 />
                 <FeedoListContainer
                   loading={loading}
                   feedoList={feedoList}
                   tabLabel={{ label: 'Pinned' }}
-                  handleFeedMenu={this.handleFeedMenu}
+                  handleFeedMenu={this.handleLongHoldMenu}
                 />
                 <FeedoListContainer
                   loading={loading}
                   feedoList={feedoList}
                   tabLabel={{ label: 'Shared with me' }}
-                  handleFeedMenu={this.handleFeedMenu}
+                  handleFeedMenu={this.handleLongHoldMenu}
                 />
               </ScrollableTabView>
-            : <View style={styles.emptyView}>
-                {loading
-                  ? <ActivityIndicator animating />
-                  : <Text style={styles.emptyText}>Feedo is more fun with feeds</Text>
-                }
-              </View>
             }
           </ScrollView>
 
         </View>
 
-        <DashboardActionBar />
+        {!this.state.isLongHoldMenuVisible && (
+          <DashboardActionBar />
+        )}
 
         {/* <Modal 
           isVisible={this.state.isModalVisible}
@@ -187,17 +272,32 @@ class HomeScreen extends React.Component {
         }
 
         <Modal 
-          isVisible={this.state.isFeedMenuVisible}
+          isVisible={this.state.isLongHoldMenuVisible}
           style={styles.newFeedModalContainer}
-          backdropColor='#c0c0c0'
+          backdropColor='#e0e0e0'
           backdropOpacity={0.9}
-          onBackdropPress={() => this.setState({ isFeedMenuVisible: false })}
+          animationIn="fadeIn"
+          animationOut="fadeOut"
+          animationInTiming={1000}
+          onModalHide={this.onLongHoldMenuHide}
+          onBackdropPress={() => this.setState({ isLongHoldMenuVisible: false })}
         >
-          <FeedMenuScreen
+          <FeedLongHoldMenuScreen
             feedData={this.state.selectedFeedData}
-            closeFeedMenu={() => this.setState({ isFeedMenuVisible: false })}
+            handleArchiveFeed={this.handleArchiveFeed}
+            handleDeleteFeed={this.handleDeleteFeed}
+            handlePinFeed={this.handlePinFeed}
+            handleUnpinFeed={this.handleUnpinFeed}
           />
         </Modal>
+
+        <ToasterComponent
+          isVisible={this.state.isShowToaster}
+          title={this.state.toasterTitle}
+          onPressButton={() => {
+            this.setState({ isShowToaster: false, isArchive: false, isDelete: false, isPin: false, isUnPin: false })}
+          }
+        />
       </SafeAreaView>
     )
   }
@@ -209,11 +309,19 @@ const mapStateToProps = ({ feedo }) => ({
 
 const mapDispatchToProps = dispatch => ({
   getFeedoList: (index) => dispatch(getFeedoList(index)),
+  pinFeed: (data) => dispatch(pinFeed(data)),
+  unpinFeed: (data) => dispatch(unpinFeed(data)),
+  deleteFeed: (data) => dispatch(deleteFeed(data)),
+  archiveFeed: (data) => dispatch(archiveFeed(data)),
 })
 
 HomeScreen.propTypes = {
   getFeedoList: PropTypes.func.isRequired,
-  feedo: PropTypes.objectOf(PropTypes.any)
+  feedo: PropTypes.objectOf(PropTypes.any),
+  pinFeed: PropTypes.func.isRequired,
+  unpinFeed: PropTypes.func.isRequired,
+  deleteFeed: PropTypes.func.isRequired,
+  archiveFeed: PropTypes.func.isRequired
 }
 
 export default connect(

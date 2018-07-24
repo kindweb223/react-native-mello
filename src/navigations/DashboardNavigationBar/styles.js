@@ -4,14 +4,7 @@ import CONSTANTS from '../../service/constants'
 
 const styles = StyleSheet.create({
   container: {
-    height: 100,
-    width: '100%',
-    paddingHorizontal: CONSTANTS.PADDING,
-    // zIndex: 999,
-  },
-  miniContainer: {
-    height: CONSTANTS.MINI_NAVIGATION_BAR_HEIGTH,
-    height: '100%',
+    flex: 1,
     width: '100%',
     paddingHorizontal: CONSTANTS.PADDING,
   },

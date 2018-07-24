@@ -8,7 +8,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff'
   },
   normalHeader: {
-    height: 100,
+    height: 120,
   },
   miniHeader: {
     position: 'absolute',
