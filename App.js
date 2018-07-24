@@ -5,6 +5,10 @@ import thunk from 'redux-thunk'
 import promiseMiddleware from './src/service/promiseMiddleware'
 import { Actions, Scene, Router, Lightbox, } from 'react-native-router-flux'
 import axios from 'axios'
+
+import { BASE_URL } from './src/service/api'
+
+axios.defaults.baseURL = BASE_URL
 axios.defaults.headers.get['Content-Type'] = 'application/json'
 axios.defaults.headers.get.Accept = 'application/json'
 axios.defaults.withCredentials = true
@@ -14,6 +18,7 @@ axios.defaults.headers['x-mobile-api'] = true
 import reducers from './src/redux/reducers'
 import HomeScreen from './src/containers/HomeScreen'
 import LoadingScreen from './src/containers/LoadingScreen';
+import ImageSliderScreen from './src/containers/ImageSliderScreen';
 import FeedDetailScreen from './src/containers/FeedDetailScreen'
 
 const store = createStore(reducers, applyMiddleware(thunk, promiseMiddleware))
@@ -27,6 +32,7 @@ export default class Root extends React.Component {
           <Scene key="FeedDetailScreen" component={ FeedDetailScreen } hideNavBar panHandlers={null} />
         </Scene>
         <Scene key="LoadingScreen" component={ LoadingScreen } hideNavBar />
+        <Scene key="ImageSliderScreen" component={ ImageSliderScreen } hideNavBar />
       </Lightbox>
     );
 

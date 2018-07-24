@@ -39,7 +39,7 @@ const FeedItemTitleComponent = ({ data, pinFlag }) => {
 
       {data.tags.length > 0 && (
         <View style={styles.tagsView}>
-          <Tags
+          {/* <Tags
             initialTags={data.tags}
             onChangeTags={() => {}}
             onTagPress={() => {}}
@@ -53,7 +53,7 @@ const FeedItemTitleComponent = ({ data, pinFlag }) => {
               color: COLORS.DARK_ORANGE,
               fontSize: 16,
             }}
-          />
+          /> */}
         </View>
       )}
     </View>
