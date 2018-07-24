@@ -1,10 +1,17 @@
 import React from 'react'
+import { Text } from 'react-native'
 import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
-import ActionSheet from 'react-native-actionsheet'
+import { ActionSheetCustom as ActionSheet } from 'react-native-actionsheet'
 import FeedActionBarComponent from '../../components/FeedActionBarComponent'
 import FeedItemComponent from '../../components/FeedItemComponent'
 import COLORS from '../../service/colors'
+import styles from './styles'
+
+const ACTIONSHEET_OPTIONS = [
+  <Text key="0" style={styles.buttonText}>Delete feed</Text>,
+  'Cancel'
+]
 
 class FeedLongHoldMenuScreen extends React.Component {
   constructor(props) {
@@ -59,11 +66,12 @@ class FeedLongHoldMenuScreen extends React.Component {
       <ActionSheet
         key="3"
         ref={o => this.ActionSheet = o}
-        title='Are you sure you want to delete this feed, everything will be gone ...'
-        options={['Delete feed', 'Cancel']}
+        title={<Text style={styles.titleText}>Are you sure you want to delete this feed, everything will be gone ...</Text>}
+        options={ACTIONSHEET_OPTIONS}
         cancelButtonIndex={1}
-        destructiveButtonIndex={1}
+        destructiveButtonIndex={2}
         tintColor={COLORS.PURPLE}
+        styles={styles}
         onPress={(index) => this.onTapActionSheet(index)}
       />
     ]
