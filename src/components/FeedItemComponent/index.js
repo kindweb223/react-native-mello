@@ -10,7 +10,7 @@ import FeedItemTitleComponent from '../FeedItemTitleComponent'
 
 const FeedItemComponent = ({ item, pinFlag }) => (
   <View style={styles.container}>
-    {item.coverImages && (
+    {item.coverImages && item.coverImages.length && (
       <View style={styles.thumbnailsView}>
         <FeedCoverImageComponent data={item.coverImages} />
       </View>

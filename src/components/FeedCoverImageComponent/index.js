@@ -10,11 +10,10 @@ import styles from './styles'
 const FeedCoverImageComponent = ({ data }) => (
   <View style={styles.list}>
     {data.map((item, key) => (
-      <View 
-        key={key} style={[styles.thumbnails, key === 0 ? styles.first : (key === data.length - 1 ? styles.last : '')]}>
+      <View key={key} style={[styles.thumbnails, key === 0 ? styles.first : (key === data.length - 1 ? styles.last : '')]}>
         <Image
-        style={styles.image}
-          source={{ uri: item.url }}
+          style={styles.image}
+          source={{ uri: item.coverImage }}
         />
       </View>
     ))}

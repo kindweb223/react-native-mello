@@ -2,20 +2,26 @@ import React from 'react'
 import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
 import ActionSheet from 'react-native-actionsheet'
+// import Snackbar from '../../components/SnackbarComponent'
 import FeedActionBarComponent from '../../components/FeedActionBarComponent'
 import FeedItemComponent from '../../components/FeedItemComponent'
 import {
   pinFeed,
   unpinFeed,
   deleteFeed,
+  archiveFeed
 } from '../../redux/feedo/actions'
 import COLORS from '../../service/colors'
+import SnackBarComponent from '../../components/SnackbarComponent';
+
+const ARCHIVE_DURATION = 5000   // 5s
 
 class FeedMenuScreen extends React.Component {
   constructor(props) {
     super(props)
     this.state = {
-      pinFlag: props.feedData.pinned ? true : false
+      pinFlag: props.feedData.pinned ? true : false,
+      isShowToaster: false,
     }
   }
 
@@ -33,15 +39,28 @@ class FeedMenuScreen extends React.Component {
   handleSetting = (item) => {
     switch(item) {
       case 'Delete':
-        this.ActionSheet.show();
-        return;
+        this.ActionSheet.show()
+        return
+      case 'Archive':
+        this.setState({ isShowToaster: true, isArchive: true })
+        setTimeout(() => {
+          this.setState({ isShowToaster: false })
+          this.archiveFeed()
+        }, ARCHIVE_DURATION)
+        return
+    }
+  }
+
+  archiveFeed = () => {
+    if (this.state.isArchive) {
+      this.props.archiveFeed(this.props.feedData.id)
+      this.props.closeFeedMenu()
     }
   }
 
   onTapActionSheet = (index) => {
-    if (index === 1) {
+    if (index === 0) {
       this.props.deleteFeed(this.props.feedData.id)
-    } else {
       this.props.closeFeedMenu()
     }
   }
@@ -81,6 +100,13 @@ class FeedMenuScreen extends React.Component {
         destructiveButtonIndex={1}
         tintColor={COLORS.PURPLE}
         onPress={(index) => this.onTapActionSheet(index)}
+      />,
+      <SnackBarComponent
+        key="4"
+        isVisible={this.state.isShowToaster}
+        title="Feed archved"
+        buttonTitle="Undo"
+        onPressButton={() => this.setState({ isShowToaster: false, isArchive: false })}
       />
     ]
   }
@@ -94,6 +120,7 @@ const mapDispatchToProps = dispatch => ({
   pinFeed: (data) => dispatch(pinFeed(data)),
   unpinFeed: (data) => dispatch(unpinFeed(data)),
   deleteFeed: (data) => dispatch(deleteFeed(data)),
+  archiveFeed: (data) => dispatch(archiveFeed(data)),
   
 })
 
@@ -102,7 +129,8 @@ FeedMenuScreen.propTypes = {
   closeFeedMenu: PropTypes.func.isRequired,
   pinFeed: PropTypes.func.isRequired,
   unpinFeed: PropTypes.func.isRequired,
-  deleteFeed: PropTypes.func.isRequired
+  deleteFeed: PropTypes.func.isRequired,
+  archiveFeed: PropTypes.func.isRequired
 }
 
 

@@ -34,30 +34,31 @@ class DashboardNavigationBar extends React.Component {
     const { mode } = this.props
 
     return (
-      <View style={mode === 'normal' ? styles.container : styles.miniContainer}>
+      <View style={styles.container}>
         {Platform.OS === 'ios' && <StatusBar barStyle="default" />}
         {Platform.OS === 'android' && (
           <View style={styles.statusBarUnderlay} />
         )}
 
         {mode === 'normal' && (
-            <View style={styles.subContainer}>
-              <View style={styles.navbarView}>
-                <FontAwesome name="search" style={styles.searchIcon} />
-              </View>
-              <View style={styles.titleView}>
-                <Text style={styles.title}>My feeds</Text>
-                <TouchableOpacity style={styles.settingButton}>
-                  <FontAwesome name="cog" style={styles.setting} />
-                </TouchableOpacity>
-              </View>
+          [
+            <View key="1" style={styles.navbarView}>
+              <FontAwesome name="search" style={styles.searchIcon} />
+            </View>,
+            <View key="2" style={styles.titleView}>
+              <Text style={styles.title}>My feeds</Text>
+              <TouchableOpacity>
+                <FontAwesome name="cog" style={styles.setting} />
+              </TouchableOpacity>
             </View>
+          ]
         )}
 
         {mode === 'mini' && (
           <View style={styles.miniNavbarView}>
+            <FontAwesome name="search" style={styles.searchIcon} />
             <Text style={styles.miniTitle}>My feeds</Text>
-            <TouchableOpacity style={styles.settingButton}>
+            <TouchableOpacity>
               <FontAwesome name="cog" style={styles.setting} />
             </TouchableOpacity>
           </View>
