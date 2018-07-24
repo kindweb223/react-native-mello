@@ -1,4 +1,3 @@
-import { BASE_URL } from '../../service/api';
 import axios from 'axios';
 
 import * as types from './types'
@@ -7,17 +6,16 @@ import * as types from './types'
  * Create a feed
  */
 export const createFeed = () => {
-  let url = `${BASE_URL}/hunts`
+  const url = `hunts`
   const data = {
     status: 'DRAFT',
   }
-  console.log('createFeed : ', url, data)
   return {
     types: [types.CREATE_FEED_PENDING, types.CREATE_FEED_FULFILLED, types.CREATE_FEED_REJECTED],
     promise:
       axios({
         method: 'post',
-        url: url,
+        url,
         data,
       })  
   };
@@ -27,7 +25,7 @@ export const createFeed = () => {
  * Update a feed
  */
 export const updateFeed = (id, feedName, note, tags, files) => {
-  let url = `${BASE_URL}/hunts/${id}`
+  let url = `hunts/${id}`
   const data = {
     status: 'PUBLISHED',
     headline: feedName,
@@ -51,9 +49,69 @@ export const updateFeed = (id, feedName, note, tags, files) => {
  * Delete a feed
  */
 export const deleteFeed = (id) => {
-  let url = `${BASE_URL}/hunts/${id}`
+  let url = `hunts/${id}`
   return {
     types: [types.DELETE_FEED_PENDING, types.DELETE_FEED_FULFILLED, types.DELETE_FEED_REJECTED],
+    promise:
+      axios({
+        method: 'delete',
+        url: url,
+      })  
+  };
+}
+
+/**
+ * Get a file upload url
+ */
+export const getFileUploadUrl = (id) => {
+  let url = `hunts/${id}/fileUpload`
+  return {
+    types: [types.GET_FILE_UPLOAD_URL_PENDING, types.GET_FILE_UPLOAD_URL_FULFILLED, types.GET_FILE_UPLOAD_URL_REJECTED],
+    promise:
+      axios({
+        method: 'get',
+        url: url,
+      })
+  };
+}
+
+/**
+ * Upload a file
+ */
+export const uploadFileToS3 = (signedUrl, file, fileName, mimeType) => {
+  const fileData = {
+    uri: file,
+    name: fileName,
+    type: mimeType,
+  };
+  console.log('File : ', fileData);
+  return {
+    types: [types.UPLOAD_FILE_PENDING, types.UPLOAD_FILE_FULFILLED, types.UPLOAD_FILE_REJECTED],
+    promise:
+      new Promise((resolve, reject) => {
+        const xhr = new XMLHttpRequest();
+        xhr.open('PUT', signedUrl);
+        xhr.onreadystatechange = function() {
+          if (xhr.readyState === 4) {
+            if (xhr.status === 200) {
+              resolve('success');
+            } else {
+              reject('Could not upload file.');
+            }
+          }
+        };
+        xhr.send(fileData);
+      })
+  };
+}
+
+/**
+ * Delete a file
+ */
+export const deleteFile = (feedId, fileId) => {
+  let url = `hunts/${feedId}/files/${fileId}`
+  return {
+    types: [types.DELETE_FILE_PENDING, types.DELETE_FILE_FULFILLED, types.DELETE_FILE_REJECTED],
     promise:
       axios({
         method: 'delete',
