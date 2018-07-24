@@ -63,7 +63,7 @@ class FeedNavigationBar extends React.Component {
             ]
           : <View style={styles.miniNavView}>
               <View>
-                <TouchableOpacity onPress={this.backToDashboard} style={styles.backButton}>
+                <TouchableOpacity onPress={this.backToDashboard}>
                   <Ionicons name="ios-arrow-back" style={styles.backIcon} />
                   {/* <Text style={styles.backTitle}>My feedos</Text> */}
                 </TouchableOpacity>

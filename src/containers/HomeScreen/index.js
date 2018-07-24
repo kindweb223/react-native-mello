@@ -186,8 +186,14 @@ class HomeScreen extends React.Component {
   render () {
     const { loading, feedoList, emptyState, tabIndex } = this.state
 
+    const miniHeaderOpacity = this.state.scrollY.interpolate({
+      inputRange: [60, 120],
+      outputRange: [0, 1],
+      extrapolate: 'clamp'
+    })
+
     const miniHeaderHeight = this.state.scrollY.interpolate({
-      inputRange: [40, 140],
+      inputRange: [60, 120],
       outputRange: [0, 60],
       extrapolate: 'clamp'
     })
@@ -195,10 +201,9 @@ class HomeScreen extends React.Component {
     return (
       <SafeAreaView style={styles.safeArea}>
         <View style={styles.container}>
-            <Animated.View style={styles.miniHeader, { height: miniHeaderHeight }}>
-              <DashboardNavigationBar mode="mini" />
-            </Animated.View>
-
+          <Animated.View style={styles.miniHeader, { opacity: miniHeaderOpacity, height: miniHeaderHeight }}>
+            <DashboardNavigationBar mode="mini" />
+          </Animated.View>          
 
           <ScrollView
             scrollEventThrottle={16}

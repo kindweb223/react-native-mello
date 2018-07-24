@@ -1,4 +1,4 @@
-import { StyleSheet } from 'react-native'
+import { StyleSheet, Platform } from 'react-native'
 import CONSTANTS from '../../service/constants'
 import COLORS from '../../service/colors'
 
@@ -15,7 +15,6 @@ const styles = StyleSheet.create({
     top: 0,
     left: 0,
     right: 0,
-    overflow: 'hidden'
   },
   container: {
     flex: 1,
@@ -26,7 +25,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     height: '100%',
-    paddingTop: 100
+    paddingTop: 80
   },
   emptyText: {
     fontSize: 18,
@@ -35,13 +34,13 @@ const styles = StyleSheet.create({
   },
   detailView: {
     flex: 1,
-    paddingHorizontal: CONSTANTS.PADDING,
     paddingVertical: 10
   },
   collapseHeader: {
     height: 40,
     flexDirection: 'row',
     alignItems: 'center',
+    paddingHorizontal: CONSTANTS.PADDING,
     justifyContent: 'space-between'
   },
   collapseHeaderText: {
@@ -56,6 +55,20 @@ const styles = StyleSheet.create({
   },
   contentText:{
     fontSize: 18
+  },
+  contentView: {
+    paddingHorizontal: CONSTANTS.PADDING,
+    ...Platform.select({
+      ios: {
+        shadowColor: 'black',
+        shadowOffset: { height: 5 },
+        shadowOpacity: 0.3,
+        shadowRadius: 10
+      },
+      android: {
+        elevation: 20
+      }
+    })
   }
 })
 

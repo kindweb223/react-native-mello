@@ -1,45 +1,56 @@
+/* global require */
 import React from 'react'
 import {
   SafeAreaView,
   ScrollView,
   View,
   Text,
+  Image,
   Animated,
-  TouchableOpacity
+  TouchableOpacity,
+  ActivityIndicator
 } from 'react-native'
 
 import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
 import Accordion from 'react-native-collapsible/Accordion'
+import { isEmpty } from 'lodash'
 import { Ionicons } from '@expo/vector-icons'
 import FeedNavigationBar from '../../navigations/FeedNavigationBar'
 import DashboardActionBar from '../../navigations/DashboardActionBar'
 import FeedCardComponent from '../../components/FeedCardComponent'
 import { getFeedDetailData } from '../../redux/feedo/actions'
 import styles from './styles'
+const EMPTY_ICON = require('../../../assets/images/empty_state/asset-emptystate.png')
 
 class FeedDetailScreen extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
       scrollY: new Animated.Value(0),
-      feedDetailData: {}
+      feedDetailData: {},
+      loading: false
     };
   }
 
   componentDidMount() {
-    const { feedData } = this.props
-    this.props.getFeedDetailData(feedData.id)
+    this.setState({ loading: true })
+    this.props.getFeedDetailData(this.props.data.id)
   }
 
   static getDerivedStateFromProps(nextProps, prevState) {
-    if (nextProps.feedo.feedDetailData === prevState.feedDetailData) {
-      return null;
+    if (nextProps.feedo.loading === 'GET_FEED_DETAIL_FULFILLED' && nextProps.feedo.feedDetailData !== prevState.feedDetailData) {
+      return {
+        loading: false,
+        feedDetailData: nextProps.feedo.feedDetailData
+      }
     }
-    // console.log('FEED_DATA: ', nextProps.feedo.feedDetailData)
-    return {
-      feedDetailData: nextProps.feedo.feedDetailData
-    };
+    if (nextProps.feedo.loading !== 'GET_FEED_DETAIL_FULFILLED') {
+      return {
+        feedDetailData: {}
+      }
+    }
+    return null
   }
 
   renderHeader = (section) => {
@@ -53,33 +64,41 @@ class FeedDetailScreen extends React.Component {
 
   renderContent = (section) => {
     return (
-      <View>
+      <View style={styles.contentView}>
         <Text style={styles.contentText}>{section.content}</Text>
       </View>
     )
   }
 
   render () {
-    const { feedData } = this.props
-    const { feedDetailData } = this.state
+    const { data } = this.props
+    const { feedDetailData, loading } = this.state
+
+    const miniHeaderOpacity = this.state.scrollY.interpolate({
+      inputRange: [60, 120],
+      outputRange: [0, 1],
+      extrapolate: 'clamp'
+    })
 
     const miniHeaderHeight = this.state.scrollY.interpolate({
-      inputRange: [80, 140],
+      inputRange: [60, 120],
       outputRange: [0, 60],
       extrapolate: 'clamp'
     })
 
     const ACCORDION_SECTIONS = [
       {
-        title: feedData.summary,
-        content: feedData.summary
+        title: data.summary,
+        content: data.summary
       }
     ]
+
+    // console.log('DETAIL_DATA: ', feedDetailData)
 
     return (
       <SafeAreaView style={styles.safeArea}>
         <View style={styles.container}>
-          <Animated.View style={styles.miniHeader, { height: miniHeaderHeight }}>
+          <Animated.View style={styles.miniHeader, { opacity: miniHeaderOpacity, height: miniHeaderHeight }}>
             <FeedNavigationBar mode="mini" data={feedDetailData}/>
           </Animated.View>
 
@@ -92,7 +111,7 @@ class FeedDetailScreen extends React.Component {
             }
           >
             <View style={styles.normalHeader}>
-              <FeedNavigationBar mode="normal" title={feedData.headline} data={feedDetailData} />
+              <FeedNavigationBar mode="normal" title={data.headline} data={feedDetailData} />
             </View>
             
               <View style={styles.detailView}>
@@ -103,12 +122,18 @@ class FeedDetailScreen extends React.Component {
                   touchableComponent={TouchableOpacity}
                 />
 
-                {feedDetailData && feedDetailData.ideas.length > 0
+                {!isEmpty(feedDetailData) && feedDetailData && feedDetailData.ideas.length > 0
                   ? feedDetailData.ideas.map(data => (
-                      <FeedCardComponent key={data.id} data={data} />
+                      <FeedCardComponent key={data.id} data={data} invitees={feedDetailData.invitees} />
                     ))
                   : <View style={styles.emptyView}>
-                      <Text style={styles.emptyText}>It is lonely here</Text>
+                      {loading
+                        ? <ActivityIndicator animating />
+                        : [
+                            <Image key="0" source={EMPTY_ICON} />,
+                            <Text key="1" style={styles.emptyText}>It is lonely here</Text>
+                          ]
+                        }
                     </View>
                 }
               </View>
@@ -131,12 +156,12 @@ const mapDispatchToProps = dispatch => ({
 })
 
 FeedDetailScreen.defaultProps = {
-  feedData: [],
+  data: [],
   getFeedDetailData: () => {}
 }
 
 FeedDetailScreen.propTypes = {
-  feedData: PropTypes.objectOf(PropTypes.any),
+  data: PropTypes.objectOf(PropTypes.any),
   feedo: PropTypes.objectOf(PropTypes.any),
   getFeedDetailData: PropTypes.func
 }

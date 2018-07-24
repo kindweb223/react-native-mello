@@ -1,10 +1,12 @@
 import { StyleSheet } from 'react-native'
 import COLORS from '../../service/colors'
+import CONSTANTS from '../../service/constants'
 
 const styles = StyleSheet.create({
   container: {
     backgroundColor: '#fff',
     marginBottom: 22,
+    paddingHorizontal: CONSTANTS.PADDING,
   },
   title: {
    fontSize: 18,

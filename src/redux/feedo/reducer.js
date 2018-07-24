@@ -39,6 +39,7 @@ export default function feedo(state = initialState, action = {}) {
     case types.GET_FEED_DETAIL_PENDING:
       return {
         ...state,
+        loading: types.GET_FEED_DETAIL_PENDING,
         error: null
       }
     case types.GET_FEED_DETAIL_FULFILLED: {

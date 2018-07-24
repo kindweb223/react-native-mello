@@ -7,6 +7,7 @@ const styles = StyleSheet.create({
     flex: 1,
     width: '100%',
     paddingHorizontal: CONSTANTS.PADDING,
+    backgroundColor: '#fff'
   },
   statusBarUnderlay: {
     height: 24,
@@ -16,10 +17,6 @@ const styles = StyleSheet.create({
     justifyContent: 'flex-end',
     width: '100%',
     height: '50%',
-  },
-  searchIcon: {
-    fontSize: 30,
-    color: COLORS.LIGHT_GREY,
   },
   titleView: {
     flexDirection: 'row',
@@ -42,14 +39,11 @@ const styles = StyleSheet.create({
     paddingBottom: 10,
   },
   miniTitle: {
-    fontSize: 18,
+    fontSize: 20,
     color: COLORS.PRIMARY_BLACK,
+    marginBottom: 3,
     fontWeight: 'bold'
-  },
-  setting: {
-    fontSize: 30,
-    color: COLORS.LIGHT_GREY,
-  },
+  }
 })
 
 export default styles

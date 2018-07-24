@@ -8,7 +8,7 @@ const styles = StyleSheet.create({
     height: CONSTANTS.ACTION_BAR_HEIGHT,
     width: '100%',
     paddingHorizontal: CONSTANTS.PADDING,
-    paddingTop: 16,
+    paddingVertical: 16,
     position: 'absolute',
     backgroundColor: '#fff',
     bottom: 0
