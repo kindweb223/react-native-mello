@@ -1,9 +1,11 @@
+import { filter } from 'lodash'
 import * as types from './types'
 
 const initialState = {
   status: null,
   error: null,
-  feed: {},
+  feed: {
+  },
   fileUploadUrl: {},
 };
 
@@ -129,6 +131,38 @@ export default function feed(state = initialState, action = {}) {
       }
     }
 
+    // add a file
+    case types.ADD_FILE_PENDING:
+      return {
+        ...state,
+        status: types.ADD_FILE_PENDING,
+        error: null,
+      }
+    case types.ADD_FILE_FULFILLED: {
+      const { data } = action.result
+      let files = [];
+      if (state.feed.files) {
+        files = state.feed.files;
+      }
+      files.push(data);
+      return {
+        ...state,
+        status: types.ADD_FILE_FULFILLED,
+        feed: {
+          ...state.feed,
+          files,
+        }
+      }
+    }
+    case types.ADD_FILE_REJECTED: {
+      const { data } = action.error.response
+      return {
+        ...state,
+        status: types.ADD_FILE_REJECTED,
+        error: data,
+      }
+    }
+  
     // delete a file
     case types.DELETE_FILE_PENDING:
       return {
@@ -137,10 +171,15 @@ export default function feed(state = initialState, action = {}) {
         error: null,
       }
     case types.DELETE_FILE_FULFILLED: {
-      const { data } = action.result
+      const fileId = action.payload;
+      const files = filter(state.feed.files, file => file.id !== fileId);
       return {
         ...state,
         status: types.DELETE_FILE_FULFILLED,
+        feed: {
+          ...state.feed,
+          files,
+        }
       }
     }
     case types.DELETE_FILE_REJECTED: {

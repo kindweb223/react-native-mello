@@ -22,9 +22,19 @@ export default class NewFeedImage extends React.Component {
       removeImageIndex: -1,
     };
     this.animatedSelect = new Animated.Value(1);
+    this.fileCount = this.props.files.length || 0;
   }
 
   componentDidMount() {
+  }
+
+  UNSAFE_componentWillReceiveProps(nextProps) {
+    if (nextProps.files.length > this.fileCount) {
+      this.fileCount = nextProps.files.length;
+      setTimeout(() => {
+        this.flatList.scrollToEnd();
+      }, 0);
+    }
   }
 
   onLongPressImage(index) {
@@ -111,6 +121,7 @@ export default class NewFeedImage extends React.Component {
 
     return (
       <FlatList
+        ref={o => this.flatList = o}
         style={styles.container}
         horizontal={true}
         showsHorizontalScrollIndicator={false}

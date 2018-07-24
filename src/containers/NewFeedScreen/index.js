@@ -23,6 +23,7 @@ import {
   deleteFeed,
   getFileUploadUrl,
   uploadFileToS3,
+  addFile,
   deleteFile,
 } from '../../redux/feed/actions'
 import * as types from '../../redux/feed/types'
@@ -42,9 +43,12 @@ class NewFeedScreen extends React.Component {
       tags: ['UX', 'Solvers'],
       loading: false,
     };
+
     this.selectedFile = null;
     this.selectedFileMimeType = null;
+    this.selectedFileType = null;
     this.selectedFileName = null;
+
     YellowBox.ignoreWarnings(['Warning: Unsafe legacy lifecycles']);
   }
 
@@ -61,62 +65,44 @@ class NewFeedScreen extends React.Component {
       // deleting a feed
       loading = true;
     } else if (this.props.feed.status !== types.DELETE_FEED_FULFILLED && nextProps.feed.status === types.DELETE_FEED_FULFILLED) {
-      // fullfilled in deleting a feed
+      // success in deleting a feed
       this.onClose();
       return;
     } else if (this.props.feed.status !== types.GET_FILE_UPLOAD_URL_PENDING && nextProps.feed.status === types.GET_FILE_UPLOAD_URL_PENDING) {
       // getting a file upload url
       loading = true;
     } else if (this.props.feed.status !== types.GET_FILE_UPLOAD_URL_FULFILLED && nextProps.feed.status === types.GET_FILE_UPLOAD_URL_FULFILLED) {
-      // fullfilled in getting a file upload url
+      // success in getting a file upload url
       loading = true;
       this.props.uploadFileToS3(nextProps.feed.fileUploadUrl.uploadUrl, this.selectedFile, this.selectedFileName, this.selectedFileMimeType);
     } else if (this.props.feed.status !== types.UPLOAD_FILE_PENDING && nextProps.feed.status === types.UPLOAD_FILE_PENDING) {
       // uploading a file
       loading = true;
     } else if (this.props.feed.status !== types.UPLOAD_FILE_FULFILLED && nextProps.feed.status === types.UPLOAD_FILE_FULFILLED) {
-      // fullfilled in uploading a file
+      // success in uploading a file
       loading = true;
       let {
         id, 
-        headline,
-        comments,
-        tags,
-        files,
       } = this.props.feed.feed;
       const {
         objectKey
       } = this.props.feed.fileUploadUrl;
-
-      if (files) {
-        files = [
-          ...files,
-          {
-            contentType: this.selectedFileMimeType,
-            name: this.selectedFileName,
-            objectKey,
-          }
-        ]
-      } else {
-        files = [
-          {
-            contentType: this.selectedFileMimeType,
-            name: this.selectedFileName,
-            objectKey,
-          }
-        ]
-      }
-      this.props.updateFeed(id, headline, comments, tags, files)
+      this.props.addFile(id, this.selectedFileType, this.selectedFileMimeType, this.selectedFileName, objectKey);
+    } else if (this.props.feed.status !== types.ADD_FILE_PENDING && nextProps.feed.status === types.ADD_FILE_PENDING) {
+      // adding a file
+      loading = true;
+    } else if (this.props.feed.status !== types.ADD_FILE_FULFILLED && nextProps.feed.status === types.ADD_FILE_FULFILLED) {
+      // success in adding a file
     } else if (this.props.feed.status !== types.UPDATE_FEED_PENDING && nextProps.feed.status === types.UPDATE_FEED_PENDING) {
       // updating a feed
       loading = true;
     } else if (this.props.feed.status !== types.UPDATE_FEED_FULFILLED && nextProps.feed.status === types.UPDATE_FEED_FULFILLED) {
-      // fullfilled in updating a feed
+      // success in updating a feed
     } else if (this.props.feed.status !== types.DELETE_FILE_PENDING && nextProps.feed.status === types.DELETE_FILE_PENDING) {
       // deleting a file
       loading = true;
     } else if (this.props.feed.status !== types.DELETE_FILE_FULFILLED && nextProps.feed.status === types.DELETE_FILE_FULFILLED) {
-      // fullfilled in deleting a file
+      // success in deleting a file
     }
 
     this.setState({
@@ -210,6 +196,7 @@ class NewFeedScreen extends React.Component {
       this.selectedFile = result.uri;
       this.selectedFileMimeType = mime.lookup(result.uri);
       this.selectedFileName = result.uri.replace(/^.*[\\\/]/, '');
+      this.selectedFileType = 'MEDIA';
       if (this.props.feed.feed.id) {
         this.props.getFileUploadUrl(this.props.feed.feed.id);
       }
@@ -243,10 +230,6 @@ class NewFeedScreen extends React.Component {
       files
     } = this.props.feed.feed;
     this.props.deleteFile(id, files[index].id);
-    // this.state.files.splice(index, 1);
-    // this.setState({
-    //   files: this.state.files,
-    // });
   }
 
   get renderImages() {
@@ -399,6 +382,7 @@ const mapDispatchToProps = dispatch => ({
   deleteFeed: (id) => dispatch(deleteFeed(id)),
   getFileUploadUrl: (id) => dispatch(getFileUploadUrl(id)),
   uploadFileToS3: (signedUrl, file, fileName, mimeType) => dispatch(uploadFileToS3(signedUrl, file, fileName, mimeType)),
+  addFile: (feedId, fileType, contentType, name, objectKey) => dispatch(addFile(feedId, fileType, contentType, name, objectKey)),
   deleteFile: (feedId, fileId) => dispatch(deleteFile(feedId, fileId)),
 })
 

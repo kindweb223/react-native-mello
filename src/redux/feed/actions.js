@@ -12,12 +12,11 @@ export const createFeed = () => {
   }
   return {
     types: [types.CREATE_FEED_PENDING, types.CREATE_FEED_FULFILLED, types.CREATE_FEED_REJECTED],
-    promise:
-      axios({
-        method: 'post',
-        url,
-        data,
-      })  
+    promise: axios({
+      method: 'post',
+      url,
+      data,
+    }),
   };
 }
 
@@ -36,12 +35,11 @@ export const updateFeed = (id, feedName, note, tags, files) => {
 
   return {
     types: [types.UPDATE_FEED_PENDING, types.UPDATE_FEED_FULFILLED, types.UPDATE_FEED_REJECTED],
-    promise:
-      axios({
-        method: 'put',
-        url: url,
-        data,
-      })  
+    promise: axios({
+      method: 'put',
+      url: url,
+      data,
+    }),
   };
 }
 
@@ -52,11 +50,10 @@ export const deleteFeed = (id) => {
   let url = `hunts/${id}`
   return {
     types: [types.DELETE_FEED_PENDING, types.DELETE_FEED_FULFILLED, types.DELETE_FEED_REJECTED],
-    promise:
-      axios({
-        method: 'delete',
-        url: url,
-      })  
+    promise: axios({
+      method: 'delete',
+      url: url,
+    }),
   };
 }
 
@@ -67,11 +64,10 @@ export const getFileUploadUrl = (id) => {
   let url = `hunts/${id}/fileUpload`
   return {
     types: [types.GET_FILE_UPLOAD_URL_PENDING, types.GET_FILE_UPLOAD_URL_FULFILLED, types.GET_FILE_UPLOAD_URL_REJECTED],
-    promise:
-      axios({
-        method: 'get',
-        url: url,
-      })
+    promise: axios({
+      method: 'get',
+      url: url,
+    }),
   };
 }
 
@@ -84,7 +80,6 @@ export const uploadFileToS3 = (signedUrl, file, fileName, mimeType) => {
     name: fileName,
     type: mimeType,
   };
-  console.log('File : ', fileData);
   return {
     types: [types.UPLOAD_FILE_PENDING, types.UPLOAD_FILE_FULFILLED, types.UPLOAD_FILE_REJECTED],
     promise:
@@ -106,16 +101,37 @@ export const uploadFileToS3 = (signedUrl, file, fileName, mimeType) => {
 }
 
 /**
+ * Add a file
+ */
+export const addFile = (feedId, fileType, contentType, name, objectKey) => {
+  let url = `hunts/${feedId}/files`
+  const data = {
+    fileType,
+    contentType,
+    name,
+    objectKey,
+  }
+  return {
+    types: [types.ADD_FILE_PENDING, types.ADD_FILE_FULFILLED, types.ADD_FILE_REJECTED],
+    promise: axios({
+      method: 'post',
+      url: url,
+      data,
+    }),
+  };
+}
+
+/**
  * Delete a file
  */
 export const deleteFile = (feedId, fileId) => {
   let url = `hunts/${feedId}/files/${fileId}`
   return {
     types: [types.DELETE_FILE_PENDING, types.DELETE_FILE_FULFILLED, types.DELETE_FILE_REJECTED],
-    promise:
-      axios({
-        method: 'delete',
-        url: url,
-      })  
+    promise: axios({
+      method: 'delete',
+      url: url,
+    }),
+    payload: fileId,
   };
 }
