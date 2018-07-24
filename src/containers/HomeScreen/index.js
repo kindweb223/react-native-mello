@@ -1,3 +1,4 @@
+/* global require */
 import React from 'react'
 import {
   SafeAreaView,
@@ -5,7 +6,8 @@ import {
   View,
   Text,
   Animated,
-  ActivityIndicator
+  ActivityIndicator,
+  Image
 } from 'react-native'
 
 import { connect } from 'react-redux'
@@ -23,7 +25,7 @@ import FeedLongHoldMenuScreen from '../FeedLongHoldMenuScreen'
 import ToasterComponent from '../../components/ToasterComponent'
 import COLORS from '../../service/colors'
 import styles from './styles'
-
+const EMPTY_ICON = require('../../../assets/images/empty_state/asset-emptystate.png')
 import {
   getFeedoList,
   pinFeed,
@@ -68,8 +70,9 @@ class HomeScreen extends React.Component {
       (feedo.loading === 'FEED_FULFILLED') || (feedo.loading === 'DEL_FEED_FULFILLED') || (feedo.loading === 'ARCHIVE_FEED_FULFILLED')) {
 
       let feedoList = []
+      let emptyState = true
 
-      if (feedo.feedoList) {
+      if (feedo.feedoList && feedo.feedoList.length > 0) {
         feedoList = feedo.feedoList.map(item => {
           const filteredIdeas = filter(item.ideas, idea => idea.coverImage !== null && idea.coverImage !== '')
 
@@ -79,18 +82,21 @@ class HomeScreen extends React.Component {
             { coverImages: R.slice(0, filteredIdeas.length > 4 ? 4 : filteredIdeas.length, filteredIdeas) }
           )
         })
+
+        // feedoList = filter(feedoList, item => item.status === 'PUBLISHED')
+        feedoList = orderBy(
+          filter(feedoList, item => item.status === 'PUBLISHED'),
+          ['pinned.pinned', 'pinned.pinnedDate', 'publishedDate'],
+          ['desc', 'desc', 'desc']
+        )
+
+        emptyState = false
       }
-      // feedoList = filter(feedoList, item => item.status === 'PUBLISHED')
-      feedoList = orderBy(
-        filter(feedoList, item => item.status === 'PUBLISHED'),
-        ['pinned.pinned', 'pinned.pinnedDate', 'publishedDate'],
-        ['desc', 'desc', 'desc']
-      )
 
       return {
         feedoList,
         loading: false,
-        emptyState: false,
+        emptyState,
         isArchive: false,
         isDelete: false,
         isPin: false,
@@ -196,6 +202,7 @@ class HomeScreen extends React.Component {
 
           <ScrollView
             scrollEventThrottle={16}
+            scrollEnabled={emptyState > 0 && tabIndex === 0 ? false : true}
             onScroll={
               Animated.event(
                 [{ nativeEvent: { contentOffset: { y: this.state.scrollY } } }]
@@ -210,7 +217,10 @@ class HomeScreen extends React.Component {
             ? <View style={styles.emptyView}>
                 {loading
                   ? <ActivityIndicator animating />
-                  : <Text style={styles.emptyText}>Feedo is more fun with feeds</Text>
+                  : [
+                      <Image key="0" source={EMPTY_ICON} />,
+                      <Text key="1" style={styles.emptyText}>Feedo is more fun with feeds</Text>
+                    ]
                 }
               </View>
             : <ScrollableTabView
@@ -251,7 +261,7 @@ class HomeScreen extends React.Component {
         </View>
 
         {!this.state.isLongHoldMenuVisible && (
-          <DashboardActionBar />
+          <DashboardActionBar filtering={!emptyState} />
         )}
 
         {/* <Modal 
