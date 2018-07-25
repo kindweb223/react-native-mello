@@ -1,18 +1,18 @@
 import React from 'react'
 import {
   View,
-  Image,
   Text
 } from 'react-native'
 import { FontAwesome, Feather } from 'react-native-vector-icons'
 import PropTypes from 'prop-types'
 import UserAvatar from 'react-native-user-avatar'
 import { filter } from 'lodash'
-import { getPastHoursFromNow } from '../../service/dateUtils'
+import Image from 'react-native-image-progress'
+import { getDurationFromNow } from '../../service/dateUtils'
 import styles from './styles'
 
 const CardBottomComponent = ({ data, invitee }) => {
-  const userName = `${invitee.firstName} ${invitee.lastName}`
+  const userName = `${invitee.userProfile.firstName} ${invitee.userProfile.lastName}`
 
   return (
     <View style={styles.bottomContainer}>
@@ -33,8 +33,8 @@ const CardBottomComponent = ({ data, invitee }) => {
               />
           }
         </View>
-        <Text style={styles.text}>{userName}</Text>
-        <Text style={styles.text}>- {getPastHoursFromNow(data.publisheddate)}</Text>
+        <Text style={styles.text}>{invitee.userProfile.firstName}</Text>
+        <Text style={styles.text}>- {getDurationFromNow(data.publishedDate)}</Text>
       </View>
       <View style={styles.subView}>
         <View style={styles.iconView}>
@@ -57,7 +57,6 @@ CardBottomComponent.propTypes = {
 
 const FeedCardComponent = ({ data, invitees }) => {
   const invitee = filter(invitees, item => item.id === data.inviteeId)[0]
-  // console.log('INVITEE_DATA: ', invitee)
 
   return (
     <View style={styles.container}>

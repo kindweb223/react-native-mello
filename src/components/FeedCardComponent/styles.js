@@ -4,18 +4,17 @@ import CONSTANTS from '../../service/constants'
 
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: '#fff',
-    marginBottom: 22,
+    marginTop: 22,
     paddingHorizontal: CONSTANTS.PADDING,
   },
   title: {
    fontSize: 18,
    fontWeight: 'bold',
-   marginBottom: 10, 
   },
   thumbnailsView: {
     width: '100%',
     height: 150,
+    marginTop: 5,
   },
   thumbnails: {
     width: '100%',
@@ -23,23 +22,23 @@ const styles = StyleSheet.create({
     borderRadius: 10,
   },
   bottomContainer: {
-    marginTop: 10,
+    marginTop: 5,
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center'
   },
   subView: {
-   flexDirection: 'row',
-   justifyContent: 'flex-start',
-   alignItems: 'center'
+    flexDirection: 'row',
+    justifyContent: 'flex-start',
+    alignItems: 'center'
   },
   avatar: {
-    marginRight: 10,
+    marginRight: 5,
   },
   text: {
     fontSize: 15,
     color: COLORS.MEDIUM_GREY,
-    marginRight: 10 
+    marginLeft: 5 
   },
   iconView: {
     flexDirection: 'row',
