@@ -22,6 +22,7 @@
     ],
     "ios": {
       "supportsTablet": true,
+      "usesIcloudStorage": true,
       "infoPlist": {
         "NSCameraUsageDescription": "Hunt mobile needs permission to your camera in order to take photos for upload",
         "NSPhotoLibraryUsageDescription": "Hunt mobile needs permission to your camera roll in order to add photos you've already taken for upload",

@@ -95,7 +95,7 @@ export default class NewFeedImage extends React.Component {
 
   onRemove(index) {
     if (this.props.onRemove) {
-      this.props.onRemove(index);
+      this.props.onRemove(this.state.files[index].id);
     }
     this.setState({
       selectedImageIndex: -1,
@@ -156,7 +156,6 @@ export default class NewFeedImage extends React.Component {
 
     return (
       <FlatList
-        ref={o => this.flatList = o}
         style={styles.container}
         horizontal={true}
         showsHorizontalScrollIndicator={false}
@@ -165,17 +164,6 @@ export default class NewFeedImage extends React.Component {
         keyExtractor={(item, index) => index.toString()}
         extraData={this.state}
       />
-      // <ScrollView 
-      //   style={styles.container}
-      //   horizontal={true}
-      //   showsHorizontalScrollIndicator={false}
-      // >
-      // {
-      //   files.map((item, index) => {
-      //     return this.renderImageFile({item, index});
-      //   })
-      // }
-      // </ScrollView>
     );
   }
 }
