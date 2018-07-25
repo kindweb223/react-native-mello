@@ -12,6 +12,9 @@ import { Actions } from 'react-native-router-flux'
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 
 import styles from './styles'
+import CONSTANTS from '../../service/constants'
+
+const AnimationMilliSeconds = 300;
 
 
 export default class NewFeedImage extends React.Component {
@@ -20,11 +23,46 @@ export default class NewFeedImage extends React.Component {
     this.state = {
       selectedImageIndex: -1,
       removeImageIndex: -1,
+      actionImageIndex: -1,
+      files: [...this.props.files],
     };
     this.animatedSelect = new Animated.Value(1);
+    this.animatedRemoving = new Animated.Value(1);
+    this.fileCount = this.props.files.length || 0;
   }
 
-  componentDidMount() {
+  UNSAFE_componentWillReceiveProps(nextProps) {
+    if (nextProps.files.length > this.fileCount) {
+      //add
+      this.setState({
+        actionImageIndex: 0,
+        files: [...nextProps.files],
+      }, () => {
+        this.animatedRemoving.setValue(0);
+        Animated.timing(this.animatedRemoving, {
+          toValue: 1,
+          duration: AnimationMilliSeconds,
+        }).start(() => {
+          this.setState({
+            actionImageIndex: -1,
+          });
+        });
+      });
+      this.fileCount = nextProps.files.length;
+    } else if (nextProps.files.length < this.fileCount) {
+      //delete
+      this.animatedRemoving.setValue(1);
+      Animated.timing(this.animatedRemoving, {
+        toValue: 0,
+        duration: AnimationMilliSeconds,
+      }).start(() => {
+        this.setState({
+          actionImageIndex: -1,
+          files: [...nextProps.files],
+        });
+      });
+      this.fileCount = nextProps.files.length;
+    }
   }
 
   onLongPressImage(index) {
@@ -50,19 +88,19 @@ export default class NewFeedImage extends React.Component {
           toValue: 1,
           duration: 100,
         }),
-      ]).start((finished) => {
+      ]).start(() => {
       });
     });
   }
 
   onRemove(index) {
-    LayoutAnimation.linear();
     if (this.props.onRemove) {
       this.props.onRemove(index);
     }
     this.setState({
       selectedImageIndex: -1,
       removeImageIndex: -1,
+      actionImageIndex: index,
     });
   }
 
@@ -71,9 +109,16 @@ export default class NewFeedImage extends React.Component {
   }
 
   renderImageFile({item, index}) {
+    let containerWidth  = this.animatedRemoving.interpolate({
+      inputRange: [0, 1],
+      outputRange: [0, CONSTANTS.SCREEN_WIDTH * 0.28 + 15]
+    });
+
     return (
       <Animated.View
         style={[
+          this.state.actionImageIndex === index &&
+          {width: containerWidth},
           this.state.selectedImageIndex === index &&
           {
             transform: [
@@ -107,10 +152,11 @@ export default class NewFeedImage extends React.Component {
   render () {
     const {
       files,
-    } = this.props;
+    } = this.state;
 
     return (
       <FlatList
+        ref={o => this.flatList = o}
         style={styles.container}
         horizontal={true}
         showsHorizontalScrollIndicator={false}
@@ -119,6 +165,17 @@ export default class NewFeedImage extends React.Component {
         keyExtractor={(item, index) => index.toString()}
         extraData={this.state}
       />
+      // <ScrollView 
+      //   style={styles.container}
+      //   horizontal={true}
+      //   showsHorizontalScrollIndicator={false}
+      // >
+      // {
+      //   files.map((item, index) => {
+      //     return this.renderImageFile({item, index});
+      //   })
+      // }
+      // </ScrollView>
     );
   }
 }
