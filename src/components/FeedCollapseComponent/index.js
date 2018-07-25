@@ -8,7 +8,7 @@ import {
 import Collapsible from 'react-native-collapsible'
 import { Ionicons } from 'react-native-vector-icons'
 import Image from 'react-native-image-progress'
-import { isEmpty } from 'lodash'
+import { isEmpty, filter } from 'lodash'
 import PropTypes from 'prop-types'
 import Tags from '../FeedTags'
 import COLORS from '../../service/colors'
@@ -27,6 +27,10 @@ class FeedCollapseComponent extends React.Component {
   }
 
   renderContent = (section, feedData) => {
+    const images = filter(feedData.files, data => data.contentType.includes('image/'))
+    // const files = filter(feedData.files, data => !data.contentType.includes('image/'))
+    // console.log('images:  ', images)
+    // console.log('files:  ', files)
     return (
       <View style={styles.contentView}>
         <Text style={styles.contentText}>{section.content}</Text>
@@ -51,19 +55,17 @@ class FeedCollapseComponent extends React.Component {
           </View>,
 
           <View key="1" style={styles.imageView}>
-            {feedData.files && (
-              <ScrollView
-                horizontal
-                pagingEnabled
-                showsHorizontalScrollIndicator={true}
-              >
-                {feedData.files.map((item, key) => (
-                  <View key={key} style={key === (feedData.files.length - 1) ? styles.feedLastImage : styles.feedImage}>
-                    <Image style={styles.image} source={{ uri: item }} threshold={300}/>
-                  </View>
-                ))}
-              </ScrollView>
-            )}
+            <ScrollView
+              horizontal
+              pagingEnabled
+              showsHorizontalScrollIndicator={true}
+            >
+              {images.map((item, key) => (
+                <View key={key} style={key === (images.length - 1) ? styles.feedLastImage : styles.feedImage}>
+                  <Image style={styles.image} source={{ uri: item.accessUrl }} threshold={300}/>
+                </View>
+              ))}
+            </ScrollView>
           </View>]
         )}
 
