@@ -1,5 +1,6 @@
 import { StyleSheet } from 'react-native'
 import COLORS from '../../service/colors'
+import CONSTANTS from '../../service/constants'
 
 const styles = StyleSheet.create({
   safeArea: {
@@ -24,7 +25,7 @@ const styles = StyleSheet.create({
   tabBarStyle: {
     borderTopWidth: 0,
     borderBottomWidth: 0,
-    height: 60,
+    height: CONSTANTS.TAB_BAR_HEIGHT,
     alignItems: 'center',
     marginTop: 0,
   },
@@ -48,8 +49,7 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    height: '100%',
-    paddingTop: 100
+    height: CONSTANTS.SCREEN_HEIGHT - CONSTANTS.ACTION_BAR_HEIGHT - 100
   },
   emptyText: {
     fontSize: 18,
