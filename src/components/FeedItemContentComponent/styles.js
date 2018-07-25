@@ -25,7 +25,7 @@ const styles = StyleSheet.create({
     fontSize: 15
   },
   feedText: {
-    fontSize: 14
+    fontSize: 15
   },
   active: {
     color: COLORS.PURPLE

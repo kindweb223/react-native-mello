@@ -8,12 +8,14 @@ import {
 import PropTypes from 'prop-types'
 import { Actions } from 'react-native-router-flux'
 import FeedItemComponent from '../../components/FeedItemComponent'
+import CONSTANTS from '../../service/constants'
 
 const FeedoListContainer = ({ loading, feedoList, handleFeedMenu }) => {
   if (loading) return <ActivityIndicator animating />
 
   return (
     <FlatList
+      style={{ paddingBottom: CONSTANTS.ACTION_BAR_HEIGHT }}
       data={feedoList}
       keyExtractor={item => item.id}
       scrollEnabled={false}
@@ -24,7 +26,7 @@ const FeedoListContainer = ({ loading, feedoList, handleFeedMenu }) => {
           onLongPress={() => handleFeedMenu(item)}
           onPress={() => {
             Actions.FeedDetailScreen({
-              feedData: item
+              data: item
             })
           }}
         >

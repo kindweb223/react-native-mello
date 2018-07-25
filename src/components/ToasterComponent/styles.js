@@ -1,11 +1,12 @@
 import { StyleSheet, Platform } from 'react-native'
+import CONSTANTS from '../../service/constants'
 
 const styles = StyleSheet.create({
   container: {
     backgroundColor: '#fff',
     ...Platform.select({
       ios: {
-        shadowColor: 'black',
+        shadowColor: '#000',
         shadowOffset: { height: 5 },
         shadowOpacity: 0.3,
         shadowRadius: 5
@@ -14,7 +15,7 @@ const styles = StyleSheet.create({
         elevation: 20
       }
     }),
-    paddingHorizontal: 15,
+    paddingHorizontal: 16,
     width: '100%',
     height: 50,
     borderRadius: 8,
@@ -22,7 +23,7 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     alignItems: 'center',
     position: 'absolute',
-    top: 50,
+    bottom: CONSTANTS.ACTION_BAR_HEIGHT,
   },
   titleView: {
     flex: 1,

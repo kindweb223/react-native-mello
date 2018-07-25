@@ -20,12 +20,8 @@ const styles = StyleSheet.create({
   backView: {
     flex: 1,
     flexDirection: 'row',
-    alignItems: 'center'
-  },
-  backButton: {
-    flexDirection: 'row',
-    justifyContent: 'flex-start',
-    alignItems: 'center'
+    alignItems: 'center',
+    justifyContent: 'space-between',
   },
   backIcon: {
     fontSize: 35,
@@ -54,8 +50,13 @@ const styles = StyleSheet.create({
     height: '100%',
     flexDirection: 'row',
     justifyContent: 'space-between',
-    alignItems: 'flex-end',
-    paddingBottom: 10,
+    alignItems: 'flex-end'
+  },
+  avatarView: {
+    flexDirection: 'row',
+    justifyContent: 'flex-end',
+    alignItems: 'center',
+    paddingBottom: 5
   }
 })
 

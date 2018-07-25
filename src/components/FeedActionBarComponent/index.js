@@ -9,6 +9,7 @@ import PropTypes from 'prop-types'
 import { Octicons, Entypo } from '@expo/vector-icons'
 import styles from './styles'
 
+import Modal from "react-native-modal"
 const MENU_ITMS = ['Duplicate', 'Edit', 'Archive', 'Delete']
 
 class FeedActionBarComponent extends React.Component {
@@ -29,16 +30,27 @@ class FeedActionBarComponent extends React.Component {
     this.setState({ isSettingMenu: false })
   }
 
+  onSettingMenuHide = () => {
+    this.props.handleSetting(this.state.selectedItem)
+  }
+
   onPressSetting = (item) => {
-    this.setState({ isSettingMenu: false })
-    this.props.handleSetting(item)
+    this.setState({ isSettingMenu: false, selectedItem: item })
   }
 
   render() {
     return (
       <View style={styles.container}>
         <View style={styles.innerContainer}>
-          {this.state.isSettingMenu && (
+          <Modal 
+            isVisible={this.state.isSettingMenu}
+            backdropOpacity={0}
+            animationIn="fadeIn"
+            animationOut="fadeOut"
+            animationInTiming={600}
+            onModalHide={this.onSettingMenuHide}
+            onBackdropPress={() => this.setState({ isSettingMenu: false })}
+          >
             <View style={styles.settingMenuView}>
               <FlatList
                 data={MENU_ITMS}
@@ -57,7 +69,7 @@ class FeedActionBarComponent extends React.Component {
                 )}
               />
             </View>
-          )}
+          </Modal>
 
           <View style={styles.buttonContainer}>
             <TouchableOpacity onPress={this.onPressPin}>

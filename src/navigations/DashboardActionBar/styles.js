@@ -8,10 +8,10 @@ const styles = StyleSheet.create({
     height: CONSTANTS.ACTION_BAR_HEIGHT,
     width: '100%',
     paddingHorizontal: CONSTANTS.PADDING,
-    paddingVertical: 8,
+    paddingVertical: 16,
     position: 'absolute',
     backgroundColor: '#fff',
-    bottom: 0,
+    bottom: 0
   },
   filterContainer: {
     justifyContent: 'space-between',

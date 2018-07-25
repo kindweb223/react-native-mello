@@ -64,7 +64,7 @@ const styles = StyleSheet.create({
     width: 130,
     position: 'absolute',
     bottom: 70,
-    right: 0,
+    right: 10,
     ...Platform.select({
       ios: {
         shadowColor: 'black',

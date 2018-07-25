@@ -4,16 +4,10 @@ import CONSTANTS from '../../service/constants'
 
 const styles = StyleSheet.create({
   container: {
-    height: 100,
+    flex: 1,
     width: '100%',
     paddingHorizontal: CONSTANTS.PADDING,
-    // zIndex: 999,
-  },
-  miniContainer: {
-    height: CONSTANTS.MINI_NAVIGATION_BAR_HEIGTH,
-    height: '100%',
-    width: '100%',
-    paddingHorizontal: CONSTANTS.PADDING,
+    backgroundColor: '#fff'
   },
   statusBarUnderlay: {
     height: 24,
@@ -23,10 +17,6 @@ const styles = StyleSheet.create({
     justifyContent: 'flex-end',
     width: '100%',
     height: '50%',
-  },
-  searchIcon: {
-    fontSize: 30,
-    color: COLORS.LIGHT_GREY,
   },
   titleView: {
     flexDirection: 'row',
@@ -49,14 +39,11 @@ const styles = StyleSheet.create({
     paddingBottom: 10,
   },
   miniTitle: {
-    fontSize: 18,
+    fontSize: 20,
     color: COLORS.PRIMARY_BLACK,
+    marginBottom: 3,
     fontWeight: 'bold'
-  },
-  setting: {
-    fontSize: 30,
-    color: COLORS.LIGHT_GREY,
-  },
+  }
 })
 
 export default styles
