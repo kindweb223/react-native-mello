@@ -21,11 +21,9 @@ const styles = StyleSheet.create({
     paddingBottom: CONSTANTS.ACTION_BAR_HEIGHT,
   },
   emptyView: {
-    flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    height: '100%',
-    paddingTop: 80
+    height: CONSTANTS.SCREEN_HEIGHT - CONSTANTS.ACTION_BAR_HEIGHT - 200,
   },
   emptyText: {
     fontSize: 18,
@@ -36,39 +34,8 @@ const styles = StyleSheet.create({
     flex: 1,
     paddingVertical: 10
   },
-  collapseHeader: {
-    height: 40,
-    flexDirection: 'row',
-    alignItems: 'center',
-    paddingHorizontal: CONSTANTS.PADDING,
-    justifyContent: 'space-between'
-  },
-  collapseHeaderText: {
-    color: COLORS.MEDIUM_GREY,
-    flex: 1,
-    marginRight: 10,
-    fontSize: 18,
-  },
-  arrowDownIcon: {
-    fontSize: 20,
-    color: COLORS.MEDIUM_GREY
-  },
-  contentText:{
-    fontSize: 18
-  },
-  contentView: {
-    paddingHorizontal: CONSTANTS.PADDING,
-    ...Platform.select({
-      ios: {
-        shadowColor: 'black',
-        shadowOffset: { height: 5 },
-        shadowOpacity: 0.3,
-        shadowRadius: 10
-      },
-      android: {
-        elevation: 20
-      }
-    })
+  tagView: {
+    marginVertical: 10,
   }
 })
 

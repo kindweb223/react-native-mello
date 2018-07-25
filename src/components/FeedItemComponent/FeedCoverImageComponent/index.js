@@ -1,10 +1,10 @@
 import React from 'react'
 import {
-  Image,
   View
 } from 'react-native'
 
 import PropTypes from 'prop-types'
+import Image from 'react-native-image-progress'
 import styles from './styles'
 
 const FeedCoverImageComponent = ({ data }) => (

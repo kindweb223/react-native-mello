@@ -30,7 +30,7 @@ class FeedNavigationBar extends React.Component {
           ...avatars,
           {
             id: key,
-            imageUrl: item.imageUrl
+            imageUrl: item.userProfile.imageUrl
           }
         ]
       })
