@@ -37,7 +37,7 @@ const styles = StyleSheet.create({
     margin: 0,
   },
   newFeedContainer: {
-    flex: 1,
+    // flex: 1,
     position: 'absolute',
     left: 0,
     right: 0,

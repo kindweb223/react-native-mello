@@ -5,17 +5,19 @@ import {
   View,
   TouchableOpacity,
   Alert,
+  ScrollView,
   YellowBox,
 } from 'react-native'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 
 import { MaterialCommunityIcons, Ionicons, Entypo } from '@expo/vector-icons';
-import Tags from "react-native-tags";
+import Tags from '../../components/TagComponent';
 import ActionSheet from 'react-native-actionsheet'
 import { Actions } from 'react-native-router-flux'
-import { ImagePicker, Permissions } from 'expo';
+import { DocumentPicker, ImagePicker, Permissions } from 'expo';
 import * as mime from 'react-native-mime-types';
+import { filter } from 'lodash'
 
 import { 
   createFeed,
@@ -25,6 +27,7 @@ import {
   uploadFileToS3,
   addFile,
   deleteFile,
+  getFeedDetail,
 } from '../../redux/feed/actions'
 import * as types from '../../redux/feed/types'
 
@@ -32,6 +35,11 @@ import COLORS from '../../service/colors'
 import styles from './styles'
 import LoadingScreen from '../LoadingScreen';
 import NewFeedImage from '../../components/NewFeedImageComponent';
+import NewFeedDocument from '../../components/NewFeedDocumentComponent';
+import TagCreateScreen from '../TagCreateScreen';
+
+const NewFeedMode = 1;
+const TagCreateMode = 2;
 
 
 class NewFeedScreen extends React.Component {
@@ -42,6 +50,7 @@ class NewFeedScreen extends React.Component {
       comments: 'Please submit ideas for Toffee sugar plum jelly beans cheesecake soufflé muffin. Oat cake dragée bear claw candy canes pastry.',
       tags: ['UX', 'Solvers'],
       loading: false,
+      currentScreen: TagCreateMode,
     };
 
     this.selectedFile = null;
@@ -128,6 +137,7 @@ class NewFeedScreen extends React.Component {
 
   componentDidMount() {
     // this.props.createFeed();
+    this.props.getFeedDetail('f62f0262-78a0-4100-9106-35697d3450b7');
   }
 
   onClose() {
@@ -143,11 +153,23 @@ class NewFeedScreen extends React.Component {
   onInsertLink() {
   }
 
-  onInsertMedia() {
+  onAddMedia() {
     this.imagePickerActionSheetRef.show();
   }
 
-  onInsertAttachment() {
+  async onAddDocument() {
+    const result = await DocumentPicker.getDocumentAsync({});
+    if (result.type === 'cancel') {
+      return;
+    }
+    console.log('Picked Document : ', result);
+    this.selectedFile = result.uri;
+    this.selectedFileMimeType = mime.lookup(result.uri);
+    this.selectedFileName = result.name;
+    this.selectedFileType = 'FILE';
+    if (this.props.feed.feed.id) {
+      this.props.getFileUploadUrl(this.props.feed.feed.id);
+    }
   }
   
   onOpenActionSheet() {
@@ -192,6 +214,7 @@ class NewFeedScreen extends React.Component {
       result = await ImagePicker.launchImageLibraryAsync({
       });
     }
+    console.log('Picked Media : ', result);
     if (!result.cancelled) {
       this.selectedFile = result.uri;
       this.selectedFileMimeType = mime.lookup(result.uri);
@@ -207,14 +230,14 @@ class NewFeedScreen extends React.Component {
     return (
       <View style={styles.topContainer}>
         <TouchableOpacity 
-          style={styles.closeContainer}
+          style={styles.closeButtonWrapper}
           activeOpacity={0.6}
           onPress={this.onOpenActionSheet.bind(this)}
         >
           <MaterialCommunityIcons name="close" size={32} color={COLORS.PURPLE} />
         </TouchableOpacity>
         <TouchableOpacity 
-          style={styles.createContainer}
+          style={styles.createButtonWapper}
           activeOpacity={0.6}
           onPress={this.onCreate.bind(this)}
         >
@@ -224,22 +247,35 @@ class NewFeedScreen extends React.Component {
     );
   }
 
-  onRemoveImage(index) {
+  onRemoveImage(fileId) {
     const {
       id,
-      files
     } = this.props.feed.feed;
-    this.props.deleteFile(id, files[index].id);
+    this.props.deleteFile(id, fileId);
   }
 
   get renderImages() {
     const {
       files
     } = this.props.feed.feed;
+    const imageFiles = filter(files, file => file.fileType === 'MEDIA');
     return (
       <NewFeedImage 
-        files={files}
-        onRemove={(index) => this.onRemoveImage(index)}
+        files={imageFiles}
+        onRemove={(fileId) => this.onRemoveImage(fileId)}
+      />
+    )
+  }
+
+  get renderDocuments() {
+    const {
+      files
+    } = this.props.feed.feed;
+    const documentFiles = filter(files, file => file.fileType === 'FILE');
+    return (
+      <NewFeedDocument 
+        files={documentFiles}
+        onRemove={(fileId) => this.onRemoveImage(fileId)}
       />
     )
   }
@@ -263,9 +299,9 @@ class NewFeedScreen extends React.Component {
           onChangeText={(value) => this.setState({comments: value})}
         />
         <Tags
+          readonly={true}
           initialTags={this.state.tags}
-          onChangeTags={tags => this.setState({ tags })}
-          onTagPress={(index, tagLabel, event) => console.log(index, tagLabel)}
+          onPressTag={(index, tag, active) => console.log(index, tag)}
           containerStyle={{
             marginHorizontal: 20,
             marginVertical: 15,
@@ -282,6 +318,7 @@ class NewFeedScreen extends React.Component {
           }}
         />
         {this.renderImages}
+        {this.renderDocuments}
       </View>
     );
   }
@@ -299,14 +336,14 @@ class NewFeedScreen extends React.Component {
         <TouchableOpacity 
           style={styles.bottomItemContainer}
           activeOpacity={0.6}
-          onPress={this.onInsertMedia.bind(this)}
+          onPress={this.onAddMedia.bind(this)}
         >
           <Entypo name="image" size={19} color={COLORS.PURPLE} />
         </TouchableOpacity>
         <TouchableOpacity 
           style={styles.bottomItemContainer}
           activeOpacity={0.6}
-          onPress={this.onInsertAttachment.bind(this)}
+          onPress={this.onAddDocument.bind(this)}
         >
           <Ionicons name="md-attach" style={styles.attachment} size={22} color={COLORS.PURPLE} />
         </TouchableOpacity>
@@ -314,9 +351,12 @@ class NewFeedScreen extends React.Component {
     );
   }
 
-  render () {
+  get renderFeed () {
+    if (this.state.currentScreen !== NewFeedMode) {
+      return;
+    }
     return (
-      <View style={styles.container}>
+      <View style={{flex: 1}}>
         <TouchableOpacity 
           style={styles.backgroundContainer}
           activeOpacity={1}
@@ -324,14 +364,40 @@ class NewFeedScreen extends React.Component {
         />
         <View style={styles.contentContainer}>
           {this.renderTopContent}
-          {this.renderCenterContent}
-          {this.renderBottomContent}
+          <ScrollView
+            showsVerticalScrollIndicator={false}
+          >
+            {this.renderCenterContent}
+            {this.renderBottomContent}
+          </ScrollView>
         </View>
         <TouchableOpacity 
           style={styles.backgroundContainer}
           activeOpacity={1}
           onPress={this.onOpenActionSheet.bind(this)}
         />
+      </View>
+    );
+  }
+
+  get renderCreateTag() {
+    if (this.state.currentScreen !== TagCreateMode) {
+      return;
+    }
+    return (
+      // <View style={{flex: 1, justifyContent: 'center'}}>
+        <View style={styles.contentContainer}>
+          <TagCreateScreen />
+        </View>
+      // </View>
+    );
+  }
+
+  render () {
+    return (
+      <View style={styles.container}>
+        {this.renderFeed}
+        {this.renderCreateTag}
         <ActionSheet
           ref={o => this.leaveActionSheetRef = o}
           title='Are you sure that you wish to leave?'
@@ -351,7 +417,7 @@ class NewFeedScreen extends React.Component {
         />
         {this.state.loading && <LoadingScreen />}
       </View>
-    )
+    );
   }
 }
 
@@ -384,6 +450,7 @@ const mapDispatchToProps = dispatch => ({
   uploadFileToS3: (signedUrl, file, fileName, mimeType) => dispatch(uploadFileToS3(signedUrl, file, fileName, mimeType)),
   addFile: (feedId, fileType, contentType, name, objectKey) => dispatch(addFile(feedId, fileType, contentType, name, objectKey)),
   deleteFile: (feedId, fileId) => dispatch(deleteFile(feedId, fileId)),
+  getFeedDetail: feedId => dispatch(getFeedDetail(feedId)),
 })
 
 

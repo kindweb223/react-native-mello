@@ -5,7 +5,7 @@ import CONSTANTS from '../../service/constants'
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#C0C0C0C0',
+    backgroundColor: COLORS.FOREGROUND_COLOR,
     justifyContent: 'center',
   },
   backgroundContainer: {
@@ -14,6 +14,7 @@ const styles = StyleSheet.create({
   contentContainer: {
     borderRadius: 18,
     backgroundColor: '#fff',
+    maxHeight: CONSTANTS.SCREEN_HEIGHT - 150,
   },
   topContainer: {
     flexDirection: 'row',
@@ -21,10 +22,10 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     padding: 16,
   },
-  closeContainer: {
+  closeButtonWrapper: {
     paddingHorizontal: 4,
   },
-  createContainer: {
+  createButtonWapper: {
     width: 80,
     height: 34,
     borderRadius: 17,
@@ -38,7 +39,6 @@ const styles = StyleSheet.create({
     textAlign: 'center',
   },
   mainContentContainer: {
-    // backgroundColor: 'green',
   },
   textInputFeedName: {
     fontSize: 24,

@@ -10,6 +10,7 @@ import { connect } from 'react-redux'
 import { Actions } from 'react-native-router-flux'
 import Slideshow from 'react-native-slideshow';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
+import { filter } from 'lodash'
 
 import styles from './styles'
 import LoadingScreen from '../LoadingScreen';
@@ -63,9 +64,10 @@ class ImageSliderScreen extends React.Component {
     const {
       files,
     } = this.props.feed.feed;
+    const imageFiles = filter(files, file => file.fileType === 'MEDIA');
     let allImages = [];
-    if (files) {
-      files.forEach(item => {
+    if (imageFiles) {
+      imageFiles.forEach(item => {
         allImages.push({
           url: item.accessUrl,
         });
@@ -83,17 +85,13 @@ class ImageSliderScreen extends React.Component {
       id,
       files
     } = this.props.feed.feed;
-    
+    const imageFiles = filter(files, file => file.fileType === 'MEDIA');
     if (id) {
-      this.props.deleteFile(id, files[this.state.position].id);
+      this.props.deleteFile(id, imageFiles[this.state.position].id);
     }
   }
 
   render () {
-    const {
-      files,
-    } = this.props.feed.feed;
-
     return (
       <View style={styles.container}>
         <TouchableOpacity 
