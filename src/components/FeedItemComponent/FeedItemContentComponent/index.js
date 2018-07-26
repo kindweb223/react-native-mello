@@ -6,9 +6,9 @@ import {
 
 import PropTypes from 'prop-types'
 import { Foundation, Ionicons, Octicons } from 'react-native-vector-icons'
-import Tags from "../../components/FeedTags";
+import Tags from "../../../components/FeedTags";
 import styles from './styles'
-import COLORS from '../../service/colors'
+import COLORS from '../../../service/colors'
 
 const FeedItemContentComponent = ({ data, pinFlag }) => {
   return (
@@ -39,7 +39,7 @@ const FeedItemContentComponent = ({ data, pinFlag }) => {
 
       {data.tags.length > 0 && (
         <View style={styles.tagsView}>
-          {/* <Tags
+          <Tags
             initialTags={data.tags}
             onChangeTags={() => {}}
             onTagPress={() => {}}
@@ -53,7 +53,7 @@ const FeedItemContentComponent = ({ data, pinFlag }) => {
               color: COLORS.DARK_ORANGE,
               fontSize: 16,
             }}
-          /> */}
+          />
         </View>
       )}
     </View>
