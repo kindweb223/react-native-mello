@@ -26,6 +26,7 @@ import ToasterComponent from '../../components/ToasterComponent'
 import COLORS from '../../service/colors'
 import styles from './styles'
 const EMPTY_ICON = require('../../../assets/images/empty_state/asset-emptystate.png')
+
 import {
   getFeedoList,
   pinFeed,

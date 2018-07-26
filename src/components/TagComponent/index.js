@@ -5,7 +5,6 @@ import {
   Text,
   TextInput,
   TouchableOpacity,
-  Keyboard,
 } from 'react-native';
 
 import Tag from './Tag';
@@ -24,7 +23,7 @@ class Tags extends React.Component {
     };
   }
 
-  componentWillReceiveProps(props) {
+  UNSAFE_componentWillReceiveProps(props) {
     const { initialTags = [], initialText = '' } = props;
 
     this.setState({
@@ -61,10 +60,9 @@ class Tags extends React.Component {
     } else {
       this.setState({ text });
     }
-  };
+  }
 
   onKeyPress(event) {
-    console.log('onKeyPress : ', event.nativeEvent.key);
     if (this.state.text === '' && event.nativeEvent.key === 'Backspace') {
       let index = 0;
       // if (this.state.selectedTagIndex !== -1) {
