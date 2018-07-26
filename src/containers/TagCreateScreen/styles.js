@@ -26,19 +26,6 @@ export default styles = StyleSheet.create({
     textAlign: 'center',
     marginLeft: 5,
   },
-  saveButtonContainer: {
-    width: 80,
-    height: 34,
-    borderRadius: 17,
-    backgroundColor: COLORS.PURPLE,
-    justifyContent: 'center',
-  },
-  textButton: {
-    color: '#fff',
-    fontSize: 15,
-    fontWeight: '500',
-    textAlign: 'center',
-  },
   mainContentContainer: {
     marginTop: 20,
     paddingHorizontal: 20,

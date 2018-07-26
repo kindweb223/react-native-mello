@@ -5,7 +5,6 @@ import {
   Text,
   TextInput,
   TouchableOpacity,
-  Keyboard,
 } from 'react-native';
 
 import Tag from './Tag';
@@ -17,67 +16,73 @@ class Tags extends React.Component {
     super(props);
 
     this.state = {
-      tags: props.initialTags,
       text: props.initialText,
-      activeTag: props.activeTag,
+      activeTagName: props.activeTagName,
       selectedTagIndex: -1,
     };
-  }
-
-  componentWillReceiveProps(props) {
-    const { initialTags = [], initialText = '' } = props;
-
-    this.setState({
-      tags: initialTags,
-      text: initialText
-    });
+    this.prevKey = '';
   }
 
   onChangeText(text) {
-    if (text.length === 0) {
-      // `onKeyPress` isn't currently supported on Android; I've placed an extra
-      //  space character at the start of `TextInput` which is used to determine if the
-      //  user is erasing.
-      // this.setState(
-      //   {
-      //     tags: this.state.tags.slice(0, -1),
-      //     // text: this.state.tags.slice(-1)[0] || ''
-      //   },
-      //   () =>
-      //     this.props.onChangeTags && this.props.onChangeTags(this.state.tags)
-      // );
-    } else if (
+    if (
       text.length > 1 &&
       (text.slice(-1) === ' ' || text.slice(-1) === ',')
     ) {
-      this.setState(
-        {
-          tags: [...this.state.tags, text.slice(0, -1).trim()],
-          text: ''
-        },
-        () =>
-          this.props.onChangeTags && this.props.onChangeTags(this.state.tags)
-      );
+      // this.setState({
+      //   tags: [
+      //     ...this.state.tags, 
+      //     {
+      //       text: text.slice(0, -1).trim(),
+      //       id: '',
+      //     },
+      //   ],
+      //   text: ''
+      // }, () => {
+      //   this.props.onChangeTags && this.props.onChangeTags(this.state.tags)
+      // });
+      this.onCreateTag();
     } else {
       this.setState({ text });
+      if (this.props.onChangeText) {
+        this.props.onChangeText(text);
+      }
     }
   };
 
   onKeyPress(event) {
-    console.log('onKeyPress : ', event.nativeEvent.key);
-    if (this.state.text === '' && event.nativeEvent.key === 'Backspace') {
-      let index = 0;
-      // if (this.state.selectedTagIndex !== -1) {
-      //   index = this.state.selectedTagIndex;
-      // }
+    console.log('PrevKey : ', this.prevKey);
+    console.log('EventKey : ', event.nativeEvent);
+    if ((this.prevKey === '' || this.prevKey === 'Backspace' || this.prevKey === ' ' || this.prevKey === ',') && event.nativeEvent.key === 'Backspace') {
+      let index = this.props.tags.length - 1;
+      if (this.state.selectedTagIndex !== -1) {
+        index = this.state.selectedTagIndex;
+      }
+      // let tags = this.props.tags;
+      // tags.splice(index, 1);
       this.setState({
-        tags: this.state.tags.slice(index, -1),
         selectedTagIndex: -1,
-        activeTag: '',
+        activeTagName: '',
       }, () => {
-        this.props.onChangeTags && this.props.onChangeTags(this.state.tags)
+        // this.props.onChangeTags && this.props.onChangeTags(tags)
+        if (this.props.onRemoveTag) {
+          this.props.onRemoveTag(this.props.tags[index]);
+        }
       });
     }
+    this.prevKey = event.nativeEvent.key;
+  }
+
+  onCreateTag() {
+    if (this.props.onCreateTag) {
+      this.props.onCreateTag(this.state.text)
+    }
+    if (this.props.onChangeText) {
+      this.props.onChangeText('');
+    }
+    this.setState({
+      text: '',
+    });
+    
   }
 
   renderEdit() {
@@ -91,6 +96,7 @@ class Tags extends React.Component {
             style={[styles.textInput, this.props.inputStyle]}
             onChangeText={this.onChangeText.bind(this)}
             onKeyPress={this.onKeyPress.bind(this)}
+            onSubmitEditing={() => {this.onCreateTag()}}
             underlineColorAndroid='transparent'
           />
         </View>
@@ -100,7 +106,7 @@ class Tags extends React.Component {
         <TouchableOpacity 
           style={styles.textInputContainer}
           activeOpacity={0.6}
-          onPress={e => this.props.onPressTag(-1, '', e)}
+          onPress={() => this.props.onPressTag(-1, '')}
           >
           <Text style={styles.textLabel}>Tags</Text>
         </TouchableOpacity>
@@ -109,14 +115,14 @@ class Tags extends React.Component {
   }
 
   onPressTag (index, tag) {
-    let activeTag = '';
-    if (this.state.activeTag !== tag) {
-      activeTag = tag;
+    let activeTagName = '';
+    if (this.state.activeTagName !== tag.text) {
+      activeTagName = tag.text;
     }
     this.setState({
-      activeTag,
+      activeTagName,
     }, () => {
-      if (activeTag !== '') {
+      if (activeTagName !== '') {
         this.tagInputRef.focus();
         this.setState({
           selectedTagIndex: index,
@@ -134,11 +140,11 @@ class Tags extends React.Component {
       <View
         style={[styles.container, this.props.containerStyle, this.props.style]}
       >
-        {this.state.tags.map((tag, index) => (
+        {this.props.tags.map((tag, index) => (
           <Tag
             key={index}
-            active={tag === this.state.activeTag}
-            label={tag}
+            active={tag.text === this.state.activeTagName}
+            label={tag.text}
             onPress={() => this.onPressTag(index, tag)}
             tagContainerStyle={this.props.tagContainerStyle}
             tagTextStyle={this.props.tagTextStyle}
@@ -153,18 +159,16 @@ class Tags extends React.Component {
 }
 
 Tags.defaultProps = {
-  initialTags: [],
+  tags: [],
   initialText: '',
   readonly: false,
-  activeTag: '',
+  activeTagName: '',
 };
 
 Tags.propTypes = {
   initialText: PropTypes.string,
-  activeTag: PropTypes.string,
-  initialTags: PropTypes.arrayOf(PropTypes.string),
-  onChangeTags: PropTypes.func,
-  onPressTag: PropTypes.func,
+  activeTagName: PropTypes.string,
+  tags: PropTypes.arrayOf(PropTypes.object),
   containerStyle: PropTypes.object,
   style: PropTypes.object,
   inputStyle: PropTypes.object,
@@ -173,6 +177,12 @@ Tags.propTypes = {
   activeTagContainerStyle: PropTypes.object,
   activeTagTextStyle: PropTypes.object,
   readonly: PropTypes.bool,
+  onChangeTags: PropTypes.func,
+  onPressTag: PropTypes.func,
+  onCreateTag: PropTypes.func,
+  onChangeText: PropTypes.func,
+  onAddTag: PropTypes.func,
+  onRemoveTag: PropTypes.func,
 };
 
 export { Tag };
