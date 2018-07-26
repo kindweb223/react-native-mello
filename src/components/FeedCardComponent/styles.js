@@ -13,13 +13,13 @@ const styles = StyleSheet.create({
   },
   thumbnailsView: {
     width: '100%',
-    height: 150,
+    height: 144,
     marginTop: 5,
   },
   thumbnails: {
     width: '100%',
     height: '100%',
-    borderRadius: 10,
+    borderRadius: 6,
   },
   bottomContainer: {
     marginTop: 5,

@@ -132,7 +132,8 @@ class FeedCollapseComponent extends React.Component {
           backdropColor="rgba(0, 0, 0, 0.9)"
           animationIn="fadeIn"
           animationOut="fadeOut"
-          animationInTiming={1000}
+          animationInTiming={1500}
+          animationOutTiming={1500}
         >
           <View style={styles.modalContainer}>
             <TouchableOpacity onPress={() => { this.setState({ isPreview: false }) }} style={styles.closeIconView}>
@@ -141,7 +142,7 @@ class FeedCollapseComponent extends React.Component {
 
             <Carousel
               width={CONSTANTS.SCREEN_WIDTH}
-              height={350}
+              height={250}
               backgroundColor="transparent"
             >
               {images.map(item => (

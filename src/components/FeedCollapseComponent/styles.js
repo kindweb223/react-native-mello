@@ -51,13 +51,13 @@ const styles = StyleSheet.create({
     marginVertical: 10
   },
   feedImage: {
-    width: 100,
-    height: 100,
+    width: 105,
+    height: 105,
     marginRight: 16
   },
   feedLastImage: {
-    width: 100,
-    height: 100,
+    width: 105,
+    height: 105,
   },
   image: {
     width: '100%',
@@ -106,7 +106,7 @@ const styles = StyleSheet.create({
   },
   previewImage: {
     width: '100%',
-    height: 300,
+    height: 210,
   },
   closeIconView: {
     position: 'absolute',

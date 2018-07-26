@@ -37,7 +37,7 @@ class Carousel extends Component {
       height: bubbleHeight,
       backgroundColor: dimmedColor,
       borderRadius: 15,
-      marginHorizontal: 2,
+      marginHorizontal: 3,
       alignSelf: 'center',
     }
 
@@ -45,7 +45,7 @@ class Carousel extends Component {
       width: bubbleWidth,
       height: bubbleHeight,
       backgroundColor: color,
-      marginHorizontal: 2,
+      marginHorizontal: 3,
       borderRadius: 15,
       alignSelf: 'center',
     }
@@ -113,7 +113,7 @@ class Carousel extends Component {
 
 Carousel.defaultProps = {
   color: '#fff',
-  dimmedColor: '#999',
+  dimmedColor: '#666',
   bubbleWidth: 6,
   bubbleHeight: 6,
   showBubbles: true,
