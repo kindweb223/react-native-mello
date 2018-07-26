@@ -1,4 +1,4 @@
-import { StyleSheet, Platform } from 'react-native'
+import { StyleSheet } from 'react-native'
 import CONSTANTS from '../../service/constants'
 import COLORS from '../../service/colors'
 
@@ -26,9 +26,9 @@ const styles = StyleSheet.create({
     height: CONSTANTS.SCREEN_HEIGHT - CONSTANTS.ACTION_BAR_HEIGHT - 200,
   },
   emptyText: {
-    fontSize: 18,
+    fontSize: 14,
     color: COLORS.MEDIUM_GREY,
-    marginVertical: 20
+    marginTop: 27
   },
   detailView: {
     flex: 1,

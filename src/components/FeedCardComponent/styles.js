@@ -8,7 +8,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: CONSTANTS.PADDING,
   },
   title: {
-   fontSize: 18,
+   fontSize: 16,
    fontWeight: 'bold',
   },
   thumbnailsView: {
@@ -36,7 +36,7 @@ const styles = StyleSheet.create({
     marginRight: 5,
   },
   text: {
-    fontSize: 15,
+    fontSize: 14,
     color: COLORS.MEDIUM_GREY,
     marginLeft: 5 
   },

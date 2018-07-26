@@ -29,9 +29,9 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   title: {
-    fontSize: 16,
+    fontSize: 14,
     flex: 1,
-    color: '#222'
+    color: '#000'
   },
   buttonView: {
     marginLeft: 20,
@@ -41,7 +41,7 @@ const styles = StyleSheet.create({
   },
   button: {
     color: '#4A00CD',
-    fontSize: 16,
+    fontSize: 14,
     fontWeight: 'bold'
   }
 })

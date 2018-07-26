@@ -37,7 +37,7 @@ export default {
   titleText: {
     color: '#A2A5AE',
     textAlign: 'center',
-    fontSize: 14
+    fontSize: 13
   },
   buttonBox: {
     height: 50,
@@ -49,8 +49,8 @@ export default {
     borderTopWidth: 0,
   },
   buttonText: {
-    fontSize: 18,
-    color: '#E63535',
+    fontSize: 20,
+    color: '#FF3626',
   },
   cancelButtonBox: {
     height: 50,

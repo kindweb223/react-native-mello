@@ -55,15 +55,16 @@ const styles = StyleSheet.create({
   },
   buttonText: {
     color: '#fff',
-    fontSize: 16
+    fontSize: 14
   },
   settingMenuView: {
-    borderRadius: 10,
+    borderRadius: 20,
     backgroundColor: '#fff',
-    paddingVertical: 12,
-    width: 130,
+    width: 122,
+    height: 167,
+    paddingTop: 10,
     position: 'absolute',
-    bottom: 70,
+    bottom: 80,
     right: 10,
     ...Platform.select({
       ios: {
@@ -80,15 +81,15 @@ const styles = StyleSheet.create({
   settingItem: {
     width: '100%',
     paddingHorizontal: 30,
-    paddingVertical: 12,
+    paddingVertical: 10,
   },
   settingButtonText: {
     color: COLORS.PURPLE,
-    fontSize: 16,
+    fontSize: 14,
   },
   deleteButtonText: {
     color: COLORS.RED,
-    fontSize: 16,
+    fontSize: 14,
   }
 })
 

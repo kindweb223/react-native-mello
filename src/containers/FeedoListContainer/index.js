@@ -22,7 +22,7 @@ const FeedoListContainer = ({ loading, feedoList, handleFeedMenu }) => {
       renderItem={({ item }) => (
         <TouchableOpacity
           activeOpacity={0.8}
-          deplayLongPress={1000}
+          delayLongPress={1000}
           onLongPress={() => handleFeedMenu(item)}
           onPress={() => {
             Actions.FeedDetailScreen({
