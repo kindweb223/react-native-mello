@@ -177,6 +177,33 @@ export default function feedo(state = initialState, action = {}) {
         error: action.error,
       }
     }
+    case types.DUPLICATE_FEED_PENDING: {
+      return {
+        ...state,
+        loading: types.DUPLICATE_FEED_PENDING,
+        error: null,
+      }
+    }
+    case types.DUPLICATE_FEED_FULFILLED: {
+      const { feedoList } = state
+      const { data } = action.result
+
+      return {
+        ...state,
+        feedoList: [
+          ...feedoList,
+          data
+        ],
+        loading: types.DUPLICATE_FEED_FULFILLED,
+      }
+    }
+    case types.DUPLICATE_FEED_REJECTED: {
+      return {
+        ...state,
+        loading: types.DUPLICATE_FEED_REJECTED,
+        error: action.error,
+      }
+    }
     default:
       return state;
   }

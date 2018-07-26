@@ -105,14 +105,13 @@ export const archiveFeed = (feedId) => {
  * Duplicate Feed
  */
 export const duplicateFeed = (feedId) => {
-  // let url = `${BASE_URL}/hunts/${feedId}/duplicate`
+  let url = `/hunts/${feedId}/duplicate`
 
-  // return {
-  //   types: [types.DUPLICATE_FEED_PENDING, types.DUPLICATE_FEED_FULFILLED, types.DUPLICATE_FEED_REJECTED],
-  //   promise: axios({
-  //     method: 'post',
-  //     url: url,
-  //   }),
-  //   payload: feedId
-  // };
+  return {
+    types: [types.DUPLICATE_FEED_PENDING, types.DUPLICATE_FEED_FULFILLED, types.DUPLICATE_FEED_REJECTED],
+    promise: axios({
+      method: 'post',
+      url: url
+    })
+  };
 }
