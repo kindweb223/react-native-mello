@@ -39,7 +39,7 @@ const styles = StyleSheet.create({
     paddingBottom: 10,
   },
   miniTitle: {
-    fontSize: 20,
+    fontSize: 16,
     color: COLORS.PRIMARY_BLACK,
     marginBottom: 3,
     fontWeight: 'bold'

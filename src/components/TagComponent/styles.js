@@ -41,7 +41,7 @@ export default StyleSheet.create({
     margin: 4
   },
   tagLabel: {
-    fontSize: 13,
+    fontSize: 14,
     color: "rgba(0, 0, 0, 0.87)"
   },
 });

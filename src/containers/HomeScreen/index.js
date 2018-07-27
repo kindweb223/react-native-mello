@@ -34,7 +34,8 @@ import {
   pinFeed,
   unpinFeed,
   deleteFeed,
-  archiveFeed
+  archiveFeed,
+  duplicateFeed
 } from '../../redux/feedo/actions'
 
 const TAB_STYLES = {
@@ -71,7 +72,8 @@ class HomeScreen extends React.Component {
     const { feedo } = nextProps
   
     if ((prevState.loading === true && (feedo.loading === 'GET_FEEDO_LIST_FULFILLED' || feedo.loading === 'GET_FEEDO_LIST_REJECTED')) ||
-      (feedo.loading === 'FEED_FULFILLED') || (feedo.loading === 'DEL_FEED_FULFILLED') || (feedo.loading === 'ARCHIVE_FEED_FULFILLED')) {
+      (feedo.loading === 'FEED_FULFILLED') || (feedo.loading === 'DEL_FEED_FULFILLED') || (feedo.loading === 'ARCHIVE_FEED_FULFILLED') ||
+      (feedo.loading === 'DUPLICATE_FEED_FULFILLED')) {
 
       let feedoList = []
       let emptyState = true
@@ -104,7 +106,8 @@ class HomeScreen extends React.Component {
         isArchive: false,
         isDelete: false,
         isPin: false,
-        isUnPin: false
+        isUnPin: false,
+        isDuplicate: false
       }
     }
 
@@ -180,9 +183,25 @@ class HomeScreen extends React.Component {
       this.props.unpinFeed(feedId)
     }
   }
+
+  handleDuplicateFeed = (feedId) => {
+    this.setState({ isLongHoldMenuVisible: false })
+    this.setState({ isDuplicate: true, toasterTitle: 'Feed duplicated' })
+    setTimeout(() => {
+      this.setState({ isShowToaster: false })
+      this.duplicateFeed(feedId)
+    }, TOASTER_DURATION)
+  }
+
+  duplicateFeed = (feedId) => {
+    if (this.state.isDuplicate) {
+      this.props.duplicateFeed(feedId)
+    }
+  }
+
   onLongHoldMenuHide = () => {
-    const { isArchive, isDelete, isPin, isUnPin } = this.state
-    if (isArchive || isDelete || isPin || isUnPin) {
+    const { isArchive, isDelete, isPin, isUnPin, isDuplicate } = this.state
+    if (isArchive || isDelete || isPin || isUnPin || isDuplicate) {
       this.setState({ isShowToaster: true })
     }
   }
@@ -307,7 +326,7 @@ class HomeScreen extends React.Component {
           backdropOpacity={0.9}
           animationIn="fadeIn"
           animationOut="fadeOut"
-          animationInTiming={1000}
+          animationInTiming={1300}
           onModalHide={this.onLongHoldMenuHide}
           onBackdropPress={() => this.setState({ isLongHoldMenuVisible: false })}
         >
@@ -317,6 +336,7 @@ class HomeScreen extends React.Component {
             handleDeleteFeed={this.handleDeleteFeed}
             handlePinFeed={this.handlePinFeed}
             handleUnpinFeed={this.handleUnpinFeed}
+            handleDuplicateFeed={this.handleDuplicateFeed}
           />
         </Modal>
 
@@ -324,7 +344,7 @@ class HomeScreen extends React.Component {
           isVisible={this.state.isShowToaster}
           title={this.state.toasterTitle}
           onPressButton={() => {
-            this.setState({ isShowToaster: false, isArchive: false, isDelete: false, isPin: false, isUnPin: false })}
+            this.setState({ isShowToaster: false, isArchive: false, isDelete: false, isPin: false, isUnPin: false, isDuplicate: false })}
           }
         />
       </SafeAreaView>
@@ -342,6 +362,7 @@ const mapDispatchToProps = dispatch => ({
   unpinFeed: (data) => dispatch(unpinFeed(data)),
   deleteFeed: (data) => dispatch(deleteFeed(data)),
   archiveFeed: (data) => dispatch(archiveFeed(data)),
+  duplicateFeed: (data) => dispatch(duplicateFeed(data))
 })
 
 HomeScreen.propTypes = {
@@ -350,7 +371,8 @@ HomeScreen.propTypes = {
   pinFeed: PropTypes.func.isRequired,
   unpinFeed: PropTypes.func.isRequired,
   deleteFeed: PropTypes.func.isRequired,
-  archiveFeed: PropTypes.func.isRequired
+  archiveFeed: PropTypes.func.isRequired,
+  duplicateFeed: PropTypes.func.isRequired
 }
 
 export default connect(

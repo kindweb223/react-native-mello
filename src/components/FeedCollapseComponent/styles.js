@@ -15,7 +15,7 @@ const styles = StyleSheet.create({
     color: COLORS.MEDIUM_GREY,
     flex: 1,
     marginRight: 10,
-    fontSize: 18,
+    fontSize: 16,
   },
   arrowDownIcon: {
     fontSize: 20,
@@ -23,7 +23,7 @@ const styles = StyleSheet.create({
     marginTop: 5,
   },
   contentText:{
-    fontSize: 18
+    fontSize: 16
   },
   contentView: {
     paddingHorizontal: CONSTANTS.PADDING,
@@ -44,15 +44,6 @@ const styles = StyleSheet.create({
       }
     })
   },
-  footerView: {
-    width: '100%',
-    justifyContent: 'center',
-    alignItems: 'center'
-  },
-  arrowUpIcon: {
-    fontSize: 25,
-    color: COLORS.MEDIUM_GREY,
-  },
   tagView: {
     marginVertical: 10
   },
@@ -60,17 +51,71 @@ const styles = StyleSheet.create({
     marginVertical: 10
   },
   feedImage: {
-    width: 100,
-    height: 100,
+    width: 105,
+    height: 105,
     marginRight: 16
   },
   feedLastImage: {
-    width: 100,
-    height: 100,
+    width: 105,
+    height: 105,
   },
   image: {
     width: '100%',
     height: '100%'
+  },
+  attachView: {
+    width: '100%'
+  },
+  attachItem: {
+    flexDirection: 'row',
+    justifyContent: 'flex-start',
+    alignItems: 'center',
+    marginVertical: 10,
+  },
+  attachIcon: {
+    width: 30,
+    height: 30,
+  },
+  attachFileText: {
+    marginLeft: 5,
+    fontSize: 16
+  },
+  footerView: {
+    width: '100%',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  arrowUpIcon: {
+    fontSize: 25,
+    color: COLORS.MEDIUM_GREY,
+  },
+  previewModal: {
+    margin: 0,
+    position: 'absolute',
+    left: 0,
+    top: 0,
+    width: '100%',
+    height: '100%'
+  },
+  modalContainer: {
+    width: '100%',
+    height: '100%',
+    backgroundColor: 'rgba(0, 0, 0, 0.9)',
+    justifyContent: 'center',
+    alignItems: 'center'
+  },
+  previewImage: {
+    width: '100%',
+    height: 210,
+  },
+  closeIconView: {
+    position: 'absolute',
+    top: 20,
+    right: 20,
+  },
+  closeIcon: {
+    color: '#fff',
+    fontSize: 40
   }
 })
 

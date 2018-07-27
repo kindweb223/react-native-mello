@@ -52,9 +52,9 @@ const styles = StyleSheet.create({
     height: CONSTANTS.SCREEN_HEIGHT - CONSTANTS.ACTION_BAR_HEIGHT - 100
   },
   emptyText: {
-    fontSize: 18,
+    fontSize: 14,
     color: COLORS.MEDIUM_GREY,
-    marginVertical: 20
+    marginTop: 27
   }
 })
 

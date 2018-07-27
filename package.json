@@ -25,7 +25,8 @@
     "react-navigation": "^2.6.2",
     "react-redux": "^5.0.7",
     "redux": "^4.0.0",
-    "redux-thunk": "^2.3.0"
+    "redux-thunk": "^2.3.0",
+    "simple-carousel-react-native": "^1.0.2"
   },
   "devDependencies": {
     "babel-eslint": "^8.2.6",

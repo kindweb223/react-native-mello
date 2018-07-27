@@ -47,7 +47,7 @@ class Tags extends React.Component {
         this.props.onChangeText(text);
       }
     }
-  };
+  }
 
   onKeyPress(event) {
     console.log('PrevKey : ', this.prevKey);
