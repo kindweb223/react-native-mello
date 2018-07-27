@@ -122,8 +122,8 @@ class FeedCollapseComponent extends React.Component {
   }
 
   handleCollapse = () => {
-    const { isCollapse } = this.state
-    if (isCollapse) {
+    const { isCollapse, COLLAPSE_SECTIONS } = this.state
+    if (isCollapse && COLLAPSE_SECTIONS.content.length > 0) {
       Animated.timing(
         this.state.spinValue,
         {

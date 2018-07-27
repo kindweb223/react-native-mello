@@ -3,7 +3,7 @@ import PropTypes from 'prop-types'
 import FacePile from './FacePile'
 
 const AvatarPileComponent = ({ maxCount, avatars }) => (
-  <FacePile numFaces={maxCount} faces={avatars} circleSize={19} />
+  <FacePile numFaces={maxCount} faces={avatars} />
 )
 
 AvatarPileComponent.defaultProps = {
