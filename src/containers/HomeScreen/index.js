@@ -128,7 +128,7 @@ class HomeScreen extends React.Component {
 
   handleArchiveFeed = (feedId) => {
     this.setState({ isLongHoldMenuVisible: false })
-    this.setState({ isArchive: true, toasterTitle: 'Feed archived' })
+    this.setState({ isArchive: true, toasterTitle: 'Feedo archived' })
     setTimeout(() => {
       this.setState({ isShowToaster: false })
       this.archiveFeed(feedId)
@@ -143,7 +143,7 @@ class HomeScreen extends React.Component {
 
   handleDeleteFeed = (feedId) => {
     this.setState({ isLongHoldMenuVisible: false })
-    this.setState({ isDelete: true, toasterTitle: 'Feed deleted' })
+    this.setState({ isDelete: true, toasterTitle: 'Feedo deleted' })
     setTimeout(() => {
       this.setState({ isShowToaster: false })
       this.deleteFeed(feedId)
@@ -158,7 +158,7 @@ class HomeScreen extends React.Component {
 
   handlePinFeed = (feedId) => {
     this.setState({ isLongHoldMenuVisible: false })
-    this.setState({ isPin: true, toasterTitle: 'Feed Pinned(Undo)' })
+    this.setState({ isPin: true, toasterTitle: 'Feed pinned' })
     setTimeout(() => {
       this.setState({ isShowToaster: false })
       this.pinFeed(feedId)
@@ -173,7 +173,7 @@ class HomeScreen extends React.Component {
 
   handleUnpinFeed = (feedId) => {
     this.setState({ isLongHoldMenuVisible: false })
-    this.setState({ isUnPin: true, toasterTitle: 'Feed Un-Pinned(Undo)' })
+    this.setState({ isUnPin: true, toasterTitle: 'Feed un-pinned' })
     setTimeout(() => {
       this.setState({ isShowToaster: false })
       this.unpinFeed(feedId)

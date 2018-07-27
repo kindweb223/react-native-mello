@@ -32,7 +32,7 @@ class ToasterComponent extends React.Component {
 ToasterComponent.defaultProps = {
   onPressButton: () => {},
   title: '',
-  buttonTitle: 'Undo',
+  buttonTitle: 'undo',
   isVisible: false
 }
 
