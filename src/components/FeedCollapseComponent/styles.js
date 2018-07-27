@@ -138,8 +138,10 @@ const styles = StyleSheet.create({
   },
   closeIconView: {
     position: 'absolute',
-    top: 20,
-    right: 20,
+    width: 40,
+    height: 40,
+    top: 40,
+    right: 0,
   },
   closeIcon: {
     color: '#fff',

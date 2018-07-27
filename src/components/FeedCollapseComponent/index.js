@@ -36,8 +36,15 @@ class FeedCollapseComponent extends React.Component {
     }
   }
 
-  onImagePreview = (images) => {
-    this.setState({ images, isPreview: true })
+  onImagePreview = (images, selectImage) => {
+    const restImages = filter(images, item => item.id !== selectImage.id)
+    this.setState({
+      images: [
+        selectImage,
+        ...restImages,
+      ],
+      isPreview: true
+    })
   }
 
   renderContent = (section, feedData) => {
@@ -79,7 +86,7 @@ class FeedCollapseComponent extends React.Component {
                 >
                   {images.map((item, key) => (
                     <View key={key} style={key === (images.length - 1) ? styles.feedLastImage : styles.feedImage}>
-                      <TouchableOpacity onPress={() => this.onImagePreview(images)}>
+                      <TouchableOpacity onPress={() => this.onImagePreview(images, item)}>
                         <Image style={styles.image} source={{ uri: item.accessUrl }} threshold={300} />
                       </TouchableOpacity>
                     </View>
@@ -178,7 +185,7 @@ class FeedCollapseComponent extends React.Component {
           animationIn="fadeIn"
           animationOut="fadeOut"
           animationInTiming={1500}
-          animationOutTiming={1500}
+          animationOutTiming={1000}
         >
           <View style={styles.modalContainer}>
             <TouchableOpacity onPress={() => { this.setState({ isPreview: false }) }} style={styles.closeIconView}>
