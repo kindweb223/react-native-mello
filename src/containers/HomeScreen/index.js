@@ -13,6 +13,7 @@ import {
   StatusBar
 } from 'react-native'
 
+import { Haptic } from 'expo'
 import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
 import ScrollableTabView from 'react-native-scrollable-tab-view'
@@ -127,6 +128,7 @@ class HomeScreen extends React.Component {
   handleLongHoldMenu = (selectedFeedData) => {
     this.setState({ selectedFeedData })
     this.setState({ isLongHoldMenuVisible: true })
+    Haptic.impact(Haptic.ImpactStyles.Heavy)
   }
 
   handleArchiveFeed = (feedId) => {
