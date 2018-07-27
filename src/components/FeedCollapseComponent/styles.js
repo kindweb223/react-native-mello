@@ -4,21 +4,24 @@ import CONSTANTS from '../../service/constants'
 
 const styles = StyleSheet.create({
   collapseHeader: {
-    height: 40,
     flexDirection: 'row',
-    alignItems: 'center',
+    alignItems: 'flex-start',
     marginHorizontal: CONSTANTS.PADDING,
+    marginTop: 10,
     justifyContent: 'space-between',
     borderColor: COLORS.LIGHT_GREY,
+    height: 30,
+    backgroundColor: '#fff',
     borderBottomWidth: 1
   },
   noncollapseHeader: {
     flexDirection: 'row',
-    alignItems: 'center',
+    alignItems: 'flex-start',
     marginHorizontal: CONSTANTS.PADDING,
+    marginTop: 10,
+    height: 30,
     justifyContent: 'space-between',
-    borderColor: COLORS.LIGHT_GREY,
-    borderBottomWidth: 0
+    backgroundColor: '#fff',
   },
   headerText: {
     color: '#000',
@@ -36,6 +39,10 @@ const styles = StyleSheet.create({
     fontSize: 20,
     color: COLORS.MEDIUM_GREY,
     marginTop: 5,
+    fontWeight: 'bold'
+  },
+  rotateIcon: {
+    // transform: [{ rotate: '180deg'}]
   },
   contentText:{
     fontSize: 16
@@ -50,9 +57,9 @@ const styles = StyleSheet.create({
     ...Platform.select({
       ios: {
         shadowColor: 'black',
-        shadowOffset: { height: 5 },
+        shadowOffset: { height: 10 },
         shadowOpacity: 0.3,
-        shadowRadius: 10
+        shadowRadius: 5
       },
       android: {
         elevation: 20

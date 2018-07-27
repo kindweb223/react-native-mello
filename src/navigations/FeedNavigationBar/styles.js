@@ -47,7 +47,7 @@ const styles = StyleSheet.create({
     flex: 1
   },
   miniNavView: {
-    height: '100%',
+    height: 60,
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'flex-end'

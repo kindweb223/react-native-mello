@@ -4,10 +4,11 @@ import {
   View,
   Text,
   TouchableOpacity,
-  ScrollView
+  ScrollView,
+  Animated
 } from 'react-native'
 import Collapsible from 'react-native-collapsible'
-import { Ionicons } from 'react-native-vector-icons'
+import { Feather, Ionicons } from 'react-native-vector-icons'
 import Image from 'react-native-image-progress'
 import Modal from "react-native-modal"
 import { isEmpty, filter } from 'lodash'
@@ -23,6 +24,8 @@ class FeedCollapseComponent extends React.Component {
   constructor(props) {
     super(props)
     this.state = {
+      spinValue: new Animated.Value(0),
+      hideArrow: false,
       isCollapse: true,
       COLLAPSE_SECTIONS: {
         title: props.data.summary.substring(0, 30),
@@ -32,7 +35,7 @@ class FeedCollapseComponent extends React.Component {
       images: []
     }
   }
-  
+
   onImagePreview = (images) => {
     this.setState({ images, isPreview: true })
   }
@@ -103,7 +106,7 @@ class FeedCollapseComponent extends React.Component {
         <View style={styles.footerView}>
           <TouchableOpacity onPress={this.closeCollapse}>
             <View style={styles.collapseIconView}>
-              <Ionicons name="ios-arrow-up" style={styles.arrowUpIcon} />
+              <Feather name="chevron-up" style={styles.arrowUpIcon} />
             </View>
           </TouchableOpacity>
         </View>
@@ -114,17 +117,40 @@ class FeedCollapseComponent extends React.Component {
   handleCollapse = () => {
     const { isCollapse } = this.state
     if (isCollapse) {
+      Animated.timing(
+        this.state.spinValue,
+        {
+          toValue: 1,
+          duration: 500,
+        }
+      ).start((animation) => {
+        if (animation.finished) {
+          this.setState({ hideArrow: true })
+        }
+      })
       this.setState({ isCollapse: false })
     }
   }
 
   closeCollapse = () => {
-    this.setState({ isCollapse: true })
+    this.setState({ isCollapse: true, hideArrow: false })
+    Animated.timing(
+      this.state.spinValue,
+      {
+        toValue: 0,
+        duration: 500,
+      }
+    ).start()
   }
 
   render() {
     const { COLLAPSE_SECTIONS, isCollapse, isPreview, images } = this.state
     const { feedData } = this.props
+
+    const spin = this.state.spinValue.interpolate({
+      inputRange: [0, 1],
+      outputRange: ['0deg', '180deg'],
+    })
 
     return (
       <View style={styles.collapseView}>
@@ -133,13 +159,15 @@ class FeedCollapseComponent extends React.Component {
             <Text style={isCollapse ? styles.collapseHeaderText : styles.headerText} numberOfLines={1} ellipsizeMode="tail">
               {COLLAPSE_SECTIONS.title}
             </Text>
-            {isCollapse && (
-              <Ionicons name="ios-arrow-down" style={styles.arrowDownIcon} />
-            )}
+            <Animated.View style={{ transform: [{ rotate: spin }] }}>
+              {!this.state.hideArrow && (
+                <Feather name="chevron-down" style={styles.arrowUpIcon} />
+              )}
+            </Animated.View>
           </View>
         </TouchableOpacity>
 
-        <Collapsible collapsed={isCollapse} align="center">
+        <Collapsible collapsed={isCollapse} align="center" duration={500}>
           {this.renderContent(COLLAPSE_SECTIONS, feedData)}
         </Collapsible>
 
