@@ -4,7 +4,7 @@ const getDurationFromNow = (date) => {
   const now = moment()
   const hours = now.diff(date, 'hours')
   if (hours > 24) {
-    return now.diff(date, 'days') + 'd'
+    return moment(date).format('MMMM D')
   } else {
     return hours + 'h'
   }

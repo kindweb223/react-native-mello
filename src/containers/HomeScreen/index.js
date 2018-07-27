@@ -233,7 +233,7 @@ class HomeScreen extends React.Component {
     })
 
     const miniHeaderOpacity = this.state.scrollY.interpolate({
-      inputRange: [50, 100],
+      inputRange: [60, 120],
       outputRange: [0, 1],
       extrapolate: 'clamp'
     })
@@ -260,7 +260,7 @@ class HomeScreen extends React.Component {
             </View>
             <Animated.View style={[styles.minHeader, { opacity: miniHeaderOpacity }]}>
               <View style={styles.minTitleView}>
-                <Text style={styles.miniTitle}>My feeds</Text>
+                <Text style={styles.minTitle}>My feeds</Text>
               </View>
               <View style={styles.settingIconView}>
                 <TouchableOpacity>

@@ -9,7 +9,22 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     marginHorizontal: CONSTANTS.PADDING,
     justifyContent: 'space-between',
-    borderColor: COLORS.LIGHT_GREY
+    borderColor: COLORS.LIGHT_GREY,
+    borderBottomWidth: 1
+  },
+  noncollapseHeader: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginHorizontal: CONSTANTS.PADDING,
+    justifyContent: 'space-between',
+    borderColor: COLORS.LIGHT_GREY,
+    borderBottomWidth: 0
+  },
+  headerText: {
+    color: '#000',
+    flex: 1,
+    marginRight: 10,
+    fontSize: 16,
   },
   collapseHeaderText: {
     color: COLORS.MEDIUM_GREY,
@@ -70,7 +85,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'flex-start',
     alignItems: 'center',
-    marginVertical: 10,
+    marginTop: 10,
   },
   attachIcon: {
     width: 30,
@@ -84,6 +99,12 @@ const styles = StyleSheet.create({
     width: '100%',
     justifyContent: 'center',
     alignItems: 'center',
+  },
+  collapseIconView: {
+    width: 60,
+    height: 30,
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   arrowUpIcon: {
     fontSize: 25,
@@ -116,7 +137,7 @@ const styles = StyleSheet.create({
   closeIcon: {
     color: '#fff',
     fontSize: 40
-  }
+  },
 })
 
 export default styles
