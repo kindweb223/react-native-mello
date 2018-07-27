@@ -54,6 +54,7 @@ class FeedDetailScreen extends React.Component {
   render () {
     const { data } = this.props
     const { feedDetailData, loading } = this.state
+    // console.log('FEED_DETAIL: ', feedDetailData)
 
     const miniHeaderOpacity = this.state.scrollY.interpolate({
       inputRange: [70, 100],
@@ -71,7 +72,7 @@ class FeedDetailScreen extends React.Component {
       <SafeAreaView style={styles.safeArea}>
         <View style={styles.container}>
           <Animated.View style={[styles.miniHeader, { opacity: miniHeaderOpacity }]}>
-            <FeedNavigationBar mode="mini" data={feedDetailData}/>
+            <FeedNavigationBar mode="mini" data={feedDetailData} />
           </Animated.View>
 
           <ScrollView

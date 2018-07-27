@@ -20,20 +20,40 @@ class FeedNavigationBar extends React.Component {
     Actions.pop()
   }
 
+  checkOwner = (data) =>{
+    if (data.invitees.length === 1 && data.owner.id === data.invitees[0].userProfile.id) {
+      return true
+    }
+    return false
+  }
+
   render () {
     const { mode, title, data } = this.props
 
     let avatars = []
     if (!isEmpty(data)) {
-      data.invitees.forEach((item, key) => {
+      const isOwner = this.checkOwner(data)
+
+      if (isOwner) {
         avatars = [
-          ...avatars,
           {
-            id: key,
-            imageUrl: item.userProfile.imageUrl
+            id: 1,
+            imageUrl: data.owner.imageUrl,
+            userName: `${data.owner.firstName} ${data.owner.lastName}`
           }
         ]
-      })
+      } else {
+        data.invitees.forEach((item, key) => {
+          avatars = [
+            ...avatars,
+            {
+              id: key,
+              imageUrl: item.userProfile.imageUrl,
+              userName: `${item.userProfile.firstName} ${item.userProfile.lastName}`
+            }
+          ]
+        })
+      }
     }
 
     return (
@@ -49,7 +69,6 @@ class FeedNavigationBar extends React.Component {
                 <View style={styles.backView}>
                   <TouchableOpacity onPress={this.backToDashboard} style={styles.backButton}>
                     <Ionicons name="ios-arrow-back" style={styles.backIcon} />
-                    {/* <Text style={styles.backTitle}>My feedos</Text> */}
                   </TouchableOpacity>
                   <AvatarPileComponent avatars={avatars} />
                 </View>
@@ -65,7 +84,6 @@ class FeedNavigationBar extends React.Component {
               <View>
                 <TouchableOpacity onPress={this.backToDashboard}>
                   <Ionicons name="ios-arrow-back" style={styles.backIcon} />
-                  {/* <Text style={styles.backTitle}>My feedos</Text> */}
                 </TouchableOpacity>
               </View>
               <View style={styles.avatarView}>
