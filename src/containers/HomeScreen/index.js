@@ -7,7 +7,8 @@ import {
   Text,
   Animated,
   ActivityIndicator,
-  Image
+  Image,
+  Vibration
 } from 'react-native'
 
 import { connect } from 'react-redux'
@@ -120,6 +121,7 @@ class HomeScreen extends React.Component {
   }
 
   handleLongHoldMenu = (selectedFeedData) => {
+    Vibration.vibrate(1000)
     this.setState({ selectedFeedData })
     this.setState({ isLongHoldMenuVisible: true })
   }
