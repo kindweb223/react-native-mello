@@ -62,7 +62,7 @@ class FeedDetailScreen extends React.Component {
     })
 
     const normalHeaderOpacity = this.state.scrollY.interpolate({
-      inputRange: [40, 80],
+      inputRange: [40, 70],
       outputRange: [1, 0],
       extrapolate: 'clamp'
     })
