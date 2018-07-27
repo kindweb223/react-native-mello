@@ -17,7 +17,8 @@ const styles = StyleSheet.create({
     right: 0,
     width: '100%',
     backgroundColor: '#fff',
-    overflow: 'hidden'
+    overflow: 'hidden',
+    zIndex: 10
   },
   container: {
     flex: 1,
@@ -33,7 +34,7 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: 'bold'
   },
-  newFeedModalContainer: {
+  longHoldModalContainer: {
     margin: 0,
   },
   modalContainer: {

@@ -321,7 +321,7 @@ class HomeScreen extends React.Component {
 
         <Modal 
           isVisible={this.state.isLongHoldMenuVisible}
-          style={styles.newFeedModalContainer}
+          style={styles.longHoldModalContainer}
           backdropColor='#e0e0e0'
           backdropOpacity={0.9}
           animationIn="fadeIn"

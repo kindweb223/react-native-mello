@@ -70,7 +70,7 @@ class FeedDetailScreen extends React.Component {
     return (
       <SafeAreaView style={styles.safeArea}>
         <View style={styles.container}>
-          <Animated.View style={styles.miniHeader, { opacity: miniHeaderOpacity, height: miniHeaderHeight }}>
+          <Animated.View style={[styles.miniHeader, { opacity: miniHeaderOpacity, height: miniHeaderHeight }]}>
             <FeedNavigationBar mode="mini" data={feedDetailData}/>
           </Animated.View>
 
