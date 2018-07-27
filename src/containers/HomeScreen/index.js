@@ -8,7 +8,9 @@ import {
   Animated,
   ActivityIndicator,
   Image,
-  Vibration
+  TouchableOpacity,
+  Platform,
+  StatusBar
 } from 'react-native'
 
 import { connect } from 'react-redux'
@@ -29,6 +31,8 @@ import COLORS from '../../service/colors'
 import styles from './styles'
 
 const EMPTY_ICON = require('../../../assets/images/empty_state/asset-emptystate.png')
+const SEARCH_ICON = require('../../../assets/images/Search/Grey.png')
+const SETTING_ICON = require('../../../assets/images/Settings/Grey.png')
 
 import {
   getFeedoList,
@@ -121,7 +125,6 @@ class HomeScreen extends React.Component {
   }
 
   handleLongHoldMenu = (selectedFeedData) => {
-    Vibration.vibrate(1000)
     this.setState({ selectedFeedData })
     this.setState({ isLongHoldMenuVisible: true })
   }
@@ -221,37 +224,63 @@ class HomeScreen extends React.Component {
   render () {
     const { loading, feedoList, emptyState, tabIndex } = this.state
 
+    const normalHeaderOpacity = this.state.scrollY.interpolate({
+      inputRange: [20, 60],
+      outputRange: [1, 0],
+      extrapolate: 'clamp'
+    })
+
     const miniHeaderOpacity = this.state.scrollY.interpolate({
-      inputRange: [60, 120],
+      inputRange: [50, 100],
       outputRange: [0, 1],
       extrapolate: 'clamp'
     })
 
-    const miniHeaderHeight = this.state.scrollY.interpolate({
-      inputRange: [60, 120],
-      outputRange: [0, 60],
+    const miniHeaderZIndex = this.state.scrollY.interpolate({
+      inputRange: [40, 80],
+      outputRange: [9, 11],
       extrapolate: 'clamp'
     })
 
     return (
       <SafeAreaView style={styles.safeArea}>
         <View style={styles.container}>
-          <Animated.View style={[styles.miniHeader, { opacity: miniHeaderOpacity, height: miniHeaderHeight}]}>
-            <DashboardNavigationBar mode="mini" />
+          {Platform.OS === 'ios' && <StatusBar barStyle="dark-content" backgroundColor="blue" />}
+          {Platform.OS === 'android' && (
+            <View style={styles.statusBarUnderlay} />
+          )}
+
+          <Animated.View style={[styles.navbarView, { zIndex: miniHeaderZIndex }]}>
+            <View style={styles.searchIconView}>
+              <TouchableOpacity>
+                <Image source={SEARCH_ICON} />
+              </TouchableOpacity>
+            </View>
+            <Animated.View style={[styles.minHeader, { opacity: miniHeaderOpacity }]}>
+              <View style={styles.minTitleView}>
+                <Text style={styles.miniTitle}>My feeds</Text>
+              </View>
+              <View style={styles.settingIconView}>
+                <TouchableOpacity>
+                  <Image source={SETTING_ICON} />
+                </TouchableOpacity>
+              </View>
+            </Animated.View>
           </Animated.View>          
 
           <ScrollView
             scrollEventThrottle={16}
             scrollEnabled={emptyState > 0 && tabIndex === 0 ? false : true}
+            style={styles.feedListView }
             onScroll={
               Animated.event(
                 [{ nativeEvent: { contentOffset: { y: this.state.scrollY } } }]
               )
             }
           >
-            <View style={styles.normalHeader}>
-              <DashboardNavigationBar mode="normal" />
-            </View>
+            <Animated.View style={[styles.normalHeader, { opacity: normalHeaderOpacity }]}>
+              <DashboardNavigationBar />
+            </Animated.View>
 
             {emptyState > 0 && tabIndex === 0
             ? <View style={styles.emptyView}>

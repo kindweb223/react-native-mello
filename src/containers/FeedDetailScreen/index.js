@@ -56,21 +56,21 @@ class FeedDetailScreen extends React.Component {
     const { feedDetailData, loading } = this.state
 
     const miniHeaderOpacity = this.state.scrollY.interpolate({
-      inputRange: [60, 120],
+      inputRange: [60, 100],
       outputRange: [0, 1],
       extrapolate: 'clamp'
     })
 
-    const miniHeaderHeight = this.state.scrollY.interpolate({
-      inputRange: [60, 120],
-      outputRange: [0, 60],
+    const normalHeaderOpacity = this.state.scrollY.interpolate({
+      inputRange: [50, 90],
+      outputRange: [1, 0],
       extrapolate: 'clamp'
     })
 
     return (
       <SafeAreaView style={styles.safeArea}>
         <View style={styles.container}>
-          <Animated.View style={[styles.miniHeader, { opacity: miniHeaderOpacity, height: miniHeaderHeight }]}>
+          <Animated.View style={[styles.miniHeader, { opacity: miniHeaderOpacity }]}>
             <FeedNavigationBar mode="mini" data={feedDetailData}/>
           </Animated.View>
 
@@ -82,9 +82,9 @@ class FeedDetailScreen extends React.Component {
               )
             }
           >
-            <View style={styles.normalHeader}>
+            <Animated.View style={[styles.normalHeader, {opacity: normalHeaderOpacity}]}>
               <FeedNavigationBar mode="normal" title={data.headline} data={feedDetailData} />
-            </View>
+            </Animated.View>
             
               <View style={styles.detailView}>
                 <FeedCollapseComponent data={data} feedData={feedDetailData} />
