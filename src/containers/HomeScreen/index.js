@@ -21,10 +21,12 @@ import DashboardNavigationBar from '../../navigations/DashboardNavigationBar'
 import DashboardActionBar from '../../navigations/DashboardActionBar'
 import FeedoListContainer from '../FeedoListContainer'
 import NewFeedScreen from '../NewFeedScreen'
+import CreateNewFeedComponent from '../../components/CreateNewFeedComponent'
 import FeedLongHoldMenuScreen from '../FeedLongHoldMenuScreen'
 import ToasterComponent from '../../components/ToasterComponent'
 import COLORS from '../../service/colors'
 import styles from './styles'
+
 const EMPTY_ICON = require('../../../assets/images/empty_state/asset-emptystate.png')
 
 import {
@@ -50,7 +52,8 @@ class HomeScreen extends React.Component {
     this.state = {
       feedoList: [],
       loading: false,
-      isModalVisible: false,
+      isVisibleNewFeed: false,
+      isVisibleCreateNewFeedModal: false,
       isLongHoldMenuVisible: false,
       selectedFeedData: {},
       tabIndex: 0,
@@ -203,6 +206,16 @@ class HomeScreen extends React.Component {
     }
   }
 
+  onSelectNewFeedType(type) {
+    if (type === 'New Card') {
+    } else if (type === 'New Feed') {
+      this.setState({ 
+        isVisibleCreateNewFeedModal: false,
+        isVisibleNewFeed: true,
+      });
+    }
+  }
+
   render () {
     const { loading, feedoList, emptyState, tabIndex } = this.state
 
@@ -221,7 +234,7 @@ class HomeScreen extends React.Component {
     return (
       <SafeAreaView style={styles.safeArea}>
         <View style={styles.container}>
-          <Animated.View style={styles.miniHeader, { opacity: miniHeaderOpacity, height: miniHeaderHeight }}>
+          <Animated.View style={[styles.miniHeader, { opacity: miniHeaderOpacity, height: miniHeaderHeight}]}>
             <DashboardNavigationBar mode="mini" />
           </Animated.View>          
 
@@ -289,19 +302,19 @@ class HomeScreen extends React.Component {
           <DashboardActionBar filtering={!emptyState} />
         )}
 
-        {/* <Modal 
-          isVisible={this.state.isModalVisible}
-          style={styles.newFeedModalContainer}
-        >
-          <NewFeedScreen 
-            onClose={() => this.setState({ isModalVisible: false })}
-          />
-        </Modal> */}
         {
-          this.state.isModalVisible && 
-          <View style={styles.newFeedContainer}>
+          this.state.isVisibleNewFeed && 
+          <View style={styles.modalContainer}>
             <NewFeedScreen 
-              onClose={() => this.setState({ isModalVisible: false })}
+              onClose={() => this.setState({ isVisibleNewFeed: false })}
+            />
+          </View>
+        }
+        {
+          this.state.isVisibleCreateNewFeedModal && 
+          <View style={styles.modalContainer}>
+            <CreateNewFeedComponent 
+              onSelect={(type) => this.onSelectNewFeedType(type)}
             />
           </View>
         }

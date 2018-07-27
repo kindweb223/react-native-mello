@@ -136,6 +136,75 @@ export const deleteFile = (feedId, fileId) => {
   };
 }
 
+/**
+ * Get user tags
+ */
+export const getUserTags = (userId) => {
+  let url = `users/${userId}/tags`
+  return {
+    types: [types.GET_USER_TAGS_PENDING, types.GET_USER_TAGS_FULFILLED, types.GET_USER_TAGS_REJECTED],
+    promise: axios({
+      method: 'get',
+      url: url,
+    }),
+  };
+}
+
+/**
+ * Create a user tag
+ */
+export const createUserTag = (userId, tagName) => {
+  let url = `users/${userId}/tags`
+  const data = {
+    text: tagName,
+  }
+  return {
+    types: [types.CREATE_USER_TAG_PENDING, types.CREATE_USER_TAG_FULFILLED, types.CREATE_USER_TAG_REJECTED],
+    promise: axios({
+      method: 'post',
+      url: url,
+      data,
+    }),
+  };
+}
+
+
+/**
+ * Add a tag to a hunt
+ */
+export const addTagToHunt = (huntId, tagId) => {
+  let url = `hunts/${huntId}/tags/${tagId}`
+  return {
+    types: [types.ADD_HUNT_TAG_PENDING, types.ADD_HUNT_TAG_FULFILLED, types.ADD_HUNT_TAG_REJECTED],
+    promise: axios({
+      method: 'post',
+      url: url,
+    }),
+    payload: tagId,
+  };
+}
+
+/**
+ * Remove a tag from a hunt
+ */
+export const removeTagFromHunt = (huntId, tagId) => {
+  let url = `hunts/${huntId}/tags/${tagId}`
+  return {
+    types: [types.REMOVE_HUNT_TAG_PENDING, types.REMOVE_HUNT_TAG_FULFILLED, types.REMOVE_HUNT_TAG_REJECTED],
+    promise: axios({
+      method: 'delete',
+      url: url,
+    }),
+    payload: tagId,
+  };
+}
+
+
+
+
+
+
+
 
 /**
  * Get a Feed detail

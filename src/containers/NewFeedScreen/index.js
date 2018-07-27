@@ -40,17 +40,17 @@ import TagCreateScreen from '../TagCreateScreen';
 
 const NewFeedMode = 1;
 const TagCreateMode = 2;
+const FeedId = 'f62f0262-78a0-4100-9106-35697d3450b7';
 
 
 class NewFeedScreen extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      feedName: 'Feedo UX improvements',
-      comments: 'Please submit ideas for Toffee sugar plum jelly beans cheesecake soufflé muffin. Oat cake dragée bear claw candy canes pastry.',
-      tags: ['UX', 'Solvers'],
+      feedName: '',
+      comments: '',
       loading: false,
-      currentScreen: TagCreateMode,
+      currentScreen: NewFeedMode,
     };
 
     this.selectedFile = null;
@@ -62,7 +62,7 @@ class NewFeedScreen extends React.Component {
   }
 
   UNSAFE_componentWillReceiveProps(nextProps) {
-    console.log('UNSAFE_componentWillReceiveProps : ', nextProps.feed);
+    console.log('NewFeedScreen UNSAFE_componentWillReceiveProps : ');
     let loading = false;
     if (this.props.feed.status !== types.CREATE_FEED_PENDING && nextProps.feed.status === types.CREATE_FEED_PENDING) {
       // creating a feed
@@ -137,7 +137,7 @@ class NewFeedScreen extends React.Component {
 
   componentDidMount() {
     // this.props.createFeed();
-    this.props.getFeedDetail('f62f0262-78a0-4100-9106-35697d3450b7');
+    this.props.getFeedDetail(FeedId);
   }
 
   onClose() {
@@ -147,7 +147,13 @@ class NewFeedScreen extends React.Component {
   }
 
   onCreate() {
-    this.props.createFeed();
+    // this.props.createFeed();
+    const {
+      id, 
+      tags,
+      files,
+    } = this.props.feed.feed;
+    this.props.updateFeed(id, this.state.feedName, this.state.comments, tags, files);
   }
 
   onInsertLink() {
@@ -299,9 +305,9 @@ class NewFeedScreen extends React.Component {
           onChangeText={(value) => this.setState({comments: value})}
         />
         <Tags
+          tags={this.props.feed.feed.tags}
           readonly={true}
-          initialTags={this.state.tags}
-          onPressTag={(index, tag, active) => console.log(index, tag)}
+          onPressTag={(index, tag) => this.setState({currentScreen: TagCreateMode})}
           containerStyle={{
             marginHorizontal: 20,
             marginVertical: 15,
@@ -376,6 +382,7 @@ class NewFeedScreen extends React.Component {
           activeOpacity={1}
           onPress={this.onOpenActionSheet.bind(this)}
         />
+        {this.state.loading && <LoadingScreen />}
       </View>
     );
   }
@@ -385,11 +392,11 @@ class NewFeedScreen extends React.Component {
       return;
     }
     return (
-      // <View style={{flex: 1, justifyContent: 'center'}}>
-        <View style={styles.contentContainer}>
-          <TagCreateScreen />
-        </View>
-      // </View>
+      <View style={styles.contentContainer}>
+        <TagCreateScreen 
+          onBack={() => this.setState({currentScreen: NewFeedMode})}
+        />
+      </View>
     );
   }
 
@@ -415,7 +422,6 @@ class NewFeedScreen extends React.Component {
           tintColor={COLORS.PURPLE}
           onPress={(index) => this.onTapImagePickerActionSheet(index)}
         />
-        {this.state.loading && <LoadingScreen />}
       </View>
     );
   }

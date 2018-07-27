@@ -5,31 +5,30 @@ import {
   TouchableOpacity,
   FlatList,
   ScrollView,
+  Alert,
 } from 'react-native'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 
 import { Actions } from 'react-native-router-flux'
-import { MaterialCommunityIcons, Ionicons } from '@expo/vector-icons';
-import { filter } from 'lodash'
+import { Ionicons } from '@expo/vector-icons';
+import _ from 'lodash';
 
 import styles from './styles'
 import COLORS from '../../service/colors'
 import Tags from '../../components/TagComponent';
+import LoadingScreen from '../LoadingScreen';
 
 import { 
+  getUserTags,
+  createUserTag,
+  addTagToHunt,
+  removeTagFromHunt,
 } from '../../redux/feed/actions'
 import * as types from '../../redux/feed/types'
 
-const AllTags = [
-  'Designers',
-  'Family',
-  'HR',
-  'Solvers',
-  'Team',
-  'Travel',
-  'UX',
-];
+const UserId = 'd742e568-37d1-4c87-b9bf-062faa59c058';
+const FeedId = 'f62f0262-78a0-4100-9106-35697d3450b7';
 
 
 class TagCreateScreen extends React.Component {
@@ -37,24 +36,58 @@ class TagCreateScreen extends React.Component {
     super(props);
     this.state = {
       loading: false,
-      tags: ['UX', 'Solvers'],
-      tagList: [...AllTags],
+      // tags: this.props.feed.feed.tags,
+      filteredUserTags: [],
+      userTags: [],
+      currentTagName: '',
     };
+    this.newTagName = '';
   }
 
   componentDidMount() {
-    this.filterUnusedTags();
+    this.props.getUserTags(UserId);
   }
 
   UNSAFE_componentWillReceiveProps(nextProps) {
-    console.log('UNSAFE_componentWillReceiveProps : ', nextProps.feed);
+    console.log('TagCreateScreen UNSAFE_componentWillReceiveProps : ');
     let loading = false;
-    if (this.props.feed.status !== types.DELETE_FILE_PENDING && nextProps.feed.status === types.DELETE_FILE_PENDING) {
-      // deleting a file
+    if (this.props.feed.status !== types.GET_USER_TAGS_PENDING && nextProps.feed.status === types.GET_USER_TAGS_PENDING) {
+      // getting user tags
       loading = true;
-    } else if (this.props.feed.status !== types.DELETE_FILE_FULFILLED && nextProps.feed.status === types.DELETE_FILE_FULFILLED) {
-      // fullfilled in deleting a file
+    } else if (this.props.feed.status !== types.GET_USER_TAGS_FULFILLED && nextProps.feed.status === types.GET_USER_TAGS_FULFILLED) {
+      // success in getting user tags
+      this.setState({
+        userTags: nextProps.feed.userTags,
+        // tags: nextProps.feed.feed.tags,
+      }, () => {
+        this.filterUnusedTags(nextProps.feed.feed.tags);
+      });
+    } else if (this.props.feed.status !== types.CREATE_USER_TAG_PENDING && nextProps.feed.status === types.CREATE_USER_TAG_PENDING) {
+      // getting user tags
+      loading = true;
+    } else if (this.props.feed.status !== types.CREATE_USER_TAG_FULFILLED && nextProps.feed.status === types.CREATE_USER_TAG_FULFILLED) {
+      // success in getting user tags
+      loading = true;
+      this.setState({
+        userTags: nextProps.feed.userTags,
+        // tags: nextProps.feed.feed.tags,
+      }, () => {
+        this.onCreateTag(this.newTagName);
+      });
+    } else if (this.props.feed.status !== types.ADD_HUNT_TAG_PENDING && nextProps.feed.status === types.ADD_HUNT_TAG_PENDING) {
+      // getting user tags
+      loading = true;
+    } else if (this.props.feed.status !== types.ADD_HUNT_TAG_FULFILLED && nextProps.feed.status === types.ADD_HUNT_TAG_FULFILLED) {
+      // success in getting user tags
+      this.filterUnusedTags(nextProps.feed.feed.tags);
+    } else if (this.props.feed.status !== types.REMOVE_HUNT_TAG_PENDING && nextProps.feed.status === types.REMOVE_HUNT_TAG_PENDING) {
+      // getting user tags
+      loading = true;
+    } else if (this.props.feed.status !== types.REMOVE_HUNT_TAG_FULFILLED && nextProps.feed.status === types.REMOVE_HUNT_TAG_FULFILLED) {
+      // success in getting user tags
+      this.filterUnusedTags(nextProps.feed.feed.tags);
     }
+
 
     this.setState({
       loading,
@@ -83,7 +116,59 @@ class TagCreateScreen extends React.Component {
     }
   }
 
-  onSave() {
+  filterUnusedTags(tags) {
+    const filteredTags = [];
+    this.state.userTags.map((item) => {
+      let isIncludeItem = false;
+      tags.map((tag) => {
+        if (item.text === tag.text) {
+          isIncludeItem = true;
+        }
+      });
+      if (!isIncludeItem) {
+        filteredTags.push(item);
+      }
+    });
+    this.setState({
+      filteredUserTags: filteredTags,
+    });
+  }
+
+  filterTagNames() {
+    if (this.state.currentTagName === '') {
+      return this.state.filteredUserTags;
+    }
+    const tags = _.filter(this.state.filteredUserTags, (tag) => { 
+      return tag.text.indexOf(this.state.currentTagName) !== -1;
+    });
+    return tags;
+  }
+
+  onCreateTag(text) {
+    const tag = _.find(this.state.userTags, (tag) => { 
+      return tag.text == text; 
+    });
+    if (tag) { 
+      this.newTagName = '';
+      this.onSelectItem(tag);
+      return;
+    }
+    this.newTagName = text;
+    this.props.createUserTag(UserId, text);
+  }
+
+  onRemoveTag(tag) {
+    this.props.removeTagFromHunt(FeedId, tag.id);
+  }
+
+  onChangeText(text) {
+    this.setState({
+      currentTagName: text,
+    });
+  }
+
+  onSelectItem(tag) {
+    this.props.addTagToHunt(FeedId, tag.id);
   }
 
   get renderTopContent() {
@@ -97,38 +182,8 @@ class TagCreateScreen extends React.Component {
           <Ionicons name="ios-arrow-back" size={32} color={COLORS.PURPLE} />
           <Text style={styles.textBack}>Back</Text>
         </TouchableOpacity>
-        <TouchableOpacity 
-          style={styles.saveButtonContainer}
-          activeOpacity={0.6}
-          onPress={this.onSave.bind(this)}
-        >
-          <Text style={styles.textButton}>Save</Text>
-        </TouchableOpacity>
       </View>
     );
-  }
-
-  filterUnusedTags() {
-    const filteredTags = AllTags;
-    AllTags.map((item, index) => {
-      this.state.tags.forEach((tag) => {
-        if (item === tag) {
-          filteredTags.splice(index, 1);
-        }
-      })
-    });
-    this.setState({
-      tagList: filteredTags,
-    });
-  }
-
-  onSelectItem(item) {
-    this.setState((state) => {
-      state.tags.push(item);
-      return state;
-    }, () => {
-      this.filterUnusedTags();
-    });
   }
 
   renderTagItem({item, index}) {
@@ -138,7 +193,7 @@ class TagCreateScreen extends React.Component {
         activeOpacity={0.6}
         onPress={() => this.onSelectItem(item)}
       >
-        <Text style={styles.textTagItem}>{item}</Text>
+        <Text style={styles.textTagItem}>{item.text}</Text>
       </TouchableOpacity>
     );
   }
@@ -149,8 +204,10 @@ class TagCreateScreen extends React.Component {
         {this.renderTopContent}
         <ScrollView style={styles.mainContentContainer}>
           <Tags
-            initialTags={this.state.tags}
-            onPressTag={(index, tag, active) => console.log(index, tag, active)}
+            tags={this.props.feed.feed.tags}
+            onCreateTag={(text) => this.onCreateTag(text)}
+            onChangeText={(text) => this.onChangeText(text)}
+            onRemoveTag={(tag) => this.onRemoveTag(tag)}
             inputStyle={{
               backgroundColor: 'white',
             }}
@@ -171,12 +228,13 @@ class TagCreateScreen extends React.Component {
           />
           <FlatList
             style={{marginTop: 20}}
-            data={this.state.tagList}
+            data={this.filterTagNames()}
             renderItem={this.renderTagItem.bind(this)}
             keyExtractor={(item, index) => index.toString()}
             extraData={this.state}
           />
         </ScrollView>
+        {this.state.loading && <LoadingScreen />}
       </View>
     );
   }
@@ -199,7 +257,10 @@ const mapStateToProps = ({ feed }) => ({
 
 
 const mapDispatchToProps = dispatch => ({
-  deleteFile: (feedId, fileId) => dispatch(deleteFile(feedId, fileId)),
+  getUserTags: (userId) => dispatch(getUserTags(userId)),
+  createUserTag: (userId, tagName) => dispatch(createUserTag(userId, tagName)),
+  addTagToHunt: (huntId, tagId) => dispatch(addTagToHunt(huntId, tagId)),
+  removeTagFromHunt: (huntId, tagId) => dispatch(removeTagFromHunt(huntId, tagId)),
 })
 
 

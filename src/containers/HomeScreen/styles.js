@@ -36,7 +36,7 @@ const styles = StyleSheet.create({
   newFeedModalContainer: {
     margin: 0,
   },
-  newFeedContainer: {
+  modalContainer: {
     // flex: 1,
     position: 'absolute',
     left: 0,
