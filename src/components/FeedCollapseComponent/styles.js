@@ -4,18 +4,20 @@ import CONSTANTS from '../../service/constants'
 
 const styles = StyleSheet.create({
   collapseHeader: {
-    height: 40,
     flexDirection: 'row',
-    alignItems: 'center',
+    alignItems: 'flex-start',
     marginHorizontal: CONSTANTS.PADDING,
+    marginTop: 10,
     justifyContent: 'space-between',
     borderColor: COLORS.LIGHT_GREY,
+    height: 30,
     borderBottomWidth: 1
   },
   noncollapseHeader: {
     flexDirection: 'row',
     alignItems: 'center',
     marginHorizontal: CONSTANTS.PADDING,
+    marginTop: 10,
     justifyContent: 'space-between',
     borderColor: COLORS.LIGHT_GREY,
     borderBottomWidth: 0

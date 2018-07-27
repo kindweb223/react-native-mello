@@ -139,7 +139,7 @@ class FeedCollapseComponent extends React.Component {
           </View>
         </TouchableOpacity>
 
-        <Collapsible collapsed={isCollapse} align="center">
+        <Collapsible collapsed={isCollapse} align="center" duration={500}>
           {this.renderContent(COLLAPSE_SECTIONS, feedData)}
         </Collapsible>
 
