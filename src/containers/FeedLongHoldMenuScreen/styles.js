@@ -20,7 +20,7 @@ export default {
     marginHorizontal: 5,
     marginBottom: 20,
     alignSelf: 'flex-end',
-    borderRadius: 15,
+    borderRadius: 14,
     backgroundColor: 'transparent'
   },
   titleBox: {
