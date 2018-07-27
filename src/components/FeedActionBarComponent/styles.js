@@ -14,7 +14,7 @@ const styles = StyleSheet.create({
     bottom: 0,
   },
   innerContainer: {
-    width: 270,
+    width: 280,
   },
   buttonContainer: {
     flexDirection: 'row',
@@ -57,6 +57,9 @@ const styles = StyleSheet.create({
     color: '#fff',
     fontSize: 14
   },
+  settingMenu: {
+    margin: 0,
+  },
   settingMenuView: {
     borderRadius: 20,
     backgroundColor: '#fff',
@@ -64,8 +67,8 @@ const styles = StyleSheet.create({
     height: 167,
     paddingTop: 10,
     position: 'absolute',
-    bottom: 80,
-    right: 10,
+    bottom: 100,
+    right: (CONSTANTS.SCREEN_WIDTH - 280) / 2,
     ...Platform.select({
       ios: {
         shadowColor: 'black',
