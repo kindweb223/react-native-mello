@@ -2,26 +2,66 @@ import { StyleSheet } from 'react-native'
 import COLORS from '../../service/colors'
 import CONSTANTS from '../../service/constants'
 
+const SEARCHBAR_HEIGHT = 60
+
 const styles = StyleSheet.create({
   safeArea: {
     flex: 1,
     backgroundColor: '#fff'
   },
-  normalHeader: {
-    height: 100,
-  },
-  miniHeader: {
-    position: 'absolute',
-    top: 0,
-    left: 0,
-    right: 0,
-    width: '100%',
-    backgroundColor: '#fff',
-    overflow: 'hidden',
-    zIndex: 10
-  },
   container: {
     flex: 1,
+  },
+  statusBarUnderlay: {
+    height: 24,
+    backgroundColor: '#fff',
+  },
+  normalHeader: {
+    height: 50,
+    backgroundColor: 'transparent'
+  },
+  navbarView: {
+    flexDirection: 'row',
+    width: '100%',
+    height: SEARCHBAR_HEIGHT,
+    paddingHorizontal: CONSTANTS.PADDING,
+    backgroundColor: '#fff',
+    zIndex: 9,
+    position: 'absolute',
+    left: 0,
+    top: 0,
+  },
+  searchIconView: {
+    width: 60,
+    height: '100%',
+    justifyContent: 'center',
+    alignItems: 'flex-start'
+  },
+  minHeader: {
+    flexDirection: 'row',
+    height: '100%'
+  },
+  minTitleView: {
+    width: CONSTANTS.SCREEN_SUB_WIDTH - 120,
+    height: '100%',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  minTitle: {
+    fontSize: 16,
+    color: COLORS.PRIMARY_BLACK,
+    textAlign: 'center',
+    fontWeight: 'bold'
+  },
+  settingIconView: {
+    width: 60,
+    height: '100%',
+    justifyContent: 'center',
+    alignItems: 'flex-end',
+  },
+  feedListView: {
+    zIndex: 10,
+    paddingTop: SEARCHBAR_HEIGHT,
   },
   tabBarStyle: {
     borderTopWidth: 0,
@@ -38,7 +78,6 @@ const styles = StyleSheet.create({
     margin: 0,
   },
   modalContainer: {
-    // flex: 1,
     position: 'absolute',
     left: 0,
     right: 0,
