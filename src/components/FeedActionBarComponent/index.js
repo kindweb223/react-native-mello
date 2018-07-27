@@ -42,7 +42,8 @@ class FeedActionBarComponent extends React.Component {
     return (
       <View style={styles.container}>
         <View style={styles.innerContainer}>
-          <Modal 
+          <Modal
+            style={styles.settingMenu}
             isVisible={this.state.isSettingMenu}
             backdropOpacity={0}
             animationIn="fadeIn"

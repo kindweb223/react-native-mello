@@ -94,7 +94,7 @@ class HomeScreen extends React.Component {
         feedoList = orderBy(
           filter(feedoList, item => item.status === 'PUBLISHED'),
           ['pinned.pinned', 'pinned.pinnedDate', 'publishedDate'],
-          ['desc', 'desc', 'desc']
+          ['asc', 'desc', 'desc']
         )
 
         emptyState = false
@@ -158,7 +158,7 @@ class HomeScreen extends React.Component {
 
   handlePinFeed = (feedId) => {
     this.setState({ isLongHoldMenuVisible: false })
-    this.setState({ isPin: true, toasterTitle: 'Feed pinned' })
+    this.setState({ isPin: true, toasterTitle: 'Feed Pinned(Undo)' })
     setTimeout(() => {
       this.setState({ isShowToaster: false })
       this.pinFeed(feedId)
@@ -173,7 +173,7 @@ class HomeScreen extends React.Component {
 
   handleUnpinFeed = (feedId) => {
     this.setState({ isLongHoldMenuVisible: false })
-    this.setState({ isUnPin: true, toasterTitle: 'Feed unpinned' })
+    this.setState({ isUnPin: true, toasterTitle: 'Feed Un-Pinned(Undo)' })
     setTimeout(() => {
       this.setState({ isShowToaster: false })
       this.unpinFeed(feedId)
