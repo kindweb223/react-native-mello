@@ -15,7 +15,7 @@ const FeedoListContainer = ({ loading, feedoList, handleFeedMenu }) => {
 
   return (
     <FlatList
-      style={{ paddingBottom: CONSTANTS.ACTION_BAR_HEIGHT }}
+      style={{ paddingBottom: CONSTANTS.ACTION_BAR_HEIGHT + 10 }}
       data={feedoList}
       keyExtractor={item => item.id}
       scrollEnabled={false}
