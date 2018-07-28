@@ -1,4 +1,5 @@
 import { StyleSheet } from 'react-native'
+import COLORS from '../../service/colors'
 export const hairlineWidth = StyleSheet.hairlineWidth
 
 export default {
@@ -24,23 +25,24 @@ export default {
     backgroundColor: 'transparent'
   },
   titleBox: {
-    height: 50,
+    height: 45,
     paddingHorizontal: 15,
     alignItems: 'center',
     justifyContent: 'center',
     backgroundColor: '#fff',
     borderBottomWidth: 1,
-    borderColor: '#c2c2c2',
+    borderColor: '#fff',
     borderTopLeftRadius: 10,
     borderTopRightRadius: 10
   },
   titleText: {
-    color: '#A2A5AE',
+    color: COLORS.ACTION_SHEET_TITLE,
     textAlign: 'center',
+    fontWeight: '600',
     fontSize: 13
   },
   buttonBox: {
-    height: 50,
+    height: 56,
     alignItems: 'center',
     justifyContent: 'center',
     backgroundColor: '#fff',
@@ -48,12 +50,16 @@ export default {
     borderBottomRightRadius: 10,
     borderTopWidth: 0,
   },
+  actionButtonText: {
+    fontSize: 20,
+    color: COLORS.RED,
+  },
   buttonText: {
     fontSize: 20,
-    color: '#FF3626',
+    fontWeight: '600',
   },
   cancelButtonBox: {
-    height: 50,
+    height: 56,
     marginTop: 10,
     alignItems: 'center',
     justifyContent: 'center',
