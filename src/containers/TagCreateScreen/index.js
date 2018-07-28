@@ -13,9 +13,11 @@ import { connect } from 'react-redux'
 import { Actions } from 'react-native-router-flux'
 import { Ionicons } from '@expo/vector-icons';
 import _ from 'lodash';
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
 
 import styles from './styles'
-import COLORS from '../../service/colors'
+import COLORS from '../../service/colors';
+import CONSTANTS from '../../service/constants';
 import Tags from '../../components/TagComponent';
 import LoadingScreen from '../LoadingScreen';
 
@@ -28,7 +30,6 @@ import {
 import * as types from '../../redux/feed/types'
 
 const UserId = 'd742e568-37d1-4c87-b9bf-062faa59c058';
-const FeedId = 'f62f0262-78a0-4100-9106-35697d3450b7';
 
 
 class TagCreateScreen extends React.Component {
@@ -45,11 +46,13 @@ class TagCreateScreen extends React.Component {
   }
 
   componentDidMount() {
-    this.props.getUserTags(UserId);
+    setTimeout(() => {
+      this.props.getUserTags(UserId);
+    }, CONSTANTS.ANIMATEION_MILLI_SECONDS + 50)
   }
 
   UNSAFE_componentWillReceiveProps(nextProps) {
-    console.log('TagCreateScreen UNSAFE_componentWillReceiveProps : ');
+    console.log('TagCreateScreen UNSAFE_componentWillReceiveProps : ', nextProps.feed);
     let loading = false;
     if (this.props.feed.status !== types.GET_USER_TAGS_PENDING && nextProps.feed.status === types.GET_USER_TAGS_PENDING) {
       // getting user tags
@@ -88,26 +91,9 @@ class TagCreateScreen extends React.Component {
       this.filterUnusedTags(nextProps.feed.feed.tags);
     }
 
-
     this.setState({
       loading,
     });
-
-    // showing error alert
-    if (nextProps.feed.error) {
-      let error = null;
-      if (nextProps.feed.error.error) {
-        error = nextProps.feed.error.error;
-      } else {
-        error = nextProps.feed.error.message;
-      }
-      if (error) {
-        Alert.alert('Error', error, [
-          {text: 'Close'},
-        ]);
-      }
-      return;
-    }
   }
 
   onBack() {
@@ -158,7 +144,7 @@ class TagCreateScreen extends React.Component {
   }
 
   onRemoveTag(tag) {
-    this.props.removeTagFromHunt(FeedId, tag.id);
+    this.props.removeTagFromHunt(this.props.feed.feed.id, tag.id);
   }
 
   onChangeText(text) {
@@ -168,7 +154,7 @@ class TagCreateScreen extends React.Component {
   }
 
   onSelectItem(tag) {
-    this.props.addTagToHunt(FeedId, tag.id);
+    this.props.addTagToHunt(this.props.feed.feed.id, tag.id);
   }
 
   get renderTopContent() {
@@ -201,39 +187,43 @@ class TagCreateScreen extends React.Component {
   render () {
     return (
       <View style={styles.container}>
-        {this.renderTopContent}
-        <ScrollView style={styles.mainContentContainer}>
-          <Tags
-            tags={this.props.feed.feed.tags}
-            onCreateTag={(text) => this.onCreateTag(text)}
-            onChangeText={(text) => this.onChangeText(text)}
-            onRemoveTag={(tag) => this.onRemoveTag(tag)}
-            inputStyle={{
-              backgroundColor: 'white',
-            }}
-            tagContainerStyle={{
-              backgroundColor: COLORS.LIGHT_ORANGE_BACKGROUND,
-            }}
-            tagTextStyle={{
-              color: COLORS.DARK_ORANGE,
-              fontSize: 16,
-            }}
-            activeTagContainerStyle={{
-              backgroundColor: COLORS.LIGHT_ORANGE_ACTIVE_BACKGROUND,
-            }}
-            activeTagTextStyle={{
-              color: '#fff',
-              fontSize: 16,
-            }}
-          />
-          <FlatList
-            style={{marginTop: 20}}
-            data={this.filterTagNames()}
-            renderItem={this.renderTagItem.bind(this)}
-            keyExtractor={(item, index) => index.toString()}
-            extraData={this.state}
-          />
-        </ScrollView>
+        <View style={styles.contentContainer}>
+          {this.renderTopContent}
+          <KeyboardAwareScrollView>
+            <View style={styles.mainContentContainer}>
+              <Tags
+                tags={this.props.feed.feed.tags}
+                onCreateTag={(text) => this.onCreateTag(text)}
+                onChangeText={(text) => this.onChangeText(text)}
+                onRemoveTag={(tag) => this.onRemoveTag(tag)}
+                inputStyle={{
+                  backgroundColor: 'white',
+                }}
+                tagContainerStyle={{
+                  backgroundColor: COLORS.LIGHT_ORANGE_BACKGROUND,
+                }}
+                tagTextStyle={{
+                  color: COLORS.DARK_ORANGE,
+                  fontSize: 16,
+                }}
+                activeTagContainerStyle={{
+                  backgroundColor: COLORS.LIGHT_ORANGE_ACTIVE_BACKGROUND,
+                }}
+                activeTagTextStyle={{
+                  color: '#fff',
+                  fontSize: 16,
+                }}
+              />
+              <FlatList
+                style={{marginTop: 20}}
+                data={this.filterTagNames()}
+                renderItem={this.renderTagItem.bind(this)}
+                keyExtractor={(item, index) => index.toString()}
+                extraData={this.state}
+              />
+            </View>
+          </KeyboardAwareScrollView>
+        </View>
         {this.state.loading && <LoadingScreen />}
       </View>
     );

@@ -5,7 +5,6 @@ import {
   Animated,
   FlatList,
   Text,
-  LayoutAnimation,
 } from 'react-native'
 import PropTypes from 'prop-types'
 
@@ -16,17 +15,18 @@ import styles from './styles'
 import CONSTANTS from '../../service/constants'
 import COLORS from '../../service/colors'
 
-const AnimationMilliSeconds = 300;
-
 
 export default class NewFeedDocument extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
       files: [...this.props.files],
-      selectedImageIndex: -1,
+      selectedIndex: -1,
+      itemLayouts: [],
+      isVisibleSelectedColors: false,
     };
     this.fileCount = this.props.files.length || 0;
+    this.animatedSelect = new Animated.Value(0);
   }
 
   UNSAFE_componentWillReceiveProps(nextProps) {
@@ -34,30 +34,56 @@ export default class NewFeedDocument extends React.Component {
       //add
       this.setState({
         files: [...nextProps.files],
-        removeFileIndex: -1,
-      }, () => {
+        selectedIndex: -1,
       });
       this.fileCount = nextProps.files.length;
     } else if (nextProps.files.length < this.fileCount) {
       //delete
       this.fileCount = nextProps.files.length;
       this.setState({
-        files: [...nextProps.files],
-        removeFileIndex: -1,
-      }, () => {
+        isVisibleSelectedColors: false,
+      });
+      this.animatedSelect.setValue(1);
+      Animated.timing(this.animatedSelect, {
+        toValue: 0,
+        duration: CONSTANTS.ANIMATEION_MILLI_SECONDS,
+      }).start(() => {
+        this.setState({
+          files: [...nextProps.files],
+          selectedIndex: -1,
+        });
       });
     }
   }
 
   onLongPressDocumnet(index) {
-    LayoutAnimation.linear();
-    if (this.state.removeFileIndex === index) {
+    // LayoutAnimation.linear();
+    if (this.state.selectedIndex === index) {
       this.setState({
-        removeFileIndex: -1,
+        isVisibleSelectedColors: false,
+      });
+      this.animatedSelect.setValue(1);
+      Animated.timing(this.animatedSelect, {
+        toValue: 0,
+        duration: CONSTANTS.ANIMATEION_MILLI_SECONDS,
+      }).start(() => {
+        this.setState({
+          selectedIndex: -1,
+        });
       });
     } else {
       this.setState({
-        removeFileIndex: index,
+        selectedIndex: index,
+      }, () => {
+        this.animatedSelect.setValue(0);
+        Animated.timing(this.animatedSelect, {
+          toValue: 1,
+          duration: CONSTANTS.ANIMATEION_MILLI_SECONDS,
+        }).start(() => {
+          this.setState({
+            isVisibleSelectedColors: true,
+          });
+        });
       });
     }
   }
@@ -71,12 +97,39 @@ export default class NewFeedDocument extends React.Component {
   onPressDocument(index) {
   }
 
-  renderDocumentFile({item, index}) {
-    console.log('Document Files : ', item);
+  renderItemBackground(index) {
+    if (this.state.selectedIndex !== index) {
+      return;
+    }
+    const animatedValue  = this.animatedSelect.interpolate({
+      inputRange: [0, 1],
+      outputRange: [0, this.state.itemLayouts[this.state.selectedIndex]],
+    });
     return (
-      <View
-        style={[styles.itemContainer, {backgroundColor: this.state.removeFileIndex === index ? COLORS.BLUE : 'transparent'}]}
+      <Animated.View
+        style={[
+          styles.itemSelectBackgroundContainer,
+          {opacity: this.animatedSelect},
+          {width: animatedValue}
+        ]}
+      />
+    );
+  }
+
+  onLayout(layout, index) {
+    this.setState((state) => {
+      state.itemLayouts[index] = layout.width;
+      return state;
+    });
+  }
+
+  renderDocumentFile({item, index}) {
+    return (
+      <View 
+        style={styles.itemContainer}
+        onLayout={({nativeEvent}) => this.onLayout(nativeEvent.layout, index)}
       >
+        {this.renderItemBackground(index)}
         <TouchableOpacity 
           style={styles.buttonContainer}
           activeOpacity={0.7}
@@ -86,17 +139,17 @@ export default class NewFeedDocument extends React.Component {
           <Ionicons 
             name="md-attach"
             style={styles.attachment} size={18}
-            color={this.state.removeFileIndex === index ? '#fff' : COLORS.MEDIUM_GREY}
+            color={this.state.selectedIndex === index && this.state.isVisibleSelectedColors ? '#fff' : COLORS.MEDIUM_GREY}
           />
           <Text 
-            style={[styles.textFileName, {color: this.state.removeFileIndex === index ? '#fff' : '#000'}]}
+            style={[styles.textFileName, {color: this.state.selectedIndex === index && this.state.isVisibleSelectedColors ? '#fff' : '#000'}]}
             numberOfLines={1}
           >
             {item.name}
           </Text>
         </TouchableOpacity>
         {
-          this.state.removeFileIndex === index && 
+          this.state.selectedIndex === index && 
             <TouchableOpacity 
               style={styles.closeButtonContainer}
               activeOpacity={0.7}

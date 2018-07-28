@@ -15,6 +15,14 @@ const styles = StyleSheet.create({
     marginBottom: 10,
     paddingLeft: 15,
   },
+  itemSelectBackgroundContainer: {
+    position: 'absolute',
+    left: 0,
+    top: 0,
+    bottom: 0,
+    backgroundColor: COLORS.BLUE,
+    borderRadius: 30,
+  },
   buttonContainer: {
     flexDirection: 'row',
     alignItems: 'center',
