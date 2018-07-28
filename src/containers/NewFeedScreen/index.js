@@ -497,7 +497,7 @@ class NewFeedScreen extends React.Component {
         <ActionSheet
           ref={o => this.imagePickerActionSheetRef = o}
           title='Select a Photo / Video'
-          options={['Select From Camera', 'Select From Library', 'Cancel']}
+          options={['Take A Photo', 'Select From Photos', 'Cancel']}
           cancelButtonIndex={2}
           tintColor={COLORS.PURPLE}
           onPress={(index) => this.onTapImagePickerActionSheet(index)}
