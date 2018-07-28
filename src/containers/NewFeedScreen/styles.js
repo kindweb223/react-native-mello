@@ -5,16 +5,29 @@ import CONSTANTS from '../../service/constants'
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: COLORS.FOREGROUND_COLOR,
+    backgroundColor: 'transparent',
     justifyContent: 'center',
   },
-  backgroundContainer: {
+  backdropContainer: {
     flex: 1,
+  },
+  feedContainer: {
+    position: 'absolute',
+    left: 0,
+    right: 0,
+    bottom: 0,
   },
   contentContainer: {
     borderRadius: 18,
     backgroundColor: '#fff',
     maxHeight: CONSTANTS.SCREEN_HEIGHT - 150,
+  },
+  tagCreationContainer: {
+    position: 'absolute',
+    top: 0,
+    bottom: 0,
+    right: 0,
+    left: 0,
   },
   topContainer: {
     flexDirection: 'row',

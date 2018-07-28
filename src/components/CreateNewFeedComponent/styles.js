@@ -1,12 +1,13 @@
 import { StyleSheet } from 'react-native'
 import COLORS from '../../service/colors'
-import CONSTANTS from '../../service/constants'
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: 'flex-end',
-    backgroundColor: '#00000020',
+    backgroundColor: 'transparent',
+  },
+  backdropContainer: {
+    flex: 1,
   },
   mainContentContainer: {
     paddingVertical: 15,
@@ -19,6 +20,15 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     paddingVertical: 8,
+    borderRadius: 18,
+  },
+  itemSelectBackgroundContainer: {
+    position: 'absolute',
+    left: 0,
+    top: 0,
+    bottom: 0,
+    backgroundColor: COLORS.LIGHT_PURPLE_BACKGROUND,
+    borderRadius: 18,
   },
   leftContentContainer: {
     paddingHorizontal: 12,

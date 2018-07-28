@@ -14,8 +14,6 @@ import { MaterialCommunityIcons } from '@expo/vector-icons';
 import styles from './styles'
 import CONSTANTS from '../../service/constants'
 
-const AnimationMilliSeconds = 300;
-
 
 export default class NewFeedImage extends React.Component {
   constructor(props) {
@@ -41,7 +39,7 @@ export default class NewFeedImage extends React.Component {
         this.animatedRemoving.setValue(0);
         Animated.timing(this.animatedRemoving, {
           toValue: 1,
-          duration: AnimationMilliSeconds,
+          duration: CONSTANTS.ANIMATEION_MILLI_SECONDS + 100,
         }).start(() => {
           this.setState({
             actionImageIndex: -1,
@@ -54,7 +52,7 @@ export default class NewFeedImage extends React.Component {
       this.animatedRemoving.setValue(1);
       Animated.timing(this.animatedRemoving, {
         toValue: 0,
-        duration: AnimationMilliSeconds,
+        duration: CONSTANTS.ANIMATEION_MILLI_SECONDS + 100,
       }).start(() => {
         this.setState({
           actionImageIndex: -1,

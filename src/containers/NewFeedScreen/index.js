@@ -5,7 +5,7 @@ import {
   View,
   TouchableOpacity,
   Alert,
-  ScrollView,
+  Animated,
   YellowBox,
 } from 'react-native'
 import PropTypes from 'prop-types'
@@ -16,8 +16,10 @@ import Tags from '../../components/TagComponent';
 import ActionSheet from 'react-native-actionsheet'
 import { Actions } from 'react-native-router-flux'
 import { DocumentPicker, ImagePicker, Permissions } from 'expo';
+
 import * as mime from 'react-native-mime-types';
 import { filter } from 'lodash'
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
 
 import { 
   createFeed,
@@ -31,8 +33,9 @@ import {
 } from '../../redux/feed/actions'
 import * as types from '../../redux/feed/types'
 
-import COLORS from '../../service/colors'
-import styles from './styles'
+import COLORS from '../../service/colors';
+import CONSTANTS from '../../service/constants';
+import styles from './styles';
 import LoadingScreen from '../LoadingScreen';
 import NewFeedImage from '../../components/NewFeedImageComponent';
 import NewFeedDocument from '../../components/NewFeedDocumentComponent';
@@ -40,7 +43,8 @@ import TagCreateScreen from '../TagCreateScreen';
 
 const NewFeedMode = 1;
 const TagCreateMode = 2;
-const FeedId = 'f62f0262-78a0-4100-9106-35697d3450b7';
+
+const FeedId = 'f5fce59c-78a5-4a00-8882-8d02d9b2db61';
 
 
 class NewFeedScreen extends React.Component {
@@ -58,17 +62,17 @@ class NewFeedScreen extends React.Component {
     this.selectedFileType = null;
     this.selectedFileName = null;
 
+    this.animatedShow = new Animated.Value(0);
+    this.animatedTagTransition = new Animated.Value(1);
+
     YellowBox.ignoreWarnings(['Warning: Unsafe legacy lifecycles']);
   }
 
   UNSAFE_componentWillReceiveProps(nextProps) {
-    console.log('NewFeedScreen UNSAFE_componentWillReceiveProps : ');
+    console.log('NewFeedScreen UNSAFE_componentWillReceiveProps : ', nextProps.feed);
     let loading = false;
     if (this.props.feed.status !== types.CREATE_FEED_PENDING && nextProps.feed.status === types.CREATE_FEED_PENDING) {
       // creating a feed
-      loading = true;
-    } else if (this.props.feed.status !== types.UPDATE_FEED_PENDING && nextProps.feed.status === types.UPDATE_FEED_PENDING) {
-      // upating a feed
       loading = true;
     } else if (this.props.feed.status !== types.DELETE_FEED_PENDING && nextProps.feed.status === types.DELETE_FEED_PENDING) {
       // deleting a feed
@@ -107,6 +111,7 @@ class NewFeedScreen extends React.Component {
       loading = true;
     } else if (this.props.feed.status !== types.UPDATE_FEED_FULFILLED && nextProps.feed.status === types.UPDATE_FEED_FULFILLED) {
       // success in updating a feed
+      this.onClose();
     } else if (this.props.feed.status !== types.DELETE_FILE_PENDING && nextProps.feed.status === types.DELETE_FILE_PENDING) {
       // deleting a file
       loading = true;
@@ -136,18 +141,39 @@ class NewFeedScreen extends React.Component {
   }
 
   componentDidMount() {
-    // this.props.createFeed();
-    this.props.getFeedDetail(FeedId);
+    Animated.timing(this.animatedShow, {
+      toValue: 1,
+      duration: CONSTANTS.ANIMATEION_MILLI_SECONDS,
+    }).start(() => {
+      this.props.createFeed();
+      // this.props.getFeedDetail(FeedId);
+    });
   }
 
   onClose() {
+    this.animatedShow.setValue(1);
+    Animated.timing(this.animatedShow, {
+      toValue: 0,
+      duration: CONSTANTS.ANIMATEION_MILLI_SECONDS,
+    }).start();
     if (this.props.onClose) {
       this.props.onClose();
     }
   }
 
   onCreate() {
-    // this.props.createFeed();
+    if (this.state.feedName === '') {
+      Alert.alert('', 'Please input your feed name.', [
+        {text: 'Close'},
+      ]);
+      return;
+    } else if (this.state.comments === '') {
+      Alert.alert('', 'Please input note.', [
+        {text: 'Close'},
+      ]);
+      return;
+    }
+
     const {
       id, 
       tags,
@@ -191,6 +217,30 @@ class NewFeedScreen extends React.Component {
         this.onClose();
       }
     }
+  }
+
+  onOpenCreationTag() {
+    this.setState({
+      currentScreen: TagCreateMode,
+    }, () => {
+      this.animatedTagTransition.setValue(1)
+      Animated.timing(this.animatedTagTransition, {
+        toValue: 0,
+        duration: CONSTANTS.ANIMATEION_MILLI_SECONDS,
+      }).start();
+    });
+  }
+
+  onCloseCreationTag() {
+    this.animatedTagTransition.setValue(0)
+    Animated.timing(this.animatedTagTransition, {
+      toValue: 1,
+      duration: CONSTANTS.ANIMATEION_MILLI_SECONDS,
+    }).start(() => {
+      this.setState({
+        currentScreen: NewFeedMode,
+      });
+    });
   }
 
   async onTapImagePickerActionSheet(index) {
@@ -307,7 +357,7 @@ class NewFeedScreen extends React.Component {
         <Tags
           tags={this.props.feed.feed.tags}
           readonly={true}
-          onPressTag={(index, tag) => this.setState({currentScreen: TagCreateMode})}
+          onPressTag={(index, tag) => this.onOpenCreationTag()}
           containerStyle={{
             marginHorizontal: 20,
             marginVertical: 15,
@@ -358,32 +408,44 @@ class NewFeedScreen extends React.Component {
   }
 
   get renderFeed () {
-    if (this.state.currentScreen !== NewFeedMode) {
-      return;
-    }
+    // if (this.state.currentScreen !== NewFeedMode) {
+    //   return;
+    // }
+    const animatedMove  = this.animatedShow.interpolate({
+      inputRange: [0, 1],
+      outputRange: [CONSTANTS.SCREEN_HEIGHT, 0],
+    });
+    
     return (
-      <View style={{flex: 1}}>
+      
+      <Animated.View 
+        style={[
+          styles.feedContainer,
+          {
+            top: animatedMove,
+            opacity: this.animatedShow,
+          },
+        ]}
+      >
         <TouchableOpacity 
-          style={styles.backgroundContainer}
+          style={styles.backdropContainer}
           activeOpacity={1}
           onPress={this.onOpenActionSheet.bind(this)}
         />
         <View style={styles.contentContainer}>
           {this.renderTopContent}
-          <ScrollView
-            showsVerticalScrollIndicator={false}
-          >
+          <KeyboardAwareScrollView>
             {this.renderCenterContent}
             {this.renderBottomContent}
-          </ScrollView>
+          </KeyboardAwareScrollView>
         </View>
         <TouchableOpacity 
-          style={styles.backgroundContainer}
+          style={styles.backdropContainer}
           activeOpacity={1}
           onPress={this.onOpenActionSheet.bind(this)}
         />
         {this.state.loading && <LoadingScreen />}
-      </View>
+      </Animated.View>
     );
   }
 
@@ -391,12 +453,30 @@ class NewFeedScreen extends React.Component {
     if (this.state.currentScreen !== TagCreateMode) {
       return;
     }
+
+    const animatedMove  = this.animatedTagTransition.interpolate({
+      inputRange: [0, 1],
+      outputRange: [0, 150],
+    });
+    const animatedOpacity  = this.animatedTagTransition.interpolate({
+      inputRange: [0, 1],
+      outputRange: [1, 0],
+    });
+
     return (
-      <View style={styles.contentContainer}>
+      <Animated.View
+        style={[
+          styles.tagCreationContainer,
+          {
+            left: animatedMove,
+            opacity: animatedOpacity,
+          }
+        ]}
+      >
         <TagCreateScreen 
-          onBack={() => this.setState({currentScreen: NewFeedMode})}
+          onBack={() => this.onCloseCreationTag()}
         />
-      </View>
+      </Animated.View>
     );
   }
 
