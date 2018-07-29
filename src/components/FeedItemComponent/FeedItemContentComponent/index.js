@@ -1,11 +1,13 @@
 import React from 'react'
 import {
   View,
-  Text,
+  Text
 } from 'react-native'
 
 import PropTypes from 'prop-types'
-import { Foundation, Ionicons, Octicons } from 'react-native-vector-icons'
+import Foundation from 'react-native-vector-icons/Foundation'
+import Ionicons from 'react-native-vector-icons/Ionicons'
+import Octicons from 'react-native-vector-icons/Octicons'
 import Tags from "../../../components/FeedTags";
 import styles from './styles'
 import COLORS from '../../../service/colors'

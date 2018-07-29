@@ -8,8 +8,8 @@ import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 
 import { Actions } from 'react-native-router-flux'
-import Slideshow from 'react-native-slideshow';
-import { MaterialCommunityIcons } from '@expo/vector-icons';
+import Slideshow from 'react-native-slideshow'
+import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons'
 import { filter } from 'lodash'
 
 import styles from './styles'

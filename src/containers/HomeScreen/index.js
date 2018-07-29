@@ -24,7 +24,7 @@ import { filter, orderBy } from 'lodash'
 import DashboardNavigationBar from '../../navigations/DashboardNavigationBar'
 import DashboardActionBar from '../../navigations/DashboardActionBar'
 import FeedoListContainer from '../FeedoListContainer'
-import NewFeedScreen from '../NewFeedScreen'
+// import NewFeedScreen from '../NewFeedScreen'
 import CreateNewFeedComponent from '../../components/CreateNewFeedComponent'
 import FeedLongHoldMenuScreen from '../FeedLongHoldMenuScreen'
 import ToasterComponent from '../../components/ToasterComponent'
@@ -338,9 +338,9 @@ class HomeScreen extends React.Component {
         {
           this.state.isVisibleNewFeed && 
           <View style={styles.modalContainer}>
-            <NewFeedScreen 
+            {/* <NewFeedScreen 
               onClose={() => this.setState({ isVisibleNewFeed: false })}
-            />
+            /> */}
           </View>
         }
         {

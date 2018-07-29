@@ -9,7 +9,7 @@ import {
 import PropTypes from 'prop-types'
 
 import { Actions } from 'react-native-router-flux'
-import { MaterialCommunityIcons } from '@expo/vector-icons';
+import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons'
 
 import styles from './styles'
 import CONSTANTS from '../../service/constants'

@@ -8,7 +8,8 @@ import {
   Animated
 } from 'react-native'
 import Collapsible from 'react-native-collapsible'
-import { Feather, Ionicons } from 'react-native-vector-icons'
+import Ionicons from 'react-native-vector-icons/Ionicons'
+import Feather from 'react-native-vector-icons/Feather'
 import Image from 'react-native-image-progress'
 import Modal from "react-native-modal"
 import { isEmpty, filter } from 'lodash'

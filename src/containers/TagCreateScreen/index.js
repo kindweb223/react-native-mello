@@ -11,7 +11,7 @@ import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 
 import { Actions } from 'react-native-router-flux'
-import { Ionicons } from '@expo/vector-icons';
+import Ionicons from 'react-native-vector-icons/Ionicons'
 import _ from 'lodash';
 
 import styles from './styles'

@@ -8,7 +8,7 @@ import {
 } from 'react-native'
 
 import PropTypes from 'prop-types'
-import { Ionicons } from 'react-native-vector-icons'
+import Ionicons from 'react-native-vector-icons/Ionicons'
 import { Actions } from 'react-native-router-flux'
 import { isEmpty } from 'lodash'
 import FeedNavbarSettingComponent from '../../components/FeedNavbarSettingComponent'

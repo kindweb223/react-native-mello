@@ -54,6 +54,25 @@ const styles = StyleSheet.create({
     width: 42,
     height: 42,
     justifyContent: 'center',
+  },
+  notificationView: {
+    width: 57,
+    height: 42,
+    borderRadius: 20,
+    borderWidth: 1,
+    borderColor: COLORS.LIGHT_GREY,
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center'
+  },
+  notificationIcon: {
+    color: COLORS.PURPLE,
+    fontSize: 20,
+  },
+  notificationText: {
+    color: COLORS.PURPLE,
+    fontSize: 14,
+    marginLeft: 5
   }
 })
 

@@ -6,7 +6,8 @@ import {
   FlatList
 } from 'react-native'
 import PropTypes from 'prop-types'
-import { Octicons, Entypo } from '@expo/vector-icons'
+import Octicons from 'react-native-vector-icons/Octicons'
+import Entypo from 'react-native-vector-icons/Entypo'
 import styles from './styles'
 
 import Modal from "react-native-modal"

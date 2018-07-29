@@ -10,7 +10,8 @@ import {
 import PropTypes from 'prop-types'
 
 import { Actions } from 'react-native-router-flux'
-import { MaterialCommunityIcons, Ionicons } from '@expo/vector-icons';
+import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons'
+import Ionicons from 'react-native-vector-icons/Ionicons'
 
 import styles from './styles'
 import CONSTANTS from '../../service/constants'

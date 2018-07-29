@@ -4,7 +4,8 @@ import {
   TouchableOpacity,
 } from 'react-native'
 
-import { Entypo, Octicons } from 'react-native-vector-icons'
+import Entypo from 'react-native-vector-icons/Entypo'
+import Octicons from 'react-native-vector-icons/Octicons'
 import styles from './styles'
 
 class FeedNavbarSettingComponent extends React.Component {

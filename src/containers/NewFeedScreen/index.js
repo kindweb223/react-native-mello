@@ -11,8 +11,10 @@ import {
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 
-import { MaterialCommunityIcons, Ionicons, Entypo } from '@expo/vector-icons';
-import Tags from '../../components/TagComponent';
+import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons'
+import Ionicons from 'react-native-vector-icons/Ionicons'
+import Entypo from 'react-native-vector-icons/Entypo'
+import Tags from '../../components/TagComponent'
 import ActionSheet from 'react-native-actionsheet'
 import { Actions } from 'react-native-router-flux'
 import { DocumentPicker, ImagePicker, Permissions } from 'expo';

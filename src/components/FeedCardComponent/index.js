@@ -3,7 +3,9 @@ import {
   View,
   Text
 } from 'react-native'
-import { FontAwesome, Feather, Entypo } from 'react-native-vector-icons'
+import FontAwesome from 'react-native-vector-icons/FontAwesome'
+import Feather from 'react-native-vector-icons/Feather'
+import Entypo from 'react-native-vector-icons/Entypo'
 import PropTypes from 'prop-types'
 import UserAvatar from 'react-native-user-avatar'
 import { filter } from 'lodash'

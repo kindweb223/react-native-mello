@@ -1,12 +1,14 @@
 import React from 'react'
 import {
   View,
+  Text,
   TouchableOpacity
 } from 'react-native'
 
 import PropTypes from 'prop-types'
-import { Feather, MaterialCommunityIcons } from 'react-native-vector-icons'
-import NotificationComponent from '../../components/NotificationComponent'
+import Ionicons from 'react-native-vector-icons/Ionicons'
+import Feather from 'react-native-vector-icons/Feather'
+import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons'
 import styles from './styles'
 
 class DashboardActionBar extends React.Component {
@@ -25,7 +27,10 @@ class DashboardActionBar extends React.Component {
           </View>
         )}
         <View style={styles.actionView}>
-          <NotificationComponent count={10} />
+          <View style={styles.notificationView}>
+            <Ionicons name="md-notifications" style={styles.notificationIcon} />
+            <Text style={styles.notificationText}>0</Text>
+          </View>
           <View style={styles.plusButtonView}>
             <TouchableOpacity>
               <View style={[styles.iconStyle, styles.plusButton]}>
