@@ -3,7 +3,7 @@ import {
   View,
   Text
 } from 'react-native'
-import { FontAwesome, Feather } from 'react-native-vector-icons'
+import { FontAwesome, Feather, Entypo } from 'react-native-vector-icons'
 import PropTypes from 'prop-types'
 import UserAvatar from 'react-native-user-avatar'
 import { filter } from 'lodash'
@@ -11,30 +11,42 @@ import Image from 'react-native-image-progress'
 import { getDurationFromNow } from '../../service/dateUtils'
 import styles from './styles'
 
-const CardBottomComponent = ({ data, invitee }) => {
+const CardBottomComponent = ({ data, invitee, invitees }) => {
   const userName = `${invitee.userProfile.firstName} ${invitee.userProfile.lastName}`
+  let isOnlyInvitee = false
+  if (invitees.length === 1 && invitees[0].userProfile.id === invitee.userProfile.id) {
+    isOnlyInvitee = true
+  }
 
   return (
     <View style={styles.bottomContainer}>
       <View style={styles.subView}>
-        <View style={styles.avatar}>
-          {invitee.imageUrl
-            ? <UserAvatar
-                size="30"
-                name={userName}
-                colors={['#fff', '#000']}
-                src={invitee.imageUrl}
-              />
-            : <UserAvatar
-                size="30"
-                name={userName}
-                color="#000"
-                colors={['#fff', '#000']}
-              />
-          }
-        </View>
-        <Text style={styles.text}>{invitee.userProfile.firstName}</Text>
-        <Text style={styles.text}>- {getDurationFromNow(data.publishedDate)}</Text>
+        {!isOnlyInvitee && (
+          [
+            <View key="0" style={styles.avatar}>
+              {invitee.imageUrl
+                ? <UserAvatar
+                    size="30"
+                    name={userName}
+                    color="#000"
+                    textColor="#fff"
+                    src={invitee.imageUrl}
+                  />
+                : <UserAvatar
+                    size="30"
+                    name={userName}
+                    color="#000"
+                    textColor="#fff"
+                  />
+              }
+            </View>,
+            <Text key="1" style={styles.text}>{invitee.userProfile.firstName}</Text>,
+            <Entypo key="2" name="dot-single" style={styles.dotIcon} />
+          ]
+        )}
+        <Text style={styles.text}>
+          {getDurationFromNow(data.publishedDate)}
+        </Text>
       </View>
       <View style={styles.subView}>
         <View style={styles.iconView}>
@@ -52,7 +64,8 @@ const CardBottomComponent = ({ data, invitee }) => {
 
 CardBottomComponent.propTypes = {
   data: PropTypes.objectOf(PropTypes.any).isRequired,
-  invitee: PropTypes.objectOf(PropTypes.any).isRequired
+  invitee: PropTypes.objectOf(PropTypes.any).isRequired,
+  invitees: PropTypes.arrayOf(PropTypes.any).isRequired
 }
 
 const FeedCardComponent = ({ data, invitees }) => {
@@ -69,7 +82,7 @@ const FeedCardComponent = ({ data, invitees }) => {
           />
         </View>
       )}
-      <CardBottomComponent data={data} invitee={invitee} />
+      <CardBottomComponent data={data} invitee={invitee} invitees={invitees} />
     </View>
   )
 }

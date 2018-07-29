@@ -38,7 +38,7 @@ const styles = StyleSheet.create({
   text: {
     fontSize: 14,
     color: COLORS.MEDIUM_GREY,
-    marginLeft: 5 
+    marginRight: 5 
   },
   iconView: {
     flexDirection: 'row',
@@ -54,6 +54,10 @@ const styles = StyleSheet.create({
     color: COLORS.MEDIUM_GREY,
     marginLeft: 5,
     fontSize: 15,
+  },
+  dotIcon: {
+    marginRight: 5,
+    color: COLORS.MEDIUM_GREY,
   }
 })
 

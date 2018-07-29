@@ -1,6 +1,7 @@
 import React, { PureComponent } from 'react'
 import PropTypes from 'prop-types'
-import { View, Text, Image, StyleSheet, Animated } from 'react-native'
+import { View, Text, StyleSheet, Animated } from 'react-native'
+import UserAvatar from 'react-native-user-avatar'
 
 const styles = StyleSheet.create({
   container: {
@@ -9,10 +10,6 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     alignSelf: 'center'
-  },
-  circleImage: {
-    borderWidth: 2,
-    borderColor: 'white'
   },
   overflow: {
     backgroundColor: '#b6c0ca',
@@ -41,25 +38,19 @@ class Circle extends PureComponent {
   }
 
   render () {
-    const { imageStyle, circleSize, face, offset } = this.props
-    const innerCircleSize = circleSize * 2
-    const marginRight = circleSize * offset
+    const { circleSize, face, offset } = this.props
+    const marginRight = circleSize * offset - 6
 
     return (
       <Animated.View
         style={{ marginRight: -marginRight }}
       >
-        <Image
-          style={[
-            styles.circleImage,
-            {
-              width: innerCircleSize,
-              height: innerCircleSize,
-              borderRadius: circleSize
-            },
-            imageStyle
-          ]}
-          source={{ uri: face.imageUrl }}
+        <UserAvatar
+          size="35"
+          name={face.userName}
+          color="#000"
+          textColor="#fff"
+          src={face.imageUrl}
         />
       </Animated.View>
     )
@@ -74,19 +65,13 @@ Circle.propTypes = {
 }
 
 export function renderFacePile (faces = [], numFaces) {
-  const entities = [...faces.reverse()]
+  const entities = faces
   if (!entities.length) return {
     facesToRender: [],
     overflow: 0
   }
 
-  const facesWithImageUrls = entities.filter(e => e.imageUrl)
-  if (!facesWithImageUrls.length) return {
-    facesToRender: [],
-    overflow: 0
-  }
-
-  const facesToRender = facesWithImageUrls.slice(0, numFaces)
+  const facesToRender = entities.slice(0, numFaces)
   const overflow = entities.length - facesToRender.length
 
   return {
@@ -112,6 +97,7 @@ export default class FacePile extends PureComponent {
     render: PropTypes.func,
     numFaces: PropTypes.number,
     offset: PropTypes.number,
+    isOwner: PropTypes.bool
   }
 
   static defaultProps = {
@@ -119,6 +105,7 @@ export default class FacePile extends PureComponent {
     numFaces: 4,
     offset: 1,
     hideOverflow: false,
+    isOwner: true
   }
 
   _renderOverflowCircle = overflow => {
@@ -127,7 +114,7 @@ export default class FacePile extends PureComponent {
       overflowStyle,
       overflowLabelStyle,
       circleSize,
-      offset
+      offset,
     } = this.props
     
     const innerCircleSize = circleSize * 1.8
@@ -168,16 +155,62 @@ export default class FacePile extends PureComponent {
     )
   }
 
-  _renderFace = (face, index) => {
-    const { circleStyle, imageStyle, circleSize, offset } = this.props
-    if (face && !face.imageUrl) return null
+  _renderEmptyOverflowCircle = () => {
+    const {
+      circleStyle,
+      overflowStyle,
+      circleSize,
+      offset,
+    } = this.props
+    
+    const innerCircleSize = 35
+    const marginLeft = (circleSize * offset) - circleSize / 1.6
+
+    return (
+      <View
+        style={[
+          styles.circle,
+          circleStyle
+        ]}
+      >
+        <View
+          style={[
+            styles.overflow,
+            {
+              width: innerCircleSize,
+              height: innerCircleSize,
+              borderRadius: circleSize,
+              marginLeft: marginLeft,
+              backgroundColor: '#4A00CD'
+            },
+            overflowStyle
+          ]}
+        >
+          <Text
+            style={[
+              styles.overflowLabel,
+              {
+                fontSize: 25,
+                fontWeight: 'normal',
+                color: '#fff'
+              }
+            ]}
+          >
+            +
+          </Text>
+        </View>
+      </View>
+    )
+  }
+
+  _renderFace = (face) => {
+    const { circleStyle, circleSize, offset } = this.props
 
     return (
       <Circle
-        key={face.id || index}
+        key={face.id}
         face={face}
         circleStyle={circleStyle}
-        imageStyle={imageStyle}
         circleSize={circleSize}
         offset={offset}
       />
@@ -185,14 +218,18 @@ export default class FacePile extends PureComponent {
   }
 
   render () {
-    const { render, faces, numFaces, hideOverflow, containerStyle } = this.props
-    if (render) return render({ faces, numFaces })
+    const { faces, numFaces, hideOverflow, containerStyle } = this.props
+
+    if (faces.length === 0) 
+      return null
 
     const { facesToRender, overflow } = renderFacePile(faces, numFaces)
 
     return (
       <View style={[styles.container, containerStyle]}>
-        {overflow > 0 && !hideOverflow && this._renderOverflowCircle(overflow)}
+        {!hideOverflow && (
+          overflow > 0 ? this._renderOverflowCircle(overflow) : this._renderEmptyOverflowCircle()
+        )}
         {Array.isArray(facesToRender) && facesToRender.map(this._renderFace)}
       </View>
     )
