@@ -5,7 +5,7 @@ const styles = StyleSheet.create({
   settingView: {
     flexDirection: 'row',
     justifyContent: 'center',
-    alignItems: 'flex-end'
+    alignItems: 'center'
   },
   button: {
     width: 34,
@@ -13,7 +13,9 @@ const styles = StyleSheet.create({
     backgroundColor: COLORS.PURPLE,
     borderRadius: 17,
     justifyContent: 'center',
-    alignItems: 'center'
+    alignItems: 'center',
+    paddingTop: 2,
+    paddingLeft: 1
   },
   settingIcon: {
     fontSize: 20,

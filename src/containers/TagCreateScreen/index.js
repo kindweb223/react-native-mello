@@ -200,14 +200,14 @@ class TagCreateScreen extends React.Component {
                   backgroundColor: 'white',
                 }}
                 tagContainerStyle={{
-                  backgroundColor: COLORS.LIGHT_ORANGE_BACKGROUND,
+                  backgroundColor: COLORS.TAG_LIGHT_ORANGE_BACKGROUND,
                 }}
                 tagTextStyle={{
                   color: COLORS.DARK_ORANGE,
                   fontSize: 16,
                 }}
                 activeTagContainerStyle={{
-                  backgroundColor: COLORS.LIGHT_ORANGE_ACTIVE_BACKGROUND,
+                  backgroundColor: COLORS.TAG_LIGHT_ORANGE_ACTIVE_BACKGROUND,
                 }}
                 activeTagTextStyle={{
                   color: '#fff',

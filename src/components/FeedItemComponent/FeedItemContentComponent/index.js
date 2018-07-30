@@ -49,7 +49,7 @@ const FeedItemContentComponent = ({ data, pinFlag }) => {
               backgroundColor: 'white',
             }}
             tagContainerStyle={{
-              backgroundColor: COLORS.LIGHT_ORANGE_BACKGROUND,
+              backgroundColor: 'rgba(255, 208, 173, 0.35)'
             }}
             tagTextStyle={{
               color: COLORS.DARK_ORANGE,
