@@ -12,7 +12,7 @@ const styles = StyleSheet.create({
     alignSelf: 'center'
   },
   overflow: {
-    backgroundColor: '#b6c0ca',
+    backgroundColor: '#A2A5AE',
     justifyContent: 'center',
     alignItems: 'center',
     marginLeft: 18
@@ -39,7 +39,7 @@ class Circle extends PureComponent {
 
   render () {
     const { circleSize, face, offset } = this.props
-    const marginRight = circleSize * offset - 6
+    const marginRight = circleSize * offset - 15
 
     return (
       <Animated.View
@@ -48,8 +48,8 @@ class Circle extends PureComponent {
         <UserAvatar
           size="35"
           name={face.userName}
-          color="#000"
-          textColor="#fff"
+          color="#F5F5F5"
+          textColor="#A2A5AE"
           src={face.imageUrl}
         />
       </Animated.View>
@@ -102,7 +102,7 @@ export default class FacePile extends PureComponent {
 
   static defaultProps = {
     circleSize: 20,
-    numFaces: 4,
+    numFaces: 3,
     offset: 1,
     hideOverflow: false,
     isOwner: true
@@ -118,7 +118,7 @@ export default class FacePile extends PureComponent {
     } = this.props
     
     const innerCircleSize = circleSize * 1.8
-    const marginLeft = (circleSize * offset) - circleSize / 1.6
+    const marginLeft = (circleSize * offset) - circleSize / 1.6 - 8
 
     return (
       <View
@@ -164,7 +164,7 @@ export default class FacePile extends PureComponent {
     } = this.props
     
     const innerCircleSize = 35
-    const marginLeft = (circleSize * offset) - circleSize / 1.6
+    const marginLeft = (circleSize * offset) - circleSize / 1.6 - 8
 
     return (
       <View
@@ -181,20 +181,20 @@ export default class FacePile extends PureComponent {
               height: innerCircleSize,
               borderRadius: circleSize,
               marginLeft: marginLeft,
-              backgroundColor: '#4A00CD'
+              backgroundColor: '#4A00CD',
+              paddingBottom: 3,
+              paddingLeft: 2
             },
             overflowStyle
           ]}
         >
           <Text
-            style={[
-              styles.overflowLabel,
-              {
-                fontSize: 25,
-                fontWeight: 'normal',
-                color: '#fff'
-              }
-            ]}
+            style={{
+              color: '#fff',
+              fontSize: 25,
+              fontWeight: 'normal',
+              color: '#fff'
+            }}
           >
             +
           </Text>
