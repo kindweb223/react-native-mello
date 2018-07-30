@@ -181,20 +181,20 @@ export default class FacePile extends PureComponent {
               height: innerCircleSize,
               borderRadius: circleSize,
               marginLeft: marginLeft,
-              backgroundColor: '#4A00CD'
+              backgroundColor: '#4A00CD',
+              paddingBottom: 3,
+              paddingLeft: 2
             },
             overflowStyle
           ]}
         >
           <Text
-            style={[
-              styles.overflowLabel,
-              {
-                fontSize: 25,
-                fontWeight: 'normal',
-                color: '#fff'
-              }
-            ]}
+            style={{
+              color: '#fff',
+              fontSize: 25,
+              fontWeight: 'normal',
+              color: '#fff'
+            }}
           >
             +
           </Text>

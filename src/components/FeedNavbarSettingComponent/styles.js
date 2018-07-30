@@ -13,7 +13,9 @@ const styles = StyleSheet.create({
     backgroundColor: COLORS.PURPLE,
     borderRadius: 17,
     justifyContent: 'center',
-    alignItems: 'center'
+    alignItems: 'center',
+    paddingTop: 2,
+    paddingLeft: 1
   },
   settingIcon: {
     fontSize: 20,
