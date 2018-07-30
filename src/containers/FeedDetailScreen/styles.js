@@ -1,23 +1,12 @@
 import { StyleSheet } from 'react-native'
 import CONSTANTS from '../../service/constants'
 import COLORS from '../../service/colors'
+const NAV_BAR_HEIGHT = 60
 
 const styles = StyleSheet.create({
   safeArea: {
     flex: 1,
     backgroundColor: '#fff'
-  },
-  normalHeader: {
-    height: 120,
-  },
-  miniHeader: {
-    position: 'absolute',
-    top: 0,
-    left: 0,
-    right: 0,
-    backgroundColor: '#fff',
-    width: '100%',
-    zIndex: 10
   },
   container: {
     flex: 1,
@@ -33,13 +22,66 @@ const styles = StyleSheet.create({
     color: COLORS.MEDIUM_GREY,
     marginTop: 27
   },
+  scrollView: {
+    zIndex: 9,
+    paddingTop: NAV_BAR_HEIGHT,
+  },
   detailView: {
     flex: 1,
     paddingVertical: 10
   },
   tagView: {
     marginVertical: 10,
-  }
+  },
+  normalHeader: {
+    height: NAV_BAR_HEIGHT
+  },
+  miniNavView: {
+    width: '100%',
+    height: NAV_BAR_HEIGHT,
+    paddingHorizontal: CONSTANTS.PADDING,
+    backgroundColor: '#fff',
+    zIndex: 11,
+    position: 'absolute',
+    left: 0,
+    top: 0,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    backgroundColor: 'transparent'
+  },
+  backView: {
+    width: 50,
+    justifyContent: 'center',
+    alignItems: 'flex-start',
+    height: '100%'
+  },
+  backIcon: {
+    fontSize: 35,
+    color: COLORS.PURPLE,
+    marginRight: 6
+  },
+  rightHeader: {
+    height: '100%',
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center'
+  },
+  avatarView: {
+    position: 'absolute',
+    right: 0,
+    bottom: 0,
+    height: '100%',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  settingView: {
+    height: '100%',
+    justifyContent: 'center',
+    alignItems: 'center',
+    width: 100
+  },
+  
 })
 
 export default styles
