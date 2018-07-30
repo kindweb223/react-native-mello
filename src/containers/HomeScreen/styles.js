@@ -83,7 +83,7 @@ const styles = StyleSheet.create({
     right: 0,
     top: 0,
     bottom: 0,
-    backgroundColor: 'transparent'
+    backgroundColor: COLORS.LIGHT_GREY_MODAL_BACKGROUND,
   },
   emptyView: {
     flex: 1,

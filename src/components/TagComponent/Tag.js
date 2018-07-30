@@ -4,6 +4,7 @@ import {
   View,
   Text,
   TouchableOpacity,
+  ViewPropTypes,
 } from "react-native";
 
 import styles from "./styles";
@@ -48,8 +49,8 @@ Tag.propTypes = {
   active: PropTypes.bool,
   label: PropTypes.string.isRequired,
   onPress: PropTypes.func,
-  tagContainerStyle: View.propTypes.style,
+  tagContainerStyle: ViewPropTypes.style,
   tagTextStyle: Text.propTypes.style,
-  activeTagContainerStyle: View.propTypes.style,
+  activeTagContainerStyle: ViewPropTypes.style,
   activeTagTextStyle: Text.propTypes.style,
 }
