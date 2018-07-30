@@ -9,7 +9,7 @@ import COLORS from '../../service/colors'
 import styles from './styles'
 
 const ACTIONSHEET_OPTIONS = [
-  <Text key="0" style={styles.buttonText}>Delete feed</Text>,
+  <Text key="0" style={styles.actionButtonText}>Delete feed</Text>,
   'Cancel'
 ]
 

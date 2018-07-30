@@ -7,7 +7,7 @@ export default {
   MEDIUM_GREY: '#A2A5AE',
   LIGHT_GREY: '#DBDCDF',
   SOFT_GREY: '#F9F9F9',
-  RED: '#E63535',
+  RED: '#FF3626',
   YELLOW: '#FFc902',
   DARK_ORANGE: '#DD5E00',
   LIGHT_ORANGE: '#FFEFE3',
