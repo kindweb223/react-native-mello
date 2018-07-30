@@ -4,9 +4,17 @@ import CONSTANTS from '../../service/constants'
 
 export default styles = StyleSheet.create({
   container: {
+    flex: 1,
+    justifyContent: 'center',
+    backgroundColor: 'transparent',
+  },
+  contentContainer: {
     width: '100%',
     height: '100%',
+    borderRadius: 18,
     paddingVertical: 20,
+    backgroundColor: '#fff',
+    maxHeight: CONSTANTS.SCREEN_HEIGHT - 150,
   },
   topContainer: {
     flexDirection: 'row',

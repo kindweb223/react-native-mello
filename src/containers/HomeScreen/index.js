@@ -24,12 +24,13 @@ import { filter, orderBy } from 'lodash'
 import DashboardNavigationBar from '../../navigations/DashboardNavigationBar'
 import DashboardActionBar from '../../navigations/DashboardActionBar'
 import FeedoListContainer from '../FeedoListContainer'
-// import NewFeedScreen from '../NewFeedScreen'
+import NewFeedScreen from '../NewFeedScreen'
 import CreateNewFeedComponent from '../../components/CreateNewFeedComponent'
 import FeedLongHoldMenuScreen from '../FeedLongHoldMenuScreen'
 import ToasterComponent from '../../components/ToasterComponent'
 import COLORS from '../../service/colors'
 import styles from './styles'
+import CONSTANTS from '../../service/constants';
 
 const EMPTY_ICON = require('../../../assets/images/empty_state/asset-emptystate.png')
 const SEARCH_ICON = require('../../../assets/images/Search/Grey.png')
@@ -52,6 +53,7 @@ const TAB_STYLES = {
 
 const TOASTER_DURATION = 5000
 
+
 class HomeScreen extends React.Component {
   constructor(props) {
     super(props);
@@ -67,6 +69,8 @@ class HomeScreen extends React.Component {
       isShowToaster: false,
       scrollY: new Animated.Value(0)
     };
+
+    this.animatedOpacity = new Animated.Value(0);
   }
 
   componentDidMount() {
@@ -213,6 +217,18 @@ class HomeScreen extends React.Component {
     }
   }
 
+  onOpenCreateNewFeedModal() {
+    this.setState({
+      isVisibleCreateNewFeedModal: true,
+    }, () => {
+      this.animatedOpacity.setValue(0);
+      Animated.timing(this.animatedOpacity, {
+        toValue: 1,
+        duration: CONSTANTS.ANIMATEION_MILLI_SECONDS,
+      }).start();
+    });
+  }
+
   onSelectNewFeedType(type) {
     if (type === 'New Card') {
     } else if (type === 'New Feed') {
@@ -221,6 +237,56 @@ class HomeScreen extends React.Component {
         isVisibleNewFeed: true,
       });
     }
+  }
+
+  onCloseCreateNewFeedModal() {
+    this.animatedOpacity.setValue(1);
+    Animated.timing(this.animatedOpacity, {
+      toValue: 0,
+      duration: CONSTANTS.ANIMATEION_MILLI_SECONDS,
+    }).start(() => {
+      this.setState({ 
+        isVisibleCreateNewFeedModal: false,
+      });
+    });
+  }
+  
+  onCloseNewFeedModal() {
+    this.animatedOpacity.setValue(1);
+    Animated.timing(this.animatedOpacity, {
+      toValue: 0,
+      duration: CONSTANTS.ANIMATEION_MILLI_SECONDS,
+    }).start(() => {
+      this.setState({ 
+        isVisibleNewFeed: false,
+      });
+    });
+  }
+
+  get renderNewFeedModals() {
+    if (!this.state.isVisibleNewFeed && !this.state.isVisibleCreateNewFeedModal) {
+      return;
+    }
+    return (
+      <Animated.View style={[
+        styles.modalContainer,
+        {opacity: this.animatedOpacity}
+      ]}>
+        {
+          this.state.isVisibleCreateNewFeedModal && 
+          <CreateNewFeedComponent 
+            onSelect={(type) => this.onSelectNewFeedType(type)}
+            onClose={() => this.onCloseCreateNewFeedModal()}
+          />
+        }
+        {
+          this.state.isVisibleNewFeed && 
+          <NewFeedScreen 
+            onClose={() => this.onCloseNewFeedModal()}
+          />  
+        }
+      </Animated.View>
+    );
   }
 
   render () {
@@ -332,26 +398,13 @@ class HomeScreen extends React.Component {
         </View>
 
         {!this.state.isLongHoldMenuVisible && (
-          <DashboardActionBar filtering={!emptyState} />
+          <DashboardActionBar 
+            filtering={!emptyState} 
+            onAddFeed={this.onOpenCreateNewFeedModal.bind(this)}
+          />
         )}
 
-        {
-          this.state.isVisibleNewFeed && 
-          <View style={styles.modalContainer}>
-            {/* <NewFeedScreen 
-              onClose={() => this.setState({ isVisibleNewFeed: false })}
-            /> */}
-          </View>
-        }
-        {
-          this.state.isVisibleCreateNewFeedModal && 
-          <View style={styles.modalContainer}>
-            <CreateNewFeedComponent 
-              onSelect={(type) => this.onSelectNewFeedType(type)}
-            />
-          </View>
-        }
-
+        {this.renderNewFeedModals}
         <Modal 
           isVisible={this.state.isLongHoldMenuVisible}
           style={styles.longHoldModalContainer}
