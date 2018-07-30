@@ -10,15 +10,16 @@ import { Actions } from 'react-native-router-flux'
 import FeedItemComponent from '../../components/FeedItemComponent'
 import CONSTANTS from '../../service/constants'
 
-const FeedoListContainer = ({ loading, feedoList, handleFeedMenu }) => {
+const FeedoListContainer = ({ loading, feedoList, handleFeedMenu, tabLabel }) => {
   if (loading) return <ActivityIndicator animating />
 
   return (
     <FlatList
-      style={{ paddingBottom: CONSTANTS.ACTION_BAR_HEIGHT + 10 }}
+      style={{ flex: 1, paddingBottom: CONSTANTS.ACTION_BAR_HEIGHT + 50 }}
       data={feedoList}
       keyExtractor={item => item.id}
       scrollEnabled={false}
+      automaticallyAdjustContentInsets={false}
       renderItem={({ item }) => (
         <TouchableOpacity
           activeOpacity={0.8}
