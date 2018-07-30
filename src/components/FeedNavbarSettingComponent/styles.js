@@ -5,7 +5,7 @@ const styles = StyleSheet.create({
   settingView: {
     flexDirection: 'row',
     justifyContent: 'center',
-    alignItems: 'flex-end'
+    alignItems: 'center'
   },
   button: {
     width: 34,

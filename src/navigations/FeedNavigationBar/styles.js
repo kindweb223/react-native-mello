@@ -5,32 +5,13 @@ import CONSTANTS from '../../service/constants'
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
     paddingHorizontal: CONSTANTS.PADDING
   },
   statusBarUnderlay: {
     height: 24,
     backgroundColor: '#fff',
-  },
-  navView: {
-    height: '50%',
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'flex-end'
-  },
-  backView: {
-    flex: 1,
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-  },
-  backIcon: {
-    fontSize: 35,
-    color: COLORS.PURPLE,
-    marginRight: 6
-  },
-  backTitle: {
-    fontSize: 20,
-    color: COLORS.PURPLE,
   },
   titleView: {
     flexDirection: 'row',
@@ -45,18 +26,6 @@ const styles = StyleSheet.create({
     color: COLORS.PRIMARY_BLACK,
     marginRight: 10,
     flex: 1
-  },
-  miniNavView: {
-    height: 60,
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'flex-end'
-  },
-  avatarView: {
-    flexDirection: 'row',
-    justifyContent: 'flex-end',
-    alignItems: 'center',
-    paddingBottom: 5
   }
 })
 

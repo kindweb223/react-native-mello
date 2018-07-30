@@ -7,16 +7,21 @@ import {
   Text,
   Image,
   Animated,
-  ActivityIndicator
+  ActivityIndicator,
+  TouchableOpacity
 } from 'react-native'
 
 import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
 import { isEmpty } from 'lodash'
+import { Actions } from 'react-native-router-flux'
+import Ionicons from 'react-native-vector-icons/Ionicons'
 import FeedNavigationBar from '../../navigations/FeedNavigationBar'
 import DashboardActionBar from '../../navigations/DashboardActionBar'
 import FeedCardComponent from '../../components/FeedCardComponent'
 import FeedCollapseComponent from '../../components/FeedCollapseComponent'
+import AvatarPileComponent from '../../components/AvatarPileComponent'
+import FeedNavbarSettingComponent from '../../components/FeedNavbarSettingComponent'
 import { getFeedDetailData } from '../../redux/feedo/actions'
 import styles from './styles'
 const EMPTY_ICON = require('../../../assets/images/empty_state/asset-emptystate.png')
@@ -51,40 +56,101 @@ class FeedDetailScreen extends React.Component {
     return null
   }
 
+  backToDashboard = () => {
+    Actions.pop()
+  }
+
+  checkOwner = (data) =>{
+    if (data.invitees.length === 1 && data.owner.id === data.invitees[0].userProfile.id) {
+      return true
+    }
+    return false
+  }
+
   render () {
     const { data } = this.props
     const { feedDetailData, loading } = this.state
-    // console.log('FEED_DETAIL: ', feedDetailData)
 
-    const miniHeaderOpacity = this.state.scrollY.interpolate({
-      inputRange: [70, 100],
+    const navbarBackground = this.state.scrollY.interpolate({
+      inputRange: [40, 41],
+      outputRange: ['transparent', '#fff'],
+      extrapolate: 'clamp'
+    })
+
+    const settingViewOpacity = this.state.scrollY.interpolate({
+      inputRange: [60, 90],
       outputRange: [0, 1],
       extrapolate: 'clamp'
     })
 
+    const avatarPosition = this.state.scrollY.interpolate({
+      inputRange: [30, 90],
+      outputRange: [0, 100],
+      extrapolate: 'clamp'
+    })
+
     const normalHeaderOpacity = this.state.scrollY.interpolate({
-      inputRange: [40, 70],
+      inputRange: [20, 35],
       outputRange: [1, 0],
       extrapolate: 'clamp'
     })
 
+    let avatars = []
+    if (!isEmpty(feedDetailData)) {
+      const isOwner = this.checkOwner(feedDetailData)
+
+      if (isOwner) {
+        avatars = [
+          {
+            id: 1,
+            imageUrl: feedDetailData.owner.imageUrl,
+            userName: `${feedDetailData.owner.firstName} ${feedDetailData.owner.lastName}`
+          }
+        ]
+      } else {
+        feedDetailData.invitees.forEach((item, key) => {
+          avatars = [
+            ...avatars,
+            {
+              id: key,
+              imageUrl: item.userProfile.imageUrl,
+              userName: `${item.userProfile.firstName} ${item.userProfile.lastName}`
+            }
+          ]
+        })
+      }
+    }
+
     return (
       <SafeAreaView style={styles.safeArea}>
         <View style={styles.container}>
-          <Animated.View style={[styles.miniHeader, { opacity: miniHeaderOpacity }]}>
-            <FeedNavigationBar mode="mini" data={feedDetailData} />
+          <Animated.View style={[styles.miniNavView, { backgroundColor: navbarBackground }]}>
+            <TouchableOpacity onPress={this.backToDashboard}>
+              <View style={styles.backView}>
+                <Ionicons name="ios-arrow-back" style={styles.backIcon} />
+              </View>
+            </TouchableOpacity>
+            <View style={styles.rightHeader}>
+              <Animated.View style={[styles.avatarView, { right: avatarPosition }]}>
+                <AvatarPileComponent avatars={avatars} />
+              </Animated.View>
+              <Animated.View style={[styles.settingView, { opacity: settingViewOpacity }]}>
+                <FeedNavbarSettingComponent />
+              </Animated.View>
+            </View>
           </Animated.View>
 
           <ScrollView
             scrollEventThrottle={16}
+            style={styles.scrollView}
             onScroll={
               Animated.event(
                 [{ nativeEvent: { contentOffset: { y: this.state.scrollY } } }]
               )
             }
           >
-            <Animated.View style={[styles.normalHeader, {opacity: normalHeaderOpacity}]}>
-              <FeedNavigationBar mode="normal" title={data.headline} data={feedDetailData} />
+            <Animated.View style={[styles.normalHeader, { opacity: normalHeaderOpacity }]}>
+              <FeedNavigationBar title={data.headline} data={feedDetailData} />
             </Animated.View>
             
               <View style={styles.detailView}>
