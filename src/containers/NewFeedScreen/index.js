@@ -6,7 +6,6 @@ import {
   TouchableOpacity,
   Alert,
   Animated,
-  YellowBox,
 } from 'react-native'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
@@ -68,8 +67,6 @@ class NewFeedScreen extends React.Component {
 
     this.animatedShow = new Animated.Value(0);
     this.animatedTagTransition = new Animated.Value(1);
-
-    YellowBox.ignoreWarnings(['Warning: Unsafe legacy lifecycles']);
   }
 
   UNSAFE_componentWillReceiveProps(nextProps) {
@@ -149,8 +146,8 @@ class NewFeedScreen extends React.Component {
       toValue: 1,
       duration: CONSTANTS.ANIMATEION_MILLI_SECONDS,
     }).start(() => {
-      // this.props.createFeed();
-      this.props.getFeedDetail(FeedId);
+      this.props.createFeed();
+      // this.props.getFeedDetail(FeedId);
     });
   }
 
@@ -168,11 +165,6 @@ class NewFeedScreen extends React.Component {
   onCreate() {
     if (this.state.feedName === '') {
       Alert.alert('', 'Please input your feed name.', [
-        {text: 'Close'},
-      ]);
-      return;
-    } else if (this.state.comments === '') {
-      Alert.alert('', 'Please input note.', [
         {text: 'Close'},
       ]);
       return;
@@ -197,19 +189,16 @@ class NewFeedScreen extends React.Component {
     DocumentPicker.show({
       filetype: [DocumentPickerUtil.allFiles()],
     },(error, response) => {
-      console.log('DocumentPicker Error : ', error);
-      console.log('DocumentPicker Response : ', response);
+      if (error === null) {
+        let type = 'FILE';
+        const mimeType = mime.lookup(response.uri);
+        if (mimeType.indexOf('image') !== -1 || mimeType.indexOf('video') !== -1) {
+          type = 'MEDIA';
+        }
+        this.uploadFile(response, type);
+      }      
     });
     return;
-
-    console.log('Picked Document : ', result);
-    this.selectedFile = result.uri;
-    this.selectedFileMimeType = mime.lookup(result.uri);
-    this.selectedFileName = result.name;
-    this.selectedFileType = 'FILE';
-    if (this.props.feed.feed.id) {
-      this.props.getFileUploadUrl(this.props.feed.feed.id);
-    }
   }
   
   onOpenActionSheet() {
@@ -251,11 +240,11 @@ class NewFeedScreen extends React.Component {
     });
   }
 
-  uploadMediaFile(file) {
+  uploadFile(file, type) {
     this.selectedFile = file.uri;
     this.selectedFileMimeType = mime.lookup(file.uri);
     this.selectedFileName = file.fileName;
-    this.selectedFileType = 'MEDIA';
+    this.selectedFileType = type;
     if (this.props.feed.feed.id) {
       this.props.getFileUploadUrl(this.props.feed.feed.id);
     }
@@ -263,18 +252,16 @@ class NewFeedScreen extends React.Component {
 
   pickMediaFromCamera(options) {
     ImagePicker.launchCamera(options, (response)  => {
-      console.log('Picked Media : ', response);
       if (!response.cancelled) {
-        this.uploadMediaFile(response);
+        this.uploadFile(response, 'MEDIA');
       }
     });
   }
 
   pickMediaFromLibrary(options) {
     ImagePicker.launchImageLibrary(options, (response)  => {
-      console.log('Picked Media : ', response);
       if (!response.cancelled) {
-        this.uploadMediaFile(response);
+        this.uploadFile(response, 'MEDIA');
       }
     });
   }
@@ -468,7 +455,9 @@ class NewFeedScreen extends React.Component {
         />
         <View style={styles.contentContainer}>
           {this.renderTopContent}
-          <KeyboardAwareScrollView>
+          <KeyboardAwareScrollView
+            enableAutomaticScroll={false}
+          >
             {this.renderCenterContent}
             {this.renderBottomContent}
           </KeyboardAwareScrollView>

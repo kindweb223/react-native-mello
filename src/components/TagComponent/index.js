@@ -23,6 +23,12 @@ class Tags extends React.Component {
     this.prevKey = '';
   }
 
+  componentDidMount() {
+    if (!this.props.readonly) {
+      this.tagInputRef.focus();
+    }
+  }
+  
   onChangeText(text) {
     if (
       text.length > 1 &&
@@ -56,18 +62,23 @@ class Tags extends React.Component {
       let index = this.props.tags.length - 1;
       if (this.state.selectedTagIndex !== -1) {
         index = this.state.selectedTagIndex;
-      }
-      // let tags = this.props.tags;
-      // tags.splice(index, 1);
-      this.setState({
-        selectedTagIndex: -1,
-        activeTagName: '',
-      }, () => {
         // this.props.onChangeTags && this.props.onChangeTags(tags)
-        if (this.props.onRemoveTag) {
-          this.props.onRemoveTag(this.props.tags[index]);
+        if (index !== -1) {
+          if (this.props.onRemoveTag) {
+            this.props.onRemoveTag(this.props.tags[index]);
+          }
         }
-      });
+        this.setState({
+          selectedTagIndex: -1,
+          activeTagName: '',
+        });
+        
+      } else if (index !== -1) {
+        this.setState({
+          selectedTagIndex: index,
+          activeTagName: this.props.tags[index].text,
+        });  
+      }
     }
     this.prevKey = event.nativeEvent.key;
   }
@@ -115,20 +126,24 @@ class Tags extends React.Component {
   }
 
   onPressTag (index, tag) {
-    let activeTagName = '';
-    if (this.state.activeTagName !== tag.text) {
-      activeTagName = tag.text;
-    }
-    this.setState({
-      activeTagName,
-    }, () => {
-      if (activeTagName !== '') {
-        this.tagInputRef.focus();
-        this.setState({
-          selectedTagIndex: index,
-        });
+    if (!this.props.readonly) {
+      let activeTagName = '';
+      if (this.state.activeTagName !== tag.text) {
+        activeTagName = tag.text;
       }
-    });
+      this.setState({
+        activeTagName,
+      }, () => {
+        if (activeTagName !== '') {
+          if (!this.props.readonly) {
+            this.tagInputRef.focus();
+          }
+          this.setState({
+            selectedTagIndex: index,
+          });
+        }
+      });
+    }
 
     if (this.props.onPressTag) {
       this.props.onPressTag(index, tag)
@@ -138,7 +153,7 @@ class Tags extends React.Component {
   render() {
     return (
       <View
-        style={[styles.container, this.props.containerStyle, this.props.style]}
+        style={[styles.container, this.props.containerStyle]}
       >
         {this.props.tags.map((tag, index) => (
           <Tag
@@ -170,7 +185,6 @@ Tags.propTypes = {
   activeTagName: PropTypes.string,
   tags: PropTypes.arrayOf(PropTypes.object),
   containerStyle: PropTypes.object,
-  style: PropTypes.object,
   inputStyle: PropTypes.object,
   tagContainerStyle: PropTypes.object,
   tagTextStyle: PropTypes.object,

@@ -5,6 +5,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: 'transparent',
+    marginBottom: 24,
   },
   backdropContainer: {
     flex: 1,

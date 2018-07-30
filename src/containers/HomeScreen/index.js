@@ -10,7 +10,8 @@ import {
   Image,
   TouchableOpacity,
   Platform,
-  StatusBar
+  StatusBar,
+  YellowBox,
 } from 'react-native'
 
 import ReactNativeHaptic from 'react-native-haptic'
@@ -76,6 +77,7 @@ class HomeScreen extends React.Component {
   componentDidMount() {
     this.setState({ loading: true })
     this.props.getFeedoList(this.state.tabIndex)
+    YellowBox.ignoreWarnings(['Module RNDocumentPicker'])
   }
 
   static getDerivedStateFromProps(nextProps, prevState) {
