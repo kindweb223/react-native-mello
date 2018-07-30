@@ -17,7 +17,10 @@ import Entypo from 'react-native-vector-icons/Entypo'
 import Tags from '../../components/TagComponent'
 import ActionSheet from 'react-native-actionsheet'
 import { Actions } from 'react-native-router-flux'
-// import { DocumentPicker, ImagePicker, Permissions } from 'expo';
+import ImagePicker from 'react-native-image-picker';
+import { DocumentPicker, DocumentPickerUtil } from 'react-native-document-picker';
+import Permissions from 'react-native-permissions'
+
 import * as mime from 'react-native-mime-types';
 import { filter } from 'lodash'
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
@@ -45,7 +48,7 @@ import TagCreateScreen from '../TagCreateScreen';
 const NewFeedMode = 1;
 const TagCreateMode = 2;
 
-const FeedId = 'f5fce59c-78a5-4a00-8882-8d02d9b2db61';
+const FeedId = '4e3709a4-1fea-4fd5-b8ed-bd91b9be4afb';
 
 
 class NewFeedScreen extends React.Component {
@@ -146,8 +149,8 @@ class NewFeedScreen extends React.Component {
       toValue: 1,
       duration: CONSTANTS.ANIMATEION_MILLI_SECONDS,
     }).start(() => {
-      this.props.createFeed();
-      // this.props.getFeedDetail(FeedId);
+      // this.props.createFeed();
+      this.props.getFeedDetail(FeedId);
     });
   }
 
@@ -190,11 +193,15 @@ class NewFeedScreen extends React.Component {
     this.imagePickerActionSheetRef.show();
   }
 
-  async onAddDocument() {
-    const result = await DocumentPicker.getDocumentAsync({});
-    if (result.type === 'cancel') {
-      return;
-    }
+  onAddDocument() {
+    DocumentPicker.show({
+      filetype: [DocumentPickerUtil.allFiles()],
+    },(error, response) => {
+      console.log('DocumentPicker Error : ', error);
+      console.log('DocumentPicker Response : ', response);
+    });
+    return;
+
     console.log('Picked Document : ', result);
     this.selectedFile = result.uri;
     this.selectedFileMimeType = mime.lookup(result.uri);
@@ -244,42 +251,68 @@ class NewFeedScreen extends React.Component {
     });
   }
 
-  async onTapImagePickerActionSheet(index) {
-    if (index === 2) {
-      return;
+  uploadMediaFile(file) {
+    this.selectedFile = file.uri;
+    this.selectedFileMimeType = mime.lookup(file.uri);
+    this.selectedFileName = file.fileName;
+    this.selectedFileType = 'MEDIA';
+    if (this.props.feed.feed.id) {
+      this.props.getFileUploadUrl(this.props.feed.feed.id);
     }
-    
-    let result;
+  }
+
+  pickMediaFromCamera(options) {
+    ImagePicker.launchCamera(options, (response)  => {
+      console.log('Picked Media : ', response);
+      if (!response.cancelled) {
+        this.uploadMediaFile(response);
+      }
+    });
+  }
+
+  pickMediaFromLibrary(options) {
+    ImagePicker.launchImageLibrary(options, (response)  => {
+      console.log('Picked Media : ', response);
+      if (!response.cancelled) {
+        this.uploadMediaFile(response);
+      }
+    });
+  }
+
+  onTapMediaPickerActionSheet(index) {
+    var options = {
+      storageOptions: {
+        skipBackup: true,
+        path: 'feedo'
+      }
+    };
+        
     if (index === 0) {
       // from camera
-      const cameraPermission = await Permissions.getAsync(Permissions.CAMERA);
-      if (cameraPermission.status !== 'granted') {
-        await Permissions.askAsync(Permissions.CAMERA);
-      }
-      const cameraRollPermission = await Permissions.getAsync(Permissions.CAMERA_ROLL);
-      if (cameraRollPermission.status !== 'granted') {
-        await Permissions.askAsync(Permissions.CAMERA_ROLL);
-      }
-      result = await ImagePicker.launchCameraAsync({
+      Permissions.check('camera').then(response => {
+        if (response !== 'authorized') {
+          Permissions.request('camera').then(response => {
+            if (response === 'authorized') {
+              this.pickMediaFromCamera(options);
+            }
+          });
+        } else {
+          this.pickMediaFromCamera(options);
+        }
       });
     } else if (index === 1) {
       // from library
-      const cameraRollPermission = await Permissions.getAsync(Permissions.CAMERA_ROLL);
-      if (cameraRollPermission.status !== 'granted') {
-        await Permissions.askAsync(Permissions.CAMERA_ROLL);
-      }
-      result = await ImagePicker.launchImageLibraryAsync({
+      Permissions.check('photo').then(response => {
+        if (response !== 'authorized') {
+          Permissions.request('photo').then(response => {
+            if (response === 'authorized') {
+              this.pickMediaFromLibrary(options);
+            }
+          });
+        } else {
+          this.pickMediaFromLibrary(options);
+        }
       });
-    }
-    console.log('Picked Media : ', result);
-    if (!result.cancelled) {
-      this.selectedFile = result.uri;
-      this.selectedFileMimeType = mime.lookup(result.uri);
-      this.selectedFileName = result.uri.replace(/^.*[\\\/]/, '');
-      this.selectedFileType = 'MEDIA';
-      if (this.props.feed.feed.id) {
-        this.props.getFileUploadUrl(this.props.feed.feed.id);
-      }
     }
   }
 
@@ -500,8 +533,9 @@ class NewFeedScreen extends React.Component {
           title='Select a Photo / Video'
           options={['Take A Photo', 'Select From Photos', 'Cancel']}
           cancelButtonIndex={2}
+          destructiveButtonIndex={2}
           tintColor={COLORS.PURPLE}
-          onPress={(index) => this.onTapImagePickerActionSheet(index)}
+          onPress={(index) => this.onTapMediaPickerActionSheet(index)}
         />
       </View>
     );
