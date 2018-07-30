@@ -364,6 +364,7 @@ class HomeScreen extends React.Component {
                 tabBarActiveTextColor={COLORS.PURPLE}
                 tabBarInactiveTextColor={COLORS.MEDIUM_GREY}
                 onChangeTab={this.onChangeTab}
+                prerenderingSiblingsNumber={0}
                 renderTabBar={() => <TabBar
                                       underlineHeight={0}
                                       underlineBottomPosition={0}
