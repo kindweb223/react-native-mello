@@ -68,5 +68,13 @@
 		<string>SimpleLineIcons.ttf</string>
 		<string>Zocial.ttf</string>
 	</array>
+	<key>NSCameraUsageDescription</key>
+	<string>Use</string>
+	<key>NSPhotoLibraryAddUsageDescription</key>
+	<string>Use</string>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>Use</string>
+	<key>NSMicrophoneUsageDescription</key>
+	<string>Use</string>
 </dict>
 </plist>
