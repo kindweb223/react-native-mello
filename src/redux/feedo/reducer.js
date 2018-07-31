@@ -204,6 +204,55 @@ export default function feedo(state = initialState, action = {}) {
         error: action.error,
       }
     }
+    /**
+     * Append dummy Feed
+     */
+    case types.ADD_DUMMY_FEED: {
+      const { payload: { feedId, flag } } = action
+      const { feedoList } = state
+
+      const currentFeed = filter(feedoList, feed => feed.id === feedId)
+      const restFeedoList = filter(feedoList, feed => feed.id !== feedId)
+      // console.log('CURRENT_FEED: ', currentFeed)
+      if (flag === 'pin') {
+        return {
+          ...state,
+          loading: 'ADD_DUMMY_FEED',
+          feedoList: [
+            Object.assign({}, currentFeed[0], { pinned: { pinned: true } }),
+            ...restFeedoList
+          ]
+        }
+      }
+      
+      return {
+        ...state,
+      }
+    }
+    /**
+     * Restore feed when clicking Undo in Toaster
+     */
+    case types.REMOVE_DUMMY_FEED: {
+      const { payload: { feedId, flag } } = action
+      const { feedoList } = state
+
+      const currentFeed = filter(feedoList, feed => feed.id === feedId)
+      const restFeedoList = filter(feedoList, feed => feed.id !== feedId)
+      if (flag === 'pin') {
+        return {
+          ...state,
+          loading: 'FEED_FULFILLED',
+          feedoList: [
+            ...restFeedoList,
+            Object.assign({}, currentFeed[0], { pinned: null })
+          ]
+        }
+      }
+      
+      return {
+        ...state,
+      }
+    }
     default:
       return state;
   }

@@ -115,3 +115,17 @@ export const duplicateFeed = (feedId) => {
     })
   };
 }
+
+export const addDummyFeed = (data) => {
+  return {
+    type: types.ADD_DUMMY_FEED,
+    payload: data
+  };
+}
+
+export const removeDummyFeed = (data) => {
+  return {
+    type: types.REMOVE_DUMMY_FEED,
+    payload: data
+  };
+}

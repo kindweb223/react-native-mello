@@ -43,7 +43,9 @@ import {
   unpinFeed,
   deleteFeed,
   archiveFeed,
-  duplicateFeed
+  duplicateFeed,
+  addDummyFeed,
+  removeDummyFeed
 } from '../../redux/feedo/actions'
 
 const TAB_STYLES = {
@@ -123,6 +125,12 @@ class HomeScreen extends React.Component {
       }
     }
 
+    if (feedo.loading === 'ADD_DUMMY_FEED') {
+      return {
+        feedoList: feedo.feedoList
+      }
+    }
+
     return null
   }
 
@@ -139,7 +147,7 @@ class HomeScreen extends React.Component {
 
   handleArchiveFeed = (feedId) => {
     this.setState({ isLongHoldMenuVisible: false })
-    this.setState({ isArchive: true, toasterTitle: 'Feedo archived' })
+    this.setState({ isArchive: true, toasterTitle: 'Feedo archived', feedId })
     setTimeout(() => {
       this.setState({ isShowToaster: false })
       this.archiveFeed(feedId)
@@ -154,7 +162,7 @@ class HomeScreen extends React.Component {
 
   handleDeleteFeed = (feedId) => {
     this.setState({ isLongHoldMenuVisible: false })
-    this.setState({ isDelete: true, toasterTitle: 'Feedo deleted' })
+    this.setState({ isDelete: true, toasterTitle: 'Feedo deleted', feedId })
     setTimeout(() => {
       this.setState({ isShowToaster: false })
       this.deleteFeed(feedId)
@@ -169,7 +177,10 @@ class HomeScreen extends React.Component {
 
   handlePinFeed = (feedId) => {
     this.setState({ isLongHoldMenuVisible: false })
-    this.setState({ isPin: true, toasterTitle: 'Feed pinned' })
+    this.setState({ isPin: true, toasterTitle: 'Feed pinned', feedId })
+
+    this.props.addDummyFeed({ feedId, flag: 'pin' })
+    this.scrollView.scrollTo({ x:0, y: 0, animated: true })
     setTimeout(() => {
       this.setState({ isShowToaster: false })
       this.pinFeed(feedId)
@@ -184,7 +195,7 @@ class HomeScreen extends React.Component {
 
   handleUnpinFeed = (feedId) => {
     this.setState({ isLongHoldMenuVisible: false })
-    this.setState({ isUnPin: true, toasterTitle: 'Feed un-pinned' })
+    this.setState({ isUnPin: true, toasterTitle: 'Feed un-pinned', feedId })
     setTimeout(() => {
       this.setState({ isShowToaster: false })
       this.unpinFeed(feedId)
@@ -199,7 +210,7 @@ class HomeScreen extends React.Component {
 
   handleDuplicateFeed = (feedId) => {
     this.setState({ isLongHoldMenuVisible: false })
-    this.setState({ isDuplicate: true, toasterTitle: 'Feed duplicated' })
+    this.setState({ isDuplicate: true, toasterTitle: 'Feed duplicated', feedId })
     setTimeout(() => {
       this.setState({ isShowToaster: false })
       this.duplicateFeed(feedId)
@@ -210,6 +221,15 @@ class HomeScreen extends React.Component {
     if (this.state.isDuplicate) {
       this.props.duplicateFeed(feedId)
     }
+  }
+  
+  undoAction = () => {
+    if (this.state.isPin) {
+      this.props.removeDummyFeed({ feedId: this.state.feedId, flag: 'pin' })
+    }
+    this.setState({
+      isShowToaster: false, isArchive: false, isDelete: false, isPin: false, isUnPin: false, isDuplicate: false
+    })
   }
 
   onLongHoldMenuHide = () => {
@@ -339,6 +359,7 @@ class HomeScreen extends React.Component {
           </Animated.View>          
 
           <ScrollView
+            ref={ref => this.scrollView = ref}
             scrollEventThrottle={16}
             scrollEnabled={emptyState > 0 && tabIndex === 0 ? false : true}
             style={styles.feedListView }
@@ -432,9 +453,7 @@ class HomeScreen extends React.Component {
         <ToasterComponent
           isVisible={this.state.isShowToaster}
           title={this.state.toasterTitle}
-          onPressButton={() => {
-            this.setState({ isShowToaster: false, isArchive: false, isDelete: false, isPin: false, isUnPin: false, isDuplicate: false })}
-          }
+          onPressButton={this.undoAction}
         />
       </SafeAreaView>
     )
@@ -451,7 +470,9 @@ const mapDispatchToProps = dispatch => ({
   unpinFeed: (data) => dispatch(unpinFeed(data)),
   deleteFeed: (data) => dispatch(deleteFeed(data)),
   archiveFeed: (data) => dispatch(archiveFeed(data)),
-  duplicateFeed: (data) => dispatch(duplicateFeed(data))
+  duplicateFeed: (data) => dispatch(duplicateFeed(data)),
+  addDummyFeed: (data) => dispatch(addDummyFeed(data)),
+  removeDummyFeed: (data) => dispatch(removeDummyFeed(data))
 })
 
 HomeScreen.propTypes = {
@@ -461,7 +482,9 @@ HomeScreen.propTypes = {
   unpinFeed: PropTypes.func.isRequired,
   deleteFeed: PropTypes.func.isRequired,
   archiveFeed: PropTypes.func.isRequired,
-  duplicateFeed: PropTypes.func.isRequired
+  duplicateFeed: PropTypes.func.isRequired,
+  addDummyFeed: PropTypes.func.isRequired,
+  removeDummyFeed: PropTypes.func.isRequired
 }
 
 export default connect(
