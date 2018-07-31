@@ -189,7 +189,9 @@ class TagCreateScreen extends React.Component {
       <View style={styles.container}>
         <View style={styles.contentContainer}>
           {this.renderTopContent}
-          <KeyboardAwareScrollView>
+          <KeyboardAwareScrollView
+            keyboardShouldPersistTaps='always'
+          >
             <View style={styles.mainContentContainer}>
               <Tags
                 tags={this.props.feed.feed.tags}

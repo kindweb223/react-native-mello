@@ -112,7 +112,7 @@ class Tags extends React.Component {
           />
         </View>
       );
-    } else {
+    } else if (this.props.tags.length === 0) {
       return (
         <TouchableOpacity 
           style={styles.textInputContainer}
@@ -127,6 +127,7 @@ class Tags extends React.Component {
 
   onPressTag (index, tag) {
     if (!this.props.readonly) {
+      this.tagInputRef.focus();
       let activeTagName = '';
       if (this.state.activeTagName !== tag.text) {
         activeTagName = tag.text;
@@ -135,9 +136,9 @@ class Tags extends React.Component {
         activeTagName,
       }, () => {
         if (activeTagName !== '') {
-          if (!this.props.readonly) {
-            this.tagInputRef.focus();
-          }
+          // if (!this.props.readonly) {
+          //   this.tagInputRef.focus();
+          // }
           this.setState({
             selectedTagIndex: index,
           });
