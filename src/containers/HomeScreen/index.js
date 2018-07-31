@@ -122,7 +122,6 @@ class HomeScreen extends React.Component {
         loading: false,
         emptyState,
         isArchive: false,
-        isDelete: false,
         isDuplicate: false
       }
     }
@@ -165,6 +164,7 @@ class HomeScreen extends React.Component {
   handleDeleteFeed = (feedId) => {
     this.setState({ isLongHoldMenuVisible: false })
     this.setState({ isDelete: true, toasterTitle: 'Feedo deleted', feedId })
+    this.props.addDummyFeed({ feedId, flag: 'delete' })
     setTimeout(() => {
       this.setState({ isShowToaster: false })
       this.deleteFeed(feedId)
@@ -174,6 +174,7 @@ class HomeScreen extends React.Component {
   deleteFeed = (feedId) => {
     if (this.state.isDelete) {
       this.props.deleteFeed(feedId)
+      this.setState({ isDelete: false })
     }
   }
 
@@ -233,6 +234,8 @@ class HomeScreen extends React.Component {
       this.props.removeDummyFeed({ feedId: this.state.feedId, flag: 'pin' })
     } else if (this.state.isUnPin) {
       this.props.removeDummyFeed({ feedId: this.state.feedId, flag: 'unpin' })
+    } else if (this.state.isDelete) {
+      this.props.removeDummyFeed({ feedId: this.state.feedId, flag: 'delete' })
     }
 
     this.setState({

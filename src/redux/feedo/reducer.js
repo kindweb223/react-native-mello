@@ -129,15 +129,10 @@ export default function feedo(state = initialState, action = {}) {
     }
     case types.DEL_FEED_FULFILLED: {
       const { feedoList } = state
-      const feedId = action.payload
-      const restFeedoList = filter(feedoList, feed => feed.id !== feedId)
       
       return {
         ...state,
         loading: types.DEL_FEED_FULFILLED,
-        feedoList: [
-          ...restFeedoList,
-        ]
       }
     }
     case types.DEL_FEED_REJECTED: {
@@ -233,6 +228,13 @@ export default function feedo(state = initialState, action = {}) {
             ...restFeedoList
           ]
         }
+      } else if (flag === 'delete') {
+        return {
+          ...state,
+          loading: types.DEL_FEED_FULFILLED,
+          deleteFeed: currentFeed,
+          feedoList: restFeedoList
+        }
       }
       
       return {
@@ -244,7 +246,7 @@ export default function feedo(state = initialState, action = {}) {
      */
     case types.REMOVE_DUMMY_FEED: {
       const { payload: { feedId, flag } } = action
-      const { feedoList, pinnedDate } = state
+      const { feedoList, pinnedDate, deleteFeed } = state
 
       const currentFeed = filter(feedoList, feed => feed.id === feedId)
       const restFeedoList = filter(feedoList, feed => feed.id !== feedId)
@@ -264,7 +266,18 @@ export default function feedo(state = initialState, action = {}) {
           feedoList: [
             ...restFeedoList,
             Object.assign({}, currentFeed[0], { pinned: { pinned: true, pinnedDate } })
-          ]
+          ],
+          pinnedDate: null
+        }
+      } else if (flag === 'delete') {
+        return {
+          ...state,
+          loading: types.DEL_FEED_FULFILLED,
+          feedoList: [
+            ...restFeedoList,
+            Object.assign({}, deleteFeed[0])
+          ],
+          deleteFeed: null,
         }
       }
       
