@@ -7,6 +7,7 @@ const initialState = {
   feedoList: null,
   feedDetailData: null,
   pinResult: null,
+  duplicaetdId: null
 };
 
 export default function feedo(state = initialState, action = {}) {
@@ -129,10 +130,20 @@ export default function feedo(state = initialState, action = {}) {
     }
     case types.DEL_FEED_FULFILLED: {
       const { feedoList } = state
-      
-      return {
-        ...state,
-        loading: types.DEL_FEED_FULFILLED,
+      const feedId = action.payload
+      if (feedId === 'empty') {
+        return {
+          ...state,
+          loading: types.DEL_FEED_FULFILLED,
+        }
+      } else {  // Delete duplicated Feed
+        const restFeedoList = filter(feedoList, feed => feed.id !== feedId)        
+        return {
+          ...state,
+          loading: types.DEL_FEED_FULFILLED,
+          duplicatedId: null,
+          feedoList: restFeedoList
+        }
       }
     }
     case types.DEL_FEED_REJECTED: {
@@ -152,17 +163,9 @@ export default function feedo(state = initialState, action = {}) {
       }
     }
     case types.ARCHIVE_FEED_FULFILLED: {
-      const { feedoList } = state
-      const feedId = action.payload
-      const currentFeed = filter(feedoList, feed => feed.id === feedId)
-      const restFeedoList = filter(feedoList, feed => feed.id !== feedId)
       return {
         ...state,
         loading: types.ARCHIVE_FEED_FULFILLED,
-        feedoList: [
-          ...restFeedoList,
-          Object.assign({}, currentFeed[0], { status: 'ENDED' })
-        ]
       }
     }
     case types.ARCHIVE_FEED_REJECTED: {
@@ -189,6 +192,7 @@ export default function feedo(state = initialState, action = {}) {
           ...feedoList,
           data
         ],
+        duplicatedId: data.id,
         loading: types.DUPLICATE_FEED_FULFILLED,
       }
     }
@@ -208,7 +212,7 @@ export default function feedo(state = initialState, action = {}) {
 
       const currentFeed = filter(feedoList, feed => feed.id === feedId)
       const restFeedoList = filter(feedoList, feed => feed.id !== feedId)
-      // console.log('CURRENT_FEED: ', currentFeed)
+
       if (flag === 'pin') {
         return {
           ...state,
@@ -235,6 +239,16 @@ export default function feedo(state = initialState, action = {}) {
           deleteFeed: currentFeed,
           feedoList: restFeedoList
         }
+      } else if (flag === 'archived') {
+        return {
+          ...state,
+          loading: types.ARCHIVE_FEED_FULFILLED,
+          archiveFeed: currentFeed,
+          feedoList: [
+            ...restFeedoList,
+            Object.assign({}, currentFeed[0], { status: 'ENDED' })
+          ]
+        }
       }
       
       return {
@@ -246,7 +260,7 @@ export default function feedo(state = initialState, action = {}) {
      */
     case types.REMOVE_DUMMY_FEED: {
       const { payload: { feedId, flag } } = action
-      const { feedoList, pinnedDate, deleteFeed } = state
+      const { feedoList, pinnedDate, deleteFeed, archiveFeed } = state
 
       const currentFeed = filter(feedoList, feed => feed.id === feedId)
       const restFeedoList = filter(feedoList, feed => feed.id !== feedId)
@@ -278,6 +292,16 @@ export default function feedo(state = initialState, action = {}) {
             Object.assign({}, deleteFeed[0])
           ],
           deleteFeed: null,
+        }
+      } else if (flag === 'archived') {
+        return {
+          ...state,
+          loading: types.ARCHIVE_FEED_FULFILLED,
+          feedoList: [
+            ...restFeedoList,
+            Object.assign({}, archiveFeed[0])
+          ],
+          archiveFeed: null,
         }
       }
       

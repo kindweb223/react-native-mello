@@ -29,8 +29,9 @@ class FeedCollapseComponent extends React.Component {
       hideArrow: false,
       isCollapse: true,
       COLLAPSE_SECTIONS: {
-        title: props.data.summary.substring(0, 30),
-        content: props.data.summary.substring(30)
+        titleOrigin: props.data.summary,
+        title: props.data.summary.substring(0, 40),
+        content: props.data.summary.substring(40)
       },
       isPreview: false,
       images: []
@@ -164,9 +165,14 @@ class FeedCollapseComponent extends React.Component {
       <View style={styles.collapseView}>
         <TouchableOpacity onPress={this.handleCollapse}>
           <View style={isCollapse ? styles.collapseHeader : styles.noncollapseHeader}>
-            <Text style={isCollapse ? styles.collapseHeaderText : styles.headerText} numberOfLines={1} ellipsizeMode="tail">
-              {COLLAPSE_SECTIONS.title}
-            </Text>
+            {isCollapse
+              ? <Text style={styles.collapseHeaderText} numberOfLines={1} ellipsizeMode="tail">
+                  {COLLAPSE_SECTIONS.titleOrigin}
+                </Text>
+              : <Text style={styles.headerText}>
+                  {COLLAPSE_SECTIONS.title}
+                </Text>
+            }
             <Animated.View style={{ transform: [{ rotate: spin }] }}>
               {!this.state.hideArrow && (
                 <Feather name="chevron-down" style={styles.arrowUpIcon} />
