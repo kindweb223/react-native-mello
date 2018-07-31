@@ -80,7 +80,7 @@ export const deleteFeed = (feedId) => {
   return {
     types: [types.DEL_FEED_PENDING, types.DEL_FEED_FULFILLED, types.DEL_FEED_REJECTED],
     promise: axios.delete(url),
-    payload: feedId
+    payload: 'empty'
   };
 }
 
@@ -112,9 +112,25 @@ export const duplicateFeed = (feedId) => {
     promise: axios({
       method: 'post',
       url: url
-    })
+    }),
+    payload: feedId
   };
 }
+
+/**
+ * Delete Duplicated Feed
+ */
+export const deleteDuplicatedFeed = (feedId) => {
+  console.log('PPP: ', feedId)
+  let url = `hunts/${feedId}`
+
+  return {
+    types: [types.DEL_FEED_PENDING, types.DEL_FEED_FULFILLED, types.DEL_FEED_REJECTED],
+    promise: axios.delete(url),
+    payload: feedId
+  };
+}
+
 
 export const addDummyFeed = (data) => {
   return {

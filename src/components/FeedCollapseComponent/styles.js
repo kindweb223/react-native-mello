@@ -2,6 +2,8 @@ import { StyleSheet, Platform } from 'react-native'
 import COLORS from '../../service/colors'
 import CONSTANTS from '../../service/constants'
 
+const HEADER_HEIGHT = 40
+
 const styles = StyleSheet.create({
   collapseHeader: {
     flexDirection: 'row',
@@ -10,7 +12,7 @@ const styles = StyleSheet.create({
     marginTop: 10,
     justifyContent: 'space-between',
     borderColor: COLORS.LIGHT_GREY,
-    height: 30,
+    height: HEADER_HEIGHT,
     backgroundColor: '#fff',
     borderBottomWidth: 1
   },
@@ -19,7 +21,7 @@ const styles = StyleSheet.create({
     alignItems: 'flex-start',
     marginHorizontal: CONSTANTS.PADDING,
     marginTop: 10,
-    height: 30,
+    height: 20,
     justifyContent: 'space-between',
     backgroundColor: '#fff',
   },
