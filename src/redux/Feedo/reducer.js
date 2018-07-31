@@ -152,17 +152,9 @@ export default function feedo(state = initialState, action = {}) {
       }
     }
     case types.ARCHIVE_FEED_FULFILLED: {
-      const { feedoList } = state
-      const feedId = action.payload
-      const currentFeed = filter(feedoList, feed => feed.id === feedId)
-      const restFeedoList = filter(feedoList, feed => feed.id !== feedId)
       return {
         ...state,
         loading: types.ARCHIVE_FEED_FULFILLED,
-        feedoList: [
-          ...restFeedoList,
-          Object.assign({}, currentFeed[0], { status: 'ENDED' })
-        ]
       }
     }
     case types.ARCHIVE_FEED_REJECTED: {
@@ -235,6 +227,16 @@ export default function feedo(state = initialState, action = {}) {
           deleteFeed: currentFeed,
           feedoList: restFeedoList
         }
+      } else if (flag === 'archived') {
+        return {
+          ...state,
+          loading: types.ARCHIVE_FEED_FULFILLED,
+          archiveFeed: currentFeed,
+          feedoList: [
+            ...restFeedoList,
+            Object.assign({}, currentFeed[0], { status: 'ENDED' })
+          ]
+        }
       }
       
       return {
@@ -246,7 +248,7 @@ export default function feedo(state = initialState, action = {}) {
      */
     case types.REMOVE_DUMMY_FEED: {
       const { payload: { feedId, flag } } = action
-      const { feedoList, pinnedDate, deleteFeed } = state
+      const { feedoList, pinnedDate, deleteFeed, archiveFeed } = state
 
       const currentFeed = filter(feedoList, feed => feed.id === feedId)
       const restFeedoList = filter(feedoList, feed => feed.id !== feedId)
@@ -278,6 +280,16 @@ export default function feedo(state = initialState, action = {}) {
             Object.assign({}, deleteFeed[0])
           ],
           deleteFeed: null,
+        }
+      } else if (flag === 'archived') {
+        return {
+          ...state,
+          loading: types.ARCHIVE_FEED_FULFILLED,
+          feedoList: [
+            ...restFeedoList,
+            Object.assign({}, archiveFeed[0])
+          ],
+          archiveFeed: null,
         }
       }
       

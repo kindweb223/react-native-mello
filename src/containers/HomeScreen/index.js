@@ -120,9 +120,7 @@ class HomeScreen extends React.Component {
       return {
         feedoList,
         loading: false,
-        emptyState,
-        isArchive: false,
-        isDuplicate: false
+        emptyState
       }
     }
 
@@ -149,6 +147,7 @@ class HomeScreen extends React.Component {
   handleArchiveFeed = (feedId) => {
     this.setState({ isLongHoldMenuVisible: false })
     this.setState({ isArchive: true, toasterTitle: 'Feedo archived', feedId })
+    this.props.addDummyFeed({ feedId, flag: 'archived' })
     setTimeout(() => {
       this.setState({ isShowToaster: false })
       this.archiveFeed(feedId)
@@ -158,6 +157,7 @@ class HomeScreen extends React.Component {
   archiveFeed = (feedId) => {
     if (this.state.isArchive) {
       this.props.archiveFeed(feedId)
+      this.setState({ isArchive: false })
     }
   }
 
@@ -226,6 +226,7 @@ class HomeScreen extends React.Component {
   duplicateFeed = (feedId) => {
     if (this.state.isDuplicate) {
       this.props.duplicateFeed(feedId)
+      this.setState({ isDuplicate: false })
     }
   }
   
@@ -236,6 +237,8 @@ class HomeScreen extends React.Component {
       this.props.removeDummyFeed({ feedId: this.state.feedId, flag: 'unpin' })
     } else if (this.state.isDelete) {
       this.props.removeDummyFeed({ feedId: this.state.feedId, flag: 'delete' })
+    } else if (this.state.isArchive) {
+      this.props.removeDummyFeed({ feedId: this.state.feedId, flag: 'archived' })
     }
 
     this.setState({
