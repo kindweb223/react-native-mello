@@ -524,7 +524,7 @@ class NewFeedScreen extends React.Component {
           options={['Take A Photo', 'Select From Photos', 'Cancel']}
           cancelButtonIndex={2}
           // destructiveButtonIndex={2}
-          // tintColor={COLORS.PURPLE}
+          tintColor={COLORS.PURPLE}
           onPress={(index) => this.onTapMediaPickerActionSheet(index)}
         />
       </View>
