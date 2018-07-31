@@ -109,6 +109,10 @@ class HomeScreen extends React.Component {
           ['pinned.pinned', 'pinned.pinnedDate', 'publishedDate'],
           ['asc', 'desc', 'desc']
         )
+        
+        if (prevState.tabIndex === 1) {
+          feedoList = filter(feedoList, item => item.pinned !== null)
+        }
 
         emptyState = false
       }
@@ -119,8 +123,6 @@ class HomeScreen extends React.Component {
         emptyState,
         isArchive: false,
         isDelete: false,
-        isPin: false,
-        isUnPin: false,
         isDuplicate: false
       }
     }
@@ -190,12 +192,14 @@ class HomeScreen extends React.Component {
   pinFeed = (feedId) => {
     if (this.state.isPin) {
       this.props.pinFeed(feedId)
+      this.setState({ isPin: false })
     }
   }
 
   handleUnpinFeed = (feedId) => {
     this.setState({ isLongHoldMenuVisible: false })
     this.setState({ isUnPin: true, toasterTitle: 'Feed un-pinned', feedId })
+    this.props.addDummyFeed({ feedId, flag: 'unpin' })
     setTimeout(() => {
       this.setState({ isShowToaster: false })
       this.unpinFeed(feedId)
@@ -205,6 +209,7 @@ class HomeScreen extends React.Component {
   unpinFeed = (feedId) => {
     if (this.state.isUnPin) {
       this.props.unpinFeed(feedId)
+      this.setState({ isUnPin: false })
     }
   }
 
@@ -226,7 +231,10 @@ class HomeScreen extends React.Component {
   undoAction = () => {
     if (this.state.isPin) {
       this.props.removeDummyFeed({ feedId: this.state.feedId, flag: 'pin' })
+    } else if (this.state.isUnPin) {
+      this.props.removeDummyFeed({ feedId: this.state.feedId, flag: 'unpin' })
     }
+
     this.setState({
       isShowToaster: false, isArchive: false, isDelete: false, isPin: false, isUnPin: false, isDuplicate: false
     })
