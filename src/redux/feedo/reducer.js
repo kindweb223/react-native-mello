@@ -223,6 +223,16 @@ export default function feedo(state = initialState, action = {}) {
             ...restFeedoList
           ]
         }
+      } else if (flag === 'unpin') {
+        return {
+          ...state,
+          loading: 'FEED_FULFILLED',
+          pinnedDate: currentFeed[0].pinned.pinnedDate,
+          feedoList: [
+            Object.assign({}, currentFeed[0], { pinned: null }),
+            ...restFeedoList
+          ]
+        }
       }
       
       return {
@@ -234,7 +244,7 @@ export default function feedo(state = initialState, action = {}) {
      */
     case types.REMOVE_DUMMY_FEED: {
       const { payload: { feedId, flag } } = action
-      const { feedoList } = state
+      const { feedoList, pinnedDate } = state
 
       const currentFeed = filter(feedoList, feed => feed.id === feedId)
       const restFeedoList = filter(feedoList, feed => feed.id !== feedId)
@@ -245,6 +255,15 @@ export default function feedo(state = initialState, action = {}) {
           feedoList: [
             ...restFeedoList,
             Object.assign({}, currentFeed[0], { pinned: null })
+          ]
+        }
+      } else if (flag === 'unpin') {
+        return {
+          ...state,
+          loading: 'FEED_FULFILLED',
+          feedoList: [
+            ...restFeedoList,
+            Object.assign({}, currentFeed[0], { pinned: { pinned: true, pinnedDate } })
           ]
         }
       }
