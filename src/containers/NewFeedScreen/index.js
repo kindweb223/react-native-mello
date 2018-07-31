@@ -146,8 +146,8 @@ class NewFeedScreen extends React.Component {
       toValue: 1,
       duration: CONSTANTS.ANIMATEION_MILLI_SECONDS,
     }).start(() => {
-      // this.props.createFeed();
-      this.props.getFeedDetail(FeedId);
+      this.props.createFeed();
+      // this.props.getFeedDetail(FeedId);
     });
   }
 
