@@ -11,7 +11,6 @@ export default StyleSheet.create({
     flex: 1,
     width: 100,
     height: 32,
-    margin: 4,
     borderRadius: 16,
     justifyContent: 'center',
   },
@@ -27,7 +26,6 @@ export default StyleSheet.create({
   textLabel: {
     margin: 0,
     padding: 0,
-    paddingHorizontal: 12,
     fontSize: 16,
     color: COLORS.MEDIUM_GREY,
   },
@@ -38,7 +36,8 @@ export default StyleSheet.create({
     paddingLeft: 12,
     paddingRight: 12,
     height: 32,
-    margin: 4
+    marginVertical: 4,
+    marginRight: 8,
   },
   tagLabel: {
     fontSize: 14,

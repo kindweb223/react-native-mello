@@ -24,31 +24,40 @@ export default class NewFeedImage extends React.Component {
       actionImageIndex: -1,
       files: [...this.props.files],
     };
+    
     this.animatedSelect = new Animated.Value(1);
     this.animatedRemoving = new Animated.Value(1);
     this.fileCount = this.props.files.length || 0;
+    this.fileAction = '';
+    this.loadedFiles = 0;
   }
 
   UNSAFE_componentWillReceiveProps(nextProps) {
     if (nextProps.files.length > this.fileCount) {
       //add
+      this.loadedFiles = 0;
+      this.fileAction = 'add';
       this.setState({
         actionImageIndex: 0,
         files: [...nextProps.files],
       }, () => {
         this.animatedRemoving.setValue(0);
-        Animated.timing(this.animatedRemoving, {
-          toValue: 1,
-          duration: CONSTANTS.ANIMATEION_MILLI_SECONDS + 100,
-        }).start(() => {
-          this.setState({
-            actionImageIndex: -1,
-          });
-        });
+
+        // this.animatedRemoving.setValue(0);
+        // Animated.timing(this.animatedRemoving, {
+        //   toValue: 1,
+        //   duration: CONSTANTS.ANIMATEION_MILLI_SECONDS + 100,
+        // }).start(() => {
+        //   this.setState({
+        //     actionImageIndex: -1,
+        //   });
+        // });
       });
       this.fileCount = nextProps.files.length;
     } else if (nextProps.files.length < this.fileCount) {
       //delete
+      this.loadedFiles = 0;
+      this.fileAction = 'delete';
       this.animatedRemoving.setValue(1);
       Animated.timing(this.animatedRemoving, {
         toValue: 0,
@@ -106,6 +115,24 @@ export default class NewFeedImage extends React.Component {
     Actions.ImageSliderScreen({position: index})
   }
 
+  onLoadEnd() {
+    this.loadedFiles ++;
+    if (this.loadedFiles === this.fileCount) {
+      if (this.fileAction === 'add') {
+        //add
+        this.animatedRemoving.setValue(0);
+        Animated.timing(this.animatedRemoving, {
+          toValue: 1,
+          duration: CONSTANTS.ANIMATEION_MILLI_SECONDS + 100,
+        }).start(() => {
+          this.setState({
+            actionImageIndex: -1,
+          });
+        });
+      }
+    }
+  }
+
   renderImageFile({item, index}) {
     let containerWidth  = this.animatedRemoving.interpolate({
       inputRange: [0, 1],
@@ -131,7 +158,12 @@ export default class NewFeedImage extends React.Component {
           onLongPress={() => this.onLongPressImage(index)}
           onPress={() => this.onPressImage(index)}
         >
-          <Image source={{uri: item.accessUrl}} style={styles.imageFeed} resizeMode='cover' />
+          <Image
+            style={styles.imageFeed}
+            source={{uri: item.accessUrl}}
+            resizeMode='cover'
+            onLoadEnd={() => this.onLoadEnd()}
+          />
         </TouchableOpacity>
         {
           this.state.removeImageIndex === index && 
