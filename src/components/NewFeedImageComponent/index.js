@@ -4,12 +4,13 @@ import {
   Image,
   Animated,
   FlatList,
-  LayoutAnimation,
 } from 'react-native'
 import PropTypes from 'prop-types'
 
 import { Actions } from 'react-native-router-flux'
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons'
+import FastImage from 'react-native-fast-image'
+
 
 import styles from './styles'
 import CONSTANTS from '../../service/constants'
@@ -22,7 +23,7 @@ export default class NewFeedImage extends React.Component {
       selectedImageIndex: -1,
       removeImageIndex: -1,
       actionImageIndex: -1,
-      files: [...this.props.files],
+      files: this.props.files,
     };
     
     this.animatedSelect = new Animated.Value(1);
@@ -39,11 +40,9 @@ export default class NewFeedImage extends React.Component {
       this.fileAction = 'add';
       this.setState({
         actionImageIndex: 0,
-        files: [...nextProps.files],
+        files: nextProps.files,
       }, () => {
-        this.animatedRemoving.setValue(0);
-
-        // this.animatedRemoving.setValue(0);
+        this.animatedRemoving.setValue(0);        
         // Animated.timing(this.animatedRemoving, {
         //   toValue: 1,
         //   duration: CONSTANTS.ANIMATEION_MILLI_SECONDS + 100,
@@ -61,11 +60,11 @@ export default class NewFeedImage extends React.Component {
       this.animatedRemoving.setValue(1);
       Animated.timing(this.animatedRemoving, {
         toValue: 0,
-        duration: CONSTANTS.ANIMATEION_MILLI_SECONDS + 100,
+        duration: CONSTANTS.ANIMATEION_MILLI_SECONDS + 2000,
       }).start(() => {
         this.setState({
           actionImageIndex: -1,
-          files: [...nextProps.files],
+          files: nextProps.files,
         });
       });
       this.fileCount = nextProps.files.length;
@@ -158,10 +157,9 @@ export default class NewFeedImage extends React.Component {
           onLongPress={() => this.onLongPressImage(index)}
           onPress={() => this.onPressImage(index)}
         >
-          <Image
+          <FastImage 
             style={styles.imageFeed}
-            source={{uri: item.accessUrl}}
-            resizeMode='cover'
+            source={{uri: item.accessUrl}} 
             onLoadEnd={() => this.onLoadEnd()}
           />
         </TouchableOpacity>
@@ -183,7 +181,6 @@ export default class NewFeedImage extends React.Component {
     const {
       files,
     } = this.state;
-
     return (
       <FlatList
         style={styles.container}

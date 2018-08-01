@@ -47,7 +47,7 @@ import TagCreateScreen from '../TagCreateScreen';
 const NewFeedMode = 1;
 const TagCreateMode = 2;
 
-const FeedId = '4e3709a4-1fea-4fd5-b8ed-bd91b9be4afb';
+const FeedId = 'f7372968-0368-43e4-932a-8c5ccfe45a8b';
 
 
 class NewFeedScreen extends React.Component {
@@ -70,7 +70,7 @@ class NewFeedScreen extends React.Component {
   }
 
   UNSAFE_componentWillReceiveProps(nextProps) {
-    console.log('NewFeedScreen UNSAFE_componentWillReceiveProps : ', nextProps.feed);
+    // console.log('NewFeedScreen UNSAFE_componentWillReceiveProps : ', nextProps.feed);
     let loading = false;
     if (this.props.feed.status !== types.CREATE_FEED_PENDING && nextProps.feed.status === types.CREATE_FEED_PENDING) {
       // creating a feed
@@ -252,7 +252,7 @@ class NewFeedScreen extends React.Component {
 
   pickMediaFromCamera(options) {
     ImagePicker.launchCamera(options, (response)  => {
-      if (!response.cancelled) {
+      if (!response.didCancel) {
         this.uploadFile(response, 'MEDIA');
       }
     });
@@ -260,7 +260,7 @@ class NewFeedScreen extends React.Component {
 
   pickMediaFromLibrary(options) {
     ImagePicker.launchImageLibrary(options, (response)  => {
-      if (!response.cancelled) {
+      if (!response.didCancel) {
         this.uploadFile(response, 'MEDIA');
       }
     });
@@ -277,27 +277,31 @@ class NewFeedScreen extends React.Component {
     if (index === 0) {
       // from camera
       Permissions.check('camera').then(response => {
-        if (response !== 'authorized') {
+        if (response === 'authorized') {
+          this.pickMediaFromCamera(options);
+        } else if (response === 'undetermined') {
           Permissions.request('camera').then(response => {
             if (response === 'authorized') {
               this.pickMediaFromCamera(options);
             }
           });
         } else {
-          this.pickMediaFromCamera(options);
+          Permissions.openSettings();
         }
       });
     } else if (index === 1) {
       // from library
       Permissions.check('photo').then(response => {
-        if (response !== 'authorized') {
+        if (response === 'authorized') {
+          this.pickMediaFromLibrary(options);
+        } else if (response === 'undetermined') {
           Permissions.request('photo').then(response => {
             if (response === 'authorized') {
               this.pickMediaFromLibrary(options);
             }
           });
         } else {
-          this.pickMediaFromLibrary(options);
+          Permissions.openSettings();
         }
       });
     }
@@ -429,9 +433,6 @@ class NewFeedScreen extends React.Component {
   }
 
   get renderFeed () {
-    // if (this.state.currentScreen !== NewFeedMode) {
-    //   return;
-    // }
     const animatedMove  = this.animatedShow.interpolate({
       inputRange: [0, 1],
       outputRange: [CONSTANTS.SCREEN_HEIGHT, 0],
@@ -522,7 +523,7 @@ class NewFeedScreen extends React.Component {
           title='Select a Photo / Video'
           options={['Take A Photo', 'Select From Photos', 'Cancel']}
           cancelButtonIndex={2}
-          destructiveButtonIndex={2}
+          // destructiveButtonIndex={2}
           tintColor={COLORS.PURPLE}
           onPress={(index) => this.onTapMediaPickerActionSheet(index)}
         />
