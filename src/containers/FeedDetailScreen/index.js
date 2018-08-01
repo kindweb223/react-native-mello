@@ -23,7 +23,17 @@ import FeedCollapseComponent from '../../components/FeedCollapseComponent'
 import AvatarPileComponent from '../../components/AvatarPileComponent'
 import FeedNavbarSettingComponent from '../../components/FeedNavbarSettingComponent'
 import FeedControlMenuComponent from '../../components/FeedControlMenuComponent'
-import { getFeedDetailData, setFeedDetailAction } from '../../redux/feedo/actions'
+import ToasterComponent from '../../components/ToasterComponent'
+import {
+  getFeedDetailData,
+  setFeedDetailAction,
+  addDummyFeed,
+  removeDummyFeed,
+  pinFeed,
+  unpinFeed,
+  duplicateFeed,
+  deleteDuplicatedFeed,
+} from '../../redux/feedo/actions'
 import COLORS from '../../service/colors'
 import styles from './styles'
 import actionSheetStyles from '../FeedLongHoldMenuScreen/styles'
@@ -33,6 +43,7 @@ const ACTIONSHEET_OPTIONS = [
   <Text key="0" style={actionSheetStyles.actionButtonText}>Delete feed</Text>,
   'Cancel'
 ]
+const TOASTER_DURATION = 5000
 
 class FeedDetailScreen extends React.Component {
   constructor(props) {
@@ -41,7 +52,9 @@ class FeedDetailScreen extends React.Component {
       scrollY: new Animated.Value(0),
       feedDetailData: {},
       loading: false,
-      openMenu: false
+      openMenu: false,
+      isShowToaster: false,
+      pinText: 'Pin'
     };
 
     this.menuOpacity = new Animated.Value(0)
@@ -57,7 +70,8 @@ class FeedDetailScreen extends React.Component {
     if (nextProps.feedo.loading === 'GET_FEED_DETAIL_FULFILLED' && nextProps.feedo.feedDetailData !== prevState.feedDetailData) {
       return {
         loading: false,
-        feedDetailData: nextProps.feedo.feedDetailData
+        feedDetailData: nextProps.feedo.feedDetailData,
+        pinText: !nextProps.feedo.feedDetailData.pinned ? 'Pin' : 'Unpin'
       }
     }
     if (nextProps.feedo.loading !== 'GET_FEED_DETAIL_FULFILLED') {
@@ -103,35 +117,106 @@ class FeedDetailScreen extends React.Component {
   }
 
   handleSettingItem = (item) => {
+    const feedId = this.props.data.id
+    this.handleSetting()
+
     switch(item) {
       case 'Pin':
+        this.handlePinFeed(feedId)
         return
       case 'Unpin':
+        this.handleUnpinFeed(feedId)
         return
       case 'Share':
+        return
+      case 'Duplicate':
+        this.handleDuplicateFeed(feedId)
         return
       case 'Delete':
         this.ActionSheet.show()
         return
       case 'Archive':
-        this.handleSetting()
         this.props.setFeedDetailAction({
           action: 'Archive',
-          feedId: this.props.data.id
+          feedId
         })
         Actions.pop()
-        return
-      case 'Duplicate':
         return
       default:
         return
     }
   }
 
+  handlePinFeed = (feedId) => {
+    this.setState({ isShowToaster: true, isPin: true, toasterTitle: 'Feed pinned', feedId, pinText: 'Unpin' })
+    this.props.addDummyFeed({ feedId, flag: 'pin' })
+
+    setTimeout(() => {
+      this.setState({ isShowToaster: false })
+      this.pinFeed(feedId)
+    }, TOASTER_DURATION)
+  }
+
+  pinFeed = (feedId) => {
+    if (this.state.isPin) {
+      this.props.pinFeed(feedId)
+      this.setState({ isPin: false })
+    }
+  }
+
+  handleUnpinFeed = (feedId) => {
+    this.setState({ isShowToaster: true, isUnPin: true, toasterTitle: 'Feed un-pinned', feedId, pinText: 'Pin' })
+    this.props.addDummyFeed({ feedId, flag: 'unpin' })
+
+    setTimeout(() => {
+      this.setState({ isShowToaster: false })
+      this.unpinFeed(feedId)
+    }, TOASTER_DURATION)
+  }
+
+  unpinFeed = (feedId) => {
+    if (this.state.isUnPin) {
+      this.props.unpinFeed(feedId)
+      this.setState({ isUnPin: false })
+    }
+  }
+
+  handleDuplicateFeed = (feedId) => {
+    this.setState({ isShowToaster: true, isDuplicate: true, toasterTitle: 'Feed duplicated', feedId })
+    this.props.duplicateFeed(feedId)
+
+    setTimeout(() => {
+      this.setState({ isShowToaster: false })
+      this.duplicateFeed()
+    }, TOASTER_DURATION + 5)
+  }
+  
+  duplicateFeed = () => {
+    if (this.state.isDuplicate) {
+      this.setState({ isDuplicate: false })
+    }
+  }
+
+  undoAction = () => {
+    if (this.state.isPin) {
+      this.setState({ pinText: 'Pin' })
+      this.props.removeDummyFeed({ feedId: this.state.feedId, flag: 'pin' })
+    } else if (this.state.isUnPin) {
+      this.setState({ pinText: 'Unpin' })
+      this.props.removeDummyFeed({ feedId: this.state.feedId, flag: 'unpin' })
+    } else if (this.state.isDuplicate) {
+      if (this.props.feedo.duplicatedId) {
+        this.props.deleteDuplicatedFeed(this.props.feedo.duplicatedId)
+      }
+    }
+
+    this.setState({
+      isShowToaster: false, isPin: false, isUnPin: false, isDuplicate: false
+    })
+  }
+
   onTapActionSheet = (index) => {
     if (index === 0) {
-      this.handleSetting()
-
       this.props.setFeedDetailAction({
         action: 'Delete',
         feedId: this.props.data.id
@@ -150,7 +235,7 @@ class FeedDetailScreen extends React.Component {
 
   render () {
     const { data } = this.props
-    const { feedDetailData, loading } = this.state
+    const { feedDetailData, loading, pinText } = this.state
 
     const navbarBackground = this.state.scrollY.interpolate({
       inputRange: [40, 41],
@@ -215,7 +300,7 @@ class FeedDetailScreen extends React.Component {
           <Animated.View
             style={[styles.settingMenuView, { opacity: this.menuOpacity, zIndex: this.menuZIndex, top: settingMenuY }]}
           >
-            <FeedControlMenuComponent handleSettingItem={item => this.handleSettingItem(item)} data={feedDetailData} />
+            <FeedControlMenuComponent handleSettingItem={item => this.handleSettingItem(item)} data={feedDetailData} pinText={pinText} />
           </Animated.View>
 
           <Animated.View style={[styles.miniNavView, { backgroundColor: navbarBackground }]}>
@@ -286,6 +371,12 @@ class FeedDetailScreen extends React.Component {
           styles={actionSheetStyles}
           onPress={(index) => this.onTapActionSheet(index)}
         />
+
+        <ToasterComponent
+          isVisible={this.state.isShowToaster}
+          title={this.state.toasterTitle}
+          onPressButton={() => this.undoAction()}
+        />
       </SafeAreaView>
     )
   }
@@ -297,7 +388,13 @@ const mapStateToProps = ({ feedo }) => ({
 
 const mapDispatchToProps = dispatch => ({
   getFeedDetailData: data => dispatch(getFeedDetailData(data)),
-  setFeedDetailAction: data => dispatch(setFeedDetailAction(data))
+  setFeedDetailAction: data => dispatch(setFeedDetailAction(data)),
+  addDummyFeed: (data) => dispatch(addDummyFeed(data)),
+  removeDummyFeed: (data) => dispatch(removeDummyFeed(data)),
+  pinFeed: (data) => dispatch(pinFeed(data)),
+  unpinFeed: (data) => dispatch(unpinFeed(data)),
+  duplicateFeed: (data) => dispatch(duplicateFeed(data)),
+  deleteDuplicatedFeed: (data) => dispatch(deleteDuplicatedFeed(data))
 })
 
 FeedDetailScreen.defaultProps = {
@@ -310,7 +407,13 @@ FeedDetailScreen.propTypes = {
   data: PropTypes.objectOf(PropTypes.any),
   feedo: PropTypes.objectOf(PropTypes.any),
   getFeedDetailData: PropTypes.func,
-  setFeedDetailAction: PropTypes.func
+  setFeedDetailAction: PropTypes.func,
+  addDummyFeed: PropTypes.func.isRequired,
+  removeDummyFeed: PropTypes.func.isRequired,
+  pinFeed: PropTypes.func.isRequired,
+  unpinFeed: PropTypes.func.isRequired,
+  duplicateFeed: PropTypes.func.isRequired,
+  deleteDuplicatedFeed: PropTypes.func.isRequired,
 }
 
 export default connect(
