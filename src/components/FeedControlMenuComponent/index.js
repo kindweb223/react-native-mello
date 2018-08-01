@@ -14,9 +14,8 @@ const MENU_ITMS = ['Duplicate', 'Edit', 'Archive', 'Delete']
 
 class FeedControlMenuComponent extends React.Component {
   render() {
-    const { data } = this.props
+    const { data, pinText } = this.props
 
-    const pinText = !data.pinned ? 'Pin' : 'Unpin'
     return (
       <View style={styles.menuContainer}>
         <TouchableOpacity onPress={() => this.props.handleSettingItem(pinText)}>
@@ -57,6 +56,7 @@ class FeedControlMenuComponent extends React.Component {
 
 FeedControlMenuComponent.propTypes = {
   handleSettingItem: PropTypes.func.isRequired,
+  pinText: PropTypes.string.isRequired,
   data: PropTypes.objectOf(PropTypes.any).isRequired
 }
 

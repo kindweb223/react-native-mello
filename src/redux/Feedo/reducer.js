@@ -328,7 +328,7 @@ export default function feedo(state = initialState, action = {}) {
       }
     }
     /**
-     * Set Feed detail action
+     * Set Feed detail action (Delete, Archive)
      */
     case types.SET_FEED_DETAIL_ACTION: {
       const { payload } = action
