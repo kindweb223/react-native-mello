@@ -1,4 +1,5 @@
 import * as types from './types'
+import * as feedTypes from '../feed/types'
 import { filter } from 'lodash'
 
 const initialState = {
@@ -307,6 +308,22 @@ export default function feedo(state = initialState, action = {}) {
       
       return {
         ...state,
+      }
+    }
+    /**
+     * Update Feed
+     */
+    case feedTypes.UPDATE_FEED_FULFILLED: {
+      const { feedoList } = state
+      const { data } = action.result
+
+      return {
+        ...state,
+        loading: 'FEED_FULFILLED',
+        feedoList: [
+          ...feedoList,
+          data
+        ]
       }
     }
     default:
