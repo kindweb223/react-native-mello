@@ -148,7 +148,7 @@ class HomeScreen extends React.Component {
   handleArchiveFeed = (feedId) => {
     this.setState({ isLongHoldMenuVisible: false })
     this.setState({ isArchive: true, toasterTitle: 'Feedo archived', feedId })
-    this.props.addDummyFeed({ feedId, flag: 'archived' })
+    this.props.addDummyFeed({ feedId, flag: 'archive' })
   }
 
   archiveFeed = (feedId) => {
