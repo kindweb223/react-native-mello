@@ -34,7 +34,24 @@ const styles = StyleSheet.create({
     marginVertical: 10,
   },
   normalHeader: {
-    height: NAV_BAR_HEIGHT
+    height: NAV_BAR_HEIGHT,
+    justifyContent: 'center',
+    alignItems: 'center',
+    paddingHorizontal: CONSTANTS.PADDING
+  },
+  headerTitleView: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'flex-end',
+    height: '50%',
+    width: '100%',
+  },
+  headerTitle: {
+    fontSize: 28,
+    fontWeight: 'bold',
+    color: COLORS.PRIMARY_BLACK,
+    marginRight: 10,
+    flex: 1
   },
   miniNavView: {
     width: '100%',
