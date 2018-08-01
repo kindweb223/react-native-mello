@@ -4,8 +4,6 @@ import {
   Text,
   TouchableOpacity,
   FlatList,
-  ScrollView,
-  Alert,
 } from 'react-native'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
@@ -37,7 +35,6 @@ class TagCreateScreen extends React.Component {
     super(props);
     this.state = {
       loading: false,
-      // tags: this.props.feed.feed.tags,
       filteredUserTags: [],
       userTags: [],
       currentTagName: '',
@@ -61,9 +58,8 @@ class TagCreateScreen extends React.Component {
       // success in getting user tags
       this.setState({
         userTags: nextProps.feed.userTags,
-        // tags: nextProps.feed.feed.tags,
       }, () => {
-        this.filterUnusedTags(nextProps.feed.feed.tags);
+        this.filterUnusedTags(nextProps.feed.currentFeed.tags);
       });
     } else if (this.props.feed.status !== types.CREATE_USER_TAG_PENDING && nextProps.feed.status === types.CREATE_USER_TAG_PENDING) {
       // getting user tags
@@ -73,7 +69,6 @@ class TagCreateScreen extends React.Component {
       loading = true;
       this.setState({
         userTags: nextProps.feed.userTags,
-        // tags: nextProps.feed.feed.tags,
       }, () => {
         this.onCreateTag(this.newTagName);
       });
@@ -82,13 +77,13 @@ class TagCreateScreen extends React.Component {
       loading = true;
     } else if (this.props.feed.status !== types.ADD_HUNT_TAG_FULFILLED && nextProps.feed.status === types.ADD_HUNT_TAG_FULFILLED) {
       // success in getting user tags
-      this.filterUnusedTags(nextProps.feed.feed.tags);
+      this.filterUnusedTags(nextProps.feed.currentFeed.tags);
     } else if (this.props.feed.status !== types.REMOVE_HUNT_TAG_PENDING && nextProps.feed.status === types.REMOVE_HUNT_TAG_PENDING) {
       // getting user tags
       loading = true;
     } else if (this.props.feed.status !== types.REMOVE_HUNT_TAG_FULFILLED && nextProps.feed.status === types.REMOVE_HUNT_TAG_FULFILLED) {
       // success in getting user tags
-      this.filterUnusedTags(nextProps.feed.feed.tags);
+      this.filterUnusedTags(nextProps.feed.currentFeed.tags);
     }
 
     this.setState({
@@ -144,7 +139,7 @@ class TagCreateScreen extends React.Component {
   }
 
   onRemoveTag(tag) {
-    this.props.removeTagFromHunt(this.props.feed.feed.id, tag.id);
+    this.props.removeTagFromHunt(this.props.feed.currentFeed.id, tag.id);
   }
 
   onChangeText(text) {
@@ -154,7 +149,7 @@ class TagCreateScreen extends React.Component {
   }
 
   onSelectItem(tag) {
-    this.props.addTagToHunt(this.props.feed.feed.id, tag.id);
+    this.props.addTagToHunt(this.props.feed.currentFeed.id, tag.id);
   }
 
   get renderTopContent() {
@@ -194,7 +189,7 @@ class TagCreateScreen extends React.Component {
           >
             <View style={styles.mainContentContainer}>
               <Tags
-                tags={this.props.feed.feed.tags}
+                tags={this.props.feed.currentFeed.tags}
                 onCreateTag={(text) => this.onCreateTag(text)}
                 onChangeText={(text) => this.onChangeText(text)}
                 onRemoveTag={(tag) => this.onRemoveTag(tag)}

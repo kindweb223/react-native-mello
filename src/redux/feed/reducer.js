@@ -4,7 +4,7 @@ import * as types from './types'
 const initialState = {
   status: null,
   error: null,
-  feed: {},
+  currentFeed: {},
   fileUploadUrl: {},
   userTags: [],
 };
@@ -17,7 +17,7 @@ export default function feed(state = initialState, action = {}) {
       return {
         ...state,
         status: types.CREATE_FEED_PENDING,
-        feed: {},
+        currentFeed: {},
         error: null,
       }
     case types.CREATE_FEED_FULFILLED: {
@@ -25,7 +25,7 @@ export default function feed(state = initialState, action = {}) {
       return {
         ...state,
         status: types.CREATE_FEED_FULFILLED,
-        feed: data,
+        currentFeed: data,
       }
     }
     case types.CREATE_FEED_REJECTED: {
@@ -49,7 +49,7 @@ export default function feed(state = initialState, action = {}) {
       return {
         ...state,
         status: types.UPDATE_FEED_FULFILLED,
-        feed: data,
+        currentFeed: data,
       }
     }
     case types.UPDATE_FEED_REJECTED: {
@@ -72,7 +72,7 @@ export default function feed(state = initialState, action = {}) {
       return {
         ...state,
         status: types.DELETE_FEED_FULFILLED,
-        feed: {},
+        currentFeed: {},
       }
     }
     case types.DELETE_FEED_REJECTED: {
@@ -139,13 +139,13 @@ export default function feed(state = initialState, action = {}) {
       }
     case types.ADD_FILE_FULFILLED: {
       const { data } = action.result
-      let files = files = state.feed.files || [];
+      let files = files = state.currentFeed.files || [];
       files.unshift(data);
       return {
         ...state,
         status: types.ADD_FILE_FULFILLED,
-        feed: {
-          ...state.feed,
+        currentFeed: {
+          ...state.currentFeed,
           files,
         }
       }
@@ -168,12 +168,12 @@ export default function feed(state = initialState, action = {}) {
       }
     case types.DELETE_FILE_FULFILLED: {
       const fileId = action.payload;
-      const files = _.filter(state.feed.files, file => file.id !== fileId);
+      const files = _.filter(state.currentFeed.files, file => file.id !== fileId);
       return {
         ...state,
         status: types.DELETE_FILE_FULFILLED,
-        feed: {
-          ...state.feed,
+        currentFeed: {
+          ...state.currentFeed,
           files,
         }
       }
@@ -188,7 +188,7 @@ export default function feed(state = initialState, action = {}) {
     }
 
     // get user tags
-    case types.GET_USER_TAGS_PENDING:
+    case types.GET_USER_TAGS_PENDING: 
       return {
         ...state,
         status: types.GET_USER_TAGS_PENDING,
@@ -237,7 +237,7 @@ export default function feed(state = initialState, action = {}) {
         error: data,
       }
     }
-  
+
     // add a tag to a hunt
     case types.ADD_HUNT_TAG_PENDING:
       return {
@@ -248,13 +248,13 @@ export default function feed(state = initialState, action = {}) {
     case types.ADD_HUNT_TAG_FULFILLED: {
       const tagId = action.payload;
       const tag = _.find(state.userTags, tag => tag.id === tagId);
-      let tags = state.feed.tags || [];
+      let tags = state.currentFeed.tags || [];
       tags.push(tag);
       return {
         ...state,
         status: types.ADD_HUNT_TAG_FULFILLED,
-        feed: {
-          ...state.feed,
+        currentFeed: {
+          ...state.currentFeed,
           tags,
         }
       }
@@ -277,12 +277,12 @@ export default function feed(state = initialState, action = {}) {
       }
     case types.REMOVE_HUNT_TAG_FULFILLED: {
       const tagId = action.payload;
-      const tags = _.filter(state.feed.tags, tag => tag.id !== tagId);
+      const tags = _.filter(state.currentFeed.tags, tag => tag.id !== tagId);
       return {
         ...state,
         status: types.REMOVE_HUNT_TAG_FULFILLED,
-        feed: {
-          ...state.feed,
+        currentFeed: {
+          ...state.currentFeed,
           tags,
         }
       }
@@ -299,6 +299,7 @@ export default function feed(state = initialState, action = {}) {
 
 
 
+    
     /**
      * Get Feed Detail
      */
@@ -313,7 +314,7 @@ export default function feed(state = initialState, action = {}) {
       return {
         ...state,
         status: types.GET_FEED_DETAIL_FULFILLED,
-        feed: data,
+        currentFeed: data,
       }
     }
     case types.GET_FEED_DETAIL_REJECTED: {

@@ -19,7 +19,6 @@ import { Actions } from 'react-native-router-flux'
 import ImagePicker from 'react-native-image-picker';
 import { DocumentPicker, DocumentPickerUtil } from 'react-native-document-picker';
 import Permissions from 'react-native-permissions'
-
 import * as mime from 'react-native-mime-types';
 import { filter } from 'lodash'
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
@@ -97,7 +96,7 @@ class NewFeedScreen extends React.Component {
       loading = true;
       let {
         id, 
-      } = this.props.feed.feed;
+      } = this.props.feed.currentFeed;
       const {
         objectKey
       } = this.props.feed.fileUploadUrl;
@@ -162,7 +161,7 @@ class NewFeedScreen extends React.Component {
     }
   }
 
-  onCreate() {
+  onUpdate() {
     if (this.state.feedName === '') {
       Alert.alert('', 'Please input your feed name.', [
         {text: 'Close'},
@@ -174,7 +173,7 @@ class NewFeedScreen extends React.Component {
       id, 
       tags,
       files,
-    } = this.props.feed.feed;
+    } = this.props.feed.currentFeed;
     this.props.updateFeed(id, this.state.feedName, this.state.comments, tags, files);
   }
 
@@ -208,8 +207,8 @@ class NewFeedScreen extends React.Component {
 
   onTapLeaveActionSheet(index) {
     if (index === 1) {
-      if (this.props.feed.feed.id) {
-        this.props.deleteFeed(this.props.feed.feed.id)
+      if (this.props.feed.currentFeed.id) {
+        this.props.deleteFeed(this.props.feed.currentFeed.id)
       } else {
         this.onClose();
       }
@@ -245,8 +244,8 @@ class NewFeedScreen extends React.Component {
     this.selectedFileMimeType = mime.lookup(file.uri);
     this.selectedFileName = file.fileName;
     this.selectedFileType = type;
-    if (this.props.feed.feed.id) {
-      this.props.getFileUploadUrl(this.props.feed.feed.id);
+    if (this.props.feed.currentFeed.id) {
+      this.props.getFileUploadUrl(this.props.feed.currentFeed.id);
     }
   }
 
@@ -320,7 +319,7 @@ class NewFeedScreen extends React.Component {
         <TouchableOpacity 
           style={styles.createButtonWapper}
           activeOpacity={0.6}
-          onPress={this.onCreate.bind(this)}
+          onPress={this.onUpdate.bind(this)}
         >
           <Text style={styles.textButton}>Create</Text>
         </TouchableOpacity>
@@ -331,14 +330,14 @@ class NewFeedScreen extends React.Component {
   onRemoveImage(fileId) {
     const {
       id,
-    } = this.props.feed.feed;
+    } = this.props.feed.currentFeed;
     this.props.deleteFile(id, fileId);
   }
 
   get renderImages() {
     const {
       files
-    } = this.props.feed.feed;
+    } = this.props.feed.currentFeed;
     const imageFiles = filter(files, file => file.fileType === 'MEDIA');
     return (
       <NewFeedImage 
@@ -351,7 +350,7 @@ class NewFeedScreen extends React.Component {
   get renderDocuments() {
     const {
       files
-    } = this.props.feed.feed;
+    } = this.props.feed.currentFeed;
     const documentFiles = filter(files, file => file.fileType === 'FILE');
     return (
       <NewFeedDocument 
@@ -380,7 +379,7 @@ class NewFeedScreen extends React.Component {
           onChangeText={(value) => this.setState({comments: value})}
         />
         <Tags
-          tags={this.props.feed.feed.tags}
+          tags={this.props.feed.currentFeed.tags}
           readonly={true}
           onPressTag={(index, tag) => this.onOpenCreationTag()}
           containerStyle={{
@@ -432,7 +431,7 @@ class NewFeedScreen extends React.Component {
     );
   }
 
-  get renderFeed () {
+  get renderFeed() {
     const animatedMove  = this.animatedShow.interpolate({
       inputRange: [0, 1],
       outputRange: [CONSTANTS.SCREEN_HEIGHT, 0],
@@ -542,9 +541,6 @@ NewFeedScreen.defaultProps = {
 NewFeedScreen.propTypes = {
   feed: PropTypes.object,
   onClose: PropTypes.func,
-  createFeed: PropTypes.func,
-  updateFeed: PropTypes.func,
-  deleteFeed: PropTypes.func,
 }
 
 

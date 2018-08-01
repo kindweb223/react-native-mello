@@ -25,6 +25,10 @@ import { getFeedDetailData } from '../../redux/feedo/actions'
 import styles from './styles'
 const EMPTY_ICON = require('../../../assets/images/empty_state/asset-emptystate.png')
 
+import CONSTANTS from '../../service/constants'
+import NewCardScreen from '../NewCardScreen'
+ 
+
 class FeedDetailScreen extends React.Component {
   constructor(props) {
     super(props);
@@ -32,7 +36,9 @@ class FeedDetailScreen extends React.Component {
       scrollY: new Animated.Value(0),
       feedDetailData: {},
       loading: false,
+      isVisibleNewCard: false,
     };
+    this.animatedOpacity = new Animated.Value(0);
   }
 
   componentDidMount() {
@@ -64,6 +70,50 @@ class FeedDetailScreen extends React.Component {
       return true
     }
     return false
+  }
+
+  onOpenNewCardModal() {
+    this.setState({
+      isVisibleNewCard: true,
+    }, () => {
+      this.animatedOpacity.setValue(0);
+      Animated.timing(this.animatedOpacity, {
+        toValue: 1,
+        duration: CONSTANTS.ANIMATEION_MILLI_SECONDS,
+      }).start();
+    });
+
+  }
+
+  onCloseNewFeedModal() {
+    this.animatedOpacity.setValue(1);
+    Animated.timing(this.animatedOpacity, {
+      toValue: 0,
+      duration: CONSTANTS.ANIMATEION_MILLI_SECONDS,
+    }).start(() => {
+      this.setState({ 
+        isVisibleNewCard: false,
+      });
+    });
+  }
+
+  get renderNewCardModal() {
+    if (!this.state.isVisibleNewCard) {
+      return;
+    }
+
+    return (
+      <Animated.View 
+        style={[
+          styles.modalContainer,
+          {opacity: this.animatedOpacity}
+        ]}
+      >
+        <NewCardScreen 
+          onClose={() => this.onCloseNewFeedModal()}
+        />  
+      </Animated.View>
+    );
   }
 
   render () {
@@ -179,7 +229,10 @@ class FeedDetailScreen extends React.Component {
 
         </View>
 
-        <DashboardActionBar />
+        <DashboardActionBar 
+          onAddFeed={this.onOpenNewCardModal.bind(this)}
+        />
+        {this.renderNewCardModal}
       </SafeAreaView>
     )
   }

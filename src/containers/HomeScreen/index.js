@@ -274,7 +274,7 @@ class HomeScreen extends React.Component {
     }
   }
 
-  onOpenCreateNewFeedModal() {
+  onOpenNewFeedModal() {
     this.setState({
       isVisibleCreateNewFeedModal: true,
     }, () => {
@@ -325,22 +325,24 @@ class HomeScreen extends React.Component {
       return;
     }
     return (
-      <Animated.View style={[
-        styles.modalContainer,
-        {opacity: this.animatedOpacity}
-      ]}>
+      <Animated.View 
+        style={[
+          styles.modalContainer,
+          {opacity: this.animatedOpacity}
+        ]}
+      >
         {
           this.state.isVisibleCreateNewFeedModal && 
-          <CreateNewFeedComponent 
-            onSelect={(type) => this.onSelectNewFeedType(type)}
-            onClose={() => this.onCloseCreateNewFeedModal()}
-          />
+            <CreateNewFeedComponent 
+              onSelect={(type) => this.onSelectNewFeedType(type)}
+              onClose={() => this.onCloseCreateNewFeedModal()}
+            />
         }
         {
           this.state.isVisibleNewFeed && 
-          <NewFeedScreen 
-            onClose={() => this.onCloseNewFeedModal()}
-          />  
+            <NewFeedScreen 
+              onClose={() => this.onCloseNewFeedModal()}
+            />  
         }
       </Animated.View>
     );
@@ -459,7 +461,7 @@ class HomeScreen extends React.Component {
         {!this.state.isLongHoldMenuVisible && (
           <DashboardActionBar 
             filtering={!emptyState} 
-            onAddFeed={this.onOpenCreateNewFeedModal.bind(this)}
+            onAddFeed={this.onOpenNewFeedModal.bind(this)}
           />
         )}
 
