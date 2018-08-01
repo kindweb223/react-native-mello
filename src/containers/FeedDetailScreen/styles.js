@@ -1,4 +1,4 @@
-import { StyleSheet } from 'react-native'
+import { StyleSheet, Platform } from 'react-native'
 import CONSTANTS from '../../service/constants'
 import COLORS from '../../service/colors'
 const NAV_BAR_HEIGHT = 60
@@ -95,10 +95,30 @@ const styles = StyleSheet.create({
   settingView: {
     height: '100%',
     justifyContent: 'center',
-    alignItems: 'center',
+    alignItems: 'flex-end',
     width: 100
   },
-  
+  settingMenuView: {
+    borderRadius: 20,
+    backgroundColor: '#fff',
+    width: 122,
+    height: 260,
+    paddingTop: 10,
+    position: 'absolute',
+    right: CONSTANTS.PADDING,
+    zIndex: 0,
+    ...Platform.select({
+      ios: {
+        shadowColor: 'black',
+        shadowOffset: { height: 5 },
+        shadowOpacity: 0.3,
+        shadowRadius: 5
+      },
+      android: {
+        elevation: 20
+      }
+    })
+  },  
 })
 
 export default styles

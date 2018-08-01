@@ -8,7 +8,7 @@ import {
   Image,
   Animated,
   ActivityIndicator,
-  TouchableOpacity
+  TouchableOpacity,
 } from 'react-native'
 
 import { connect } from 'react-redux'
@@ -21,8 +21,10 @@ import FeedCardComponent from '../../components/FeedCardComponent'
 import FeedCollapseComponent from '../../components/FeedCollapseComponent'
 import AvatarPileComponent from '../../components/AvatarPileComponent'
 import FeedNavbarSettingComponent from '../../components/FeedNavbarSettingComponent'
+import FeedControlMenuComponent from '../../components/FeedControlMenuComponent'
 import { getFeedDetailData } from '../../redux/feedo/actions'
 import styles from './styles'
+
 const EMPTY_ICON = require('../../../assets/images/empty_state/asset-emptystate.png')
 
 class FeedDetailScreen extends React.Component {
@@ -32,7 +34,11 @@ class FeedDetailScreen extends React.Component {
       scrollY: new Animated.Value(0),
       feedDetailData: {},
       loading: false,
+      openMenu: false
     };
+
+    this.menuOpacity = new Animated.Value(0)
+    this.menuZIndex = new Animated.Value(0)
   }
 
   componentDidMount() {
@@ -59,6 +65,36 @@ class FeedDetailScreen extends React.Component {
     Actions.pop()
   }
 
+  handleSetting = () => {
+    const { openMenu } = this.state
+
+    if (openMenu) {
+      this.menuOpacity.setValue(1);
+      Animated.timing(this.menuOpacity, {
+        toValue: 0,
+        duration: 50
+      }).start(() => {
+        this.menuZIndex.setValue(12);
+        Animated.timing(this.menuZIndex, {
+          toValue: 0
+        }).start()
+      })
+    } else {
+      this.menuZIndex.setValue(0);
+      Animated.timing(this.menuZIndex, {
+        toValue: 12
+      }).start(() => {
+        this.menuOpacity.setValue(0);
+        Animated.timing(this.menuOpacity, {
+          toValue: 1,
+          duration: 100
+        }).start()
+      })
+    }
+
+    this.setState({ openMenu: !openMenu })
+  }
+
   checkOwner = (data) =>{
     if (data.invitees.length === 1 && data.owner.id === data.invitees[0].userProfile.id) {
       return true
@@ -68,7 +104,7 @@ class FeedDetailScreen extends React.Component {
 
   render () {
     const { data } = this.props
-    const { feedDetailData, loading } = this.state
+    const { feedDetailData, loading, openMenu } = this.state
 
     const navbarBackground = this.state.scrollY.interpolate({
       inputRange: [40, 41],
@@ -79,6 +115,12 @@ class FeedDetailScreen extends React.Component {
     const settingViewOpacity = this.state.scrollY.interpolate({
       inputRange: [60, 90],
       outputRange: [0, 1],
+      extrapolate: 'clamp'
+    })
+
+    const settingMenuY = this.state.scrollY.interpolate({
+      inputRange: [0, 35],
+      outputRange: [120, 60],
       extrapolate: 'clamp'
     })
 
@@ -123,6 +165,13 @@ class FeedDetailScreen extends React.Component {
     return (
       <SafeAreaView style={styles.safeArea}>
         <View style={styles.container}>
+
+          <Animated.View
+            style={[styles.settingMenuView, { opacity: this.menuOpacity, zIndex: this.menuZIndex, top: settingMenuY }]}
+          >
+            <FeedControlMenuComponent handleSettingItem={item => {}} />
+          </Animated.View>
+
           <Animated.View style={[styles.miniNavView, { backgroundColor: navbarBackground }]}>
             <TouchableOpacity onPress={this.backToDashboard}>
               <View style={styles.backView}>
@@ -134,7 +183,7 @@ class FeedDetailScreen extends React.Component {
                 <AvatarPileComponent avatars={avatars} />
               </Animated.View>
               <Animated.View style={[styles.settingView, { opacity: settingViewOpacity }]}>
-                <FeedNavbarSettingComponent />
+                <FeedNavbarSettingComponent handleSetting={() => this.handleSetting()} />
               </Animated.View>
             </View>
           </Animated.View>
@@ -147,12 +196,12 @@ class FeedDetailScreen extends React.Component {
                 [{ nativeEvent: { contentOffset: { y: this.state.scrollY } } }]
               )
             }
-          >
+          >       
             <Animated.View style={[styles.normalHeader, { opacity: normalHeaderOpacity }]}>
               <View key="2" style={styles.headerTitleView}>
                 <Text style={styles.headerTitle} numberOfLines={1} ellipsizeMode="tail">{data.headline}</Text>
                 <View>
-                  <FeedNavbarSettingComponent />
+                  <FeedNavbarSettingComponent handleSetting={this.handleSetting} />
                 </View>
               </View>
             </Animated.View>
