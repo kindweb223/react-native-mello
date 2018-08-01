@@ -16,7 +16,6 @@ import PropTypes from 'prop-types'
 import { isEmpty } from 'lodash'
 import { Actions } from 'react-native-router-flux'
 import Ionicons from 'react-native-vector-icons/Ionicons'
-import FeedNavigationBar from '../../navigations/FeedNavigationBar'
 import DashboardActionBar from '../../navigations/DashboardActionBar'
 import FeedCardComponent from '../../components/FeedCardComponent'
 import FeedCollapseComponent from '../../components/FeedCollapseComponent'
@@ -150,7 +149,12 @@ class FeedDetailScreen extends React.Component {
             }
           >
             <Animated.View style={[styles.normalHeader, { opacity: normalHeaderOpacity }]}>
-              <FeedNavigationBar title={data.headline} data={feedDetailData} />
+              <View key="2" style={styles.headerTitleView}>
+                <Text style={styles.headerTitle} numberOfLines={1} ellipsizeMode="tail">{data.headline}</Text>
+                <View>
+                  <FeedNavbarSettingComponent />
+                </View>
+              </View>
             </Animated.View>
             
               <View style={styles.detailView}>
