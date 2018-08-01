@@ -8,7 +8,7 @@ import {
   Image,
   Animated,
   ActivityIndicator,
-  TouchableOpacity
+  TouchableOpacity,
 } from 'react-native'
 
 import { connect } from 'react-redux'
@@ -16,14 +16,23 @@ import PropTypes from 'prop-types'
 import { isEmpty } from 'lodash'
 import { Actions } from 'react-native-router-flux'
 import Ionicons from 'react-native-vector-icons/Ionicons'
+import { ActionSheetCustom as ActionSheet } from 'react-native-actionsheet'
 import DashboardActionBar from '../../navigations/DashboardActionBar'
 import FeedCardComponent from '../../components/FeedCardComponent'
 import FeedCollapseComponent from '../../components/FeedCollapseComponent'
 import AvatarPileComponent from '../../components/AvatarPileComponent'
 import FeedNavbarSettingComponent from '../../components/FeedNavbarSettingComponent'
-import { getFeedDetailData } from '../../redux/feedo/actions'
+import FeedControlMenuComponent from '../../components/FeedControlMenuComponent'
+import { getFeedDetailData, setFeedDetailAction } from '../../redux/feedo/actions'
+import COLORS from '../../service/colors'
 import styles from './styles'
+import actionSheetStyles from '../FeedLongHoldMenuScreen/styles'
+
 const EMPTY_ICON = require('../../../assets/images/empty_state/asset-emptystate.png')
+const ACTIONSHEET_OPTIONS = [
+  <Text key="0" style={actionSheetStyles.actionButtonText}>Delete feed</Text>,
+  'Cancel'
+]
 
 class FeedDetailScreen extends React.Component {
   constructor(props) {
@@ -32,7 +41,11 @@ class FeedDetailScreen extends React.Component {
       scrollY: new Animated.Value(0),
       feedDetailData: {},
       loading: false,
+      openMenu: false
     };
+
+    this.menuOpacity = new Animated.Value(0)
+    this.menuZIndex = new Animated.Value(0)
   }
 
   componentDidMount() {
@@ -59,6 +72,69 @@ class FeedDetailScreen extends React.Component {
     Actions.pop()
   }
 
+  handleSetting = () => {
+    const { openMenu } = this.state
+
+    if (openMenu) {
+      this.menuOpacity.setValue(1);
+      Animated.timing(this.menuOpacity, {
+        toValue: 0,
+        duration: 100
+      }).start(() => {
+        this.menuZIndex.setValue(12);
+        Animated.timing(this.menuZIndex, {
+          toValue: 0
+        }).start()
+      })
+    } else {
+      this.menuZIndex.setValue(0);
+      Animated.timing(this.menuZIndex, {
+        toValue: 12
+      }).start(() => {
+        this.menuOpacity.setValue(0);
+        Animated.timing(this.menuOpacity, {
+          toValue: 1,
+          duration: 100
+        }).start()
+      })
+    }
+
+    this.setState({ openMenu: !openMenu })
+  }
+
+  handleSettingItem = (item) => {
+    switch(item) {
+      case 'Pin':
+        return
+      case 'Unpin':
+        return
+      case 'Share':
+        return
+      case 'Delete':
+        this.ActionSheet.show()
+        return
+      case 'Archive':
+        this.props.handleArchiveFeed(this.props.feedData.id)
+        return
+      case 'Duplicate':
+        this.props.handleDuplicateFeed(this.props.feedData.id)
+        return
+    }
+  }
+
+  onTapActionSheet = (index) => {
+    if (index === 0) {
+      this.handleSetting()
+
+      this.props.setFeedDetailAction({
+        action: 'Delete',
+        feedId: this.state.feedDetailData.id
+      })
+
+      Actions.pop()
+    }
+  }
+
   checkOwner = (data) =>{
     if (data.invitees.length === 1 && data.owner.id === data.invitees[0].userProfile.id) {
       return true
@@ -79,6 +155,12 @@ class FeedDetailScreen extends React.Component {
     const settingViewOpacity = this.state.scrollY.interpolate({
       inputRange: [60, 90],
       outputRange: [0, 1],
+      extrapolate: 'clamp'
+    })
+
+    const settingMenuY = this.state.scrollY.interpolate({
+      inputRange: [0, 35],
+      outputRange: [120, 60],
       extrapolate: 'clamp'
     })
 
@@ -123,6 +205,13 @@ class FeedDetailScreen extends React.Component {
     return (
       <SafeAreaView style={styles.safeArea}>
         <View style={styles.container}>
+
+          <Animated.View
+            style={[styles.settingMenuView, { opacity: this.menuOpacity, zIndex: this.menuZIndex, top: settingMenuY }]}
+          >
+            <FeedControlMenuComponent handleSettingItem={item => this.handleSettingItem(item)} data={feedDetailData} />
+          </Animated.View>
+
           <Animated.View style={[styles.miniNavView, { backgroundColor: navbarBackground }]}>
             <TouchableOpacity onPress={this.backToDashboard}>
               <View style={styles.backView}>
@@ -134,7 +223,7 @@ class FeedDetailScreen extends React.Component {
                 <AvatarPileComponent avatars={avatars} />
               </Animated.View>
               <Animated.View style={[styles.settingView, { opacity: settingViewOpacity }]}>
-                <FeedNavbarSettingComponent />
+                <FeedNavbarSettingComponent handleSetting={() => this.handleSetting()} />
               </Animated.View>
             </View>
           </Animated.View>
@@ -147,12 +236,12 @@ class FeedDetailScreen extends React.Component {
                 [{ nativeEvent: { contentOffset: { y: this.state.scrollY } } }]
               )
             }
-          >
+          >       
             <Animated.View style={[styles.normalHeader, { opacity: normalHeaderOpacity }]}>
               <View key="2" style={styles.headerTitleView}>
                 <Text style={styles.headerTitle} numberOfLines={1} ellipsizeMode="tail">{data.headline}</Text>
                 <View>
-                  <FeedNavbarSettingComponent />
+                  <FeedNavbarSettingComponent handleSetting={this.handleSetting} />
                 </View>
               </View>
             </Animated.View>
@@ -180,6 +269,17 @@ class FeedDetailScreen extends React.Component {
         </View>
 
         <DashboardActionBar />
+
+        <ActionSheet
+          ref={o => this.ActionSheet = o}
+          title={<Text style={actionSheetStyles.titleText}>Are you sure you want to delete this feed, everything will be gone ...</Text>}
+          options={ACTIONSHEET_OPTIONS}
+          cancelButtonIndex={1}
+          destructiveButtonIndex={2}
+          tintColor={COLORS.PURPLE}
+          styles={actionSheetStyles}
+          onPress={(index) => this.onTapActionSheet(index)}
+        />
       </SafeAreaView>
     )
   }
@@ -191,17 +291,20 @@ const mapStateToProps = ({ feedo }) => ({
 
 const mapDispatchToProps = dispatch => ({
   getFeedDetailData: data => dispatch(getFeedDetailData(data)),
+  setFeedDetailAction: data => dispatch(setFeedDetailAction(data))
 })
 
 FeedDetailScreen.defaultProps = {
   data: [],
-  getFeedDetailData: () => {}
+  getFeedDetailData: () => {},
+  setFeedDetailAction: () => {}
 }
 
 FeedDetailScreen.propTypes = {
   data: PropTypes.objectOf(PropTypes.any),
   feedo: PropTypes.objectOf(PropTypes.any),
-  getFeedDetailData: PropTypes.func
+  getFeedDetailData: PropTypes.func,
+  setFeedDetailAction: PropTypes.func
 }
 
 export default connect(
