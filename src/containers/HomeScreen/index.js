@@ -140,6 +140,11 @@ class HomeScreen extends React.Component {
         this.setState({ isShowToaster: true })
         this.handleDeleteFeed(this.props.feedo.feedDetailAction.feedId)
       }
+
+      if (this.props.feedo.feedDetailAction.action === 'Archive') {
+        this.setState({ isShowToaster: true })
+        this.handleArchiveFeed(this.props.feedo.feedDetailAction.feedId)
+      }
     }
   }
 
@@ -158,6 +163,11 @@ class HomeScreen extends React.Component {
     this.setState({ isLongHoldMenuVisible: false })
     this.setState({ isArchive: true, toasterTitle: 'Feedo archived', feedId })
     this.props.addDummyFeed({ feedId, flag: 'archive' })
+
+    setTimeout(() => {
+      this.setState({ isShowToaster: false })
+      this.archiveFeed(feedId)
+    }, TOASTER_DURATION)
   }
 
   archiveFeed = (feedId) => {
@@ -257,13 +267,6 @@ class HomeScreen extends React.Component {
         this.setState({ isShowToaster: false })
         this.duplicateFeed()
       }, TOASTER_DURATION + 3)
-    }
-
-    if (isArchive) {
-      setTimeout(() => {
-        this.setState({ isShowToaster: false })
-        this.archiveFeed(feedId)
-      }, TOASTER_DURATION)
     }
 
     if (isPin) {
