@@ -145,3 +145,10 @@ export const removeDummyFeed = (data) => {
     payload: data
   };
 }
+
+export const setFeedDetailAction = (data) => {
+  return {
+    type: types.SET_FEED_DETAIL_ACTION,
+    payload: data
+  }
+}
