@@ -46,7 +46,8 @@ import {
   duplicateFeed,
   deleteDuplicatedFeed,
   addDummyFeed,
-  removeDummyFeed
+  removeDummyFeed,
+  setFeedDetailAction
 } from '../../redux/feedo/actions'
 
 const TAB_STYLES = {
@@ -85,7 +86,7 @@ class HomeScreen extends React.Component {
 
   static getDerivedStateFromProps(nextProps, prevState) {
     const { feedo } = nextProps
-  
+
     if ((prevState.loading === true && (feedo.loading === 'GET_FEEDO_LIST_FULFILLED' || feedo.loading === 'GET_FEEDO_LIST_REJECTED')) ||
       (feedo.loading === 'FEED_FULFILLED') || (feedo.loading === 'DEL_FEED_FULFILLED') || (feedo.loading === 'ARCHIVE_FEED_FULFILLED') ||
       (feedo.loading === 'DUPLICATE_FEED_FULFILLED')) {
@@ -104,7 +105,6 @@ class HomeScreen extends React.Component {
           )
         })
 
-        // feedoList = filter(feedoList, item => item.status === 'PUBLISHED')
         feedoList = orderBy(
           filter(feedoList, item => item.status === 'PUBLISHED'),
           ['pinned.pinned', 'pinned.pinnedDate', 'publishedDate'],
@@ -132,6 +132,15 @@ class HomeScreen extends React.Component {
     }
 
     return null
+  }
+
+  componentDidUpdate(prevProps) {
+    if (this.props.feedo.loading === 'SET_FEED_DETAIL_ACTION' && prevProps.feedo.feedDetailAction !== this.props.feedo.feedDetailAction) {
+      if (this.props.feedo.feedDetailAction.action === 'Delete') {
+        this.setState({ isShowToaster: true })
+        this.handleDeleteFeed(this.props.feedo.feedDetailAction.feedId)
+      }
+    }
   }
 
   onChangeTab = ({ i }) => {
@@ -162,6 +171,11 @@ class HomeScreen extends React.Component {
     this.setState({ isLongHoldMenuVisible: false })
     this.setState({ isDelete: true, toasterTitle: 'Feedo deleted', feedId })
     this.props.addDummyFeed({ feedId, flag: 'delete' })
+
+    setTimeout(() => {
+      this.setState({ isShowToaster: false })
+      this.deleteFeed(feedId)
+    }, TOASTER_DURATION)
   }
 
   deleteFeed = (feedId) => {
@@ -249,13 +263,6 @@ class HomeScreen extends React.Component {
       setTimeout(() => {
         this.setState({ isShowToaster: false })
         this.archiveFeed(feedId)
-      }, TOASTER_DURATION)
-    }
-
-    if (isDelete) {
-      setTimeout(() => {
-        this.setState({ isShowToaster: false })
-        this.deleteFeed(feedId)
       }, TOASTER_DURATION)
     }
 
@@ -369,6 +376,7 @@ class HomeScreen extends React.Component {
 
     return (
       <SafeAreaView style={styles.safeArea}>
+        <View feedAction="null" />
         <View style={styles.container}>
           {Platform.OS === 'ios' && <StatusBar barStyle="dark-content" backgroundColor="blue" />}
           {Platform.OS === 'android' && (
@@ -508,7 +516,8 @@ const mapDispatchToProps = dispatch => ({
   duplicateFeed: (data) => dispatch(duplicateFeed(data)),
   deleteDuplicatedFeed: (data) => dispatch(deleteDuplicatedFeed(data)),
   addDummyFeed: (data) => dispatch(addDummyFeed(data)),
-  removeDummyFeed: (data) => dispatch(removeDummyFeed(data))
+  removeDummyFeed: (data) => dispatch(removeDummyFeed(data)),
+  setFeedDetailAction: (data) => dispatch(setFeedDetailAction(data))
 })
 
 HomeScreen.propTypes = {
@@ -521,7 +530,8 @@ HomeScreen.propTypes = {
   duplicateFeed: PropTypes.func.isRequired,
   deleteDuplicatedFeed: PropTypes.func.isRequired,
   addDummyFeed: PropTypes.func.isRequired,
-  removeDummyFeed: PropTypes.func.isRequired
+  removeDummyFeed: PropTypes.func.isRequired,
+  setFeedDetailAction: PropTypes.func.isRequired
 }
 
 export default connect(

@@ -8,7 +8,8 @@ const initialState = {
   feedoList: null,
   feedDetailData: null,
   pinResult: null,
-  duplicaetdId: null
+  duplicaetdId: null,
+  feedDetailAction: null
 };
 
 export default function feedo(state = initialState, action = {}) {
@@ -324,6 +325,17 @@ export default function feedo(state = initialState, action = {}) {
           ...feedoList,
           data
         ]
+      }
+    }
+    /**
+     * Set Feed detail action
+     */
+    case types.SET_FEED_DETAIL_ACTION: {
+      const { payload } = action
+      return {
+        ...state,
+        loading: types.SET_FEED_DETAIL_ACTION,
+        feedDetailAction: payload
       }
     }
     default:

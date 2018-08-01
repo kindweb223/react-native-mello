@@ -14,16 +14,19 @@ const MENU_ITMS = ['Duplicate', 'Edit', 'Archive', 'Delete']
 
 class FeedControlMenuComponent extends React.Component {
   render() {
+    const { data } = this.props
+
+    const pinText = !data.pinned ? 'Pin' : 'Unpin'
     return (
       <View style={styles.menuContainer}>
-        <TouchableOpacity onPress={this.onPressPin}>
+        <TouchableOpacity onPress={() => this.props.handleSettingItem(pinText)}>
           <View style={styles.buttonView}>
             <Octicons name="pin" style={styles.pinIcon} />
-            <Text style={styles.buttonText}>{this.props.pinFlag ? 'Unpin' : 'Pin'}</Text>
+            <Text style={styles.buttonText}>{pinText}</Text>
           </View>
         </TouchableOpacity>
 
-        <TouchableOpacity onPress={this.onPressShare}>
+        <TouchableOpacity onPress={() => this.props.handleSettingItem('Share')}>
           <View style={styles.buttonView}>
             <Entypo name="share-alternative" style={styles.shareIcon} />
             <Text style={styles.buttonText}>Share</Text>
@@ -33,6 +36,7 @@ class FeedControlMenuComponent extends React.Component {
         <FlatList
           data={MENU_ITMS}
           keyExtractor={item => item}
+          scrollEnabled={false}
           renderItem={({ item }) => (
             <TouchableOpacity
               onPress={() => this.props.handleSettingItem(item)}
@@ -51,13 +55,9 @@ class FeedControlMenuComponent extends React.Component {
   }
 }
 
-FeedControlMenuComponent.defaultProps = {
-  pinFlag: false
-}
-
 FeedControlMenuComponent.propTypes = {
   handleSettingItem: PropTypes.func.isRequired,
-  pinFlag: PropTypes.bool.isRequired
+  data: PropTypes.objectOf(PropTypes.any).isRequired
 }
 
 export default FeedControlMenuComponent
