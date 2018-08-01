@@ -140,6 +140,11 @@ class HomeScreen extends React.Component {
         this.setState({ isShowToaster: true })
         this.handleDeleteFeed(this.props.feedo.feedDetailAction.feedId)
       }
+
+      if (this.props.feedo.feedDetailAction.action === 'Duplicate') {
+        this.setState({ isShowToaster: true })
+        this.handleDuplicateFeed(this.props.feedo.feedDetailAction.feedId)
+      }
     }
   }
 
@@ -217,6 +222,11 @@ class HomeScreen extends React.Component {
     this.setState({ isLongHoldMenuVisible: false })
     this.setState({ isDuplicate: true, toasterTitle: 'Feed duplicated', feedId })
     this.props.duplicateFeed(feedId)
+
+    setTimeout(() => {
+      this.setState({ isShowToaster: false })
+      this.duplicateFeed()
+    }, TOASTER_DURATION + 5)
   }
   
   duplicateFeed = () => {
@@ -250,13 +260,6 @@ class HomeScreen extends React.Component {
 
     if (isArchive || isDelete || isPin || isUnPin || isDuplicate) {
       this.setState({ isShowToaster: true })
-    }
-
-    if (isDuplicate) {
-      setTimeout(() => {
-        this.setState({ isShowToaster: false })
-        this.duplicateFeed()
-      }, TOASTER_DURATION + 3)
     }
 
     if (isArchive) {

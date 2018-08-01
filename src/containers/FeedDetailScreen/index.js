@@ -114,10 +114,16 @@ class FeedDetailScreen extends React.Component {
         this.ActionSheet.show()
         return
       case 'Archive':
-        this.props.handleArchiveFeed(this.props.feedData.id)
         return
       case 'Duplicate':
-        this.props.handleDuplicateFeed(this.props.feedData.id)
+        this.handleSetting()
+        this.props.setFeedDetailAction({
+          action: 'Duplicate',
+          feedId: this.props.data.id
+        })
+        Actions.pop()
+        return
+      default:
         return
     }
   }
@@ -128,7 +134,7 @@ class FeedDetailScreen extends React.Component {
 
       this.props.setFeedDetailAction({
         action: 'Delete',
-        feedId: this.state.feedDetailData.id
+        feedId: this.props.data.id
       })
 
       Actions.pop()
