@@ -239,7 +239,7 @@ export default function feedo(state = initialState, action = {}) {
           deleteFeed: currentFeed,
           feedoList: restFeedoList
         }
-      } else if (flag === 'archived') {
+      } else if (flag === 'archive') {
         return {
           ...state,
           loading: types.ARCHIVE_FEED_FULFILLED,
@@ -293,7 +293,7 @@ export default function feedo(state = initialState, action = {}) {
           ],
           deleteFeed: null,
         }
-      } else if (flag === 'archived') {
+      } else if (flag === 'archive') {
         return {
           ...state,
           loading: types.ARCHIVE_FEED_FULFILLED,
