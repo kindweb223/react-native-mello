@@ -30,12 +30,12 @@ class ImageSliderScreen extends React.Component {
   }
 
   UNSAFE_componentWillReceiveProps(nextProps) {
-    console.log('UNSAFE_componentWillReceiveProps : ', nextProps.feed);
+    console.log('UNSAFE_componentWillReceiveProps : ', nextProps.feedo);
     let loading = false;
-    if (this.props.feed.loading !== types.DELETE_FILE_PENDING && nextProps.feed.loading === types.DELETE_FILE_PENDING) {
+    if (this.props.feedo.loading !== types.DELETE_FILE_PENDING && nextProps.feedo.loading === types.DELETE_FILE_PENDING) {
       // deleting a file
       loading = true;
-    } else if (this.props.feed.loading !== types.DELETE_FILE_FULFILLED && nextProps.feed.loading === types.DELETE_FILE_FULFILLED) {
+    } else if (this.props.feedo.loading !== types.DELETE_FILE_FULFILLED && nextProps.feedo.loading === types.DELETE_FILE_FULFILLED) {
       // fullfilled in deleting a file
     }
 
@@ -44,12 +44,12 @@ class ImageSliderScreen extends React.Component {
     });
 
     // showing error alert
-    if (nextProps.feed.error) {
+    if (nextProps.feedo.error) {
       let error = null;
-      if (nextProps.feed.error.error) {
-        error = nextProps.feed.error.error;
+      if (nextProps.feedo.error.error) {
+        error = nextProps.feedo.error.error;
       } else {
-        error = nextProps.feed.error.message;
+        error = nextProps.feedo.error.message;
       }
       if (error) {
         Alert.alert('Error', error, [
@@ -63,17 +63,15 @@ class ImageSliderScreen extends React.Component {
   getImages() {
     const {
       files,
-    } = this.props.feed.currentFeed;
+    } = this.props.feedo.currentFeed;
+    const { position } = this.state
     const imageFiles = filter(files, file => file.fileType === 'MEDIA');
-    let allImages = [];
-    if (imageFiles) {
-      imageFiles.forEach(item => {
-        allImages.push({
-          url: item.accessUrl,
-        });
-      })
+    selectImage = imageFiles[position]
+    const restImages = imageFiles.slice(position, 1)
+    return {
+      selectImage,
+      ...restImages
     }
-    return allImages;
   }
 
   onClose() {
@@ -84,7 +82,7 @@ class ImageSliderScreen extends React.Component {
     const {
       id,
       files
-    } = this.props.feed.currentFeed;
+    } = this.props.feedo.currentFeed;
     const imageFiles = filter(files, file => file.fileType === 'MEDIA');
     if (id) {
       this.props.deleteFile(id, imageFiles[this.state.position].id);
@@ -102,14 +100,23 @@ class ImageSliderScreen extends React.Component {
           <MaterialCommunityIcons name="close" size={30} color={'#fff'} />
         </TouchableOpacity>
 
-        <Slideshow 
+        {/* <Slideshow 
           position={this.state.position}
           arrowSize={0}
           dataSource = {this.getImages()}
           onPositionChanged={position => this.setState({ position })}
           width={CONSTANTS.SCREEN_WIDTH}
           height={CONSTANTS.SCREEN_WIDTH}
-        />
+        /> */}
+        <Carousel
+          width={CONSTANTS.SCREEN_WIDTH}
+          height={CONSTANTS.SCREEN_WIDTH}
+          backgroundColor="transparent"
+        >
+          {dataSource.map(item => (
+            <Image key={item.id} style={styles.previewImage} source={{ uri: item.accessUrl }} threshold={300} />
+          ))}
+        </Carousel>
 
         {this.props.removal && (
           <TouchableOpacity 
@@ -140,7 +147,7 @@ ImageSliderScreen.propTypes = {
 
 
 const mapStateToProps = ({ feedo }) => ({
-  feed: feedo,
+  feedo,
 })
 
 
