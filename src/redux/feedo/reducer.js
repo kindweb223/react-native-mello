@@ -5,7 +5,7 @@ const initialState = {
   loading: null,
   error: null,
   feedoList: null,
-  currentFeed: null,
+  currentFeed: {},
   pinResult: null,
   duplicaetdId: null,
   feedDetailAction: null,
@@ -20,7 +20,7 @@ export default function feedo(state = initialState, action = {}) {
      */
     case types.GET_FEEDO_LIST_PENDING:
       return {
-        ...initialState,
+        ...state,
       }
     case types.GET_FEEDO_LIST_FULFILLED: {
       const { data } = action.result
@@ -366,7 +366,7 @@ export default function feedo(state = initialState, action = {}) {
         ...state,
         loading: types.UPDATE_FEED_FULFILLED,
         feedoList: [
-          ...feedoList,
+          ...state.feedoList,
           data
         ],
         currentFeed: data,

@@ -69,53 +69,53 @@ class NewFeedScreen extends React.Component {
   }
 
   UNSAFE_componentWillReceiveProps(nextProps) {
-    // console.log('NewFeedScreen UNSAFE_componentWillReceiveProps : ', nextProps.feed);
+    // console.log('NewFeedScreen UNSAFE_componentWillReceiveProps : ', nextProps.feedo.currentFeed);
     let loading = false;
-    if (this.props.feed.status !== types.CREATE_FEED_PENDING && nextProps.feed.status === types.CREATE_FEED_PENDING) {
+    if (this.props.feedo.loading !== types.CREATE_FEED_PENDING && nextProps.feedo.loading === types.CREATE_FEED_PENDING) {
       // creating a feed
       loading = true;
-    } else if (this.props.feed.status !== types.DELETE_FEED_PENDING && nextProps.feed.status === types.DELETE_FEED_PENDING) {
+    } else if (this.props.feedo.loading !== types.DELETE_FEED_PENDING && nextProps.feedo.loading === types.DELETE_FEED_PENDING) {
       // deleting a feed
       loading = true;
-    } else if (this.props.feed.status !== types.DELETE_FEED_FULFILLED && nextProps.feed.status === types.DELETE_FEED_FULFILLED) {
+    } else if (this.props.feedo.loading !== types.DELETE_FEED_FULFILLED && nextProps.feedo.loading === types.DELETE_FEED_FULFILLED) {
       // success in deleting a feed
       this.onClose();
       return;
-    } else if (this.props.feed.status !== types.GET_FILE_UPLOAD_URL_PENDING && nextProps.feed.status === types.GET_FILE_UPLOAD_URL_PENDING) {
+    } else if (this.props.feedo.loading !== types.GET_FILE_UPLOAD_URL_PENDING && nextProps.feedo.loading === types.GET_FILE_UPLOAD_URL_PENDING) {
       // getting a file upload url
       loading = true;
-    } else if (this.props.feed.status !== types.GET_FILE_UPLOAD_URL_FULFILLED && nextProps.feed.status === types.GET_FILE_UPLOAD_URL_FULFILLED) {
+    } else if (this.props.feedo.loading !== types.GET_FILE_UPLOAD_URL_FULFILLED && nextProps.feedo.loading === types.GET_FILE_UPLOAD_URL_FULFILLED) {
       // success in getting a file upload url
       loading = true;
-      this.props.uploadFileToS3(nextProps.feed.fileUploadUrl.uploadUrl, this.selectedFile, this.selectedFileName, this.selectedFileMimeType);
-    } else if (this.props.feed.status !== types.UPLOAD_FILE_PENDING && nextProps.feed.status === types.UPLOAD_FILE_PENDING) {
+      this.props.uploadFileToS3(nextProps.feedo.fileUploadUrl.uploadUrl, this.selectedFile, this.selectedFileName, this.selectedFileMimeType);
+    } else if (this.props.feedo.loading !== types.UPLOAD_FILE_PENDING && nextProps.feedo.loading === types.UPLOAD_FILE_PENDING) {
       // uploading a file
       loading = true;
-    } else if (this.props.feed.status !== types.UPLOAD_FILE_FULFILLED && nextProps.feed.status === types.UPLOAD_FILE_FULFILLED) {
+    } else if (this.props.feedo.loading !== types.UPLOAD_FILE_FULFILLED && nextProps.feedo.loading === types.UPLOAD_FILE_FULFILLED) {
       // success in uploading a file
       loading = true;
       let {
         id, 
-      } = this.props.feed.currentFeed;
+      } = this.props.feedo.currentFeed;
       const {
         objectKey
-      } = this.props.feed.fileUploadUrl;
+      } = this.props.feedo.fileUploadUrl;
       this.props.addFile(id, this.selectedFileType, this.selectedFileMimeType, this.selectedFileName, objectKey);
-    } else if (this.props.feed.status !== types.ADD_FILE_PENDING && nextProps.feed.status === types.ADD_FILE_PENDING) {
+    } else if (this.props.feedo.loading !== types.ADD_FILE_PENDING && nextProps.feedo.loading === types.ADD_FILE_PENDING) {
       // adding a file
       loading = true;
-    } else if (this.props.feed.status !== types.ADD_FILE_FULFILLED && nextProps.feed.status === types.ADD_FILE_FULFILLED) {
+    } else if (this.props.feedo.loading !== types.ADD_FILE_FULFILLED && nextProps.feedo.loading === types.ADD_FILE_FULFILLED) {
       // success in adding a file
-    } else if (this.props.feed.status !== types.UPDATE_FEED_PENDING && nextProps.feed.status === types.UPDATE_FEED_PENDING) {
+    } else if (this.props.feedo.loading !== types.UPDATE_FEED_PENDING && nextProps.feedo.loading === types.UPDATE_FEED_PENDING) {
       // updating a feed
       loading = true;
-    } else if (this.props.feed.status !== types.UPDATE_FEED_FULFILLED && nextProps.feed.status === types.UPDATE_FEED_FULFILLED) {
+    } else if (this.props.feedo.loading !== types.UPDATE_FEED_FULFILLED && nextProps.feedo.loading === types.UPDATE_FEED_FULFILLED) {
       // success in updating a feed
       this.onClose();
-    } else if (this.props.feed.status !== types.DELETE_FILE_PENDING && nextProps.feed.status === types.DELETE_FILE_PENDING) {
+    } else if (this.props.feedo.loading !== types.DELETE_FILE_PENDING && nextProps.feedo.loading === types.DELETE_FILE_PENDING) {
       // deleting a file
       loading = true;
-    } else if (this.props.feed.status !== types.DELETE_FILE_FULFILLED && nextProps.feed.status === types.DELETE_FILE_FULFILLED) {
+    } else if (this.props.feedo.loading !== types.DELETE_FILE_FULFILLED && nextProps.feedo.loading === types.DELETE_FILE_FULFILLED) {
       // success in deleting a file
     }
 
@@ -124,12 +124,12 @@ class NewFeedScreen extends React.Component {
     });
 
     // showing error alert
-    if (nextProps.feed.error) {
+    if (nextProps.feedo.error) {
       let error = null;
-      if (nextProps.feed.error.error) {
-        error = nextProps.feed.error.error;
+      if (nextProps.feedo.error.error) {
+        error = nextProps.feedo.error.error;
       } else {
-        error = nextProps.feed.error.message;
+        error = nextProps.feedo.error.message;
       }
       if (error) {
         Alert.alert('Error', error, [
@@ -173,7 +173,7 @@ class NewFeedScreen extends React.Component {
       id, 
       tags,
       files,
-    } = this.props.feed.currentFeed;
+    } = this.props.feedo.currentFeed;
     this.props.updateFeed(id, this.state.feedName, this.state.comments, tags, files);
   }
 
@@ -207,8 +207,8 @@ class NewFeedScreen extends React.Component {
 
   onTapLeaveActionSheet(index) {
     if (index === 1) {
-      if (this.props.feed.currentFeed.id) {
-        this.props.deleteDraftFeed(this.props.feed.currentFeed.id)
+      if (this.props.feedo.currentFeed.id) {
+        this.props.deleteDraftFeed(this.props.feedo.currentFeed.id)
       } else {
         this.onClose();
       }
@@ -244,8 +244,8 @@ class NewFeedScreen extends React.Component {
     this.selectedFileMimeType = mime.lookup(file.uri);
     this.selectedFileName = file.fileName;
     this.selectedFileType = type;
-    if (this.props.feed.currentFeed.id) {
-      this.props.getFileUploadUrl(this.props.feed.currentFeed.id);
+    if (this.props.feedo.currentFeed.id) {
+      this.props.getFileUploadUrl(this.props.feedo.currentFeed.id);
     }
   }
 
@@ -330,14 +330,14 @@ class NewFeedScreen extends React.Component {
   onRemoveImage(fileId) {
     const {
       id,
-    } = this.props.feed.currentFeed;
+    } = this.props.feedo.currentFeed;
     this.props.deleteFile(id, fileId);
   }
 
   get renderImages() {
     const {
       files
-    } = this.props.feed.currentFeed;
+    } = this.props.feedo.currentFeed;
     const imageFiles = filter(files, file => file.fileType === 'MEDIA');
     return (
       <NewFeedImage 
@@ -350,7 +350,7 @@ class NewFeedScreen extends React.Component {
   get renderDocuments() {
     const {
       files
-    } = this.props.feed.currentFeed;
+    } = this.props.feedo.currentFeed;
     const documentFiles = filter(files, file => file.fileType === 'FILE');
     return (
       <NewFeedDocument 
@@ -379,7 +379,7 @@ class NewFeedScreen extends React.Component {
           onChangeText={(value) => this.setState({comments: value})}
         />
         <Tags
-          tags={this.props.feed.currentFeed.tags}
+          tags={this.props.feedo.currentFeed.tags}
           readonly={true}
           onPressTag={(index, tag) => this.onOpenCreationTag()}
           containerStyle={{
@@ -533,19 +533,19 @@ class NewFeedScreen extends React.Component {
 
 
 NewFeedScreen.defaultProps = {
-  feed: {},
+  feedo: {},
   onClose: () => {},
 }
 
 
 NewFeedScreen.propTypes = {
-  feed: PropTypes.object,
+  feedo: PropTypes.object,
   onClose: PropTypes.func,
 }
 
 
 const mapStateToProps = ({ feedo }) => ({
-  feed: feedo,
+  feedo,
 })
 
 

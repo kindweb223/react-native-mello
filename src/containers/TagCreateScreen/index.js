@@ -49,41 +49,41 @@ class TagCreateScreen extends React.Component {
   }
 
   UNSAFE_componentWillReceiveProps(nextProps) {
-    console.log('TagCreateScreen UNSAFE_componentWillReceiveProps : ', nextProps.feed);
+    // console.log('TagCreateScreen UNSAFE_componentWillReceiveProps : ', nextProps.feedo);
     let loading = false;
-    if (this.props.feed.status !== types.GET_USER_TAGS_PENDING && nextProps.feed.status === types.GET_USER_TAGS_PENDING) {
+    if (this.props.feedo.loading !== types.GET_USER_TAGS_PENDING && nextProps.feedo.loading === types.GET_USER_TAGS_PENDING) {
       // getting user tags
       loading = true;
-    } else if (this.props.feed.status !== types.GET_USER_TAGS_FULFILLED && nextProps.feed.status === types.GET_USER_TAGS_FULFILLED) {
+    } else if (this.props.feedo.loading !== types.GET_USER_TAGS_FULFILLED && nextProps.feedo.loading === types.GET_USER_TAGS_FULFILLED) {
       // success in getting user tags
       this.setState({
-        userTags: nextProps.feed.userTags,
+        userTags: nextProps.feedo.userTags,
       }, () => {
-        this.filterUnusedTags(nextProps.feed.currentFeed.tags);
+        this.filterUnusedTags(nextProps.feedo.currentFeed.tags);
       });
-    } else if (this.props.feed.status !== types.CREATE_USER_TAG_PENDING && nextProps.feed.status === types.CREATE_USER_TAG_PENDING) {
+    } else if (this.props.feedo.loading !== types.CREATE_USER_TAG_PENDING && nextProps.feedo.loading === types.CREATE_USER_TAG_PENDING) {
       // getting user tags
       loading = true;
-    } else if (this.props.feed.status !== types.CREATE_USER_TAG_FULFILLED && nextProps.feed.status === types.CREATE_USER_TAG_FULFILLED) {
+    } else if (this.props.feedo.loading !== types.CREATE_USER_TAG_FULFILLED && nextProps.feedo.loading === types.CREATE_USER_TAG_FULFILLED) {
       // success in getting user tags
       loading = true;
       this.setState({
-        userTags: nextProps.feed.userTags,
+        userTags: nextProps.feedo.userTags,
       }, () => {
         this.onCreateTag(this.newTagName);
       });
-    } else if (this.props.feed.status !== types.ADD_HUNT_TAG_PENDING && nextProps.feed.status === types.ADD_HUNT_TAG_PENDING) {
+    } else if (this.props.feedo.loading !== types.ADD_HUNT_TAG_PENDING && nextProps.feedo.loading === types.ADD_HUNT_TAG_PENDING) {
       // getting user tags
       loading = true;
-    } else if (this.props.feed.status !== types.ADD_HUNT_TAG_FULFILLED && nextProps.feed.status === types.ADD_HUNT_TAG_FULFILLED) {
+    } else if (this.props.feedo.loading !== types.ADD_HUNT_TAG_FULFILLED && nextProps.feedo.loading === types.ADD_HUNT_TAG_FULFILLED) {
       // success in getting user tags
-      this.filterUnusedTags(nextProps.feed.currentFeed.tags);
-    } else if (this.props.feed.status !== types.REMOVE_HUNT_TAG_PENDING && nextProps.feed.status === types.REMOVE_HUNT_TAG_PENDING) {
+      this.filterUnusedTags(nextProps.feedo.currentFeed.tags);
+    } else if (this.props.feedo.loading !== types.REMOVE_HUNT_TAG_PENDING && nextProps.feedo.loading === types.REMOVE_HUNT_TAG_PENDING) {
       // getting user tags
       loading = true;
-    } else if (this.props.feed.status !== types.REMOVE_HUNT_TAG_FULFILLED && nextProps.feed.status === types.REMOVE_HUNT_TAG_FULFILLED) {
+    } else if (this.props.feedo.loading !== types.REMOVE_HUNT_TAG_FULFILLED && nextProps.feedo.loading === types.REMOVE_HUNT_TAG_FULFILLED) {
       // success in getting user tags
-      this.filterUnusedTags(nextProps.feed.currentFeed.tags);
+      this.filterUnusedTags(nextProps.feedo.currentFeed.tags);
     }
 
     this.setState({
@@ -139,7 +139,7 @@ class TagCreateScreen extends React.Component {
   }
 
   onRemoveTag(tag) {
-    this.props.removeTagFromHunt(this.props.feed.currentFeed.id, tag.id);
+    this.props.removeTagFromHunt(this.props.feedo.currentFeed.id, tag.id);
   }
 
   onChangeText(text) {
@@ -149,7 +149,7 @@ class TagCreateScreen extends React.Component {
   }
 
   onSelectItem(tag) {
-    this.props.addTagToHunt(this.props.feed.currentFeed.id, tag.id);
+    this.props.addTagToHunt(this.props.feedo.currentFeed.id, tag.id);
   }
 
   get renderTopContent() {
@@ -189,7 +189,7 @@ class TagCreateScreen extends React.Component {
           >
             <View style={styles.mainContentContainer}>
               <Tags
-                tags={this.props.feed.currentFeed.tags}
+                tags={this.props.feedo.currentFeed.tags}
                 onCreateTag={(text) => this.onCreateTag(text)}
                 onChangeText={(text) => this.onChangeText(text)}
                 onRemoveTag={(tag) => this.onRemoveTag(tag)}
@@ -239,7 +239,7 @@ TagCreateScreen.propTypes = {
 
 
 const mapStateToProps = ({ feedo }) => ({
-  feed: feedo,
+  feedo,
 })
 
 
