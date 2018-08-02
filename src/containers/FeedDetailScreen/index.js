@@ -96,39 +96,14 @@ class FeedDetailScreen extends React.Component {
 
   handleSetting = () => {
     const { openMenu } = this.state
-
-    if (openMenu) {
-      this.menuOpacity.setValue(1);
-      Animated.timing(this.menuOpacity, {
-        toValue: 0,
-        duration: 100
-      }).start(() => {
-        this.menuZIndex.setValue(12);
-        Animated.timing(this.menuZIndex, {
-          toValue: 0
-        }).start()
-      })
-    } else {
-      this.menuZIndex.setValue(0);
-      Animated.timing(this.menuZIndex, {
-        toValue: 12
-      }).start(() => {
-        this.menuOpacity.setValue(0);
-        Animated.timing(this.menuOpacity, {
-          toValue: 1,
-          duration: 100
-        }).start()
-      })
-    }
-
     this.setState({ openMenu: !openMenu })
   }
 
-  handleSettingItem = (item) => {
+  hideSettingMenu = () => {
     const feedId = this.props.data.id
-    this.handleSetting()
+    const { settingItem } = this.state
 
-    switch(item) {
+    switch(settingItem) {
       case 'Pin':
         this.handlePinFeed(feedId)
         return
@@ -154,6 +129,10 @@ class FeedDetailScreen extends React.Component {
       default:
         return
     }
+  }
+
+  handleSettingItem = (item) => {
+    this.setState({ settingItem: item, openMenu: false })
   }
 
   handlePinFeed = (feedId) => {
@@ -304,7 +283,7 @@ class FeedDetailScreen extends React.Component {
 
     const settingMenuY = this.state.scrollY.interpolate({
       inputRange: [0, 35],
-      outputRange: [120, 60],
+      outputRange: [140, 80],
       extrapolate: 'clamp'
     })
 
@@ -349,13 +328,6 @@ class FeedDetailScreen extends React.Component {
     return (
       <SafeAreaView style={styles.safeArea}>
         <View style={styles.container}>
-
-          <Animated.View
-            style={[styles.settingMenuView, { opacity: this.menuOpacity, zIndex: this.menuZIndex, top: settingMenuY }]}
-          >
-            <FeedControlMenuComponent handleSettingItem={item => this.handleSettingItem(item)} data={currentFeed} pinText={pinText} />
-          </Animated.View>
-
           <Animated.View style={[styles.miniNavView, { backgroundColor: navbarBackground }]}>
             <TouchableOpacity onPress={this.backToDashboard}>
               <View style={styles.backView}>
@@ -445,6 +417,22 @@ class FeedDetailScreen extends React.Component {
           onModalHide={() => {}}
         >
           <ShareScreen onClose={() => this.setState({ isShowShare: false })} />
+        </Modal>
+
+        <Modal 
+          isVisible={this.state.openMenu}
+          style={styles.shareScreenContainer}
+          backdropColor='#fff'
+          backdropOpacity={0}
+          animationIn="fadeIn"
+          animationOut="fadeOut"
+          animationInTiming={500}
+          onModalHide={() => this.hideSettingMenu()}
+          onBackdropPress={() => this.setState({ openMenu: false })}
+        >
+          <Animated.View style={[styles.settingMenuView, { top: settingMenuY }]}>
+            <FeedControlMenuComponent handleSettingItem={item => this.handleSettingItem(item)} data={currentFeed} pinText={pinText} />
+          </Animated.View>
         </Modal>
       </SafeAreaView>
     )
