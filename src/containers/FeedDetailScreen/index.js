@@ -96,7 +96,7 @@ class FeedDetailScreen extends React.Component {
 
   handleSetting = () => {
     const { openMenu } = this.state
-    this.setState({ openMenu: !openMenu })
+    this.setState({ openMenu: !openMenu, settingItem: null })
   }
 
   hideSettingMenu = () => {
