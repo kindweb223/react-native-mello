@@ -8,8 +8,8 @@ import {
 import PropTypes from 'prop-types'
 
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons'
+import Modal from 'react-native-modal'
 import FastImage from 'react-native-fast-image'
-
 import ImageSliderScreen from '../../containers/ImageSliderScreen'
 import styles from './styles'
 import CONSTANTS from '../../service/constants'
