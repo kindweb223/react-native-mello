@@ -45,6 +45,10 @@ const ACTIONSHEET_OPTIONS = [
 ]
 const TOASTER_DURATION = 5000
 
+import CONSTANTS from '../../service/constants'
+import NewCardScreen from '../NewCardScreen'
+ 
+
 class FeedDetailScreen extends React.Component {
   constructor(props) {
     super(props);
@@ -52,11 +56,13 @@ class FeedDetailScreen extends React.Component {
       scrollY: new Animated.Value(0),
       feedDetailData: {},
       loading: false,
+      isVisibleNewCard: false,
       openMenu: false,
       isShowToaster: false,
       pinText: 'Pin'
-    };
 
+    };
+    this.animatedOpacity = new Animated.Value(0);
     this.menuOpacity = new Animated.Value(0)
     this.menuZIndex = new Animated.Value(0)
   }
@@ -233,6 +239,50 @@ class FeedDetailScreen extends React.Component {
     return false
   }
 
+  onOpenNewCardModal() {
+    this.setState({
+      isVisibleNewCard: true,
+    }, () => {
+      this.animatedOpacity.setValue(0);
+      Animated.timing(this.animatedOpacity, {
+        toValue: 1,
+        duration: CONSTANTS.ANIMATEION_MILLI_SECONDS,
+      }).start();
+    });
+
+  }
+
+  onCloseNewFeedModal() {
+    this.animatedOpacity.setValue(1);
+    Animated.timing(this.animatedOpacity, {
+      toValue: 0,
+      duration: CONSTANTS.ANIMATEION_MILLI_SECONDS,
+    }).start(() => {
+      this.setState({ 
+        isVisibleNewCard: false,
+      });
+    });
+  }
+
+  get renderNewCardModal() {
+    if (!this.state.isVisibleNewCard) {
+      return;
+    }
+
+    return (
+      <Animated.View 
+        style={[
+          styles.modalContainer,
+          {opacity: this.animatedOpacity}
+        ]}
+      >
+        <NewCardScreen 
+          onClose={() => this.onCloseNewFeedModal()}
+        />  
+      </Animated.View>
+    );
+  }
+
   render () {
     const { data } = this.props
     const { feedDetailData, loading, pinText } = this.state
@@ -359,7 +409,10 @@ class FeedDetailScreen extends React.Component {
 
         </View>
 
-        <DashboardActionBar />
+        <DashboardActionBar 
+          onAddFeed={this.onOpenNewCardModal.bind(this)}
+        />
+        {this.renderNewCardModal}
 
         <ActionSheet
           ref={o => this.ActionSheet = o}
