@@ -16,8 +16,8 @@ import styles from './styles'
 import LoadingScreen from '../LoadingScreen';
 import { 
   deleteFile,
-} from '../../redux/feed/actions'
-import * as types from '../../redux/feed/types'
+} from '../../redux/feedo/actions'
+import * as types from '../../redux/feedo/types'
 
 
 class ImageSliderScreen extends React.Component {
@@ -131,8 +131,8 @@ ImageSliderScreen.propTypes = {
 }
 
 
-const mapStateToProps = ({ feed }) => ({
-  feed,
+const mapStateToProps = ({ feedo }) => ({
+  feed: feedo,
 })
 
 

@@ -24,8 +24,8 @@ import {
   createUserTag,
   addTagToHunt,
   removeTagFromHunt,
-} from '../../redux/feed/actions'
-import * as types from '../../redux/feed/types'
+} from '../../redux/feedo/actions'
+import * as types from '../../redux/feedo/types'
 
 const UserId = 'd742e568-37d1-4c87-b9bf-062faa59c058';
 
@@ -238,8 +238,8 @@ TagCreateScreen.propTypes = {
 }
 
 
-const mapStateToProps = ({ feed }) => ({
-  feed,
+const mapStateToProps = ({ feedo }) => ({
+  feed: feedo,
 })
 
 

@@ -56,7 +56,7 @@ class FeedDetailScreen extends React.Component {
     super(props);
     this.state = {
       scrollY: new Animated.Value(0),
-      feedDetailData: {},
+      currentFeed: {},
       loading: false,
       isVisibleNewCard: false,
       openMenu: false,
@@ -64,9 +64,7 @@ class FeedDetailScreen extends React.Component {
       isShowShare: false,
       pinText: 'Pin',
     };
-
-    };
-    this.animatedOpacity = new Animated.Value(0);
+    this.animatedOpacity = new Animated.Value(0)
     this.menuOpacity = new Animated.Value(0)
     this.menuZIndex = new Animated.Value(0)
   }
@@ -77,11 +75,11 @@ class FeedDetailScreen extends React.Component {
   }
 
   static getDerivedStateFromProps(nextProps, prevState) {
-    if (nextProps.feedo.loading === 'GET_FEED_DETAIL_FULFILLED' && nextProps.feedo.feedDetailData !== prevState.feedDetailData) {
+    if (nextProps.feedo.loading === 'GET_FEED_DETAIL_FULFILLED' && nextProps.feedo.currentFeed !== prevState.currentFeed) {
       return {
         loading: false,
-        feedDetailData: nextProps.feedo.feedDetailData,
-        pinText: !nextProps.feedo.feedDetailData.pinned ? 'Pin' : 'Unpin'
+        currentFeed: nextProps.feedo.currentFeed,
+        pinText: !nextProps.feedo.currentFeed.pinned ? 'Pin' : 'Unpin'
       }
     }
     if (nextProps.feedo.loading !== 'GET_FEED_DETAIL_FULFILLED') {
@@ -290,7 +288,7 @@ class FeedDetailScreen extends React.Component {
 
   render () {
     const { data } = this.props
-    const { feedDetailData, loading, pinText } = this.state
+    const { currentFeed, loading, pinText } = this.state
 
     const navbarBackground = this.state.scrollY.interpolate({
       inputRange: [40, 41],
@@ -323,19 +321,19 @@ class FeedDetailScreen extends React.Component {
     })
 
     let avatars = []
-    if (!isEmpty(feedDetailData)) {
-      const isOwner = this.checkOwner(feedDetailData)
+    if (!isEmpty(currentFeed)) {
+      const isOwner = this.checkOwner(currentFeed)
 
       if (isOwner) {
         avatars = [
           {
             id: 1,
-            imageUrl: feedDetailData.owner.imageUrl,
-            userName: `${feedDetailData.owner.firstName} ${feedDetailData.owner.lastName}`
+            imageUrl: currentFeed.owner.imageUrl,
+            userName: `${currentFeed.owner.firstName} ${currentFeed.owner.lastName}`
           }
         ]
       } else {
-        feedDetailData.invitees.forEach((item, key) => {
+        currentFeed.invitees.forEach((item, key) => {
           avatars = [
             ...avatars,
             {
@@ -355,7 +353,7 @@ class FeedDetailScreen extends React.Component {
           <Animated.View
             style={[styles.settingMenuView, { opacity: this.menuOpacity, zIndex: this.menuZIndex, top: settingMenuY }]}
           >
-            <FeedControlMenuComponent handleSettingItem={item => this.handleSettingItem(item)} data={feedDetailData} pinText={pinText} />
+            <FeedControlMenuComponent handleSettingItem={item => this.handleSettingItem(item)} data={currentFeed} pinText={pinText} />
           </Animated.View>
 
           <Animated.View style={[styles.miniNavView, { backgroundColor: navbarBackground }]}>
@@ -393,11 +391,11 @@ class FeedDetailScreen extends React.Component {
             </Animated.View>
             
               <View style={styles.detailView}>
-                <FeedCollapseComponent data={data} feedData={feedDetailData} />
+                <FeedCollapseComponent data={data} feedData={currentFeed} />
 
-                {!isEmpty(feedDetailData) && feedDetailData && feedDetailData.ideas.length > 0
-                  ? feedDetailData.ideas.map(item => (
-                      <FeedCardComponent key={item.id} data={item} invitees={feedDetailData.invitees} />
+                {!isEmpty(currentFeed) && currentFeed && currentFeed.ideas.length > 0
+                  ? currentFeed.ideas.map(item => (
+                      <FeedCardComponent key={item.id} data={item} invitees={currentFeed.invitees} />
                     ))
                   : <View style={styles.emptyView}>
                       {loading

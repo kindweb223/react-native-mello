@@ -130,7 +130,7 @@ class NewCardScreen extends React.Component {
       toValue: 1,
       duration: CONSTANTS.ANIMATEION_MILLI_SECONDS,
     }).start(() => {
-      this.props.createCard(this.props.feedo.feedDetailData.id);
+      this.props.createCard(this.props.feedo.currentFeed.id);
     });
   }
 
@@ -157,7 +157,7 @@ class NewCardScreen extends React.Component {
       id, 
       files,
     } = this.props.card.currentCard;
-    this.props.updateCard(this.props.feedo.feedDetailData.id, id, this.state.cardTitle, this.state.idea, files);
+    this.props.updateCard(this.props.feedo.currentFeed.id, id, this.state.cardTitle, this.state.idea, files);
   }
 
   onAddMedia() {
@@ -195,7 +195,7 @@ class NewCardScreen extends React.Component {
     this.selectedFileName = file.fileName;
     this.selectedFileType = type;
     if (this.props.card.currentCard.id) {
-      this.props.getFileUploadUrl(this.props.feedo.feedDetailData.id, this.props.card.currentCard.id);
+      this.props.getFileUploadUrl(this.props.feedo.currentFeed.id, this.props.card.currentCard.id);
     }
   }
 

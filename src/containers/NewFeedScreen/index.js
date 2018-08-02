@@ -26,14 +26,14 @@ import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view
 import { 
   createFeed,
   updateFeed,
-  deleteFeed,
+  deleteDraftFeed,
   getFileUploadUrl,
   uploadFileToS3,
   addFile,
   deleteFile,
   getFeedDetail,
-} from '../../redux/feed/actions'
-import * as types from '../../redux/feed/types'
+} from '../../redux/feedo/actions'
+import * as types from '../../redux/feedo/types'
 
 import COLORS from '../../service/colors';
 import CONSTANTS from '../../service/constants';
@@ -208,7 +208,7 @@ class NewFeedScreen extends React.Component {
   onTapLeaveActionSheet(index) {
     if (index === 1) {
       if (this.props.feed.currentFeed.id) {
-        this.props.deleteFeed(this.props.feed.currentFeed.id)
+        this.props.deleteDraftFeed(this.props.feed.currentFeed.id)
       } else {
         this.onClose();
       }
@@ -544,15 +544,15 @@ NewFeedScreen.propTypes = {
 }
 
 
-const mapStateToProps = ({ feed }) => ({
-  feed,
+const mapStateToProps = ({ feedo }) => ({
+  feed: feedo,
 })
 
 
 const mapDispatchToProps = dispatch => ({
   createFeed: () => dispatch(createFeed()),
   updateFeed: (id, name, comments, tags, files) => dispatch(updateFeed(id, name, comments, tags, files)),
-  deleteFeed: (id) => dispatch(deleteFeed(id)),
+  deleteDraftFeed: (id) => dispatch(deleteDraftFeed(id)),
   getFileUploadUrl: (id) => dispatch(getFileUploadUrl(id)),
   uploadFileToS3: (signedUrl, file, fileName, mimeType) => dispatch(uploadFileToS3(signedUrl, file, fileName, mimeType)),
   addFile: (feedId, fileType, contentType, name, objectKey) => dispatch(addFile(feedId, fileType, contentType, name, objectKey)),

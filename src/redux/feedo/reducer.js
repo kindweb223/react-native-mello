@@ -1,15 +1,16 @@
 import * as types from './types'
-import * as feedTypes from '../feed/types'
-import { filter } from 'lodash'
+import { filter, find } from 'lodash'
 
 const initialState = {
   loading: null,
   error: null,
   feedoList: null,
-  feedDetailData: null,
+  currentFeed: null,
   pinResult: null,
   duplicaetdId: null,
-  feedDetailAction: null
+  feedDetailAction: null,
+  fileUploadUrl: {},
+  userTags: [],
 };
 
 export default function feedo(state = initialState, action = {}) {
@@ -50,7 +51,7 @@ export default function feedo(state = initialState, action = {}) {
       return {
         ...state,
         loading: types.GET_FEED_DETAIL_FULFILLED,
-        feedDetailData: data,
+        currentFeed: data,
       }
     }
     case types.GET_FEED_DETAIL_REJECTED: {
@@ -312,22 +313,6 @@ export default function feedo(state = initialState, action = {}) {
       }
     }
     /**
-     * Update Feed
-     */
-    case feedTypes.UPDATE_FEED_FULFILLED: {
-      const { feedoList } = state
-      const { data } = action.result
-
-      return {
-        ...state,
-        loading: 'FEED_FULFILLED',
-        feedoList: [
-          ...feedoList,
-          data
-        ]
-      }
-    }
-    /**
      * Set Feed detail action (Delete, Archive)
      */
     case types.SET_FEED_DETAIL_ACTION: {
@@ -336,6 +321,298 @@ export default function feedo(state = initialState, action = {}) {
         ...state,
         loading: types.SET_FEED_DETAIL_ACTION,
         feedDetailAction: payload
+      }
+    }
+
+
+
+
+
+    // create a feed
+    case types.CREATE_FEED_PENDING:
+      return {
+        ...state,
+        loading: types.CREATE_FEED_PENDING,
+        currentFeed: {},
+        error: null,
+      }
+    case types.CREATE_FEED_FULFILLED: {
+      const { data } = action.result
+      return {
+        ...state,
+        loading: types.CREATE_FEED_FULFILLED,
+        currentFeed: data,
+      }
+    }
+    case types.CREATE_FEED_REJECTED: {
+      const { data } = action.error.response
+      return {
+        ...state,
+        loading: types.CREATE_FEED_REJECTED,
+        error: data,
+      }
+    }
+
+    // update a feed
+    case types.UPDATE_FEED_PENDING:
+      return {
+        ...state,
+        loading: types.UPDATE_FEED_PENDING,
+        error: null,
+      }
+    case types.UPDATE_FEED_FULFILLED: {
+      const { data } = action.result
+      return {
+        ...state,
+        loading: types.UPDATE_FEED_FULFILLED,
+        feedoList: [
+          ...feedoList,
+          data
+        ],
+        currentFeed: data,
+      }
+    }
+    case types.UPDATE_FEED_REJECTED: {
+      const { data } = action.error.response
+      return {
+        ...state,
+        loading: types.UPDATE_FEED_REJECTED,
+        error: data,
+      }
+    }
+
+    // delete a feed
+    case types.DELETE_FEED_PENDING:
+      return {
+        ...state,
+        loading: types.DELETE_FEED_PENDING,
+        error: null,
+      }
+    case types.DELETE_FEED_FULFILLED: {
+      return {
+        ...state,
+        loading: types.DELETE_FEED_FULFILLED,
+        currentFeed: {},
+      }
+    }
+    case types.DELETE_FEED_REJECTED: {
+      const { data } = action.error.response
+      return {
+        ...state,
+        loading: types.DELETE_FEED_REJECTED,
+        error: data,
+      }
+    }
+
+    // get a file upload url
+    case types.GET_FILE_UPLOAD_URL_PENDING:
+      return {
+        ...state,
+        loading: types.GET_FILE_UPLOAD_URL_PENDING,
+        fileUploadUrl: {},
+        error: null,
+      }
+    case types.GET_FILE_UPLOAD_URL_FULFILLED: {
+      const { data } = action.result
+      return {
+        ...state,
+        loading: types.GET_FILE_UPLOAD_URL_FULFILLED,
+        fileUploadUrl: data
+      }
+    }
+    case types.DELETE_FEED_REJECTED: {
+      const { data } = action.error.response
+      return {
+        ...state,
+        loading: types.DELETE_FEED_REJECTED,
+        error: data,
+      }
+    }
+
+    // upload a file
+    case types.UPLOAD_FILE_PENDING:
+      return {
+        ...state,
+        loading: types.UPLOAD_FILE_PENDING,
+        error: null,
+      }
+    case types.UPLOAD_FILE_FULFILLED: {
+      return {
+        ...state,
+        loading: types.UPLOAD_FILE_FULFILLED,
+      }
+    }
+    case types.UPLOAD_FILE_REJECTED: {
+      return {
+        ...state,
+        loading: types.UPLOAD_FILE_REJECTED,
+        error: action.error,
+      }
+    }
+
+    // add a file
+    case types.ADD_FILE_PENDING:
+      return {
+        ...state,
+        loading: types.ADD_FILE_PENDING,
+        error: null,
+      }
+    case types.ADD_FILE_FULFILLED: {
+      const { data } = action.result
+      let files = files = state.currentFeed.files || [];
+      files.unshift(data);
+      return {
+        ...state,
+        loading: types.ADD_FILE_FULFILLED,
+        currentFeed: {
+          ...state.currentFeed,
+          files,
+        }
+      }
+    }
+    case types.ADD_FILE_REJECTED: {
+      const { data } = action.error.response
+      return {
+        ...state,
+        loading: types.ADD_FILE_REJECTED,
+        error: data,
+      }
+    }
+  
+    // delete a file
+    case types.DELETE_FILE_PENDING:
+      return {
+        ...state,
+        loading: types.DELETE_FILE_PENDING,
+        error: null,
+      }
+    case types.DELETE_FILE_FULFILLED: {
+      const fileId = action.payload;
+      const files = filter(state.currentFeed.files, file => file.id !== fileId);
+      return {
+        ...state,
+        loading: types.DELETE_FILE_FULFILLED,
+        currentFeed: {
+          ...state.currentFeed,
+          files,
+        }
+      }
+    }
+    case types.DELETE_FILE_REJECTED: {
+      const { data } = action.error.response
+      return {
+        ...state,
+        loading: types.DELETE_FILE_REJECTED,
+        error: data,
+      }
+    }
+
+    // get user tags
+    case types.GET_USER_TAGS_PENDING: 
+      return {
+        ...state,
+        loading: types.GET_USER_TAGS_PENDING,
+        error: null,
+      }
+    case types.GET_USER_TAGS_FULFILLED: {
+      const { data } = action.result
+      return {
+        ...state,
+        loading: types.GET_USER_TAGS_FULFILLED,
+        userTags: data,
+      }
+    }
+    case types.DELETE_FILE_REJECTED: {
+      const { data } = action.error.response
+      return {
+        ...state,
+        loading: types.DELETE_FILE_REJECTED,
+        error: data,
+      }
+    }
+
+    // create a user tags
+    case types.CREATE_USER_TAGS_PENDING:
+      return {
+        ...state,
+        loading: types.CREATE_USER_TAGS_PENDING,
+        error: null,
+      }
+    case types.CREATE_USER_TAG_FULFILLED: {
+      const { data } = action.result
+      return {
+        ...state,
+        loading: types.CREATE_USER_TAG_FULFILLED,
+        userTags: [
+          ...state.userTags,
+          data,
+        ],
+      }
+    }
+    case types.CREATE_USER_TAG_REJECTED: {
+      const { data } = action.error.response
+      return {
+        ...state,
+        loading: types.CREATE_USER_TAG_REJECTED,
+        error: data,
+      }
+    }
+
+    // add a tag to a hunt
+    case types.ADD_HUNT_TAG_PENDING:
+      return {
+        ...state,
+        loading: types.ADD_HUNT_TAG_PENDING,
+        error: null,
+      }
+    case types.ADD_HUNT_TAG_FULFILLED: {
+      const tagId = action.payload;
+      const tag = find(state.userTags, tag => tag.id === tagId);
+      let tags = state.currentFeed.tags || [];
+      tags.push(tag);
+      return {
+        ...state,
+        loading: types.ADD_HUNT_TAG_FULFILLED,
+        currentFeed: {
+          ...state.currentFeed,
+          tags,
+        }
+      }
+    }
+    case types.ADD_HUNT_TAG_REJECTED: {
+      const { data } = action.error.response
+      return {
+        ...state,
+        loading: types.ADD_HUNT_TAG_REJECTED,
+        error: data,
+      }
+    }
+
+    // remove a tag from a hunt
+    case types.REMOVE_HUNT_TAG_PENDING:
+      return {
+        ...state,
+        loading: types.REMOVE_HUNT_TAG_PENDING,
+        error: null,
+      }
+    case types.REMOVE_HUNT_TAG_FULFILLED: {
+      const tagId = action.payload;
+      const tags = filter(state.currentFeed.tags, tag => tag.id !== tagId);
+      return {
+        ...state,
+        loading: types.REMOVE_HUNT_TAG_FULFILLED,
+        currentFeed: {
+          ...state.currentFeed,
+          tags,
+        }
+      }
+    }
+    case types.REMOVE_HUNT_TAG_REJECTED: {
+      const { data } = action.error.response
+      return {
+        ...state,
+        loading: types.REMOVE_HUNT_TAG_REJECTED,
+        error: data,
       }
     }
     default:
