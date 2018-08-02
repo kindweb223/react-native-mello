@@ -27,7 +27,7 @@ import FeedControlMenuComponent from '../../components/FeedControlMenuComponent'
 import ToasterComponent from '../../components/ToasterComponent'
 import ShareScreen from '../ShareScreen'
 import {
-  getFeedDetailData,
+  getFeedDetail,
   setFeedDetailAction,
   addDummyFeed,
   removeDummyFeed,
@@ -71,7 +71,7 @@ class FeedDetailScreen extends React.Component {
 
   componentDidMount() {
     this.setState({ loading: true })
-    this.props.getFeedDetailData(this.props.data.id)
+    this.props.getFeedDetail(this.props.data.id)
   }
 
   static getDerivedStateFromProps(nextProps, prevState) {
@@ -456,7 +456,7 @@ const mapStateToProps = ({ feedo }) => ({
 })
 
 const mapDispatchToProps = dispatch => ({
-  getFeedDetailData: data => dispatch(getFeedDetailData(data)),
+  getFeedDetail: data => dispatch(getFeedDetail(data)),
   setFeedDetailAction: data => dispatch(setFeedDetailAction(data)),
   addDummyFeed: (data) => dispatch(addDummyFeed(data)),
   removeDummyFeed: (data) => dispatch(removeDummyFeed(data)),
@@ -468,14 +468,14 @@ const mapDispatchToProps = dispatch => ({
 
 FeedDetailScreen.defaultProps = {
   data: [],
-  getFeedDetailData: () => {},
+  getFeedDetail: () => {},
   setFeedDetailAction: () => {}
 }
 
 FeedDetailScreen.propTypes = {
   data: PropTypes.objectOf(PropTypes.any),
   feedo: PropTypes.objectOf(PropTypes.any),
-  getFeedDetailData: PropTypes.func,
+  getFeedDetail: PropTypes.func,
   setFeedDetailAction: PropTypes.func,
   addDummyFeed: PropTypes.func.isRequired,
   removeDummyFeed: PropTypes.func.isRequired,

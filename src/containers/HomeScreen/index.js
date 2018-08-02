@@ -66,6 +66,7 @@ class HomeScreen extends React.Component {
       feedoList: [],
       loading: false,
       isVisibleNewFeed: false,
+      isEditFeed: false,
       isVisibleCreateNewFeedModal: false,
       isLongHoldMenuVisible: false,
       selectedFeedData: {},
@@ -250,6 +251,14 @@ class HomeScreen extends React.Component {
     }
   }
 
+  handleEditFeed = (feedId) => {
+    this.setState({ 
+      isVisibleNewFeed: true,
+      isEditFeed: true,
+      isLongHoldMenuVisible: false,
+    });
+  }
+
   undoAction = () => {
     if (this.state.isPin) {
       this.props.removeDummyFeed({ feedId: this.state.feedId, flag: 'pin' })
@@ -296,6 +305,7 @@ class HomeScreen extends React.Component {
       this.setState({ 
         isVisibleCreateNewFeedModal: false,
         isVisibleNewFeed: true,
+        isEditFeed: false,
       });
     }
   }
@@ -346,6 +356,7 @@ class HomeScreen extends React.Component {
           this.state.isVisibleNewFeed && 
             <NewFeedScreen 
               onClose={() => this.onCloseNewFeedModal()}
+              selectedFeedId={this.state.isEditFeed ? this.state.selectedFeedData.id : null}
             />  
         }
       </Animated.View>
@@ -489,6 +500,7 @@ class HomeScreen extends React.Component {
             handlePinFeed={this.handlePinFeed}
             handleUnpinFeed={this.handleUnpinFeed}
             handleDuplicateFeed={this.handleDuplicateFeed}
+            handleEditFeed={this.handleEditFeed}
           />
         </Modal>
 

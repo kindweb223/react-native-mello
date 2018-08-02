@@ -1,7 +1,6 @@
 import React from 'react'
 import {
   TouchableOpacity,
-  Image,
   Animated,
   FlatList,
 } from 'react-native'
@@ -16,7 +15,7 @@ import styles from './styles'
 import CONSTANTS from '../../service/constants'
 
 
-export default class NewFeedImage extends React.Component {
+export default class ImageList extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -196,13 +195,13 @@ export default class NewFeedImage extends React.Component {
 }
 
 
-NewFeedImage.defaultProps = {
+ImageList.defaultProps = {
   files: [],
   onRemove: () => {},
 }
 
 
-NewFeedImage.propTypes = {
+ImageList.propTypes = {
   files: PropTypes.array,
   onRemove: PropTypes.func,
 }

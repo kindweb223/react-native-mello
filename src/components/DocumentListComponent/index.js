@@ -17,7 +17,7 @@ import CONSTANTS from '../../service/constants'
 import COLORS from '../../service/colors'
 
 
-export default class NewFeedDocument extends React.Component {
+export default class DocumentList extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -183,13 +183,13 @@ export default class NewFeedDocument extends React.Component {
 }
 
 
-NewFeedDocument.defaultProps = {
+DocumentList.defaultProps = {
   files: [],
   onRemove: () => {},
 }
 
 
-NewFeedDocument.propTypes = {
+DocumentList.propTypes = {
   files: PropTypes.array,
   onRemove: PropTypes.func,
 }

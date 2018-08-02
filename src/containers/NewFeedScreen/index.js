@@ -39,14 +39,12 @@ import COLORS from '../../service/colors';
 import CONSTANTS from '../../service/constants';
 import styles from './styles';
 import LoadingScreen from '../LoadingScreen';
-import NewFeedImage from '../../components/NewFeedImageComponent';
-import NewFeedDocument from '../../components/NewFeedDocumentComponent';
+import ImageList from '../../components/ImageListComponent';
+import DocumentList from '../../components/DocumentListComponent';
 import TagCreateScreen from '../TagCreateScreen';
 
 const NewFeedMode = 1;
 const TagCreateMode = 2;
-
-const FeedId = 'f7372968-0368-43e4-932a-8c5ccfe45a8b';
 
 
 class NewFeedScreen extends React.Component {
@@ -69,7 +67,7 @@ class NewFeedScreen extends React.Component {
   }
 
   UNSAFE_componentWillReceiveProps(nextProps) {
-    // console.log('NewFeedScreen UNSAFE_componentWillReceiveProps : ', nextProps.feedo.currentFeed);
+    console.log('NewFeedScreen UNSAFE_componentWillReceiveProps : ', nextProps.feedo.loading, nextProps.feedo.currentFeed);
     let loading = false;
     if (this.props.feedo.loading !== types.CREATE_FEED_PENDING && nextProps.feedo.loading === types.CREATE_FEED_PENDING) {
       // creating a feed
@@ -117,6 +115,15 @@ class NewFeedScreen extends React.Component {
       loading = true;
     } else if (this.props.feedo.loading !== types.DELETE_FILE_FULFILLED && nextProps.feedo.loading === types.DELETE_FILE_FULFILLED) {
       // success in deleting a file
+    } else if (this.props.feedo.loading !== types.GET_FEED_DETAIL_PENDING && nextProps.feedo.loading === types.GET_FEED_DETAIL_PENDING) {
+      // getting a feed
+      loading = true;
+    } else if (this.props.feedo.loading !== types.GET_FEED_DETAIL_FULFILLED && nextProps.feedo.loading === types.GET_FEED_DETAIL_FULFILLED) {
+      // success in getting a feed
+      this.setState({
+        feedName: nextProps.feedo.currentFeed.headline,
+        comments: nextProps.feedo.currentFeed.summary,
+      });
     }
 
     this.setState({
@@ -141,12 +148,17 @@ class NewFeedScreen extends React.Component {
   }
 
   componentDidMount() {
+    console.log('NewFeedScreen called ...');
+
     Animated.timing(this.animatedShow, {
       toValue: 1,
       duration: CONSTANTS.ANIMATEION_MILLI_SECONDS,
     }).start(() => {
-      this.props.createFeed();
-      // this.props.getFeedDetail(FeedId);
+      if (this.props.selectedFeedId) {
+        this.props.getFeedDetail(this.props.selectedFeedId);
+      } else {
+        this.props.createFeed();
+      }
     });
   }
 
@@ -340,7 +352,7 @@ class NewFeedScreen extends React.Component {
     } = this.props.feedo.currentFeed;
     const imageFiles = filter(files, file => file.fileType === 'MEDIA');
     return (
-      <NewFeedImage 
+      <ImageList 
         files={imageFiles}
         onRemove={(fileId) => this.onRemoveImage(fileId)}
       />
@@ -353,7 +365,7 @@ class NewFeedScreen extends React.Component {
     } = this.props.feedo.currentFeed;
     const documentFiles = filter(files, file => file.fileType === 'FILE');
     return (
-      <NewFeedDocument 
+      <DocumentList 
         files={documentFiles}
         onRemove={(fileId) => this.onRemoveImage(fileId)}
       />
@@ -534,12 +546,14 @@ class NewFeedScreen extends React.Component {
 
 NewFeedScreen.defaultProps = {
   feedo: {},
+  selectedFeedId: null,
   onClose: () => {},
 }
 
 
 NewFeedScreen.propTypes = {
   feedo: PropTypes.object,
+  selectedFeedId: PropTypes.string,
   onClose: PropTypes.func,
 }
 
