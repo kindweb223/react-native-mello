@@ -119,6 +119,9 @@ const styles = StyleSheet.create({
       }
     })
   },  
+  shareScreenContainer: {
+    margin: 0
+  }
 })
 
 export default styles
