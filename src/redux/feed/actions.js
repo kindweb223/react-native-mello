@@ -168,7 +168,6 @@ export const createUserTag = (userId, tagName) => {
   };
 }
 
-
 /**
  * Add a tag to a hunt
  */

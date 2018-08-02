@@ -63,7 +63,7 @@ class ImageSliderScreen extends React.Component {
   getImages() {
     const {
       files,
-    } = this.props.feed.feed;
+    } = this.props.feed.currentFeed;
     const imageFiles = filter(files, file => file.fileType === 'MEDIA');
     let allImages = [];
     if (imageFiles) {
@@ -84,7 +84,7 @@ class ImageSliderScreen extends React.Component {
     const {
       id,
       files
-    } = this.props.feed.feed;
+    } = this.props.feed.currentFeed;
     const imageFiles = filter(files, file => file.fileType === 'MEDIA');
     if (id) {
       this.props.deleteFile(id, imageFiles[this.state.position].id);

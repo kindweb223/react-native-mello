@@ -98,6 +98,14 @@ const styles = StyleSheet.create({
     alignItems: 'flex-end',
     width: 100
   },
+  modalContainer: {
+    position: 'absolute',
+    left: 0,
+    right: 0,
+    top: 0,
+    bottom: 0,
+    backgroundColor: COLORS.LIGHT_GREY_MODAL_BACKGROUND,
+  },
   settingMenuView: {
     borderRadius: 20,
     backgroundColor: '#fff',
