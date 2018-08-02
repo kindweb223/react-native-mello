@@ -8,7 +8,7 @@ import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 
 import { Actions } from 'react-native-router-flux'
-import Slideshow from 'react-native-slideshow'
+import Slideshow from '../../components/Slideshow'
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons'
 import { filter } from 'lodash'
 
@@ -18,7 +18,7 @@ import {
   deleteFile,
 } from '../../redux/feedo/actions'
 import * as types from '../../redux/feedo/types'
-
+import CONSTANTS from '../../service/constants'
 
 class ImageSliderScreen extends React.Component {
   constructor(props) {
@@ -64,20 +64,15 @@ class ImageSliderScreen extends React.Component {
     const {
       files,
     } = this.props.feedo.currentFeed;
+    const { position } = this.state
     const imageFiles = filter(files, file => file.fileType === 'MEDIA');
-    let allImages = [];
-    if (imageFiles) {
-      imageFiles.forEach(item => {
-        allImages.push({
-          url: item.accessUrl,
-        });
-      })
-    }
-    return allImages;
+    selectImage = imageFiles[position]
+    const restImages = imageFiles.slice(position, 1)
+    return imageFiles
   }
 
   onClose() {
-    Actions.pop();
+    this.props.onClose()
   }
 
   onDelete() {
@@ -101,19 +96,25 @@ class ImageSliderScreen extends React.Component {
         >
           <MaterialCommunityIcons name="close" size={30} color={'#fff'} />
         </TouchableOpacity>
+
         <Slideshow 
           position={this.state.position}
           arrowSize={0}
           dataSource = {this.getImages()}
           onPositionChanged={position => this.setState({ position })}
+          width={CONSTANTS.SCREEN_WIDTH}
+          height={CONSTANTS.SCREEN_WIDTH}
         />
-        <TouchableOpacity 
-          style={styles.borderButtonWrapper}
-          activeOpacity={0.6}
-          onPress={this.onDelete.bind(this)}
-        >
-          <Text style={styles.textButton}>Delete</Text>
-        </TouchableOpacity>
+
+        {this.props.removal && (
+          <TouchableOpacity 
+            style={styles.borderButtonWrapper}
+            activeOpacity={0.6}
+            onPress={this.onDelete.bind(this)}
+          >
+            <Text style={styles.textButton}>Delete</Text>
+          </TouchableOpacity>
+        )}
         {this.state.loading && <LoadingScreen />}
       </View>
     );
@@ -123,11 +124,13 @@ class ImageSliderScreen extends React.Component {
 
 ImageSliderScreen.defaultProps = {
   position: 0,
+  removal: true
 }
 
 
 ImageSliderScreen.propTypes = {
   position: PropTypes.number,
+  removal: PropTypes.bool
 }
 
 

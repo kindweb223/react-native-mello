@@ -7,11 +7,10 @@ import {
 } from 'react-native'
 import PropTypes from 'prop-types'
 
-import { Actions } from 'react-native-router-flux'
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons'
 import FastImage from 'react-native-fast-image'
 
-
+import ImageSliderScreen from '../../containers/ImageSliderScreen'
 import styles from './styles'
 import CONSTANTS from '../../service/constants'
 
@@ -24,6 +23,8 @@ export default class NewFeedImage extends React.Component {
       removeImageIndex: -1,
       actionImageIndex: -1,
       files: this.props.files,
+      isPreview: false,
+      position: 0
     };
     
     this.animatedSelect = new Animated.Value(1);
@@ -111,7 +112,7 @@ export default class NewFeedImage extends React.Component {
   }
 
   onPressImage(index) {
-    Actions.ImageSliderScreen({position: index})
+    this.setState({ isPreview: true, position: index })
   }
 
   onLoadEnd() {
@@ -182,15 +183,30 @@ export default class NewFeedImage extends React.Component {
       files,
     } = this.state;
     return (
-      <FlatList
-        style={styles.container}
-        horizontal={true}
-        showsHorizontalScrollIndicator={false}
-        data={files}
-        renderItem={this.renderImageFile.bind(this)}
-        keyExtractor={(item, index) => index.toString()}
-        extraData={this.state}
-      />
+      [
+        <FlatList
+          key="0"
+          style={styles.container}
+          horizontal={true}
+          showsHorizontalScrollIndicator={false}
+          data={files}
+          renderItem={this.renderImageFile.bind(this)}
+          keyExtractor={(item, index) => index.toString()}
+          extraData={this.state}
+        />,
+        <Modal 
+          key="1"
+          isVisible={this.state.isPreview}
+          style={styles.previewModal}
+          backdropColor="rgba(0, 0, 0, 0.9)"
+          animationIn="fadeIn"
+          animationOut="fadeOut"
+          animationInTiming={100}
+          animationOutTiming={100}
+        >
+          <ImageSliderScreen position={this.state.position} onClose={() => this.setState({ isPreview: false })} />
+        </Modal>
+      ]
     );
   }
 }
