@@ -191,8 +191,8 @@ class FeedCollapseComponent extends React.Component {
           backdropColor="rgba(0, 0, 0, 0.9)"
           animationIn="fadeIn"
           animationOut="fadeOut"
-          animationInTiming={1500}
-          animationOutTiming={1000}
+          animationInTiming={500}
+          animationOutTiming={500}
         >
           <View style={styles.modalContainer}>
             <TouchableOpacity onPress={() => { this.setState({ isPreview: false }) }} style={styles.closeIconView}>

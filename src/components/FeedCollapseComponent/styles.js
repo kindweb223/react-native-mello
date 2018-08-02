@@ -136,7 +136,6 @@ const styles = StyleSheet.create({
   },
   previewImage: {
     width: '100%',
-    height: 210,
   },
   closeIconView: {
     position: 'absolute',
