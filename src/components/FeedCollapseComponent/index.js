@@ -190,7 +190,7 @@ class FeedCollapseComponent extends React.Component {
           animationInTiming={300}
           animationOutTiming={300}
         >
-          <ImageSliderScreen position={this.state.position} removal={true} onClose={() => this.setState({ isPreview: false })} />
+          <ImageSliderScreen position={this.state.position} removal={false} onClose={() => this.setState({ isPreview: false })} />
         </Modal>
       </View>
     )
