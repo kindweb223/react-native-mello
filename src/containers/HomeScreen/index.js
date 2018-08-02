@@ -253,9 +253,20 @@ class HomeScreen extends React.Component {
 
   handleEditFeed = (feedId) => {
     this.setState({ 
-      isVisibleNewFeed: true,
-      isEditFeed: true,
       isLongHoldMenuVisible: false,
+    }, () => {
+      setTimeout(() => {
+        this.setState({
+          isVisibleNewFeed: true,
+          isEditFeed: true,
+        }, () => {
+          this.animatedOpacity.setValue(0);
+          Animated.timing(this.animatedOpacity, {
+            toValue: 1,
+            duration: CONSTANTS.ANIMATEION_MILLI_SECONDS,
+          }).start();
+        });  
+      }, 300);
     });
   }
 

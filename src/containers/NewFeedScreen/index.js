@@ -219,7 +219,7 @@ class NewFeedScreen extends React.Component {
 
   onTapLeaveActionSheet(index) {
     if (index === 1) {
-      if (this.props.feedo.currentFeed.id) {
+      if (!this.props.selectedFeedId) {
         this.props.deleteDraftFeed(this.props.feedo.currentFeed.id)
       } else {
         this.onClose();
@@ -333,7 +333,7 @@ class NewFeedScreen extends React.Component {
           activeOpacity={0.6}
           onPress={this.onUpdate.bind(this)}
         >
-          <Text style={styles.textButton}>Create</Text>
+          <Text style={styles.textButton}>{this.props.selectedFeedId ? 'Save' : 'Create'}</Text>
         </TouchableOpacity>
       </View>
     );
@@ -523,7 +523,7 @@ class NewFeedScreen extends React.Component {
         <ActionSheet
           ref={o => this.leaveActionSheetRef = o}
           title='Are you sure that you wish to leave?'
-          options={['Continue editing', 'Leave and discard', 'Cancel']}
+          options={['Continue editing', this.props.selectedFeedId ? 'Close and discard' : 'Leave and discard', 'Cancel']}
           cancelButtonIndex={2}
           destructiveButtonIndex={1}
           tintColor={COLORS.PURPLE}
