@@ -12,9 +12,9 @@ import Ionicons from 'react-native-vector-icons/Ionicons'
 import Feather from 'react-native-vector-icons/Feather'
 import Image from 'react-native-image-progress'
 import Modal from "react-native-modal"
+import ImageSliderScreen from '../../containers/ImageSliderScreen'
 import { isEmpty, filter } from 'lodash'
 import PropTypes from 'prop-types'
-import Carousel from '../../components/Carousel'
 import Tags from '../FeedTags'
 import COLORS from '../../service/colors'
 import CONSTANTS from '../../service/constants'
@@ -34,17 +34,13 @@ class FeedCollapseComponent extends React.Component {
         content: props.data.summary.substring(40)
       },
       isPreview: false,
-      images: []
+      position: 0,
     }
   }
 
-  onImagePreview = (images, selectImage) => {
-    const restImages = filter(images, item => item.id !== selectImage.id)
+  onImagePreview = (key) => {
     this.setState({
-      images: [
-        selectImage,
-        ...restImages,
-      ],
+      position: key,
       isPreview: true
     })
   }
@@ -88,7 +84,7 @@ class FeedCollapseComponent extends React.Component {
                 >
                   {images.map((item, key) => (
                     <View key={key} style={key === (images.length - 1) ? styles.feedLastImage : styles.feedImage}>
-                      <TouchableOpacity onPress={() => this.onImagePreview(images, item)}>
+                      <TouchableOpacity onPress={() => this.onImagePreview(key)}>
                         <Image style={styles.image} source={{ uri: item.accessUrl }} threshold={300} />
                       </TouchableOpacity>
                     </View>
@@ -191,24 +187,10 @@ class FeedCollapseComponent extends React.Component {
           backdropColor="rgba(0, 0, 0, 0.9)"
           animationIn="fadeIn"
           animationOut="fadeOut"
-          animationInTiming={500}
-          animationOutTiming={500}
+          animationInTiming={300}
+          animationOutTiming={300}
         >
-          <View style={styles.modalContainer}>
-            <TouchableOpacity onPress={() => { this.setState({ isPreview: false }) }} style={styles.closeIconView}>
-              <Ionicons name="ios-close" style={styles.closeIcon} />
-            </TouchableOpacity>
-
-            <Carousel
-              width={CONSTANTS.SCREEN_WIDTH}
-              height={250}
-              backgroundColor="transparent"
-            >
-              {images.map(item => (
-                <Image key={item.id} style={styles.previewImage} source={{ uri: item.accessUrl }} threshold={300} />
-              ))}
-            </Carousel>
-          </View>
+          <ImageSliderScreen position={this.state.position} removal={false} onClose={() => this.setState({ isPreview: false })} />
         </Modal>
       </View>
     )
