@@ -126,28 +126,7 @@ const styles = StyleSheet.create({
     top: 0,
     width: '100%',
     height: '100%'
-  },
-  modalContainer: {
-    width: '100%',
-    height: '100%',
-    backgroundColor: 'rgba(0, 0, 0, 0.9)',
-    justifyContent: 'center',
-    alignItems: 'center'
-  },
-  previewImage: {
-    width: '100%',
-  },
-  closeIconView: {
-    position: 'absolute',
-    width: 40,
-    height: 40,
-    top: 40,
-    right: 0,
-  },
-  closeIcon: {
-    color: '#fff',
-    fontSize: 40
-  },
+  }
 })
 
 export default styles

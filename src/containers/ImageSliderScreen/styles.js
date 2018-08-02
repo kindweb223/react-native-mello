@@ -11,13 +11,14 @@ const styles = StyleSheet.create({
     bottom: 0,
     backgroundColor: 'black',
     alignItems: 'center',
-    justifyContent: 'space-between',
+    justifyContent: 'center',
   },
   closeButtonWrapper: {
     padding: 10,
-    marginTop: 30,
-    marginRight: 10,
-    alignSelf: 'flex-end'
+    top: 30,
+    right: 10,
+    alignSelf: 'flex-end',
+    position: 'absolute',
   },
   borderButtonWrapper: {
     height: 42,
@@ -25,9 +26,10 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: COLORS.MEDIUM_GREY,
     borderRadius: 21,
-    marginBottom: 30,
+    bottom: 30,
     alignItems: 'center',
     justifyContent: 'center',
+    position: 'absolute'
   },
   textButton: {
     fontSize: 14,
