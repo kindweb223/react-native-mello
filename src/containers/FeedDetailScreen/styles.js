@@ -114,6 +114,7 @@ const styles = StyleSheet.create({
     paddingTop: 10,
     position: 'absolute',
     right: CONSTANTS.PADDING,
+    top: 140,
     zIndex: 0,
     ...Platform.select({
       ios: {
