@@ -35,6 +35,10 @@ const styles = StyleSheet.create({
     fontSize: 14,
     color: '#fff',
   },
+  previewImage: {
+    width: '100%',
+    height: '100%'
+  }
 })
 
 

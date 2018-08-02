@@ -3,22 +3,22 @@ import {
   View,
   Text,
   TouchableOpacity,
+  Image
 } from 'react-native'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 
 import { Actions } from 'react-native-router-flux'
-import Carousel from '../../components/Carousel'
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons'
 import { filter } from 'lodash'
-
-import styles from './styles'
+import Carousel from '../../components/Carousel'
 import LoadingScreen from '../LoadingScreen';
 import { 
   deleteFile,
 } from '../../redux/feedo/actions'
 import * as types from '../../redux/feedo/types'
 import CONSTANTS from '../../service/constants'
+import styles from './styles'
 
 class ImageSliderScreen extends React.Component {
   constructor(props) {
@@ -65,13 +65,15 @@ class ImageSliderScreen extends React.Component {
       files,
     } = this.props.feedo.currentFeed;
     const { position } = this.state
+
     const imageFiles = filter(files, file => file.fileType === 'MEDIA');
-    selectImage = imageFiles[position]
-    const restImages = imageFiles.slice(position, 1)
-    return {
+    const selectImage = imageFiles[position]
+    const restImages = filter(imageFiles, item => item.id !== selectImage.id);
+
+    return [
       selectImage,
       ...restImages
-    }
+    ]
   }
 
   onClose() {
@@ -90,6 +92,8 @@ class ImageSliderScreen extends React.Component {
   }
 
   render () {
+    const images = this.getImages()
+
     return (
       <View style={styles.container}>
         <TouchableOpacity 
@@ -100,21 +104,13 @@ class ImageSliderScreen extends React.Component {
           <MaterialCommunityIcons name="close" size={30} color={'#fff'} />
         </TouchableOpacity>
 
-        {/* <Slideshow 
-          position={this.state.position}
-          arrowSize={0}
-          dataSource = {this.getImages()}
-          onPositionChanged={position => this.setState({ position })}
-          width={CONSTANTS.SCREEN_WIDTH}
-          height={CONSTANTS.SCREEN_WIDTH}
-        /> */}
         <Carousel
           width={CONSTANTS.SCREEN_WIDTH}
           height={CONSTANTS.SCREEN_WIDTH}
           backgroundColor="transparent"
         >
-          {dataSource.map(item => (
-            <Image key={item.id} style={styles.previewImage} source={{ uri: item.accessUrl }} threshold={300} />
+          {images.map(item => (
+            <Image key={item.id} style={styles.previewImage} resizeMode="contain" source={{ uri: item.accessUrl }} threshold={300} />
           ))}
         </Carousel>
 
