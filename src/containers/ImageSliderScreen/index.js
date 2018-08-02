@@ -30,12 +30,12 @@ class ImageSliderScreen extends React.Component {
   }
 
   UNSAFE_componentWillReceiveProps(nextProps) {
-    console.log('UNSAFE_componentWillReceiveProps : ', nextProps.feed);
+    console.log('UNSAFE_componentWillReceiveProps : ', nextProps.feedo);
     let loading = false;
-    if (this.props.feed.status !== types.DELETE_FILE_PENDING && nextProps.feed.status === types.DELETE_FILE_PENDING) {
+    if (this.props.feedo.loading !== types.DELETE_FILE_PENDING && nextProps.feedo.loading === types.DELETE_FILE_PENDING) {
       // deleting a file
       loading = true;
-    } else if (this.props.feed.status !== types.DELETE_FILE_FULFILLED && nextProps.feed.status === types.DELETE_FILE_FULFILLED) {
+    } else if (this.props.feedo.loading !== types.DELETE_FILE_FULFILLED && nextProps.feedo.loading === types.DELETE_FILE_FULFILLED) {
       // fullfilled in deleting a file
     }
 
@@ -44,12 +44,12 @@ class ImageSliderScreen extends React.Component {
     });
 
     // showing error alert
-    if (nextProps.feed.error) {
+    if (nextProps.feedo.error) {
       let error = null;
-      if (nextProps.feed.error.error) {
-        error = nextProps.feed.error.error;
+      if (nextProps.feedo.error.error) {
+        error = nextProps.feedo.error.error;
       } else {
-        error = nextProps.feed.error.message;
+        error = nextProps.feedo.error.message;
       }
       if (error) {
         Alert.alert('Error', error, [
@@ -63,7 +63,7 @@ class ImageSliderScreen extends React.Component {
   getImages() {
     const {
       files,
-    } = this.props.feed.currentFeed;
+    } = this.props.feedo.currentFeed;
     const imageFiles = filter(files, file => file.fileType === 'MEDIA');
     let allImages = [];
     if (imageFiles) {
@@ -84,7 +84,7 @@ class ImageSliderScreen extends React.Component {
     const {
       id,
       files
-    } = this.props.feed.currentFeed;
+    } = this.props.feedo.currentFeed;
     const imageFiles = filter(files, file => file.fileType === 'MEDIA');
     if (id) {
       this.props.deleteFile(id, imageFiles[this.state.position].id);
@@ -132,7 +132,7 @@ ImageSliderScreen.propTypes = {
 
 
 const mapStateToProps = ({ feedo }) => ({
-  feed: feedo,
+  feedo,
 })
 
 
