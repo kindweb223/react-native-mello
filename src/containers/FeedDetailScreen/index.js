@@ -17,6 +17,7 @@ import { isEmpty } from 'lodash'
 import { Actions } from 'react-native-router-flux'
 import Ionicons from 'react-native-vector-icons/Ionicons'
 import { ActionSheetCustom as ActionSheet } from 'react-native-actionsheet'
+import Modal from "react-native-modal"
 import DashboardActionBar from '../../navigations/DashboardActionBar'
 import FeedCardComponent from '../../components/FeedCardComponent'
 import FeedCollapseComponent from '../../components/FeedCollapseComponent'
@@ -24,6 +25,7 @@ import AvatarPileComponent from '../../components/AvatarPileComponent'
 import FeedNavbarSettingComponent from '../../components/FeedNavbarSettingComponent'
 import FeedControlMenuComponent from '../../components/FeedControlMenuComponent'
 import ToasterComponent from '../../components/ToasterComponent'
+import ShareScreen from '../ShareScreen'
 import {
   getFeedDetailData,
   setFeedDetailAction,
@@ -59,7 +61,9 @@ class FeedDetailScreen extends React.Component {
       isVisibleNewCard: false,
       openMenu: false,
       isShowToaster: false,
-      pinText: 'Pin'
+      isShowShare: false,
+      pinText: 'Pin',
+    };
 
     };
     this.animatedOpacity = new Animated.Value(0);
@@ -134,6 +138,7 @@ class FeedDetailScreen extends React.Component {
         this.handleUnpinFeed(feedId)
         return
       case 'Share':
+        this.setState({ isShowShare: true })
         return
       case 'Duplicate':
         this.handleDuplicateFeed(feedId)
@@ -430,6 +435,19 @@ class FeedDetailScreen extends React.Component {
           title={this.state.toasterTitle}
           onPressButton={() => this.undoAction()}
         />
+
+        <Modal 
+          isVisible={this.state.isShowShare}
+          style={styles.shareScreenContainer}
+          backdropColor='#f5f5f5'
+          backdropOpacity={0.9}
+          animationIn="zoomInUp"
+          animationOut="zoomOutDown"
+          animationInTiming={500}
+          onModalHide={() => {}}
+        >
+          <ShareScreen onClose={() => this.setState({ isShowShare: false })} />
+        </Modal>
       </SafeAreaView>
     )
   }
