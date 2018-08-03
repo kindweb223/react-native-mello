@@ -25,16 +25,18 @@ const styles = StyleSheet.create({
     paddingBottom: 17,
   },
   mainContentContainer: {
-    paddingHorizontal: 22,
+    // paddingHorizontal: 22,
   },
   textInputCardName: {
     fontSize: 18,
     lineHeight: 25,
+    marginHorizontal: 20,
   },
   textInputNote: {
     fontSize: 16,
     lineHeight: 23,
     marginTop: 15,
+    marginHorizontal: 20,
   },
   bottomContainer: {
     flexDirection: 'row',

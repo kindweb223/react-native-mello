@@ -26,8 +26,10 @@ import FeedNavbarSettingComponent from '../../components/FeedNavbarSettingCompon
 import FeedControlMenuComponent from '../../components/FeedControlMenuComponent'
 import ToasterComponent from '../../components/ToasterComponent'
 import ShareScreen from '../ShareScreen'
+import NewFeedScreen from '../NewFeedScreen'
+
 import {
-  getFeedDetailData,
+  getFeedDetail,
   setFeedDetailAction,
   addDummyFeed,
   removeDummyFeed,
@@ -59,6 +61,7 @@ class FeedDetailScreen extends React.Component {
       currentFeed: {},
       loading: false,
       isVisibleNewCard: false,
+      isVisibleEditFeed: false,
       openMenu: false,
       isShowToaster: false,
       isShowShare: false,
@@ -71,7 +74,7 @@ class FeedDetailScreen extends React.Component {
 
   componentDidMount() {
     this.setState({ loading: true })
-    this.props.getFeedDetailData(this.props.data.id)
+    this.props.getFeedDetail(this.props.data.id)
   }
 
   static getDerivedStateFromProps(nextProps, prevState) {
@@ -102,7 +105,7 @@ class FeedDetailScreen extends React.Component {
   hideSettingMenu = () => {
     const feedId = this.props.data.id
     const { settingItem } = this.state
-
+    console.log('hideSettingMenu : ', settingItem);
     switch(settingItem) {
       case 'Pin':
         this.handlePinFeed(feedId)
@@ -126,9 +129,25 @@ class FeedDetailScreen extends React.Component {
         })
         Actions.pop()
         return
+      case 'Edit':
+        this.handleEdit(feedId);
+        return
       default:
         return
     }
+  }
+
+  handleEdit = (feedId) => {
+    this.setState({
+      isVisibleEditFeed: true,
+    }, () => {
+      this.animatedOpacity.setValue(0);
+      Animated.timing(this.animatedOpacity, {
+        toValue: 1,
+        duration: CONSTANTS.ANIMATEION_MILLI_SECONDS,
+      }).start();
+    });  
+
   }
 
   handleSettingItem = (item) => {
@@ -221,6 +240,18 @@ class FeedDetailScreen extends React.Component {
     return false
   }
 
+  onCloseEditFeedModal() {
+    this.animatedOpacity.setValue(1);
+    Animated.timing(this.animatedOpacity, {
+      toValue: 0,
+      duration: CONSTANTS.ANIMATEION_MILLI_SECONDS,
+    }).start(() => {
+      this.setState({ 
+        isVisibleEditFeed: false,
+      });
+    });
+  }
+
   onOpenNewCardModal() {
     this.setState({
       isVisibleNewCard: true,
@@ -234,7 +265,7 @@ class FeedDetailScreen extends React.Component {
 
   }
 
-  onCloseNewFeedModal() {
+  onCloseNewCardModal() {
     this.animatedOpacity.setValue(1);
     Animated.timing(this.animatedOpacity, {
       toValue: 0,
@@ -247,7 +278,7 @@ class FeedDetailScreen extends React.Component {
   }
 
   get renderNewCardModal() {
-    if (!this.state.isVisibleNewCard) {
+    if (!this.state.isVisibleNewCard && !this.state.isVisibleEditFeed) {
       return;
     }
 
@@ -258,9 +289,19 @@ class FeedDetailScreen extends React.Component {
           {opacity: this.animatedOpacity}
         ]}
       >
-        <NewCardScreen 
-          onClose={() => this.onCloseNewFeedModal()}
-        />  
+        {
+          this.state.isVisibleNewCard && 
+            <NewCardScreen 
+              onClose={() => this.onCloseNewCardModal()}
+            />
+        }
+        {  
+          this.state.isVisibleEditFeed && 
+            <NewFeedScreen 
+              onClose={() => this.onCloseEditFeedModal()}
+              selectedFeedId={this.props.data.id}
+            />  
+        }
       </Animated.View>
     );
   }
@@ -444,7 +485,7 @@ const mapStateToProps = ({ feedo }) => ({
 })
 
 const mapDispatchToProps = dispatch => ({
-  getFeedDetailData: data => dispatch(getFeedDetailData(data)),
+  getFeedDetail: data => dispatch(getFeedDetail(data)),
   setFeedDetailAction: data => dispatch(setFeedDetailAction(data)),
   addDummyFeed: (data) => dispatch(addDummyFeed(data)),
   removeDummyFeed: (data) => dispatch(removeDummyFeed(data)),
@@ -456,14 +497,14 @@ const mapDispatchToProps = dispatch => ({
 
 FeedDetailScreen.defaultProps = {
   data: [],
-  getFeedDetailData: () => {},
+  getFeedDetail: () => {},
   setFeedDetailAction: () => {}
 }
 
 FeedDetailScreen.propTypes = {
   data: PropTypes.objectOf(PropTypes.any),
   feedo: PropTypes.objectOf(PropTypes.any),
-  getFeedDetailData: PropTypes.func,
+  getFeedDetail: PropTypes.func,
   setFeedDetailAction: PropTypes.func,
   addDummyFeed: PropTypes.func.isRequired,
   removeDummyFeed: PropTypes.func.isRequired,

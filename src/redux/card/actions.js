@@ -139,23 +139,3 @@ export const deleteFile = (ideaId, fileId) => {
     payload: fileId,
   };
 }
-
-
-
-
-
-
-/**
- * Get a Feed detail
- */
-export const getFeedDetail = (ideaId) => {
-  let url = `hunts/${ideaId}`
-
-  return {
-    types: [types.GET_FEED_DETAIL_PENDING, types.GET_FEED_DETAIL_FULFILLED, types.GET_FEED_DETAIL_REJECTED],
-    promise: axios({
-      method: 'get',
-      url: url
-    })
-  };
-}

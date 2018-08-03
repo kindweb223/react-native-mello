@@ -4,8 +4,8 @@ import CONSTANTS from '../../service/constants'
 
 const styles = StyleSheet.create({
   container: {
-    marginHorizontal: 10,
     marginTop: 30,
+    marginHorizontal: 10,
   },
   itemContainer: {
     alignSelf: 'flex-start',
