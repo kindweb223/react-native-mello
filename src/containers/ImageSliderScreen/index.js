@@ -3,6 +3,7 @@ import {
   View,
   Text,
   TouchableOpacity,
+  Image
 } from 'react-native'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
@@ -10,7 +11,7 @@ import { connect } from 'react-redux'
 import { Actions } from 'react-native-router-flux'
 import Slideshow from '../../components/Slideshow'
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons'
-import { filter } from 'lodash'
+import { max, filter } from 'lodash'
 
 import styles from './styles'
 import LoadingScreen from '../LoadingScreen';
@@ -23,14 +24,36 @@ import CONSTANTS from '../../service/constants'
 class ImageSliderScreen extends React.Component {
   constructor(props) {
     super(props);
+
     this.state = {
       position: this.props.position,
       loading: false,
+      imageFiles: [],
+      maxImageHeight: 0
     };
   }
 
+  componentDidMount() {
+    const {
+      files,
+    } = this.props.feedo.currentFeed;
+    const { position } = this.state
+    const imageFiles = filter(files, file => file.fileType === 'MEDIA');
+
+    let imageHeightList = []
+    imageFiles.forEach(element => {
+      Image.getSize(element.accessUrl, (width, height) => {
+        imageHeightList = [ ...imageHeightList, CONSTANTS.SCREEN_WIDTH / width * height ]
+        this.setState({ maxImageHeight: max(imageHeightList) })
+      })
+    });
+
+    this.setState({
+      imageFiles: imageFiles,
+    })
+  }
+
   UNSAFE_componentWillReceiveProps(nextProps) {
-    console.log('UNSAFE_componentWillReceiveProps : ', nextProps.feedo);
     let loading = false;
     if (this.props.feedo.loading !== types.DELETE_FILE_PENDING && nextProps.feedo.loading === types.DELETE_FILE_PENDING) {
       // deleting a file
@@ -60,17 +83,6 @@ class ImageSliderScreen extends React.Component {
     }
   }
 
-  getImages() {
-    const {
-      files,
-    } = this.props.feedo.currentFeed;
-    const { position } = this.state
-    const imageFiles = filter(files, file => file.fileType === 'MEDIA');
-    selectImage = imageFiles[position]
-    const restImages = imageFiles.slice(position, 1)
-    return imageFiles
-  }
-
   onClose() {
     this.props.onClose()
   }
@@ -87,8 +99,17 @@ class ImageSliderScreen extends React.Component {
   }
 
   render () {
+    const { imageFiles, maxImageHeight } = this.state
+
     return (
       <View style={styles.container}>
+        <Slideshow 
+          position={this.state.position}
+          imageFiles={imageFiles}
+          width={CONSTANTS.SCREEN_WIDTH}
+          height={maxImageHeight}
+        />
+
         <TouchableOpacity 
           style={styles.closeButtonWrapper}
           activeOpacity={0.6}
@@ -96,15 +117,6 @@ class ImageSliderScreen extends React.Component {
         >
           <MaterialCommunityIcons name="close" size={30} color={'#fff'} />
         </TouchableOpacity>
-
-        <Slideshow 
-          position={this.state.position}
-          arrowSize={0}
-          dataSource = {this.getImages()}
-          onPositionChanged={position => this.setState({ position })}
-          width={CONSTANTS.SCREEN_WIDTH}
-          height={CONSTANTS.SCREEN_WIDTH}
-        />
 
         {this.props.removal && (
           <TouchableOpacity 

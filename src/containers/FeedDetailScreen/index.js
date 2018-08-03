@@ -416,7 +416,7 @@ class FeedDetailScreen extends React.Component {
           animationInTiming={500}
           onModalHide={() => {}}
         >
-          <ShareScreen onClose={() => this.setState({ isShowShare: false })} />
+          <ShareScreen onClose={() => this.setState({ isShowShare: false })} data={data} />
         </Modal>
 
         <Modal 

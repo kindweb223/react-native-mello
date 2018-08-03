@@ -56,7 +56,7 @@ export default {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    paddingVertical: 10,
+    height: 60,
     borderBottomWidth: 1,
     borderColor: COLORS.SOFT_GREY
   },
@@ -65,41 +65,19 @@ export default {
     alignItems: 'center',
     justifyContent: 'flex-start'
   },
-  plusButtonView: {
-    marginRight: 15
-  },
   plusButton: {
     width: 42,
     height: 42,
     borderRadius: 21,
+    marginRight: 15,
     backgroundColor: COLORS.PURPLE,
     justifyContent: 'center',
     alignItems: 'center'
-  },
-  linkButton: {
-    width: 42,
-    height: 42,
-    borderRadius: 21,
-    backgroundColor: COLORS.LIGHT_YELLOW,
-    justifyContent: 'center',
-    alignItems: 'center'
-  },
-  plusButtonIcon: {
-    color: '#fff',
-    fontSize: 30,
-  },
-  tileView: {
-    justifyContent: 'center',
-    alignItems: 'flex-start'
   },
   title: {
     fontSize: 16,
     fontWeight: '600',
     color: '#000'
-  },
-  description: {
-    fontSize: 14,
-    color: COLORS.MEDIUM_GREY
   },
   rightView: {
     flexDirection: 'row',
@@ -107,14 +85,24 @@ export default {
     justifyContent: 'center'
   },
   viewText: {
-    color: COLORS.PURPLE,
     fontSize: 14,
     marginHorizontal: 5,
     fontWeight: '600',
   },
-  cogIcon: {
+  viewDisableText: {
+    color: COLORS.LIGHT_GREY,
+  },
+  viewEnableText: {
     color: COLORS.PURPLE,
+  },
+  cogIcon: {
     marginTop: 2,
     fontSize: 10
+  },
+  cogDisableIcon: {
+    color: COLORS.LIGHT_GREY,
+  },
+  cogEnableIcon: {
+    color: COLORS.PURPLE,
   }
 }

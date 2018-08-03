@@ -5,55 +5,81 @@ import {
   TouchableWithoutFeedback,
   TouchableOpacity,
   Animated,
-  Image
+  Image,
+  Share
 } from 'react-native'
 import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
 import Feather from 'react-native-vector-icons/Feather'
 import Entypo from 'react-native-vector-icons/Entypo'
+import Modal from 'react-native-modal'
+import LinkShareModalComponent from '../../components/LinkShareModalComponent'
+import LinkShareItem from '../../components/LinkShareModalComponent/LinkShareItem'
+import COLORS from '../../service/colors'
 import styles from './styles'
-const LINK_ICON = require('../../../assets/images/Link/White.png')
 const PLUS_ICON = require('../../../assets/images/Add/White.png')
 const CLOSE_ICON = require('../../../assets/images/Close/Blue.png')
+
+const InvitePeopleItemComponent = () => (
+  <View style={styles.innerView}>
+    <View style={styles.plusButton}>
+      <Image source={PLUS_ICON} />
+    </View>
+    <Text style={styles.title}>Invite people</Text>
+  </View>
+)
 
 class ShareScreen extends React.Component {
   constructor(props) {
     super(props)
     this.state = {
+      linkShareModal: false
     }
-    this.animatedPlusButton = new Animated.Value(1);
-    this.animatedLinkButton = new Animated.Value(1);
   }
 
-  onPlusPressInAddFeed() {
-    Animated.timing(this.animatedPlusButton, {
-      toValue: 0.8,
-      duration: 100,
-    }).start();
+  onInviteePeople = () => {
   }
 
-  onPlusPressOutAddFeed() {
-    Animated.timing(this.animatedPlusButton, {
-      toValue: 1,
-      duration: 100,
-    }).start();
+  onLinkShare = (isInviteeOnly) => {
+    this.setState({ linkShareModal: true })
   }
 
-  onLinkPressInAddFeed() {
-    Animated.timing(this.animatedLinkButton, {
-      toValue: 0.8,
-      duration: 100,
-    }).start();
+  showShareModal = () => {
+    const { data } = this.props
+
+    Share.share({
+      message: data.summary,
+      url: '',
+      title: data.headline
+    },{
+      dialogTitle: data.headline,
+      tintColor: COLORS.PURPLE,
+      subject: data.headline
+    })
   }
 
-  onLinkPressOutAddFeed() {
-    Animated.timing(this.animatedLinkButton, {
-      toValue: 1,
-      duration: 100,
-    }).start();
+  handleShareOption = (index) => {
+    this.setState({ linkShareModal: false })
+
+    switch(index) {
+      case 0: // Edit
+        return
+      case 1: // Add
+        return
+      case 2: // View
+        return
+      case 3: // Sharing Off
+        return
+      default:
+        return
+    }
   }
 
   render () {
+    const { data } = this.props
+    console.log('DATA: ', data)
+    const isInviteeOnly = data.sharingPreferences.level === 'INVITEES_ONLY'
+
     return (
       <View style={styles.overlay}>
         <View style={styles.header}>
@@ -61,7 +87,7 @@ class ShareScreen extends React.Component {
             <Image source={CLOSE_ICON} />
           </TouchableOpacity>
 
-          <TouchableOpacity onPress={() => this.props.handleSettingItem('Share')}>
+          <TouchableOpacity onPress={() => this.showShareModal()}>
             <View style={styles.shareButtonView}>
               <Entypo name="share-alternative" style={styles.shareIcon} />
               <Text style={styles.shareButtonText}>Share link</Text>
@@ -70,75 +96,52 @@ class ShareScreen extends React.Component {
         </View>
 
         <View style={styles.body}>
-          <View style={styles.listItem}>
-            <View style={styles.innerView}>
-              <Animated.View 
-                style={[styles.plusButtonView, 
-                  {
-                    transform: [
-                      { scale: this.animatedPlusButton },
-                    ],
-                  },
-                ]}
-              >
-                <TouchableWithoutFeedback
-                  onPressIn={this.onPlusPressInAddFeed.bind(this)}
-                  onPressOut={this.onPlusPressOutAddFeed.bind(this)}
-                >
-                  <View style={styles.plusButton}>
-                    <Image source={PLUS_ICON} />
-                  </View>
-                </TouchableWithoutFeedback>
-              </Animated.View>
-              <Text style={styles.title}>Invite people</Text>
+          <TouchableOpacity onPress={() => this.onInviteePeople()}>
+            <View style={styles.listItem}>
+              <InvitePeopleItemComponent />
             </View>
-          </View>
-
-          <View style={styles.listItem}>
-            <View style={styles.innerView}>
-              <Animated.View 
-                style={[styles.plusButtonView, 
-                  {
-                    transform: [
-                      { scale: this.animatedLinkButton },
-                    ],
-                  },
-                ]}
-              >
-                <TouchableWithoutFeedback
-                  onPressIn={this.onLinkPressInAddFeed.bind(this)}
-                  onPressOut={this.onLinkPressOutAddFeed.bind(this)}
-                >
-                  <View style={styles.linkButton}>
-                    <Image source={LINK_ICON} />
-                  </View>
-                </TouchableWithoutFeedback>
-              </Animated.View>
-
-              <View style={styles.tileView}>
-                <Text style={styles.title}>Invite people</Text>
-                <Text style={styles.description}>Anyone with the link can view</Text>
+          </TouchableOpacity>
+          
+          <TouchableOpacity onPress={() => this.onLinkShare()}>
+            <View style={styles.listItem}>
+              <LinkShareItem isInviteeOnly={isInviteeOnly} />
+            
+              <View style={styles.rightView}>
+                <Text style={[styles.viewText, isInviteeOnly ? styles.viewDisableText : styles.viewEnableText]}>
+                  {isInviteeOnly ? 'Off' : 'View'}
+                </Text>
+                <Entypo name="cog" style={[styles.cogIcon, isInviteeOnly ? styles.cogDisableIcon : styles.cogEnableIcon]} />
               </View>
             </View>
-
-            <TouchableOpacity style={styles.rightView}>
-              <Text style={styles.viewText}>View</Text>
-              <Entypo name="cog" style={styles.cogIcon} />
-            </TouchableOpacity>
-
-          </View>
+          </TouchableOpacity>
         </View>
+
+        <Modal 
+          isVisible={this.state.linkShareModal}
+          style={{ margin: 0 }}
+          backdropColor='#e0e0e0'
+          backdropOpacity={0.9}
+          animationIn="slideInUp"
+          animationOut="slideOutDown"
+          animationInTiming={500}
+          onBackdropPress={() => this.setState({ linkShareModal: false })}
+        >
+          <LinkShareModalComponent isInviteeOnly={isInviteeOnly} handleShareOption={this.handleShareOption} />
+        </Modal>
+
       </View>
     )
   }
 }
 
 ShareScreen.defaultProps = {
-  onClose: () => {}
+  onClose: () => {},
+  data: {}
 }
 
 ShareScreen.propTypes = {
-  onClose: PropTypes.func
+  onClose: PropTypes.func,
+  data: PropTypes.objectOf(PropTypes.any)
 }
 
 const mapStateToProps = ({ feedo }) => ({

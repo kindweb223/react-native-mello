@@ -3,7 +3,7 @@ import { createStore, applyMiddleware } from 'redux'
 import { Provider } from 'react-redux'
 import thunk from 'redux-thunk'
 import promiseMiddleware from './src/service/promiseMiddleware'
-import { Actions, Scene, Router, Lightbox, } from 'react-native-router-flux'
+import { Actions, Scene, Router, Lightbox } from 'react-native-router-flux'
 import axios from 'axios'
 
 import { BASE_URL } from './src/service/api'
@@ -12,7 +12,7 @@ axios.defaults.baseURL = BASE_URL
 axios.defaults.headers.get['Content-Type'] = 'application/json'
 axios.defaults.headers.get.Accept = 'application/json'
 axios.defaults.withCredentials = true
-axios.defaults.headers['x-auth-token'] = 'fb1c630e-fe98-4511-8624-87d5565a5c23'
+axios.defaults.headers['x-auth-token'] = '390796be-ee71-43a7-a20e-b0d5461b795c'
 axios.defaults.headers['x-mobile-api'] = true
 
 import reducers from './src/redux/reducers'
