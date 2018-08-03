@@ -32,6 +32,9 @@ class FeedLongHoldMenuScreen extends React.Component {
       case 'Duplicate':
         this.props.handleDuplicateFeed(this.props.feedData.id)
         return
+      case 'Edit':
+        this.props.handleEditFeed(this.props.feedData.id)
+        return;
     }
   }
 
@@ -91,7 +94,8 @@ FeedLongHoldMenuScreen.propTypes = {
   handleDeleteFeed: PropTypes.func.isRequired,
   handlePinFeed: PropTypes.func.isRequired,
   handleUnpinFeed: PropTypes.func.isRequired,
-  handleDuplicateFeed: PropTypes.func.isRequired
+  handleDuplicateFeed: PropTypes.func.isRequired,
+  handleEditFeed: PropTypes.func.isRequired,
 }
 
 

@@ -36,8 +36,8 @@ import COLORS from '../../service/colors';
 import CONSTANTS from '../../service/constants';
 import styles from './styles';
 import LoadingScreen from '../LoadingScreen';
-import NewFeedImage from '../../components/NewFeedImageComponent';
-import NewFeedDocument from '../../components/NewFeedDocumentComponent';
+import ImageList from '../../components/ImageListComponent';
+import DocumentList from '../../components/DocumentListComponent';
 
 const FeedId = 'f7372968-0368-43e4-932a-8c5ccfe45a8b';
 
@@ -269,7 +269,7 @@ class NewCardScreen extends React.Component {
     } = this.props.card.currentCard;
     const imageFiles = filter(files, file => file.fileType === 'MEDIA');
     return (
-      <NewFeedImage 
+      <ImageList 
         files={imageFiles}
         onRemove={(fileId) => this.onRemoveImage(fileId)}
       />
@@ -282,7 +282,7 @@ class NewCardScreen extends React.Component {
     } = this.props.card.currentCard;
     const documentFiles = filter(files, file => file.fileType === 'FILE');
     return (
-      <NewFeedDocument 
+      <DocumentList 
         files={documentFiles}
         onRemove={(fileId) => this.onRemoveImage(fileId)}
       />
@@ -350,7 +350,7 @@ class NewCardScreen extends React.Component {
     );
   }
 
-  get renderFeed() {
+  get renderCard() {
     const animatedMove  = this.animatedShow.interpolate({
       inputRange: [0, 1],
       outputRange: [CONSTANTS.SCREEN_HEIGHT, 0],
@@ -391,7 +391,7 @@ class NewCardScreen extends React.Component {
   render () {
     return (
       <View style={styles.container}>
-        {this.renderFeed}
+        {this.renderCard}
         <ActionSheet
           ref={o => this.imagePickerActionSheetRef = o}
           title='Select a Photo / Video'
