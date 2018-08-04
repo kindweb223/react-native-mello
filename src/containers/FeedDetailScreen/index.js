@@ -64,17 +64,20 @@ class FeedDetailScreen extends React.Component {
       scrollY: new Animated.Value(0),
       currentFeed: {},
       loading: false,
-      isVisibleNewCard: false,
+      isVisibleCard: false,
       isVisibleEditFeed: false,
       openMenu: false,
       isShowToaster: false,
       isShowShare: false,
       pinText: 'Pin',
       selectedIdeaInvitee: null,
+      selectedIdeaLayout: {},
     };
     this.animatedOpacity = new Animated.Value(0)
     this.menuOpacity = new Animated.Value(0)
     this.menuZIndex = new Animated.Value(0)
+
+    this.cardItemRefs = [];
   }
 
   componentDidMount() {
@@ -260,8 +263,9 @@ class FeedDetailScreen extends React.Component {
 
   onOpenNewCardModal() {
     this.setState({
-      isVisibleNewCard: true,
+      isVisibleCard: true,
       selectedIdeaInvitee: null,
+      selectedIdeaLayout: {},
     }, () => {
       this.animatedOpacity.setValue(0);
       Animated.timing(this.animatedOpacity, {
@@ -271,38 +275,41 @@ class FeedDetailScreen extends React.Component {
     });
   }
 
-  onCloseNewCardModal() {
+  onCloseCardModal() {
     this.animatedOpacity.setValue(1);
     Animated.timing(this.animatedOpacity, {
       toValue: 0,
       duration: CONSTANTS.ANIMATEION_MILLI_SECONDS,
     }).start(() => {
       this.setState({ 
-        isVisibleNewCard: false,
+        isVisibleCard: false,
       });
     });
   }
 
-  onSelectCard(idea) {
+  onSelectCard(idea, index) {
     this.props.setCard(idea);
     const { currentFeed } = this.state
     const invitee = find(currentFeed.invitees, (o) => {
       return (o.id == idea.inviteeId)
     })
-    this.setState({
-      isVisibleNewCard: true,
-      selectedIdeaInvitee: invitee,
-    }, () => {
-      this.animatedOpacity.setValue(0);
-      Animated.timing(this.animatedOpacity, {
-        toValue: 1,
-        duration: CONSTANTS.ANIMATEION_MILLI_SECONDS,
-      }).start();
+    this.cardItemRefs[index].measure((ox, oy, width, height, px, py) => {
+      this.setState({
+        isVisibleCard: true,
+        selectedIdeaInvitee: invitee,
+        selectedIdeaLayout: { ox, oy, width, height, px, py },
+      }, () => {
+        this.animatedOpacity.setValue(0);
+        Animated.timing(this.animatedOpacity, {
+          toValue: 1,
+          duration: CONSTANTS.ANIMATEION_MILLI_SECONDS,
+        }).start();
+      });
     });
   }
 
   get renderNewCardModal() {
-    if (!this.state.isVisibleNewCard && !this.state.isVisibleEditFeed) {
+    if (!this.state.isVisibleCard && !this.state.isVisibleEditFeed) {
       return;
     }
 
@@ -314,10 +321,11 @@ class FeedDetailScreen extends React.Component {
         ]}
       >
         {
-          this.state.isVisibleNewCard && 
+          this.state.isVisibleCard && 
             <NewCardScreen 
-              onClose={() => this.onCloseNewCardModal()}
+              onClose={() => this.onCloseCardModal()}
               invitee={this.state.selectedIdeaInvitee}
+              intialLayout={this.state.selectedIdeaLayout}
             />
         }
         {  
@@ -431,18 +439,21 @@ class FeedDetailScreen extends React.Component {
               <View style={styles.detailView}>
                 <FeedCollapseComponent data={data} feedData={currentFeed} />
 
-                {!isEmpty(currentFeed) && currentFeed && currentFeed.ideas.length > 0
-                  ? currentFeed.ideas.map(item => (
+                {
+                  !isEmpty(currentFeed) && currentFeed && currentFeed.ideas.length > 0 ?
+                    currentFeed.ideas.map((item, index) => (
                       <TouchableHighlight
+                        key={index}
+                        ref={ref => this.cardItemRefs[index] = ref}
                         style={{marginHorizontal: 5, borderRadius: 5,}}
-                        key={item.id} 
                         underlayColor={COLORS.LIGHT_GREY}
-                        onPress={() => this.onSelectCard(item)}
+                        onPress={() => this.onSelectCard(item, index)}
                       >
                         <FeedCardComponent data={item} invitees={currentFeed.invitees} />
                       </TouchableHighlight>
                     ))
-                  : <View style={styles.emptyView}>
+                  : 
+                    <View style={styles.emptyView}>
                       {loading
                         ? <ActivityIndicator animating />
                         : [
@@ -463,7 +474,7 @@ class FeedDetailScreen extends React.Component {
         {this.renderNewCardModal}
 
         <ActionSheet
-          ref={o => this.ActionSheet = o}
+          ref={ref => this.ActionSheet = ref}
           title={<Text style={actionSheetStyles.titleText}>Are you sure you want to delete this feed, everything will be gone ...</Text>}
           options={ACTIONSHEET_OPTIONS}
           cancelButtonIndex={1}

@@ -101,7 +101,7 @@ class Tags extends React.Component {
       return (
         <View style={styles.textInputContainer}>
           <TextInput
-            ref={o => this.tagInputRef = o}
+            ref={ref => this.tagInputRef = ref}
             value={this.state.text}
             placeholder='Tags'
             style={[styles.textInput, this.props.inputStyle]}

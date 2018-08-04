@@ -16,16 +16,17 @@ const styles = StyleSheet.create({
     left: 0,
     right: 0,
     bottom: 0,
+    justifyContent: 'center',
+    zIndex: 1,
   },
   contentContainer: {
+    flex: 1,
     borderRadius: 18,
     backgroundColor: '#fff',
-    height: CONSTANTS.SCREEN_HEIGHT,
     paddingTop: 26,
     paddingBottom: 17,
   },
   mainContentContainer: {
-    // paddingHorizontal: 22,
   },
   textInputCardTitle: {
     fontSize: 18,
@@ -39,7 +40,7 @@ const styles = StyleSheet.create({
     marginTop: 15,
     marginHorizontal: 20,
   },
-  bottomContainer: {
+  attachmentButtonsContainer: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
@@ -47,7 +48,7 @@ const styles = StyleSheet.create({
     paddingRight: 16,
     marginTop: 20,
   },
-  bottomItemContainer: {
+  buttonItemContainer: {
     width: 32,
     height: 32,
     marginRight: 8,
@@ -80,6 +81,16 @@ const styles = StyleSheet.create({
   },
   cellContainer: {
     marginLeft: 15,
+  },
+  heaerContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    height: 50,
+    paddingHorizontal: 6,
+  },
+  closeButtonWrapper: {
+    padding: 10,
   },
 })
 

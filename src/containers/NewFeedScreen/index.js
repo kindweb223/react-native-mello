@@ -519,7 +519,7 @@ class NewFeedScreen extends React.Component {
         {this.renderFeed}
         {this.renderCreateTag}
         <ActionSheet
-          ref={o => this.leaveActionSheetRef = o}
+          ref={ref => this.leaveActionSheetRef = ref}
           title='Are you sure that you wish to leave?'
           options={['Continue editing', this.props.selectedFeedId ? 'Close and discard' : 'Leave and discard', 'Cancel']}
           cancelButtonIndex={2}
@@ -528,7 +528,7 @@ class NewFeedScreen extends React.Component {
           onPress={(index) => this.onTapLeaveActionSheet(index)}
         />
         <ActionSheet
-          ref={o => this.imagePickerActionSheetRef = o}
+          ref={ref => this.imagePickerActionSheetRef = ref}
           title='Select a Photo / Video'
           options={['Take A Photo', 'Select From Photos', 'Cancel']}
           cancelButtonIndex={2}
