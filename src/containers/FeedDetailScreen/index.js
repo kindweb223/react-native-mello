@@ -9,11 +9,12 @@ import {
   Animated,
   ActivityIndicator,
   TouchableOpacity,
+  TouchableHighlight,
 } from 'react-native'
 
 import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
-import { isEmpty } from 'lodash'
+import { isEmpty, find } from 'lodash'
 import { Actions } from 'react-native-router-flux'
 import Ionicons from 'react-native-vector-icons/Ionicons'
 import { ActionSheetCustom as ActionSheet } from 'react-native-actionsheet'
@@ -37,7 +38,10 @@ import {
   unpinFeed,
   duplicateFeed,
   deleteDuplicatedFeed,
-} from '../../redux/feedo/actions'
+} from '../../redux/feedo/actions';
+import {
+  setCard,
+} from '../../redux/card/actions'
 import COLORS from '../../service/colors'
 import styles from './styles'
 import actionSheetStyles from '../FeedLongHoldMenuScreen/styles'
@@ -66,6 +70,7 @@ class FeedDetailScreen extends React.Component {
       isShowToaster: false,
       isShowShare: false,
       pinText: 'Pin',
+      selectedIdeaInvitee: null,
     };
     this.animatedOpacity = new Animated.Value(0)
     this.menuOpacity = new Animated.Value(0)
@@ -79,6 +84,7 @@ class FeedDetailScreen extends React.Component {
 
   static getDerivedStateFromProps(nextProps, prevState) {
     if (nextProps.feedo.loading === 'GET_FEED_DETAIL_FULFILLED' && nextProps.feedo.currentFeed !== prevState.currentFeed) {
+      console.log('Current Feed : ', nextProps.feedo.currentFeed);
       return {
         loading: false,
         currentFeed: nextProps.feedo.currentFeed,
@@ -255,6 +261,7 @@ class FeedDetailScreen extends React.Component {
   onOpenNewCardModal() {
     this.setState({
       isVisibleNewCard: true,
+      selectedIdeaInvitee: null,
     }, () => {
       this.animatedOpacity.setValue(0);
       Animated.timing(this.animatedOpacity, {
@@ -262,7 +269,6 @@ class FeedDetailScreen extends React.Component {
         duration: CONSTANTS.ANIMATEION_MILLI_SECONDS,
       }).start();
     });
-
   }
 
   onCloseNewCardModal() {
@@ -274,6 +280,24 @@ class FeedDetailScreen extends React.Component {
       this.setState({ 
         isVisibleNewCard: false,
       });
+    });
+  }
+
+  onSelectCard(idea) {
+    this.props.setCard(idea);
+    const { currentFeed } = this.state
+    const invitee = find(currentFeed.invitees, (o) => {
+      return (o.id == idea.inviteeId)
+    })
+    this.setState({
+      isVisibleNewCard: true,
+      selectedIdeaInvitee: invitee,
+    }, () => {
+      this.animatedOpacity.setValue(0);
+      Animated.timing(this.animatedOpacity, {
+        toValue: 1,
+        duration: CONSTANTS.ANIMATEION_MILLI_SECONDS,
+      }).start();
     });
   }
 
@@ -293,6 +317,7 @@ class FeedDetailScreen extends React.Component {
           this.state.isVisibleNewCard && 
             <NewCardScreen 
               onClose={() => this.onCloseNewCardModal()}
+              invitee={this.state.selectedIdeaInvitee}
             />
         }
         {  
@@ -408,7 +433,14 @@ class FeedDetailScreen extends React.Component {
 
                 {!isEmpty(currentFeed) && currentFeed && currentFeed.ideas.length > 0
                   ? currentFeed.ideas.map(item => (
-                      <FeedCardComponent key={item.id} data={item} invitees={currentFeed.invitees} />
+                      <TouchableHighlight
+                        style={{marginHorizontal: 5, borderRadius: 5,}}
+                        key={item.id} 
+                        underlayColor={COLORS.LIGHT_GREY}
+                        onPress={() => this.onSelectCard(item)}
+                      >
+                        <FeedCardComponent data={item} invitees={currentFeed.invitees} />
+                      </TouchableHighlight>
                     ))
                   : <View style={styles.emptyView}>
                       {loading
@@ -492,7 +524,8 @@ const mapDispatchToProps = dispatch => ({
   pinFeed: (data) => dispatch(pinFeed(data)),
   unpinFeed: (data) => dispatch(unpinFeed(data)),
   duplicateFeed: (data) => dispatch(duplicateFeed(data)),
-  deleteDuplicatedFeed: (data) => dispatch(deleteDuplicatedFeed(data))
+  deleteDuplicatedFeed: (data) => dispatch(deleteDuplicatedFeed(data)),
+  setCard: (data) => dispatch(setCard(data)),
 })
 
 FeedDetailScreen.defaultProps = {

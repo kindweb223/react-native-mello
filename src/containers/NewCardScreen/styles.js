@@ -20,19 +20,20 @@ const styles = StyleSheet.create({
   contentContainer: {
     borderRadius: 18,
     backgroundColor: '#fff',
-    maxHeight: CONSTANTS.SCREEN_HEIGHT - 150,
+    height: CONSTANTS.SCREEN_HEIGHT,
     paddingTop: 26,
     paddingBottom: 17,
   },
   mainContentContainer: {
     // paddingHorizontal: 22,
   },
-  textInputCardName: {
+  textInputCardTitle: {
     fontSize: 18,
     lineHeight: 25,
+    fontWeight: '600',
     marginHorizontal: 20,
   },
-  textInputNote: {
+  textInputIdea: {
     fontSize: 16,
     lineHeight: 23,
     marginTop: 15,
@@ -58,6 +59,27 @@ const styles = StyleSheet.create({
       { rotate: '135deg' }, 
       { rotateY: '180deg' },
     ],
+  },
+  line: {
+    height: 1,
+    backgroundColor: COLORS.LIGHT_GREY_LINE,
+    marginVertical: 15,
+  },
+  rowContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  textInvitee: {
+    fontSize: 14,
+    lineHeight: 21,
+    color: COLORS.DARK_GREY,
+  },
+  iconDot: {
+    marginHorizontal: 7,
+    color: COLORS.DARK_GREY,
+  },
+  cellContainer: {
+    marginLeft: 15,
   },
 })
 

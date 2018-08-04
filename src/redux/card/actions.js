@@ -33,7 +33,6 @@ export const updateCard = (huntId, ideaId, title, idea, files) => {
     idea,
     files,
   }
-
   return {
     types: [types.UPDATE_CARD_PENDING, types.UPDATE_CARD_FULFILLED, types.UPDATE_CARD_REJECTED],
     promise: axios({
@@ -41,6 +40,30 @@ export const updateCard = (huntId, ideaId, title, idea, files) => {
       url: url,
       data,
     }),
+  };
+}
+
+/**
+ * Get a card
+ */
+export const getCard = (ideaId) => {
+  let url = `ideas/${ideaId}`
+  return {
+    types: [types.GET_CARD_PENDING, types.GET_CARD_FULFILLED, types.GET_CARD_REJECTED],
+    promise: axios({
+      method: 'get',
+      url: url,
+    }),
+  };
+}
+
+/**
+ * Set a card to currentCard
+ */
+export const setCard = (idea) => {
+  return {
+    type: types.SET_CURRENT_CARD,
+    payload: idea,
   };
 }
 
@@ -106,7 +129,6 @@ export const uploadFileToS3 = (signedUrl, file, fileName, mimeType) => {
  */
 export const addFile = (ideaId, fileType, contentType, name, objectKey, accessUrl) => {
   let url = `ideas/${ideaId}/files`
-
   const data = {
     fileType,
     contentType,
@@ -114,7 +136,6 @@ export const addFile = (ideaId, fileType, contentType, name, objectKey, accessUr
     objectKey,
     accessUrl,
   }
-  console.log('addFile Format : ', data);
   return {
     types: [types.ADD_FILE_PENDING, types.ADD_FILE_FULFILLED, types.ADD_FILE_REJECTED],
     promise: axios({
