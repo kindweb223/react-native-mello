@@ -15,6 +15,7 @@ import Entypo from 'react-native-vector-icons/Entypo'
 import Modal from 'react-native-modal'
 import LinkShareModalComponent from '../../components/LinkShareModalComponent'
 import LinkShareItem from '../../components/LinkShareModalComponent/LinkShareItem'
+import { SERVER_URL } from '../../service/api'
 import COLORS from '../../service/colors'
 import styles from './styles'
 const PLUS_ICON = require('../../../assets/images/Add/White.png')
@@ -49,7 +50,7 @@ class ShareScreen extends React.Component {
 
     Share.share({
       message: data.summary,
-      url: '',
+      url: `${SERVER_URL}${data.id}`,
       title: data.headline
     },{
       dialogTitle: data.headline,
