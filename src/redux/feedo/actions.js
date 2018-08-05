@@ -359,3 +359,19 @@ export const removeTagFromHunt = (huntId, tagId) => {
     payload: tagId,
   };
 }
+
+/**
+ * Update sharing preferences
+ */
+export const updateSharingPreferences = (feedId, data) => {
+  let url = `hunts/${feedId}/share`
+  return {
+    types: [types.UPDATE_SHARING_PREFERENCES_PENDING, types.UPDATE_SHARING_PREFERENCES_FULFILLED, types.UPDATE_SHARING_PREFERENCES_REJECTED],
+    promise: axios({
+      method: 'put',
+      url: url,
+      data
+    }),
+    payload: feedId,
+  }
+}
