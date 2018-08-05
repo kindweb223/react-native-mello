@@ -5,3 +5,4 @@ export const AXIOS_CONFIG = {
     'Content-Type': 'application/json'
   }
 }
+export const SERVER_URL = 'https://demos.solvers.io/solvers/hunt-demo/hunt/'
