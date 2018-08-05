@@ -615,6 +615,45 @@ export default function feedo(state = initialState, action = {}) {
         error: data,
       }
     }
+    /**
+     * Update sharing preferenecs
+     */
+    case types.UPDATE_SHARING_PREFERENCES_PENDING: {
+      return {
+        ...state,
+        error: null,
+      }
+    }
+    case types.UPDATE_SHARING_PREFERENCES_FULFILLED: {
+      console.log('UPDATE_SHARING_PREFERENCES_FULFILLED')
+      const { feedoList } = state
+      const feedId = action.payload
+
+      const restFeedoList = filter(feedoList, feed => feed.id !== feedId)
+      let selectedFeed = filter(feedoList, feed => feed.id === feedId)
+      const currentFeed = Object.assign(
+        {},
+        selectedFeed[0],
+        { sharingPreferences: { level: selectedFeed[0].sharingPreferences.level === 'INVITEES_ONLY' ? 'PUBLIC' : 'INVITEES_ONLY' } }
+      )
+
+      return {
+        ...state,
+        loading: types.UPDATE_SHARING_PREFERENCES_FULFILLED,
+        feedoList: [
+          ...restFeedoList,
+          currentFeed
+        ],
+        currentFeed,
+      }
+    }
+    case types.UPDATE_SHARING_PREFERENCES_REJECTED: {
+      return {
+        ...state,
+        loading: types.UNPIN_FEED_REJECTED,
+        error: action.error,
+      }
+    }
     default:
       return state;
   }

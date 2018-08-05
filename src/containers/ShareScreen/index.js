@@ -16,6 +16,7 @@ import Modal from 'react-native-modal'
 import LinkShareModalComponent from '../../components/LinkShareModalComponent'
 import LinkShareItem from '../../components/LinkShareModalComponent/LinkShareItem'
 import { SERVER_URL } from '../../service/api'
+import { updateSharingPreferences } from '../../redux/feedo/actions'
 import COLORS from '../../service/colors'
 import styles from './styles'
 const PLUS_ICON = require('../../../assets/images/Add/White.png')
@@ -34,8 +35,27 @@ class ShareScreen extends React.Component {
   constructor(props) {
     super(props)
     this.state = {
-      linkShareModal: false
+      linkShareModal: false,
+      isInviteeOnly: false
     }
+  }
+
+  componentDidMount() {
+    const { data } = this.props
+    const isInviteeOnly = data.sharingPreferences.level === 'INVITEES_ONLY'
+    this.setState({ isInviteeOnly })
+  }
+
+  static getDerivedStateFromProps(nextProps, prevState) {
+    const { feedo } = nextProps
+
+    if (feedo.loading === 'UPDATE_SHARING_PREFERENCES_FULFILLED') {
+      return {
+        isInviteeOnly: feedo.currentFeed.sharingPreferences.level === 'INVITEES_ONLY'
+      }
+    }
+
+    return null
   }
 
   onInviteePeople = () => {
@@ -60,6 +80,7 @@ class ShareScreen extends React.Component {
   }
 
   handleShareOption = (index) => {
+    const { data, updateSharingPreferences } = this.props
     this.setState({ linkShareModal: false })
 
     switch(index) {
@@ -70,6 +91,12 @@ class ShareScreen extends React.Component {
       case 2: // View
         return
       case 3: // Sharing Off
+        updateSharingPreferences(
+          data.id,
+          {
+            level: data.sharingPreferences.level === 'INVITEES_ONLY' ? 'PUBLIC' : 'INVITEES_ONLY'
+          }
+        )
         return
       default:
         return
@@ -78,8 +105,7 @@ class ShareScreen extends React.Component {
 
   render () {
     const { data } = this.props
-    console.log('DATA: ', data)
-    const isInviteeOnly = data.sharingPreferences.level === 'INVITEES_ONLY'
+    const { isInviteeOnly } = this.state
 
     return (
       <View style={styles.overlay}>
@@ -137,19 +163,25 @@ class ShareScreen extends React.Component {
 
 ShareScreen.defaultProps = {
   onClose: () => {},
-  data: {}
+  data: {},
+  updateSharingPreferences: () => {}
 }
 
 ShareScreen.propTypes = {
   onClose: PropTypes.func,
-  data: PropTypes.objectOf(PropTypes.any)
+  data: PropTypes.objectOf(PropTypes.any),
+  updateSharingPreferences: PropTypes.func
 }
 
 const mapStateToProps = ({ feedo }) => ({
   feedo
 })
 
+const mapDispatchToProps = dispatch => ({
+  updateSharingPreferences: (feedId, data) => dispatch(updateSharingPreferences(feedId, data))
+})
+
 export default connect(
   mapStateToProps,
-  null
+  mapDispatchToProps
 )(ShareScreen)

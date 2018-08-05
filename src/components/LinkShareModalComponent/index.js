@@ -51,7 +51,7 @@ class LinkShareModalComponent extends React.Component {
         <TouchableOpacity onPress={() => this.onPressItem(3)}>
           <View style={[styles.listItem, styles.itemLast]}>
             <Text style={[styles.title, styles.titleLast]}>
-              Link sharing off
+              {isInviteeOnly ? 'Link sharing on' : 'Link sharing off'}
             </Text>
           </View>
         </TouchableOpacity>
