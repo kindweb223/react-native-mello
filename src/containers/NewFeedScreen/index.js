@@ -67,7 +67,7 @@ class NewFeedScreen extends React.Component {
   }
 
   UNSAFE_componentWillReceiveProps(nextProps) {
-    console.log('NewFeedScreen UNSAFE_componentWillReceiveProps : ', nextProps.feedo.loading, nextProps.feedo.currentFeed);
+    // console.log('NewFeedScreen UNSAFE_componentWillReceiveProps : ', nextProps.feedo.loading, nextProps.feedo.currentFeed);
     let loading = false;
     if (this.props.feedo.loading !== types.CREATE_FEED_PENDING && nextProps.feedo.loading === types.CREATE_FEED_PENDING) {
       // creating a feed
@@ -148,8 +148,6 @@ class NewFeedScreen extends React.Component {
   }
 
   componentDidMount() {
-    console.log('NewFeedScreen called ...');
-
     Animated.timing(this.animatedShow, {
       toValue: 1,
       duration: CONSTANTS.ANIMATEION_MILLI_SECONDS,
@@ -521,7 +519,7 @@ class NewFeedScreen extends React.Component {
         {this.renderFeed}
         {this.renderCreateTag}
         <ActionSheet
-          ref={o => this.leaveActionSheetRef = o}
+          ref={ref => this.leaveActionSheetRef = ref}
           title='Are you sure that you wish to leave?'
           options={['Continue editing', this.props.selectedFeedId ? 'Close and discard' : 'Leave and discard', 'Cancel']}
           cancelButtonIndex={2}
@@ -530,7 +528,7 @@ class NewFeedScreen extends React.Component {
           onPress={(index) => this.onTapLeaveActionSheet(index)}
         />
         <ActionSheet
-          ref={o => this.imagePickerActionSheetRef = o}
+          ref={ref => this.imagePickerActionSheetRef = ref}
           title='Select a Photo / Video'
           options={['Take A Photo', 'Select From Photos', 'Cancel']}
           cancelButtonIndex={2}

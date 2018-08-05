@@ -71,7 +71,7 @@ class FeedLongHoldMenuScreen extends React.Component {
       />,
       <ActionSheet
         key="3"
-        ref={o => this.ActionSheet = o}
+        ref={ref => this.ActionSheet = ref}
         title={<Text style={styles.titleText}>Are you sure you want to delete this feed, everything will be gone ...</Text>}
         options={ACTIONSHEET_OPTIONS}
         cancelButtonIndex={1}

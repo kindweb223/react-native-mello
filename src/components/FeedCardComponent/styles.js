@@ -4,8 +4,9 @@ import CONSTANTS from '../../service/constants'
 
 const styles = StyleSheet.create({
   container: {
-    marginTop: 22,
-    paddingHorizontal: CONSTANTS.PADDING,
+    justifyContent: 'center',
+    paddingHorizontal: 11,
+    paddingVertical: 11,
   },
   title: {
    fontSize: 16,

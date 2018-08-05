@@ -2,7 +2,7 @@ import _ from 'lodash'
 import * as types from './types'
 
 const initialState = {
-  status: null,
+  loading: null,
   error: null,
   currentCard: {},
   fileUploadUrl: {},
@@ -15,7 +15,7 @@ export default function card(state = initialState, action = {}) {
     case types.CREATE_CARD_PENDING:
       return {
         ...state,
-        status: types.CREATE_CARD_PENDING,
+        loading: types.CREATE_CARD_PENDING,
         currentCard: {},
         error: null,
       }
@@ -23,7 +23,7 @@ export default function card(state = initialState, action = {}) {
       const { data } = action.result
       return {
         ...state,
-        status: types.CREATE_CARD_FULFILLED,
+        loading: types.CREATE_CARD_FULFILLED,
         currentCard: data,
       }
     }
@@ -31,7 +31,7 @@ export default function card(state = initialState, action = {}) {
       const { data } = action.error.response
       return {
         ...state,
-        status: types.CREATE_CARD_REJECTED,
+        loading: types.CREATE_CARD_REJECTED,
         error: data,
       }
     }
@@ -40,14 +40,14 @@ export default function card(state = initialState, action = {}) {
     case types.UPDATE_CARD_PENDING:
       return {
         ...state,
-        status: types.UPDATE_CARD_PENDING,
+        loading: types.UPDATE_CARD_PENDING,
         error: null,
       }
     case types.UPDATE_CARD_FULFILLED: {
       const { data } = action.result
       return {
         ...state,
-        status: types.UPDATE_CARD_FULFILLED,
+        loading: types.UPDATE_CARD_FULFILLED,
         currentCard: data,
       }
     }
@@ -55,8 +55,42 @@ export default function card(state = initialState, action = {}) {
       const { data } = action.error.response
       return {
         ...state,
-        status: types.UPDATE_CARD_REJECTED,
+        loading: types.UPDATE_CARD_REJECTED,
         error: data,
+      }
+    }
+
+    // get a card
+    case types.GET_CARD_PENDING:
+      return {
+        ...state,
+        loading: types.GET_CARD_PENDING,
+        error: null,
+      }
+    case types.GET_CARD_FULFILLED: {
+      const { data } = action.result
+      return {
+        ...state,
+        loading: types.GET_CARD_FULFILLED,
+        currentCard: data,
+      }
+    }
+    case types.GET_CARD_REJECTED: {
+      const { data } = action.error.response
+      return {
+        ...state,
+        loading: types.GET_CARD_REJECTED,
+        error: data,
+      }
+    }
+
+    // set a card to currentCard
+    case types.SET_CURRENT_CARD: {
+      const data = action.payload;
+      return {
+        ...state,
+        loading: types.SET_CURRENT_CARD,
+        currentCard: data,
       }
     }
     
@@ -64,13 +98,13 @@ export default function card(state = initialState, action = {}) {
     case types.DELETE_CARD_PENDING:
       return {
         ...state,
-        status: types.DELETE_CARD_PENDING,
+        loading: types.DELETE_CARD_PENDING,
         error: null,
       }
     case types.DELETE_CARD_FULFILLED: {
       return {
         ...state,
-        status: types.DELETE_CARD_FULFILLED,
+        loading: types.DELETE_CARD_FULFILLED,
         currentCard: {},
       }
     }
@@ -78,7 +112,7 @@ export default function card(state = initialState, action = {}) {
       const { data } = action.error.response
       return {
         ...state,
-        status: types.DELETE_CARD_REJECTED,
+        loading: types.DELETE_CARD_REJECTED,
         error: data,
       }
     }
@@ -87,7 +121,7 @@ export default function card(state = initialState, action = {}) {
     case types.GET_FILE_UPLOAD_URL_PENDING:
       return {
         ...state,
-        status: types.GET_FILE_UPLOAD_URL_PENDING,
+        loading: types.GET_FILE_UPLOAD_URL_PENDING,
         fileUploadUrl: {},
         error: null,
       }
@@ -95,7 +129,7 @@ export default function card(state = initialState, action = {}) {
       const { data } = action.result
       return {
         ...state,
-        status: types.GET_FILE_UPLOAD_URL_FULFILLED,
+        loading: types.GET_FILE_UPLOAD_URL_FULFILLED,
         fileUploadUrl: data
       }
     }
@@ -103,7 +137,7 @@ export default function card(state = initialState, action = {}) {
       const { data } = action.error.response
       return {
         ...state,
-        status: types.DELETE_FEED_REJECTED,
+        loading: types.DELETE_FEED_REJECTED,
         error: data,
       }
     }
@@ -112,19 +146,19 @@ export default function card(state = initialState, action = {}) {
     case types.UPLOAD_FILE_PENDING:
       return {
         ...state,
-        status: types.UPLOAD_FILE_PENDING,
+        loading: types.UPLOAD_FILE_PENDING,
         error: null,
       }
     case types.UPLOAD_FILE_FULFILLED: {
       return {
         ...state,
-        status: types.UPLOAD_FILE_FULFILLED,
+        loading: types.UPLOAD_FILE_FULFILLED,
       }
     }
     case types.UPLOAD_FILE_REJECTED: {
       return {
         ...state,
-        status: types.UPLOAD_FILE_REJECTED,
+        loading: types.UPLOAD_FILE_REJECTED,
         error: action.error,
       }
     }
@@ -133,7 +167,7 @@ export default function card(state = initialState, action = {}) {
     case types.ADD_FILE_PENDING:
       return {
         ...state,
-        status: types.ADD_FILE_PENDING,
+        loading: types.ADD_FILE_PENDING,
         error: null,
       }
     case types.ADD_FILE_FULFILLED: {
@@ -143,7 +177,7 @@ export default function card(state = initialState, action = {}) {
       files.unshift(data);
       return {
         ...state,
-        status: types.ADD_FILE_FULFILLED,
+        loading: types.ADD_FILE_FULFILLED,
         currentCard: {
           ...state.currentCard,
           files,
@@ -154,7 +188,7 @@ export default function card(state = initialState, action = {}) {
       const { data } = action.error.response
       return {
         ...state,
-        status: types.ADD_FILE_REJECTED,
+        loading: types.ADD_FILE_REJECTED,
         error: data,
       }
     }
@@ -163,7 +197,7 @@ export default function card(state = initialState, action = {}) {
     case types.DELETE_FILE_PENDING:
       return {
         ...state,
-        status: types.DELETE_FILE_PENDING,
+        loading: types.DELETE_FILE_PENDING,
         error: null,
       }
     case types.DELETE_FILE_FULFILLED: {
@@ -171,7 +205,7 @@ export default function card(state = initialState, action = {}) {
       const files = _.filter(state.currentCard.files, file => file.id !== fileId);
       return {
         ...state,
-        status: types.DELETE_FILE_FULFILLED,
+        loading: types.DELETE_FILE_FULFILLED,
         currentCard: {
           ...state.currentCard,
           files,
@@ -182,7 +216,7 @@ export default function card(state = initialState, action = {}) {
       const { data } = action.error.response
       return {
         ...state,
-        status: types.DELETE_FILE_REJECTED,
+        loading: types.DELETE_FILE_REJECTED,
         error: data,
       }
     }

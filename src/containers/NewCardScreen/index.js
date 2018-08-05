@@ -6,6 +6,7 @@ import {
   Alert,
   Animated,
   Keyboard,
+  Text,
 } from 'react-native'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
@@ -13,17 +14,20 @@ import { connect } from 'react-redux'
 import Ionicons from 'react-native-vector-icons/Ionicons'
 import Entypo from 'react-native-vector-icons/Entypo'
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons'
-
+import Feather from 'react-native-vector-icons/Feather'
 import ActionSheet from 'react-native-actionsheet'
-import ImagePicker from 'react-native-image-picker';
-import { DocumentPicker, DocumentPickerUtil } from 'react-native-document-picker';
+import ImagePicker from 'react-native-image-picker'
+import { DocumentPicker, DocumentPickerUtil } from 'react-native-document-picker'
 import Permissions from 'react-native-permissions'
-import * as mime from 'react-native-mime-types';
-import { filter } from 'lodash'
+import * as mime from 'react-native-mime-types'
+import { filter, isEmpty } from 'lodash'
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
+import UserAvatar from 'react-native-user-avatar'
+
 
 import { 
   createCard,
+  getCard,
   updateCard,
   getFileUploadUrl,
   uploadFileToS3,
@@ -31,7 +35,7 @@ import {
   deleteFile,
 } from '../../redux/card/actions'
 import * as types from '../../redux/card/types'
-
+import { getDurationFromNow } from '../../service/dateUtils'
 import COLORS from '../../service/colors';
 import CONSTANTS from '../../service/constants';
 import styles from './styles';
@@ -39,7 +43,7 @@ import LoadingScreen from '../LoadingScreen';
 import ImageList from '../../components/ImageListComponent';
 import DocumentList from '../../components/DocumentListComponent';
 
-const FeedId = 'f7372968-0368-43e4-932a-8c5ccfe45a8b';
+const ScreenVerticalMargin = 100;
 
 
 class NewCardScreen extends React.Component {
@@ -49,7 +53,11 @@ class NewCardScreen extends React.Component {
       cardTitle: '',
       idea: '',
       loading: false,
+      isExpandCard: false,
+      originalCardTopY: this.props.intialLayout.py,
+      originalCardBottomY: this.props.intialLayout.py + this.props.intialLayout.height,
     };
+    this.isNewCard = isEmpty(this.props.invitee) ? true : false;
 
     this.selectedFile = null;
     this.selectedFileMimeType = null;
@@ -57,25 +65,35 @@ class NewCardScreen extends React.Component {
     this.selectedFileName = null;
 
     this.animatedShow = new Animated.Value(0);
+    this.scrollViewLayoutHeight = 0;
   }
 
   UNSAFE_componentWillReceiveProps(nextProps) {
     console.log('NewCardScreen UNSAFE_componentWillReceiveProps : ', nextProps.card);
     let loading = false;
-    if (this.props.card.status !== types.CREATE_CARD_PENDING && nextProps.card.status === types.CREATE_CARD_PENDING) {
+    if (this.props.card.loading !== types.CREATE_CARD_PENDING && nextProps.card.loading === types.CREATE_CARD_PENDING) {
       // creating a card
       loading = true;
-    } else if (this.props.card.status !== types.GET_FILE_UPLOAD_URL_PENDING && nextProps.card.status === types.GET_FILE_UPLOAD_URL_PENDING) {
+    // } else if (this.props.card.loading !== types.GET_CARD_PENDING && nextProps.card.loading === types.GET_CARD_PENDING) {
+    //   // getting a card
+    //   loading = true;
+    // } else if (this.props.card.loading !== types.GET_CARD_FULFILLED && nextProps.card.loading === types.GET_CARD_FULFILLED) {
+    //   // success in getting a card
+    //   this.setState({
+    //     cardTitle: nextProps.card.currentCard.title,
+    //     idea: nextProps.card.currentCard.idea,
+    //   });
+    } else if (this.props.card.loading !== types.GET_FILE_UPLOAD_URL_PENDING && nextProps.card.loading === types.GET_FILE_UPLOAD_URL_PENDING) {
       // getting a file upload url
       loading = true;
-    } else if (this.props.card.status !== types.GET_FILE_UPLOAD_URL_FULFILLED && nextProps.card.status === types.GET_FILE_UPLOAD_URL_FULFILLED) {
+    } else if (this.props.card.loading !== types.GET_FILE_UPLOAD_URL_FULFILLED && nextProps.card.loading === types.GET_FILE_UPLOAD_URL_FULFILLED) {
       // success in getting a file upload url
       loading = true;
       this.props.uploadFileToS3(nextProps.card.fileUploadUrl.uploadUrl, this.selectedFile, this.selectedFileName, this.selectedFileMimeType);
-    } else if (this.props.card.status !== types.UPLOAD_FILE_PENDING && nextProps.card.status === types.UPLOAD_FILE_PENDING) {
+    } else if (this.props.card.loading !== types.UPLOAD_FILE_PENDING && nextProps.card.loading === types.UPLOAD_FILE_PENDING) {
       // uploading a file
       loading = true;
-    } else if (this.props.card.status !== types.UPLOAD_FILE_FULFILLED && nextProps.card.status === types.UPLOAD_FILE_FULFILLED) {
+    } else if (this.props.card.loading !== types.UPLOAD_FILE_FULFILLED && nextProps.card.loading === types.UPLOAD_FILE_FULFILLED) {
       // success in uploading a file
       loading = true;
       let {
@@ -86,21 +104,21 @@ class NewCardScreen extends React.Component {
         accessUrl,
       } = this.props.card.fileUploadUrl;
       this.props.addFile(id, this.selectedFileType, this.selectedFileMimeType, this.selectedFileName, objectKey, accessUrl);
-    } else if (this.props.card.status !== types.ADD_FILE_PENDING && nextProps.card.status === types.ADD_FILE_PENDING) {
+    } else if (this.props.card.loading !== types.ADD_FILE_PENDING && nextProps.card.loading === types.ADD_FILE_PENDING) {
       // adding a file
       loading = true;
-    } else if (this.props.card.status !== types.ADD_FILE_FULFILLED && nextProps.card.status === types.ADD_FILE_FULFILLED) {
+    } else if (this.props.card.loading !== types.ADD_FILE_FULFILLED && nextProps.card.loading === types.ADD_FILE_FULFILLED) {
       // success in adding a file
-    } else if (this.props.card.status !== types.UPDATE_CARD_PENDING && nextProps.card.status === types.UPDATE_CARD_PENDING) {
+    } else if (this.props.card.loading !== types.UPDATE_CARD_PENDING && nextProps.card.loading === types.UPDATE_CARD_PENDING) {
       // updating a card
       loading = true;
-    } else if (this.props.card.status !== types.UPDATE_CARD_FULFILLED && nextProps.card.status === types.UPDATE_CARD_FULFILLED) {
+    } else if (this.props.card.loading !== types.UPDATE_CARD_FULFILLED && nextProps.card.loading === types.UPDATE_CARD_FULFILLED) {
       // success in updating a card
       this.onClose();
-    } else if (this.props.card.status !== types.DELETE_FILE_PENDING && nextProps.card.status === types.DELETE_FILE_PENDING) {
+    } else if (this.props.card.loading !== types.DELETE_FILE_PENDING && nextProps.card.loading === types.DELETE_FILE_PENDING) {
       // deleting a file
       loading = true;
-    } else if (this.props.card.status !== types.DELETE_FILE_FULFILLED && nextProps.card.status === types.DELETE_FILE_FULFILLED) {
+    } else if (this.props.card.loading !== types.DELETE_FILE_FULFILLED && nextProps.card.loading === types.DELETE_FILE_FULFILLED) {
       // success in deleting a file
     }
 
@@ -126,23 +144,37 @@ class NewCardScreen extends React.Component {
   }
 
   componentDidMount() {
+    if (!this.isNewCard) {
+      this.setState({
+        cardTitle: this.props.card.currentCard.title,
+        idea: this.props.card.currentCard.idea,
+      });
+    }
+
     Animated.timing(this.animatedShow, {
       toValue: 1,
       duration: CONSTANTS.ANIMATEION_MILLI_SECONDS,
     }).start(() => {
-      this.props.createCard(this.props.feedo.currentFeed.id);
+      if (this.isNewCard) {
+        this.props.createCard(this.props.feedo.currentFeed.id);
+      }
     });
   }
 
   onClose() {
-    this.animatedShow.setValue(1);
-    Animated.timing(this.animatedShow, {
-      toValue: 0,
-      duration: CONSTANTS.ANIMATEION_MILLI_SECONDS,
-    }).start();
-    if (this.props.onClose) {
-      this.props.onClose();
-    }
+    this.setState({
+      originalCardTopY: this.props.intialLayout.py,
+      originalCardBottomY: this.props.intialLayout.py + this.props.intialLayout.height,
+    }, () => {
+      this.animatedShow.setValue(1);
+      Animated.timing(this.animatedShow, {
+        toValue: 0,
+        duration: CONSTANTS.ANIMATEION_MILLI_SECONDS + 200,
+      }).start();
+      if (this.props.onClose) {
+        this.props.onClose();
+      }
+    });
   }
 
   onUpdate() {
@@ -185,7 +217,11 @@ class NewCardScreen extends React.Component {
   }
 
   onTapOutsideCard() {
-    this.onUpdate();
+    if (this.isNewCard) {
+      this.onUpdate();
+      return;
+    }
+    this.onClose();
     return;
   }
 
@@ -264,43 +300,49 @@ class NewCardScreen extends React.Component {
   }
 
   get renderImages() {
-    const {
-      files
-    } = this.props.card.currentCard;
-    const imageFiles = filter(files, file => file.fileType === 'MEDIA');
-    return (
-      <ImageList 
-        files={imageFiles}
-        onRemove={(fileId) => this.onRemoveImage(fileId)}
-      />
-    )
+    if (!this.isNewCard || this.state.isExpandCard) {
+      const {
+        files
+      } = this.props.card.currentCard;
+      const imageFiles = filter(files, file => file.fileType === 'MEDIA');
+      return (
+        <ImageList 
+          files={imageFiles}
+          onRemove={(fileId) => this.onRemoveImage(fileId)}
+        />
+      )
+    }
   }
 
   get renderDocuments() {
-    const {
-      files
-    } = this.props.card.currentCard;
-    const documentFiles = filter(files, file => file.fileType === 'FILE');
-    return (
-      <DocumentList 
-        files={documentFiles}
-        onRemove={(fileId) => this.onRemoveImage(fileId)}
-      />
-    )
+    if (!this.isNewCard || this.state.isExpandCard) {
+      const {
+        files
+      } = this.props.card.currentCard;
+      const documentFiles = filter(files, file => file.fileType === 'FILE');
+      return (
+        <DocumentList 
+          files={documentFiles}
+          onRemove={(fileId) => this.onRemoveImage(fileId)}
+        />
+      )
+    }
   }
 
-  get renderCenterContent() {
+  get renderMainContent() {
     return (
       <View style={styles.mainContentContainer}>
         <TextInput 
-          style={styles.textInputCardName}
+          style={styles.textInputCardTitle}
+          editable={this.isNewCard || this.state.isExpandCard}
           placeholder='Type a title or paste a link'
           underlineColorAndroid='transparent'
           value={this.state.cardTitle}
           onChangeText={(value) => this.setState({cardTitle: value})}
         />
         <TextInput 
-          style={styles.textInputNote}
+          style={styles.textInputIdea}
+          editable={this.isNewCard || this.state.isExpandCard}
           placeholder='Note'
           multiline={true}
           underlineColorAndroid='transparent'
@@ -313,76 +355,217 @@ class NewCardScreen extends React.Component {
     );
   }
 
-  get renderBottomContent() {
+  get renderAttachmentButtons() {
     return (
-      <View style={styles.bottomContainer}>
+      <View style={styles.attachmentButtonsContainer}>
         <View style={{flexDirection: 'row',}}>
           <TouchableOpacity 
-            style={styles.bottomItemContainer}
+            style={styles.buttonItemContainer}
             activeOpacity={0.6}
             onPress={this.onAddMedia.bind(this)}
           >
             <Entypo name="image" size={19} color={COLORS.PURPLE} />
           </TouchableOpacity>
           <TouchableOpacity 
-            style={styles.bottomItemContainer}
+            style={styles.buttonItemContainer}
             activeOpacity={0.6}
             onPress={this.onAddDocument.bind(this)}
           >
             <Ionicons name="md-attach" style={styles.attachment} size={22} color={COLORS.PURPLE} />
           </TouchableOpacity>
         </View>
-        <TouchableOpacity 
-          style={[
-            styles.bottomItemContainer, 
-            {
-              backgroundColor: COLORS.PURPLE,
-              borderRadius: 8,
-              marginRight: 0,
-            },
-          ]}
-          activeOpacity={0.6}
-          onPress={this.onHideKeyboard.bind(this)}
-        >
-          <MaterialCommunityIcons name="keyboard-close" size={20} color={'#fff'} />
-        </TouchableOpacity>
+        {
+          (this.isNewCard  || this.state.isExpandCard) && 
+            <TouchableOpacity 
+              style={[
+                styles.buttonItemContainer, 
+                {
+                  backgroundColor: COLORS.PURPLE,
+                  borderRadius: 8,
+                  marginRight: 0,
+                },
+              ]}
+              activeOpacity={0.6}
+              onPress={this.onHideKeyboard.bind(this)}
+            >
+              <MaterialCommunityIcons name="keyboard-close" size={20} color={'#fff'} />
+            </TouchableOpacity>
+        }
       </View>
     );
   }
 
+  get renderInvitee() {
+    if (!this.isNewCard) {
+      const {
+        firstName,
+        lastName,
+        imageUrl,
+      } = this.props.invitee.userProfile;
+      const name = `${firstName} ${lastName}`;
+      return (
+        <View>
+          <View style={styles.line} />
+          <View style={[styles.rowContainer, {marginHorizontal: 22}]}>
+            <UserAvatar
+              size="24"
+              name={name}
+              color="#000"
+              textColor="#fff"
+              src={imageUrl}
+            />
+            <Text style={[styles.textInvitee, {marginLeft: 9}]}>{name}</Text>
+            <Entypo name="dot-single" style={styles.iconDot} />
+            <Text style={styles.textInvitee}>{getDurationFromNow(this.props.card.currentCard.publishedDate)}</Text>
+          </View>
+        </View>
+      );
+    }
+  }
+
+  get renderLikes() {
+    if (!this.isNewCard) {
+      const {
+        voteCount,
+      } = this.props.card.currentCard;
+      return (
+        <View>
+          <View style={styles.line} />
+            <View style={[styles.rowContainer, {justifyContent: 'space-between', marginHorizontal: 22}]}>
+            <Text style={styles.textInvitee}>{voteCount} people liked</Text>
+            <View style={styles.rowContainer}>
+              <View style={[styles.rowContainer, styles.cellContainer]}>
+                <MaterialCommunityIcons name="heart" size={16} color={COLORS.RED} />
+                <Text style={[styles.textInvitee, {marginLeft: 4}]}>{voteCount}</Text>
+              </View>
+              <View style={[styles.rowContainer, styles.cellContainer]}>
+                <Feather name="message-square" size={16} color={COLORS.LIGHT_GREY} />
+                <Text style={[styles.textInvitee, {marginLeft: 4}]}>0</Text>
+              </View>
+            </View>
+          </View>
+        </View>
+      );
+    }
+  }
+
+  get renderHeader() {
+    if (this.state.isExpandCard) {
+      return (
+        <View style={styles.heaerContainer}>
+          <TouchableOpacity 
+            style={styles.closeButtonWrapper}
+            activeOpacity={0.7}
+            onPress={() => this.onClose()}
+          >
+            <MaterialCommunityIcons name="close" size={28} color={COLORS.PURPLE} />
+          </TouchableOpacity>
+        </View>
+      );
+    }
+  }
+
+  get renderBottomContent() {
+    return (
+      <View>
+        {this.renderInvitee}
+        {this.renderLikes}
+      </View>
+    );
+  }
+
+  onScrollBeginDrag(e) {
+    this.scrollViewLayoutHeight = 0;
+  }
+
+  onScroll(e) {
+    const currentOffsetY = e.nativeEvent.contentOffset.y;
+    if (!this.isNewCard && !this.state.isExpandCard && this.scrollViewLayoutHeight === 0 && currentOffsetY > 10) {
+      this.scrollViewLayoutHeight = e.nativeEvent.layoutMeasurement.height;
+      this.setState({
+        isExpandCard: true,
+        originalCardTopY: ScreenVerticalMargin,
+        originalCardBottomY: ScreenVerticalMargin,
+      }, () => {
+        this.animatedShow.setValue(0);
+        Animated.timing(this.animatedShow, {
+          toValue: 1,
+          duration: CONSTANTS.ANIMATEION_MILLI_SECONDS,
+        }).start();
+      });
+    }
+  }
+
   get renderCard() {
-    const animatedMove  = this.animatedShow.interpolate({
-      inputRange: [0, 1],
-      outputRange: [CONSTANTS.SCREEN_HEIGHT, 0],
-    });
+    let cardStyle = {};
+    if (this.isNewCard) {
+      const animatedMove  = this.animatedShow.interpolate({
+        inputRange: [0, 1],
+        outputRange: [CONSTANTS.SCREEN_HEIGHT, 0],
+      });  
+      cardStyle = {
+        top: animatedMove,
+        opacity: this.animatedShow,
+      };
+    } else if (!this.state.isExpandCard) {
+      const animatedTopMove = this.animatedShow.interpolate({
+        inputRange: [0, 1],
+        outputRange: [this.state.originalCardTopY, ScreenVerticalMargin],
+      });
+      const animatedBottomMove = this.animatedShow.interpolate({
+        inputRange: [0, 1],
+        outputRange: [this.state.originalCardBottomY, ScreenVerticalMargin],
+      });
+      cardStyle = {
+        top: animatedTopMove,
+        bottom: animatedBottomMove,
+        opacity: this.animatedShow,
+      };
+    } else {
+      const animatedTopMove = this.animatedShow.interpolate({
+        inputRange: [0, 1],
+        outputRange: [this.state.originalCardTopY, 0],
+      });
+      const animatedBottomMove = this.animatedShow.interpolate({
+        inputRange: [0, 1],
+        outputRange: [this.state.originalCardBottomY, 0],
+      });
+      cardStyle = {
+        top: animatedTopMove,
+        bottom: animatedBottomMove,
+      };
+    }
+
     return (
       <Animated.View 
         style={[
           styles.cardContainer,
-          {
-            top: animatedMove,
-            opacity: this.animatedShow,
-          },
+          cardStyle,
         ]}
       >
-        <TouchableOpacity 
-          style={styles.backdropContainer}
-          activeOpacity={1}
-          onPress={this.onTapOutsideCard.bind(this)}
-        />
-        <View style={styles.contentContainer}>
+        <View 
+          style={[
+            styles.contentContainer,
+            (this.isNewCard || !this.state.isExpandCard) && {maxHeight: CONSTANTS.SCREEN_HEIGHT - ScreenVerticalMargin * 2},
+            this.state.isExpandCard && {height: CONSTANTS.SCREEN_HEIGHT},
+          ]}
+        >
+          {this.renderHeader}
           <KeyboardAwareScrollView
             enableAutomaticScroll={false}
+            onScrollBeginDrag={(e) => this.onScrollBeginDrag(e)}
+            onScroll={(e) => this.onScroll(e)}
           >
-            {this.renderCenterContent}
-            {this.renderBottomContent}
+            {this.renderMainContent}
+            {this.renderAttachmentButtons}
+            {
+              !this.state.isExpandCard && this.renderBottomContent
+            }
           </KeyboardAwareScrollView>
+          {
+            this.state.isExpandCard && this.renderBottomContent
+          }
         </View>
-        <TouchableOpacity 
-          style={styles.backdropContainer}
-          activeOpacity={1}
-          onPress={this.onTapOutsideCard.bind(this)}
-        />
         {this.state.loading && <LoadingScreen />}
       </Animated.View>
     );
@@ -391,9 +574,19 @@ class NewCardScreen extends React.Component {
   render () {
     return (
       <View style={styles.container}>
+        <TouchableOpacity 
+          style={styles.backdropContainer}
+          activeOpacity={1}
+          onPress={this.onTapOutsideCard.bind(this)}
+        />
         {this.renderCard}
+        <TouchableOpacity 
+          style={styles.backdropContainer}
+          activeOpacity={1}
+          onPress={this.onTapOutsideCard.bind(this)}
+        />
         <ActionSheet
-          ref={o => this.imagePickerActionSheetRef = o}
+          ref={ref => this.imagePickerActionSheetRef = ref}
           title='Select a Photo / Video'
           options={['Take A Photo', 'Select From Photos', 'Cancel']}
           cancelButtonIndex={2}
@@ -408,12 +601,16 @@ class NewCardScreen extends React.Component {
 
 NewCardScreen.defaultProps = {
   card: {},
+  invitee: {},
+  intialLayout: {},
   onClose: () => {},
 }
 
 
 NewCardScreen.propTypes = {
   card: PropTypes.object,
+  invitee: PropTypes.object,
+  intialLayout: PropTypes.object,
   onClose: PropTypes.func,
 }
 
@@ -426,6 +623,7 @@ const mapStateToProps = ({ card, feedo }) => ({
 
 const mapDispatchToProps = dispatch => ({
   createCard: (huntId) => dispatch(createCard(huntId)),
+  getCard: (ideaId) => dispatch(getCard(ideaId)),
   updateCard: (huntId, ideaId, title, idea, files) => dispatch(updateCard(huntId, ideaId, title, idea, files)),
   getFileUploadUrl: (huntId, ideaId) => dispatch(getFileUploadUrl(huntId, ideaId)),
   uploadFileToS3: (signedUrl, file, fileName, mimeType) => dispatch(uploadFileToS3(signedUrl, file, fileName, mimeType)),
