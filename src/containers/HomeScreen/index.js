@@ -29,6 +29,7 @@ import NewFeedScreen from '../NewFeedScreen'
 import CreateNewFeedComponent from '../../components/CreateNewFeedComponent'
 import FeedLongHoldMenuScreen from '../FeedLongHoldMenuScreen'
 import ToasterComponent from '../../components/ToasterComponent'
+import FeedLoadingStateComponent from '../../components/FeedLoadingStateComponent'
 import COLORS from '../../service/colors'
 import styles from './styles'
 import CONSTANTS from '../../service/constants';
@@ -440,7 +441,7 @@ class HomeScreen extends React.Component {
             {emptyState > 0 && tabIndex === 0
             ? <View style={styles.emptyView}>
                 {loading
-                  ? <ActivityIndicator animating />
+                  ? <FeedLoadingStateComponent />
                   : [
                       <Image key="0" source={EMPTY_ICON} />,
                       <Text key="1" style={styles.emptyText}>Feedo is more fun with feeds</Text>
