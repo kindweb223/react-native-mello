@@ -114,7 +114,7 @@ class FeedDetailScreen extends React.Component {
   hideSettingMenu = () => {
     const feedId = this.props.data.id
     const { settingItem } = this.state
-    console.log('hideSettingMenu : ', settingItem);
+
     switch(settingItem) {
       case 'Pin':
         this.handlePinFeed(feedId)
@@ -429,7 +429,7 @@ class FeedDetailScreen extends React.Component {
           >       
             <Animated.View style={[styles.normalHeader, { opacity: normalHeaderOpacity }]}>
               <View key="2" style={styles.headerTitleView}>
-                <Text style={styles.headerTitle} numberOfLines={1} ellipsizeMode="tail">{data.headline}</Text>
+                <Text style={styles.headerTitle} numberOfLines={1} ellipsizeMode="tail">{currentFeed.headline}</Text>
                 <View>
                   <FeedNavbarSettingComponent handleSetting={this.handleSetting} />
                 </View>
@@ -437,7 +437,7 @@ class FeedDetailScreen extends React.Component {
             </Animated.View>
             
               <View style={styles.detailView}>
-                <FeedCollapseComponent data={data} feedData={currentFeed} />
+                <FeedCollapseComponent feedData={currentFeed} />
 
                 {
                   !isEmpty(currentFeed) && currentFeed && currentFeed.ideas.length > 0 ?
@@ -500,7 +500,7 @@ class FeedDetailScreen extends React.Component {
           animationInTiming={500}
           onModalHide={() => {}}
         >
-          <ShareScreen onClose={() => this.setState({ isShowShare: false })} data={data} />
+          <ShareScreen onClose={() => this.setState({ isShowShare: false })} data={currentFeed} />
         </Modal>
 
         <Modal 
