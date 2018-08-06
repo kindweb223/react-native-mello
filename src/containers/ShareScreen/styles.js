@@ -8,10 +8,9 @@ export default {
     top: 0,
     right: 0,
     left: 0,
-    height: 220,
+    paddingBottom: 21,
     borderRadius: 18,
     backgroundColor: '#fff',
-    paddingHorizontal: CONSTANTS.PADDING,
     ...Platform.select({
       ios: {
         shadowColor: 'black',
@@ -29,7 +28,8 @@ export default {
     height: 66,
     flexDirection: 'row',
     justifyContent: 'space-between',
-    alignItems: 'center'
+    alignItems: 'center',
+    paddingHorizontal: CONSTANTS.PADDING
   },
   closeButton: {
     width: 50,
@@ -56,9 +56,10 @@ export default {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    height: 60,
+    paddingVertical: 13,
     borderBottomWidth: 1,
-    borderColor: COLORS.SOFT_GREY
+    borderColor: COLORS.SOFT_GREY,
+    paddingHorizontal: CONSTANTS.PADDING,
   },
   innerView: {
     flexDirection: 'row',
@@ -79,30 +80,23 @@ export default {
     fontWeight: '600',
     color: '#000'
   },
-  rightView: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center'
+  inviteeListView: {
+    marginTop: 24,
+    maxHeight: CONSTANTS.SCREEN_HEIGHT - 260,
+    paddingHorizontal: CONSTANTS.PADDING
   },
-  viewText: {
-    fontSize: 14,
-    marginHorizontal: 5,
-    fontWeight: '600',
+  titleView: {
+    paddingBottom: 9,
+    borderBottomWidth: 1,
+    borderColor: COLORS.SOFT_GREY
   },
-  viewDisableText: {
-    color: COLORS.LIGHT_GREY,
+  titleText: {
+    color: COLORS.MEDIUM_GREY,
+    fontSize: 14
   },
-  viewEnableText: {
-    color: COLORS.PURPLE,
-  },
-  cogIcon: {
-    marginTop: 2,
-    fontSize: 10
-  },
-  cogDisableIcon: {
-    color: COLORS.LIGHT_GREY,
-  },
-  cogEnableIcon: {
-    color: COLORS.PURPLE,
+  inviteeItem: {
+    paddingVertical: 13,
+    borderBottomWidth: 1,
+    borderColor: COLORS.SOFT_GREY
   }
 }

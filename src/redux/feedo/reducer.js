@@ -625,7 +625,6 @@ export default function feedo(state = initialState, action = {}) {
       }
     }
     case types.UPDATE_SHARING_PREFERENCES_FULFILLED: {
-      console.log('UPDATE_SHARING_PREFERENCES_FULFILLED')
       const { feedoList } = state
       const feedId = action.payload
 
@@ -652,6 +651,73 @@ export default function feedo(state = initialState, action = {}) {
         ...state,
         loading: types.UNPIN_FEED_REJECTED,
         error: action.error,
+      }
+    }
+    /**
+     * Delete Invitee
+     */
+    case types.DELETE_INVITEE_PENDING:
+      return {
+        ...state,
+        loading: types.DELETE_INVITEE_PENDING,
+        error: null,
+      }
+    case types.DELETE_INVITEE_FULFILLED: {
+      const { data } = action.result
+      const { currentFeed } = state
+      const inviteeId = action.payload
+      const restInviteeList = filter(currentFeed.invitees, invitee => invitee.id !== inviteeId)
+      console.log('DELTE_INVITEE_RESPONSE: ', data)
+
+      return {
+        ...state,
+        loading: types.DELETE_INVITEE_FULFILLED,
+        currentFeed: {
+          ...currentFeed,
+          invitees: restInviteeList
+        }
+      }
+    }
+    case types.DELETE_INVITEE_REJECTED: {
+      const { data } = action.error.response
+      return {
+        ...state,
+        loading: types.DELETE_INVITEE_REJECTED,
+        error: data,
+      }
+    }
+    /**
+     * Update Invitee permission
+     */
+    case types.UPDATE_INVITEE_PERMISSION_PENDING:
+      return {
+        ...state,
+        loading: types.UPDATE_INVITEE_PERMISSION_PENDING,
+        error: null,
+      }
+    case types.UPDATE_INVITEE_PERMISSION_FULFILLED: {
+      const { data } = action.result
+      const { currentFeed } = state
+      const { payload } = action
+      const currentInvitee = filter(currentFeed.invitees, invitee => invitee.id === payload.inviteeId)
+      const restInviteeList = filter(currentFeed.invitees, invitee => invitee.id !== payload.inviteeId)
+      console.log('UPDATE_INVITEE_PERMISSION_FULFILLED: ', data)
+
+      return {
+        ...state,
+        loading: types.UPDATE_INVITEE_PERMISSION_FULFILLED,
+        currentFeed: {
+          ...currentFeed,
+          invitees: Object.assign({}, restInviteeList, Object.assign({}, currentInvitee[0], { permissions: payload.type }))
+        }
+      }
+    }
+    case types.UPDATE_INVITEE_PERMISSION_REJECTED: {
+      const { data } = action.error.response
+      return {
+        ...state,
+        loading: types.UPDATE_INVITEE_PERMISSION_REJECTED,
+        error: data,
       }
     }
     default:
