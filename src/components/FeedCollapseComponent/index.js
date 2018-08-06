@@ -28,14 +28,26 @@ class FeedCollapseComponent extends React.Component {
       spinValue: new Animated.Value(0),
       hideArrow: false,
       isCollapse: true,
-      COLLAPSE_SECTIONS: {
-        titleOrigin: props.data.summary,
-        title: props.data.summary.substring(0, 40),
-        content: props.data.summary.substring(40)
-      },
+      feedData: {},
+      COLLAPSE_SECTIONS: {},
       isPreview: false,
       position: 0,
     }
+  }
+
+  static getDerivedStateFromProps(nextProps, prevState) {
+    const { feedData } = nextProps
+    if (prevState.feedData !== feedData && !isEmpty(feedData)) {
+      return {
+        feedData,
+        COLLAPSE_SECTIONS: {
+          titleOrigin: feedData.summary,
+          title: feedData.summary.substring(0, 40),
+          content: feedData.summary.substring(40)
+        },
+      }
+    }
+    return null
   }
 
   onImagePreview = (key) => {
@@ -149,8 +161,7 @@ class FeedCollapseComponent extends React.Component {
   }
 
   render() {
-    const { COLLAPSE_SECTIONS, isCollapse, isPreview, images } = this.state
-    const { feedData } = this.props
+    const { feedData, COLLAPSE_SECTIONS, isCollapse, isPreview, images } = this.state
 
     const spin = this.state.spinValue.interpolate({
       inputRange: [0, 1],
@@ -202,7 +213,6 @@ class FeedCollapseComponent extends React.Component {
 }
 
 FeedCollapseComponent.propTypes = {
-  data: PropTypes.objectOf(PropTypes.any).isRequired,
   feedData: PropTypes.objectOf(PropTypes.any).isRequired
 }
 

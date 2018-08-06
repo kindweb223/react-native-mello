@@ -437,7 +437,7 @@ class FeedDetailScreen extends React.Component {
             </Animated.View>
             
               <View style={styles.detailView}>
-                <FeedCollapseComponent data={data} feedData={currentFeed} />
+                <FeedCollapseComponent feedData={currentFeed} />
 
                 {
                   !isEmpty(currentFeed) && currentFeed && currentFeed.ideas.length > 0 ?
@@ -500,7 +500,7 @@ class FeedDetailScreen extends React.Component {
           animationInTiming={500}
           onModalHide={() => {}}
         >
-          <ShareScreen onClose={() => this.setState({ isShowShare: false })} data={data} />
+          <ShareScreen onClose={() => this.setState({ isShowShare: false })} data={currentFeed} />
         </Modal>
 
         <Modal 
