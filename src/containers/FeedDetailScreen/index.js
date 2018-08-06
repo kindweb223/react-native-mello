@@ -86,17 +86,15 @@ class FeedDetailScreen extends React.Component {
   }
 
   static getDerivedStateFromProps(nextProps, prevState) {
-    if (nextProps.feedo.loading === 'GET_FEED_DETAIL_FULFILLED' && nextProps.feedo.currentFeed !== prevState.currentFeed) {
-      console.log('Current Feed : ', nextProps.feedo.currentFeed);
+    if ((nextProps.feedo.loading === 'GET_FEED_DETAIL_FULFILLED' ||
+      nextProps.feedo.loading === 'DELETE_INVITEE_FULFILLED' ||
+      nextProps.feedo.loading === 'UPDATE_INVITEE_PERMISSION_FULFILLED') &&
+      nextProps.feedo.currentFeed !== prevState.currentFeed) {
+        console.log('CURRENT_FEED: ', nextProps.feedo.currentFeed)
       return {
         loading: false,
         currentFeed: nextProps.feedo.currentFeed,
         pinText: !nextProps.feedo.currentFeed.pinned ? 'Pin' : 'Unpin'
-      }
-    }
-    if (nextProps.feedo.loading !== 'GET_FEED_DETAIL_FULFILLED') {
-      return {
-        currentFeed: {}
       }
     }
     return null
@@ -409,11 +407,11 @@ class FeedDetailScreen extends React.Component {
               </View>
             </TouchableOpacity>
             <View style={styles.rightHeader}>
-              <Animated.View style={[styles.avatarView, { right: avatarPosition }]}>
-                <AvatarPileComponent avatars={avatars} />
-              </Animated.View>
               <Animated.View style={[styles.settingView, { opacity: settingViewOpacity }]}>
                 <FeedNavbarSettingComponent handleSetting={() => this.handleSetting()} />
+              </Animated.View>
+              <Animated.View style={[styles.avatarView, { right: avatarPosition }]}>
+                <AvatarPileComponent avatars={avatars} />
               </Animated.View>
             </View>
           </Animated.View>
@@ -445,7 +443,7 @@ class FeedDetailScreen extends React.Component {
                       <TouchableHighlight
                         key={index}
                         ref={ref => this.cardItemRefs[index] = ref}
-                        style={{marginHorizontal: 5, borderRadius: 5,}}
+                        style={{ marginHorizontal: 5, borderRadius: 5 }}
                         underlayColor={COLORS.LIGHT_GREY}
                         onPress={() => this.onSelectCard(item, index)}
                       >

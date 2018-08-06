@@ -2,6 +2,7 @@ import React from 'react'
 import { View, Text, TouchableOpacity } from 'react-native'
 import PropTypes from 'prop-types'
 import LinkShareItem from './LinkShareItem'
+import InviteeItemComponent from './InviteeItemComponent'
 import styles from './styles'
 
 const LIST_ITEM = [
@@ -28,11 +29,15 @@ class LinkShareModalComponent extends React.Component {
   }
 
   render() {
-    const { isInviteeOnly } = this.props
+    const { shareModalType, shareInviteeData, isInviteeOnly } = this.props
+
     return (
       <View style={styles.container}>
         <View style={styles.headerView}>
-          <LinkShareItem isInviteeOnly={isInviteeOnly} />
+          {shareModalType === 'share'
+            ? <LinkShareItem isInviteeOnly={isInviteeOnly} />
+            : <InviteeItemComponent invitee={shareInviteeData} />
+          }
         </View>
 
         {LIST_ITEM.map(item => (
@@ -50,9 +55,14 @@ class LinkShareModalComponent extends React.Component {
 
         <TouchableOpacity onPress={() => this.onPressItem(3)}>
           <View style={[styles.listItem, styles.itemLast]}>
-            <Text style={[styles.title, styles.titleLast]}>
-              {isInviteeOnly ? 'Link sharing on' : 'Link sharing off'}
-            </Text>
+            {shareModalType === 'share'
+              ? <Text style={[styles.title, styles.titleLast]}>
+                  {isInviteeOnly ? 'Link sharing on' : 'Link sharing off'}
+                </Text>
+              : <Text style={[styles.title, styles.titleLast]}>
+                  Remove
+                </Text>
+            }
           </View>
         </TouchableOpacity>
 
@@ -62,12 +72,13 @@ class LinkShareModalComponent extends React.Component {
 }
 
 LinkShareModalComponent.defaultProps = {
-  data: {},
+  shareInviteeData: {},
   isInviteeOnly: true,
 }
 
 LinkShareModalComponent.propTypes = {
-  data: PropTypes.objectOf(PropTypes.any),
+  shareModalType: PropTypes.string.isRequired,
+  shareInviteeData: PropTypes.objectOf(PropTypes.any),
   isInviteeOnly: PropTypes.bool,
   handleShareOption: PropTypes.func.isRequired
 }

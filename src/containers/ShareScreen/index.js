@@ -6,7 +6,8 @@ import {
   TouchableOpacity,
   Animated,
   Image,
-  Share
+  Share,
+  ScrollView
 } from 'react-native'
 import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
@@ -15,8 +16,10 @@ import Entypo from 'react-native-vector-icons/Entypo'
 import Modal from 'react-native-modal'
 import LinkShareModalComponent from '../../components/LinkShareModalComponent'
 import LinkShareItem from '../../components/LinkShareModalComponent/LinkShareItem'
+import InviteeItemComponent from '../../components/LinkShareModalComponent/InviteeItemComponent'
+import InviteeScreen from '../InviteeScreen'
 import { SERVER_URL } from '../../service/api'
-import { updateSharingPreferences } from '../../redux/feedo/actions'
+import { updateSharingPreferences, deleteInvitee, updateInviteePermission } from '../../redux/feedo/actions'
 import COLORS from '../../service/colors'
 import styles from './styles'
 const PLUS_ICON = require('../../../assets/images/Add/White.png')
@@ -36,7 +39,10 @@ class ShareScreen extends React.Component {
     super(props)
     this.state = {
       linkShareModal: false,
-      isInviteeOnly: false
+      shareModalType: 'share',
+      shareInviteeData: {},
+      isInviteeOnly: false,
+      isInviteeModal: false
     }
   }
 
@@ -58,11 +64,16 @@ class ShareScreen extends React.Component {
     return null
   }
 
-  onInviteePeople = () => {
+  onShowInviteeModal = () => {
+    this.setState({ isInviteeModal: true })
   }
 
   onLinkShare = (isInviteeOnly) => {
-    this.setState({ linkShareModal: true })
+    this.setState({ linkShareModal: true, shareModalType: 'share', shareInviteeData: {} })
+  }
+
+  onPressInvitee = (data) => {
+    this.setState({ linkShareModal: true, shareModalType: 'invitee', shareInviteeData: data })
   }
 
   showShareModal = () => {
@@ -80,32 +91,57 @@ class ShareScreen extends React.Component {
   }
 
   handleShareOption = (index) => {
-    const { data, updateSharingPreferences } = this.props
+    const { data, updateSharingPreferences, deleteInvitee, updateInviteePermission } = this.props
+    const { shareModalType } = this.state
     this.setState({ linkShareModal: false })
 
-    switch(index) {
-      case 0: // Edit
-        return
-      case 1: // Add
-        return
-      case 2: // View
-        return
-      case 3: // Sharing Off
-        updateSharingPreferences(
-          data.id,
-          {
-            level: data.sharingPreferences.level === 'INVITEES_ONLY' ? 'PUBLIC' : 'INVITEES_ONLY'
-          }
-        )
-        return
-      default:
-        return
+    if (shareModalType === 'share') {
+      switch(index) {
+        case 0: // Edit
+          return
+        case 1: // Add
+          return
+        case 2: // View
+          return
+        case 3: // Sharing Off
+          updateSharingPreferences(
+            data.id,
+            {
+              level: data.sharingPreferences.level === 'INVITEES_ONLY' ? 'PUBLIC' : 'INVITEES_ONLY'
+            }
+          )
+          return
+        default:
+          return
+      }
+    } else if (shareModalType === 'invitee') {
+      const { shareInviteeData } = this.state
+
+      if (data.owner.id !== shareInviteeData.userProfile.id) {
+        switch(index) {
+          case 0: // Edit
+            updateInviteePermission(data.id, shareInviteeData.id, 'Edit')
+            return
+          case 1: // Add
+            updateInviteePermission(data.id, shareInviteeData.id, 'Add')
+            return
+          case 2: // View
+            updateInviteePermission(data.id, shareInviteeData.id, 'View')
+            return
+          case 3: // Remove
+            console.log('INVITEE_DATA: ', shareInviteeData)
+            deleteInvitee(data.id, shareInviteeData.id)
+            return
+          default:
+            return
+        }
+      }
     }
   }
 
   render () {
     const { data } = this.props
-    const { isInviteeOnly } = this.state
+    const { linkShareModal, isInviteeOnly, shareModalType, shareInviteeData } = this.state
 
     return (
       <View style={styles.overlay}>
@@ -123,28 +159,40 @@ class ShareScreen extends React.Component {
         </View>
 
         <View style={styles.body}>
-          <TouchableOpacity onPress={() => this.onInviteePeople()}>
-            <View style={styles.listItem}>
-              <InvitePeopleItemComponent />
-            </View>
-          </TouchableOpacity>
-          
-          <TouchableOpacity onPress={() => this.onLinkShare()}>
-            <View style={styles.listItem}>
-              <LinkShareItem isInviteeOnly={isInviteeOnly} />
-            
-              <View style={styles.rightView}>
-                <Text style={[styles.viewText, isInviteeOnly ? styles.viewDisableText : styles.viewEnableText]}>
-                  {isInviteeOnly ? 'Off' : 'View'}
-                </Text>
-                <Entypo name="cog" style={[styles.cogIcon, isInviteeOnly ? styles.cogDisableIcon : styles.cogEnableIcon]} />
+          <View style={styles.listItemView}>
+            <TouchableOpacity onPress={() => this.onShowInviteeModal()}>
+              <View style={styles.listItem}>
+                <InvitePeopleItemComponent />
               </View>
+            </TouchableOpacity>
+            
+            <TouchableOpacity onPress={() => this.onLinkShare()}>
+              <View style={styles.listItem}>
+                <LinkShareItem isInviteeOnly={isInviteeOnly} isViewOnly={false} />
+              </View>
+            </TouchableOpacity>
+          </View>
+
+          {data.invitees && data.invitees.length > 0 && (
+            <View style={styles.inviteeListView}>
+              <View style={styles.titleView}>
+                <Text style={styles.titleText}>Members</Text>
+              </View>
+              <ScrollView style={styles.inviteeList}>
+                {data.invitees.map(item => (
+                  <TouchableOpacity onPress={() => this.onPressInvitee(item)} key={item.id}>
+                    <View style={styles.inviteeItem}>
+                      <InviteeItemComponent invitee={item} isViewOnly={false} />
+                    </View>
+                  </TouchableOpacity>
+                ))}
+              </ScrollView>
             </View>
-          </TouchableOpacity>
+          )}
         </View>
 
         <Modal 
-          isVisible={this.state.linkShareModal}
+          isVisible={linkShareModal}
           style={{ margin: 0 }}
           backdropColor='#e0e0e0'
           backdropOpacity={0.9}
@@ -153,7 +201,25 @@ class ShareScreen extends React.Component {
           animationInTiming={500}
           onBackdropPress={() => this.setState({ linkShareModal: false })}
         >
-          <LinkShareModalComponent isInviteeOnly={isInviteeOnly} handleShareOption={this.handleShareOption} />
+          <LinkShareModalComponent
+            shareModalType={shareModalType}
+            shareInviteeData={shareInviteeData}
+            isInviteeOnly={isInviteeOnly}
+            handleShareOption={this.handleShareOption}
+          />
+        </Modal>
+
+        <Modal 
+          isVisible={this.state.isInviteeModal}
+          style={{ margin: 0 }}
+          backdropColor='#f5f5f5'
+          backdropOpacity={0.9}
+          animationIn="zoomInUp"
+          animationOut="zoomOutDown"
+          animationInTiming={500}
+          onModalHide={() => {}}
+        >
+          <InviteeScreen onClose={() => this.setState({ isInviteeModal: false })} data={data} />
         </Modal>
 
       </View>
@@ -164,13 +230,17 @@ class ShareScreen extends React.Component {
 ShareScreen.defaultProps = {
   onClose: () => {},
   data: {},
-  updateSharingPreferences: () => {}
+  updateSharingPreferences: () => {},
+  deleteInvitee: () => {},
+  updateInviteePermission: () => {}
 }
 
 ShareScreen.propTypes = {
   onClose: PropTypes.func,
   data: PropTypes.objectOf(PropTypes.any),
-  updateSharingPreferences: PropTypes.func
+  updateSharingPreferences: PropTypes.func,
+  deleteInvitee: PropTypes.func,
+  updateInviteePermission: PropTypes.func
 }
 
 const mapStateToProps = ({ feedo }) => ({
@@ -178,7 +248,9 @@ const mapStateToProps = ({ feedo }) => ({
 })
 
 const mapDispatchToProps = dispatch => ({
-  updateSharingPreferences: (feedId, data) => dispatch(updateSharingPreferences(feedId, data))
+  updateSharingPreferences: (feedId, data) => dispatch(updateSharingPreferences(feedId, data)),
+  deleteInvitee: (feedId, inviteeId) => dispatch(deleteInvitee(feedId, inviteeId)),
+  updateInviteePermission: (feedId, inviteeId, type) => dispatch(updateInviteePermission(feedId, inviteeId, type)),
 })
 
 export default connect(
