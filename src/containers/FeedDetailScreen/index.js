@@ -443,7 +443,7 @@ class FeedDetailScreen extends React.Component {
                       <TouchableHighlight
                         key={index}
                         ref={ref => this.cardItemRefs[index] = ref}
-                        style={{marginHorizontal: 5, borderRadius: 5,}}
+                        style={{ marginHorizontal: 5, borderRadius: 5 }}
                         underlayColor={COLORS.LIGHT_GREY}
                         onPress={() => this.onSelectCard(item, index)}
                       >

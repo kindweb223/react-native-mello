@@ -17,6 +17,7 @@ import Modal from 'react-native-modal'
 import LinkShareModalComponent from '../../components/LinkShareModalComponent'
 import LinkShareItem from '../../components/LinkShareModalComponent/LinkShareItem'
 import InviteeItemComponent from '../../components/LinkShareModalComponent/InviteeItemComponent'
+import InviteeScreen from '../InviteeScreen'
 import { SERVER_URL } from '../../service/api'
 import { updateSharingPreferences, deleteInvitee, updateInviteePermission } from '../../redux/feedo/actions'
 import COLORS from '../../service/colors'
@@ -40,7 +41,8 @@ class ShareScreen extends React.Component {
       linkShareModal: false,
       shareModalType: 'share',
       shareInviteeData: {},
-      isInviteeOnly: false
+      isInviteeOnly: false,
+      isInviteeModal: false
     }
   }
 
@@ -62,7 +64,8 @@ class ShareScreen extends React.Component {
     return null
   }
 
-  onInviteePeople = () => {
+  onShowInviteeModal = () => {
+    this.setState({ isInviteeModal: true })
   }
 
   onLinkShare = (isInviteeOnly) => {
@@ -156,17 +159,19 @@ class ShareScreen extends React.Component {
         </View>
 
         <View style={styles.body}>
-          <TouchableOpacity onPress={() => this.onInviteePeople()}>
-            <View style={styles.listItem}>
-              <InvitePeopleItemComponent />
-            </View>
-          </TouchableOpacity>
-          
-          <TouchableOpacity onPress={() => this.onLinkShare()}>
-            <View style={styles.listItem}>
-              <LinkShareItem isInviteeOnly={isInviteeOnly} isViewOnly={false} />
-            </View>
-          </TouchableOpacity>
+          <View style={styles.listItemView}>
+            <TouchableOpacity onPress={() => this.onShowInviteeModal()}>
+              <View style={styles.listItem}>
+                <InvitePeopleItemComponent />
+              </View>
+            </TouchableOpacity>
+            
+            <TouchableOpacity onPress={() => this.onLinkShare()}>
+              <View style={styles.listItem}>
+                <LinkShareItem isInviteeOnly={isInviteeOnly} isViewOnly={false} />
+              </View>
+            </TouchableOpacity>
+          </View>
 
           {data.invitees && data.invitees.length > 0 && (
             <View style={styles.inviteeListView}>
@@ -202,6 +207,19 @@ class ShareScreen extends React.Component {
             isInviteeOnly={isInviteeOnly}
             handleShareOption={this.handleShareOption}
           />
+        </Modal>
+
+        <Modal 
+          isVisible={this.state.isInviteeModal}
+          style={{ margin: 0 }}
+          backdropColor='#f5f5f5'
+          backdropOpacity={0.9}
+          animationIn="zoomInUp"
+          animationOut="zoomOutDown"
+          animationInTiming={500}
+          onModalHide={() => {}}
+        >
+          <InviteeScreen onClose={() => this.setState({ isInviteeModal: false })} data={data} />
         </Modal>
 
       </View>

@@ -14,18 +14,9 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'flex-start'
   },
-  plusButton: {
-    width: 42,
-    height: 42,
-    borderRadius: 21,
-    marginRight: 15,
-    backgroundColor: COLORS.PURPLE,
-    justifyContent: 'center',
-    alignItems: 'center'
-  },
   linkButton: {
-    width: 42,
-    height: 42,
+    width: 38,
+    height: 38,
     borderRadius: 21,
     marginRight: 15,
     justifyContent: 'center',

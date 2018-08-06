@@ -12,7 +12,6 @@ const styles = StyleSheet.create({
   avatarView: {
     flexDirection: 'row',
     justifyContent: 'flex-start',
-    alignItems: 'flex-start'
   },
   avatar: {
     marginRight: 15,

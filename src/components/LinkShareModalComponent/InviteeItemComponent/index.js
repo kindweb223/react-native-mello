@@ -10,22 +10,22 @@ import Entypo from 'react-native-vector-icons/Entypo'
 import COLORS from '../../../service/colors'
 import styles from './styles'
 
-const InviteeItemComponent = ({ invitee, isViewOnly }) => {
+const InviteeItemComponent = ({ invitee, isViewOnly, isOnlyTitle }) => {
   const { userProfile } = invitee
   const userName = `${userProfile.firstName} ${userProfile.lastName}`
 
   return (
     <View style={styles.container}>
-      <View style={styles.avatarView}>
+      <View style={[styles.avatarView, isOnlyTitle ? { alignItems: 'center' } : { alignItems: 'flex-start' }]}>
         <View style={styles.avatar}>
           {userProfile.imageUrl
             ? <UserAvatar
-                size="42"
+                size="38"
                 name={userName}
                 src={userProfile.imageUrl}
               />
             : <UserAvatar
-                size="42"
+                size="38"
                 name={userName}
                 color="#ECEDEE"
                 textColor="#000"
@@ -34,11 +34,15 @@ const InviteeItemComponent = ({ invitee, isViewOnly }) => {
         </View>
         <View style={styles.infoView}>
           <Text style={styles.title}>{userProfile.firstName}</Text>
-          <Text style={styles.subtitle}>{userProfile.email}</Text>
-          <View style={styles.cardView}>
-            <Text style={styles.subtitle}>{invitee.ideas ? invitee.ideas.length : 0} cards</Text>
-            <Text  style={styles.subtitle}>0 likes</Text>
-          </View>
+          {!isOnlyTitle && (
+            [
+              <Text key="0" style={styles.subtitle}>{userProfile.email}</Text>,
+              <View key="1" style={styles.cardView}>
+                <Text style={styles.subtitle}>{invitee.ideas ? invitee.ideas.length : 0} cards</Text>
+                <Text  style={styles.subtitle}>0 likes</Text>
+              </View>
+            ]
+          )}
         </View>
       </View>
 
@@ -55,12 +59,14 @@ const InviteeItemComponent = ({ invitee, isViewOnly }) => {
 }
 
 InviteeItemComponent.defaultProps = {
-  isViewOnly: true
+  isViewOnly: true,
+  isOnlyTitle: false
 }
 
 InviteeItemComponent.propTypes = {
   invitee: PropTypes.objectOf(PropTypes.any).isRequired,
-  isViewOnly: PropTypes.bool
+  isViewOnly: PropTypes.bool,
+  isOnlyTitle: PropTypes.bool
 }
 
 export default InviteeItemComponent
