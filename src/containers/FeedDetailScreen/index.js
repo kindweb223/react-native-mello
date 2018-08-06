@@ -96,7 +96,7 @@ class FeedDetailScreen extends React.Component {
     }
     if (nextProps.feedo.loading !== 'GET_FEED_DETAIL_FULFILLED') {
       return {
-        feedDetailData: {}
+        currentFeed: {}
       }
     }
     return null
