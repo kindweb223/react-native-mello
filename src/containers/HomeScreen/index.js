@@ -90,7 +90,7 @@ class HomeScreen extends React.Component {
 
     if ((prevState.loading === true && (feedo.loading === 'GET_FEEDO_LIST_FULFILLED' || feedo.loading === 'GET_FEEDO_LIST_REJECTED')) ||
       (feedo.loading === 'FEED_FULFILLED') || (feedo.loading === 'DEL_FEED_FULFILLED') || (feedo.loading === 'ARCHIVE_FEED_FULFILLED') ||
-      (feedo.loading === 'DUPLICATE_FEED_FULFILLED')) {
+      (feedo.loading === 'DUPLICATE_FEED_FULFILLED') || (feedo.loading === 'UPDATE_FEED_FULFILLED')) {
 
       let feedoList = []
       let emptyState = true
