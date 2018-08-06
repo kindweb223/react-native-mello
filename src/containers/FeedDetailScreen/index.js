@@ -26,6 +26,7 @@ import AvatarPileComponent from '../../components/AvatarPileComponent'
 import FeedNavbarSettingComponent from '../../components/FeedNavbarSettingComponent'
 import FeedControlMenuComponent from '../../components/FeedControlMenuComponent'
 import ToasterComponent from '../../components/ToasterComponent'
+import FeedLoadingStateComponent from '../../components/FeedLoadingStateComponent'
 import ShareScreen from '../ShareScreen'
 import NewFeedScreen from '../NewFeedScreen'
 
@@ -54,8 +55,7 @@ const ACTIONSHEET_OPTIONS = [
 const TOASTER_DURATION = 5000
 
 import CONSTANTS from '../../service/constants'
-import NewCardScreen from '../NewCardScreen'
- 
+import NewCardScreen from '../NewCardScreen' 
 
 class FeedDetailScreen extends React.Component {
   constructor(props) {
@@ -455,7 +455,7 @@ class FeedDetailScreen extends React.Component {
                   : 
                     <View style={styles.emptyView}>
                       {loading
-                        ? <ActivityIndicator animating />
+                        ? <FeedLoadingStateComponent />
                         : [
                             <Image key="0" source={EMPTY_ICON} />,
                             <Text key="1" style={styles.emptyText}>It is lonely here</Text>
