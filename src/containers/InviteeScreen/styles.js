@@ -37,45 +37,30 @@ export default {
     alignItems: 'flex-start',
     justifyContent: 'center'
   },
-  shareButtonView: {
+  sendButtonView: {
     flexDirection: 'row',
     justifyContent: 'center',
     alignItems: 'center',
+    height: 34,
+    width: 80,
+    borderRadius: 17
   },
-  shareIcon: {
-    color: COLORS.PURPLE,
-    fontSize: 16,
+  sendEnableButtonView: {
+    backgroundColor: COLORS.PURPLE
   },
-  shareButtonText: {
-    color: COLORS.PURPLE,
+  sendDisableButtonView: {
+    backgroundColor: COLORS.LIGHT_GREY
+  },
+  sendButtonText: {
     fontSize: 14,
     marginLeft: 8,
     fontWeight: '600'
   },
-  listItemView: {
-    paddingHorizontal: CONSTANTS.PADDING,
+  sendEnableButtonText: {
+    color: '#fff'
   },
-  listItem: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    paddingVertical: 10,
-    borderBottomWidth: 1,
-    borderColor: COLORS.SOFT_GREY,
-  },
-  innerView: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'flex-start'
-  },
-  plusButton: {
-    width: 38,
-    height: 38,
-    borderRadius: 19,
-    marginRight: 15,
-    backgroundColor: COLORS.PURPLE,
-    justifyContent: 'center',
-    alignItems: 'center'
+  sendDisableButtonText: {
+    color: COLORS.MEDIUM_GREY
   },
   title: {
     fontSize: 16,
@@ -88,13 +73,12 @@ export default {
     paddingHorizontal: CONSTANTS.PADDING
   },
   titleView: {
-    paddingBottom: 9,
-    borderBottomWidth: 1,
-    borderColor: COLORS.SOFT_GREY
+    paddingBottom: 5,
   },
   titleText: {
-    color: COLORS.MEDIUM_GREY,
-    fontSize: 14
+    color: '#000',
+    fontSize: 16,
+    fontWeight: '600'
   },
   inviteeItem: {
     paddingVertical: 7,

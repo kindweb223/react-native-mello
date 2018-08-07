@@ -385,3 +385,39 @@ export const updateSharingPreferences = (feedId, data) => {
     payload: feedId,
   }
 }
+
+/**
+ * Delete invitee
+ */
+export const deleteInvitee = (feedId, inviteeId) => {
+  let url = `hunts/${feedId}/invitees/${inviteeId}`
+
+  return {
+    types: [types.DELETE_INVITEE_PENDING, types.DELETE_INVITEE_FULFILLED, types.DELETE_INVITEE_REJECTED],
+    promise: axios({
+      method: 'delete',
+      url: url
+    }),
+    payload: inviteeId
+  }
+}
+
+/**
+ * Update invitee permission
+ */
+export const updateInviteePermission = (feedId, inviteeId, type) => {
+  return {
+    types: [types.UPDATE_INVITEE_PERMISSION_PENDING, types.UPDATE_INVITEE_PERMISSION_FULFILLED, types.UPDATE_INVITEE_PERMISSION_REJECTED],
+    promise: axios({
+      method: 'put',
+      url: url,
+      data: {
+        permissions: type
+      }
+    }),
+    payload: {
+      inviteeId,
+      type
+    }
+  }
+}

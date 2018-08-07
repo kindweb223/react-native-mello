@@ -26,6 +26,7 @@ import AvatarPileComponent from '../../components/AvatarPileComponent'
 import FeedNavbarSettingComponent from '../../components/FeedNavbarSettingComponent'
 import FeedControlMenuComponent from '../../components/FeedControlMenuComponent'
 import ToasterComponent from '../../components/ToasterComponent'
+import FeedLoadingStateComponent from '../../components/FeedLoadingStateComponent'
 import ShareScreen from '../ShareScreen'
 import NewFeedScreen from '../NewFeedScreen'
 
@@ -57,8 +58,7 @@ const ACTIONSHEET_OPTIONS = [
 const TOASTER_DURATION = 5000
 
 import CONSTANTS from '../../service/constants'
-import NewCardScreen from '../NewCardScreen'
- 
+import NewCardScreen from '../NewCardScreen' 
 
 class FeedDetailScreen extends React.Component {
   constructor(props) {
@@ -92,17 +92,15 @@ class FeedDetailScreen extends React.Component {
   }
 
   static getDerivedStateFromProps(nextProps, prevState) {
-    if (nextProps.feedo.loading === 'GET_FEED_DETAIL_FULFILLED' && nextProps.feedo.currentFeed !== prevState.currentFeed) {
-      console.log('Current Feed : ', nextProps.feedo.currentFeed);
+    if ((nextProps.feedo.loading === 'GET_FEED_DETAIL_FULFILLED' ||
+      nextProps.feedo.loading === 'DELETE_INVITEE_FULFILLED' ||
+      nextProps.feedo.loading === 'UPDATE_INVITEE_PERMISSION_FULFILLED') &&
+      nextProps.feedo.currentFeed !== prevState.currentFeed) {
+        console.log('CURRENT_FEED: ', nextProps.feedo.currentFeed)
       return {
         loading: false,
         currentFeed: nextProps.feedo.currentFeed,
         pinText: !nextProps.feedo.currentFeed.pinned ? 'Pin' : 'Unpin'
-      }
-    }
-    if (nextProps.feedo.loading !== 'GET_FEED_DETAIL_FULFILLED') {
-      return {
-        currentFeed: {}
       }
     }
     return null
@@ -424,11 +422,11 @@ class FeedDetailScreen extends React.Component {
               </View>
             </TouchableOpacity>
             <View style={styles.rightHeader}>
-              <Animated.View style={[styles.avatarView, { right: avatarPosition }]}>
-                <AvatarPileComponent avatars={avatars} />
-              </Animated.View>
               <Animated.View style={[styles.settingView, { opacity: settingViewOpacity }]}>
                 <FeedNavbarSettingComponent handleSetting={() => this.handleSetting()} />
+              </Animated.View>
+              <Animated.View style={[styles.avatarView, { right: avatarPosition }]}>
+                <AvatarPileComponent avatars={avatars} />
               </Animated.View>
             </View>
           </Animated.View>
@@ -460,7 +458,7 @@ class FeedDetailScreen extends React.Component {
                       <TouchableHighlight
                         key={index}
                         ref={ref => this.cardItemRefs[index] = ref}
-                        style={{marginHorizontal: 5, borderRadius: 5,}}
+                        style={{ marginHorizontal: 5, borderRadius: 5 }}
                         underlayColor={COLORS.LIGHT_GREY}
                         onPress={() => this.onSelectCard(item, index)}
                       >
@@ -470,7 +468,7 @@ class FeedDetailScreen extends React.Component {
                   : 
                     <View style={styles.emptyView}>
                       {loading
-                        ? <ActivityIndicator animating />
+                        ? <FeedLoadingStateComponent />
                         : [
                             <Image key="0" source={EMPTY_ICON} />,
                             <Text key="1" style={styles.emptyText}>It is lonely here</Text>
