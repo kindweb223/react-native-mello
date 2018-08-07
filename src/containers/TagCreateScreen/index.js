@@ -26,8 +26,9 @@ import {
   removeTagFromHunt,
 } from '../../redux/feedo/actions'
 import * as types from '../../redux/feedo/types'
-
-const UserId = 'd742e568-37d1-4c87-b9bf-062faa59c058';
+import {
+  UserId,
+} from '../../service/api';
 
 
 class TagCreateScreen extends React.Component {

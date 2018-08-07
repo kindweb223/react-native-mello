@@ -60,7 +60,7 @@ export const getCard = (ideaId) => {
 /**
  * Set a card to currentCard
  */
-export const setCard = (idea) => {
+export const setCurrentCard = (idea) => {
   return {
     type: types.SET_CURRENT_CARD,
     payload: idea,
