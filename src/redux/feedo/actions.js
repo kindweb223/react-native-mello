@@ -406,6 +406,7 @@ export const deleteInvitee = (feedId, inviteeId) => {
  * Update invitee permission
  */
 export const updateInviteePermission = (feedId, inviteeId, type) => {
+  let url = `hunts/${feedId}/invitees/${inviteeId}/permissions`
   return {
     types: [types.UPDATE_INVITEE_PERMISSION_PENDING, types.UPDATE_INVITEE_PERMISSION_FULFILLED, types.UPDATE_INVITEE_PERMISSION_REJECTED],
     promise: axios({

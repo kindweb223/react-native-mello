@@ -14,6 +14,7 @@ import PropTypes from 'prop-types'
 import Feather from 'react-native-vector-icons/Feather'
 import Entypo from 'react-native-vector-icons/Entypo'
 import Modal from 'react-native-modal'
+import _ from 'lodash'
 import LinkShareModalComponent from '../../components/LinkShareModalComponent'
 import LinkShareItem from '../../components/LinkShareModalComponent/LinkShareItem'
 import InviteeItemComponent from '../../components/LinkShareModalComponent/InviteeItemComponent'
@@ -21,6 +22,7 @@ import InviteeScreen from '../InviteeScreen'
 import { SERVER_URL } from '../../service/api'
 import { updateSharingPreferences, deleteInvitee, updateInviteePermission } from '../../redux/feedo/actions'
 import COLORS from '../../service/colors'
+import * as USER_ROLE from '../../service/userRole'
 import styles from './styles'
 const PLUS_ICON = require('../../../assets/images/Add/White.png')
 const CLOSE_ICON = require('../../../assets/images/Close/Blue.png')
@@ -64,16 +66,22 @@ class ShareScreen extends React.Component {
     return null
   }
 
-  onShowInviteeModal = () => {
-    this.setState({ isInviteeModal: true })
+  onShowInviteeModal = (feed) => {
+    // if (USER_ROLE.checkOwnerEditor(feed)) {
+    //   this.setState({ isInviteeModal: true })
+    // }
   }
 
-  onLinkShare = (isInviteeOnly) => {
-    this.setState({ linkShareModal: true, shareModalType: 'share', shareInviteeData: {} })
+  onLinkShare = (feed) => {
+    if (USER_ROLE.checkOwnerEditor(feed)) {
+      this.setState({ linkShareModal: true, shareModalType: 'share', shareInviteeData: {} })
+    }
   }
 
-  onPressInvitee = (data) => {
-    this.setState({ linkShareModal: true, shareModalType: 'invitee', shareInviteeData: data })
+  onPressInvitee = (feed, invitee) => {
+    if (!USER_ROLE.checkOwnerinvitee(feed, invitee) && USER_ROLE.checkOwnerEditor(feed)) {
+      this.setState({ linkShareModal: true, shareModalType: 'invitee', shareInviteeData: invitee })
+    }
   }
 
   showShareModal = () => {
@@ -107,7 +115,7 @@ class ShareScreen extends React.Component {
           updateSharingPreferences(
             data.id,
             {
-              level: data.sharingPreferences.level === 'INVITEES_ONLY' ? 'PUBLIC' : 'INVITEES_ONLY'
+              level: data.sharingPreferences.level === 'INVITEES_ONLY' ? 'REGISTERED' : 'INVITEES_ONLY'
             }
           )
           return
@@ -120,13 +128,13 @@ class ShareScreen extends React.Component {
       if (data.owner.id !== shareInviteeData.userProfile.id) {
         switch(index) {
           case 0: // Edit
-            updateInviteePermission(data.id, shareInviteeData.id, 'Edit')
+            updateInviteePermission(data.id, shareInviteeData.id, 'EDIT')
             return
           case 1: // Add
-            updateInviteePermission(data.id, shareInviteeData.id, 'Add')
+            updateInviteePermission(data.id, shareInviteeData.id, 'ADD')
             return
           case 2: // View
-            updateInviteePermission(data.id, shareInviteeData.id, 'View')
+            updateInviteePermission(data.id, shareInviteeData.id, 'VIEW')
             return
           case 3: // Remove
             console.log('INVITEE_DATA: ', shareInviteeData)
@@ -142,6 +150,8 @@ class ShareScreen extends React.Component {
   render () {
     const { data } = this.props
     const { linkShareModal, isInviteeOnly, shareModalType, shareInviteeData } = this.state
+    let { invitees } = data
+    invitees = _.sortBy(invitees, invitee => invitee.id)
 
     return (
       <View style={styles.overlay}>
@@ -160,29 +170,33 @@ class ShareScreen extends React.Component {
 
         <View style={styles.body}>
           <View style={styles.listItemView}>
-            <TouchableOpacity onPress={() => this.onShowInviteeModal()}>
+            <TouchableOpacity onPress={() => this.onShowInviteeModal(data)}>
               <View style={styles.listItem}>
                 <InvitePeopleItemComponent />
               </View>
             </TouchableOpacity>
             
-            <TouchableOpacity onPress={() => this.onLinkShare()}>
+            <TouchableOpacity onPress={() => this.onLinkShare(data)}>
               <View style={styles.listItem}>
                 <LinkShareItem isInviteeOnly={isInviteeOnly} isViewOnly={false} />
               </View>
             </TouchableOpacity>
           </View>
 
-          {data.invitees && data.invitees.length > 0 && (
+          {invitees && invitees.length > 0 && (
             <View style={styles.inviteeListView}>
               <View style={styles.titleView}>
                 <Text style={styles.titleText}>Members</Text>
               </View>
               <ScrollView style={styles.inviteeList}>
-                {data.invitees.map(item => (
-                  <TouchableOpacity onPress={() => this.onPressInvitee(item)} key={item.id}>
+                {invitees.map(invitee => (
+                  <TouchableOpacity onPress={() => this.onPressInvitee(data, invitee)} key={invitee.id}>
                     <View style={styles.inviteeItem}>
-                      <InviteeItemComponent invitee={item} isViewOnly={false} />
+                      <InviteeItemComponent
+                        invitee={invitee}
+                        isViewOnly={false}
+                        isOwnerInvitee={USER_ROLE.checkOwnerinvitee(data, invitee)}
+                      />
                     </View>
                   </TouchableOpacity>
                 ))}
@@ -214,8 +228,8 @@ class ShareScreen extends React.Component {
           style={{ margin: 0 }}
           backdropColor='#f5f5f5'
           backdropOpacity={0.9}
-          animationIn="zoomInUp"
-          animationOut="zoomOutDown"
+          animationIn="fadeInUp"
+          animationOut="fadeOutDown"
           animationInTiming={500}
           onModalHide={() => {}}
         >
