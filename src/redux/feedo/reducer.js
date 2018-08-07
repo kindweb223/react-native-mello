@@ -1,5 +1,5 @@
 import * as types from './types'
-import { filter, find } from 'lodash'
+import { filter, find, findIndex } from 'lodash'
 
 const initialState = {
   loading: null,
@@ -362,13 +362,24 @@ export default function feedo(state = initialState, action = {}) {
       }
     case types.UPDATE_FEED_FULFILLED: {
       const { data } = action.result
+      const index = findIndex(state.feedoList, (o) => {
+        return (o.id === data.id)
+      });
+      let feedoList = [];
+      if (index === -1) {
+        feedoList = [
+          ...state.feedoList,
+          data
+        ];
+      } else {
+        feedoList = state.feedoList;
+        feedoList[index] = data;
+      }
+
       return {
         ...state,
         loading: types.UPDATE_FEED_FULFILLED,
-        feedoList: [
-          ...state.feedoList,
-          data
-        ],
+        feedoList,
         currentFeed: data,
       }
     }
@@ -401,6 +412,16 @@ export default function feedo(state = initialState, action = {}) {
         ...state,
         loading: types.DELETE_FEED_REJECTED,
         error: data,
+      }
+    }
+
+    // set a feed to currentFeed
+    case types.SET_CURRENT_FEED: {
+      const data = action.payload;
+      return {
+        ...state,
+        loading: types.SET_CURRENT_FEED,
+        currentFeed: data,
       }
     }
 

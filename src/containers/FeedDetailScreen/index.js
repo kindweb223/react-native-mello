@@ -40,8 +40,11 @@ import {
   deleteDuplicatedFeed,
 } from '../../redux/feedo/actions';
 import {
-  setCard,
+  setCurrentCard,
 } from '../../redux/card/actions'
+import {
+  UserId,
+} from '../../service/api'
 import COLORS from '../../service/colors'
 import styles from './styles'
 import actionSheetStyles from '../FeedLongHoldMenuScreen/styles'
@@ -64,7 +67,10 @@ class FeedDetailScreen extends React.Component {
       scrollY: new Animated.Value(0),
       currentFeed: {},
       loading: false,
+      
       isVisibleCard: false,
+      cardViewMode: CONSTANTS.CARD_NONE,
+
       isVisibleEditFeed: false,
       openMenu: false,
       isShowToaster: false,
@@ -262,8 +268,10 @@ class FeedDetailScreen extends React.Component {
   }
 
   onOpenNewCardModal() {
+    this.props.setCurrentCard({});
     this.setState({
       isVisibleCard: true,
+      cardViewMode: CONSTANTS.CARD_NEW,
       selectedIdeaInvitee: null,
       selectedIdeaLayout: {},
     }, () => {
@@ -283,19 +291,25 @@ class FeedDetailScreen extends React.Component {
     }).start(() => {
       this.setState({ 
         isVisibleCard: false,
+        cardViewMode: CONSTANTS.CARD_NONE,
       });
     });
   }
 
   onSelectCard(idea, index) {
-    this.props.setCard(idea);
-    const { currentFeed } = this.state
+    this.props.setCurrentCard(idea);
+    const { currentFeed } = this.state;
     const invitee = find(currentFeed.invitees, (o) => {
       return (o.id == idea.inviteeId)
-    })
+    });
+    let cardViewMode = CONSTANTS.CARD_VIEW;
+    if (invitee.userProfile.id === UserId) {
+      cardViewMode = CONSTANTS.CARD_EDIT;
+    }
     this.cardItemRefs[index].measure((ox, oy, width, height, px, py) => {
       this.setState({
         isVisibleCard: true,
+        cardViewMode,
         selectedIdeaInvitee: invitee,
         selectedIdeaLayout: { ox, oy, width, height, px, py },
       }, () => {
@@ -323,9 +337,10 @@ class FeedDetailScreen extends React.Component {
         {
           this.state.isVisibleCard && 
             <NewCardScreen 
-              onClose={() => this.onCloseCardModal()}
+              viewMode={this.state.cardViewMode}
               invitee={this.state.selectedIdeaInvitee}
               intialLayout={this.state.selectedIdeaLayout}
+              onClose={() => this.onCloseCardModal()}
             />
         }
         {  
@@ -536,7 +551,7 @@ const mapDispatchToProps = dispatch => ({
   unpinFeed: (data) => dispatch(unpinFeed(data)),
   duplicateFeed: (data) => dispatch(duplicateFeed(data)),
   deleteDuplicatedFeed: (data) => dispatch(deleteDuplicatedFeed(data)),
-  setCard: (data) => dispatch(setCard(data)),
+  setCurrentCard: (data) => dispatch(setCurrentCard(data)),
 })
 
 FeedDetailScreen.defaultProps = {

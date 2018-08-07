@@ -47,7 +47,8 @@ import {
   deleteDuplicatedFeed,
   addDummyFeed,
   removeDummyFeed,
-  setFeedDetailAction
+  setFeedDetailAction,
+  setCurrentFeed,
 } from '../../redux/feedo/actions'
 
 const TAB_STYLES = {
@@ -256,6 +257,7 @@ class HomeScreen extends React.Component {
       isLongHoldMenuVisible: false,
     }, () => {
       setTimeout(() => {
+        this.props.setCurrentFeed({});
         this.setState({
           isVisibleNewFeed: true,
           isEditFeed: true,
@@ -313,6 +315,7 @@ class HomeScreen extends React.Component {
   onSelectNewFeedType(type) {
     if (type === 'New Card') {
     } else if (type === 'New Feed') {
+      this.props.setCurrentFeed({});
       this.setState({ 
         isVisibleCreateNewFeedModal: false,
         isVisibleNewFeed: true,
@@ -539,7 +542,8 @@ const mapDispatchToProps = dispatch => ({
   deleteDuplicatedFeed: (data) => dispatch(deleteDuplicatedFeed(data)),
   addDummyFeed: (data) => dispatch(addDummyFeed(data)),
   removeDummyFeed: (data) => dispatch(removeDummyFeed(data)),
-  setFeedDetailAction: (data) => dispatch(setFeedDetailAction(data))
+  setFeedDetailAction: (data) => dispatch(setFeedDetailAction(data)),
+  setCurrentFeed: (data) => dispatch(setCurrentFeed(data)),
 })
 
 HomeScreen.propTypes = {
