@@ -220,6 +220,16 @@ export const deleteDraftFeed = (id) => {
 }
 
 /**
+ * Set a feed to currentFeed
+ */
+export const setCurrentFeed = (feed) => {
+  return {
+    type: types.SET_CURRENT_FEED,
+    payload: feed,
+  };
+}
+
+/**
  * Get a file upload url
  */
 export const getFileUploadUrl = (id) => {

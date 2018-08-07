@@ -58,7 +58,9 @@ export default class DocumentList extends React.Component {
   }
 
   onLongPressDocumnet(index) {
-    // LayoutAnimation.linear();
+    if (!this.props.editable) {
+      return;
+    }
     if (this.state.selectedIndex === index) {
       this.setState({
         isVisibleSelectedColors: false,
@@ -185,11 +187,13 @@ export default class DocumentList extends React.Component {
 
 DocumentList.defaultProps = {
   files: [],
+  editable: true,
   onRemove: () => {},
 }
 
 
 DocumentList.propTypes = {
   files: PropTypes.array,
+  editable: PropTypes.bool,
   onRemove: PropTypes.func,
 }

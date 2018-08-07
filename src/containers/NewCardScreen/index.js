@@ -57,7 +57,6 @@ class NewCardScreen extends React.Component {
       originalCardTopY: this.props.intialLayout.py,
       originalCardBottomY: this.props.intialLayout.py + this.props.intialLayout.height,
     };
-    this.isNewCard = isEmpty(this.props.invitee) ? true : false;
 
     this.selectedFile = null;
     this.selectedFileMimeType = null;
@@ -144,7 +143,9 @@ class NewCardScreen extends React.Component {
   }
 
   componentDidMount() {
-    if (!this.isNewCard) {
+    console.log('Current Card : ', this.props.card.currentCard);
+    const { viewMode } = this.props;
+    if (viewMode === CONSTANTS.CARD_VIEW || viewMode === CONSTANTS.CARD_EDIT) {
       this.setState({
         cardTitle: this.props.card.currentCard.title,
         idea: this.props.card.currentCard.idea,
@@ -155,7 +156,7 @@ class NewCardScreen extends React.Component {
       toValue: 1,
       duration: CONSTANTS.ANIMATEION_MILLI_SECONDS,
     }).start(() => {
-      if (this.isNewCard) {
+      if (viewMode === CONSTANTS.CARD_NEW) {
         this.props.createCard(this.props.feedo.currentFeed.id);
       }
     });
@@ -217,7 +218,8 @@ class NewCardScreen extends React.Component {
   }
 
   onTapOutsideCard() {
-    if (this.isNewCard) {
+    const { viewMode } = this.props;
+    if (viewMode === CONSTANTS.CARD_NEW || viewMode === CONSTANTS.CARD_EDIT) {
       this.onUpdate();
       return;
     }
@@ -300,41 +302,42 @@ class NewCardScreen extends React.Component {
   }
 
   get renderImages() {
-    if (!this.isNewCard || this.state.isExpandCard) {
-      const {
-        files
-      } = this.props.card.currentCard;
-      const imageFiles = filter(files, file => file.fileType === 'MEDIA');
-      return (
-        <ImageList 
-          files={imageFiles}
-          onRemove={(fileId) => this.onRemoveImage(fileId)}
-        />
-      )
-    }
+    const { viewMode } = this.props;
+    const {
+      files
+    } = this.props.card.currentCard;
+    const imageFiles = filter(files, file => file.fileType === 'MEDIA');
+    return (
+      <ImageList 
+        files={imageFiles}
+        editable={viewMode !== CONSTANTS.CARD_VIEW}
+        onRemove={(fileId) => this.onRemoveImage(fileId)}
+      />
+    )
   }
 
   get renderDocuments() {
-    if (!this.isNewCard || this.state.isExpandCard) {
-      const {
-        files
-      } = this.props.card.currentCard;
-      const documentFiles = filter(files, file => file.fileType === 'FILE');
-      return (
-        <DocumentList 
-          files={documentFiles}
-          onRemove={(fileId) => this.onRemoveImage(fileId)}
-        />
-      )
-    }
+    const { viewMode } = this.props;
+    const {
+      files
+    } = this.props.card.currentCard;
+    const documentFiles = filter(files, file => file.fileType === 'FILE');
+    return (
+      <DocumentList
+        files={documentFiles}
+        editable={viewMode !== CONSTANTS.CARD_VIEW}
+        onRemove={(fileId) => this.onRemoveImage(fileId)}
+      />
+    )
   }
 
   get renderMainContent() {
+    const { viewMode } = this.props;
     return (
       <View style={styles.mainContentContainer}>
         <TextInput 
           style={styles.textInputCardTitle}
-          editable={this.isNewCard || this.state.isExpandCard}
+          editable={viewMode === CONSTANTS.CARD_NEW || viewMode === CONSTANTS.CARD_EDIT}
           placeholder='Type a title or paste a link'
           underlineColorAndroid='transparent'
           value={this.state.cardTitle}
@@ -342,7 +345,7 @@ class NewCardScreen extends React.Component {
         />
         <TextInput 
           style={styles.textInputIdea}
-          editable={this.isNewCard || this.state.isExpandCard}
+          editable={viewMode === CONSTANTS.CARD_NEW || viewMode === CONSTANTS.CARD_EDIT}
           placeholder='Note'
           multiline={true}
           underlineColorAndroid='transparent'
@@ -356,6 +359,11 @@ class NewCardScreen extends React.Component {
   }
 
   get renderAttachmentButtons() {
+    const { viewMode } = this.props;
+    if (viewMode === CONSTANTS.CARD_VIEW) {
+      return;
+    }
+
     return (
       <View style={styles.attachmentButtonsContainer}>
         <View style={{flexDirection: 'row',}}>
@@ -374,79 +382,72 @@ class NewCardScreen extends React.Component {
             <Ionicons name="md-attach" style={styles.attachment} size={22} color={COLORS.PURPLE} />
           </TouchableOpacity>
         </View>
-        {
-          (this.isNewCard  || this.state.isExpandCard) && 
-            <TouchableOpacity 
-              style={[
-                styles.buttonItemContainer, 
-                {
-                  backgroundColor: COLORS.PURPLE,
-                  borderRadius: 8,
-                  marginRight: 0,
-                },
-              ]}
-              activeOpacity={0.6}
-              onPress={this.onHideKeyboard.bind(this)}
-            >
-              <MaterialCommunityIcons name="keyboard-close" size={20} color={'#fff'} />
-            </TouchableOpacity>
-        }
+          <TouchableOpacity 
+            style={[
+              styles.buttonItemContainer, 
+              {
+                backgroundColor: COLORS.PURPLE,
+                borderRadius: 8,
+                marginRight: 0,
+              },
+            ]}
+            activeOpacity={0.6}
+            onPress={this.onHideKeyboard.bind(this)}
+          >
+            <MaterialCommunityIcons name="keyboard-close" size={20} color={'#fff'} />
+          </TouchableOpacity>
       </View>
     );
   }
 
   get renderInvitee() {
-    if (!this.isNewCard) {
-      const {
-        firstName,
-        lastName,
-        imageUrl,
-      } = this.props.invitee.userProfile;
-      const name = `${firstName} ${lastName}`;
-      return (
-        <View>
-          <View style={styles.line} />
-          <View style={[styles.rowContainer, {marginHorizontal: 22}]}>
-            <UserAvatar
-              size="24"
-              name={name}
-              color="#000"
-              textColor="#fff"
-              src={imageUrl}
-            />
-            <Text style={[styles.textInvitee, {marginLeft: 9}]}>{name}</Text>
-            <Entypo name="dot-single" style={styles.iconDot} />
-            <Text style={styles.textInvitee}>{getDurationFromNow(this.props.card.currentCard.publishedDate)}</Text>
-          </View>
+    const {
+      firstName,
+      lastName,
+      imageUrl,
+    } = this.props.invitee.userProfile;
+    const name = `${firstName} ${lastName}`;
+    return (
+      <View>
+        <View style={styles.line} />
+        <View style={[styles.rowContainer, {marginHorizontal: 22}]}>
+          <UserAvatar
+            size="24"
+            name={name}
+            color="#000"
+            textColor="#fff"
+            src={imageUrl}
+          />
+          <Text style={[styles.textInvitee, {marginLeft: 9}]}>{name}</Text>
+          <Entypo name="dot-single" style={styles.iconDot} />
+          <Text style={styles.textInvitee}>{getDurationFromNow(this.props.card.currentCard.publishedDate)}</Text>
         </View>
-      );
-    }
+      </View>
+    );
   }
 
   get renderLikes() {
-    if (!this.isNewCard) {
-      const {
-        voteCount,
-      } = this.props.card.currentCard;
-      return (
-        <View>
-          <View style={styles.line} />
-            <View style={[styles.rowContainer, {justifyContent: 'space-between', marginHorizontal: 22}]}>
-            <Text style={styles.textInvitee}>{voteCount} people liked</Text>
-            <View style={styles.rowContainer}>
-              <View style={[styles.rowContainer, styles.cellContainer]}>
-                <MaterialCommunityIcons name="heart" size={16} color={COLORS.RED} />
-                <Text style={[styles.textInvitee, {marginLeft: 4}]}>{voteCount}</Text>
-              </View>
-              <View style={[styles.rowContainer, styles.cellContainer]}>
-                <Feather name="message-square" size={16} color={COLORS.LIGHT_GREY} />
-                <Text style={[styles.textInvitee, {marginLeft: 4}]}>0</Text>
-              </View>
+    const {
+      voteCount,
+    } = this.props.card.currentCard;
+    return (
+      <View>
+        <View style={styles.line} />
+          <View style={[styles.rowContainer, {justifyContent: 'space-between', marginHorizontal: 22}]}>
+          <Text style={styles.textInvitee}>{voteCount} people liked</Text>
+          <View style={styles.rowContainer}>
+            <View style={[styles.rowContainer, styles.cellContainer]}>
+              <MaterialCommunityIcons name="heart" size={16} color={COLORS.RED} />
+              <Text style={[styles.textInvitee, {marginLeft: 4}]}>{voteCount}</Text>
+            </View>
+            <View style={[styles.rowContainer, styles.cellContainer]}>
+              <Feather name="message-square" size={16} color={COLORS.LIGHT_GREY} />
+              <Text style={[styles.textInvitee, {marginLeft: 4}]}>0</Text>
             </View>
           </View>
         </View>
-      );
-    }
+      </View>
+    );
   }
 
   get renderHeader() {
@@ -466,12 +467,15 @@ class NewCardScreen extends React.Component {
   }
 
   get renderBottomContent() {
-    return (
-      <View>
-        {this.renderInvitee}
-        {this.renderLikes}
-      </View>
-    );
+    const { viewMode } = this.props;
+    if (viewMode !== CONSTANTS.CARD_NEW) {
+      return (
+        <View>
+          {this.renderInvitee}
+          {this.renderLikes}
+        </View>
+      );
+    }
   }
 
   onScrollBeginDrag(e) {
@@ -479,8 +483,9 @@ class NewCardScreen extends React.Component {
   }
 
   onScroll(e) {
+    const { viewMode } = this.props;
     const currentOffsetY = e.nativeEvent.contentOffset.y;
-    if (!this.isNewCard && !this.state.isExpandCard && this.scrollViewLayoutHeight === 0 && currentOffsetY > 10) {
+    if (viewMode !== CONSTANTS.CARD_NEW && !this.state.isExpandCard && this.scrollViewLayoutHeight === 0 && currentOffsetY > 10) {
       this.scrollViewLayoutHeight = e.nativeEvent.layoutMeasurement.height;
       this.setState({
         isExpandCard: true,
@@ -497,14 +502,16 @@ class NewCardScreen extends React.Component {
   }
 
   get renderCard() {
+    const { viewMode } = this.props;
     let cardStyle = {};
-    if (this.isNewCard) {
+    if (viewMode === CONSTANTS.CARD_NEW) {
       const animatedMove  = this.animatedShow.interpolate({
         inputRange: [0, 1],
-        outputRange: [CONSTANTS.SCREEN_HEIGHT, 0],
+        outputRange: [CONSTANTS.SCREEN_HEIGHT, ScreenVerticalMargin],
       });  
       cardStyle = {
         top: animatedMove,
+        bottom: ScreenVerticalMargin,
         opacity: this.animatedShow,
       };
     } else if (!this.state.isExpandCard) {
@@ -543,11 +550,20 @@ class NewCardScreen extends React.Component {
           cardStyle,
         ]}
       >
+        {
+          !this.state.isExpandCard && 
+            <TouchableOpacity 
+            style={styles.backdropContainer}
+            activeOpacity={1}
+            onPress={this.onTapOutsideCard.bind(this)}
+          />
+        } 
+        
         <View 
           style={[
             styles.contentContainer,
-            (this.isNewCard || !this.state.isExpandCard) && {maxHeight: CONSTANTS.SCREEN_HEIGHT - ScreenVerticalMargin * 2},
-            this.state.isExpandCard && {height: CONSTANTS.SCREEN_HEIGHT},
+            (viewMode === CONSTANTS.CARD_NEW || !this.state.isExpandCard) && {maxHeight: CONSTANTS.SCREEN_HEIGHT - ScreenVerticalMargin * 2},
+            this.state.isExpandCard && {flex: 1},
           ]}
         >
           {this.renderHeader}
@@ -558,15 +574,18 @@ class NewCardScreen extends React.Component {
           >
             {this.renderMainContent}
             {this.renderAttachmentButtons}
-            {
-              !this.state.isExpandCard && this.renderBottomContent
-            }
           </KeyboardAwareScrollView>
-          {
-            this.state.isExpandCard && this.renderBottomContent
-          }
+          {this.renderBottomContent}
         </View>
-        {this.state.loading && <LoadingScreen />}
+        
+        {
+          !this.state.isExpandCard && 
+            <TouchableOpacity 
+            style={styles.backdropContainer}
+            activeOpacity={1}
+            onPress={this.onTapOutsideCard.bind(this)}
+          />
+        } 
       </Animated.View>
     );
   }
@@ -593,6 +612,7 @@ class NewCardScreen extends React.Component {
           tintColor={COLORS.PURPLE}
           onPress={(index) => this.onTapMediaPickerActionSheet(index)}
         />
+        {this.state.loading && <LoadingScreen />}
       </View>
     );
   }
@@ -603,6 +623,7 @@ NewCardScreen.defaultProps = {
   card: {},
   invitee: {},
   intialLayout: {},
+  viewMode: CONSTANTS.CARD_NEW,
   onClose: () => {},
 }
 
@@ -612,6 +633,7 @@ NewCardScreen.propTypes = {
   invitee: PropTypes.object,
   intialLayout: PropTypes.object,
   onClose: PropTypes.func,
+  viewMode: PropTypes.number,
 }
 
 

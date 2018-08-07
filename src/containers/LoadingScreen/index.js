@@ -3,6 +3,7 @@ import {
   SafeAreaView,
   ActivityIndicator,
   View,
+  ViewPropTypes,
 } from 'react-native'
 import PropTypes from 'prop-types'
 
@@ -29,4 +30,14 @@ export default class LoadingScreen extends React.Component {
       </SafeAreaView>
     )
   }
+}
+
+
+LoadingScreen.defaultProps = {
+  containerStyle: {},
+}
+
+
+LoadingScreen.propTypes = {
+  containerStyle: ViewPropTypes.style
 }

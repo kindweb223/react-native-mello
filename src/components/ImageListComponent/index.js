@@ -72,6 +72,9 @@ export default class ImageList extends React.Component {
   }
 
   onLongPressImage(index) {
+    if (!this.props.editable) {
+      return;
+    }
     if (this.state.removeImageIndex === index) {
       this.setState({
         removeImageIndex: -1,
@@ -203,7 +206,13 @@ export default class ImageList extends React.Component {
           animationInTiming={100}
           animationOutTiming={100}
         >
-          <ImageSliderScreen position={this.state.position} onClose={() => this.setState({ isPreview: false })} />
+          <ImageSliderScreen 
+            imageFiles={this.props.files}
+            position={this.state.position}
+            removal={this.props.editable}
+            onRemove={(id) => this.props.onRemove(id)}
+            onClose={() => this.setState({ isPreview: false })}
+          />
         </Modal>
       ]
     );
@@ -213,11 +222,13 @@ export default class ImageList extends React.Component {
 
 ImageList.defaultProps = {
   files: [],
+  editable: true,
   onRemove: () => {},
 }
 
 
 ImageList.propTypes = {
   files: PropTypes.array,
+  editable: PropTypes.bool,
   onRemove: PropTypes.func,
 }

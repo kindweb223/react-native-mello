@@ -3,7 +3,8 @@ import {
   View,
   Text,
   TouchableOpacity,
-  Image
+  Image,
+  Alert,
 } from 'react-native'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
@@ -28,29 +29,21 @@ class ImageSliderScreen extends React.Component {
     this.state = {
       position: this.props.position,
       loading: false,
-      imageFiles: [],
       maxImageHeight: 0
     };
   }
 
   componentDidMount() {
     const {
-      files,
-    } = this.props.feedo.currentFeed;
-    const { position } = this.state
-    const imageFiles = filter(files, file => file.fileType === 'MEDIA');
-
+      imageFiles,
+    } = this.props;
     let imageHeightList = []
     imageFiles.forEach(element => {
       Image.getSize(element.accessUrl, (width, height) => {
-        imageHeightList = [ ...imageHeightList, CONSTANTS.SCREEN_WIDTH / width * height ]
+        imageHeightList = [ ...imageHeightList, CONSTANTS.SCREEN_WIDTH / width * height ];
         this.setState({ maxImageHeight: max(imageHeightList) })
       })
     });
-
-    this.setState({
-      imageFiles: imageFiles,
-    })
   }
 
   UNSAFE_componentWillReceiveProps(nextProps) {
@@ -84,22 +77,23 @@ class ImageSliderScreen extends React.Component {
   }
 
   onClose() {
-    this.props.onClose()
+    if (this.props.onClose) {
+      this.props.onClose()
+    }
   }
 
   onDelete() {
     const {
-      id,
-      files
-    } = this.props.feedo.currentFeed;
-    const imageFiles = filter(files, file => file.fileType === 'MEDIA');
-    if (id) {
-      this.props.deleteFile(id, imageFiles[this.state.position].id);
+      imageFiles,
+    } = this.props;
+    if (this.props.onRemove) {
+      this.props.onRemove(imageFiles[this.state.position].id);
     }
   }
 
   render () {
-    const { imageFiles, maxImageHeight } = this.state
+    const { maxImageHeight } = this.state
+    const { imageFiles } = this.props;
 
     return (
       <View style={styles.container}>
@@ -118,7 +112,8 @@ class ImageSliderScreen extends React.Component {
           <MaterialCommunityIcons name="close" size={30} color={'#fff'} />
         </TouchableOpacity>
 
-        {this.props.removal && (
+        {
+          this.props.removal && (
           <TouchableOpacity 
             style={styles.borderButtonWrapper}
             activeOpacity={0.6}
@@ -135,14 +130,20 @@ class ImageSliderScreen extends React.Component {
 
 
 ImageSliderScreen.defaultProps = {
+  imageFiles: [],
   position: 0,
-  removal: true
+  removal: true,
+  onRemove: () => {},
+  onClose: () => {},
 }
 
 
 ImageSliderScreen.propTypes = {
+  imageFiles: PropTypes.array,
   position: PropTypes.number,
-  removal: PropTypes.bool
+  removal: PropTypes.bool,
+  onRemove: PropTypes.func,
+  onClose: PropTypes.func,
 }
 
 
