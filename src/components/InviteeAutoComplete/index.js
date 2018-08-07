@@ -1,194 +1,137 @@
-import React, { Component } from "react";
+import React from 'react'
 import {
-  StyleSheet,
+  View,
   Text,
-  TouchableHighlight,
   TouchableOpacity,
-  View
-} from "react-native";
-import Autocomplete from './AutoCompleteInput'
+  FlatList,
+  ScrollView
+} from 'react-native'
+import PropTypes from 'prop-types'
+import { connect } from 'react-redux'
 
-export default class InviteeAutoComplete extends Component {
-  state = {
-    query: ""
-  };
+import { Actions } from 'react-native-router-flux'
+import Ionicons from 'react-native-vector-icons/Ionicons'
+import _ from 'lodash';
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
 
-  renderTags = () => {
-    if (this.props.renderTags) {
-      return this.props.renderTags(this.props.tagsSelected);
+import styles from './styles'
+import COLORS from '../../service/colors';
+import CONSTANTS from '../../service/constants';
+import Tags from '../../components/TagComponent';
+import InviteeItemComponent from '../../components/LinkShareModalComponent/InviteeItemComponent'
+
+class InviteeAutoComplete extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      invitees: [],
+      filteredInvitees: [],
+      inviteeEmails: [],
+      isInput: false
+    };
+  }
+
+  componentDidMount() {
+    const { invitees } = this.props
+    // let inviteeEmails = []
+    // for (let i = 0; i < invitees.length; i ++) {
+    //   inviteeEmails = [...inviteeEmails, invitees[i].userProfile.email]
+    // }
+
+    this.setState({
+      invitees,
+      filteredInvitees: invitees
+    })
+  }
+
+  onCreateInvitee(text) {
+    const { inviteeEmails } = this.state
+    inviteeEmails.push(text)
+    this.setState({ inviteeEmails })
+  }
+
+  onRemoveInvitee(invitee) {
+    console.log('REMOVE: ', invitee)
+  }
+
+  onChangeText(text) {
+    if (text.length > 0) {
+      this.setState({ isInput: true })
+    } else {
+      this.setState({ isInput: false })
     }
+  }
 
-    const tagMargins = this.props.tagsOrientedBelow
-      ? { marginBottom: 5 }
-      : { marginTop: 5 };
-
+  renderFilteredInvitees = (invitees) => {
     return (
-      <View style={this.props.tagStyles || styles.tags}>
-        {this.props.tagsSelected.map((t, i) => {
-          return (
-            <TouchableHighlight
-              key={i}
-              style={[tagMargins, styles.tag]}
-              onPress={() => this.props.handleDelete(i)}
-            >
-              <Text style={styles.tagText}>{t.name}</Text>
-            </TouchableHighlight>
-          );
-        })}
-      </View>
+      <ScrollView style={styles.inviteeList}>
+        {invitees.map(item => (
+          <TouchableOpacity onPress={() => {}} key={item.id}>
+            <View style={styles.inviteeItem}>
+              <InviteeItemComponent invitee={item} isOnlyTitle={true} />
+            </View>
+          </TouchableOpacity>
+        ))}
+      </ScrollView>
     );
-  };
+  }
 
-  handleInput = text => {
-    if (this.submitting) return;
-    if (this.props.allowBackspace) {
-      //TODO: on ios, delete last tag on backspace event && empty query
-      //(impossible on android atm, no listeners for empty backspace)
-    }
-    if (this.props.onChangeText) return this.props.onChangeText(text);
-    if (
-      this.props.createTagOnSpace &&
-      this.props.onCustomTagCreated &&
-      text.length > 1 &&
-      text.charAt(text.length - 1) === " "
-    ) {
-      this.setState({ query: "" });
-      return this.props.onCustomTagCreated(text.trim());
-    } else if (this.props.createTagOnSpace && !this.props.onCustomTagCreated) {
-      console.error(
-        "When enabling createTagOnSpace, you must provide an onCustomTagCreated function"
-      );
-    }
-
-    if (text.charAt(text.length - 1) === "\n") {
-      return; // prevent onSubmit bugs
-    }
-
-    this.setState({ query: text });
-  };
-
-  filterData = query => {
-    if (!query || query.trim() == "" || !this.props.suggestions) {
-      return;
-    }
-    if (this.props.filterData) {
-      return this.props.filterData(query);
-    }
-    let suggestions = this.props.suggestions;
-    let results = [];
-    query = query.toUpperCase();
-    suggestions.forEach(i => {
-      if (i.name.toUpperCase().includes(query)) {
-        results.push(i);
-      }
-    });
-    return results;
-  };
-
-  onSubmitEditing = () => {
-    const { query } = this.state;
-    if (!this.props.onCustomTagCreated || query.trim() === "") return;
-    this.setState({ query: "" }, () => this.props.onCustomTagCreated(query));
-
-    // prevents an issue where handleInput() will overwrite
-    // the query clear in some circumstances
-    this.submitting = true;
-    setTimeout(() => {
-      this.submitting = false;
-    }, 30);
-  };
-
-  addTag = tag => {
-    this.props.handleAddition(tag);
-    this.setState({ query: "" });
-  };
-
-  render() {
-    const { query } = this.state;
-    const data = this.filterData(query);
+  render () {
+    const { filteredInvitees, inviteeEmails, isInput } = this.state
+    console.log('INVITEE_EMAILS: ', inviteeEmails)
 
     return (
-      <View style={styles.AutoTags}>
-        {!this.props.tagsOrientedBelow &&
-          this.props.tagsSelected &&
-          this.renderTags()}
-        <Autocomplete
-          data={data}
-          controlled={true}
-          placeholder={this.props.placeholder}
-          defaultValue={query}
-          value={query}
-          onChangeText={text => this.handleInput(text)}
-          onSubmitEditing={this.onSubmitEditing}
-          multiline={true}
-          autoFocus={this.props.autoFocus === false ? false : true}
-          renderItem={suggestion => (
-            <TouchableOpacity onPress={e => this.addTag(suggestion)}>
-              {this.props.renderSuggestion ? (
-                this.props.renderSuggestion(suggestion)
-              ) : (
-                <Text>{suggestion.name}</Text>
-              )}
-            </TouchableOpacity>
-          )}
-          inputContainerStyle={
-            this.props.inputContainerStyle || styles.inputContainerStyle
-          }
-          containerStyle={this.props.containerStyle || styles.containerStyle}
-          underlineColorAndroid="transparent"
-          style={{ backgroundColor: "#efeaea" }}
-          listContainerStyle={{
-            backgroundColor: this.props.tagsOrientedBelow
-              ? "#efeaea"
-              : "transparent"
-          }}
-          {...this.props}
-        />
-        {this.props.tagsOrientedBelow &&
-          this.props.tagsSelected &&
-          this.renderTags()}
+      <View style={styles.container}>
+        <KeyboardAwareScrollView
+          keyboardShouldPersistTaps='always'
+        >
+          <View style={styles.mainContentContainer}>
+            <Tags
+              tags={inviteeEmails}
+              placeHolder="Email or name"
+              onCreateTag={(text) => this.onCreateInvitee(text)}
+              onChangeText={(text) => this.onChangeText(text)}
+              onRemoveTag={(invitee) => this.onRemovInvitee(invitee)}
+              inputStyle={{
+                backgroundColor: 'white',
+              }}
+              tagContainerStyle={{
+                backgroundColor: COLORS.PURPLE,
+                opacity: 0.3
+              }}
+              tagTextStyle={{
+                color: COLORS.DARK_GREY,
+                fontSize: 14,
+              }}
+              activeTagContainerStyle={{
+                backgroundColor: COLORS.PURPLE,
+                opacity: 0.3
+              }}
+              activeTagTextStyle={{
+                color: COLORS.PURPLE,
+                fontSize: 14,
+              }}
+            />
+            
+            {isInput && (
+              this.renderFilteredInvitees(filteredInvitees)
+            )}
+
+          </View>
+        </KeyboardAwareScrollView>
       </View>
     );
   }
 }
 
-const styles = StyleSheet.create({
-  AutoTags: {
-    flexDirection: "row",
-    flexWrap: "wrap",
-    alignItems: "flex-start"
-  },
-  tags: {
-    flexDirection: "row",
-    flexWrap: "wrap",
-    alignItems: "flex-start",
-    backgroundColor: "#fff",
-    width: '100%'
-  },
-  tag: {
-    backgroundColor: "#F5F1FC",
-    justifyContent: "center",
-    alignItems: "center",
-    height: 24,
-    marginLeft: 5,
-    borderRadius: 30,
-    padding: 8
-  },
-  tagText: {
-    fontSize: 14,
-    color: '#4A00CD'
-  },
-  inputContainerStyle: {
-    borderRadius: 0,
-    paddingRight: 5,
-    height: 24,
-    width: '100%',
-    justifyContent: "center",
-    borderColor: "#fff",
-    alignItems: "stretch",
-    backgroundColor: "#fff"
-  },
-  containerStyle: {
-    width: '100%'
-  }
-});
+
+InviteeAutoComplete.defaultProps = {
+  invitees: []
+}
+
+
+InviteeAutoComplete.propTypes = {
+  invitees: PropTypes.arrayOf(PropTypes.any)
+}
+
+export default InviteeAutoComplete

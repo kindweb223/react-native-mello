@@ -29,6 +29,7 @@ import ToasterComponent from '../../components/ToasterComponent'
 import FeedLoadingStateComponent from '../../components/FeedLoadingStateComponent'
 import ShareScreen from '../ShareScreen'
 import NewFeedScreen from '../NewFeedScreen'
+import InviteeScreen from '../InviteeScreen'
 
 import {
   getFeedDetail,
@@ -79,6 +80,7 @@ class FeedDetailScreen extends React.Component {
       pinText: 'Pin',
       selectedIdeaInvitee: null,
       selectedIdeaLayout: {},
+      isInviteeModal: false
     };
     this.animatedOpacity = new Animated.Value(0)
     this.menuOpacity = new Animated.Value(0)
@@ -114,6 +116,10 @@ class FeedDetailScreen extends React.Component {
   handleSetting = () => {
     const { openMenu } = this.state
     this.setState({ openMenu: !openMenu, settingItem: null })
+  }
+
+  handleInvitees = () => {
+    this.setState({ isInviteeModal: true })
   }
 
   hideSettingMenu = () => {
@@ -420,7 +426,9 @@ class FeedDetailScreen extends React.Component {
                 <FeedNavbarSettingComponent handleSetting={() => this.handleSetting()} />
               </Animated.View>
               <Animated.View style={[styles.avatarView, { right: avatarPosition }]}>
-                <AvatarPileComponent avatars={avatars} />
+                <TouchableOpacity onPress={() => this.handleInvitees()}>
+                  <AvatarPileComponent avatars={avatars} />
+                </TouchableOpacity>
               </Animated.View>
             </View>
           </Animated.View>
@@ -524,6 +532,19 @@ class FeedDetailScreen extends React.Component {
           <Animated.View style={[styles.settingMenuView, { top: settingMenuY }]}>
             <FeedControlMenuComponent handleSettingItem={item => this.handleSettingItem(item)} data={currentFeed} pinText={pinText} />
           </Animated.View>
+        </Modal>
+
+        <Modal 
+          isVisible={this.state.isInviteeModal}
+          style={{ margin: 0 }}
+          backdropColor='#f5f5f5'
+          backdropOpacity={0.9}
+          animationIn="fadeInUp"
+          animationOut="fadeOutDown"
+          animationInTiming={500}
+          onModalHide={() => {}}
+        >
+          <InviteeScreen onClose={() => this.setState({ isInviteeModal: false })} data={currentFeed} />
         </Modal>
       </SafeAreaView>
     )

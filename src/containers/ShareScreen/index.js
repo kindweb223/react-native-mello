@@ -67,9 +67,9 @@ class ShareScreen extends React.Component {
   }
 
   onShowInviteeModal = (feed) => {
-    // if (USER_ROLE.checkOwnerEditor(feed)) {
-    //   this.setState({ isInviteeModal: true })
-    // }
+    if (USER_ROLE.checkOwnerEditor(feed)) {
+      this.setState({ isInviteeModal: true })
+    }
   }
 
   onLinkShare = (feed) => {

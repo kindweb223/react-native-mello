@@ -7,6 +7,7 @@ import {
   Animated,
   Image,
   Share,
+  TextInput,
   ScrollView
 } from 'react-native'
 import { connect } from 'react-redux'
@@ -39,34 +40,21 @@ class InviteeScreen extends React.Component {
   constructor(props) {
     super(props)
     this.state = {
-      isEdit: false,
-      suggestions : [ { name:'Mickey Mouse' }, ],
-      tagsSelected : []
+      isAddInvitee: false,
+      message: ''
     }
   }
 
   componentDidMount() {
-    const { data } = this.props
-    let emails = []
-    for (let i = 0; i < data.invitees.length; i ++) {
-      emails = [...emails, data.invitees[i].userProfile.email]
-    }
-    console.log('INVITEE_DATA: ', emails)
   }
 
-  handleDelete = index => {
-    let tagsSelected = this.state.tagsSelected;
-    tagsSelected.splice(index, 1);
-    this.setState({ tagsSelected });
-  }
- 
-  handleAddition = suggestion => {
-    this.setState({ tagsSelected: this.state.tagsSelected.concat([suggestion]) });
+  onChangeMessage = (text) => {
+    this.setState({ message: text })
   }
 
   render () {
     const { data } = this.props
-    const { isEdit } = this.state
+    const { isAddInvitee } = this.state
 
     return (
       <View style={styles.overlay}>
@@ -76,8 +64,8 @@ class InviteeScreen extends React.Component {
           </TouchableOpacity>
 
           <TouchableOpacity onPress={() => this.onSendInvitation()}>
-            <View style={[styles.sendButtonView, isEdit ? styles.sendEnableButtonView : styles.sendDisableButtonView]}>
-              <Text style={[styles.sendButtonText, isEdit ? styles.sendEnableButtonText : styles.sendDisableButtonText]}>Send</Text>
+            <View style={[styles.sendButtonView, isAddInvitee ? styles.sendEnableButtonView : styles.sendDisableButtonView]}>
+              <Text style={[styles.sendButtonText, isAddInvitee ? styles.sendEnableButtonText : styles.sendDisableButtonText]}>Send</Text>
             </View>
           </TouchableOpacity>
         </View>
@@ -86,14 +74,18 @@ class InviteeScreen extends React.Component {
           <View style={styles.inputFieldView}>
             <View style={styles.inputItem}>
               <InviteeAutoComplete
-                suggestions={this.state.suggestions}
-                tagsSelected={this.state.tagsSelected}
-                handleAddition={this.handleAddition}
-                handleDelete={this.handleDelete}
-                placeholder="Add a contact.."
+                invitees={data.invitees}
               />
             </View>
             <View style={styles.inputItem}>
+              <TextInput
+                ref={ref => this.messageRef = ref}
+                value={this.state.message}
+                placeholder="Add message"
+                style={[styles.textInput]}
+                onChangeText={this.onChangeMessage}
+                underlineColorAndroid='transparent'
+              />
             </View>
           </View>
 
@@ -104,7 +96,7 @@ class InviteeScreen extends React.Component {
               </View>
               <ScrollView style={styles.inviteeList}>
                 {data.invitees.map(item => (
-                  <TouchableOpacity onPress={() => this.onPressInvitee(item)} key={item.id}>
+                  <TouchableOpacity onPress={() => {}} key={item.id}>
                     <View style={styles.inviteeItem}>
                       <InviteeItemComponent invitee={item} isOnlyTitle={true} />
                     </View>

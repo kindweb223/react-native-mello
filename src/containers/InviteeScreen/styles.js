@@ -29,13 +29,14 @@ export default {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    paddingHorizontal: CONSTANTS.PADDING
+    paddingLeft: CONSTANTS.PADDING / 2,
+    paddingRight: CONSTANTS.PADDING
   },
   closeButton: {
     width: 50,
     height: 50,
     alignItems: 'flex-start',
-    justifyContent: 'center'
+    justifyContent: 'center',
   },
   sendButtonView: {
     flexDirection: 'row',
@@ -83,15 +84,22 @@ export default {
   inviteeItem: {
     paddingVertical: 7,
     borderBottomWidth: 1,
-    borderColor: COLORS.LIGHT_GREY_LINE
+    borderColor: COLORS.LIGHT_GREY_LINE,
+  },
+  inputFieldView: {
+    paddingHorizontal: CONSTANTS.PADDING
   },
   inputItem: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    paddingVertical: 5,
-    marginBottom: 10,
+    paddingVertical: 3,
+    marginBottom: 20,
     borderBottomWidth: 1,
     borderColor: COLORS.LIGHT_GREY_LINE,
   },
+  textInput: {
+    fontSize: 16,
+    marginBottom: 5,
+  }
 }
