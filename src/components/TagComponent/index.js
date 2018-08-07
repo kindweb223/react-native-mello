@@ -103,7 +103,7 @@ class Tags extends React.Component {
           <TextInput
             ref={ref => this.tagInputRef = ref}
             value={this.state.text}
-            placeholder='Tags'
+            placeholder={this.props.placeHolder}
             style={[styles.textInput, this.props.inputStyle]}
             onChangeText={this.onChangeText.bind(this)}
             onKeyPress={this.onKeyPress.bind(this)}
@@ -119,7 +119,7 @@ class Tags extends React.Component {
           activeOpacity={0.6}
           onPress={() => this.props.onPressTag(-1, '')}
           >
-          <Text style={styles.textLabel}>Tags</Text>
+          <Text style={styles.textLabel}>{this.props.placeHolder}</Text>
         </TouchableOpacity>
       );
     }
@@ -179,6 +179,7 @@ Tags.defaultProps = {
   initialText: '',
   readonly: false,
   activeTagName: '',
+  placeHolder: 'Tags'
 };
 
 Tags.propTypes = {
@@ -198,6 +199,7 @@ Tags.propTypes = {
   onChangeText: PropTypes.func,
   onAddTag: PropTypes.func,
   onRemoveTag: PropTypes.func,
+  placeHolder: PropTypes.string
 };
 
 export { Tag };
