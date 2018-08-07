@@ -44,6 +44,10 @@ const styles = StyleSheet.create({
     paddingHorizontal: 10,
     paddingVertical: 5,
   },
+  modalContainer: {
+    margin: 0,
+  },
+
 })
 
 

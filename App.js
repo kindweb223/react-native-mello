@@ -12,14 +12,16 @@ axios.defaults.baseURL = BASE_URL
 axios.defaults.headers.get['Content-Type'] = 'application/json'
 axios.defaults.headers.get.Accept = 'application/json'
 axios.defaults.withCredentials = true
-axios.defaults.headers['x-auth-token'] = '390796be-ee71-43a7-a20e-b0d5461b795c'
+axios.defaults.headers['x-auth-token'] = '81b7e965-87d2-42ee-a46b-6d49c9c6cfcf'
 axios.defaults.headers['x-mobile-api'] = true
 
 import reducers from './src/redux/reducers'
 import HomeScreen from './src/containers/HomeScreen'
 import LoadingScreen from './src/containers/LoadingScreen';
 import ImageSliderScreen from './src/containers/ImageSliderScreen';
-import FeedDetailScreen from './src/containers/FeedDetailScreen'
+import FeedDetailScreen from './src/containers/FeedDetailScreen';
+import DocumentSliderScreen from './src/containers/DocumentSliderScreen';
+
 
 const store = createStore(reducers, applyMiddleware(thunk, promiseMiddleware))
 
@@ -30,6 +32,7 @@ export default class Root extends React.Component {
         <Scene key="root">
           <Scene key="HomeScreen" component={ HomeScreen } initial hideNavBar panHandlers={null} />
           <Scene key="FeedDetailScreen" component={ FeedDetailScreen } hideNavBar panHandlers={null} />
+          <Scene key="DocumentSliderScreen" component={ DocumentSliderScreen } hideNavBar />
         </Scene>
         <Scene key="LoadingScreen" component={ LoadingScreen } hideNavBar />
         <Scene key="ImageSliderScreen" component={ ImageSliderScreen } hideNavBar />

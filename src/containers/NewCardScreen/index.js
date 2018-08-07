@@ -143,7 +143,6 @@ class NewCardScreen extends React.Component {
   }
 
   componentDidMount() {
-    console.log('Current Card : ', this.props.card.currentCard);
     const { viewMode } = this.props;
     if (viewMode === CONSTANTS.CARD_VIEW || viewMode === CONSTANTS.CARD_EDIT) {
       this.setState({
@@ -294,7 +293,7 @@ class NewCardScreen extends React.Component {
     }
   }
 
-  onRemoveImage(fileId) {
+  onRemoveFile(fileId) {
     const {
       id,
     } = this.props.card.currentCard;
@@ -311,7 +310,7 @@ class NewCardScreen extends React.Component {
       <ImageList 
         files={imageFiles}
         editable={viewMode !== CONSTANTS.CARD_VIEW}
-        onRemove={(fileId) => this.onRemoveImage(fileId)}
+        onRemove={(fileId) => this.onRemoveFile(fileId)}
       />
     )
   }
@@ -326,7 +325,7 @@ class NewCardScreen extends React.Component {
       <DocumentList
         files={documentFiles}
         editable={viewMode !== CONSTANTS.CARD_VIEW}
-        onRemove={(fileId) => this.onRemoveImage(fileId)}
+        onRemove={(fileId) => this.onRemoveFile(fileId)}
       />
     )
   }

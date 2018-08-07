@@ -337,7 +337,7 @@ class NewFeedScreen extends React.Component {
     );
   }
 
-  onRemoveImage(fileId) {
+  onRemoveFile(fileId) {
     const {
       id,
     } = this.props.feedo.currentFeed;
@@ -352,7 +352,7 @@ class NewFeedScreen extends React.Component {
     return (
       <ImageList 
         files={imageFiles}
-        onRemove={(fileId) => this.onRemoveImage(fileId)}
+        onRemove={(fileId) => this.onRemoveFile(fileId)}
       />
     )
   }
@@ -365,7 +365,7 @@ class NewFeedScreen extends React.Component {
     return (
       <DocumentList 
         files={documentFiles}
-        onRemove={(fileId) => this.onRemoveImage(fileId)}
+        onRemove={(fileId) => this.onRemoveFile(fileId)}
       />
     )
   }

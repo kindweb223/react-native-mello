@@ -11,10 +11,12 @@ import PropTypes from 'prop-types'
 import { Actions } from 'react-native-router-flux'
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons'
 import Ionicons from 'react-native-vector-icons/Ionicons'
+import Modal from 'react-native-modal'
 
 import styles from './styles'
 import CONSTANTS from '../../service/constants'
 import COLORS from '../../service/colors'
+import DocumentSliderScreen from '../../containers/DocumentSliderScreen';
 
 
 export default class DocumentList extends React.Component {
@@ -25,6 +27,8 @@ export default class DocumentList extends React.Component {
       selectedIndex: -1,
       itemLayouts: [],
       isVisibleSelectedColors: false,
+      isVisibleDocSlider: false,
+      position: 0,
     };
     this.fileCount = this.props.files.length || 0;
     this.animatedSelect = new Animated.Value(0);
@@ -98,6 +102,10 @@ export default class DocumentList extends React.Component {
   }
 
   onPressDocument(index) {
+    this.setState({
+      position: index,
+      isVisibleDocSlider: true,
+    })
   }
 
   renderItemBackground(index) {
@@ -171,15 +179,29 @@ export default class DocumentList extends React.Component {
     } = this.state;
 
     return (
-      <FlatList
-        style={styles.container}
-        showsHorizontalScrollIndicator={false}
-        data={files}
-        renderItem={this.renderDocumentFile.bind(this)}
-        keyExtractor={(item, index) => index.toString()}
-        extraData={this.state}
-        bounces={false}
-      />
+      <View>
+        <FlatList
+          style={styles.container}
+          showsHorizontalScrollIndicator={false}
+          data={files}
+          renderItem={this.renderDocumentFile.bind(this)}
+          keyExtractor={(item, index) => index.toString()}
+          extraData={this.state}
+          bounces={false}
+        />
+        <Modal 
+          isVisible={this.state.isVisibleDocSlider}
+          style={styles.modalContainer}
+        >
+          <DocumentSliderScreen 
+            docFiles={this.props.files}
+            position={this.state.position}
+            removal={this.props.editable}
+            onRemove={(id) => this.props.onRemove(id)}
+            onClose={() => this.setState({ isVisibleDocSlider: false })}
+          />
+        </Modal>
+      </View>
     );
   }
 }

@@ -1,48 +1,35 @@
 import React from 'react'
 import {
+  TouchableOpacity,
   View,
   Text,
-  TouchableOpacity,
-  Image,
-  Alert,
+  WebView,
 } from 'react-native'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 
+import Swiper from 'react-native-swiper';
 import { Actions } from 'react-native-router-flux'
-import Slideshow from '../../components/Slideshow'
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons'
-import { max, filter } from 'lodash'
 
 import styles from './styles'
+import CONSTANTS from '../../service/constants'
+import COLORS from '../../service/colors'
 import LoadingScreen from '../LoadingScreen';
 import * as feedTypes from '../../redux/feedo/types'
 import * as cardTypes from '../../redux/card/types'
 
-import CONSTANTS from '../../service/constants'
 
-class ImageSliderScreen extends React.Component {
+class DocumentSliderScreen extends React.Component {
   constructor(props) {
     super(props);
-
     this.state = {
       position: this.props.position,
       loading: false,
-      maxImageHeight: 0
     };
   }
 
   componentDidMount() {
-    const {
-      imageFiles,
-    } = this.props;
-    let imageHeightList = []
-    imageFiles.forEach(element => {
-      Image.getSize(element.accessUrl, (width, height) => {
-        imageHeightList = [ ...imageHeightList, CONSTANTS.SCREEN_WIDTH / width * height ];
-        this.setState({ maxImageHeight: max(imageHeightList) })
-      })
-    });
   }
 
   UNSAFE_componentWillReceiveProps(nextProps) {
@@ -89,26 +76,20 @@ class ImageSliderScreen extends React.Component {
 
   onDelete() {
     const {
-      imageFiles,
+      docFiles,
     } = this.props;
     if (this.props.onRemove) {
-      this.props.onRemove(imageFiles[this.state.position].id);
+      this.props.onRemove(docFiles[this.state.position].id);
     }
   }
 
   render () {
-    const { maxImageHeight } = this.state
-    const { imageFiles } = this.props;
+    const {
+      docFiles,
+    } = this.props;
 
     return (
       <View style={styles.container}>
-        <Slideshow 
-          position={this.state.position}
-          imageFiles={imageFiles}
-          width={CONSTANTS.SCREEN_WIDTH}
-          height={maxImageHeight}
-        />
-
         <TouchableOpacity 
           style={styles.closeButtonWrapper}
           activeOpacity={0.6}
@@ -116,7 +97,30 @@ class ImageSliderScreen extends React.Component {
         >
           <MaterialCommunityIcons name="close" size={30} color={'#fff'} />
         </TouchableOpacity>
-
+        <View style={styles.webViewContainer}>
+          <Swiper 
+            loop={false}
+            index={this.state.position}
+            paginationStyle={{ bottom: 0 }}
+            activeDotColor='#fff'
+            dotColor={COLORS.MEDIUM_GREY}
+            onIndexChanged={(index) => this.setState({position: index})}
+          >
+            {
+              docFiles.map((file, index) => {
+                return (
+                  <View key={index} style={styles.slideContainer}>
+                    <WebView 
+                      source={{uri: file.accessUrl}}
+                      onLoadStart={() =>  this.setState({loading: true})}
+                      onLoadEnd={() =>  this.setState({loading: false})}
+                    />
+                  </View>
+                )
+              })
+            }
+          </Swiper>
+        </View>
         {
           this.props.removal && (
           <TouchableOpacity 
@@ -134,8 +138,8 @@ class ImageSliderScreen extends React.Component {
 }
 
 
-ImageSliderScreen.defaultProps = {
-  imageFiles: [],
+DocumentSliderScreen.defaultProps = {
+  docFiles: [],
   position: 0,
   removal: true,
   onRemove: () => {},
@@ -143,8 +147,8 @@ ImageSliderScreen.defaultProps = {
 }
 
 
-ImageSliderScreen.propTypes = {
-  imageFiles: PropTypes.array,
+DocumentSliderScreen.propTypes = {
+  docFiles: PropTypes.array,
   position: PropTypes.number,
   removal: PropTypes.bool,
   onRemove: PropTypes.func,
@@ -162,4 +166,4 @@ const mapDispatchToProps = dispatch => ({
 })
 
 
-export default connect(mapStateToProps, mapDispatchToProps)(ImageSliderScreen)
+export default connect(mapStateToProps, mapDispatchToProps)(DocumentSliderScreen)
