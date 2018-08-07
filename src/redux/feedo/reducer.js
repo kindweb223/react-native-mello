@@ -688,7 +688,7 @@ export default function feedo(state = initialState, action = {}) {
       const { currentFeed } = state
       const inviteeId = action.payload
       const restInviteeList = filter(currentFeed.invitees, invitee => invitee.id !== inviteeId)
-      console.log('DELTE_INVITEE_RESPONSE: ', data)
+      console.log('DELTE_INVITEE_RESPONSE: ', restInviteeList)
 
       return {
         ...state,
@@ -701,6 +701,7 @@ export default function feedo(state = initialState, action = {}) {
     }
     case types.DELETE_INVITEE_REJECTED: {
       const { data } = action.error.response
+      console.log("DELETE_INVITEE_ERROR: ", data)
       return {
         ...state,
         loading: types.DELETE_INVITEE_REJECTED,
@@ -722,19 +723,27 @@ export default function feedo(state = initialState, action = {}) {
       const { payload } = action
       const currentInvitee = filter(currentFeed.invitees, invitee => invitee.id === payload.inviteeId)
       const restInviteeList = filter(currentFeed.invitees, invitee => invitee.id !== payload.inviteeId)
-      console.log('UPDATE_INVITEE_PERMISSION_FULFILLED: ', data)
+
+      let updaedFeed = {
+        ...currentFeed,
+        invitees: [
+          ...restInviteeList,
+          {
+            ...currentInvitee[0],
+            permissions: payload.type
+          }
+        ]
+      }
 
       return {
         ...state,
         loading: types.UPDATE_INVITEE_PERMISSION_FULFILLED,
-        currentFeed: {
-          ...currentFeed,
-          invitees: Object.assign({}, restInviteeList, Object.assign({}, currentInvitee[0], { permissions: payload.type }))
-        }
+        currentFeed: updaedFeed
       }
     }
     case types.UPDATE_INVITEE_PERMISSION_REJECTED: {
       const { data } = action.error.response
+
       return {
         ...state,
         loading: types.UPDATE_INVITEE_PERMISSION_REJECTED,

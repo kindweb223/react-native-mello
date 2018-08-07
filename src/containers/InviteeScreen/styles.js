@@ -83,6 +83,15 @@ export default {
   inviteeItem: {
     paddingVertical: 7,
     borderBottomWidth: 1,
-    borderColor: COLORS.SOFT_GREY
-  }
+    borderColor: COLORS.LIGHT_GREY_LINE
+  },
+  inputItem: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    paddingVertical: 5,
+    marginBottom: 10,
+    borderBottomWidth: 1,
+    borderColor: COLORS.LIGHT_GREY_LINE,
+  },
 }

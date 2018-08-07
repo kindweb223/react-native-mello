@@ -14,6 +14,8 @@ import PropTypes from 'prop-types'
 import Feather from 'react-native-vector-icons/Feather'
 import Entypo from 'react-native-vector-icons/Entypo'
 import Modal from 'react-native-modal'
+import _ from 'lodash'
+import InviteeAutoComplete from '../../components/InviteeAutoComplete'
 import LinkShareModalComponent from '../../components/LinkShareModalComponent'
 import LinkShareItem from '../../components/LinkShareModalComponent/LinkShareItem'
 import InviteeItemComponent from '../../components/LinkShareModalComponent/InviteeItemComponent'
@@ -37,11 +39,29 @@ class InviteeScreen extends React.Component {
   constructor(props) {
     super(props)
     this.state = {
-      isEdit: false
+      isEdit: false,
+      suggestions : [ { name:'Mickey Mouse' }, ],
+      tagsSelected : []
     }
   }
 
   componentDidMount() {
+    const { data } = this.props
+    let emails = []
+    for (let i = 0; i < data.invitees.length; i ++) {
+      emails = [...emails, data.invitees[i].userProfile.email]
+    }
+    console.log('INVITEE_DATA: ', emails)
+  }
+
+  handleDelete = index => {
+    let tagsSelected = this.state.tagsSelected;
+    tagsSelected.splice(index, 1);
+    this.setState({ tagsSelected });
+  }
+ 
+  handleAddition = suggestion => {
+    this.setState({ tagsSelected: this.state.tagsSelected.concat([suggestion]) });
   }
 
   render () {
@@ -63,7 +83,18 @@ class InviteeScreen extends React.Component {
         </View>
 
         <View style={styles.body}>
-          <View style={styles.inviteFieldView}>
+          <View style={styles.inputFieldView}>
+            <View style={styles.inputItem}>
+              <InviteeAutoComplete
+                suggestions={this.state.suggestions}
+                tagsSelected={this.state.tagsSelected}
+                handleAddition={this.handleAddition}
+                handleDelete={this.handleDelete}
+                placeholder="Add a contact.."
+              />
+            </View>
+            <View style={styles.inputItem}>
+            </View>
           </View>
 
           {data.invitees && data.invitees.length > 0 && (

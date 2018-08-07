@@ -61,7 +61,7 @@ export default {
     justifyContent: 'space-between',
     paddingVertical: 10,
     borderBottomWidth: 1,
-    borderColor: COLORS.SOFT_GREY,
+    borderColor: COLORS.LIGHT_GREY_LINE,
   },
   innerView: {
     flexDirection: 'row',
@@ -84,13 +84,13 @@ export default {
   },
   inviteeListView: {
     marginTop: 24,
-    maxHeight: CONSTANTS.SCREEN_HEIGHT - 260,
-    paddingHorizontal: CONSTANTS.PADDING
+    maxHeight: CONSTANTS.SCREEN_HEIGHT - 260
   },
   titleView: {
     paddingBottom: 9,
     borderBottomWidth: 1,
-    borderColor: COLORS.SOFT_GREY
+    borderColor: COLORS.LIGHT_GREY_LINE,
+    paddingHorizontal: CONSTANTS.PADDING
   },
   titleText: {
     color: COLORS.MEDIUM_GREY,
@@ -99,6 +99,7 @@ export default {
   inviteeItem: {
     paddingVertical: 7,
     borderBottomWidth: 1,
-    borderColor: COLORS.SOFT_GREY
+    borderColor: COLORS.LIGHT_GREY_LINE,
+    paddingHorizontal: CONSTANTS.PADDING
   }
 }
