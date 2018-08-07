@@ -47,6 +47,7 @@ import {
   UserId,
 } from '../../service/api'
 import COLORS from '../../service/colors'
+import * as USER_ROLE from '../../service/userRole'
 import styles from './styles'
 import actionSheetStyles from '../FeedLongHoldMenuScreen/styles'
 
@@ -245,13 +246,6 @@ class FeedDetailScreen extends React.Component {
     }
   }
 
-  checkOwner = (data) =>{
-    if (data.invitees.length === 1 && data.owner.id === data.invitees[0].userProfile.id) {
-      return true
-    }
-    return false
-  }
-
   onCloseEditFeedModal() {
     this.animatedOpacity.setValue(1);
     Animated.timing(this.animatedOpacity, {
@@ -387,7 +381,7 @@ class FeedDetailScreen extends React.Component {
 
     let avatars = []
     if (!isEmpty(currentFeed)) {
-      const isOwner = this.checkOwner(currentFeed)
+      const isOwner = USER_ROLE.checkOwner(currentFeed)
 
       if (isOwner) {
         avatars = [

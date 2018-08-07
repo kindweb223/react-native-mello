@@ -12,6 +12,8 @@ import { connect } from 'react-redux'
 import { Actions } from 'react-native-router-flux'
 import Slideshow from '../../components/Slideshow'
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons'
+import Feather from 'react-native-vector-icons/Feather'
+import Entypo from 'react-native-vector-icons/Entypo'
 import { max, filter } from 'lodash'
 
 import styles from './styles'
@@ -36,10 +38,12 @@ class ImageSliderScreen extends React.Component {
     const {
       imageFiles,
     } = this.props;
+    console.log('aaa: ', imageFiles)
     let imageHeightList = []
     imageFiles.forEach(element => {
       Image.getSize(element.accessUrl, (width, height) => {
         imageHeightList = [ ...imageHeightList, CONSTANTS.SCREEN_WIDTH / width * height ];
+        console.log('PPP: ', width, height, imageHeightList)
         this.setState({ maxImageHeight: max(imageHeightList) })
       })
     });
@@ -87,13 +91,17 @@ class ImageSliderScreen extends React.Component {
     }
   }
 
-  onDelete() {
+  onDelete = () => {
     const {
       imageFiles,
     } = this.props;
     if (this.props.onRemove) {
       this.props.onRemove(imageFiles[this.state.position].id);
     }
+  }
+
+  onSetCoverImage = () => {
+
   }
 
   render () {
@@ -106,7 +114,7 @@ class ImageSliderScreen extends React.Component {
           position={this.state.position}
           imageFiles={imageFiles}
           width={CONSTANTS.SCREEN_WIDTH}
-          height={maxImageHeight}
+          height={CONSTANTS.SCREEN_HEIGHT - 120}
         />
 
         <TouchableOpacity 
@@ -114,19 +122,29 @@ class ImageSliderScreen extends React.Component {
           activeOpacity={0.6}
           onPress={this.onClose.bind(this)}
         >
-          <MaterialCommunityIcons name="close" size={30} color={'#fff'} />
+          <MaterialCommunityIcons name="close" size={25} color={'#fff'} />
         </TouchableOpacity>
 
-        {
-          this.props.removal && (
+        {this.props.removal && (
           <TouchableOpacity 
-            style={styles.borderButtonWrapper}
+            style={styles.coverButton}
             activeOpacity={0.6}
-            onPress={this.onDelete.bind(this)}
+            onPress={() => this.onSetCoverImage()}
           >
-            <Text style={styles.textButton}>Delete</Text>
+            <Entypo name="image" size={25} color={'#fff'} />
           </TouchableOpacity>
         )}
+
+        {this.props.removal && (
+          <TouchableOpacity 
+            style={styles.deleteButton}
+            activeOpacity={0.6}
+            onPress={() => this.onDelete()}
+          >
+            <Feather name="trash-2" size={25} color={'#fff'} />
+          </TouchableOpacity>
+        )}
+
         {this.state.loading && <LoadingScreen />}
       </View>
     );

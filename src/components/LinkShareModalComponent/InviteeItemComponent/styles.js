@@ -38,9 +38,13 @@ const styles = StyleSheet.create({
     fontSize: 14,
     marginHorizontal: 5,
     fontWeight: '600',
+    textTransform: 'capitalize'
   },
   viewEnableText: {
-    color: COLORS.PURPLE,
+    color: COLORS.PURPLE
+  },
+  viewDisableText: {
+    color: COLORS.MEDIUM_GREY
   },
   cogIcon: {
     marginTop: 2,

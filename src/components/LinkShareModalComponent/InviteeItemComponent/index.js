@@ -10,7 +10,7 @@ import Entypo from 'react-native-vector-icons/Entypo'
 import COLORS from '../../../service/colors'
 import styles from './styles'
 
-const InviteeItemComponent = ({ invitee, isViewOnly, isOnlyTitle }) => {
+const InviteeItemComponent = ({ invitee, isViewOnly, isOwnerInvitee, isOnlyTitle }) => {
   const { userProfile } = invitee
   const userName = `${userProfile.firstName} ${userProfile.lastName}`
 
@@ -47,12 +47,18 @@ const InviteeItemComponent = ({ invitee, isViewOnly, isOnlyTitle }) => {
       </View>
 
       {!isViewOnly && (
-        <View style={styles.rightView}>
-          <Text style={[styles.viewText, styles.viewEnableText]}>
-            {invitee.permissions}
-          </Text>
-          <Entypo name="cog" style={[styles.cogIcon, styles.cogEnableIcon]} />
-        </View>
+        isOwnerInvitee
+        ? <View style={styles.rightView}>
+            <Text style={[styles.viewText, styles.viewDisableText]}>
+              Owner
+            </Text>
+          </View>
+        : <View style={styles.rightView}>
+            <Text style={[styles.viewText, styles.viewEnableText]}>
+              {invitee.permissions}
+            </Text>
+            <Entypo name="cog" style={[styles.cogIcon, styles.cogEnableIcon]} />
+          </View>
       )}
     </View>
   )
@@ -60,13 +66,15 @@ const InviteeItemComponent = ({ invitee, isViewOnly, isOnlyTitle }) => {
 
 InviteeItemComponent.defaultProps = {
   isViewOnly: true,
-  isOnlyTitle: false
+  isOnlyTitle: false,
+  isOwnerInvitee: false
 }
 
 InviteeItemComponent.propTypes = {
   invitee: PropTypes.objectOf(PropTypes.any).isRequired,
   isViewOnly: PropTypes.bool,
-  isOnlyTitle: PropTypes.bool
+  isOnlyTitle: PropTypes.bool,
+  isOwnerInvitee: PropTypes.bool
 }
 
 export default InviteeItemComponent
