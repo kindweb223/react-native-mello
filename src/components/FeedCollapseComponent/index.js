@@ -31,6 +31,7 @@ class FeedCollapseComponent extends React.Component {
       feedData: {},
       COLLAPSE_SECTIONS: {},
       isPreview: false,
+      images: [],
       position: 0,
     }
   }
@@ -40,6 +41,7 @@ class FeedCollapseComponent extends React.Component {
     if (prevState.feedData !== feedData && !isEmpty(feedData)) {
       return {
         feedData,
+        images: filter(feedData.files, data => data.contentType.includes('image/')),
         COLLAPSE_SECTIONS: {
           titleOrigin: feedData.summary,
           title: feedData.summary.substring(0, 40),
@@ -203,7 +205,8 @@ class FeedCollapseComponent extends React.Component {
         >
           <ImageSliderScreen
             position={this.state.position}
-            removal={true}
+            imageFiles={images}
+            removal={false}
             onClose={() => this.setState({ isPreview: false })}
           />
         </Modal>

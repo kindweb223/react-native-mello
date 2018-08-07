@@ -16,24 +16,27 @@ const styles = StyleSheet.create({
   closeButtonWrapper: {
     padding: 10,
     top: 30,
-    right: 10,
+    left: 10,
     alignSelf: 'flex-end',
     position: 'absolute',
   },
-  borderButtonWrapper: {
-    height: 42,
-    width: 142,
-    borderWidth: 1,
-    borderColor: COLORS.MEDIUM_GREY,
-    borderRadius: 21,
-    bottom: 30,
+  coverButton: {
+    height: 30,
+    width: 30,
+    bottom: 27,
+    right: 70,
     alignItems: 'center',
     justifyContent: 'center',
     position: 'absolute'
   },
-  textButton: {
-    fontSize: 14,
-    color: '#fff',
+  deleteButton: {
+    height: 30,
+    width: 30,
+    bottom: 30,
+    right: 20,
+    alignItems: 'center',
+    justifyContent: 'center',
+    position: 'absolute'
   },
   previewImage: {
     width: '100%',
