@@ -90,6 +90,11 @@ const styles = StyleSheet.create({
   closeButtonWrapper: {
     padding: 10,
   },
+  imageCover: {
+    marginHorizontal: 20,
+    marginTop: 15,
+    height: CONSTANTS.SCREEN_WIDTH * 0.384,
+  },
 })
 
 
