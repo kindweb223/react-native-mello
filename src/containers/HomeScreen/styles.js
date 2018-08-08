@@ -87,8 +87,11 @@ const styles = StyleSheet.create({
   },
   emptyView: {
     flex: 1,
+  },
+  emptyInnerView: {
     justifyContent: 'center',
     alignItems: 'center',
+    width: '100%',
     height: CONSTANTS.SCREEN_HEIGHT - CONSTANTS.ACTION_BAR_HEIGHT - 100
   },
   emptyText: {

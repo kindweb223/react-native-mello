@@ -20,6 +20,7 @@ import PropTypes from 'prop-types'
 import ScrollableTabView from 'react-native-scrollable-tab-view'
 import TabBar from 'react-native-underline-tabbar'
 import Modal from "react-native-modal"
+import { Actions } from 'react-native-router-flux'
 import * as R from 'ramda'
 import { filter, orderBy } from 'lodash'
 import DashboardNavigationBar from '../../navigations/DashboardNavigationBar'
@@ -445,10 +446,10 @@ class HomeScreen extends React.Component {
             ? <View style={styles.emptyView}>
                 {loading
                   ? <FeedLoadingStateComponent />
-                  : [
-                      <Image key="0" source={EMPTY_ICON} />,
-                      <Text key="1" style={styles.emptyText}>Feedo is more fun with feeds</Text>
-                    ]
+                  : <View style={styles.emptyInnerView}>
+                      <Image source={EMPTY_ICON} />
+                      <Text style={styles.emptyText}>Feedo is more fun with feeds</Text>
+                    </View>
                 }
               </View>
             : <ScrollableTabView
