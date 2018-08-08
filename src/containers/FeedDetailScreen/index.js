@@ -99,7 +99,6 @@ class FeedDetailScreen extends React.Component {
       nextProps.feedo.loading === 'DELETE_INVITEE_FULFILLED' ||
       nextProps.feedo.loading === 'UPDATE_INVITEE_PERMISSION_FULFILLED') &&
       nextProps.feedo.currentFeed !== prevState.currentFeed) {
-        console.log('CURRENT_FEED: ', nextProps.feedo.currentFeed)
       return {
         loading: false,
         currentFeed: nextProps.feedo.currentFeed,

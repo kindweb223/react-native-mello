@@ -1,52 +1,35 @@
 import React from 'react'
 import {
+  TouchableOpacity,
   View,
   Text,
-  TouchableOpacity,
-  Image,
-  Alert,
+  WebView,
 } from 'react-native'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 
+import Swiper from 'react-native-swiper';
 import { Actions } from 'react-native-router-flux'
-import Slideshow from '../../components/Slideshow'
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons'
-import Feather from 'react-native-vector-icons/Feather'
-import Entypo from 'react-native-vector-icons/Entypo'
-import { max, filter } from 'lodash'
 
 import styles from './styles'
+import CONSTANTS from '../../service/constants'
+import COLORS from '../../service/colors'
 import LoadingScreen from '../LoadingScreen';
 import * as feedTypes from '../../redux/feedo/types'
 import * as cardTypes from '../../redux/card/types'
 
-import CONSTANTS from '../../service/constants'
 
-class ImageSliderScreen extends React.Component {
+class DocumentSliderScreen extends React.Component {
   constructor(props) {
     super(props);
-
     this.state = {
       position: this.props.position,
       loading: false,
-      maxImageHeight: 0
     };
   }
 
   componentDidMount() {
-    const {
-      imageFiles,
-    } = this.props;
-    console.log('aaa: ', imageFiles)
-    let imageHeightList = []
-    imageFiles.forEach(element => {
-      Image.getSize(element.accessUrl, (width, height) => {
-        imageHeightList = [ ...imageHeightList, CONSTANTS.SCREEN_WIDTH / width * height ];
-        console.log('PPP: ', width, height, imageHeightList)
-        this.setState({ maxImageHeight: max(imageHeightList) })
-      })
-    });
   }
 
   UNSAFE_componentWillReceiveProps(nextProps) {
@@ -91,60 +74,63 @@ class ImageSliderScreen extends React.Component {
     }
   }
 
-  onDelete = () => {
+  onDelete() {
     const {
-      imageFiles,
+      docFiles,
     } = this.props;
     if (this.props.onRemove) {
-      this.props.onRemove(imageFiles[this.state.position].id);
+      this.props.onRemove(docFiles[this.state.position].id);
     }
   }
 
-  onSetCoverImage = () => {
-
-  }
-
   render () {
-    const { maxImageHeight } = this.state
-    const { imageFiles } = this.props;
+    const {
+      docFiles,
+    } = this.props;
 
     return (
       <View style={styles.container}>
-        <Slideshow 
-          position={this.state.position}
-          imageFiles={imageFiles}
-          width={CONSTANTS.SCREEN_WIDTH}
-          height={CONSTANTS.SCREEN_HEIGHT - 120}
-        />
-
         <TouchableOpacity 
           style={styles.closeButtonWrapper}
           activeOpacity={0.6}
           onPress={this.onClose.bind(this)}
         >
-          <MaterialCommunityIcons name="close" size={25} color={'#fff'} />
+          <MaterialCommunityIcons name="close" size={30} color={'#fff'} />
         </TouchableOpacity>
-
-        {this.props.removal && (
-          <TouchableOpacity 
-            style={styles.coverButton}
-            activeOpacity={0.6}
-            onPress={() => this.onSetCoverImage()}
+        <View style={styles.webViewContainer}>
+          <Swiper 
+            loop={false}
+            index={this.state.position}
+            paginationStyle={{ bottom: 0 }}
+            activeDotColor='#fff'
+            dotColor={COLORS.MEDIUM_GREY}
+            onIndexChanged={(index) => this.setState({position: index})}
           >
-            <Entypo name="image" size={25} color={'#fff'} />
+            {
+              docFiles.map((file, index) => {
+                return (
+                  <View key={index} style={styles.slideContainer}>
+                    <WebView 
+                      source={{uri: file.accessUrl}}
+                      onLoadStart={() =>  this.setState({loading: true})}
+                      onLoadEnd={() =>  this.setState({loading: false})}
+                    />
+                  </View>
+                )
+              })
+            }
+          </Swiper>
+        </View>
+        {
+          this.props.removal && (
+          <TouchableOpacity 
+            style={styles.borderButtonWrapper}
+            activeOpacity={0.6}
+            onPress={this.onDelete.bind(this)}
+          >
+            <Text style={styles.textButton}>Delete</Text>
           </TouchableOpacity>
         )}
-
-        {this.props.removal && (
-          <TouchableOpacity 
-            style={styles.deleteButton}
-            activeOpacity={0.6}
-            onPress={() => this.onDelete()}
-          >
-            <Feather name="trash-2" size={25} color={'#fff'} />
-          </TouchableOpacity>
-        )}
-
         {this.state.loading && <LoadingScreen />}
       </View>
     );
@@ -152,8 +138,8 @@ class ImageSliderScreen extends React.Component {
 }
 
 
-ImageSliderScreen.defaultProps = {
-  imageFiles: [],
+DocumentSliderScreen.defaultProps = {
+  docFiles: [],
   position: 0,
   removal: true,
   onRemove: () => {},
@@ -161,8 +147,8 @@ ImageSliderScreen.defaultProps = {
 }
 
 
-ImageSliderScreen.propTypes = {
-  imageFiles: PropTypes.array,
+DocumentSliderScreen.propTypes = {
+  docFiles: PropTypes.array,
   position: PropTypes.number,
   removal: PropTypes.bool,
   onRemove: PropTypes.func,
@@ -180,4 +166,4 @@ const mapDispatchToProps = dispatch => ({
 })
 
 
-export default connect(mapStateToProps, mapDispatchToProps)(ImageSliderScreen)
+export default connect(mapStateToProps, mapDispatchToProps)(DocumentSliderScreen)

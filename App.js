@@ -19,7 +19,9 @@ import reducers from './src/redux/reducers'
 import HomeScreen from './src/containers/HomeScreen'
 import LoadingScreen from './src/containers/LoadingScreen';
 import ImageSliderScreen from './src/containers/ImageSliderScreen';
-import FeedDetailScreen from './src/containers/FeedDetailScreen'
+import FeedDetailScreen from './src/containers/FeedDetailScreen';
+import DocumentSliderScreen from './src/containers/DocumentSliderScreen';
+
 
 const store = createStore(reducers, applyMiddleware(thunk, promiseMiddleware))
 
@@ -30,6 +32,7 @@ export default class Root extends React.Component {
         <Scene key="root">
           <Scene key="HomeScreen" component={ HomeScreen } initial hideNavBar panHandlers={null} />
           <Scene key="FeedDetailScreen" component={ FeedDetailScreen } hideNavBar panHandlers={null} />
+          <Scene key="DocumentSliderScreen" component={ DocumentSliderScreen } hideNavBar />
         </Scene>
         <Scene key="LoadingScreen" component={ LoadingScreen } hideNavBar />
         <Scene key="ImageSliderScreen" component={ ImageSliderScreen } hideNavBar />
