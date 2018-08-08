@@ -22,6 +22,7 @@ import LinkShareItem from '../../components/LinkShareModalComponent/LinkShareIte
 import InviteeItemComponent from '../../components/LinkShareModalComponent/InviteeItemComponent'
 import { SERVER_URL } from '../../service/api'
 import { updateSharingPreferences, deleteInvitee, updateInviteePermission } from '../../redux/feedo/actions'
+import { getContactList } from '../../redux/user/actions'
 import COLORS from '../../service/colors'
 import styles from './styles'
 const PLUS_ICON = require('../../../assets/images/Add/White.png')
@@ -41,11 +42,24 @@ class InviteeScreen extends React.Component {
     super(props)
     this.state = {
       isAddInvitee: false,
-      message: ''
+      message: '',
+      contactList: []
     }
   }
 
   componentDidMount() {
+    const userId = '62743b5d-54f1-4b16-b0fb-a29dc816501c'
+    this.props.getContactList(userId)
+  }
+
+  static getDerivedStateFromProps(nextProps, prevState) {
+    const { user } = nextProps
+    if (user.contactList !== prevState.contactList && nextProps.loading === 'GET_CONTACT_LIST_FULFILLED') {
+      return {
+        contactList: user.contactList
+      }
+    }
+    return null
   }
 
   onChangeMessage = (text) => {
@@ -54,7 +68,7 @@ class InviteeScreen extends React.Component {
 
   render () {
     const { data } = this.props
-    const { isAddInvitee } = this.state
+    const { isAddInvitee, contactList } = this.state
 
     return (
       <View style={styles.overlay}>
@@ -74,7 +88,7 @@ class InviteeScreen extends React.Component {
           <View style={styles.inputFieldView}>
             <View style={styles.inputItem}>
               <InviteeAutoComplete
-                invitees={data.invitees}
+                contactList={contactList}
               />
             </View>
             <View style={styles.inputItem}>
@@ -115,18 +129,25 @@ class InviteeScreen extends React.Component {
 InviteeScreen.defaultProps = {
   onClose: () => {},
   data: {},
+  getContactList: () => {}
 }
 
 InviteeScreen.propTypes = {
   onClose: PropTypes.func,
   data: PropTypes.objectOf(PropTypes.any),
+  getContactList: PropTypes.func
 }
 
-const mapStateToProps = ({ feedo }) => ({
-  feedo
+const mapStateToProps = ({ feedo, user }) => ({
+  feedo,
+  user
+})
+
+const mapDispatchToProps = dispatch => ({
+  getContactList: (userId) => dispatch(getContactList(userId)),
 })
 
 export default connect(
   mapStateToProps,
-  null
+  mapDispatchToProps
 )(InviteeScreen)

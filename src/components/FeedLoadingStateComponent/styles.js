@@ -6,7 +6,6 @@ const styles = StyleSheet.create({
   container: {
     width: '100%',
     paddingHorizontal: CONSTANTS.PADDING,
-    marginTop: 180,
   },
   animationBar: {
     position: 'absolute',

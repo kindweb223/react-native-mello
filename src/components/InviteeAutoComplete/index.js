@@ -24,29 +24,24 @@ class InviteeAutoComplete extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      invitees: [],
-      filteredInvitees: [],
+      contactList: [],
+      filteredContacts: [],
       inviteeEmails: [],
       isInput: false
     };
   }
 
   componentDidMount() {
-    const { invitees } = this.props
-    // let inviteeEmails = []
-    // for (let i = 0; i < invitees.length; i ++) {
-    //   inviteeEmails = [...inviteeEmails, invitees[i].userProfile.email]
-    // }
+    const { contactList } = this.props
 
     this.setState({
-      invitees,
-      filteredInvitees: invitees
+      contactList
     })
   }
 
   onCreateInvitee(text) {
-    const { inviteeEmails } = this.state
-    inviteeEmails.push(text)
+    let { inviteeEmails } = this.state
+    inviteeEmails.push({ 'text': text })
     this.setState({ inviteeEmails })
   }
 
@@ -55,19 +50,40 @@ class InviteeAutoComplete extends React.Component {
   }
 
   onChangeText(text) {
+    let { contactList } = this.state
+
     if (text.length > 0) {
       this.setState({ isInput: true })
     } else {
       this.setState({ isInput: false })
     }
+
+    let filteredContacts = []
+
+    for (let i = 0; i < contactList.length; i ++) {
+      const email = contactList[i].userProfile.email
+      const name = `${contactList[i].userProfile.firstName} ${contactList[i].userProfile.lastName}`
+
+      if (email.includes(text.toLowerCase()) || name.includes(text.toLowerCase())) {
+        filteredContacts.push(contactList[i])
+      }
+    }
+
+    this.setState({ filteredContacts })
   }
 
-  renderFilteredInvitees = (invitees) => {
+  onSelectContact = (contact) => {
+    let { inviteeEmails } = this.state
+    inviteeEmails.push({ 'text': contact.userProfile.email })
+    this.setState({ inviteeEmails })
+  }
+
+  renderFilteredContacts = (filteredContacts) => {
     return (
-      <ScrollView style={styles.inviteeList}>
-        {invitees.map(item => (
-          <TouchableOpacity onPress={() => {}} key={item.id}>
-            <View style={styles.inviteeItem}>
+      <ScrollView style={styles.contactList}>
+        {filteredContacts.map(item => (
+          <TouchableOpacity onPress={() => this.onSelectContact(item)} key={item.id}>
+            <View style={styles.contactItem}>
               <InviteeItemComponent invitee={item} isOnlyTitle={true} />
             </View>
           </TouchableOpacity>
@@ -77,7 +93,7 @@ class InviteeAutoComplete extends React.Component {
   }
 
   render () {
-    const { filteredInvitees, inviteeEmails, isInput } = this.state
+    const { filteredContacts, inviteeEmails, isInput } = this.state
     console.log('INVITEE_EMAILS: ', inviteeEmails)
 
     return (
@@ -91,21 +107,19 @@ class InviteeAutoComplete extends React.Component {
               placeHolder="Email or name"
               onCreateTag={(text) => this.onCreateInvitee(text)}
               onChangeText={(text) => this.onChangeText(text)}
-              onRemoveTag={(invitee) => this.onRemovInvitee(invitee)}
+              onRemoveTag={(invitee) => this.onRemoveInvitee(invitee)}
               inputStyle={{
                 backgroundColor: 'white',
               }}
               tagContainerStyle={{
-                backgroundColor: COLORS.PURPLE,
-                opacity: 0.3
+                backgroundColor: '#f00',
               }}
               tagTextStyle={{
                 color: COLORS.DARK_GREY,
                 fontSize: 14,
               }}
               activeTagContainerStyle={{
-                backgroundColor: COLORS.PURPLE,
-                opacity: 0.3
+                backgroundColor: 'rgba(74, 0, 205, .2)'
               }}
               activeTagTextStyle={{
                 color: COLORS.PURPLE,
@@ -114,7 +128,7 @@ class InviteeAutoComplete extends React.Component {
             />
             
             {isInput && (
-              this.renderFilteredInvitees(filteredInvitees)
+              this.renderFilteredContacts(filteredContacts)
             )}
 
           </View>
@@ -126,12 +140,12 @@ class InviteeAutoComplete extends React.Component {
 
 
 InviteeAutoComplete.defaultProps = {
-  invitees: []
+  contactList: []
 }
 
 
 InviteeAutoComplete.propTypes = {
-  invitees: PropTypes.arrayOf(PropTypes.any)
+  contactList: PropTypes.arrayOf(PropTypes.any)
 }
 
 export default InviteeAutoComplete

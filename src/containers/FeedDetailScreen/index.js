@@ -29,7 +29,6 @@ import ToasterComponent from '../../components/ToasterComponent'
 import FeedLoadingStateComponent from '../../components/FeedLoadingStateComponent'
 import ShareScreen from '../ShareScreen'
 import NewFeedScreen from '../NewFeedScreen'
-import InviteeScreen from '../InviteeScreen'
 
 import {
   getFeedDetail,
@@ -117,8 +116,8 @@ class FeedDetailScreen extends React.Component {
     this.setState({ openMenu: !openMenu, settingItem: null })
   }
 
-  handleInvitees = () => {
-    this.setState({ isInviteeModal: true })
+  handleShare = () => {
+    this.setState({ isShowShare: true })
   }
 
   hideSettingMenu = () => {
@@ -425,7 +424,7 @@ class FeedDetailScreen extends React.Component {
                 <FeedNavbarSettingComponent handleSetting={() => this.handleSetting()} />
               </Animated.View>
               <Animated.View style={[styles.avatarView, { right: avatarPosition }]}>
-                <TouchableOpacity onPress={() => this.handleInvitees()}>
+                <TouchableOpacity onPress={() => this.handleShare()}>
                   <AvatarPileComponent avatars={avatars} />
                 </TouchableOpacity>
               </Animated.View>
@@ -451,7 +450,9 @@ class FeedDetailScreen extends React.Component {
             </Animated.View>
             
               <View style={styles.detailView}>
-                <FeedCollapseComponent feedData={currentFeed} />
+                {!isEmpty(currentFeed) && currentFeed && currentFeed.ideas.length > 0 && (
+                  <FeedCollapseComponent feedData={currentFeed} />
+                )}
 
                 {
                   !isEmpty(currentFeed) && currentFeed && currentFeed.ideas.length > 0 ?
@@ -470,10 +471,10 @@ class FeedDetailScreen extends React.Component {
                     <View style={styles.emptyView}>
                       {loading
                         ? <FeedLoadingStateComponent />
-                        : [
-                            <Image key="0" source={EMPTY_ICON} />,
-                            <Text key="1" style={styles.emptyText}>It is lonely here</Text>
-                          ]
+                        : <View style={styles.emptyInnerView}>
+                            <Image source={EMPTY_ICON} />
+                            <Text style={styles.emptyText}>It is lonely here</Text>
+                          </View>
                         }
                     </View>
                 }
@@ -533,18 +534,6 @@ class FeedDetailScreen extends React.Component {
           </Animated.View>
         </Modal>
 
-        <Modal 
-          isVisible={this.state.isInviteeModal}
-          style={{ margin: 0 }}
-          backdropColor='#f5f5f5'
-          backdropOpacity={0.9}
-          animationIn="fadeInUp"
-          animationOut="fadeOutDown"
-          animationInTiming={500}
-          onModalHide={() => {}}
-        >
-          <InviteeScreen onClose={() => this.setState({ isInviteeModal: false })} data={currentFeed} />
-        </Modal>
       </SafeAreaView>
     )
   }

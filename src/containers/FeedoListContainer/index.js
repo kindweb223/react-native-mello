@@ -10,6 +10,7 @@ import {
 import PropTypes from 'prop-types'
 import { Actions } from 'react-native-router-flux'
 import FeedItemComponent from '../../components/FeedItemComponent'
+import FeedLoadingStateComponent from '../../components/FeedLoadingStateComponent'
 import CONSTANTS from '../../service/constants'
 
 class ListRow extends React.Component {
@@ -40,7 +41,7 @@ class ListRow extends React.Component {
 }
 
 const FeedoListContainer = ({ loading, feedoList, handleFeedMenu, tabLabel }) => {
-  if (loading) return <ActivityIndicator animating />
+  if (loading) return <FeedLoadingStateComponent animating />
 
   return (
     <FlatList
