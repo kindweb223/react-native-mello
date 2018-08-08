@@ -8,21 +8,7 @@ import {
 import styles from './styles'
 import CONSTANTS from '../../service/constants'
 
-const FeedLoadingStateItem = () => (
-  <View style={styles.subContainer}>
-    <View style={styles.thumbnailsView} />
-    <View style={styles.feedInfoView}>
-      <View style={styles.titleView} />
-    </View>
-    <View style={styles.bottomView}>
-      <View style={styles.actionView} />
-      <View style={styles.actionView} />
-      <View style={styles.actionView} />
-    </View>
-  </View>
-)
-
-class FeedLoadingStateComponent extends React.Component {
+class FeedLoadingStateItem extends React.Component {
   constructor(props) {
     super(props)
     this.animatedValue = new Animated.Value(0)
@@ -45,17 +31,22 @@ class FeedLoadingStateComponent extends React.Component {
   }
 
   render() {
-
     const marginLeft = this.animatedValue.interpolate({
       inputRange: [0, 1],
       outputRange: [0, CONSTANTS.SCREEN_SUB_WIDTH]
     })
 
     return (
-      <View style={styles.container}>
-        <FeedLoadingStateItem />
-        <FeedLoadingStateItem />
-        <FeedLoadingStateItem />
+      <View style={styles.subContainer}>
+        <View style={styles.thumbnailsView} />
+        <View style={styles.feedInfoView}>
+          <View style={styles.titleView} />
+        </View>
+        <View style={styles.bottomView}>
+          <View style={styles.actionView} />
+          <View style={styles.actionView} />
+          <View style={styles.actionView} />
+        </View>
         <Animated.View
           style={[ styles.animationBar, { marginLeft: marginLeft }]}
         />
@@ -63,5 +54,14 @@ class FeedLoadingStateComponent extends React.Component {
     )
   }
 }
+
+const FeedLoadingStateComponent = () => (
+  <View style={styles.container}>
+    <FeedLoadingStateItem />
+    <FeedLoadingStateItem />
+    <FeedLoadingStateItem />
+    <FeedLoadingStateItem />   
+  </View>
+)
 
 export default FeedLoadingStateComponent

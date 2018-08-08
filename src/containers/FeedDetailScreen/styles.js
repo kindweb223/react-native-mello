@@ -13,8 +13,12 @@ const styles = StyleSheet.create({
     paddingBottom: CONSTANTS.ACTION_BAR_HEIGHT,
   },
   emptyView: {
+    flex: 1
+  },
+  emptyInnerView: {
     justifyContent: 'center',
     alignItems: 'center',
+    width: '100%',
     height: CONSTANTS.SCREEN_HEIGHT - CONSTANTS.ACTION_BAR_HEIGHT - 200,
   },
   emptyText: {
