@@ -30,6 +30,7 @@ export default function card(state = initialState, action = {}) {
     }
     case types.CREATE_CARD_REJECTED: {
       const { data } = action.error.response
+      console.log('CREATE_CARD_REJECTED : ', action.error);
       return {
         ...state,
         loading: types.CREATE_CARD_REJECTED,
