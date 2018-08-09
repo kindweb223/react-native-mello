@@ -2,7 +2,8 @@
 /** @flow */
 
 import React from 'react'
-import { ScrollView, View, Image, Text } from 'react-native'
+import { ScrollView, View, Image, Text, TouchableOpacity } from 'react-native'
+import GestureRecognizer, { SwipeDirections } from 'react-native-swipe-gestures'
 import styles from './styles'
 
 export default class SlideShow extends React.Component {
@@ -61,7 +62,19 @@ export default class SlideShow extends React.Component {
           contentContainerStyle={{ height }}
         >
           {imageFiles.map((item, key) => (
-            <Image source={{ uri: item.accessUrl }} key={key} resizeMode="contain" style={{ width }} />
+            <GestureRecognizer
+              key={key}
+              style={{ width, height }}
+              onSwipeUp={() => this.props.onSwipeUp()}
+              config={{
+                velocityThreshold: 0.3,
+                directionalOffsetThreshold: 80
+              }}
+            >
+              <TouchableOpacity activeOpacity={1} onPress={() => this.props.handleImage()}>
+                <Image source={{ uri: item.accessUrl }} resizeMode="contain" style={{ width, height: '100%' }} />
+              </TouchableOpacity>
+            </GestureRecognizer>
           ))}
         </ScrollView>
         
