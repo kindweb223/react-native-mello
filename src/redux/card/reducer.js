@@ -6,6 +6,7 @@ const initialState = {
   error: null,
   currentCard: {},
   fileUploadUrl: {},
+  currentOpneGraph: {},
 };
 
 export default function card(state = initialState, action = {}) {
@@ -217,6 +218,32 @@ export default function card(state = initialState, action = {}) {
       return {
         ...state,
         loading: types.DELETE_FILE_REJECTED,
+        error: data,
+      }
+    }
+    
+    // get open graph
+    case types.GET_OPEN_GRAPH_PENDING:
+      return {
+        ...state,
+        loading: types.GET_OPEN_GRAPH_PENDING,
+        currentOpneGraph: {},
+        error: null,
+      }
+    case types.GET_OPEN_GRAPH_FULFILLED: {
+      const data = action.result.data;
+      console.log('GET_OPEN_GRAPH_FULFILLED : ', data);
+      return {
+          ...state,
+          loading: types.GET_OPEN_GRAPH_FULFILLED,
+          currentOpneGraph: data,
+        }
+      }
+    case types.GET_OPEN_GRAPH_REJECTED: {
+      const { data } = action.error.response
+      return {
+        ...state,
+        loading: types.GET_OPEN_GRAPH_REJECTED,
         error: data,
       }
     }

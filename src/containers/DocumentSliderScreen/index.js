@@ -11,6 +11,7 @@ import { connect } from 'react-redux'
 import Swiper from 'react-native-swiper';
 import { Actions } from 'react-native-router-flux'
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons'
+import Feather from 'react-native-vector-icons/Feather'
 
 import styles from './styles'
 import CONSTANTS from '../../service/constants'
@@ -95,13 +96,15 @@ class DocumentSliderScreen extends React.Component {
           activeOpacity={0.6}
           onPress={this.onClose.bind(this)}
         >
-          <MaterialCommunityIcons name="close" size={30} color={'#fff'} />
+          <MaterialCommunityIcons name="close" size={25} color={'#fff'} />
         </TouchableOpacity>
         <View style={styles.webViewContainer}>
           <Swiper 
             loop={false}
             index={this.state.position}
             paginationStyle={{ bottom: 0 }}
+            dotStyle={styles.dotStyle}
+            activeDotStyle={styles.dotStyle}
             activeDotColor='#fff'
             dotColor={COLORS.MEDIUM_GREY}
             onIndexChanged={(index) => this.setState({position: index})}
@@ -122,15 +125,15 @@ class DocumentSliderScreen extends React.Component {
           </Swiper>
         </View>
         {
-          this.props.removal && (
-          <TouchableOpacity 
-            style={styles.borderButtonWrapper}
-            activeOpacity={0.6}
-            onPress={this.onDelete.bind(this)}
-          >
-            <Text style={styles.textButton}>Delete</Text>
-          </TouchableOpacity>
-        )}
+          this.props.removal && 
+            <TouchableOpacity 
+              style={styles.deleteButtonWrapper}
+              activeOpacity={0.6}
+              onPress={() => this.onDelete()}
+            >
+              <Feather name="trash-2" size={25} color={'#fff'} />
+            </TouchableOpacity>
+        }
         {this.state.loading && <LoadingScreen />}
       </View>
     );

@@ -24,13 +24,14 @@ export const createCard = (huntId) => {
 /**
  * Update a card
  */
-export const updateCard = (huntId, ideaId, title, idea, files) => {
+export const updateCard = (huntId, ideaId, title, idea, coverImage, files) => {
   let url = `ideas/${ideaId}`
   const data = {
     status: 'PUBLISHED',
     huntId,
     title,
     idea,
+    coverImage,
     files,
   }
   return {
@@ -160,3 +161,31 @@ export const deleteFile = (ideaId, fileId) => {
     payload: fileId,
   };
 }
+
+/**
+ * Get a Open Graph
+ */
+export const getOpneGraph = (urlPath) => {
+  const url = 'extract';
+  const data = {
+    url: urlPath,
+  };
+  return {
+    types: [types.GET_OPEN_GRAPH_PENDING, types.GET_OPEN_GRAPH_FULFILLED, types.GET_OPEN_GRAPH_REJECTED],
+    promise: axios({
+      method: 'post',
+      baseURL: 'http://localhost:3000/',
+      url,
+      data,
+      // headers: {
+      //   'Content-Type': 'application/json',
+      //   'Accept' : 'application/json',
+      //   'x-auth-token': '',
+      //   'x-mobile-api': false,
+      // },
+      // withCredentials: false,
+    }),
+  };
+}
+
+

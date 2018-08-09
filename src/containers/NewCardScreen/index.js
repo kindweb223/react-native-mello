@@ -1,5 +1,6 @@
 import React from 'react'
 import {
+  SafeAreaView,
   TextInput,
   View,
   TouchableOpacity,
@@ -7,6 +8,7 @@ import {
   Animated,
   Keyboard,
   Text,
+  Image,
 } from 'react-native'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
@@ -23,6 +25,7 @@ import * as mime from 'react-native-mime-types'
 import { filter, isEmpty } from 'lodash'
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
 import UserAvatar from 'react-native-user-avatar'
+import validUrl from 'valid-url';
 
 
 import { 
@@ -33,6 +36,7 @@ import {
   uploadFileToS3,
   addFile,
   deleteFile,
+  getOpneGraph,
 } from '../../redux/card/actions'
 import * as types from '../../redux/card/types'
 import { getDurationFromNow } from '../../service/dateUtils'
@@ -52,8 +56,9 @@ class NewCardScreen extends React.Component {
     this.state = {
       cardTitle: '',
       idea: '',
+      coverImage: null,
       loading: false,
-      isExpandCard: false,
+      isFullScreenCard: false,
       originalCardTopY: this.props.intialLayout.py,
       originalCardBottomY: this.props.intialLayout.py + this.props.intialLayout.height,
     };
@@ -71,17 +76,7 @@ class NewCardScreen extends React.Component {
     console.log('NewCardScreen UNSAFE_componentWillReceiveProps : ', nextProps.card);
     let loading = false;
     if (this.props.card.loading !== types.CREATE_CARD_PENDING && nextProps.card.loading === types.CREATE_CARD_PENDING) {
-      // creating a card
       loading = true;
-    // } else if (this.props.card.loading !== types.GET_CARD_PENDING && nextProps.card.loading === types.GET_CARD_PENDING) {
-    //   // getting a card
-    //   loading = true;
-    // } else if (this.props.card.loading !== types.GET_CARD_FULFILLED && nextProps.card.loading === types.GET_CARD_FULFILLED) {
-    //   // success in getting a card
-    //   this.setState({
-    //     cardTitle: nextProps.card.currentCard.title,
-    //     idea: nextProps.card.currentCard.idea,
-    //   });
     } else if (this.props.card.loading !== types.GET_FILE_UPLOAD_URL_PENDING && nextProps.card.loading === types.GET_FILE_UPLOAD_URL_PENDING) {
       // getting a file upload url
       loading = true;
@@ -119,6 +114,16 @@ class NewCardScreen extends React.Component {
       loading = true;
     } else if (this.props.card.loading !== types.DELETE_FILE_FULFILLED && nextProps.card.loading === types.DELETE_FILE_FULFILLED) {
       // success in deleting a file
+    } else if (this.props.card.loading !== types.GET_OPEN_GRAPH_PENDING && nextProps.card.loading === types.GET_OPEN_GRAPH_PENDING) {
+      // getting open graph
+      loading = true;
+    } else if (this.props.card.loading !== types.GET_OPEN_GRAPH_FULFILLED && nextProps.card.loading === types.GET_OPEN_GRAPH_FULFILLED) {
+      // success in getting open graph
+      this.setState({
+        cardTitle: nextProps.card.currentOpneGraph.title,
+        idea: nextProps.card.currentOpneGraph.description,
+        coverImage: nextProps.card.currentOpneGraph.image
+      });
     }
 
     this.setState({
@@ -148,6 +153,7 @@ class NewCardScreen extends React.Component {
       this.setState({
         cardTitle: this.props.card.currentCard.title,
         idea: this.props.card.currentCard.idea,
+        coverImage: this.props.card.currentCard.coverImage,
       });
     }
 
@@ -189,7 +195,7 @@ class NewCardScreen extends React.Component {
       id, 
       files,
     } = this.props.card.currentCard;
-    this.props.updateCard(this.props.feedo.currentFeed.id, id, this.state.cardTitle, this.state.idea, files);
+    this.props.updateCard(this.props.feedo.currentFeed.id, id, this.state.cardTitle, this.state.idea, this.state.coverImage, files);
   }
 
   onAddMedia() {
@@ -224,6 +230,9 @@ class NewCardScreen extends React.Component {
     }
     this.onClose();
     return;
+  }
+
+  onPressMoreActions() {
   }
 
   uploadFile(file, type) {
@@ -330,6 +339,14 @@ class NewCardScreen extends React.Component {
     )
   }
 
+  onChangeTitle(value) {
+    if (validUrl.isUri(value)){
+      this.props.getOpneGraph(value);
+    } else {
+      this.setState({cardTitle: value})
+    }
+  }
+
   get renderMainContent() {
     const { viewMode } = this.props;
     return (
@@ -340,8 +357,12 @@ class NewCardScreen extends React.Component {
           placeholder='Type a title or paste a link'
           underlineColorAndroid='transparent'
           value={this.state.cardTitle}
-          onChangeText={(value) => this.setState({cardTitle: value})}
+          onChangeText={(value) => this.onChangeTitle(value)}
         />
+        {
+          this.state.coverImage && 
+            <Image style={styles.imageCover} source={{ uri: this.state.coverImage.accessUrl }} resizeMode="cover" />
+        }
         <TextInput 
           style={styles.textInputIdea}
           editable={viewMode === CONSTANTS.CARD_NEW || viewMode === CONSTANTS.CARD_EDIT}
@@ -450,19 +471,55 @@ class NewCardScreen extends React.Component {
   }
 
   get renderHeader() {
-    if (this.state.isExpandCard) {
+    if (this.state.isFullScreenCard) {
       return (
-        <View style={styles.heaerContainer}>
+        <View style={styles.headerContainer}>
           <TouchableOpacity 
             style={styles.closeButtonWrapper}
             activeOpacity={0.7}
-            onPress={() => this.onClose()}
+            onPress={() => this.onTapOutsideCard()}
           >
             <MaterialCommunityIcons name="close" size={28} color={COLORS.PURPLE} />
+          </TouchableOpacity>
+          <TouchableOpacity 
+            style={styles.threeDotButtonWrapper}
+            activeOpacity={0.7}
+            onPress={() => this.onPressMoreActions()}
+          >
+            <Entypo name="dots-three-horizontal" size={20} color={'#fff'} />
           </TouchableOpacity>
         </View>
       );
     }
+  }
+
+  get renderOutside() {
+    if (!this.state.isFullScreenCard) {
+      return (
+        <TouchableOpacity 
+          style={styles.backdropContainer}
+          activeOpacity={1}
+          onPress={this.onTapOutsideCard.bind(this)}
+        />
+      );
+    }
+  }
+
+  get renderOutsideMoreActions() {
+    if (!this.state.isFullScreenCard) {
+      return (
+        <View style={styles.outSideMoreActionContainer}>
+          <TouchableOpacity 
+            style={styles.threeDotButtonWrapper}
+            activeOpacity={0.7}
+            onPress={() => this.onPressMoreActions()}
+          >
+            <Entypo name="dots-three-horizontal" size={20} color={'#fff'} />
+          </TouchableOpacity>
+        </View>
+      );
+    }
+
   }
 
   get renderBottomContent() {
@@ -484,10 +541,10 @@ class NewCardScreen extends React.Component {
   onScroll(e) {
     const { viewMode } = this.props;
     const currentOffsetY = e.nativeEvent.contentOffset.y;
-    if (viewMode !== CONSTANTS.CARD_NEW && !this.state.isExpandCard && this.scrollViewLayoutHeight === 0 && currentOffsetY > 10) {
+    if (viewMode !== CONSTANTS.CARD_NEW && !this.state.isFullScreenCard && this.scrollViewLayoutHeight === 0 && currentOffsetY > 10) {
       this.scrollViewLayoutHeight = e.nativeEvent.layoutMeasurement.height;
       this.setState({
-        isExpandCard: true,
+        isFullScreenCard: true,
         originalCardTopY: ScreenVerticalMargin,
         originalCardBottomY: ScreenVerticalMargin,
       }, () => {
@@ -513,7 +570,7 @@ class NewCardScreen extends React.Component {
         bottom: ScreenVerticalMargin,
         opacity: this.animatedShow,
       };
-    } else if (!this.state.isExpandCard) {
+    } else if (!this.state.isFullScreenCard) {
       const animatedTopMove = this.animatedShow.interpolate({
         inputRange: [0, 1],
         outputRange: [this.state.originalCardTopY, ScreenVerticalMargin],
@@ -549,20 +606,12 @@ class NewCardScreen extends React.Component {
           cardStyle,
         ]}
       >
-        {
-          !this.state.isExpandCard && 
-            <TouchableOpacity 
-            style={styles.backdropContainer}
-            activeOpacity={1}
-            onPress={this.onTapOutsideCard.bind(this)}
-          />
-        } 
-        
+        {this.renderOutside}
         <View 
           style={[
             styles.contentContainer,
-            (viewMode === CONSTANTS.CARD_NEW || !this.state.isExpandCard) && {maxHeight: CONSTANTS.SCREEN_HEIGHT - ScreenVerticalMargin * 2},
-            this.state.isExpandCard && {flex: 1},
+            (viewMode === CONSTANTS.CARD_NEW || !this.state.isFullScreenCard) && {maxHeight: CONSTANTS.SCREEN_HEIGHT - ScreenVerticalMargin * 2},
+            this.state.isFullScreenCard && {flex: 1, borderRadius: 0},
           ]}
         >
           {this.renderHeader}
@@ -576,27 +625,20 @@ class NewCardScreen extends React.Component {
           </KeyboardAwareScrollView>
           {this.renderBottomContent}
         </View>
-        
-        {
-          !this.state.isExpandCard && 
-            <TouchableOpacity 
-            style={styles.backdropContainer}
-            activeOpacity={1}
-            onPress={this.onTapOutsideCard.bind(this)}
-          />
-        } 
+        {this.renderOutside}
       </Animated.View>
     );
   }
 
   render () {
     return (
-      <View style={styles.container}>
+      <SafeAreaView style={styles.container}>
         <TouchableOpacity 
           style={styles.backdropContainer}
           activeOpacity={1}
           onPress={this.onTapOutsideCard.bind(this)}
         />
+        {this.renderOutsideMoreActions}
         {this.renderCard}
         <TouchableOpacity 
           style={styles.backdropContainer}
@@ -612,7 +654,7 @@ class NewCardScreen extends React.Component {
           onPress={(index) => this.onTapMediaPickerActionSheet(index)}
         />
         {this.state.loading && <LoadingScreen />}
-      </View>
+      </SafeAreaView>
     );
   }
 }
@@ -645,11 +687,12 @@ const mapStateToProps = ({ card, feedo }) => ({
 const mapDispatchToProps = dispatch => ({
   createCard: (huntId) => dispatch(createCard(huntId)),
   getCard: (ideaId) => dispatch(getCard(ideaId)),
-  updateCard: (huntId, ideaId, title, idea, files) => dispatch(updateCard(huntId, ideaId, title, idea, files)),
+  updateCard: (huntId, ideaId, title, idea, coverImage, files) => dispatch(updateCard(huntId, ideaId, title, idea, coverImage, files)),
   getFileUploadUrl: (huntId, ideaId) => dispatch(getFileUploadUrl(huntId, ideaId)),
   uploadFileToS3: (signedUrl, file, fileName, mimeType) => dispatch(uploadFileToS3(signedUrl, file, fileName, mimeType)),
   addFile: (ideaId, fileType, contentType, name, objectKey, accessUrl) => dispatch(addFile(ideaId, fileType, contentType, name, objectKey, accessUrl)),
   deleteFile: (ideaId, fileId) => dispatch(deleteFile(ideaId, fileId)),
+  getOpneGraph: (url) => dispatch(getOpneGraph(url)),
 })
 
 

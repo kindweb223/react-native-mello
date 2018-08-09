@@ -1,4 +1,4 @@
-import { StyleSheet } from 'react-native'
+import { StyleSheet, Platform } from 'react-native'
 import COLORS from '../../service/colors'
 import CONSTANTS from '../../service/constants'
 
@@ -80,7 +80,7 @@ const styles = StyleSheet.create({
   cellContainer: {
     marginLeft: 15,
   },
-  heaerContainer: {
+  headerContainer: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
@@ -89,6 +89,29 @@ const styles = StyleSheet.create({
   },
   closeButtonWrapper: {
     padding: 10,
+  },
+  threeDotButtonWrapper: {
+    width: 35,
+    height: 35,
+    backgroundColor: COLORS.PURPLE,
+    borderRadius: 20,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  imageCover: {
+    marginHorizontal: 20,
+    marginTop: 15,
+    height: CONSTANTS.SCREEN_WIDTH * 0.384,
+  },
+  outSideMoreActionContainer: {
+    position: 'absolute',
+    right: 0,
+    top: Platform.OS === 'ios' ? 20 : 0,
+    height: 60,
+    alignItems: 'flex-end',
+    justifyContent: 'center',
+    paddingHorizontal: CONSTANTS.PADDING,
+    paddingVertical: CONSTANTS.PADDING / 2,
   },
 })
 
