@@ -68,6 +68,7 @@ class HomeScreen extends React.Component {
     this.state = {
       feedoList: [],
       loading: false,
+      apiLoading: null,
       isVisibleNewFeed: false,
       isEditFeed: false,
       isVisibleCreateNewFeedModal: false,
@@ -91,12 +92,12 @@ class HomeScreen extends React.Component {
   static getDerivedStateFromProps(nextProps, prevState) {
     const { feedo } = nextProps
 
-    if ((prevState.loading === true && (feedo.loading === 'GET_FEEDO_LIST_FULFILLED' || feedo.loading === 'GET_FEEDO_LIST_REJECTED')) ||
+    if (prevState.apiLoading !== feedo.loading && ((feedo.loading === 'GET_FEEDO_LIST_FULFILLED') || (feedo.loading === 'GET_FEEDO_LIST_REJECTED') ||
       (feedo.loading === 'FEED_FULFILLED') || (feedo.loading === 'DEL_FEED_FULFILLED') || (feedo.loading === 'ARCHIVE_FEED_FULFILLED') ||
-      (feedo.loading === 'DUPLICATE_FEED_FULFILLED') || (feedo.loading === 'UPDATE_FEED_FULFILLED')) {
+      (feedo.loading === 'DUPLICATE_FEED_FULFILLED') || (feedo.loading === 'UPDATE_FEED_FULFILLED'))) {
 
       let feedoList = []
-      let emptyState = true
+      let emptyState = prevState.emptyState
 
       if (feedo.feedoList && feedo.feedoList.length > 0) {
         feedoList = feedo.feedoList.map(item => {
@@ -125,17 +126,21 @@ class HomeScreen extends React.Component {
       return {
         feedoList,
         loading: false,
-        emptyState
+        emptyState,
+        apiLoading: feedo.loading
       }
     }
 
     if (feedo.loading === 'ADD_DUMMY_FEED') {
       return {
-        feedoList: feedo.feedoList
+        feedoList: feedo.feedoList,
+        apiLoading: feedo.loading
       }
     }
 
-    return null
+    return {
+      apiLoading: feedo.loading
+    }
   }
 
   componentDidUpdate(prevProps) {
@@ -430,7 +435,7 @@ class HomeScreen extends React.Component {
           <ScrollView
             ref={ref => this.scrollView = ref}
             scrollEventThrottle={16}
-            scrollEnabled={emptyState > 0 && tabIndex === 0 ? false : true}
+            scrollEnabled={emptyState && tabIndex === 0 ? false : true}
             style={styles.feedListView }
             onScroll={
               Animated.event(
@@ -442,7 +447,7 @@ class HomeScreen extends React.Component {
               <DashboardNavigationBar />
             </Animated.View>
 
-            {emptyState > 0 && tabIndex === 0
+            {emptyState > 0 && (tabIndex === 0 && feedoList.length === 0)
             ? <View style={styles.emptyView}>
                 {loading
                   ? <FeedLoadingStateComponent />

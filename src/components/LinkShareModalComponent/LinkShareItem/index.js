@@ -6,42 +6,42 @@ import Entypo from 'react-native-vector-icons/Entypo'
 import styles from './styles'
 const LINK_ICON = require('../../../../assets/images/Link/White.png')
 
-const LinkShareItem = ({ isInviteeOnly, isViewOnly }) => (
+const LinkShareItem = ({ isViewOnly, feed }) => (
   <View style={styles.container}>
     <View style={styles.innerView}>
-      <View style={[styles.linkButton, isInviteeOnly ? styles.linkDisableButton : styles.linkEnableButton]}>
+      <View style={[styles.linkButton, feed.sharingPreferences.level === 'INVITEES_ONLY' ? styles.linkDisableButton : styles.linkEnableButton]}>
         <Image source={LINK_ICON} />
       </View>
 
       <View style={styles.tileView}>
         <Text style={styles.title}>
-          {isInviteeOnly ? 'Link sharing disabled' : 'Link sharing enabled'}
+          {feed.sharingPreferences.level === 'INVITEES_ONLY' ? 'Link sharing disabled' : 'Link sharing enabled'}
         </Text>
         <Text style={styles.description}>
-          {isInviteeOnly ? 'Anyone with the link can view' : 'Invitation only access'}
+          {feed.sharingPreferences.level === 'INVITEES_ONLY' ? 'Anyone with the link can view' : 'Invitation only access'}
         </Text>
       </View>
     </View>
 
     {!isViewOnly && (
       <View style={styles.rightView}>
-        <Text style={[styles.viewText, isInviteeOnly ? styles.viewDisableText : styles.viewEnableText]}>
-          {isInviteeOnly ? 'Off' : 'View'}
+        <Text style={[styles.viewText, feed.sharingPreferences.level === 'INVITEES_ONLY' ? styles.viewDisableText : styles.viewEnableText]}>
+          {feed.sharingPreferences.level === 'INVITEES_ONLY' ? 'Off' : feed.sharingPreferences.permissions}
         </Text>
-        <Entypo name="cog" style={[styles.cogIcon, isInviteeOnly ? styles.cogDisableIcon : styles.cogEnableIcon]} />
+        <Entypo name="cog" style={[styles.cogIcon, feed.sharingPreferences.level === 'INVITEES_ONLY' ? styles.cogDisableIcon : styles.cogEnableIcon]} />
       </View>
     )}
   </View>
 )
 
 LinkShareItem.defaultProps = {
-  isInviteeOnly: true,
-  isViewOnly: true
+  isViewOnly: true,
+  feed: {}
 }
 
 LinkShareItem.propTypes = {
-  isInviteeOnly: PropTypes.bool,
-  isViewOnly: PropTypes.bool
+  isViewOnly: PropTypes.bool,
+  feed: PropTypes.objectOf(PropTypes.any)
 }
 
 export default LinkShareItem

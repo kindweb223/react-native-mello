@@ -43,27 +43,8 @@ class ShareScreen extends React.Component {
       linkShareModal: false,
       shareModalType: 'share',
       shareInviteeData: {},
-      isInviteeOnly: false,
       isInviteeModal: false
     }
-  }
-
-  componentDidMount() {
-    const { data } = this.props
-    const isInviteeOnly = data.sharingPreferences.level === 'INVITEES_ONLY'
-    this.setState({ isInviteeOnly })
-  }
-
-  static getDerivedStateFromProps(nextProps, prevState) {
-    const { feedo } = nextProps
-
-    if (feedo.loading === 'UPDATE_SHARING_PREFERENCES_FULFILLED') {
-      return {
-        isInviteeOnly: feedo.currentFeed.sharingPreferences.level === 'INVITEES_ONLY'
-      }
-    }
-
-    return null
   }
 
   onShowInviteeModal = (feed) => {
@@ -106,16 +87,37 @@ class ShareScreen extends React.Component {
     if (shareModalType === 'share') {
       switch(index) {
         case 0: // Edit
+          updateSharingPreferences(
+            data.id,
+            {
+              level: 'REGISTERED_ONLY',
+              permissions: 'EDIT'
+            }
+          )
           return
         case 1: // Add
+          updateSharingPreferences(
+            data.id,
+            {
+              level: 'REGISTERED_ONLY',
+              permissions: 'ADD'
+            }
+          )
           return
         case 2: // View
+          updateSharingPreferences(
+            data.id,
+            {
+              level: 'REGISTERED_ONLY',
+              permissions: 'VIEW'
+            }
+          )
           return
         case 3: // Sharing Off
           updateSharingPreferences(
             data.id,
             {
-              level: data.sharingPreferences.level === 'INVITEES_ONLY' ? 'REGISTERED' : 'INVITEES_ONLY'
+              level: 'INVITEES_ONLY'
             }
           )
           return
@@ -137,7 +139,6 @@ class ShareScreen extends React.Component {
             updateInviteePermission(data.id, shareInviteeData.id, 'VIEW')
             return
           case 3: // Remove
-            console.log('INVITEE_DATA: ', shareInviteeData)
             deleteInvitee(data.id, shareInviteeData.id)
             return
           default:
@@ -149,9 +150,10 @@ class ShareScreen extends React.Component {
 
   render () {
     const { data } = this.props
-    const { linkShareModal, isInviteeOnly, shareModalType, shareInviteeData } = this.state
+    const { linkShareModal, shareModalType, shareInviteeData } = this.state
     let { invitees } = data
     invitees = _.sortBy(invitees, invitee => invitee.id)
+    console.log('FEED_DATA: ', data)
 
     return (
       <View style={styles.overlay}>
@@ -178,7 +180,7 @@ class ShareScreen extends React.Component {
             
             <TouchableOpacity onPress={() => this.onLinkShare(data)}>
               <View style={styles.listItem}>
-                <LinkShareItem isInviteeOnly={isInviteeOnly} isViewOnly={false} />
+                <LinkShareItem isViewOnly={false} feed={data} />
               </View>
             </TouchableOpacity>
           </View>
@@ -218,7 +220,7 @@ class ShareScreen extends React.Component {
           <LinkShareModalComponent
             shareModalType={shareModalType}
             shareInviteeData={shareInviteeData}
-            isInviteeOnly={isInviteeOnly}
+            feed={data}
             handleShareOption={this.handleShareOption}
           />
         </Modal>

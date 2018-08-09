@@ -96,12 +96,18 @@ class FeedDetailScreen extends React.Component {
   static getDerivedStateFromProps(nextProps, prevState) {
     if ((nextProps.feedo.loading === 'GET_FEED_DETAIL_FULFILLED' ||
       nextProps.feedo.loading === 'DELETE_INVITEE_FULFILLED' ||
+      nextProps.feedo.loading === 'UPDATE_SHARING_PREFERENCES_FULFILLED' ||
       nextProps.feedo.loading === 'UPDATE_INVITEE_PERMISSION_FULFILLED') &&
       nextProps.feedo.currentFeed !== prevState.currentFeed) {
       return {
         loading: false,
         currentFeed: nextProps.feedo.currentFeed,
         pinText: !nextProps.feedo.currentFeed.pinned ? 'Pin' : 'Unpin'
+      }
+    }
+    if (nextProps.feedo.loading === 'GET_FEED_DETAIL_PENDING') {
+      return {
+        currentFeed: {}
       }
     }
     return null

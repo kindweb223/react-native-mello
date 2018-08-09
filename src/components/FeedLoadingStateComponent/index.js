@@ -5,6 +5,7 @@ import {
   Animated,
   Easing
 } from 'react-native'
+import LinearGradient from 'react-native-linear-gradient'
 import styles from './styles'
 import CONSTANTS from '../../service/constants'
 
@@ -24,7 +25,7 @@ class FeedLoadingStateItem extends React.Component {
       this.animatedValue,
       {
         toValue: 1,
-        duration: 500,
+        duration: 1000,
         easing: Easing.linear
       }
     ).start(() => this.animate())
@@ -38,7 +39,11 @@ class FeedLoadingStateItem extends React.Component {
 
     return (
       <View style={styles.subContainer}>
-        <View style={styles.thumbnailsView} />
+        <View style={styles.thumbnailsView}>
+          <View style={[styles.splitter, { left: '25%' }]} />
+          <View style={[styles.splitter, { left: '50%' }]} />
+          <View style={[styles.splitter, { left: '75%' }]} />
+        </View>
         <View style={styles.feedInfoView}>
           <View style={styles.titleView} />
         </View>
@@ -49,10 +54,26 @@ class FeedLoadingStateItem extends React.Component {
         </View>
         <Animated.View
           style={[ styles.animationBar, { marginLeft: marginLeft }]}
-        />
+        >
+          <Gradient />
+        </Animated.View>
       </View>
     )
   }
+}
+
+const Gradient = () => {
+  return(
+    <LinearGradient
+      colors={['rgba(255, 255, 255, 0.1)', 'rgba(255, 255, 255, 0.6)', 'rgba(255, 255, 255, 0.1)']}
+      start={{ x: 0.0, y: 0.0 }}
+      end={{ x: 1.0, y: 0.0 }}
+      style={{
+        flex: 1,
+        width: 150
+      }}
+    />
+  )
 }
 
 const FeedLoadingStateComponent = () => (

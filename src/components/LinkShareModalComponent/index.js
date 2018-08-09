@@ -29,13 +29,13 @@ class LinkShareModalComponent extends React.Component {
   }
 
   render() {
-    const { shareModalType, shareInviteeData, isInviteeOnly } = this.props
+    const { shareModalType, shareInviteeData, feed } = this.props
 
     return (
       <View style={styles.container}>
         <View style={styles.headerView}>
           {shareModalType === 'share'
-            ? <LinkShareItem isInviteeOnly={isInviteeOnly} />
+            ? <LinkShareItem feed={feed} />
             : <InviteeItemComponent invitee={shareInviteeData} />
           }
         </View>
@@ -53,18 +53,25 @@ class LinkShareModalComponent extends React.Component {
           </TouchableOpacity>
         ))}
 
-        <TouchableOpacity onPress={() => this.onPressItem(3)}>
-          <View style={[styles.listItem, styles.itemLast]}>
-            {shareModalType === 'share'
-              ? <Text style={[styles.title, styles.titleLast]}>
-                  {isInviteeOnly ? 'Link sharing on' : 'Link sharing off'}
-                </Text>
-              : <Text style={[styles.title, styles.titleLast]}>
+        {shareModalType === 'share'
+          ? 
+            feed.sharingPreferences.level !== 'INVITEES_ONLY' && (
+              <TouchableOpacity onPress={() => this.onPressItem(3)}>
+                <View style={[styles.listItem, styles.itemLast]}>
+                  <Text style={[styles.title, styles.titleLast]}>
+                    Link sharing off
+                  </Text>
+                </View>
+              </TouchableOpacity>
+            )
+          : <TouchableOpacity onPress={() => this.onPressItem(3)}>
+              <View style={[styles.listItem, styles.itemLast]}>
+                <Text style={[styles.title, styles.titleLast]}>
                   Remove
                 </Text>
-            }
-          </View>
-        </TouchableOpacity>
+              </View>
+            </TouchableOpacity>
+        }
 
       </View>
     )
@@ -73,13 +80,13 @@ class LinkShareModalComponent extends React.Component {
 
 LinkShareModalComponent.defaultProps = {
   shareInviteeData: {},
-  isInviteeOnly: true,
+  feed: {},
 }
 
 LinkShareModalComponent.propTypes = {
   shareModalType: PropTypes.string.isRequired,
   shareInviteeData: PropTypes.objectOf(PropTypes.any),
-  isInviteeOnly: PropTypes.bool,
+  feed: PropTypes.objectOf(PropTypes.any),
   handleShareOption: PropTypes.func.isRequired
 }
 
