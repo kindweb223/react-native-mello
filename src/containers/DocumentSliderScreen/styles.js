@@ -12,36 +12,34 @@ const styles = StyleSheet.create({
   closeButtonWrapper: {
     position: 'absolute',
     top: 20,
-    right: 10,
+    left: 10,
     padding: 10,
     alignSelf: 'flex-end',
-  },
-  borderButtonWrapper: {
-    position: 'absolute',
-    bottom: 20,
-    height: 42,
-    width: 142,
-    borderWidth: 1,
-    borderColor: COLORS.MEDIUM_GREY,
-    borderRadius: 21,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  textButton: {
-    fontSize: 14,
-    color: '#fff',
   },
   webViewContainer: {
     position: 'absolute',
     left: 0,
     right: 0,
     top: 80,
-    bottom: 80,
+    bottom: 35,
   },
   slideContainer: {
     flex: 1,
-    marginBottom: 30,
+    marginBottom: 45,
   },
+  deleteButtonWrapper: {
+    position: 'absolute',
+    height: 30,
+    width: 30,
+    bottom: 25,
+    right: 20,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  dotStyle: {
+    width: 6,
+    height: 6,
+  }
 })
 
 
