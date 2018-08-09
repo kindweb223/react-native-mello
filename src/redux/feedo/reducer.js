@@ -648,14 +648,19 @@ export default function feedo(state = initialState, action = {}) {
     }
     case types.UPDATE_SHARING_PREFERENCES_FULFILLED: {
       const { feedoList } = state
-      const feedId = action.payload
+      const { feedId, data } = action.payload
 
       const restFeedoList = filter(feedoList, feed => feed.id !== feedId)
       let selectedFeed = filter(feedoList, feed => feed.id === feedId)
       const currentFeed = Object.assign(
         {},
         selectedFeed[0],
-        { sharingPreferences: { level: selectedFeed[0].sharingPreferences.level === 'INVITEES_ONLY' ? 'PUBLIC' : 'INVITEES_ONLY' } }
+        {
+          sharingPreferences: {
+            level: data.level,
+            permissions: data.level === 'INVITEES_ONLY' ? null : data.permissions
+          }
+        }
       )
 
       return {

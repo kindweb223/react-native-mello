@@ -50,6 +50,7 @@ const styles = StyleSheet.create({
     fontSize: 14,
     marginHorizontal: 5,
     fontWeight: '600',
+    textTransform: 'capitalize'
   },
   viewDisableText: {
     color: COLORS.LIGHT_GREY,
