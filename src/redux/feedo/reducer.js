@@ -21,6 +21,7 @@ export default function feedo(state = initialState, action = {}) {
     case types.GET_FEEDO_LIST_PENDING:
       return {
         ...state,
+        loading: types.GET_FEEDO_LIST_PENDING,
       }
     case types.GET_FEEDO_LIST_FULFILLED: {
       const { data } = action.result
