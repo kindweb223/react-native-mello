@@ -8,7 +8,7 @@ export default {
     top: 0,
     right: 0,
     left: 0,
-    paddingTop: CONSTANTS.STATUSBAR_HEIGHT,
+    marginTop: CONSTANTS.STATUSBAR_HEIGHT,
     paddingBottom: 21,
     borderRadius: 18,
     backgroundColor: '#fff',
@@ -26,6 +26,7 @@ export default {
   },
   header: {
     width: '100%',
+    height: 50,
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
@@ -34,6 +35,7 @@ export default {
   },
   closeButton: {
     width: 50,
+    height: 50,
     alignItems: 'flex-start',
     justifyContent: 'center'
   },
