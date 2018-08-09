@@ -104,6 +104,11 @@ class FeedDetailScreen extends React.Component {
         pinText: !nextProps.feedo.currentFeed.pinned ? 'Pin' : 'Unpin'
       }
     }
+    if (nextProps.feedo.loading === 'GET_FEED_DETAIL_PENDING') {
+      return {
+        currentFeed: {}
+      }
+    }
     return null
   }
 
