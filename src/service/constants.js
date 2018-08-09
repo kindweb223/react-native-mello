@@ -1,7 +1,7 @@
 import { Dimensions, Platform } from 'react-native'
 import { ifIphoneX } from 'react-native-iphone-x-helper';
 
-const STATUSBAR_HEIGHT = Platform.OS === 'ios' ? ifIphoneX(44, 20) : 20;
+const STATUSBAR_HEIGHT = Platform.OS === 'ios' ? ifIphoneX(34, 20) : 20;
 
 const width = Dimensions.get('window').width
 const height = Dimensions.get('window').height
