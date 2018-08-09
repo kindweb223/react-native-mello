@@ -88,7 +88,7 @@ export const deleteFeed = (feedId) => {
  * Archive Feed
  */
 export const archiveFeed = (feedId) => {
-  let url = `/hunts/${feedId}`
+  let url = `hunts/${feedId}`
 
   return {
     types: [types.ARCHIVE_FEED_PENDING, types.ARCHIVE_FEED_FULFILLED, types.ARCHIVE_FEED_REJECTED],
@@ -105,7 +105,7 @@ export const archiveFeed = (feedId) => {
  * Duplicate Feed
  */
 export const duplicateFeed = (feedId) => {
-  let url = `/hunts/${feedId}/duplicate`
+  let url = `hunts/${feedId}/duplicate`
 
   return {
     types: [types.DUPLICATE_FEED_PENDING, types.DUPLICATE_FEED_FULFILLED, types.DUPLICATE_FEED_REJECTED],
@@ -121,7 +121,6 @@ export const duplicateFeed = (feedId) => {
  * Delete Duplicated Feed
  */
 export const deleteDuplicatedFeed = (feedId) => {
-  console.log('PPP: ', feedId)
   let url = `hunts/${feedId}`
 
   return {
