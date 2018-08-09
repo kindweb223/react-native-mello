@@ -9,10 +9,7 @@ const styles = StyleSheet.create({
   },
   animationBar: {
     position: 'absolute',
-    width: 60,
     height: '100%',
-    backgroundColor: '#fff',
-    opacity: 0.3
   },
   subContainer: {
     marginVertical: 11,
@@ -49,6 +46,14 @@ const styles = StyleSheet.create({
     height: '100%',
     marginRight: 16,
     backgroundColor: 'rgba(219, 220, 223, .32)',
+  },
+  splitter: {
+    position: 'absolute',
+    top: 0,
+    width: 2,
+    height: '100%',
+    backgroundColor: '#fff',
+    opacity: 0.5
   }
 })
 
