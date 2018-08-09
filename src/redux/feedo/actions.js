@@ -381,7 +381,10 @@ export const updateSharingPreferences = (feedId, data) => {
       url: url,
       data
     }),
-    payload: feedId,
+    payload: {
+      feedId,
+      data
+    }
   }
 }
 

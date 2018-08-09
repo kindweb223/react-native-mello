@@ -39,6 +39,7 @@ class FeedLongHoldMenuScreen extends React.Component {
     if (nextProps.feedo.currentFeed !== prevState.currentFeed && (
         nextProps.feedo.loading === 'GET_FEED_DETAIL_FULFILLED' ||
         nextProps.feedo.loading === 'DELETE_INVITEE_FULFILLED' ||
+        nextProps.feedo.loading === 'UPDATE_SHARING_PREFERENCES_FULFILLED' ||
         nextProps.feedo.loading === 'UPDATE_INVITEE_PERMISSION_FULFILLED')) {
       return {
         currentFeed: nextProps.feedo.currentFeed,
