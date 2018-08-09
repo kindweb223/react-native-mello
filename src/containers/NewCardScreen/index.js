@@ -1,5 +1,6 @@
 import React from 'react'
 import {
+  SafeAreaView,
   TextInput,
   View,
   TouchableOpacity,
@@ -57,7 +58,7 @@ class NewCardScreen extends React.Component {
       idea: '',
       coverImage: null,
       loading: false,
-      isExpandCard: false,
+      isFullScreenCard: false,
       originalCardTopY: this.props.intialLayout.py,
       originalCardBottomY: this.props.intialLayout.py + this.props.intialLayout.height,
     };
@@ -72,7 +73,7 @@ class NewCardScreen extends React.Component {
   }
 
   UNSAFE_componentWillReceiveProps(nextProps) {
-    // console.log('NewCardScreen UNSAFE_componentWillReceiveProps : ', nextProps.card);
+    console.log('NewCardScreen UNSAFE_componentWillReceiveProps : ', nextProps.card);
     let loading = false;
     if (this.props.card.loading !== types.CREATE_CARD_PENDING && nextProps.card.loading === types.CREATE_CARD_PENDING) {
       loading = true;
@@ -229,6 +230,9 @@ class NewCardScreen extends React.Component {
     }
     this.onClose();
     return;
+  }
+
+  onPressMoreActions() {
   }
 
   uploadFile(file, type) {
@@ -467,9 +471,9 @@ class NewCardScreen extends React.Component {
   }
 
   get renderHeader() {
-    if (this.state.isExpandCard) {
+    if (this.state.isFullScreenCard) {
       return (
-        <View style={styles.heaerContainer}>
+        <View style={styles.headerContainer}>
           <TouchableOpacity 
             style={styles.closeButtonWrapper}
             activeOpacity={0.7}
@@ -477,9 +481,45 @@ class NewCardScreen extends React.Component {
           >
             <MaterialCommunityIcons name="close" size={28} color={COLORS.PURPLE} />
           </TouchableOpacity>
+          <TouchableOpacity 
+            style={styles.threeDotButtonWrapper}
+            activeOpacity={0.7}
+            onPress={() => this.onPressMoreActions()}
+          >
+            <Entypo name="dots-three-horizontal" size={20} color={'#fff'} />
+          </TouchableOpacity>
         </View>
       );
     }
+  }
+
+  get renderOutside() {
+    if (!this.state.isFullScreenCard) {
+      return (
+        <TouchableOpacity 
+          style={styles.backdropContainer}
+          activeOpacity={1}
+          onPress={this.onTapOutsideCard.bind(this)}
+        />
+      );
+    }
+  }
+
+  get renderOutsideMoreActions() {
+    if (!this.state.isFullScreenCard) {
+      return (
+        <View style={styles.outSideMoreActionContainer}>
+          <TouchableOpacity 
+            style={styles.threeDotButtonWrapper}
+            activeOpacity={0.7}
+            onPress={() => this.onPressMoreActions()}
+          >
+            <Entypo name="dots-three-horizontal" size={20} color={'#fff'} />
+          </TouchableOpacity>
+        </View>
+      );
+    }
+
   }
 
   get renderBottomContent() {
@@ -501,10 +541,10 @@ class NewCardScreen extends React.Component {
   onScroll(e) {
     const { viewMode } = this.props;
     const currentOffsetY = e.nativeEvent.contentOffset.y;
-    if (viewMode !== CONSTANTS.CARD_NEW && !this.state.isExpandCard && this.scrollViewLayoutHeight === 0 && currentOffsetY > 10) {
+    if (viewMode !== CONSTANTS.CARD_NEW && !this.state.isFullScreenCard && this.scrollViewLayoutHeight === 0 && currentOffsetY > 10) {
       this.scrollViewLayoutHeight = e.nativeEvent.layoutMeasurement.height;
       this.setState({
-        isExpandCard: true,
+        isFullScreenCard: true,
         originalCardTopY: ScreenVerticalMargin,
         originalCardBottomY: ScreenVerticalMargin,
       }, () => {
@@ -530,7 +570,7 @@ class NewCardScreen extends React.Component {
         bottom: ScreenVerticalMargin,
         opacity: this.animatedShow,
       };
-    } else if (!this.state.isExpandCard) {
+    } else if (!this.state.isFullScreenCard) {
       const animatedTopMove = this.animatedShow.interpolate({
         inputRange: [0, 1],
         outputRange: [this.state.originalCardTopY, ScreenVerticalMargin],
@@ -566,20 +606,12 @@ class NewCardScreen extends React.Component {
           cardStyle,
         ]}
       >
-        {
-          !this.state.isExpandCard && 
-            <TouchableOpacity 
-            style={styles.backdropContainer}
-            activeOpacity={1}
-            onPress={this.onTapOutsideCard.bind(this)}
-          />
-        } 
-        
+        {this.renderOutside}
         <View 
           style={[
             styles.contentContainer,
-            (viewMode === CONSTANTS.CARD_NEW || !this.state.isExpandCard) && {maxHeight: CONSTANTS.SCREEN_HEIGHT - ScreenVerticalMargin * 2},
-            this.state.isExpandCard && {flex: 1},
+            (viewMode === CONSTANTS.CARD_NEW || !this.state.isFullScreenCard) && {maxHeight: CONSTANTS.SCREEN_HEIGHT - ScreenVerticalMargin * 2},
+            this.state.isFullScreenCard && {flex: 1, borderRadius: 0},
           ]}
         >
           {this.renderHeader}
@@ -593,27 +625,20 @@ class NewCardScreen extends React.Component {
           </KeyboardAwareScrollView>
           {this.renderBottomContent}
         </View>
-        
-        {
-          !this.state.isExpandCard && 
-            <TouchableOpacity 
-            style={styles.backdropContainer}
-            activeOpacity={1}
-            onPress={this.onTapOutsideCard.bind(this)}
-          />
-        } 
+        {this.renderOutside}
       </Animated.View>
     );
   }
 
   render () {
     return (
-      <View style={styles.container}>
+      <SafeAreaView style={styles.container}>
         <TouchableOpacity 
           style={styles.backdropContainer}
           activeOpacity={1}
           onPress={this.onTapOutsideCard.bind(this)}
         />
+        {this.renderOutsideMoreActions}
         {this.renderCard}
         <TouchableOpacity 
           style={styles.backdropContainer}
@@ -629,7 +654,7 @@ class NewCardScreen extends React.Component {
           onPress={(index) => this.onTapMediaPickerActionSheet(index)}
         />
         {this.state.loading && <LoadingScreen />}
-      </View>
+      </SafeAreaView>
     );
   }
 }
