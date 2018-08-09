@@ -5,6 +5,7 @@ import {
   TouchableOpacity,
   Image,
   Alert,
+  Animated
 } from 'react-native'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
@@ -30,20 +31,21 @@ class ImageSliderScreen extends React.Component {
     this.state = {
       position: this.props.position,
       loading: false,
-      maxImageHeight: 0
+      maxImageHeight: 0,
+      isTouch: false
     };
+    this.buttonOpacity = new Animated.Value(1)
   }
 
   componentDidMount() {
     const {
       imageFiles,
     } = this.props;
-    console.log('aaa: ', imageFiles)
+
     let imageHeightList = []
     imageFiles.forEach(element => {
       Image.getSize(element.accessUrl, (width, height) => {
         imageHeightList = [ ...imageHeightList, CONSTANTS.SCREEN_WIDTH / width * height ];
-        console.log('PPP: ', width, height, imageHeightList)
         this.setState({ maxImageHeight: max(imageHeightList) })
       })
     });
@@ -104,6 +106,30 @@ class ImageSliderScreen extends React.Component {
 
   }
 
+  handleImage = () => {
+    const { isTouch } = this.state
+
+    if (isTouch) {
+      this.buttonOpacity.setValue(0);
+      Animated.timing(this.buttonOpacity, {
+        toValue: 1,
+        duration: CONSTANTS.ANIMATEION_MILLI_SECONDS,
+      }).start();
+    } else {
+      this.buttonOpacity.setValue(1);
+      Animated.timing(this.buttonOpacity, {
+        toValue: 0,
+        duration: CONSTANTS.ANIMATEION_MILLI_SECONDS,
+      }).start();
+    }
+
+    this.setState({ isTouch: !isTouch })
+  }
+
+  onSwipeUp = () => {
+    this.props.onClose()
+  }
+
   render () {
     const { maxImageHeight } = this.state
     const { imageFiles } = this.props;
@@ -115,34 +141,45 @@ class ImageSliderScreen extends React.Component {
           imageFiles={imageFiles}
           width={CONSTANTS.SCREEN_WIDTH}
           height={CONSTANTS.SCREEN_HEIGHT - 120}
+          handleImage={() => this.handleImage()}
+          onSwipeUp={this.onSwipeUp}
         />
 
-        <TouchableOpacity 
-          style={styles.closeButtonWrapper}
-          activeOpacity={0.6}
-          onPress={this.onClose.bind(this)}
+        <Animated.View 
+          style={[styles.closeButtonWrapper, { opacity: this.buttonOpacity }]}
         >
-          <MaterialCommunityIcons name="close" size={25} color={'#fff'} />
-        </TouchableOpacity>
+          <TouchableOpacity
+            activeOpacity={0.6}
+            onPress={this.onClose.bind(this)}
+          >
+            <MaterialCommunityIcons name="close" size={25} color={'#fff'} />
+          </TouchableOpacity>
+        </Animated.View>
 
         {this.props.removal && (
-          <TouchableOpacity 
-            style={styles.coverButton}
-            activeOpacity={0.6}
-            onPress={() => this.onSetCoverImage()}
+          <Animated.View 
+            style={[styles.coverButton, { opacity: this.buttonOpacity }]}
           >
-            <Entypo name="image" size={25} color={'#fff'} />
-          </TouchableOpacity>
+            <TouchableOpacity 
+              activeOpacity={0.6}
+              onPress={() => this.onSetCoverImage()}
+            >
+              <Entypo name="image" size={25} color={'#fff'} />
+            </TouchableOpacity>
+          </Animated.View>
         )}
 
         {this.props.removal && (
-          <TouchableOpacity 
-            style={styles.deleteButton}
-            activeOpacity={0.6}
-            onPress={() => this.onDelete()}
+          <Animated.View 
+            style={[styles.deleteButton, { opacity: this.buttonOpacity }]}
           >
-            <Feather name="trash-2" size={25} color={'#fff'} />
-          </TouchableOpacity>
+            <TouchableOpacity 
+              activeOpacity={0.6}
+              onPress={() => this.onDelete()}
+            >
+              <Feather name="trash-2" size={25} color={'#fff'} />
+            </TouchableOpacity>
+          </Animated.View >
         )}
 
         {this.state.loading && <LoadingScreen />}
