@@ -1,4 +1,5 @@
 import * as types from './types'
+import * as cardTypes from '../card/types'
 import { filter, find, findIndex } from 'lodash'
 
 const initialState = {
@@ -750,6 +751,46 @@ export default function feedo(state = initialState, action = {}) {
         error: data,
       }
     }
+
+
+    /**
+     * Update a card in feedList
+     */
+
+    case cardTypes.UPDATE_CARD_FULFILLED: {
+      const { data } = action.result
+      const { currentFeed, } = state
+      const ideaIndex = findIndex(currentFeed.ideas, idea => idea.id === data.id);
+      if (ideaIndex === -1) {
+        currentFeed.ideas.unshift(data)  
+      } else {
+        currentFeed.ideas[ideaIndex] = data;
+      }
+
+      const inviteeIndex = findIndex(currentFeed.invitees, invitee => invitee.id === data.inviteeId);
+      if (inviteeIndex !== -1) {
+        let inviteeIdeas = currentFeed.invitees[inviteeIndex].ideas
+        if (!inviteeIdeas) {
+          inviteeIdeas = [];
+          inviteeIdeas.push({ id: data.id });
+        } else {
+          const inviteeIdeaIndex = findIndex(inviteeIdeas, idea => idea.id === data.id);
+          if (inviteeIdeaIndex === -1) {
+            inviteeIdeas.unshift({ id: data.id });
+          }
+        }
+        currentFeed.invitees[inviteeIndex].ideas = inviteeIdeas;
+      }
+      return {
+        ...state,
+        currentFeed: {
+          ...currentFeed,
+        },
+      }
+    }
+
+
+
     default:
       return state;
   }

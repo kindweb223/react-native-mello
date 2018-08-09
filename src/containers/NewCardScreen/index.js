@@ -54,13 +54,14 @@ class NewCardScreen extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      cardTitle: '',
+      cardName: '',
       idea: '',
       coverImage: null,
       loading: false,
       isFullScreenCard: false,
       originalCardTopY: this.props.intialLayout.py,
       originalCardBottomY: this.props.intialLayout.py + this.props.intialLayout.height,
+      isShowKeyboardButton: false,
     };
 
     this.selectedFile = null;
@@ -73,7 +74,7 @@ class NewCardScreen extends React.Component {
   }
 
   UNSAFE_componentWillReceiveProps(nextProps) {
-    console.log('NewCardScreen UNSAFE_componentWillReceiveProps : ', nextProps.card);
+    // console.log('NewCardScreen UNSAFE_componentWillReceiveProps : ', nextProps.card);
     let loading = false;
     if (this.props.card.loading !== types.CREATE_CARD_PENDING && nextProps.card.loading === types.CREATE_CARD_PENDING) {
       loading = true;
@@ -120,7 +121,7 @@ class NewCardScreen extends React.Component {
     } else if (this.props.card.loading !== types.GET_OPEN_GRAPH_FULFILLED && nextProps.card.loading === types.GET_OPEN_GRAPH_FULFILLED) {
       // success in getting open graph
       this.setState({
-        cardTitle: nextProps.card.currentOpneGraph.title,
+        cardName: nextProps.card.currentOpneGraph.title,
         idea: nextProps.card.currentOpneGraph.description,
         coverImage: nextProps.card.currentOpneGraph.image
       });
@@ -151,7 +152,7 @@ class NewCardScreen extends React.Component {
     const { viewMode } = this.props;
     if (viewMode === CONSTANTS.CARD_VIEW || viewMode === CONSTANTS.CARD_EDIT) {
       this.setState({
-        cardTitle: this.props.card.currentCard.title,
+        cardName: this.props.card.currentCard.title,
         idea: this.props.card.currentCard.idea,
         coverImage: this.props.card.currentCard.coverImage,
       });
@@ -184,18 +185,16 @@ class NewCardScreen extends React.Component {
   }
 
   onUpdate() {
-    if (this.state.cardTitle === '') {
-      Alert.alert('', 'Please input a card title.', [
-        {text: 'Close'},
-      ]);
-      return;
-    }
-
     const {
       id, 
       files,
     } = this.props.card.currentCard;
-    this.props.updateCard(this.props.feedo.currentFeed.id, id, this.state.cardTitle, this.state.idea, this.state.coverImage, files);
+
+    let cardName = this.state.cardName;
+    if (cardName === '') {
+      cardName = 'New Card';
+    }
+    this.props.updateCard(this.props.feedo.currentFeed.id, id, cardName, this.state.idea, this.state.coverImage, files);
   }
 
   onAddMedia() {
@@ -343,8 +342,23 @@ class NewCardScreen extends React.Component {
     if (validUrl.isUri(value)){
       this.props.getOpneGraph(value);
     } else {
-      this.setState({cardTitle: value})
+      this.setState({cardName: value});
     }
+  }
+
+  onFocus() {
+    const { viewMode } = this.props;
+    if (viewMode === CONSTANTS.CARD_NEW || viewMode === CONSTANTS.CARD_EDIT) {
+      this.setState({
+        isShowKeyboardButton: true,
+      });
+    }
+  }
+
+  onBlur() {
+    this.setState({
+      isShowKeyboardButton: false,
+    });
   }
 
   get renderMainContent() {
@@ -356,8 +370,10 @@ class NewCardScreen extends React.Component {
           editable={viewMode === CONSTANTS.CARD_NEW || viewMode === CONSTANTS.CARD_EDIT}
           placeholder='Type a title or paste a link'
           underlineColorAndroid='transparent'
-          value={this.state.cardTitle}
+          value={this.state.cardName}
           onChangeText={(value) => this.onChangeTitle(value)}
+          onFocus={() => this.onFocus()}
+          onBlur={() => this.onBlur()}
         />
         {
           this.state.coverImage && 
@@ -371,6 +387,8 @@ class NewCardScreen extends React.Component {
           underlineColorAndroid='transparent'
           value={this.state.idea}
           onChangeText={(value) => this.setState({idea: value})}
+          onFocus={() => this.onFocus()}
+          onBlur={() => this.onBlur()}
         />
         {this.renderImages}
         {this.renderDocuments}
@@ -402,20 +420,23 @@ class NewCardScreen extends React.Component {
             <Ionicons name="md-attach" style={styles.attachment} size={22} color={COLORS.PURPLE} />
           </TouchableOpacity>
         </View>
-          <TouchableOpacity 
-            style={[
-              styles.buttonItemContainer, 
-              {
-                backgroundColor: COLORS.PURPLE,
-                borderRadius: 8,
-                marginRight: 0,
-              },
-            ]}
-            activeOpacity={0.6}
-            onPress={this.onHideKeyboard.bind(this)}
-          >
-            <MaterialCommunityIcons name="keyboard-close" size={20} color={'#fff'} />
-          </TouchableOpacity>
+        {
+          this.state.isShowKeyboardButton && 
+            <TouchableOpacity 
+              style={[
+                styles.buttonItemContainer, 
+                {
+                  backgroundColor: COLORS.PURPLE,
+                  borderRadius: 8,
+                  marginRight: 0,
+                },
+              ]}
+              activeOpacity={0.6}
+              onPress={this.onHideKeyboard.bind(this)}
+            >
+              <MaterialCommunityIcons name="keyboard-close" size={20} color={'#fff'} />
+            </TouchableOpacity>
+        }
       </View>
     );
   }
