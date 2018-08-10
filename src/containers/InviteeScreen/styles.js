@@ -103,5 +103,23 @@ export default {
   textInput: {
     fontSize: 16,
     marginBottom: 5,
+  },
+  rightView: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginLeft: 10
+  },
+  viewText: {
+    fontSize: 14,
+    marginHorizontal: 5,
+    fontWeight: '600',
+    textTransform: 'capitalize',
+    color: COLORS.PURPLE,
+  },
+  cogIcon: {
+    marginTop: 2,
+    fontSize: 10,
+    color: COLORS.PURPLE,
   }
 }

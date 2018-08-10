@@ -795,7 +795,51 @@ export default function feedo(state = initialState, action = {}) {
       }
     }
 
+    /**
+     * Invite contact to HUNT
+     */
+    case types.INVITE_HUNT_PENDING: {
+      console.log('INVITE_HUNT_PENDING')
+      return {
+        ...state,
+        loading: types.INVITE_HUNT_PENDING,
+        error: null,
+      }
+    }
+    case types.INVITE_HUNT_FULFILLED: {
+      const { data } = action.result
+      const { feedoList, currentFeed } = state
+      const feedId = action.payload
 
+      const restFeedoList = filter(feedoList, feed => feed.id !== feedId)
+      const newFeed = {
+        ...currentFeed,
+        invitees: [
+          ...currentFeed.invitees,
+          data[0]
+        ]
+      }
+
+      console.log('INVITE_HUNT_FULFILLED', data)
+  
+      return {
+        ...state,
+        loading: types.INVITE_HUNT_FULFILLED,
+        feedoList: [
+          ...restFeedoList,
+          newFeed
+        ],
+        currentFeed: newFeed
+      }
+    }
+    case types.INVITE_HUNT_REJECTED: {
+      console.log('INVITE_HUNT_REJECTED',  action)
+      return {
+        ...state,
+        loading: types.INVITE_HUNT_REJECTED,
+        error: action.error,
+      }
+    }
 
     default:
       return state;
