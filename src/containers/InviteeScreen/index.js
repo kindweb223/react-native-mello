@@ -77,20 +77,24 @@ class InviteeScreen extends React.Component {
   handleInvitees = (inviteeEmails) => {
     if (inviteeEmails.length > 0) {
       this.setState({ isAddInvitee: true, inviteeEmails })
+    } else {
+      this.setState({ isAddInvitee: false, inviteeEmails: [] })
     }
   }
 
   onSendInvitation = () => {
     const { data, inviteToHunt } = this.props
-    const { inviteeEmails, message, inviteePermission } = this.state
+    const { inviteeEmails, message, inviteePermission, isAddInvitee } = this.state
 
-    const params = {
-      message,
-      invitees: inviteeEmails,
-      permissions: inviteePermission
+    if (isAddInvitee) {
+      const params = {
+        message,
+        invitees: inviteeEmails,
+        permissions: inviteePermission
+      }
+      console.log('INVITEES_EMAIL: ', params)
+      inviteToHunt(data.id, params)
     }
-    console.log('INVITEES_EMAIL: ', params)
-    inviteToHunt(data.id, params)
   }
 
   handlePermissionOption = (index) => {
@@ -127,7 +131,7 @@ class InviteeScreen extends React.Component {
             <Image source={CLOSE_ICON} />
           </TouchableOpacity>
 
-          <TouchableOpacity onPress={() => this.onSendInvitation()}>
+          <TouchableOpacity onPress={() => this.onSendInvitation()} activeOpacity={0.8}>
             <View style={[styles.sendButtonView, isAddInvitee ? styles.sendEnableButtonView : styles.sendDisableButtonView]}>
               <Text style={[styles.sendButtonText, isAddInvitee ? styles.sendEnableButtonText : styles.sendDisableButtonText]}>Send</Text>
             </View>
