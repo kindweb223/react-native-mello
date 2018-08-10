@@ -12,18 +12,15 @@ import {
 } from 'react-native'
 import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
-import Feather from 'react-native-vector-icons/Feather'
 import Entypo from 'react-native-vector-icons/Entypo'
+import Octicons from 'react-native-vector-icons/Octicons'
 import Modal from 'react-native-modal'
 import _ from 'lodash'
 import InviteeAutoComplete from '../../components/InviteeAutoComplete'
 import LinkShareModalComponent from '../../components/LinkShareModalComponent'
-import LinkShareItem from '../../components/LinkShareModalComponent/LinkShareItem'
 import InviteeItemComponent from '../../components/LinkShareModalComponent/InviteeItemComponent'
-import { SERVER_URL } from '../../service/api'
-import { updateSharingPreferences, deleteInvitee, updateInviteePermission } from '../../redux/feedo/actions'
 import { getContactList } from '../../redux/user/actions'
-import COLORS from '../../service/colors'
+import { inviteToHunt } from '../../redux/feedo/actions'
 import styles from './styles'
 const PLUS_ICON = require('../../../assets/images/Add/White.png')
 const CLOSE_ICON = require('../../../assets/images/Close/Blue.png')
@@ -43,7 +40,10 @@ class InviteeScreen extends React.Component {
     this.state = {
       isAddInvitee: false,
       message: '',
-      contactList: []
+      contactList: [],
+      isPermissionModal: false,
+      inviteePermission: 'ADD',
+      isSuccess: false
     }
   }
 
@@ -52,23 +52,77 @@ class InviteeScreen extends React.Component {
     this.props.getContactList(userId)
   }
 
-  static getDerivedStateFromProps(nextProps, prevState) {
-    const { user } = nextProps
-    if (user.contactList !== prevState.contactList && nextProps.loading === 'GET_CONTACT_LIST_FULFILLED') {
-      return {
-        contactList: user.contactList
-      }
+  UNSAFE_componentWillReceiveProps(nextProps) {
+    const { user, feedo } = nextProps
+    if (this.props.feedo.loading === 'INVITE_HUNT_PENDING' && feedo.loading === 'INVITE_HUNT_FULFILLED') {
+      this.setState({ isSuccess: true, inviteeEmails: [], isAddInvitee: false })
     }
-    return null
+
+    if (this.props.user.loading === 'GET_CONTACT_LIST_PENDING' && user.loading === 'GET_CONTACT_LIST_FULFILLED') {
+      this.setState({ contactList: user.contactList })
+    }
+  }
+
+  filterContactList = (feed, contactList) => {
+    const { invitees } = feed
+    const filteredList = _.filter(contactList, item =>
+                          _.findIndex(invitees, invitee => invitee.userProfile.id === item.userProfile.id) === -1)
+    return filteredList
   }
 
   onChangeMessage = (text) => {
     this.setState({ message: text })
   }
 
+  handleInvitees = (inviteeEmails) => {
+    if (inviteeEmails.length > 0) {
+      this.setState({ isAddInvitee: true, inviteeEmails })
+    } else {
+      this.setState({ isAddInvitee: false, inviteeEmails: [] })
+    }
+  }
+
+  onSendInvitation = () => {
+    const { data, inviteToHunt } = this.props
+    const { inviteeEmails, message, inviteePermission, isAddInvitee } = this.state
+
+    if (isAddInvitee) {
+      const params = {
+        message,
+        invitees: inviteeEmails,
+        permissions: inviteePermission
+      }
+      console.log('INVITEES_EMAIL: ', params)
+      inviteToHunt(data.id, params)
+    }
+  }
+
+  handlePermissionOption = (index) => {
+    this.setState({ isPermissionModal: false })
+    switch(index) {
+      case 0: // Edit
+        this.setState({ inviteePermission: 'EDIT' })
+        return
+      case 1: // Add
+        this.setState({ inviteePermission: 'ADD' })
+        return
+      case 2: // View
+        this.setState({ inviteePermission: 'VIEW' })
+        return
+      default:
+        return
+    }
+  }
+
+  updatePermission = () => {
+    this.setState({ isPermissionModal: true })
+  }
+
   render () {
     const { data } = this.props
-    const { isAddInvitee, contactList } = this.state
+    const { isAddInvitee, contactList, inviteePermission, isPermissionModal, isSuccess } = this.state
+    const filteredContactList = this.filterContactList(data, contactList)
+    console.log('Feed: ', data)
 
     return (
       <View style={styles.overlay}>
@@ -77,7 +131,7 @@ class InviteeScreen extends React.Component {
             <Image source={CLOSE_ICON} />
           </TouchableOpacity>
 
-          <TouchableOpacity onPress={() => this.onSendInvitation()}>
+          <TouchableOpacity onPress={() => this.onSendInvitation()} activeOpacity={0.8}>
             <View style={[styles.sendButtonView, isAddInvitee ? styles.sendEnableButtonView : styles.sendDisableButtonView]}>
               <Text style={[styles.sendButtonText, isAddInvitee ? styles.sendEnableButtonText : styles.sendDisableButtonText]}>Send</Text>
             </View>
@@ -88,9 +142,19 @@ class InviteeScreen extends React.Component {
           <View style={styles.inputFieldView}>
             <View style={styles.inputItem}>
               <InviteeAutoComplete
-                contactList={contactList}
+                contactList={filteredContactList}
+                handleInvitees={this.handleInvitees}
               />
+              <TouchableOpacity onPress={() => this.updatePermission()}>
+                <View style={styles.rightView}>
+                  <Text style={styles.viewText}>
+                    {inviteePermission}
+                  </Text>
+                  <Entypo name="cog" style={styles.cogIcon} />
+                </View>
+              </TouchableOpacity>
             </View>
+
             <View style={styles.inputItem}>
               <TextInput
                 ref={ref => this.messageRef = ref}
@@ -103,13 +167,13 @@ class InviteeScreen extends React.Component {
             </View>
           </View>
 
-          {data.invitees && data.invitees.length > 0 && (
+          {filteredContactList && filteredContactList.length > 0 && (
             <View style={styles.inviteeListView}>
               <View style={styles.titleView}>
-                <Text style={styles.titleText}>Recent</Text>
+                <Text style={styles.titleText}>Contacts</Text>
               </View>
               <ScrollView style={styles.inviteeList}>
-                {data.invitees.map(item => (
+                {filteredContactList.map(item => (
                   <TouchableOpacity onPress={() => {}} key={item.id}>
                     <View style={styles.inviteeItem}>
                       <InviteeItemComponent invitee={item} isOnlyTitle={true} />
@@ -120,6 +184,37 @@ class InviteeScreen extends React.Component {
             </View>
           )}
         </View>
+
+        <Modal 
+          isVisible={isPermissionModal}
+          style={{ margin: 0 }}
+          backdropColor='#e0e0e0'
+          backdropOpacity={0.9}
+          animationIn="slideInUp"
+          animationOut="slideOutDown"
+          animationInTiming={500}
+          onBackdropPress={() => this.setState({ isPermissionModal: false })}
+        >
+          <LinkShareModalComponent
+            inviteePermission={true}
+            handleShareOption={this.handlePermissionOption}
+          />
+        </Modal>
+
+        <Modal 
+          isVisible={isSuccess}
+          style={styles.successModal}
+          backdropColor='#e0e0e0'
+          backdropOpacity={0.9}
+          animationIn="fadeIn"
+          animationOut="fadeOut"
+          animationInTiming={500}
+          onBackdropPress={() => this.setState({ isSuccess: false })}
+        >
+          <View style={styles.successView}>
+            <Octicons name="check" style={styles.successIcon} />
+          </View>
+        </Modal>
 
       </View>
     )
@@ -135,7 +230,8 @@ InviteeScreen.defaultProps = {
 InviteeScreen.propTypes = {
   onClose: PropTypes.func,
   data: PropTypes.objectOf(PropTypes.any),
-  getContactList: PropTypes.func
+  getContactList: PropTypes.func,
+  inviteToHunt: PropTypes.func
 }
 
 const mapStateToProps = ({ feedo, user }) => ({
@@ -145,6 +241,7 @@ const mapStateToProps = ({ feedo, user }) => ({
 
 const mapDispatchToProps = dispatch => ({
   getContactList: (userId) => dispatch(getContactList(userId)),
+  inviteToHunt: (feedId, data) => dispatch(inviteToHunt(feedId, data))
 })
 
 export default connect(

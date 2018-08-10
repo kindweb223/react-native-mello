@@ -187,18 +187,22 @@ class ShareScreen extends React.Component {
 
           {invitees && invitees.length > 0 && (
             <View style={styles.inviteeListView}>
-              <View style={styles.titleView}>
-                <Text style={styles.titleText}>Members</Text>
+              <View style={styles.titleContainer}>
+                <View style={styles.titleView}>
+                  <Text style={styles.titleText}>Members</Text>
+                </View>
               </View>
               <ScrollView style={styles.inviteeList}>
                 {invitees.map(invitee => (
                   <TouchableOpacity onPress={() => this.onPressInvitee(data, invitee)} key={invitee.id}>
-                    <View style={styles.inviteeItem}>
-                      <InviteeItemComponent
-                        invitee={invitee}
-                        isViewOnly={false}
-                        isOwnerInvitee={USER_ROLE.checkOwnerinvitee(data, invitee)}
-                      />
+                    <View style={styles.inviteeItemView}>
+                      <View style={styles.inviteeItem}>
+                        <InviteeItemComponent
+                          invitee={invitee}
+                          isViewOnly={false}
+                          isOwnerInvitee={USER_ROLE.checkOwnerinvitee(data, invitee)}
+                        />
+                      </View>
                     </View>
                   </TouchableOpacity>
                 ))}

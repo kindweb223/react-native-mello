@@ -29,16 +29,18 @@ class LinkShareModalComponent extends React.Component {
   }
 
   render() {
-    const { shareModalType, shareInviteeData, feed } = this.props
+    const { shareModalType, shareInviteeData, feed, inviteePermission } = this.props
 
     return (
       <View style={styles.container}>
-        <View style={styles.headerView}>
-          {shareModalType === 'share'
-            ? <LinkShareItem feed={feed} />
-            : <InviteeItemComponent invitee={shareInviteeData} />
-          }
-        </View>
+        {!inviteePermission && (
+          <View style={styles.headerView}>
+            {shareModalType === 'share'
+              ? <LinkShareItem feed={feed} />
+              : <InviteeItemComponent invitee={shareInviteeData} />
+            }
+          </View>
+        )}
 
         {LIST_ITEM.map(item => (
           <TouchableOpacity key={item.id} onPress={() => this.onPressItem(item.id)}>
@@ -53,25 +55,26 @@ class LinkShareModalComponent extends React.Component {
           </TouchableOpacity>
         ))}
 
-        {shareModalType === 'share'
-          ? 
-            feed.sharingPreferences.level !== 'INVITEES_ONLY' && (
-              <TouchableOpacity onPress={() => this.onPressItem(3)}>
+        {!inviteePermission && (
+          shareModalType === 'share'
+            ? 
+              feed.sharingPreferences.level !== 'INVITEES_ONLY' && (
+                <TouchableOpacity onPress={() => this.onPressItem(3)}>
+                  <View style={[styles.listItem, styles.itemLast]}>
+                    <Text style={[styles.title, styles.titleLast]}>
+                      Link sharing off
+                    </Text>
+                  </View>
+                </TouchableOpacity>
+              )
+            : <TouchableOpacity onPress={() => this.onPressItem(3)}>
                 <View style={[styles.listItem, styles.itemLast]}>
                   <Text style={[styles.title, styles.titleLast]}>
-                    Link sharing off
+                    Remove
                   </Text>
                 </View>
               </TouchableOpacity>
-            )
-          : <TouchableOpacity onPress={() => this.onPressItem(3)}>
-              <View style={[styles.listItem, styles.itemLast]}>
-                <Text style={[styles.title, styles.titleLast]}>
-                  Remove
-                </Text>
-              </View>
-            </TouchableOpacity>
-        }
+        )}
 
       </View>
     )
@@ -81,10 +84,13 @@ class LinkShareModalComponent extends React.Component {
 LinkShareModalComponent.defaultProps = {
   shareInviteeData: {},
   feed: {},
+  inviteePermission: false,
+  shareModalType: 'share'
 }
 
 LinkShareModalComponent.propTypes = {
-  shareModalType: PropTypes.string.isRequired,
+  shareModalType: PropTypes.string,
+  inviteePermission: PropTypes.bool,
   shareInviteeData: PropTypes.objectOf(PropTypes.any),
   feed: PropTypes.objectOf(PropTypes.any),
   handleShareOption: PropTypes.func.isRequired
