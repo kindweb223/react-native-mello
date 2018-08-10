@@ -33,10 +33,17 @@ const InviteeItemComponent = ({ invitee, isViewOnly, isOwnerInvitee, isOnlyTitle
           }
         </View>
         <View style={styles.infoView}>
-          <Text style={styles.title}>{userName}</Text>
+          {userProfile.firstName !== null && userProfile.lastName !== null && (
+            <Text style={styles.title}>{userName}</Text>
+          )}
           {!isOnlyTitle && (
             [
-              <Text key="0" style={styles.subtitle}>{userProfile.email}</Text>,
+              <Text
+                key="0"
+                style={userProfile.firstName !== null && userProfile.lastName !== null ? styles.subtitle : styles.title}
+              >
+                {userProfile.email}
+              </Text>,
               <View key="1" style={styles.cardView}>
                 <Text style={styles.subtitle}>{invitee.ideas ? invitee.ideas.length : 0} cards</Text>
                 <Text  style={styles.subtitle}>0 likes</Text>

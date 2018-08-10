@@ -424,3 +424,19 @@ export const updateInviteePermission = (feedId, inviteeId, type) => {
     }
   }
 }
+
+/**
+ * Invite to Hunt
+ */
+export const inviteToHunt = (feedId, data) => {
+  let url = `hunts/${feedId}/invitees`
+  return {
+    types: [types.INVITE_HUNT_PENDING, types.INVITE_HUNT_FULFILLED, types.INVITE_HUNT_REJECTED],
+    promise: axios({
+      method: 'post',
+      url: url,
+      data
+    }),
+    payload: feedId
+  }
+}

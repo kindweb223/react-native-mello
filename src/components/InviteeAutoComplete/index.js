@@ -31,6 +31,12 @@ class InviteeAutoComplete extends React.Component {
     };
   }
 
+  UNSAFE_componentWillReceiveProps(nextProps) {
+    if (this.props.feedo.loading === 'INVITE_HUNT_PENDING' && nextProps.feedo.loading === 'INVITE_HUNT_FULFILLED') {
+      this.setState({ inviteeEmails: [], isInput: false, filteredContacts: [] })
+    }
+  }
+
   componentDidUpdate(prevProps) {
     const { contactList } = this.props
 
@@ -44,8 +50,9 @@ class InviteeAutoComplete extends React.Component {
   onCreateInvitee(text) {
     let { inviteeEmails } = this.state
 
-    inviteeEmails.push({ 'text': text })
+    inviteeEmails.push({ text, name: text, email: text })
     this.setState({ inviteeEmails })
+    this.props.handleInvitees(inviteeEmails)
   }
 
   onRemoveInvitee(invitee) {
@@ -53,6 +60,7 @@ class InviteeAutoComplete extends React.Component {
 
     inviteeEmails = _.filter(inviteeEmails, item => item.text !== invitee.text)
     this.setState({ inviteeEmails })
+    this.props.handleInvitees(inviteeEmails)
   }
 
   onChangeText(text) {
@@ -71,21 +79,30 @@ class InviteeAutoComplete extends React.Component {
       const name = `${contactList[i].userProfile.firstName} ${contactList[i].userProfile.lastName}`
 
       if (email.includes(text.toLowerCase()) || name.includes(text.toLowerCase())) {
-        if (_.findIndex(inviteeEmails, item => item.text === email) === -1) {
+        if (_.findIndex(inviteeEmails, item => item.text === email) === -1 &&
+            _.findIndex(inviteeEmails, item => item.name === name) === -1) {
           filteredContacts.push(contactList[i])
         }
       }
     }
 
     this.setState({ filteredContacts })
+    this.props.handleInvitees(inviteeEmails)
   }
 
   onSelectContact = (contact) => {
     let { inviteeEmails, filteredContacts } = this.state
+    const name = `${contact.userProfile.firstName} ${contact.userProfile.lastName}`
 
-    inviteeEmails.push({ 'text': contact.userProfile.email })
+    inviteeEmails.push({
+      text: name,
+      email: contact.userProfile.email,
+      name: name,
+      userProfileId: contact.userProfile.id
+    })
     filteredContacts = _.filter(filteredContacts, item => item.id !== contact.id)
     this.setState({ inviteeEmails, filteredContacts })
+    this.props.handleInvitees(inviteeEmails)
   }
 
   renderFilteredContacts = (filteredContacts) => {
@@ -104,7 +121,6 @@ class InviteeAutoComplete extends React.Component {
 
   render () {
     const { filteredContacts, inviteeEmails, isInput } = this.state
-    console.log('INVITEE_EMAILS: ', inviteeEmails)
 
     return (
       <View style={styles.container}>
@@ -122,14 +138,14 @@ class InviteeAutoComplete extends React.Component {
                 backgroundColor: 'transparent',
               }}
               tagContainerStyle={{
-                backgroundColor: 'rgba(74, 0, 205, .2)',
+                backgroundColor: 'rgba(74, 0, 205, .1)',
               }}
               tagTextStyle={{
                 color: COLORS.PURPLE,
                 fontSize: 14,
               }}
               activeTagContainerStyle={{
-                backgroundColor: 'rgba(74, 0, 205, .4)'
+                backgroundColor: 'rgba(74, 0, 205, .3)'
               }}
               activeTagTextStyle={{
                 color: COLORS.PURPLE,
@@ -153,9 +169,15 @@ InviteeAutoComplete.defaultProps = {
   contactList: []
 }
 
-
 InviteeAutoComplete.propTypes = {
   contactList: PropTypes.arrayOf(PropTypes.any)
 }
 
-export default InviteeAutoComplete
+const mapStateToProps = ({ feedo }) => ({
+  feedo
+})
+
+export default connect(
+  mapStateToProps,
+  null
+)(InviteeAutoComplete)
