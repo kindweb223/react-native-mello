@@ -31,6 +31,12 @@ class InviteeAutoComplete extends React.Component {
     };
   }
 
+  UNSAFE_componentWillReceiveProps(nextProps) {
+    if (this.props.feedo.loading === 'INVITE_HUNT_PENDING' && nextProps.feedo.loading === 'INVITE_HUNT_FULFILLED') {
+      this.setState({ inviteeEmails: [], isInput: false, filteredContacts: [] })
+    }
+  }
+
   componentDidUpdate(prevProps) {
     const { contactList } = this.props
 
@@ -163,9 +169,15 @@ InviteeAutoComplete.defaultProps = {
   contactList: []
 }
 
-
 InviteeAutoComplete.propTypes = {
   contactList: PropTypes.arrayOf(PropTypes.any)
 }
 
-export default InviteeAutoComplete
+const mapStateToProps = ({ feedo }) => ({
+  feedo
+})
+
+export default connect(
+  mapStateToProps,
+  null
+)(InviteeAutoComplete)

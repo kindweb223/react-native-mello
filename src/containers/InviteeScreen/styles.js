@@ -121,5 +121,22 @@ export default {
     marginTop: 2,
     fontSize: 10,
     color: COLORS.PURPLE,
+  },
+  successModal: {
+    margin: 0,
+    justifyContent: 'center',
+    alignItems: 'center'
+  },
+  successView: {
+    width: 146,
+    height: 146,
+    borderRadius: 24,
+    backgroundColor: '#fff',
+    justifyContent: 'center',
+    alignItems: 'center'
+  },
+  successIcon: {
+    fontSize: 80,
+    color: COLORS.PURPLE
   }
 }

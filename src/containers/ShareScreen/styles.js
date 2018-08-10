@@ -86,7 +86,7 @@ export default {
   },
   inviteeListView: {
     marginTop: 24,
-    maxHeight: 420
+    maxHeight: 400
   },
   titleContainer: {
     paddingHorizontal: CONSTANTS.PADDING

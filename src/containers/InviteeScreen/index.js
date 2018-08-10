@@ -13,6 +13,7 @@ import {
 import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
 import Entypo from 'react-native-vector-icons/Entypo'
+import Octicons from 'react-native-vector-icons/Octicons'
 import Modal from 'react-native-modal'
 import _ from 'lodash'
 import InviteeAutoComplete from '../../components/InviteeAutoComplete'
@@ -41,7 +42,8 @@ class InviteeScreen extends React.Component {
       message: '',
       contactList: [],
       isPermissionModal: false,
-      inviteePermission: 'ADD'
+      inviteePermission: 'ADD',
+      isSuccess: false
     }
   }
 
@@ -50,14 +52,15 @@ class InviteeScreen extends React.Component {
     this.props.getContactList(userId)
   }
 
-  static getDerivedStateFromProps(nextProps, prevState) {
-    const { user } = nextProps
-    if (user.contactList !== prevState.contactList && user.loading === 'GET_CONTACT_LIST_FULFILLED') {
-      return {
-        contactList: user.contactList,
-      }
+  UNSAFE_componentWillReceiveProps(nextProps) {
+    const { user, feedo } = nextProps
+    if (this.props.feedo.loading === 'INVITE_HUNT_PENDING' && feedo.loading === 'INVITE_HUNT_FULFILLED') {
+      this.setState({ isSuccess: true, inviteeEmails: [], isAddInvitee: false })
     }
-    return null
+
+    if (this.props.user.loading === 'GET_CONTACT_LIST_PENDING' && user.loading === 'GET_CONTACT_LIST_FULFILLED') {
+      this.setState({ contactList: user.contactList })
+    }
   }
 
   filterContactList = (feed, contactList) => {
@@ -80,12 +83,13 @@ class InviteeScreen extends React.Component {
   onSendInvitation = () => {
     const { data, inviteToHunt } = this.props
     const { inviteeEmails, message, inviteePermission } = this.state
-    console.log('INVITEES_EMAIL: ', inviteeEmails)
+
     const params = {
       message,
       invitees: inviteeEmails,
       permissions: inviteePermission
     }
+    console.log('INVITEES_EMAIL: ', params)
     inviteToHunt(data.id, params)
   }
 
@@ -112,11 +116,9 @@ class InviteeScreen extends React.Component {
 
   render () {
     const { data } = this.props
-    const { isAddInvitee, contactList, inviteePermission, isPermissionModal } = this.state
+    const { isAddInvitee, contactList, inviteePermission, isPermissionModal, isSuccess } = this.state
     const filteredContactList = this.filterContactList(data, contactList)
     console.log('Feed: ', data)
-    console.log('contactList: ', contactList)
-    console.log('filteredContactList: ', filteredContactList)
 
     return (
       <View style={styles.overlay}>
@@ -193,6 +195,21 @@ class InviteeScreen extends React.Component {
             inviteePermission={true}
             handleShareOption={this.handlePermissionOption}
           />
+        </Modal>
+
+        <Modal 
+          isVisible={isSuccess}
+          style={styles.successModal}
+          backdropColor='#e0e0e0'
+          backdropOpacity={0.9}
+          animationIn="fadeIn"
+          animationOut="fadeOut"
+          animationInTiming={500}
+          onBackdropPress={() => this.setState({ isSuccess: false })}
+        >
+          <View style={styles.successView}>
+            <Octicons name="check" style={styles.successIcon} />
+          </View>
         </Modal>
 
       </View>

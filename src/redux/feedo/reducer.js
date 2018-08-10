@@ -695,7 +695,6 @@ export default function feedo(state = initialState, action = {}) {
       const { currentFeed } = state
       const inviteeId = action.payload
       const restInviteeList = filter(currentFeed.invitees, invitee => invitee.id !== inviteeId)
-      console.log('DELTE_INVITEE_RESPONSE: ', restInviteeList)
 
       return {
         ...state,
@@ -816,7 +815,7 @@ export default function feedo(state = initialState, action = {}) {
         ...currentFeed,
         invitees: [
           ...currentFeed.invitees,
-          data[0]
+          ...data
         ]
       }
 
