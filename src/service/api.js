@@ -7,4 +7,4 @@ export const AXIOS_CONFIG = {
 }
 export const SERVER_URL = 'https://demos.solvers.io/solvers/hunt-demo/hunt/'
 
-export const UserId = '8ec55281-0147-4715-a34d-525ddecfdd00';
+export const UserId = 'b3b14481-3a54-4c4d-8df9-101fa5d3f76d';
