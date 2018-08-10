@@ -31,26 +31,32 @@ class InviteeAutoComplete extends React.Component {
     };
   }
 
-  componentDidMount() {
+  componentDidUpdate(prevProps) {
     const { contactList } = this.props
 
-    this.setState({
-      contactList
-    })
+    if (this.state.contactList !== contactList) {
+      this.setState({
+        contactList
+      })
+    }
   }
 
   onCreateInvitee(text) {
     let { inviteeEmails } = this.state
+
     inviteeEmails.push({ 'text': text })
     this.setState({ inviteeEmails })
   }
 
   onRemoveInvitee(invitee) {
-    console.log('REMOVE: ', invitee)
+    let { contactList, inviteeEmails } = this.state
+
+    inviteeEmails = _.filter(inviteeEmails, item => item.text !== invitee.text)
+    this.setState({ inviteeEmails })
   }
 
   onChangeText(text) {
-    let { contactList } = this.state
+    let { contactList, inviteeEmails } = this.state
 
     if (text.length > 0) {
       this.setState({ isInput: true })
@@ -65,7 +71,9 @@ class InviteeAutoComplete extends React.Component {
       const name = `${contactList[i].userProfile.firstName} ${contactList[i].userProfile.lastName}`
 
       if (email.includes(text.toLowerCase()) || name.includes(text.toLowerCase())) {
-        filteredContacts.push(contactList[i])
+        if (_.findIndex(inviteeEmails, item => item.text === email) === -1) {
+          filteredContacts.push(contactList[i])
+        }
       }
     }
 
@@ -73,9 +81,11 @@ class InviteeAutoComplete extends React.Component {
   }
 
   onSelectContact = (contact) => {
-    let { inviteeEmails } = this.state
+    let { inviteeEmails, filteredContacts } = this.state
+
     inviteeEmails.push({ 'text': contact.userProfile.email })
-    this.setState({ inviteeEmails })
+    filteredContacts = _.filter(filteredContacts, item => item.id !== contact.id)
+    this.setState({ inviteeEmails, filteredContacts })
   }
 
   renderFilteredContacts = (filteredContacts) => {
@@ -109,17 +119,17 @@ class InviteeAutoComplete extends React.Component {
               onChangeText={(text) => this.onChangeText(text)}
               onRemoveTag={(invitee) => this.onRemoveInvitee(invitee)}
               inputStyle={{
-                backgroundColor: 'white',
+                backgroundColor: 'transparent',
               }}
               tagContainerStyle={{
-                backgroundColor: '#f00',
+                backgroundColor: 'rgba(74, 0, 205, .2)',
               }}
               tagTextStyle={{
-                color: COLORS.DARK_GREY,
+                color: COLORS.PURPLE,
                 fontSize: 14,
               }}
               activeTagContainerStyle={{
-                backgroundColor: 'rgba(74, 0, 205, .2)'
+                backgroundColor: 'rgba(74, 0, 205, .4)'
               }}
               activeTagTextStyle={{
                 color: COLORS.PURPLE,

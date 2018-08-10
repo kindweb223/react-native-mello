@@ -88,20 +88,24 @@ export default {
     marginTop: 24,
     maxHeight: 420
   },
+  titleContainer: {
+    paddingHorizontal: CONSTANTS.PADDING
+  },
   titleView: {
     paddingBottom: 9,
     borderBottomWidth: 1,
     borderColor: COLORS.LIGHT_GREY_LINE,
-    paddingHorizontal: CONSTANTS.PADDING
   },
   titleText: {
     color: COLORS.MEDIUM_GREY,
     fontSize: 14
   },
+  inviteeItemView: {
+    paddingHorizontal: CONSTANTS.PADDING
+  },
   inviteeItem: {
     paddingVertical: 7,
     borderBottomWidth: 1,
-    borderColor: COLORS.LIGHT_GREY_LINE,
-    paddingHorizontal: CONSTANTS.PADDING
+    borderColor: COLORS.LIGHT_GREY_LINE
   }
 }

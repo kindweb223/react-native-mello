@@ -54,7 +54,7 @@ class InviteeScreen extends React.Component {
 
   static getDerivedStateFromProps(nextProps, prevState) {
     const { user } = nextProps
-    if (user.contactList !== prevState.contactList && nextProps.loading === 'GET_CONTACT_LIST_FULFILLED') {
+    if (user.contactList !== prevState.contactList && user.loading === 'GET_CONTACT_LIST_FULFILLED') {
       return {
         contactList: user.contactList
       }

@@ -25,7 +25,7 @@ class FeedLoadingStateItem extends React.Component {
       this.animatedValue,
       {
         toValue: 1,
-        duration: 1000,
+        duration: 800,
         easing: Easing.linear
       }
     ).start(() => this.animate())
