@@ -38,7 +38,6 @@ export default function user(state = initialState, action = {}) {
       }
     case types.GET_CONTACT_LIST_FULFILLED: {
       const { data } = action.result
-      console.log('GET_CONTACT_LIST_FULFILLED: ', data)
       return {
         ...state,
         contactList: data,
@@ -46,7 +45,6 @@ export default function user(state = initialState, action = {}) {
       }
     }
     case types.GET_CONTACT_LIST_REJECTED: {
-      console.log('GET_CONTACT_LIST_ERROR: ', action)
       return {
         ...state,
         contactList: [],

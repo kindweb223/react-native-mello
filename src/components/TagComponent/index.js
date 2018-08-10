@@ -56,8 +56,6 @@ class Tags extends React.Component {
   }
 
   onKeyPress(event) {
-    console.log('PrevKey : ', this.prevKey);
-    console.log('EventKey : ', event.nativeEvent);
     if ((this.prevKey === '' || this.prevKey === 'Backspace' || this.prevKey === ' ' || this.prevKey === ',') && event.nativeEvent.key === 'Backspace') {
       let index = this.props.tags.length - 1;
       if (this.state.selectedTagIndex !== -1) {
