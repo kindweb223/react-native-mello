@@ -119,6 +119,50 @@ export default function card(state = initialState, action = {}) {
       }
     }
 
+    // like a card
+    case types.LIKE_CARD_PENDING:
+      return {
+        ...state,
+        loading: types.LIKE_CARD_PENDING,
+        error: null,
+      }
+    case types.LIKE_CARD_FULFILLED: {
+      return {
+        ...state,
+        loading: types.LIKE_CARD_FULFILLED,
+      }
+    }
+    case types.LIKE_CARD_REJECTED: {
+      const { data } = action.error.response
+      return {
+        ...state,
+        loading: types.LIKE_CARD_REJECTED,
+        error: data,
+      }
+    }
+  
+    // unlike a card
+    case types.UNLIKE_CARD_PENDING:
+      return {
+        ...state,
+        loading: types.UNLIKE_CARD_PENDING,
+        error: null,
+      }
+    case types.UNLIKE_CARD_FULFILLED: {
+      return {
+        ...state,
+        loading: types.UNLIKE_CARD_FULFILLED,
+      }
+    }
+    case types.UNLIKE_CARD_REJECTED: {
+      const { data } = action.error.response
+      return {
+        ...state,
+        loading: types.UNLIKE_CARD_REJECTED,
+        error: data,
+      }
+    }
+  
     // get a file upload url
     case types.GET_FILE_UPLOAD_URL_PENDING:
       return {
@@ -174,7 +218,6 @@ export default function card(state = initialState, action = {}) {
       }
     case types.ADD_FILE_FULFILLED: {
       const { data } = action.result
-      console.log('ADD_FILE_FULFILLED : ', data);
       let files = files = state.currentCard.files || [];
       files.unshift(data);
       return {

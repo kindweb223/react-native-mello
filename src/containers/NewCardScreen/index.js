@@ -16,6 +16,7 @@ import { connect } from 'react-redux'
 import Ionicons from 'react-native-vector-icons/Ionicons'
 import Entypo from 'react-native-vector-icons/Entypo'
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons'
+import FontAwesome from 'react-native-vector-icons/FontAwesome'
 import Feather from 'react-native-vector-icons/Feather'
 import ActionSheet from 'react-native-actionsheet'
 import ImagePicker from 'react-native-image-picker'
@@ -37,6 +38,8 @@ import {
   addFile,
   deleteFile,
   getOpneGraph,
+  likeCard,
+  unlikeCard,
 } from '../../redux/card/actions'
 import * as types from '../../redux/card/types'
 import { getDurationFromNow } from '../../service/dateUtils'
@@ -125,7 +128,17 @@ class NewCardScreen extends React.Component {
         idea: nextProps.card.currentOpneGraph.description,
         coverImage: nextProps.card.currentOpneGraph.image
       });
-    }
+    } else if (this.props.card.loading !== types.LIKE_CARD_PENDING && nextProps.card.loading === types.LIKE_CARD_PENDING) {
+      // liking a card
+      loading = true;
+    } else if (this.props.card.loading !== types.LIKE_CARD_FULFILLED && nextProps.card.loading === types.LIKE_CARD_FULFILLED) {
+      // success in liking a card
+    } else if (this.props.card.loading !== types.UNLIKE_CARD_PENDING && nextProps.card.loading === types.UNLIKE_CARD_PENDING) {
+      // unliking a card
+      loading = true;
+    } else if (this.props.card.loading !== types.UNLIKE_CARD_FULFILLED && nextProps.card.loading === types.UNLIKE_CARD_FULFILLED) {
+      // success in unliking a card
+    } 
 
     this.setState({
       loading,
@@ -149,6 +162,7 @@ class NewCardScreen extends React.Component {
   }
 
   componentDidMount() {
+    console.log('Current Card : ', this.props.card.currentCard);
     const { viewMode } = this.props;
     if (viewMode === CONSTANTS.CARD_VIEW || viewMode === CONSTANTS.CARD_EDIT) {
       this.setState({
@@ -467,24 +481,45 @@ class NewCardScreen extends React.Component {
     );
   }
 
+  onLike(liked) {
+    if (liked) {
+      this.props.unlikeCard(this.props.card.currentCard.id);
+    } else {
+      this.props.likeCard(this.props.card.currentCard.id);
+    }
+  }
+
+  onComment() {
+  }
+
   get renderLikes() {
     const {
-      voteCount,
-    } = this.props.card.currentCard;
+      likes,
+      comments,
+      liked,
+    } = this.props.card.currentCard.metadata;
     return (
       <View>
         <View style={styles.line} />
           <View style={[styles.rowContainer, {justifyContent: 'space-between', marginHorizontal: 22}]}>
-          <Text style={styles.textInvitee}>{voteCount} people liked</Text>
+          <Text style={styles.textInvitee}>{likes} people liked</Text>
           <View style={styles.rowContainer}>
-            <View style={[styles.rowContainer, styles.cellContainer]}>
-              <MaterialCommunityIcons name="heart" size={16} color={COLORS.RED} />
-              <Text style={[styles.textInvitee, {marginLeft: 4}]}>{voteCount}</Text>
-            </View>
-            <View style={[styles.rowContainer, styles.cellContainer]}>
-              <Feather name="message-square" size={16} color={COLORS.LIGHT_GREY} />
-              <Text style={[styles.textInvitee, {marginLeft: 4}]}>0</Text>
-            </View>
+            <TouchableOpacity
+              style={[styles.rowContainer, styles.cellContainer]}
+              activeOpacity={0.7}
+              onPress={() => this.onLike(liked)}
+            >
+              <FontAwesome name={liked ? 'heart' : 'heart-o'} size={16} color={liked ? COLORS.RED : COLORS.LIGHT_GREY} />
+              <Text style={[styles.textInvitee, {marginLeft: 4}]}>{likes}</Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={[styles.rowContainer, styles.cellContainer]}
+              activeOpacity={0.7}
+              onPress={() => this.onComment()}
+            >
+              <Feather name='message-square' size={16} color={COLORS.LIGHT_GREY} />
+              <Text style={[styles.textInvitee, {marginLeft: 4}]}>{comments}</Text>
+            </TouchableOpacity>
           </View>
         </View>
       </View>
@@ -714,6 +749,8 @@ const mapDispatchToProps = dispatch => ({
   addFile: (ideaId, fileType, contentType, name, objectKey, accessUrl) => dispatch(addFile(ideaId, fileType, contentType, name, objectKey, accessUrl)),
   deleteFile: (ideaId, fileId) => dispatch(deleteFile(ideaId, fileId)),
   getOpneGraph: (url) => dispatch(getOpneGraph(url)),
+  likeCard: (ideaId) => dispatch(likeCard(ideaId)),
+  unlikeCard: (ideaId) => dispatch(unlikeCard(ideaId)),
 })
 
 
