@@ -14,6 +14,7 @@ import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
 import Entypo from 'react-native-vector-icons/Entypo'
 import Octicons from 'react-native-vector-icons/Octicons'
+import MaterialIcons from 'react-native-vector-icons/MaterialIcons'
 import Modal from 'react-native-modal'
 import _ from 'lodash'
 import InviteeAutoComplete from '../../components/InviteeAutoComplete'
@@ -43,7 +44,9 @@ class InviteeScreen extends React.Component {
       contactList: [],
       isPermissionModal: false,
       inviteePermission: 'ADD',
-      isSuccess: false
+      isSuccess: false,
+      isError: false,
+      errorMsg: ''
     }
   }
 
@@ -56,6 +59,11 @@ class InviteeScreen extends React.Component {
     const { user, feedo } = nextProps
     if (this.props.feedo.loading === 'INVITE_HUNT_PENDING' && feedo.loading === 'INVITE_HUNT_FULFILLED') {
       this.setState({ isSuccess: true, inviteeEmails: [], isAddInvitee: false })
+    }
+
+    if (this.props.feedo.loading === 'INVITE_HUNT_PENDING' && feedo.loading === 'INVITE_HUNT_REJECTED') {
+      console.log('ERROR !!!!: ', feedo.error)
+      this.setState({ isError: true, errorMsg: feedo.error })
     }
 
     if (this.props.user.loading === 'GET_CONTACT_LIST_PENDING' && user.loading === 'GET_CONTACT_LIST_FULFILLED') {
@@ -213,6 +221,22 @@ class InviteeScreen extends React.Component {
         >
           <View style={styles.successView}>
             <Octicons name="check" style={styles.successIcon} />
+          </View>
+        </Modal>
+
+        <Modal 
+          isVisible={this.state.isError}
+          style={styles.successModal}
+          backdropColor='#e0e0e0'
+          backdropOpacity={0.9}
+          animationIn="fadeIn"
+          animationOut="fadeOut"
+          animationInTiming={500}
+          onBackdropPress={() => this.setState({ isError: false })}
+        >
+          <View style={styles.successView}>
+            <MaterialIcons name="close" style={styles.successIcon} />
+            <Text>{this.state.errorMsg}</Text>
           </View>
         </Modal>
 

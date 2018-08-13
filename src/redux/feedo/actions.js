@@ -429,6 +429,7 @@ export const updateInviteePermission = (feedId, inviteeId, type) => {
  * Invite to Hunt
  */
 export const inviteToHunt = (feedId, data) => {
+  console.log('INVITE_PARAM: ', feedId, data)
   let url = `hunts/${feedId}/invitees`
   return {
     types: [types.INVITE_HUNT_PENDING, types.INVITE_HUNT_FULFILLED, types.INVITE_HUNT_REJECTED],
