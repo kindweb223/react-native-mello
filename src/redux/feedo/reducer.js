@@ -1,6 +1,7 @@
 import * as types from './types'
 import * as cardTypes from '../card/types'
 import { filter, find, findIndex } from 'lodash'
+import resolveError from './../../service/resolveError'
 
 const initialState = {
   loading: null,
@@ -798,7 +799,6 @@ export default function feedo(state = initialState, action = {}) {
      * Invite contact to HUNT
      */
     case types.INVITE_HUNT_PENDING: {
-      console.log('INVITE_HUNT_PENDING')
       return {
         ...state,
         loading: types.INVITE_HUNT_PENDING,
@@ -818,8 +818,6 @@ export default function feedo(state = initialState, action = {}) {
           ...data
         ]
       }
-
-      console.log('INVITE_HUNT_FULFILLED', data)
   
       return {
         ...state,
@@ -832,11 +830,11 @@ export default function feedo(state = initialState, action = {}) {
       }
     }
     case types.INVITE_HUNT_REJECTED: {
-      console.log('INVITE_HUNT_REJECTED',  action)
+      const { error } = action
       return {
         ...state,
         loading: types.INVITE_HUNT_REJECTED,
-        error: action.error,
+        error: resolveError('error.invitee.feed.invalid', 'Email is Duplicated'),
       }
     }
 
