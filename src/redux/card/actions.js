@@ -165,7 +165,7 @@ export const deleteFile = (ideaId, fileId) => {
 /**
  * Get a Open Graph
  */
-export const getOpneGraph = (urlPath) => {
+export const getOpenGraph = (urlPath) => {
   const url = 'extract';
   const data = {
     url: urlPath,
@@ -177,13 +177,6 @@ export const getOpneGraph = (urlPath) => {
       baseURL: 'http://localhost:3000/',
       url,
       data,
-      // headers: {
-      //   'Content-Type': 'application/json',
-      //   'Accept' : 'application/json',
-      //   'x-auth-token': '',
-      //   'x-mobile-api': false,
-      // },
-      // withCredentials: false,
     }),
   };
 }
