@@ -84,7 +84,9 @@ const FeedCardComponent = ({ data, invitees }) => {
           />
         </View>
       )}
-      <CardBottomComponent data={data} invitee={invitee} invitees={invitees} />
+      {invitee && (
+        <CardBottomComponent data={data} invitee={invitee} invitees={invitees} />
+      )}
     </View>
   )
 }
