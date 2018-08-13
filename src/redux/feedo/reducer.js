@@ -649,14 +649,13 @@ export default function feedo(state = initialState, action = {}) {
       }
     }
     case types.UPDATE_SHARING_PREFERENCES_FULFILLED: {
-      const { feedoList } = state
+      const { feedoList, currentFeed } = state
       const { feedId, data } = action.payload
 
       const restFeedoList = filter(feedoList, feed => feed.id !== feedId)
-      let selectedFeed = filter(feedoList, feed => feed.id === feedId)
-      const currentFeed = Object.assign(
+      let newFeed = Object.assign(
         {},
-        selectedFeed[0],
+        currentFeed,
         {
           sharingPreferences: {
             level: data.level,
@@ -670,9 +669,9 @@ export default function feedo(state = initialState, action = {}) {
         loading: types.UPDATE_SHARING_PREFERENCES_FULFILLED,
         feedoList: [
           ...restFeedoList,
-          currentFeed
+          newFeed
         ],
-        currentFeed,
+        currentFeed: newFeed,
       }
     }
     case types.UPDATE_SHARING_PREFERENCES_REJECTED: {
