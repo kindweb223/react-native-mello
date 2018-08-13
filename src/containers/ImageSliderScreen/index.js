@@ -140,7 +140,7 @@ class ImageSliderScreen extends React.Component {
           position={this.state.position}
           imageFiles={imageFiles}
           width={CONSTANTS.SCREEN_WIDTH}
-          height={CONSTANTS.SCREEN_HEIGHT - 120}
+          height={CONSTANTS.SCREEN_HEIGHT - 140}
           handleImage={() => this.handleImage()}
           onSwipeUp={this.onSwipeUp}
         />
