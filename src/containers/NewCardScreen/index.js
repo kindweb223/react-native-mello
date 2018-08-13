@@ -49,6 +49,8 @@ import styles from './styles';
 import LoadingScreen from '../LoadingScreen';
 import ImageList from '../../components/ImageListComponent';
 import DocumentList from '../../components/DocumentListComponent';
+import WebMetaList from '../../components/WebMetaListComponent';
+
 
 const ScreenVerticalMargin = 100;
 
@@ -65,12 +67,18 @@ class NewCardScreen extends React.Component {
       originalCardTopY: this.props.intialLayout.py,
       originalCardBottomY: this.props.intialLayout.py + this.props.intialLayout.height,
       isShowKeyboardButton: false,
+      opneGraphForLinks: [],
     };
 
     this.selectedFile = null;
     this.selectedFileMimeType = null;
     this.selectedFileType = null;
     this.selectedFileName = null;
+
+    this.isOpenGraphForTitle = false;
+    this.openGraphIndex = 0;
+    this.linksForOpenGraph = [];
+    this.opneGraphForLinks = [];
 
     this.animatedShow = new Animated.Value(0);
     this.scrollViewLayoutHeight = 0;
@@ -123,11 +131,29 @@ class NewCardScreen extends React.Component {
       loading = true;
     } else if (this.props.card.loading !== types.GET_OPEN_GRAPH_FULFILLED && nextProps.card.loading === types.GET_OPEN_GRAPH_FULFILLED) {
       // success in getting open graph
-      this.setState({
-        cardName: nextProps.card.currentOpneGraph.title,
-        idea: nextProps.card.currentOpneGraph.description,
-        coverImage: nextProps.card.currentOpneGraph.image
-      });
+      if (this.isOpenGraphForTitle) {
+        this.setState({
+          cardName: nextProps.card.currentOpneGraph.title,
+          idea: nextProps.card.currentOpneGraph.description,
+          coverImage: nextProps.card.currentOpneGraph.image
+        });
+      } else {
+        this.opneGraphForLinks.push({
+          url: this.linksForOpenGraph[this.openGraphIndex++],
+          title: nextProps.card.currentOpneGraph.title,
+          description: nextProps.card.currentOpneGraph.description,
+          image: nextProps.card.currentOpneGraph.image
+        });
+
+        if (this.openGraphIndex >= this.linksForOpenGraph.length) {
+          this.setState({
+            opneGraphForLinks: this.opneGraphForLinks,
+          });
+        } else {
+          loading = true;
+          this.props.getOpenGraph(this.linksForOpenGraph[this.openGraphIndex]);
+        }
+      }
     } else if (this.props.card.loading !== types.LIKE_CARD_PENDING && nextProps.card.loading === types.LIKE_CARD_PENDING) {
       // liking a card
       loading = true;
@@ -139,6 +165,7 @@ class NewCardScreen extends React.Component {
     } else if (this.props.card.loading !== types.UNLIKE_CARD_FULFILLED && nextProps.card.loading === types.UNLIKE_CARD_FULFILLED) {
       // success in unliking a card
     } 
+
 
     this.setState({
       loading,
@@ -322,19 +349,34 @@ class NewCardScreen extends React.Component {
     this.props.deleteFile(id, fileId);
   }
 
+  get renderWebMeta() {
+    const { viewMode } = this.props;
+    const { opneGraphForLinks } = this.state;
+    if (opneGraphForLinks.length > 0) {
+      return (
+        <WebMetaList 
+          links={opneGraphForLinks}
+          editable={viewMode !== CONSTANTS.CARD_VIEW}
+        />
+      )
+    }
+  }
+
   get renderImages() {
     const { viewMode } = this.props;
     const {
       files
     } = this.props.card.currentCard;
     const imageFiles = filter(files, file => file.fileType === 'MEDIA');
-    return (
-      <ImageList 
-        files={imageFiles}
-        editable={viewMode !== CONSTANTS.CARD_VIEW}
-        onRemove={(fileId) => this.onRemoveFile(fileId)}
-      />
-    )
+    if (imageFiles.length > 0) {
+      return (
+        <ImageList 
+          files={imageFiles}
+          editable={viewMode !== CONSTANTS.CARD_VIEW}
+          onRemove={(fileId) => this.onRemoveFile(fileId)}
+        />
+      )
+    }
   }
 
   get renderDocuments() {
@@ -343,21 +385,31 @@ class NewCardScreen extends React.Component {
       files
     } = this.props.card.currentCard;
     const documentFiles = filter(files, file => file.fileType === 'FILE');
-    return (
-      <DocumentList
-        files={documentFiles}
-        editable={viewMode !== CONSTANTS.CARD_VIEW}
-        onRemove={(fileId) => this.onRemoveFile(fileId)}
-      />
-    )
+    if (documentFiles.length > 0) {
+      return (
+        <DocumentList
+          files={documentFiles}
+          editable={viewMode !== CONSTANTS.CARD_VIEW}
+          onRemove={(fileId) => this.onRemoveFile(fileId)}
+        />
+      )
+    }
   }
 
-  onChangeTitle(value) {
-    if (validUrl.isUri(value)){
-      this.props.getOpneGraph(value);
-    } else {
-      this.setState({cardName: value});
+  onChangeTitle(text) {
+    const { viewMode } = this.props;
+    if (viewMode === CONSTANTS.CARD_NEW) {
+      if (validUrl.isUri(text)) {
+        this.isOpenGraphForTitle = true;
+        this.props.getOpenGraph(text);
+        return;
+      } 
     }
+    this.setState({cardName: text});
+  }
+  
+  onChangeIdea(text) {
+    this.setState({idea: text});
   }
 
   onFocus() {
@@ -369,10 +421,24 @@ class NewCardScreen extends React.Component {
     }
   }
 
-  onBlur() {
+  onBlurTitle() {
     this.setState({
       isShowKeyboardButton: false,
     });
+  }
+
+  onBlurIdea() {
+    this.setState({
+      isShowKeyboardButton: false,
+    });
+    const urls = this.state.idea.match(/\bhttps?:\/\/\S+/gi);
+    if (urls) {
+      this.isOpenGraphForTitle = false;
+      this.openGraphIndex = 0;
+      this.opneGraphForLinks = [];
+      this.linksForOpenGraph = urls;
+      this.props.getOpenGraph(this.linksForOpenGraph[this.openGraphIndex]);
+    }
   }
 
   get renderMainContent() {
@@ -387,11 +453,11 @@ class NewCardScreen extends React.Component {
           value={this.state.cardName}
           onChangeText={(value) => this.onChangeTitle(value)}
           onFocus={() => this.onFocus()}
-          onBlur={() => this.onBlur()}
+          onBlur={() => this.onBlurTitle()}
         />
         {
           this.state.coverImage && 
-            <Image style={styles.imageCover} source={{ uri: this.state.coverImage.accessUrl }} resizeMode="cover" />
+            <Image style={styles.imageCover} source={{ uri: this.state.coverImage }} resizeMode="cover" />
         }
         <TextInput 
           style={styles.textInputIdea}
@@ -400,10 +466,11 @@ class NewCardScreen extends React.Component {
           multiline={true}
           underlineColorAndroid='transparent'
           value={this.state.idea}
-          onChangeText={(value) => this.setState({idea: value})}
+          onChangeText={(value) => this.onChangeIdea(value)}
           onFocus={() => this.onFocus()}
-          onBlur={() => this.onBlur()}
+          onBlur={() => this.onBlurIdea()}
         />
+        {this.renderWebMeta}
         {this.renderImages}
         {this.renderDocuments}
       </View>

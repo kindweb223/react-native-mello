@@ -1,6 +1,7 @@
 import * as types from './types'
 import * as cardTypes from '../card/types'
 import { filter, find, findIndex } from 'lodash'
+import resolveError from './../../service/resolveError'
 
 const initialState = {
   loading: null,
@@ -648,14 +649,13 @@ export default function feedo(state = initialState, action = {}) {
       }
     }
     case types.UPDATE_SHARING_PREFERENCES_FULFILLED: {
-      const { feedoList } = state
+      const { feedoList, currentFeed } = state
       const { feedId, data } = action.payload
 
       const restFeedoList = filter(feedoList, feed => feed.id !== feedId)
-      let selectedFeed = filter(feedoList, feed => feed.id === feedId)
-      const currentFeed = Object.assign(
+      let newFeed = Object.assign(
         {},
-        selectedFeed[0],
+        currentFeed,
         {
           sharingPreferences: {
             level: data.level,
@@ -669,9 +669,9 @@ export default function feedo(state = initialState, action = {}) {
         loading: types.UPDATE_SHARING_PREFERENCES_FULFILLED,
         feedoList: [
           ...restFeedoList,
-          currentFeed
+          newFeed
         ],
-        currentFeed,
+        currentFeed: newFeed,
       }
     }
     case types.UPDATE_SHARING_PREFERENCES_REJECTED: {
@@ -837,7 +837,6 @@ export default function feedo(state = initialState, action = {}) {
      * Invite contact to HUNT
      */
     case types.INVITE_HUNT_PENDING: {
-      console.log('INVITE_HUNT_PENDING')
       return {
         ...state,
         loading: types.INVITE_HUNT_PENDING,
@@ -857,8 +856,6 @@ export default function feedo(state = initialState, action = {}) {
           ...data
         ]
       }
-
-      console.log('INVITE_HUNT_FULFILLED', data)
   
       return {
         ...state,
@@ -871,11 +868,11 @@ export default function feedo(state = initialState, action = {}) {
       }
     }
     case types.INVITE_HUNT_REJECTED: {
-      console.log('INVITE_HUNT_REJECTED',  action)
+      const { error } = action
       return {
         ...state,
         loading: types.INVITE_HUNT_REJECTED,
-        error: action.error,
+        error: resolveError('error.invitee.feed.invalid', 'Email is Duplicated'),
       }
     }
 

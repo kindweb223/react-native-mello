@@ -349,12 +349,14 @@ class NewFeedScreen extends React.Component {
       files
     } = this.props.feedo.currentFeed;
     const imageFiles = filter(files, file => file.fileType === 'MEDIA');
-    return (
-      <ImageList 
-        files={imageFiles}
-        onRemove={(fileId) => this.onRemoveFile(fileId)}
-      />
-    )
+    if (imageFiles.length > 0) {
+      return (
+        <ImageList 
+          files={imageFiles}
+          onRemove={(fileId) => this.onRemoveFile(fileId)}
+        />
+      )
+    }
   }
 
   get renderDocuments() {
@@ -362,12 +364,14 @@ class NewFeedScreen extends React.Component {
       files
     } = this.props.feedo.currentFeed;
     const documentFiles = filter(files, file => file.fileType === 'FILE');
-    return (
-      <DocumentList 
-        files={documentFiles}
-        onRemove={(fileId) => this.onRemoveFile(fileId)}
-      />
-    )
+    if (documentFiles.length > 0) {
+      return (
+        <DocumentList 
+          files={documentFiles}
+          onRemove={(fileId) => this.onRemoveFile(fileId)}
+        />
+      )
+    }
   }
 
   get renderCenterContent() {

@@ -2,7 +2,7 @@
 /** @flow */
 
 import React from 'react'
-import { ScrollView, View, Image, Text, TouchableOpacity } from 'react-native'
+import { ScrollView, View, Image, Text, TouchableOpacity, Animated } from 'react-native'
 import GestureRecognizer, { SwipeDirections } from 'react-native-swipe-gestures'
 import styles from './styles'
 
@@ -11,8 +11,10 @@ export default class SlideShow extends React.Component {
     super(props)
 
     this.state = {
-      offset: 0
+      offset: 0,
+      isTouch: false
     }
+    this.buttonOpacity = new Animated.Value(1)
   }
 
   renderBubbles = (width) => {
@@ -40,6 +42,23 @@ export default class SlideShow extends React.Component {
     )
   }
 
+  handleImage = () => {
+    if (this.state.isTouch) {
+      this.buttonOpacity.setValue(0);
+      Animated.timing(this.buttonOpacity, {
+        toValue: 1,
+        duration: 200,
+      }).start();
+    } else {
+      this.buttonOpacity.setValue(1);
+      Animated.timing(this.buttonOpacity, {
+        toValue: 0,
+        duration: 200
+      }).start();
+    }
+    this.setState({ isTouch: !this.state.isTouch })
+    this.props.handleImage()
+  }
   render () {
     const {
       imageFiles,
@@ -49,7 +68,7 @@ export default class SlideShow extends React.Component {
     } = this.props
 
     return (
-      <View style={{ width, height: height + 40 }}>
+      <View style={[styles.container, { width, height }]}>
         <ScrollView
           horizontal={true}
           pagingEnabled={true}
@@ -71,14 +90,18 @@ export default class SlideShow extends React.Component {
                 directionalOffsetThreshold: 80
               }}
             >
-              <TouchableOpacity activeOpacity={1} onPress={() => this.props.handleImage()}>
+              <TouchableOpacity activeOpacity={1} onPress={() => this.handleImage()}>
                 <Image source={{ uri: item.accessUrl }} resizeMode="contain" style={{ width, height: '100%' }} />
               </TouchableOpacity>
             </GestureRecognizer>
           ))}
         </ScrollView>
         
-        {this.renderBubbles(width)}
+        <Animated.View 
+          style={[styles.closeButtonWrapper, { opacity: this.buttonOpacity }]}
+        >
+          {this.renderBubbles(width)}
+        </Animated.View>
       </View>
     )
   }
