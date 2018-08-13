@@ -33,7 +33,9 @@ class InviteeAutoComplete extends React.Component {
 
   UNSAFE_componentWillReceiveProps(nextProps) {
     if (this.props.feedo.loading === 'INVITE_HUNT_PENDING' && nextProps.feedo.loading === 'INVITE_HUNT_FULFILLED') {
-      this.setState({ inviteeEmails: [], isInput: false, filteredContacts: [] })
+      if (!nextProps.feedo.error) {
+        this.setState({ inviteeEmails: [], isInput: false, filteredContacts: [] })
+      }
     }
   }
 
