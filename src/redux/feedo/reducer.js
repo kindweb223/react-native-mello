@@ -856,6 +856,11 @@ export default function feedo(state = initialState, action = {}) {
           ...data
         ]
       }
+
+      let error = null
+      if (data.length === 0) {
+        error = resolveError('error.invitee.feed.invalid', 'Email is Duplicated')
+      }
   
       return {
         ...state,
@@ -864,7 +869,8 @@ export default function feedo(state = initialState, action = {}) {
           ...restFeedoList,
           newFeed
         ],
-        currentFeed: newFeed
+        currentFeed: newFeed,
+        error
       }
     }
     case types.INVITE_HUNT_REJECTED: {
@@ -872,7 +878,7 @@ export default function feedo(state = initialState, action = {}) {
       return {
         ...state,
         loading: types.INVITE_HUNT_REJECTED,
-        error: resolveError('error.invitee.feed.invalid', 'Email is Duplicated'),
+        error: action.error
       }
     }
 

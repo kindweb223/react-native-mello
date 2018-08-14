@@ -58,12 +58,11 @@ class InviteeScreen extends React.Component {
   UNSAFE_componentWillReceiveProps(nextProps) {
     const { user, feedo } = nextProps
     if (this.props.feedo.loading === 'INVITE_HUNT_PENDING' && feedo.loading === 'INVITE_HUNT_FULFILLED') {
-      this.setState({ isSuccess: true, inviteeEmails: [], isAddInvitee: false })
-    }
-
-    if (this.props.feedo.loading === 'INVITE_HUNT_PENDING' && feedo.loading === 'INVITE_HUNT_REJECTED') {
-      console.log('ERROR !!!!: ', feedo.error)
-      this.setState({ isError: true, errorMsg: feedo.error })
+      if (feedo.error) {
+        this.setState({ isError: true, errorMsg: feedo.error })  
+      } else {
+        this.setState({ isSuccess: true, inviteeEmails: [], isAddInvitee: false })
+      }
     }
 
     if (this.props.user.loading === 'GET_CONTACT_LIST_PENDING' && user.loading === 'GET_CONTACT_LIST_FULFILLED') {
@@ -182,11 +181,11 @@ class InviteeScreen extends React.Component {
               </View>
               <ScrollView style={styles.inviteeList}>
                 {filteredContactList.map(item => (
-                  <TouchableOpacity onPress={() => {}} key={item.id}>
+                  <View key={item.id}>
                     <View style={styles.inviteeItem}>
                       <InviteeItemComponent invitee={item} isOnlyTitle={true} />
                     </View>
-                  </TouchableOpacity>
+                  </View>
                 ))}
               </ScrollView>
             </View>

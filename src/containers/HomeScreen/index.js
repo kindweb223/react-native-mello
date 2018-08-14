@@ -34,6 +34,7 @@ import FeedLoadingStateComponent from '../../components/FeedLoadingStateComponen
 import COLORS from '../../service/colors'
 import styles from './styles'
 import CONSTANTS from '../../service/constants';
+import { userSignOut } from '../../redux/user/actions'
 
 const EMPTY_ICON = require('../../../assets/images/empty_state/asset-emptystate.png')
 const SEARCH_ICON = require('../../../assets/images/Search/Grey.png')
@@ -154,6 +155,10 @@ class HomeScreen extends React.Component {
         this.setState({ isShowToaster: true })
         this.handleArchiveFeed(this.props.feedo.feedDetailAction.feedId)
       }
+    }
+
+    if (prevProps.user.loading === 'USER_SIGNOUT_PENDING' && this.props.user.loading === 'USER_SIGNOUT_FULFILLED') {
+      Actions.LoginStartScreen()
     }
   }
 
@@ -384,6 +389,10 @@ class HomeScreen extends React.Component {
     );
   }
 
+  handleFilter = () => {
+    this.props.userSignOut()
+  }
+
   render () {
     const { loading, feedoList, emptyState, tabIndex } = this.state
 
@@ -499,6 +508,7 @@ class HomeScreen extends React.Component {
           <DashboardActionBar 
             filtering={!emptyState} 
             onAddFeed={this.onOpenNewFeedModal.bind(this)}
+            handleFilter={() => this.handleFilter()}
           />
         )}
 
@@ -535,8 +545,9 @@ class HomeScreen extends React.Component {
   }
 }
 
-const mapStateToProps = ({ feedo }) => ({
-  feedo
+const mapStateToProps = ({ user, feedo }) => ({
+  feedo,
+  user
 })
 
 const mapDispatchToProps = dispatch => ({
@@ -551,6 +562,7 @@ const mapDispatchToProps = dispatch => ({
   removeDummyFeed: (data) => dispatch(removeDummyFeed(data)),
   setFeedDetailAction: (data) => dispatch(setFeedDetailAction(data)),
   setCurrentFeed: (data) => dispatch(setCurrentFeed(data)),
+  userSignOut: () => dispatch(userSignOut())
 })
 
 HomeScreen.propTypes = {
@@ -564,7 +576,8 @@ HomeScreen.propTypes = {
   deleteDuplicatedFeed: PropTypes.func.isRequired,
   addDummyFeed: PropTypes.func.isRequired,
   removeDummyFeed: PropTypes.func.isRequired,
-  setFeedDetailAction: PropTypes.func.isRequired
+  setFeedDetailAction: PropTypes.func.isRequired,
+  userSignOut: PropTypes.func.isRequired
 }
 
 export default connect(

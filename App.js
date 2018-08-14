@@ -12,10 +12,11 @@ axios.defaults.baseURL = BASE_URL
 axios.defaults.headers.get['Content-Type'] = 'application/json'
 axios.defaults.headers.get.Accept = 'application/json'
 axios.defaults.withCredentials = true
-axios.defaults.headers['x-auth-token'] = 'a5ca96c0-f91d-4762-8cb4-15aea80263bc'
 axios.defaults.headers['x-mobile-api'] = true
 
 import reducers from './src/redux/reducers'
+import LoginStartScreen from './src/containers/LoginStartScreen'
+import LoginScreen from './src/containers/LoginScreen'
 import HomeScreen from './src/containers/HomeScreen'
 import LoadingScreen from './src/containers/LoadingScreen';
 import ImageSliderScreen from './src/containers/ImageSliderScreen';
@@ -30,7 +31,9 @@ export default class Root extends React.Component {
     const scenes = Actions.create(
       <Lightbox>
         <Scene key="root">
-          <Scene key="HomeScreen" component={ HomeScreen } initial hideNavBar panHandlers={null} />
+          <Scene key="LoginStartScreen" component={ LoginStartScreen } initial hideNavBar panHandlers={null} />
+          <Scene key="LoginScreen" component={ LoginScreen } hideNavBar panHandlers={null} />
+          <Scene key="HomeScreen" component={ HomeScreen } hideNavBar panHandlers={null} />
           <Scene key="FeedDetailScreen" component={ FeedDetailScreen } hideNavBar panHandlers={null} />
           <Scene key="DocumentSliderScreen" component={ DocumentSliderScreen } hideNavBar />
         </Scene>
