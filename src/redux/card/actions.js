@@ -69,7 +69,7 @@ export const setCurrentCard = (idea) => {
 }
 
 /**
- * Delete a feed
+ * Delete a card
  */
 export const deleteCard = (id) => {
   let url = `ideas/${id}`
@@ -79,6 +79,36 @@ export const deleteCard = (id) => {
       method: 'delete',
       url: url,
     }),
+  };
+}
+
+/**
+ * Like a card
+ */
+export const likeCard = (id) => {
+  let url = `ideas/${id}/likes`
+  return {
+    types: [types.LIKE_CARD_PENDING, types.LIKE_CARD_FULFILLED, types.LIKE_CARD_REJECTED],
+    promise: axios({
+      method: 'post',
+      url: url,
+    }),
+    payload: id,
+  };
+}
+
+/**
+ * UnLike a card
+ */
+export const unlikeCard = (id) => {
+  let url = `ideas/${id}/likes`
+  return {
+    types: [types.UNLIKE_CARD_PENDING, types.UNLIKE_CARD_FULFILLED, types.UNLIKE_CARD_REJECTED],
+    promise: axios({
+      method: 'delete',
+      url: url,
+    }),
+    payload: id,
   };
 }
 

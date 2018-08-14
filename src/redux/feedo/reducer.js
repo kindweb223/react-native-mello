@@ -794,6 +794,45 @@ export default function feedo(state = initialState, action = {}) {
       }
     }
 
+
+    /**
+     * Like a card in ideas
+     */
+    case cardTypes.LIKE_CARD_FULFILLED: {
+      const { currentFeed } = state
+      const ideaId = action.payload;
+      const ideaIndex = findIndex(currentFeed.ideas, idea => idea.id === ideaId);
+      currentFeed.ideas[ideaIndex].metadata.likes ++;
+      currentFeed.ideas[ideaIndex].metadata.liked = true;
+      console.log('LIKE_CARD_FULFILLED : ', currentFeed);
+      return {
+        ...state,
+        currentFeed: {
+          ...currentFeed,
+        }
+      }
+    }
+
+    
+    /**
+     * UnLike a card in ideas
+     */
+    case cardTypes.UNLIKE_CARD_FULFILLED: {
+      const { currentFeed } = state
+      const ideaId = action.payload;
+      const ideaIndex = findIndex(currentFeed.ideas, idea => idea.id === ideaId);
+      currentFeed.ideas[ideaIndex].metadata.likes --;
+      currentFeed.ideas[ideaIndex].metadata.liked = false;
+      console.log('UNLIKE_CARD_FULFILLED : ', currentFeed);
+      return {
+        ...state,
+        currentFeed: {
+          ...currentFeed,
+        }
+      }
+    }
+
+
     /**
      * Invite contact to HUNT
      */
