@@ -390,6 +390,9 @@ class HomeScreen extends React.Component {
   }
 
   handleFilter = () => {
+  }
+
+  handleSetting = () => {
     this.props.userSignOut()
   }
 
@@ -434,7 +437,7 @@ class HomeScreen extends React.Component {
                 <Text style={styles.minTitle}>My feeds</Text>
               </View>
               <View style={styles.settingIconView}>
-                <TouchableOpacity>
+                <TouchableOpacity onPress={() => this.handleSetting()}>
                   <Image source={SETTING_ICON} />
                 </TouchableOpacity>
               </View>
@@ -453,7 +456,7 @@ class HomeScreen extends React.Component {
             }
           >
             <Animated.View style={[styles.normalHeader, { opacity: normalHeaderOpacity }]}>
-              <DashboardNavigationBar />
+              <DashboardNavigationBar handleSetting={this.handleSetting} />
             </Animated.View>
 
             {emptyState > 0 && (tabIndex === 0 && feedoList.length === 0)

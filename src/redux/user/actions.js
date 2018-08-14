@@ -5,6 +5,7 @@ import * as types from './types'
  * User login
  */
 export const userSignIn = (data) => {
+  console.log('DATA: ', data)
   const url = 'auth/login'
 
   return {

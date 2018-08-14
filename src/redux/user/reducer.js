@@ -1,6 +1,7 @@
 import { AsyncStorage } from 'react-native'
 import axios from 'axios'
 import * as types from './types'
+import resolveError from './../../service/resolveError'
 
 const initialState = {
   loading: null,
@@ -18,7 +19,7 @@ export default function user(state = initialState, action = {}) {
     case types.USER_SIGNIN_FULFILLED: {
       const { data, headers } = action.result
       const xAuthToken = headers['x-auth-token']
-      console.log('QQQQQQ: ', action.result)
+
       if (xAuthToken) {
         axios.defaults.headers['x-auth-token'] = xAuthToken
         AsyncStorage.setItem('xAuthToken', xAuthToken)
@@ -28,7 +29,16 @@ export default function user(state = initialState, action = {}) {
 
       return {
         ...state,
+        error: null,
         loading: types.USER_SIGNIN_FULFILLED
+      }
+    }
+    case types.USER_SIGNIN_REJECTED: {
+      console.log('USER_SIGNIN_REJECTED: ', action.result)
+      return {
+        ...state,
+        loading: types.USER_SIGNIN_REJECTED,
+        error: resolveError('error.login.invalid', 'Your email or password is incorrect')
       }
     }
     case types.USER_SIGNOUT_PENDING:
@@ -42,11 +52,10 @@ export default function user(state = initialState, action = {}) {
 
       return {
         ...state,
-        loading: types.USER_SIGNOUT_FULFILLED
+        loading: types.USER_SIGNOUT_FULFILLED,
       }
     }
     case types.USER_SIGNOUT_REJECTED: {
-      console.log('LOGOUT_ERROR: ', action)
       return {
         ...state,
         loading: types.USER_SIGNOUT_REJECTED,
