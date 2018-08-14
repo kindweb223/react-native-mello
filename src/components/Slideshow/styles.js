@@ -2,7 +2,10 @@ import { StyleSheet } from 'react-native'
 
 const styles = StyleSheet.create({
   container: {
-    marginTop: 0,
+    marginTop: 0
+  },
+  renderButtonWrapper: {
+    marginBottom: -30
   },
   bubbleView: {
     position: 'absolute',

@@ -6,6 +6,10 @@ import Entypo from 'react-native-vector-icons/Entypo'
 import styles from './styles'
 const LINK_ICON = require('../../../../assets/images/Link/White.png')
 
+const changeToCapital = str => {
+  return str[0].toUpperCase() + str.substr(1).toLowerCase()
+}
+
 const LinkShareItem = ({ isViewOnly, feed }) => (
   <View style={styles.container}>
     <View style={styles.innerView}>
@@ -18,7 +22,10 @@ const LinkShareItem = ({ isViewOnly, feed }) => (
           {feed.sharingPreferences.level === 'INVITEES_ONLY' ? 'Link sharing disabled' : 'Link sharing enabled'}
         </Text>
         <Text style={styles.description}>
-          {feed.sharingPreferences.level === 'INVITEES_ONLY' ? 'Anyone with the link can view' : 'Invitation only access'}
+          {feed.sharingPreferences.level === 'INVITEES_ONLY' 
+            ? 'Invitation only access'
+            : `Anyone with the link can ${changeToCapital(feed.sharingPreferences.permissions)}`
+          }
         </Text>
       </View>
     </View>
