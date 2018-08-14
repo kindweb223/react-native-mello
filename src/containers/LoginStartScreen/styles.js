@@ -9,13 +9,6 @@ export default {
     width: CONSTANTS.SCREEN_WIDTH,
     height: CONSTANTS.SCREEN_HEIGHT
   },
-  loadingContainer: {
-    width: CONSTANTS.SCREEN_WIDTH,
-    height: CONSTANTS.SCREEN_HEIGHT,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: '#fff'
-  },
   contentView: {
     width: '100%',
     height: CONSTANTS.SCREEN_HEIGHT - MODAL_HEIGHT,

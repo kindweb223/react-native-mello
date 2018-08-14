@@ -1,11 +1,17 @@
 import React from 'react'
+import { 
+  AsyncStorage,
+  ActivityIndicator,
+  View
+} from 'react-native'
 import { createStore, applyMiddleware } from 'redux'
 import { Provider } from 'react-redux'
 import thunk from 'redux-thunk'
 import promiseMiddleware from './src/service/promiseMiddleware'
 import { Actions, Scene, Router, Lightbox } from 'react-native-router-flux'
 import axios from 'axios'
-
+import CONSTANTS from './src/service/constants'
+import COLORS from './src/service/colors'
 import { BASE_URL } from './src/service/api'
 
 axios.defaults.baseURL = BASE_URL
@@ -13,6 +19,20 @@ axios.defaults.headers.get['Content-Type'] = 'application/json'
 axios.defaults.headers.get.Accept = 'application/json'
 axios.defaults.withCredentials = true
 axios.defaults.headers['x-mobile-api'] = true
+
+axios.interceptors.response.use(
+  response => (
+    response
+  ),
+  (error) => {
+    if (error.response === undefined || (error.response.status === 401 && error.response.data.code === 'session.expired')) {
+      AsyncStorage.removeItem('xAuthToken')
+      Actions.LoginStartScreen()
+    }
+    console.log('ERROR: ', error)
+    return error
+  }
+)
 
 import reducers from './src/redux/reducers'
 import LoginStartScreen from './src/containers/LoginStartScreen'
@@ -27,6 +47,29 @@ import DocumentSliderScreen from './src/containers/DocumentSliderScreen';
 const store = createStore(reducers, applyMiddleware(thunk, promiseMiddleware))
 
 export default class Root extends React.Component {
+  constructor(props) {
+    super(props)
+    this.state = {
+      loading: false
+    }
+  }
+
+  async UNSAFE_componentWillMount() {
+    this.setState({ loading: true })
+    try {
+      const xAuthToken = await AsyncStorage.getItem('xAuthToken')
+      console.log('xAuthToken: ', xAuthToken)
+      if (xAuthToken) {
+        axios.defaults.headers['x-auth-token'] = xAuthToken
+        Actions.HomeScreen()
+      }
+      this.setState({ loading: false })
+    } catch(error) {
+      console.log('error', error)
+      this.setState({ loading: false })
+    }
+  }
+
   render() {
     const scenes = Actions.create(
       <Lightbox>
@@ -42,10 +85,32 @@ export default class Root extends React.Component {
       </Lightbox>
     );
 
-    return (
-      <Provider store={store}>
-        <Router scenes={scenes}/>
-      </Provider>
-    );
+    if (this.state.loading) {
+      return (
+        <View style={styles.loadingContainer}>
+          <ActivityIndicator 
+            animating
+            size="large"
+            color={COLORS.PURPLE}
+          />
+        </View>
+      )
+    } else {
+      return (
+        <Provider store={store}>
+          <Router scenes={scenes}/>
+        </Provider>
+      )
+    }
+  }
+}
+
+const styles = {
+  loadingContainer: {
+    width: CONSTANTS.SCREEN_WIDTH,
+    height: CONSTANTS.SCREEN_HEIGHT,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: '#fff'
   }
 }

@@ -6,7 +6,6 @@ import {
   TextInput,
   TouchableOpacity,
   Image,
-  AsyncStorage,
   ActivityIndicator
 } from 'react-native'
 import { connect } from 'react-redux'
@@ -42,86 +41,58 @@ class LoginStartScreen extends React.Component {
   constructor(props) {
     super(props)
     this.state = {
-      email: 'seed-data@solvers.io'
-    }
-  }
-
-  async UNSAFE_componentWillMount() {
-    this.setState({ loading: true })
-    try {
-      const xAuthToken = await AsyncStorage.getItem('xAuthToken')
-      console.log('xAuthToken: ', xAuthToken)
-      if (xAuthToken) {
-        axios.defaults.headers['x-auth-token'] = xAuthToken
-        Actions.HomeScreen()
-      } else {
-        this.setState({ loading: false })
-      }
-    } catch(error) {
-      console.log('error', error)
-      this.setState({ loading: false })
+      // email: 'seed-data@solvers.io'
+      email: ''
     }
   }
 
   onContinue = () => {
     const { email } = this.state
-    Actions.LoginScreen({ userEmail: 'seed-data@solvers.io' })
+    Actions.LoginScreen({ userEmail: email })
   }
 
   render () {
-    if (this.state.loading) {
-      return (
-        <View style={styles.loadingContainer}>
-          <ActivityIndicator 
-            animating
-            size="large"
-            color={COLORS.PURPLE}
-          />
-        </View>
-      )
-    } else {
-      return (
-        <View style={styles.container}>
-          <Gradient />
-          
-          <KeyboardScrollView>
-            <View style={styles.container}>
-              <View style={styles.contentView}>
-                <View style={styles.logoView}>
-                  <Image source={LOGO} />
-                </View>
-                <View style={styles.content}>
-                  <Text style={styles.title}>Get started</Text>
-                  <Text style={styles.title}>with Feedo</Text>
-                  <Text style={styles.subTitle}>Enter your email and continue</Text>
-                </View>
+    return (
+      <View style={styles.container}>
+        <Gradient />
+        
+        <KeyboardScrollView>
+          <View style={styles.container}>
+            <View style={styles.contentView}>
+              <View style={styles.logoView}>
+                <Image source={LOGO} />
               </View>
-
-              <View style={styles.modalContainer}>
-                <View style={styles.inputView}>
-                  <TextInput
-                    ref={ref => this.emailRef = ref}
-                    value={this.state.email}
-                    placeholder="Enter email"
-                    placeholderTextColor={COLORS.DARK_GREY}
-                    style={styles.inputStyle}
-                    onChangeText={text => this.setState({ email: text })}
-                    autoCorrect={false}
-                    autoCapitalize="none"
-                    underlineColorAndroid='transparent'
-                  />
-                </View>
-                <TouchableOpacity onPress={() => this.onContinue()} activeOpacity={0.8}>
-                  <View style={styles.buttonView}>
-                    <Text style={styles.buttonText}>Continue</Text>
-                  </View>
-                </TouchableOpacity>
+              <View style={styles.content}>
+                <Text style={styles.title}>Get started</Text>
+                <Text style={styles.title}>with Feedo</Text>
+                <Text style={styles.subTitle}>Enter your email and continue</Text>
               </View>
             </View>
-          </KeyboardScrollView>
-        </View>
-      )
-    }
+
+            <View style={styles.modalContainer}>
+              <View style={styles.inputView}>
+                <TextInput
+                  ref={ref => this.emailRef = ref}
+                  value={this.state.email}
+                  placeholder="Enter email"
+                  placeholderTextColor={COLORS.DARK_GREY}
+                  style={styles.inputStyle}
+                  onChangeText={text => this.setState({ email: text })}
+                  autoCorrect={false}
+                  autoCapitalize="none"
+                  underlineColorAndroid='transparent'
+                />
+              </View>
+              <TouchableOpacity onPress={() => this.onContinue()} activeOpacity={0.8}>
+                <View style={styles.buttonView}>
+                  <Text style={styles.buttonText}>Continue</Text>
+                </View>
+              </TouchableOpacity>
+            </View>
+          </View>
+        </KeyboardScrollView>
+      </View>
+    )
   }
 }
 
