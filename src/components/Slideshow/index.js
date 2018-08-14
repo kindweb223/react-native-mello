@@ -98,7 +98,7 @@ export default class SlideShow extends React.Component {
         </ScrollView>
         
         <Animated.View 
-          style={[styles.closeButtonWrapper, { opacity: this.buttonOpacity }]}
+          style={[styles.renderButtonWrapper, { opacity: this.buttonOpacity }]}
         >
           {this.renderBubbles(width)}
         </Animated.View>
