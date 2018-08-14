@@ -7,6 +7,7 @@ import {
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 
+import { Actions } from 'react-native-router-flux'
 import FontAwesome from 'react-native-vector-icons/FontAwesome'
 import Feather from 'react-native-vector-icons/Feather'
 import Entypo from 'react-native-vector-icons/Entypo'
@@ -21,7 +22,6 @@ import {
   likeCard,
   unlikeCard,
 } from '../../redux/card/actions'
-import * as types from '../../redux/card/types'
 
 
 class FeedCardComponent extends React.Component {
@@ -31,7 +31,16 @@ class FeedCardComponent extends React.Component {
       loading: false,
     };
   }
-    
+
+  onShowLikes() {
+    const {
+      likes,
+    } = this.props.idea.metadata;
+    if (likes > 0) {
+      Actions.LikesListScreen({idea: this.props.idea});
+    }
+  }
+
   onLike(liked) {
     if (liked) {
       this.props.unlikeCard(this.props.idea.id);
@@ -96,6 +105,7 @@ class FeedCardComponent extends React.Component {
             style={styles.buttonWrapper}
             activeOpacity={0.7}
             onPress={() => this.onLike(liked)}
+            onLongPress={() => this.onShowLikes()}
           >
             <FontAwesome name={liked ? 'heart' : 'heart-o'} size={16} color={liked ? COLORS.RED : COLORS.LIGHT_GREY} />
             <Text style={styles.iconText}>{likes}</Text>
