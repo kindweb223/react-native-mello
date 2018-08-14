@@ -5,8 +5,12 @@ import CONSTANTS from '../../service/constants'
 const styles = StyleSheet.create({
   container: {
     justifyContent: 'center',
-    paddingHorizontal: 11,
-    paddingVertical: 11,
+    paddingTop: 11,
+    paddingBottom: 6,
+    paddingLeft: 11,
+    paddingRight: 6,
+    // paddingHorizontal: 11,
+    // paddingVertical: 11,
   },
   title: {
    fontSize: 16,
@@ -26,7 +30,7 @@ const styles = StyleSheet.create({
     marginTop: 5,
     flexDirection: 'row',
     justifyContent: 'space-between',
-    alignItems: 'center'
+    alignItems: 'center',
   },
   subView: {
     flexDirection: 'row',
@@ -41,11 +45,12 @@ const styles = StyleSheet.create({
     color: COLORS.MEDIUM_GREY,
     marginRight: 5 
   },
-  iconView: {
+  buttonWrapper: {
     flexDirection: 'row',
-    marginLeft: 20,
+    marginLeft: 10,
+    padding: 5,
     alignItems: 'center',
-    justifyContent: 'center'
+    justifyContent: 'center',
   },
   icon: {
     color: COLORS.LIGHT_GREY,

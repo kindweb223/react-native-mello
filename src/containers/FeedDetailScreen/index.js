@@ -7,7 +7,6 @@ import {
   Text,
   Image,
   Animated,
-  ActivityIndicator,
   TouchableOpacity,
   TouchableHighlight,
 } from 'react-native'
@@ -306,7 +305,7 @@ class FeedDetailScreen extends React.Component {
       return (o.id == idea.inviteeId)
     });
     let cardViewMode = CONSTANTS.CARD_VIEW;
-    if (invitee.userProfile.id === UserId) {
+    if (currentFeed.metadata.owner) {
       cardViewMode = CONSTANTS.CARD_EDIT;
     }
     this.cardItemRefs[index].measure((ox, oy, width, height, px, py) => {
@@ -471,7 +470,7 @@ class FeedDetailScreen extends React.Component {
                         underlayColor={COLORS.LIGHT_GREY}
                         onPress={() => this.onSelectCard(item, index)}
                       >
-                        <FeedCardComponent data={item} invitees={currentFeed.invitees} />
+                        <FeedCardComponent idea={item} invitees={currentFeed.invitees} />
                       </TouchableHighlight>
                     ))
                   : 
