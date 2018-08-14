@@ -34,6 +34,7 @@ import FeedLoadingStateComponent from '../../components/FeedLoadingStateComponen
 import COLORS from '../../service/colors'
 import styles from './styles'
 import CONSTANTS from '../../service/constants';
+import { userSignOut } from '../../redux/user/actions'
 
 const EMPTY_ICON = require('../../../assets/images/empty_state/asset-emptystate.png')
 const SEARCH_ICON = require('../../../assets/images/Search/Grey.png')
@@ -154,6 +155,10 @@ class HomeScreen extends React.Component {
         this.setState({ isShowToaster: true })
         this.handleArchiveFeed(this.props.feedo.feedDetailAction.feedId)
       }
+    }
+
+    if (prevProps.user.loading === 'USER_SIGNOUT_PENDING' && this.props.user.loading === 'USER_SIGNOUT_FULFILLED') {
+      Actions.LoginStartScreen()
     }
   }
 
@@ -384,6 +389,13 @@ class HomeScreen extends React.Component {
     );
   }
 
+  handleFilter = () => {
+  }
+
+  handleSetting = () => {
+    this.props.userSignOut()
+  }
+
   render () {
     const { loading, feedoList, emptyState, tabIndex } = this.state
 
@@ -425,7 +437,7 @@ class HomeScreen extends React.Component {
                 <Text style={styles.minTitle}>My feeds</Text>
               </View>
               <View style={styles.settingIconView}>
-                <TouchableOpacity>
+                <TouchableOpacity onPress={() => this.handleSetting()}>
                   <Image source={SETTING_ICON} />
                 </TouchableOpacity>
               </View>
@@ -444,7 +456,7 @@ class HomeScreen extends React.Component {
             }
           >
             <Animated.View style={[styles.normalHeader, { opacity: normalHeaderOpacity }]}>
-              <DashboardNavigationBar />
+              <DashboardNavigationBar handleSetting={this.handleSetting} />
             </Animated.View>
 
             {emptyState > 0 && (tabIndex === 0 && feedoList.length === 0)
@@ -499,6 +511,7 @@ class HomeScreen extends React.Component {
           <DashboardActionBar 
             filtering={!emptyState} 
             onAddFeed={this.onOpenNewFeedModal.bind(this)}
+            handleFilter={() => this.handleFilter()}
           />
         )}
 
@@ -535,8 +548,9 @@ class HomeScreen extends React.Component {
   }
 }
 
-const mapStateToProps = ({ feedo }) => ({
-  feedo
+const mapStateToProps = ({ user, feedo }) => ({
+  feedo,
+  user
 })
 
 const mapDispatchToProps = dispatch => ({
@@ -551,6 +565,7 @@ const mapDispatchToProps = dispatch => ({
   removeDummyFeed: (data) => dispatch(removeDummyFeed(data)),
   setFeedDetailAction: (data) => dispatch(setFeedDetailAction(data)),
   setCurrentFeed: (data) => dispatch(setCurrentFeed(data)),
+  userSignOut: () => dispatch(userSignOut())
 })
 
 HomeScreen.propTypes = {
@@ -564,7 +579,8 @@ HomeScreen.propTypes = {
   deleteDuplicatedFeed: PropTypes.func.isRequired,
   addDummyFeed: PropTypes.func.isRequired,
   removeDummyFeed: PropTypes.func.isRequired,
-  setFeedDetailAction: PropTypes.func.isRequired
+  setFeedDetailAction: PropTypes.func.isRequired,
+  userSignOut: PropTypes.func.isRequired
 }
 
 export default connect(

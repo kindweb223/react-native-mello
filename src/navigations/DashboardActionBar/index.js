@@ -46,7 +46,7 @@ class DashboardActionBar extends React.Component {
       <View style={[styles.container, filtering ? styles.filterContainer : styles.actionContainer]}>
         {filtering && (
           <View style={styles.filteringView}>
-            <TouchableOpacity>
+            <TouchableOpacity onPress={() => this.props.handleFilter()}>
               <View style={[styles.iconStyle, styles.filterButton]}>
                 <MaterialCommunityIcons name="filter-variant" style={styles.filteringButtonIcon} />
               </View>
@@ -85,11 +85,13 @@ class DashboardActionBar extends React.Component {
 
 DashboardActionBar.defaultProps = {
   filtering: true,
+  handleFilter: () => {}
 }
 
 DashboardActionBar.propTypes = {
   filtering: PropTypes.bool,
   onAddFeed: PropTypes.func,
+  handleFilter: PropTypes.func
 }
 
 export default DashboardActionBar

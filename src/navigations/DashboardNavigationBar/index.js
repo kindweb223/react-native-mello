@@ -15,7 +15,7 @@ class DashboardNavigationBar extends React.Component {
     return (
       <View style={styles.container}>
         <Text style={styles.title}>My feeds</Text>
-        <TouchableOpacity>
+        <TouchableOpacity onPress={() => this.props.handleSetting()}>
           <Image source={SETTING_ICON} />
         </TouchableOpacity>
       </View>

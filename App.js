@@ -1,5 +1,6 @@
 import React from 'react'
 import { 
+  StyleSheet,
   AsyncStorage,
   ActivityIndicator,
   View
@@ -107,17 +108,6 @@ export default class Root extends React.Component {
   }
 }
 
-const styles = {
-  loadingContainer: {
-    width: CONSTANTS.SCREEN_WIDTH,
-    height: CONSTANTS.SCREEN_HEIGHT,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: '#fff'
-  }
-}
-
-
 const styles = StyleSheet.create({
   defaultNavigationBar: {
     height: 70,
@@ -127,5 +117,12 @@ const styles = StyleSheet.create({
 		// shadowOffset: { width: 0, height: 2 },
 		// shadowOpacity: 0.19,
 		// shadowRadius: 12,
+  },
+  loadingContainer: {
+    width: CONSTANTS.SCREEN_WIDTH,
+    height: CONSTANTS.SCREEN_HEIGHT,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: '#fff'
   },
 });
