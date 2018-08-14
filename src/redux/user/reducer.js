@@ -1,3 +1,5 @@
+import { AsyncStorage } from 'react-native'
+import axios from 'axios'
 import * as types from './types'
 
 const initialState = {
@@ -8,22 +10,46 @@ const initialState = {
 
 export default function user(state = initialState, action = {}) {
   switch (action.type) {
-    case types.USER_LOGIN_PENDING:
+    case types.USER_SIGNIN_PENDING:
       return {
         ...initialState,
+        loading: types.USER_SIGNIN_PENDING,
       }
-    case types.USER_LOGIN_FULFILLED: {
-      console.log('LOGIN_RESULT: ', action.result.data)
+    case types.USER_SIGNIN_FULFILLED: {
+      const { data, headers } = action.result
+      const xAuthToken = headers['x-auth-token']
+      console.log('QQQQQQ: ', action.result)
+      if (xAuthToken) {
+        axios.defaults.headers['x-auth-token'] = xAuthToken
+        AsyncStorage.setItem('xAuthToken', xAuthToken)
+      } else {
+        AsyncStorage.removeItem('xAuthToken')
+      }
+
       return {
         ...state,
-        loading: types.USER_LOGIN_FULFILLED,
+        loading: types.USER_SIGNIN_FULFILLED
       }
     }
-    case types.USER_LOGIN_REJECTED: {
-      console.log('LOGIN_ERROR: ', action)
+    case types.USER_SIGNOUT_PENDING:
       return {
         ...state,
-        loading: types.USER_LOGIN_REJECTED,
+        loading: types.USER_SIGNOUT_PENDING,
+      }
+    case types.USER_SIGNOUT_FULFILLED: {
+      const { data } = action.result
+      AsyncStorage.removeItem('xAuthToken')
+
+      return {
+        ...state,
+        loading: types.USER_SIGNOUT_FULFILLED
+      }
+    }
+    case types.USER_SIGNOUT_REJECTED: {
+      console.log('LOGOUT_ERROR: ', action)
+      return {
+        ...state,
+        loading: types.USER_SIGNOUT_REJECTED,
         error: action.error,
       }
     }

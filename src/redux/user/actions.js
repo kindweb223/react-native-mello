@@ -1,24 +1,36 @@
-import { BASE_URL } from '../../service/api';
 import axios from 'axios';
 import * as types from './types'
 
 /**
- * Get feedo list
+ * User login
  */
-export const userLogIn = () => {
-  const url = '/auth/login'
-  const data = {
-    "username": "eamon@solvers.io",
-    "password": "qwerty1"
-  }
+export const userSignIn = (data) => {
+  const url = 'auth/login'
 
   return {
-    types: [types.USER_LOGIN_PENDING, types.USER_LOGIN_FULFILLED, types.USER_LOGIN_REJECTED],
+    types: [types.USER_SIGNIN_PENDING, types.USER_SIGNIN_FULFILLED, types.USER_SIGNIN_REJECTED],
     promise:
       axios({
-        method: 'get',
-        url: url,
-        data: data
+        method: 'post',
+        url,
+        data
+      })  
+  };
+}
+
+/**
+ * User logout
+ */
+export const userSignOut = (data) => {
+  const url = 'auth/logout'
+
+  return {
+    types: [types.USER_SIGNOUT_PENDING, types.USER_SIGNOUT_FULFILLED, types.USER_SIGNOUT_REJECTED],
+    promise:
+      axios({
+        method: 'post',
+        url,
+        data
       })  
   };
 }
@@ -27,8 +39,7 @@ export const userLogIn = () => {
  * Get user's contact list (to invite the user)
  */
 export const getContactList = (userId) => {
-  console.log('USEREID: ', userId)
-  let url = `/users/${userId}/contacts`
+  let url = `users/${userId}/contacts`
 
   return {
     types: [types.GET_CONTACT_LIST_PENDING, types.GET_CONTACT_LIST_FULFILLED, types.GET_CONTACT_LIST_REJECTED],
