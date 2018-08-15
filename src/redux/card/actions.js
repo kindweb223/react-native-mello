@@ -204,7 +204,7 @@ export const getOpenGraph = (urlPath) => {
     types: [types.GET_OPEN_GRAPH_PENDING, types.GET_OPEN_GRAPH_FULFILLED, types.GET_OPEN_GRAPH_REJECTED],
     promise: axios({
       method: 'post',
-      baseURL: 'http://localhost:3000/',
+      baseURL: 'https://ueoqaymxdl.execute-api.us-east-1.amazonaws.com/dev/',
       url,
       data,
     }),

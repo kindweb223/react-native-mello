@@ -37,7 +37,7 @@ import {
   uploadFileToS3,
   addFile,
   deleteFile,
-  getOpneGraph,
+  getOpenGraph,
   likeCard,
   unlikeCard,
 } from '../../redux/card/actions'
@@ -815,7 +815,7 @@ const mapDispatchToProps = dispatch => ({
   uploadFileToS3: (signedUrl, file, fileName, mimeType) => dispatch(uploadFileToS3(signedUrl, file, fileName, mimeType)),
   addFile: (ideaId, fileType, contentType, name, objectKey, accessUrl) => dispatch(addFile(ideaId, fileType, contentType, name, objectKey, accessUrl)),
   deleteFile: (ideaId, fileId) => dispatch(deleteFile(ideaId, fileId)),
-  getOpneGraph: (url) => dispatch(getOpneGraph(url)),
+  getOpenGraph: (url) => dispatch(getOpenGraph(url)),
   likeCard: (ideaId) => dispatch(likeCard(ideaId)),
   unlikeCard: (ideaId) => dispatch(unlikeCard(ideaId)),
 })
