@@ -7,8 +7,6 @@ import {
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 
-import { Actions } from 'react-native-router-flux'
-import FontAwesome from 'react-native-vector-icons/FontAwesome'
 import Feather from 'react-native-vector-icons/Feather'
 import Entypo from 'react-native-vector-icons/Entypo'
 import UserAvatar from 'react-native-user-avatar'
@@ -18,10 +16,7 @@ import Image from 'react-native-image-progress'
 import COLORS from '../../service/colors'
 import { getDurationFromNow } from '../../service/dateUtils'
 import styles from './styles'
-import { 
-  likeCard,
-  unlikeCard,
-} from '../../redux/card/actions'
+import LikeComponent from '../LikeComponent';
 
 
 class FeedCardComponent extends React.Component {
@@ -32,31 +27,12 @@ class FeedCardComponent extends React.Component {
     };
   }
 
-  onShowLikes() {
-    const {
-      likes,
-    } = this.props.idea.metadata;
-    if (likes > 0) {
-      Actions.LikesListScreen({idea: this.props.idea});
-    }
-  }
-
-  onLike(liked) {
-    if (liked) {
-      this.props.unlikeCard(this.props.idea.id);
-    } else {
-      this.props.likeCard(this.props.idea.id);
-    }
-  }
-
   onComment() {
   }
 
   get renderBottom() {
     const { invitees, idea } = this.props;
     const {
-      liked,
-      likes,
       comments,
     } = idea.metadata;
     const invitee = filter(invitees, item => item.id === idea.inviteeId)[0]
@@ -101,15 +77,7 @@ class FeedCardComponent extends React.Component {
           </Text>
         </View>
         <View style={styles.subView}>
-          <TouchableOpacity
-            style={styles.buttonWrapper}
-            activeOpacity={0.7}
-            onPress={() => this.onLike(liked)}
-            onLongPress={() => this.onShowLikes()}
-          >
-            <FontAwesome name={liked ? 'heart' : 'heart-o'} size={16} color={liked ? COLORS.RED : COLORS.LIGHT_GREY} />
-            <Text style={styles.iconText}>{likes}</Text>
-          </TouchableOpacity>
+          <LikeComponent idea={this.props.idea} />
           <TouchableOpacity 
             style={styles.buttonWrapper}
             activeOpacity={0.7}
@@ -157,8 +125,6 @@ const mapStateToProps = ({ card, feedo }) => ({
 
 
 const mapDispatchToProps = dispatch => ({
-  likeCard: (ideaId) => dispatch(likeCard(ideaId)),
-  unlikeCard: (ideaId) => dispatch(unlikeCard(ideaId)),
 })
 
 

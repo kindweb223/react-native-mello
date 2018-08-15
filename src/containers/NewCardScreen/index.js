@@ -39,8 +39,6 @@ import {
   addFile,
   deleteFile,
   getOpenGraph,
-  likeCard,
-  unlikeCard,
 } from '../../redux/card/actions'
 import * as types from '../../redux/card/types'
 import { getDurationFromNow } from '../../service/dateUtils'
@@ -51,6 +49,7 @@ import LoadingScreen from '../LoadingScreen';
 import ImageList from '../../components/ImageListComponent';
 import DocumentList from '../../components/DocumentListComponent';
 import WebMetaList from '../../components/WebMetaListComponent';
+import LikeComponent from '../../components/LikeComponent';
 
 
 const ScreenVerticalMargin = 100;
@@ -166,7 +165,6 @@ class NewCardScreen extends React.Component {
     } else if (this.props.card.loading !== types.UNLIKE_CARD_FULFILLED && nextProps.card.loading === types.UNLIKE_CARD_FULFILLED) {
       // success in unliking a card
     }
-
 
     this.setState({
       loading,
@@ -548,23 +546,6 @@ class NewCardScreen extends React.Component {
     );
   }
 
-  onLike(liked) {
-    if (liked) {
-      this.props.unlikeCard(this.props.card.currentCard.id);
-    } else {
-      this.props.likeCard(this.props.card.currentCard.id);
-    }
-  }
-
-  onShowLikes() {
-    const {
-      likes,
-    } = this.props.card.currentCard.metadata;
-    if (likes > 0) {
-      Actions.LikesListScreen({idea: this.props.card.currentCard});
-    }
-  }
-
   onComment() {
   }
 
@@ -586,15 +567,7 @@ class NewCardScreen extends React.Component {
             <Text style={styles.textInvitee}>{likes} people liked</Text>
           </TouchableOpacity>
           <View style={styles.rowContainer}>
-            <TouchableOpacity
-              style={[styles.rowContainer, styles.cellContainer]}
-              activeOpacity={0.7}
-              onPress={() => this.onLike(liked)}
-              onLongPress={() => this.onShowLikes()}
-            >
-              <FontAwesome name={liked ? 'heart' : 'heart-o'} size={16} color={liked ? COLORS.RED : COLORS.LIGHT_GREY} />
-              <Text style={[styles.textInvitee, {marginLeft: 4}]}>{likes}</Text>
-            </TouchableOpacity>
+            <LikeComponent idea={this.props.card.currentCard} />
             <TouchableOpacity
               style={[styles.rowContainer, styles.cellContainer]}
               activeOpacity={0.7}
@@ -832,8 +805,6 @@ const mapDispatchToProps = dispatch => ({
   addFile: (ideaId, fileType, contentType, name, objectKey, accessUrl) => dispatch(addFile(ideaId, fileType, contentType, name, objectKey, accessUrl)),
   deleteFile: (ideaId, fileId) => dispatch(deleteFile(ideaId, fileId)),
   getOpenGraph: (url) => dispatch(getOpenGraph(url)),
-  likeCard: (ideaId) => dispatch(likeCard(ideaId)),
-  unlikeCard: (ideaId) => dispatch(unlikeCard(ideaId)),
 })
 
 
