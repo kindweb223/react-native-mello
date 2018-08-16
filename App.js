@@ -38,6 +38,7 @@ axios.interceptors.response.use(
 import reducers from './src/redux/reducers'
 import LoginStartScreen from './src/containers/LoginStartScreen'
 import LoginScreen from './src/containers/LoginScreen'
+import SignUpScreen from './src/containers/SignUpScreen'
 import HomeScreen from './src/containers/HomeScreen'
 import LoadingScreen from './src/containers/LoadingScreen';
 import ImageSliderScreen from './src/containers/ImageSliderScreen';
@@ -78,6 +79,7 @@ export default class Root extends React.Component {
         <Scene key="root">
           <Scene key="LoginStartScreen" component={ LoginStartScreen } initial hideNavBar panHandlers={null} />
           <Scene key="LoginScreen" component={ LoginScreen } hideNavBar panHandlers={null} />
+          <Scene key="SignUpScreen" component={ SignUpScreen } hideNavBar panHandlers={null} />
           <Scene key="HomeScreen" component={ HomeScreen } hideNavBar panHandlers={null} />
           <Scene key="FeedDetailScreen" component={ FeedDetailScreen } hideNavBar panHandlers={null} />
           <Scene key="DocumentSliderScreen" component={ DocumentSliderScreen } hideNavBar />

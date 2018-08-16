@@ -17,7 +17,7 @@ import AwesomeAlert from 'react-native-awesome-alerts'
 import KeyboardScrollView from '../../components/KeyboardScrollView'
 import LoadingScreen from '../LoadingScreen'
 import TextInputComponent from '../../components/TextInputComponent'
-import { userSignIn } from '../../redux/user/actions'
+import { userSignUp } from '../../redux/user/actions'
 import COLORS from '../../service/colors'
 import styles from './styles'
 const LOGO = require('../../../assets/images/Login/Group.png')
@@ -39,12 +39,13 @@ const Gradient = () => {
   )
 }
 
-class LoginScreen extends React.Component {
+class SignUpScreen extends React.Component {
   constructor(props) {
     super(props)
     this.state = {
-      password: 'Qwerty123',
-      // password: '',
+      password: '',
+      userEmail: props.userEmail,
+      confirmPassword: '',
       loading: false,
       isError: false,
       errorMsg: ''
@@ -52,25 +53,25 @@ class LoginScreen extends React.Component {
   }
 
   componentDidUpdate(prevProps) {
-    if (prevProps.user.loading === 'USER_SIGNIN_PENDING' && this.props.user.loading === 'USER_SIGNIN_FULFILLED') {
+    if (prevProps.user.loading === 'USER_SIGNUP_PENDING' && this.props.user.loading === 'USER_SIGNUP_FULFILLED') {
       this.setState({ loading: false })
       Actions.HomeScreen()
     }
 
-    if (prevProps.user.loading === 'USER_SIGNIN_PENDING' && this.props.user.loading === 'USER_SIGNIN_REJECTED') {
+    if (prevProps.user.loading === 'USER_SIGNUP_PENDING' && this.props.user.loading === 'USER_SIGNUP_REJECTED') {
       this.setState({ loading: false })
       this.setState({ isError: true, errorMsg: this.props.user.error })
     }
   }
 
-  onSignIn = () => {
-    const { password } = this.state
-    const param = {
-      username: this.props.userEmail,
-      password
-    }
-    this.setState({ loading: true })
-    this.props.userSignIn(param)
+  onSignUp = () => {
+    // const { password } = this.state
+    // const param = {
+    //   username: this.props.userEmail,
+    //   password
+    // }
+    // this.setState({ loading: true })
+    // this.props.userSignUp(param)
   }
 
   onForgot = () => {
@@ -84,34 +85,27 @@ class LoginScreen extends React.Component {
 
         <KeyboardScrollView>
           <View style={styles.innerContainer}>
-            <View style={styles.contentView}>
-              <View style={styles.avatarView}>
-                {/* <Image style={styles.avatar} source={LOGO} /> */}
-              </View>
-              <Text style={styles.subTitle}>{this.props.userEmail}</Text>
-              <View style={styles.content}>
-                <Text style={styles.title}>Welcome back</Text>
-                <Text style={styles.title}>Tester</Text>
-              </View>
-            </View>
 
             <View style={styles.modalContainer}>
-              <View style={styles.inputView}>
-                <TextInputComponent
-                  placeholder="Enter Password"
-                  isSecure={true}
-                  handleChange={text => this.setState({ password: text })}
-                >
-                  <TouchableOpacity onPress={() => this.onForgot()} activeOpacity={0.8}>
-                    <View style={styles.forgotView}>
-                      <Text style={styles.forgotText}>Forgot?</Text>
-                    </View>
-                  </TouchableOpacity>
-                </TextInputComponent>
-              </View>
-              <TouchableOpacity onPress={() => this.onSignIn()}>
+              <TextInputComponent
+                placeholder="Enter Email"
+                value={this.state.userEmail}
+                handleChange={text => this.setState({ userEmail: text })}
+              />
+              <TextInputComponent
+                placeholder="Enter Password"
+                isSecure={true}
+                handleChange={text => this.setState({ password: text })}
+              />
+              {/* <TouchableOpacity onPress={() => this.onForgot()} activeOpacity={0.8}>
+                <View style={styles.forgotView}>
+                  <Text style={styles.forgotText}>Forgot?</Text>
+                </View>
+              </TouchableOpacity> */}
+
+              <TouchableOpacity onPress={() => this.onSignUp()}>
                 <View style={styles.buttonView}>
-                  <Text style={styles.buttonText}>SignIn</Text>
+                  <Text style={styles.buttonText}>Continue</Text>
                 </View>
               </TouchableOpacity>
             </View>
@@ -138,6 +132,7 @@ class LoginScreen extends React.Component {
           <TouchableOpacity onPress={() => Actions.pop()} style={styles.btnBack}>
             <Feather name="arrow-left" size={25} color={'#fff'} />
           </TouchableOpacity>
+          <Text style={styles.headerText}>Create new account</Text>
           <TouchableOpacity onPress={() => {}}>
             <Feather name="info" size={25} color={'#fff'} />
           </TouchableOpacity>
@@ -147,11 +142,11 @@ class LoginScreen extends React.Component {
   }
 }
 
-LoginScreen.defaultProps = {
+SignUpScreen.defaultProps = {
   userEmail: ''
 }
 
-LoginScreen.propTypes = {
+SignUpScreen.propTypes = {
   userEmail: PropTypes.string
 }
 
@@ -160,10 +155,10 @@ const mapStateToProps = ({ user }) => ({
 })
 
 const mapDispatchToProps = dispatch => ({
-  userSignIn: (data) => dispatch(userSignIn(data)),
+  userSignp: (data) => dispatch(userSignp(data)),
 })
 
 export default connect(
   mapStateToProps,
   mapDispatchToProps
-)(LoginScreen)
+)(SignUpScreen)

@@ -6,7 +6,8 @@ import resolveError from './../../service/resolveError'
 const initialState = {
   loading: null,
   error: null,
-  contactList: []
+  contactList: [],
+  userInfo: null
 };
 
 export default function user(state = initialState, action = {}) {
@@ -15,6 +16,7 @@ export default function user(state = initialState, action = {}) {
       return {
         ...initialState,
         loading: types.USER_SIGNIN_PENDING,
+        userInfo: null,
       }
     case types.USER_SIGNIN_FULFILLED: {
       const { data, headers } = action.result
@@ -23,13 +25,16 @@ export default function user(state = initialState, action = {}) {
       if (xAuthToken) {
         axios.defaults.headers['x-auth-token'] = xAuthToken
         AsyncStorage.setItem('xAuthToken', xAuthToken)
+        AsyncStorage.setItem('userInfo', JSON.stringify(data))
       } else {
         AsyncStorage.removeItem('xAuthToken')
+        AsyncStorage.removeItem('userInfo')
       }
 
       return {
         ...state,
         error: null,
+        userInfo: data,
         loading: types.USER_SIGNIN_FULFILLED
       }
     }
@@ -38,6 +43,7 @@ export default function user(state = initialState, action = {}) {
       return {
         ...state,
         loading: types.USER_SIGNIN_REJECTED,
+        userInfo: null,
         error: resolveError('error.login.invalid', 'Your email or password is incorrect')
       }
     }
@@ -49,6 +55,7 @@ export default function user(state = initialState, action = {}) {
     case types.USER_SIGNOUT_FULFILLED: {
       const { data } = action.result
       AsyncStorage.removeItem('xAuthToken')
+      AsyncStorage.removeItem('userInfo')
 
       return {
         ...state,
@@ -85,6 +92,16 @@ export default function user(state = initialState, action = {}) {
         contactList: [],
         loading: types.GET_CONTACT_LIST_REJECTED,
         error: action.error,
+      }
+    }
+    /**
+     * set userinfo from storage
+     */
+    case types.SET_USER_INFO: {
+      const data = action.payload
+      return {
+        ...state,
+        userInfo: data
       }
     }
     default:
