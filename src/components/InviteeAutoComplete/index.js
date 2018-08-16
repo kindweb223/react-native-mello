@@ -83,6 +83,7 @@ InviteeAutoComplete.defaultProps = {
 }
 
 InviteeAutoComplete.propTypes = {
+  inviteeEmails: PropTypes.arrayOf(PropTypes.any).isRequired,
   handleChange: PropTypes.func
 }
 

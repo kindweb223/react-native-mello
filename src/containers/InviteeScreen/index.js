@@ -192,7 +192,7 @@ class InviteeScreen extends React.Component {
 
   renderFilteredContacts = (filteredContacts) => {
     return (
-      <ScrollView style={[ styles.contactList, filteredContacts.length > 0 ? { marginBottom: 20 } : { marginBottom: 0 } ]}>
+      <ScrollView style={[ styles.contactList ]}>
         {filteredContacts.map(item => (
           <TouchableOpacity onPress={() => this.onSelectContact(item)} key={item.id}>
             <View style={styles.contactItem}>

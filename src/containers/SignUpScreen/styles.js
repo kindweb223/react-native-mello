@@ -66,5 +66,24 @@ export default {
   forgotText: {
     color: COLORS.PURPLE,
     fontWeight: '600'
+  },
+  avatarView: {
+    marginBottom: 30,
+    width: '100%',
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  avatar: {
+    width: 60,
+    height: 60,
+    borderRadius: 30,
+    backgroundColor: COLORS.SOFT_GREY,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginRight: 20
+  },
+  uploadText: {
+    color: COLORS.DARK_GREY,
+    fontSize: 14
   }
 }

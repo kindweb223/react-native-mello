@@ -20,7 +20,7 @@ import TextInputComponent from '../../components/TextInputComponent'
 import { userSignUp } from '../../redux/user/actions'
 import COLORS from '../../service/colors'
 import styles from './styles'
-const LOGO = require('../../../assets/images/Login/Group.png')
+const CAMERA_ICON = require('../../../assets/images/Camera/Blue.png')
 
 const Gradient = () => {
   return(
@@ -44,6 +44,7 @@ class SignUpScreen extends React.Component {
     super(props)
     this.state = {
       password: '',
+      fullName: '',
       userEmail: props.userEmail,
       confirmPassword: '',
       loading: false,
@@ -74,7 +75,7 @@ class SignUpScreen extends React.Component {
     // this.props.userSignUp(param)
   }
 
-  onForgot = () => {
+  uploadPhoto = () => {
 
   }
 
@@ -87,11 +88,27 @@ class SignUpScreen extends React.Component {
           <View style={styles.innerContainer}>
 
             <View style={styles.modalContainer}>
+              <TouchableOpacity onPress={() => this.uploadPhoto()} activeOpacity={0.8}>
+                <View style={styles.avatarView}>
+                  <View style={styles.avatar}>
+                    <Image source={CAMERA_ICON} />
+                  </View>
+                  <Text style={styles.uploadText}>Upload avatar</Text>
+                </View>
+              </TouchableOpacity>
+
+              <TextInputComponent
+                placeholder="Full name"
+                value={this.state.fullName}
+                handleChange={text => this.setState({ fullName: text })}
+              />
+
               <TextInputComponent
                 placeholder="Enter Email"
                 value={this.state.userEmail}
                 handleChange={text => this.setState({ userEmail: text })}
               />
+
               <TextInputComponent
                 placeholder="Enter Password"
                 isSecure={true}
