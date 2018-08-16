@@ -113,6 +113,20 @@ export const unlikeCard = (id) => {
 }
 
 /**
+ * UnLike a card
+ */
+export const getCardLikes = (id) => {
+  let url = `ideas/${id}/likes`
+  return {
+    types: [types.GET_CARD_LIKES_PENDING, types.GET_CARD_LIKES_FULFILLED, types.GET_CARD_LIKES_REJECTED],
+    promise: axios({
+      method: 'get',
+      url: url,
+    }),
+  };
+}
+
+/**
  * Get a file upload url
  */
 export const getFileUploadUrl = (huntId, ideaId ) => {
