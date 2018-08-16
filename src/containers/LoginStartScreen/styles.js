@@ -44,24 +44,8 @@ export default {
     left: 0,
     right: 0
   },
-  inputView: {
-    borderRadius: 16,
-    width: '100%',
-    height: 50,
-    marginBottom: 20,
-    alignItems: 'flex-start',
-    justifyContent: 'center',
-    backgroundColor: COLORS.LIGHT_GREY_LINE,
-    paddingHorizontal: 16
-  },
-  inputStyle: {
-    color: COLORS.PURPLE,
-    flex: 1,
-    height: '100%',
-    fontWeight: '600'
-  },
   buttonView: {
-    borderRadius: 16,
+    borderRadius: 14,
     width: '100%',
     height: 60,
     backgroundColor: COLORS.PURPLE,
@@ -70,6 +54,6 @@ export default {
   },
   buttonText: {
     color: '#fff',
-    fontSize: 20
+    fontSize: 18
   }
 }

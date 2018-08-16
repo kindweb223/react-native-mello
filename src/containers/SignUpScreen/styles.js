@@ -23,48 +23,23 @@ export default {
     width: '100%',
     paddingHorizontal: CONSTANTS.PADDING
   },
+  headerText: {
+    color: '#fff',
+    fontSize: 16,
+    fontWeight: '600'
+  },
   btnback: {
     width: 100,
     height: 30,
     backgroundColor: '#ff0'
   },
-  contentView: {
-    width: '100%',
-    height: CONSTANTS.SCREEN_HEIGHT - MODAL_HEIGHT,
-    justifyContent: 'center',
-    alignItems: 'center'
-  },
-  avatarView: {
-    backgroundColor: '#fff',
-    borderRadius: 36,
-    width: 72,
-    height: 72,
-    marginBottom: 15,
-  },
-  avatar: {
-    width: '100%',
-    height: '100%'
-  },
-  subTitle: {
-    fontSize: 14,
-    color: '#fff'
-  },
-  content: {
-    alignItems: 'center',
-    justifyContent: 'center',
-    marginTop: 30,
-  },
-  title: {
-    fontWeight: 'bold',
-    fontSize: 39,
-    color: '#fff'
-  },
   modalContainer: {
     borderTopLeftRadius: 18,
     borderTopRightRadius: 18,
     backgroundColor: '#fff',
-    padding: CONSTANTS.PADDING,
-    height: MODAL_HEIGHT,
+    paddingHorizontal: CONSTANTS.PADDING,
+    paddingTop: 40,
+    paddingBottom: 55,
     position: 'absolute',
     bottom: 0,
     left: 0,
@@ -86,6 +61,7 @@ export default {
     height: 50,
     justifyContent: 'center',
     alignItems: 'center',
+    backgroundColor: 'transparent'
   },
   forgotText: {
     color: COLORS.PURPLE,
