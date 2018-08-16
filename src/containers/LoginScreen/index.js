@@ -42,7 +42,7 @@ class LoginScreen extends React.Component {
   constructor(props) {
     super(props)
     this.state = {
-      // password: 'Qwerty123',
+      password: 'Qwerty123',
       password: '',
       loading: false,
       isError: false,
