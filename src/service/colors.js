@@ -9,6 +9,7 @@ export default {
   SOFT_GREY: '#F9F9F9',
   LIGHT_GREY_LINE: '#EEEFF1',
   RED: '#FF3626',
+  DARK_RED: '#F12B65',
   YELLOW: '#FFc902',
   DARK_ORANGE: '#DD5E00',
   LIGHT_ORANGE: '#FFEFE3',

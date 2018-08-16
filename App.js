@@ -44,6 +44,7 @@ import ImageSliderScreen from './src/containers/ImageSliderScreen';
 import FeedDetailScreen from './src/containers/FeedDetailScreen';
 import DocumentSliderScreen from './src/containers/DocumentSliderScreen';
 import LikesListScreen from './src/containers/LikesListScreen';
+import CommentScreen from './src/containers/CommentScreen';
 
 
 const store = createStore(reducers, applyMiddleware(thunk, promiseMiddleware))
@@ -81,7 +82,8 @@ export default class Root extends React.Component {
           <Scene key="HomeScreen" component={ HomeScreen } hideNavBar panHandlers={null} />
           <Scene key="FeedDetailScreen" component={ FeedDetailScreen } hideNavBar panHandlers={null} />
           <Scene key="DocumentSliderScreen" component={ DocumentSliderScreen } hideNavBar />
-          <Scene key="LikesListScreen" component={ LikesListScreen } navigationBarStyle={styles.defaultNavigationBar}/>
+          <Scene key="LikesListScreen" component={ LikesListScreen } navigationBarStyle={styles.defaultNavigationBar} />
+          <Scene key="CommentScreen" component={ CommentScreen } navigationBarStyle={styles.defaultNavigationBar} />
         </Scene>
         <Scene key="LoadingScreen" component={ LoadingScreen } hideNavBar />
         <Scene key="ImageSliderScreen" component={ ImageSliderScreen } hideNavBar />

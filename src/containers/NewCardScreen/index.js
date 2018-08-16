@@ -50,6 +50,7 @@ import ImageList from '../../components/ImageListComponent';
 import DocumentList from '../../components/DocumentListComponent';
 import WebMetaList from '../../components/WebMetaListComponent';
 import LikeComponent from '../../components/LikeComponent';
+import CommentComponent from '../../components/CommentComponent';
 
 
 const ScreenVerticalMargin = 100;
@@ -439,6 +440,12 @@ class NewCardScreen extends React.Component {
     }
   }
 
+  onShowLikes(likes) {
+    if (likes > 0) {
+      Actions.LikesListScreen({idea: this.props.card.currentCard});
+    }
+  }
+
   get renderMainContent() {
     const { viewMode } = this.props;
     return (
@@ -546,14 +553,9 @@ class NewCardScreen extends React.Component {
     );
   }
 
-  onComment() {
-  }
-
   get renderLikes() {
     const {
       likes,
-      comments,
-      liked,
     } = this.props.card.currentCard.metadata;
     return (
       <View>
@@ -562,20 +564,13 @@ class NewCardScreen extends React.Component {
           <TouchableOpacity
             style={{paddingVertical: 3,}}
             activeOpacity={0.7}
-            onPress={() => this.onShowLikes()}
+            onPress={() => this.onShowLikes(likes)}
           >
             <Text style={styles.textInvitee}>{likes} people liked</Text>
           </TouchableOpacity>
           <View style={styles.rowContainer}>
             <LikeComponent idea={this.props.card.currentCard} />
-            <TouchableOpacity
-              style={[styles.rowContainer, styles.cellContainer]}
-              activeOpacity={0.7}
-              onPress={() => this.onComment()}
-            >
-              <Feather name='message-square' size={16} color={COLORS.LIGHT_GREY} />
-              <Text style={[styles.textInvitee, {marginLeft: 4}]}>{comments}</Text>
-            </TouchableOpacity>
+            <CommentComponent idea={this.props.card.currentCard} />
           </View>
         </View>
       </View>

@@ -8,6 +8,7 @@ const initialState = {
   fileUploadUrl: {},
   currentOpneGraph: {},
   currentLikes: [],
+  currentComments: [],
 };
 
 export default function card(state = initialState, action = {}) {
@@ -173,7 +174,6 @@ export default function card(state = initialState, action = {}) {
       }
     case types.GET_CARD_LIKES_FULFILLED: {
       const { data } = action.result
-      console.log('GET_CARD_LIKES_FULFILLED : ', data);
       return {
         ...state,
         loading: types.GET_CARD_LIKES_FULFILLED,
@@ -185,6 +185,30 @@ export default function card(state = initialState, action = {}) {
       return {
         ...state,
         loading: types.GET_CARD_LIKES_REJECTED,
+        error: data,
+      }
+    }
+  
+    // get card comments
+      case types.GET_CARD_COMMENTS_PENDING:
+      return {
+        ...state,
+        loading: types.GET_CARD_COMMENTS_PENDING,
+        error: null,
+      }
+    case types.GET_CARD_COMMENTS_FULFILLED: {
+      const { data } = action.result
+      return {
+        ...state,
+        loading: types.GET_CARD_COMMENTS_FULFILLED,
+        currentComments: data,
+      }
+    }
+    case types.GET_CARD_COMMENTS_REJECTED: {
+      const { data } = action.error.response
+      return {
+        ...state,
+        loading: types.GET_CARD_COMMENTS_REJECTED,
         error: data,
       }
     }
