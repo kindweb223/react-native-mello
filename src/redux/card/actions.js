@@ -113,6 +113,20 @@ export const unlikeCard = (id) => {
 }
 
 /**
+ * UnLike a card
+ */
+export const getCardLikes = (id) => {
+  let url = `ideas/${id}/likes`
+  return {
+    types: [types.GET_CARD_LIKES_PENDING, types.GET_CARD_LIKES_FULFILLED, types.GET_CARD_LIKES_REJECTED],
+    promise: axios({
+      method: 'get',
+      url: url,
+    }),
+  };
+}
+
+/**
  * Get a file upload url
  */
 export const getFileUploadUrl = (huntId, ideaId ) => {
@@ -204,7 +218,7 @@ export const getOpenGraph = (urlPath) => {
     types: [types.GET_OPEN_GRAPH_PENDING, types.GET_OPEN_GRAPH_FULFILLED, types.GET_OPEN_GRAPH_REJECTED],
     promise: axios({
       method: 'post',
-      baseURL: 'http://localhost:3000/',
+      baseURL: 'https://ueoqaymxdl.execute-api.us-east-1.amazonaws.com/dev/',
       url,
       data,
     }),

@@ -110,6 +110,7 @@ class NewFeedScreen extends React.Component {
     } else if (this.props.feedo.loading !== types.UPDATE_FEED_FULFILLED && nextProps.feedo.loading === types.UPDATE_FEED_FULFILLED) {
       // success in updating a feed
       this.onClose();
+      Actions.FeedDetailScreen({ data: nextProps.feedo.currentFeed });
     } else if (this.props.feedo.loading !== types.DELETE_FILE_PENDING && nextProps.feedo.loading === types.DELETE_FILE_PENDING) {
       // deleting a file
       loading = true;

@@ -7,6 +7,7 @@ const initialState = {
   currentCard: {},
   fileUploadUrl: {},
   currentOpneGraph: {},
+  currentLikes: [],
 };
 
 export default function card(state = initialState, action = {}) {
@@ -159,6 +160,31 @@ export default function card(state = initialState, action = {}) {
       return {
         ...state,
         loading: types.UNLIKE_CARD_REJECTED,
+        error: data,
+      }
+    }
+
+    // get card likes
+    case types.GET_CARD_LIKES_PENDING:
+      return {
+        ...state,
+        loading: types.GET_CARD_LIKES_PENDING,
+        error: null,
+      }
+    case types.GET_CARD_LIKES_FULFILLED: {
+      const { data } = action.result
+      console.log('GET_CARD_LIKES_FULFILLED : ', data);
+      return {
+        ...state,
+        loading: types.GET_CARD_LIKES_FULFILLED,
+        currentLikes: data.likes,
+      }
+    }
+    case types.GET_CARD_LIKES_REJECTED: {
+      const { data } = action.error.response
+      return {
+        ...state,
+        loading: types.GET_CARD_LIKES_REJECTED,
         error: data,
       }
     }

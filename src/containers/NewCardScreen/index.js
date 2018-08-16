@@ -13,6 +13,7 @@ import {
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 
+import { Actions } from 'react-native-router-flux'
 import Ionicons from 'react-native-vector-icons/Ionicons'
 import Entypo from 'react-native-vector-icons/Entypo'
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons'
@@ -37,9 +38,7 @@ import {
   uploadFileToS3,
   addFile,
   deleteFile,
-  getOpneGraph,
-  likeCard,
-  unlikeCard,
+  getOpenGraph,
 } from '../../redux/card/actions'
 import * as types from '../../redux/card/types'
 import { getDurationFromNow } from '../../service/dateUtils'
@@ -50,6 +49,7 @@ import LoadingScreen from '../LoadingScreen';
 import ImageList from '../../components/ImageListComponent';
 import DocumentList from '../../components/DocumentListComponent';
 import WebMetaList from '../../components/WebMetaListComponent';
+import LikeComponent from '../../components/LikeComponent';
 
 
 const ScreenVerticalMargin = 100;
@@ -164,8 +164,7 @@ class NewCardScreen extends React.Component {
       loading = true;
     } else if (this.props.card.loading !== types.UNLIKE_CARD_FULFILLED && nextProps.card.loading === types.UNLIKE_CARD_FULFILLED) {
       // success in unliking a card
-    } 
-
+    }
 
     this.setState({
       loading,
@@ -189,7 +188,6 @@ class NewCardScreen extends React.Component {
   }
 
   componentDidMount() {
-    console.log('Current Card : ', this.props.card.currentCard);
     const { viewMode } = this.props;
     if (viewMode === CONSTANTS.CARD_VIEW || viewMode === CONSTANTS.CARD_EDIT) {
       this.setState({
@@ -548,14 +546,6 @@ class NewCardScreen extends React.Component {
     );
   }
 
-  onLike(liked) {
-    if (liked) {
-      this.props.unlikeCard(this.props.card.currentCard.id);
-    } else {
-      this.props.likeCard(this.props.card.currentCard.id);
-    }
-  }
-
   onComment() {
   }
 
@@ -568,17 +558,16 @@ class NewCardScreen extends React.Component {
     return (
       <View>
         <View style={styles.line} />
-          <View style={[styles.rowContainer, {justifyContent: 'space-between', marginHorizontal: 22}]}>
-          <Text style={styles.textInvitee}>{likes} people liked</Text>
+        <View style={[styles.rowContainer, {justifyContent: 'space-between', marginHorizontal: 22}]}>
+          <TouchableOpacity
+            style={{paddingVertical: 3,}}
+            activeOpacity={0.7}
+            onPress={() => this.onShowLikes()}
+          >
+            <Text style={styles.textInvitee}>{likes} people liked</Text>
+          </TouchableOpacity>
           <View style={styles.rowContainer}>
-            <TouchableOpacity
-              style={[styles.rowContainer, styles.cellContainer]}
-              activeOpacity={0.7}
-              onPress={() => this.onLike(liked)}
-            >
-              <FontAwesome name={liked ? 'heart' : 'heart-o'} size={16} color={liked ? COLORS.RED : COLORS.LIGHT_GREY} />
-              <Text style={[styles.textInvitee, {marginLeft: 4}]}>{likes}</Text>
-            </TouchableOpacity>
+            <LikeComponent idea={this.props.card.currentCard} />
             <TouchableOpacity
               style={[styles.rowContainer, styles.cellContainer]}
               activeOpacity={0.7}
@@ -815,9 +804,7 @@ const mapDispatchToProps = dispatch => ({
   uploadFileToS3: (signedUrl, file, fileName, mimeType) => dispatch(uploadFileToS3(signedUrl, file, fileName, mimeType)),
   addFile: (ideaId, fileType, contentType, name, objectKey, accessUrl) => dispatch(addFile(ideaId, fileType, contentType, name, objectKey, accessUrl)),
   deleteFile: (ideaId, fileId) => dispatch(deleteFile(ideaId, fileId)),
-  getOpneGraph: (url) => dispatch(getOpneGraph(url)),
-  likeCard: (ideaId) => dispatch(likeCard(ideaId)),
-  unlikeCard: (ideaId) => dispatch(unlikeCard(ideaId)),
+  getOpenGraph: (url) => dispatch(getOpenGraph(url)),
 })
 
 
