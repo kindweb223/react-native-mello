@@ -7,16 +7,5 @@ export default styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     backgroundColor: 'transparent',
-  },
-  mainContentContainer: {
-    maxHeight: CONSTANTS.SCREEN_HEIGHT - 150,
-  },
-  contactList: {
-    maxHeight: 300
-  },
-  contactItem: {
-    paddingVertical: 5,
-    borderBottomWidth: 1,
-    borderColor: COLORS.LIGHT_GREY_LINE,
-  },
+  }
 })

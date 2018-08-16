@@ -12,6 +12,7 @@ import {
   Platform,
   StatusBar,
   YellowBox,
+  AsyncStorage
 } from 'react-native'
 
 import ReactNativeHaptic from 'react-native-haptic'
@@ -34,7 +35,6 @@ import FeedLoadingStateComponent from '../../components/FeedLoadingStateComponen
 import COLORS from '../../service/colors'
 import styles from './styles'
 import CONSTANTS from '../../service/constants';
-import { userSignOut } from '../../redux/user/actions'
 
 const EMPTY_ICON = require('../../../assets/images/empty_state/asset-emptystate.png')
 const SEARCH_ICON = require('../../../assets/images/Search/Grey.png')
@@ -53,6 +53,8 @@ import {
   setFeedDetailAction,
   setCurrentFeed,
 } from '../../redux/feedo/actions'
+
+import { userSignOut, setUserInfo } from '../../redux/user/actions'
 
 const TAB_STYLES = {
   height: '100%',
@@ -84,8 +86,12 @@ class HomeScreen extends React.Component {
     this.animatedOpacity = new Animated.Value(0);
   }
 
-  componentDidMount() {
+  async componentDidMount() {
     this.setState({ loading: true })
+
+    const userInfo = await AsyncStorage.getItem('userInfo')
+    this.props.setUserInfo(JSON.parse(userInfo))
+
     this.props.getFeedoList(this.state.tabIndex)
     YellowBox.ignoreWarnings(['Module RNDocumentPicker'])
   }
@@ -565,7 +571,8 @@ const mapDispatchToProps = dispatch => ({
   removeDummyFeed: (data) => dispatch(removeDummyFeed(data)),
   setFeedDetailAction: (data) => dispatch(setFeedDetailAction(data)),
   setCurrentFeed: (data) => dispatch(setCurrentFeed(data)),
-  userSignOut: () => dispatch(userSignOut())
+  userSignOut: () => dispatch(userSignOut()),
+  setUserInfo: (data) => dispatch(setUserInfo(data))
 })
 
 HomeScreen.propTypes = {
@@ -580,7 +587,8 @@ HomeScreen.propTypes = {
   addDummyFeed: PropTypes.func.isRequired,
   removeDummyFeed: PropTypes.func.isRequired,
   setFeedDetailAction: PropTypes.func.isRequired,
-  userSignOut: PropTypes.func.isRequired
+  userSignOut: PropTypes.func.isRequired,
+  setUserInfo: PropTypes.func.isRequired,
 }
 
 export default connect(

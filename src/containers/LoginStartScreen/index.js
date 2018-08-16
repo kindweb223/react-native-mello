@@ -15,6 +15,7 @@ import Modal from 'react-native-modal'
 import axios from 'axios'
 import LinearGradient from 'react-native-linear-gradient'
 import KeyboardScrollView from '../../components/KeyboardScrollView'
+import TextInputComponent from '../../components/TextInputComponent'
 import { checkAccount } from '../../redux/user/actions'
 import COLORS from '../../service/colors'
 import styles from './styles'
@@ -49,6 +50,7 @@ class LoginStartScreen extends React.Component {
   onContinue = () => {
     const { email } = this.state
     Actions.LoginScreen({ userEmail: email })
+    // Actions.SignUpScreen({ userEmail: email })
   }
 
   render () {
@@ -70,19 +72,11 @@ class LoginStartScreen extends React.Component {
             </View>
 
             <View style={styles.modalContainer}>
-              <View style={styles.inputView}>
-                <TextInput
-                  ref={ref => this.emailRef = ref}
-                  value={this.state.email}
-                  placeholder="Enter email"
-                  placeholderTextColor={COLORS.DARK_GREY}
-                  style={styles.inputStyle}
-                  onChangeText={text => this.setState({ email: text })}
-                  autoCorrect={false}
-                  autoCapitalize="none"
-                  underlineColorAndroid='transparent'
-                />
-              </View>
+              <TextInputComponent
+                value={this.state.email}
+                placeholder="Enter email"
+                handleChange={text => this.setState({ email: text })}
+              />
               <TouchableOpacity onPress={() => this.onContinue()} activeOpacity={0.8}>
                 <View style={styles.buttonView}>
                   <Text style={styles.buttonText}>Continue</Text>

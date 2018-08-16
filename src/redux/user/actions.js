@@ -51,3 +51,13 @@ export const getContactList = (userId) => {
       })  
   };
 }
+
+/**
+ * set userinfo from storage
+ */
+export const setUserInfo = (data) => {
+  return {
+    type: types.SET_USER_INFO,
+    payload: data
+  };
+}

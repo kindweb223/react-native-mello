@@ -34,12 +34,6 @@ export default {
     paddingLeft: CONSTANTS.PADDING / 2,
     paddingRight: CONSTANTS.PADDING
   },
-  closeButton: {
-    width: 50,
-    height: 50,
-    alignItems: 'flex-start',
-    justifyContent: 'center',
-  },
   sendButtonView: {
     flexDirection: 'row',
     justifyContent: 'center',
@@ -56,7 +50,6 @@ export default {
   },
   sendButtonText: {
     fontSize: 14,
-    marginLeft: 8,
     fontWeight: '600'
   },
   sendEnableButtonText: {
@@ -69,6 +62,11 @@ export default {
     fontSize: 16,
     fontWeight: '600',
     color: '#000'
+  },
+  loadingView: {
+    marginTop: 24,
+    justifyContent: 'center',
+    alignItems: 'center'
   },
   inviteeListView: {
     marginTop: 24,
@@ -91,12 +89,20 @@ export default {
   inputFieldView: {
     paddingHorizontal: CONSTANTS.PADDING
   },
-  inputItem: {
+  tagInputItem: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
     paddingVertical: 3,
-    marginBottom: 20,
+    borderBottomWidth: 1,
+    borderColor: COLORS.LIGHT_GREY_LINE,
+  },
+  messageInputItem: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    paddingVertical: 3,
+    marginVertical: 20,
     borderBottomWidth: 1,
     borderColor: COLORS.LIGHT_GREY_LINE,
   },
@@ -138,5 +144,25 @@ export default {
   successIcon: {
     fontSize: 80,
     color: COLORS.PURPLE
+  },
+  contactList: {
+    maxHeight: 300
+  },
+  contactItem: {
+    paddingVertical: 5,
+    borderBottomWidth: 1,
+    borderColor: COLORS.LIGHT_GREY_LINE,
+  },
+  invalidEmail: {
+    width: '100%',
+    backgroundColor: COLORS.LIGHT_RED,
+    paddingHorizontal: CONSTANTS.PADDING,
+    paddingVertical: 10,
+    justifyContent: 'center',
+    alignItems: 'center'
+  },
+  invalidEmailText: {
+    color: COLORS.MEDIUM_RED,
+    fontWeight: '600'
   }
 }

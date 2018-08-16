@@ -28,6 +28,12 @@ class Tags extends React.Component {
       this.tagInputRef.focus();
     }
   }
+
+  componentDidUpdate(prevProps) {
+    if (prevProps.tags !== this.props.tags) {
+      this.setState({ text: '' })
+    }
+  }
   
   onChangeText(text) {
     if (
@@ -106,6 +112,7 @@ class Tags extends React.Component {
             onChangeText={this.onChangeText.bind(this)}
             onKeyPress={this.onKeyPress.bind(this)}
             onSubmitEditing={() => {this.onCreateTag()}}
+            autoCapitalize="none"
             underlineColorAndroid='transparent'
           />
         </View>

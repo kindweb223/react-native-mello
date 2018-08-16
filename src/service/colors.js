@@ -1,5 +1,6 @@
 export default {
   PURPLE: '#4A00CD',
+  LIGHT_PURPLE: 'rgba(74, 00, 205, .2)',
   BLUE: '#006DFF',
   PRIMARY_BLACK: '#000',
   DARK_GREY: '#656974',
@@ -9,6 +10,8 @@ export default {
   SOFT_GREY: '#F9F9F9',
   LIGHT_GREY_LINE: '#EEEFF1',
   RED: '#FF3626',
+  MEDIUM_RED: '#F12B65',
+  LIGHT_RED: 'rgba(245, 43, 101, .2)',
   YELLOW: '#FFc902',
   DARK_ORANGE: '#DD5E00',
   LIGHT_ORANGE: '#FFEFE3',
