@@ -13,6 +13,7 @@ import PropTypes from 'prop-types'
 import { Actions } from 'react-native-router-flux'
 import LinearGradient from 'react-native-linear-gradient'
 import Feather from 'react-native-vector-icons/Feather'
+import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons'
 import AwesomeAlert from 'react-native-awesome-alerts'
 import KeyboardScrollView from '../../components/KeyboardScrollView'
 import LoadingScreen from '../LoadingScreen'
@@ -43,8 +44,8 @@ class LoginScreen extends React.Component {
   constructor(props) {
     super(props)
     this.state = {
-      password: 'Qwerty123',
-      // password: '',
+      // password: 'Qwerty123',
+      password: '',
       loading: false,
       isError: false,
       errorMsg: ''
@@ -139,7 +140,7 @@ class LoginScreen extends React.Component {
             <Feather name="arrow-left" size={25} color={'#fff'} />
           </TouchableOpacity>
           <TouchableOpacity onPress={() => {}}>
-            <Feather name="info" size={25} color={'#fff'} />
+            <MaterialCommunityIcons name="onepassword" size={25} color={'#fff'} />
           </TouchableOpacity>
         </View>
       </View>

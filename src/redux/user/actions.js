@@ -20,6 +20,23 @@ export const userSignIn = (data) => {
 }
 
 /**
+ * User SignUp
+ */
+export const userSignUp = (data) => {
+  const url = 'users'
+
+  return {
+    types: [types.USER_SIGNUP_PENDING, types.USER_SIGNUP_FULFILLED, types.USER_SIGNUP_REJECTED],
+    promise:
+      axios({
+        method: 'post',
+        url,
+        data
+      })  
+  };
+}
+
+/**
  * User logout
  */
 export const userSignOut = (data) => {

@@ -72,6 +72,11 @@ class InviteeScreen extends React.Component {
         this.setState({ isError: true, errorMsg: feedo.error })  
       } else {
         this.setState({ isSuccess: true, inviteeEmails: [], isAddInvitee: false })
+        // setTimeout(() => {
+        //   this.setState({ isSuccess: false }, () => {
+        //     this.props.handleModal()
+        //   })
+        // }, 2000)
       }
     }
 
@@ -192,7 +197,7 @@ class InviteeScreen extends React.Component {
 
   renderFilteredContacts = (filteredContacts) => {
     return (
-      <ScrollView style={[ styles.contactList, filteredContacts.length > 0 ? { marginBottom: 20 } : { marginBottom: 0 } ]}>
+      <ScrollView style={[ styles.contactList ]}>
         {filteredContacts.map(item => (
           <TouchableOpacity onPress={() => this.onSelectContact(item)} key={item.id}>
             <View style={styles.contactItem}>

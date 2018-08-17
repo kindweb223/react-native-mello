@@ -1,4 +1,5 @@
 {
   "error.invitee.feed.invalid": "Email is duplicated",
-  "error.login.invalid": "Your email or password is incorrect"
+  "error.login.invalid": "Your email or password is incorrect",
+  "error.user.password.invalid.registrationRequest.password": "Password doesnt meet password strength requirements"
 }

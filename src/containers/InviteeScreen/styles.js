@@ -9,7 +9,7 @@ export default {
     right: 0,
     left: 0,
     marginTop: CONSTANTS.STATUSBAR_HEIGHT,
-    paddingBottom: 21,
+    paddingBottom: 60,
     borderRadius: 18,
     backgroundColor: '#fff',
     ...Platform.select({
@@ -146,7 +146,8 @@ export default {
     color: COLORS.PURPLE
   },
   contactList: {
-    maxHeight: 300
+    maxHeight: 300,
+    marginBottom: 0
   },
   contactItem: {
     paddingVertical: 5,

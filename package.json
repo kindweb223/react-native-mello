@@ -27,6 +27,7 @@
     "react-native-mime-types": "^2.2.1",
     "react-native-modal": "^6.5.0",
     "react-native-permissions": "^1.1.1",
+    "react-native-progress": "^3.5.0",
     "react-native-router-flux": "^4.0.0-beta.31",
     "react-native-scrollable-tab-view": "git+https://github.com/skv-headless/react-native-scrollable-tab-view.git",
     "react-native-slideshow": "git+https://github.com/haqiqiw/react-native-slideshow.git",
@@ -41,6 +42,7 @@
     "react-redux": "^5.0.7",
     "redux": "^4.0.0",
     "redux-thunk": "^2.3.0",
-    "valid-url": "^1.0.9"
+    "valid-url": "^1.0.9",
+    "zxcvbn": "^4.4.2"
   }
 }

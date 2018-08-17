@@ -39,7 +39,6 @@ export default function user(state = initialState, action = {}) {
       }
     }
     case types.USER_SIGNIN_REJECTED: {
-      console.log('USER_SIGNIN_REJECTED: ', action.result)
       return {
         ...state,
         loading: types.USER_SIGNIN_REJECTED,
@@ -47,6 +46,46 @@ export default function user(state = initialState, action = {}) {
         error: resolveError('error.login.invalid', 'Your email or password is incorrect')
       }
     }
+    /**
+     * User signup
+     */
+    case types.USER_SIGNUP_PENDING:
+      console.log('USER_SIGNUP_PENDING: ')
+      return {
+        ...state,
+        loading: types.USER_SIGNUP_PENDING,
+      }
+    case types.USER_SIGNUP_FULFILLED: {
+      const { data, headers } = action.result
+
+      console.log('USER_SIGNUP_FULFILLED: ', action.result)
+
+      const xAuthToken = headers['x-auth-token']
+      if (xAuthToken) {
+        axios.defaults.headers['x-auth-token'] = xAuthToken
+        AsyncStorage.setItem('xAuthToken', xAuthToken)
+      } else {
+        AsyncStorage.removeItem('xAuthToken')
+      }
+
+      return {
+        ...state,
+        error: null,
+        loading: types.USER_SIGNUP_FULFILLED
+      }
+    }
+    case types.USER_SIGNUP_REJECTED: {
+      console.log('USER_SIGNUP_REJECTED', action.error.response.data)
+      return {
+        ...state,
+        loading: types.USER_SIGNUP_REJECTED,
+        userInfo: null,
+        error: action.error.response.data.fieldErrors
+      }
+    }
+    /**
+     * User signout
+     */
     case types.USER_SIGNOUT_PENDING:
       return {
         ...state,

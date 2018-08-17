@@ -49,6 +49,7 @@ export default {
     borderRadius: 14,
     width: '100%',
     height: 60,
+    marginTop: 10,
     backgroundColor: COLORS.PURPLE,
     alignItems: 'center',
     justifyContent: 'center'
@@ -57,14 +58,44 @@ export default {
     color: '#fff',
     fontSize: 18
   },
-  forgotView: {
+  passwordPreview: {
     height: 50,
     justifyContent: 'center',
     alignItems: 'center',
     backgroundColor: 'transparent'
   },
-  forgotText: {
-    color: COLORS.PURPLE,
-    fontWeight: '600'
+  avatarView: {
+    marginBottom: 30,
+    width: '100%',
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  avatar: {
+    width: 60,
+    height: 60,
+    borderRadius: 30,
+    backgroundColor: COLORS.SOFT_GREY,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginRight: 20,
+    overflow: 'hidden'
+  },
+  avatarImg: {
+    width: '100%',
+    height: '100%'
+  },
+  uploadText: {
+    color: COLORS.DARK_GREY,
+    fontSize: 14
+  },
+  passwordScoreView: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    marginBottom: 10
+  },
+  passwordScoreText: {
+    fontSize: 12,
+    color: COLORS.DARK_GREY
   }
 }

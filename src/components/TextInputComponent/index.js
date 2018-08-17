@@ -29,6 +29,8 @@ class TextInputComponent extends React.Component {
       backgroundColor: COLORS.LIGHT_PURPLE,
       placeholderTextColor: COLORS.PURPLE,
       textColor: COLORS.PURPLE
+    }, () => {
+      this.props.onFocus()
     })
   }
 
@@ -37,11 +39,13 @@ class TextInputComponent extends React.Component {
       backgroundColor: COLORS.SOFT_GREY,
       placeholderTextColor: COLORS.DARK_GREY,
       textColor: '#000'
+    }, () => {
+      this.props.onBlur()
     })
   }
 
   render() {
-    const { placeholder, isSecure, isError, errorText } = this.props
+    const { placeholder, isSecure, isError, errorText, ContainerStyle } = this.props
     let {
       backgroundColor,
       textColor,
@@ -54,7 +58,7 @@ class TextInputComponent extends React.Component {
     }
 
     return (
-      <View style={styles.container}>
+      <View style={[styles.container, ContainerStyle]}>
         <View style={[styles.inputView, { backgroundColor }]}>
           <TextInput
             ref={ref => this.textRef = ref}
@@ -94,7 +98,10 @@ TextInputComponent.defaultProps = {
   isSecure: false,
   value: '',
   placeholder: '',
-  handleChange: () => {}
+  ContainerStyle: {},
+  handleChange: () => {},
+  onFocus: () => {},
+  onBlur: () => {}
 }
 
 TextInputComponent.propTypes = {
@@ -103,7 +110,10 @@ TextInputComponent.propTypes = {
   isSecure: PropTypes.bool,
   value: PropTypes.string,
   placeholder: PropTypes.string,
-  handleChange: PropTypes.func
+  handleChange: PropTypes.func,
+  ContainerStyle: PropTypes.objectOf(PropTypes.any),
+  onFocus: PropTypes.func,
+  onBlur: PropTypes.func
 }
 
 export default TextInputComponent
