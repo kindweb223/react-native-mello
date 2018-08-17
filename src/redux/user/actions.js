@@ -2,6 +2,24 @@ import axios from 'axios';
 import * as types from './types'
 
 /**
+ * check user account
+ */
+export const userLookup = (data) => {
+  console.log('DATA: ', data)
+  const url = 'users/lookup'
+
+  return {
+    types: [types.USER_LOOKUP_PENDING, types.USER_LOOKUP_FULFILLED, types.USER_LOOKUP_REJECTED],
+    promise:
+      axios({
+        method: 'post',
+        url,
+        data
+      })  
+  };
+}
+
+/**
  * User login
  */
 export const userSignIn = (data) => {
