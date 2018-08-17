@@ -804,7 +804,6 @@ export default function feedo(state = initialState, action = {}) {
       const ideaIndex = findIndex(currentFeed.ideas, idea => idea.id === ideaId);
       currentFeed.ideas[ideaIndex].metadata.likes ++;
       currentFeed.ideas[ideaIndex].metadata.liked = true;
-      console.log('LIKE_CARD_FULFILLED : ', currentFeed);
       return {
         ...state,
         currentFeed: {
@@ -813,7 +812,7 @@ export default function feedo(state = initialState, action = {}) {
       }
     }
 
-    
+
     /**
      * UnLike a card in ideas
      */
@@ -833,6 +832,40 @@ export default function feedo(state = initialState, action = {}) {
     }
 
 
+    /**
+     * add a comment in ideas
+     */
+    case cardTypes.ADD_CARD_COMMENT_FULFILLED: {
+      const { currentFeed } = state
+      const ideaId = action.payload;
+      const ideaIndex = findIndex(currentFeed.ideas, idea => idea.id === ideaId);
+      currentFeed.ideas[ideaIndex].metadata.comments ++;
+      return {
+        ...state,
+        currentFeed: {
+          ...currentFeed,
+        }
+      }
+    }
+
+
+    /**
+     * delete a comment in ideas
+     */
+    case cardTypes.DELETE_CARD_COMMENT_FULFILLED: {
+      const { currentFeed } = state
+      const { ideaId } = action.payload;
+      const ideaIndex = findIndex(currentFeed.ideas, idea => idea.id === ideaId);
+      currentFeed.ideas[ideaIndex].metadata.comments --;
+      return {
+        ...state,
+        currentFeed: {
+          ...currentFeed,
+        }
+      }
+    }
+    
+    
     /**
      * Invite contact to HUNT
      */

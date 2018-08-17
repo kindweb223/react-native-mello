@@ -17,18 +17,22 @@ import styles from './styles'
 export default class InputToolbarComponent extends React.Component {
   constructor(props) {
     super(props);
-    this.state = {
-      comment: '',
-    };
   }
 
   onSend() {
     if (this.props.onSend) {
-      this.props.onSend(this.state.comment)
+      this.props.onSend()
     }
-    this.setState({
-      comment: ''
-    });
+  }
+
+  onChangeText(value) {
+    if (this.props.onChangeText) {
+      this.props.onChangeText(value)
+    }
+  }
+
+  focus() {
+    this.textInputRef.focus();
   }
 
   render() {
@@ -39,20 +43,21 @@ export default class InputToolbarComponent extends React.Component {
       <View style={styles.container}>
         <View style={styles.rowContainer}>
           <TextInput
+            ref={ref => this.textInputRef = ref}
             style={styles.textInput}
             placeholder='Type comment...'
             autoCorrect={false}
             multiline={true}
             underlineColorAndroid='transparent'
-            value={this.state.comment}
-            onChangeText={(value) => this.setState({comment: value})}
+            value={this.props.comment}
+            onChangeText={(value) => this.onChangeText(value)}
           />
           <TouchableOpacity
             style={styles.buttonContainer}
             activeOpacity={0.6}
             onPress={() => this.onSend()}
           >
-            <FontAwesome5 name='arrow-circle-right' size={27} color={this.state.comment ? COLORS.PURPLE : COLORS.MEDIUM_GREY} />
+            <FontAwesome5 name='arrow-circle-right' size={27} color={this.props.comment ? COLORS.PURPLE : COLORS.MEDIUM_GREY} />
           </TouchableOpacity>
         </View>
       </View>
@@ -62,10 +67,14 @@ export default class InputToolbarComponent extends React.Component {
 
 
 InputToolbarComponent.defaultProps = {
+  comment: '',
+  onChangeText: () => {},
   onSend: () => {},
 };
 
 
 InputToolbarComponent.propTypes = {
-  onSend: PropTypes.func,
+  comment: PropTypes.string,
+  onChangeText: PropTypes.func.isRequired,
+  onSend: PropTypes.func.isRequired,
 };
