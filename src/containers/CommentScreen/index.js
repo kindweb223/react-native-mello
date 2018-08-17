@@ -25,36 +25,15 @@ import LoadingScreen from '../LoadingScreen';
 import * as types from '../../redux/card/types'
 import { 
   getCardComments,
+  addCardComment,
+  updateCardComment,
+  deleteCardComment,
 } from '../../redux/card/actions'
 import { getDurationFromNow } from '../../service/dateUtils'
 import InputToolbarComponent from '../../components/InputToolbarComponent';
 
 
-const Comments = [
-  {
-    firstName: 'James',
-    lastName: '',
-    time: '2min ago',
-    comment: 'It looks great!',
-  },
-  {
-    firstName: 'Lisa',
-    lastName: '',
-    time: '4h ago',
-    comment: 'Hella narwhal Cosby sweater McSweeney\'s, salvia 👍 kitsch before they sold out High Life. Umami tatto.',
-  },
-  {
-    firstName: 'Thomas',
-    lastName: '',
-    time: '4h ago',
-    comment: 'James narwhal Cosby sweater McSweeney\'s 😃',
-  },
-  
-]
-
-
 class CommentScreen extends React.Component {
-
   static renderLeftButton(props) {
     return (
       <TouchableOpacity 
@@ -76,17 +55,18 @@ class CommentScreen extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      comments: Comments,
       selectedItemIndex: -1,
+      comment: '',
       loading: false,
     };
     this.keyboardHeight = new Animated.Value(0);
+    this.userInfo = {};
   }
 
   componentDidMount() {
     this.keyboardWillShowSubscription = Keyboard.addListener('keyboardWillShow', (e) => this.keyboardWillShow(e));
     this.keyboardWillHideSubscription = Keyboard.addListener('keyboardWillHide', (e) => this.keyboardWillHide(e));
-    // this.props.getCardComments(this.props.idea.id);
+    this.props.getCardComments(this.props.idea.id);
   }
 
   componentWillUnmount() {
@@ -97,12 +77,27 @@ class CommentScreen extends React.Component {
   UNSAFE_componentWillReceiveProps(nextProps) {
     let loading = false;
     if (this.props.card.loading !== types.GET_CARD_COMMENTS_PENDING && nextProps.card.loading === types.GET_CARD_COMMENTS_PENDING) {
-      // liking a card
+      // getting comments of a card
       loading = true;
     } else if (this.props.card.loading !== types.GET_CARD_COMMENTS_FULFILLED && nextProps.card.loading === types.GET_CARD_COMMENTS_FULFILLED) {
-      // success in liking a card
-      this.getCommentUsers(nextProps);
+      // success in getting comments of a card
+    } else if (this.props.card.loading !== types.ADD_CARD_COMMENT_PENDING && nextProps.card.loading === types.ADD_CARD_COMMENT_PENDING) {
+      // adding a comment of a card
+      loading = true;
+    } else if (this.props.card.loading !== types.ADD_CARD_COMMENT_FULFILLED && nextProps.card.loading === types.ADD_CARD_COMMENT_FULFILLED) {
+      // success in adding a comment of a card
+    } else if (this.props.card.loading !== types.EDIT_CARD_COMMENT_PENDING && nextProps.card.loading === types.EDIT_CARD_COMMENT_PENDING) {
+      // adding a comment of a card
+      loading = true;
+    } else if (this.props.card.loading !== types.EDIT_CARD_COMMENT_FULFILLED && nextProps.card.loading === types.EDIT_CARD_COMMENT_FULFILLED) {
+      // success in adding a comment of a card
+    } else if (this.props.card.loading !== types.DELETE_CARD_COMMENT_PENDING && nextProps.card.loading === types.DELETE_CARD_COMMENT_PENDING) {
+      // adding a comment of a card
+      loading = true;
+    } else if (this.props.card.loading !== types.DELETE_CARD_COMMENT_FULFILLED && nextProps.card.loading === types.DELETE_CARD_COMMENT_FULFILLED) {
+      // success in adding a comment of a card
     } 
+
     this.setState({
       loading,
     });
@@ -146,32 +141,13 @@ class CommentScreen extends React.Component {
     ).start();
   }
 
-  getCommentUsers(props) {
-    // let likes = [];
-    // const { currentLikes } = props.card;
-    // const { invitees } = props.feedo.currentFeed;
-    // if (currentLikes) {
-    //   currentLikes.forEach(like => {
-    //     const invitee = _.find(invitees, invitee => invitee.id === like.huntInviteeId);
-    //     if (invitee) {
-    //       likes.push({
-    //         ...like,
-    //         firstName: invitee.userProfile.firstName,
-    //         lastName: invitee.userProfile.lastName,
-    //         imageUrl: invitee.userProfile.imageUrl,
-    //       })
-    //     }
-    //   });
-    //   this.setState({
-    //     likesList: likes,
-    //   });
-    // }
-  }
-
-  onSelectItem(index) {
-    this.setState({
-      selectedItemIndex: index,
-    });
+  getCommentUser(comment) {
+    const { invitees } = this.props.feedo.currentFeed;
+    const invitee = _.find(invitees, invitee => invitee.id === comment.huntInviteeId);
+    if (invitee) {
+      return invitee.userProfile;  
+    }
+    return null;
   }
 
   get renderEdit() {
@@ -191,17 +167,45 @@ class CommentScreen extends React.Component {
   }
 
   onEdit(index) {
+    this.setState({
+      selectedItemIndex: index,
+      comment: this.props.card.currentComments[index].content,
+    });
+    this.inputToolbarRef.focus();
   }
 
   onDelete(index) {
+    this.setState({ 
+      comment: '',
+      selectedItemIndex: -1,
+    });
+    this.props.deleteCardComment(
+      this.props.idea.id, 
+      this.props.card.currentComments[index].id,
+    );
   }
 
-  onSend(comment) {
+  onSend() {
+    if (this.state.selectedItemIndex === -1) {
+      this.props.addCardComment(this.props.idea.id, this.state.comment);
+    } else {
+      this.props.updateCardComment(
+        this.props.idea.id, 
+        this.props.card.currentComments[this.state.selectedItemIndex].id,
+        this.state.comment
+      );
+    }
+    this.setState({ 
+      comment: '',
+      selectedItemIndex: -1,
+    });
+  }
+
+  onChangeText(comment) {
+    this.setState({ comment });
   }
 
   renderItem({item, index}) {
-    const name = `${item.firstName} ${item.lastName}`;
-
     const swipeoutBtns = [
       {
         component: this.renderEdit,
@@ -213,35 +217,35 @@ class CommentScreen extends React.Component {
         backgroundColor: COLORS.DARK_RED,
         onPress: () => this.onDelete(index),
       }
-    ]
-    
+    ];
+    const user = this.getCommentUser(item);
+    const enabled = user && user.id === this.props.user.userInfo.userProfileId;
+    const name = `${user.firstName} ${user.lastName}`;
+
     return (
       <Swipeout
         style={[styles.itemContainer, this.state.selectedItemIndex === index && {backgroundColor: '#4A00CD0A'}]}
+        disabled={!enabled}
         autoClose={true}
         right={swipeoutBtns}
       > 
-        <TouchableOpacity 
-          style={styles.itemButtonContainer}
-          activeOpacity={0.6}
-          onPress={() => this.onSelectItem(index)}
-        >
+        <View style={styles.itemContentContainer}>
           <UserAvatar
             size="32"
             name={name}
             color="#000"
             textColor="#fff"
-            src={item.imageUrl}
+            src={user.imageUrl}
           />
           <View style={styles.textsContainer}>
             <View style={styles.rowContainer}>
               <Text style={styles.textItemName}>{name}</Text>
               <Entypo name='dot-single' size={12} color={COLORS.DARK_GREY} />
-              <Text style={styles.textItemTime}>{/*getDurationFromNow(item.likedDate)*/item.time}</Text>
+              <Text style={styles.textItemTime}>{getDurationFromNow(item.created)}</Text>
             </View>
-            <Text style={styles.textItemComment}>{item.comment}</Text>
+            <Text style={styles.textItemComment}>{item.content}</Text>
           </View>
-        </TouchableOpacity>
+        </View>
       </Swipeout>
     );
   }
@@ -251,14 +255,17 @@ class CommentScreen extends React.Component {
       <View style={styles.container}>
         <FlatList
           contentContainerStyle={{paddingVertical: 16}}
-          data={this.state.comments}
+          data={this.props.card.currentComments}
           renderItem={this.renderItem.bind(this)}
           keyExtractor={(item, index) => index.toString()}
           extraData={this.state}
         />
         <Animated.View style={{marginBottom: this.keyboardHeight}}>
-          <InputToolbarComponent 
-            onSend={(comment) => this.onSend(comment)}
+          <InputToolbarComponent
+            ref={ref => this.inputToolbarRef = ref}
+            comment={this.state.comment}
+            onChangeText={(comment) => this.onChangeText(comment)}
+            onSend={() => this.onSend()}
           />
         </Animated.View>
         {this.state.loading && <LoadingScreen />}
@@ -277,14 +284,18 @@ CommentScreen.propTypes = {
 }
 
 
-const mapStateToProps = ({ feedo, card }) => ({
+const mapStateToProps = ({ feedo, card, user }) => ({
   feedo,
   card,
+  user,
 })
 
 
 const mapDispatchToProps = dispatch => ({
   getCardComments: (ideaId) => dispatch(getCardComments(ideaId)),
+  addCardComment: (ideaId, content) => dispatch(addCardComment(ideaId, content)),
+  updateCardComment: (ideaId, commentId, content) => dispatch(updateCardComment(ideaId, commentId, content)),
+  deleteCardComment: (ideaId, commentId) => dispatch(deleteCardComment(ideaId, commentId)),
 })
 
 

@@ -30,7 +30,7 @@ const styles = StyleSheet.create({
     borderRadius: 5,
     backgroundColor: 'transparent',
   },
-  itemButtonContainer: {
+  itemContentContainer: {
     flex: 1,
     paddingHorizontal: 7,
     paddingVertical: 11,
