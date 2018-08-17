@@ -45,22 +45,6 @@ const styles = StyleSheet.create({
     color: COLORS.MEDIUM_GREY,
     marginRight: 5 
   },
-  buttonWrapper: {
-    flexDirection: 'row',
-    marginLeft: 10,
-    padding: 5,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  icon: {
-    color: COLORS.LIGHT_GREY,
-    fontSize: 16,
-  },
-  iconText: {
-    color: COLORS.MEDIUM_GREY,
-    marginLeft: 5,
-    fontSize: 15,
-  },
   dotIcon: {
     marginRight: 5,
     color: COLORS.MEDIUM_GREY,

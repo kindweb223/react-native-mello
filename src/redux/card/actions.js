@@ -113,12 +113,26 @@ export const unlikeCard = (id) => {
 }
 
 /**
- * UnLike a card
+ * get a card likes
  */
 export const getCardLikes = (id) => {
   let url = `ideas/${id}/likes`
   return {
     types: [types.GET_CARD_LIKES_PENDING, types.GET_CARD_LIKES_FULFILLED, types.GET_CARD_LIKES_REJECTED],
+    promise: axios({
+      method: 'get',
+      url: url,
+    }),
+  };
+}
+
+/**
+ * get a card comments
+ */
+export const getCardComments = (id) => {
+  let url = `ideas/${id}/comments`
+  return {
+    types: [types.GET_CARD_COMMENTS_PENDING, types.GET_CARD_COMMENTS_FULFILLED, types.GET_CARD_COMMENTS_REJECTED],
     promise: axios({
       method: 'get',
       url: url,

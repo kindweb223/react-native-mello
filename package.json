@@ -31,6 +31,7 @@
     "react-native-scrollable-tab-view": "git+https://github.com/skv-headless/react-native-scrollable-tab-view.git",
     "react-native-slideshow": "git+https://github.com/haqiqiw/react-native-slideshow.git",
     "react-native-swipe-gestures": "^1.0.2",
+    "react-native-swipeout": "^2.3.6",
     "react-native-swiper": "^1.5.13",
     "react-native-tags": "^1.2.1",
     "react-native-underline-tabbar": "^1.3.6",

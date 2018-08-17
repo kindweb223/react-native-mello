@@ -2,12 +2,10 @@ import React from 'react'
 import {
   View,
   Text,
-  TouchableOpacity,
 } from 'react-native'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 
-import Feather from 'react-native-vector-icons/Feather'
 import Entypo from 'react-native-vector-icons/Entypo'
 import UserAvatar from 'react-native-user-avatar'
 import { filter } from 'lodash'
@@ -17,6 +15,7 @@ import COLORS from '../../service/colors'
 import { getDurationFromNow } from '../../service/dateUtils'
 import styles from './styles'
 import LikeComponent from '../LikeComponent';
+import CommentComponent from '../CommentComponent';
 
 
 class FeedCardComponent extends React.Component {
@@ -27,14 +26,8 @@ class FeedCardComponent extends React.Component {
     };
   }
 
-  onComment() {
-  }
-
   get renderBottom() {
     const { invitees, idea } = this.props;
-    const {
-      comments,
-    } = idea.metadata;
     const invitee = filter(invitees, item => item.id === idea.inviteeId)[0]
     const userName = `${invitee.userProfile.firstName} ${invitee.userProfile.lastName}`
     let isOnlyInvitee = false
@@ -77,15 +70,8 @@ class FeedCardComponent extends React.Component {
           </Text>
         </View>
         <View style={styles.subView}>
-          <LikeComponent idea={this.props.idea} />
-          <TouchableOpacity 
-            style={styles.buttonWrapper}
-            activeOpacity={0.7}
-            onPress={() => this.onComment()}
-          >
-            <Feather name="message-square" style={styles.icon} />
-            <Text style={styles.iconText}>{comments}</Text>
-          </TouchableOpacity>
+          <LikeComponent idea={idea} />
+          <CommentComponent idea={idea} />
         </View>
       </View>
     )
