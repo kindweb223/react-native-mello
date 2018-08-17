@@ -148,12 +148,17 @@ class ShareScreen extends React.Component {
     }
   }
 
+  handleModal = () => {
+    this.setState({ isInviteeModal: false }, () => {
+      this.props.onClose()
+    })
+  }
+
   render () {
     const { data } = this.props
     const { linkShareModal, shareModalType, shareInviteeData } = this.state
     let { invitees } = data
     invitees = _.sortBy(invitees, invitee => invitee.id)
-    console.log('FEED_DATA: ', data)
 
     return (
       <View style={styles.overlay}>
@@ -239,7 +244,11 @@ class ShareScreen extends React.Component {
           animationInTiming={500}
           onModalHide={() => {}}
         >
-          <InviteeScreen onClose={() => this.setState({ isInviteeModal: false })} data={data} />
+          <InviteeScreen
+            data={data}
+            onClose={() => this.setState({ isInviteeModal: false })}
+            handleModal={() => this.handleModal()}
+          />
         </Modal>
 
       </View>

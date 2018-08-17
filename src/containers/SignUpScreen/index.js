@@ -13,14 +13,24 @@ import PropTypes from 'prop-types'
 import { Actions } from 'react-native-router-flux'
 import LinearGradient from 'react-native-linear-gradient'
 import Feather from 'react-native-vector-icons/Feather'
+import Octicons from 'react-native-vector-icons/Octicons'
 import AwesomeAlert from 'react-native-awesome-alerts'
+import * as Progress from 'react-native-progress'
+import zxcvbn from 'zxcvbn'
 import KeyboardScrollView from '../../components/KeyboardScrollView'
 import LoadingScreen from '../LoadingScreen'
 import TextInputComponent from '../../components/TextInputComponent'
 import { userSignUp } from '../../redux/user/actions'
 import COLORS from '../../service/colors'
+import CONSTANTS from '../../service/constants'
 import styles from './styles'
 const CAMERA_ICON = require('../../../assets/images/Camera/Blue.png')
+const PASSWORD_PROGRESS = [
+  { color: COLORS.RED, text: 'Weak' },
+  { color: COLORS.MEDIUM_RED, text: 'Medium' },
+  { color: COLORS.YELLOW, text: 'Strong' },
+  { color: COLORS.PURPLE, text: 'Very Strong' }
+]
 
 const Gradient = () => {
   return(
@@ -49,7 +59,8 @@ class SignUpScreen extends React.Component {
       confirmPassword: '',
       loading: false,
       isError: false,
-      errorMsg: ''
+      errorMsg: '',
+      passwordScore: 0
     }
   }
 
@@ -65,6 +76,12 @@ class SignUpScreen extends React.Component {
     }
   }
 
+  changePassword = text => {
+    this.setState({ password: text })
+    const passwordScore = zxcvbn(text).score
+    this.setState({ passwordScore })
+  }
+
   onSignUp = () => {
     // const { password } = this.state
     // const param = {
@@ -78,8 +95,11 @@ class SignUpScreen extends React.Component {
   uploadPhoto = () => {
 
   }
+  
 
   render () {
+    const { passwordScore, password } = this.state
+
     return (
       <View style={styles.container}>
         <Gradient />
@@ -112,13 +132,30 @@ class SignUpScreen extends React.Component {
               <TextInputComponent
                 placeholder="Enter Password"
                 isSecure={true}
-                handleChange={text => this.setState({ password: text })}
-              />
-              {/* <TouchableOpacity onPress={() => this.onForgot()} activeOpacity={0.8}>
-                <View style={styles.forgotView}>
-                  <Text style={styles.forgotText}>Forgot?</Text>
+                ContainerStyle={{ marginBottom: 10 }}
+                handleChange={text => this.changePassword(text)}
+              >
+                <TouchableOpacity onPress={() => this.onForgot()} activeOpacity={0.8}>
+                  <View style={styles.passwordPreview}>
+                    <Octicons name="eye" size={20} color={COLORS.MEDIUM_GREY} />
+                  </View>
+                </TouchableOpacity>
+              </TextInputComponent>
+
+              {password.length > 0 && (
+                <View style={styles.passwordScoreView}>
+                  <Progress.Bar
+                    progress={(passwordScore + 1) * 0.25}
+                    width={CONSTANTS.SCREEN_SUB_WIDTH - 90}
+                    color={PASSWORD_PROGRESS[passwordScore].color}
+                    unfilledColor={COLORS.LIGHT_GREY}
+                    borderColor={COLORS.LIGHT_GREY}
+                    borderWidth={0}
+                    height={3}
+                  />
+                  <Text>{PASSWORD_PROGRESS[passwordScore].text}</Text>
                 </View>
-              </TouchableOpacity> */}
+              )}
 
               <TouchableOpacity onPress={() => this.onSignUp()}>
                 <View style={styles.buttonView}>

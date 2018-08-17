@@ -49,8 +49,8 @@ class LoginStartScreen extends React.Component {
 
   onContinue = () => {
     const { email } = this.state
-    Actions.LoginScreen({ userEmail: email })
-    // Actions.SignUpScreen({ userEmail: email })
+    // Actions.LoginScreen({ userEmail: email })
+    Actions.SignUpScreen({ userEmail: email })
   }
 
   render () {

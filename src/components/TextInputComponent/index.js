@@ -41,7 +41,7 @@ class TextInputComponent extends React.Component {
   }
 
   render() {
-    const { placeholder, isSecure, isError, errorText } = this.props
+    const { placeholder, isSecure, isError, errorText, ContainerStyle } = this.props
     let {
       backgroundColor,
       textColor,
@@ -54,7 +54,7 @@ class TextInputComponent extends React.Component {
     }
 
     return (
-      <View style={styles.container}>
+      <View style={[styles.container, ContainerStyle]}>
         <View style={[styles.inputView, { backgroundColor }]}>
           <TextInput
             ref={ref => this.textRef = ref}
@@ -94,6 +94,7 @@ TextInputComponent.defaultProps = {
   isSecure: false,
   value: '',
   placeholder: '',
+  ContainerStyle: {},
   handleChange: () => {}
 }
 
@@ -103,7 +104,8 @@ TextInputComponent.propTypes = {
   isSecure: PropTypes.bool,
   value: PropTypes.string,
   placeholder: PropTypes.string,
-  handleChange: PropTypes.func
+  handleChange: PropTypes.func,
+  ContainerStyle: PropTypes.objectOf(PropTypes.any)
 }
 
 export default TextInputComponent

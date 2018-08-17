@@ -72,6 +72,11 @@ class InviteeScreen extends React.Component {
         this.setState({ isError: true, errorMsg: feedo.error })  
       } else {
         this.setState({ isSuccess: true, inviteeEmails: [], isAddInvitee: false })
+        // setTimeout(() => {
+        //   this.setState({ isSuccess: false }, () => {
+        //     this.props.handleModal()
+        //   })
+        // }, 2000)
       }
     }
 
