@@ -77,7 +77,12 @@ export default {
     backgroundColor: COLORS.SOFT_GREY,
     justifyContent: 'center',
     alignItems: 'center',
-    marginRight: 20
+    marginRight: 20,
+    overflow: 'hidden'
+  },
+  avatarImg: {
+    width: '100%',
+    height: '100%'
   },
   uploadText: {
     color: COLORS.DARK_GREY,
@@ -88,5 +93,9 @@ export default {
     alignItems: 'center',
     justifyContent: 'space-between',
     marginBottom: 10
+  },
+  passwordScoreText: {
+    fontSize: 12,
+    color: COLORS.DARK_GREY
   }
 }

@@ -29,6 +29,8 @@ class TextInputComponent extends React.Component {
       backgroundColor: COLORS.LIGHT_PURPLE,
       placeholderTextColor: COLORS.PURPLE,
       textColor: COLORS.PURPLE
+    }, () => {
+      this.props.onFocus()
     })
   }
 
@@ -37,6 +39,8 @@ class TextInputComponent extends React.Component {
       backgroundColor: COLORS.SOFT_GREY,
       placeholderTextColor: COLORS.DARK_GREY,
       textColor: '#000'
+    }, () => {
+      this.props.onBlur()
     })
   }
 
@@ -95,7 +99,9 @@ TextInputComponent.defaultProps = {
   value: '',
   placeholder: '',
   ContainerStyle: {},
-  handleChange: () => {}
+  handleChange: () => {},
+  onFocus: () => {},
+  onBlur: () => {}
 }
 
 TextInputComponent.propTypes = {
@@ -105,7 +111,9 @@ TextInputComponent.propTypes = {
   value: PropTypes.string,
   placeholder: PropTypes.string,
   handleChange: PropTypes.func,
-  ContainerStyle: PropTypes.objectOf(PropTypes.any)
+  ContainerStyle: PropTypes.objectOf(PropTypes.any),
+  onFocus: PropTypes.func,
+  onBlur: PropTypes.func
 }
 
 export default TextInputComponent
