@@ -12,9 +12,35 @@ const initialState = {
 
 export default function user(state = initialState, action = {}) {
   switch (action.type) {
+    case types.USER_LOOKUP_PENDING:
+      console.log('USER_LOOKUP_PENDING')
+      return {
+        ...state,
+        error: null,
+        loading: types.USER_LOOKUP_PENDING,
+      }
+    case types.USER_LOOKUP_FULFILLED: {
+      const { data } = action.result
+      console.log('USER_LOOKUP_FULFILLED', data)
+
+      return {
+        ...state,
+        loading: types.USER_LOOKUP_FULFILLED
+      }
+    }
+    case types.USER_LOOKUP_REJECTED: {
+      console.log('USER_LOOKUP_REJECTED', action)
+      return {
+        ...state,
+        loading: types.USER_LOOKUP_REJECTED
+      }
+    }
+    /**
+     * User signIn
+     */
     case types.USER_SIGNIN_PENDING:
       return {
-        ...initialState,
+        ...state,
         loading: types.USER_SIGNIN_PENDING,
         userInfo: null,
       }

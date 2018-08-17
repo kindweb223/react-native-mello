@@ -14,9 +14,11 @@ import PropTypes from 'prop-types'
 import Modal from 'react-native-modal'
 import axios from 'axios'
 import LinearGradient from 'react-native-linear-gradient'
+import LoadingScreen from '../LoadingScreen'
 import KeyboardScrollView from '../../components/KeyboardScrollView'
 import TextInputComponent from '../../components/TextInputComponent'
-import { checkAccount } from '../../redux/user/actions'
+import { userLookup } from '../../redux/user/actions'
+import { xSecretToken } from '../../service/api'
 import COLORS from '../../service/colors'
 import styles from './styles'
 const LOGO = require('../../../assets/images/Login/Group.png')
@@ -42,15 +44,35 @@ class LoginStartScreen extends React.Component {
   constructor(props) {
     super(props)
     this.state = {
-      // email: 'seed-data@solvers.io'
-      email: ''
+      // email: 'seed-data@solvers.io',
+      email: '',
+      loading: false
     }
   }
+  
+  componentDidUpdate(prevProps) {
+    const { email } = this.state
 
+    if (prevProps.user.loading === 'USER_LOOKUP_PENDING' && this.props.user.loading === 'USER_LOOKUP_FULFILLED') {
+      this.setState({ loading: false })
+      Actions.LoginScreen({ userEmail: email })
+    }
+
+    if (prevProps.user.loading === 'USER_LOOKUP_PENDING' && this.props.user.loading === 'USER_LOOKUP_REJECTED') {
+      this.setState({ loading: false })
+      Actions.SignUpScreen({ userEmail: email })
+    }
+  }
+ 
   onContinue = () => {
     const { email } = this.state
-    Actions.LoginScreen({ userEmail: email })
-    // Actions.SignUpScreen({ userEmail: email })
+
+    this.setState({ loading: true })
+    const param = {
+      key: xSecretToken,
+      email
+    }
+    this.props.userLookup(param)
   }
 
   render () {
@@ -85,13 +107,17 @@ class LoginStartScreen extends React.Component {
             </View>
           </View>
         </KeyboardScrollView>
+
+        {this.state.loading && (
+          <LoadingScreen />
+        )}
       </View>
     )
   }
 }
 
 LoginStartScreen.propTypes = {
-  checkAccount: PropTypes.func.isRequired
+  userLookup: PropTypes.func.isRequired
 }
 
 const mapStateToProps = ({ user }) => ({
@@ -99,7 +125,7 @@ const mapStateToProps = ({ user }) => ({
 })
 
 const mapDispatchToProps = dispatch => ({
-  checkAccount: (feedId, data) => dispatch(checkAccount(feedId, data)),
+  userLookup: (data) => dispatch(userLookup(data)),
 })
 
 export default connect(
