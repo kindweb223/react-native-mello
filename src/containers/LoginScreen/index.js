@@ -79,6 +79,8 @@ class LoginScreen extends React.Component {
   }
 
   render () {
+    const { userName } = this.props
+
     return (
       <View style={styles.container}>
         <Gradient />
@@ -92,7 +94,7 @@ class LoginScreen extends React.Component {
               <Text style={styles.subTitle}>{this.props.userEmail}</Text>
               <View style={styles.content}>
                 <Text style={styles.title}>Welcome back</Text>
-                <Text style={styles.title}>Tester</Text>
+                <Text style={styles.title}>{userName}</Text>
               </View>
             </View>
 
@@ -149,11 +151,13 @@ class LoginScreen extends React.Component {
 }
 
 LoginScreen.defaultProps = {
-  userEmail: ''
+  userEmail: '',
+  userName: ''
 }
 
 LoginScreen.propTypes = {
-  userEmail: PropTypes.string
+  userEmail: PropTypes.string,
+  userName: PropTypes.string
 }
 
 const mapStateToProps = ({ user }) => ({
