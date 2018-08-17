@@ -14,7 +14,6 @@ const initialState = {
 export default function user(state = initialState, action = {}) {
   switch (action.type) {
     case types.USER_LOOKUP_PENDING:
-      console.log('USER_LOOKUP_PENDING')
       return {
         ...state,
         error: null,
@@ -23,7 +22,6 @@ export default function user(state = initialState, action = {}) {
       }
     case types.USER_LOOKUP_FULFILLED: {
       const { data } = action.result
-      console.log('USER_LOOKUP_FULFILLED', data)
 
       return {
         ...state,
@@ -32,7 +30,6 @@ export default function user(state = initialState, action = {}) {
       }
     }
     case types.USER_LOOKUP_REJECTED: {
-      console.log('USER_LOOKUP_REJECTED', action)
       return {
         ...state,
         userLookup: null,
