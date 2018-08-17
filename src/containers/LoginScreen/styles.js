@@ -40,6 +40,7 @@ export default {
     width: 72,
     height: 72,
     marginBottom: 15,
+    overflow: 'hidden'
   },
   avatar: {
     width: '100%',

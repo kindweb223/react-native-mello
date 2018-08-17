@@ -67,7 +67,7 @@ class LoginScreen extends React.Component {
   onSignIn = () => {
     const { password } = this.state
     const param = {
-      username: this.props.userEmail,
+      username: this.props.userData.email,
       password
     }
     this.setState({ loading: true })
@@ -79,7 +79,7 @@ class LoginScreen extends React.Component {
   }
 
   render () {
-    const { userName } = this.props
+    const { userData } = this.props
 
     return (
       <View style={styles.container}>
@@ -88,13 +88,16 @@ class LoginScreen extends React.Component {
         <KeyboardScrollView>
           <View style={styles.innerContainer}>
             <View style={styles.contentView}>
-              <View style={styles.avatarView}>
-                {/* <Image style={styles.avatar} source={LOGO} /> */}
-              </View>
-              <Text style={styles.subTitle}>{this.props.userEmail}</Text>
+              {userData.imageUrl && (
+                <View style={styles.avatarView}>
+                  <Image style={styles.avatar} source={{ uri: userData.imageUrl }} />
+                </View>
+              )}
+
+              <Text style={styles.subTitle}>{userData.email}</Text>
               <View style={styles.content}>
                 <Text style={styles.title}>Welcome back</Text>
-                <Text style={styles.title}>{userName}</Text>
+                <Text style={styles.title}>{userData.firstName}</Text>
               </View>
             </View>
 
@@ -151,13 +154,11 @@ class LoginScreen extends React.Component {
 }
 
 LoginScreen.defaultProps = {
-  userEmail: '',
-  userName: ''
+  userData: {}
 }
 
 LoginScreen.propTypes = {
-  userEmail: PropTypes.string,
-  userName: PropTypes.string
+  userEmail: PropTypes.objectOf(PropTypes.any),
 }
 
 const mapStateToProps = ({ user }) => ({
