@@ -113,7 +113,7 @@ export const unlikeCard = (id) => {
 }
 
 /**
- * get a card likes
+ * get likes of a card 
  */
 export const getCardLikes = (id) => {
   let url = `ideas/${id}/likes`
@@ -127,7 +127,7 @@ export const getCardLikes = (id) => {
 }
 
 /**
- * get a card comments
+ * get comments of a card 
  */
 export const getCardComments = (id) => {
   let url = `ideas/${id}/comments`
@@ -139,6 +139,62 @@ export const getCardComments = (id) => {
     }),
   };
 }
+
+/**
+ * add a comment to a card
+ */
+export const addCardComment = (ideaId, content) => {
+  let url = `ideas/${ideaId}/comments`
+  const data = {
+    content,
+  }
+  return {
+    types: [types.ADD_CARD_COMMENT_PENDING, types.ADD_CARD_COMMENT_FULFILLED, types.ADD_CARD_COMMENT_REJECTED],
+    promise: axios({
+      method: 'post',
+      url: url,
+      data,
+    }),
+    payload: ideaId,
+  };
+}
+
+
+/**
+ * update a comment in a card
+ */
+export const updateCardComment = (ideaId, commentId, content) => {
+  let url = `ideas/${ideaId}/comments/${commentId}`
+  const data = {
+    content,
+  }
+  return {
+    types: [types.EDIT_CARD_COMMENT_PENDING, types.EDIT_CARD_COMMENT_FULFILLED, types.EDIT_CARD_COMMENT_REJECTED],
+    promise: axios({
+      method: 'put',
+      url: url,
+      data,
+    }),
+  };
+}
+
+
+/**
+ * delete a comment in a card
+ */
+export const deleteCardComment = (ideaId, commentId) => {
+  let url = `ideas/${ideaId}/comments/${commentId}`
+  return {
+    types: [types.DELETE_CARD_COMMENT_PENDING, types.DELETE_CARD_COMMENT_FULFILLED, types.DELETE_CARD_COMMENT_REJECTED],
+    promise: axios({
+      method: 'delete',
+      url: url,
+    }),
+    payload: { ideaId, commentId }
+  };
+}
+
+
 
 /**
  * Get a file upload url

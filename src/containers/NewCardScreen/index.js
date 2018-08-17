@@ -189,6 +189,7 @@ class NewCardScreen extends React.Component {
   }
 
   componentDidMount() {
+    console.log('Currrent Card : ', this.props.card.currentCard);
     const { viewMode } = this.props;
     if (viewMode === CONSTANTS.CARD_VIEW || viewMode === CONSTANTS.CARD_EDIT) {
       this.setState({

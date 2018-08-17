@@ -32,7 +32,6 @@ export default function card(state = initialState, action = {}) {
     }
     case types.CREATE_CARD_REJECTED: {
       const { data } = action.error.response
-      console.log('CREATE_CARD_REJECTED : ', action.error);
       return {
         ...state,
         loading: types.CREATE_CARD_REJECTED,
@@ -209,6 +208,89 @@ export default function card(state = initialState, action = {}) {
       return {
         ...state,
         loading: types.GET_CARD_COMMENTS_REJECTED,
+        error: data,
+      }
+    }
+
+    // add a comment
+    case types.ADD_CARD_COMMENT_PENDING:
+      return {
+        ...state,
+        loading: types.ADD_CARD_COMMENT_PENDING,
+        error: null,
+      }
+    case types.ADD_CARD_COMMENT_FULFILLED: {
+      const { data } = action.result
+      return {
+        ...state,
+        loading: types.ADD_CARD_COMMENT_FULFILLED,
+        currentComments: [
+          data,
+          ...state.currentComments,
+        ],
+      }
+    }
+    case types.ADD_CARD_COMMENT_REJECTED: {
+      const { data } = action.error.response
+      return {
+        ...state,
+        loading: types.ADD_CARD_COMMENT_REJECTED,
+        error: data,
+      }
+    }
+
+    // update a comment
+    case types.EDIT_CARD_COMMENT_PENDING:
+      return {
+        ...state,
+        loading: types.EDIT_CARD_COMMENT_PENDING,
+        error: null,
+      }
+    case types.EDIT_CARD_COMMENT_FULFILLED: {
+      const { data } = action.result
+      const { currentComments } = state
+      const commentIndex = _.findIndex(currentComments, comment => comment.id === data.id);
+      currentComments[commentIndex] = data;
+      return {
+        ...state,
+        loading: types.EDIT_CARD_COMMENT_FULFILLED,
+        currentComments: [
+          ...currentComments,
+        ],
+      }
+    }
+    case types.EDIT_CARD_COMMENT_REJECTED: {
+      const { data } = action.error.response
+      return {
+        ...state,
+        loading: types.EDIT_CARD_COMMENT_REJECTED,
+        error: data,
+      }
+    }
+
+    // delete a comment
+    case types.DELETE_CARD_COMMENT_PENDING:
+      return {
+        ...state,
+        loading: types.DELETE_CARD_COMMENT_PENDING,
+        error: null,
+      }
+    case types.DELETE_CARD_COMMENT_FULFILLED: {
+      const { commentId } = action.payload
+      const currentComments = _.filter(state.currentComments, comment => comment.id !== commentId);
+      return {
+        ...state,
+        loading: types.DELETE_CARD_COMMENT_FULFILLED,
+        currentComments: [
+          ...currentComments,
+        ],
+      }
+    }
+    case types.DELETE_CARD_COMMENT_REJECTED: {
+      const { data } = action.error.response
+      return {
+        ...state,
+        loading: types.DELETE_CARD_COMMENT_REJECTED,
         error: data,
       }
     }
