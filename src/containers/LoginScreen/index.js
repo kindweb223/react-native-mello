@@ -6,7 +6,8 @@ import {
   TextInput,
   TouchableOpacity,
   ActivityIndicator,
-  Image
+  Image,
+  Alert
 } from 'react-native'
 import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
@@ -14,7 +15,6 @@ import { Actions } from 'react-native-router-flux'
 import LinearGradient from 'react-native-linear-gradient'
 import Feather from 'react-native-vector-icons/Feather'
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons'
-import AwesomeAlert from 'react-native-awesome-alerts'
 import KeyboardScrollView from '../../components/KeyboardScrollView'
 import LoadingScreen from '../LoadingScreen'
 import TextInputComponent from '../../components/TextInputComponent'
@@ -47,10 +47,8 @@ class LoginScreen extends React.Component {
       // password: 'Qwerty123',
       password: '',
       loading: false,
-      isError: false,
       isInvalidError: false,
-      errorText: '',
-      errorMsg: ''
+      errorText: ''
     }
   }
 
@@ -61,8 +59,12 @@ class LoginScreen extends React.Component {
     }
 
     if (prevProps.user.loading === 'USER_SIGNIN_PENDING' && this.props.user.loading === 'USER_SIGNIN_REJECTED') {
-      this.setState({ loading: false })
-      this.setState({ isError: true, errorMsg: this.props.user.error })
+      this.setState({ loading: false }, () => {
+        Alert.alert(
+          'Warning',
+          this.props.user.error
+        )
+      })
     }
   }
 
@@ -148,18 +150,6 @@ class LoginScreen extends React.Component {
         {this.state.loading && (
           <LoadingScreen />
         )}
-
-        <AwesomeAlert
-          show={this.state.isError}
-          showProgress={false}
-          title="Warning"
-          message={this.state.errorMsg}
-          closeOnTouchOutside={true}
-          closeOnHardwareBackPress={false}
-          showCancelButton={true}
-          cancelButtonColor='rgba(255, 0, 0, 0.6)'
-          onCancelPressed={() => this.setState({ isError: false })}
-        />
 
         <View style={styles.headerView}>
           <TouchableOpacity onPress={() => Actions.pop()} style={styles.btnBack}>
