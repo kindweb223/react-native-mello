@@ -8,7 +8,7 @@ import {
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
 import PropTypes from 'prop-types'
 
-const KeyboardScrollView = ({ children, isKeyboardVerticalOffset }) => {
+const KeyboardScrollView = ({ children, isKeyboardVerticalOffset, extraScrollHeight }) => {
   if (Platform.OS === 'android') {
     return (
       <KeyboardAvoidingView
@@ -23,17 +23,23 @@ const KeyboardScrollView = ({ children, isKeyboardVerticalOffset }) => {
   }
 
   return (
-    <KeyboardAwareScrollView>{children}</KeyboardAwareScrollView>
+    <KeyboardAwareScrollView 
+      extraScrollHeight={extraScrollHeight}
+    >
+      {children}
+    </KeyboardAwareScrollView>
   )
 }
 
 KeyboardScrollView.propTypes = {
   isKeyboardVerticalOffset: PropTypes.bool,
+  extraScrollHeight: PropTypes.number,
   children: PropTypes.node.isRequired
 }
 
 KeyboardScrollView.defaultProps = {
-  isKeyboardVerticalOffset: true
+  isKeyboardVerticalOffset: true,
+  extraScrollHeight: 10
 }
 
 export default KeyboardScrollView
