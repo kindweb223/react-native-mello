@@ -248,7 +248,7 @@ class SignUpScreen extends React.Component {
       <View style={styles.container}>
         <Gradient />
 
-        <KeyboardScrollView>
+        <KeyboardScrollView extraScrollHeight={100}>
           <View style={styles.innerContainer}>
 
             <View style={styles.modalContainer}>
