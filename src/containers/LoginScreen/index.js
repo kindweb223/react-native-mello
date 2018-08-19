@@ -101,7 +101,7 @@ class LoginScreen extends React.Component {
         <Gradient />
 
         <SafeAreaView>
-          <KeyboardScrollView extraScrollHeight={120}>
+          <KeyboardScrollView extraScrollHeight={isInvalidError ? 120 : 100}>
             <View style={styles.innerContainer}>
               <View style={styles.contentView}>
                 <View style={styles.avatarView}>
