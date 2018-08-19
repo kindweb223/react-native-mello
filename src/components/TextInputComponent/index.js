@@ -45,7 +45,7 @@ class TextInputComponent extends React.Component {
   }
 
   render() {
-    const { placeholder, isSecure, isError, errorText, ContainerStyle } = this.props
+    const { placeholder, isSecure, isError, errorText, ContainerStyle, returnKeyType, keyboardType } = this.props
     let {
       backgroundColor,
       textColor,
@@ -78,6 +78,9 @@ class TextInputComponent extends React.Component {
             underlineColorAndroid='transparent'
             secureTextEntry={isSecure}
             autoCapitalize="none"
+            keyboardType={keyboardType}
+            returnKeyType={returnKeyType}
+            onSubmitEditing={() => this.props.onSubmitEditing()}
           />
         
           {this.props.children}
@@ -99,9 +102,12 @@ TextInputComponent.defaultProps = {
   value: '',
   placeholder: '',
   ContainerStyle: {},
+  returnKeyType: 'go',
+  keyboardType: "default",
   handleChange: () => {},
   onFocus: () => {},
-  onBlur: () => {}
+  onBlur: () => {},
+  onSubmitEditing: () => {}
 }
 
 TextInputComponent.propTypes = {
@@ -113,7 +119,10 @@ TextInputComponent.propTypes = {
   handleChange: PropTypes.func,
   ContainerStyle: PropTypes.objectOf(PropTypes.any),
   onFocus: PropTypes.func,
-  onBlur: PropTypes.func
+  onBlur: PropTypes.func,
+  onSubmitEditing: PropTypes.func,
+  returnKeyType: PropTypes.string,
+  keyboardType: PropTypes.string
 }
 
 export default TextInputComponent
