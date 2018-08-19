@@ -26,10 +26,6 @@ import {
   removeTagFromHunt,
 } from '../../redux/feedo/actions'
 import * as types from '../../redux/feedo/types'
-import {
-  UserId,
-} from '../../service/api';
-
 
 class TagCreateScreen extends React.Component {
   constructor(props) {
@@ -44,8 +40,10 @@ class TagCreateScreen extends React.Component {
   }
 
   componentDidMount() {
+    const { userInfo } = this.props.user
+
     setTimeout(() => {
-      this.props.getUserTags(UserId);
+      this.props.getUserTags(userInfo.userProfileId);
     }, CONSTANTS.ANIMATEION_MILLI_SECONDS + 50)
   }
 
@@ -127,6 +125,8 @@ class TagCreateScreen extends React.Component {
   }
 
   onCreateTag(text) {
+    const { userInfo } = this.props.user
+
     const tag = _.find(this.state.userTags, (tag) => { 
       return tag.text == text; 
     });
@@ -136,7 +136,7 @@ class TagCreateScreen extends React.Component {
       return;
     }
     this.newTagName = text;
-    this.props.createUserTag(UserId, text);
+    this.props.createUserTag(userInfo.userProfileId, text);
   }
 
   onRemoveTag(tag) {

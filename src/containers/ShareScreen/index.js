@@ -22,7 +22,7 @@ import InviteeScreen from '../InviteeScreen'
 import { SERVER_URL } from '../../service/api'
 import { updateSharingPreferences, deleteInvitee, updateInviteePermission } from '../../redux/feedo/actions'
 import COLORS from '../../service/colors'
-import * as USER_ROLE from '../../service/userRole'
+import * as COMMON_FUNC from '../../service/commonFunc'
 import styles from './styles'
 const PLUS_ICON = require('../../../assets/images/Add/White.png')
 const CLOSE_ICON = require('../../../assets/images/Close/Blue.png')
@@ -48,19 +48,19 @@ class ShareScreen extends React.Component {
   }
 
   onShowInviteeModal = (feed) => {
-    if (USER_ROLE.checkOwnerEditor(feed)) {
+    if (COMMON_FUNC.checkOwnerEditor(feed)) {
       this.setState({ isInviteeModal: true })
     }
   }
 
   onLinkShare = (feed) => {
-    if (USER_ROLE.checkOwnerEditor(feed)) {
+    if (COMMON_FUNC.checkOwnerEditor(feed)) {
       this.setState({ linkShareModal: true, shareModalType: 'share', shareInviteeData: {} })
     }
   }
 
   onPressInvitee = (feed, invitee) => {
-    if (!USER_ROLE.checkOwnerinvitee(feed, invitee) && USER_ROLE.checkOwnerEditor(feed)) {
+    if (!COMMON_FUNC.checkOwnerinvitee(feed, invitee) && COMMON_FUNC.checkOwnerEditor(feed)) {
       this.setState({ linkShareModal: true, shareModalType: 'invitee', shareInviteeData: invitee })
     }
   }
@@ -205,7 +205,7 @@ class ShareScreen extends React.Component {
                         <InviteeItemComponent
                           invitee={invitee}
                           isViewOnly={false}
-                          isOwnerInvitee={USER_ROLE.checkOwnerinvitee(data, invitee)}
+                          isOwnerInvitee={COMMON_FUNC.checkOwnerinvitee(data, invitee)}
                         />
                       </View>
                     </View>

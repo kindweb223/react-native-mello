@@ -48,6 +48,8 @@ class LoginScreen extends React.Component {
       password: '',
       loading: false,
       isError: false,
+      isInvalidError: false,
+      errorText: '',
       errorMsg: ''
     }
   }
@@ -66,6 +68,11 @@ class LoginScreen extends React.Component {
 
   onSignIn = () => {
     const { password } = this.state
+    if (password.length === 0) {
+      this.setState({ isInvalidError: true, errorText: 'Password is required' })
+      return
+    }
+
     const param = {
       username: this.props.userData.email,
       password
@@ -74,55 +81,69 @@ class LoginScreen extends React.Component {
     this.props.userSignIn(param)
   }
 
+  handleChange = text => {
+    if (text.length > 0) {
+      this.setState({ isInvalidError: false })
+    }
+    this.setState({ password: text })
+  }
+
   onForgot = () => {
 
   }
 
   render () {
     const { userData } = this.props
+    const { isInvalidError, errorText } = this.state
 
     return (
       <View style={styles.container}>
         <Gradient />
 
-        <KeyboardScrollView extraScrollHeight={100}>
-          <View style={styles.innerContainer}>
-            <View style={styles.contentView}>
-              {userData.imageUrl && (
+        <SafeAreaView>
+          <KeyboardScrollView extraScrollHeight={isInvalidError ? 120 : 100}>
+            <View style={styles.innerContainer}>
+              <View style={styles.contentView}>
                 <View style={styles.avatarView}>
-                  <Image style={styles.avatar} source={{ uri: userData.imageUrl }} />
+                  {userData.imageUrl
+                    ? <Image style={styles.avatar} source={{ uri: userData.imageUrl }} />
+                    : <Image style={styles.defaultAvatar} source={LOGO} />
+                  }
                 </View>
-              )}
 
-              <Text style={styles.subTitle}>{userData.email}</Text>
-              <View style={styles.content}>
-                <Text style={styles.title}>Welcome back</Text>
-                <Text style={styles.title}>{userData.firstName}</Text>
+                <Text style={styles.subTitle}>{userData.email}</Text>
+                <View style={styles.content}>
+                  <Text style={styles.title}>Welcome back</Text>
+                  <Text style={styles.title}>{userData.firstName}</Text>
+                </View>
+              </View>
+
+              <View style={styles.modalContainer}>
+                <View style={styles.inputView}>
+                  <TextInputComponent
+                    placeholder="Enter Password"
+                    isSecure={true}
+                    isError={isInvalidError}
+                    errorText={errorText}
+                    handleChange={text => this.handleChange(text)}
+                    onSubmitEditing={() => this.onSignIn()}
+                  >
+                    <TouchableOpacity onPress={() => this.onForgot()} activeOpacity={0.8}>
+                      <View style={styles.forgotView}>
+                        <Text style={styles.forgotText}>Forgot?</Text>
+                      </View>
+                    </TouchableOpacity>
+                  </TextInputComponent>
+                </View>
+                <TouchableOpacity onPress={() => this.onSignIn()}>
+                  <View style={styles.buttonView}>
+                    <Text style={styles.buttonText}>SignIn</Text>
+                  </View>
+                </TouchableOpacity>
               </View>
             </View>
-
-            <View style={styles.modalContainer}>
-              <View style={styles.inputView}>
-                <TextInputComponent
-                  placeholder="Enter Password"
-                  isSecure={true}
-                  handleChange={text => this.setState({ password: text })}
-                >
-                  <TouchableOpacity onPress={() => this.onForgot()} activeOpacity={0.8}>
-                    <View style={styles.forgotView}>
-                      <Text style={styles.forgotText}>Forgot?</Text>
-                    </View>
-                  </TouchableOpacity>
-                </TextInputComponent>
-              </View>
-              <TouchableOpacity onPress={() => this.onSignIn()}>
-                <View style={styles.buttonView}>
-                  <Text style={styles.buttonText}>SignIn</Text>
-                </View>
-              </TouchableOpacity>
-            </View>
-          </View>
-        </KeyboardScrollView>
+          </KeyboardScrollView>
+        </SafeAreaView>
 
         {this.state.loading && (
           <LoadingScreen />

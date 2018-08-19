@@ -40,11 +40,18 @@ export default {
     width: 72,
     height: 72,
     marginBottom: 15,
-    overflow: 'hidden'
+    overflow: 'hidden',
+    alignItems: 'center',
+    justifyContent: 'center'
   },
   avatar: {
     width: '100%',
-    height: '100%'
+    height: '100%',
+  },
+  defaultAvatar: {
+    marginTop: 25,
+    width: 100,
+    height: 100,
   },
   subTitle: {
     fontSize: 14,

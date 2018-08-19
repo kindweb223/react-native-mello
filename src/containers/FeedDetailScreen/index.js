@@ -42,11 +42,8 @@ import {
 import {
   setCurrentCard,
 } from '../../redux/card/actions'
-import {
-  UserId,
-} from '../../service/api'
 import COLORS from '../../service/colors'
-import * as USER_ROLE from '../../service/userRole'
+import * as COMMON_FUNC from '../../service/commonFunc'
 import styles from './styles'
 import actionSheetStyles from '../FeedLongHoldMenuScreen/styles'
 
@@ -392,7 +389,7 @@ class FeedDetailScreen extends React.Component {
 
     let avatars = []
     if (!isEmpty(currentFeed)) {
-      const isOwner = USER_ROLE.checkOwner(currentFeed)
+      const isOwner = COMMON_FUNC.checkOwner(currentFeed)
 
       if (isOwner) {
         avatars = [

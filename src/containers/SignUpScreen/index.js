@@ -30,6 +30,7 @@ import { userSignUp } from '../../redux/user/actions'
 import COLORS from '../../service/colors'
 import CONSTANTS from '../../service/constants'
 import resolveError from '../../service/resolveError'
+import * as COMMON_FUNC from '../../service/commonFunc'
 import styles from './styles'
 
 const CAMERA_ICON = require('../../../assets/images/Camera/Blue.png')
@@ -127,15 +128,10 @@ class SignUpScreen extends React.Component {
     this.setState({ isPasswordFocus: status })
   }
 
-  validateEmail = (email) => {
-    let re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
-    return re.test(email.toLowerCase())
-  }
-
   onSignUp = () => {
     const { ERRORS, avatarFile, userEmail, fullName, password, passwordScore } = this.state
     console.log('avatarFile: ', avatarFile)
-    // if (!this.validateEmail(userEmail)) {
+    // if (!COMMON_FUNC.validateEmail(userEmail)) {
     //   ERRORS.email = true
     // } else {
     //   ERRORS.email = false
@@ -270,6 +266,7 @@ class SignUpScreen extends React.Component {
                 isError={fieldErrors[0].field === 'fullname' ? true : false}
                 errorText={resolveError(fieldErrors[0].code, fieldErrors[0].message)}
                 handleChange={text => this.changeFullName(text)}
+                returnKeyType="return"
               />
 
               <TextInputComponent
@@ -278,6 +275,8 @@ class SignUpScreen extends React.Component {
                 isError={fieldErrors[0].field === 'email' ? true : false}
                 errorText={resolveError(fieldErrors[0].code, fieldErrors[0].message)}
                 handleChange={text => this.setState({ userEmail: text })}
+                returnKeyType="return"
+                keyboardType="email-address"
               />
 
               <TextInputComponent

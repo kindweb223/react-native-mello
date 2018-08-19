@@ -7,7 +7,7 @@ const MODAL_HEIGHT = 200
 export default {
   container: {
     width: CONSTANTS.SCREEN_WIDTH,
-    height: CONSTANTS.SCREEN_HEIGHT
+    height: CONSTANTS.SCREEN_HEIGHT,
   },
   contentView: {
     width: '100%',

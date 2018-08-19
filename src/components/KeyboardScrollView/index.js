@@ -23,8 +23,9 @@ const KeyboardScrollView = ({ children, isKeyboardVerticalOffset, extraScrollHei
   }
 
   return (
-    <KeyboardAwareScrollView 
+    <KeyboardAwareScrollView
       extraScrollHeight={extraScrollHeight}
+      automaticallyAdjustContentInsets={true}
     >
       {children}
     </KeyboardAwareScrollView>
