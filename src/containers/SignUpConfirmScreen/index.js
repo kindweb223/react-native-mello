@@ -2,7 +2,8 @@ import React from 'react'
 import {
   View,
   Text,
-  TouchableOpacity
+  TouchableOpacity,
+  Alert
 } from 'react-native'
 import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
@@ -10,6 +11,8 @@ import { Actions } from 'react-native-router-flux'
 import LinearGradient from 'react-native-linear-gradient'
 import Ionicons from 'react-native-vector-icons/Ionicons'
 import Feather from 'react-native-vector-icons/Feather'
+import LoadingScreen from '../LoadingScreen'
+import { resendConfirmationEmail } from '../../redux/user/actions'
 import COLORS from '../../service/colors'
 import CONSTANTS from '../../service/constants'
 import styles from './styles'
@@ -35,11 +38,23 @@ class SignUpConfirmScreen extends React.Component {
   constructor(props) {
     super(props)
     this.state = {
+      loading: false
+    }
+  }
+
+  componentDidUpdate(prevProps) {
+    if (prevProps.user.loading === 'RESEND_CONFIRMATION_EMAIL_PENDING' && this.props.user.loading === 'RESEND_CONFIRMATION_EMAIL_FULFILLED') {
+      this.setState({ loading: false }, () => {
+        Alert.alert(
+          'Success'
+        )
+      })
     }
   }
 
   onResend = () => {
-
+    this.setState({ loading: true })
+    this.props.resendConfirmationEmail()
   }
 
   render () {
@@ -85,11 +100,15 @@ SignUpConfirmScreen.propTypes = {
   userEmail: PropTypes.string
 }
 
+const mapStateToProps = ({ user }) => ({
+  user
+})
+
 const mapDispatchToProps = dispatch => ({
-  resendEmail: (data) => dispatch(resendEmail(data)),
+  resendConfirmationEmail: () => dispatch(resendConfirmationEmail()),
 })
 
 export default connect(
-  null,
+  mapStateToProps,
   mapDispatchToProps
 )(SignUpConfirmScreen)

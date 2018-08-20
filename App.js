@@ -30,6 +30,9 @@ axios.interceptors.response.use(
       AsyncStorage.removeItem('xAuthToken')
       Actions.LoginStartScreen()
     }
+    // if (error.response.status === 403 && error.response.data.code === 'error.user.unconfirmed') {
+    //   Actions.SignUpConfirmScreen({ userEmail: 'test@test.com' })
+    // }
     console.log('ERROR: ', error)
     throw error
   }
@@ -40,6 +43,7 @@ import LoginStartScreen from './src/containers/LoginStartScreen'
 import LoginScreen from './src/containers/LoginScreen'
 import SignUpScreen from './src/containers/SignUpScreen'
 import SignUpConfirmScreen from './src/containers/SignUpConfirmScreen'
+import TermsAndConditionsScreen from './src/containers/TermsAndConditionsScreen'
 import HomeScreen from './src/containers/HomeScreen'
 import LoadingScreen from './src/containers/LoadingScreen';
 import ImageSliderScreen from './src/containers/ImageSliderScreen';
@@ -63,8 +67,9 @@ export default class Root extends React.Component {
     this.setState({ loading: true })
     try {
       const xAuthToken = await AsyncStorage.getItem('xAuthToken')
+      const userInfo = await AsyncStorage.getItem('userInfo')
       console.log('xAuthToken: ', xAuthToken)
-      if (xAuthToken) {
+      if (xAuthToken && userInfo) {
         axios.defaults.headers['x-auth-token'] = xAuthToken
         Actions.HomeScreen()
       }
@@ -83,6 +88,7 @@ export default class Root extends React.Component {
           <Scene key="LoginScreen" component={ LoginScreen } hideNavBar panHandlers={null} />
           <Scene key="SignUpScreen" component={ SignUpScreen } hideNavBar panHandlers={null} />
           <Scene key="SignUpConfirmScreen" component={ SignUpConfirmScreen } hideNavBar panHandlers={null} />
+          <Scene key="TermsAndConditionsScreen" component={ TermsAndConditionsScreen } hideNavBar panHandlers={null} />
           <Scene key="HomeScreen" component={ HomeScreen } hideNavBar panHandlers={null} />
           <Scene key="FeedDetailScreen" component={ FeedDetailScreen } hideNavBar panHandlers={null} />
           <Scene key="DocumentSliderScreen" component={ DocumentSliderScreen } hideNavBar />

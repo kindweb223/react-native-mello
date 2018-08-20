@@ -43,7 +43,7 @@ class TagCreateScreen extends React.Component {
     const { userInfo } = this.props.user
 
     setTimeout(() => {
-      this.props.getUserTags(userInfo.userProfileId);
+      this.props.getUserTags(userInfo.id);
     }, CONSTANTS.ANIMATEION_MILLI_SECONDS + 50)
   }
 
@@ -136,7 +136,7 @@ class TagCreateScreen extends React.Component {
       return;
     }
     this.newTagName = text;
-    this.props.createUserTag(userInfo.userProfileId, text);
+    this.props.createUserTag(userInfo.id, text);
   }
 
   onRemoveTag(tag) {

@@ -1,5 +1,10 @@
 {
   "error.invitee.feed.invalid": "Email is duplicated",
   "error.login.invalid": "Your email or password is incorrect",
-  "error.user.password.invalid.registrationRequest.password": "Password doesnt meet password strength requirements"
+  "error.user.password.invalid.registrationRequest.password": "Password doesnt meet password strength requirements",
+  "com.signup.fullname.empty": "Full name is required",
+  "com.signup.email.empty": "Email is required",
+  "com.signup.email.invalid": "Email is invalid",
+  "com.signup.password.empty": "Password is required",
+  "error.user.exists": "User is already registered"
 }
