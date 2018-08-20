@@ -1,6 +1,7 @@
 import React from 'react'
 import {
   View,
+  SafeAreaView,
   Text,
   FlatList,
   Alert,
@@ -138,15 +139,17 @@ class LIkesListScreen extends React.Component {
 
   render () {
     return (
-      <View style={styles.container}>
-        <FlatList
-          data={this.state.likesList}
-          renderItem={this.renderItem.bind(this)}
-          keyExtractor={(item, index) => index.toString()}
-          extraData={this.state}
-        />
-        {this.state.loading && <LoadingScreen />}
-      </View>
+      <SafeAreaView style={styles.container}>
+        <View style={styles.container}>
+          <FlatList
+            data={this.state.likesList}
+            renderItem={this.renderItem.bind(this)}
+            keyExtractor={(item, index) => index.toString()}
+            extraData={this.state}
+          />
+          {this.state.loading && <LoadingScreen />}
+        </View>
+      </SafeAreaView>
     );
   }
 }
