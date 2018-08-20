@@ -24,7 +24,7 @@ import ImagePicker from 'react-native-image-picker'
 import { DocumentPicker, DocumentPickerUtil } from 'react-native-document-picker'
 import Permissions from 'react-native-permissions'
 import * as mime from 'react-native-mime-types'
-import { filter, isEmpty } from 'lodash'
+import _ from 'lodash';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
 import UserAvatar from 'react-native-user-avatar'
 import validUrl from 'valid-url';
@@ -39,6 +39,7 @@ import {
   addFile,
   deleteFile,
   getOpenGraph,
+  setCoverImage,
 } from '../../redux/card/actions'
 import * as types from '../../redux/card/types'
 import { getDurationFromNow } from '../../service/dateUtils'
@@ -116,6 +117,19 @@ class NewCardScreen extends React.Component {
       loading = true;
     } else if (this.props.card.loading !== types.ADD_FILE_FULFILLED && nextProps.card.loading === types.ADD_FILE_FULFILLED) {
       // success in adding a file
+      const newImageFiles = _.filter(nextProps.card.currentCard.files, file => file.contentType.indexOf('image') !== -1);
+      if (newImageFiles.length === 1 && !nextProps.card.currentCard.coverImage) {
+        loading = true;
+        this.props.setCoverImage(this.props.card.currentCard.id, newImageFiles[0].id);
+      }
+    } else if (this.props.card.loading !== types.SET_COVER_IMAGE_PENDING && nextProps.card.loading === types.SET_COVER_IMAGE_PENDING) {
+      // setting a file as cover image
+      loading = true;
+    } else if (this.props.card.loading !== types.SET_COVER_IMAGE_FULFILLED && nextProps.card.loading === types.SET_COVER_IMAGE_FULFILLED) {
+      this.setState({
+        coverImage: nextProps.card.currentCard.coverImage,
+      });
+      // success in setting a file as cover image
     } else if (this.props.card.loading !== types.UPDATE_CARD_PENDING && nextProps.card.loading === types.UPDATE_CARD_PENDING) {
       // updating a card
       loading = true;
@@ -127,6 +141,9 @@ class NewCardScreen extends React.Component {
       loading = true;
     } else if (this.props.card.loading !== types.DELETE_FILE_FULFILLED && nextProps.card.loading === types.DELETE_FILE_FULFILLED) {
       // success in deleting a file
+      this.setState({
+        coverImage: nextProps.card.currentCard.coverImage,
+      });
     } else if (this.props.card.loading !== types.GET_OPEN_GRAPH_PENDING && nextProps.card.loading === types.GET_OPEN_GRAPH_PENDING) {
       // getting open graph
       loading = true;
@@ -367,7 +384,7 @@ class NewCardScreen extends React.Component {
     const {
       files
     } = this.props.card.currentCard;
-    const imageFiles = filter(files, file => file.fileType === 'MEDIA');
+    const imageFiles = _.filter(files, file => file.fileType === 'MEDIA');
     if (imageFiles.length > 0) {
       return (
         <ImageList 
@@ -384,7 +401,7 @@ class NewCardScreen extends React.Component {
     const {
       files
     } = this.props.card.currentCard;
-    const documentFiles = filter(files, file => file.fileType === 'FILE');
+    const documentFiles = _.filter(files, file => file.fileType === 'FILE');
     if (documentFiles.length > 0) {
       return (
         <DocumentList
@@ -447,6 +464,31 @@ class NewCardScreen extends React.Component {
     }
   }
 
+  onSelectCoverImage() {
+  }
+
+  get renderCoverImage() {
+    if (this.state.coverImage) {
+      return (
+        <Image style={styles.imageCover} source={{ uri: this.state.coverImage }} resizeMode="cover" />
+      );
+    }
+    const imageFiles = _.filter(this.props.card.currentCard.files, file => file.contentType.indexOf('image') !== -1);
+    if (imageFiles.length > 0) {
+      return (
+        <View style={styles.coverImageSelectContainer}>
+          <TouchableOpacity
+            style={styles.coverImageSelectButtonWrapper}
+            activeOpacity={0.6}
+            onPress={() => this.onSelectCoverImage()}
+          >
+            <Text style={styles.textSelectButton}>Select cover image</Text>
+          </TouchableOpacity>
+        </View>
+      );
+    }
+  }
+
   get renderMainContent() {
     const { viewMode } = this.props;
     return (
@@ -461,10 +503,7 @@ class NewCardScreen extends React.Component {
           onFocus={() => this.onFocus()}
           onBlur={() => this.onBlurTitle()}
         />
-        {
-          this.state.coverImage && 
-            <Image style={styles.imageCover} source={{ uri: this.state.coverImage }} resizeMode="cover" />
-        }
+        {this.renderCoverImage}
         <TextInput 
           style={styles.textInputIdea}
           editable={viewMode === CONSTANTS.CARD_NEW || viewMode === CONSTANTS.CARD_EDIT}
@@ -800,6 +839,7 @@ const mapDispatchToProps = dispatch => ({
   uploadFileToS3: (signedUrl, file, fileName, mimeType) => dispatch(uploadFileToS3(signedUrl, file, fileName, mimeType)),
   addFile: (ideaId, fileType, contentType, name, objectKey, accessUrl) => dispatch(addFile(ideaId, fileType, contentType, name, objectKey, accessUrl)),
   deleteFile: (ideaId, fileId) => dispatch(deleteFile(ideaId, fileId)),
+  setCoverImage: (ideaId, fileId) => dispatch(setCoverImage(ideaId, fileId)),
   getOpenGraph: (url) => dispatch(getOpenGraph(url)),
 })
 
