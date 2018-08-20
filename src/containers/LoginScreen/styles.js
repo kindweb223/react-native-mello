@@ -1,7 +1,7 @@
 import { StyleSheet, Platform } from 'react-native'
 import COLORS from '../../service/colors'
 import CONSTANTS from '../../service/constants'
-const MODAL_HEIGHT = 200
+const MODAL_HEIGHT = 220
 
 export default {
   container: {

@@ -5,7 +5,7 @@ import CONSTANTS from '../../service/constants'
 const styles = StyleSheet.create({
   container: {
     width: '100%',
-    marginBottom: 20,
+    marginBottom: 10,
   },
   inputView: {
     borderRadius: 9,
@@ -25,7 +25,10 @@ const styles = StyleSheet.create({
     fontSize: 16
   },
   errorView: {
-    padding: 10,
+    height: 20,
+    justifyContent: 'center',
+    alignItems: 'flex-start',
+    paddingHorizontal: 10,
     width: '100%'
   },
   errorText: {

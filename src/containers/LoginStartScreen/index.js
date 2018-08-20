@@ -45,8 +45,8 @@ class LoginStartScreen extends React.Component {
   constructor(props) {
     super(props)
     this.state = {
-      // email: 'seed-data@solvers.io',
-      email: '',
+      email: 'seed-data@solvers.io',
+      // email: '',
       loading: false,
       isInvalidError: false,
       errorText: ''
@@ -103,39 +103,37 @@ class LoginStartScreen extends React.Component {
       <View style={styles.container}>
         <Gradient />
         
-        <SafeAreaView>
-          <KeyboardScrollView extraScrollHeight={isInvalidError ? 120 : 100}>
-            <View style={styles.container}>
-              <View style={styles.contentView}>
-                <View style={styles.logoView}>
-                  <Image source={LOGO} />
-                </View>
-                <View style={styles.content}>
-                  <Text style={styles.title}>Get started</Text>
-                  <Text style={styles.title}>with Feedo</Text>
-                  <Text style={styles.subTitle}>Enter your email and continue</Text>
-                </View>
+        <KeyboardScrollView extraScrollHeight={isInvalidError ? 120 : 100}>
+          <View style={styles.container}>
+            <View style={styles.contentView}>
+              <View style={styles.logoView}>
+                <Image source={LOGO} />
               </View>
-
-              <View style={styles.modalContainer}>
-                <TextInputComponent
-                  value={this.state.email}
-                  placeholder="Enter email"
-                  isError={isInvalidError}
-                  errorText={errorText}
-                  keyboardType="email-address"
-                  handleChange={(text) => this.handleChange(text)}
-                  onSubmitEditing={() => this.onContinue()}
-                />
-                <TouchableOpacity onPress={() => this.onContinue()} activeOpacity={0.8}>
-                  <View style={styles.buttonView}>
-                    <Text style={styles.buttonText}>Continue</Text>
-                  </View>
-                </TouchableOpacity>
+              <View style={styles.content}>
+                <Text style={styles.title}>Get started</Text>
+                <Text style={styles.title}>with Feedo</Text>
+                <Text style={styles.subTitle}>Enter your email and continue</Text>
               </View>
             </View>
-          </KeyboardScrollView>
-        </SafeAreaView>
+
+            <View style={styles.modalContainer}>
+              <TextInputComponent
+                value={this.state.email}
+                placeholder="Enter email"
+                isError={isInvalidError}
+                errorText={errorText}
+                keyboardType="email-address"
+                handleChange={(text) => this.handleChange(text)}
+                onSubmitEditing={() => this.onContinue()}
+              />
+              <TouchableOpacity onPress={() => this.onContinue()} activeOpacity={0.8}>
+                <View style={styles.buttonView}>
+                  <Text style={styles.buttonText}>Continue</Text>
+                </View>
+              </TouchableOpacity>
+            </View>
+          </View>
+        </KeyboardScrollView>
 
         {this.state.loading && (
           <LoadingScreen />
