@@ -9,8 +9,8 @@ const styles = StyleSheet.create({
   buttonWrapper: {
     flexDirection: 'row',
     alignItems: 'center',
-    padding: 10,
-    marginTop: 15,
+    paddingLeft: 10,
+    marginBottom: 5,
   },
   textBack: {
     fontSize: 16,
@@ -24,7 +24,7 @@ const styles = StyleSheet.create({
     lineHeight: 23,
     fontWeight: '500',
     textAlign: 'center',
-    marginTop: 15,
+    marginBottom: 5,
   },
   itemContainer: {
     marginHorizontal: 9,

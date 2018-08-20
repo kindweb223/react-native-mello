@@ -42,7 +42,7 @@ class CommentScreen extends React.Component {
         style={styles.buttonWrapper}
         onPress={() => Actions.pop()}
       >
-        <Ionicons name="ios-arrow-back" size={30} color={COLORS.PURPLE} />
+        <Ionicons name="ios-arrow-back" size={27} color={COLORS.PURPLE} />
         <Text style={styles.textBack}>Back</Text>
       </TouchableOpacity>
     );
