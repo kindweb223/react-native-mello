@@ -1,6 +1,7 @@
 import React from 'react'
 import {
   View,
+  SafeAreaView,
   Text,
   FlatList,
   TouchableOpacity,
@@ -273,25 +274,27 @@ class CommentScreen extends React.Component {
 
   render () {
     return (
-      <View style={styles.container}>
-        <FlatList
-          contentContainerStyle={{paddingVertical: 16}}
-          data={this.props.card.currentComments}
-          renderItem={this.renderItem.bind(this)}
-          keyExtractor={(item, index) => index.toString()}
-          extraData={this.state}
-        />
-        <Animated.View style={{marginBottom: this.keyboardHeight}}>
-          <InputToolbarComponent
-            ref={ref => this.inputToolbarRef = ref}
-            showKeyboard={this.state.isShowKeyboard}
-            comment={this.state.comment}
-            onChangeText={(comment) => this.onChangeText(comment)}
-            onSend={() => this.onSend()}
+      <SafeAreaView style={styles.container}>
+        <View style={styles.container}>
+          <FlatList
+            contentContainerStyle={{paddingVertical: 16}}
+            data={this.props.card.currentComments}
+            renderItem={this.renderItem.bind(this)}
+            keyExtractor={(item, index) => index.toString()}
+            extraData={this.state}
           />
-        </Animated.View>
-        {this.state.loading && <LoadingScreen />}
-      </View>
+          <Animated.View style={{marginBottom: this.keyboardHeight}}>
+            <InputToolbarComponent
+              ref={ref => this.inputToolbarRef = ref}
+              showKeyboard={this.state.isShowKeyboard}
+              comment={this.state.comment}
+              onChangeText={(comment) => this.onChangeText(comment)}
+              onSend={() => this.onSend()}
+            />
+          </Animated.View>
+          {this.state.loading && <LoadingScreen />}
+        </View>
+      </SafeAreaView>
     );
   }
 }
