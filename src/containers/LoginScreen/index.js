@@ -15,6 +15,7 @@ import { Actions } from 'react-native-router-flux'
 import LinearGradient from 'react-native-linear-gradient'
 import Feather from 'react-native-vector-icons/Feather'
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons'
+import UserAvatar from 'react-native-user-avatar'
 import KeyboardScrollView from '../../components/KeyboardScrollView'
 import LoadingScreen from '../LoadingScreen'
 import TextInputComponent from '../../components/TextInputComponent'
@@ -97,7 +98,7 @@ class LoginScreen extends React.Component {
   render () {
     const { userData } = this.props
     const { isInvalidError, errorText } = this.state
-
+    console.log('userData: ', userData)
     return (
       <View style={styles.container}>
         <Gradient />
@@ -108,7 +109,12 @@ class LoginScreen extends React.Component {
               <View style={styles.avatarView}>
                 {userData.imageUrl
                   ? <Image style={styles.avatar} source={{ uri: userData.imageUrl }} />
-                  : <Image style={styles.defaultAvatar} source={LOGO} />
+                  : <UserAvatar
+                      size="72"
+                      name={`${userData.firstName} ${userData.lastName}`}
+                      color="#fff"
+                      textColor={COLORS.PURPLE}
+                    />
                 }
               </View>
 
