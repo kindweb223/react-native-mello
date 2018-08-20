@@ -102,50 +102,48 @@ class LoginScreen extends React.Component {
       <View style={styles.container}>
         <Gradient />
 
-        <SafeAreaView>
-          <KeyboardScrollView extraScrollHeight={isInvalidError ? 120 : 100}>
-            <View style={styles.innerContainer}>
-              <View style={styles.contentView}>
-                <View style={styles.avatarView}>
-                  {userData.imageUrl
-                    ? <Image style={styles.avatar} source={{ uri: userData.imageUrl }} />
-                    : <Image style={styles.defaultAvatar} source={LOGO} />
-                  }
-                </View>
-
-                <Text style={styles.subTitle}>{userData.email}</Text>
-                <View style={styles.content}>
-                  <Text style={styles.title}>Welcome back</Text>
-                  <Text style={styles.title}>{userData.firstName}</Text>
-                </View>
+        <KeyboardScrollView extraScrollHeight={isInvalidError ? 120 : 100}>
+          <View style={styles.innerContainer}>
+            <View style={styles.contentView}>
+              <View style={styles.avatarView}>
+                {userData.imageUrl
+                  ? <Image style={styles.avatar} source={{ uri: userData.imageUrl }} />
+                  : <Image style={styles.defaultAvatar} source={LOGO} />
+                }
               </View>
 
-              <View style={styles.modalContainer}>
-                <View style={styles.inputView}>
-                  <TextInputComponent
-                    placeholder="Enter Password"
-                    isSecure={true}
-                    isError={isInvalidError}
-                    errorText={errorText}
-                    handleChange={text => this.handleChange(text)}
-                    onSubmitEditing={() => this.onSignIn()}
-                  >
-                    <TouchableOpacity onPress={() => this.onForgot()} activeOpacity={0.8}>
-                      <View style={styles.forgotView}>
-                        <Text style={styles.forgotText}>Forgot?</Text>
-                      </View>
-                    </TouchableOpacity>
-                  </TextInputComponent>
-                </View>
-                <TouchableOpacity onPress={() => this.onSignIn()}>
-                  <View style={styles.buttonView}>
-                    <Text style={styles.buttonText}>SignIn</Text>
-                  </View>
-                </TouchableOpacity>
+              <Text style={styles.subTitle}>{userData.email}</Text>
+              <View style={styles.content}>
+                <Text style={styles.title}>Welcome back</Text>
+                <Text style={styles.title}>{userData.firstName}</Text>
               </View>
             </View>
-          </KeyboardScrollView>
-        </SafeAreaView>
+
+            <View style={styles.modalContainer}>
+              <View style={styles.inputView}>
+                <TextInputComponent
+                  placeholder="Enter Password"
+                  isSecure={true}
+                  isError={isInvalidError}
+                  errorText={errorText}
+                  handleChange={text => this.handleChange(text)}
+                  onSubmitEditing={() => this.onSignIn()}
+                >
+                  <TouchableOpacity onPress={() => this.onForgot()} activeOpacity={0.8}>
+                    <View style={styles.forgotView}>
+                      <Text style={styles.forgotText}>Forgot?</Text>
+                    </View>
+                  </TouchableOpacity>
+                </TextInputComponent>
+              </View>
+              <TouchableOpacity onPress={() => this.onSignIn()}>
+                <View style={styles.buttonView}>
+                  <Text style={styles.buttonText}>SignIn</Text>
+                </View>
+              </TouchableOpacity>
+            </View>
+          </View>
+        </KeyboardScrollView>
 
         {this.state.loading && (
           <LoadingScreen />

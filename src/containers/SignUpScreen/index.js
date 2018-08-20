@@ -266,7 +266,7 @@ class SignUpScreen extends React.Component {
                 isError={fieldErrors[0].field === 'fullname' ? true : false}
                 errorText={resolveError(fieldErrors[0].code, fieldErrors[0].message)}
                 handleChange={text => this.changeFullName(text)}
-                returnKeyType="return"
+                returnKeyType="done"
               />
 
               <TextInputComponent
@@ -275,7 +275,7 @@ class SignUpScreen extends React.Component {
                 isError={fieldErrors[0].field === 'email' ? true : false}
                 errorText={resolveError(fieldErrors[0].code, fieldErrors[0].message)}
                 handleChange={text => this.setState({ userEmail: text })}
-                returnKeyType="return"
+                returnKeyType="done"
                 keyboardType="email-address"
               />
 
