@@ -101,7 +101,30 @@ const styles = StyleSheet.create({
   imageCover: {
     marginHorizontal: 20,
     marginTop: 15,
-    height: CONSTANTS.SCREEN_WIDTH * 0.384,
+    height: CONSTANTS.SCREEN_WIDTH * 0.48,
+    borderRadius: 5,
+  },
+  coverImageSelectContainer: {
+    marginHorizontal: 20,
+    marginTop: 15,
+    height: CONSTANTS.SCREEN_WIDTH * 0.48,
+    borderRadius: 5,
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: COLORS.SOFT_GREY,
+  },
+  coverImageSelectButtonWrapper: {
+    height: 34,
+    width: 186,
+    borderRadius: 17,
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: COLORS.PURPLE,
+  },
+  textSelectButton: {
+    fontSize: 15,
+    fontWeight: '500',
+    color: '#fff',
   },
   outSideMoreActionContainer: {
     position: 'absolute',

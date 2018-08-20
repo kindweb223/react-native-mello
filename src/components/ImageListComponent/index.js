@@ -60,7 +60,7 @@ export default class ImageList extends React.Component {
       this.animatedRemoving.setValue(1);
       Animated.timing(this.animatedRemoving, {
         toValue: 0,
-        duration: CONSTANTS.ANIMATEION_MILLI_SECONDS + 2000,
+        duration: CONSTANTS.ANIMATEION_MILLI_SECONDS + 100,
       }).start(() => {
         this.setState({
           actionImageIndex: -1,

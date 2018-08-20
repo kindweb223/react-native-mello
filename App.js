@@ -117,12 +117,8 @@ export default class Root extends React.Component {
 const styles = StyleSheet.create({
   defaultNavigationBar: {
     height: 70,
-    // backgroundColor: whiteColor,
+    backgroundColor: '#FEFEFE',
     // borderBottomWidth: 0,
-    // shadowColor: lightGreyColor,
-		// shadowOffset: { width: 0, height: 2 },
-		// shadowOpacity: 0.19,
-		// shadowRadius: 12,
   },
   loadingContainer: {
     width: CONSTANTS.SCREEN_WIDTH,
