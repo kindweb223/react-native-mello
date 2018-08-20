@@ -6,6 +6,7 @@ import {
   TouchableOpacity,
   Animated,
   Keyboard,
+  Alert,
 } from 'react-native'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
@@ -58,6 +59,7 @@ class CommentScreen extends React.Component {
       selectedItemIndex: -1,
       comment: '',
       loading: false,
+      isShowKeyboard: false,
     };
     this.keyboardHeight = new Animated.Value(0);
     this.userInfo = {};
@@ -130,6 +132,9 @@ class CommentScreen extends React.Component {
         duration: e.duration,
       }
     ).start();
+    this.setState({
+      isShowKeyboard: true,
+    });
   }
 
   keyboardWillHide(e) {
@@ -138,7 +143,11 @@ class CommentScreen extends React.Component {
         toValue:  0,
         duration: e.duration,
       }
-    ).start();
+    ).start(() => {
+      this.setState({
+        isShowKeyboard: false,
+      });
+    });
   }
 
   getCommentUser(comment) {
@@ -172,6 +181,18 @@ class CommentScreen extends React.Component {
       comment: this.props.card.currentComments[index].content,
     });
     this.inputToolbarRef.focus();
+  }
+
+  onConfirmDelete(index) {
+    Alert.alert(
+      '',
+      'Are you sure you want to delete this comment?',
+      [
+        {text: 'No', onPress: () => console.log('Cancel Pressed'), style: 'cancel'},
+        {text: 'Yes', onPress: () => this.onDelete(index)},
+      ],
+      { cancelable: false }
+    )
   }
 
   onDelete(index) {
@@ -215,7 +236,7 @@ class CommentScreen extends React.Component {
       {
         component: this.renderDelete,
         backgroundColor: COLORS.DARK_RED,
-        onPress: () => this.onDelete(index),
+        onPress: () => this.onConfirmDelete(index),
       }
     ];
     const user = this.getCommentUser(item);
@@ -263,6 +284,7 @@ class CommentScreen extends React.Component {
         <Animated.View style={{marginBottom: this.keyboardHeight}}>
           <InputToolbarComponent
             ref={ref => this.inputToolbarRef = ref}
+            showKeyboard={this.state.isShowKeyboard}
             comment={this.state.comment}
             onChangeText={(comment) => this.onChangeText(comment)}
             onSend={() => this.onSend()}

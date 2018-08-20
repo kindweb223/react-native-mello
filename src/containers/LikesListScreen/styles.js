@@ -10,6 +10,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     padding: 10,
+    marginTop: 15,
   },
   textBack: {
     fontSize: 16,
@@ -23,6 +24,7 @@ const styles = StyleSheet.create({
     lineHeight: 23,
     fontWeight: '500',
     textAlign: 'center',
+    marginTop: 15,
   },
   itemContainer: {
     height: 52,

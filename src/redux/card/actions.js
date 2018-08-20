@@ -277,6 +277,22 @@ export const deleteFile = (ideaId, fileId) => {
 }
 
 /**
+ * set a image file as cover image
+ */
+export const setCoverImage = (ideaId, fileId,) => {
+  let url = `ideas/${ideaId}/cover-image/${fileId}`
+  return {
+    types: [types.SET_COVER_IMAGE_PENDING, types.SET_COVER_IMAGE_FULFILLED, types.SET_COVER_IMAGE_REJECTED],
+    promise: axios({
+      method: 'put',
+      url: url,
+    }),
+    payload: fileId,
+  };
+}
+
+
+/**
  * Get a Open Graph
  */
 export const getOpenGraph = (urlPath) => {

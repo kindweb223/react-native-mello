@@ -379,13 +379,19 @@ export default function card(state = initialState, action = {}) {
       }
     case types.DELETE_FILE_FULFILLED: {
       const fileId = action.payload;
+      const deletedFile = _.find(state.currentCard.files, file => file.id === fileId);
       const files = _.filter(state.currentCard.files, file => file.id !== fileId);
+      let coverImage = state.currentCard.coverImage;
+      if (coverImage === deletedFile.accessUrl) {
+        coverImage = null;
+      }
       return {
         ...state,
         loading: types.DELETE_FILE_FULFILLED,
         currentCard: {
           ...state.currentCard,
           files,
+          coverImage,
         }
       }
     }
@@ -398,6 +404,34 @@ export default function card(state = initialState, action = {}) {
       }
     }
     
+    // set a cover image
+    case types.SET_COVER_IMAGE_PENDING:
+      return {
+        ...state,
+        loading: types.SET_COVER_IMAGE_PENDING,
+        error: null,
+      }
+    case types.SET_COVER_IMAGE_FULFILLED: {
+      const fileId = action.payload;
+      const file = _.find(state.currentCard.files, file => file.id === fileId);
+      return {
+        ...state,
+        loading: types.SET_COVER_IMAGE_FULFILLED,
+        currentCard: {
+          ...state.currentCard,
+          coverImage: file.accessUrl,
+        }
+      }
+    }
+    case types.SET_COVER_IMAGE_REJECTED: {
+      const { data } = action.error.response
+      return {
+        ...state,
+        loading: types.SET_COVER_IMAGE_REJECTED,
+        error: data,
+      }
+    }
+  
     // get open graph
     case types.GET_OPEN_GRAPH_PENDING:
       return {
