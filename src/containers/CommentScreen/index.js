@@ -219,7 +219,7 @@ class CommentScreen extends React.Component {
       }
     ];
     const user = this.getCommentUser(item);
-    const enabled = user && user.id === this.props.user.userInfo.userProfileId;
+    const enabled = user && user.id === this.props.user.userInfo.id;
     const name = `${user.firstName} ${user.lastName}`;
 
     return (

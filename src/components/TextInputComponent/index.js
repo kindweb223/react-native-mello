@@ -45,7 +45,16 @@ class TextInputComponent extends React.Component {
   }
 
   render() {
-    const { placeholder, isSecure, isError, errorText, ContainerStyle, returnKeyType, keyboardType } = this.props
+    const {
+      placeholder,
+      isSecure,
+      isError,
+      errorText,
+      ContainerStyle,
+      returnKeyType,
+      keyboardType
+    } = this.props
+
     let {
       backgroundColor,
       textColor,
@@ -54,7 +63,8 @@ class TextInputComponent extends React.Component {
 
     if (isError) {
       backgroundColor = COLORS.LIGHT_RED,
-      textColor = COLORS.MEDIUM_RED
+      textColor = COLORS.RED,
+      placeholderTextColor = COLORS.RED
     }
 
     return (

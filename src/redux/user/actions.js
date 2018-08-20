@@ -38,6 +38,22 @@ export const userSignIn = (data) => {
 }
 
 /**
+ * Get logged user's session
+ */
+export const getUserSession = () => {
+  const url = 'users/session'
+
+  return {
+    types: [types.GET_USER_SESSION_PENDING, types.GET_USER_SESSION_FULFILLED, types.GET_USER_SESSION_REJECTED],
+    promise:
+      axios({
+        method: 'get',
+        url
+      })  
+  };
+}
+
+/**
  * User SignUp
  */
 export const userSignUp = (data) => {
@@ -86,6 +102,39 @@ export const getContactList = (userId) => {
       })  
   };
 }
+
+/**
+ * get user image
+ */
+export const getProfilePhoto = (userId) => {
+  let url = `users/${userId}/image`
+
+  return {
+    types: [types.GET_PROFILE_PHOTO_PENDING, types.GET_PROFILE_PHOTO_FULFILLED, types.GET_PROFILE_PHOTO_REJECTED],
+    promise:
+      axios({
+        method: 'get',
+        url: url
+      })  
+  };
+}
+
+/**
+ * Resend confirmation email
+ */
+export const resendConfirmationEmail = () => {
+  let url = 'users/confirmation/resend'
+
+  return {
+    types: [types.RESEND_CONFIRMATION_EMAIL_PENDING, types.RESEND_CONFIRMATION_EMAIL_FULFILLED, types.RESEND_CONFIRMATION_EMAIL_REJECTED],
+    promise:
+      axios({
+        method: 'get',
+        url: url
+      })  
+  };
+}
+
 
 /**
  * set userinfo from storage

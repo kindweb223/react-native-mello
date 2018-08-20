@@ -19,7 +19,7 @@ import UserAvatar from 'react-native-user-avatar'
 import KeyboardScrollView from '../../components/KeyboardScrollView'
 import LoadingScreen from '../LoadingScreen'
 import TextInputComponent from '../../components/TextInputComponent'
-import { userSignIn } from '../../redux/user/actions'
+import { userSignIn, getUserSession } from '../../redux/user/actions'
 import COLORS from '../../service/colors'
 import styles from './styles'
 const LOGO = require('../../../assets/images/Login/Group.png')
@@ -55,8 +55,7 @@ class LoginScreen extends React.Component {
 
   componentDidUpdate(prevProps) {
     if (prevProps.user.loading === 'USER_SIGNIN_PENDING' && this.props.user.loading === 'USER_SIGNIN_FULFILLED') {
-      this.setState({ loading: false })
-      Actions.HomeScreen()
+      this.props.getUserSession()
     }
 
     if (prevProps.user.loading === 'USER_SIGNIN_PENDING' && this.props.user.loading === 'USER_SIGNIN_REJECTED') {
@@ -66,6 +65,15 @@ class LoginScreen extends React.Component {
           this.props.user.error
         )
       })
+    }
+
+    if (prevProps.user.loading === 'GET_USER_SESSION_PENDING' && this.props.user.loading === 'GET_USER_SESSION_FULFILLED') {
+      this.setState({ loading: false })
+      Actions.HomeScreen()
+    }
+
+    if (prevProps.user.loading === 'GET_USER_SESSION_PENDING' && this.props.user.loading === 'GET_USER_SESSION_REJECTED') {
+      Actions.SignUpConfirmScreen({ userEmail:  this.props.userData.email })
     }
   }
 
@@ -98,7 +106,7 @@ class LoginScreen extends React.Component {
   render () {
     const { userData } = this.props
     const { isInvalidError, errorText } = this.state
-    console.log('userData: ', userData)
+
     return (
       <View style={styles.container}>
         <Gradient />
@@ -182,6 +190,7 @@ const mapStateToProps = ({ user }) => ({
 
 const mapDispatchToProps = dispatch => ({
   userSignIn: (data) => dispatch(userSignIn(data)),
+  getUserSession: () => dispatch(getUserSession()),
 })
 
 export default connect(

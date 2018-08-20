@@ -8,6 +8,8 @@ const initialState = {
   error: null,
   contactList: [],
   userInfo: null,
+  userSignUpData: null,
+  userPhotoData: null,
   userLookup: null
 };
 
@@ -52,7 +54,6 @@ export default function user(state = initialState, action = {}) {
       if (xAuthToken) {
         axios.defaults.headers['x-auth-token'] = xAuthToken
         AsyncStorage.setItem('xAuthToken', xAuthToken)
-        AsyncStorage.setItem('userInfo', JSON.stringify(data))
       } else {
         AsyncStorage.removeItem('xAuthToken')
         AsyncStorage.removeItem('userInfo')
@@ -74,18 +75,46 @@ export default function user(state = initialState, action = {}) {
       }
     }
     /**
+     * Get user's session
+     */
+    case types.GET_USER_SESSION_PENDING:
+      console.log('GET_USER_SESSION_PENDING: ')
+      return {
+        ...state,
+        loading: types.GET_USER_SESSION_PENDING,
+        userInfo: null,
+      }
+    case types.GET_USER_SESSION_FULFILLED: {
+      const { data } = action.result
+      console.log('GET_USER_SESSION_FULFILLED: ', data)
+      AsyncStorage.setItem('userInfo', JSON.stringify(data))
+
+      return {
+        ...state,
+        error: null,
+        userInfo: data,
+        loading: types.GET_USER_SESSION_FULFILLED
+      }
+    }
+    case types.GET_USER_SESSION_REJECTED: {
+      console.log('GET_USER_SESSION_REJECTED: ', action.result)
+      AsyncStorage.removeItem('userInfo')
+      return {
+        ...state,
+        loading: types.GET_USER_SESSION_REJECTED,
+        userInfo: null
+      }
+    }
+    /**
      * User signup
      */
     case types.USER_SIGNUP_PENDING:
-      console.log('USER_SIGNUP_PENDING: ')
       return {
         ...state,
         loading: types.USER_SIGNUP_PENDING,
       }
     case types.USER_SIGNUP_FULFILLED: {
       const { data, headers } = action.result
-
-      console.log('USER_SIGNUP_FULFILLED: ', action.result)
 
       const xAuthToken = headers['x-auth-token']
       if (xAuthToken) {
@@ -98,16 +127,16 @@ export default function user(state = initialState, action = {}) {
       return {
         ...state,
         error: null,
+        userSignUpData: data,
         loading: types.USER_SIGNUP_FULFILLED
       }
     }
     case types.USER_SIGNUP_REJECTED: {
-      console.log('USER_SIGNUP_REJECTED', action.error.response.data)
       return {
         ...state,
         loading: types.USER_SIGNUP_REJECTED,
-        userInfo: null,
-        error: action.error.response.data.fieldErrors
+        userSignUpData: null,
+        error: action.error.response.data
       }
     }
     /**
@@ -157,6 +186,55 @@ export default function user(state = initialState, action = {}) {
         ...state,
         contactList: [],
         loading: types.GET_CONTACT_LIST_REJECTED,
+        error: action.error,
+      }
+    }
+    /**
+     * Get user profile photo
+     */
+    case types.GET_PROFILE_PHOTO_PENDING:
+      console.log('GET_PROFILE_PHOTO_PENDING')
+      return {
+        ...state,
+        loading: types.GET_PROFILE_PHOTO_PENDING,
+      }
+    case types.GET_PROFILE_PHOTO_FULFILLED: {
+      const { data } = action.result
+      console.log('GET_PROFILE_PHOTO_FULFILLED', data)
+      return {
+        ...state,
+        userPhotoData: data,
+        loading: types.GET_PROFILE_PHOTO_FULFILLED,
+      }
+    }
+    case types.GET_PROFILE_PHOTO_REJECTED: {
+      console.log('GET_PROFILE_PHOTO_REJECTED')
+      return {
+        ...state,
+        userPhotoData: null,
+        loading: types.GET_PROFILE_PHOTO_REJECTED,
+        error: action.error,
+      }
+    }
+    /**
+     * Resend confirmation email
+     */
+    case types.RESEND_CONFIRMATION_EMAIL_PENDING:
+      return {
+        ...state,
+        loading: types.RESEND_CONFIRMATION_EMAIL_PENDING,
+      }
+    case types.RESEND_CONFIRMATION_EMAIL_FULFILLED: {
+      const { data } = action.result
+      return {
+        ...state,
+        loading: types.RESEND_CONFIRMATION_EMAIL_FULFILLED,
+      }
+    }
+    case types.RESEND_CONFIRMATION_EMAIL_REJECTED: {
+      return {
+        ...state,
+        loading: types.RESEND_CONFIRMATION_EMAIL_REJECTED,
         error: action.error,
       }
     }

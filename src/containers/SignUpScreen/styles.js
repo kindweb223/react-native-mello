@@ -92,7 +92,7 @@ export default {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    marginBottom: 10
+    height: 15
   },
   passwordScoreText: {
     fontSize: 12,

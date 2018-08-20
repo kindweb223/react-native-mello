@@ -62,7 +62,7 @@ class InviteeScreen extends React.Component {
   componentDidMount() {
     const { userInfo } = this.props.user
     this.setState({ loading: true })
-    this.props.getContactList(userInfo.userProfileId)
+    this.props.getContactList(userInfo.id)
   }
 
   UNSAFE_componentWillReceiveProps(nextProps) {
