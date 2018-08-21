@@ -45,8 +45,8 @@ class LoginScreen extends React.Component {
   constructor(props) {
     super(props)
     this.state = {
-      password: 'Qwerty123',
-      // password: '',
+      // password: 'Qwerty123',
+      password: '',
       loading: false,
       isInvalidError: false,
       errorText: ''
@@ -71,12 +71,18 @@ class LoginScreen extends React.Component {
 
     if (prevProps.user.loading === 'GET_USER_SESSION_PENDING' && this.props.user.loading === 'GET_USER_SESSION_FULFILLED') {
       this.setState({ loading: false }, () => {
-        Actions.HomeScreen()
+        if (this.props.user.userInfo.emailConfirmed) {
+          Actions.HomeScreen()
+        } else {
+          Actions.SignUpConfirmScreen({ userEmail:  this.props.userData.email })
+        }
       })
     }
 
     if (prevProps.user.loading === 'GET_USER_SESSION_PENDING' && this.props.user.loading === 'GET_USER_SESSION_REJECTED') {
-      Actions.SignUpConfirmScreen({ userEmail:  this.props.userData.email })
+      this.setState({ loading: false }, () => {
+        Actions.SignUpConfirmScreen({ userEmail:  this.props.userData.email })
+      })
     }
   }
 

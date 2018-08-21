@@ -1,6 +1,7 @@
 import { AsyncStorage } from 'react-native'
 import axios from 'axios'
 import * as types from './types'
+import * as cardTypes from '../card/types'
 import resolveError from './../../service/resolveError'
 
 const initialState = {
@@ -9,7 +10,7 @@ const initialState = {
   contactList: [],
   userInfo: null,
   userSignUpData: null,
-  userPhotoData: null,
+  userImageUrlData: null,
   userLookup: null
 };
 
@@ -190,29 +191,71 @@ export default function user(state = initialState, action = {}) {
       }
     }
     /**
-     * Get user profile photo
+     * Get user's image url
      */
-    case types.GET_PROFILE_PHOTO_PENDING:
-      console.log('GET_PROFILE_PHOTO_PENDING')
+    case types.GET_USER_IMAGE_URL_PENDING:
       return {
         ...state,
-        loading: types.GET_PROFILE_PHOTO_PENDING,
+        loading: types.GET_USER_IMAGE_URL_PENDING,
       }
-    case types.GET_PROFILE_PHOTO_FULFILLED: {
+    case types.GET_USER_IMAGE_URL_FULFILLED: {
       const { data } = action.result
-      console.log('GET_PROFILE_PHOTO_FULFILLED', data)
       return {
         ...state,
-        userPhotoData: data,
-        loading: types.GET_PROFILE_PHOTO_FULFILLED,
+        userImageUrlData: data,
+        loading: types.GET_USER_IMAGE_URL_FULFILLED,
       }
     }
-    case types.GET_PROFILE_PHOTO_REJECTED: {
-      console.log('GET_PROFILE_PHOTO_REJECTED')
+    case types.GET_USER_IMAGE_URL_REJECTED: {
       return {
         ...state,
-        userPhotoData: null,
-        loading: types.GET_PROFILE_PHOTO_REJECTED,
+        userImageUrlData: null,
+        loading: types.GET_USER_IMAGE_URL_REJECTED,
+        error: action.error,
+      }
+    }
+    /**
+     * Upload image to S3
+     */
+    case cardTypes.UPLOAD_FILE_PENDING:
+      return {
+        ...state,
+        loading: 'UPLOAD_FILE_PENDING',
+        error: null,
+      }
+    case cardTypes.UPLOAD_FILE_FULFILLED: {
+      return {
+        ...state,
+        loading: 'UPLOAD_FILE_FULFILLED',
+      }
+    }
+    case cardTypes.UPLOAD_FILE_REJECTED: {
+      return {
+        ...state,
+        loading: 'UPLOAD_FILE_REJECTED',
+        error: action.error,
+      }
+    }
+    /**
+     * Update user profile
+     */
+    case types.UPDATE_PROFILE_PENDING:
+      return {
+        ...state,
+        loading: types.UPDATE_PROFILE_PENDING,
+      }
+    case types.UPDATE_PROFILE_FULFILLED: {
+      const { data } = action.result
+      console.log('UPDATE_PROFILE_REJECTED', data)
+      return {
+        ...state,
+        loading: types.UPDATE_PROFILE_FULFILLED,
+      }
+    }
+    case types.UPDATE_PROFILE_REJECTED: {
+      return {
+        ...state,
+        loading: types.UPDATE_PROFILE_REJECTED,
         error: action.error,
       }
     }

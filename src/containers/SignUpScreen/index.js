@@ -9,6 +9,7 @@ import {
   Image,
   Alert
 } from 'react-native'
+import axios from 'axios';
 import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
 import { Actions } from 'react-native-router-flux'
@@ -26,7 +27,8 @@ import _ from 'lodash'
 import KeyboardScrollView from '../../components/KeyboardScrollView'
 import LoadingScreen from '../LoadingScreen'
 import TextInputComponent from '../../components/TextInputComponent'
-import { userSignUp, getProfilePhoto } from '../../redux/user/actions'
+import { userSignUp, getImageUrl, updateProfile } from '../../redux/user/actions'
+import { uploadFileToS3 } from '../../redux/card/actions'
 import COLORS from '../../service/colors'
 import CONSTANTS from '../../service/constants'
 import resolveError from '../../service/resolveError'
@@ -82,13 +84,15 @@ class SignUpScreen extends React.Component {
     }
   }
 
-  componentDidUpdate(prevProps) {
+  componentDidUpdate(prevProps, prevState) {
     if (prevProps.user.loading === 'USER_SIGNUP_PENDING' && this.props.user.loading === 'USER_SIGNUP_FULFILLED') {
+      const { userSignUpData } = this.props.user
       if (_.isEmpty(this.state.avatarFile)) {
-        this.setState({ loading: false })
-        Actions.SignUpConfirmScreen({ userEmail: this.state.userEmail })
+        this.setState({ loading: false }, () => {
+          Actions.SignUpConfirmScreen({ userEmail: this.state.userEmail })
+        })        
       } else {
-        this.props.getProfilePhoto(this.props.user.userSignUpData.id)
+        this.props.getImageUrl(userSignUpData.id)
       }
     }
 
@@ -102,10 +106,43 @@ class SignUpScreen extends React.Component {
       })
     }
 
-    if (prevProps.user.loading === 'GET_PROFILE_PHOTO_PENDING' && this.props.user.loading === 'GET_PROFILE_PHOTO_FULFILLED') {
-      this.setState({ loading: false })
-      const { userPhotoData } = this.props.user
+    if (prevProps.user.loading === 'GET_USER_IMAGE_URL_PENDING' && this.props.user.loading === 'GET_USER_IMAGE_URL_FULFILLED') {
+      const { userImageUrlData } = this.props.user
+      console.log('GET_USER_IMAGE_URL_FULFILLED: ', userImageUrlData)
+      this.uploadImage(userImageUrlData)
     }
+
+    if (prevProps.user.loading === 'UPLOAD_FILE_PENDING' && this.props.user.loading === 'UPLOAD_FILE_FULFILLED') {
+      const { userSignUpData, userImageUrlData } = this.props.user
+      const param = {
+        imageUrl: userImageUrlData.objectKey
+      }
+      this.props.updateProfile(userSignUpData.id, param)
+    }
+
+    if (prevProps.user.loading === 'UPDATE_PROFILE_PENDING' && this.props.user.loading === 'UPDATE_PROFILE_FULFILLED') {
+      this.setState({ loading: false }, () => {
+        Actions.SignUpConfirmScreen({ userEmail: this.state.userEmail })
+      })
+    }
+
+    if (this.props.user.loading === 'GET_USER_IMAGE_URL_REJECTED' ||
+        this.props.user.loading === 'UPLOAD_FILE_REJECTED' ||
+        this.props.user.loading === 'UPDATE_PROFILE_REJECTED') {
+      this.setState({ loading: false })
+    }
+  }
+
+  uploadImage = async (userImageUrlData) => {
+    const { avatarFile } = this.state
+
+    const baseUrl = userImageUrlData.uploadUrl
+    const fileUrl = avatarFile.uri
+    const urlArray = fileUrl.split('/')
+    const fileName = urlArray[urlArray.length - 1]
+    const fileType = mime.lookup(fileUrl);
+
+    this.props.uploadFileToS3(baseUrl, fileUrl, fileName, fileType);
   }
 
   changeFullName = text => {
@@ -146,8 +183,8 @@ class SignUpScreen extends React.Component {
 
   onSignUp = () => {
     const { fieldErrors, avatarFile, userEmail, fullName, password, passwordScore } = this.state
-    console.log('avatarFile: ', avatarFile)
     let errors = []
+
     if (fullName.length === 0) {
       errors = [
         ...errors,
@@ -202,7 +239,7 @@ class SignUpScreen extends React.Component {
         firstName: arr[0],
         lastName: arr[1]
       }
-      console.log('PARAM: ', param)
+
       this.setState({ loading: true })
       this.props.userSignUp(param)
     }
@@ -417,13 +454,16 @@ SignUpScreen.propTypes = {
   userEmail: PropTypes.string
 }
 
-const mapStateToProps = ({ user }) => ({
-  user
+const mapStateToProps = ({ user, card }) => ({
+  user,
+  card
 })
 
 const mapDispatchToProps = dispatch => ({
   userSignUp: (data) => dispatch(userSignUp(data)),
-  getProfilePhoto: (data) => dispatch(getProfilePhoto(data))
+  getImageUrl: (data) => dispatch(getImageUrl(data)),
+  updateProfile: (userId, data) => dispatch(updateProfile(userId, data)),
+  uploadFileToS3: (signedUrl, file, fileName, mimeType) => dispatch(uploadFileToS3(signedUrl, file, fileName, mimeType)),
 })
 
 export default connect(
