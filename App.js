@@ -9,7 +9,7 @@ import { createStore, applyMiddleware } from 'redux'
 import { Provider } from 'react-redux'
 import thunk from 'redux-thunk'
 import promiseMiddleware from './src/service/promiseMiddleware'
-import { Actions, Scene, Router, Lightbox } from 'react-native-router-flux'
+import { Actions, Scene, Router, Modal, Lightbox } from 'react-native-router-flux'
 import axios from 'axios'
 import CONSTANTS from './src/service/constants'
 import COLORS from './src/service/colors'
@@ -51,6 +51,7 @@ import FeedDetailScreen from './src/containers/FeedDetailScreen';
 import DocumentSliderScreen from './src/containers/DocumentSliderScreen';
 import LikesListScreen from './src/containers/LikesListScreen';
 import CommentScreen from './src/containers/CommentScreen';
+import ProfileScreen from './src/containers/ProfileScreen'
 
 const store = createStore(reducers, applyMiddleware(thunk, promiseMiddleware))
 
@@ -82,18 +83,21 @@ export default class Root extends React.Component {
   render() {
     const scenes = Actions.create(
       <Lightbox>
-        <Scene key="root">
-          <Scene key="LoginStartScreen" component={ LoginStartScreen } initial hideNavBar panHandlers={null} />
-          <Scene key="LoginScreen" component={ LoginScreen } hideNavBar panHandlers={null} />
-          <Scene key="SignUpScreen" component={ SignUpScreen } hideNavBar panHandlers={null} />
-          <Scene key="SignUpConfirmScreen" component={ SignUpConfirmScreen } hideNavBar panHandlers={null} />
-          <Scene key="TermsAndConditionsScreen" component={ TermsAndConditionsScreen } hideNavBar panHandlers={null} />
-          <Scene key="HomeScreen" component={ HomeScreen } hideNavBar panHandlers={null} />
-          <Scene key="FeedDetailScreen" component={ FeedDetailScreen } hideNavBar panHandlers={null} />
-          <Scene key="DocumentSliderScreen" component={ DocumentSliderScreen } hideNavBar />
-          <Scene key="LikesListScreen" component={ LikesListScreen } navigationBarStyle={styles.defaultNavigationBar} />
-          <Scene key="CommentScreen" component={ CommentScreen } navigationBarStyle={styles.defaultNavigationBar} />
-        </Scene>
+        <Modal>
+          <Scene key="root">
+            <Scene key="LoginStartScreen" component={ LoginStartScreen } initial hideNavBar panHandlers={null} />
+            <Scene key="LoginScreen" component={ LoginScreen } hideNavBar panHandlers={null} />
+            <Scene key="SignUpScreen" component={ SignUpScreen } hideNavBar panHandlers={null} />
+            <Scene key="SignUpConfirmScreen" component={ SignUpConfirmScreen } hideNavBar panHandlers={null} />
+            <Scene key="TermsAndConditionsScreen" component={ TermsAndConditionsScreen } hideNavBar panHandlers={null} />
+            <Scene key="HomeScreen" component={ HomeScreen } hideNavBar panHandlers={null} />
+            <Scene key="FeedDetailScreen" component={ FeedDetailScreen } hideNavBar panHandlers={null} />
+            <Scene key="DocumentSliderScreen" component={ DocumentSliderScreen } hideNavBar />
+            <Scene key="LikesListScreen" component={ LikesListScreen } navigationBarStyle={styles.defaultNavigationBar} />
+            <Scene key="CommentScreen" component={ CommentScreen } navigationBarStyle={styles.defaultNavigationBar} />
+          </Scene>
+          <Scene key="ProfileScreen" component={ ProfileScreen } hideNavBar navigationBarStyle={styles.defaultNavigationBar} />
+        </Modal>
         <Scene key="LoadingScreen" component={ LoadingScreen } hideNavBar />
         <Scene key="ImageSliderScreen" component={ ImageSliderScreen } hideNavBar />
       </Lightbox>
@@ -112,7 +116,7 @@ export default class Root extends React.Component {
     } else {
       return (
         <Provider store={store}>
-          <Router scenes={scenes}/>
+          <Router scenes={scenes} />
         </Provider>
       )
     }

@@ -57,136 +57,137 @@ class ProfileScreen extends React.Component {
 
   componentDidUpdate(prevProps) {
     if (prevProps.user.loading === 'USER_SIGNOUT_PENDING' && this.props.user.loading === 'USER_SIGNOUT_FULFILLED') {
-      this.props.onClose()
       Actions.LoginStartScreen()
     }
   }
 
   render () {
     const { userInfo } = this.props.user
-    console.log('userInfo: ', userInfo)
+
     return (
       <View style={styles.overlay}>
-        <ScrollView style={styles.scrollView}>
-          <View style={styles.body}>
-            <TouchableOpacity onPress={() => this.props.onClose()} style={styles.closeButton}>
-              <Image source={CLOSE_ICON} />
-            </TouchableOpacity>
+        {userInfo && (
+          <ScrollView style={styles.scrollView}>
+            <View style={styles.body}>
+              <TouchableOpacity onPress={() => Actions.pop()} style={styles.closeButton}>
+                <Image source={CLOSE_ICON} />
+              </TouchableOpacity>
 
-            <View style={styles.headerView}>
-              {userInfo.imageUrl
-              ? <View style={styles.avatarView}>
-                  <Image
-                    style={styles.image}
-                    source={{ uri: item.coverImage }}
+              <View style={styles.headerView}>
+                {userInfo.imageUrl
+                ? <View style={styles.avatarView}>
+                    <Image
+                      style={styles.image}
+                      source={{ uri: item.coverImage }}
+                    />
+                  </View>
+                : <UserAvatar
+                    size="100"
+                    name={`${userInfo.firstName} ${userInfo.lastName}`}
+                    color="#fff"
+                    textColor={COLORS.PURPLE}
                   />
-                </View>
-              : <UserAvatar
-                  size="100"
-                  name={`${userInfo.firstName} ${userInfo.lastName}`}
-                  color="#fff"
-                  textColor={COLORS.PURPLE}
-                />
-              }
-              <Text style={styles.name}>
-                {userInfo.firstName} {userInfo.lastName}
-              </Text>
-              <Text style={styles.email}>
-                {userInfo.email}
-              </Text>
-            </View>
-
-            <View style={styles.settingView}>
-              <View style={styles.settingItem}>
-                <TouchableOpacity
-                  onPress={() => this.props.handleSettingItem(0)}
-                  activeOpacity={0.8}
-                  style={styles.itemView}
-                >
-                  <View style={styles.aboutItem}>
-                    <View style={styles.settingLeftView}>
-                      <Image source={BELL_ICON} style={styles.leftIcon} />
-                      <Text style={styles.title}>
-                        Bio
-                      </Text>
-                    </View>
-                    <Ionicons name="ios-arrow-forward" color={COLORS.DARK_GREY} size={20} />
-                  </View>
-                </TouchableOpacity>
-              </View>
-              {
-                SETTING_ITEMS.map((item, key) => (
-                  <View key={key} style={styles.settingItem}>
-                    <TouchableOpacity
-                      onPress={() => this.props.handleSettingItem(key + 1)}
-                      activeOpacity={0.8}
-                      style={styles.itemView}
-                    >
-                      <View style={styles.aboutItem}>
-                        <View style={styles.settingLeftView}>
-                          {item.icon}
-                          <Text style={styles.title}>
-                            {item.title}
-                          </Text>
-                        </View>
-                        <Ionicons name="ios-arrow-forward" color={COLORS.DARK_GREY} size={20} />
-                      </View>
-                    </TouchableOpacity>
-                  </View>
-                ))
-              }
-            </View>
-
-            <View style={styles.settingView}>
-              <View style={styles.aboutTitleView}>
-                <Text style={styles.aboutTitle}>
-                  About
+                }
+                <Text style={styles.name}>
+                  {userInfo.firstName} {userInfo.lastName}
+                </Text>
+                <Text style={styles.email}>
+                  {userInfo.email}
                 </Text>
               </View>
-              <FlatList
-                data={ABOUT_ITEMS}
-                keyExtractor={item => item}
-                renderItem={({ item }) => (
+
+              <View style={styles.settingView}>
+                <View style={styles.settingItem}>
                   <TouchableOpacity
-                    onPress={() => this.props.handleAboutItem(item)}
+                    onPress={() => this.props.handleSettingItem(0)}
                     activeOpacity={0.8}
                     style={styles.itemView}
                   >
                     <View style={styles.aboutItem}>
-                      <Text style={styles.title}>
-                        { item }
-                      </Text>
+                      <View style={styles.settingLeftView}>
+                        <Image source={BELL_ICON} style={styles.leftIcon} />
+                        <Text style={styles.title}>
+                          Bio
+                        </Text>
+                      </View>
                       <Ionicons name="ios-arrow-forward" color={COLORS.DARK_GREY} size={20} />
                     </View>
                   </TouchableOpacity>
-                )}
-              />
-            </View>
+                </View>
+                {
+                  SETTING_ITEMS.map((item, key) => (
+                    <View key={key} style={styles.settingItem}>
+                      <TouchableOpacity
+                        onPress={() => this.props.handleSettingItem(key + 1)}
+                        activeOpacity={0.8}
+                        style={styles.itemView}
+                      >
+                        <View style={styles.aboutItem}>
+                          <View style={styles.settingLeftView}>
+                            {item.icon}
+                            <Text style={styles.title}>
+                              {item.title}
+                            </Text>
+                          </View>
+                          <Ionicons name="ios-arrow-forward" color={COLORS.DARK_GREY} size={20} />
+                        </View>
+                      </TouchableOpacity>
+                    </View>
+                  ))
+                }
+              </View>
 
-            <View style={styles.signoOutView}>
-              <TouchableOpacity
-                onPress={() => this.props.userSignOut()}
-                activeOpacity={0.8}
-                style={styles.itemView}
-              >
-                <View style={styles.signOutItem}>
-                  <Text style={styles.title}>
-                    Sign out
+              <View style={styles.settingView}>
+                <View style={styles.aboutTitleView}>
+                  <Text style={styles.aboutTitle}>
+                    About
                   </Text>
                 </View>
-              </TouchableOpacity>
-            </View>
+                <FlatList
+                  data={ABOUT_ITEMS}
+                  keyExtractor={item => item}
+                  renderItem={({ item }) => (
+                    <TouchableOpacity
+                      onPress={() => this.props.handleAboutItem(item)}
+                      activeOpacity={0.8}
+                      style={styles.itemView}
+                    >
+                      <View style={styles.aboutItem}>
+                        <Text style={styles.title}>
+                          { item }
+                        </Text>
+                        <Ionicons name="ios-arrow-forward" color={COLORS.DARK_GREY} size={20} />
+                      </View>
+                    </TouchableOpacity>
+                  )}
+                />
+              </View>
 
-            <View style={styles.bottomView}>
-              <Text style={styles.version}>Version 1.0.0 (1000)</Text>
-              <View style={styles.bottomItemView}>
-                <Text style={styles.version}>Crafted with</Text>
-                <MaterialIcons name='favorite' size={12} color={COLORS.MEDIUM_GREY} style={styles.favicon}/>
-                <Text style={styles.version}>in Dublin</Text>
+              <View style={styles.signoOutView}>
+                <TouchableOpacity
+                  onPress={() => this.props.userSignOut()}
+                  activeOpacity={0.8}
+                  style={styles.itemView}
+                >
+                  <View style={styles.signOutItem}>
+                    <Text style={styles.title}>
+                      Sign out
+                    </Text>
+                  </View>
+                </TouchableOpacity>
+              </View>
+
+              <View style={styles.bottomView}>
+                <Text style={styles.version}>Version 1.0.0 (1000)</Text>
+                <View style={styles.bottomItemView}>
+                  <Text style={styles.version}>Crafted with</Text>
+                  <MaterialIcons name='favorite' size={12} color={COLORS.MEDIUM_GREY} style={styles.favicon}/>
+                  <Text style={styles.version}>in Dublin</Text>
+                </View>
               </View>
             </View>
-          </View>
-        </ScrollView>
+          </ScrollView>
+        )}
       </View>
     )
   }

@@ -32,7 +32,6 @@ import CreateNewFeedComponent from '../../components/CreateNewFeedComponent'
 import FeedLongHoldMenuScreen from '../FeedLongHoldMenuScreen'
 import ToasterComponent from '../../components/ToasterComponent'
 import FeedLoadingStateComponent from '../../components/FeedLoadingStateComponent'
-import ProfileScreen from '../ProfileScreen'
 import COLORS from '../../service/colors'
 import styles from './styles'
 import CONSTANTS from '../../service/constants';
@@ -81,7 +80,6 @@ class HomeScreen extends React.Component {
       tabIndex: 0,
       emptyState: true,
       isShowToaster: false,
-      showProfile: false,
       scrollY: new Animated.Value(0)
     };
 
@@ -405,7 +403,7 @@ class HomeScreen extends React.Component {
   }
 
   handleSetting = () => {
-    this.setState({ showProfile: true })
+    Actions.ProfileScreen()
   }
 
   render () {
@@ -547,21 +545,6 @@ class HomeScreen extends React.Component {
             handleUnpinFeed={this.handleUnpinFeed}
             handleDuplicateFeed={this.handleDuplicateFeed}
             handleEditFeed={this.handleEditFeed}
-          />
-        </Modal>
-
-        <Modal 
-          isVisible={this.state.showProfile}
-          style={styles.longHoldModalContainer}
-          backdropColor='#e0e0e0'
-          backdropOpacity={0.9}
-          animationIn="slideInUp"
-          animationOut="slideOutDown"
-          animationInTiming={600}
-          onBackdropPress={() => this.setState({ showProfile: false })}
-        >
-          <ProfileScreen
-            onClose={() => this.setState({ showProfile: false })}
           />
         </Modal>
 
