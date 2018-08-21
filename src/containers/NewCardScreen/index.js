@@ -118,7 +118,7 @@ class NewCardScreen extends React.Component {
       const newImageFiles = _.filter(nextProps.card.currentCard.files, file => file.contentType.indexOf('image') !== -1);
       if (newImageFiles.length === 1 && !nextProps.card.currentCard.coverImage) {
         loading = true;
-        this.props.setCoverImage(this.props.card.currentCard.id, newImageFiles[0].id);
+        this.onSetCoverImage(newImageFiles[0].id);
       }
     } else if (this.props.card.loading !== types.SET_COVER_IMAGE_PENDING && nextProps.card.loading === types.SET_COVER_IMAGE_PENDING) {
       // setting a file as cover image
@@ -364,6 +364,10 @@ class NewCardScreen extends React.Component {
     this.props.deleteFile(id, fileId);
   }
 
+  onSetCoverImage(fileId) {
+    this.props.setCoverImage(this.props.card.currentCard.id, fileId);
+  }
+
   get renderWebMeta() {
     const { viewMode } = this.props;
     const { opneGraphForLinks } = this.state;
@@ -388,7 +392,9 @@ class NewCardScreen extends React.Component {
         <ImageList 
           files={imageFiles}
           editable={viewMode !== CONSTANTS.CARD_VIEW}
+          isSetCoverImage={true}
           onRemove={(fileId) => this.onRemoveFile(fileId)}
+          onSetCoverImage={(fileId) => this.onSetCoverImage(fileId)}
         />
       )
     }

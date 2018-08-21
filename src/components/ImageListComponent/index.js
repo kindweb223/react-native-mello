@@ -2,6 +2,7 @@ import React from 'react'
 import {
   TouchableOpacity,
   Animated,
+  View,
   FlatList,
 } from 'react-native'
 import PropTypes from 'prop-types'
@@ -185,9 +186,8 @@ export default class ImageList extends React.Component {
       files,
     } = this.state;
     return (
-      [
+      <View style={{flex: 1}}>
         <FlatList
-          key="0"
           style={styles.container}
           horizontal={true}
           showsHorizontalScrollIndicator={false}
@@ -195,14 +195,13 @@ export default class ImageList extends React.Component {
           renderItem={this.renderImageFile.bind(this)}
           keyExtractor={(item, index) => index.toString()}
           extraData={this.state}
-        />,
+        />
         <Modal 
-          key="1"
           isVisible={this.state.isPreview}
           style={styles.previewModal}
-          backdropColor="rgba(0, 0, 0, 0.9)"
-          animationIn="fadeIn"
-          animationOut="fadeOut"
+          backdropColor='rgba(0, 0, 0, 0.9)'
+          animationIn='fadeIn'
+          animationOut='fadeOut'
           animationInTiming={100}
           animationOutTiming={100}
         >
@@ -210,11 +209,13 @@ export default class ImageList extends React.Component {
             imageFiles={this.props.files}
             position={this.state.position}
             removal={this.props.editable}
+            isSetCoverImage={this.props.isSetCoverImage}
             onRemove={(id) => this.props.onRemove(id)}
+            onSetCoverImage={(id) => this.props.onSetCoverImage(id)}
             onClose={() => this.setState({ isPreview: false })}
           />
         </Modal>
-      ]
+      </View>
     );
   }
 }
@@ -223,12 +224,16 @@ export default class ImageList extends React.Component {
 ImageList.defaultProps = {
   files: [],
   editable: true,
+  isSetCoverImage: false,
   onRemove: () => {},
+  onSetCoverImage: () => {},
 }
 
 
 ImageList.propTypes = {
   files: PropTypes.array,
   editable: PropTypes.bool,
+  isSetCoverImage: PropTypes.bool,
   onRemove: PropTypes.func,
+  onSetCoverImage: PropTypes.func,
 }

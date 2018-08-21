@@ -60,7 +60,12 @@ class ImageSliderScreen extends React.Component {
     } else if ((this.props.feedo.loading !== feedTypes.DELETE_FILE_FULFILLED && nextProps.feedo.loading === feedTypes.DELETE_FILE_FULFILLED)
       || (this.props.card.loading !== cardTypes.DELETE_FILE_FULFILLED && nextProps.card.loading === cardTypes.DELETE_FILE_FULFILLED)) {
       // fullfilled in deleting a file
-    }
+    } else if (this.props.card.loading !== cardTypes.SET_COVER_IMAGE_PENDING && nextProps.card.loading === cardTypes.SET_COVER_IMAGE_PENDING) {
+      // setting a file as cover image
+      loading = true;
+    } else if (this.props.card.loading !== cardTypes.SET_COVER_IMAGE_FULFILLED && nextProps.card.loading === cardTypes.SET_COVER_IMAGE_FULFILLED) {
+      // success in setting a file as cover image
+    } 
 
     this.setState({
       loading,
@@ -93,7 +98,7 @@ class ImageSliderScreen extends React.Component {
     }
   }
 
-  onDelete = () => {
+  onDelete() {
     const {
       imageFiles,
     } = this.props;
@@ -102,8 +107,13 @@ class ImageSliderScreen extends React.Component {
     }
   }
 
-  onSetCoverImage = () => {
-
+  onSetCoverImage() {
+    const {
+      imageFiles,
+    } = this.props;
+    if (this.props.onSetCoverImage) {
+      this.props.onSetCoverImage(imageFiles[this.state.position].id);
+    }
   }
 
   handleImage = () => {
@@ -155,8 +165,8 @@ class ImageSliderScreen extends React.Component {
             <MaterialCommunityIcons name="close" size={25} color={'#fff'} />
           </TouchableOpacity>
         </Animated.View>
-
-        {this.props.removal && (
+        {
+          this.props.removal && this.props.isSetCoverImage && 
           <Animated.View 
             style={[styles.coverButton, { opacity: this.buttonOpacity }]}
           >
@@ -167,9 +177,9 @@ class ImageSliderScreen extends React.Component {
               <Entypo name="image" size={25} color={'#fff'} />
             </TouchableOpacity>
           </Animated.View>
-        )}
-
-        {this.props.removal && (
+        }
+        {
+          this.props.removal && 
           <Animated.View 
             style={[styles.deleteButton, { opacity: this.buttonOpacity }]}
           >
@@ -180,8 +190,7 @@ class ImageSliderScreen extends React.Component {
               <Feather name="trash-2" size={25} color={'#fff'} />
             </TouchableOpacity>
           </Animated.View >
-        )}
-
+        }
         {this.state.loading && <LoadingScreen />}
       </View>
     );
@@ -193,7 +202,9 @@ ImageSliderScreen.defaultProps = {
   imageFiles: [],
   position: 0,
   removal: true,
+  isSetCoverImage: false,
   onRemove: () => {},
+  onSetCoverImage: () => {},
   onClose: () => {},
 }
 
@@ -202,7 +213,9 @@ ImageSliderScreen.propTypes = {
   imageFiles: PropTypes.array,
   position: PropTypes.number,
   removal: PropTypes.bool,
+  isSetCoverImage: PropTypes.bool,
   onRemove: PropTypes.func,
+  onSetCoverImage: PropTypes.func,
   onClose: PropTypes.func,
 }
 
