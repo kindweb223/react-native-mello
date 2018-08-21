@@ -133,7 +133,7 @@ class SignUpScreen extends React.Component {
     }
   }
 
-  uploadImage = async (userImageUrlData) => {
+  uploadImage = (userImageUrlData) => {
     const { avatarFile } = this.state
 
     const baseUrl = userImageUrlData.uploadUrl
