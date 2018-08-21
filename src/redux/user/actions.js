@@ -5,7 +5,6 @@ import * as types from './types'
  * check user account
  */
 export const userLookup = (data) => {
-  console.log('DATA: ', data)
   const url = 'users/lookup'
 
   return {
@@ -23,7 +22,6 @@ export const userLookup = (data) => {
  * User login
  */
 export const userSignIn = (data) => {
-  console.log('DATA: ', data)
   const url = 'auth/login'
 
   return {
@@ -74,7 +72,6 @@ export const userSignUp = (data) => {
  * User logout
  */
 export const userSignOut = () => {
-  console.log('aaaaa')
   const url = 'auth/logout'
 
   return {
@@ -106,11 +103,11 @@ export const getContactList = (userId) => {
 /**
  * get user image
  */
-export const getProfilePhoto = (userId) => {
+export const getImageUrl = (userId) => {
   let url = `users/${userId}/image`
 
   return {
-    types: [types.GET_PROFILE_PHOTO_PENDING, types.GET_PROFILE_PHOTO_FULFILLED, types.GET_PROFILE_PHOTO_REJECTED],
+    types: [types.GET_USER_IMAGE_URL_PENDING, types.GET_USER_IMAGE_URL_FULFILLED, types.GET_USER_IMAGE_URL_REJECTED],
     promise:
       axios({
         method: 'get',
@@ -143,5 +140,24 @@ export const setUserInfo = (data) => {
   return {
     type: types.SET_USER_INFO,
     payload: data
+  };
+}
+
+/**
+ * Update user profile
+ */
+export const updateProfile = (userId, data) => {
+  let url = `users/${userId}`
+  console.log('PARAM: ', data)
+
+  return {
+    types: [types.UPDATE_PROFILE_PENDING, types.UPDATE_PROFILE_FULFILLED, types.UPDATE_PROFILE_REJECTED],
+    promise:
+      axios({
+        method: 'put',
+        url,
+        data
+      }),
+    payload: data.imageUrl
   };
 }

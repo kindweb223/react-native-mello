@@ -707,7 +707,7 @@ export default function feedo(state = initialState, action = {}) {
     }
     case types.DELETE_INVITEE_REJECTED: {
       const { data } = action.error.response
-      console.log("DELETE_INVITEE_ERROR: ", data)
+
       return {
         ...state,
         loading: types.DELETE_INVITEE_REJECTED,
