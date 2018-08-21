@@ -45,8 +45,8 @@ class LoginScreen extends React.Component {
   constructor(props) {
     super(props)
     this.state = {
-      // password: 'Qwerty123',
-      password: '',
+      password: 'Qwerty123',
+      // password: '',
       loading: false,
       isInvalidError: false,
       errorText: ''
@@ -139,6 +139,7 @@ class LoginScreen extends React.Component {
             <View style={styles.modalContainer}>
               <View style={styles.inputView}>
                 <TextInputComponent
+                  value={this.state.password}
                   placeholder="Enter Password"
                   isSecure={true}
                   isError={isInvalidError}

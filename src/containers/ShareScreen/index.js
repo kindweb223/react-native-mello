@@ -234,7 +234,7 @@ class ShareScreen extends React.Component {
           />
         </Modal>
 
-        <Modal 
+        <Modal
           isVisible={this.state.isInviteeModal}
           style={{ margin: 0 }}
           backdropColor='#f5f5f5'

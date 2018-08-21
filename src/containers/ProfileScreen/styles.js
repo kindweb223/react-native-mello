@@ -61,7 +61,8 @@ export default {
     paddingVertical: 15,
   },
   aboutTitle: {
-    fontWeight: '600'
+    fontWeight: '600',
+    fontSize: 16
   },
   settingView: {
     backgroundColor: '#fff',

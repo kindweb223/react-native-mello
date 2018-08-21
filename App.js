@@ -96,7 +96,7 @@ export default class Root extends React.Component {
             <Scene key="LikesListScreen" component={ LikesListScreen } navigationBarStyle={styles.defaultNavigationBar} />
             <Scene key="CommentScreen" component={ CommentScreen } navigationBarStyle={styles.defaultNavigationBar} />
           </Scene>
-          <Scene key="ProfileScreen" component={ ProfileScreen } hideNavBar navigationBarStyle={styles.defaultNavigationBar} />
+          <Scene key="ProfileScreen" component={ ProfileScreen } hideNavBar />
         </Modal>
         <Scene key="LoadingScreen" component={ LoadingScreen } hideNavBar />
         <Scene key="ImageSliderScreen" component={ ImageSliderScreen } hideNavBar />
