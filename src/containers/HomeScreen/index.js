@@ -54,7 +54,7 @@ import {
   setCurrentFeed,
 } from '../../redux/feedo/actions'
 
-import { userSignOut, setUserInfo } from '../../redux/user/actions'
+import { setUserInfo } from '../../redux/user/actions'
 
 const TAB_STYLES = {
   height: '100%',
@@ -366,6 +366,10 @@ class HomeScreen extends React.Component {
     });
   }
 
+  userSignOut = () => {
+    this.setState({ showProfile: false })
+  }
+
   get renderNewFeedModals() {
     if (!this.state.isVisibleNewFeed && !this.state.isVisibleCreateNewFeedModal) {
       return;
@@ -399,7 +403,7 @@ class HomeScreen extends React.Component {
   }
 
   handleSetting = () => {
-    this.props.userSignOut()
+    Actions.ProfileScreen()
   }
 
   render () {
@@ -571,7 +575,6 @@ const mapDispatchToProps = dispatch => ({
   removeDummyFeed: (data) => dispatch(removeDummyFeed(data)),
   setFeedDetailAction: (data) => dispatch(setFeedDetailAction(data)),
   setCurrentFeed: (data) => dispatch(setCurrentFeed(data)),
-  userSignOut: () => dispatch(userSignOut()),
   setUserInfo: (data) => dispatch(setUserInfo(data))
 })
 
@@ -587,7 +590,6 @@ HomeScreen.propTypes = {
   addDummyFeed: PropTypes.func.isRequired,
   removeDummyFeed: PropTypes.func.isRequired,
   setFeedDetailAction: PropTypes.func.isRequired,
-  userSignOut: PropTypes.func.isRequired,
   setUserInfo: PropTypes.func.isRequired,
 }
 

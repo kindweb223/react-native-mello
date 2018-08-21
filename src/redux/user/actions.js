@@ -73,7 +73,8 @@ export const userSignUp = (data) => {
 /**
  * User logout
  */
-export const userSignOut = (data) => {
+export const userSignOut = () => {
+  console.log('aaaaa')
   const url = 'auth/logout'
 
   return {
@@ -81,8 +82,7 @@ export const userSignOut = (data) => {
     promise:
       axios({
         method: 'post',
-        url,
-        data
+        url
       })  
   };
 }
