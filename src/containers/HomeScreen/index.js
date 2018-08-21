@@ -32,6 +32,7 @@ import CreateNewFeedComponent from '../../components/CreateNewFeedComponent'
 import FeedLongHoldMenuScreen from '../FeedLongHoldMenuScreen'
 import ToasterComponent from '../../components/ToasterComponent'
 import FeedLoadingStateComponent from '../../components/FeedLoadingStateComponent'
+import ProfileScreen from '../ProfileScreen'
 import COLORS from '../../service/colors'
 import styles from './styles'
 import CONSTANTS from '../../service/constants';
@@ -54,7 +55,7 @@ import {
   setCurrentFeed,
 } from '../../redux/feedo/actions'
 
-import { userSignOut, setUserInfo } from '../../redux/user/actions'
+import { setUserInfo } from '../../redux/user/actions'
 
 const TAB_STYLES = {
   height: '100%',
@@ -80,6 +81,7 @@ class HomeScreen extends React.Component {
       tabIndex: 0,
       emptyState: true,
       isShowToaster: false,
+      showProfile: false,
       scrollY: new Animated.Value(0)
     };
 
@@ -366,6 +368,10 @@ class HomeScreen extends React.Component {
     });
   }
 
+  userSignOut = () => {
+    this.setState({ showProfile: false })
+  }
+
   get renderNewFeedModals() {
     if (!this.state.isVisibleNewFeed && !this.state.isVisibleCreateNewFeedModal) {
       return;
@@ -399,7 +405,7 @@ class HomeScreen extends React.Component {
   }
 
   handleSetting = () => {
-    this.props.userSignOut()
+    this.setState({ showProfile: true })
   }
 
   render () {
@@ -544,6 +550,21 @@ class HomeScreen extends React.Component {
           />
         </Modal>
 
+        <Modal 
+          isVisible={this.state.showProfile}
+          style={styles.longHoldModalContainer}
+          backdropColor='#e0e0e0'
+          backdropOpacity={0.9}
+          animationIn="slideInUp"
+          animationOut="slideOutDown"
+          animationInTiming={600}
+          onBackdropPress={() => this.setState({ showProfile: false })}
+        >
+          <ProfileScreen
+            onClose={() => this.setState({ showProfile: false })}
+          />
+        </Modal>
+
         <ToasterComponent
           isVisible={this.state.isShowToaster}
           title={this.state.toasterTitle}
@@ -571,7 +592,6 @@ const mapDispatchToProps = dispatch => ({
   removeDummyFeed: (data) => dispatch(removeDummyFeed(data)),
   setFeedDetailAction: (data) => dispatch(setFeedDetailAction(data)),
   setCurrentFeed: (data) => dispatch(setCurrentFeed(data)),
-  userSignOut: () => dispatch(userSignOut()),
   setUserInfo: (data) => dispatch(setUserInfo(data))
 })
 
@@ -587,7 +607,6 @@ HomeScreen.propTypes = {
   addDummyFeed: PropTypes.func.isRequired,
   removeDummyFeed: PropTypes.func.isRequired,
   setFeedDetailAction: PropTypes.func.isRequired,
-  userSignOut: PropTypes.func.isRequired,
   setUserInfo: PropTypes.func.isRequired,
 }
 

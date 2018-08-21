@@ -52,7 +52,6 @@ import DocumentSliderScreen from './src/containers/DocumentSliderScreen';
 import LikesListScreen from './src/containers/LikesListScreen';
 import CommentScreen from './src/containers/CommentScreen';
 
-
 const store = createStore(reducers, applyMiddleware(thunk, promiseMiddleware))
 
 export default class Root extends React.Component {
