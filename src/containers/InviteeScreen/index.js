@@ -23,6 +23,7 @@ import LinkShareModalComponent from '../../components/LinkShareModalComponent'
 import InviteeItemComponent from '../../components/LinkShareModalComponent/InviteeItemComponent'
 import { getContactList } from '../../redux/user/actions'
 import { inviteToHunt } from '../../redux/feedo/actions'
+import * as COMMON_FUNC from '../../service/commonFunc'
 import COLORS from '../../service/colors'
 import styles from './styles'
 const PLUS_ICON = require('../../../assets/images/Add/White.png')
@@ -65,22 +66,24 @@ class InviteeScreen extends React.Component {
     this.props.getContactList(userInfo.id)
   }
 
-  UNSAFE_componentWillReceiveProps(nextProps) {
-    const { user, feedo, data } = nextProps
-    if (this.props.feedo.loading === 'INVITE_HUNT_PENDING' && feedo.loading === 'INVITE_HUNT_FULFILLED') {
-      if (feedo.error) {
+  componentDidUpdate(prevProps) {
+    const { user, feedo, data } = this.props
+
+    if (prevProps.feedo.loading === 'INVITE_HUNT_PENDING' && feedo.loading === 'INVITE_HUNT_FULFILLED') {
+      if (this.props.feedo.error) {
         this.setState({ isError: true, errorMsg: feedo.error })  
       } else {
-        this.setState({ isSuccess: true, inviteeEmails: [], isAddInvitee: false })
-        // setTimeout(() => {
-        //   this.setState({ isSuccess: false }, () => {
-        //     this.props.handleModal()
-        //   })
-        // }, 2000)
+        this.setState({ isSuccess: true })
+
+        setTimeout(() => {
+          this.setState({ isSuccess: false }, () => {
+            this.props.handleModal()
+          })
+        }, 2000)
       }
     }
 
-    if (this.props.user.loading === 'GET_CONTACT_LIST_PENDING' && user.loading === 'GET_CONTACT_LIST_FULFILLED') {
+    if (prevProps.user.loading === 'GET_CONTACT_LIST_PENDING' && user.loading === 'GET_CONTACT_LIST_FULFILLED') {
       this.setState({ loading: false })
       this.setState({
         contactList: this.getRecentContactList(data, user.contactList),
@@ -96,15 +99,10 @@ class InviteeScreen extends React.Component {
     return filteredList
   }
 
-  validateEmail = (email) => {
-    let re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
-    return re.test(email.toLowerCase())
-  }
-
   handleInvitees = (inviteeEmails) => {
     const { contactList } = this.state
 
-    let invalidEmail = _.filter(inviteeEmails, invitee => this.validateEmail(invitee.email) === false)
+    let invalidEmail = _.filter(inviteeEmails, invitee => COMMON_FUNC.validateEmail(invitee.email) === false)
     this.setState({ isInvalidEmail: invalidEmail.length > 0 ? true : false, invalidEmailCount: invalidEmail.length })
 
     const filteredList = _.filter(contactList, item =>
