@@ -46,7 +46,7 @@ class SignUpConfirmScreen extends React.Component {
     if (prevProps.user.loading === 'RESEND_CONFIRMATION_EMAIL_PENDING' && this.props.user.loading === 'RESEND_CONFIRMATION_EMAIL_FULFILLED') {
       this.setState({ loading: false }, () => {
         Alert.alert(
-          'Success'
+          "We've resent a confirmation email"
         )
       })
     }
@@ -73,7 +73,7 @@ class SignUpConfirmScreen extends React.Component {
           <Text style={styles.title}>Confirm email</Text>
           <Text style={styles.title}>address</Text>
           <View style={styles.subTitleView}>
-            <Text style={styles.subTitle}>We have sent an confirmation</Text>
+            <Text style={styles.subTitle}>We have sent a confirmation</Text>
             <Text style={styles.subTitle}>email to {userEmail}</Text>
           </View>
 

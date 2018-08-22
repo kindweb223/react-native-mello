@@ -25,13 +25,13 @@ export default {
     backgroundColor: 'transparent'
   },
   titleBox: {
-    backgroundColor: 'rgba(245, 245, 245, 0.8)',
+    backgroundColor: '#fff',
     height: 45,
     paddingHorizontal: 15,
     alignItems: 'center',
     justifyContent: 'center',
     borderBottomWidth: 1,
-    borderColor: COLORS.MEDIUM_GREY,
+    borderColor: COLORS.LIGHT_GREY,
     borderTopLeftRadius: 10,
     borderTopRightRadius: 10
   },
@@ -42,7 +42,7 @@ export default {
     fontSize: 13
   },
   buttonBox: {
-    backgroundColor: 'rgba(245, 245, 245, 0.8)',
+    backgroundColor: '#fff',
     height: 56,
     alignItems: 'center',
     justifyContent: 'center',

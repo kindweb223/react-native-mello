@@ -239,8 +239,9 @@ TagCreateScreen.propTypes = {
 }
 
 
-const mapStateToProps = ({ feedo }) => ({
+const mapStateToProps = ({ feedo, user}) => ({
   feedo,
+  user,
 })
 
 
