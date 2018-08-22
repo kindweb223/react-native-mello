@@ -79,7 +79,7 @@ class InviteeScreen extends React.Component {
 
         setTimeout(() => {
           this.setState({ isSuccess: false }, () => {
-            this.props.handleModal()
+            // this.props.handleModal()
           })
         }, 2000)
       }
