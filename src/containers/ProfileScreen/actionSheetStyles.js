@@ -31,7 +31,7 @@ export default {
     alignItems: 'center',
     justifyContent: 'center',
     borderBottomWidth: 1,
-    borderColor: COLORS.MEDIUM_GREY,
+    borderColor: COLORS.LIGHT_GREY,
     borderTopLeftRadius: 10,
     borderTopRightRadius: 10
   },
