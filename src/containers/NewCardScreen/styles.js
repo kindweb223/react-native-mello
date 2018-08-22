@@ -55,8 +55,7 @@ const styles = StyleSheet.create({
   },
   attachment: {
     transform: [
-      { rotate: '135deg' }, 
-      { rotateY: '180deg' },
+      { rotate: '90deg' },
     ],
   },
   line: {

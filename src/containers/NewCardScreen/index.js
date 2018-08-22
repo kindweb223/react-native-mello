@@ -476,7 +476,20 @@ class NewCardScreen extends React.Component {
   onSelectCoverImage() {
   }
 
-  get renderCoverImage() {
+  getLikedText(likes) {
+      let text = ''
+
+      if (likes === 1) {
+        text = likes + ' person liked'
+      }
+      else if (likes > 0) {
+        text = likes + ' people liked'
+      }
+
+      return text
+  }
+
+    get renderCoverImage() {
     if (this.state.coverImage) {
       return (
         <Image style={styles.imageCover} source={{ uri: this.state.coverImage }} resizeMode="cover" />
@@ -554,7 +567,7 @@ class NewCardScreen extends React.Component {
         <TextInput 
           style={styles.textInputCardTitle}
           editable={viewMode === CONSTANTS.CARD_NEW || viewMode === CONSTANTS.CARD_EDIT}
-          placeholder='Type a title or paste a link'
+          placeholder='Add a name or link here’'
           underlineColorAndroid='transparent'
           value={this.state.cardName}
           onChangeText={(value) => this.onChangeTitle(value)}
@@ -566,7 +579,7 @@ class NewCardScreen extends React.Component {
         <TextInput 
           style={styles.textInputIdea}
           editable={viewMode === CONSTANTS.CARD_NEW || viewMode === CONSTANTS.CARD_EDIT}
-          placeholder='Note'
+          placeholder='Add a note'
           multiline={true}
           underlineColorAndroid='transparent'
           value={this.state.idea}
@@ -596,14 +609,14 @@ class NewCardScreen extends React.Component {
             activeOpacity={0.6}
             onPress={this.onAddMedia.bind(this)}
           >
-            <Entypo name="image" size={19} color={COLORS.PURPLE} />
+            <Entypo name="image" size={20} color={COLORS.PURPLE} />
           </TouchableOpacity>
           <TouchableOpacity 
             style={styles.buttonItemContainer}
             activeOpacity={0.6}
             onPress={this.onAddDocument.bind(this)}
           >
-            <Ionicons name="md-attach" style={styles.attachment} size={22} color={COLORS.PURPLE} />
+            <Entypo name="attachment" style={styles.attachment} size={20} color={COLORS.PURPLE} />
           </TouchableOpacity>
         </View>
         {
@@ -666,7 +679,7 @@ class NewCardScreen extends React.Component {
             activeOpacity={0.7}
             onPress={() => this.onShowLikes(likes)}
           >
-            <Text style={styles.textInvitee}>{likes} people liked</Text>
+            <Text style={styles.textInvitee}>{this.getLikedText(likes)}</Text>
           </TouchableOpacity>
           <View style={styles.rowContainer}>
             <LikeComponent idea={this.props.card.currentCard} />

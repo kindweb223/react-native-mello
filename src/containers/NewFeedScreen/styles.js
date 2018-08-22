@@ -58,12 +58,13 @@ const styles = StyleSheet.create({
     fontWeight: '500',
     lineHeight: 26,
     marginHorizontal: 20,
-    marginVertical: 13,
+    marginVertical: 8,
   },
   textInputNote: {
     fontSize: 16,
     lineHeight: 23,
     marginHorizontal: 20,
+    marginVertical: 8,
   },
   bottomContainer: {
     flexDirection: 'row',
@@ -79,8 +80,7 @@ const styles = StyleSheet.create({
   },
   attachment: {
     transform: [
-      { rotate: '135deg' }, 
-      { rotateY: '180deg' },
+      { rotate: '90deg' },
     ],
   },
 })
