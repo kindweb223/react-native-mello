@@ -17,7 +17,7 @@ import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view
 import styles from './styles'
 import COLORS from '../../service/colors';
 import CONSTANTS from '../../service/constants';
-import Tags from '../../components/TagComponent';
+import InviteeTag from './InviteeTag';
 import InviteeItemComponent from '../../components/LinkShareModalComponent/InviteeItemComponent'
 
 class InviteeAutoComplete extends React.Component {
@@ -44,11 +44,12 @@ class InviteeAutoComplete extends React.Component {
   }
 
   render () {
-    const { inviteeEmails } = this.props
+    const { inviteeEmails, invalidEmail } = this.props
 
     return (
       <View style={styles.container}>
-        <Tags
+        <InviteeTag
+          invalidEmail={invalidEmail}
           tags={inviteeEmails}
           placeHolder="Email or name"
           onCreateTag={(text) => this.onCreateInvitee(text)}
@@ -83,6 +84,7 @@ InviteeAutoComplete.defaultProps = {
 }
 
 InviteeAutoComplete.propTypes = {
+  invalidEmail: PropTypes.arrayOf(PropTypes.any).isRequired,
   inviteeEmails: PropTypes.arrayOf(PropTypes.any).isRequired,
   handleChange: PropTypes.func
 }

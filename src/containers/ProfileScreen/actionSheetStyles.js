@@ -25,7 +25,7 @@ export default {
     backgroundColor: 'transparent'
   },
   titleBox: {
-    backgroundColor: 'rgba(245, 245, 245, 0.8)',
+    backgroundColor: '#fff',
     height: 45,
     paddingHorizontal: 15,
     alignItems: 'center',
@@ -42,7 +42,7 @@ export default {
     fontSize: 13
   },
   buttonBox: {
-    backgroundColor: 'rgba(245, 245, 245, 0.8)',
+    backgroundColor: '#fff',
     height: 56,
     alignItems: 'center',
     justifyContent: 'center',
