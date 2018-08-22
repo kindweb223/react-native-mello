@@ -33,6 +33,7 @@ class LIkesListScreen extends React.Component {
     return (
       <TouchableOpacity 
         style={styles.buttonWrapper}
+        activeOpacity={0.6}
         onPress={() => Actions.pop()}
       >
         <Ionicons name="ios-arrow-back" size={30} color={COLORS.PURPLE} />
