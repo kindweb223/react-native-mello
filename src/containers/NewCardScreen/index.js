@@ -9,6 +9,8 @@ import {
   Keyboard,
   Text,
   Image,
+  AppState,
+  Clipboard,
 } from 'react-native'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
@@ -67,7 +69,7 @@ class NewCardScreen extends React.Component {
       originalCardTopY: this.props.intialLayout.py,
       originalCardBottomY: this.props.intialLayout.py + this.props.intialLayout.height,
       isShowKeyboardButton: false,
-      opneGraphForLinks: [],
+      openGraphForLinks: [],
     };
 
     this.selectedFile = null;
@@ -75,10 +77,12 @@ class NewCardScreen extends React.Component {
     this.selectedFileType = null;
     this.selectedFileName = null;
 
-    this.isOpenGraphForTitle = false;
+    this.isOpenGraphForNewCard = false;
+    this.urlForNewCard = '';
+
     this.openGraphIndex = 0;
     this.linksForOpenGraph = [];
-    this.opneGraphForLinks = [];
+    this.openGraphForLinks = [];
 
     this.animatedShow = new Animated.Value(0);
     this.scrollViewLayoutHeight = 0;
@@ -147,14 +151,14 @@ class NewCardScreen extends React.Component {
       loading = true;
     } else if (this.props.card.loading !== types.GET_OPEN_GRAPH_FULFILLED && nextProps.card.loading === types.GET_OPEN_GRAPH_FULFILLED) {
       // success in getting open graph
-      if (this.isOpenGraphForTitle) {
+      if (this.isOpenGraphForNewCard) {
         this.setState({
           cardName: nextProps.card.currentOpneGraph.title,
-          idea: nextProps.card.currentOpneGraph.description,
+          idea: nextProps.card.currentOpneGraph.description + '\n' + this.urlForNewCard,
           coverImage: nextProps.card.currentOpneGraph.image
         });
       } else {
-        this.opneGraphForLinks.push({
+        this.openGraphForLinks.push({
           url: this.linksForOpenGraph[this.openGraphIndex++],
           title: nextProps.card.currentOpneGraph.title,
           description: nextProps.card.currentOpneGraph.description,
@@ -163,7 +167,7 @@ class NewCardScreen extends React.Component {
 
         if (this.openGraphIndex >= this.linksForOpenGraph.length) {
           this.setState({
-            opneGraphForLinks: this.opneGraphForLinks,
+            openGraphForLinks: this.openGraphForLinks,
           });
         } else {
           loading = true;
@@ -279,6 +283,11 @@ class NewCardScreen extends React.Component {
 
   onTapOutsideCard() {
     const { viewMode } = this.props;
+    if (viewMode === CONSTANTS.CARD_NEW) {
+      if (this.checkUrl(this.state.cardName) || this.checkUrl(this.state.idea)) {
+        return;
+      }
+    }
     if (viewMode === CONSTANTS.CARD_NEW || viewMode === CONSTANTS.CARD_EDIT) {
       this.onUpdate();
       return;
@@ -368,13 +377,127 @@ class NewCardScreen extends React.Component {
     this.props.setCoverImage(this.props.card.currentCard.id, fileId);
   }
 
+  checkUrl(content) {
+    const { viewMode } = this.props;
+    if (viewMode === CONSTANTS.CARD_NEW) {
+      const texts = content.split(/[, ]/);
+      if (texts.length === 1 && validUrl.isUri(texts[0])) {
+        this.isOpenGraphForNewCard = true;
+        this.urlForNewCard = texts[0];
+        this.props.getOpenGraph(texts[0]);
+        return true;
+      }
+    }
+    return false;
+  }
+
+  async onChangeTitle(text) {
+    const { viewMode } = this.props;
+    if (viewMode === CONSTANTS.CARD_NEW) {
+      const clipboardContent = await Clipboard.getString();
+      if (clipboardContent === text) {
+        if (this.checkUrl(text)) {
+          return;
+        }
+      }
+    }
+    this.setState({cardName: text});
+  }
+  
+  onKeyPressTitle(event) {
+    if (event.nativeEvent.key === ' ' || event.nativeEvent.key === ',' || event.nativeEvent.key === 'Enter') {
+      this.checkUrl(this.state.cardName);
+    }
+  }
+  
+  async onChangeIdea(text) {
+    const { viewMode } = this.props;
+    if (viewMode === CONSTANTS.CARD_NEW) {
+      const clipboardContent = await Clipboard.getString();
+      if (clipboardContent === text) {
+        if (this.checkUrl(text)) {
+          return;
+        }
+      }
+    }
+    this.setState({idea: text});
+  }
+
+  onKeyPressIdea(event) {
+    if (event.nativeEvent.key === ' ' || event.nativeEvent.key === ',' || event.nativeEvent.key === 'Enter') {
+      this.checkUrl(this.state.idea);
+    }
+  }
+
+  onFocus() {
+    const { viewMode } = this.props;
+    if (viewMode === CONSTANTS.CARD_NEW || viewMode === CONSTANTS.CARD_EDIT) {
+      this.setState({
+        isShowKeyboardButton: true,
+      });
+    }
+  }
+
+  onBlurTitle() {
+    this.setState({
+      isShowKeyboardButton: false,
+    });
+    this.checkUrl(this.state.cardName);
+  }
+
+  onBlurIdea() {
+    this.setState({
+      isShowKeyboardButton: false,
+    });
+    this.checkUrl(this.state.idea);
+    // const urls = this.state.idea.match(/\bhttps?:\/\/\S+/gi);
+    // if (urls) {
+    //   this.isOpenGraphForNewCard = false;
+    //   this.openGraphIndex = 0;
+    //   this.openGraphForLinks = [];
+    //   this.linksForOpenGraph = urls;
+    //   this.props.getOpenGraph(this.linksForOpenGraph[this.openGraphIndex]);
+    // }
+  }
+
+  onShowLikes(likes) {
+    if (likes > 0) {
+      Actions.LikesListScreen({idea: this.props.card.currentCard});
+    }
+  }
+
+  onSelectCoverImage() {
+  }
+
+  get renderCoverImage() {
+    if (this.state.coverImage) {
+      return (
+        <Image style={styles.imageCover} source={{ uri: this.state.coverImage }} resizeMode="cover" />
+      );
+    }
+    const imageFiles = _.filter(this.props.card.currentCard.files, file => file.contentType.indexOf('image') !== -1);
+    if (imageFiles.length > 0) {
+      return (
+        <View style={styles.coverImageSelectContainer}>
+          <TouchableOpacity
+            style={styles.coverImageSelectButtonWrapper}
+            activeOpacity={0.6}
+            onPress={() => this.onSelectCoverImage()}
+          >
+            <Text style={styles.textSelectButton}>Select cover image</Text>
+          </TouchableOpacity>
+        </View>
+      );
+    }
+  }
+
   get renderWebMeta() {
     const { viewMode } = this.props;
-    const { opneGraphForLinks } = this.state;
-    if (opneGraphForLinks.length > 0) {
+    const { openGraphForLinks } = this.state;
+    if (openGraphForLinks.length > 0) {
       return (
         <WebMetaList 
-          links={opneGraphForLinks}
+          links={openGraphForLinks}
           editable={viewMode !== CONSTANTS.CARD_VIEW}
         />
       )
@@ -417,82 +540,6 @@ class NewCardScreen extends React.Component {
     }
   }
 
-  onChangeTitle(text) {
-    const { viewMode } = this.props;
-    if (viewMode === CONSTANTS.CARD_NEW) {
-      if (validUrl.isUri(text)) {
-        this.isOpenGraphForTitle = true;
-        this.props.getOpenGraph(text);
-        return;
-      } 
-    }
-    this.setState({cardName: text});
-  }
-  
-  onChangeIdea(text) {
-    this.setState({idea: text});
-  }
-
-  onFocus() {
-    const { viewMode } = this.props;
-    if (viewMode === CONSTANTS.CARD_NEW || viewMode === CONSTANTS.CARD_EDIT) {
-      this.setState({
-        isShowKeyboardButton: true,
-      });
-    }
-  }
-
-  onBlurTitle() {
-    this.setState({
-      isShowKeyboardButton: false,
-    });
-  }
-
-  onBlurIdea() {
-    this.setState({
-      isShowKeyboardButton: false,
-    });
-    const urls = this.state.idea.match(/\bhttps?:\/\/\S+/gi);
-    if (urls) {
-      this.isOpenGraphForTitle = false;
-      this.openGraphIndex = 0;
-      this.opneGraphForLinks = [];
-      this.linksForOpenGraph = urls;
-      this.props.getOpenGraph(this.linksForOpenGraph[this.openGraphIndex]);
-    }
-  }
-
-  onShowLikes(likes) {
-    if (likes > 0) {
-      Actions.LikesListScreen({idea: this.props.card.currentCard});
-    }
-  }
-
-  onSelectCoverImage() {
-  }
-
-  get renderCoverImage() {
-    if (this.state.coverImage) {
-      return (
-        <Image style={styles.imageCover} source={{ uri: this.state.coverImage }} resizeMode="cover" />
-      );
-    }
-    const imageFiles = _.filter(this.props.card.currentCard.files, file => file.contentType.indexOf('image') !== -1);
-    if (imageFiles.length > 0) {
-      return (
-        <View style={styles.coverImageSelectContainer}>
-          <TouchableOpacity
-            style={styles.coverImageSelectButtonWrapper}
-            activeOpacity={0.6}
-            onPress={() => this.onSelectCoverImage()}
-          >
-            <Text style={styles.textSelectButton}>Select cover image</Text>
-          </TouchableOpacity>
-        </View>
-      );
-    }
-  }
-
   get renderMainContent() {
     const { viewMode } = this.props;
     return (
@@ -504,6 +551,7 @@ class NewCardScreen extends React.Component {
           underlineColorAndroid='transparent'
           value={this.state.cardName}
           onChangeText={(value) => this.onChangeTitle(value)}
+          onKeyPress={this.onKeyPressTitle.bind(this)}
           onFocus={() => this.onFocus()}
           onBlur={() => this.onBlurTitle()}
         />
@@ -516,6 +564,7 @@ class NewCardScreen extends React.Component {
           underlineColorAndroid='transparent'
           value={this.state.idea}
           onChangeText={(value) => this.onChangeIdea(value)}
+          onKeyPress={this.onKeyPressIdea.bind(this)}
           onFocus={() => this.onFocus()}
           onBlur={() => this.onBlurIdea()}
         />
