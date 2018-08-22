@@ -31,7 +31,7 @@ export default {
     justifyContent: 'center',
     backgroundColor: '#fff',
     borderBottomWidth: 1,
-    borderColor: '#fff',
+    borderColor: COLORS.LIGHT_GREY,
     borderTopLeftRadius: 10,
     borderTopRightRadius: 10
   },
