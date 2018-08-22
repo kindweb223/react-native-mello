@@ -243,14 +243,13 @@ export const uploadFileToS3 = (signedUrl, file, fileName, mimeType) => {
 /**
  * Add a file
  */
-export const addFile = (ideaId, fileType, contentType, name, objectKey, accessUrl) => {
+export const addFile = (ideaId, fileType, contentType, name, objectKey) => {
   let url = `ideas/${ideaId}/files`
   const data = {
     fileType,
     contentType,
     name,
     objectKey,
-    accessUrl,
   }
   return {
     types: [types.ADD_FILE_PENDING, types.ADD_FILE_FULFILLED, types.ADD_FILE_REJECTED],
