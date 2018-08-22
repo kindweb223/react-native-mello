@@ -91,7 +91,7 @@ export default {
   },
   tagInputItem: {
     flexDirection: 'row',
-    alignItems: 'center',
+    alignItems: 'flex-start',
     justifyContent: 'space-between',
     paddingVertical: 3,
     borderBottomWidth: 1,
@@ -114,7 +114,8 @@ export default {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
-    marginLeft: 10
+    marginLeft: 10,
+    marginTop: 10
   },
   viewText: {
     fontSize: 14,

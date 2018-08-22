@@ -9,7 +9,8 @@ import {
   Share,
   TextInput,
   ScrollView,
-  ActivityIndicator
+  ActivityIndicator,
+  Alert
 } from 'react-native'
 import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
@@ -47,15 +48,13 @@ class InviteeScreen extends React.Component {
       isPermissionModal: false,
       inviteePermission: 'ADD',
       isSuccess: false,
-      isError: false,
-      errorMsg: '',
       isInput: false,
       contactList: [],
       inviteeEmails: [],
       filteredContacts: [],
       recentContacts: [],
       isInvalidEmail: false,
-      invalidEmailCount: 0,
+      invalidEmail: [],
       loading: false
     }
   }
@@ -71,7 +70,10 @@ class InviteeScreen extends React.Component {
 
     if (prevProps.feedo.loading === 'INVITE_HUNT_PENDING' && feedo.loading === 'INVITE_HUNT_FULFILLED') {
       if (this.props.feedo.error) {
-        this.setState({ isError: true, errorMsg: feedo.error })  
+        Alert.alert(
+          'Error',
+          feedo.error
+        )
       } else {
         this.setState({ isSuccess: true })
 
@@ -103,7 +105,7 @@ class InviteeScreen extends React.Component {
     const { contactList } = this.state
 
     let invalidEmail = _.filter(inviteeEmails, invitee => COMMON_FUNC.validateEmail(invitee.email) === false)
-    this.setState({ isInvalidEmail: invalidEmail.length > 0 ? true : false, invalidEmailCount: invalidEmail.length })
+    this.setState({ isInvalidEmail: invalidEmail.length > 0 ? true : false, invalidEmail })
 
     const filteredList = _.filter(contactList, item =>
       _.findIndex(inviteeEmails, invitee => invitee.email === item.userProfile.email) === -1)
@@ -160,15 +162,18 @@ class InviteeScreen extends React.Component {
 
   onSendInvitation = () => {
     const { data, inviteToHunt } = this.props
-    const { inviteeEmails, message, inviteePermission, isAddInvitee } = this.state
+    const { inviteeEmails, message, inviteePermission, isAddInvitee, isInvalidEmail } = this.state
 
-    if (isAddInvitee) {
+    if (isAddInvitee && !isInvalidEmail) {
       const params = {
         message,
         invitees: inviteeEmails,
         permissions: inviteePermission
       }
-      inviteToHunt(data.id, params)
+
+      if (!this.state.isInvalidEmail) {
+        inviteToHunt(data.id, params)
+      }
     }
   }
 
@@ -221,7 +226,9 @@ class InviteeScreen extends React.Component {
       inviteeEmails,
       inviteePermission,
       isPermissionModal,
-      isSuccess
+      isSuccess,
+      isInvalidEmail,
+      invalidEmail
      } = this.state
 
     return (
@@ -232,8 +239,8 @@ class InviteeScreen extends React.Component {
           </TouchableOpacity>
 
           <TouchableOpacity onPress={() => this.onSendInvitation()} activeOpacity={0.8}>
-            <View style={[styles.sendButtonView, isAddInvitee ? styles.sendEnableButtonView : styles.sendDisableButtonView]}>
-              <Text style={[styles.sendButtonText, isAddInvitee ? styles.sendEnableButtonText : styles.sendDisableButtonText]}>Send</Text>
+            <View style={[styles.sendButtonView, (!isAddInvitee || isInvalidEmail) ? styles.sendDisableButtonView : styles.sendEnableButtonView]}>
+              <Text style={[styles.sendButtonText, (!isAddInvitee || isInvalidEmail) ? styles.sendDisableButtonText : styles.sendEnableButtonText]}>Send</Text>
             </View>
           </TouchableOpacity>
         </View>
@@ -243,6 +250,7 @@ class InviteeScreen extends React.Component {
             <View style={styles.tagInputItem}>
               <InviteeAutoComplete
                 inviteeEmails={inviteeEmails}
+                invalidEmail={invalidEmail}
                 handleInvitees={this.handleInvitees}
                 handleChange={this.handleChange}
               />
@@ -255,14 +263,6 @@ class InviteeScreen extends React.Component {
                 </View>
               </TouchableOpacity>
             </View>
-
-            {this.state.isInvalidEmail && (
-              <View style={styles.invalidEmail}>
-                <Text style={styles.invalidEmailText}>
-                  {this.state.invalidEmailCount} {this.state.invalidEmailCount === 1 ? 'email' : 'emails'} are invalid
-                </Text>
-              </View>
-            )}
 
             {this.state.isInput && (
               this.renderFilteredContacts(filteredContacts)
@@ -336,22 +336,6 @@ class InviteeScreen extends React.Component {
         >
           <View style={styles.successView}>
             <Octicons name="check" style={styles.successIcon} />
-          </View>
-        </Modal>
-
-        <Modal 
-          isVisible={this.state.isError}
-          style={styles.successModal}
-          backdropColor='#e0e0e0'
-          backdropOpacity={0.9}
-          animationIn="fadeIn"
-          animationOut="fadeOut"
-          animationInTiming={500}
-          onBackdropPress={() => this.setState({ isError: false })}
-        >
-          <View style={styles.successView}>
-            <MaterialIcons name="close" style={styles.successIcon} />
-            <Text>{this.state.errorMsg}</Text>
           </View>
         </Modal>
 
