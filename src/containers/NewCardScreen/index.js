@@ -9,7 +9,6 @@ import {
   Keyboard,
   Text,
   Image,
-  AppState,
   Clipboard,
 } from 'react-native'
 import PropTypes from 'prop-types'
@@ -111,9 +110,8 @@ class NewCardScreen extends React.Component {
       } = this.props.card.currentCard;
       const {
         objectKey,
-        accessUrl,
       } = this.props.card.fileUploadUrl;
-      this.props.addFile(id, this.selectedFileType, this.selectedFileMimeType, this.selectedFileName, objectKey, accessUrl);
+      this.props.addFile(id, this.selectedFileType, this.selectedFileMimeType, this.selectedFileName, objectKey);
     } else if (this.props.card.loading !== types.ADD_FILE_PENDING && nextProps.card.loading === types.ADD_FILE_PENDING) {
       // adding a file
       loading = true;
@@ -157,6 +155,16 @@ class NewCardScreen extends React.Component {
           idea: nextProps.card.currentOpneGraph.description + '\n' + this.urlForNewCard,
           coverImage: nextProps.card.currentOpneGraph.image
         });
+        if (nextProps.card.currentOpneGraph.image) {
+          loading = true;
+          let {
+            id, 
+          } = this.props.card.currentCard;
+          const coverImageUrl = nextProps.card.currentOpneGraph.image;
+          const mimeType = mime.lookup(coverImageUrl);
+          const filename = coverImageUrl.replace(/^.*[\\\/]/, '')
+          this.props.addFile(id, 'MEDIA', mimeType, filename, coverImageUrl);
+        }
       } else {
         this.openGraphForLinks.push({
           url: this.linksForOpenGraph[this.openGraphIndex++],
@@ -208,7 +216,6 @@ class NewCardScreen extends React.Component {
   }
 
   componentDidMount() {
-    console.log('Currrent Card : ', this.props.card.currentCard);
     const { viewMode } = this.props;
     if (viewMode === CONSTANTS.CARD_VIEW || viewMode === CONSTANTS.CARD_EDIT) {
       this.setState({
@@ -890,7 +897,7 @@ const mapDispatchToProps = dispatch => ({
   updateCard: (huntId, ideaId, title, idea, coverImage, files) => dispatch(updateCard(huntId, ideaId, title, idea, coverImage, files)),
   getFileUploadUrl: (huntId, ideaId) => dispatch(getFileUploadUrl(huntId, ideaId)),
   uploadFileToS3: (signedUrl, file, fileName, mimeType) => dispatch(uploadFileToS3(signedUrl, file, fileName, mimeType)),
-  addFile: (ideaId, fileType, contentType, name, objectKey, accessUrl) => dispatch(addFile(ideaId, fileType, contentType, name, objectKey, accessUrl)),
+  addFile: (ideaId, fileType, contentType, name, objectKey) => dispatch(addFile(ideaId, fileType, contentType, name, objectKey)),
   deleteFile: (ideaId, fileId) => dispatch(deleteFile(ideaId, fileId)),
   setCoverImage: (ideaId, fileId) => dispatch(setCoverImage(ideaId, fileId)),
   getOpenGraph: (url) => dispatch(getOpenGraph(url)),
