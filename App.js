@@ -83,7 +83,7 @@ export default class Root extends React.Component {
   render() {
     const scenes = Actions.create(
       <Lightbox>
-        <Modal>
+        <Modal hideNavBar>
           <Scene key="root">
             <Scene key="LoginStartScreen" component={ LoginStartScreen } initial hideNavBar panHandlers={null} />
             <Scene key="LoginScreen" component={ LoginScreen } hideNavBar panHandlers={null} />
