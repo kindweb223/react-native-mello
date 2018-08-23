@@ -23,9 +23,14 @@ class CropImageScreen extends React.Component {
     }
   }
 
+  onSave = () => {
+
+  }
+
   render () {
     const { avatarFile } = this.state
-    console.log('PPPP: ', avatarFile.uri)
+    console.log('avatarFile: ', avatarFile.uri)
+
     return (
       <View style={styles.container}>
         <SafeAreaView>

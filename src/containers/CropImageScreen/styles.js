@@ -45,8 +45,7 @@ export default {
   },
   image: {
     width: '100%',
-    height: '100%',
-    opacity: 0.5,
+    height: '100%'
   },
   footerView: {
     width: '100%',

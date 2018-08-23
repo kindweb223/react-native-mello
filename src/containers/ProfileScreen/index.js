@@ -13,19 +13,19 @@ import { Actions } from 'react-native-router-flux'
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons'
 import Ionicons from 'react-native-vector-icons/Ionicons'
 import UserAvatar from 'react-native-user-avatar'
-import { ActionSheetCustom } from 'react-native-actionsheet'
-import ActionSheet from 'react-native-actionsheet'
+
 import Permissions from 'react-native-permissions'
-// import ImagePicker from 'react-native-image-picker'
-import ImagePicker from 'react-native-image-crop-picker'
+import ImagePicker from 'react-native-image-picker'
+// import ImagePicker from 'react-native-image-crop-picker'
 import Modal from "react-native-modal"
 import * as mime from 'react-native-mime-types'
+import ActionSheet from 'react-native-actionsheet'
 import _ from 'lodash'
 import CropImageScreen from '../CropImageScreen'
 import { userSignOut, getImageUrl, updateProfile } from '../../redux/user/actions'
 import { uploadFileToS3 } from '../../redux/card/actions'
 import COLORS from '../../service/colors'
-import actionSheetStyles from '../FeedLongHoldMenuScreen/styles'
+import * as COMMON_FUNC from '../../service/commonFunc'
 import styles from './styles'
 
 const CLOSE_ICON = require('../../../assets/images/Close/Blue.png')
@@ -41,11 +41,6 @@ const ABOUT_ITEMS = [
   'Contact Us',
   'Privacy Policy',
   'Terms & Conditions'
-]
-
-const ACTIONSHEET_OPTIONS = [
-  <Text key="0" style={actionSheetStyles.actionButtonText}>Sign Out</Text>,
-  'Cancel'
 ]
 
 const SETTING_ITEMS = [
@@ -85,50 +80,50 @@ class ProfileScreen extends React.Component {
   }
 
   pickMediaFromCamera(options) {
-    // ImagePicker.launchCamera(options, (response)  => {
-    //   if (!response.didCancel) {
-    //     this.setState({ avatarFile: response, isCrop: true })
-    //   }
-    // });
+    ImagePicker.launchCamera(options, (response)  => {
+      if (!response.didCancel) {
+        this.setState({ avatarFile: response, isCrop: true })
+      }
+    });
   }
 
   pickMediaFromLibrary(options) {
-    // ImagePicker.launchImageLibrary(options, (response)  => {
-    //   if (!response.didCancel) {
-    //     this.setState({ avatarFile: response, isCrop: true })
-    //   }
-    // });
+    ImagePicker.launchImageLibrary(options, (response)  => {
+      if (!response.didCancel) {
+        this.setState({ avatarFile: response, isCrop: true })
+      }
+    });
   }
+
+  // onTapMediaPickerActionSheet(index) {
+  //   if (index === 0) {
+  //     ImagePicker.openPicker({
+  //       width: 20,
+  //       height: 20,
+  //       cropping: true,
+  //       cropperCircleOverlay: true,
+  //       freeStyleCropEnabled: true,
+  //       hideBottomControls: true,
+  //       avoidEmptySpaceAroundImage: false
+  //     }).then(image => {
+  //       console.log('CROPPED_IMAGE: ', image)
+  //     })
+  //   } else if (index === 1) {
+  //     ImagePicker.openCamera({
+  //       width: 20,
+  //       height: 20,
+  //       cropping: true,
+  //       cropperCircleOverlay: true,
+  //       freeStyleCropEnabled: true,
+  //       hideBottomControls: true,
+  //       avoidEmptySpaceAroundImage: false
+  //     }).then(image => {
+  //       console.log('CROPPED_IMAGE: ', image)
+  //     })
+  //   }
+  // }
 
   onTapMediaPickerActionSheet(index) {
-    if (index === 0) {
-      ImagePicker.openPicker({
-        width: 20,
-        height: 20,
-        cropping: true,
-        cropperCircleOverlay: true,
-        freeStyleCropEnabled: true,
-        hideBottomControls: true,
-        avoidEmptySpaceAroundImage: false
-      }).then(image => {
-        console.log('CROPPED_IMAGE: ', image)
-      })
-    } else if (index === 1) {
-      ImagePicker.openCamera({
-        width: 20,
-        height: 20,
-        cropping: true,
-        cropperCircleOverlay: true,
-        freeStyleCropEnabled: true,
-        hideBottomControls: true,
-        avoidEmptySpaceAroundImage: false
-      }).then(image => {
-        console.log('CROPPED_IMAGE: ', image)
-      })
-    }
-  }
-
-  onTapMediaPickerActionSheet1(index) {
     const options = {
       storageOptions: {
         skipBackup: true,
@@ -308,14 +303,13 @@ class ProfileScreen extends React.Component {
           </ScrollView>
         )}
 
-        <ActionSheetCustom
+        <ActionSheet
           ref={ref => this.ActionSheet = ref}
-          title={<Text style={actionSheetStyles.titleText}>Are you sure that you would like to sign out?</Text>}
-          options={ACTIONSHEET_OPTIONS}
+          title={'Are you sure that you would like to sign out?'}
+          options={['Sign Out', 'Cancel']}
           cancelButtonIndex={1}
-          destructiveButtonIndex={2}
+          destructiveButtonIndex={0}
           tintColor={COLORS.PURPLE}
-          styles={actionSheetStyles}
           onPress={(index) => this.onTapActionSheet(index)}
         />
 

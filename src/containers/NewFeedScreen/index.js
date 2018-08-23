@@ -11,7 +11,7 @@ import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons'
-import Ionicons from 'react-native-vector-icons/Ionicons'
+import Octicons from 'react-native-vector-icons/Octicons'
 import Entypo from 'react-native-vector-icons/Entypo'
 import Tags from '../../components/TagComponent'
 import ActionSheet from 'react-native-actionsheet'
@@ -385,9 +385,9 @@ class NewFeedScreen extends React.Component {
           value={this.state.feedName}
           onChangeText={(value) => this.setState({feedName: value})}
         />
-        <TextInput 
+        <TextInput
           style={styles.textInputNote}
-          placeholder='Note'
+          placeholder='Add a note'
           multiline={true}
           underlineColorAndroid='transparent'
           value={this.state.comments}
@@ -399,7 +399,7 @@ class NewFeedScreen extends React.Component {
           onPressTag={(index, tag) => this.onOpenCreationTag()}
           containerStyle={{
             marginHorizontal: 20,
-            marginVertical: 15,
+            marginVertical: 8,
           }}
           inputStyle={{
             backgroundColor: 'white',
@@ -421,26 +421,28 @@ class NewFeedScreen extends React.Component {
   get renderBottomContent() {
     return (
       <View style={styles.bottomContainer}>
+        {/*
         <TouchableOpacity
           style={styles.bottomItemContainer}
           activeOpacity={0.6}
           onPress={this.onInsertLink.bind(this)}
         >
-          <Ionicons name="ios-flash" size={28} color={COLORS.PURPLE} />
+          <Octicons name="zap" size={20} color={COLORS.PURPLE} />
         </TouchableOpacity>
-        <TouchableOpacity 
+        */}
+        <TouchableOpacity
           style={styles.bottomItemContainer}
           activeOpacity={0.6}
           onPress={this.onAddMedia.bind(this)}
         >
-          <Entypo name="image" size={19} color={COLORS.PURPLE} />
+          <Entypo name="image" size={20} color={COLORS.PURPLE} />
         </TouchableOpacity>
         <TouchableOpacity 
           style={styles.bottomItemContainer}
           activeOpacity={0.6}
           onPress={this.onAddDocument.bind(this)}
         >
-          <Ionicons name="md-attach" style={styles.attachment} size={22} color={COLORS.PURPLE} />
+          <Entypo name="attachment" style={styles.attachment} size={20} color={COLORS.PURPLE} />
         </TouchableOpacity>
       </View>
     );
