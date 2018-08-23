@@ -3,19 +3,32 @@ import moment from 'moment'
 const getDurationFromNow = (date) => {
   const now = moment()
   const hours = now.diff(date, 'hours')
+
+  // Return days if over 24 hours
   if (hours > 24) {
-    return moment(date).format('MMMM D')
-  } else if (hours > 0) {
+    const days = now.diff(date, 'days')
+    return days + 'd'
+  }
+  // Return hours over an hour and less than a day
+  else if (hours > 0) {
     return hours + 'h'
-  } else {
+  }
+  // Return minutes if less then an hour
+  else {
     const minutes = now.diff(date, 'minutes')
     if (minutes > 0) {
-      return minutes === 1 ? minutes + ' min' : minutes + ' mins'
+      return minutes + 'm'
     }
     return 'just now'
   }
 }
 
+const getTimestamp = (date) => {
+  // 17:15 - 22 Aug 2018
+  return moment(date).format('H:mm - D MMM YYYY')
+}
+
 export {
   getDurationFromNow,
+  getTimestamp,
 }

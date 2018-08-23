@@ -26,6 +26,8 @@ import styles from './styles'
 const CLOSE_ICON = require('../../../assets/images/Close/Blue.png')
 const TRASH_ICON = require('../../../assets/images/Trash/Blue.png')
 const BELL_ICON = require('../../../assets/images/Bell/Blue.png')
+const QUOTE_ICON = require('../../../assets/images/Quote/Blue.png')
+const LOCK_ICON = require('../../../assets/images/Lock/Blue.png')
 
 
 const ABOUT_ITEMS = [
@@ -37,7 +39,7 @@ const ABOUT_ITEMS = [
 
 const SETTING_ITEMS = [
   {
-    icon: <Image source={BELL_ICON} style={styles.leftIcon} />,
+    icon: <Image source={LOCK_ICON} style={styles.leftIcon} />,
     title: 'Security'
   },
   {
@@ -113,7 +115,7 @@ class ProfileScreen extends React.Component {
                   >
                     <View style={styles.aboutItem}>
                       <View style={styles.settingLeftView}>
-                        <Image source={BELL_ICON} style={styles.leftIcon} />
+                        <Image source={QUOTE_ICON} style={styles.leftIcon} />
                         <Text style={styles.title}>
                           Bio
                         </Text>
