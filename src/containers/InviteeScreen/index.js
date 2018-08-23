@@ -10,7 +10,8 @@ import {
   TextInput,
   ScrollView,
   ActivityIndicator,
-  Alert
+  Alert,
+  KeyboardAvoidingView
 } from 'react-native'
 import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
@@ -19,6 +20,7 @@ import Octicons from 'react-native-vector-icons/Octicons'
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons'
 import Modal from 'react-native-modal'
 import _ from 'lodash'
+import KeyboardScrollView from '../../components/KeyboardScrollView'
 import InviteeAutoComplete from '../../components/InviteeAutoComplete'
 import LinkShareModalComponent from '../../components/LinkShareModalComponent'
 import InviteeItemComponent from '../../components/LinkShareModalComponent/InviteeItemComponent'
@@ -274,6 +276,7 @@ class InviteeScreen extends React.Component {
                   ref={ref => this.messageRef = ref}
                   value={this.state.message}
                   placeholder="Add message"
+                  multiline={true}
                   style={[styles.textInput]}
                   onChangeText={this.onChangeMessage}
                   underlineColorAndroid='transparent'
