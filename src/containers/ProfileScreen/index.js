@@ -16,7 +16,6 @@ import UserAvatar from 'react-native-user-avatar'
 
 import Permissions from 'react-native-permissions'
 import ImagePicker from 'react-native-image-picker'
-// import ImagePicker from 'react-native-image-crop-picker'
 import Modal from "react-native-modal"
 import * as mime from 'react-native-mime-types'
 import ActionSheet from 'react-native-actionsheet'
@@ -94,34 +93,6 @@ class ProfileScreen extends React.Component {
       }
     });
   }
-
-  // onTapMediaPickerActionSheet(index) {
-  //   if (index === 0) {
-  //     ImagePicker.openPicker({
-  //       width: 20,
-  //       height: 20,
-  //       cropping: true,
-  //       cropperCircleOverlay: true,
-  //       freeStyleCropEnabled: true,
-  //       hideBottomControls: true,
-  //       avoidEmptySpaceAroundImage: false
-  //     }).then(image => {
-  //       console.log('CROPPED_IMAGE: ', image)
-  //     })
-  //   } else if (index === 1) {
-  //     ImagePicker.openCamera({
-  //       width: 20,
-  //       height: 20,
-  //       cropping: true,
-  //       cropperCircleOverlay: true,
-  //       freeStyleCropEnabled: true,
-  //       hideBottomControls: true,
-  //       avoidEmptySpaceAroundImage: false
-  //     }).then(image => {
-  //       console.log('CROPPED_IMAGE: ', image)
-  //     })
-  //   }
-  // }
 
   onTapMediaPickerActionSheet(index) {
     const options = {
