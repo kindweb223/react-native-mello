@@ -15,8 +15,8 @@ import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 
 import { Actions } from 'react-native-router-flux'
-import Ionicons from 'react-native-vector-icons/Ionicons'
 import Entypo from 'react-native-vector-icons/Entypo'
+import EvilIcons from 'react-native-vector-icons/EvilIcons'
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons'
 import ActionSheet from 'react-native-actionsheet'
 import ImagePicker from 'react-native-image-picker'
@@ -212,19 +212,21 @@ class NewCardScreen extends React.Component {
     });
 
     // showing error alert
-    if (nextProps.card.error) {
-      let error = null;
-      if (nextProps.card.error.error) {
-        error = nextProps.card.error.error;
-      } else {
-        error = nextProps.card.error.message;
+    if (this.props.card.loading !== nextProps.card.loading) {
+      if (nextProps.card.error) {
+        let error = null;
+        if (nextProps.card.error.error) {
+          error = nextProps.card.error.error;
+        } else {
+          error = nextProps.card.error.message;
+        }
+        if (error) {
+          Alert.alert('Error', error, [
+            {text: 'Close'},
+          ]);
+        }
+        return;
       }
-      if (error) {
-        Alert.alert('Error', error, [
-          {text: 'Close'},
-        ]);
-      }
-      return;
     }
   }
 
@@ -235,6 +237,12 @@ class NewCardScreen extends React.Component {
         cardName: this.props.card.currentCard.title,
         idea: this.props.card.currentCard.idea,
         coverImage: this.props.card.currentCard.coverImage,
+      });
+    }
+
+    if (viewMode === CONSTANTS.CARD_NEW) {
+      this.setState({
+        isShowKeyboardButton: true,
       });
     }
 
@@ -272,7 +280,7 @@ class NewCardScreen extends React.Component {
 
     let cardName = this.state.cardName;
     if (cardName === '') {
-      cardName = 'New Card';
+      cardName = '';
     }
     this.props.updateCard(this.props.feedo.currentFeed.id, id, cardName, this.state.idea, this.state.coverImage, files);
   }
@@ -459,16 +467,22 @@ class NewCardScreen extends React.Component {
   }
 
   onBlurTitle() {
-    this.setState({
-      isShowKeyboardButton: false,
-    });
+    const { viewMode } = this.props;
+    if (viewMode !== CONSTANTS.CARD_NEW) {
+      this.setState({
+        isShowKeyboardButton: false,
+      });
+    }
     this.checkUrl(this.state.cardName);
   }
 
   onBlurIdea() {
-    this.setState({
-      isShowKeyboardButton: false,
-    });
+    const { viewMode } = this.props;
+    if (viewMode !== CONSTANTS.CARD_NEW) {
+      this.setState({
+        isShowKeyboardButton: false,
+      });
+    }
     this.checkUrl(this.state.idea);
     // const urls = this.state.idea.match(/\bhttps?:\/\/\S+/gi);
     // if (urls) {
@@ -604,7 +618,7 @@ class NewCardScreen extends React.Component {
         <TextInput 
           style={styles.textInputCardTitle}
           editable={viewMode === CONSTANTS.CARD_NEW || viewMode === CONSTANTS.CARD_EDIT}
-          placeholder='Add a name or link here’'
+          placeholder='New Card' //Add a name or link here
           underlineColorAndroid='transparent'
           value={this.state.cardName}
           onChangeText={(value) => this.onChangeTitle(value)}
@@ -677,25 +691,40 @@ class NewCardScreen extends React.Component {
     );
   }
 
+  renderAvatar(user) {
+    const name = `${user.firstName} ${user.lastName}`;
+    if (user.imageUrl || user.firstName || user.lastName) {
+      return (
+        <UserAvatar
+          size="24"
+          name={name}
+          color="#000"
+          textColor="#fff"
+          src={user.imageUrl}
+        />
+      );
+    }
+    return (
+      <EvilIcons name="envelope" size={24} color={COLORS.PURPLE} />
+    )
+  }
+
   get renderInvitee() {
     const {
-      firstName,
-      lastName,
-      imageUrl,
-    } = this.props.invitee.userProfile;
-    const name = `${firstName} ${lastName}`;
+      userProfile
+    } = this.props.invitee;
+    const name = `${userProfile.firstName} ${userProfile.lastName}`;
+    const letterToWidthRatio = 0.5476; // Approximate this by taking the width of some representative text samples
+    let fontSize = CONSTANTS.SCREEN_WIDTH * 0.42 / (name.length * letterToWidthRatio) - 4;
+    if (fontSize > 14) {
+      fontSize = 14;
+    }
     return (
       <View>
         <View style={styles.line} />
         <View style={[styles.rowContainer, {marginHorizontal: 22}]}>
-          <UserAvatar
-            size="24"
-            name={name}
-            color="#000"
-            textColor="#fff"
-            src={imageUrl}
-          />
-          <Text style={[styles.textInvitee, {marginLeft: 9}]}>{name}</Text>
+          {this.renderAvatar(userProfile)}
+          <Text style={[styles.textInvitee, { marginLeft: 9, fontSize,}]} numberOfLines={1}>{name}</Text>
           <Entypo name="dot-single" style={styles.iconDot} />
           <Text style={styles.textInvitee}>{getTimestamp(this.props.card.currentCard.publishedDate)}</Text>
         </View>

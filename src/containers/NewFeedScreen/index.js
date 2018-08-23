@@ -6,12 +6,13 @@ import {
   TouchableOpacity,
   Alert,
   Animated,
+  Keyboard,
+  ScrollView,
 } from 'react-native'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons'
-import Octicons from 'react-native-vector-icons/Octicons'
 import Entypo from 'react-native-vector-icons/Entypo'
 import Tags from '../../components/TagComponent'
 import ActionSheet from 'react-native-actionsheet'
@@ -20,8 +21,7 @@ import ImagePicker from 'react-native-image-picker';
 import { DocumentPicker, DocumentPickerUtil } from 'react-native-document-picker';
 import Permissions from 'react-native-permissions'
 import * as mime from 'react-native-mime-types';
-import { filter } from 'lodash'
-import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
+import _ from 'lodash'
 
 import { 
   createFeed,
@@ -45,6 +45,7 @@ import TagCreateScreen from '../TagCreateScreen';
 
 const NewFeedMode = 1;
 const TagCreateMode = 2;
+const ScreenVerticalMargin = 80;
 
 
 class NewFeedScreen extends React.Component {
@@ -55,14 +56,18 @@ class NewFeedScreen extends React.Component {
       comments: '',
       loading: false,
       currentScreen: NewFeedMode,
+      keyboardHeight: ScreenVerticalMargin * 2,
+      isShowKeyboard: false,
     };
-
+    this.isNewFeed = Object.keys(this.props.feedo.currentFeed).length === 0;
+    
     this.selectedFile = null;
     this.selectedFileMimeType = null;
     this.selectedFileType = null;
     this.selectedFileName = null;
-
+    
     this.animatedShow = new Animated.Value(0);
+    this.animatedKeyboardHeight = new Animated.Value(0);
     this.animatedTagTransition = new Animated.Value(1);
   }
 
@@ -110,7 +115,9 @@ class NewFeedScreen extends React.Component {
     } else if (this.props.feedo.loading !== types.UPDATE_FEED_FULFILLED && nextProps.feedo.loading === types.UPDATE_FEED_FULFILLED) {
       // success in updating a feed
       this.onClose();
-      Actions.FeedDetailScreen({ data: nextProps.feedo.currentFeed });
+      if (this.isNewFeed) {
+        Actions.FeedDetailScreen({ data: nextProps.feedo.currentFeed });
+      } 
     } else if (this.props.feedo.loading !== types.DELETE_FILE_PENDING && nextProps.feedo.loading === types.DELETE_FILE_PENDING) {
       // deleting a file
       loading = true;
@@ -132,19 +139,21 @@ class NewFeedScreen extends React.Component {
     });
 
     // showing error alert
-    if (nextProps.feedo.error) {
-      let error = null;
-      if (nextProps.feedo.error.error) {
-        error = nextProps.feedo.error.error;
-      } else {
-        error = nextProps.feedo.error.message;
+    if (this.props.feedo.loading !== nextProps.feedo.loading) {
+      if (nextProps.feedo.error) {
+        let error = null;
+        if (nextProps.feedo.error.error) {
+          error = nextProps.feedo.error.error;
+        } else {
+          error = nextProps.feedo.error.message;
+        }
+        if (error) {
+          Alert.alert('Error', error, [
+            {text: 'Close'},
+          ]);
+        }
+        return;
       }
-      if (error) {
-        Alert.alert('Error', error, [
-          {text: 'Close'},
-        ]);
-      }
-      return;
     }
   }
 
@@ -158,6 +167,45 @@ class NewFeedScreen extends React.Component {
       } else {
         this.props.createFeed();
       }
+    });
+    this.keyboardWillShowSubscription = Keyboard.addListener('keyboardWillShow', (e) => this.keyboardWillShow(e));
+    this.keyboardWillHideSubscription = Keyboard.addListener('keyboardWillHide', (e) => this.keyboardWillHide(e));
+  }
+
+  componentWillUnmount() {
+    this.keyboardWillShowSubscription.remove();
+    this.keyboardWillHideSubscription.remove();
+  }
+
+  keyboardWillShow(e) {
+    this.setState({
+      keyboardHeight: e.endCoordinates.height + ScreenVerticalMargin / 2,
+    });
+    Animated.timing(
+      this.animatedKeyboardHeight, {
+        toValue: e.endCoordinates.height - 18, //border radius = 18
+        duration: e.duration,
+      }
+    ).start(() => {
+      this.setState({
+        isShowKeyboard: true,
+      });
+    });
+  }
+
+  keyboardWillHide(e) {
+    this.setState({
+      isShowKeyboard: false,
+    });
+    Animated.timing(
+      this.animatedKeyboardHeight, {
+        toValue: 0,
+        duration: e.duration,
+      }
+    ).start(() => {
+      this.setState({
+        keyboardHeight: ScreenVerticalMargin * 2,
+      });
     });
   }
 
@@ -349,7 +397,7 @@ class NewFeedScreen extends React.Component {
     const {
       files
     } = this.props.feedo.currentFeed;
-    const imageFiles = filter(files, file => file.fileType === 'MEDIA');
+    const imageFiles = _.filter(files, file => file.fileType === 'MEDIA');
     if (imageFiles.length > 0) {
       return (
         <ImageList 
@@ -364,7 +412,7 @@ class NewFeedScreen extends React.Component {
     const {
       files
     } = this.props.feedo.currentFeed;
-    const documentFiles = filter(files, file => file.fileType === 'FILE');
+    const documentFiles = _.filter(files, file => file.fileType === 'FILE');
     if (documentFiles.length > 0) {
       return (
         <DocumentList 
@@ -377,7 +425,7 @@ class NewFeedScreen extends React.Component {
 
   get renderCenterContent() {
     return (
-      <View style={styles.mainContentContainer}>
+      <ScrollView style={styles.mainContentContainer}>
         <TextInput 
           style={styles.textInputFeedName}
           placeholder='Name your feed'
@@ -414,7 +462,7 @@ class NewFeedScreen extends React.Component {
         />
         {this.renderImages}
         {this.renderDocuments}
-      </View>
+      </ScrollView>
     );
   }
 
@@ -455,11 +503,9 @@ class NewFeedScreen extends React.Component {
     });
     
     return (
-      
       <Animated.View 
         style={[
-          styles.feedContainer,
-          {
+          styles.feedContainer, {
             top: animatedMove,
             opacity: this.animatedShow,
           },
@@ -470,20 +516,27 @@ class NewFeedScreen extends React.Component {
           activeOpacity={1}
           onPress={this.onOpenActionSheet.bind(this)}
         />
-        <View style={styles.contentContainer}>
+        <Animated.View 
+          style={[
+            styles.contentContainer, 
+            {
+              marginBottom: this.animatedKeyboardHeight,
+              maxHeight: CONSTANTS.SCREEN_HEIGHT - this.state.keyboardHeight,
+            },
+          ]}
+        >
           {this.renderTopContent}
-          <KeyboardAwareScrollView
-            enableAutomaticScroll={false}
-          >
-            {this.renderCenterContent}
-            {this.renderBottomContent}
-          </KeyboardAwareScrollView>
-        </View>
-        <TouchableOpacity 
-          style={styles.backdropContainer}
-          activeOpacity={1}
-          onPress={this.onOpenActionSheet.bind(this)}
-        />
+          {this.renderCenterContent}
+          {this.renderBottomContent}
+        </Animated.View>
+        {
+          !this.state.isShowKeyboard &&
+            <TouchableOpacity 
+              style={styles.backdropContainer}
+              activeOpacity={1}
+              onPress={this.onOpenActionSheet.bind(this)}
+            />
+        }
         {this.state.loading && <LoadingScreen />}
       </Animated.View>
     );

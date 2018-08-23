@@ -2,6 +2,7 @@ import React, { PureComponent } from 'react'
 import PropTypes from 'prop-types'
 import { View, Text, StyleSheet, Animated } from 'react-native'
 import UserAvatar from 'react-native-user-avatar'
+import EvilIcons from 'react-native-vector-icons/EvilIcons'
 
 const styles = StyleSheet.create({
   container: {
@@ -37,14 +38,10 @@ class Circle extends PureComponent {
     imageStyle: {},
   }
 
-  render () {
-    const { circleSize, face, offset } = this.props
-    const marginRight = circleSize * offset - 15
-
-    return (
-      <Animated.View
-        style={{ marginRight: -marginRight }}
-      >
+  get renderAvatar() {
+    const { face } = this.props
+    if (face.imageUrl || face.userName) {
+      return (
         <UserAvatar
           size="35"
           name={face.userName}
@@ -52,6 +49,22 @@ class Circle extends PureComponent {
           textColor="#A2A5AE"
           src={face.imageUrl}
         />
+      )
+    }
+    return (
+      <EvilIcons name="envelope" size={35} color={COLORS.PURPLE} />
+    )
+  }
+
+  render () {
+    const { circleSize, offset } = this.props
+    const marginRight = circleSize * offset - 15
+
+    return (
+      <Animated.View
+        style={{ marginRight: -marginRight }}
+      >
+        {this.renderAvatar}
       </Animated.View>
     )
   }

@@ -3,9 +3,9 @@ import {
   View,
   Text
 } from 'react-native'
-import FontAwesome from 'react-native-vector-icons/FontAwesome'
 import PropTypes from 'prop-types'
 import UserAvatar from 'react-native-user-avatar'
+import EvilIcons from 'react-native-vector-icons/EvilIcons'
 import Entypo from 'react-native-vector-icons/Entypo'
 import COLORS from '../../../service/colors'
 import styles from './styles'
@@ -18,18 +18,17 @@ const InviteeItemComponent = ({ invitee, isViewOnly, isOwnerInvitee, isOnlyTitle
     <View style={styles.container}>
       <View style={[styles.avatarView, isOnlyTitle ? { alignItems: 'center' } : { alignItems: 'flex-start' }]}>
         <View style={styles.avatar}>
-          {userProfile.imageUrl
-            ? <UserAvatar
+          {
+            userProfile.imageUrl || userProfile.firstName || userProfile.lastName ?
+              <UserAvatar
                 size="38"
                 name={userName}
                 src={userProfile.imageUrl}
-              />
-            : <UserAvatar
-                size="38"
-                name={userName}
                 color="#ECEDEE"
                 textColor="#000"
               />
+            : 
+              <EvilIcons name="envelope" size={38} color={COLORS.PURPLE} />
           }
         </View>
         <View style={styles.infoView}>
