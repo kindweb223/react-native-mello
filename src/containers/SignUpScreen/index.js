@@ -269,7 +269,7 @@ class SignUpScreen extends React.Component {
       }
     };
         
-    if (index === 0) {
+    if (index === 1) {
       // from camera
       Permissions.check('camera').then(response => {
         if (response === 'authorized') {
@@ -284,7 +284,7 @@ class SignUpScreen extends React.Component {
           Permissions.openSettings();
         }
       });
-    } else if (index === 1) {
+    } else if (index === 0) {
       // from library
       Permissions.check('photo').then(response => {
         if (response === 'authorized') {
@@ -350,17 +350,6 @@ class SignUpScreen extends React.Component {
               </TouchableOpacity>
 
               <TextInputComponent
-                ref={ref => this.fullnamRef = ref}
-                placeholder="Full name"
-                value={this.state.fullName}
-                isError={nameError.length > 0 ? true : false}
-                errorText={nameError.length > 0 ? resolveError(nameError[0].code, nameError[0].message) : ''}
-                handleChange={text => this.changeFullName(text)}
-                returnKeyType="next"
-                onSubmitEditing={() => this.onNextFullName()}
-              />
-
-              <TextInputComponent
                 ref={ref => this.emailRef = ref}
                 placeholder="Enter Email"
                 value={this.state.userEmail}
@@ -369,45 +358,61 @@ class SignUpScreen extends React.Component {
                 handleChange={text => this.changeEmail(text)}
                 returnKeyType="next"
                 keyboardType="email-address"
+                textContentType='emailAddress'
                 onSubmitEditing={() => this.onNextFullEmail()}
               />
 
               <TextInputComponent
-                ref={ref => this.passwordRef = ref}
-                placeholder="Enter Password"
-                isError={passwordError.length > 0 ? true : false}
-                errorText={passwordError.length > 0 ? resolveError(passwordError[0].code, passwordError[0].message) : ''}
-                isSecure={this.state.isSecure}
-                ContainerStyle={{ marginBottom: 10 }}
-                handleChange={text => this.changePassword(text)}
-                onFocus={() => this.onPasswordFocus(true)}
-                onBlur={() => this.onPasswordFocus(false)}
-                onSubmitEditing={() => this.onSignUp()}
-              >
-                <TouchableOpacity onPress={() => this.setState({ isSecure: !isSecure}) } activeOpacity={0.8}>
-                  <View style={styles.passwordPreview}>
-                    {isSecure
-                      ? <Ionicons name="md-eye" size={20} color={isPasswordFocus ? COLORS.PURPLE : COLORS.MEDIUM_GREY} />
-                      : <Ionicons name="md-eye-off" size={20} color={isPasswordFocus ? COLORS.PURPLE : COLORS.MEDIUM_GREY} />
-                    }
-                  </View>
-                </TouchableOpacity>
-              </TextInputComponent>
+                ref={ref => this.fullnamRef = ref}
+                placeholder="Full name"
+                value={this.state.fullName}
+                isError={nameError.length > 0 ? true : false}
+                errorText={nameError.length > 0 ? resolveError(nameError[0].code, nameError[0].message) : ''}
+                handleChange={text => this.changeFullName(text)}
+                returnKeyType="next"
+                autoCapitalize="words"
+                textContentType="name"
+                onSubmitEditing={() => this.onNextFullName()}
+              />
 
-              <View style={styles.passwordScoreView}>
-                {password.length > 0 && [
-                  <Progress.Bar
-                    key="0"
-                    progress={(passwordScore + 1) * 0.25}
-                    width={CONSTANTS.SCREEN_SUB_WIDTH - 90}
-                    color={PASSWORD_PROGRESS[passwordScore].color}
-                    unfilledColor={COLORS.LIGHT_GREY}
-                    borderColor={COLORS.LIGHT_GREY}
-                    borderWidth={0}
-                    height={3}
-                  />,
-                  <Text key="1" style={styles.passwordScoreText}>{PASSWORD_PROGRESS[passwordScore].text}</Text>
-                ]}
+              <View>
+                <TextInputComponent
+                  ref={ref => this.passwordRef = ref}
+                  placeholder="Enter Password"
+                  isError={passwordError.length > 0 ? true : false}
+                  errorText={passwordError.length > 0 ? resolveError(passwordError[0].code, passwordError[0].message) : ''}
+                  isSecure={this.state.isSecure}
+                  ContainerStyle={{ marginBottom: 10 }}
+                  handleChange={text => this.changePassword(text)}
+                  onFocus={() => this.onPasswordFocus(true)}
+                  onBlur={() => this.onPasswordFocus(false)}
+                  onSubmitEditing={() => this.onSignUp()}
+                >
+                  <TouchableOpacity onPress={() => this.setState({ isSecure: !isSecure}) } activeOpacity={0.8}>
+                    <View style={styles.passwordPreview}>
+                      {isSecure
+                        ? <Ionicons name="md-eye" size={20} color={isPasswordFocus ? COLORS.PURPLE : COLORS.MEDIUM_GREY} />
+                        : <Ionicons name="md-eye-off" size={20} color={isPasswordFocus ? COLORS.PURPLE : COLORS.MEDIUM_GREY} />
+                      }
+                    </View>
+                  </TouchableOpacity>
+                </TextInputComponent>
+
+                <View style={styles.passwordScoreView}>
+                  {password.length > 0 && [
+                    <Progress.Bar
+                      key="0"
+                      progress={(passwordScore + 1) * 0.25}
+                      width={CONSTANTS.SCREEN_SUB_WIDTH - 90}
+                      color={PASSWORD_PROGRESS[passwordScore].color}
+                      unfilledColor={COLORS.LIGHT_GREY}
+                      borderColor={COLORS.LIGHT_GREY}
+                      borderWidth={0}
+                      height={3}
+                    />,
+                    <Text key="1" style={styles.passwordScoreText}>{PASSWORD_PROGRESS[passwordScore].text}</Text>
+                  ]}
+                </View>
               </View>
 
               <TouchableOpacity onPress={() => this.onSignUp()}>
@@ -435,8 +440,7 @@ class SignUpScreen extends React.Component {
 
         <ActionSheet
           ref={ref => this.imagePickerActionSheetRef = ref}
-          title='Select a Photo / Video'
-          options={['Take A Photo', 'Select From Photos', 'Cancel']}
+          options={['Photo Library', 'Take Photo', 'Cancel']}
           cancelButtonIndex={2}
           tintColor={COLORS.PURPLE}
           onPress={(index) => this.onTapMediaPickerActionSheet(index)}
