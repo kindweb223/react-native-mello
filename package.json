@@ -19,6 +19,7 @@
     "react-native-document-picker": "^2.1.0",
     "react-native-fast-image": "^4.0.14",
     "react-native-haptic": "^1.0.9",
+    "react-native-image-crop-picker": "^0.21.1",
     "react-native-image-picker": "^0.26.10",
     "react-native-image-progress": "^1.1.1",
     "react-native-iphone-x-helper": "^1.0.3",

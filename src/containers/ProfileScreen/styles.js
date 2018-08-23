@@ -42,6 +42,16 @@ export default {
     borderRadius: 50,
     overflow: 'hidden'
   },
+  editView: {
+    width: 32,
+    height: 32,
+    borderRadius: 16,
+    overflow: 'hidden',
+    position: 'absolute',
+    top: 0,
+    right: 0,
+    backgroundColor: '#fff'
+  },
   name: {
     fontWeight: 'bold',
     fontSize: 28,

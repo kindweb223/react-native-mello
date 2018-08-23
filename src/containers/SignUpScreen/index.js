@@ -269,7 +269,7 @@ class SignUpScreen extends React.Component {
       }
     };
         
-    if (index === 0) {
+    if (index === 1) {
       // from camera
       Permissions.check('camera').then(response => {
         if (response === 'authorized') {
@@ -284,7 +284,7 @@ class SignUpScreen extends React.Component {
           Permissions.openSettings();
         }
       });
-    } else if (index === 1) {
+    } else if (index === 0) {
       // from library
       Permissions.check('photo').then(response => {
         if (response === 'authorized') {
@@ -437,8 +437,7 @@ class SignUpScreen extends React.Component {
 
         <ActionSheet
           ref={ref => this.imagePickerActionSheetRef = ref}
-          title='Select a Photo / Video'
-          options={['Take A Photo', 'Select From Photos', 'Cancel']}
+          options={['Photo Library', 'Take Photo', 'Cancel']}
           cancelButtonIndex={2}
           tintColor={COLORS.PURPLE}
           onPress={(index) => this.onTapMediaPickerActionSheet(index)}
