@@ -9,7 +9,7 @@ export default {
     right: 0,
     left: 0,
     marginTop: CONSTANTS.STATUSBAR_HEIGHT,
-    paddingBottom: 60,
+    paddingBottom: 50,
     borderRadius: 18,
     backgroundColor: '#fff',
     ...Platform.select({
@@ -70,11 +70,11 @@ export default {
   },
   inviteeListView: {
     marginTop: 24,
-    maxHeight: 400,
-    paddingHorizontal: CONSTANTS.PADDING
+    maxHeight: 300
   },
   titleView: {
     paddingBottom: 5,
+    paddingHorizontal: CONSTANTS.PADDING
   },
   titleText: {
     color: '#000',
@@ -85,6 +85,7 @@ export default {
     paddingVertical: 7,
     borderBottomWidth: 1,
     borderColor: COLORS.LIGHT_GREY_LINE,
+    paddingHorizontal: CONSTANTS.PADDING
   },
   inputFieldView: {
     paddingHorizontal: CONSTANTS.PADDING
@@ -104,11 +105,13 @@ export default {
     paddingVertical: 3,
     marginVertical: 20,
     borderBottomWidth: 1,
+    width: '100%',
     borderColor: COLORS.LIGHT_GREY_LINE,
   },
   textInput: {
     fontSize: 16,
     marginBottom: 5,
+    width: '100%'
   },
   rightView: {
     flexDirection: 'row',

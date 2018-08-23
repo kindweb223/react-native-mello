@@ -28,8 +28,10 @@ class InviteeAutoComplete extends React.Component {
   onCreateInvitee(text) {
     let { inviteeEmails } = this.props
 
-    inviteeEmails.push({ text, name: text, email: text })
-    this.props.handleInvitees(inviteeEmails)
+    if (text.length > 0) {
+      inviteeEmails.push({ text, name: text, email: text })
+      this.props.handleInvitees(inviteeEmails)
+    }
 
   }
 
