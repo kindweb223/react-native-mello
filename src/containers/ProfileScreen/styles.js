@@ -42,6 +42,33 @@ export default {
     borderRadius: 50,
     overflow: 'hidden'
   },
+  editView: {
+    width: 32,
+    height: 32,
+    borderRadius: 16,
+    // overflow: 'hidden',
+    position: 'absolute',
+    top: 10,
+    right: -10,
+    backgroundColor: '#fff',
+    alignItems: 'center',
+    justifyContent: 'center',
+    ...Platform.select({
+      ios: {
+        shadowColor: 'black',
+        shadowOffset: { height: 2 },
+        shadowOpacity: 0.1,
+        shadowRadius: 3
+      },
+      android: {
+        elevation: 10
+      }
+    })
+  },
+  editIcon: {
+    width: 25,
+    height: 25
+  },
   name: {
     fontWeight: 'bold',
     fontSize: 28,

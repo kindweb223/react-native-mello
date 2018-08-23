@@ -87,7 +87,10 @@ class LoginStartScreen extends React.Component {
       key: xSecretToken,
       email
     }
-    this.props.userLookup(param)
+
+    if (!this.state.loading) {
+      this.props.userLookup(param)
+    }
   }
 
   handleChange = text => {
@@ -124,6 +127,7 @@ class LoginStartScreen extends React.Component {
                 isError={isInvalidError}
                 errorText={errorText}
                 keyboardType="email-address"
+                textContentType='emailAddress'
                 handleChange={(text) => this.handleChange(text)}
                 onSubmitEditing={() => this.onContinue()}
               />

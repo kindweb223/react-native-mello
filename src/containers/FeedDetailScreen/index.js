@@ -48,10 +48,6 @@ import styles from './styles'
 import actionSheetStyles from '../FeedLongHoldMenuScreen/styles'
 
 const EMPTY_ICON = require('../../../assets/images/empty_state/asset-emptystate.png')
-const ACTIONSHEET_OPTIONS = [
-  <Text key="0" style={actionSheetStyles.actionButtonText}>Delete feed</Text>,
-  'Cancel'
-]
 const TOASTER_DURATION = 5000
 
 import CONSTANTS from '../../service/constants'
@@ -412,7 +408,7 @@ class FeedDetailScreen extends React.Component {
         })
       }
     }
-
+    console.log('CURRENT_FEED: ', currentFeed)
     return (
       <SafeAreaView style={styles.safeArea}>
         <View style={styles.container}>
@@ -453,7 +449,10 @@ class FeedDetailScreen extends React.Component {
             </Animated.View>
             
               <View style={styles.detailView}>
-                {!isEmpty(currentFeed) && currentFeed && currentFeed.ideas.length > 0 && (
+                {!isEmpty(currentFeed) && 
+                  (currentFeed.summary.length > 0 ||
+                  (currentFeed.files && currentFeed.files.length > 0) ||
+                  (currentFeed.tags && currentFeed.tags.length > 0)) && (
                   <FeedCollapseComponent feedData={currentFeed} />
                 )}
 
@@ -493,10 +492,10 @@ class FeedDetailScreen extends React.Component {
 
         <ActionSheet
           ref={ref => this.ActionSheet = ref}
-          title={<Text style={actionSheetStyles.titleText}>Are you sure you want to delete this feed, everything will be gone ...</Text>}
-          options={ACTIONSHEET_OPTIONS}
+          title={'Are you sure you want to delete this feed, everything will be gone ...'}
+          options={['Delete feed', 'Cancel']}
           cancelButtonIndex={1}
-          destructiveButtonIndex={2}
+          destructiveButtonIndex={0}
           tintColor={COLORS.PURPLE}
           styles={actionSheetStyles}
           onPress={(index) => this.onTapActionSheet(index)}

@@ -32,7 +32,8 @@ const styles = StyleSheet.create({
   },
   detailView: {
     flex: 1,
-    paddingVertical: 10
+    paddingTop: 10,
+    paddingBottom: 80
   },
   tagView: {
     marginVertical: 10,

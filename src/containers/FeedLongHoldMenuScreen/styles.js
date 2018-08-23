@@ -31,14 +31,13 @@ export default {
     justifyContent: 'center',
     backgroundColor: '#fff',
     borderBottomWidth: 1,
-    borderColor: COLORS.LIGHT_GREY,
+    borderColor: COLORS.LIGHT_GREY_LINE,
     borderTopLeftRadius: 10,
     borderTopRightRadius: 10
   },
   titleText: {
     color: COLORS.ACTION_SHEET_TITLE,
     textAlign: 'center',
-    fontWeight: '600',
     fontSize: 13
   },
   buttonBox: {

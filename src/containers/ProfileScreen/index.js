@@ -2,11 +2,8 @@ import React from 'react'
 import {
   View,
   Text, 
-  TouchableWithoutFeedback,
   TouchableOpacity,
-  Animated,
   Image,
-  Share,
   ScrollView,
   FlatList
 } from 'react-native'
@@ -17,18 +14,26 @@ import MaterialIcons from 'react-native-vector-icons/MaterialIcons'
 import Ionicons from 'react-native-vector-icons/Ionicons'
 import EvilIcons from 'react-native-vector-icons/EvilIcons'
 import UserAvatar from 'react-native-user-avatar'
-import { ActionSheetCustom as ActionSheet } from 'react-native-actionsheet'
+
+import Permissions from 'react-native-permissions'
+import ImagePicker from 'react-native-image-picker'
+import Modal from "react-native-modal"
+import * as mime from 'react-native-mime-types'
+import ActionSheet from 'react-native-actionsheet'
 import _ from 'lodash'
-import { userSignOut } from '../../redux/user/actions'
+import CropImageScreen from '../CropImageScreen'
+import { userSignOut, getImageUrl, updateProfile } from '../../redux/user/actions'
+import { uploadFileToS3 } from '../../redux/card/actions'
 import COLORS from '../../service/colors'
 import * as COMMON_FUNC from '../../service/commonFunc'
-import actionSheetStyles from './actionSheetStyles'
 import styles from './styles'
+
 const CLOSE_ICON = require('../../../assets/images/Close/Blue.png')
 const TRASH_ICON = require('../../../assets/images/Trash/Blue.png')
 const BELL_ICON = require('../../../assets/images/Bell/Blue.png')
 const QUOTE_ICON = require('../../../assets/images/Quote/Blue.png')
 const LOCK_ICON = require('../../../assets/images/Lock/Blue.png')
+const EDIT_ICON = require('../../../assets/images/Edit/Blue.png')
 
 
 const ABOUT_ITEMS = [
@@ -36,11 +41,6 @@ const ABOUT_ITEMS = [
   'Contact Us',
   'Privacy Policy',
   'Terms & Conditions'
-]
-
-const ACTIONSHEET_OPTIONS = [
-  <Text key="0" style={actionSheetStyles.actionButtonText}>Sign Out</Text>,
-  'Cancel'
 ]
 
 const SETTING_ITEMS = [
@@ -62,6 +62,8 @@ class ProfileScreen extends React.Component {
   constructor(props) {
     super(props)
     this.state = {
+      avatarFile: {},
+      isCrop: false
     }
   }
 
@@ -75,6 +77,67 @@ class ProfileScreen extends React.Component {
     if (index === 0) {
       this.props.userSignOut()
     }
+  }
+
+  pickMediaFromCamera(options) {
+    ImagePicker.launchCamera(options, (response)  => {
+      if (!response.didCancel) {
+        this.setState({ avatarFile: response, isCrop: true })
+      }
+    });
+  }
+
+  pickMediaFromLibrary(options) {
+    ImagePicker.launchImageLibrary(options, (response)  => {
+      if (!response.didCancel) {
+        this.setState({ avatarFile: response, isCrop: true })
+      }
+    });
+  }
+
+  onTapMediaPickerActionSheet(index) {
+    const options = {
+      storageOptions: {
+        skipBackup: true,
+        path: 'feedo'
+      }
+    };
+        
+    if (index === 1) {
+      // from camera
+      Permissions.check('camera').then(response => {
+        if (response === 'authorized') {
+          this.pickMediaFromCamera(options);
+        } else if (response === 'undetermined') {
+          Permissions.request('camera').then(response => {
+            if (response === 'authorized') {
+              this.pickMediaFromCamera(options);
+            }
+          });
+        } else {
+          Permissions.openSettings();
+        }
+      });
+    } else if (index === 0) {
+      // from library
+      Permissions.check('photo').then(response => {
+        if (response === 'authorized') {
+          this.pickMediaFromLibrary(options);
+        } else if (response === 'undetermined') {
+          Permissions.request('photo').then(response => {
+            if (response === 'authorized') {
+              this.pickMediaFromLibrary(options);
+            }
+          });
+        } else {
+          Permissions.openSettings();
+        }
+      });
+    }
+  }
+
+  updatePhoto = () => {
+    this.imagePickerActionSheetRef.show();
   }
 
   renderAvatar(user) {
@@ -108,7 +171,14 @@ class ProfileScreen extends React.Component {
               </TouchableOpacity>
 
               <View style={styles.headerView}>
-                {this.renderAvatar(userInfo)}
+                <View>
+                  {this.renderAvatar(userInfo)}
+                  <View style={styles.editView}>
+                    <TouchableOpacity onPress={() => this.updatePhoto()}>
+                      <Image source={EDIT_ICON} style={styles.editIcon} />
+                    </TouchableOpacity>
+                  </View>
+                </View>
                 <Text style={styles.name}>
                   {userInfo.firstName} {userInfo.lastName}
                 </Text>
@@ -199,7 +269,7 @@ class ProfileScreen extends React.Component {
               </View>
 
               <View style={styles.bottomView}>
-                <Text style={styles.version}>Version 1.0.0 (1000)</Text>
+                <Text style={styles.version}>Version 1.0.0 (10000)</Text>
                 <View style={styles.bottomItemView}>
                   <Text style={styles.version}>Crafted with</Text>
                   <MaterialIcons name='favorite' size={12} color={COLORS.MEDIUM_GREY} style={styles.favicon}/>
@@ -212,14 +282,38 @@ class ProfileScreen extends React.Component {
 
         <ActionSheet
           ref={ref => this.ActionSheet = ref}
-          title={<Text style={actionSheetStyles.titleText}>Are you sure that you would like to sign out?</Text>}
-          options={ACTIONSHEET_OPTIONS}
+          title={'Are you sure that you would like to sign out?'}
+          options={['Sign Out', 'Cancel']}
           cancelButtonIndex={1}
-          destructiveButtonIndex={2}
+          destructiveButtonIndex={0}
           tintColor={COLORS.PURPLE}
-          styles={actionSheetStyles}
           onPress={(index) => this.onTapActionSheet(index)}
         />
+
+        <ActionSheet
+          ref={ref => this.imagePickerActionSheetRef = ref}
+          options={['Photo Library', 'Take A Photo', 'Cancel']}
+          cancelButtonIndex={2}
+          tintColor={COLORS.PURPLE}
+          onPress={(index) => this.onTapMediaPickerActionSheet(index)}
+        />
+
+        <Modal 
+          isVisible={this.state.isCrop}
+          style={{ margin: 0 }}
+          backdropColor='#fff'
+          backdropOpacity={1}
+          animationIn="slideInUp"
+          animationOut="slideOutDown"
+          animationInTiming={600}
+          onBackdropPress={() => this.setState({ isCrop: false })}
+        >
+          <CropImageScreen
+            avatarFile={this.state.avatarFile}
+            onClose={() => this.setState({ isCrop: false })}
+          />
+        </Modal>
+
       </View>
     )
   }
