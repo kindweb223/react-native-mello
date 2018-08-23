@@ -15,6 +15,7 @@ import { Actions } from 'react-native-router-flux'
 import LinearGradient from 'react-native-linear-gradient'
 import Feather from 'react-native-vector-icons/Feather'
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons'
+import EvilIcons from 'react-native-vector-icons/EvilIcons'
 import UserAvatar from 'react-native-user-avatar'
 import KeyboardScrollView from '../../components/KeyboardScrollView'
 import LoadingScreen from '../LoadingScreen'
@@ -112,6 +113,25 @@ class LoginScreen extends React.Component {
 
   }
 
+  renderAvatar(user) {
+    const name = `${user.firstName} ${user.lastName}`;
+    if (user.imageUrl || user.firstName || user.lastName) {
+      return (
+        <UserAvatar
+          size="72"
+          name={name}
+          color="#fff"
+          textColor={COLORS.PURPLE}
+          src={user.imageUrl}
+        />
+      )
+    }
+    return (
+      <EvilIcons name="envelope" size={72} color={COLORS.PURPLE} />
+    )
+  }
+
+
   render () {
     const { userData } = this.props
     const { isInvalidError, errorText } = this.state
@@ -124,15 +144,7 @@ class LoginScreen extends React.Component {
           <View style={styles.innerContainer}>
             <View style={styles.contentView}>
               <View style={styles.avatarView}>
-                {userData.imageUrl
-                  ? <Image style={styles.avatar} source={{ uri: userData.imageUrl }} />
-                  : <UserAvatar
-                      size="72"
-                      name={`${userData.firstName} ${userData.lastName}`}
-                      color="#fff"
-                      textColor={COLORS.PURPLE}
-                    />
-                }
+                {this.renderAvatar(userData)}
               </View>
 
               <Text style={styles.subTitle}>{userData.email}</Text>

@@ -20,7 +20,6 @@ const styles = StyleSheet.create({
   contentContainer: {
     borderRadius: 18,
     backgroundColor: '#fff',
-    maxHeight: CONSTANTS.SCREEN_HEIGHT - 150,
   },
   tagCreationContainer: {
     position: 'absolute',

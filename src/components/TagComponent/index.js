@@ -97,7 +97,6 @@ class Tags extends React.Component {
     this.setState({
       text: '',
     });
-    
   }
 
   renderEdit() {
@@ -108,10 +107,11 @@ class Tags extends React.Component {
             ref={ref => this.tagInputRef = ref}
             value={this.state.text}
             placeholder={this.props.placeHolder}
+            blurOnSubmit={false}
             style={[styles.textInput, this.props.inputStyle]}
             onChangeText={this.onChangeText.bind(this)}
             onKeyPress={this.onKeyPress.bind(this)}
-            onSubmitEditing={() => {this.onCreateTag()}}
+            onSubmitEditing={() => this.onCreateTag()}
             autoCapitalize="none"
             underlineColorAndroid='transparent'
           />

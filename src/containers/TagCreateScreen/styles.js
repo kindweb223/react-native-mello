@@ -23,7 +23,6 @@ export default styles = StyleSheet.create({
     paddingHorizontal: 20,
   },
   backButtonContainer: {
-    paddingHorizontal: 4,
     flexDirection: 'row',
     alignItems: 'center',
   },
