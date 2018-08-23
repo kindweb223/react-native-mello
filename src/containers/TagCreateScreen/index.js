@@ -119,7 +119,7 @@ class TagCreateScreen extends React.Component {
       return this.state.filteredUserTags;
     }
     const tags = _.filter(this.state.filteredUserTags, (tag) => { 
-      return tag.text.indexOf(this.state.currentTagName) !== -1;
+      return tag.text.toLowerCase().indexOf(this.state.currentTagName.toLowerCase()) !== -1;
     });
     return tags;
   }
@@ -128,7 +128,7 @@ class TagCreateScreen extends React.Component {
     const { userInfo } = this.props.user
 
     const tag = _.find(this.state.userTags, (tag) => { 
-      return tag.text == text; 
+      return tag.text.toLowerCase() == text.toLowerCase(); 
     });
     if (tag) { 
       this.newTagName = '';
@@ -213,7 +213,7 @@ class TagCreateScreen extends React.Component {
                 }}
               />
               <FlatList
-                style={{marginTop: 20}}
+                style={{marginTop: 10}}
                 data={this.filterTagNames()}
                 renderItem={this.renderTagItem.bind(this)}
                 keyExtractor={(item, index) => index.toString()}

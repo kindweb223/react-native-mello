@@ -12,6 +12,7 @@ import PropTypes from 'prop-types'
 import { Actions } from 'react-native-router-flux'
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons'
 import Ionicons from 'react-native-vector-icons/Ionicons'
+import EvilIcons from 'react-native-vector-icons/EvilIcons'
 import UserAvatar from 'react-native-user-avatar'
 
 import Permissions from 'react-native-permissions'
@@ -139,6 +140,24 @@ class ProfileScreen extends React.Component {
     this.imagePickerActionSheetRef.show();
   }
 
+  renderAvatar(user) {
+    const name = `${user.firstName} ${user.lastName}`;
+    if (user.imageUrl || user.firstName || user.lastName) {
+      return (
+        <UserAvatar
+          size="100"
+          name={name}
+          color="#fff"
+          textColor={COLORS.PURPLE}
+          src={user.imageUrl}
+        />
+      );
+    }
+    return (
+      <EvilIcons name="envelope" size={100} color={COLORS.PURPLE} />
+    )
+  }
+
   render () {
     const { userInfo } = this.props.user
 
@@ -153,20 +172,7 @@ class ProfileScreen extends React.Component {
 
               <View style={styles.headerView}>
                 <View>
-                  {userInfo.imageUrl
-                  ? <View style={styles.avatarView}>
-                      <Image
-                        style={styles.image}
-                        source={{ uri: item.coverImage }}
-                      />
-                    </View>
-                  : <UserAvatar
-                      size="100"
-                      name={`${userInfo.firstName} ${userInfo.lastName}`}
-                      color="#fff"
-                      textColor={COLORS.PURPLE}
-                    />
-                  }
+                  {this.renderAvatar(userInfo)}
                   <View style={styles.editView}>
                     <TouchableOpacity onPress={() => this.updatePhoto()}>
                       <Image source={EDIT_ICON} style={styles.editIcon} />

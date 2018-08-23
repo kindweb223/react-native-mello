@@ -8,6 +8,7 @@ import { connect } from 'react-redux'
 
 import Entypo from 'react-native-vector-icons/Entypo'
 import UserAvatar from 'react-native-user-avatar'
+import EvilIcons from 'react-native-vector-icons/EvilIcons'
 import { filter } from 'lodash'
 import Image from 'react-native-image-progress'
 
@@ -26,10 +27,27 @@ class FeedCardComponent extends React.Component {
     };
   }
 
+  renderAvatar(user) {
+    const name = `${user.firstName} ${user.lastName}`;
+    if (user.imageUrl || user.firstName || user.lastName) {
+      return (
+        <UserAvatar
+          size="30"
+          name={name}
+          color="#000"
+          textColor="#fff"
+          src={user.imageUrl}
+        />
+      )
+    }
+    return (
+      <EvilIcons name="envelope" size={30} color={COLORS.PURPLE} />
+    )
+  }
+
   get renderBottom() {
     const { invitees, idea } = this.props;
     const invitee = filter(invitees, item => item.id === idea.inviteeId)[0]
-    const userName = `${invitee.userProfile.firstName} ${invitee.userProfile.lastName}`
     let isOnlyInvitee = false
     
     if (invitees.length === 1 && invitees[0].userProfile.id === invitee.userProfile.id) {
@@ -43,23 +61,7 @@ class FeedCardComponent extends React.Component {
             !isOnlyInvitee &&
               [
                 <View key="0" style={styles.avatar}>
-                  {
-                    invitee.imageUrl ?
-                      <UserAvatar
-                        size="30"
-                        name={userName}
-                        color="#000"
-                        textColor="#fff"
-                        src={invitee.imageUrl}
-                      />
-                    : 
-                      <UserAvatar
-                        size="30"
-                        name={userName}
-                        color="#000"
-                        textColor="#fff"
-                      />
-                  }
+                  {this.renderAvatar(invitee.userProfile)}
                 </View>,
                 <Text key="1" style={styles.text}>{invitee.userProfile.firstName}</Text>,
                 <Entypo key="2" name="dot-single" style={styles.dotIcon} />
