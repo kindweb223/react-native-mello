@@ -16,12 +16,12 @@ import { Actions } from 'react-native-router-flux'
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons'
 import Ionicons from 'react-native-vector-icons/Ionicons'
 import UserAvatar from 'react-native-user-avatar'
-import { ActionSheetCustom as ActionSheet } from 'react-native-actionsheet'
+import ActionSheet from 'react-native-actionsheet'
 import _ from 'lodash'
 import { userSignOut } from '../../redux/user/actions'
 import COLORS from '../../service/colors'
 import * as COMMON_FUNC from '../../service/commonFunc'
-import actionSheetStyles from './actionSheetStyles'
+import actionSheetStyles from '../FeedLongHoldMenuScreen/styles'
 import styles from './styles'
 const CLOSE_ICON = require('../../../assets/images/Close/Blue.png')
 const TRASH_ICON = require('../../../assets/images/Trash/Blue.png')
@@ -35,11 +35,6 @@ const ABOUT_ITEMS = [
   'Contact Us',
   'Privacy Policy',
   'Terms & Conditions'
-]
-
-const ACTIONSHEET_OPTIONS = [
-  <Text key="0" style={actionSheetStyles.actionButtonText}>Sign Out</Text>,
-  'Cancel'
 ]
 
 const SETTING_ITEMS = [
@@ -206,12 +201,11 @@ class ProfileScreen extends React.Component {
 
         <ActionSheet
           ref={ref => this.ActionSheet = ref}
-          title={<Text style={actionSheetStyles.titleText}>Are you sure that you would like to sign out?</Text>}
-          options={ACTIONSHEET_OPTIONS}
+          title={'Are you sure that you would like to sign out?'}
+          options={['Sign Out', 'Cancel']}
           cancelButtonIndex={1}
-          destructiveButtonIndex={2}
+          destructiveButtonIndex={0}
           tintColor={COLORS.PURPLE}
-          styles={actionSheetStyles}
           onPress={(index) => this.onTapActionSheet(index)}
         />
       </View>
