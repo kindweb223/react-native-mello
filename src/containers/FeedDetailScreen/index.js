@@ -412,7 +412,7 @@ class FeedDetailScreen extends React.Component {
         })
       }
     }
-
+    console.log('CURRENT_FEED: ', currentFeed)
     return (
       <SafeAreaView style={styles.safeArea}>
         <View style={styles.container}>
@@ -453,7 +453,10 @@ class FeedDetailScreen extends React.Component {
             </Animated.View>
             
               <View style={styles.detailView}>
-                {!isEmpty(currentFeed) && currentFeed && currentFeed.ideas.length > 0 && (
+                {!isEmpty(currentFeed) && 
+                  (currentFeed.summary.length > 0 ||
+                  (currentFeed.files && currentFeed.files.length > 0) ||
+                  (currentFeed.tags && currentFeed.tags.length > 0)) && (
                   <FeedCollapseComponent feedData={currentFeed} />
                 )}
 
