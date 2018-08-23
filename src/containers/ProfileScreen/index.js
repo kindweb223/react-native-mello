@@ -198,7 +198,7 @@ class ProfileScreen extends React.Component {
                   }
                   <View style={styles.editView}>
                     <TouchableOpacity onPress={() => this.updatePhoto()}>
-                      <Image source={EDIT_ICON} />
+                      <Image source={EDIT_ICON} style={styles.editIcon} />
                     </TouchableOpacity>
                   </View>
                 </View>
@@ -292,7 +292,7 @@ class ProfileScreen extends React.Component {
               </View>
 
               <View style={styles.bottomView}>
-                <Text style={styles.version}>Version 1.0.0 (1000)</Text>
+                <Text style={styles.version}>Version 1.0.0 (10000)</Text>
                 <View style={styles.bottomItemView}>
                   <Text style={styles.version}>Crafted with</Text>
                   <MaterialIcons name='favorite' size={12} color={COLORS.MEDIUM_GREY} style={styles.favicon}/>

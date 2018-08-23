@@ -358,6 +358,7 @@ class SignUpScreen extends React.Component {
                 handleChange={text => this.changeEmail(text)}
                 returnKeyType="next"
                 keyboardType="email-address"
+                textContentType='emailAddress'
                 onSubmitEditing={() => this.onNextFullEmail()}
               />
 
@@ -369,6 +370,8 @@ class SignUpScreen extends React.Component {
                 errorText={nameError.length > 0 ? resolveError(nameError[0].code, nameError[0].message) : ''}
                 handleChange={text => this.changeFullName(text)}
                 returnKeyType="next"
+                autoCapitalize="words"
+                textContentType="name"
                 onSubmitEditing={() => this.onNextFullName()}
               />
 
