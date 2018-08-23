@@ -27,6 +27,7 @@ import _ from 'lodash';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
 import UserAvatar from 'react-native-user-avatar'
 import validUrl from 'valid-url';
+import Modal from 'react-native-modal';
 
 
 import { 
@@ -51,7 +52,7 @@ import DocumentList from '../../components/DocumentListComponent';
 import WebMetaList from '../../components/WebMetaListComponent';
 import LikeComponent from '../../components/LikeComponent';
 import CommentComponent from '../../components/CommentComponent';
-
+import ChooseLinkImages from '../../components/chooseLinkImagesComponent';
 
 const ScreenVerticalMargin = 100;
 
@@ -63,12 +64,14 @@ class NewCardScreen extends React.Component {
       cardName: '',
       idea: '',
       coverImage: null,
+
       loading: false,
       isFullScreenCard: false,
       originalCardTopY: this.props.intialLayout.py,
       originalCardBottomY: this.props.intialLayout.py + this.props.intialLayout.height,
       isShowKeyboardButton: false,
       openGraphForLinks: [],
+      isVisibleChooseLinkImagesModal: false,
     };
 
     this.selectedFile = null;
@@ -78,6 +81,11 @@ class NewCardScreen extends React.Component {
 
     this.isOpenGraphForNewCard = false;
     this.urlForNewCard = '';
+
+    this.allLinkImages = [];
+    this.selectedLinkImages = [];
+    this.currentSelectedLinkImageIndex = 0;
+
 
     this.openGraphIndex = 0;
     this.linksForOpenGraph = [];
@@ -121,6 +129,11 @@ class NewCardScreen extends React.Component {
       if (newImageFiles.length === 1 && !nextProps.card.currentCard.coverImage) {
         loading = true;
         this.onSetCoverImage(newImageFiles[0].id);
+      } else {
+        this.currentSelectedLinkImageIndex ++;
+        if (this.currentSelectedLinkImageIndex < this.selectedLinkImages.length) {
+          this.addLinkImage(this.selectedLinkImages[this.currentSelectedLinkImageIndex]);
+        }
       }
     } else if (this.props.card.loading !== types.SET_COVER_IMAGE_PENDING && nextProps.card.loading === types.SET_COVER_IMAGE_PENDING) {
       // setting a file as cover image
@@ -153,17 +166,17 @@ class NewCardScreen extends React.Component {
         this.setState({
           cardName: nextProps.card.currentOpneGraph.title,
           idea: nextProps.card.currentOpneGraph.description + '\n' + this.urlForNewCard,
-          coverImage: nextProps.card.currentOpneGraph.image
+          coverImage: nextProps.card.currentOpneGraph.image,
         });
         if (nextProps.card.currentOpneGraph.image) {
           loading = true;
-          let {
-            id, 
-          } = this.props.card.currentCard;
-          const coverImageUrl = nextProps.card.currentOpneGraph.image;
-          const mimeType = mime.lookup(coverImageUrl);
-          const filename = coverImageUrl.replace(/^.*[\\\/]/, '')
-          this.props.addFile(id, 'MEDIA', mimeType, filename, coverImageUrl);
+          this.addLinkImage(nextProps.card.currentOpneGraph.image);
+        } 
+        this.allLinkImages = nextProps.card.currentOpneGraph.images;
+        if (this.allLinkImages.length > 0) {
+          this.setState({
+            isVisibleChooseLinkImagesModal: true,
+          });
         }
       } else {
         this.openGraphForLinks.push({
@@ -473,7 +486,31 @@ class NewCardScreen extends React.Component {
     }
   }
 
+  onCloseLinkImages() {
+    this.setState({
+      isVisibleChooseLinkImagesModal: false,
+    });
+  }
+
+  onSaveLinkImages(selectedImages) {
+    this.onCloseLinkImages();
+    this.selectedLinkImages = selectedImages;
+    this.currentSelectedLinkImageIndex = 0;
+    if (this.selectedLinkImages.length > 0) {
+      this.addLinkImage(this.selectedLinkImages[this.currentSelectedLinkImageIndex]);
+    }
+  }
+
   onSelectCoverImage() {
+  }
+
+  addLinkImage(imageUrl) {
+    const {
+      id, 
+    } = this.props.card.currentCard;
+    const mimeType = mime.lookup(imageUrl);
+    const filename = imageUrl.replace(/^.*[\\\/]/, '')
+    this.props.addFile(id, 'MEDIA', mimeType, filename, imageUrl);
   }
 
   getLikedText(likes) {
@@ -489,7 +526,7 @@ class NewCardScreen extends React.Component {
       return text
   }
 
-    get renderCoverImage() {
+  get renderCoverImage() {
     if (this.state.coverImage) {
       return (
         <Image style={styles.imageCover} source={{ uri: this.state.coverImage }} resizeMode="cover" />
@@ -874,6 +911,16 @@ class NewCardScreen extends React.Component {
           onPress={(index) => this.onTapMediaPickerActionSheet(index)}
         />
         {this.state.loading && <LoadingScreen />}
+        <Modal 
+          style={{margin: 0}}
+          isVisible={this.state.isVisibleChooseLinkImagesModal}
+        >
+          <ChooseLinkImages
+            images={this.allLinkImages}
+            onClose={this.onCloseLinkImages.bind(this)}
+            onSave={this.onSaveLinkImages.bind(this)}
+          />
+        </Modal>
       </SafeAreaView>
     );
   }
