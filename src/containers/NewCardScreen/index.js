@@ -42,7 +42,7 @@ import {
   setCoverImage,
 } from '../../redux/card/actions'
 import * as types from '../../redux/card/types'
-import { getDurationFromNow } from '../../service/dateUtils'
+import { getTimestamp } from '../../service/dateUtils'
 import COLORS from '../../service/colors';
 import CONSTANTS from '../../service/constants';
 import styles from './styles';
@@ -697,7 +697,7 @@ class NewCardScreen extends React.Component {
           />
           <Text style={[styles.textInvitee, {marginLeft: 9}]}>{name}</Text>
           <Entypo name="dot-single" style={styles.iconDot} />
-          <Text style={styles.textInvitee}>{getDurationFromNow(this.props.card.currentCard.publishedDate)}</Text>
+          <Text style={styles.textInvitee}>{getTimestamp(this.props.card.currentCard.publishedDate)}</Text>
         </View>
       </View>
     );
