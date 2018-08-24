@@ -93,12 +93,24 @@ export default {
     alignItems: 'center',
     justifyContent: 'space-between',
     height: 15,
-    position: 'absolute',
-    bottom: 10,
+    marginTop: 5,
+    paddingHorizontal: 10,
     width: '100%'
   },
   passwordScoreText: {
     fontSize: 12,
     color: COLORS.DARK_GREY
+  },
+  errorView: {
+    height: 20,
+    justifyContent: 'center',
+    alignItems: 'flex-start',
+    paddingHorizontal: 10,
+    width: '100%'
+  },
+  errorText: {
+    color: COLORS.MEDIUM_RED,
+    fontWeight: '600',
+    fontSize: 12
   }
 }

@@ -194,6 +194,15 @@ class SignUpScreen extends React.Component {
           message: 'Full name is required'
         }
       ]
+    } else if (!(/(\w.+\s).+/).test(fullName)) {
+      errors = [
+        ...errors,
+        {
+          code: 'com.signup.fullname.invalid',
+          field: 'fullname',
+          message: 'Please enter your full name'
+        }
+      ]
     }
 
     if (userEmail.length === 0) {
@@ -225,6 +234,15 @@ class SignUpScreen extends React.Component {
           code: 'com.signup.password.empty',
           field: 'password',
           message: 'Password is required'
+        }
+      ]
+    } else if (password.length < 6) {
+      errors = [
+        ...errors,
+        {
+          code: 'com.signup.password.invalid',
+          field: 'password',
+          message: 'Password must have at least 6 characters'
         }
       ]
     }
@@ -305,12 +323,12 @@ class SignUpScreen extends React.Component {
   uploadPhoto = () => {
     this.imagePickerActionSheetRef.show();
   }
-  
-  onNextFullName = () => {
-    this.emailRef.textRef.focus()
+
+  onNextEmail = () => {
+    this.fullnameRef.textRef.focus()
   }
 
-  onNextFullEmail = () => {
+  onNextFullName = () => {
     this.passwordRef.textRef.focus()
   }
 
@@ -359,11 +377,11 @@ class SignUpScreen extends React.Component {
                 returnKeyType="next"
                 keyboardType="email-address"
                 textContentType='emailAddress'
-                onSubmitEditing={() => this.onNextFullEmail()}
+                onSubmitEditing={() => this.onNextEmail()}
               />
 
               <TextInputComponent
-                ref={ref => this.fullnamRef = ref}
+                ref={ref => this.fullnameRef = ref}
                 placeholder="Full name"
                 value={this.state.fullName}
                 isError={nameError.length > 0 ? true : false}
@@ -379,10 +397,9 @@ class SignUpScreen extends React.Component {
                 <TextInputComponent
                   ref={ref => this.passwordRef = ref}
                   placeholder="Enter Password"
-                  isError={passwordError.length > 0 ? true : false}
-                  errorText={passwordError.length > 0 ? resolveError(passwordError[0].code, passwordError[0].message) : ''}
                   isSecure={this.state.isSecure}
-                  ContainerStyle={{ marginBottom: 10 }}
+                  ContainerStyle={{ marginBottom: 0 }}
+                  isErrorView={false}
                   handleChange={text => this.changePassword(text)}
                   onFocus={() => this.onPasswordFocus(true)}
                   onBlur={() => this.onPasswordFocus(false)}
@@ -397,9 +414,9 @@ class SignUpScreen extends React.Component {
                     </View>
                   </TouchableOpacity>
                 </TextInputComponent>
-
-                <View style={styles.passwordScoreView}>
-                  {password.length > 0 && [
+                
+                {password.length > 0 &&
+                  <View style={styles.passwordScoreView}>
                     <Progress.Bar
                       key="0"
                       progress={(passwordScore + 1) * 0.25}
@@ -409,9 +426,15 @@ class SignUpScreen extends React.Component {
                       borderColor={COLORS.LIGHT_GREY}
                       borderWidth={0}
                       height={3}
-                    />,
+                    />
                     <Text key="1" style={styles.passwordScoreText}>{PASSWORD_PROGRESS[passwordScore].text}</Text>
-                  ]}
+                  </View>
+                }
+
+                <View style={styles.errorView}>
+                  {passwordError.length > 0 && (
+                    <Text style={styles.errorText}>{resolveError(passwordError[0].code, passwordError[0].message)}</Text>
+                  )}
                 </View>
               </View>
 

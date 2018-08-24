@@ -3,8 +3,10 @@
   "error.login.invalid": "Your email or password is incorrect",
   "error.user.password.invalid.registrationRequest.password": "Password doesnt meet password strength requirements",
   "com.signup.fullname.empty": "Full name is required",
+  "com.signup.fullname.invalid": "Please enter your full name",
   "com.signup.email.empty": "Email is required",
   "com.signup.email.invalid": "Email is invalid",
   "com.signup.password.empty": "Password is required",
+  "com.signup.password.invalid": "Password must have at least 6 characters",
   "error.user.exists": "User is already registered"
 }
