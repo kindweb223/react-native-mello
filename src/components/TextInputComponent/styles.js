@@ -35,6 +35,12 @@ const styles = StyleSheet.create({
     color: COLORS.MEDIUM_RED,
     fontWeight: '600',
     fontSize: 12
+  },
+  label: {
+    fontSize: 14,
+    fontWeight: '600',
+    marginBottom: 5,
+    marginLeft: 5
   }
 })
 

@@ -9,7 +9,7 @@ import { createStore, applyMiddleware } from 'redux'
 import { Provider } from 'react-redux'
 import thunk from 'redux-thunk'
 import promiseMiddleware from './src/service/promiseMiddleware'
-import { Actions, Scene, Router, Modal, Lightbox } from 'react-native-router-flux'
+import { Actions, Scene, Router, Modal, Lightbox, Stack } from 'react-native-router-flux'
 import axios from 'axios'
 import CONSTANTS from './src/service/constants'
 import COLORS from './src/service/colors'
@@ -52,6 +52,7 @@ import DocumentSliderScreen from './src/containers/DocumentSliderScreen';
 import LikesListScreen from './src/containers/LikesListScreen';
 import CommentScreen from './src/containers/CommentScreen';
 import ProfileScreen from './src/containers/ProfileScreen'
+import ProfileUpdateScreen from './src/containers/ProfileUpdateScreen'
 
 const store = createStore(reducers, applyMiddleware(thunk, promiseMiddleware))
 
@@ -97,6 +98,9 @@ export default class Root extends React.Component {
             <Scene key="CommentScreen" component={ CommentScreen } navigationBarStyle={styles.defaultNavigationBar} />
           </Scene>
           <Scene key="ProfileScreen" component={ ProfileScreen } hideNavBar />
+          <Stack key="ProfileUpdateScreen" hideNavBar>
+            <Scene key="ProfileUpdateScreen" component={ ProfileUpdateScreen } hideNavBar panHandlers={null} />
+          </Stack>
         </Modal>
         <Scene key="LoadingScreen" component={ LoadingScreen } hideNavBar />
         <Scene key="ImageSliderScreen" component={ ImageSliderScreen } hideNavBar />

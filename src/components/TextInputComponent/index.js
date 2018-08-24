@@ -55,7 +55,8 @@ class TextInputComponent extends React.Component {
       keyboardType,
       textContentType,
       autoCapitalize,
-      isErrorView
+      isErrorView,
+      label
     } = this.props
 
     let {
@@ -72,6 +73,9 @@ class TextInputComponent extends React.Component {
 
     return (
       <View style={[styles.container, ContainerStyle]}>
+        {label.length > 0 && (
+          <Text style={styles.label}>{label}</Text>
+        )}
         <View style={[styles.inputView, { backgroundColor }]}>
           <TextInput
             ref={ref => this.textRef = ref}
@@ -123,6 +127,7 @@ TextInputComponent.defaultProps = {
   textContentType: 'none',
   autoCapitalize: 'none',
   isErrorView: true,
+  label: '',
   handleChange: () => {},
   onFocus: () => {},
   onBlur: () => {},
@@ -144,7 +149,8 @@ TextInputComponent.propTypes = {
   keyboardType: PropTypes.string,
   textContentType: PropTypes.string,
   autoCapitalize: PropTypes.string,
-  isErrorView: PropTypes.bool
+  isErrorView: PropTypes.bool,
+  label: PropTypes.string,
 }
 
 export default TextInputComponent
