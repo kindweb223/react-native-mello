@@ -246,10 +246,17 @@ export default function user(state = initialState, action = {}) {
       }
     case types.UPDATE_PROFILE_FULFILLED: {
       const { data } = action.result
-      console.log('UPDATE_PROFILE_REJECTED', data)
+      const { userInfo } = state
+
+      if (userInfo) {
+        // update the user's info when it's not signup page
+        AsyncStorage.setItem('userInfo', JSON.stringify(data))
+      }
+
       return {
         ...state,
         loading: types.UPDATE_PROFILE_FULFILLED,
+        userInfo: userInfo ? data : null
       }
     }
     case types.UPDATE_PROFILE_REJECTED: {
@@ -257,6 +264,30 @@ export default function user(state = initialState, action = {}) {
         ...state,
         loading: types.UPDATE_PROFILE_REJECTED,
         error: action.error,
+      }
+    }
+    /**
+     * Update user password
+     */
+    case types.UPDATE_PASSWORD_PENDING:
+      return {
+        ...state,
+        error: null,
+        loading: types.UPDATE_PASSWORD_PENDING,
+      }
+    case types.UPDATE_PASSWORD_FULFILLED: {
+      const { data } = action.result
+
+      return {
+        ...state,
+        loading: types.UPDATE_PASSWORD_FULFILLED,
+      }
+    }
+    case types.UPDATE_PASSWORD_REJECTED: {
+      return {
+        ...state,
+        loading: types.UPDATE_PASSWORD_REJECTED,
+        error: action.error.response.data
       }
     }
     /**

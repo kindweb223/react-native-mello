@@ -148,7 +148,6 @@ export const setUserInfo = (data) => {
  */
 export const updateProfile = (userId, data) => {
   let url = `users/${userId}`
-  console.log('PARAM: ', data)
 
   return {
     types: [types.UPDATE_PROFILE_PENDING, types.UPDATE_PROFILE_FULFILLED, types.UPDATE_PROFILE_REJECTED],
@@ -159,5 +158,22 @@ export const updateProfile = (userId, data) => {
         data
       }),
     payload: data.imageUrl
+  };
+}
+
+/**
+ * Update user password
+ */
+export const updatePassword = (userId, data) => {
+  let url = `users/${userId}/password`
+
+  return {
+    types: [types.UPDATE_PASSWORD_PENDING, types.UPDATE_PASSWORD_FULFILLED, types.UPDATE_PASSWORD_REJECTED],
+    promise:
+      axios({
+        method: 'put',
+        url,
+        data
+      })
   };
 }

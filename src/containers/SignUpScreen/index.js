@@ -340,7 +340,6 @@ class SignUpScreen extends React.Component {
       isPasswordFocus,
       isSecure,
       avatarFile,
-      ERRORS,
       fieldErrors
     } = this.state
 
@@ -419,7 +418,6 @@ class SignUpScreen extends React.Component {
                 {password.length > 0 &&
                   <View style={styles.passwordScoreView}>
                     <Progress.Bar
-                      key="0"
                       progress={(passwordScore + 1) * 0.25}
                       width={CONSTANTS.SCREEN_SUB_WIDTH - 90}
                       color={PASSWORD_PROGRESS[passwordScore].color}
@@ -428,7 +426,7 @@ class SignUpScreen extends React.Component {
                       borderWidth={0}
                       height={3}
                     />
-                    <Text key="1" style={styles.passwordScoreText}>{PASSWORD_PROGRESS[passwordScore].text}</Text>
+                    <Text style={styles.passwordScoreText}>{PASSWORD_PROGRESS[passwordScore].text}</Text>
                   </View>
                 }
 
