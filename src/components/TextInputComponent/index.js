@@ -54,7 +54,8 @@ class TextInputComponent extends React.Component {
       returnKeyType,
       keyboardType,
       textContentType,
-      autoCapitalize
+      autoCapitalize,
+      isErrorView
     } = this.props
 
     let {
@@ -98,11 +99,13 @@ class TextInputComponent extends React.Component {
         
           {this.props.children}
         </View>
-        <View style={styles.errorView}>
-          {isError && errorText.length > 0 && (
-            <Text style={styles.errorText}>{errorText}</Text>
-          )}
-        </View>
+        {isErrorView && (
+          <View style={styles.errorView}>
+            {isError && errorText.length > 0 && (
+              <Text style={styles.errorText}>{errorText}</Text>
+            )}
+          </View>
+        )}
       </View>
     )
   }
@@ -119,6 +122,7 @@ TextInputComponent.defaultProps = {
   keyboardType: "default",
   textContentType: 'none',
   autoCapitalize: 'none',
+  isErrorView: true,
   handleChange: () => {},
   onFocus: () => {},
   onBlur: () => {},
@@ -140,6 +144,7 @@ TextInputComponent.propTypes = {
   keyboardType: PropTypes.string,
   textContentType: PropTypes.string,
   autoCapitalize: PropTypes.string,
+  autoCapitalize: PropTypes.bool
 }
 
 export default TextInputComponent
