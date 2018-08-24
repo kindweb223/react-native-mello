@@ -21,8 +21,7 @@ const styles = StyleSheet.create({
     marginRight: 16
   },
   feedIcon: {
-    marginRight: 5,
-    fontSize: 15
+    marginRight: 5
   },
   feedText: {
     fontSize: 13
@@ -36,12 +35,16 @@ const styles = StyleSheet.create({
   inActiveText: {
     color: COLORS.MEDIUM_GREY
   },
-  pinView: {
-    marginLeft: 10,
+  rightView: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center'
   },
   pinIcon: {
-    fontSize: 20,
     transform: [{ rotate: '-90deg' }]
+  },
+  avatarView: {
+    marginLeft: 10
   }
 })
 
