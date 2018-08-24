@@ -22,7 +22,7 @@
     "react-native-image-picker": "^0.26.10",
     "react-native-image-progress": "^1.1.1",
     "react-native-iphone-x-helper": "^1.0.3",
-    "react-native-keyboard-aware-scroll-view": "^0.6.0",
+    "react-native-keyboard-aware-scroll-view": "^0.7.1",
     "react-native-linear-gradient": "^2.4.0",
     "react-native-mime-types": "^2.2.1",
     "react-native-modal": "^6.5.0",
