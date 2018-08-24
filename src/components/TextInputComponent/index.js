@@ -144,7 +144,7 @@ TextInputComponent.propTypes = {
   keyboardType: PropTypes.string,
   textContentType: PropTypes.string,
   autoCapitalize: PropTypes.string,
-  autoCapitalize: PropTypes.bool
+  isErrorView: PropTypes.bool
 }
 
 export default TextInputComponent

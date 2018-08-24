@@ -7,7 +7,8 @@ import {
   TouchableOpacity,
   ActivityIndicator,
   Image,
-  Alert
+  Alert,
+  Keyboard
 } from 'react-native'
 import axios from 'axios';
 import { connect } from 'react-redux'
@@ -351,7 +352,7 @@ class SignUpScreen extends React.Component {
       <View style={styles.container}>
         <Gradient />
 
-        <KeyboardScrollView extraScrollHeight={120}>
+        <KeyboardScrollView>
           <View style={styles.innerContainer}>
 
             <View style={styles.modalContainer}>
