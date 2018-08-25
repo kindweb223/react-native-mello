@@ -15,6 +15,7 @@ const styles = StyleSheet.create({
   },
   navBar: {
     height: 54,
+    paddingTop: 5,
     borderBottomWidth: 1,
     borderColor: COLORS.LIGHT_GREY_LINE,
     flexDirection: 'row',

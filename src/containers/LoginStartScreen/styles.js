@@ -16,8 +16,7 @@ export default {
     alignItems: 'center'
   },
   logoView: {
-    position: 'absolute',
-    top: CONSTANTS.STATUSBAR_HEIGHT + 30
+    marginTop: CONSTANTS.STATUSBAR_HEIGHT + 30
   },
   content: {
     alignItems: 'center',
