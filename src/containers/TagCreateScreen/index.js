@@ -150,6 +150,9 @@ class TagCreateScreen extends React.Component {
   }
 
   onSelectItem(tag) {
+    this.setState({
+      currentTagName: '',
+    });
     this.props.addTagToHunt(this.props.feedo.currentFeed.id, tag.id);
   }
 
@@ -185,41 +188,39 @@ class TagCreateScreen extends React.Component {
       <View style={styles.container}>
         <View style={styles.contentContainer}>
           {this.renderTopContent}
+          <Tags
+            containerStyle={{marginTop: 20, paddingHorizontal: 20,}}
+            tags={this.props.feedo.currentFeed.tags}
+            tagText={this.state.currentTagName}
+            onCreateTag={(text) => this.onCreateTag(text)}
+            onChangeText={(text) => this.onChangeText(text)}
+            onRemoveTag={(tag) => this.onRemoveTag(tag)}
+            tagContainerStyle={{
+              backgroundColor: COLORS.TAG_LIGHT_ORANGE_BACKGROUND,
+            }}
+            tagTextStyle={{
+              color: COLORS.DARK_ORANGE,
+              fontSize: 16,
+            }}
+            activeTagContainerStyle={{
+              backgroundColor: COLORS.TAG_LIGHT_ORANGE_ACTIVE_BACKGROUND,
+            }}
+            activeTagTextStyle={{
+              color: '#fff',
+              fontSize: 16,
+            }}
+          />
+
           <KeyboardAwareScrollView
             keyboardShouldPersistTaps='always'
           >
-            <View style={styles.mainContentContainer}>
-              <Tags
-                tags={this.props.feedo.currentFeed.tags}
-                onCreateTag={(text) => this.onCreateTag(text)}
-                onChangeText={(text) => this.onChangeText(text)}
-                onRemoveTag={(tag) => this.onRemoveTag(tag)}
-                inputStyle={{
-                  backgroundColor: 'white',
-                }}
-                tagContainerStyle={{
-                  backgroundColor: COLORS.TAG_LIGHT_ORANGE_BACKGROUND,
-                }}
-                tagTextStyle={{
-                  color: COLORS.DARK_ORANGE,
-                  fontSize: 16,
-                }}
-                activeTagContainerStyle={{
-                  backgroundColor: COLORS.TAG_LIGHT_ORANGE_ACTIVE_BACKGROUND,
-                }}
-                activeTagTextStyle={{
-                  color: '#fff',
-                  fontSize: 16,
-                }}
-              />
-              <FlatList
-                style={{marginTop: 10}}
-                data={this.filterTagNames()}
-                renderItem={this.renderTagItem.bind(this)}
-                keyExtractor={(item, index) => index.toString()}
-                extraData={this.state}
-              />
-            </View>
+            <FlatList
+              style={{marginTop: 10, paddingHorizontal: 20,}}
+              data={this.filterTagNames()}
+              renderItem={this.renderTagItem.bind(this)}
+              keyExtractor={(item, index) => index.toString()}
+              extraData={this.state}
+            />
           </KeyboardAwareScrollView>
         </View>
         {this.state.loading && <LoadingScreen />}

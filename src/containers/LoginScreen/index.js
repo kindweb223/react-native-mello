@@ -15,8 +15,6 @@ import { Actions } from 'react-native-router-flux'
 import LinearGradient from 'react-native-linear-gradient'
 import Feather from 'react-native-vector-icons/Feather'
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons'
-import EvilIcons from 'react-native-vector-icons/EvilIcons'
-import UserAvatar from 'react-native-user-avatar'
 import KeyboardScrollView from '../../components/KeyboardScrollView'
 import LoadingScreen from '../LoadingScreen'
 import TextInputComponent from '../../components/TextInputComponent'
@@ -24,6 +22,8 @@ import { userSignIn, getUserSession } from '../../redux/user/actions'
 import COLORS from '../../service/colors'
 import styles from './styles'
 const LOGO = require('../../../assets/images/Login/Group.png')
+import UserAvatarComponent from '../../components/UserAvatarComponent';
+
 
 const Gradient = () => {
   return(
@@ -113,25 +113,6 @@ class LoginScreen extends React.Component {
 
   }
 
-  renderAvatar(user) {
-    const name = `${user.firstName} ${user.lastName}`;
-    if (user.imageUrl || user.firstName || user.lastName) {
-      return (
-        <UserAvatar
-          size="72"
-          name={name}
-          color="#fff"
-          textColor={COLORS.PURPLE}
-          src={user.imageUrl}
-        />
-      )
-    }
-    return (
-      <EvilIcons name="envelope" size={72} color={COLORS.PURPLE} />
-    )
-  }
-
-
   render () {
     const { userData } = this.props
     const { isInvalidError, errorText } = this.state
@@ -143,10 +124,12 @@ class LoginScreen extends React.Component {
         <KeyboardScrollView extraScrollHeight={isInvalidError ? 120 : 100}>
           <View style={styles.innerContainer}>
             <View style={styles.contentView}>
-              <View style={styles.avatarView}>
-                {this.renderAvatar(userData)}
-              </View>
-
+              <UserAvatarComponent
+                user={userData}
+                size={72}
+                color="#fff"
+                textColor={COLORS.PURPLE}
+              />
               <Text style={styles.subTitle}>{userData.email}</Text>
               <View style={styles.content}>
                 <Text style={styles.title}>Welcome back</Text>

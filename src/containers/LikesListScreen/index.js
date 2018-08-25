@@ -13,9 +13,7 @@ import { connect } from 'react-redux'
 import { Actions } from 'react-native-router-flux'
 import Ionicons from 'react-native-vector-icons/Ionicons'
 import FontAwesome from 'react-native-vector-icons/FontAwesome'
-import EvilIcons from 'react-native-vector-icons/EvilIcons'
 import _ from 'lodash';
-import UserAvatar from 'react-native-user-avatar'
 
 import styles from './styles'
 import CONSTANTS from '../../service/constants'
@@ -26,6 +24,7 @@ import {
   getCardLikes,
 } from '../../redux/card/actions'
 import { getDurationFromNow } from '../../service/dateUtils'
+import UserAvatarComponent from '../../components/UserAvatarComponent';
 
 
 class LIkesListScreen extends React.Component {
@@ -117,30 +116,15 @@ class LIkesListScreen extends React.Component {
     }
   }
 
-  renderAvatar(user) {
-    const name = `${user.firstName} ${user.lastName}`;
-    if (user.imageUrl || user.firstName || user.lastName) {
-      return (
-        <UserAvatar
-          size="32"
-          name={name}
-          color="#000"
-          textColor="#fff"
-          src={user.imageUrl}
-        />
-      )
-    }
-    return (
-      <EvilIcons name="envelope" size={32} color={COLORS.PURPLE} />
-    )
-  }
-
   renderItem({item, index}) {
     const name = `${item.firstName} ${item.lastName}`;
     return (
       <View style={styles.itemContainer}>
         <View style={styles.avatarContainer}>
-          {this.renderAvatar(item)}
+          <UserAvatarComponent
+            user={item}
+            size={32}
+          />
           <View style={styles.likeContainer}>
             <FontAwesome name='heart' size={10} color={COLORS.RED} />
           </View>

@@ -8,20 +8,22 @@ export default StyleSheet.create({
     alignItems: "center"
   },
   textInputContainer: {
-    flex: 1,
-    width: 100,
+    minWidth: 50,
     height: 32,
-    borderRadius: 16,
     justifyContent: 'center',
   },
   textInput: {
-    margin: 0,
-    padding: 0,
-    paddingRight: 12,
-    flex: 1,
-    height: 32,
     fontSize: 16,
-    color: "rgba(0, 0, 0, 0.87)"
+    color: "rgba(0, 0, 0, 0.87)",
+  },
+  tagInputCoverContainer: {
+    position: 'absolute',
+    left: 0,
+    right: 0,
+    top: 0,
+    bottom: 0,
+    justifyContent: 'center',
+    backgroundColor: '#fff',
   },
   textLabel: {
     margin: 0,

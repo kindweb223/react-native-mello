@@ -389,21 +389,13 @@ class FeedDetailScreen extends React.Component {
 
       if (isOwner) {
         avatars = [
-          {
-            id: 1,
-            imageUrl: currentFeed.owner.imageUrl,
-            userName: `${currentFeed.owner.firstName} ${currentFeed.owner.lastName}`
-          }
+          currentFeed.owner,
         ]
       } else {
         currentFeed.invitees.forEach((item, key) => {
           avatars = [
             ...avatars,
-            {
-              id: key,
-              imageUrl: item.userProfile.imageUrl,
-              userName: `${item.userProfile.firstName} ${item.userProfile.lastName}`
-            }
+            item.userProfile
           ]
         })
       }

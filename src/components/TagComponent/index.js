@@ -9,6 +9,7 @@ import {
 
 import Tag from './Tag';
 import styles from './styles';
+import COLORS from '../../service/colors';
 
 
 class Tags extends React.Component {
@@ -16,9 +17,10 @@ class Tags extends React.Component {
     super(props);
 
     this.state = {
-      text: props.initialText,
+      tagText: this.props.tagText,
       activeTagName: props.activeTagName,
       selectedTagIndex: -1,
+      isHideCursor: false,
     };
     this.prevKey = '';
   }
@@ -29,32 +31,33 @@ class Tags extends React.Component {
     }
   }
 
-  componentDidUpdate(prevProps) {
-    if (prevProps.tags !== this.props.tags) {
-      this.setState({ text: '' })
+  UNSAFE_componentWillReceiveProps(nextProps) {
+    if (nextProps.tags.length === 0) {
+      this.setState({
+        isHideCursor: false,
+      });
+    }
+    if (nextProps.tagText !== this.state.tagText) {
+      this.setState({
+        tagText: nextProps.tagText,
+      });
     }
   }
-  
+
   onChangeText(text) {
-    if (
-      text.length > 1 &&
-      (text.slice(-1) === ' ' || text.slice(-1) === ',')
-    ) {
-      // this.setState({
-      //   tags: [
-      //     ...this.state.tags, 
-      //     {
-      //       text: text.slice(0, -1).trim(),
-      //       id: '',
-      //     },
-      //   ],
-      //   text: ''
-      // }, () => {
-      //   this.props.onChangeTags && this.props.onChangeTags(this.state.tags)
-      // });
+    if (this.state.isHideCursor) {
+      this.setState({
+        tagText: text,
+      });
+      return;
+    }
+    this.setState({
+      selectedTagIndex: -1,
+      activeTagName: '',
+    });
+    if (text.length > 1 && (text.slice(-1) === ' ' || text.slice(-1) === ',')) {
       this.onCreateTag();
     } else {
-      this.setState({ text });
       if (this.props.onChangeText) {
         this.props.onChangeText(text);
       }
@@ -62,6 +65,10 @@ class Tags extends React.Component {
   }
 
   onKeyPress(event) {
+    if (this.state.tagText) {
+      this.prevKey = event.nativeEvent.key;
+      return;
+    }
     if ((this.prevKey === '' || this.prevKey === 'Backspace' || this.prevKey === ' ' || this.prevKey === ',') && event.nativeEvent.key === 'Backspace') {
       let index = this.props.tags.length - 1;
       if (this.state.selectedTagIndex !== -1) {
@@ -81,7 +88,8 @@ class Tags extends React.Component {
         this.setState({
           selectedTagIndex: index,
           activeTagName: this.props.tags[index].text,
-        });  
+          isHideCursor: true,
+        });
       }
     }
     this.prevKey = event.nativeEvent.key;
@@ -89,13 +97,17 @@ class Tags extends React.Component {
 
   onCreateTag() {
     if (this.props.onCreateTag) {
-      this.props.onCreateTag(this.state.text)
+      this.props.onCreateTag(this.state.tagText)
     }
     if (this.props.onChangeText) {
       this.props.onChangeText('');
     }
+  }
+
+  onPressTagInputCover() {
     this.setState({
-      text: '',
+      isHideCursor: false,
+      tagText: '',
     });
   }
 
@@ -105,16 +117,32 @@ class Tags extends React.Component {
         <View style={styles.textInputContainer}>
           <TextInput
             ref={ref => this.tagInputRef = ref}
-            value={this.state.text}
+            style={[styles.textInput, this.props.inputStyle, this.state.isHideCursor && {maxWidth: 50}]}
+            maxLength={40}
+            autoCapitalize="none"
+            autoCorrect={false} 
+            underlineColorAndroid='transparent'
             placeholder={this.props.placeHolder}
-            blurOnSubmit={false}
-            style={[styles.textInput, this.props.inputStyle]}
+            placeholderTextColor={COLORS.MEDIUM_GREY}
+            value={this.state.tagText}
             onChangeText={this.onChangeText.bind(this)}
             onKeyPress={this.onKeyPress.bind(this)}
             onSubmitEditing={() => this.onCreateTag()}
-            autoCapitalize="none"
-            underlineColorAndroid='transparent'
           />
+          {
+            this.state.isHideCursor &&
+              <TouchableOpacity 
+                style={styles.tagInputCoverContainer}
+                activeOpacity={1}
+                onPress={() => this.onPressTagInputCover()}
+              >
+                <Text
+                  style={[styles.textInput, this.props.inputStyle, {color: COLORS.MEDIUM_GREY, marginBottom: 1}]}
+                >
+                  {this.props.placeHolder}
+                </Text>
+              </TouchableOpacity>
+          }
         </View>
       );
     } else if (this.props.tags.length === 0) {
@@ -137,15 +165,20 @@ class Tags extends React.Component {
       if (this.state.activeTagName !== tag.text) {
         activeTagName = tag.text;
       }
+      this.onChangeText('');
+      this.prevKey = '';
       this.setState({
         activeTagName,
       }, () => {
         if (activeTagName !== '') {
-          // if (!this.props.readonly) {
-          //   this.tagInputRef.focus();
-          // }
           this.setState({
             selectedTagIndex: index,
+            isHideCursor: true,
+          });
+        } else {
+          this.setState({
+            selectedTagIndex: -1,
+            isHideCursor: false,
           });
         }
       });
@@ -181,14 +214,14 @@ class Tags extends React.Component {
 
 Tags.defaultProps = {
   tags: [],
-  initialText: '',
+  tagText: '',
   readonly: false,
   activeTagName: '',
   placeHolder: 'Tags'
 };
 
 Tags.propTypes = {
-  initialText: PropTypes.string,
+  tagText: PropTypes.string,
   activeTagName: PropTypes.string,
   tags: PropTypes.arrayOf(PropTypes.object),
   containerStyle: PropTypes.object,

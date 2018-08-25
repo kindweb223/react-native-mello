@@ -10,13 +10,13 @@ import {
   Text,
   Image,
   Clipboard,
+  ScrollView,
 } from 'react-native'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 
 import { Actions } from 'react-native-router-flux'
 import Entypo from 'react-native-vector-icons/Entypo'
-import EvilIcons from 'react-native-vector-icons/EvilIcons'
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons'
 import ActionSheet from 'react-native-actionsheet'
 import ImagePicker from 'react-native-image-picker'
@@ -25,7 +25,6 @@ import Permissions from 'react-native-permissions'
 import * as mime from 'react-native-mime-types'
 import _ from 'lodash';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
-import UserAvatar from 'react-native-user-avatar'
 import validUrl from 'valid-url';
 import Modal from 'react-native-modal';
 
@@ -53,6 +52,7 @@ import WebMetaList from '../../components/WebMetaListComponent';
 import LikeComponent from '../../components/LikeComponent';
 import CommentComponent from '../../components/CommentComponent';
 import ChooseLinkImages from '../../components/chooseLinkImagesComponent';
+import UserAvatarComponent from '../../components/UserAvatarComponent';
 
 const ScreenVerticalMargin = 100;
 
@@ -72,6 +72,7 @@ class NewCardScreen extends React.Component {
       isShowKeyboardButton: false,
       openGraphForLinks: [],
       isVisibleChooseLinkImagesModal: false,
+      cardMaxHeight: CONSTANTS.SCREEN_HEIGHT - ScreenVerticalMargin * 2,
     };
 
     this.selectedFile = null;
@@ -92,6 +93,7 @@ class NewCardScreen extends React.Component {
     this.openGraphForLinks = [];
 
     this.animatedShow = new Animated.Value(0);
+    this.animatedKeyboardHeight = new Animated.Value(0);
     this.scrollViewLayoutHeight = 0;
   }
 
@@ -240,12 +242,6 @@ class NewCardScreen extends React.Component {
       });
     }
 
-    if (viewMode === CONSTANTS.CARD_NEW) {
-      this.setState({
-        isShowKeyboardButton: true,
-      });
-    }
-
     Animated.timing(this.animatedShow, {
       toValue: 1,
       duration: CONSTANTS.ANIMATEION_MILLI_SECONDS,
@@ -254,6 +250,40 @@ class NewCardScreen extends React.Component {
         this.props.createCard(this.props.feedo.currentFeed.id);
       }
     });
+
+    this.keyboardWillShowSubscription = Keyboard.addListener('keyboardWillShow', (e) => this.keyboardWillShow(e));
+    this.keyboardWillHideSubscription = Keyboard.addListener('keyboardWillHide', (e) => this.keyboardWillHide(e));
+  }
+
+  componentWillUnmount() {
+    this.keyboardWillShowSubscription.remove();
+    this.keyboardWillHideSubscription.remove();
+  }
+
+  keyboardWillShow(e) {
+    Animated.timing(
+      this.animatedKeyboardHeight, {
+        toValue: e.endCoordinates.height,
+        duration: e.duration,
+      }
+    ).start(() => {
+      this.setState({
+        cardMaxHeight: CONSTANTS.SCREEN_HEIGHT - e.endCoordinates.height,
+      });
+    });
+  }
+
+  keyboardWillHide(e) {
+    this.setState({
+      cardMaxHeight: CONSTANTS.SCREEN_HEIGHT - ScreenVerticalMargin * 2,
+    }, () => {
+      Animated.timing(
+        this.animatedKeyboardHeight, {
+          toValue: 0,
+          duration: e.duration,
+        }
+      ).start();
+    });    
   }
 
   onClose() {
@@ -340,6 +370,9 @@ class NewCardScreen extends React.Component {
   pickMediaFromCamera(options) {
     ImagePicker.launchCamera(options, (response)  => {
       if (!response.didCancel) {
+        if (!response.fileName) {
+          response.fileName = response.uri.replace(/^.*[\\\/]/, '')
+        }
         this.uploadFile(response, 'MEDIA');
       }
     });
@@ -467,22 +500,16 @@ class NewCardScreen extends React.Component {
   }
 
   onBlurTitle() {
-    const { viewMode } = this.props;
-    if (viewMode !== CONSTANTS.CARD_NEW) {
-      this.setState({
-        isShowKeyboardButton: false,
-      });
-    }
+    this.setState({
+      isShowKeyboardButton: false,
+    });
     this.checkUrl(this.state.cardName);
   }
 
   onBlurIdea() {
-    const { viewMode } = this.props;
-    if (viewMode !== CONSTANTS.CARD_NEW) {
-      this.setState({
-        isShowKeyboardButton: false,
-      });
-    }
+    this.setState({
+      isShowKeyboardButton: false,
+    });
     this.checkUrl(this.state.idea);
     // const urls = this.state.idea.match(/\bhttps?:\/\/\S+/gi);
     // if (urls) {
@@ -614,7 +641,12 @@ class NewCardScreen extends React.Component {
   get renderMainContent() {
     const { viewMode } = this.props;
     return (
-      <View style={styles.mainContentContainer}>
+      <ScrollView
+        style={styles.mainContentContainer}
+        enableAutomaticScroll={false}
+        onScrollBeginDrag={(e) => this.onScrollBeginDrag(e)}
+        onScroll={(e) => this.onScroll(e)}
+      >
         <TextInput 
           style={styles.textInputCardTitle}
           editable={viewMode === CONSTANTS.CARD_NEW || viewMode === CONSTANTS.CARD_EDIT}
@@ -642,7 +674,7 @@ class NewCardScreen extends React.Component {
         {this.renderWebMeta}
         {this.renderImages}
         {this.renderDocuments}
-      </View>
+      </ScrollView>
     );
   }
 
@@ -691,24 +723,6 @@ class NewCardScreen extends React.Component {
     );
   }
 
-  renderAvatar(user) {
-    const name = `${user.firstName} ${user.lastName}`;
-    if (user.imageUrl || user.firstName || user.lastName) {
-      return (
-        <UserAvatar
-          size="24"
-          name={name}
-          color="#000"
-          textColor="#fff"
-          src={user.imageUrl}
-        />
-      );
-    }
-    return (
-      <EvilIcons name="envelope" size={24} color={COLORS.PURPLE} />
-    )
-  }
-
   get renderInvitee() {
     const {
       userProfile
@@ -723,7 +737,9 @@ class NewCardScreen extends React.Component {
       <View>
         <View style={styles.line} />
         <View style={[styles.rowContainer, {marginHorizontal: 22}]}>
-          {this.renderAvatar(userProfile)}
+          <UserAvatarComponent
+            user={userProfile}
+          />
           <Text style={[styles.textInvitee, { marginLeft: 9, fontSize,}]} numberOfLines={1}>{name}</Text>
           <Entypo name="dot-single" style={styles.iconDot} />
           <Text style={styles.textInvitee}>{getTimestamp(this.props.card.currentCard.publishedDate)}</Text>
@@ -849,25 +865,25 @@ class NewCardScreen extends React.Component {
     if (viewMode === CONSTANTS.CARD_NEW) {
       const animatedMove  = this.animatedShow.interpolate({
         inputRange: [0, 1],
-        outputRange: [CONSTANTS.SCREEN_HEIGHT, ScreenVerticalMargin],
+        outputRange: [CONSTANTS.SCREEN_HEIGHT, 0],
       });  
       cardStyle = {
         top: animatedMove,
-        bottom: ScreenVerticalMargin,
+        bottom: this.animatedKeyboardHeight,
         opacity: this.animatedShow,
       };
     } else if (!this.state.isFullScreenCard) {
       const animatedTopMove = this.animatedShow.interpolate({
         inputRange: [0, 1],
-        outputRange: [this.state.originalCardTopY, ScreenVerticalMargin],
+        outputRange: [this.state.originalCardTopY, 0],
       });
-      const animatedBottomMove = this.animatedShow.interpolate({
-        inputRange: [0, 1],
-        outputRange: [this.state.originalCardBottomY, ScreenVerticalMargin],
-      });
+      // const animatedBottomMove = this.animatedShow.interpolate({
+      //   inputRange: [0, 1],
+      //   outputRange: [this.state.originalCardBottomY, 0],
+      // });
       cardStyle = {
         top: animatedTopMove,
-        bottom: animatedBottomMove,
+        bottom: this.animatedKeyboardHeight,
         opacity: this.animatedShow,
       };
     } else {
@@ -875,13 +891,13 @@ class NewCardScreen extends React.Component {
         inputRange: [0, 1],
         outputRange: [this.state.originalCardTopY, 0],
       });
-      const animatedBottomMove = this.animatedShow.interpolate({
-        inputRange: [0, 1],
-        outputRange: [this.state.originalCardBottomY, 0],
-      });
+      // const animatedBottomMove = this.animatedShow.interpolate({
+      //   inputRange: [0, 1],
+      //   outputRange: [this.state.originalCardBottomY, 0],
+      // });
       cardStyle = {
         top: animatedTopMove,
-        bottom: animatedBottomMove,
+        bottom: this.animatedKeyboardHeight,
       };
     }
 
@@ -896,19 +912,13 @@ class NewCardScreen extends React.Component {
         <View 
           style={[
             styles.contentContainer,
-            (viewMode === CONSTANTS.CARD_NEW || !this.state.isFullScreenCard) && {maxHeight: CONSTANTS.SCREEN_HEIGHT - ScreenVerticalMargin * 2},
+            (viewMode === CONSTANTS.CARD_NEW || !this.state.isFullScreenCard) && {maxHeight: this.state.cardMaxHeight},
             this.state.isFullScreenCard && {flex: 1, borderRadius: 0},
           ]}
         >
           {this.renderHeader}
-          <KeyboardAwareScrollView
-            enableAutomaticScroll={false}
-            onScrollBeginDrag={(e) => this.onScrollBeginDrag(e)}
-            onScroll={(e) => this.onScroll(e)}
-          >
-            {this.renderMainContent}
-            {this.renderAttachmentButtons}
-          </KeyboardAwareScrollView>
+          {this.renderMainContent}
+          {this.renderAttachmentButtons}
           {this.renderBottomContent}
         </View>
         {this.renderOutside}
@@ -919,18 +929,8 @@ class NewCardScreen extends React.Component {
   render () {
     return (
       <SafeAreaView style={styles.container}>
-        <TouchableOpacity 
-          style={styles.backdropContainer}
-          activeOpacity={1}
-          onPress={this.onTapOutsideCard.bind(this)}
-        />
-        {this.renderOutsideMoreActions}
         {this.renderCard}
-        <TouchableOpacity 
-          style={styles.backdropContainer}
-          activeOpacity={1}
-          onPress={this.onTapOutsideCard.bind(this)}
-        />
+        {this.renderOutsideMoreActions}
         <ActionSheet
           ref={ref => this.imagePickerActionSheetRef = ref}
           title='Select a Photo / Video'

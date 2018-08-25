@@ -919,7 +919,7 @@
 					};
 					13B07F861A680F5B00A75B9A = {
 						DevelopmentTeam = B2TWZYTK2Q;
-						ProvisioningStyle = Manual;
+						ProvisioningStyle = Automatic;
 						SystemCapabilities = {
 							com.apple.Push = {
 								enabled = 1;
@@ -1570,12 +1570,12 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_ENTITLEMENTS = HuntMobile/HuntMobile.entitlements;
-				CODE_SIGN_IDENTITY = "iPhone Developer: Eamon Doyle (H2VVNQ44JN)";
+				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
-				CODE_SIGN_STYLE = Manual;
+				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEAD_CODE_STRIPPING = NO;
-				DEVELOPMENT_TEAM = B2TWZYTK2Q;
+				DEVELOPMENT_TEAM = "";
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(SRCROOT)/../node_modules/react-native-vector-icons/RNVectorIconsManager",
@@ -1596,8 +1596,8 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = io.solvers.feedo;
 				PRODUCT_NAME = HuntMobile;
-				PROVISIONING_PROFILE = "cc8844ab-4113-4467-a604-745188cabbe3";
-				PROVISIONING_PROFILE_SPECIFIER = "Feed Mobile DEV";
+				PROVISIONING_PROFILE = "";
+				PROVISIONING_PROFILE_SPECIFIER = "";
 				VERSIONING_SYSTEM = "apple-generic";
 			};
 			name = Debug;
@@ -1607,11 +1607,11 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_ENTITLEMENTS = HuntMobile/HuntMobile.entitlements;
-				CODE_SIGN_IDENTITY = "iPhone Developer: Eamon Doyle (H2VVNQ44JN)";
+				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution";
-				CODE_SIGN_STYLE = Manual;
+				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = B2TWZYTK2Q;
+				DEVELOPMENT_TEAM = "";
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(SRCROOT)/../node_modules/react-native-vector-icons/RNVectorIconsManager",
@@ -1632,8 +1632,8 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = io.solvers.feedo;
 				PRODUCT_NAME = HuntMobile;
-				PROVISIONING_PROFILE = "99ba09fd-8fcc-4483-b561-037a12e390a5";
-				PROVISIONING_PROFILE_SPECIFIER = "Feed Mobile Dist";
+				PROVISIONING_PROFILE = "";
+				PROVISIONING_PROFILE_SPECIFIER = "";
 				VERSIONING_SYSTEM = "apple-generic";
 			};
 			name = Release;

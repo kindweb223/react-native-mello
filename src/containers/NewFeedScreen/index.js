@@ -45,7 +45,7 @@ import TagCreateScreen from '../TagCreateScreen';
 
 const NewFeedMode = 1;
 const TagCreateMode = 2;
-const ScreenVerticalMargin = 80;
+const ScreenVerticalMinMargin = 80;
 
 
 class NewFeedScreen extends React.Component {
@@ -56,8 +56,6 @@ class NewFeedScreen extends React.Component {
       comments: '',
       loading: false,
       currentScreen: NewFeedMode,
-      keyboardHeight: ScreenVerticalMargin * 2,
-      isShowKeyboard: false,
     };
     this.isNewFeed = Object.keys(this.props.feedo.currentFeed).length === 0;
     
@@ -170,6 +168,7 @@ class NewFeedScreen extends React.Component {
     });
     this.keyboardWillShowSubscription = Keyboard.addListener('keyboardWillShow', (e) => this.keyboardWillShow(e));
     this.keyboardWillHideSubscription = Keyboard.addListener('keyboardWillHide', (e) => this.keyboardWillHide(e));
+    this.textInputFeedNameRef.focus();
   }
 
   componentWillUnmount() {
@@ -178,35 +177,21 @@ class NewFeedScreen extends React.Component {
   }
 
   keyboardWillShow(e) {
-    this.setState({
-      keyboardHeight: e.endCoordinates.height + ScreenVerticalMargin / 2,
-    });
     Animated.timing(
       this.animatedKeyboardHeight, {
-        toValue: e.endCoordinates.height - 18, //border radius = 18
+        toValue: e.endCoordinates.height - ScreenVerticalMinMargin - 18, // border radius = 18
         duration: e.duration,
       }
-    ).start(() => {
-      this.setState({
-        isShowKeyboard: true,
-      });
-    });
+    ).start();
   }
 
   keyboardWillHide(e) {
-    this.setState({
-      isShowKeyboard: false,
-    });
     Animated.timing(
       this.animatedKeyboardHeight, {
         toValue: 0,
         duration: e.duration,
       }
-    ).start(() => {
-      this.setState({
-        keyboardHeight: ScreenVerticalMargin * 2,
-      });
-    });
+    ).start();
   }
 
   onClose() {
@@ -311,6 +296,9 @@ class NewFeedScreen extends React.Component {
   pickMediaFromCamera(options) {
     ImagePicker.launchCamera(options, (response)  => {
       if (!response.didCancel) {
+        if (!response.fileName) {
+          response.fileName = response.uri.replace(/^.*[\\\/]/, '')
+        }
         this.uploadFile(response, 'MEDIA');
       }
     });
@@ -427,6 +415,7 @@ class NewFeedScreen extends React.Component {
     return (
       <ScrollView style={styles.mainContentContainer}>
         <TextInput 
+          ref={ref => this.textInputFeedNameRef = ref}
           style={styles.textInputFeedName}
           placeholder='Name your feed'
           underlineColorAndroid='transparent'
@@ -434,6 +423,7 @@ class NewFeedScreen extends React.Component {
           onChangeText={(value) => this.setState({feedName: value})}
         />
         <TextInput
+          ref={ref => this.textInputFeedNoteRef = ref}
           style={styles.textInputNote}
           placeholder='Add a note'
           multiline={true}
@@ -520,8 +510,8 @@ class NewFeedScreen extends React.Component {
           style={[
             styles.contentContainer, 
             {
-              marginBottom: this.animatedKeyboardHeight,
-              maxHeight: CONSTANTS.SCREEN_HEIGHT - this.state.keyboardHeight,
+              paddingBottom: this.animatedKeyboardHeight,
+              height: CONSTANTS.SCREEN_HEIGHT - ScreenVerticalMinMargin * 2,
             },
           ]}
         >
@@ -529,14 +519,11 @@ class NewFeedScreen extends React.Component {
           {this.renderCenterContent}
           {this.renderBottomContent}
         </Animated.View>
-        {
-          !this.state.isShowKeyboard &&
-            <TouchableOpacity 
-              style={styles.backdropContainer}
-              activeOpacity={1}
-              onPress={this.onOpenActionSheet.bind(this)}
-            />
-        }
+        <TouchableOpacity 
+          style={styles.backdropContainer}
+          activeOpacity={1}
+          onPress={this.onOpenActionSheet.bind(this)}
+        />
         {this.state.loading && <LoadingScreen />}
       </Animated.View>
     );

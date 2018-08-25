@@ -51,6 +51,7 @@ const styles = StyleSheet.create({
     textAlign: 'center',
   },
   mainContentContainer: {
+    flex: 1,
   },
   textInputFeedName: {
     fontSize: 24,

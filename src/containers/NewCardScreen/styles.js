@@ -16,13 +16,14 @@ const styles = StyleSheet.create({
     left: 0,
     right: 0,
     justifyContent: 'center',
-    zIndex: 1,
+    // zIndex: 1,
+    backgroundColor: 'transparent',
   },
   contentContainer: {
     borderRadius: 18,
-    backgroundColor: '#fff',
     paddingTop: 26,
     paddingBottom: 17,
+    backgroundColor: '#fff',
   },
   mainContentContainer: {
   },
