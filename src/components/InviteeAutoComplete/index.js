@@ -71,7 +71,6 @@ class InviteeAutoComplete extends React.Component {
             backgroundColor: 'rgba(74, 0, 205, .3)'
           }}
           activeTagTextStyle={{
-            color: COLORS.PURPLE,
             fontSize: 14,
           }}
         />
