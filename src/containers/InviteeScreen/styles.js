@@ -70,7 +70,7 @@ export default {
   },
   inviteeListView: {
     marginTop: 24,
-    maxHeight: 300
+    maxHeight: 240
   },
   titleView: {
     paddingBottom: 5,

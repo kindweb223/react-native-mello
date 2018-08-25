@@ -1,51 +1,57 @@
-import { StyleSheet, Platform } from 'react-native'
+import { StyleSheet } from 'react-native'
 import COLORS from '../../service/colors'
 import CONSTANTS from '../../service/constants'
-const MODAL_HEIGHT = 200
 
-export default {
+const styles = StyleSheet.create({
   container: {
-    width: CONSTANTS.SCREEN_WIDTH,
-    height: CONSTANTS.SCREEN_HEIGHT,
-    alignItems: 'center',
-    justifyContent: 'center'
+    flex: 1,
+    backgroundColor: '#fff',
   },
-  innerContainer: {
-    width: CONSTANTS.SCREEN_WIDTH,
-    height: CONSTANTS.SCREEN_HEIGHT
-  },
-  headerView: {
-    position: 'absolute',
-    top: CONSTANTS.STATUSBAR_HEIGHT + 20,
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    flexDirection: 'row',
-    width: '100%',
-    paddingHorizontal: CONSTANTS.PADDING
-  },
-  headerText: {
-    color: '#fff',
-    fontSize: 16,
-    fontWeight: '600'
-  },
-  btnback: {
-    width: 100,
-    height: 30,
-    backgroundColor: '#ff0'
-  },
-  modalContainer: {
-    borderTopLeftRadius: 18,
-    borderTopRightRadius: 18,
+  subContainer: {
+    flex: 1,
     backgroundColor: '#fff',
     paddingHorizontal: CONSTANTS.PADDING,
-    paddingTop: 40,
-    paddingBottom: 55,
-    position: 'absolute',
-    bottom: 0,
-    left: 0,
-    right: 0
+    paddingVertical: 30
+  },
+  navBar: {
+    height: 54,
+    paddingTop: 5,
+    borderBottomWidth: 1,
+    borderColor: COLORS.LIGHT_GREY_LINE,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    paddingHorizontal: CONSTANTS.PADDING
+  },
+  navLeftWrapper: {
+    width: 80,
+    flexDirection: 'row',
+    alignItems: 'center'
+  },
+  navRightWrapper: {
+    width: 80,
+    alignItems: 'flex-end',
+    justifyContent: 'center'
+  },
+  headerTextBack: {
+    fontSize: 16,
+    fontWeight: '500',
+    marginLeft: 5,
+    color: COLORS.PURPLE,
+  },
+  headerTextTitle: {
+    fontSize: 16,
+    fontWeight: '600',
+    textAlign: 'center',
+    marginBottom: 5,
   },
   buttonView: {
+    position: 'absolute',
+    width: '100%',
+    bottom: 30,
+    left: CONSTANTS.PADDING
+  },
+  button: {
     borderRadius: 14,
     width: '100%',
     height: 60,
@@ -112,5 +118,17 @@ export default {
     color: COLORS.MEDIUM_RED,
     fontWeight: '600',
     fontSize: 12
+  },
+  forgotView: {
+    height: 50,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  forgotText: {
+    color: COLORS.PURPLE,
+    fontWeight: '600'
   }
-}
+})
+
+
+export default styles

@@ -44,6 +44,10 @@ const ABOUT_ITEMS = [
 
 const SETTING_ITEMS = [
   {
+    icon: <Image source={EDIT_ICON} style={styles.leftIcon} />,
+    title: 'Profile'
+  },
+  {
     icon: <Image source={LOCK_ICON} style={styles.leftIcon} />,
     title: 'Security'
   },
@@ -66,8 +70,14 @@ class ProfileScreen extends React.Component {
     }
   }
 
-  componentDidUpdate(prevProps) {
-    if (prevProps.user.loading === 'USER_SIGNOUT_PENDING' && this.props.user.loading === 'USER_SIGNOUT_FULFILLED') {
+  componentDidMount() {
+    this.setState({ userInfo: this.props.user.userInfo })
+  }
+
+  UNSAFE_componentWillReceiveProps(nextProps) {
+    this.setState({ userInfo: nextProps.user.userInfo })
+
+    if (this.props.user.loading === 'USER_SIGNOUT_PENDING' && nextProps.user.loading === 'USER_SIGNOUT_FULFILLED') {
       Actions.LoginStartScreen()
     }
   }
@@ -142,8 +152,30 @@ class ProfileScreen extends React.Component {
     this.imagePickerActionSheetRef.show();
   }
 
-  render () {
+  handleSettingItem = (index) => {
     const { userInfo } = this.props.user
+    switch(index) {
+      case 0:
+        return
+      case 1: // Profile
+        Actions.ProfileUpdateScreen({ page: 'user', data: userInfo, title: 'Edit Profile' })
+        return
+      case 2:
+        Actions.ProfileUpdateScreen({ page: 'password', data: userInfo, title: 'Edit Password' })
+        return
+      case 3:
+        return
+      default:
+        return
+    }
+  }
+
+  handleAboutItem = () => {
+
+  }
+
+  render () {
+    const { userInfo } = this.state
 
     return (
       <View style={styles.overlay}>
@@ -179,7 +211,7 @@ class ProfileScreen extends React.Component {
               <View style={styles.settingView}>
                 <View style={styles.settingItem}>
                   <TouchableOpacity
-                    onPress={() => this.props.handleSettingItem(0)}
+                    onPress={() => this.handleSettingItem(0)}
                     activeOpacity={0.8}
                     style={styles.itemView}
                   >
@@ -198,7 +230,7 @@ class ProfileScreen extends React.Component {
                   SETTING_ITEMS.map((item, key) => (
                     <View key={key} style={styles.settingItem}>
                       <TouchableOpacity
-                        onPress={() => this.props.handleSettingItem(key + 1)}
+                        onPress={() => this.handleSettingItem(key + 1)}
                         activeOpacity={0.8}
                         style={styles.itemView}
                       >
@@ -228,7 +260,7 @@ class ProfileScreen extends React.Component {
                   keyExtractor={item => item}
                   renderItem={({ item }) => (
                     <TouchableOpacity
-                      onPress={() => this.props.handleAboutItem(item)}
+                      onPress={() => this.handleAboutItem(item)}
                       activeOpacity={0.8}
                       style={styles.itemView}
                     >

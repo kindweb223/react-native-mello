@@ -182,8 +182,8 @@ class InviteeTag extends React.Component {
             onPress={() => this.onPressTag(index, tag)}
             tagContainerStyle={this.checkInvalidEmail(tag.text) ? { backgroundColor: COLORS.LIGHT_RED } : this.props.tagContainerStyle}
             tagTextStyle={this.checkInvalidEmail(tag.text) ? { color: COLORS.MEDIUM_RED } : this.props.tagTextStyle }
-            activeTagContainerStyle={this.props.activeTagContainerStyle}
-            activeTagTextStyle={this.props.activeTagTextStyle}
+            activeTagContainerStyle={this.checkInvalidEmail(tag.text) ? { backgroundColor: 'rgba(245, 43, 101, .4)' } : { backgroundColor: 'rgba(74, 0, 205, .3)' }}
+            activeTagTextStyle={[this.props.activeTagTextStyle, this.checkInvalidEmail(tag.text) ? { color: '#FF3626' } : { color: '#4A00CD' }]}
           />
         ))}
         {this.renderEdit()}

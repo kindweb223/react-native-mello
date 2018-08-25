@@ -8,31 +8,56 @@ import PropTypes from 'prop-types'
 import Foundation from 'react-native-vector-icons/Foundation'
 import Ionicons from 'react-native-vector-icons/Ionicons'
 import Octicons from 'react-native-vector-icons/Octicons'
-import Tags from "../../../components/FeedTags";
+import EvilIcons from 'react-native-vector-icons/EvilIcons'
+import UserAvatar from 'react-native-user-avatar'
+import Tags from "../../../components/FeedTags"
 import styles from './styles'
 import COLORS from '../../../service/colors'
+
+const renderAvatar = (user) => {
+  const name = `${user.firstName} ${user.lastName}`;
+  if (user.imageUrl || user.firstName || user.lastName) {
+    return (
+      <UserAvatar
+        size="22"
+        name={name}
+        color={COLORS.LIGHT_GREY}
+        textColor="#000"
+        src={user.imageUrl}
+      />
+    );
+  }
+  return (
+    <EvilIcons name="envelope" size={22} color={COLORS.PURPLE} />
+  )
+}
 
 const FeedItemContentComponent = ({ data, pinFlag }) => {
   return (
     <View style={styles.container}>
       <View style={styles.titleView}>
         <Text style={styles.title} numberOfLines={1} ellipsizeMode="tail">{data.headline}</Text>
-        {pinFlag && (
-          <View style={styles.pinView}>
-            <Octicons name="pin" style={[styles.pinIcon, styles.active]} />
-          </View>
-        )}
+        <View style={styles.rightView}>
+          {pinFlag && (
+            <Octicons name="pin" size={18} style={[styles.pinIcon, styles.active]} />
+          )}
+          {!data.metadata.owner && (
+            <View style={styles.avatarView}>
+              {renderAvatar(data.owner)}
+            </View>
+          )}
+        </View>
       </View>
 
       <View style={styles.statsView}>
         <View style={styles.statsItemView}>
-          <Ionicons name="md-person" style={[styles.feedIcon, data.metadata.newInvitees ? styles.active : styles.inActive]} />
+          <Ionicons name="md-person" feedIcon={15} style={[styles.feedIcon, data.metadata.newInvitees ? styles.active : styles.inActive]} />
           <Text style={[styles.feedText, data.metadata.newInvitees ? styles.active : styles.inActive]}>
             {data.metadata.invitees}
           </Text>
         </View>
         <View style={styles.statsItemView}>
-          <Foundation name="credit-card"  style={[styles.feedIcon, data.metadata.newIdeas  ? styles.active : styles.inActive]} />
+          <Foundation name="credit-card" feedIcon={15} style={[styles.feedIcon, data.metadata.newIdeas ? styles.active : styles.inActive]} />
           <Text style={[styles.feedText, data.metadata.newIdeas  ? styles.active : styles.inActive]}>
             {data.metadata.ideasSubmitted}
           </Text>
