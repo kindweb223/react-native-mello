@@ -30,9 +30,6 @@ axios.interceptors.response.use(
       AsyncStorage.removeItem('xAuthToken')
       Actions.LoginStartScreen()
     }
-    // if (error.response.status === 403 && error.response.data.code === 'error.user.unconfirmed') {
-    //   Actions.SignUpConfirmScreen({ userEmail: 'test@test.com' })
-    // }
     console.log('ERROR: ', error)
     throw error
   }
@@ -97,9 +94,11 @@ export default class Root extends React.Component {
             <Scene key="LikesListScreen" component={ LikesListScreen } navigationBarStyle={styles.defaultNavigationBar} />
             <Scene key="CommentScreen" component={ CommentScreen } navigationBarStyle={styles.defaultNavigationBar} />
           </Scene>
-          <Scene key="ProfileScreen" component={ ProfileScreen } hideNavBar />
-          <Stack key="ProfileUpdateScreen" hideNavBar>
-            <Scene key="ProfileUpdateScreen" component={ ProfileUpdateScreen } hideNavBar panHandlers={null} />
+          <Stack key="ProfileScreen" hideNavBar>
+            <Stack key="ProfileScreen" hideNavBar>
+              <Scene key="ProfileScreen" component={ ProfileScreen } hideNavBar />
+              <Scene key="ProfileUpdateScreen" component={ ProfileUpdateScreen } hideNavBar panHandlers={null} />
+            </Stack>
           </Stack>
         </Modal>
         <Scene key="LoadingScreen" component={ LoadingScreen } hideNavBar />

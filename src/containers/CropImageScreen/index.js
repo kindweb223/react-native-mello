@@ -10,6 +10,7 @@ import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
 import { Actions } from 'react-native-router-flux'
 import * as mime from 'react-native-mime-types'
+import ImageCrop from '../../components/ImageCrop'
 import _ from 'lodash'
 import COLORS from '../../service/colors'
 import styles from './styles'
@@ -49,6 +50,10 @@ class CropImageScreen extends React.Component {
                 source={{ uri: avatarFile.uri }}
                 resizeMode="contain"
               />
+              {/* <ImageCrop
+                ref={c => this.imageCrop = c}
+                source={{ uri: avatarFile.uri }}
+              /> */}
             </View>
 
             <View style={styles.footerView}>
