@@ -11,14 +11,17 @@ const styles = StyleSheet.create({
     justifyContent: 'flex-start',
   },
   checkboxView: {
-    width: 32,
-    height: 32,
+    width: 26,
+    height: 26,
     borderRadius: 8,
     justifyContent: 'center',
     alignItems: 'center'
   },
   rightTextView: {
-    marginLeft: 15
+    marginLeft: 15,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center'
   },
   rightText: {
     fontSize: 14

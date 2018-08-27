@@ -253,23 +253,17 @@ class SignUpScreen extends React.Component {
     this.setState({ fieldErrors: errors })
 
     if (errors.length === 0) {
-      if (!this.state.isTNC) {
-        Alert.alert(
-          'Warning',
-          'Please accept the terms & conditions'
-        )
-      } else {
-        const arr = _.split(fullName, ' ')
-        const param = {
-          email: userEmail,
-          password: password,
-          firstName: arr[0],
-          lastName: arr[1]
-        }
-
-        this.setState({ loading: true })
-        this.props.userSignUp(param)
+      const arr = _.split(fullName, ' ')
+      const param = {
+        email: userEmail,
+        password: password,
+        firstName: arr[0],
+        lastName: arr[1],
+        tandcAccepted: this.state.isTNC
       }
+
+      this.setState({ loading: true })
+      this.props.userSignUp(param)
     }
   }
 
@@ -456,10 +450,13 @@ class SignUpScreen extends React.Component {
                     this.setState({ isTNC: !this.state.isTNC })
                   }}
                   isChecked={this.state.isTNC}
-                  rightText="I'll accept the terms & conditions"
-                />
+                  rightText="I'll accept the "
+                >
+                  <TouchableOpacity onPress={() => Actions.TermsAndConditionsScreen()}>
+                    <Text style={styles.termsText}>terms & conditions</Text>
+                  </TouchableOpacity>
+                </CheckBox>
               </View>
-
 
               <TouchableOpacity onPress={() => this.onSignUp()}>
                 <View style={styles.buttonView}>

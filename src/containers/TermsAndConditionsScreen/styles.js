@@ -10,17 +10,14 @@ export default {
     alignItems: 'center',
     justifyContent: 'center'
   },
-  innerContainer: {
-    justifyContent: 'center',
-    alignItems: 'center'
-  },
   headerView: {
-    position: 'absolute',
-    top: CONSTANTS.STATUSBAR_HEIGHT + 20,
+    paddingTop: CONSTANTS.STATUSBAR_HEIGHT,
     alignItems: 'center',
     justifyContent: 'space-between',
     flexDirection: 'row',
     width: '100%',
+    height: 80,
+    marginBottom: 20,
     paddingHorizontal: CONSTANTS.PADDING
   },
   headerText: {
@@ -33,44 +30,35 @@ export default {
     height: 30,
     backgroundColor: '#ff0'
   },
-  title: {
-    fontSize: 29,
-    fontWeight: 'bold',
-    color: '#fff',
-    textAlign: 'center'
-  },
-  subTitleView: {
-    marginTop: 25
-  },
-  subTitle: {
-    fontSize: 14,
-    color: '#fff',
-    textAlign: 'center'
-  },
-  buttonView: {
-    padding: 25,
-    justifyContent: 'center',
-    alignItems: 'center'
-  },
-  btnContinue: {
-    fontSize: 14,
-    fontWeight: '600',
-    color: '#fff'
-  },
   modalContainer: {
+    flex: 1,
+    width: '100%',
     borderTopLeftRadius: 18,
     borderTopRightRadius: 18,
     backgroundColor: '#fff',
-    position: 'absolute',
-    bottom: 0,
-    left: 0,
-    right: 0
+    paddingVertical: 30,
   },
   innerContainer: {
-    flex: 1,
     width: '100%',
-    height: CONSTANTS.SCREEN_HEIGHT - 100,
-    paddingHorizontal: CONSTANTS.PADDING,
-    paddingVertical: 40,
+    paddingHorizontal: CONSTANTS.PADDING
+  },
+  arrowView: {
+    width: '100%',
+    marginTop: 10,
+    justifyContent: 'center',
+    alignItems: 'center'
+  },
+  arrow: {
+    width: 50,
+    height: 50,
+    borderRadius: 25,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: COLORS.PURPLE,
+    shadowColor: 'black',
+    shadowOffset: { height: 5 },
+    shadowOpacity: 0.3,
+    shadowRadius: 5,
+    elevation: 20
   }
 }

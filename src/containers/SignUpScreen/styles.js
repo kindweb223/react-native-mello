@@ -115,5 +115,11 @@ export default {
   },
   checkboxView: {
     width: '100%'
+  },
+  termsText: {
+    fontSize: 14,
+    color: COLORS.PURPLE,
+    textDecorationLine: 'underline',
+    fontWeight: '600'
   }
 }

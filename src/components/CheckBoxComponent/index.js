@@ -23,14 +23,17 @@ export default class CheckBox extends Component {
             styles.checkboxView,
             isChecked ? { backgroundColor: COLORS.LIGHT_PURPLE } : { backgroundColor: COLORS.LIGHT_GREY_LINE }
           ]}>
-            <Octicons
-              name="check"
-              size={18}
-              color={isChecked ? COLORS.PURPLE : COLORS.MEDIUM_GREY}
-            />
+            {isChecked && (
+              <Octicons
+                name="check"
+                size={18}
+                color={isChecked ? COLORS.PURPLE : COLORS.MEDIUM_GREY}
+              />
+            )}
           </View>
           <View style={styles.rightTextView}>
             <Text>{this.props.rightText}</Text>
+            {this.props.children}
           </View>
         </View>
       </TouchableOpacity>
