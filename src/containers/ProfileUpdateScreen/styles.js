@@ -3,6 +3,10 @@ import COLORS from '../../service/colors'
 import CONSTANTS from '../../service/constants'
 
 const styles = StyleSheet.create({
+  main: {
+    width: CONSTANTS.SCREEN_WIDTH,
+    height: CONSTANTS.SCREEN_HEIGHT
+  },
   container: {
     flex: 1,
     backgroundColor: '#fff',

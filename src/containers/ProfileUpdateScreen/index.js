@@ -211,16 +211,18 @@ class ProfileUpdateScreen extends React.Component {
     const { page } = this.props
 
     return (
-      <SafeAreaView style={styles.container}>
-        {this.renderNavBar()}
-        
-        {page === 'user' && this.renderUserContent()}
-        {page === 'password' && this.renderPasswordContent()}
-        
-        {this.state.loading && (
-          <LoadingScreen />
-        )}
-      </SafeAreaView>
+      <View style={styles.main}>
+        <SafeAreaView style={styles.container}>
+          {this.renderNavBar()}
+          
+          {page === 'user' && this.renderUserContent()}
+          {page === 'password' && this.renderPasswordContent()}
+          
+          {this.state.loading && (
+            <LoadingScreen />
+          )}
+        </SafeAreaView>
+      </View>
     );
   }
 
