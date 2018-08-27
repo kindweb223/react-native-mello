@@ -34,16 +34,6 @@ export default {
     justifyContent: 'center',
     alignItems: 'center'
   },
-  avatarView: {
-    backgroundColor: '#fff',
-    borderRadius: 36,
-    width: 72,
-    height: 72,
-    marginBottom: 15,
-    overflow: 'hidden',
-    alignItems: 'center',
-    justifyContent: 'center'
-  },
   avatar: {
     width: '100%',
     height: '100%',
@@ -55,7 +45,8 @@ export default {
   },
   subTitle: {
     fontSize: 14,
-    color: '#fff'
+    color: '#fff',
+    marginTop: 15,
   },
   content: {
     alignItems: 'center',

@@ -1,8 +1,8 @@
 import React, { PureComponent } from 'react'
 import PropTypes from 'prop-types'
 import { View, Text, StyleSheet, Animated } from 'react-native'
-import UserAvatar from 'react-native-user-avatar'
-import EvilIcons from 'react-native-vector-icons/EvilIcons'
+import UserAvatarComponent from '../UserAvatarComponent';
+
 
 const styles = StyleSheet.create({
   container: {
@@ -38,33 +38,20 @@ class Circle extends PureComponent {
     imageStyle: {},
   }
 
-  get renderAvatar() {
-    const { face } = this.props
-    if (face.imageUrl || face.userName) {
-      return (
-        <UserAvatar
-          size="35"
-          name={face.userName}
-          color="#F5F5F5"
-          textColor="#A2A5AE"
-          src={face.imageUrl}
-        />
-      )
-    }
-    return (
-      <EvilIcons name="envelope" size={35} color={COLORS.PURPLE} />
-    )
-  }
-
   render () {
-    const { circleSize, offset } = this.props
+    const { circleSize, face, offset } = this.props
     const marginRight = circleSize * offset - 15
 
     return (
       <Animated.View
         style={{ marginRight: -marginRight }}
       >
-        {this.renderAvatar}
+        <UserAvatarComponent
+          user={face}
+          size={35}
+          color="#F5F5F5"
+          textColor="#A2A5AE"
+        />
       </Animated.View>
     )
   }
@@ -95,11 +82,7 @@ export function renderFacePile (faces = [], numFaces) {
 
 export default class FacePile extends PureComponent {
   static propTypes = {
-    faces: PropTypes.arrayOf(
-      PropTypes.shape({
-        imageUrl: PropTypes.string
-      })
-    ).isRequired,
+    faces: PropTypes.array.isRequired,
     circleSize: PropTypes.number,
     hideOverflow: PropTypes.bool,
     containerStyle: PropTypes.instanceOf(StyleSheet),
