@@ -350,7 +350,7 @@ export default function card(state = initialState, action = {}) {
       }
     case types.ADD_FILE_FULFILLED: {
       const { data } = action.result
-      let files = files = state.currentCard.files || [];
+      let files = state.currentCard.files || [];
       files.unshift(data);
       return {
         ...state,
@@ -431,7 +431,64 @@ export default function card(state = initialState, action = {}) {
         error: data,
       }
     }
+
+    // add a link
+    case types.ADD_LINK_PENDING:
+      return {
+        ...state,
+        loading: types.ADD_LINK_PENDING,
+        error: null,
+      }
+    case types.ADD_LINK_FULFILLED: {
+      const { data } = action.result
+      let links = links = state.currentCard.links || [];
+      links.unshift(data);
+      return {
+        ...state,
+        loading: types.ADD_LINK_FULFILLED,
+        currentCard: {
+          ...state.currentCard,
+          links,
+        }
+      }
+    }
+    case types.ADD_LINK_REJECTED: {
+      const { data } = action.error.response
+      return {
+        ...state,
+        loading: types.ADD_LINK_REJECTED,
+        error: data,
+      }
+    }
   
+    // delete a link
+    case types.DELETE_LINK_PENDING:
+      return {
+        ...state,
+        loading: types.DELETE_LINK_PENDING,
+        error: null,
+      }
+    case types.DELETE_LINK_FULFILLED: {
+      const linkId = action.payload;
+      const links = _.filter(state.currentCard.links, link => link.id !== linkId);
+      return {
+        ...state,
+        loading: types.DELETE_LINK_FULFILLED,
+        currentCard: {
+          ...state.currentCard,
+          links,
+        }
+      }
+    }
+    case types.DELETE_LINK_REJECTED: {
+      const { data } = action.error.response
+      return {
+        ...state,
+        loading: types.DELETE_LINK_REJECTED,
+        error: data,
+      }
+    }
+    
     // get open graph
     case types.GET_OPEN_GRAPH_PENDING:
       return {

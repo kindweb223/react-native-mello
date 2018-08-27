@@ -30,6 +30,7 @@ export default class UserAvatarComponent extends React.Component {
       color,
       textColor,
     } = this.props;
+    console.log('User Avatar : ', user);
     if (user.imageUrl || user.firstName || user.lastName) {
       const name = `${this.capitalizeFirstLetter(user.firstName)} ${this.capitalizeFirstLetter(user.lastName)}`;
       return (

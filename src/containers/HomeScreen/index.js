@@ -11,7 +11,6 @@ import {
   TouchableOpacity,
   Platform,
   StatusBar,
-  YellowBox,
   AsyncStorage
 } from 'react-native'
 
@@ -93,7 +92,6 @@ class HomeScreen extends React.Component {
     this.props.setUserInfo(JSON.parse(userInfo))
 
     this.props.getFeedoList(this.state.tabIndex)
-    YellowBox.ignoreWarnings(['Module RNDocumentPicker'])
   }
 
   static getDerivedStateFromProps(nextProps, prevState) {
