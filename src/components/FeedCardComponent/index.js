@@ -7,8 +7,6 @@ import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 
 import Entypo from 'react-native-vector-icons/Entypo'
-import UserAvatar from 'react-native-user-avatar'
-import EvilIcons from 'react-native-vector-icons/EvilIcons'
 import { filter } from 'lodash'
 import Image from 'react-native-image-progress'
 
@@ -17,6 +15,7 @@ import { getDurationFromNow } from '../../service/dateUtils'
 import styles from './styles'
 import LikeComponent from '../LikeComponent';
 import CommentComponent from '../CommentComponent';
+import UserAvatarComponent from '../UserAvatarComponent';
 
 
 class FeedCardComponent extends React.Component {
@@ -25,24 +24,6 @@ class FeedCardComponent extends React.Component {
     this.state = {
       loading: false,
     };
-  }
-
-  renderAvatar(user) {
-    const name = `${user.firstName} ${user.lastName}`;
-    if (user.imageUrl || user.firstName || user.lastName) {
-      return (
-        <UserAvatar
-          size="30"
-          name={name}
-          color="#000"
-          textColor="#fff"
-          src={user.imageUrl}
-        />
-      )
-    }
-    return (
-      <EvilIcons name="envelope" size={30} color={COLORS.PURPLE} />
-    )
   }
 
   get renderBottom() {
@@ -61,7 +42,10 @@ class FeedCardComponent extends React.Component {
             !isOnlyInvitee &&
               [
                 <View key="0" style={styles.avatar}>
-                  {this.renderAvatar(invitee.userProfile)}
+                  <UserAvatarComponent
+                    user={invitee.userProfile}
+                    size={30}
+                  />
                 </View>,
                 <Text key="1" style={styles.text}>{invitee.userProfile.firstName}</Text>,
                 <Entypo key="2" name="dot-single" style={styles.dotIcon} />
@@ -85,7 +69,12 @@ class FeedCardComponent extends React.Component {
     } = this.props;
     return (
       <View style={styles.container}>
-        <Text style={styles.title}>{idea.title}</Text>
+        {
+          idea.title ?
+            <Text style={styles.title}>{idea.title}</Text>
+          :
+            <Text style={styles.greyTitle}>New Card</Text>
+        }
         {
           idea.coverImage && idea.coverImage.length && 
             <View style={styles.thumbnailsView}>

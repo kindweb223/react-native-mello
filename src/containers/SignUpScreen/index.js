@@ -267,6 +267,9 @@ class SignUpScreen extends React.Component {
   pickMediaFromCamera(options) {
     ImagePicker.launchCamera(options, (response)  => {
       if (!response.didCancel) {
+        if (!response.fileName) {
+          response.fileName = response.uri.replace(/^.*[\\\/]/, '')
+        }
         this.setState({ avatarFile: response })
       }
     });

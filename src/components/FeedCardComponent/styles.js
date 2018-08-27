@@ -16,6 +16,11 @@ const styles = StyleSheet.create({
    fontSize: 16,
    fontWeight: 'bold',
   },
+  greyTitle: {
+    fontSize: 16,
+    fontWeight: 'bold',
+    color: COLORS.MEDIUM_GREY,
+  },
   thumbnailsView: {
     width: '100%',
     height: 144,

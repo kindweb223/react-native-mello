@@ -16,9 +16,7 @@ import { Actions } from 'react-native-router-flux'
 import Ionicons from 'react-native-vector-icons/Ionicons'
 import Entypo from 'react-native-vector-icons/Entypo'
 import FontAwesome from 'react-native-vector-icons/FontAwesome'
-import EvilIcons from 'react-native-vector-icons/EvilIcons'
 import _ from 'lodash';
-import UserAvatar from 'react-native-user-avatar'
 import Swipeout from 'react-native-swipeout';
 
 import styles from './styles'
@@ -34,6 +32,7 @@ import {
 } from '../../redux/card/actions'
 import { getDurationFromNow } from '../../service/dateUtils'
 import InputToolbarComponent from '../../components/InputToolbarComponent';
+import UserAvatarComponent from '../../components/UserAvatarComponent';
 
 
 class CommentScreen extends React.Component {
@@ -229,24 +228,6 @@ class CommentScreen extends React.Component {
     this.setState({ comment });
   }
 
-  renderAvatar(user) {
-    const name = `${user.firstName} ${user.lastName}`;
-    if (user.imageUrl || user.firstName || user.lastName) {
-      return (
-        <UserAvatar
-          size="32"
-          name={name}
-          color="#000"
-          textColor="#fff"
-          src={user.imageUrl}
-        />
-      )
-    }
-    return (
-      <EvilIcons name="envelope" size={32} color={COLORS.PURPLE} />
-    )
-  }
-  
   renderItem({item, index}) {
     const swipeoutBtns = [
       {
@@ -272,7 +253,10 @@ class CommentScreen extends React.Component {
         right={swipeoutBtns}
       > 
         <View style={styles.itemContentContainer}>
-          {this.renderAvatar(user)}
+          <UserAvatarComponent
+            user={user}
+            size={32}
+          />
           <View style={styles.textsContainer}>
             <View style={styles.rowContainer}>
               <Text style={styles.textItemName}>{name}</Text>
