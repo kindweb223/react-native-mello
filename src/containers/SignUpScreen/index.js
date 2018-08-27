@@ -23,6 +23,7 @@ import Permissions from 'react-native-permissions'
 import ImagePicker from 'react-native-image-picker'
 import * as mime from 'react-native-mime-types'
 import * as Progress from 'react-native-progress'
+import CheckBox from '../../components/CheckBoxComponent'
 import zxcvbn from 'zxcvbn'
 import _ from 'lodash'
 import KeyboardScrollView from '../../components/KeyboardScrollView'
@@ -74,6 +75,7 @@ class SignUpScreen extends React.Component {
       errorMsg: '',
       passwordScore: 0,
       isPasswordFocus: false,
+      isTNC: false,
       avatarFile: {},
       fieldErrors: [
         {
@@ -251,16 +253,23 @@ class SignUpScreen extends React.Component {
     this.setState({ fieldErrors: errors })
 
     if (errors.length === 0) {
-      const arr = _.split(fullName, ' ')
-      const param = {
-        email: userEmail,
-        password: password,
-        firstName: arr[0],
-        lastName: arr[1]
-      }
+      if (!this.state.isTNC) {
+        Alert.alert(
+          'Warning',
+          'Please accept the terms & conditions'
+        )
+      } else {
+        const arr = _.split(fullName, ' ')
+        const param = {
+          email: userEmail,
+          password: password,
+          firstName: arr[0],
+          lastName: arr[1]
+        }
 
-      this.setState({ loading: true })
-      this.props.userSignUp(param)
+        this.setState({ loading: true })
+        this.props.userSignUp(param)
+      }
     }
   }
 
@@ -439,6 +448,18 @@ class SignUpScreen extends React.Component {
                   )}
                 </View>
               </View>
+              
+              <View style={styles.checkboxView}>
+                <CheckBox
+                  style={{ flex: 1, paddingVertical: 10 }}
+                  onClick={() => {
+                    this.setState({ isTNC: !this.state.isTNC })
+                  }}
+                  isChecked={this.state.isTNC}
+                  rightText="I'll accept the terms & conditions"
+                />
+              </View>
+
 
               <TouchableOpacity onPress={() => this.onSignUp()}>
                 <View style={styles.buttonView}>

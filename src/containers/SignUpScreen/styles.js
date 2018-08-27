@@ -112,5 +112,8 @@ export default {
     color: COLORS.MEDIUM_RED,
     fontWeight: '600',
     fontSize: 12
+  },
+  checkboxView: {
+    width: '100%'
   }
 }
