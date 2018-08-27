@@ -442,7 +442,7 @@ export default function card(state = initialState, action = {}) {
     case types.ADD_LINK_FULFILLED: {
       const { data } = action.result
       let links = links = state.currentCard.links || [];
-      links.unshift(data);
+      links.push(data);
       return {
         ...state,
         loading: types.ADD_LINK_FULFILLED,
