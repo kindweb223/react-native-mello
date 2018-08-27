@@ -23,6 +23,7 @@ import Permissions from 'react-native-permissions'
 import ImagePicker from 'react-native-image-picker'
 import * as mime from 'react-native-mime-types'
 import * as Progress from 'react-native-progress'
+import CheckBox from '../../components/CheckBoxComponent'
 import zxcvbn from 'zxcvbn'
 import _ from 'lodash'
 import KeyboardScrollView from '../../components/KeyboardScrollView'
@@ -74,6 +75,7 @@ class SignUpScreen extends React.Component {
       errorMsg: '',
       passwordScore: 0,
       isPasswordFocus: false,
+      isTNC: false,
       avatarFile: {},
       fieldErrors: [
         {
@@ -256,7 +258,8 @@ class SignUpScreen extends React.Component {
         email: userEmail,
         password: password,
         firstName: arr[0],
-        lastName: arr[1]
+        lastName: arr[1],
+        tandcAccepted: this.state.isTNC
       }
 
       this.setState({ loading: true })
@@ -438,6 +441,21 @@ class SignUpScreen extends React.Component {
                     <Text style={styles.errorText}>{resolveError(passwordError[0].code, passwordError[0].message)}</Text>
                   )}
                 </View>
+              </View>
+              
+              <View style={styles.checkboxView}>
+                <CheckBox
+                  style={{ flex: 1, paddingVertical: 10 }}
+                  onClick={() => {
+                    this.setState({ isTNC: !this.state.isTNC })
+                  }}
+                  isChecked={this.state.isTNC}
+                  rightText="I'll accept the "
+                >
+                  <TouchableOpacity onPress={() => Actions.TermsAndConditionsScreen()}>
+                    <Text style={styles.termsText}>terms & conditions</Text>
+                  </TouchableOpacity>
+                </CheckBox>
               </View>
 
               <TouchableOpacity onPress={() => this.onSignUp()}>

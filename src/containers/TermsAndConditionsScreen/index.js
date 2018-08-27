@@ -36,11 +36,17 @@ class TermsAndConditionsScreen extends React.Component {
   constructor(props) {
     super(props)
     this.state = {
+      isScrollTop: true
     }
   }
 
-  onContinue = () => {
-
+  onScrollDown = () => {
+    this.setState(prevState => ({ isScrollTop: !prevState.isScrollTop }))
+    if (this.state.isScrollTop) {
+      this.scrollView.scrollToEnd()
+    } else {
+      this.scrollView.scrollTo({ x: 0, y: 0 })
+    }
   }
 
   render () {
@@ -54,22 +60,81 @@ class TermsAndConditionsScreen extends React.Component {
           <LoadingScreen />
         )}
 
-        <View style={styles.modalContainer}>
-          <ScrollView style={{ flex: 1 }}>
-            <View style={styles.innerContainer}>
-              <TouchableOpacity onPress={() => this.onContinue()} style={styles.buttonView}>
-                <Text style={styles.btnContinue}>Continue</Text>
-              </TouchableOpacity>
-            </View>
-          </ScrollView>
-        </View>
-
         <View style={styles.headerView}>
           <TouchableOpacity onPress={() => Actions.pop()} style={styles.btnBack}>
             <Feather name="arrow-left" size={25} color={'#fff'} />
           </TouchableOpacity>
           <Text style={styles.headerText}>Terms & Conditions</Text>
           <View />
+        </View>
+
+        <View style={styles.modalContainer}>
+          <ScrollView
+            ref={c => this.scrollView = c}
+            style={{ flex: 1 }}
+          >
+            <View style={styles.innerContainer}>
+              <Text style={styles.btnContinue}>TOP</Text>
+              <Text style={styles.btnContinue}>Continue</Text>
+              <Text style={styles.btnContinue}>Continue</Text>
+              <Text style={styles.btnContinue}>Continue</Text>
+              <Text style={styles.btnContinue}>Continue</Text>
+              <Text style={styles.btnContinue}>Continue</Text>
+              <Text style={styles.btnContinue}>Continue</Text>
+              <Text style={styles.btnContinue}>Continue</Text>
+              <Text style={styles.btnContinue}>Continue</Text>
+              <Text style={styles.btnContinue}>Continue</Text>
+              <Text style={styles.btnContinue}>Continue</Text>
+              <Text style={styles.btnContinue}>Continue</Text>
+              <Text style={styles.btnContinue}>Continue</Text>
+              <Text style={styles.btnContinue}>Continue</Text>
+              <Text style={styles.btnContinue}>Continue</Text>
+              <Text style={styles.btnContinue}>Continue</Text>
+              <Text style={styles.btnContinue}>Continue</Text>
+              <Text style={styles.btnContinue}>Continue</Text>
+              <Text style={styles.btnContinue}>Continue</Text>
+              <Text style={styles.btnContinue}>Continue</Text>
+              <Text style={styles.btnContinue}>Continue</Text>
+              <Text style={styles.btnContinue}>Continue</Text>
+              <Text style={styles.btnContinue}>Continue</Text>
+              <Text style={styles.btnContinue}>Continue</Text>
+              <Text style={styles.btnContinue}>Continue</Text>
+              <Text style={styles.btnContinue}>Continue</Text>
+              <Text style={styles.btnContinue}>Continue</Text>
+              <Text style={styles.btnContinue}>Continue</Text>
+              <Text style={styles.btnContinue}>Continue</Text>
+              <Text style={styles.btnContinue}>Continue</Text>
+              <Text style={styles.btnContinue}>Continue</Text>
+              <Text style={styles.btnContinue}>Continue</Text>
+              <Text style={styles.btnContinue}>Continue</Text>
+              <Text style={styles.btnContinue}>Continue</Text>
+              <Text style={styles.btnContinue}>Continue</Text>
+              <Text style={styles.btnContinue}>Continue</Text>
+              <Text style={styles.btnContinue}>Continue</Text>
+              <Text style={styles.btnContinue}>Continue</Text>
+              <Text style={styles.btnContinue}>Continue</Text>
+              <Text style={styles.btnContinue}>Continue</Text>
+              <Text style={styles.btnContinue}>Continue</Text>
+              <Text style={styles.btnContinue}>Continue</Text>
+              <Text style={styles.btnContinue}>Continue</Text>
+              <Text style={styles.btnContinue}>Continue</Text>
+              <Text style={styles.btnContinue}>Bottom</Text>
+            </View>
+          </ScrollView>
+
+          <View style={styles.arrowView}>
+            <TouchableOpacity
+              activeOpacity={0.9}
+              onPress={() => this.onScrollDown()}
+            >
+              <View style={styles.arrow}>
+                {this.state.isScrollTop
+                  ? <Ionicons name="ios-arrow-down" size={30} color="#fff" style={{ marginTop: 5 }} />
+                  : <Ionicons name="ios-arrow-up" size={30} color="#fff" />
+                }
+              </View>
+            </TouchableOpacity>
+          </View>
         </View>
       </View>
     )
