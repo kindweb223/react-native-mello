@@ -87,7 +87,7 @@ export default class Root extends React.Component {
             <Scene key="LoginScreen" component={ LoginScreen } hideNavBar panHandlers={null} />
             <Scene key="SignUpScreen" component={ SignUpScreen } hideNavBar panHandlers={null} />
             <Scene key="SignUpConfirmScreen" component={ SignUpConfirmScreen } hideNavBar panHandlers={null} />
-            <Scene key="TermsAndConditionsScreen" initial component={ TermsAndConditionsScreen } hideNavBar panHandlers={null} />
+            <Scene key="TermsAndConditionsScreen" component={ TermsAndConditionsScreen } hideNavBar panHandlers={null} />
             <Scene key="HomeScreen" component={ HomeScreen } hideNavBar panHandlers={null} />
             <Scene key="FeedDetailScreen" component={ FeedDetailScreen } hideNavBar panHandlers={null} />
             <Scene key="DocumentSliderScreen" component={ DocumentSliderScreen } hideNavBar />
