@@ -96,7 +96,7 @@ export default class Root extends React.Component {
           </Scene>
           <Stack key="ProfileScreen" hideNavBar>
             <Stack key="ProfileScreen" hideNavBar>
-              <Scene key="ProfileScreen" component={ ProfileScreen } hideNavBar />
+              <Scene key="ProfileScreen" component={ ProfileScreen } hideNavBar panHandlers={null} />
               <Scene key="ProfileUpdateScreen" component={ ProfileUpdateScreen } hideNavBar panHandlers={null} />
             </Stack>
           </Stack>

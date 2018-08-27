@@ -483,9 +483,8 @@ SignUpScreen.propTypes = {
   userEmail: PropTypes.string
 }
 
-const mapStateToProps = ({ user, card }) => ({
-  user,
-  card
+const mapStateToProps = ({ user }) => ({
+  user
 })
 
 const mapDispatchToProps = dispatch => ({

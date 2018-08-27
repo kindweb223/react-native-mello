@@ -10,8 +10,11 @@ import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
 import { Actions } from 'react-native-router-flux'
 import * as mime from 'react-native-mime-types'
-import ImageCrop from '../../components/ImageCrop'
 import _ from 'lodash'
+import ImageCrop from '../../components/ImageCrop'
+import { getImageUrl, updateProfile } from '../../redux/user/actions'
+import { uploadFileToS3 } from '../../redux/card/actions'
+import LoadingScreen from '../LoadingScreen'
 import COLORS from '../../service/colors'
 import styles from './styles'
 const CLOSE_ICON = require('../../../assets/images/Close/Blue.png')
@@ -20,17 +23,62 @@ class CropImageScreen extends React.Component {
   constructor(props) {
     super(props)
     this.state = {
-      avatarFile: props.avatarFile
+      loading: false,
+      avatarFile: props.avatarFile,
+      cropUrl: props.avatarFile
     }
   }
 
-  onSave = () => {
+  componentDidUpdate(prevProps, prevState) {
+    if (prevProps.user.loading === 'GET_USER_IMAGE_URL_PENDING' && this.props.user.loading === 'GET_USER_IMAGE_URL_FULFILLED') {
+      const { userImageUrlData } = this.props.user
+      console.log('GET_USER_IMAGE_URL_FULFILLED: ', userImageUrlData)
+      this.uploadImage(userImageUrlData)
+    }
 
+    if (prevProps.user.loading === 'UPLOAD_FILE_PENDING' && this.props.user.loading === 'UPLOAD_FILE_FULFILLED') {
+      const { userInfo, userImageUrlData } = this.props.user
+      const param = {
+        imageUrl: userImageUrlData.objectKey
+      }
+      this.props.updateProfile(userInfo.id, param)
+    }
+
+    if (prevProps.user.loading === 'UPDATE_PROFILE_PENDING' && this.props.user.loading === 'UPDATE_PROFILE_FULFILLED') {
+      this.setState({ loading: false }, () => {
+        this.props.onClose()
+      })
+    }
+
+    if (this.props.user.loading === 'GET_USER_IMAGE_URL_REJECTED' ||
+        this.props.user.loading === 'UPLOAD_FILE_REJECTED' ||
+        this.props.user.loading === 'UPDATE_PROFILE_REJECTED') {
+      this.setState({ loading: false })
+    }
+  }
+
+  uploadImage = (userImageUrlData) => {
+    const { avatarFile, cropUrl } = this.state
+
+    const baseUrl = userImageUrlData.uploadUrl
+    const fileUrl = cropUrl.uri
+    const fileName = cropUrl.name
+    const fileType = mime.lookup(fileUrl);
+
+    this.props.uploadFileToS3(baseUrl, fileUrl, fileName, fileType);
+  }
+
+  onSave = () => {
+    const { userInfo } = this.props.user
+    this.setState({ loading: true })
+    this.imageCrop.crop().then((uri) => {
+      this.setState({ cropUrl: uri })
+      this.props.getImageUrl(userInfo.id)
+    })
   }
 
   render () {
     const { avatarFile } = this.state
-    console.log('avatarFile: ', avatarFile.uri)
 
     return (
       <View style={styles.container}>
@@ -45,15 +93,10 @@ class CropImageScreen extends React.Component {
             </View>
 
             <View style={styles.imageView}>
-              <Image
-                style={styles.image}
-                source={{ uri: avatarFile.uri }}
-                resizeMode="contain"
-              />
-              {/* <ImageCrop
+              <ImageCrop
                 ref={c => this.imageCrop = c}
                 source={{ uri: avatarFile.uri }}
-              /> */}
+              />
             </View>
 
             <View style={styles.footerView}>
@@ -64,6 +107,11 @@ class CropImageScreen extends React.Component {
               </TouchableOpacity>
             </View>
           </View>
+
+          {this.state.loading && (
+            <LoadingScreen />
+          )}
+
         </SafeAreaView>
       </View>
     )
@@ -78,4 +126,18 @@ CropImageScreen.propTypes = {
   onClose: PropTypes.func
 }
 
-export default CropImageScreen
+const mapStateToProps = ({ user }) => ({
+  user
+})
+
+const mapDispatchToProps = dispatch => ({
+  getImageUrl: (data) => dispatch(getImageUrl(data)),
+  updateProfile: (userId, data) => dispatch(updateProfile(userId, data)),
+  uploadFileToS3: (signedUrl, file, fileName, mimeType) => dispatch(uploadFileToS3(signedUrl, file, fileName, mimeType)),
+})
+
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(CropImageScreen)

@@ -8,109 +8,44 @@ import {
 } from 'react-native';
 import PropTypes from 'prop-types';
 import ImageResizer from 'react-native-image-resizer';
-
-const styles = StyleSheet.create({
-	container: {
-		flex: 1,
-		position: 'relative',
-		overflow: 'hidden',
-		width: '100%',
-		height: '100%'
-	},
-	imageWrapper: {
-		overflow: 'hidden',
-	},
-	image: {
-		position: 'absolute',
-	},
-	cropContainer: {
-		position: 'absolute',
-		overflow: 'hidden',
-	},
-});
+import styles from './styles'
+import CONSTANTS from '../../service/constants'
 
 class ImageCrop extends Component {
 	static propTypes = {
-		source: PropTypes.any.isRequired,
-		containerPaddingLeft: PropTypes.number,
-		containerPaddingRight: PropTypes.number,
-		containerPaddingTop: PropTypes.number,
-		containerPaddingBottom: PropTypes.number,
-		cropWidth: PropTypes.number,
-		cropHeight: PropTypes.number,
-		cropQuality: PropTypes.number,
-	}
-
-	static defaultProps = {
-		containerPaddingTop: 0,
-		containerPaddingLeft: 0,
-		containerPaddingRight: 0,
-		containerPaddingBottom: 0,
-		cropQuality: 80,
+		source: PropTypes.any.isRequired
 	}
 
 	constructor(props) {
 		super(props);
-
-		this.previousImageTop = 0;
-		this.previousImageLeft = 0;
 
 		this.state = {
 			originalImageWidth: null,
 			originalImageHeight: null,
 			imageWidth: null,
 			imageHeight: null,
-			imageTop: 0,
-			imageLeft: 0,
-			imageSizeRatio: 1,
 			containerWidth: null,
 			containerHeight: null,
 			containerRatio: null,
-			cropPaddingLeft: 0,
-			cropPaddingRight: 0,
-			cropPaddingTop: 0,
-			cropPaddingBottom: 0,
+			offsetX: 0,
+			offsetY: 0,
+			cropWidth: 200,
+			cropHeight: 200,
+			cropQuality: 100
 		};
 	}
 
 	componentWillMount() {
 		this.panResponder = this.getPanResponder();
-	}
 
-	componentDidMount() {
 		Image.getSize(this.props.source.uri, (originalImageWidth, originalImageHeight) => {
 			this.setState({ originalImageWidth, originalImageHeight });
+			this.setState({
+				containerWidth: CONSTANTS.SCREEN_WIDTH,
+				containerHeight: CONSTANTS.SCREEN_WIDTH / originalImageWidth * originalImageHeight,
+				containerRatio: originalImageWidth / CONSTANTS.SCREEN_WIDTH
+			})
 		});
-	}
-
-	componentDidUpdate() {
-		if (this.state.originalImageWidth && this.state.containerWidth && !this.state.imageWidth) {
-			this.setCropArea();
-		}
-	}
-
-	getTotalPaddingTop() {
-		return this.props.containerPaddingTop + this.state.cropPaddingTop;
-	}
-
-	getTotalPaddingBottom() {
-		return this.props.containerPaddingBottom + this.state.cropPaddingBottom;
-	}
-
-	getTotalPaddingTopBottom() {
-		return this.getTotalPaddingTop() + this.getTotalPaddingBottom();
-	}
-
-	getTotalPaddingLeft() {
-		return this.props.containerPaddingLeft + this.state.cropPaddingLeft;
-	}
-
-	getTotalPaddingRight() {
-		return this.props.containerPaddingRight + this.state.cropPaddingRight;
-	}
-
-	getTotalPaddingLeftRight() {
-		return this.getTotalPaddingLeft() + this.getTotalPaddingRight();
 	}
 
 	getPanResponder() {
@@ -118,193 +53,47 @@ class ImageCrop extends Component {
 			onStartShouldSetPanResponder: () => true,
 			onMoveShouldSetPanResponder: () => true,
 			onPanResponderMove: (event, { dx, dy }) => {
-				let imageTop = this.previousImageTop + dy;
-				let imageLeft = this.previousImageLeft + dx;
-				const limitLeft = (
-					this.state.containerWidth -
-					this.state.imageWidth -
-					this.getTotalPaddingRight()
-				);
-				const limitTop = (
-					this.state.containerHeight -
-					this.state.imageHeight -
-					this.getTotalPaddingBottom()
-				);
-				const paddingLeft = this.getTotalPaddingLeft();
-				const paddingTop = this.getTotalPaddingTop();
+				let { containerWidth, containerHeight, offsetX, offsetY, cropWidth, cropHeight } = this.state
 
-				if (imageLeft > paddingLeft) {
-					imageLeft = paddingLeft;
-				} else if (imageLeft < limitLeft) {
-					imageLeft = limitLeft;
+				offsetX = dx
+				offsetY = dy
+				if (Math.abs(offsetX) < containerWidth / 2 - cropWidth / 2) {
+					this.setState({ offsetX })
 				}
-
-				if (imageTop > paddingTop) {
-					imageTop = paddingTop;
-				} else if (imageTop < limitTop) {
-					imageTop = limitTop;
+				if (Math.abs(offsetY) < containerHeight / 2 - cropWidth / 2) {
+					this.setState({ offsetY })
 				}
-
-				this.setState({
-					imageTop,
-					imageLeft,
-				});
 			},
 			onPanResponderEnd: (event, { dx, dy }) => {
-				const limitLeft = (
-					(
-						this.state.imageWidth -
-						this.state.containerWidth
-					) +
-					this.getTotalPaddingLeftRight()
-				);
-				const limitTop = (
-					(
-						this.state.imageHeight -
-						this.state.containerHeight
-					) +
-					this.getTotalPaddingTopBottom()
-				);
-				const paddingLeft = this.getTotalPaddingLeft();
-				const paddingTop = this.getTotalPaddingTop();
-
-				this.previousImageLeft += dx;
-				this.previousImageTop += dy;
-
-				if (this.previousImageLeft > paddingLeft) {
-					this.previousImageLeft = paddingLeft;
-				} else if (this.previousImageLeft < -limitLeft) {
-					this.previousImageLeft = -limitLeft;
-				}
-
-				if (this.previousImageTop > paddingTop) {
-					this.previousImageTop = paddingTop;
-				} else if (this.previousImageTop < -limitTop) {
-					this.previousImageTop = -limitTop;
-				}
 			},
 		});
-	}
-
-	/**
-	 * Sets the image size and position to create the crop area
-	 */
-	setCropArea() {
-		let imageWidth = 0;
-		let imageHeight = 0;
-		let imageLeft = 0;
-		let imageTop = 0;
-		let cropPaddingLeft = 0;
-		let cropPaddingRight = 0;
-		let cropPaddingTop = 0;
-		let cropPaddingBottom = 0;
-		let cropRatio = 1;
-		const imageRatio = this.state.originalImageHeight / this.state.originalImageWidth;
-		const containerRatio = this.state.containerHeight / this.state.containerWidth;
-
-		if (this.props.cropWidth && this.props.cropHeight) {
-			cropRatio = this.props.cropHeight / this.props.cropWidth;
-
-			if (containerRatio < cropRatio) {
-				cropPaddingLeft = cropPaddingRight = (
-					this.state.containerWidth - (
-						(
-							this.state.containerHeight -
-							this.props.containerPaddingTop -
-							this.props.containerPaddingBottom
-						) / cropRatio
-					) -
-					this.props.containerPaddingLeft -
-					this.props.containerPaddingRight
-				) / 2;
-			} else {
-				cropPaddingTop = cropPaddingBottom = (
-					this.state.containerHeight - (
-						(
-							this.state.containerWidth -
-							this.props.containerPaddingLeft -
-							this.props.containerPaddingRight
-						) * cropRatio
-					) -
-					this.props.containerPaddingTop -
-					this.props.containerPaddingBottom
-				) / 2;
-			}
-		}
-
-		if (imageRatio < cropRatio) {
-			imageHeight = this.state.containerHeight - (
-				this.props.containerPaddingTop +
-				this.props.containerPaddingBottom +
-				cropPaddingTop +
-				cropPaddingBottom
-			);
-			imageWidth = (imageHeight / this.state.originalImageHeight) * this.state.originalImageWidth;
-			imageLeft = (this.state.containerWidth / 2) - (imageWidth / 2);
-			imageTop = this.props.containerPaddingTop + cropPaddingTop;
-		} else {
-			imageWidth = this.state.containerWidth - (
-				this.props.containerPaddingLeft +
-				this.props.containerPaddingRight +
-				cropPaddingLeft +
-				cropPaddingRight
-			);
-			imageHeight = (imageWidth / this.state.originalImageWidth) * this.state.originalImageHeight;
-			imageLeft = this.props.containerPaddingLeft + cropPaddingLeft;
-			imageTop = (this.state.containerHeight / 2) - (imageHeight / 2);
-		}
-
-		const imageSizeRatio = imageHeight / this.state.originalImageHeight;
-
-		this.setState({
-			imageWidth,
-			imageHeight,
-			imageLeft,
-			imageTop,
-			imageSizeRatio,
-			cropPaddingLeft,
-			cropPaddingRight,
-			cropPaddingTop,
-			cropPaddingBottom,
-		});
-
-		this.previousImageLeft = imageLeft;
-		this.previousImageTop = imageTop;
 	}
 
 	crop() {
+		const { containerWidth, containerHeight, containerRatio, offsetX, offsetY, cropWidth, cropHeight } = this.state
 		const cropData = {
 			offset: {
-				x: -(
-					this.state.imageLeft - this.getTotalPaddingLeft()
-				) / this.state.imageSizeRatio,
-				y: -(
-					this.state.imageTop - this.getTotalPaddingTop()
-				) / this.state.imageSizeRatio,
+				y: containerRatio * (containerHeight / 2 - cropWidth / 2 + offsetY),
+				x: containerRatio * (containerWidth / 2 - cropWidth / 2 + offsetX),
 			},
 			size: {
-				width: (
-					this.state.containerWidth - this.getTotalPaddingLeftRight()
-				) / this.state.imageSizeRatio,
-				height: (
-					this.state.containerHeight - this.getTotalPaddingTopBottom()
-				) / this.state.imageSizeRatio,
-			},
+				width: cropWidth * containerRatio,
+				height: cropHeight * containerRatio
+			}
 		};
 
 		return new Promise((resolve, reject) => {
 			ImageEditor.cropImage(
 				this.props.source.uri,
 				cropData,
-				(croppedUri) => {
-					const { cropWidth, cropHeight } = this.props;
+				(croppedUrl) => {
 					this.resize(
-						croppedUri,
-						(cropWidth || cropData.size.width),
-						(cropHeight || cropData.size.height)
-					).then((resizedUri) =>
-						resolve(resizedUri)
-					);
+						croppedUrl,
+						cropData.size.width,
+						cropData.size.height
+					).then((resizedUrl) => {
+						return resolve(resizedUrl)
+					});
 				},
 				(failure) => reject(failure)
 			);
@@ -312,7 +101,7 @@ class ImageCrop extends Component {
 	}
 
 	resize(uri, width, height) {
-		let { cropQuality } = this.props;
+		let { cropQuality } = this.state;
 		if (!Number.isInteger(cropQuality) || cropQuality < 0 || cropQuality > 100) {
 			cropQuality = ImageCrop.defaultProps.cropQuality;
 		}
@@ -320,102 +109,79 @@ class ImageCrop extends Component {
 	}
 
 	renderContainerImage() {
-		if (this.state.imageWidth) {
-			return (
-				<View
-					style={[styles.imageWrapper, {
-						width: this.state.containerWidth,
-						height: this.state.containerHeight,
+		return (
+			<View
+				style={[styles.imageWrapper, {
+					width: this.state.containerWidth,
+					height: this.state.containerHeight,
+					top: 0,
+					left: 0,
+					borderRadius: 0,
+					backgroundColor: '#000'
+				}]}
+			>
+				<Image
+					resizeMode="cover"
+					source={this.props.source}
+					style={[styles.image, {
+						width: '100%',
+						height: '100%',
 						top: 0,
 						left: 0,
-						borderRadius: 0,
-						backgroundColor: '#000'
+						opacity: 0.2
 					}]}
-				>
-					<Image
-						resizeMode="cover"
-						source={this.props.source}
-						style={[styles.image, {
-							width: this.state.imageWidth,
-							height: this.state.imageHeight,
-							top: this.state.imageTop,
-							left: this.state.imageLeft,
-							opacity: 0.2
-						}]}
-					/>
-				</View>
-			);
-		}
-		return null;
+				/>
+			</View>
+		)
 	}
 
-	renderImage(isLower = false) {
-		if (this.state.imageWidth) {
-			return (
-				<View
-					style={[styles.imageWrapper, {
-						width: (isLower ?
-							this.state.containerWidth :
-							200
-						),
-						height: (isLower ?
-							this.state.containerHeight :
-							200
-						),
-						top: (isLower ? 0 : this.state.cropPaddingTop + this.state.imageHeight / 2 - 100),
-						left: (isLower ? 0 : this.state.cropPaddingLeft + 100),
-						borderRadius: isLower ? 0 : 100,
-						backgroundColor: '#000'
+	renderImage() {
+		const { containerWidth, containerHeight, offsetX, offsetY, cropWidth, cropHeight } = this.state
+		return (
+			<View
+				style={{
+					width: cropWidth,
+					height: cropHeight,
+					top: containerHeight / 2 - cropWidth / 2 + offsetY,
+					left: containerWidth / 2 - cropWidth / 2 + offsetX,
+					borderRadius: cropWidth / 2,
+					overflow: 'hidden'
+				}}
+			>
+				<Image
+					resizeMode="cover"
+					source={this.props.source}
+					style={[styles.image, {
+						width: containerWidth,
+						height: containerHeight,
+						top: -(containerHeight / 2 - cropWidth / 2 + offsetY),
+						left: -(containerWidth / 2 - cropWidth / 2 + offsetX),
+						opacity: 1
 					}]}
-				>
-					<Image
-						resizeMode="cover"
-						source={this.props.source}
-						style={[styles.image, {
-							width: this.state.imageWidth,
-							height: this.state.imageHeight,
-							top: this.state.imageTop + (isLower ? 0 : -this.getTotalPaddingTop() - this.state.imageHeight / 2 + 100),
-							left: this.state.imageLeft + (isLower ? 0 : -this.getTotalPaddingLeft() - 100),
-							opacity: (isLower ? 0.2 : 1)
-						}]}
-					/>
-				</View>
-			);
-		}
-		return null;
+				/>
+			</View>
+		)
 	}
 
 	render() {
+		const { continerWidth, containerHeight, originalImageHeight, originalImageWidth } = this.state
 		return (
 			<View
-				style={styles.container}
-				onLayout={(event) => {
-					const { width, height } = event.nativeEvent.layout;
-					this.setState({
-						containerWidth: width,
-						containerHeight: height,
-						containerRatio: height / width,
-					});
-				}}
+				style={[styles.container, {
+					width: continerWidth,
+					height: containerHeight
+				}]}
+				{...this.panResponder.panHandlers}
 			>
-				{ this.renderContainerImage() }
+				{ this.renderContainerImage(true) }
 				<View
-					{...this.panResponder.panHandlers}
 					style={[styles.cropContainer, {
-						top: this.props.containerPaddingTop,
-						bottom: this.props.containerPaddingBottom,
-						left: this.props.containerPaddingLeft,
-						right: this.props.containerPaddingRight,
-						width: (
-							this.state.containerWidth -
-							this.props.containerPaddingLeft -
-							this.props.containerPaddingRight
-						),
-						height: (
-							this.state.containerHeight -
-							this.props.containerPaddingTop -
-							this.props.containerPaddingBottom
-						),
+						top: -this.state.containerHeight,
+						bottom: 0,
+						left: 0,
+						right: 0,
+						width: this.state.containerWidth,
+						height: this.state.containerHeight,
 					}]}
 				>
 					{ this.renderImage() }
