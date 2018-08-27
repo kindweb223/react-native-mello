@@ -26,7 +26,7 @@ export default {
     justifyContent: 'space-between',
     borderBottomWidth: 1,
     borderColor: COLORS.LIGHT_GREY_LINE,
-    marginBottom: 20,
+    marginBottom: 1,
   },
   closeButton: {
     width: 50,
@@ -49,10 +49,11 @@ export default {
   },
   footerView: {
     width: '100%',
-    marginBottom: 30,
+    marginBottom: 20,
     justifyContent: 'center',
     alignItems: 'center',
-    padding: CONSTANTS.PADDING
+    padding: CONSTANTS.PADDING,
+    backgroudnColor: '#fff'
   },
   saveBtn: {
     height: 60,
