@@ -11,9 +11,13 @@ import { Actions } from 'react-native-router-flux'
 import LinearGradient from 'react-native-linear-gradient'
 import Ionicons from 'react-native-vector-icons/Ionicons'
 import Feather from 'react-native-vector-icons/Feather'
+import { MarkdownView } from 'react-native-markdown-view'
+import RNFetchBlob from 'rn-fetch-blob'
+import LoadingScreen from '../LoadingScreen'
 import COLORS from '../../service/colors'
 import CONSTANTS from '../../service/constants'
 import styles from './styles'
+import markdownStyles from './markdownStyles'
 
 const Gradient = () => {
   return(
@@ -36,8 +40,29 @@ class TermsAndConditionsScreen extends React.Component {
   constructor(props) {
     super(props)
     this.state = {
-      isScrollTop: true
+      isScrollTop: true,
+      loading: false,
+      markdownText: ''
     }
+  }
+
+  async componentWillMount() {
+    this.setState({ loading: true })
+    await RNFetchBlob.fetch('GET', 'https://d5qq4b94z26us.cloudfront.net/feedo/legal/TandC.md')
+    .then((res) => {
+      this.setState({ loading: false })
+      console.log('LLL: ', res.data)
+      let status = res.info().status
+      if (status === 200) {
+        let base64Str = res.base64()
+        let text = res.text()
+        this.setState({ markdownText: text })
+      }
+    })
+    .catch((errorMessage, statusCode) => {
+      this.setState({ loading: false })
+      console.log('errorMessage: ', errorMessage)
+    })
   }
 
   onScrollDown = () => {
@@ -49,8 +74,17 @@ class TermsAndConditionsScreen extends React.Component {
     }
   }
 
+  renderListBullet = (ordered, index) => {
+    console.log('AA: ', ordered)
+    console.log('BB: ', index)
+    return (
+      <View style={{ width: 20, height: 20, backgroundColor: '#f00' }} />
+    )
+  }
+
   render () {
     const { userEmail } = this.props
+    console.log('PPP: ', this.state.markdownText)
 
     return (
       <View style={styles.container}>
@@ -74,51 +108,11 @@ class TermsAndConditionsScreen extends React.Component {
             style={{ flex: 1 }}
           >
             <View style={styles.innerContainer}>
-              <Text style={styles.btnContinue}>TOP</Text>
-              <Text style={styles.btnContinue}>Continue</Text>
-              <Text style={styles.btnContinue}>Continue</Text>
-              <Text style={styles.btnContinue}>Continue</Text>
-              <Text style={styles.btnContinue}>Continue</Text>
-              <Text style={styles.btnContinue}>Continue</Text>
-              <Text style={styles.btnContinue}>Continue</Text>
-              <Text style={styles.btnContinue}>Continue</Text>
-              <Text style={styles.btnContinue}>Continue</Text>
-              <Text style={styles.btnContinue}>Continue</Text>
-              <Text style={styles.btnContinue}>Continue</Text>
-              <Text style={styles.btnContinue}>Continue</Text>
-              <Text style={styles.btnContinue}>Continue</Text>
-              <Text style={styles.btnContinue}>Continue</Text>
-              <Text style={styles.btnContinue}>Continue</Text>
-              <Text style={styles.btnContinue}>Continue</Text>
-              <Text style={styles.btnContinue}>Continue</Text>
-              <Text style={styles.btnContinue}>Continue</Text>
-              <Text style={styles.btnContinue}>Continue</Text>
-              <Text style={styles.btnContinue}>Continue</Text>
-              <Text style={styles.btnContinue}>Continue</Text>
-              <Text style={styles.btnContinue}>Continue</Text>
-              <Text style={styles.btnContinue}>Continue</Text>
-              <Text style={styles.btnContinue}>Continue</Text>
-              <Text style={styles.btnContinue}>Continue</Text>
-              <Text style={styles.btnContinue}>Continue</Text>
-              <Text style={styles.btnContinue}>Continue</Text>
-              <Text style={styles.btnContinue}>Continue</Text>
-              <Text style={styles.btnContinue}>Continue</Text>
-              <Text style={styles.btnContinue}>Continue</Text>
-              <Text style={styles.btnContinue}>Continue</Text>
-              <Text style={styles.btnContinue}>Continue</Text>
-              <Text style={styles.btnContinue}>Continue</Text>
-              <Text style={styles.btnContinue}>Continue</Text>
-              <Text style={styles.btnContinue}>Continue</Text>
-              <Text style={styles.btnContinue}>Continue</Text>
-              <Text style={styles.btnContinue}>Continue</Text>
-              <Text style={styles.btnContinue}>Continue</Text>
-              <Text style={styles.btnContinue}>Continue</Text>
-              <Text style={styles.btnContinue}>Continue</Text>
-              <Text style={styles.btnContinue}>Continue</Text>
-              <Text style={styles.btnContinue}>Continue</Text>
-              <Text style={styles.btnContinue}>Continue</Text>
-              <Text style={styles.btnContinue}>Continue</Text>
-              <Text style={styles.btnContinue}>Bottom</Text>
+              <MarkdownView
+                styles={markdownStyles}
+              >
+                {this.state.markdownText}
+              </MarkdownView>
             </View>
           </ScrollView>
 
@@ -135,17 +129,10 @@ class TermsAndConditionsScreen extends React.Component {
               </View>
             </TouchableOpacity>
           </View>
-        </View>
+        </View> 
       </View>
     )
   }
 }
 
-const mapDispatchToProps = dispatch => ({
-  onContinue: (data) => dispatch(onContinue(data)),
-})
-
-export default connect(
-  null,
-  mapDispatchToProps
-)(TermsAndConditionsScreen)
+export default TermsAndConditionsScreen
