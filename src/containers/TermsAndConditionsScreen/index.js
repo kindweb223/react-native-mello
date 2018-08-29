@@ -51,10 +51,8 @@ class TermsAndConditionsScreen extends React.Component {
     await RNFetchBlob.fetch('GET', 'https://d5qq4b94z26us.cloudfront.net/feedo/legal/TandC.md')
     .then((res) => {
       this.setState({ loading: false })
-      console.log('LLL: ', res.data)
       let status = res.info().status
       if (status === 200) {
-        let base64Str = res.base64()
         let text = res.text()
         this.setState({ markdownText: text })
       }
@@ -74,17 +72,8 @@ class TermsAndConditionsScreen extends React.Component {
     }
   }
 
-  renderListBullet = (ordered, index) => {
-    console.log('AA: ', ordered)
-    console.log('BB: ', index)
-    return (
-      <View style={{ width: 20, height: 20, backgroundColor: '#f00' }} />
-    )
-  }
-
   render () {
     const { userEmail } = this.props
-    console.log('PPP: ', this.state.markdownText)
 
     return (
       <View style={styles.container}>
