@@ -18,7 +18,7 @@ import zxcvbn from 'zxcvbn'
 import LoadingScreen from '../LoadingScreen'
 import KeyboardScrollView from '../../components/KeyboardScrollView'
 import TextInputComponent from '../../components/TextInputComponent'
-import { updateProfile, updatePassword } from '../../redux/user/actions'
+import { updateProfile, updatePassword, sendResetPasswordEmail } from '../../redux/user/actions'
 import CONSTANTS from '../../service/constants'
 import COLORS from '../../service/colors'
 import resolveError from '../../service/resolveError'
@@ -67,6 +67,12 @@ class ProfileUpdateScreen extends React.Component {
     if (prevProps.user.loading === 'UPDATE_PASSWORD_PENDING' && user.loading === 'UPDATE_PASSWORD_REJECTED') {
       this.setState({ loading: false }, () => {
         Alert.alert('Error', resolveError(user.error.code, user.error.message));
+      })
+    }
+
+    if (prevProps.user.loading === 'SEND_RESET_PASSWORD_EMAIL_PENDING' && user.loading === 'SEND_RESET_PASSWORD_EMAIL_FULFILLED') {
+      this.setState({ loading: false }, () => {
+        Actions.ResetPasswordConfirmScreen({ userEmail: this.state.userEmail })
       })
     }
   }
@@ -214,6 +220,14 @@ class ProfileUpdateScreen extends React.Component {
     }
   }
 
+  onForgotPassword = () => {
+    this.setState({ loading: true })
+    const param = {
+      email: this.state.userEmail
+    }
+    this.props.sendResetPasswordEmail(param)
+  }
+
   render () {
     const { page } = this.props
 
@@ -326,7 +340,7 @@ class ProfileUpdateScreen extends React.Component {
               handleChange={text => this.changeOldPassword(text)}
               onSubmitEditing={() => this.onNextOldPassword()}
             >
-              <TouchableOpacity onPress={() => {}} activeOpacity={0.8}>
+              <TouchableOpacity onPress={() => this.onForgotPassword()} activeOpacity={0.8}>
                 <View style={styles.forgotView}>
                   <Text style={styles.forgotText}>Forgot?</Text>
                 </View>
@@ -409,7 +423,8 @@ const mapStateToProps = ({ user }) => ({
 
 const mapDispatchToProps = dispatch => ({
   updateProfile: (userId, data) => dispatch(updateProfile(userId, data)),
-  updatePassword: (userId, data) => dispatch(updatePassword(userId, data))
+  updatePassword: (userId, data) => dispatch(updatePassword(userId, data)),
+  sendResetPasswordEmail: (data) => dispatch(sendResetPasswordEmail(data))
 })
 
 

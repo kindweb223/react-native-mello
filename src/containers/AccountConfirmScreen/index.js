@@ -9,7 +9,7 @@ import { Actions } from 'react-native-router-flux'
 import Feather from 'react-native-vector-icons/Feather'
 import LinearGradient from 'react-native-linear-gradient'
 import LoadingScreen from '../LoadingScreen'
-import { ConfirmAccount } from '../../redux/user/actions'
+import { confirmAccount, getUserSession } from '../../redux/user/actions'
 import COLORS from '../../service/colors'
 import styles from './styles'
 
@@ -39,18 +39,34 @@ class AccountConfirmScreen extends React.Component {
   }
 
   componentWillMount() {
-    const { token } = this.props
-    // this.setState({ loading: true })
-    // this.props.ConfirmAccount(token)
+    const { token, deepLinking } = this.props
+    if (deepLinking) { // from deep_linking
+      this.setState({ loading: true })
+      this.props.confirmAccount(token)
+    } else {
+      setTimeout(() => {
+        Actions.HomeScreen()
+      }, 2000)
+    }
   }
 
   componentDidUpdate(prevProps) {
-    const { user } = this.props
+    const { user, deepLinking } = this.props
+
     if (prevProps.user.loading === 'USER_CONFIRM_ACCOUNT_PENDING' && user.loading === 'USER_CONFIRM_ACCOUNT_FULFILLED') {
-      this.setState({ loading: false })
-      setTimeout(() => {
-        Actions.LoginStartScreen()
-      }, 2000)
+      this.props.getUserSession()
+    }
+
+    if (prevProps.user.loading === 'GET_USER_SESSION_PENDING' && user.loading === 'GET_USER_SESSION_FULFILLED') {
+      if (deepLinking) {
+        this.setState({ loading: false }, () => {
+          if (user.userInfo.emailConfirmed) {
+            setTimeout(() => {
+              Actions.HomeScreen()
+            }, 2000)
+          }
+        })
+      }
     }
   }
 
@@ -77,12 +93,14 @@ class AccountConfirmScreen extends React.Component {
 }
 
 AccountConfirmScreen.defaultProps = {
-  token: 'test'
+  token: 'null',
+  deepLinking: false
 }
 
 AccountConfirmScreen.propTypes = {
   token: PropTypes.string,
-  ConfirmAccount: PropTypes.func.isRequired
+  deepLinking: PropTypes.bool,
+  confirmAccount: PropTypes.func.isRequired
 }
 
 const mapStateToProps = ({ user }) => ({
@@ -90,7 +108,8 @@ const mapStateToProps = ({ user }) => ({
 })
 
 const mapDispatchToProps = dispatch => ({
-  ConfirmAccount: (token) => dispatch(ConfirmAccount(token)),
+  confirmAccount: (token) => dispatch(confirmAccount(token)),
+  getUserSession: () => dispatch(getUserSession())
 })
 
 export default connect(

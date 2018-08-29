@@ -313,6 +313,69 @@ export default function user(state = initialState, action = {}) {
       }
     }
     /**
+    * Confirm user's account
+    */
+    case types.USER_CONFIRM_ACCOUNT_PENDING:
+      return {
+        ...state,
+        loading: types.USER_CONFIRM_ACCOUNT_PENDING,
+      }
+    case types.USER_CONFIRM_ACCOUNT_FULFILLED: {
+      return {
+        ...state,
+        loading: types.USER_CONFIRM_ACCOUNT_FULFILLED,
+      }
+    }
+    case types.USER_CONFIRM_ACCOUNT_REJECTED: {
+      return {
+        ...state,
+        loading: types.USER_CONFIRM_ACCOUNT_REJECTED,
+        error: action.error,
+      }
+    }
+    /**
+    * Send reset password email
+    */
+    case types.SEND_RESET_PASSWORD_EMAIL_PENDING:
+      return {
+        ...state,
+        loading: types.SEND_RESET_PASSWORD_EMAIL_PENDING,
+      }
+    case types.SEND_RESET_PASSWORD_EMAIL_FULFILLED: {
+      return {
+        ...state,
+        loading: types.SEND_RESET_PASSWORD_EMAIL_FULFILLED,
+      }
+    }
+    case types.SEND_RESET_PASSWORD_EMAIL_REJECTED: {
+      return {
+        ...state,
+        loading: types.SEND_RESET_PASSWORD_EMAIL_REJECTED,
+        error: action.error,
+      }
+    }
+    /**
+    * Reset password
+    */
+    case types.RESET_PASSWORD_PENDING:
+      return {
+        ...state,
+        loading: types.RESET_PASSWORD_PENDING,
+      }
+    case types.RESET_PASSWORD_FULFILLED: {
+      return {
+        ...state,
+        loading: types.RESET_PASSWORD_FULFILLED,
+      }
+    }
+    case types.RESET_PASSWORD_REJECTED: {
+      return {
+        ...state,
+        loading: types.RESET_PASSWORD_REJECTED,
+        error: action.error.response.data
+      }
+    }
+    /**
      * set userinfo from storage
      */
     case types.SET_USER_INFO: {
