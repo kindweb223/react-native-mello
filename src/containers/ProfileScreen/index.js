@@ -72,12 +72,6 @@ class ProfileScreen extends React.Component {
     }
   }
 
-  componentWillMount() {
-    if (this.props.user.loading === 'UPDATE_PASSWORD_FULFILLED' || this.props.user.loading === 'UPDATE_PROFILE_FULFILLED') {
-      this.setState({ isShowToaster: true })
-    }
-  }
-
   componentDidMount() {
     this.setState({ userInfo: this.props.user.userInfo })
   }
@@ -87,6 +81,14 @@ class ProfileScreen extends React.Component {
 
     if (this.props.user.loading === 'USER_SIGNOUT_PENDING' && nextProps.user.loading === 'USER_SIGNOUT_FULFILLED') {
       Actions.LoginStartScreen()
+    }
+
+    if (this.props.user.loading === 'UPDATE_PROFILE_PENDING' && nextProps.user.loading === 'UPDATE_PROFILE_FULFILLED') {
+      this.setState({ isShowToaster: true })
+    }
+
+    if (this.props.user.loading === 'UPDATE_PASSWORD_FULFILLED' && nextProps.user.loading === 'UPDATE_PROFILE_FULFILLED') {
+      this.setState({ isShowToaster: true })
     }
   }
 

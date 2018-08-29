@@ -50,7 +50,7 @@ class ProfileUpdateScreen extends React.Component {
     const { user } = this.props
     if (prevProps.user.loading === 'UPDATE_PROFILE_PENDING' && user.loading === 'UPDATE_PROFILE_FULFILLED') {
       this.setState({ loading: false }, () => {
-        Actions.ProfileScreen()
+        Actions.pop()
       })
     }
 
@@ -60,7 +60,7 @@ class ProfileUpdateScreen extends React.Component {
 
     if (prevProps.user.loading === 'UPDATE_PASSWORD_PENDING' && user.loading === 'UPDATE_PASSWORD_FULFILLED') {
       this.setState({ loading: false }, () => {
-        Actions.ProfileScreen()
+        Actions.pop()
       })
     }
 
