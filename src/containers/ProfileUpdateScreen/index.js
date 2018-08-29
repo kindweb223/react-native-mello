@@ -48,13 +48,20 @@ class ProfileUpdateScreen extends React.Component {
 
   componentDidUpdate(prevProps, prevState) {
     const { user } = this.props
-    if ((prevProps.user.loading === 'UPDATE_PROFILE_PENDING' && user.loading === 'UPDATE_PROFILE_FULFILLED') ||
-        (prevProps.user.loading === 'UPDATE_PROFILE_PENDING' && user.loading === 'UPDATE_PROFILE_FULFILLED')) {
+    if (prevProps.user.loading === 'UPDATE_PROFILE_PENDING' && user.loading === 'UPDATE_PROFILE_FULFILLED') {
+      this.setState({ loading: false }, () => {
+        Actions.pop()
+      })
+    }
+
+    if (prevProps.user.loading === 'UPDATE_PROFILE_PENDING' && user.loading === 'UPDATE_PROFILE_FULFILLED') {
       this.setState({ loading: false })
     }
 
     if (prevProps.user.loading === 'UPDATE_PASSWORD_PENDING' && user.loading === 'UPDATE_PASSWORD_FULFILLED') {
-      this.setState({ loading: false })
+      this.setState({ loading: false }, () => {
+        Actions.pop()
+      })
     }
 
     if (prevProps.user.loading === 'UPDATE_PASSWORD_PENDING' && user.loading === 'UPDATE_PASSWORD_REJECTED') {
@@ -242,11 +249,9 @@ class ProfileUpdateScreen extends React.Component {
 
         <TouchableOpacity
           style={styles.navRightWrapper}
-          activeOpacity={0.6}
+          activeOpacity={1}
           onPress={() => {}}
-        >
-          <MaterialCommunityIcons name="onepassword" size={25} color={COLORS.LIGHT_GREY} />
-        </TouchableOpacity>
+        />
       </View>
     );
   }
@@ -254,7 +259,8 @@ class ProfileUpdateScreen extends React.Component {
   renderUserContent = () => {
     const {
       fieldErrors,
-      fullName
+      fullName,
+      userEmail
     } = this.state
 
     const nameError = (_.filter(fieldErrors, item => item.field === 'fullname'))
@@ -263,6 +269,12 @@ class ProfileUpdateScreen extends React.Component {
     return (
       <View style={styles.subContainer}>
         <KeyboardScrollView style={{ flex: 1 }}>
+          <TextInputComponent
+            label='Email'
+            placeholder="Email"
+            value={userEmail}
+            editable={false}
+          />
           <TextInputComponent
             ref={ref => this.fullnameRef = ref}
             label='Full name'
