@@ -79,9 +79,11 @@ class HomeScreen extends React.Component {
       tabIndex: 0,
       emptyState: true,
       isShowToaster: false,
+      scrollableTabViewContainer: {},
       scrollY: new Animated.Value(0)
     };
 
+    this.currentRef = null;
     this.animatedOpacity = new Animated.Value(0);
   }
 
@@ -166,9 +168,29 @@ class HomeScreen extends React.Component {
     }
   }
 
-  onChangeTab = ({ i }) => {
-    this.setState({ tabIndex: i, loading: true })
-    this.props.getFeedoList(i)
+  onChangeTab(value) {
+    // if (value.ref.props.tabLabel.label === 'All') {
+    //   this.currentRef = this.scrollTabAll;
+    // } else if (value.ref.props.tabLabel.label === 'Pinned') {
+    //   this.currentRef = this.scrollTabPinned;
+    // } else if (value.ref.props.tabLabel.label === 'Shared with me') {
+    //   this.currentRef = this.scrollTabSharedWithMe;
+    // }
+    // if (this.currentRef) {
+    //   this.currentRef.measure((ox, oy, width, height, px, py) => {
+    //     console.log('onChangeTab : ', value.ref.props.tabLabel.label + " : " + height);
+    //     if (height != 0) {
+    //       this.setState({scrollableTabViewContainer: {height}});
+    //     }
+    //   });
+    // }
+
+    this.setState({ 
+      tabIndex: value.i,
+      loading: true,
+      scrollableTabViewContainer: {},
+    })
+    this.props.getFeedoList(value.i)
   }
 
   handleLongHoldMenu = (selectedFeedData) => {
@@ -404,6 +426,20 @@ class HomeScreen extends React.Component {
     Actions.ProfileScreen()
   }
 
+  onScrollableTabViewLayout(event, selectedIndex) {
+    const { loading } = this.state
+    // console.log('All : ', event.nativeEvent);
+    if (this.state.tabIndex === selectedIndex && !loading) {
+      console.log('Select : ', event.nativeEvent.layout.height, this.state.scrollableTabViewContainer.height);
+      if (!this.state.scrollableTabViewContainer.height || event.nativeEvent.layout.height > this.state.scrollableTabViewContainer.height) {
+        const height = event.nativeEvent.layout.height;
+        setTimeout(() => {
+          this.setState({scrollableTabViewContainer: {height}});
+        }, 0);
+      }
+    }
+  }
+
   render () {
     const { loading, feedoList, emptyState, tabIndex } = this.state
 
@@ -478,9 +514,11 @@ class HomeScreen extends React.Component {
                 }
               </View>
             : <ScrollableTabView
+                style={this.state.scrollableTabViewContainer}
+                prerenderingSiblingsNumber={0}
                 tabBarActiveTextColor={COLORS.PURPLE}
                 tabBarInactiveTextColor={COLORS.MEDIUM_GREY}
-                onChangeTab={this.onChangeTab}
+                onChangeTab={this.onChangeTab.bind(this)}
                 prerenderingSiblingsNumber={0}
                 renderTabBar={() => <TabBar
                                       underlineHeight={0}
@@ -491,24 +529,42 @@ class HomeScreen extends React.Component {
                                       tabStyles={{ 'tab': TAB_STYLES }}
                                     />}
               >
-                <FeedoListContainer
-                  loading={loading}
-                  feedoList={feedoList}
+                <View
+                  style={{paddingBottom: CONSTANTS.ACTION_BAR_HEIGHT}}
+                  ref={ref => this.scrollTabAll = ref} 
                   tabLabel={{ label: 'All' }}
-                  handleFeedMenu={this.handleLongHoldMenu}
-                />
-                <FeedoListContainer
-                  loading={loading}
-                  feedoList={feedoList}
+                  onLayout={(event) => this.onScrollableTabViewLayout(event, 0)}
+                >
+                  <FeedoListContainer
+                    loading={loading}
+                    feedoList={feedoList}
+                    handleFeedMenu={this.handleLongHoldMenu}
+                  />
+                </View>
+                <View
+                  style={{paddingBottom: CONSTANTS.ACTION_BAR_HEIGHT}}
+                  ref={ref => this.scrollTabPinned = ref}
                   tabLabel={{ label: 'Pinned' }}
-                  handleFeedMenu={this.handleLongHoldMenu}
-                />
-                <FeedoListContainer
-                  loading={loading}
-                  feedoList={feedoList}
+                  onLayout={(event) => this.onScrollableTabViewLayout(event, 1)}
+                >
+                  <FeedoListContainer
+                    loading={loading}
+                    feedoList={feedoList}
+                    handleFeedMenu={this.handleLongHoldMenu}
+                  />
+                </View>
+                <View
+                  style={{paddingBottom: CONSTANTS.ACTION_BAR_HEIGHT}}
+                  ref={ref => this.scrollTabSharedWithMe = ref}
                   tabLabel={{ label: 'Shared with me' }}
-                  handleFeedMenu={this.handleLongHoldMenu}
-                />
+                  onLayout={(event) => this.onScrollableTabViewLayout(event, 2)}
+                >
+                  <FeedoListContainer
+                    loading={loading}
+                    feedoList={feedoList}
+                    handleFeedMenu={this.handleLongHoldMenu}
+                  />
+                </View>
               </ScrollableTabView>
             }
           </ScrollView>
