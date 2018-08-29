@@ -62,7 +62,7 @@ class SignUpConfirmScreen extends React.Component {
       this.intervalId = null
 
       if (user.userInfo.emailConfirmed) {
-        Actions.confirm({ token: 'null', deepLinking: true })
+        Actions.confirm({ token: 'null', deepLinking: false })
       }
     }
   }

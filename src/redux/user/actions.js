@@ -177,3 +177,23 @@ export const updatePassword = (userId, data) => {
       })
   };
 }
+
+/**
+ * Confirm user account
+ */
+export const ConfirmAccount = (token) => {
+  let url = 'users/confirmation'
+  const data = {
+    token
+  }
+
+  return {
+    types: [types.USER_CONFIRM_ACCOUNT_PENDING, types.USER_CONFIRM_ACCOUNT_FULFILLED, types.USER_CONFIRM_ACCOUNT_EJECTED],
+    promise:
+      axios({
+        method: 'put',
+        url,
+        data
+      })
+  };
+}
