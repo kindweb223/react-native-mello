@@ -92,7 +92,7 @@ class ProfileScreen extends React.Component {
       }, 2000)
     }
 
-    if (this.props.user.loading === 'UPDATE_PASSWORD_FULFILLED' && nextProps.user.loading === 'UPDATE_PROFILE_FULFILLED') {
+    if (this.props.user.loading === 'UPDATE_PASSWORD_PENDING' && nextProps.user.loading === 'UPDATE_PASSWORD_FULFILLED') {
       this.setState({ isShowToaster: true, toasterText: 'Password changed' })
       setTimeout(() => {
         this.setState({ isShowToaster: false })
