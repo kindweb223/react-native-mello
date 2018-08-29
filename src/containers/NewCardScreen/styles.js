@@ -41,7 +41,6 @@ const styles = StyleSheet.create({
   },
   attachmentButtonsContainer: {
     flexDirection: 'row',
-    justifyContent: 'space-between',
     alignItems: 'center',
     paddingLeft: 22,
     paddingRight: 16,
@@ -53,6 +52,14 @@ const styles = StyleSheet.create({
     marginRight: 8,
     alignItems: 'center',
     justifyContent: 'center',
+  },
+  hideKeyboardContainer:                 {
+    backgroundColor: COLORS.PURPLE,
+    borderRadius: 8,
+    marginRight: 0,
+    position: 'absolute',
+    right: 16,
+    bottom: 17,
   },
   attachment: {
     transform: [

@@ -6,6 +6,7 @@ import {
   FlatList,
   Image,
   Text,
+  Linking,
 } from 'react-native'
 import PropTypes from 'prop-types'
 
@@ -22,7 +23,6 @@ export default class WebMetaList extends React.Component {
     super(props);
     this.state = {
       links: [...this.props.links],
-      selectedIndex: -1,
     };
     this.animatedSelect = new Animated.Value(0);
     this.linksCount = this.props.links.length || 0;
@@ -38,56 +38,26 @@ export default class WebMetaList extends React.Component {
     }
   }
 
-  onLongPressLink(index) {
-    if (!this.props.editable) {
-      return;
-    }
-    if (this.state.selectedIndex === index) {
-      index = -1;
-    }
-    this.setState({
-      selectedIndex: index,
-    }, () => {
-      Animated.sequence([
-        Animated.timing(this.animatedSelect, {
-          toValue: 0.9,
-          duration: 100,
-        }),
-        Animated.timing(this.animatedSelect, {
-          toValue: 1,
-          duration: 100,
-        }),
-      ]).start(() => {
-      });
-    });
-  }
-
   onRemove(index) {
-    this.setState({
-      selectedIndex: -1,
-    });
-
     if (this.props.onRemove) {
       this.props.onRemove(this.state.links[index].id);
     }
   }
 
   onPressLink(index) {
+    const url = this.props.links[index].originalUrl;
+    Linking.canOpenURL(url).then(supported => {
+      if (!supported) {
+        console.log('Can\'t handle url: ' + url);
+      } else {
+        return Linking.openURL(url);
+      }
+    }).catch(error => console.error('An error occurred', error));
   }
 
   renderItem({item, index}) {
     return (
-      <Animated.View
-        style={[
-          styles.itemContainer,
-          this.state.selectedIndex === index &&
-          {
-            transform: [
-              { scale: this.animatedSelect },
-            ],
-          },
-        ]}
-      >
+      <Animated.View style={styles.itemContainer}>
         <TouchableOpacity 
           style={styles.buttonContainer}
           activeOpacity={0.7}
@@ -100,16 +70,13 @@ export default class WebMetaList extends React.Component {
             <Text style={styles.textDescription} numberOfLines={1}>{item.description}</Text>
           </View>
         </TouchableOpacity>
-        {
-          this.state.selectedIndex === index && 
-          <TouchableOpacity 
-            style={styles.closeButtonContainer}
-            activeOpacity={0.8}
-            onPress={() => this.onRemove(index)}
-          >
-            <MaterialCommunityIcons name="close" size={18} color={'#fff'} />
-          </TouchableOpacity>
-    }
+        <TouchableOpacity 
+          style={styles.closeButtonContainer}
+          activeOpacity={0.8}
+          onPress={() => this.onRemove(index)}
+        >
+          <MaterialCommunityIcons name="close" size={18} color={'#fff'} />
+        </TouchableOpacity>
       </Animated.View>
     )
   }
