@@ -59,7 +59,7 @@ import AccountConfirmScreen from './src/containers/AccountConfirmScreen'
 import ResetPasswordScreen from './src/containers/ResetPasswordScreen'
 
 const store = createStore(reducers, applyMiddleware(thunk, promiseMiddleware))
-// crossroads.addRoute('confirm/{token}', token => Actions.confirm({ token }))
+// crossroads.addRoute('confirm/{token}', token => Actions.confirm({ token, deepLinking: true }))
 
 export default class Root extends React.Component {
   constructor(props) {
