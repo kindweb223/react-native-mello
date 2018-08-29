@@ -40,34 +40,36 @@ class ListRow extends React.Component {
   }
 }
 
-const FeedoListContainer = ({ loading, feedoList, handleFeedMenu, tabLabel }) => {
-  if (loading) return <FeedLoadingStateComponent animating />
-
-  return (
-    <FlatList
-      style={{ flex: 1, paddingBottom: CONSTANTS.ACTION_BAR_HEIGHT + 50 }}
-      data={feedoList}
-      keyExtractor={item => item.id}
-      scrollEnabled={false}
-      automaticallyAdjustContentInsets={false}
-      renderItem={({ item, index }) => (
-        <ListRow index={index}>
-          <TouchableOpacity
-            activeOpacity={0.8}
-            delayLongPress={1000}
-            onLongPress={() => handleFeedMenu(item)}
-            onPress={() => {
-              Actions.FeedDetailScreen({
-                data: item
-              })
-            }}
-          >
-            <FeedItemComponent item={item} pinFlag={item.pinned ? true : false} />
-          </TouchableOpacity>
-        </ListRow>
-      )}
-    />
-  )
+class FeedoListContainer extends React.Component {
+  render() {
+    const {loading, feedoList, handleFeedMenu, tabLabel} = this.props;
+    if (loading) return <FeedLoadingStateComponent animating />
+    return (
+      <FlatList
+        style={{paddingBottom: CONSTANTS.ACTION_BAR_HEIGHT + 50}}
+        data={feedoList}
+        keyExtractor={item => item.id}
+        scrollEnabled={false}
+        automaticallyAdjustContentInsets={false}
+        renderItem={({ item, index }) => (
+          <ListRow index={index}>
+            <TouchableOpacity
+              activeOpacity={0.8}
+              delayLongPress={1000}
+              onLongPress={() => handleFeedMenu(item)}
+              onPress={() => {
+                Actions.FeedDetailScreen({
+                  data: item
+                })
+              }}
+            >
+              <FeedItemComponent item={item} pinFlag={item.pinned ? true : false} />
+            </TouchableOpacity>
+          </ListRow>
+        )}
+      />
+    )
+  }
 }
 
 FeedoListContainer.defaultProps = {
