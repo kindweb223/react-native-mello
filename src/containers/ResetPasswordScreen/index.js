@@ -230,11 +230,11 @@ class ResetPasswordScreen extends React.Component {
           <LoadingScreen />
         )}
 
-        <View style={styles.headerView}>
+        {/* <View style={styles.headerView}>
           <TouchableOpacity onPress={() => Actions.pop()} style={styles.btnBack}>
             <Feather name="arrow-left" size={25} color={'#fff'} />
           </TouchableOpacity>
-        </View>
+        </View> */}
 
       </View>
     )

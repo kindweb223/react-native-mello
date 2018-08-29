@@ -149,7 +149,7 @@ export default class Root extends React.Component {
             <Scene key="CommentScreen" component={ CommentScreen } navigationBarStyle={styles.defaultNavigationBar} />
             <Scene key="confirm" component={ AccountConfirmScreen } hideNavBar panHandlers={null} />
             <Scene key="ResetPasswordConfirmScreen" component={ ResetPasswordConfirmScreen } hideNavBar panHandlers={null} />
-            <Scene key="ResetPasswordScreen" initial component={ ResetPasswordScreen } hideNavBar panHandlers={null} />
+            <Scene key="ResetPasswordScreen" component={ ResetPasswordScreen } hideNavBar panHandlers={null} />
           </Scene>
           <Stack key="ProfileScreen" hideNavBar>
             <Stack key="ProfileScreen" hideNavBar>
