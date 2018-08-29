@@ -18,7 +18,7 @@ import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityI
 import KeyboardScrollView from '../../components/KeyboardScrollView'
 import LoadingScreen from '../LoadingScreen'
 import TextInputComponent from '../../components/TextInputComponent'
-import { userSignIn, getUserSession } from '../../redux/user/actions'
+import { userSignIn, getUserSession, sendResetPasswordEmail } from '../../redux/user/actions'
 import COLORS from '../../service/colors'
 import styles from './styles'
 const LOGO = require('../../../assets/images/Login/Group.png')
@@ -85,6 +85,12 @@ class LoginScreen extends React.Component {
         Actions.SignUpConfirmScreen({ userEmail:  this.props.userData.email })
       })
     }
+
+    if (prevProps.user.loading === 'SEND_RESET_PASSWORD_EMAIL_PENDING' && this.props.user.loading === 'SEND_RESET_PASSWORD_EMAIL_FULFILLED') {
+      this.setState({ loading: false }, () => {
+        Actions.ResetPasswordConfirmScreen({ userEmail: this.props.userData.email })
+      })
+    }
   }
 
   onSignIn = () => {
@@ -109,8 +115,12 @@ class LoginScreen extends React.Component {
     this.setState({ password: text })
   }
 
-  onForgot = () => {
-
+  onForgotPassword = () => {
+    this.setState({ loading: true })
+    const param = {
+      email: this.props.userData.email
+    }
+    this.props.sendResetPasswordEmail(param)
   }
 
   render () {
@@ -148,7 +158,7 @@ class LoginScreen extends React.Component {
                   handleChange={text => this.handleChange(text)}
                   onSubmitEditing={() => this.onSignIn()}
                 >
-                  <TouchableOpacity onPress={() => this.onForgot()} activeOpacity={0.8}>
+                  <TouchableOpacity onPress={() => this.onForgotPassword()} activeOpacity={0.8}>
                     <View style={styles.forgotView}>
                       <Text style={styles.forgotText}>Forgot?</Text>
                     </View>
@@ -196,6 +206,7 @@ const mapStateToProps = ({ user }) => ({
 const mapDispatchToProps = dispatch => ({
   userSignIn: (data) => dispatch(userSignIn(data)),
   getUserSession: () => dispatch(getUserSession()),
+  sendResetPasswordEmail: (data) => dispatch(sendResetPasswordEmail(data)),
 })
 
 export default connect(

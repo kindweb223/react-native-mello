@@ -56,6 +56,7 @@ import CommentScreen from './src/containers/CommentScreen';
 import ProfileScreen from './src/containers/ProfileScreen'
 import ProfileUpdateScreen from './src/containers/ProfileUpdateScreen'
 import AccountConfirmScreen from './src/containers/AccountConfirmScreen'
+import ResetPasswordConfirmScreen from './src/containers/ResetPasswordConfirmScreen'
 import ResetPasswordScreen from './src/containers/ResetPasswordScreen'
 
 const store = createStore(reducers, applyMiddleware(thunk, promiseMiddleware))
@@ -147,12 +148,14 @@ export default class Root extends React.Component {
             <Scene key="LikesListScreen" component={ LikesListScreen } navigationBarStyle={styles.defaultNavigationBar} />
             <Scene key="CommentScreen" component={ CommentScreen } navigationBarStyle={styles.defaultNavigationBar} />
             <Scene key="confirm" component={ AccountConfirmScreen } hideNavBar panHandlers={null} />
-            <Scene key="ResetPasswordScreen" component={ ResetPasswordScreen } hideNavBar panHandlers={null} />
+            <Scene key="ResetPasswordConfirmScreen" component={ ResetPasswordConfirmScreen } hideNavBar panHandlers={null} />
+            <Scene key="ResetPasswordScreen" initial component={ ResetPasswordScreen } hideNavBar panHandlers={null} />
           </Scene>
           <Stack key="ProfileScreen" hideNavBar>
             <Stack key="ProfileScreen" hideNavBar>
               <Scene key="ProfileScreen" component={ ProfileScreen } hideNavBar panHandlers={null} />
               <Scene key="ProfileUpdateScreen" component={ ProfileUpdateScreen } hideNavBar panHandlers={null} />
+              <Scene key="ProfileResetPasswordConfirmScreen" component={ ResetPasswordConfirmScreen } hideNavBar panHandlers={null} />
             </Stack>
           </Stack>
         </Modal>

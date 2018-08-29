@@ -132,7 +132,6 @@ export const resendConfirmationEmail = () => {
   };
 }
 
-
 /**
  * set userinfo from storage
  */
@@ -181,7 +180,7 @@ export const updatePassword = (userId, data) => {
 /**
  * Confirm user account
  */
-export const ConfirmAccount = (token) => {
+export const confirmAccount = (token) => {
   let url = 'users/confirmation'
   const data = {
     token
@@ -195,5 +194,38 @@ export const ConfirmAccount = (token) => {
         url,
         data
       })
+  };
+}
+
+/**
+ * Resend reset password email
+ */
+export const sendResetPasswordEmail = (data) => {
+  let url = 'users/reset-password'
+
+  return {
+    types: [types.SEND_RESET_PASSWORD_EMAIL_PENDING, types.SEND_RESET_PASSWORD_EMAIL_FULFILLED, types.SEND_RESET_PASSWORD_EMAIL_REJECTED],
+    promise:
+      axios({
+        method: 'post',
+        url,
+        data
+      })  
+  };
+}
+/**
+ * Reset password
+ */
+export const resetPassword = (data) => {
+  let url = 'users/reset-password'
+
+  return {
+    types: [types.RESET_PASSWORD_PENDING, types.RESET_PASSWORD_FULFILLED, types.RESET_PASSWORD_REJECTED],
+    promise:
+      axios({
+        method: 'put',
+        url,
+        data
+      })  
   };
 }

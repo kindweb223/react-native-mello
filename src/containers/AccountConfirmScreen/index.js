@@ -9,7 +9,7 @@ import { Actions } from 'react-native-router-flux'
 import Feather from 'react-native-vector-icons/Feather'
 import LinearGradient from 'react-native-linear-gradient'
 import LoadingScreen from '../LoadingScreen'
-import { ConfirmAccount, getUserSession } from '../../redux/user/actions'
+import { confirmAccount, getUserSession } from '../../redux/user/actions'
 import COLORS from '../../service/colors'
 import styles from './styles'
 
@@ -42,7 +42,7 @@ class AccountConfirmScreen extends React.Component {
     const { token, deepLinking } = this.props
     if (deepLinking) { // from deep_linking
       this.setState({ loading: true })
-      this.props.ConfirmAccount(token)
+      this.props.confirmAccount(token)
     } else {
       setTimeout(() => {
         Actions.HomeScreen()
@@ -59,13 +59,13 @@ class AccountConfirmScreen extends React.Component {
 
     if (prevProps.user.loading === 'GET_USER_SESSION_PENDING' && user.loading === 'GET_USER_SESSION_FULFILLED') {
       if (deepLinking) {
-        this.setState({ loading: false })
-
-        if (user.userInfo.emailConfirmed) {
-          setTimeout(() => {
-            Actions.HomeScreen()
-          }, 2000)
-        }
+        this.setState({ loading: false }, () => {
+          if (user.userInfo.emailConfirmed) {
+            setTimeout(() => {
+              Actions.HomeScreen()
+            }, 2000)
+          }
+        })
       }
     }
   }
@@ -100,7 +100,7 @@ AccountConfirmScreen.defaultProps = {
 AccountConfirmScreen.propTypes = {
   token: PropTypes.string,
   deepLinking: PropTypes.bool,
-  ConfirmAccount: PropTypes.func.isRequired
+  confirmAccount: PropTypes.func.isRequired
 }
 
 const mapStateToProps = ({ user }) => ({
@@ -108,7 +108,7 @@ const mapStateToProps = ({ user }) => ({
 })
 
 const mapDispatchToProps = dispatch => ({
-  ConfirmAccount: (token) => dispatch(ConfirmAccount(token)),
+  confirmAccount: (token) => dispatch(confirmAccount(token)),
   getUserSession: () => dispatch(getUserSession())
 })
 
