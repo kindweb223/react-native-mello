@@ -68,7 +68,9 @@ class ProfileScreen extends React.Component {
     super(props)
     this.state = {
       avatarFile: {},
-      isCrop: false
+      isCrop: false,
+      isShowToaster: false,
+      toasterText: ''
     }
   }
 
@@ -84,11 +86,17 @@ class ProfileScreen extends React.Component {
     }
 
     if (this.props.user.loading === 'UPDATE_PROFILE_PENDING' && nextProps.user.loading === 'UPDATE_PROFILE_FULFILLED') {
-      this.setState({ isShowToaster: true })
+      this.setState({ isShowToaster: true, toasterText: 'Profile changed' })
+      setTimeout(() => {
+        this.setState({ isShowToaster: false })
+      }, 2000)
     }
 
     if (this.props.user.loading === 'UPDATE_PASSWORD_FULFILLED' && nextProps.user.loading === 'UPDATE_PROFILE_FULFILLED') {
-      this.setState({ isShowToaster: true })
+      this.setState({ isShowToaster: true, toasterText: 'Password changed' })
+      setTimeout(() => {
+        this.setState({ isShowToaster: false })
+      }, 2000)
     }
   }
 
@@ -347,7 +355,7 @@ class ProfileScreen extends React.Component {
 
         <ToasterComponent
           isVisible={this.state.isShowToaster}
-          title="Profile updated"
+          title={this.state.toasterText}
           buttonTitle="OK"
           onPressButton={() => this.setState({ isShowToaster: false })}
         />
