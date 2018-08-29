@@ -242,11 +242,9 @@ class ProfileUpdateScreen extends React.Component {
 
         <TouchableOpacity
           style={styles.navRightWrapper}
-          activeOpacity={0.6}
+          activeOpacity={1}
           onPress={() => {}}
-        >
-          <MaterialCommunityIcons name="onepassword" size={25} color={COLORS.LIGHT_GREY} />
-        </TouchableOpacity>
+        />
       </View>
     );
   }
@@ -254,7 +252,8 @@ class ProfileUpdateScreen extends React.Component {
   renderUserContent = () => {
     const {
       fieldErrors,
-      fullName
+      fullName,
+      userEmail
     } = this.state
 
     const nameError = (_.filter(fieldErrors, item => item.field === 'fullname'))
@@ -263,6 +262,12 @@ class ProfileUpdateScreen extends React.Component {
     return (
       <View style={styles.subContainer}>
         <KeyboardScrollView style={{ flex: 1 }}>
+          <TextInputComponent
+            label='Email'
+            placeholder="Email"
+            value={userEmail}
+            editable={false}
+          />
           <TextInputComponent
             ref={ref => this.fullnameRef = ref}
             label='Full name'
