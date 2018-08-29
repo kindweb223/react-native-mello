@@ -355,6 +355,7 @@ class ProfileUpdateScreen extends React.Component {
               placeholder="Enter password"
               isSecure={this.state.isSecure}
               ContainerStyle={{ marginBottom: 0 }}
+              isError={passwordError.length > 0 ? true : false}
               isErrorView={false}
               handleChange={text => this.changePassword(text)}
               onFocus={() => this.onPasswordFocus(true)}
