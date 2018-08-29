@@ -353,12 +353,14 @@ class ProfileScreen extends React.Component {
           />
         </Modal>
 
-        <ToasterComponent
-          isVisible={this.state.isShowToaster}
-          title={this.state.toasterText}
-          buttonTitle="OK"
-          onPressButton={() => this.setState({ isShowToaster: false })}
-        />
+        {this.state.isShowToaster && (
+          <ToasterComponent
+            isVisible={this.state.isShowToaster}
+            title={this.state.toasterText}
+            buttonTitle="OK"
+            onPressButton={() => this.setState({ isShowToaster: false })}
+          />
+        )}
 
       </View>
     )
