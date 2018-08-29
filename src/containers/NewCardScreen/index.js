@@ -39,6 +39,8 @@ import {
   deleteFile,
   getOpenGraph,
   setCoverImage,
+  addLink,
+  deleteLink,
 } from '../../redux/card/actions'
 import * as types from '../../redux/card/types'
 import { getTimestamp } from '../../service/dateUtils'
@@ -70,7 +72,7 @@ class NewCardScreen extends React.Component {
       originalCardTopY: this.props.intialLayout.py,
       originalCardBottomY: this.props.intialLayout.py + this.props.intialLayout.height,
       isShowKeyboardButton: false,
-      openGraphForLinks: [],
+      // openGraphForNoteLinks: [],
       isVisibleChooseLinkImagesModal: false,
       cardMaxHeight: CONSTANTS.SCREEN_HEIGHT - ScreenVerticalMargin * 2,
     };
@@ -88,9 +90,10 @@ class NewCardScreen extends React.Component {
     this.currentSelectedLinkImageIndex = 0;
 
 
-    this.openGraphIndex = 0;
-    this.linksForOpenGraph = [];
-    this.openGraphForLinks = [];
+    this.openGraphNoteIndex = 0;
+    this.addLinkIndex = 0;
+    this.noteLinksForOpenGraph = [];
+    this.openGraphForNoteLinks = [];
 
     this.animatedShow = new Animated.Value(0);
     this.animatedKeyboardHeight = new Animated.Value(0);
@@ -137,6 +140,26 @@ class NewCardScreen extends React.Component {
           this.addLinkImage(this.selectedLinkImages[this.currentSelectedLinkImageIndex]);
         }
       }
+    } else if (this.props.card.loading !== types.ADD_LINK_PENDING && nextProps.card.loading === types.ADD_LINK_PENDING) {
+      // adding a link
+      loading = true;
+    } else if (this.props.card.loading !== types.ADD_LINK_FULFILLED && nextProps.card.loading === types.ADD_LINK_FULFILLED) {
+      // success in adding a link
+      if (this.addLinkIndex < this.openGraphForNoteLinks.length) {
+        const { id } = this.props.card.currentCard;
+        const {
+          url,
+          title,
+          description,
+          image,
+        } = this.openGraphForNoteLinks[this.addLinkIndex++];
+        this.props.addLink(id, url, title, description, image);
+      }
+    } else if (this.props.card.loading !== types.DELETE_LINK_PENDING && nextProps.card.loading === types.DELETE_LINK_PENDING) {
+      // deleting a link
+      loading = true;
+    } else if (this.props.card.loading !== types.DELETE_LINK_FULFILLED && nextProps.card.loading === types.DELETE_LINK_FULFILLED) {
+      // success in deleting a link
     } else if (this.props.card.loading !== types.SET_COVER_IMAGE_PENDING && nextProps.card.loading === types.SET_COVER_IMAGE_PENDING) {
       // setting a file as cover image
       loading = true;
@@ -181,20 +204,26 @@ class NewCardScreen extends React.Component {
           });
         }
       } else {
-        this.openGraphForLinks.push({
-          url: this.linksForOpenGraph[this.openGraphIndex++],
+        this.openGraphForNoteLinks.push({
+          url: this.noteLinksForOpenGraph[this.openGraphNoteIndex++],
           title: nextProps.card.currentOpneGraph.title,
           description: nextProps.card.currentOpneGraph.description,
           image: nextProps.card.currentOpneGraph.image
         });
 
-        if (this.openGraphIndex >= this.linksForOpenGraph.length) {
-          this.setState({
-            openGraphForLinks: this.openGraphForLinks,
-          });
-        } else {
+        if (this.openGraphNoteIndex < this.noteLinksForOpenGraph.length) {
           loading = true;
-          this.props.getOpenGraph(this.linksForOpenGraph[this.openGraphIndex]);
+          this.props.getOpenGraph(this.noteLinksForOpenGraph[this.openGraphNoteIndex]);
+        } else {
+          this.addLinkIndex = 0;
+          const { id } = this.props.card.currentCard;
+          const {
+            url,
+            title,
+            description,
+            image,
+          } = this.openGraphForNoteLinks[this.addLinkIndex++];
+          this.props.addLink(id, url, title, description, image);
         }
       }
     } else if (this.props.card.loading !== types.LIKE_CARD_PENDING && nextProps.card.loading === types.LIKE_CARD_PENDING) {
@@ -233,6 +262,7 @@ class NewCardScreen extends React.Component {
   }
 
   componentDidMount() {
+    console.log('Current Card : ', this.props.card.currentCard);
     const { viewMode } = this.props;
     if (viewMode === CONSTANTS.CARD_VIEW || viewMode === CONSTANTS.CARD_EDIT) {
       this.setState({
@@ -342,7 +372,7 @@ class NewCardScreen extends React.Component {
   onTapOutsideCard() {
     const { viewMode } = this.props;
     if (viewMode === CONSTANTS.CARD_NEW) {
-      if (this.checkUrl(this.state.cardName) || this.checkUrl(this.state.idea)) {
+      if (this.checkUrl(this.state.cardName) || this.checkUrlsInNote()) {
         return;
       }
     }
@@ -434,6 +464,13 @@ class NewCardScreen extends React.Component {
     this.props.deleteFile(id, fileId);
   }
 
+  onDeleteLink(linkId) {
+    const {
+      id,
+    } = this.props.card.currentCard;
+    this.props.deleteLink(id, linkId);
+  }
+
   onSetCoverImage(fileId) {
     this.props.setCoverImage(this.props.card.currentCard.id, fileId);
   }
@@ -447,6 +484,37 @@ class NewCardScreen extends React.Component {
         this.urlForNewCard = texts[0];
         this.props.getOpenGraph(texts[0]);
         return true;
+      }
+    }
+    return false;
+  }
+
+  checkUrlsInNote() {
+    if (this.checkUrl(this.state.idea)) {
+      return true;
+    }
+    const allUrls = this.state.idea.match(/\bhttps?:\/\/\S+/gi);
+    if (allUrls) {
+      let newUrls = [];
+      const {
+        links
+      } = this.props.card.currentCard;
+      if (links) {
+        allUrls.forEach(url => {
+          const index = _.findIndex(links, link => link.originalUrl === url);
+          if (index === -1) {
+            newUrls.push(url);
+          }
+        });
+      } else {
+        newUrls = allUrls;
+      }
+      if (newUrls.length > 0) {
+        this.isOpenGraphForNewCard = false;
+        this.openGraphNoteIndex = 0;
+        this.openGraphForNoteLinks = [];
+        this.noteLinksForOpenGraph = newUrls;
+        this.props.getOpenGraph(this.noteLinksForOpenGraph[this.openGraphNoteIndex]);
       }
     }
     return false;
@@ -486,7 +554,7 @@ class NewCardScreen extends React.Component {
 
   onKeyPressIdea(event) {
     if (event.nativeEvent.key === ' ' || event.nativeEvent.key === ',' || event.nativeEvent.key === 'Enter') {
-      this.checkUrl(this.state.idea);
+      this.checkUrlsInNote();
     }
   }
 
@@ -510,15 +578,7 @@ class NewCardScreen extends React.Component {
     this.setState({
       isShowKeyboardButton: false,
     });
-    this.checkUrl(this.state.idea);
-    // const urls = this.state.idea.match(/\bhttps?:\/\/\S+/gi);
-    // if (urls) {
-    //   this.isOpenGraphForNewCard = false;
-    //   this.openGraphIndex = 0;
-    //   this.openGraphForLinks = [];
-    //   this.linksForOpenGraph = urls;
-    //   this.props.getOpenGraph(this.linksForOpenGraph[this.openGraphIndex]);
-    // }
+    this.checkUrlsInNote();
   }
 
   onShowLikes(likes) {
@@ -591,12 +651,13 @@ class NewCardScreen extends React.Component {
 
   get renderWebMeta() {
     const { viewMode } = this.props;
-    const { openGraphForLinks } = this.state;
-    if (openGraphForLinks.length > 0) {
+    const { links } = this.props.card.currentCard;
+    if (links && links.length > 0) {
       return (
         <WebMetaList 
-          links={openGraphForLinks}
+          links={links}
           editable={viewMode !== CONSTANTS.CARD_VIEW}
+          onRemove={(linkId) => this.onDeleteLink(linkId)}
         />
       )
     }
@@ -990,6 +1051,8 @@ const mapDispatchToProps = dispatch => ({
   deleteFile: (ideaId, fileId) => dispatch(deleteFile(ideaId, fileId)),
   setCoverImage: (ideaId, fileId) => dispatch(setCoverImage(ideaId, fileId)),
   getOpenGraph: (url) => dispatch(getOpenGraph(url)),
+  addLink: (ideaId, originalUrl, title, description, imageUrl) => dispatch(addLink(ideaId, originalUrl, title, description, imageUrl)),
+  deleteLink: (ideaId, linkId) => dispatch(deleteLink(ideaId, linkId)),
 })
 
 

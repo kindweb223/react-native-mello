@@ -400,7 +400,6 @@ class FeedDetailScreen extends React.Component {
         })
       }
     }
-    console.log('CURRENT_FEED: ', currentFeed)
     return (
       <SafeAreaView style={styles.safeArea}>
         <View style={styles.container}>

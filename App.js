@@ -3,7 +3,8 @@ import {
   StyleSheet,
   AsyncStorage,
   ActivityIndicator,
-  View
+  View,
+  YellowBox,
 } from 'react-native'
 import { createStore, applyMiddleware } from 'redux'
 import { Provider } from 'react-redux'
@@ -61,6 +62,10 @@ export default class Root extends React.Component {
     }
   }
 
+  componentDidMount() {
+    YellowBox.ignoreWarnings(['Module RNDocumentPicker'])
+  }
+  
   async UNSAFE_componentWillMount() {
     this.setState({ loading: true })
     try {

@@ -29,8 +29,8 @@ export default class WebMetaList extends React.Component {
   }
 
   UNSAFE_componentWillReceiveProps(nextProps) {
-    if (nextProps.links.length > this.linksCount) {
-      //add
+    if (nextProps.links.length !== this.linksCount) {
+      //add / remove
       this.setState({
         links: nextProps.links,
       });
@@ -41,6 +41,9 @@ export default class WebMetaList extends React.Component {
   onLongPressLink(index) {
     if (!this.props.editable) {
       return;
+    }
+    if (this.state.selectedIndex === index) {
+      index = -1;
     }
     this.setState({
       selectedIndex: index,
@@ -65,7 +68,7 @@ export default class WebMetaList extends React.Component {
     });
 
     if (this.props.onRemove) {
-      this.props.onRemove(index);
+      this.props.onRemove(this.state.links[index].id);
     }
   }
 
@@ -91,7 +94,7 @@ export default class WebMetaList extends React.Component {
           onLongPress={() => this.onLongPressLink(index)}
           onPress={() => this.onPressLink(index)}
         >
-          <Image style={styles.imageCover} source={{uri: item.image}} resizeMode='cover' />
+          <Image style={styles.imageCover} source={{uri: item.imageUrl}} resizeMode='cover' />
           <View style={styles.infoContainer}>
             <Text style={styles.textTitle} numberOfLines={1}>{item.title}</Text>
             <Text style={styles.textDescription} numberOfLines={1}>{item.description}</Text>

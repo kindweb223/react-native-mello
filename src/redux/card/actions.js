@@ -291,6 +291,41 @@ export const setCoverImage = (ideaId, fileId,) => {
   };
 }
 
+/**
+ * Add a link
+ */
+export const addLink = (ideaId, originalUrl, title, description, imageUrl) => {
+  let url = `ideas/${ideaId}/links`
+  const data = {
+    originalUrl,
+    title,
+    description,
+    imageUrl,
+  }
+  return {
+    types: [types.ADD_LINK_PENDING, types.ADD_LINK_FULFILLED, types.ADD_LINK_REJECTED],
+    promise: axios({
+      method: 'post',
+      url: url,
+      data,
+    }),
+  };
+}
+
+/**
+ * Delete a file
+ */
+export const deleteLink = (ideaId, linkId) => {
+  let url = `ideas/${ideaId}/links/${linkId}`
+  return {
+    types: [types.DELETE_LINK_PENDING, types.DELETE_LINK_FULFILLED, types.DELETE_LINK_REJECTED],
+    promise: axios({
+      method: 'delete',
+      url: url,
+    }),
+    payload: linkId,
+  };
+}
 
 /**
  * Get a Open Graph
