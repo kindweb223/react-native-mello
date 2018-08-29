@@ -48,13 +48,20 @@ class ProfileUpdateScreen extends React.Component {
 
   componentDidUpdate(prevProps, prevState) {
     const { user } = this.props
-    if ((prevProps.user.loading === 'UPDATE_PROFILE_PENDING' && user.loading === 'UPDATE_PROFILE_FULFILLED') ||
-        (prevProps.user.loading === 'UPDATE_PROFILE_PENDING' && user.loading === 'UPDATE_PROFILE_FULFILLED')) {
+    if (prevProps.user.loading === 'UPDATE_PROFILE_PENDING' && user.loading === 'UPDATE_PROFILE_FULFILLED') {
+      this.setState({ loading: false }, () => {
+        Actions.ProfileScreen()
+      })
+    }
+
+    if (prevProps.user.loading === 'UPDATE_PROFILE_PENDING' && user.loading === 'UPDATE_PROFILE_FULFILLED') {
       this.setState({ loading: false })
     }
 
     if (prevProps.user.loading === 'UPDATE_PASSWORD_PENDING' && user.loading === 'UPDATE_PASSWORD_FULFILLED') {
-      this.setState({ loading: false })
+      this.setState({ loading: false }, () => {
+        Actions.ProfileScreen()
+      })
     }
 
     if (prevProps.user.loading === 'UPDATE_PASSWORD_PENDING' && user.loading === 'UPDATE_PASSWORD_REJECTED') {
