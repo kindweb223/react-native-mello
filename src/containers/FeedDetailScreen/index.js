@@ -385,21 +385,14 @@ class FeedDetailScreen extends React.Component {
 
     let avatars = []
     if (!isEmpty(currentFeed)) {
-      const isOwner = COMMON_FUNC.checkOwner(currentFeed)
-
-      if (isOwner) {
+      currentFeed.invitees.forEach((item, key) => {
         avatars = [
-          currentFeed.owner,
+          ...avatars,
+          item.userProfile
         ]
-      } else {
-        currentFeed.invitees.forEach((item, key) => {
-          avatars = [
-            ...avatars,
-            item.userProfile
-          ]
-        })
-      }
+      })
     }
+
     return (
       <SafeAreaView style={styles.safeArea}>
         <View style={styles.container}>

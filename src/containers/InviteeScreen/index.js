@@ -77,13 +77,9 @@ class InviteeScreen extends React.Component {
           feedo.error
         )
       } else {
-        this.setState({ isSuccess: true })
-
-        setTimeout(() => {
-          this.setState({ isSuccess: false }, () => {
-            // this.props.handleModal()
-          })
-        }, 2000)
+        this.setState({ isSuccess: true }, () => {
+          this.closeModal()
+        })
       }
     }
 
@@ -94,6 +90,14 @@ class InviteeScreen extends React.Component {
         recentContacts: this.getRecentContactList(data, user.contactList)
       })
     }
+  }
+
+  closeModal = () => {
+    setTimeout(() => {
+      this.setState({ isSuccess: false }, () => {
+        this.props.handleModal()
+      })
+    }, 2000)
   }
 
   getRecentContactList = (feed, contactList) => {
