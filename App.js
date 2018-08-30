@@ -79,16 +79,16 @@ export default class Root extends React.Component {
     .then((url) => {
       if (url) {
         Alert.alert('GET INIT URL', 'initial url ' + url)
-        // this.resetStackToProperRoute(url)
+        this.resetStackToProperRoute(url)
       }
     })
 
-    DeepLinking.addScheme(SCHEME)
+    // DeepLinking.addScheme(SCHEME)
     Linking.addEventListener('url', this.handleOpenURL)
 
-    DeepLinking.addRoute('/confirm/:token', res => {
-      Actions.confirm({ token: res['token'] })
-    })
+    // DeepLinking.addRoute('/confirm/:token', res => {
+    //   Actions.confirm({ token: res['token'] })
+    // })
   }
 
   componentWillUnmount() {
@@ -98,7 +98,9 @@ export default class Root extends React.Component {
   resetStackToProperRoute = (url) => {
     Linking.canOpenURL(url).then((supported) => {
       if (supported) {
-        DeepLinking.evaluateUrl(url)
+        // DeepLinking.evaluateUrl(url)
+        let trailing = url.slice(url.lastIndexOf('/') + 1, url.length)
+        console.log('TRAILING: ', trailing)
       } else {
         if (Platform.OS === 'ios') {
           // Linking.openURL(`https://itunes.apple.com/${appStoreLocale}/app/${appName}/id${appStoreId}`);
