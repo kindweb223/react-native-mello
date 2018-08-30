@@ -18,19 +18,20 @@ export default {
   },
   heading: {
     fontWeight: '600',
-  },
-  heading1: {
-    display: 'none'
-  },
-  heading2: {
-    fontSize: 16,
-    marginTop: 10,
+    marginTop: 20,
     marginBottom: 10,
     marginLeft: 0,
     marginRight: 0,
+    color: '#000'
+  },
+  heading1: {
+    fontSize: 18
+  },
+  heading2: {
+    fontSize: 16
   },
   hr: {
-    backgroundColor: '#ccc',
+    backgroundColor: COLORS.LIGHT_GREY_LINE,
     height: 1,
   },
   inlineCode: {
@@ -39,32 +40,36 @@ export default {
     fontWeight: '500',
   },
   link: {
-    color: '#0366d6',
+    color: COLORS.PURPLE,
   },
   list: {
-    margin: 8,
+    marginHorizontal: 10,
+    marginVertical: 10
   },
   listItem: {
     flexDirection: 'row',
   },
   listItemNumber: {
-    minWidth: 32,
+    minWidth: 20,
     paddingRight: 4,
+    color: COLORS.DARK_GREY,
   },
   listItemBullet: {
-    minWidth: 32,
+    minWidth: 20,
     paddingRight: 4,
+    color: COLORS.DARK_GREY,
   },
   listItemOrderedContent: {
     flex: 1,
   },
   listItemUnorderedContent: {
+    color: COLORS.DARK_GREY,
     flex: 1,
   },
   paragraph: {
     fontSize: 14,
     marginTop: 0,
-    marginBottom: 20,
+    marginBottom: 10,
     color: COLORS.DARK_GREY
   },
   strong: {
