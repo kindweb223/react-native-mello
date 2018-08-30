@@ -406,6 +406,7 @@ class SignUpScreen extends React.Component {
                   isSecure={this.state.isSecure}
                   ContainerStyle={{ marginBottom: 0 }}
                   isErrorView={false}
+                  isError={passwordError.length > 0 ? true : false}
                   handleChange={text => this.changePassword(text)}
                   onFocus={() => this.onPasswordFocus(true)}
                   onBlur={() => this.onPasswordFocus(false)}

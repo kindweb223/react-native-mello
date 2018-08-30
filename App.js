@@ -5,16 +5,20 @@ import {
   ActivityIndicator,
   View,
   YellowBox,
+  Linking,
+  Alert,
+  Platform
 } from 'react-native'
 import { createStore, applyMiddleware } from 'redux'
 import { Provider } from 'react-redux'
 import thunk from 'redux-thunk'
 import promiseMiddleware from './src/service/promiseMiddleware'
 import { Actions, Scene, Router, Modal, Lightbox, Stack } from 'react-native-router-flux'
+import DeepLinking from 'react-native-deep-linking'
 import axios from 'axios'
 import CONSTANTS from './src/service/constants'
 import COLORS from './src/service/colors'
-import { BASE_URL } from './src/service/api'
+import { BASE_URL, SCHEME } from './src/service/api'
 
 axios.defaults.baseURL = BASE_URL
 axios.defaults.headers.get['Content-Type'] = 'application/json'
@@ -51,8 +55,12 @@ import LikesListScreen from './src/containers/LikesListScreen';
 import CommentScreen from './src/containers/CommentScreen';
 import ProfileScreen from './src/containers/ProfileScreen'
 import ProfileUpdateScreen from './src/containers/ProfileUpdateScreen'
+import AccountConfirmScreen from './src/containers/AccountConfirmScreen'
+import ResetPasswordConfirmScreen from './src/containers/ResetPasswordConfirmScreen'
+import ResetPasswordScreen from './src/containers/ResetPasswordScreen'
 
 const store = createStore(reducers, applyMiddleware(thunk, promiseMiddleware))
+// crossroads.addRoute('confirm/{token}', token => Actions.confirm({ token, deepLinking: true }))
 
 export default class Root extends React.Component {
   constructor(props) {
@@ -60,10 +68,51 @@ export default class Root extends React.Component {
     this.state = {
       loading: false
     }
+
+    this.handleOpenURL = this.handleOpenURL.bind(this)
   }
 
   componentDidMount() {
     YellowBox.ignoreWarnings(['Module RNDocumentPicker'])
+
+    Linking.getInitialURL()
+    .then((url) => {
+      if (url) {
+        Alert.alert('GET INIT URL', 'initial url ' + url)
+        // this.resetStackToProperRoute(url)
+      }
+    })
+
+    DeepLinking.addScheme(SCHEME)
+    Linking.addEventListener('url', this.handleOpenURL)
+
+    DeepLinking.addRoute('/confirm/:token', res => {
+      Actions.confirm({ token: res['token'] })
+    })
+  }
+
+  componentWillUnmount() {
+    Linking.removeEventListener('url', this.handleOpenURL)
+  }
+
+  resetStackToProperRoute = (url) => {
+    Linking.canOpenURL(url).then((supported) => {
+      if (supported) {
+        DeepLinking.evaluateUrl(url)
+      } else {
+        if (Platform.OS === 'ios') {
+          // Linking.openURL(`https://itunes.apple.com/${appStoreLocale}/app/${appName}/id${appStoreId}`);
+        } else {
+          // Linking.openURL(
+          //   `https://play.google.com/store/apps/details?id=${playStoreId}`
+          // );
+        }
+      }
+    })
+  }
+
+  handleOpenURL({ url }) {
+    this.resetStackToProperRoute(url)
   }
   
   async UNSAFE_componentWillMount() {
@@ -98,11 +147,15 @@ export default class Root extends React.Component {
             <Scene key="DocumentSliderScreen" component={ DocumentSliderScreen } hideNavBar />
             <Scene key="LikesListScreen" component={ LikesListScreen } navigationBarStyle={styles.defaultNavigationBar} />
             <Scene key="CommentScreen" component={ CommentScreen } navigationBarStyle={styles.defaultNavigationBar} />
+            <Scene key="confirm" component={ AccountConfirmScreen } hideNavBar panHandlers={null} />
+            <Scene key="ResetPasswordConfirmScreen" component={ ResetPasswordConfirmScreen } hideNavBar panHandlers={null} />
+            <Scene key="ResetPasswordScreen" component={ ResetPasswordScreen } hideNavBar panHandlers={null} />
           </Scene>
           <Stack key="ProfileScreen" hideNavBar>
             <Stack key="ProfileScreen" hideNavBar>
               <Scene key="ProfileScreen" component={ ProfileScreen } hideNavBar panHandlers={null} />
               <Scene key="ProfileUpdateScreen" component={ ProfileUpdateScreen } hideNavBar panHandlers={null} />
+              <Scene key="ProfileResetPasswordConfirmScreen" component={ ResetPasswordConfirmScreen } hideNavBar panHandlers={null} />
             </Stack>
           </Stack>
         </Modal>

@@ -492,11 +492,13 @@ class FeedDetailScreen extends React.Component {
           onPress={(index) => this.onTapActionSheet(index)}
         />
 
-        <ToasterComponent
-          isVisible={this.state.isShowToaster}
-          title={this.state.toasterTitle}
-          onPressButton={() => this.undoAction()}
-        />
+        {this.state.isShowToaster && (
+          <ToasterComponent
+            isVisible={this.state.isShowToaster}
+            title={this.state.toasterTitle}
+            onPressButton={() => this.undoAction()}
+          />
+        )}
 
         <Modal 
           isVisible={this.state.isShowShare}

@@ -16,7 +16,8 @@ const styles = StyleSheet.create({
       }
     }),
     paddingHorizontal: 16,
-    width: '100%',
+    width: CONSTANTS.SCREEN_SUB_WIDTH,
+    marginLeft: CONSTANTS.PADDING,
     height: 50,
     borderRadius: 8,
     flexDirection: 'row',

@@ -12,7 +12,7 @@ import LinearGradient from 'react-native-linear-gradient'
 import Ionicons from 'react-native-vector-icons/Ionicons'
 import Feather from 'react-native-vector-icons/Feather'
 import LoadingScreen from '../LoadingScreen'
-import { resendConfirmationEmail, getUserSession } from '../../redux/user/actions'
+import { sendResetPasswordEmail } from '../../redux/user/actions'
 import COLORS from '../../service/colors'
 import CONSTANTS from '../../service/constants'
 import styles from './styles'
@@ -34,16 +34,12 @@ const Gradient = () => {
   )
 }
 
-class SignUpConfirmScreen extends React.Component {
+class ResetPasswordConfirmScreen extends React.Component {
   constructor(props) {
     super(props)
     this.state = {
       loading: false
     }
-  }
-
-  componentDidMount() {
-    this.intervalId = setInterval(this.pollSession, 3000)
   }
 
   componentDidUpdate(prevProps) {
@@ -57,28 +53,18 @@ class SignUpConfirmScreen extends React.Component {
       })
     }
 
-    if (prevProps.user.loading === 'GET_USER_SESSION_PENDING' && user.loading === 'GET_USER_SESSION_FULFILLED') {
-      clearInterval(this.intervalId)
-      this.intervalId = null
-
-      if (user.userInfo.emailConfirmed) {
-        Actions.confirm({ token: 'null', deepLinking: false })
-      }
+    if ((prevProps.user.loading === 'SEND_RESET_PASSWORD_EMAIL_PENDING' && user.loading === 'SEND_RESET_PASSWORD_EMAIL_FULFILLED') ||
+      (prevProps.user.loading === 'SEND_RESET_PASSWORD_EMAIL_PENDING' && user.loading === 'SEND_RESET_PASSWORD_EMAIL_REJECTED')) {
+      this.setState({ loading: false })
     }
-  }
-
-  componentWillUnmount() {
-    clearInterval(this.intervalId)
-    this.intervalId = null
-  }
-
-  pollSession = () => {
-    this.props.getUserSession()
   }
 
   onResend = () => {
     this.setState({ loading: true })
-    this.props.resendConfirmationEmail()
+    const param = {
+      email: this.props.userEmail
+    }
+    this.props.sendResetPasswordEmail(param)
   }
 
   render () {
@@ -94,11 +80,11 @@ class SignUpConfirmScreen extends React.Component {
 
         <View style={styles.innerContainer}>
           <Ionicons name="ios-mail" size={90} color={'#fff'} />
-          <Text style={styles.title}>Confirm email</Text>
-          <Text style={styles.title}>address</Text>
+          <Text style={styles.title}>Reset</Text>
+          <Text style={styles.title}>password</Text>
           <View style={styles.subTitleView}>
-            <Text style={styles.subTitle}>We have sent a confirmation</Text>
-            <Text style={styles.subTitle}>email to {userEmail}</Text>
+            <Text style={styles.subTitle}>We have sent instructions to</Text>
+            <Text style={styles.subTitle}>{userEmail}</Text>
           </View>
 
           <TouchableOpacity onPress={() => this.onResend()} style={styles.buttonView}>
@@ -116,11 +102,11 @@ class SignUpConfirmScreen extends React.Component {
   }
 }
 
-SignUpConfirmScreen.defaultProps = {
+ResetPasswordConfirmScreen.defaultProps = {
   userEmail: 'data-seed@gmail.com'
 }
 
-SignUpConfirmScreen.propTypes = {
+ResetPasswordConfirmScreen.propTypes = {
   userEmail: PropTypes.string
 }
 
@@ -129,11 +115,10 @@ const mapStateToProps = ({ user }) => ({
 })
 
 const mapDispatchToProps = dispatch => ({
-  resendConfirmationEmail: () => dispatch(resendConfirmationEmail()),
-  getUserSession: () => dispatch(getUserSession())
+  sendResetPasswordEmail: (data) => dispatch(sendResetPasswordEmail(data)),
 })
 
 export default connect(
   mapStateToProps,
   mapDispatchToProps
-)(SignUpConfirmScreen)
+)(ResetPasswordConfirmScreen)

@@ -600,11 +600,14 @@ class HomeScreen extends React.Component {
           />
         </Modal>
 
-        <ToasterComponent
-          isVisible={this.state.isShowToaster}
-          title={this.state.toasterTitle}
-          onPressButton={this.undoAction}
-        />
+        {this.state.isShowToaster && (
+          <ToasterComponent
+            isVisible={this.state.isShowToaster}
+            title={this.state.toasterTitle}
+            onPressButton={this.undoAction}
+          />
+        )}
+
       </SafeAreaView>
     )
   }

@@ -19,6 +19,7 @@ import Modal from "react-native-modal"
 import * as mime from 'react-native-mime-types'
 import ActionSheet from 'react-native-actionsheet'
 import _ from 'lodash'
+import ToasterComponent from '../../components/ToasterComponent'
 import CropImageScreen from '../CropImageScreen'
 import { userSignOut, getImageUrl, updateProfile } from '../../redux/user/actions'
 import { uploadFileToS3 } from '../../redux/card/actions'
@@ -33,6 +34,7 @@ const BELL_ICON = require('../../../assets/images/Bell/Blue.png')
 const QUOTE_ICON = require('../../../assets/images/Quote/Blue.png')
 const LOCK_ICON = require('../../../assets/images/Lock/Blue.png')
 const EDIT_ICON = require('../../../assets/images/Edit/Blue.png')
+const PROFILE_ICON = require('../../../assets/images/Profile/Blue.png')
 
 
 const ABOUT_ITEMS = [
@@ -44,7 +46,7 @@ const ABOUT_ITEMS = [
 
 const SETTING_ITEMS = [
   {
-    icon: <Image source={EDIT_ICON} style={styles.leftIcon} />,
+    icon: <Image source={PROFILE_ICON} style={styles.leftIcon} />,
     title: 'Profile'
   },
   {
@@ -66,7 +68,9 @@ class ProfileScreen extends React.Component {
     super(props)
     this.state = {
       avatarFile: {},
-      isCrop: false
+      isCrop: false,
+      isShowToaster: false,
+      toasterText: ''
     }
   }
 
@@ -79,6 +83,20 @@ class ProfileScreen extends React.Component {
 
     if (this.props.user.loading === 'USER_SIGNOUT_PENDING' && nextProps.user.loading === 'USER_SIGNOUT_FULFILLED') {
       Actions.LoginStartScreen()
+    }
+
+    if (this.props.user.loading === 'UPDATE_PROFILE_PENDING' && nextProps.user.loading === 'UPDATE_PROFILE_FULFILLED') {
+      this.setState({ isShowToaster: true, toasterText: 'Profile changed' })
+      setTimeout(() => {
+        this.setState({ isShowToaster: false })
+      }, 2000)
+    }
+
+    if (this.props.user.loading === 'UPDATE_PASSWORD_PENDING' && nextProps.user.loading === 'UPDATE_PASSWORD_FULFILLED') {
+      this.setState({ isShowToaster: true, toasterText: 'Password changed' })
+      setTimeout(() => {
+        this.setState({ isShowToaster: false })
+      }, 2000)
     }
   }
 
@@ -334,6 +352,15 @@ class ProfileScreen extends React.Component {
             onClose={() => this.setState({ isCrop: false })}
           />
         </Modal>
+
+        {this.state.isShowToaster && (
+          <ToasterComponent
+            isVisible={this.state.isShowToaster}
+            title={this.state.toasterText}
+            buttonTitle="OK"
+            onPressButton={() => this.setState({ isShowToaster: false })}
+          />
+        )}
 
       </View>
     )
