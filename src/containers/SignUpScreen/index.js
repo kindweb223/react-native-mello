@@ -228,7 +228,8 @@ class SignUpScreen extends React.Component {
       fullName,
       password,
       passwordScore,
-      isInvite
+      isInvite,
+      isTNC
     } = this.state
 
     let errors = []
@@ -300,30 +301,35 @@ class SignUpScreen extends React.Component {
     if (errors.length === 0) {
       const arr = _.split(fullName, ' ')
 
-      if (isInvite) {
-        const param = {
-          email: userEmail,
-          password: password,
-          firstName: arr[0],
-          lastName: arr[1],
-          tandcAccepted: this.state.isTNC,
-          validationToken: this.props.token,
-          jobTitle: ''
-        }
-
-        this.setState({ loading: true })
-        this.props.completeInvite(param)
+      if (!isTNC) {
+        Alert.alert(
+          'Warning',
+          'You must accept the Terms and Conditions'
+        )
       } else {
-        const param = {
-          email: userEmail,
-          password: password,
-          firstName: arr[0],
-          lastName: arr[1],
-          tandcAccepted: this.state.isTNC
-        }
-  
         this.setState({ loading: true })
-        this.props.userSignUp(param)
+
+        if (isInvite) {
+          const param = {
+            email: userEmail,
+            password: password,
+            firstName: arr[0],
+            lastName: arr[1],
+            tandcAccepted: true,
+            validationToken: this.props.token,
+            jobTitle: ''
+          }
+          this.props.completeInvite(param)
+        } else {
+          const param = {
+            email: userEmail,
+            password: password,
+            firstName: arr[0],
+            lastName: arr[1],
+            tandcAccepted: true
+          }
+          this.props.userSignUp(param)
+        }
       }
     }
   }
