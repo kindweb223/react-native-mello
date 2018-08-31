@@ -49,7 +49,6 @@ export default {
     fontSize: 16,
   },
   shareButtonText: {
-    color: COLORS.PURPLE,
     fontSize: 14,
     marginLeft: 8,
     fontWeight: '600'
