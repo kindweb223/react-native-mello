@@ -188,8 +188,20 @@ class ProfileScreen extends React.Component {
     }
   }
 
-  handleAboutItem = () => {
-
+  handleAboutItem = (item, index) => {
+    switch(index) {
+      case 0:
+        return
+      case 1:
+        return
+      case 2:
+        return
+      case 3:
+        Actions.ProfileTermsAndConditionsScreen()
+        return
+      default:
+        return
+    }
   }
 
   render () {
@@ -276,9 +288,9 @@ class ProfileScreen extends React.Component {
                 <FlatList
                   data={ABOUT_ITEMS}
                   keyExtractor={item => item}
-                  renderItem={({ item }) => (
+                  renderItem={({ item, index }) => (
                     <TouchableOpacity
-                      onPress={() => this.handleAboutItem(item)}
+                      onPress={() => this.handleAboutItem(item, index)}
                       activeOpacity={0.8}
                       style={styles.itemView}
                     >

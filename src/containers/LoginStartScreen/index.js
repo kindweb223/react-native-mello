@@ -59,13 +59,17 @@ class LoginStartScreen extends React.Component {
     const { email } = this.state
 
     if (prevProps.user.loading === 'USER_LOOKUP_PENDING' && user.loading === 'USER_LOOKUP_FULFILLED') {
-      this.setState({ loading: false })
-      Actions.LoginScreen({ userData: user.userLookup })
+      this.setState({ loading: false }, () => {
+        Actions.LoginScreen({ userData: user.userLookup })
+      })
     }
 
     if (prevProps.user.loading === 'USER_LOOKUP_PENDING' && user.loading === 'USER_LOOKUP_REJECTED') {
-      this.setState({ loading: false })
-      Actions.SignUpScreen({ userEmail: email })
+      this.setState({ loading: false }, () => {
+        if (user.error.code === 'error.user.email.not.found') {
+          Actions.SignUpScreen({ userEmail: email })
+        }
+      })
     }
   }
 

@@ -88,7 +88,9 @@ class LoginScreen extends React.Component {
 
     if (prevProps.user.loading === 'SEND_RESET_PASSWORD_EMAIL_PENDING' && this.props.user.loading === 'SEND_RESET_PASSWORD_EMAIL_FULFILLED') {
       this.setState({ loading: false }, () => {
-        Actions.ResetPasswordConfirmScreen({ userEmail: this.props.userData.email })
+        if (!this.props.user.userInfo) {
+          Actions.ResetPasswordConfirmScreen({ userEmail: this.props.userData.email })
+        }
       })
     }
   }

@@ -106,7 +106,7 @@ class TermsAndConditionsScreen extends React.Component {
             </View>
           </ScrollView>
 
-          <View style={styles.arrowView}>
+          {/* <View style={styles.arrowView}>
             <TouchableOpacity
               activeOpacity={0.9}
               onPress={() => this.onScrollDown()}
@@ -118,7 +118,7 @@ class TermsAndConditionsScreen extends React.Component {
                 }
               </View>
             </TouchableOpacity>
-          </View>
+          </View> */}
         </View> 
       </View>
     )
