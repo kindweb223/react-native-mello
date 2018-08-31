@@ -317,21 +317,24 @@ export default function user(state = initialState, action = {}) {
     * Confirm user's account
     */
     case types.USER_CONFIRM_ACCOUNT_PENDING:
+      console.log('USER_CONFIRM_ACCOUNT_PENDING')
       return {
         ...state,
         loading: types.USER_CONFIRM_ACCOUNT_PENDING,
       }
     case types.USER_CONFIRM_ACCOUNT_FULFILLED: {
+      console.log('USER_CONFIRM_ACCOUNT_FULFILLED')
       return {
         ...state,
         loading: types.USER_CONFIRM_ACCOUNT_FULFILLED,
       }
     }
     case types.USER_CONFIRM_ACCOUNT_REJECTED: {
+      console.log('USER_CONFIRM_ACCOUNT_REJECTED')
       return {
         ...state,
         loading: types.USER_CONFIRM_ACCOUNT_REJECTED,
-        error: action.error,
+        error: action.error.response.data
       }
     }
     /**

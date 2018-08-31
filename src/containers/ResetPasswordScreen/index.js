@@ -183,7 +183,7 @@ class ResetPasswordScreen extends React.Component {
                   handleChange={text => this.changePassword(text)}
                   onFocus={() => this.onPasswordFocus(true)}
                   onBlur={() => this.onPasswordFocus(false)}
-                  onSubmitEditing={() => this.onSignUp()}
+                  onSubmitEditing={() => this.onContinue()}
                 >
                   <TouchableOpacity onPress={() => this.setState({ isSecure: !isSecure}) } activeOpacity={0.8}>
                     <View style={styles.passwordPreview}>
