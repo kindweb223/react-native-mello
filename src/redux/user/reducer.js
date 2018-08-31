@@ -36,7 +36,8 @@ export default function user(state = initialState, action = {}) {
       return {
         ...state,
         userLookup: null,
-        loading: types.USER_LOOKUP_REJECTED
+        loading: types.USER_LOOKUP_REJECTED,
+        error: action.error.response.data
       }
     }
     /**
