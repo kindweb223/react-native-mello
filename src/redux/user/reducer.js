@@ -376,6 +376,54 @@ export default function user(state = initialState, action = {}) {
       }
     }
     /**
+     * Validate invite
+     */
+    case types.VALIDATE_INVITE_PENDING:
+      console.log('VALIDATE_INVITE_PENDING:')
+      return {
+        ...state,
+        loading: types.VALIDATE_INVITE_PENDING,
+      }
+    case types.VALIDATE_INVITE_FULFILLED: {
+      console.log('VALIDATE_INVITE_FULFILLED: ', action.result)
+      return {
+        ...state,
+        loading: types.VALIDATE_INVITE_FULFILLED,
+      }
+    }
+    case types.VALIDATE_INVITE_REJECTED: {
+      console.log('VALIDATE_INVITE_REJECTED: ', action.error)
+      return {
+        ...state,
+        loading: types.VALIDATE_INVITE_REJECTED,
+        error: action.error.response.data
+      }
+    }
+    /**
+     * Complete invite
+     */
+    case types.COMPLETE_INVITE_PENDING:
+      console.log('COMPLETE_INVITE_PENDING:')
+      return {
+        ...state,
+        loading: types.COMPLETE_INVITE_PENDING,
+      }
+    case types.COMPLETE_INVITE_FULFILLED: {
+      console.log('COMPLETE_INVITE_FULFILLED: ', action.result)
+      return {
+        ...state,
+        loading: types.COMPLETE_INVITE_FULFILLED,
+      }
+    }
+    case types.COMPLETE_INVITE_REJECTED: {
+      console.log('COMPLETE_INVITE_REJECTED: ', action.error)
+      return {
+        ...state,
+        loading: types.COMPLETE_INVITE_REJECTED,
+        error: action.error.response.data
+      }
+    }
+    /**
      * set userinfo from storage
      */
     case types.SET_USER_INFO: {
