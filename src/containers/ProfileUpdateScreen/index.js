@@ -72,7 +72,9 @@ class ProfileUpdateScreen extends React.Component {
 
     if (prevProps.user.loading === 'SEND_RESET_PASSWORD_EMAIL_PENDING' && user.loading === 'SEND_RESET_PASSWORD_EMAIL_FULFILLED') {
       this.setState({ loading: false }, () => {
-        Actions.ResetPasswordConfirmScreen({ userEmail: this.state.userEmail })
+        if (user.userInfo) {
+          Actions.ProfileResetPasswordConfirmScreen({ userEmail: this.state.userEmail })
+        }
       })
     }
   }
@@ -221,11 +223,14 @@ class ProfileUpdateScreen extends React.Component {
   }
 
   onForgotPassword = () => {
-    this.setState({ loading: true })
-    const param = {
-      email: this.state.userEmail
-    }
-    this.props.sendResetPasswordEmail(param)
+    this.setState({ loading: true }, () => {
+      if (this.state.loading) {
+        const param = {
+          email: this.state.userEmail
+        }
+        this.props.sendResetPasswordEmail(param)
+      }
+    })
   }
 
   render () {
