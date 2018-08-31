@@ -11,7 +11,7 @@ import {
 import PropTypes from 'prop-types'
 
 import { Actions } from 'react-native-router-flux'
-import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons'
+import Ionicons from 'react-native-vector-icons/Ionicons'
 
 import styles from './styles'
 import CONSTANTS from '../../service/constants'
@@ -61,7 +61,6 @@ export default class WebMetaList extends React.Component {
         <TouchableOpacity 
           style={styles.buttonContainer}
           activeOpacity={0.7}
-          onLongPress={() => this.onLongPressLink(index)}
           onPress={() => this.onPressLink(index)}
         >
           <Image style={styles.imageCover} source={{uri: item.imageUrl}} resizeMode='cover' />
@@ -75,7 +74,9 @@ export default class WebMetaList extends React.Component {
           activeOpacity={0.8}
           onPress={() => this.onRemove(index)}
         >
-          <MaterialCommunityIcons name="close" size={18} color={'#fff'} />
+          <View style={styles.closeSubButtonContainer}>
+            <Ionicons name="md-close" size={18} color={'#fff'} style={{marginTop: 2, marginLeft: 1}} />
+          </View>
         </TouchableOpacity>
       </Animated.View>
     )

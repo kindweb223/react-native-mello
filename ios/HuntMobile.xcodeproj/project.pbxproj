@@ -43,6 +43,7 @@
 		4D155804DAC84ABD8370724D /* FontAwesome5_Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 9AFE45238BF344909F881B0C /* FontAwesome5_Regular.ttf */; };
 		4F7697CE36E840CDA629D4D2 /* Entypo.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 49E66C7627DA4206B745FC76 /* Entypo.ttf */; };
 		5BAD52376C3246DB8B4CA79D /* Feather.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 6DCC07EC76FC4C7FB3BBECE6 /* Feather.ttf */; };
+		5C9BF4F2C94A4571930C46A7 /* libReactNativeShareExtension.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 2D6F67447A8D4C5790DBBE1E /* libReactNativeShareExtension.a */; };
 		5D4845C5F9C349359FEE44B4 /* libRNFetchBlob.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 644B2D9A94784859B6ECCCD3 /* libRNFetchBlob.a */; };
 		5E9157361DD0AC6A00FF2AA8 /* libRCTAnimation.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 5E9157331DD0AC6500FF2AA8 /* libRCTAnimation.a */; };
 		616841DB94F14927B791ECFB /* libFastImage.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 77E9C8AEA81B42B39062B950 /* libFastImage.a */; };
@@ -52,25 +53,27 @@
 		8279C7EF12BA49AAA09783C7 /* Foundation.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 967ED53775644A5E9E9E82CB /* Foundation.ttf */; };
 		832341BD1AAA6AB300B99B32 /* libRCTText.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 832341B51AAA6A8300B99B32 /* libRCTText.a */; };
 		8D2B584D1B954CA58C0936B6 /* SimpleLineIcons.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 2E7C184AF38D495CA598BB2B /* SimpleLineIcons.ttf */; };
-		97E20135740443D8BF3AC8EA /* libReactNativeShareExtension.a in Frameworks */ = {isa = PBXBuildFile; fileRef = B29A417A1AAC4FEAAC44CDDC /* libReactNativeShareExtension.a */; };
 		9984E80312CC41B9AA567B8E /* EvilIcons.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 6DDC407B5B624A7C8F6AD515 /* EvilIcons.ttf */; };
-		A43563D52138358C00A6D4EA /* MainInterface.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = A43563D32138358C00A6D4EA /* MainInterface.storyboard */; };
-		A43563D92138358C00A6D4EA /* HuntMobileEx.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = A43563CE2138358B00A6D4EA /* HuntMobileEx.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
-		A43563DF2138361B00A6D4EA /* HuntMobileEx.m in Sources */ = {isa = PBXBuildFile; fileRef = A43563DE2138361B00A6D4EA /* HuntMobileEx.m */; };
-		A435641C21383B3700A6D4EA /* libRCTActionSheet.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 00C302AC1ABCB8CE00DB3ED1 /* libRCTActionSheet.a */; };
-		A435641D21383B3700A6D4EA /* libRCTAnimation.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 5E9157331DD0AC6500FF2AA8 /* libRCTAnimation.a */; };
-		A435641E21383B3700A6D4EA /* libRCTGeolocation.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 00C302BA1ABCB90400DB3ED1 /* libRCTGeolocation.a */; };
-		A435641F21383B3700A6D4EA /* libRCTImage.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 00C302C01ABCB91800DB3ED1 /* libRCTImage.a */; };
-		A435642121383B3700A6D4EA /* libRCTLinking.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 78C398B91ACF4ADC00677621 /* libRCTLinking.a */; };
-		A435642221383B3700A6D4EA /* libRCTNetwork.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 00C302DC1ABCB9D200DB3ED1 /* libRCTNetwork.a */; };
-		A435642321383B3700A6D4EA /* libRCTSettings.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 139105C11AF99BAD00B5F7CC /* libRCTSettings.a */; };
-		A435642421383B3700A6D4EA /* libRCTText.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 832341B51AAA6A8300B99B32 /* libRCTText.a */; };
-		A435642521383B3700A6D4EA /* libRCTVibration.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 00C302E41ABCB9EE00DB3ED1 /* libRCTVibration.a */; };
-		A435642621383B3700A6D4EA /* libRCTWebSocket.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 139FDEF41B06529B00C62182 /* libRCTWebSocket.a */; };
-		A435642721383B3700A6D4EA /* libReact.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 146834041AC3E56700842450 /* libReact.a */; };
-		A43564F5213881DD00A6D4EA /* libRCTBlob.a in Frameworks */ = {isa = PBXBuildFile; fileRef = ADBDB9271DFEBF0700ED6528 /* libRCTBlob.a */; };
-		A43564F62138834D00A6D4EA /* libReactNativeShareExtension.a in Frameworks */ = {isa = PBXBuildFile; fileRef = A43563BE2138317700A6D4EA /* libReactNativeShareExtension.a */; };
+		A450133E2139BEE600A78D65 /* libRCTActionSheet.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 00C302AC1ABCB8CE00DB3ED1 /* libRCTActionSheet.a */; };
+		A450133F2139BEE600A78D65 /* libRCTAnimation.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 5E9157331DD0AC6500FF2AA8 /* libRCTAnimation.a */; };
+		A45013402139BEE600A78D65 /* libRCTAnimation.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 5E9157351DD0AC6500FF2AA8 /* libRCTAnimation.a */; };
+		A45013422139BEE600A78D65 /* libRCTGeolocation.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 00C302BA1ABCB90400DB3ED1 /* libRCTGeolocation.a */; };
+		A45013432139BEE700A78D65 /* libRCTImage.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 00C302C01ABCB91800DB3ED1 /* libRCTImage.a */; };
+		A45013442139BEE700A78D65 /* libRCTLinking.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 78C398B91ACF4ADC00677621 /* libRCTLinking.a */; };
+		A45013452139BEE700A78D65 /* libRCTNetwork.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 00C302DC1ABCB9D200DB3ED1 /* libRCTNetwork.a */; };
+		A45013462139BEE700A78D65 /* libRCTSettings.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 139105C11AF99BAD00B5F7CC /* libRCTSettings.a */; };
+		A45013472139BEE700A78D65 /* libRCTText.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 832341B51AAA6A8300B99B32 /* libRCTText.a */; };
+		A45013482139BEE700A78D65 /* libRCTVibration.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 00C302E41ABCB9EE00DB3ED1 /* libRCTVibration.a */; };
+		A45013492139BEE700A78D65 /* libRCTWebSocket.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 139FDEF41B06529B00C62182 /* libRCTWebSocket.a */; };
+		A450134A2139BEE700A78D65 /* libReact.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 146834041AC3E56700842450 /* libReact.a */; };
+		A450134B2139BEE700A78D65 /* libReactNativeShareExtension.a in Frameworks */ = {isa = PBXBuildFile; fileRef = A4CD66E82139B77E00874CB1 /* libReactNativeShareExtension.a */; };
+		A450134D2139BFA200A78D65 /* libRCTBlob.a in Frameworks */ = {isa = PBXBuildFile; fileRef = ADBDB9271DFEBF0700ED6528 /* libRCTBlob.a */; };
+		A450134E2139BFA200A78D65 /* libRNFetchBlob.a in Frameworks */ = {isa = PBXBuildFile; fileRef = B547AE5721370AB60004D6D5 /* libRNFetchBlob.a */; };
 		A4BF285821234CFE0054D7A9 /* CloudKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A4BF285721234CFE0054D7A9 /* CloudKit.framework */; };
+		A4CD66922139B68000874CB1 /* ShareViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = A4CD66912139B68000874CB1 /* ShareViewController.m */; };
+		A4CD66952139B68000874CB1 /* MainInterface.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = A4CD66932139B68000874CB1 /* MainInterface.storyboard */; };
+		A4CD66992139B68000874CB1 /* HuntMobileEx.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = A4CD668E2139B67F00874CB1 /* HuntMobileEx.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		A4CD669E2139B72A00874CB1 /* HuntMobileEx.m in Sources */ = {isa = PBXBuildFile; fileRef = A4CD669D2139B72A00874CB1 /* HuntMobileEx.m */; };
 		ADBDB9381DFEBF1600ED6528 /* libRCTBlob.a in Frameworks */ = {isa = PBXBuildFile; fileRef = ADBDB9271DFEBF0700ED6528 /* libRCTBlob.a */; };
 		BB896AB9E6414964B0B4FC39 /* Zocial.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 6ABC6722E2BF4E8E89696E69 /* Zocial.ttf */; };
 		BDF2DA279A484FA7B04A157F /* FontAwesome.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 7574CA4FAF3A401FBE3E75F4 /* FontAwesome.ttf */; };
@@ -355,20 +358,6 @@
 			remoteGlobalIDString = A287971D1DE0C0A60081BDFA;
 			remoteInfo = FastImage;
 		};
-		A43563BD2138317700A6D4EA /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 0C7616BE4D3042208290CD0C /* ReactNativeShareExtension.xcodeproj */;
-			proxyType = 2;
-			remoteGlobalIDString = 41B5DE301D0B505800949BD5;
-			remoteInfo = ReactNativeShareExtension;
-		};
-		A43563D72138358C00A6D4EA /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 83CBB9F71A601CBA00E9B192 /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = A43563CD2138358B00A6D4EA;
-			remoteInfo = HuntMobileEx;
-		};
 		A48B0099210F6C68001C33B5 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = DDF2F7A8F2BB4EE4B265F759 /* RNImagePicker.xcodeproj */;
@@ -389,6 +378,20 @@
 			proxyType = 2;
 			remoteGlobalIDString = 9D23B34F1C767B80008B4819;
 			remoteInfo = ReactNativePermissions;
+		};
+		A4CD66972139B68000874CB1 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 83CBB9F71A601CBA00E9B192 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = A4CD668D2139B67F00874CB1;
+			remoteInfo = HuntMobileEx;
+		};
+		A4CD66E72139B77E00874CB1 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 4DDC0A44CB55444597FFC4D6 /* ReactNativeShareExtension.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 41B5DE301D0B505800949BD5;
+			remoteInfo = ReactNativeShareExtension;
 		};
 		ADBDB9261DFEBF0700ED6528 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
@@ -448,7 +451,7 @@
 			dstPath = "";
 			dstSubfolderSpec = 13;
 			files = (
-				A43563D92138358C00A6D4EA /* HuntMobileEx.appex in Embed App Extensions */,
+				A4CD66992139B68000874CB1 /* HuntMobileEx.appex in Embed App Extensions */,
 			);
 			name = "Embed App Extensions";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -466,7 +469,6 @@
 		00E356F11AD99517003FC87E /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		00E356F21AD99517003FC87E /* HuntMobileTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = HuntMobileTests.m; sourceTree = "<group>"; };
 		02E97D88AA95480983B98802 /* RNVectorIcons.xcodeproj */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = "wrapper.pb-project"; name = RNVectorIcons.xcodeproj; path = "../node_modules/react-native-vector-icons/RNVectorIcons.xcodeproj"; sourceTree = "<group>"; };
-		0C7616BE4D3042208290CD0C /* ReactNativeShareExtension.xcodeproj */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = "wrapper.pb-project"; name = ReactNativeShareExtension.xcodeproj; path = "../node_modules/react-native-share-extension/ios/ReactNativeShareExtension.xcodeproj"; sourceTree = "<group>"; };
 		139105B61AF99BAD00B5F7CC /* RCTSettings.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RCTSettings.xcodeproj; path = "../node_modules/react-native/Libraries/Settings/RCTSettings.xcodeproj"; sourceTree = "<group>"; };
 		139FDEE61B06529A00C62182 /* RCTWebSocket.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RCTWebSocket.xcodeproj; path = "../node_modules/react-native/Libraries/WebSocket/RCTWebSocket.xcodeproj"; sourceTree = "<group>"; };
 		13B07F961A680F5B00A75B9A /* HuntMobile.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = HuntMobile.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -482,10 +484,12 @@
 		2D02E47B1E0B4A5D006451C7 /* HuntMobile-tvOS.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "HuntMobile-tvOS.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		2D02E4901E0B4A5D006451C7 /* HuntMobile-tvOSTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "HuntMobile-tvOSTests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		2D16E6891FA4F8E400B85C8A /* libReact.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; path = libReact.a; sourceTree = BUILT_PRODUCTS_DIR; };
+		2D6F67447A8D4C5790DBBE1E /* libReactNativeShareExtension.a */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = archive.ar; path = libReactNativeShareExtension.a; sourceTree = "<group>"; };
 		2E7C184AF38D495CA598BB2B /* SimpleLineIcons.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = SimpleLineIcons.ttf; path = "../node_modules/react-native-vector-icons/Fonts/SimpleLineIcons.ttf"; sourceTree = "<group>"; };
 		33BD4A274A84484B97C217E8 /* RNFetchBlob.xcodeproj */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = "wrapper.pb-project"; name = RNFetchBlob.xcodeproj; path = "../node_modules/rn-fetch-blob/ios/RNFetchBlob.xcodeproj"; sourceTree = "<group>"; };
 		47BA3513B6514BE58476D7B4 /* libRNImagePicker.a */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = archive.ar; path = libRNImagePicker.a; sourceTree = "<group>"; };
 		49E66C7627DA4206B745FC76 /* Entypo.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = Entypo.ttf; path = "../node_modules/react-native-vector-icons/Fonts/Entypo.ttf"; sourceTree = "<group>"; };
+		4DDC0A44CB55444597FFC4D6 /* ReactNativeShareExtension.xcodeproj */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = "wrapper.pb-project"; name = ReactNativeShareExtension.xcodeproj; path = "../node_modules/react-native-share-extension/ios/ReactNativeShareExtension.xcodeproj"; sourceTree = "<group>"; };
 		5E91572D1DD0AC6500FF2AA8 /* RCTAnimation.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RCTAnimation.xcodeproj; path = "../node_modules/react-native/Libraries/NativeAnimation/RCTAnimation.xcodeproj"; sourceTree = "<group>"; };
 		63B0B597FA904A7BBE354801 /* libReactNativeHaptic.a */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = archive.ar; path = libReactNativeHaptic.a; sourceTree = "<group>"; };
 		644B2D9A94784859B6ECCCD3 /* libRNFetchBlob.a */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = archive.ar; path = libRNFetchBlob.a; sourceTree = "<group>"; };
@@ -501,10 +505,6 @@
 		967ED53775644A5E9E9E82CB /* Foundation.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = Foundation.ttf; path = "../node_modules/react-native-vector-icons/Fonts/Foundation.ttf"; sourceTree = "<group>"; };
 		9AFE45238BF344909F881B0C /* FontAwesome5_Regular.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = FontAwesome5_Regular.ttf; path = "../node_modules/react-native-vector-icons/Fonts/FontAwesome5_Regular.ttf"; sourceTree = "<group>"; };
 		A325EC454F3344B38D48C594 /* ReactNativeHaptic.xcodeproj */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = "wrapper.pb-project"; name = ReactNativeHaptic.xcodeproj; path = "../node_modules/react-native-haptic/ios/ReactNativeHaptic.xcodeproj"; sourceTree = "<group>"; };
-		A43563CE2138358B00A6D4EA /* HuntMobileEx.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = HuntMobileEx.appex; sourceTree = BUILT_PRODUCTS_DIR; };
-		A43563D42138358C00A6D4EA /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/MainInterface.storyboard; sourceTree = "<group>"; };
-		A43563D62138358C00A6D4EA /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		A43563DE2138361B00A6D4EA /* HuntMobileEx.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = HuntMobileEx.m; sourceTree = "<group>"; };
 		A43563E0213837A200A6D4EA /* libSDWebImage iOS static.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; path = "libSDWebImage iOS static.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		A43563E2213837A200A6D4EA /* libSDWebImage watchOS static.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; path = "libSDWebImage watchOS static.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		A43563E4213837A200A6D4EA /* SDWebImage.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = SDWebImage.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -513,12 +513,17 @@
 		A43563EA213837A200A6D4EA /* SDWebImage.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = SDWebImage.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		A48B0150210F8F9C001C33B5 /* HuntMobile.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; name = HuntMobile.entitlements; path = HuntMobile/HuntMobile.entitlements; sourceTree = "<group>"; };
 		A4BF285721234CFE0054D7A9 /* CloudKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CloudKit.framework; path = System/Library/Frameworks/CloudKit.framework; sourceTree = SDKROOT; };
+		A4CD668E2139B67F00874CB1 /* HuntMobileEx.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = HuntMobileEx.appex; sourceTree = BUILT_PRODUCTS_DIR; };
+		A4CD66902139B68000874CB1 /* ShareViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ShareViewController.h; sourceTree = "<group>"; };
+		A4CD66912139B68000874CB1 /* ShareViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ShareViewController.m; sourceTree = "<group>"; };
+		A4CD66942139B68000874CB1 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/MainInterface.storyboard; sourceTree = "<group>"; };
+		A4CD66962139B68000874CB1 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		A4CD669D2139B72A00874CB1 /* HuntMobileEx.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = HuntMobileEx.m; sourceTree = "<group>"; };
 		A4CD76AA21198ECA002BE387 /* AssetsLibrary.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AssetsLibrary.framework; path = System/Library/Frameworks/AssetsLibrary.framework; sourceTree = SDKROOT; };
 		A4CD76D821198ED8002BE387 /* QuickLook.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuickLook.framework; path = System/Library/Frameworks/QuickLook.framework; sourceTree = SDKROOT; };
 		A4ED2C5426FB4A1DAD19663F /* libRNVectorIcons.a */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = archive.ar; path = libRNVectorIcons.a; sourceTree = "<group>"; };
 		A91519045FC74D37A0B5D694 /* MaterialCommunityIcons.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = MaterialCommunityIcons.ttf; path = "../node_modules/react-native-vector-icons/Fonts/MaterialCommunityIcons.ttf"; sourceTree = "<group>"; };
 		ADBDB91F1DFEBF0600ED6528 /* RCTBlob.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RCTBlob.xcodeproj; path = "../node_modules/react-native/Libraries/Blob/RCTBlob.xcodeproj"; sourceTree = "<group>"; };
-		B29A417A1AAC4FEAAC44CDDC /* libReactNativeShareExtension.a */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = archive.ar; path = libReactNativeShareExtension.a; sourceTree = "<group>"; };
 		B74E433CEE1F41BC9567AFCD /* ReactNativePermissions.xcodeproj */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = "wrapper.pb-project"; name = ReactNativePermissions.xcodeproj; path = "../node_modules/react-native-permissions/ios/ReactNativePermissions.xcodeproj"; sourceTree = "<group>"; };
 		B9577B0B9C0042FEBD2572D5 /* FontAwesome5_Brands.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = FontAwesome5_Brands.ttf; path = "../node_modules/react-native-vector-icons/Fonts/FontAwesome5_Brands.ttf"; sourceTree = "<group>"; };
 		C01A3DFF0BBD47CA8E552943 /* Octicons.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = Octicons.ttf; path = "../node_modules/react-native-vector-icons/Fonts/Octicons.ttf"; sourceTree = "<group>"; };
@@ -568,7 +573,7 @@
 				4C030DDBB9734D8CB1045CEB /* libBVLinearGradient.a in Frameworks */,
 				0A790EEC82F644B5A5380ED4 /* libRCTImageResizer.a in Frameworks */,
 				5D4845C5F9C349359FEE44B4 /* libRNFetchBlob.a in Frameworks */,
-				97E20135740443D8BF3AC8EA /* libReactNativeShareExtension.a in Frameworks */,
+				5C9BF4F2C94A4571930C46A7 /* libReactNativeShareExtension.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -595,23 +600,25 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		A43563CB2138358B00A6D4EA /* Frameworks */ = {
+		A4CD668B2139B67F00874CB1 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				A43564F5213881DD00A6D4EA /* libRCTBlob.a in Frameworks */,
-				A435641D21383B3700A6D4EA /* libRCTAnimation.a in Frameworks */,
-				A435642721383B3700A6D4EA /* libReact.a in Frameworks */,
-				A435641C21383B3700A6D4EA /* libRCTActionSheet.a in Frameworks */,
-				A435641E21383B3700A6D4EA /* libRCTGeolocation.a in Frameworks */,
-				A435641F21383B3700A6D4EA /* libRCTImage.a in Frameworks */,
-				A435642121383B3700A6D4EA /* libRCTLinking.a in Frameworks */,
-				A435642221383B3700A6D4EA /* libRCTNetwork.a in Frameworks */,
-				A435642321383B3700A6D4EA /* libRCTSettings.a in Frameworks */,
-				A435642421383B3700A6D4EA /* libRCTText.a in Frameworks */,
-				A435642521383B3700A6D4EA /* libRCTVibration.a in Frameworks */,
-				A435642621383B3700A6D4EA /* libRCTWebSocket.a in Frameworks */,
-				A43564F62138834D00A6D4EA /* libReactNativeShareExtension.a in Frameworks */,
+				A450134D2139BFA200A78D65 /* libRCTBlob.a in Frameworks */,
+				A450134E2139BFA200A78D65 /* libRNFetchBlob.a in Frameworks */,
+				A450133E2139BEE600A78D65 /* libRCTActionSheet.a in Frameworks */,
+				A450133F2139BEE600A78D65 /* libRCTAnimation.a in Frameworks */,
+				A45013402139BEE600A78D65 /* libRCTAnimation.a in Frameworks */,
+				A45013422139BEE600A78D65 /* libRCTGeolocation.a in Frameworks */,
+				A45013432139BEE700A78D65 /* libRCTImage.a in Frameworks */,
+				A45013442139BEE700A78D65 /* libRCTLinking.a in Frameworks */,
+				A45013452139BEE700A78D65 /* libRCTNetwork.a in Frameworks */,
+				A45013462139BEE700A78D65 /* libRCTSettings.a in Frameworks */,
+				A45013472139BEE700A78D65 /* libRCTText.a in Frameworks */,
+				A45013482139BEE700A78D65 /* libRCTVibration.a in Frameworks */,
+				A45013492139BEE700A78D65 /* libRCTWebSocket.a in Frameworks */,
+				A450134A2139BEE700A78D65 /* libReact.a in Frameworks */,
+				A450134B2139BEE700A78D65 /* libReactNativeShareExtension.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -815,7 +822,7 @@
 				E57D5DDA7F1640AB94755FB9 /* BVLinearGradient.xcodeproj */,
 				E1CBEF82D4354C2B972EC9F2 /* RCTImageResizer.xcodeproj */,
 				33BD4A274A84484B97C217E8 /* RNFetchBlob.xcodeproj */,
-				0C7616BE4D3042208290CD0C /* ReactNativeShareExtension.xcodeproj */,
+				4DDC0A44CB55444597FFC4D6 /* ReactNativeShareExtension.xcodeproj */,
 			);
 			name = Libraries;
 			sourceTree = "<group>";
@@ -835,7 +842,7 @@
 				13B07FAE1A68108700A75B9A /* HuntMobile */,
 				832341AE1AAA6A7D00B99B32 /* Libraries */,
 				00E356EF1AD99517003FC87E /* HuntMobileTests */,
-				A43563CF2138358C00A6D4EA /* HuntMobileEx */,
+				A4CD668F2139B68000874CB1 /* HuntMobileEx */,
 				83CBBA001A601CBA00E9B192 /* Products */,
 				2D16E6871FA4F8E400B85C8A /* Frameworks */,
 				4836FCAAE7F14E69A4ACF664 /* Resources */,
@@ -853,7 +860,7 @@
 				00E356EE1AD99517003FC87E /* HuntMobileTests.xctest */,
 				2D02E47B1E0B4A5D006451C7 /* HuntMobile-tvOS.app */,
 				2D02E4901E0B4A5D006451C7 /* HuntMobile-tvOSTests.xctest */,
-				A43563CE2138358B00A6D4EA /* HuntMobileEx.appex */,
+				A4CD668E2139B67F00874CB1 /* HuntMobileEx.appex */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -864,24 +871,6 @@
 				A40B3D5C2110EB62002B5EDB /* libFastImage.a */,
 			);
 			name = Products;
-			sourceTree = "<group>";
-		};
-		A43563BA2138317600A6D4EA /* Products */ = {
-			isa = PBXGroup;
-			children = (
-				A43563BE2138317700A6D4EA /* libReactNativeShareExtension.a */,
-			);
-			name = Products;
-			sourceTree = "<group>";
-		};
-		A43563CF2138358C00A6D4EA /* HuntMobileEx */ = {
-			isa = PBXGroup;
-			children = (
-				A43563D32138358C00A6D4EA /* MainInterface.storyboard */,
-				A43563D62138358C00A6D4EA /* Info.plist */,
-				A43563DE2138361B00A6D4EA /* HuntMobileEx.m */,
-			);
-			path = HuntMobileEx;
 			sourceTree = "<group>";
 		};
 		A48B0096210F6C68001C33B5 /* Products */ = {
@@ -904,6 +893,26 @@
 			isa = PBXGroup;
 			children = (
 				A48B0111210F7061001C33B5 /* libReactNativePermissions.a */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		A4CD668F2139B68000874CB1 /* HuntMobileEx */ = {
+			isa = PBXGroup;
+			children = (
+				A4CD66902139B68000874CB1 /* ShareViewController.h */,
+				A4CD66912139B68000874CB1 /* ShareViewController.m */,
+				A4CD66932139B68000874CB1 /* MainInterface.storyboard */,
+				A4CD66962139B68000874CB1 /* Info.plist */,
+				A4CD669D2139B72A00874CB1 /* HuntMobileEx.m */,
+			);
+			path = HuntMobileEx;
+			sourceTree = "<group>";
+		};
+		A4CD66E42139B77E00874CB1 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				A4CD66E82139B77E00874CB1 /* libReactNativeShareExtension.a */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -946,7 +955,7 @@
 				1AE0342E1F8E4EB593320F3B /* libBVLinearGradient.a */,
 				E11AA4DCF86945E6A2B20097 /* libRCTImageResizer.a */,
 				644B2D9A94784859B6ECCCD3 /* libRNFetchBlob.a */,
-				B29A417A1AAC4FEAAC44CDDC /* libReactNativeShareExtension.a */,
+				2D6F67447A8D4C5790DBBE1E /* libReactNativeShareExtension.a */,
 			);
 			name = "Recovered References";
 			sourceTree = "<group>";
@@ -1009,7 +1018,7 @@
 			buildRules = (
 			);
 			dependencies = (
-				A43563D82138358C00A6D4EA /* PBXTargetDependency */,
+				A4CD66982139B68000874CB1 /* PBXTargetDependency */,
 			);
 			name = HuntMobile;
 			productName = "Hello World";
@@ -1052,14 +1061,14 @@
 			productReference = 2D02E4901E0B4A5D006451C7 /* HuntMobile-tvOSTests.xctest */;
 			productType = "com.apple.product-type.bundle.unit-test";
 		};
-		A43563CD2138358B00A6D4EA /* HuntMobileEx */ = {
+		A4CD668D2139B67F00874CB1 /* HuntMobileEx */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = A43563DA2138358C00A6D4EA /* Build configuration list for PBXNativeTarget "HuntMobileEx" */;
+			buildConfigurationList = A4CD669A2139B68000874CB1 /* Build configuration list for PBXNativeTarget "HuntMobileEx" */;
 			buildPhases = (
-				A43563CA2138358B00A6D4EA /* Sources */,
-				A43563CB2138358B00A6D4EA /* Frameworks */,
-				A43563CC2138358B00A6D4EA /* Resources */,
-				A471D9F4213895D600C08895 /* ShellScript */,
+				A4CD668A2139B67F00874CB1 /* Sources */,
+				A4CD668B2139B67F00874CB1 /* Frameworks */,
+				A4CD668C2139B67F00874CB1 /* Resources */,
+				A4CD66F72139B93E00874CB1 /* Bundle React Native code and images */,
 			);
 			buildRules = (
 			);
@@ -1067,7 +1076,7 @@
 			);
 			name = HuntMobileEx;
 			productName = HuntMobileEx;
-			productReference = A43563CE2138358B00A6D4EA /* HuntMobileEx.appex */;
+			productReference = A4CD668E2139B67F00874CB1 /* HuntMobileEx.appex */;
 			productType = "com.apple.product-type.app-extension";
 		};
 /* End PBXNativeTarget section */
@@ -1109,7 +1118,7 @@
 						ProvisioningStyle = Automatic;
 						TestTargetID = 2D02E47A1E0B4A5D006451C7;
 					};
-					A43563CD2138358B00A6D4EA = {
+					A4CD668D2139B67F00874CB1 = {
 						CreatedOnToolsVersion = 9.4.1;
 						ProvisioningStyle = Automatic;
 					};
@@ -1196,8 +1205,8 @@
 					ProjectRef = B74E433CEE1F41BC9567AFCD /* ReactNativePermissions.xcodeproj */;
 				},
 				{
-					ProductGroup = A43563BA2138317600A6D4EA /* Products */;
-					ProjectRef = 0C7616BE4D3042208290CD0C /* ReactNativeShareExtension.xcodeproj */;
+					ProductGroup = A4CD66E42139B77E00874CB1 /* Products */;
+					ProjectRef = 4DDC0A44CB55444597FFC4D6 /* ReactNativeShareExtension.xcodeproj */;
 				},
 				{
 					ProductGroup = A48B00D2210F6ECE001C33B5 /* Products */;
@@ -1222,7 +1231,7 @@
 				00E356ED1AD99517003FC87E /* HuntMobileTests */,
 				2D02E47A1E0B4A5D006451C7 /* HuntMobile-tvOS */,
 				2D02E48F1E0B4A5D006451C7 /* HuntMobile-tvOSTests */,
-				A43563CD2138358B00A6D4EA /* HuntMobileEx */,
+				A4CD668D2139B67F00874CB1 /* HuntMobileEx */,
 			);
 		};
 /* End PBXProject section */
@@ -1487,13 +1496,6 @@
 			remoteRef = A40B3D5B2110EB62002B5EDB /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
-		A43563BE2138317700A6D4EA /* libReactNativeShareExtension.a */ = {
-			isa = PBXReferenceProxy;
-			fileType = archive.ar;
-			path = libReactNativeShareExtension.a;
-			remoteRef = A43563BD2138317700A6D4EA /* PBXContainerItemProxy */;
-			sourceTree = BUILT_PRODUCTS_DIR;
-		};
 		A48B009A210F6C68001C33B5 /* libRNImagePicker.a */ = {
 			isa = PBXReferenceProxy;
 			fileType = archive.ar;
@@ -1513,6 +1515,13 @@
 			fileType = archive.ar;
 			path = libReactNativePermissions.a;
 			remoteRef = A48B0110210F7061001C33B5 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		A4CD66E82139B77E00874CB1 /* libReactNativeShareExtension.a */ = {
+			isa = PBXReferenceProxy;
+			fileType = archive.ar;
+			path = libReactNativeShareExtension.a;
+			remoteRef = A4CD66E72139B77E00874CB1 /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
 		ADBDB9271DFEBF0700ED6528 /* libRCTBlob.a */ = {
@@ -1612,11 +1621,11 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		A43563CC2138358B00A6D4EA /* Resources */ = {
+		A4CD668C2139B67F00874CB1 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				A43563D52138358C00A6D4EA /* MainInterface.storyboard in Resources */,
+				A4CD66952139B68000874CB1 /* MainInterface.storyboard in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1651,13 +1660,14 @@
 			shellPath = /bin/sh;
 			shellScript = "export NODE_BINARY=node\n../node_modules/react-native/scripts/react-native-xcode.sh";
 		};
-		A471D9F4213895D600C08895 /* ShellScript */ = {
+		A4CD66F72139B93E00874CB1 /* Bundle React Native code and images */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
 			);
 			inputPaths = (
 			);
+			name = "Bundle React Native code and images";
 			outputPaths = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -1701,11 +1711,12 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		A43563CA2138358B00A6D4EA /* Sources */ = {
+		A4CD668A2139B67F00874CB1 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				A43563DF2138361B00A6D4EA /* HuntMobileEx.m in Sources */,
+				A4CD66922139B68000874CB1 /* ShareViewController.m in Sources */,
+				A4CD669E2139B72A00874CB1 /* HuntMobileEx.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1722,10 +1733,10 @@
 			target = 2D02E47A1E0B4A5D006451C7 /* HuntMobile-tvOS */;
 			targetProxy = 2D02E4911E0B4A5D006451C7 /* PBXContainerItemProxy */;
 		};
-		A43563D82138358C00A6D4EA /* PBXTargetDependency */ = {
+		A4CD66982139B68000874CB1 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			target = A43563CD2138358B00A6D4EA /* HuntMobileEx */;
-			targetProxy = A43563D72138358C00A6D4EA /* PBXContainerItemProxy */;
+			target = A4CD668D2139B67F00874CB1 /* HuntMobileEx */;
+			targetProxy = A4CD66972139B68000874CB1 /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
 
@@ -1739,10 +1750,10 @@
 			path = HuntMobile;
 			sourceTree = "<group>";
 		};
-		A43563D32138358C00A6D4EA /* MainInterface.storyboard */ = {
+		A4CD66932139B68000874CB1 /* MainInterface.storyboard */ = {
 			isa = PBXVariantGroup;
 			children = (
-				A43563D42138358C00A6D4EA /* Base */,
+				A4CD66942139B68000874CB1 /* Base */,
 			);
 			name = MainInterface.storyboard;
 			sourceTree = "<group>";
@@ -2155,7 +2166,7 @@
 			};
 			name = Release;
 		};
-		A43563DB2138358C00A6D4EA /* Debug */ = {
+		A4CD669B2139B68000874CB1 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				CLANG_ANALYZER_NONNULL = YES;
@@ -2182,13 +2193,14 @@
 				ENABLE_TESTABILITY = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu11;
 				GCC_NO_COMMON_BLOCKS = YES;
-				HEADER_SEARCH_PATHS = (
-					"$(inherited)",
-					"$(SRCROOT)/../node_modules/react-native-share-extension/ios/**",
-				);
+				HEADER_SEARCH_PATHS = "$(SRCROOT)/../node_modules/react-native-share-extension/ios";
 				INFOPLIST_FILE = HuntMobileEx/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @executable_path/../../Frameworks";
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
+				);
 				OTHER_LDFLAGS = (
 					"-ObjC",
 					"-lc++",
@@ -2200,7 +2212,7 @@
 			};
 			name = Debug;
 		};
-		A43563DC2138358C00A6D4EA /* Release */ = {
+		A4CD669C2139B68000874CB1 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				CLANG_ANALYZER_NONNULL = YES;
@@ -2227,13 +2239,14 @@
 				DEVELOPMENT_TEAM = "";
 				GCC_C_LANGUAGE_STANDARD = gnu11;
 				GCC_NO_COMMON_BLOCKS = YES;
-				HEADER_SEARCH_PATHS = (
-					"$(inherited)",
-					"$(SRCROOT)/../node_modules/react-native-share-extension/ios/**",
-				);
+				HEADER_SEARCH_PATHS = "$(SRCROOT)/../node_modules/react-native-share-extension/ios";
 				INFOPLIST_FILE = HuntMobileEx/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @executable_path/../../Frameworks";
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
+				);
 				OTHER_LDFLAGS = (
 					"-ObjC",
 					"-lc++",
@@ -2293,11 +2306,11 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		A43563DA2138358C00A6D4EA /* Build configuration list for PBXNativeTarget "HuntMobileEx" */ = {
+		A4CD669A2139B68000874CB1 /* Build configuration list for PBXNativeTarget "HuntMobileEx" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				A43563DB2138358C00A6D4EA /* Debug */,
-				A43563DC2138358C00A6D4EA /* Release */,
+				A4CD669B2139B68000874CB1 /* Debug */,
+				A4CD669C2139B68000874CB1 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
