@@ -159,7 +159,7 @@ class ShareScreen extends React.Component {
     const { linkShareModal, shareModalType, shareInviteeData } = this.state
     let { invitees } = data
     invitees = _.sortBy(invitees, invitee => invitee.id)
-    console.log('DATA: ', data)
+
     return (
       <View style={styles.overlay}>
         <View style={styles.header}>
