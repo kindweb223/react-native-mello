@@ -63,9 +63,7 @@ class AccountConfirmScreen extends React.Component {
         'Error',
         user.error.message
       )
-      this.setState({ loading: false }, () => {
-        Actions.LoginStartScreen()
-      })
+      Actions.LoginStartScreen()
     }
 
     if (prevProps.user.loading === 'GET_USER_SESSION_PENDING' && user.loading === 'GET_USER_SESSION_FULFILLED') {

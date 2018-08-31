@@ -66,8 +66,8 @@ class SignUpScreen extends React.Component {
   constructor(props) {
     super(props)
     this.state = {
-      password: 'Qwerty123',
-      fullName: 'FF LL',
+      password: '',
+      fullName: '',
       userEmail: props.userEmail,
       loading: false,
       isError: false,
@@ -75,7 +75,7 @@ class SignUpScreen extends React.Component {
       errorMsg: '',
       passwordScore: 0,
       isPasswordFocus: false,
-      isTNC: true,
+      isTNC: false,
       avatarFile: {},
       fieldErrors: [
         {
