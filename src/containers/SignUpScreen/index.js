@@ -29,7 +29,7 @@ import _ from 'lodash'
 import KeyboardScrollView from '../../components/KeyboardScrollView'
 import LoadingScreen from '../LoadingScreen'
 import TextInputComponent from '../../components/TextInputComponent'
-import { userSignUp, getImageUrl, updateProfile } from '../../redux/user/actions'
+import { userSignUp, getImageUrl, updateProfile, validateInvite, completeInvite } from '../../redux/user/actions'
 import { uploadFileToS3 } from '../../redux/card/actions'
 import COLORS from '../../service/colors'
 import CONSTANTS from '../../service/constants'
@@ -83,7 +83,22 @@ class SignUpScreen extends React.Component {
           field: '',
           message: ''
         }
-      ]
+      ],
+      isInvite: props.isInvite
+    }
+  }
+
+  componentWillMount() {
+    const { token } = this.props
+    const { isInvite } = this.state
+
+    if (isInvite) {
+      const param = {
+        validationToken: token,
+        email: this.state.userEmail
+      }
+      this.setState({ loading: true })
+      this.props.validateInvite(param)
     }
   }
 
@@ -133,6 +148,28 @@ class SignUpScreen extends React.Component {
         this.props.user.loading === 'UPLOAD_FILE_REJECTED' ||
         this.props.user.loading === 'UPDATE_PROFILE_REJECTED') {
       this.setState({ loading: false })
+    }
+
+    if (prevProps.user.loading === 'VALIDATE_INVITE_PENDING' && this.props.user.loading === 'VALIDATE_INVITE_FULFILLED') {
+      this.setState({ loading: false })
+    }
+
+    if (prevProps.user.loading === 'VALIDATE_INVITE_PENDING' && this.props.user.loading === 'VALIDATE_INVITE_REJECTED') {
+      this.setState({ loading: false, isInvite: false })
+    }
+
+    if (prevProps.user.loading === 'COMPLETE_INVITE_PENDING' && this.props.user.loading === 'COMPLETE_INVITE_FULFILLED') {
+      this.setState({ loading: false })
+    }
+
+    if (prevProps.user.loading === 'COMPLETE_INVITE_PENDING' && this.props.user.loading === 'COMPLETE_INVITE_REJECTED') {
+      const { error } = this.props.user
+      this.setState({ loading: false }, () => {
+        Alert.alert(
+          'Error',
+          error.message
+        )
+      })
     }
   }
 
@@ -185,7 +222,15 @@ class SignUpScreen extends React.Component {
   }
 
   onSignUp = () => {
-    const { fieldErrors, avatarFile, userEmail, fullName, password, passwordScore } = this.state
+    const {
+      fieldErrors,
+      userEmail,
+      fullName,
+      password,
+      passwordScore,
+      isInvite
+    } = this.state
+
     let errors = []
 
     if (fullName.length === 0) {
@@ -254,16 +299,32 @@ class SignUpScreen extends React.Component {
 
     if (errors.length === 0) {
       const arr = _.split(fullName, ' ')
-      const param = {
-        email: userEmail,
-        password: password,
-        firstName: arr[0],
-        lastName: arr[1],
-        tandcAccepted: this.state.isTNC
-      }
 
-      this.setState({ loading: true })
-      this.props.userSignUp(param)
+      if (isInvite) {
+        const param = {
+          email: userEmail,
+          password: password,
+          firstName: arr[0],
+          lastName: arr[1],
+          tandcAccepted: this.state.isTNC,
+          validationToken: this.props.token,
+          jobTitle: ''
+        }
+
+        this.setState({ loading: true })
+        this.props.completeInvite(param)
+      } else {
+        const param = {
+          email: userEmail,
+          password: password,
+          firstName: arr[0],
+          lastName: arr[1],
+          tandcAccepted: this.state.isTNC
+        }
+  
+        this.setState({ loading: true })
+        this.props.userSignUp(param)
+      }
     }
   }
 
@@ -495,11 +556,15 @@ class SignUpScreen extends React.Component {
 }
 
 SignUpScreen.defaultProps = {
-  userEmail: ''
+  userEmail: '',
+  isInvite: false,
+  token: 'null'
 }
 
 SignUpScreen.propTypes = {
-  userEmail: PropTypes.string
+  userEmail: PropTypes.string,
+  isInvite: PropTypes.bool,
+  token: PropTypes.string
 }
 
 const mapStateToProps = ({ user }) => ({
@@ -511,6 +576,8 @@ const mapDispatchToProps = dispatch => ({
   getImageUrl: (data) => dispatch(getImageUrl(data)),
   updateProfile: (userId, data) => dispatch(updateProfile(userId, data)),
   uploadFileToS3: (signedUrl, file, fileName, mimeType) => dispatch(uploadFileToS3(signedUrl, file, fileName, mimeType)),
+  validateInvite: (data) => dispatch(validateInvite(data)),
+  completeInvite: (data) => dispatch(completeInvite(data))
 })
 
 export default connect(

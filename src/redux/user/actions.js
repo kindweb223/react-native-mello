@@ -229,3 +229,37 @@ export const resetPassword = (data) => {
       })  
   };
 }
+
+/**
+ * Validata invite token
+ */
+export const validateInvite = (data) => {
+  let url = 'users/invite/validate'
+
+  return {
+    types: [types.VALIDATE_INVITE_PENDING, types.VALIDATE_INVITE_FULFILLED, types.VALIDATE_INVITE_REJECTED],
+    promise:
+      axios({
+        method: 'post',
+        url,
+        data
+      })  
+  }
+}
+
+/**
+ * Complete Invite
+ */
+export const completeInvite = (data) => {
+  let url = 'users/invite/complete'
+
+  return {
+    types: [types.COMPLETE_INVITE_PENDING, types.COMPLETE_INVITE_FULFILLED, types.COMPLETE_INVITE_REJECTED],
+    promise:
+      axios({
+        method: 'post',
+        url,
+        data
+      })  
+  }
+}
