@@ -156,6 +156,7 @@ export default class Root extends React.Component {
               <Scene key="ProfileScreen" component={ ProfileScreen } hideNavBar panHandlers={null} />
               <Scene key="ProfileUpdateScreen" component={ ProfileUpdateScreen } hideNavBar panHandlers={null} />
               <Scene key="ProfileResetPasswordConfirmScreen" component={ ResetPasswordConfirmScreen } hideNavBar panHandlers={null} />
+              <Scene key="ProfileTermsAndConditionsScreen" component={ TermsAndConditionsScreen } hideNavBar panHandlers={null} />
             </Stack>
           </Stack>
         </Modal>
