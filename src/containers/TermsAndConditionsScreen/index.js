@@ -18,6 +18,7 @@ import COLORS from '../../service/colors'
 import CONSTANTS from '../../service/constants'
 import styles from './styles'
 import markdownStyles from './markdownStyles'
+import { TNC_URL } from '../../service/api'
 
 const Gradient = () => {
   return(
@@ -48,7 +49,7 @@ class TermsAndConditionsScreen extends React.Component {
 
   async componentWillMount() {
     this.setState({ loading: true })
-    await RNFetchBlob.fetch('GET', 'https://d5qq4b94z26us.cloudfront.net/feedo/legal/TandC.md')
+    await RNFetchBlob.fetch('GET', TNC_URL)
     .then((res) => {
       this.setState({ loading: false })
       let status = res.info().status
