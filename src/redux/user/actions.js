@@ -187,10 +187,10 @@ export const confirmAccount = (token) => {
   }
 
   return {
-    types: [types.USER_CONFIRM_ACCOUNT_PENDING, types.USER_CONFIRM_ACCOUNT_FULFILLED, types.USER_CONFIRM_ACCOUNT_EJECTED],
+    types: [types.USER_CONFIRM_ACCOUNT_PENDING, types.USER_CONFIRM_ACCOUNT_FULFILLED, types.USER_CONFIRM_ACCOUNT_REJECTED],
     promise:
       axios({
-        method: 'put',
+        method: 'post',
         url,
         data
       })

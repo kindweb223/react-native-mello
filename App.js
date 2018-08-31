@@ -12,9 +12,9 @@ import {
 import { createStore, applyMiddleware } from 'redux'
 import { Provider } from 'react-redux'
 import thunk from 'redux-thunk'
+import _ from 'lodash'
 import promiseMiddleware from './src/service/promiseMiddleware'
 import { Actions, Scene, Router, Modal, Lightbox, Stack } from 'react-native-router-flux'
-import DeepLinking from 'react-native-deep-linking'
 import axios from 'axios'
 import CONSTANTS from './src/service/constants'
 import COLORS from './src/service/colors'
@@ -60,13 +60,13 @@ import ResetPasswordConfirmScreen from './src/containers/ResetPasswordConfirmScr
 import ResetPasswordScreen from './src/containers/ResetPasswordScreen'
 
 const store = createStore(reducers, applyMiddleware(thunk, promiseMiddleware))
-// crossroads.addRoute('confirm/{token}', token => Actions.confirm({ token, deepLinking: true }))
 
 export default class Root extends React.Component {
   constructor(props) {
     super(props)
     this.state = {
-      loading: false
+      loading: true,
+      userInfo: null
     }
 
     this.handleOpenURL = this.handleOpenURL.bind(this)
@@ -74,21 +74,6 @@ export default class Root extends React.Component {
 
   componentDidMount() {
     YellowBox.ignoreWarnings(['Module RNDocumentPicker'])
-
-    Linking.getInitialURL()
-    .then((url) => {
-      if (url) {
-        Alert.alert('GET INIT URL', 'initial url ' + url)
-        this.resetStackToProperRoute(url)
-      }
-    })
-
-    // DeepLinking.addScheme(SCHEME)
-    Linking.addEventListener('url', this.handleOpenURL)
-
-    // DeepLinking.addRoute('/confirm/:token', res => {
-    //   Actions.confirm({ token: res['token'] })
-    // })
   }
 
   componentWillUnmount() {
@@ -97,17 +82,31 @@ export default class Root extends React.Component {
 
   resetStackToProperRoute = (url) => {
     Linking.canOpenURL(url).then((supported) => {
+      this.setState({ loading: false })
+
       if (supported) {
-        // DeepLinking.evaluateUrl(url)
-        let trailing = url.slice(url.lastIndexOf('/') + 1, url.length)
-        console.log('TRAILING: ', trailing)
+        let params = _.split(url, '/')
+        const path = params[params.length - 2]
+        console.log('TRAILING: ', params)
+
+        if (path === 'hunt') {  // Signup via invite
+        }
+
+        if (path === 'reset') { // Reset password
+          const token = params[params.length - 1]
+          Actions.ResetPasswordScreen({ token })
+        }
+
+        if (path === 'account') { // Confirm regstration
+          const token = url.slice(url.lastIndexOf('=') + 1, url.length)
+          Actions.confirm({ token, deepLinking: true })
+        }
+
       } else {
         if (Platform.OS === 'ios') {
           // Linking.openURL(`https://itunes.apple.com/${appStoreLocale}/app/${appName}/id${appStoreId}`);
         } else {
-          // Linking.openURL(
-          //   `https://play.google.com/store/apps/details?id=${playStoreId}`
-          // );
+          // Linking.openURL(`https://play.google.com/store/apps/details?id=${playStoreId}`);
         }
       }
     })
@@ -118,18 +117,26 @@ export default class Root extends React.Component {
   }
   
   async UNSAFE_componentWillMount() {
-    this.setState({ loading: true })
+    Linking.getInitialURL()
+    .then((url) => {
+      if (url) {
+        this.resetStackToProperRoute(url)
+      }
+    })
+
+    Linking.addEventListener('url', this.handleOpenURL)
+
     try {
       const xAuthToken = await AsyncStorage.getItem('xAuthToken')
       const userInfo = await AsyncStorage.getItem('userInfo')
       console.log('xAuthToken: ', xAuthToken)
+
       if (xAuthToken && userInfo) {
         axios.defaults.headers['x-auth-token'] = xAuthToken
         Actions.HomeScreen()
       }
       this.setState({ loading: false })
     } catch(error) {
-      console.log('error', error)
       this.setState({ loading: false })
     }
   }

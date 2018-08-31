@@ -65,6 +65,11 @@ class SignUpConfirmScreen extends React.Component {
         Actions.confirm({ token: 'null', deepLinking: false })
       }
     }
+
+    if (user.loading === 'USER_CONFIRM_ACCOUNT_FULFILLED' || user.loading === 'USER_CONFIRM_ACCOUNT_REJECTED') {
+      clearInterval(this.intervalId)
+      this.intervalId = null
+    }
   }
 
   componentWillUnmount() {

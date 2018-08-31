@@ -1,7 +1,8 @@
 import React from 'react'
 import {
   View,
-  Text
+  Text,
+  Alert
 } from 'react-native'
 import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
@@ -46,15 +47,25 @@ class AccountConfirmScreen extends React.Component {
     } else {
       setTimeout(() => {
         Actions.HomeScreen()
-      }, 2000)
+      }, 3000)
     }
   }
 
   componentDidUpdate(prevProps) {
     const { user, deepLinking } = this.props
 
-    if (prevProps.user.loading === 'USER_CONFIRM_ACCOUNT_PENDING' && user.loading === 'USER_CONFIRM_ACCOUNT_FULFILLED') {
+    if (user.loading === 'USER_CONFIRM_ACCOUNT_FULFILLED') {
       this.props.getUserSession()
+    }
+
+    if (user.loading === 'USER_CONFIRM_ACCOUNT_REJECTED') {
+      Alert.alert(
+        'Error',
+        user.error.message
+      )
+      this.setState({ loading: false }, () => {
+        Actions.LoginStartScreen()
+      })
     }
 
     if (prevProps.user.loading === 'GET_USER_SESSION_PENDING' && user.loading === 'GET_USER_SESSION_FULFILLED') {
