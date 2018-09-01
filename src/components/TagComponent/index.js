@@ -111,6 +111,10 @@ class Tags extends React.Component {
     });
   }
 
+  onSubmitEditing() {
+    this.onCreateTag();
+  }
+
   renderEdit() {
     if (!this.props.readonly) {
       return (
@@ -119,7 +123,8 @@ class Tags extends React.Component {
             ref={ref => this.tagInputRef = ref}
             style={[styles.textInput, this.props.inputStyle, this.state.isHideCursor && {maxWidth: 50}]}
             maxLength={40}
-            autoCapitalize="none"
+            autoCapitalize='none'
+            blurOnSubmit={false}
             autoCorrect={false} 
             underlineColorAndroid='transparent'
             placeholder={this.props.placeHolder}
@@ -127,7 +132,7 @@ class Tags extends React.Component {
             value={this.state.tagText}
             onChangeText={this.onChangeText.bind(this)}
             onKeyPress={this.onKeyPress.bind(this)}
-            onSubmitEditing={() => this.onCreateTag()}
+            onSubmitEditing={() => this.onSubmitEditing()}
           />
           {
             this.state.isHideCursor &&

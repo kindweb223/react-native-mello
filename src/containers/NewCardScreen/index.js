@@ -24,7 +24,6 @@ import { DocumentPicker, DocumentPickerUtil } from 'react-native-document-picker
 import Permissions from 'react-native-permissions'
 import * as mime from 'react-native-mime-types'
 import _ from 'lodash';
-import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
 import validUrl from 'valid-url';
 import Modal from 'react-native-modal';
 
@@ -98,6 +97,7 @@ class NewCardScreen extends React.Component {
     this.animatedShow = new Animated.Value(0);
     this.animatedKeyboardHeight = new Animated.Value(0);
     this.scrollViewLayoutHeight = 0;
+    this.isVisibleErrorDialog = false;
   }
 
   UNSAFE_componentWillReceiveProps(nextProps) {
@@ -167,6 +167,9 @@ class NewCardScreen extends React.Component {
       this.setState({
         coverImage: nextProps.card.currentCard.coverImage,
       });
+      if (this.isOpenGraphForNewCard) {
+        this.checkUrlsInNote();
+      }
       // success in setting a file as cover image
     } else if (this.props.card.loading !== types.UPDATE_CARD_PENDING && nextProps.card.loading === types.UPDATE_CARD_PENDING) {
       // updating a card
@@ -252,9 +255,12 @@ class NewCardScreen extends React.Component {
           error = nextProps.card.error.message;
         }
         if (error) {
-          Alert.alert('Error', error, [
-            {text: 'Close'},
-          ]);
+          if (!this.isVisibleErrorDialog) {
+            this.isVisibleErrorDialog = true;
+            Alert.alert('Error', error, [
+              {text: 'Close', onPress: () => this.isVisibleErrorDialog = false},
+            ]);
+          }
         }
         return;
       }
@@ -702,12 +708,7 @@ class NewCardScreen extends React.Component {
   get renderMainContent() {
     const { viewMode } = this.props;
     return (
-      <ScrollView
-        style={styles.mainContentContainer}
-        enableAutomaticScroll={false}
-        onScrollBeginDrag={(e) => this.onScrollBeginDrag(e)}
-        onScroll={(e) => this.onScroll(e)}
-      >
+      <View style={styles.mainContentContainer}>
         <TextInput 
           style={styles.textInputCardTitle}
           editable={viewMode === CONSTANTS.CARD_NEW || viewMode === CONSTANTS.CARD_EDIT}
@@ -735,7 +736,7 @@ class NewCardScreen extends React.Component {
         {this.renderWebMeta}
         {this.renderImages}
         {this.renderDocuments}
-      </ScrollView>
+      </View>
     );
   }
 
@@ -747,39 +748,20 @@ class NewCardScreen extends React.Component {
 
     return (
       <View style={styles.attachmentButtonsContainer}>
-        <View style={{flexDirection: 'row',}}>
-          <TouchableOpacity 
-            style={styles.buttonItemContainer}
-            activeOpacity={0.6}
-            onPress={this.onAddMedia.bind(this)}
-          >
-            <Entypo name="image" size={20} color={COLORS.PURPLE} />
-          </TouchableOpacity>
-          <TouchableOpacity 
-            style={styles.buttonItemContainer}
-            activeOpacity={0.6}
-            onPress={this.onAddDocument.bind(this)}
-          >
-            <Entypo name="attachment" style={styles.attachment} size={20} color={COLORS.PURPLE} />
-          </TouchableOpacity>
-        </View>
-        {
-          this.state.isShowKeyboardButton && 
-            <TouchableOpacity 
-              style={[
-                styles.buttonItemContainer, 
-                {
-                  backgroundColor: COLORS.PURPLE,
-                  borderRadius: 8,
-                  marginRight: 0,
-                },
-              ]}
-              activeOpacity={0.6}
-              onPress={this.onHideKeyboard.bind(this)}
-            >
-              <MaterialCommunityIcons name="keyboard-close" size={20} color={'#fff'} />
-            </TouchableOpacity>
-        }
+        <TouchableOpacity 
+          style={styles.buttonItemContainer}
+          activeOpacity={0.6}
+          onPress={this.onAddMedia.bind(this)}
+        >
+          <Entypo name="image" size={20} color={COLORS.PURPLE} />
+        </TouchableOpacity>
+        <TouchableOpacity 
+          style={styles.buttonItemContainer}
+          activeOpacity={0.6}
+          onPress={this.onAddDocument.bind(this)}
+        >
+          <Entypo name="attachment" style={styles.attachment} size={20} color={COLORS.PURPLE} />
+        </TouchableOpacity>
       </View>
     );
   }
@@ -978,9 +960,25 @@ class NewCardScreen extends React.Component {
           ]}
         >
           {this.renderHeader}
-          {this.renderMainContent}
-          {this.renderAttachmentButtons}
-          {this.renderBottomContent}
+          <ScrollView
+            enableAutomaticScroll={false}
+            onScrollBeginDrag={(e) => this.onScrollBeginDrag(e)}
+            onScroll={(e) => this.onScroll(e)}
+          >
+            {this.renderMainContent}
+            {this.renderAttachmentButtons}
+            {this.renderBottomContent}
+          </ScrollView>
+          {
+            this.state.isShowKeyboardButton && 
+            <TouchableOpacity 
+              style={[styles.buttonItemContainer, styles.hideKeyboardContainer]}
+              activeOpacity={0.6}
+              onPress={this.onHideKeyboard.bind(this)}
+            >
+              <MaterialCommunityIcons name="keyboard-close" size={20} color={'#fff'} />
+            </TouchableOpacity>
+          }
         </View>
         {this.renderOutside}
       </Animated.View>
