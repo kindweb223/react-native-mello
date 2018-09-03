@@ -89,11 +89,16 @@ export default class Root extends React.Component {
         console.log('TRAILING: ', params)
 
         if (path === 'signup') {  // Signup via invite
-          // Actions.SignUpScreen({
-          //   userEmail: 'test@test.com',
-          //   isInvite: true,
-          //   token: params[params.length - 1]
-          // })
+          const lastParam = params[params.length - 1]
+          const paramArray = _.split(lastParam, '?')
+          const token = paramArray[0]
+          const userEmail = (_.split(paramArray[1], '='))[1]
+          
+          Actions.SignUpScreen({
+            userEmail,
+            token,
+            isInvite: true
+          })
         }
 
         if (path === 'reset') { // Reset password
