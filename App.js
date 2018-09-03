@@ -88,7 +88,12 @@ export default class Root extends React.Component {
         const path = params[params.length - 2]
         console.log('TRAILING: ', params)
 
-        if (path === 'hunt') {  // Signup via invite
+        if (path === 'signup') {  // Signup via invite
+          // Actions.SignUpScreen({
+          //   userEmail: 'test@test.com',
+          //   isInvite: true,
+          //   token: params[params.length - 1]
+          // })
         }
 
         if (path === 'reset') { // Reset password
