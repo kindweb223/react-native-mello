@@ -47,7 +47,7 @@ class SignUpSuccessScreen extends React.Component {
     } else {
       setTimeout(() => {
         Actions.HomeScreen()
-      }, 2000)
+      }, 3000)
     }
   }
 
