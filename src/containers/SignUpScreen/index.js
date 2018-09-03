@@ -155,6 +155,7 @@ class SignUpScreen extends React.Component {
     }
 
     if (prevProps.user.loading === 'VALIDATE_INVITE_PENDING' && this.props.user.loading === 'VALIDATE_INVITE_REJECTED') {
+      // Invitation has expired
       this.setState({ loading: false, isInvite: false })
     }
 

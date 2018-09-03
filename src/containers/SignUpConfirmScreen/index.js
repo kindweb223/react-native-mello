@@ -43,7 +43,7 @@ class SignUpConfirmScreen extends React.Component {
   }
 
   componentDidMount() {
-    this.intervalId = setInterval(this.pollSession, 3000)
+    this.intervalId = setInterval(this.pollSession, 2000)
   }
 
   componentDidUpdate(prevProps) {
