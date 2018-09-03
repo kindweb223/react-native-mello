@@ -367,6 +367,8 @@ export default function user(state = initialState, action = {}) {
         loading: types.RESET_PASSWORD_PENDING,
       }
     case types.RESET_PASSWORD_FULFILLED: {
+      AsyncStorage.removeItem('xAuthToken')
+      AsyncStorage.removeItem('userInfo')
       return {
         ...state,
         loading: types.RESET_PASSWORD_FULFILLED,
