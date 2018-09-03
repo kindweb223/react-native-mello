@@ -29,7 +29,7 @@ import _ from 'lodash'
 import KeyboardScrollView from '../../components/KeyboardScrollView'
 import LoadingScreen from '../LoadingScreen'
 import TextInputComponent from '../../components/TextInputComponent'
-import { userSignUp, getImageUrl, updateProfile, validateInvite, completeInvite } from '../../redux/user/actions'
+import { userSignUp, getImageUrl, updateProfile, validateInvite, completeInvite, getUserSession } from '../../redux/user/actions'
 import { uploadFileToS3 } from '../../redux/card/actions'
 import COLORS from '../../service/colors'
 import CONSTANTS from '../../service/constants'
@@ -156,11 +156,15 @@ class SignUpScreen extends React.Component {
 
     if (prevProps.user.loading === 'VALIDATE_INVITE_PENDING' && this.props.user.loading === 'VALIDATE_INVITE_REJECTED') {
       // Invitation has expired
+      const { error } = this.props.user
       this.setState({ loading: false, isInvite: false })
+      if (error.code === 'error.user.invite.notfound') {
+        Actions.LoginStartScreen()
+      }
     }
 
     if (prevProps.user.loading === 'COMPLETE_INVITE_PENDING' && this.props.user.loading === 'COMPLETE_INVITE_FULFILLED') {
-      this.setState({ loading: false })
+      this.props.getUserSession()
     }
 
     if (prevProps.user.loading === 'COMPLETE_INVITE_PENDING' && this.props.user.loading === 'COMPLETE_INVITE_REJECTED') {
@@ -170,6 +174,14 @@ class SignUpScreen extends React.Component {
           'Error',
           error.message
         )
+      })
+    }
+
+    if (prevProps.user.loading === 'GET_USER_SESSION_PENDING' && this.props.user.loading === 'GET_USER_SESSION_FULFILLED') {
+      this.setState({ loading: false }, () => {
+        if (this.props.user.userInfo.emailConfirmed) {
+          Actions.HomeScreen()
+        }
       })
     }
   }
@@ -584,7 +596,8 @@ const mapDispatchToProps = dispatch => ({
   updateProfile: (userId, data) => dispatch(updateProfile(userId, data)),
   uploadFileToS3: (signedUrl, file, fileName, mimeType) => dispatch(uploadFileToS3(signedUrl, file, fileName, mimeType)),
   validateInvite: (data) => dispatch(validateInvite(data)),
-  completeInvite: (data) => dispatch(completeInvite(data))
+  completeInvite: (data) => dispatch(completeInvite(data)),
+  getUserSession: () => dispatch(getUserSession()),
 })
 
 export default connect(
