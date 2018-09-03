@@ -55,7 +55,7 @@ import LikesListScreen from './src/containers/LikesListScreen';
 import CommentScreen from './src/containers/CommentScreen';
 import ProfileScreen from './src/containers/ProfileScreen'
 import ProfileUpdateScreen from './src/containers/ProfileUpdateScreen'
-import AccountConfirmScreen from './src/containers/AccountConfirmScreen'
+import SignUpSuccessScreen from './src/containers/SignUpSuccessScreen'
 import ResetPasswordConfirmScreen from './src/containers/ResetPasswordConfirmScreen'
 import ResetPasswordScreen from './src/containers/ResetPasswordScreen'
 import ResetPasswordSuccessScreen from './src/containers/ResetPasswordSuccessScreen'
@@ -98,7 +98,7 @@ export default class Root extends React.Component {
 
         if (path === 'account') { // Confirm regstration
           const token = url.slice(url.lastIndexOf('=') + 1, url.length)
-          Actions.confirm({ token, deepLinking: true })
+          Actions.SignUpSuccessScreen({ token, deepLinking: true })
         }
 
       } else {
@@ -155,7 +155,7 @@ export default class Root extends React.Component {
             <Scene key="DocumentSliderScreen" component={ DocumentSliderScreen } hideNavBar />
             <Scene key="LikesListScreen" component={ LikesListScreen } navigationBarStyle={styles.defaultNavigationBar} />
             <Scene key="CommentScreen" component={ CommentScreen } navigationBarStyle={styles.defaultNavigationBar} />
-            <Scene key="confirm" component={ AccountConfirmScreen } hideNavBar panHandlers={null} />
+            <Scene key="SignUpSuccessScreen" component={ SignUpSuccessScreen } hideNavBar panHandlers={null} />
             <Scene key="ResetPasswordConfirmScreen" component={ ResetPasswordConfirmScreen } hideNavBar panHandlers={null} />
             <Scene key="ResetPasswordScreen" component={ ResetPasswordScreen } hideNavBar panHandlers={null} />
             <Scene key="ResetPasswordSuccessScreen" component={ ResetPasswordSuccessScreen } hideNavBar panHandlers={null} />
