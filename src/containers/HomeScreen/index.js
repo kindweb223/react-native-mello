@@ -428,9 +428,7 @@ class HomeScreen extends React.Component {
 
   onScrollableTabViewLayout(event, selectedIndex) {
     const { loading } = this.state
-    // console.log('All : ', event.nativeEvent);
     if (this.state.tabIndex === selectedIndex && !loading) {
-      console.log('Select : ', event.nativeEvent.layout.height, this.state.scrollableTabViewContainer.height);
       if (!this.state.scrollableTabViewContainer.height || event.nativeEvent.layout.height > this.state.scrollableTabViewContainer.height) {
         const height = event.nativeEvent.layout.height;
         setTimeout(() => {

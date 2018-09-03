@@ -64,6 +64,8 @@ class NewFeedScreen extends React.Component {
     this.selectedFileType = null;
     this.selectedFileName = null;
     
+    this.isVisibleErrorDialog = false;
+
     this.animatedShow = new Animated.Value(0);
     this.animatedKeyboardHeight = new Animated.Value(0);
     this.animatedTagTransition = new Animated.Value(1);
@@ -146,9 +148,12 @@ class NewFeedScreen extends React.Component {
           error = nextProps.feedo.error.message;
         }
         if (error) {
-          Alert.alert('Error', error, [
-            {text: 'Close'},
-          ]);
+          if (!this.isVisibleErrorDialog) {
+            this.isVisibleErrorDialog = true;
+            Alert.alert('Error', error, [
+              {text: 'Close', onPress: () => this.isVisibleErrorDialog = false},
+            ]);
+          }
         }
         return;
       }
@@ -283,6 +288,10 @@ class NewFeedScreen extends React.Component {
     });
   }
 
+  onChangeNote(value) {
+    this.setState({comments: value});
+  }
+  
   uploadFile(file, type) {
     this.selectedFile = file.uri;
     this.selectedFileMimeType = mime.lookup(file.uri);
@@ -353,6 +362,13 @@ class NewFeedScreen extends React.Component {
     }
   }
 
+  onRemoveFile(fileId) {
+    const {
+      id,
+    } = this.props.feedo.currentFeed;
+    this.props.deleteFile(id, fileId);
+  }
+
   get renderTopContent() {
     return (
       <View style={styles.topContainer}>
@@ -372,13 +388,6 @@ class NewFeedScreen extends React.Component {
         </TouchableOpacity>
       </View>
     );
-  }
-
-  onRemoveFile(fileId) {
-    const {
-      id,
-    } = this.props.feedo.currentFeed;
-    this.props.deleteFile(id, fileId);
   }
 
   get renderImages() {
@@ -411,9 +420,17 @@ class NewFeedScreen extends React.Component {
     }
   }
 
+  onScrollNote(event) {
+    console.log(event.nativeEvent.contentOffset);
+  }
+
   get renderCenterContent() {
+    const CustomView = ScrollView;
     return (
-      <ScrollView style={styles.mainContentContainer}>
+      <ScrollView 
+        ref={ref => this.scrollViewMainContentRef = ref}
+        style={styles.mainContentContainer}
+      >
         <TextInput 
           ref={ref => this.textInputFeedNameRef = ref}
           style={styles.textInputFeedName}
@@ -429,7 +446,7 @@ class NewFeedScreen extends React.Component {
           multiline={true}
           underlineColorAndroid='transparent'
           value={this.state.comments}
-          onChangeText={(value) => this.setState({comments: value})}
+          onChangeText={(value) => this.onChangeNote(value)}
         />
         <Tags
           tags={this.props.feedo.currentFeed.tags}
