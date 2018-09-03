@@ -35,4 +35,8 @@ RCT_EXPORT_MODULE();
   return rootView;
 }
 
++ (BOOL)requiresMainQueueSetup {
+  return YES;
+}
+
 @end

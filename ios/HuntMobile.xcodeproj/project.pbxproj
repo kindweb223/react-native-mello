@@ -70,7 +70,6 @@
 		A450134D2139BFA200A78D65 /* libRCTBlob.a in Frameworks */ = {isa = PBXBuildFile; fileRef = ADBDB9271DFEBF0700ED6528 /* libRCTBlob.a */; };
 		A450134E2139BFA200A78D65 /* libRNFetchBlob.a in Frameworks */ = {isa = PBXBuildFile; fileRef = B547AE5721370AB60004D6D5 /* libRNFetchBlob.a */; };
 		A4BF285821234CFE0054D7A9 /* CloudKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A4BF285721234CFE0054D7A9 /* CloudKit.framework */; };
-		A4CD66922139B68000874CB1 /* ShareViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = A4CD66912139B68000874CB1 /* ShareViewController.m */; };
 		A4CD66952139B68000874CB1 /* MainInterface.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = A4CD66932139B68000874CB1 /* MainInterface.storyboard */; };
 		A4CD66992139B68000874CB1 /* HuntMobileEx.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = A4CD668E2139B67F00874CB1 /* HuntMobileEx.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		A4CD669E2139B72A00874CB1 /* HuntMobileEx.m in Sources */ = {isa = PBXBuildFile; fileRef = A4CD669D2139B72A00874CB1 /* HuntMobileEx.m */; };
@@ -514,8 +513,6 @@
 		A48B0150210F8F9C001C33B5 /* HuntMobile.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; name = HuntMobile.entitlements; path = HuntMobile/HuntMobile.entitlements; sourceTree = "<group>"; };
 		A4BF285721234CFE0054D7A9 /* CloudKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CloudKit.framework; path = System/Library/Frameworks/CloudKit.framework; sourceTree = SDKROOT; };
 		A4CD668E2139B67F00874CB1 /* HuntMobileEx.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = HuntMobileEx.appex; sourceTree = BUILT_PRODUCTS_DIR; };
-		A4CD66902139B68000874CB1 /* ShareViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ShareViewController.h; sourceTree = "<group>"; };
-		A4CD66912139B68000874CB1 /* ShareViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ShareViewController.m; sourceTree = "<group>"; };
 		A4CD66942139B68000874CB1 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/MainInterface.storyboard; sourceTree = "<group>"; };
 		A4CD66962139B68000874CB1 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		A4CD669D2139B72A00874CB1 /* HuntMobileEx.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = HuntMobileEx.m; sourceTree = "<group>"; };
@@ -900,8 +897,6 @@
 		A4CD668F2139B68000874CB1 /* HuntMobileEx */ = {
 			isa = PBXGroup;
 			children = (
-				A4CD66902139B68000874CB1 /* ShareViewController.h */,
-				A4CD66912139B68000874CB1 /* ShareViewController.m */,
 				A4CD66932139B68000874CB1 /* MainInterface.storyboard */,
 				A4CD66962139B68000874CB1 /* Info.plist */,
 				A4CD669D2139B72A00874CB1 /* HuntMobileEx.m */,
@@ -1715,7 +1710,6 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				A4CD66922139B68000874CB1 /* ShareViewController.m in Sources */,
 				A4CD669E2139B72A00874CB1 /* HuntMobileEx.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

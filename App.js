@@ -74,6 +74,7 @@ export default class Root extends React.Component {
 
   componentDidMount() {
     YellowBox.ignoreWarnings(['Module RNDocumentPicker'])
+    YellowBox.ignoreWarnings(['Module ReactNativeShareExtension'])
   }
 
   componentWillUnmount() {

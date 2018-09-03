@@ -1,24 +1,36 @@
 import React, { Component } from 'react'
-import Modal from 'react-native-modalbox'
+import {
+  YellowBox,
+  StyleSheet,
+  View,
+} from 'react-native'
+import { createStore, applyMiddleware } from 'redux'
+import { Provider } from 'react-redux'
+import thunk from 'redux-thunk'
+import _ from 'lodash'
+import promiseMiddleware from './src/service/promiseMiddleware'
+import reducers from './src/redux/reducers'
+
+const store = createStore(reducers, applyMiddleware(thunk, promiseMiddleware))
+
+import { Scene, Router, Modal } from 'react-native-router-flux'
 import ShareExtension from 'react-native-share-extension'
 
-import {
-  Text,
-  View,
-  TouchableOpacity
-} from 'react-native'
+import ShareCardScreen from './src/share/ShareCardScreen';
+import NewCardScreen from './src/containers/NewCardScreen' 
+
 
 export default class Share extends Component {
   constructor(props) {
     super(props)
     this.state = {
-      isOpen: true,
       type: '',
       value: ''
     }
   }
 
   async componentDidMount() {
+    YellowBox.ignoreWarnings(['Module ReactNativeShareExtension'])
     try {
       const { type, value } = await ShareExtension.data()
       this.setState({
@@ -30,29 +42,27 @@ export default class Share extends Component {
     }
   }
 
-  onClose() {
-    ShareExtension.close()
-  }
-
   render() {
     return (
-      <Modal
-        backdrop={false}
-        style={{ backgroundColor: 'transparent' }}
-        position="center"
-        isOpen={this.state.isOpen}
-        onClosed={this.onClose.bind(this)}
-      >
-        <View style={{ alignItems: 'center', justifyContent:'center', flex: 1 }}>
-          <View style={{ borderColor: 'green', borderWidth: 1, backgroundColor: 'white', height: 200, width: 300 }}>
-            <TouchableOpacity onPress={() => this.setState({ isOpen: false })}>
-              <Text>Close</Text>
-              <Text>type: { this.state.type }</Text>
-              <Text>value: { this.state.value }</Text>
-            </TouchableOpacity>
-          </View>
-        </View>
-      </Modal>
-    );
+      <View style={styles.rootContainer}>
+        <Provider store={store}>
+          <Router>
+            <Scene key="root" hideNavBar>
+              <Scene key="ShareCardScreen" component={ShareCardScreen} />
+            </Scene>
+          </Router>
+        </Provider>
+      </View>
+    )
   }
 }
+
+
+const styles = StyleSheet.create({
+  rootContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: 'transparent',
+  },
+});
