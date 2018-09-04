@@ -102,6 +102,8 @@ export default function user(state = initialState, action = {}) {
     case types.GET_USER_SESSION_REJECTED: {
       console.log('GET_USER_SESSION_REJECTED: ', action.result)
       AsyncStorage.removeItem('userInfo')
+      AsyncStorage.removeItem('xAuthToken')
+
       return {
         ...state,
         loading: types.GET_USER_SESSION_REJECTED,
@@ -420,6 +422,15 @@ export default function user(state = initialState, action = {}) {
       }
     case types.COMPLETE_INVITE_FULFILLED: {
       console.log('COMPLETE_INVITE_FULFILLED: ', action.result)
+      const { headers } = action.result
+      const xAuthToken = headers['x-auth-token']
+      if (xAuthToken) {
+        axios.defaults.headers['x-auth-token'] = xAuthToken
+        AsyncStorage.setItem('xAuthToken', xAuthToken)
+      } else {
+        AsyncStorage.removeItem('xAuthToken')
+      }
+
       return {
         ...state,
         loading: types.COMPLETE_INVITE_FULFILLED,

@@ -178,10 +178,10 @@ class SignUpScreen extends React.Component {
     }
 
     if (prevProps.user.loading === 'GET_USER_SESSION_PENDING' && this.props.user.loading === 'GET_USER_SESSION_FULFILLED') {
-      if (this.state.isInvite) {
+      if (this.props.isInvite) {
         this.setState({ loading: false }, () => {
           if (this.props.user.userInfo.emailConfirmed) {
-            Actions.HomeScreen()
+            Actions.SignUpSuccessScreen()
           }
         })
       }

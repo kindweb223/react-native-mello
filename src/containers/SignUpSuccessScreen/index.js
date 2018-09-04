@@ -47,7 +47,7 @@ class SignUpSuccessScreen extends React.Component {
     } else {
       setTimeout(() => {
         Actions.HomeScreen()
-      }, 3000)
+      }, 2000)
     }
   }
 
@@ -63,11 +63,8 @@ class SignUpSuccessScreen extends React.Component {
       Alert.alert(
         'Error',
         user.error.message,
-        [{
-          text: 'OK',
-          onPress: () => Actions.LoginStartScreen()
-        }]
       )
+      Actions.LoginStartScreen()
     }
 
     if (this.props.user.loading === 'GET_USER_SESSION_PENDING' && user.loading === 'GET_USER_SESSION_FULFILLED') {
