@@ -56,9 +56,7 @@ class LoginScreen extends React.Component {
 
   componentDidUpdate(prevProps) {
     if (prevProps.user.loading === 'USER_SIGNIN_PENDING' && this.props.user.loading === 'USER_SIGNIN_FULFILLED') {
-      this.setState({ loading: false }, () => {
-        this.props.getUserSession()
-      })
+      this.props.getUserSession()
     }
 
     if (prevProps.user.loading === 'USER_SIGNIN_PENDING' && this.props.user.loading === 'USER_SIGNIN_REJECTED') {
@@ -169,7 +167,7 @@ class LoginScreen extends React.Component {
               </View>
               <TouchableOpacity onPress={() => this.onSignIn()}>
                 <View style={styles.buttonView}>
-                  <Text style={styles.buttonText}>SignIn</Text>
+                  <Text style={styles.buttonText}>Sign In</Text>
                 </View>
               </TouchableOpacity>
             </View>

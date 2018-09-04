@@ -106,6 +106,7 @@ export default {
     justifyContent: 'center',
     alignItems: 'flex-start',
     paddingHorizontal: 10,
+    paddingTop: 4,
     width: '100%'
   },
   errorText: {

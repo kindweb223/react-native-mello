@@ -43,7 +43,7 @@ class SignUpConfirmScreen extends React.Component {
   }
 
   componentDidMount() {
-    this.intervalId = setInterval(this.pollSession, 3000)
+    this.intervalId = setInterval(this.pollSession, 5000)
   }
 
   componentDidUpdate(prevProps) {
@@ -58,15 +58,16 @@ class SignUpConfirmScreen extends React.Component {
     }
 
     if (prevProps.user.loading === 'GET_USER_SESSION_PENDING' && user.loading === 'GET_USER_SESSION_FULFILLED') {
+      // Verified from web app
       clearInterval(this.intervalId)
       this.intervalId = null
 
       if (user.userInfo.emailConfirmed) {
-        Actions.confirm({ token: 'null', deepLinking: false })
+        Actions.SignUpSuccessScreen({ token: 'null', deepLinking: false })
       }
     }
 
-    if (user.loading === 'USER_CONFIRM_ACCOUNT_FULFILLED' || user.loading === 'USER_CONFIRM_ACCOUNT_REJECTED') {
+    if (user.loading === 'USER_CONFIRM_ACCOUNT_PENDING') {
       clearInterval(this.intervalId)
       this.intervalId = null
     }

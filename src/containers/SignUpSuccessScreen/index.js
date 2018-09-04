@@ -31,7 +31,7 @@ const Gradient = () => {
   )
 }
 
-class AccountConfirmScreen extends React.Component {
+class SignUpSuccessScreen extends React.Component {
   constructor(props) {
     super(props)
     this.state = {
@@ -51,22 +51,26 @@ class AccountConfirmScreen extends React.Component {
     }
   }
 
-  componentDidUpdate(prevProps) {
-    const { user, deepLinking } = this.props
+  UNSAFE_componentWillReceiveProps(nextProps) {
+    const { user, deepLinking } = nextProps
 
     if (user.loading === 'USER_CONFIRM_ACCOUNT_FULFILLED') {
       this.props.getUserSession()
     }
 
     if (user.loading === 'USER_CONFIRM_ACCOUNT_REJECTED') {
+      this.setState({ loading: false })
       Alert.alert(
         'Error',
-        user.error.message
+        user.error.message,
+        [{
+          text: 'OK',
+          onPress: () => Actions.LoginStartScreen()
+        }]
       )
-      Actions.LoginStartScreen()
     }
 
-    if (prevProps.user.loading === 'GET_USER_SESSION_PENDING' && user.loading === 'GET_USER_SESSION_FULFILLED') {
+    if (this.props.user.loading === 'GET_USER_SESSION_PENDING' && user.loading === 'GET_USER_SESSION_FULFILLED') {
       if (deepLinking) {
         this.setState({ loading: false }, () => {
           if (user.userInfo.emailConfirmed) {
@@ -101,12 +105,12 @@ class AccountConfirmScreen extends React.Component {
   }
 }
 
-AccountConfirmScreen.defaultProps = {
+SignUpSuccessScreen.defaultProps = {
   token: 'null',
   deepLinking: false
 }
 
-AccountConfirmScreen.propTypes = {
+SignUpSuccessScreen.propTypes = {
   token: PropTypes.string,
   deepLinking: PropTypes.bool,
   confirmAccount: PropTypes.func.isRequired
@@ -124,4 +128,4 @@ const mapDispatchToProps = dispatch => ({
 export default connect(
   mapStateToProps,
   mapDispatchToProps
-)(AccountConfirmScreen)
+)(SignUpSuccessScreen)

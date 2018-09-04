@@ -14,7 +14,7 @@ class ToasterComponent extends React.Component {
       this.state.fadeAnimate,
       {
         toValue: 1,
-        duration: 2000
+        duration: 500
       }
     ).start()
   }
