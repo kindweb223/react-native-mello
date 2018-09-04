@@ -62,8 +62,9 @@ class SignUpConfirmScreen extends React.Component {
       clearInterval(this.intervalId)
       this.intervalId = null
 
-      if (user.userInfo.emailConfirmed) {
-        Actions.SignUpSuccessScreen({ token: 'null', deepLinking: false })
+      if (!user.userConfirmed && user.userInfo.emailConfirmed) {
+        console.log('DEEP_LINK === FALSE')
+        Actions.SignUpSuccessScreen()
       }
     }
 

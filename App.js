@@ -111,6 +111,16 @@ export default class Root extends React.Component {
           Actions.SignUpSuccessScreen({ token, deepLinking: true })
         }
 
+        if (path === 'hunt') { // Share an Idea
+          // const lastParam = params[params.length - 1]
+          // const paramArray = _.split(lastParam, '?')
+          // const feedId = paramArray[0]
+          // const data = {
+          //   id: feedId
+          // }
+          // Actions.FeedDetailScreen({ data })
+        }
+
       } else {
         if (Platform.OS === 'ios') {
           // Linking.openURL(`https://itunes.apple.com/${appStoreLocale}/app/${appName}/id${appStoreId}`);
