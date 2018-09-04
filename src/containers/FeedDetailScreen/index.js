@@ -350,7 +350,6 @@ class FeedDetailScreen extends React.Component {
   }
 
   render () {
-    const { data } = this.props
     const { currentFeed, loading, pinText } = this.state
 
     const navbarBackground = this.state.scrollY.interpolate({

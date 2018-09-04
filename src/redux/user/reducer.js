@@ -11,7 +11,8 @@ const initialState = {
   userInfo: null,
   userSignUpData: null,
   userImageUrlData: null,
-  userLookup: null
+  userLookup: null,
+  userConfirmed: false
 };
 
 export default function user(state = initialState, action = {}) {
@@ -147,6 +148,7 @@ export default function user(state = initialState, action = {}) {
     case types.USER_SIGNOUT_PENDING:
       return {
         ...state,
+        userConfirmed: false,
         loading: types.USER_SIGNOUT_PENDING,
       }
     case types.USER_SIGNOUT_FULFILLED: {
@@ -326,6 +328,7 @@ export default function user(state = initialState, action = {}) {
       console.log('USER_CONFIRM_ACCOUNT_FULFILLED')
       return {
         ...state,
+        userConfirmed: true,
         loading: types.USER_CONFIRM_ACCOUNT_FULFILLED,
       }
     }
@@ -333,6 +336,7 @@ export default function user(state = initialState, action = {}) {
       console.log('USER_CONFIRM_ACCOUNT_REJECTED')
       return {
         ...state,
+        userConfirmed: false,
         loading: types.USER_CONFIRM_ACCOUNT_REJECTED,
         error: action.error.response.data
       }
