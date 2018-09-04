@@ -112,13 +112,18 @@ export default class Root extends React.Component {
         }
 
         if (path === 'hunt') { // Share an Idea
-          // const lastParam = params[params.length - 1]
-          // const paramArray = _.split(lastParam, '?')
-          // const feedId = paramArray[0]
-          // const data = {
-          //   id: feedId
-          // }
-          // Actions.FeedDetailScreen({ data })
+          const lastParam = params[params.length - 1]
+          const paramArray = _.split(lastParam, '?')
+          const feedId = paramArray[0]
+          const data = {
+            id: feedId
+          }
+
+          if (this.state.userInfo) {
+            Actions.FeedDetailScreen({ data })
+          } else {
+            Actions.LoginStartScreen()
+          }
         }
 
       } else {
@@ -148,6 +153,7 @@ export default class Root extends React.Component {
     try {
       const xAuthToken = await AsyncStorage.getItem('xAuthToken')
       const userInfo = await AsyncStorage.getItem('userInfo')
+      this.setState({ userInfo })
       console.log('xAuthToken: ', xAuthToken)
 
       if (xAuthToken && userInfo) {
