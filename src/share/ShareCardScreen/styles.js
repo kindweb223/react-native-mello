@@ -4,6 +4,8 @@ import CONSTANTS from '../../service/constants'
 
 export default styles = StyleSheet.create({
   container: {
-    flex: 1,
+    height: CONSTANTS.SCREEN_HEIGHT,
+    width: CONSTANTS.SCREEN_WIDTH,
+    // backgroundColor: 'green',
   },
 })
