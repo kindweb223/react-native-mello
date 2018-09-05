@@ -52,17 +52,17 @@ class LoginStartScreen extends React.Component {
     }
   }
 
-  componentDidUpdate(prevProps) {
-    const { user } = this.props
+  UNSAFE_componentWillReceiveProps(nextProps) {
+    const { user } = nextProps
     const { email } = this.state
 
-    if (prevProps.user.loading === 'USER_LOOKUP_PENDING' && user.loading === 'USER_LOOKUP_FULFILLED') {
+    if (this.props.user.loading === 'USER_LOOKUP_PENDING' && user.loading === 'USER_LOOKUP_FULFILLED') {
       this.setState({ loading: false }, () => {
         Actions.LoginScreen({ userData: user.userLookup })
       })
     }
 
-    if (prevProps.user.loading === 'USER_LOOKUP_PENDING' && user.loading === 'USER_LOOKUP_REJECTED') {
+    if (this.props.user.loading === 'USER_LOOKUP_PENDING' && user.loading === 'USER_LOOKUP_REJECTED') {
       this.setState({ loading: false }, () => {
         if (user.error.code === 'error.user.email.not.found') {
           Actions.SignUpScreen({ userEmail: email })
@@ -104,7 +104,7 @@ class LoginStartScreen extends React.Component {
 
   render () {
     const { isInvalidError, errorText } = this.state
-
+    console.log('START !!!!')
     return (
       <View style={styles.container}>
         <Gradient />

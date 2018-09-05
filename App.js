@@ -14,7 +14,7 @@ import { Provider } from 'react-redux'
 import thunk from 'redux-thunk'
 import _ from 'lodash'
 import promiseMiddleware from './src/service/promiseMiddleware'
-import { Actions, Scene, Router, Modal, Lightbox, Stack } from 'react-native-router-flux'
+import { Actions, Scene, Router, Modal, Lightbox, Stack, ActionConst } from 'react-native-router-flux'
 import axios from 'axios'
 import CONSTANTS from './src/service/constants'
 import COLORS from './src/service/colors'
@@ -31,11 +31,11 @@ axios.interceptors.response.use(
     response
   ),
   (error) => {
+    console.log('ERROR: ', error)
     if (error.response === undefined || (error.response.status === 401 && error.response.data.code === 'session.expired')) {
       AsyncStorage.removeItem('xAuthToken')
       Actions.LoginStartScreen()
     }
-    console.log('ERROR: ', error)
     throw error
   }
 )
@@ -171,7 +171,7 @@ export default class Root extends React.Component {
       <Lightbox>
         <Modal hideNavBar>
           <Scene key="root">
-            <Scene key="LoginStartScreen" component={ LoginStartScreen } initial hideNavBar panHandlers={null} />
+            <Scene key="LoginStartScreen" component={ LoginStartScreen } hideNavBar panHandlers={null} />
             <Scene key="LoginScreen" component={ LoginScreen } hideNavBar panHandlers={null} />
             <Scene key="SignUpScreen" component={ SignUpScreen } hideNavBar panHandlers={null} />
             <Scene key="SignUpConfirmScreen" component={ SignUpConfirmScreen } hideNavBar panHandlers={null} />

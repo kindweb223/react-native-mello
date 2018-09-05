@@ -52,14 +52,15 @@ class LoginScreen extends React.Component {
       isInvalidError: false,
       errorText: '',
       isLogIn: false,
-      isResetSuccess: true
+      isResetSuccess: false
     }
   }
 
   UNSAFE_componentWillMount() {
+    this.setState({ isResetSuccess: true })
     setTimeout(() => {
       this.setState({ isResetSuccess: false })
-    }, 3000)
+    }, 5000)
   }
 
   componentDidUpdate(prevProps) {
@@ -78,8 +79,8 @@ class LoginScreen extends React.Component {
     }
 
     if (prevProps.user.loading === 'GET_USER_SESSION_PENDING' && this.props.user.loading === 'GET_USER_SESSION_FULFILLED') {
-      console.log('LOGIN_SESSION !!!!!')
       if (this.state.isLogIn) {
+        console.log('LOGIN_SESSION !!!!!')
         this.setState({ loading: false  }, () => {
           this.setState({ isLogIn: false })
 
