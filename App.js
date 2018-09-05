@@ -87,17 +87,16 @@ export default class Root extends React.Component {
       if (supported) {
         let params = _.split(url, '/')
         const path = params[params.length - 2]
-        console.log('TRAILING: ', params)
+        console.log('UNIVERSAL_LINK: ', params)
 
         if (path === 'get-started') {  
           const lastParam = params[params.length - 1]
-          const paramArray = _.split(lastParam, '?')
+          const paramArray = lastParam.split(/[?\=&]/)
           const type = paramArray[0]
 
           if (type === 'signup') {  // Signup via invite
-            console.log('PARAMS: ', _.split(paramArray[1], '='))
-            const token = (_.split(paramArray[1], '='))[1]
-            const userEmail = (_.split(paramArray[1], '='))[3]
+            const token = paramArray[2]
+            const userEmail = paramArray[4]
             
             Actions.SignUpScreen({
               userEmail,
@@ -105,7 +104,7 @@ export default class Root extends React.Component {
               isInvite: true
             })
           } else if (type === 'check-token') {  // Confirm user
-            const token = (_.split(paramArray[1], '='))[1]
+            const token = paramArray[2]
             Actions.SignUpSuccessScreen({ token, deepLinking: true })
           }
         }
