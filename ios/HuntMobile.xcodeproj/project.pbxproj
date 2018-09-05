@@ -24,6 +24,7 @@
 		140ED2AC1D01E1AD002B40FF /* libReact.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 146834041AC3E56700842450 /* libReact.a */; };
 		146834051AC3E58100842450 /* libReact.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 146834041AC3E56700842450 /* libReact.a */; };
 		1FB598891B6543C3940754FF /* FontAwesome5_Solid.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 212DE1171C3D4A89BC6BDD44 /* FontAwesome5_Solid.ttf */; };
+		216584875F9441649E350DA0 /* libRNReactNativeSharedGroupPreferences.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 5394A3ED34ED4B6EB2B6B100 /* libRNReactNativeSharedGroupPreferences.a */; };
 		2D02E4BC1E0B4A80006451C7 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB01A68108700A75B9A /* AppDelegate.m */; };
 		2D02E4BD1E0B4A84006451C7 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 13B07FB51A68108700A75B9A /* Images.xcassets */; };
 		2D02E4BF1E0B4AB3006451C7 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB71A68108700A75B9A /* main.m */; };
@@ -70,6 +71,7 @@
 		A4BF285821234CFE0054D7A9 /* CloudKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A4BF285721234CFE0054D7A9 /* CloudKit.framework */; };
 		A4CD66952139B68000874CB1 /* MainInterface.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = A4CD66932139B68000874CB1 /* MainInterface.storyboard */; };
 		A4CD66992139B68000874CB1 /* HuntMobileEx.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = A4CD668E2139B67F00874CB1 /* HuntMobileEx.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		A4D2256A21408E8300539042 /* libRNReactNativeSharedGroupPreferences.a in Frameworks */ = {isa = PBXBuildFile; fileRef = A466CC352140042C00B3430F /* libRNReactNativeSharedGroupPreferences.a */; };
 		A4EB9CC8213F0FE300C598B8 /* libRNVectorIcons.a in Frameworks */ = {isa = PBXBuildFile; fileRef = B554B64B210DFC7800A36A10 /* libRNVectorIcons.a */; };
 		A4EB9CF8213F114300C598B8 /* Entypo.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 49E66C7627DA4206B745FC76 /* Entypo.ttf */; };
 		A4EB9CF9213F114300C598B8 /* EvilIcons.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 6DDC407B5B624A7C8F6AD515 /* EvilIcons.ttf */; };
@@ -370,6 +372,13 @@
 			remoteGlobalIDString = A287971D1DE0C0A60081BDFA;
 			remoteInfo = FastImage;
 		};
+		A466CC342140042C00B3430F /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = B08A94F41567427AB02CD8DC /* RNReactNativeSharedGroupPreferences.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 134814201AA4EA6300B7C361;
+			remoteInfo = RNReactNativeSharedGroupPreferences;
+		};
 		A48B0099210F6C68001C33B5 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = DDF2F7A8F2BB4EE4B265F759 /* RNImagePicker.xcodeproj */;
@@ -493,6 +502,7 @@
 		33BD4A274A84484B97C217E8 /* RNFetchBlob.xcodeproj */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = "wrapper.pb-project"; name = RNFetchBlob.xcodeproj; path = "../node_modules/rn-fetch-blob/ios/RNFetchBlob.xcodeproj"; sourceTree = "<group>"; };
 		47BA3513B6514BE58476D7B4 /* libRNImagePicker.a */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = archive.ar; path = libRNImagePicker.a; sourceTree = "<group>"; };
 		49E66C7627DA4206B745FC76 /* Entypo.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = Entypo.ttf; path = "../node_modules/react-native-vector-icons/Fonts/Entypo.ttf"; sourceTree = "<group>"; };
+		5394A3ED34ED4B6EB2B6B100 /* libRNReactNativeSharedGroupPreferences.a */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = archive.ar; path = libRNReactNativeSharedGroupPreferences.a; sourceTree = "<group>"; };
 		5E91572D1DD0AC6500FF2AA8 /* RCTAnimation.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RCTAnimation.xcodeproj; path = "../node_modules/react-native/Libraries/NativeAnimation/RCTAnimation.xcodeproj"; sourceTree = "<group>"; };
 		63B0B597FA904A7BBE354801 /* libReactNativeHaptic.a */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = archive.ar; path = libReactNativeHaptic.a; sourceTree = "<group>"; };
 		644B2D9A94784859B6ECCCD3 /* libRNFetchBlob.a */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = archive.ar; path = libRNFetchBlob.a; sourceTree = "<group>"; };
@@ -527,6 +537,7 @@
 		A4ED2C5426FB4A1DAD19663F /* libRNVectorIcons.a */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = archive.ar; path = libRNVectorIcons.a; sourceTree = "<group>"; };
 		A91519045FC74D37A0B5D694 /* MaterialCommunityIcons.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = MaterialCommunityIcons.ttf; path = "../node_modules/react-native-vector-icons/Fonts/MaterialCommunityIcons.ttf"; sourceTree = "<group>"; };
 		ADBDB91F1DFEBF0600ED6528 /* RCTBlob.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RCTBlob.xcodeproj; path = "../node_modules/react-native/Libraries/Blob/RCTBlob.xcodeproj"; sourceTree = "<group>"; };
+		B08A94F41567427AB02CD8DC /* RNReactNativeSharedGroupPreferences.xcodeproj */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = "wrapper.pb-project"; name = RNReactNativeSharedGroupPreferences.xcodeproj; path = "../node_modules/react-native-shared-group-preferences/ios/RNReactNativeSharedGroupPreferences.xcodeproj"; sourceTree = "<group>"; };
 		B74E433CEE1F41BC9567AFCD /* ReactNativePermissions.xcodeproj */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = "wrapper.pb-project"; name = ReactNativePermissions.xcodeproj; path = "../node_modules/react-native-permissions/ios/ReactNativePermissions.xcodeproj"; sourceTree = "<group>"; };
 		B9577B0B9C0042FEBD2572D5 /* FontAwesome5_Brands.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = FontAwesome5_Brands.ttf; path = "../node_modules/react-native-vector-icons/Fonts/FontAwesome5_Brands.ttf"; sourceTree = "<group>"; };
 		C01A3DFF0BBD47CA8E552943 /* Octicons.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = Octicons.ttf; path = "../node_modules/react-native-vector-icons/Fonts/Octicons.ttf"; sourceTree = "<group>"; };
@@ -576,6 +587,7 @@
 				4C030DDBB9734D8CB1045CEB /* libBVLinearGradient.a in Frameworks */,
 				0A790EEC82F644B5A5380ED4 /* libRCTImageResizer.a in Frameworks */,
 				5D4845C5F9C349359FEE44B4 /* libRNFetchBlob.a in Frameworks */,
+				216584875F9441649E350DA0 /* libRNReactNativeSharedGroupPreferences.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -606,6 +618,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				A4D2256A21408E8300539042 /* libRNReactNativeSharedGroupPreferences.a in Frameworks */,
 				A450134D2139BFA200A78D65 /* libRCTBlob.a in Frameworks */,
 				A450134E2139BFA200A78D65 /* libRNFetchBlob.a in Frameworks */,
 				A450133E2139BEE600A78D65 /* libRCTActionSheet.a in Frameworks */,
@@ -824,6 +837,7 @@
 				E57D5DDA7F1640AB94755FB9 /* BVLinearGradient.xcodeproj */,
 				E1CBEF82D4354C2B972EC9F2 /* RCTImageResizer.xcodeproj */,
 				33BD4A274A84484B97C217E8 /* RNFetchBlob.xcodeproj */,
+				B08A94F41567427AB02CD8DC /* RNReactNativeSharedGroupPreferences.xcodeproj */,
 			);
 			name = Libraries;
 			sourceTree = "<group>";
@@ -870,6 +884,14 @@
 			isa = PBXGroup;
 			children = (
 				A40B3D5C2110EB62002B5EDB /* libFastImage.a */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		A466CC312140042B00B3430F /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				A466CC352140042C00B3430F /* libRNReactNativeSharedGroupPreferences.a */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -948,6 +970,7 @@
 				1AE0342E1F8E4EB593320F3B /* libBVLinearGradient.a */,
 				E11AA4DCF86945E6A2B20097 /* libRCTImageResizer.a */,
 				644B2D9A94784859B6ECCCD3 /* libRNFetchBlob.a */,
+				5394A3ED34ED4B6EB2B6B100 /* libRNReactNativeSharedGroupPreferences.a */,
 			);
 			name = "Recovered References";
 			sourceTree = "<group>";
@@ -1219,6 +1242,10 @@
 				{
 					ProductGroup = A48B0096210F6C68001C33B5 /* Products */;
 					ProjectRef = DDF2F7A8F2BB4EE4B265F759 /* RNImagePicker.xcodeproj */;
+				},
+				{
+					ProductGroup = A466CC312140042B00B3430F /* Products */;
+					ProjectRef = B08A94F41567427AB02CD8DC /* RNReactNativeSharedGroupPreferences.xcodeproj */;
 				},
 				{
 					ProductGroup = B554B622210DFC7800A36A10 /* Products */;
@@ -1494,6 +1521,13 @@
 			fileType = archive.ar;
 			path = libFastImage.a;
 			remoteRef = A40B3D5B2110EB62002B5EDB /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		A466CC352140042C00B3430F /* libRNReactNativeSharedGroupPreferences.a */ = {
+			isa = PBXReferenceProxy;
+			fileType = archive.ar;
+			path = libRNReactNativeSharedGroupPreferences.a;
+			remoteRef = A466CC342140042C00B3430F /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
 		A48B009A210F6C68001C33B5 /* libRNImagePicker.a */ = {
@@ -1789,11 +1823,15 @@
 					"$(SRCROOT)/../node_modules/react-native-image-resizer/ios/RCTImageResizer",
 					"$(SRCROOT)/../node_modules/rn-fetch-blob/ios/**",
 					"$(SRCROOT)/../node_modules/react-native-share-extension/ios",
+					"$(SRCROOT)/../node_modules/react-native-shared-group-preferences/ios",
 				);
 				INFOPLIST_FILE = HuntMobileTests/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
-				LIBRARY_SEARCH_PATHS = "$(inherited)";
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
+				);
 				OTHER_LDFLAGS = (
 					"-ObjC",
 					"-lc++",
@@ -1824,11 +1862,15 @@
 					"$(SRCROOT)/../node_modules/react-native-image-resizer/ios/RCTImageResizer",
 					"$(SRCROOT)/../node_modules/rn-fetch-blob/ios/**",
 					"$(SRCROOT)/../node_modules/react-native-share-extension/ios",
+					"$(SRCROOT)/../node_modules/react-native-shared-group-preferences/ios",
 				);
 				INFOPLIST_FILE = HuntMobileTests/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
-				LIBRARY_SEARCH_PATHS = "$(inherited)";
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
+				);
 				OTHER_LDFLAGS = (
 					"-ObjC",
 					"-lc++",
@@ -1862,6 +1904,7 @@
 					"$(SRCROOT)/../node_modules/react-native-image-resizer/ios/RCTImageResizer",
 					"$(SRCROOT)/../node_modules/react-native/Libraries",
 					"$(SRCROOT)/../node_modules/rn-fetch-blob/ios/**",
+					"$(SRCROOT)/../node_modules/react-native-shared-group-preferences/ios",
 				);
 				INFOPLIST_FILE = HuntMobile/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
@@ -1901,6 +1944,7 @@
 					"$(SRCROOT)/../node_modules/react-native-image-resizer/ios/RCTImageResizer",
 					"$(SRCROOT)/../node_modules/react-native/Libraries",
 					"$(SRCROOT)/../node_modules/rn-fetch-blob/ios/**",
+					"$(SRCROOT)/../node_modules/react-native-shared-group-preferences/ios",
 				);
 				INFOPLIST_FILE = HuntMobile/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
@@ -1942,10 +1986,14 @@
 					"$(SRCROOT)/../node_modules/react-native-image-resizer/ios/RCTImageResizer",
 					"$(SRCROOT)/../node_modules/rn-fetch-blob/ios/**",
 					"$(SRCROOT)/../node_modules/react-native-share-extension/ios",
+					"$(SRCROOT)/../node_modules/react-native-shared-group-preferences/ios",
 				);
 				INFOPLIST_FILE = "HuntMobile-tvOS/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				LIBRARY_SEARCH_PATHS = "$(inherited)";
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
+				);
 				OTHER_LDFLAGS = (
 					"-ObjC",
 					"-lc++",
@@ -1982,10 +2030,14 @@
 					"$(SRCROOT)/../node_modules/react-native-image-resizer/ios/RCTImageResizer",
 					"$(SRCROOT)/../node_modules/rn-fetch-blob/ios/**",
 					"$(SRCROOT)/../node_modules/react-native-share-extension/ios",
+					"$(SRCROOT)/../node_modules/react-native-shared-group-preferences/ios",
 				);
 				INFOPLIST_FILE = "HuntMobile-tvOS/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				LIBRARY_SEARCH_PATHS = "$(inherited)";
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
+				);
 				OTHER_LDFLAGS = (
 					"-ObjC",
 					"-lc++",
@@ -2021,10 +2073,14 @@
 					"$(SRCROOT)/../node_modules/react-native-image-resizer/ios/RCTImageResizer",
 					"$(SRCROOT)/../node_modules/rn-fetch-blob/ios/**",
 					"$(SRCROOT)/../node_modules/react-native-share-extension/ios",
+					"$(SRCROOT)/../node_modules/react-native-shared-group-preferences/ios",
 				);
 				INFOPLIST_FILE = "HuntMobile-tvOSTests/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
-				LIBRARY_SEARCH_PATHS = "$(inherited)";
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
+				);
 				OTHER_LDFLAGS = (
 					"-ObjC",
 					"-lc++",
@@ -2060,10 +2116,14 @@
 					"$(SRCROOT)/../node_modules/react-native-image-resizer/ios/RCTImageResizer",
 					"$(SRCROOT)/../node_modules/rn-fetch-blob/ios/**",
 					"$(SRCROOT)/../node_modules/react-native-share-extension/ios",
+					"$(SRCROOT)/../node_modules/react-native-shared-group-preferences/ios",
 				);
 				INFOPLIST_FILE = "HuntMobile-tvOSTests/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
-				LIBRARY_SEARCH_PATHS = "$(inherited)";
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
+				);
 				OTHER_LDFLAGS = (
 					"-ObjC",
 					"-lc++",
@@ -2180,11 +2240,17 @@
 				ENABLE_TESTABILITY = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu11;
 				GCC_NO_COMMON_BLOCKS = YES;
-				HEADER_SEARCH_PATHS = "$(SRCROOT)/../node_modules/react-native-vector-icons/RNVectorIconsManager";
+				HEADER_SEARCH_PATHS = (
+					"$(SRCROOT)/../node_modules/react-native-vector-icons/RNVectorIconsManager",
+					"$(SRCROOT)/../node_modules/react-native-shared-group-preferences/ios",
+				);
 				INFOPLIST_FILE = HuntMobileEx/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @executable_path/../../Frameworks";
-				LIBRARY_SEARCH_PATHS = "$(inherited)";
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
+				);
 				OTHER_LDFLAGS = (
 					"-ObjC",
 					"-lc++",
@@ -2224,11 +2290,17 @@
 				DEVELOPMENT_TEAM = B2TWZYTK2Q;
 				GCC_C_LANGUAGE_STANDARD = gnu11;
 				GCC_NO_COMMON_BLOCKS = YES;
-				HEADER_SEARCH_PATHS = "$(SRCROOT)/../node_modules/react-native-vector-icons/RNVectorIconsManager";
+				HEADER_SEARCH_PATHS = (
+					"$(SRCROOT)/../node_modules/react-native-vector-icons/RNVectorIconsManager",
+					"$(SRCROOT)/../node_modules/react-native-shared-group-preferences/ios",
+				);
 				INFOPLIST_FILE = HuntMobileEx/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @executable_path/../../Frameworks";
-				LIBRARY_SEARCH_PATHS = "$(inherited)";
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
+				);
 				OTHER_LDFLAGS = (
 					"-ObjC",
 					"-lc++",

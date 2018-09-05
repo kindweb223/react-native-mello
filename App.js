@@ -15,6 +15,7 @@ import thunk from 'redux-thunk'
 import _ from 'lodash'
 import promiseMiddleware from './src/service/promiseMiddleware'
 import { Actions, Scene, Router, Modal, Lightbox, Stack } from 'react-native-router-flux'
+import SharedGroupPreferences from 'react-native-shared-group-preferences'
 import axios from 'axios'
 import CONSTANTS from './src/service/constants'
 import COLORS from './src/service/colors'
@@ -33,6 +34,8 @@ axios.interceptors.response.use(
   (error) => {
     if (error.response === undefined || (error.response.status === 401 && error.response.data.code === 'session.expired')) {
       AsyncStorage.removeItem('xAuthToken')
+      SharedGroupPreferences.setItem('xAuthToken', null, CONSTANTS.APP_GROUP_TOKEN_IDENTIFIER)
+
       Actions.LoginStartScreen()
     }
     console.log('ERROR: ', error)
