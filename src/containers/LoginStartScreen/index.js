@@ -46,7 +46,7 @@ class LoginStartScreen extends React.Component {
     super(props)
     this.state = {
       email: 'seed-data@solvers.io',
-      // email: 'sergeypahm+99@gmail.com',
+      // email: 'sergeypahm+102@gmail.com',
       // email: '',
       loading: false,
       isInvalidError: false,

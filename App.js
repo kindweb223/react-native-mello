@@ -87,19 +87,26 @@ export default class Root extends React.Component {
       if (supported) {
         let params = _.split(url, '/')
         const path = params[params.length - 2]
-        console.log('TRAILING: ', params)
+        console.log('UNIVERSAL_LINK: ', params)
 
-        if (path === 'signup') {  // Signup via invite
+        if (path === 'get-started') {  
           const lastParam = params[params.length - 1]
-          const paramArray = _.split(lastParam, '?')
-          const token = paramArray[0]
-          const userEmail = (_.split(paramArray[1], '='))[1]
-          
-          Actions.SignUpScreen({
-            userEmail,
-            token,
-            isInvite: true
-          })
+          const paramArray = lastParam.split(/[?\=&]/)
+          const type = paramArray[0]
+
+          if (type === 'signup') {  // Signup via invite
+            const token = paramArray[2]
+            const userEmail = paramArray[4]
+            
+            Actions.SignUpScreen({
+              userEmail,
+              token,
+              isInvite: true
+            })
+          } else if (type === 'check-token') {  // Confirm user
+            const token = paramArray[2]
+            Actions.SignUpSuccessScreen({ token, deepLinking: true })
+          }
         }
 
         if (path === 'reset') { // Reset password
@@ -107,15 +114,8 @@ export default class Root extends React.Component {
           Actions.ResetPasswordScreen({ token })
         }
 
-        if (path === 'account') { // Confirm regstration
-          const token = url.slice(url.lastIndexOf('=') + 1, url.length)
-          Actions.SignUpSuccessScreen({ token, deepLinking: true })
-        }
-
-        if (path === 'hunt') { // Share an Idea
-          const lastParam = params[params.length - 1]
-          const paramArray = _.split(lastParam, '?')
-          const feedId = paramArray[0]
+        if (path === 'feedo') { // Share an Idea
+          const feedId = params[params.length - 1]
           const data = {
             id: feedId
           }
