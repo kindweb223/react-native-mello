@@ -29,9 +29,13 @@ class ImageCrop extends Component {
 			containerRatio: null,
 			offsetX: 0,
 			offsetY: 0,
-			cropWidth: 200,
-			cropHeight: 200,
-			cropQuality: 100
+			currentOffsetX: 0, 
+			currentOffsetY: 0,
+			cropWidth: CONSTANTS.SCREEN_WIDTH,
+			cropHeight: CONSTANTS.SCREEN_WIDTH,
+			cropQuality: 100,
+			isZooming: false,
+			isMoving: false
 		};
 	}
 
@@ -42,30 +46,78 @@ class ImageCrop extends Component {
 			this.setState({ originalImageWidth, originalImageHeight });
 			this.setState({
 				containerWidth: CONSTANTS.SCREEN_WIDTH,
-				containerHeight: CONSTANTS.SCREEN_WIDTH / originalImageWidth * originalImageHeight,
+				containerHeight: CONSTANTS.SCREEN_WIDTH,
+				// containerHeight: CONSTANTS.SCREEN_WIDTH / originalImageWidth * originalImageHeight,
 				containerRatio: originalImageWidth / CONSTANTS.SCREEN_WIDTH
 			})
 		});
+	}
+
+	calcDistance = (x1, y1, x2, y2) => {
+    let dx = Math.abs(x1 - x2)
+    let dy = Math.abs(y1 - y2)
+    return Math.sqrt(Math.pow(dx, 2) + Math.pow(dy, 2));
+	}
+
+	middle = (p1, p2) => {
+		return p1 > p2 ? p1 - (p1 - p2) / 2 : p2 - (p2 - p1) / 2;
+	}
+
+	calcCenter = (x1, y1, x2, y2) => {
+		return {
+				x: this.middle(x1, x2),
+				y: this.middle(y1, y2),
+		};
+	}
+
+	processPinch(x1, y1, x2, y2) {
+		let distance = this.calcDistance(x1, y1, x2, y2);
+		let center = this.calcCenter(x1, y1, x2, y2);
+
+		console.log('DISTANCE: ', distance)
+		console.log('CENTER: ', center)
+		
+	}
+
+	processTouch(x, y) {
+		console.log('TX: ', x)
+		console.log('TY: ', y)
 	}
 
 	getPanResponder() {
 		return PanResponder.create({
 			onStartShouldSetPanResponder: () => true,
 			onMoveShouldSetPanResponder: () => true,
+			onPandResponderTerminationRequest: () => true,
+			onMoveShouldSetPanResponderCapture: () => true,
 			onPanResponderMove: (event, { dx, dy }) => {
-				let { containerWidth, containerHeight, offsetX, offsetY, cropWidth, cropHeight } = this.state
+				let { currentOffsetX, currentOffsetY } = this.state
+				currentOffsetX += dx
+				currentOffsetY += dy
+				this.setState({ offsetX: currentOffsetX, offsetY: currentOffsetY })
 
-				offsetX = dx
-				offsetY = dy
-				if (Math.abs(offsetX) < containerWidth / 2 - cropWidth / 2) {
-					this.setState({ offsetX })
-				}
-				if (Math.abs(offsetY) < containerHeight / 2 - cropWidth / 2) {
-					this.setState({ offsetY })
+				let touches = event.nativeEvent.touches
+				if (touches.length === 2) {
+					let touch1 = touches[0]
+					let touch2 = touches[1]
+
+					this.processPinch(touches[0].pageX, touches[0].pageY, touches[1].pageX, touches[1].pageY)
+				} else if (touches.length === 1 && !this.state.isZooming) {
+					this.processTouch(touches[0].pageX, touches[0].pageY)
 				}
 			},
 			onPanResponderEnd: (event, { dx, dy }) => {
+				let { offsetX, offsetY } = this.state
+				this.setState({ currentOffsetX: offsetX, currentOffsetY: offsetY })
 			},
+			onPandResponderTerminate: () => {},
+			onPanResponderRelease: (evt, gestureState) => {
+				this.setState({
+					isZooming: false,
+					isMoving: false
+				})
+			},
+			onShouldBlockNativeResponder: (evt, gestureState) => true
 		});
 	}
 
@@ -109,13 +161,16 @@ class ImageCrop extends Component {
 	}
 
 	renderContainerImage() {
+		const { containerWidth, containerHeight, offsetX, offsetY } = this.state
+		console.log('X1: ', offsetX)
+		console.log('Y1: ', offsetY)
 		return (
 			<View
 				style={[styles.imageWrapper, {
-					width: this.state.containerWidth,
-					height: this.state.containerHeight,
-					top: 0,
-					left: 0,
+					width: containerWidth,
+					height: containerHeight,
+					top: offsetY * 2,
+					left: offsetX * 2,
 					borderRadius: 0,
 					backgroundColor: '#000'
 				}]}
@@ -137,13 +192,15 @@ class ImageCrop extends Component {
 
 	renderImage() {
 		const { containerWidth, containerHeight, offsetX, offsetY, cropWidth, cropHeight } = this.state
+		console.log('X2: ', offsetX)
+		console.log('Y2: ', offsetY)
 		return (
 			<View
 				style={{
 					width: cropWidth,
 					height: cropHeight,
-					top: containerHeight / 2 - cropWidth / 2 + offsetY,
-					left: containerWidth / 2 - cropWidth / 2 + offsetX,
+					top: 0,
+					left: 0,
 					borderRadius: cropWidth / 2,
 					overflow: 'hidden'
 				}}
@@ -154,8 +211,8 @@ class ImageCrop extends Component {
 					style={[styles.image, {
 						width: containerWidth,
 						height: containerHeight,
-						top: -(containerHeight / 2 - cropWidth / 2 + offsetY),
-						left: -(containerWidth / 2 - cropWidth / 2 + offsetX),
+						top: offsetY * 2,
+						left: offsetX * 2,
 						opacity: 1
 					}]}
 				/>
@@ -164,24 +221,22 @@ class ImageCrop extends Component {
 	}
 
 	render() {
-		const { continerWidth, containerHeight, originalImageHeight, originalImageWidth } = this.state
+		const { containerWidth, containerHeight, originalImageHeight, originalImageWidth } = this.state
 		return (
 			<View
 				style={[styles.container, {
-					width: continerWidth,
+					width: containerWidth,
 					height: containerHeight
 				}]}
 				{...this.panResponder.panHandlers}
 			>
-				{ this.renderContainerImage(true) }
+				{ this.renderContainerImage() }
 				<View
 					style={[styles.cropContainer, {
-						top: -this.state.containerHeight,
-						bottom: 0,
+						top: -containerHeight,
 						left: 0,
-						right: 0,
-						width: this.state.containerWidth,
-						height: this.state.containerHeight,
+						width: containerWidth,
+						height: containerHeight,
 					}]}
 				>
 					{ this.renderImage() }
