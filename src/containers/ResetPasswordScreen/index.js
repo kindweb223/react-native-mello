@@ -89,17 +89,15 @@ class ResetPasswordScreen extends React.Component {
     }
 
     if (prevProps.user.loading === 'RESET_PASSWORD_PENDING' && user.loading === 'RESET_PASSWORD_REJECTED') {
-      const { error } = user
-      this.setState({ loading: false }, () => {
-        Alert.alert(
-          'Error',
-          error.message,
-          [{
-            text: 'OK',
-            onPress: () => Actions.LoginStartScreen()
-          }]
-        )
-      })
+      this.setState({ loading: false })
+      Alert.alert(
+        'Error',
+        user.error.message,
+        [{
+          text: 'OK',
+          onPress: () => Actions.LoginStartScreen()
+        }]
+      )
     }
   }
 
