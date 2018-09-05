@@ -11,7 +11,8 @@ const initialState = {
   userInfo: null,
   userSignUpData: null,
   userImageUrlData: null,
-  userLookup: null
+  userLookup: null,
+  userConfirmed: false
 };
 
 export default function user(state = initialState, action = {}) {
@@ -101,6 +102,8 @@ export default function user(state = initialState, action = {}) {
     case types.GET_USER_SESSION_REJECTED: {
       console.log('GET_USER_SESSION_REJECTED: ', action.result)
       AsyncStorage.removeItem('userInfo')
+      AsyncStorage.removeItem('xAuthToken')
+
       return {
         ...state,
         loading: types.GET_USER_SESSION_REJECTED,
@@ -147,6 +150,7 @@ export default function user(state = initialState, action = {}) {
     case types.USER_SIGNOUT_PENDING:
       return {
         ...state,
+        userConfirmed: false,
         loading: types.USER_SIGNOUT_PENDING,
       }
     case types.USER_SIGNOUT_FULFILLED: {
@@ -326,6 +330,7 @@ export default function user(state = initialState, action = {}) {
       console.log('USER_CONFIRM_ACCOUNT_FULFILLED')
       return {
         ...state,
+        userConfirmed: true,
         loading: types.USER_CONFIRM_ACCOUNT_FULFILLED,
       }
     }
@@ -333,6 +338,7 @@ export default function user(state = initialState, action = {}) {
       console.log('USER_CONFIRM_ACCOUNT_REJECTED')
       return {
         ...state,
+        userConfirmed: false,
         loading: types.USER_CONFIRM_ACCOUNT_REJECTED,
         error: action.error.response.data
       }
@@ -416,6 +422,15 @@ export default function user(state = initialState, action = {}) {
       }
     case types.COMPLETE_INVITE_FULFILLED: {
       console.log('COMPLETE_INVITE_FULFILLED: ', action.result)
+      const { headers } = action.result
+      const xAuthToken = headers['x-auth-token']
+      if (xAuthToken) {
+        axios.defaults.headers['x-auth-token'] = xAuthToken
+        AsyncStorage.setItem('xAuthToken', xAuthToken)
+      } else {
+        AsyncStorage.removeItem('xAuthToken')
+      }
+
       return {
         ...state,
         loading: types.COMPLETE_INVITE_FULFILLED,

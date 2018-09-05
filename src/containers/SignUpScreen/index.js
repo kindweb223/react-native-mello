@@ -92,6 +92,7 @@ class SignUpScreen extends React.Component {
     const { token } = this.props
     const { isInvite } = this.state
 
+    // For invited user
     if (isInvite) {
       const param = {
         validationToken: token,
@@ -126,7 +127,6 @@ class SignUpScreen extends React.Component {
 
     if (prevProps.user.loading === 'GET_USER_IMAGE_URL_PENDING' && this.props.user.loading === 'GET_USER_IMAGE_URL_FULFILLED') {
       const { userImageUrlData } = this.props.user
-      console.log('GET_USER_IMAGE_URL_FULFILLED: ', userImageUrlData)
       this.uploadImage(userImageUrlData)
     }
 
@@ -157,10 +157,12 @@ class SignUpScreen extends React.Component {
     if (prevProps.user.loading === 'VALIDATE_INVITE_PENDING' && this.props.user.loading === 'VALIDATE_INVITE_REJECTED') {
       // Invitation has expired
       const { error } = this.props.user
-      this.setState({ loading: false, isInvite: false })
-      if (error.code === 'error.user.invite.notfound') {
-        Actions.LoginStartScreen()
-      }
+      this.setState({ loading: false, isInvite: false }, () => {
+        Alert.alert(
+          'Error',
+          error.message
+        )
+      })
     }
 
     if (prevProps.user.loading === 'COMPLETE_INVITE_PENDING' && this.props.user.loading === 'COMPLETE_INVITE_FULFILLED') {
@@ -169,7 +171,7 @@ class SignUpScreen extends React.Component {
 
     if (prevProps.user.loading === 'COMPLETE_INVITE_PENDING' && this.props.user.loading === 'COMPLETE_INVITE_REJECTED') {
       const { error } = this.props.user
-      this.setState({ loading: false }, () => {
+      this.setState({ loading: false, isInvite: false }, () => {
         Alert.alert(
           'Error',
           error.message
@@ -178,11 +180,13 @@ class SignUpScreen extends React.Component {
     }
 
     if (prevProps.user.loading === 'GET_USER_SESSION_PENDING' && this.props.user.loading === 'GET_USER_SESSION_FULFILLED') {
-      this.setState({ loading: false }, () => {
-        if (this.props.user.userInfo.emailConfirmed) {
-          Actions.HomeScreen()
-        }
-      })
+      if (this.props.isInvite) {
+        this.setState({ loading: false }, () => {
+          if (this.props.user.userInfo.emailConfirmed) {
+            Actions.SignUpSuccessScreen()
+          }
+        })
+      }
     }
   }
 
