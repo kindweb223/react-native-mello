@@ -85,9 +85,9 @@ export default class Root extends React.Component {
   resetStackToProperRoute = (url) => {
     Linking.canOpenURL(url).then((supported) => {
       if (supported) {
-        let params = _.split(url, '/')
+        let params = _.split(decodeURIComponent(url), '/')
         const path = params[params.length - 2]
-        console.log('UNIVERSAL_LINK: ', params)
+        console.log('UNIVERSAL_LINK: ', decodeURIComponent(url))
 
         if (path === 'get-started') {  
           const lastParam = params[params.length - 1]
