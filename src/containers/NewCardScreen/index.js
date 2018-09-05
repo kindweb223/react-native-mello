@@ -712,7 +712,7 @@ class NewCardScreen extends React.Component {
         <TextInput 
           style={styles.textInputCardTitle}
           editable={viewMode === CONSTANTS.CARD_NEW || viewMode === CONSTANTS.CARD_EDIT}
-          placeholder='New Card' //Add a name or link here
+          placeholder='Add a name or link here'
           underlineColorAndroid='transparent'
           value={this.state.cardName}
           onChangeText={(value) => this.onChangeTitle(value)}
