@@ -31,11 +31,11 @@ axios.interceptors.response.use(
     response
   ),
   (error) => {
+    console.log('ERROR: ', error)
     if (error.response === undefined || (error.response.status === 401 && error.response.data.code === 'session.expired')) {
       AsyncStorage.removeItem('xAuthToken')
       Actions.LoginStartScreen()
     }
-    console.log('ERROR: ', error)
     throw error
   }
 )
@@ -171,7 +171,7 @@ export default class Root extends React.Component {
       <Lightbox>
         <Modal hideNavBar>
           <Scene key="root">
-            <Scene key="LoginStartScreen" component={ LoginStartScreen } initial hideNavBar panHandlers={null} />
+            <Scene key="LoginStartScreen" component={ LoginStartScreen } hideNavBar panHandlers={null} />
             <Scene key="LoginScreen" component={ LoginScreen } hideNavBar panHandlers={null} />
             <Scene key="SignUpScreen" component={ SignUpScreen } hideNavBar panHandlers={null} />
             <Scene key="SignUpConfirmScreen" component={ SignUpConfirmScreen } hideNavBar panHandlers={null} />
