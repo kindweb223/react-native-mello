@@ -75,14 +75,21 @@ class ResetPasswordScreen extends React.Component {
   }
 
   componentDidUpdate(prevProps, prevState) {
-    if (prevProps.user.loading === 'RESET_PASSWORD_PENDING' && this.props.user.loading === 'RESET_PASSWORD_FULFILLED') {
+    const { user } = this.props
+
+    if (prevProps.user.loading === 'RESET_PASSWORD_PENDING' && user.loading === 'RESET_PASSWORD_FULFILLED') {
+      const { userInfo } = user
       this.setState({ loading: false }, () => {
-        Actions.ResetPasswordSuccessScreen()
+        if (userInfo) {
+          Actions.LoginScreen({ userData: user.userInfo, isReset: true })
+        } else {
+          Actions.LoginStartScreen()
+        }
       })
     }
 
-    if (prevProps.user.loading === 'RESET_PASSWORD_PENDING' && this.props.user.loading === 'RESET_PASSWORD_REJECTED') {
-      const { error } = this.props.user
+    if (prevProps.user.loading === 'RESET_PASSWORD_PENDING' && user.loading === 'RESET_PASSWORD_REJECTED') {
+      const { error } = user
       this.setState({ loading: false }, () => {
         Alert.alert(
           'Error',
@@ -234,11 +241,11 @@ class ResetPasswordScreen extends React.Component {
           <LoadingScreen />
         )}
 
-        {/* <View style={styles.headerView}>
-          <TouchableOpacity onPress={() => Actions.pop()} style={styles.btnBack}>
+        <View style={styles.headerView}>
+          <TouchableOpacity onPress={() => Actions.LoginStartScreen()} style={styles.btnBack}>
             <Feather name="arrow-left" size={25} color={'#fff'} />
           </TouchableOpacity>
-        </View> */}
+        </View>
 
       </View>
     )

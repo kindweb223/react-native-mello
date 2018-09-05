@@ -58,7 +58,6 @@ import ProfileUpdateScreen from './src/containers/ProfileUpdateScreen'
 import SignUpSuccessScreen from './src/containers/SignUpSuccessScreen'
 import ResetPasswordConfirmScreen from './src/containers/ResetPasswordConfirmScreen'
 import ResetPasswordScreen from './src/containers/ResetPasswordScreen'
-import ResetPasswordSuccessScreen from './src/containers/ResetPasswordSuccessScreen'
 
 const store = createStore(reducers, applyMiddleware(thunk, promiseMiddleware))
 
@@ -114,7 +113,7 @@ export default class Root extends React.Component {
           Actions.ResetPasswordScreen({ token })
         }
 
-        if (path === 'feedo') { // Share an Idea
+        if (path === 'feed') { // Share an Idea
           const feedId = params[params.length - 1]
           const data = {
             id: feedId
@@ -185,7 +184,6 @@ export default class Root extends React.Component {
             <Scene key="SignUpSuccessScreen" component={ SignUpSuccessScreen } hideNavBar panHandlers={null} />
             <Scene key="ResetPasswordConfirmScreen" component={ ResetPasswordConfirmScreen } hideNavBar panHandlers={null} />
             <Scene key="ResetPasswordScreen" component={ ResetPasswordScreen } hideNavBar panHandlers={null} />
-            <Scene key="ResetPasswordSuccessScreen" component={ ResetPasswordSuccessScreen } hideNavBar panHandlers={null} />
           </Scene>
           <Stack key="ProfileScreen" hideNavBar>
             <Stack key="ProfileScreen" hideNavBar>

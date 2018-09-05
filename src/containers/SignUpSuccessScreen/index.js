@@ -69,7 +69,7 @@ class SignUpSuccessScreen extends React.Component {
 
     if (this.props.user.loading === 'GET_USER_SESSION_PENDING' && user.loading === 'GET_USER_SESSION_FULFILLED') {
       if (deepLinking) {
-        console.log('DEEP_LINK === TRUE')
+        console.log('SIGNUP_SUCCESS_SESSION !!!')
         this.setState({ loading: false }, () => {
           if (user.userInfo.emailConfirmed) {
             setTimeout(() => {
