@@ -7,7 +7,7 @@ import {
 } from 'react-native'
 import PropTypes from 'prop-types'
 
-import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons'
+import Ionicons from 'react-native-vector-icons/Ionicons'
 import Modal from 'react-native-modal'
 import FastImage from 'react-native-fast-image'
 import ImageSliderScreen from '../../containers/ImageSliderScreen'
@@ -174,7 +174,9 @@ export default class ImageList extends React.Component {
               activeOpacity={0.8}
               onPress={() => this.onRemove(index)}
             >
-              <MaterialCommunityIcons name="close" size={18} color={'#fff'} />
+              <View style={styles.closeSubButtonContainer}>
+                <Ionicons name="md-close" size={18} color={'#fff'} style={{marginTop: 2, marginLeft: 1}} />
+              </View>
             </TouchableOpacity>
         }
       </Animated.View>

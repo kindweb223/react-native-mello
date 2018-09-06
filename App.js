@@ -14,7 +14,7 @@ import { Provider } from 'react-redux'
 import thunk from 'redux-thunk'
 import _ from 'lodash'
 import promiseMiddleware from './src/service/promiseMiddleware'
-import { Actions, Scene, Router, Modal, Lightbox, Stack } from 'react-native-router-flux'
+import { Actions, Scene, Router, Modal, Lightbox, Stack, ActionConst } from 'react-native-router-flux'
 import axios from 'axios'
 import CONSTANTS from './src/service/constants'
 import COLORS from './src/service/colors'
@@ -31,11 +31,11 @@ axios.interceptors.response.use(
     response
   ),
   (error) => {
+    console.log('ERROR: ', error)
     if (error.response === undefined || (error.response.status === 401 && error.response.data.code === 'session.expired')) {
       AsyncStorage.removeItem('xAuthToken')
       Actions.LoginStartScreen()
     }
-    console.log('ERROR: ', error)
     throw error
   }
 )
@@ -58,7 +58,6 @@ import ProfileUpdateScreen from './src/containers/ProfileUpdateScreen'
 import SignUpSuccessScreen from './src/containers/SignUpSuccessScreen'
 import ResetPasswordConfirmScreen from './src/containers/ResetPasswordConfirmScreen'
 import ResetPasswordScreen from './src/containers/ResetPasswordScreen'
-import ResetPasswordSuccessScreen from './src/containers/ResetPasswordSuccessScreen'
 
 const store = createStore(reducers, applyMiddleware(thunk, promiseMiddleware))
 
@@ -85,9 +84,9 @@ export default class Root extends React.Component {
   resetStackToProperRoute = (url) => {
     Linking.canOpenURL(url).then((supported) => {
       if (supported) {
-        let params = _.split(url, '/')
+        let params = _.split(decodeURIComponent(url), '/')
         const path = params[params.length - 2]
-        console.log('UNIVERSAL_LINK: ', params)
+        console.log('UNIVERSAL_LINK: ', decodeURIComponent(url))
 
         if (path === 'get-started') {  
           const lastParam = params[params.length - 1]
@@ -114,7 +113,7 @@ export default class Root extends React.Component {
           Actions.ResetPasswordScreen({ token })
         }
 
-        if (path === 'feedo') { // Share an Idea
+        if (path === 'feed') { // Share an Idea
           const feedId = params[params.length - 1]
           const data = {
             id: feedId
@@ -172,7 +171,7 @@ export default class Root extends React.Component {
       <Lightbox>
         <Modal hideNavBar>
           <Scene key="root">
-            <Scene key="LoginStartScreen" component={ LoginStartScreen } initial hideNavBar panHandlers={null} />
+            <Scene key="LoginStartScreen" component={ LoginStartScreen } hideNavBar panHandlers={null} />
             <Scene key="LoginScreen" component={ LoginScreen } hideNavBar panHandlers={null} />
             <Scene key="SignUpScreen" component={ SignUpScreen } hideNavBar panHandlers={null} />
             <Scene key="SignUpConfirmScreen" component={ SignUpConfirmScreen } hideNavBar panHandlers={null} />
@@ -185,7 +184,6 @@ export default class Root extends React.Component {
             <Scene key="SignUpSuccessScreen" component={ SignUpSuccessScreen } hideNavBar panHandlers={null} />
             <Scene key="ResetPasswordConfirmScreen" component={ ResetPasswordConfirmScreen } hideNavBar panHandlers={null} />
             <Scene key="ResetPasswordScreen" component={ ResetPasswordScreen } hideNavBar panHandlers={null} />
-            <Scene key="ResetPasswordSuccessScreen" component={ ResetPasswordSuccessScreen } hideNavBar panHandlers={null} />
           </Scene>
           <Stack key="ProfileScreen" hideNavBar>
             <Stack key="ProfileScreen" hideNavBar>

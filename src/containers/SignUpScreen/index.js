@@ -84,7 +84,8 @@ class SignUpScreen extends React.Component {
           message: ''
         }
       ],
-      isInvite: props.isInvite
+      isInvite: props.isInvite,
+      isSignup: false
     }
   }
 
@@ -167,6 +168,7 @@ class SignUpScreen extends React.Component {
 
     if (prevProps.user.loading === 'COMPLETE_INVITE_PENDING' && this.props.user.loading === 'COMPLETE_INVITE_FULFILLED') {
       this.props.getUserSession()
+      this.setState({ isSignup: true })
     }
 
     if (prevProps.user.loading === 'COMPLETE_INVITE_PENDING' && this.props.user.loading === 'COMPLETE_INVITE_REJECTED') {
@@ -180,13 +182,19 @@ class SignUpScreen extends React.Component {
     }
 
     if (prevProps.user.loading === 'GET_USER_SESSION_PENDING' && this.props.user.loading === 'GET_USER_SESSION_FULFILLED') {
-      if (this.props.isInvite) {
+      if (this.state.isSignedup && this.props.isInvite) {
+        console.log('SIGNUP_SESSION !!!!!')
         this.setState({ loading: false }, () => {
+          this.setState({ isSignup: false })
           if (this.props.user.userInfo.emailConfirmed) {
             Actions.SignUpSuccessScreen()
           }
         })
       }
+    }
+
+    if (prevProps.user.loading === 'GET_USER_SESSION_PENDING' && this.props.user.loading === 'GET_USER_SESSION_REJECTED') {
+      this.setState({ loading: false, isSignup: false })
     }
   }
 
