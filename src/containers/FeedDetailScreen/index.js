@@ -588,6 +588,7 @@ class FeedDetailScreen extends React.Component {
         </Modal>
 
         <FilterComponent
+          cardCount={currentFeed ? currentFeed.ideas.length : 0}
           show={this.state.showFilterModal}
           onFilterShow={this.onFilterShow}
           onFilterSort={this.onFilterSort}

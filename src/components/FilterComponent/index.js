@@ -58,7 +58,7 @@ class FilterComponent extends React.Component {
 
           <View style={styles.body}>
             <View style={styles.row}>
-              <Text style={styles.countText}>Shwoing all 34 cards</Text>
+              <Text style={styles.countText}>Showing all {this.props.cardCount} cards</Text>
               <View style={styles.buttonGroup}>
                 <TouchableOpacity onPress={() => this.showCards('all')} style={styles.buttonView}>
                   <View style={[styles.button, showType === 'all' ? styles.buttonSelect : styles.buttonDeselect]}>
@@ -123,6 +123,7 @@ class FilterComponent extends React.Component {
 
 FilterComponent.defaultProps = {
   show: false,
+  cardCount: 0,
   onClose: () => {},
   onFilterShow: () => {},
   onFilterSort: () => {}
@@ -130,6 +131,7 @@ FilterComponent.defaultProps = {
 
 FilterComponent.propTypes = {
   show: PropTypes.bool,
+  cardCount: PropTypes.number,
   onClose: PropTypes.func,
   onFilterShow: PropTypes.func,
   onFilterSort: PropTypes.func
