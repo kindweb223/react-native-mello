@@ -339,7 +339,7 @@ export const getOpenGraph = (urlPath) => {
     types: [types.GET_OPEN_GRAPH_PENDING, types.GET_OPEN_GRAPH_FULFILLED, types.GET_OPEN_GRAPH_REJECTED],
     promise: axios({
       method: 'post',
-      baseURL: 'https://ueoqaymxdl.execute-api.us-east-1.amazonaws.com/dev/',
+      baseURL: 'https://cwnlt0ox3g.execute-api.us-east-1.amazonaws.com/dev/',
       url,
       data,
     }),
