@@ -13,7 +13,7 @@ import {
 
 import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
-import { isEmpty, find } from 'lodash'
+import _ from 'lodash'
 import { Actions } from 'react-native-router-flux'
 import Ionicons from 'react-native-vector-icons/Ionicons'
 import { ActionSheetCustom as ActionSheet } from 'react-native-actionsheet'
@@ -28,6 +28,7 @@ import ToasterComponent from '../../components/ToasterComponent'
 import FeedLoadingStateComponent from '../../components/FeedLoadingStateComponent'
 import ShareScreen from '../ShareScreen'
 import NewFeedScreen from '../NewFeedScreen'
+import FilterComponent from '../../components/FilterComponent'
 
 import {
   getFeedDetail,
@@ -58,6 +59,7 @@ class FeedDetailScreen extends React.Component {
     super(props);
     this.state = {
       scrollY: new Animated.Value(0),
+      currentBackFeed: {},
       currentFeed: {},
       loading: false,
       
@@ -71,7 +73,10 @@ class FeedDetailScreen extends React.Component {
       pinText: 'Pin',
       selectedIdeaInvitee: null,
       selectedIdeaLayout: {},
-      isInviteeModal: false
+      isInviteeModal: false,
+      showFilterModal: false,
+      filterShowType: 'all',
+      filterSortType: 'date'
     };
     this.animatedOpacity = new Animated.Value(0)
     this.menuOpacity = new Animated.Value(0)
@@ -85,25 +90,79 @@ class FeedDetailScreen extends React.Component {
     this.props.getFeedDetail(this.props.data.id)
   }
 
-  static getDerivedStateFromProps(nextProps, prevState) {
-    if (nextProps.feedo.currentFeed !== prevState.currentFeed && (
-        nextProps.feedo.loading === 'GET_FEED_DETAIL_FULFILLED' ||
-        nextProps.feedo.loading === 'DELETE_INVITEE_FULFILLED' ||
-        nextProps.feedo.loading === 'UPDATE_SHARING_PREFERENCES_FULFILLED' ||
-        nextProps.feedo.loading === 'UPDATE_INVITEE_PERMISSION_FULFILLED' ||
-        nextProps.feedo.loading === 'INVITE_HUNT_FULFILLED')) {
-      return {
+  UNSAFE_componentWillReceiveProps(nextProps) {
+    const { feedo } = nextProps
+
+    if ((this.props.feedo.loading === 'GET_FEED_DETAIL_PENDING' && feedo.loading === 'GET_FEED_DETAIL_FULFILLED') ||
+        (this.props.feedo.loading === 'DELETE_INVITEE_PENDING' && feedo.loading === 'DELETE_INVITEE_FULFILLED') ||
+        (this.props.feedo.loading === 'UPDATE_SHARING_PREFERENCES_PENDING' && feedo.loading === 'UPDATE_SHARING_PREFERENCES_FULFILLED') ||
+        (this.props.feedo.loading === 'UPDATE_INVITEE_PERMISSION_PENDING' && feedo.loading === 'UPDATE_INVITEE_PERMISSION_FULFILLED') ||
+        (this.props.feedo.loading === 'INVITE_HUNT_PENDING' && feedo.loading === 'INVITE_HUNT_FULFILLED')) {
+      
+      const currentFeed = feedo.currentFeed
+
+      this.setState({
         loading: false,
-        currentFeed: nextProps.feedo.currentFeed,
-        pinText: !nextProps.feedo.currentFeed.pinned ? 'Pin' : 'Unpin'
-      }
+        pinText: !currentFeed.pinned ? 'Pin' : 'Unpin'
+      })
+
+      this.setState({ currentBackFeed: currentFeed }, () => {
+        this.filterCards(currentFeed)
+      })
     }
-    if (nextProps.feedo.loading === 'GET_FEED_DETAIL_PENDING') {
-      return {
-        currentFeed: {}
-      }
+
+    if (feedo.loading === 'GET_FEED_DETAIL_PENDING') {
+      this.setState({ currentFeed: {} })
     }
-    return null
+  }
+
+  filterCards = (currentFeed) => {
+    const { currentBackFeed, filterShowType, filterSortType } = this.state
+    const { ideas } = currentFeed
+    let filterIdeas = {}, sortIdeas = {}
+
+    if (filterShowType === 'all') {
+      filterIdeas = currentBackFeed.ideas
+    }
+
+    if (filterShowType === 'like') {
+      filterIdeas = _.filter(ideas, idea => idea.metadata.likes > 0)
+    }
+
+    if (filterSortType === 'date') {
+      sortIdeas = _.orderBy(filterIdeas, ['dateCreated'], ['desc'])
+    }
+
+    if (filterSortType === 'like') {
+      sortIdeas = _.orderBy(filterIdeas, ['metadata.likes'], ['desc'])
+    }
+
+    if (filterSortType === 'comment') {
+      sortIdeas = _.orderBy(filterIdeas, ['metadata.comments'], ['desc'])
+    }
+
+    this.setState({
+      currentFeed: {
+        ...currentFeed,
+        ideas: sortIdeas
+      }
+    })
+  }
+
+  onFilterShow = (type) => {
+    const { currentFeed } = this.state
+
+    this.setState({ showFilterModal: false, filterShowType: type }, () => {
+      this.filterCards(currentFeed)
+    })
+  }
+
+  onFilterSort = (type) => {
+    const { currentFeed } = this.state
+
+    this.setState({ showFilterModal: false, filterSortType: type }, () => {
+      this.filterCards(currentFeed)
+    })
   }
 
   backToDashboard = () => {
@@ -294,7 +353,7 @@ class FeedDetailScreen extends React.Component {
   onSelectCard(idea, index) {
     this.props.setCurrentCard(idea);
     const { currentFeed } = this.state;
-    const invitee = find(currentFeed.invitees, (o) => {
+    const invitee = _.find(currentFeed.invitees, (o) => {
       return (o.id == idea.inviteeId)
     });
     let cardViewMode = CONSTANTS.CARD_VIEW;
@@ -348,6 +407,10 @@ class FeedDetailScreen extends React.Component {
       </Animated.View>
     );
   }
+  
+  handleFilter = () => {
+    this.setState({ showFilterModal: true })
+  }
 
   render () {
     const { currentFeed, loading, pinText } = this.state
@@ -383,7 +446,7 @@ class FeedDetailScreen extends React.Component {
     })
 
     let avatars = []
-    if (!isEmpty(currentFeed)) {
+    if (!_.isEmpty(currentFeed)) {
       currentFeed.invitees.forEach((item, key) => {
         avatars = [
           ...avatars,
@@ -432,7 +495,7 @@ class FeedDetailScreen extends React.Component {
             </Animated.View>
             
               <View style={styles.detailView}>
-                {!isEmpty(currentFeed) && 
+                {!_.isEmpty(currentFeed) && 
                   (currentFeed.summary.length > 0 ||
                   (currentFeed.files && currentFeed.files.length > 0) ||
                   (currentFeed.tags && currentFeed.tags.length > 0)) && (
@@ -440,7 +503,7 @@ class FeedDetailScreen extends React.Component {
                 )}
 
                 {
-                  !isEmpty(currentFeed) && currentFeed && currentFeed.ideas.length > 0 ?
+                  !_.isEmpty(currentFeed) && currentFeed && currentFeed.ideas.length > 0 ?
                     currentFeed.ideas.map((item, index) => (
                       <TouchableHighlight
                         key={index}
@@ -470,6 +533,7 @@ class FeedDetailScreen extends React.Component {
 
         <DashboardActionBar 
           onAddFeed={this.onOpenNewCardModal.bind(this)}
+          handleFilter={this.handleFilter}
         />
         {this.renderNewCardModal}
 
@@ -519,6 +583,13 @@ class FeedDetailScreen extends React.Component {
             <FeedControlMenuComponent handleSettingItem={item => this.handleSettingItem(item)} data={currentFeed} pinText={pinText} />
           </Animated.View>
         </Modal>
+
+        <FilterComponent
+          show={this.state.showFilterModal}
+          onFilterShow={this.onFilterShow}
+          onFilterSort={this.onFilterSort}
+          onClose={() => this.setState({ showFilterModal: false }) }
+        />
 
       </SafeAreaView>
     )
