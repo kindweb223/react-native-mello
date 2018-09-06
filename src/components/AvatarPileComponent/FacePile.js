@@ -72,6 +72,7 @@ export function renderFacePile (faces = [], numFaces) {
   }
 
   const facesToRender = entities.slice(0, numFaces)
+  facesToRender.reverse() // Need to show oldest from left to right
   const overflow = entities.length - facesToRender.length
 
   return {

@@ -480,7 +480,6 @@ class FeedDetailScreen extends React.Component {
           cancelButtonIndex={1}
           destructiveButtonIndex={0}
           tintColor={COLORS.PURPLE}
-          styles={actionSheetStyles}
           onPress={(index) => this.onTapActionSheet(index)}
         />
 
