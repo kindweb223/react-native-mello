@@ -112,7 +112,7 @@ class LoginStartScreen extends React.Component {
         <Gradient />
         
         <KeyboardScrollView>
-          <View style={styles.container}>
+          <View style={styles.innerContainer}>
             <View style={styles.contentView}>
               <View style={styles.logoView}>
                 <Image source={LOGO} />
