@@ -19,6 +19,9 @@ class KeyboardScrollView extends React.Component {
 
   componentDidMount() {
     this.mounted = true
+
+    this.scrollRef.scrollToEnd()
+
     this.keyboardWillShowEvent = Keyboard.addListener(
       'keyboardWillShow',
       this.showKeyboard
@@ -62,6 +65,8 @@ class KeyboardScrollView extends React.Component {
       <KeyboardAwareScrollView
         ref={c => this.scrollRef = c}
         automaticallyAdjustContentInsets={true}
+        extraHeight={0}
+        extraScrollHeight={0}
       >
         {children}
       </KeyboardAwareScrollView>
