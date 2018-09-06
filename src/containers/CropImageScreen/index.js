@@ -84,19 +84,19 @@ class CropImageScreen extends React.Component {
       <View style={styles.container}>
         <SafeAreaView>
           <View style={styles.body}>
+            <View style={styles.imageView}>
+              <ImageCrop
+                ref={c => this.imageCrop = c}
+                source={{ uri: avatarFile.uri }}
+              />
+            </View>
+
             <View style={styles.headerView}>
               <View style={styles.closeButton} />
               <Text style={styles.title}>Update avatar</Text>
               <TouchableOpacity onPress={() => this.props.onClose()} style={styles.closeButton}>
                 <Image source={CLOSE_ICON} />
               </TouchableOpacity>
-            </View>
-
-            <View style={styles.imageView}>
-              <ImageCrop
-                ref={c => this.imageCrop = c}
-                source={{ uri: avatarFile.uri }}
-              />
             </View>
 
             <View style={styles.footerView}>

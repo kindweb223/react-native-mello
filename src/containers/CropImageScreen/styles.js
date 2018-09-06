@@ -11,16 +11,19 @@ export default {
     right: 0,
     left: 0,
     bottom: 0,
-    backgroudnColor: '#fff'
+    backgroundColor: '#fff'
   },
   body: {
     width: '100%',
     height: '100%',
-    backgroudnColor: '#fff',
+    backgroundColor: '#fff',
   },
   headerView: {
     width: '100%',
     height: 50,
+    position: 'absolute',
+    top: 0,
+    left: 0,
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
@@ -39,7 +42,9 @@ export default {
     fontWeight: '600',
   },
   imageView: {
-    flex: 1,
+    width: '100%',
+    height: CONSTANTS.SCREEN_HEIGHT - 160,
+    marginTop: 51,
     justifyContent: 'center',
     alignItems: 'center'
   },
@@ -49,11 +54,13 @@ export default {
   },
   footerView: {
     width: '100%',
-    marginBottom: 20,
-    justifyContent: 'center',
+    height: 90,
+    position: 'absolute',
+    left: 0,
+    bottom: 0,
+    justifyContent: 'flex-start',
     alignItems: 'center',
-    padding: CONSTANTS.PADDING,
-    backgroudnColor: '#fff'
+    paddingHorizontal: CONSTANTS.PADDING
   },
   saveBtn: {
     height: 60,
@@ -67,14 +74,5 @@ export default {
     fontSize: 16,
     fontWeight: '600',
     color: '#fff'
-  },
-  box: {
-    backgroundColor: "tomato",
-    marginLeft: -(CIRCLE_SIZE / 2),
-    marginTop: -(CIRCLE_SIZE / 2),
-    width: CIRCLE_SIZE,
-    height: CIRCLE_SIZE,
-    borderRadius: CIRCLE_SIZE / 2,
-    borderColor: "#000"
   }
 }

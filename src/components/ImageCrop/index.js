@@ -34,8 +34,8 @@ class ImageCrop extends Component {
 			cropWidth: CONSTANTS.SCREEN_WIDTH,
 			cropHeight: CONSTANTS.SCREEN_WIDTH,
 			cropQuality: 100,
-			isZooming: false,
-			isMoving: false
+
+			scale: 1
 		};
 	}
 
@@ -47,79 +47,64 @@ class ImageCrop extends Component {
 			this.setState({
 				containerWidth: CONSTANTS.SCREEN_WIDTH,
 				containerHeight: CONSTANTS.SCREEN_WIDTH,
-				// containerHeight: CONSTANTS.SCREEN_WIDTH / originalImageWidth * originalImageHeight,
 				containerRatio: originalImageWidth / CONSTANTS.SCREEN_WIDTH
 			})
 		});
-	}
-
-	calcDistance = (x1, y1, x2, y2) => {
-    let dx = Math.abs(x1 - x2)
-    let dy = Math.abs(y1 - y2)
-    return Math.sqrt(Math.pow(dx, 2) + Math.pow(dy, 2));
-	}
-
-	middle = (p1, p2) => {
-		return p1 > p2 ? p1 - (p1 - p2) / 2 : p2 - (p2 - p1) / 2;
-	}
-
-	calcCenter = (x1, y1, x2, y2) => {
-		return {
-				x: this.middle(x1, x2),
-				y: this.middle(y1, y2),
-		};
-	}
-
-	processPinch(x1, y1, x2, y2) {
-		let distance = this.calcDistance(x1, y1, x2, y2);
-		let center = this.calcCenter(x1, y1, x2, y2);
-
-		console.log('DISTANCE: ', distance)
-		console.log('CENTER: ', center)
-		
-	}
-
-	processTouch(x, y) {
-		console.log('TX: ', x)
-		console.log('TY: ', y)
 	}
 
 	getPanResponder() {
 		return PanResponder.create({
 			onStartShouldSetPanResponder: () => true,
 			onMoveShouldSetPanResponder: () => true,
-			onPandResponderTerminationRequest: () => true,
+			onPanResponderGrant: this._handlePanResponderGrant,
 			onMoveShouldSetPanResponderCapture: () => true,
-			onPanResponderMove: (event, { dx, dy }) => {
-				let { currentOffsetX, currentOffsetY } = this.state
-				currentOffsetX += dx
-				currentOffsetY += dy
-				this.setState({ offsetX: currentOffsetX, offsetY: currentOffsetY })
-
-				let touches = event.nativeEvent.touches
-				if (touches.length === 2) {
-					let touch1 = touches[0]
-					let touch2 = touches[1]
-
-					this.processPinch(touches[0].pageX, touches[0].pageY, touches[1].pageX, touches[1].pageY)
-				} else if (touches.length === 1 && !this.state.isZooming) {
-					this.processTouch(touches[0].pageX, touches[0].pageY)
-				}
-			},
+			onPanResponderMove: this._handlePanResponderMove,
 			onPanResponderEnd: (event, { dx, dy }) => {
 				let { offsetX, offsetY } = this.state
 				this.setState({ currentOffsetX: offsetX, currentOffsetY: offsetY })
 			},
-			onPandResponderTerminate: () => {},
-			onPanResponderRelease: (evt, gestureState) => {
-				this.setState({
-					isZooming: false,
-					isMoving: false
-				})
-			},
-			onShouldBlockNativeResponder: (evt, gestureState) => true
+			onPanResponderTerminationRequest: evt => true,
+      onShouldBlockNativeResponder: evt => false
 		});
 	}
+
+	_handlePanResponderMove = (e, gestureState) => {
+		let { currentOffsetX, currentOffsetY } = this.state
+
+		console.log('MOVE: ', gestureState.numberActiveTouches)
+		if (gestureState.numberActiveTouches === 2) {
+			// let dx = Math.abs(
+			// 	e.nativeEvent.touches[0].pageX - e.nativeEvent.touches[1].pageX
+			// );
+			// let dy = Math.abs(
+			// 	e.nativeEvent.touches[0].pageY - e.nativeEvent.touches[1].pageY
+			// );
+			// let distant = Math.sqrt(dx * dx + dy * dy);
+			// let scale = (distant / this.distant) * this.state.lastScale;
+			// //check scale min to max hello
+			// if (scale < this.props.maxScale && scale > this.props.minScale) {
+			// 	this.setState({ scale, lastMovePinch: true });
+			// }
+		} else {
+			currentOffsetX += gestureState.dx
+			currentOffsetY += gestureState.dy
+			this.setState({ offsetX: currentOffsetX, offsetY: currentOffsetY })
+		}
+	}
+
+	_handlePanResponderGrant = (e, gestureState) => {
+    if (gestureState.numberActiveTouches === 2) {
+      let dx = Math.abs(
+        e.nativeEvent.touches[0].pageX - e.nativeEvent.touches[1].pageX
+      );
+      let dy = Math.abs(
+        e.nativeEvent.touches[0].pageY - e.nativeEvent.touches[1].pageY
+      );
+			let distant = Math.sqrt(dx * dx + dy * dy);
+			this.distant = distant;
+			console.log('DISTANT: ', distant)
+    }
+  };
 
 	crop() {
 		const { containerWidth, containerHeight, containerRatio, offsetX, offsetY, cropWidth, cropHeight } = this.state
@@ -161,18 +146,23 @@ class ImageCrop extends Component {
 	}
 
 	renderContainerImage() {
-		const { containerWidth, containerHeight, offsetX, offsetY } = this.state
-		console.log('X1: ', offsetX)
-		console.log('Y1: ', offsetY)
+		const { containerWidth, containerHeight, offsetX, offsetY, scale } = this.state
+
 		return (
 			<View
 				style={[styles.imageWrapper, {
 					width: containerWidth,
 					height: containerHeight,
-					top: offsetY * 2,
-					left: offsetX * 2,
+					top: 0,
+					left: 0,
 					borderRadius: 0,
-					backgroundColor: '#000'
+					backgroundColor: '#000',
+					transform: [
+						{ scaleX: scale },
+						{ scaleY: scale },
+						{ translateX: offsetX },
+						{ translateY: offsetY }
+					]
 				}]}
 			>
 				<Image
@@ -191,9 +181,8 @@ class ImageCrop extends Component {
 	}
 
 	renderImage() {
-		const { containerWidth, containerHeight, offsetX, offsetY, cropWidth, cropHeight } = this.state
-		console.log('X2: ', offsetX)
-		console.log('Y2: ', offsetY)
+		const { containerWidth, containerHeight, offsetX, offsetY, cropWidth, cropHeight, scale } = this.state
+
 		return (
 			<View
 				style={{
@@ -211,9 +200,15 @@ class ImageCrop extends Component {
 					style={[styles.image, {
 						width: containerWidth,
 						height: containerHeight,
-						top: offsetY * 2,
-						left: offsetX * 2,
-						opacity: 1
+						top: 0,
+						left: 0,
+						opacity: 1,
+						transform: [
+              { scaleX: scale },
+							{ scaleY: scale },
+							{ translateX: offsetX },
+							{ translateY: offsetY }
+						]
 					}]}
 				/>
 			</View>
@@ -224,11 +219,11 @@ class ImageCrop extends Component {
 		const { containerWidth, containerHeight, originalImageHeight, originalImageWidth } = this.state
 		return (
 			<View
+				{...this.panResponder.panHandlers}
 				style={[styles.container, {
 					width: containerWidth,
 					height: containerHeight
 				}]}
-				{...this.panResponder.panHandlers}
 			>
 				{ this.renderContainerImage() }
 				<View
