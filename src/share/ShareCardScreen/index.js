@@ -16,6 +16,20 @@ export default class ShareCardScreen extends React.Component {
     }
   }
 
+  async componentDidMount() {
+    try {
+      const { type, value } = await ShareExtension.data()
+      this.setState({
+        type,
+        value
+      })
+    } catch(e) {
+      console.log('error : ', e)
+    }
+  }
+
+
+
   onClosed() {
     ShareExtension.close();
   }

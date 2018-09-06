@@ -3,6 +3,8 @@ import axios from 'axios'
 import * as types from './types'
 import * as cardTypes from '../card/types'
 import resolveError from './../../service/resolveError'
+import CONSTANTS from '../../../src/service/constants'
+import SharedGroupPreferences from 'react-native-shared-group-preferences'
 
 const initialState = {
   loading: null,
@@ -59,9 +61,12 @@ export default function user(state = initialState, action = {}) {
       if (xAuthToken) {
         axios.defaults.headers['x-auth-token'] = xAuthToken
         AsyncStorage.setItem('xAuthToken', xAuthToken)
+        SharedGroupPreferences.setItem('xAuthToken', xAuthToken, CONSTANTS.APP_GROUP_TOKEN_IDENTIFIER)
       } else {
         AsyncStorage.removeItem('xAuthToken')
         AsyncStorage.removeItem('userInfo')
+        SharedGroupPreferences.setItem('xAuthToken', null, CONSTANTS.APP_GROUP_TOKEN_IDENTIFIER)
+        SharedGroupPreferences.setItem('userInfo', null, CONSTANTS.APP_GROUP_USER_IDENTIFIER)
       }
 
       return {
@@ -93,6 +98,7 @@ export default function user(state = initialState, action = {}) {
       const { data } = action.result
       console.log('GET_USER_SESSION_FULFILLED: ', data)
       AsyncStorage.setItem('userInfo', JSON.stringify(data))
+      SharedGroupPreferences.setItem('userInfo', JSON.stringify(data), CONSTANTS.APP_GROUP_USER_IDENTIFIER)
 
       return {
         ...state,
@@ -105,6 +111,8 @@ export default function user(state = initialState, action = {}) {
       console.log('GET_USER_SESSION_REJECTED: ', action.result)
       AsyncStorage.removeItem('userInfo')
       AsyncStorage.removeItem('xAuthToken')
+      SharedGroupPreferences.setItem('xAuthToken', null, CONSTANTS.APP_GROUP_TOKEN_IDENTIFIER)
+      SharedGroupPreferences.setItem('userInfo', null, CONSTANTS.APP_GROUP_USER_IDENTIFIER)
 
       return {
         ...state,
@@ -128,8 +136,10 @@ export default function user(state = initialState, action = {}) {
       if (xAuthToken) {
         axios.defaults.headers['x-auth-token'] = xAuthToken
         AsyncStorage.setItem('xAuthToken', xAuthToken)
+        SharedGroupPreferences.setItem('xAuthToken', xAuthToken, CONSTANTS.APP_GROUP_TOKEN_IDENTIFIER)
       } else {
         AsyncStorage.removeItem('xAuthToken')
+        SharedGroupPreferences.setItem('xAuthToken', null, CONSTANTS.APP_GROUP_TOKEN_IDENTIFIER)
       }
 
       return {
@@ -160,6 +170,8 @@ export default function user(state = initialState, action = {}) {
       const { data } = action.result
       AsyncStorage.removeItem('xAuthToken')
       AsyncStorage.removeItem('userInfo')
+      SharedGroupPreferences.setItem('xAuthToken', null, CONSTANTS.APP_GROUP_TOKEN_IDENTIFIER)
+      SharedGroupPreferences.setItem('userInfo', null, CONSTANTS.APP_GROUP_USER_IDENTIFIER)
 
       return {
         ...state,
@@ -259,6 +271,7 @@ export default function user(state = initialState, action = {}) {
       if (userInfo) {
         // update the user's info when it's not signup page
         AsyncStorage.setItem('userInfo', JSON.stringify(data))
+        SharedGroupPreferences.setItem('userInfo', JSON.stringify(data), CONSTANTS.APP_GROUP_USER_IDENTIFIER)
       }
 
       return {
@@ -377,6 +390,9 @@ export default function user(state = initialState, action = {}) {
       }
     case types.RESET_PASSWORD_FULFILLED: {
       AsyncStorage.removeItem('xAuthToken')
+      AsyncStorage.removeItem('userInfo')
+      SharedGroupPreferences.setItem('xAuthToken', null, CONSTANTS.APP_GROUP_TOKEN_IDENTIFIER)
+      SharedGroupPreferences.setItem('userInfo', null, CONSTANTS.APP_GROUP_USER_IDENTIFIER)
       return {
         ...state,
         loading: types.RESET_PASSWORD_FULFILLED,
@@ -429,8 +445,10 @@ export default function user(state = initialState, action = {}) {
       if (xAuthToken) {
         axios.defaults.headers['x-auth-token'] = xAuthToken
         AsyncStorage.setItem('xAuthToken', xAuthToken)
+        SharedGroupPreferences.setItem('xAuthToken', xAuthToken, CONSTANTS.APP_GROUP_TOKEN_IDENTIFIER)
       } else {
         AsyncStorage.removeItem('xAuthToken')
+        SharedGroupPreferences.setItem('xAuthToken', null, CONSTANTS.APP_GROUP_TOKEN_IDENTIFIER)
       }
 
       return {
