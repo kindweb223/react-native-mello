@@ -28,4 +28,7 @@ export default {
   CARD_NEW: 1,
   CARD_VIEW: 2,
   CARD_EDIT: 3,
+
+  APP_GROUP_USER_IDENTIFIER: "group.hunt.mobile.user.info",
+  APP_GROUP_TOKEN_IDENTIFIER: "group.hunt.mobile.token",
 }

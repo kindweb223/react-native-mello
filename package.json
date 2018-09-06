@@ -33,6 +33,7 @@
     "react-native-progress": "^3.5.0",
     "react-native-router-flux": "^4.0.0-beta.31",
     "react-native-scrollable-tab-view": "git+https://github.com/skv-headless/react-native-scrollable-tab-view.git",
+    "react-native-shared-group-preferences": "^1.0.6",
     "react-native-slideshow": "git+https://github.com/haqiqiw/react-native-slideshow.git",
     "react-native-swipe-gestures": "^1.0.2",
     "react-native-swipeout": "^2.3.6",
