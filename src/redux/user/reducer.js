@@ -24,6 +24,7 @@ export default function user(state = initialState, action = {}) {
         ...state,
         error: null,
         userLookup: null,
+        userInfo: null,
         loading: types.USER_LOOKUP_PENDING,
       }
     case types.USER_LOOKUP_FULFILLED: {
@@ -49,6 +50,7 @@ export default function user(state = initialState, action = {}) {
     case types.USER_SIGNIN_PENDING:
       return {
         ...state,
+        userConfirmed: false,
         loading: types.USER_SIGNIN_PENDING,
         userInfo: null,
       }
@@ -124,6 +126,7 @@ export default function user(state = initialState, action = {}) {
     case types.USER_SIGNUP_PENDING:
       return {
         ...state,
+        userConfirmed: false,
         loading: types.USER_SIGNUP_PENDING,
       }
     case types.USER_SIGNUP_FULFILLED: {
