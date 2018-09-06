@@ -158,12 +158,11 @@ class SignUpScreen extends React.Component {
     if (prevProps.user.loading === 'VALIDATE_INVITE_PENDING' && this.props.user.loading === 'VALIDATE_INVITE_REJECTED') {
       // Invitation has expired
       const { error } = this.props.user
-      this.setState({ loading: false, isInvite: false }, () => {
-        Alert.alert(
-          'Error',
-          error.message
-        )
-      })
+      this.setState({ loading: false, isInvite: false })
+      Alert.alert(
+        'Error',
+        error.message
+      )
     }
 
     if (prevProps.user.loading === 'COMPLETE_INVITE_PENDING' && this.props.user.loading === 'COMPLETE_INVITE_FULFILLED') {
@@ -173,16 +172,15 @@ class SignUpScreen extends React.Component {
 
     if (prevProps.user.loading === 'COMPLETE_INVITE_PENDING' && this.props.user.loading === 'COMPLETE_INVITE_REJECTED') {
       const { error } = this.props.user
-      this.setState({ loading: false, isInvite: false }, () => {
-        Alert.alert(
-          'Error',
-          error.message
-        )
-      })
+      this.setState({ loading: false, isInvite: false })
+      Alert.alert(
+        'Error',
+        error.message
+      )
     }
 
     if (prevProps.user.loading === 'GET_USER_SESSION_PENDING' && this.props.user.loading === 'GET_USER_SESSION_FULFILLED') {
-      if (this.state.isSignedup && this.props.isInvite) {
+      if (this.state.isSignup && this.props.isInvite) {
         console.log('SIGNUP_SESSION !!!!!')
         this.setState({ loading: false }, () => {
           this.setState({ isSignup: false })
