@@ -15,11 +15,13 @@ import styles from './styles'
 import COLORS from '../../../service/colors'
 
 const renderAvatar = (user) => {
+  const size = 22
   const name = `${user.firstName} ${user.lastName}`;
+
   if (user.imageUrl || user.firstName || user.lastName) {
     return (
       <UserAvatar
-        size="22"
+        size={size}
         name={name}
         color={COLORS.LIGHT_GREY}
         textColor="#000"
@@ -28,7 +30,18 @@ const renderAvatar = (user) => {
     );
   }
   return (
-    <EvilIcons name="envelope" size={22} color={COLORS.PURPLE} />
+    <View
+      style={{
+        width: size,
+        height: size,
+        borderRadius: size / 2,
+        backgroundColor: COLORS.LIGHT_GREY,
+        alignItems: 'center',
+        justifyContent: 'center',
+      }}
+    >
+      <EvilIcons name="envelope" size={18} color={COLORS.PURPLE} />
+    </View>
   )
 }
 

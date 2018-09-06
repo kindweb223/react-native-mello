@@ -11,6 +11,7 @@ import PropTypes from 'prop-types'
 import Ionicons from 'react-native-vector-icons/Ionicons'
 import Feather from 'react-native-vector-icons/Feather'
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons'
+import COLORS from '../../service/colors'
 import styles from './styles'
 
 class DashboardActionBar extends React.Component {
@@ -40,7 +41,7 @@ class DashboardActionBar extends React.Component {
   }
 
   render () {
-    const { filtering } = this.props
+    const { filtering, showType, sortType } = this.props
 
     return (
       <View style={[styles.container, filtering ? styles.filterContainer : styles.actionContainer]}>
@@ -48,14 +49,22 @@ class DashboardActionBar extends React.Component {
           <View style={styles.filteringView}>
             <TouchableOpacity onPress={() => this.props.handleFilter()}>
               <View style={[styles.iconStyle, styles.filterButton]}>
-                <MaterialCommunityIcons name="filter-variant" style={styles.filteringButtonIcon} />
+                <MaterialCommunityIcons
+                  name="filter-variant"
+                  size={30}
+                  color={showType === 'all' && sortType ==='date' ? COLORS.MEDIUM_GREY : COLORS.PURPLE}
+                />
               </View>
             </TouchableOpacity>
           </View>
         )}
         <View style={styles.actionView}>
           <View style={styles.notificationView}>
-            <Ionicons name="md-notifications" style={styles.notificationIcon} />
+            <Ionicons
+              name="md-notifications"
+              size={20}
+              color={COLORS.PURPLE}
+            />
             <Text style={styles.notificationText}>0</Text>
           </View>
 
@@ -85,10 +94,14 @@ class DashboardActionBar extends React.Component {
 
 DashboardActionBar.defaultProps = {
   filtering: true,
-  handleFilter: () => {}
+  handleFilter: () => {},
+  showType: 'all',
+  sortType: 'date'
 }
 
 DashboardActionBar.propTypes = {
+  showType: PropTypes.string,
+  sortType: PropTypes.string,
   filtering: PropTypes.bool,
   onAddFeed: PropTypes.func,
   handleFilter: PropTypes.func

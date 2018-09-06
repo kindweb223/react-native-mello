@@ -1,4 +1,5 @@
 import { StyleSheet, Platform } from 'react-native'
+import { ifIphoneX } from 'react-native-iphone-x-helper';
 import COLORS from '../../service/colors'
 import CONSTANTS from '../../service/constants'
 const MODAL_HEIGHT = 200
@@ -6,7 +7,7 @@ const MODAL_HEIGHT = 200
 export default {
   container: {
     width: CONSTANTS.SCREEN_WIDTH,
-    height: CONSTANTS.SCREEN_HEIGHT,
+    height: CONSTANTS.SCREEN_HEIGHT + ifIphoneX(34, 0),
     alignItems: 'center',
     justifyContent: 'center'
   },

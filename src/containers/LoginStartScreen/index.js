@@ -45,7 +45,9 @@ class LoginStartScreen extends React.Component {
   constructor(props) {
     super(props)
     this.state = {
-      email: '',
+      email: 'seed-data@solvers.io',
+      // email: 'sergeypahm+100@gmail.com',
+      // email: '',
       loading: false,
       isInvalidError: false,
       errorText: ''
@@ -110,7 +112,7 @@ class LoginStartScreen extends React.Component {
         <Gradient />
         
         <KeyboardScrollView>
-          <View style={styles.container}>
+          <View style={styles.innerContainer}>
             <View style={styles.contentView}>
               <View style={styles.logoView}>
                 <Image source={LOGO} />
