@@ -534,7 +534,10 @@ class FeedDetailScreen extends React.Component {
         <DashboardActionBar 
           onAddFeed={this.onOpenNewCardModal.bind(this)}
           handleFilter={this.handleFilter}
+          showType={this.state.filterShowType}
+          sortType={this.state.filterSortType}
         />
+
         {this.renderNewCardModal}
 
         <ActionSheet

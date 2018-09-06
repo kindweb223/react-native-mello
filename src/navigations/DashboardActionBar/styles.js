@@ -29,10 +29,6 @@ const styles = StyleSheet.create({
   filterButton: {
     alignItems: 'flex-start'
   },
-  filteringButtonIcon: {
-    fontSize: 30,
-    color: COLORS.PURPLE
-  },
   actionView: {
     flex: 1,
     flexDirection: 'row',
@@ -64,10 +60,6 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'center',
     alignItems: 'center'
-  },
-  notificationIcon: {
-    color: COLORS.PURPLE,
-    fontSize: 20,
   },
   notificationText: {
     color: COLORS.PURPLE,
