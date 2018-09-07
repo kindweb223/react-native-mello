@@ -91,13 +91,14 @@ class FeedDetailScreen extends React.Component {
   }
 
   UNSAFE_componentWillReceiveProps(nextProps) {
-    const { feedo } = nextProps
+    const { feedo, card } = nextProps
 
     if ((this.props.feedo.loading === 'GET_FEED_DETAIL_PENDING' && feedo.loading === 'GET_FEED_DETAIL_FULFILLED') ||
         (this.props.feedo.loading === 'DELETE_INVITEE_PENDING' && feedo.loading === 'DELETE_INVITEE_FULFILLED') ||
         (this.props.feedo.loading === 'UPDATE_SHARING_PREFERENCES_PENDING' && feedo.loading === 'UPDATE_SHARING_PREFERENCES_FULFILLED') ||
         (this.props.feedo.loading === 'UPDATE_INVITEE_PERMISSION_PENDING' && feedo.loading === 'UPDATE_INVITEE_PERMISSION_FULFILLED') ||
-        (this.props.feedo.loading === 'INVITE_HUNT_PENDING' && feedo.loading === 'INVITE_HUNT_FULFILLED')) {
+        (this.props.feedo.loading === 'INVITE_HUNT_PENDING' && feedo.loading === 'INVITE_HUNT_FULFILLED') || 
+        (this.props.card.loading === 'UPDATE_CARD_PENDING' && card.loading === 'UPDATE_CARD_FULFILLED')){
       
       const currentFeed = feedo.currentFeed
 
@@ -600,8 +601,9 @@ class FeedDetailScreen extends React.Component {
   }
 }
 
-const mapStateToProps = ({ feedo }) => ({
-  feedo
+const mapStateToProps = ({ feedo, card }) => ({
+  feedo,
+  card,
 })
 
 const mapDispatchToProps = dispatch => ({

@@ -5,6 +5,7 @@
 	};
 	objectVersion = 46;
 	objects = {
+
 /* Begin PBXBuildFile section */
 		00C302E51ABCBA2D00DB3ED1 /* libRCTActionSheet.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 00C302AC1ABCB8CE00DB3ED1 /* libRCTActionSheet.a */; };
 		00C302E71ABCBA2D00DB3ED1 /* libRCTGeolocation.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 00C302BA1ABCB90400DB3ED1 /* libRCTGeolocation.a */; };
@@ -53,6 +54,7 @@
 		832341BD1AAA6AB300B99B32 /* libRCTText.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 832341B51AAA6A8300B99B32 /* libRCTText.a */; };
 		8D2B584D1B954CA58C0936B6 /* SimpleLineIcons.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 2E7C184AF38D495CA598BB2B /* SimpleLineIcons.ttf */; };
 		9984E80312CC41B9AA567B8E /* EvilIcons.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 6DDC407B5B624A7C8F6AD515 /* EvilIcons.ttf */; };
+		A43342992142AF80005EE6DE /* libFastImage.a in Frameworks */ = {isa = PBXBuildFile; fileRef = A40B3D5C2110EB62002B5EDB /* libFastImage.a */; };
 		A450133E2139BEE600A78D65 /* libRCTActionSheet.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 00C302AC1ABCB8CE00DB3ED1 /* libRCTActionSheet.a */; };
 		A450133F2139BEE600A78D65 /* libRCTAnimation.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 5E9157331DD0AC6500FF2AA8 /* libRCTAnimation.a */; };
 		A45013402139BEE600A78D65 /* libRCTAnimation.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 5E9157351DD0AC6500FF2AA8 /* libRCTAnimation.a */; };
@@ -617,7 +619,6 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				A4D2256A21408E8300539042 /* libRNReactNativeSharedGroupPreferences.a in Frameworks */,
 				A450134D2139BFA200A78D65 /* libRCTBlob.a in Frameworks */,
 				A450134E2139BFA200A78D65 /* libRNFetchBlob.a in Frameworks */,
 				A450133E2139BEE600A78D65 /* libRCTActionSheet.a in Frameworks */,
@@ -633,6 +634,8 @@
 				A45013492139BEE700A78D65 /* libRCTWebSocket.a in Frameworks */,
 				A450134A2139BEE700A78D65 /* libReact.a in Frameworks */,
 				A4EB9CC8213F0FE300C598B8 /* libRNVectorIcons.a in Frameworks */,
+				A4D2256A21408E8300539042 /* libRNReactNativeSharedGroupPreferences.a in Frameworks */,
+				A43342992142AF80005EE6DE /* libFastImage.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

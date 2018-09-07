@@ -57,6 +57,7 @@ export default class Share extends Component {
   async componentDidMount() {
     try {
       const xAuthToken = await SharedGroupPreferences.getItem("xAuthToken", CONSTANTS.APP_GROUP_TOKEN_IDENTIFIER);
+      console.log('xAuthToken : ', xAuthToken);
       if (xAuthToken) {
         axios.defaults.headers['x-auth-token'] = xAuthToken;
         this.setState({
