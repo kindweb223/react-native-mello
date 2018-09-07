@@ -15,7 +15,8 @@ export default class ShareModalScreen extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-    }
+      isVisible: true,
+    };
   }
 
   componentDidMount() {
@@ -23,6 +24,20 @@ export default class ShareModalScreen extends React.Component {
 
   onClosed() {
     ShareExtension.close();
+  }
+
+  onPressOk() {
+    this.setState({
+      isVisible: false,
+    });
+    ShareExtension.goToMainApp();
+    ShareExtension.close();
+  }
+
+  onPressClose() {
+    this.setState({
+      isVisible: false,
+    });
   }
 
   render() {
@@ -35,16 +50,32 @@ export default class ShareModalScreen extends React.Component {
           position="center"
           animationIn="zoomInDown"
           animationOut="zoomOutUp"
-          isOpen={true}
-          onClosed={this.onClose}
+          isOpen={this.state.isVisible}
+          onClosed={this.onClosed.bind(this)}
         >
           <View style={styles.modalContainer}>
             <View style={styles.modalContentContainer}>
-              <TouchableOpacity onPress={this.closing}>
-                <Text>Close</Text>
-                <Text>type: { this.state.type }</Text>
-                <Text>value: { this.state.value }</Text>
-              </TouchableOpacity>
+              <View style={styles.topContainer}>
+                <Text style={styles.textTitle}>Hunt Mobile</Text>
+                <Text style={styles.textDescription}>You should sign in at the first</Text>
+              </View>
+              <View style={styles.bottomContainer}>
+                <TouchableOpacity 
+                  style={styles.buttonContainer}
+                  activeOpacity={0.7}
+                  onPress={this.onPressOk.bind(this)}
+                >
+                  <Text style={styles.textButton}>OK</Text>
+                </TouchableOpacity>
+                <View style={styles.line} />
+                <TouchableOpacity 
+                  style={styles.buttonContainer}
+                  activeOpacity={0.7}
+                  onPress={this.onPressClose.bind(this)}
+                >
+                  <Text style={styles.textButton}>Close</Text>
+                </TouchableOpacity>
+              </View>
             </View>
           </View>
         </Modal>
