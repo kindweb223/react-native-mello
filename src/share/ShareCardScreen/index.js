@@ -6,6 +6,7 @@ import {
 import ShareExtension from '../shareExtension'
 
 import styles from './styles'
+import CONSTANTS from '../../service/constants'
 import NewCardScreen from '../../containers/NewCardScreen' 
 
 
@@ -13,6 +14,7 @@ export default class ShareCardScreen extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
+      value: '',
     }
   }
 
@@ -28,8 +30,6 @@ export default class ShareCardScreen extends React.Component {
     }
   }
 
-
-
   onClosed() {
     ShareExtension.close();
   }
@@ -37,7 +37,9 @@ export default class ShareCardScreen extends React.Component {
   render() {
     return (
       <View style={styles.container}>
-        <NewCardScreen 
+        <NewCardScreen
+          cardMode={CONSTANTS.EXTENTION_CARD}
+          shareUrl={this.state.value}
           onClose={() => this.onClosed()}
         />
       </View>

@@ -103,6 +103,13 @@ class NewCardScreen extends React.Component {
   UNSAFE_componentWillReceiveProps(nextProps) {
     // console.log('NewCardScreen UNSAFE_componentWillReceiveProps : ', nextProps.card);
     let loading = false;
+    if (this.props.shareUrl === '' && nextProps.shareUrl !== '') {
+      this.setState({
+        cardName: nextProps.shareUrl,
+      }, () => {
+        // this.checkUrl(this.state.cardName);
+      });
+    }
     if (this.props.card.loading !== types.CREATE_CARD_PENDING && nextProps.card.loading === types.CREATE_CARD_PENDING) {
       loading = true;
     } else if (this.props.card.loading !== types.GET_FILE_UPLOAD_URL_PENDING && nextProps.card.loading === types.GET_FILE_UPLOAD_URL_PENDING) {
@@ -268,7 +275,7 @@ class NewCardScreen extends React.Component {
   }
 
   componentDidMount() {
-    console.log('Current Card : ', this.props.card.currentCard);
+    // console.log('Current Card : ', this.props.card.currentCard);
     const { viewMode } = this.props;
     if (viewMode === CONSTANTS.CARD_VIEW || viewMode === CONSTANTS.CARD_EDIT) {
       this.setState({
@@ -656,7 +663,10 @@ class NewCardScreen extends React.Component {
   }
 
   get renderWebMeta() {
-    const { viewMode } = this.props;
+    const { viewMode, cardMode } = this.props;
+    if (cardMode !== CONSTANTS.MAIN_APP_CARD) {
+      return;
+    }
     const { links } = this.props.card.currentCard;
     if (links && links.length > 0) {
       return (
@@ -689,7 +699,10 @@ class NewCardScreen extends React.Component {
   }
 
   get renderDocuments() {
-    const { viewMode } = this.props;
+    const { viewMode, cardMode } = this.props;
+    if (cardMode !== CONSTANTS.MAIN_APP_CARD) {
+      return;
+    }
     const {
       files
     } = this.props.card.currentCard;
@@ -741,11 +754,13 @@ class NewCardScreen extends React.Component {
   }
 
   get renderAttachmentButtons() {
-    const { viewMode } = this.props;
+    const { viewMode, cardMode } = this.props;
+    if (cardMode !== CONSTANTS.MAIN_APP_CARD) {
+      return;
+    }
     if (viewMode === CONSTANTS.CARD_VIEW) {
       return;
     }
-
     return (
       <View style={styles.attachmentButtonsContainer}>
         <TouchableOpacity 
@@ -816,9 +831,30 @@ class NewCardScreen extends React.Component {
   }
 
   get renderHeader() {
+    const { cardMode } = this.props;
+    if (cardMode !== CONSTANTS.MAIN_APP_CARD) {
+      return (
+        <View style={styles.shareHeaderContainer}>
+          <TouchableOpacity 
+            style={styles.closeButtonWrapper}
+            activeOpacity={0.7}
+            onPress={() => this.onClose()}
+          >
+            <MaterialCommunityIcons name="close" size={28} color={COLORS.BLUE} />
+          </TouchableOpacity>
+          <TouchableOpacity 
+            style={styles.addCardButtonWapper}
+            activeOpacity={0.6}
+            onPress={this.onTapOutsideCard.bind(this)}
+          >
+            <Text style={styles.textButton}>Add card</Text>
+          </TouchableOpacity>
+        </View>
+      );
+    }
     if (this.state.isFullScreenCard) {
       return (
-        <View style={styles.headerContainer}>
+        <View style={styles.mainHeaderContainer}>
           <TouchableOpacity 
             style={styles.closeButtonWrapper}
             activeOpacity={0.7}
@@ -839,6 +875,10 @@ class NewCardScreen extends React.Component {
   }
 
   get renderOutside() {
+    const { cardMode } = this.props;
+    if (cardMode !== CONSTANTS.MAIN_APP_CARD) {
+      return;
+    }
     if (!this.state.isFullScreenCard) {
       return (
         <TouchableOpacity 
@@ -851,6 +891,10 @@ class NewCardScreen extends React.Component {
   }
 
   get renderOutsideMoreActions() {
+    const { cardMode } = this.props;
+    if (cardMode !== CONSTANTS.MAIN_APP_CARD) {
+      return;
+    }
     if (!this.state.isFullScreenCard) {
       return (
         <View style={styles.outSideMoreActionContainer}>
@@ -864,11 +908,13 @@ class NewCardScreen extends React.Component {
         </View>
       );
     }
-
   }
 
   get renderBottomContent() {
-    const { viewMode } = this.props;
+    const { viewMode, cardMode } = this.props;
+    if (cardMode !== CONSTANTS.MAIN_APP_CARD) {
+      return;
+    }
     if (viewMode !== CONSTANTS.CARD_NEW) {
       return (
         <View>
@@ -903,7 +949,7 @@ class NewCardScreen extends React.Component {
   }
 
   get renderCard() {
-    const { viewMode } = this.props;
+    const { viewMode, cardMode } = this.props;
     let cardStyle = {};
     if (viewMode === CONSTANTS.CARD_NEW) {
       const animatedMove  = this.animatedShow.interpolate({
@@ -955,6 +1001,7 @@ class NewCardScreen extends React.Component {
         <View 
           style={[
             styles.contentContainer,
+            { paddingTop: cardMode === CONSTANTS.MAIN_APP_CARD ?  26 : 10},
             (viewMode === CONSTANTS.CARD_NEW || !this.state.isFullScreenCard) && {maxHeight: this.state.cardMaxHeight},
             this.state.isFullScreenCard && {flex: 1, borderRadius: 0},
           ]}
@@ -972,7 +1019,7 @@ class NewCardScreen extends React.Component {
           {
             this.state.isShowKeyboardButton && 
             <TouchableOpacity 
-              style={[styles.buttonItemContainer, styles.hideKeyboardContainer]}
+              style={[styles.buttonItemContainer, styles.hideKeyboardContainer, {backgroundColor: cardMode !== CONSTANTS.MAIN_APP_CARD ? COLORS.BLUE : COLORS.PURPLE}]}
               activeOpacity={0.6}
               onPress={this.onHideKeyboard.bind(this)}
             >
@@ -1020,6 +1067,8 @@ NewCardScreen.defaultProps = {
   invitee: {},
   intialLayout: {},
   viewMode: CONSTANTS.CARD_NEW,
+  cardMode: CONSTANTS.MAIN_APP_CARD,
+  shareUrl: '',
   onClose: () => {},
 }
 
@@ -1030,6 +1079,8 @@ NewCardScreen.propTypes = {
   intialLayout: PropTypes.object,
   onClose: PropTypes.func,
   viewMode: PropTypes.number,
+  cardMode: PropTypes.number,
+  shareUrl: PropTypes.string,
 }
 
 

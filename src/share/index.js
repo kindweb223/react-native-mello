@@ -41,6 +41,7 @@ import ShareExtension from './shareExtension'
 import CONSTANTS from '../service/constants';
 import ShareCardScreen from './ShareCardScreen';
 import ShareModalScreen from './ShareModalScreen';
+import SelectHuntScreen from './SelectHuntScreen';
 
 
 
@@ -48,8 +49,8 @@ export default class Share extends Component {
   constructor(props) {
     super(props)
     this.state = {
-      userInfo: null,
       initialized: false,
+      isVisibleModal: false,
     }
   }
 
@@ -66,8 +67,10 @@ export default class Share extends Component {
     } catch (error) {
       console.log('error code : ', error);
     }
-    ShareExtension.goToMainApp();
-    ShareExtension.close();
+    this.setState({
+      initialized: true,
+      isVisibleModal: true,
+    })
   }
 
   render() {
@@ -82,8 +85,9 @@ export default class Share extends Component {
         <Provider store={store}>
           <Router>
             <Scene key="root" hideNavBar>
+              <Scene key="SelectHuntScreen" component={SelectHuntScreen} /> 
               <Scene key="ShareCardScreen" component={ShareCardScreen} />
-              <Scene key="ShareModalScreen" component={ShareModalScreen} />
+              <Scene key="ShareModalScreen" component={ShareModalScreen} initial={this.state.isVisibleModal} />
             </Scene>
           </Router>
         </Provider>
