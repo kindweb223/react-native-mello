@@ -35,8 +35,16 @@ class ImageCrop extends Component {
 			cropHeight: CONSTANTS.SCREEN_WIDTH,
 			cropQuality: 100,
 
-			scale: 1
+			scale: 1,
+			maxScale: 2,
+			minScale: 1,
+			lastScale: 1
 		};
+
+		this.pointX = 0
+		this.pointY = 0
+		this.paddingWidth = 0
+		this.paddingHeight = 0
 	}
 
 	componentWillMount() {
@@ -46,7 +54,7 @@ class ImageCrop extends Component {
 			this.setState({ originalImageWidth, originalImageHeight });
 			this.setState({
 				containerWidth: CONSTANTS.SCREEN_WIDTH,
-				containerHeight: CONSTANTS.SCREEN_WIDTH,
+				containerHeight: originalImageWidth > originalImageHeight ? CONSTANTS.SCREEN_WIDTH : CONSTANTS.SCREEN_WIDTH * originalImageHeight / originalImageWidth,
 				containerRatio: originalImageWidth / CONSTANTS.SCREEN_WIDTH
 			})
 		});
@@ -56,43 +64,87 @@ class ImageCrop extends Component {
 		return PanResponder.create({
 			onStartShouldSetPanResponder: () => true,
 			onMoveShouldSetPanResponder: () => true,
-			onPanResponderGrant: this._handlePanResponderGrant,
 			onMoveShouldSetPanResponderCapture: () => true,
+			onPanResponderGrant: this._handlePanResponderGrant,
 			onPanResponderMove: this._handlePanResponderMove,
-			onPanResponderEnd: (event, { dx, dy }) => {
-				let { offsetX, offsetY } = this.state
-				this.setState({ currentOffsetX: offsetX, currentOffsetY: offsetY })
-			},
+			onPanResponderRelease: this._handlePanResponderEnd,
 			onPanResponderTerminationRequest: evt => true,
-      onShouldBlockNativeResponder: evt => false
+      onShouldBlockNativeResponder: evt => true
 		});
 	}
 
-	_handlePanResponderMove = (e, gestureState) => {
-		let { currentOffsetX, currentOffsetY } = this.state
+	_handlePanResponderEnd = (e, gestureState) => {
+		let { offsetX, offsetY, scale } = this.state
 
-		console.log('MOVE: ', gestureState.numberActiveTouches)
+		this.setState({
+			lastScale: scale,
+			currentOffsetX: offsetX,
+			currentOffsetY: offsetY
+    })
+	}
+
+	_handlePanResponderMove = (e, gestureState) => {
+		let { cropWidth, cropHeight, currentOffsetX, currentOffsetY, scale, minScale, maxScale, lastScale } = this.state
+
 		if (gestureState.numberActiveTouches === 2) {
-			// let dx = Math.abs(
-			// 	e.nativeEvent.touches[0].pageX - e.nativeEvent.touches[1].pageX
-			// );
-			// let dy = Math.abs(
-			// 	e.nativeEvent.touches[0].pageY - e.nativeEvent.touches[1].pageY
-			// );
-			// let distant = Math.sqrt(dx * dx + dy * dy);
-			// let scale = (distant / this.distant) * this.state.lastScale;
-			// //check scale min to max hello
-			// if (scale < this.props.maxScale && scale > this.props.minScale) {
-			// 	this.setState({ scale, lastMovePinch: true });
-			// }
+			let dx = Math.abs(
+				e.nativeEvent.touches[0].pageX - e.nativeEvent.touches[1].pageX
+			);
+			let dy = Math.abs(
+				e.nativeEvent.touches[0].pageY - e.nativeEvent.touches[1].pageY
+			);
+			let distant = Math.sqrt(dx * dx + dy * dy);
+			let scale = (distant / this.distant) * lastScale;
+
+			this.paddingWidth = (scale - 1) * this.state.cropWidth / 2
+			this.paddingHeight = (scale - 1) * this.state.cropHeight / 2
+			console.log('AAA: ', this.paddingWidth)
+			console.log('BBB: ', this.paddingHeight)
+
+			if (scale < maxScale && scale > minScale) {
+				this.setState({ scale });
+			}
 		} else {
-			currentOffsetX += gestureState.dx
-			currentOffsetY += gestureState.dy
-			this.setState({ offsetX: currentOffsetX, offsetY: currentOffsetY })
+			if (scale > 1) {
+				this.pointOffsetX =  e.nativeEvent.touches[0].pageX - this.pointX
+				this.pointOffsetY =  e.nativeEvent.touches[0].pageY - this.pointY
+
+				this.paddingWidth -= this.pointOffsetX
+				this.paddingHeight -= this.pointOffsetY
+				console.log('PADDING: ', this.paddingWidth, ' : ', this.paddingHeight)
+				// console.log('POINT_OFFSET: ', this.pointOffsetX, ' : ', this.pointOffsetY)
+			
+				currentOffsetX += gestureState.dx
+				currentOffsetY += gestureState.dy
+				this.setState({ offsetX: currentOffsetX })
+				this.setState({ offsetY: currentOffsetY })
+
+				// if (this.paddingWidth > 0 && this.paddingWidth < (scale - 1) * cropWidth) {
+				// 	currentOffsetX += gestureState.dx			
+				// 	this.setState({ offsetX: currentOffsetX })
+				// } else {
+				// 	this.paddingWidth = 0
+				// }
+
+				// if (this.paddingHeight > 0 && this.paddingHeight < (scale - 1) * cropHeight) {	
+				// 	currentOffsetY += gestureState.dy
+				// 	this.setState({ offsetY: currentOffsetY })
+				// } else {
+				// 	this.paddingHeight = 0
+				// }
+			} else {
+				if (Math.abs(gestureState.dx) < currentOffsetX && Math.abs(gestureState.dy) < currentOffsetY) {
+					currentOffsetX += gestureState.dx			
+					currentOffsetY += gestureState.dy
+					this.setState({ offsetX: currentOffsetX, offsetY: currentOffsetY })
+				}
+			}
 		}
 	}
 
 	_handlePanResponderGrant = (e, gestureState) => {
+		this.setState({ isMoving: true })
+
     if (gestureState.numberActiveTouches === 2) {
       let dx = Math.abs(
         e.nativeEvent.touches[0].pageX - e.nativeEvent.touches[1].pageX
@@ -102,8 +154,10 @@ class ImageCrop extends Component {
       );
 			let distant = Math.sqrt(dx * dx + dy * dy);
 			this.distant = distant;
-			console.log('DISTANT: ', distant)
-    }
+    } else {
+			this.pointX = e.nativeEvent.touches[0].pageX
+			this.pointY = e.nativeEvent.touches[0].pageY
+		}
   };
 
 	crop() {
