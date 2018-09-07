@@ -29,6 +29,12 @@ export default {
   CARD_VIEW: 2,
   CARD_EDIT: 3,
 
+  FEEDO_FIRST_SELECT: 1,
+  FEEDO_LATER_SELECT: 2,
+
+  MAIN_APP_CARD: 1,
+  EXTENTION_CARD: 2,
+
   APP_GROUP_USER_IDENTIFIER: "group.hunt.mobile.user.info",
   APP_GROUP_TOKEN_IDENTIFIER: "group.hunt.mobile.token",
 }

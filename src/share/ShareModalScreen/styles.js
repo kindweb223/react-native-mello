@@ -18,4 +18,42 @@ export default styles = StyleSheet.create({
     width: 300,
     borderRadius: 20,
   },
+  topContainer: {
+    flex: 2,
+    // padding: 20,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  bottomContainer: {
+    flex: 1,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderTopWidth: 1,
+    borderTopColor: COLORS.LIGHT_GREY,
+  },
+  buttonContainer: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  line: {
+    backgroundColor: COLORS.LIGHT_GREY,
+    width: 1,
+    height: '100%',
+  },
+  textTitle: {
+    fontSize: 16,
+    lineHeight: 20,
+    fontWeight: 'bold',
+  },
+  textDescription: {
+    fontSize: 16,
+    lineHeight: 20,
+  },
+  textButton: {
+    fontSize: 17,
+    fontWeight: 'bold',
+    color: COLORS.PURPLE,
+  }
 })

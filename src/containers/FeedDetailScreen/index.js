@@ -503,7 +503,7 @@ class FeedDetailScreen extends React.Component {
                 )}
 
                 {
-                  !_.isEmpty(currentFeed) && currentFeed && currentFeed.ideas.length > 0 ?
+                  !_.isEmpty(currentFeed) && currentFeed && currentFeed.ideas && currentFeed.ideas.length > 0 ?
                     currentFeed.ideas.map((item, index) => (
                       <TouchableHighlight
                         key={index}
@@ -588,7 +588,7 @@ class FeedDetailScreen extends React.Component {
         </Modal>
 
         <FilterComponent
-          cardCount={currentFeed ? currentFeed.ideas.length : 0}
+          cardCount={currentFeed && currentFeed.ideas ? currentFeed.ideas.length : 0}
           show={this.state.showFilterModal}
           onFilterShow={this.onFilterShow}
           onFilterSort={this.onFilterSort}

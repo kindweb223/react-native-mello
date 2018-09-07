@@ -87,15 +87,24 @@ const styles = StyleSheet.create({
   cellContainer: {
     marginLeft: 15,
   },
-  headerContainer: {
+  mainHeaderContainer: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    height: 50,
     paddingHorizontal: 6,
+    height: 50
+  },
+  shareHeaderContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    paddingLeft: 6,
+    paddingRight: 16,
+    marginBottom: 16,
   },
   closeButtonWrapper: {
-    padding: 10,
+    paddingHorizontal: 10,
+    paddingVertical: 5,
   },
   threeDotButtonWrapper: {
     width: 35,
@@ -142,6 +151,19 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     paddingHorizontal: CONSTANTS.PADDING,
     paddingVertical: CONSTANTS.PADDING / 2,
+  },
+  addCardButtonWapper: {
+    width: 110,
+    height: 40,
+    borderRadius: 20,
+    backgroundColor: COLORS.BLUE,
+    justifyContent: 'center',
+  },
+  textButton: {
+    color: '#fff',
+    fontSize: 16,
+    fontWeight: '500',
+    textAlign: 'center',
   },
 })
 

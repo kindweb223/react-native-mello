@@ -425,7 +425,6 @@ class NewFeedScreen extends React.Component {
   }
 
   get renderCenterContent() {
-    const CustomView = ScrollView;
     return (
       <ScrollView 
         ref={ref => this.scrollViewMainContentRef = ref}
