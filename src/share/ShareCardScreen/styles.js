@@ -6,6 +6,5 @@ export default styles = StyleSheet.create({
   container: {
     height: CONSTANTS.SCREEN_HEIGHT,
     width: CONSTANTS.SCREEN_WIDTH,
-    // backgroundColor: 'green',
   },
 })

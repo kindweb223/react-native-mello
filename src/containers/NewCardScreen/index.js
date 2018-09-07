@@ -103,15 +103,16 @@ class NewCardScreen extends React.Component {
   UNSAFE_componentWillReceiveProps(nextProps) {
     // console.log('NewCardScreen UNSAFE_componentWillReceiveProps : ', nextProps.card);
     let loading = false;
-    if (this.props.shareUrl === '' && nextProps.shareUrl !== '') {
-      this.setState({
-        cardName: nextProps.shareUrl,
-      }, () => {
-        // this.checkUrl(this.state.cardName);
-      });
-    }
     if (this.props.card.loading !== types.CREATE_CARD_PENDING && nextProps.card.loading === types.CREATE_CARD_PENDING) {
       loading = true;
+    } else if (this.props.card.loading !== types.CREATE_CARD_FULFILLED && nextProps.card.loading === types.CREATE_CARD_FULFILLED) {
+      if (this.props.cardMode !== CONSTANTS.MAIN_APP_CARD && this.props.shareUrl !== '') {
+        this.setState({
+          cardName: this.props.shareUrl,
+        }, () => {
+          this.checkUrl(this.state.cardName);
+        });
+      }
     } else if (this.props.card.loading !== types.GET_FILE_UPLOAD_URL_PENDING && nextProps.card.loading === types.GET_FILE_UPLOAD_URL_PENDING) {
       // getting a file upload url
       loading = true;
@@ -664,9 +665,9 @@ class NewCardScreen extends React.Component {
 
   get renderWebMeta() {
     const { viewMode, cardMode } = this.props;
-    if (cardMode !== CONSTANTS.MAIN_APP_CARD) {
-      return;
-    }
+    // if (cardMode !== CONSTANTS.MAIN_APP_CARD) {
+    //   return;
+    // }
     const { links } = this.props.card.currentCard;
     if (links && links.length > 0) {
       return (
@@ -913,7 +914,16 @@ class NewCardScreen extends React.Component {
   get renderBottomContent() {
     const { viewMode, cardMode } = this.props;
     if (cardMode !== CONSTANTS.MAIN_APP_CARD) {
-      return;
+      return (
+        <View style={{paddingHorizontal: 16}}>
+          <View style={styles.line} />
+          <View style={styles.feedSelectContainer}>
+            <Text style={styles.textAddFeed}>Add to </Text>
+            <Text style={[styles.textButton, {color: COLORS.BLUE}]}>{this.props.feedo.currentFeed.headline}</Text>
+            <Text style={styles.textAddFeed}> feed</Text>
+          </View>
+        </View>
+      )
     }
     if (viewMode !== CONSTANTS.CARD_NEW) {
       return (

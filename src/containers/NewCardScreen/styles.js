@@ -165,6 +165,15 @@ const styles = StyleSheet.create({
     fontWeight: '500',
     textAlign: 'center',
   },
+  feedSelectContainer: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    alignItems: 'center',
+  },
+  textAddFeed: {
+    fontSize: 16,
+    lineHeight: 20,
+  },
 })
 
 
