@@ -438,6 +438,10 @@ class HomeScreen extends React.Component {
     }
   }
 
+  onSearch = () => {
+    Actions.FeedFilterScreen()
+  }
+
   render () {
     const { loading, feedoList, emptyState, tabIndex } = this.state
 
@@ -470,7 +474,7 @@ class HomeScreen extends React.Component {
 
           <Animated.View style={[styles.navbarView, { zIndex: miniHeaderZIndex }]}>
             <View style={styles.searchIconView}>
-              <TouchableOpacity>
+              <TouchableOpacity onPress={() => this.onSearch()}>
                 <Image source={SEARCH_ICON} />
               </TouchableOpacity>
             </View>
