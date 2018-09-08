@@ -1888,8 +1888,8 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_ENTITLEMENTS = HuntMobile/HuntMobile.entitlements;
-				CODE_SIGN_IDENTITY = "iPhone Developer: Eamon Doyle (H2VVNQ44JN)";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer: Eamon Doyle (H2VVNQ44JN)";
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				CODE_SIGN_STYLE = Manual;
 				CURRENT_PROJECT_VERSION = 1;
 				DEAD_CODE_STRIPPING = NO;
@@ -1929,8 +1929,8 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_ENTITLEMENTS = HuntMobile/HuntMobile.entitlements;
-				CODE_SIGN_IDENTITY = "iPhone Distribution: Eamon Doyle (B2TWZYTK2Q)";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution: Eamon Doyle (B2TWZYTK2Q)";
+				CODE_SIGN_IDENTITY = "iPhone Distribution";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution";
 				CODE_SIGN_STYLE = Manual;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = B2TWZYTK2Q;
@@ -2311,7 +2311,7 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = io.solvers.feedo.ex;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE = "aa22a053-6153-4f0c-a1cb-0671ad327420";
+				PROVISIONING_PROFILE = "0e8a532e-7c0f-4dd8-8a31-42394bf26dd7";
 				PROVISIONING_PROFILE_SPECIFIER = "Feedo Ex Dist";
 				SKIP_INSTALL = YES;
 				TARGETED_DEVICE_FAMILY = "1,2";
