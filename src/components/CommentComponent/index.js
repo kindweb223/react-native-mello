@@ -7,7 +7,7 @@ import {
 import PropTypes from 'prop-types'
 
 import { Actions } from 'react-native-router-flux'
-import Feather from 'react-native-vector-icons/Feather'
+import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons'
 
 import COLORS from '../../service/colors'
 import CONSTANTS from '../../service/constants'
@@ -22,6 +22,9 @@ export default class CommentComponent extends React.Component {
   }
 
   onComment() {
+    if (this.props.onComment) {
+      this.props.onComment();
+    }
     Actions.CommentScreen({
       idea: this.props.idea,
     });
@@ -37,7 +40,7 @@ export default class CommentComponent extends React.Component {
         activeOpacity={0.7}
         onPress={() => this.onComment()}
       >
-        <Feather name="message-square" size={16} color={COLORS.LIGHT_GREY} />
+        <MaterialCommunityIcons name={comments > 0 ? "message" : "message-outline"} size={16} color={comments > 0 ? COLORS.PURPLE : COLORS.LIGHT_GREY} />
         <Text style={styles.iconText}>{comments}</Text>
       </TouchableOpacity>
     );
@@ -46,4 +49,5 @@ export default class CommentComponent extends React.Component {
 
 CommentComponent.propTypes = {
   idea: PropTypes.objectOf(PropTypes.any).isRequired,
+  onComment: PropTypes.func,
 }

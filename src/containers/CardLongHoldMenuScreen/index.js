@@ -7,6 +7,7 @@ import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
 import { ActionSheetCustom as ActionSheet } from 'react-native-actionsheet'
 import FeedCardComponent from '../../components/FeedCardComponent'
+import CardActionBarComponent from '../../components/CardActionBarComponent'
 import COLORS from '../../service/colors'
 import styles from './styles'
 
@@ -21,7 +22,7 @@ class CardLongHoldMenuScreen extends React.Component {
   componentDidMount() {
   }
 
-  handleSetting(item) {
+  onHandleSettings(item) {
     switch(item) {
       case 'Delete':
         this.actionSheetRef.show()
@@ -39,40 +40,52 @@ class CardLongHoldMenuScreen extends React.Component {
   }
 
   onMoveCard() {
+    if (this.props.onMove) {
+      this.props.onMove();
+    }
+  }
+
+  onClose() {
+    if (this.props.onClose) {
+      this.props.onClose();
+    }
   }
 
   render () {
     const { idea, invitees } = this.props
-    return (
-      <View style={styles.container}>
-        <View style={styles.cardContainer}>
-          <FeedCardComponent idea={idea} invitees={invitees} />
-        </View>
-        {/* <FeedActionBarComponent
-          handleShare={this.onMoveCard.bind(this)}
-          handleSetting={this.handleSetting.bind(this)}
-          data={feedData}
-          pinFlag={this.state.pinFlag}
-        /> */}
-        <ActionSheet
-          ref={ref => this.actionSheetRef = ref}
-          title={
-            <Text style={styles.titleText}>Are you sure you want to delete this card, everything will be gone ...</Text>
-          }
-          options={
-            [
-              <Text key="0" style={styles.actionButtonText}>Delete feed</Text>,
-              'Cancel'
-            ]
-          }
-          cancelButtonIndex={1}
-          destructiveButtonIndex={2}
-          tintColor={COLORS.PURPLE}
-          styles={styles}
-          onPress={(index) => this.onTapActionSheet(index)}
+    return [
+      <View key='0' style={styles.cardContainer}>
+        <FeedCardComponent 
+          idea={idea} 
+          invitees={invitees}
+          onComment={this.onClose.bind(this)}
         />
-      </View>
-    )
+      </View>,
+      <CardActionBarComponent
+        key='1'
+        onMove={this.onMoveCard.bind(this)}
+        onHandleSettings={this.onHandleSettings.bind(this)}
+        idea={idea}
+      />,
+      <ActionSheet
+        key='2' 
+        ref={ref => this.actionSheetRef = ref}
+        title={
+          <Text style={styles.titleText}>This will permanentely delete your card</Text>
+        }
+        options={
+          [
+            <Text key="0" style={styles.actionButtonText}>Delete card</Text>,
+            'Cancel'
+          ]
+        }
+        cancelButtonIndex={1}
+        destructiveButtonIndex={2}
+        tintColor={COLORS.PURPLE}
+        styles={styles}
+        onPress={(index) => this.onTapActionSheet(index)}
+      />
+    ]
   }
 }
 
@@ -86,6 +99,7 @@ const mapDispatchToProps = dispatch => ({
 CardLongHoldMenuScreen.propTypes = {
   idea: PropTypes.object.isRequired,
   invitees: PropTypes.array.isRequired,
+  onClose: PropTypes.func.isRequired,
   onMove: PropTypes.func.isRequired,
   onEdit: PropTypes.func.isRequired,
   onDelete: PropTypes.func.isRequired,
