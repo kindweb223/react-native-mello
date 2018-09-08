@@ -76,13 +76,13 @@ class ImageCrop extends Component {
 	_handlePanResponderEnd = (e, gestureState) => {
 		let { offsetX, offsetY, scale } = this.state
 
-		offsetX = Math.abs(offsetX) > this.paddingWidth ? (offsetX < 0 ? -this.paddingWidth : this.paddingWidth) : offsetX
-		offsetY = Math.abs(offsetY) > this.paddingHeight ? (offsetY < 0 ? -this.paddingHeight : this.paddingHeight) : offsetY
+		let offsetX1 = Math.abs(offsetX) < this.paddingWidth ? offsetX : (offsetX < 0 ? -this.paddingWidth * 2 : this.paddingWidth * 2)
+		let offsetY1 = Math.abs(offsetY) < this.paddingHeight ? offsetY : (offsetY < 0 ? -this.paddingHeight * 2 : this.paddingHeight * 2)
 
 		this.setState({
 			lastScale: scale,
-			currentOffsetX: offsetX,
-			currentOffsetY: offsetY
+			currentOffsetX: offsetX1,
+			currentOffsetY: offsetY1
     })
 	}
 
@@ -99,19 +99,15 @@ class ImageCrop extends Component {
 			let distant = Math.sqrt(dx * dx + dy * dy);
 			let scale = (distant / this.distant) * lastScale;
 
-			this.paddingWidth = (scale - 1) * cropWidth / 2 - 12
-			this.paddingHeight = (scale - 1) * cropHeight / 2 - 27
+			this.paddingWidth = (scale - 1) * cropWidth / 2
+			this.paddingHeight = (scale - 1) * cropHeight / 2
 
 			if (scale < maxScale && scale > minScale) {
 				this.setState({ scale });
 			}
 		} else {
-			if (scale > 1) {
-				currentOffsetX += gestureState.dx
-				currentOffsetY += gestureState.dy
-				this.setState({ offsetX: currentOffsetX })
-				this.setState({ offsetY: currentOffsetY })
-			}
+			this.setState({ offsetX: currentOffsetX +  gestureState.dx * lastScale })
+			this.setState({ offsetY: currentOffsetY + gestureState.dy * lastScale })
 		}
 	}
 
@@ -140,8 +136,8 @@ class ImageCrop extends Component {
 				x: (this.paddingWidth * scale - currentOffsetX)
 			},
 			size: {
-				width: cropWidth * containerRatio,
-				height: cropHeight * containerRatio
+				width: cropWidth * containerRatio / scale,
+				height: cropHeight * containerRatio / scale
 			}
 		};
 		console.log('CROPDATA: ', cropData)
@@ -175,11 +171,18 @@ class ImageCrop extends Component {
 	renderContainerImage() {
 		const { containerWidth, containerHeight, offsetX, offsetY, scale } = this.state
 
+		console.log('==============================================')
+		console.log('PAN: ', this.paddingWidth, ' : ', this.paddingHeight)
+		console.log('OFFSET: ', offsetX, ' : ', offsetY)
+
+		const translateX = Math.abs(offsetX) < this.paddingWidth ? offsetX : (offsetX < 0 ? -this.paddingWidth : this.paddingWidth)
+		const translateY = Math.abs(offsetY) < this.paddingHeight ? offsetY : (offsetY < 0 ? -this.paddingHeight : this.paddingHeight)
+
 		return (
 			<View
 				style={[styles.imageWrapper, {
 					width: containerWidth,
-					height: containerHeight,
+					height: containerWidth,
 					top: 0,
 					left: 0,
 					borderRadius: 0,
@@ -187,13 +190,12 @@ class ImageCrop extends Component {
 					transform: [
 						{ scaleX: scale },
 						{ scaleY: scale },
-						{ translateX: Math.abs(offsetX) < this.paddingWidth ? offsetX : (offsetX < 0 ? -this.paddingWidth : this.paddingWidth) },
-						{ translateY: Math.abs(offsetY) < this.paddingHeight ? offsetY : (offsetY < 0 ? -this.paddingHeight : this.paddingHeight) }
+						{ translateX },
+						{ translateY }
 					]
 				}]}
 			>
 				<Image
-					resizeMode="cover"
 					source={this.props.source}
 					style={[styles.image, {
 						width: '100%',
@@ -210,6 +212,9 @@ class ImageCrop extends Component {
 	renderImage() {
 		const { containerWidth, containerHeight, offsetX, offsetY, cropWidth, cropHeight, scale } = this.state
 
+		const translateX = Math.abs(offsetX) < this.paddingWidth ? offsetX : (offsetX < 0 ? -this.paddingWidth : this.paddingWidth)
+		const translateY = Math.abs(offsetY) < this.paddingHeight ? offsetY : (offsetY < 0 ? -this.paddingHeight : this.paddingHeight)
+
 		return (
 			<View
 				style={{
@@ -222,7 +227,6 @@ class ImageCrop extends Component {
 				}}
 			>
 				<Image
-					resizeMode="cover"
 					source={this.props.source}
 					style={[styles.image, {
 						width: containerWidth,
@@ -233,8 +237,8 @@ class ImageCrop extends Component {
 						transform: [
               { scaleX: scale },
 							{ scaleY: scale },
-							{ translateX: Math.abs(offsetX) < this.paddingWidth ? offsetX : (offsetX < 0 ? -this.paddingWidth : this.paddingWidth) },
-							{ translateY: Math.abs(offsetY) < this.paddingHeight ? offsetY : (offsetY < 0 ? -this.paddingHeight : this.paddingHeight) }
+							{ translateX },
+							{ translateY }
 						]
 					}]}
 				/>
