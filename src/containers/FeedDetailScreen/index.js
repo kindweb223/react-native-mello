@@ -18,6 +18,8 @@ import { Actions } from 'react-native-router-flux'
 import Ionicons from 'react-native-vector-icons/Ionicons'
 import { ActionSheetCustom as ActionSheet } from 'react-native-actionsheet'
 import Modal from "react-native-modal"
+import ReactNativeHaptic from 'react-native-haptic'
+
 import DashboardActionBar from '../../navigations/DashboardActionBar'
 import FeedCardComponent from '../../components/FeedCardComponent'
 import FeedCollapseComponent from '../../components/FeedCollapseComponent'
@@ -29,6 +31,7 @@ import FeedLoadingStateComponent from '../../components/FeedLoadingStateComponen
 import ShareScreen from '../ShareScreen'
 import NewFeedScreen from '../NewFeedScreen'
 import FilterComponent from '../../components/FilterComponent'
+import CardLongHoldMenuScreen from '../CardLongHoldMenuScreen'
 
 import {
   getFeedDetail,
@@ -46,13 +49,13 @@ import {
 import COLORS from '../../service/colors'
 import * as COMMON_FUNC from '../../service/commonFunc'
 import styles from './styles'
-import actionSheetStyles from '../FeedLongHoldMenuScreen/styles'
 
 const EMPTY_ICON = require('../../../assets/images/empty_state/asset-emptystate.png')
 const TOASTER_DURATION = 5000
 
 import CONSTANTS from '../../service/constants'
 import NewCardScreen from '../NewCardScreen' 
+
 
 class FeedDetailScreen extends React.Component {
   constructor(props) {
@@ -67,6 +70,7 @@ class FeedDetailScreen extends React.Component {
       cardViewMode: CONSTANTS.CARD_NONE,
 
       isVisibleEditFeed: false,
+      isVisibleLongHoldMenu: false,
       openMenu: false,
       isShowToaster: false,
       isShowShare: false,
@@ -76,7 +80,9 @@ class FeedDetailScreen extends React.Component {
       isInviteeModal: false,
       showFilterModal: false,
       filterShowType: 'all',
-      filterSortType: 'date'
+      filterSortType: 'date',
+      selectedLongHoldIdea: {},
+      selectedLongHoldInvitees: [],
     };
     this.animatedOpacity = new Animated.Value(0)
     this.menuOpacity = new Animated.Value(0)
@@ -377,6 +383,24 @@ class FeedDetailScreen extends React.Component {
     });
   }
 
+  onLongPressCard(idea, invitees) {
+    ReactNativeHaptic.generate('impactHeavy');
+    this.setState({
+      selectedLongHoldIdea: idea,
+      selectedLongHoldInvitees: invitees,
+      isVisibleLongHoldMenu: true,
+    })
+  }
+
+  onMoveCard() {
+  }
+  
+  onEditCard() {
+  }
+
+  onDeleteCard() {
+  }
+
   get renderNewCardModal() {
     if (!this.state.isVisibleCard && !this.state.isVisibleEditFeed) {
       return;
@@ -512,6 +536,7 @@ class FeedDetailScreen extends React.Component {
                         style={{ marginHorizontal: 5, borderRadius: 5 }}
                         underlayColor={COLORS.LIGHT_GREY}
                         onPress={() => this.onSelectCard(item, index)}
+                        onLongPress={() => this.onLongPressCard(item, currentFeed.invitees)}
                       >
                         <FeedCardComponent idea={item} invitees={currentFeed.invitees} />
                       </TouchableHighlight>
@@ -587,6 +612,27 @@ class FeedDetailScreen extends React.Component {
             <FeedControlMenuComponent handleSettingItem={item => this.handleSettingItem(item)} data={currentFeed} pinText={pinText} />
           </Animated.View>
         </Modal>
+
+        <Modal 
+          isVisible={this.state.isVisibleLongHoldMenu}
+          style={styles.longHoldModalContainer}
+          backdropColor='#e0e0e0'
+          backdropOpacity={0.9}
+          animationIn="fadeIn"
+          animationOut="fadeOut"
+          animationInTiming={1300}
+          onModalHide={this.onLongHoldMenuHide}
+          onBackdropPress={() => this.setState({ isVisibleLongHoldMenu: false })}
+        >
+          <CardLongHoldMenuScreen
+            idea={this.state.selectedLongHoldIdea}
+            invitees={this.state.selectedLongHoldInvitees}
+            onMove={this.onMoveCard.bind(this)}
+            onEdit={this.onEditCard.bind(this)}
+            onDelete={this.onDeleteCard.bind(this)}
+          />
+        </Modal>
+
 
         <FilterComponent
           cardCount={currentFeed && currentFeed.ideas ? currentFeed.ideas.length : 0}

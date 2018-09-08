@@ -9,8 +9,7 @@ const styles = StyleSheet.create({
     paddingBottom: 6,
     paddingLeft: 11,
     paddingRight: 6,
-    // paddingHorizontal: 11,
-    // paddingVertical: 11,
+    borderRadius: 18,
   },
   title: {
    fontSize: 16,
