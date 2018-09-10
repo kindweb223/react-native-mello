@@ -14,7 +14,6 @@ import {
   AsyncStorage
 } from 'react-native'
 
-import ReactNativeHaptic from 'react-native-haptic'
 import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
 import ScrollableTabView from 'react-native-scrollable-tab-view'
@@ -196,7 +195,6 @@ class HomeScreen extends React.Component {
   handleLongHoldMenu = (selectedFeedData) => {
     this.setState({ selectedFeedData })
     this.setState({ isLongHoldMenuVisible: true })
-    ReactNativeHaptic.generate('impactHeavy')
   }
 
   handleArchiveFeed = (feedId) => {
