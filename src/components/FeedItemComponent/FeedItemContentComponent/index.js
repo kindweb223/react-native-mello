@@ -5,6 +5,7 @@ import {
 } from 'react-native'
 
 import PropTypes from 'prop-types'
+import { Actions } from 'react-native-router-flux'
 import Foundation from 'react-native-vector-icons/Foundation'
 import Ionicons from 'react-native-vector-icons/Ionicons'
 import Octicons from 'react-native-vector-icons/Octicons'
@@ -45,6 +46,12 @@ const renderAvatar = (user) => {
   )
 }
 
+onTagPress = (initialTag) => {
+  Actions.FeedFilterScreen({
+    initialTag: [{ text: initialTag.text }]
+  })
+}
+
 const FeedItemContentComponent = ({ data, pinFlag }) => {
   return (
     <View style={styles.container}>
@@ -82,7 +89,7 @@ const FeedItemContentComponent = ({ data, pinFlag }) => {
           <Tags
             initialTags={data.tags}
             onChangeTags={() => {}}
-            onTagPress={() => {}}
+            onTagPress={this.onTagPress}
             inputStyle={{
               backgroundColor: 'white',
             }}

@@ -439,7 +439,6 @@ class HomeScreen extends React.Component {
   }
 
   onSearch = () => {
-    Actions.FeedFilterScreen()
   }
 
   render () {

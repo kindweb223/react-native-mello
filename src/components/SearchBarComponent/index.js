@@ -1,54 +1,105 @@
 import React from "react";
 import PropTypes from "prop-types";
-import { View } from "react-native";
+import {
+  View,
+  Text,
+  Image,
+  FlatList,
+  TouchableOpacity
+} from "react-native";
 
-import Tag from "./Tag";
+import _ from 'lodash'
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
+import Tags from "../TagComponent";
+import COLORS from '../../service/colors'
 import styles from "./styles";
+
+const SEARCH_ICON = require('../../../assets/images/Search/Grey.png')
+const TAG_ICON = require('../../../assets/images/Tag/Grey.png')
 
 class SearchBarComponent extends React.Component {
   constructor(props) {
     super(props);
-  }
 
-  filterTagNames() {
-    
+    this.state = {
+      selectTags: this.props.initialTag,
+      currentTagName: '',
+      showFilterTags: false
+    }
   }
 
   onCreateTag(text) {
-    console.log('CREATE: ', text)
+    let { selectTags } = this.state
+    selectTags = [
+      ...selectTags,
+      { text }
+    ]
+    this.setState({ selectTags }, () => {
+      this.filterFeedList()
+    })
   }
 
   onRemoveTag(tag) {
+    let { selectTags } = this.state
+    selectTags = _.filter(selectTags, item => item.text !== tag.text)
+    this.setState({ selectTags }, () => {
+      this.filterFeedList()
+    })
     console.log('REMOVE: ', tag)
   }
 
+  filterFeedList = () => {
+    const { selectTags} = this.state
+    this.props.changeTags(selectTags)
+  }
+
   onChangeText(text) {
+    this.setState({ showFilterTags: text.length > 0 ? true : false })
     this.setState({
       currentTagName: text,
     });
   }
 
-  onSelectItem(tag) {
+  onSelectFilterItem = (item) => {
+    this.onCreateTag(item.text)
     this.setState({
       currentTagName: '',
     });
-    console.log('SELECT_TAG: ', tag)
   }
 
+  filterTagItem = ({ item }) => (
+    <TouchableOpacity onPress={() => this.onSelectFilterItem(item)}>
+      <View style={styles.filterItem}>
+        <Image source={TAG_ICON} />
+        <Text style={styles.filterItemText}>
+          {item.text}
+        </Text>
+      </View>
+    </TouchableOpacity>
+  )
+
   render() {
+    const { userTags } = this.props
+    const { selectTags, showFilterTags } = this.state
+    console.log('userTags: ', userTags)
+
     return (
-      <View
-        style={[styles.container, this.props.containerStyle, this.props.style]}
-      >
-        {/* <Tag
-            containerStyle={{marginTop: 20, paddingHorizontal: 20,}}
-            tags={this.props.feedo.currentFeed.tags}
+      <View style={styles.container}>
+        <View style={styles.searchContainer}>
+          <View style={styles.searchIconView}>
+            <Image source={SEARCH_ICON} />
+          </View>
+
+          <Tags
+            containerStyle={{ paddingHorizontal: 5 }}
+            tags={selectTags}
             tagText={this.state.currentTagName}
+            placeHolder=""
             onCreateTag={(text) => this.onCreateTag(text)}
             onChangeText={(text) => this.onChangeText(text)}
             onRemoveTag={(tag) => this.onRemoveTag(tag)}
             tagContainerStyle={{
-              backgroundColor: COLORS.TAG_LIGHT_ORANGE_BACKGROUND,
+              backgroundColor: COLORS.TAG_LIGHT_ORANGE_BACKGROUND
             }}
             tagTextStyle={{
               color: COLORS.DARK_ORANGE,
@@ -61,30 +112,46 @@ class SearchBarComponent extends React.Component {
               color: '#fff',
               fontSize: 16,
             }}
-          /> */}
+          />
+        </View>
 
-          {/* <KeyboardAwareScrollView
+        {showFilterTags && (
+          <KeyboardAwareScrollView
             keyboardShouldPersistTaps='always'
           >
-            <FlatList
-              style={{marginTop: 10, paddingHorizontal: 20,}}
-              data={this.filterTagNames()}
-              renderItem={this.renderTagItem.bind(this)}
-              keyExtractor={(item, index) => index.toString()}
-              extraData={this.state}
-            />
-          </KeyboardAwareScrollView> */}
+            <View style={styles.filterContainer}>
+              <View>
+                <View style={styles.titleView}>
+                  <Text style={styles.title}>Tags</Text>
+                </View>
+                <FlatList
+                  style={{ marginTop: 10 }}
+                  data={userTags}
+                  renderItem={this.filterTagItem}
+                  keyExtractor={(item, index) => index.toString()}
+                  extraData={this.state}
+                />
+              </View>
+            </View>
+          </KeyboardAwareScrollView>
+        )}
       </View>
     );
   }
 }
 
 SearchBarComponent.defaultProps = {
-  readonly: false
+  readonly: false,
+  initialTag: [],
+  userTags: [],
+  changeTags: () => {}
 };
 
 SearchBarComponent.propTypes = {
-  readonly: PropTypes.bool
+  initialTag: PropTypes.arrayOf(PropTypes.any),
+  userTags: PropTypes.arrayOf(PropTypes.any),
+  readonly: PropTypes.bool,
+  changeTags: PropTypes.func
 };
 
 export default SearchBarComponent;

@@ -1,43 +1,51 @@
 import { StyleSheet } from "react-native";
+import COLORS from '../../service/colors'
+import CONSTANTS from '../../service/constants'
 
 export default StyleSheet.create({
   container: {
-    flexDirection: "row",
-    flexWrap: "wrap",
-    alignItems: "center"
+    width: '100%',
+    paddingHorizontal: CONSTANTS.PADDING,
   },
-
-  textInputContainer: {
-    flex: 1,
-    width: 100,
-    height: 32,
-    margin: 4,
+  searchContainer: {
+    width: '100%',
+    backgroundColor: COLORS.LIGHT_GREY_LINE,
+    paddingHorizontal: 5,
     borderRadius: 16,
-    backgroundColor: "#ccc"
+    flexDirection: 'row',
+    justifyContent: 'flex-start',
+    alignItems: 'center'
   },
-
-  textInput: {
-    margin: 0,
-    padding: 0,
-    paddingLeft: 12,
-    paddingRight: 12,
-    flex: 1,
-    height: 32,
-    fontSize: 13,
-    color: "rgba(0, 0, 0, 0.87)"
+  searchIconView: {
+    backgroundColor: 'transparent',
+    justifyContent: 'center',
+    alignItems: 'center',
+    opacity: 0.6
   },
-
-  tag: {
-    justifyContent: "center",
-    backgroundColor: "#e0e0e0",
-    borderRadius: 16,
-    paddingLeft: 12,
-    paddingRight: 12,
-    height: 32,
-    margin: 4
+  filterContainer: {
+    width: '100%',
+    paddingVertical: 20,
+    backgroundColor: '#fff'
   },
-  tagLabel: {
-    fontSize: 13,
-    color: "rgba(0, 0, 0, 0.87)"
+  titleView: {
+    paddingBottom: 7,
+    borderBottomWidth: 1,
+    borderColor: COLORS.LIGHT_GREY_LINE
+  },
+  title: {
+    color: COLORS.MEDIUM_GREY
+  },
+  filterItem: {
+    flexDirection: 'row',
+    justifyContent: 'flex-start',
+    alignItems: 'center',
+    width: '100%',
+    paddingVertical: 5
+  },
+  filterItemText: {
+    color: COLORS.DARK_GREY,
+    fontSize: 16,
+    marginLeft: 10,
+    fontWeight: '500'
   }
 });
