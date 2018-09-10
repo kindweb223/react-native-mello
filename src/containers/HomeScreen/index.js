@@ -458,8 +458,8 @@ class HomeScreen extends React.Component {
     })
 
     const miniHeaderZIndex = this.state.scrollY.interpolate({
-      inputRange: [40, 80],
-      outputRange: [9, 11],
+      inputRange: [0, 40, 80],
+      outputRange: [11, 9, 11],
       extrapolate: 'clamp'
     })
 

@@ -100,7 +100,7 @@ class LikeComponent extends React.Component {
       likes,
       prevLikes,
     } = this.state;
-    
+
     const animatedMove1 = this.animatedShow.interpolate({
       inputRange: [0, 1],
       outputRange: [8, 0],

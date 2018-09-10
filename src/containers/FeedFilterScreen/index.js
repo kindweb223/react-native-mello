@@ -17,6 +17,7 @@ import _ from 'lodash'
 import Ionicons from 'react-native-vector-icons/Ionicons'
 
 import FeedoListContainer from '../FeedoListContainer'
+import SearchBarComponent from '../../components/SearchBarComponent'
 
 import COLORS from '../../service/colors'
 import styles from './styles'
@@ -95,6 +96,8 @@ class FeedFilterScreen extends React.Component {
                 <Text style={styles.headerTitle} numberOfLines={1} ellipsizeMode="tail">Search</Text>
               </View>
             </Animated.View>
+
+            <SearchBarComponent />
             
             <View style={styles.detailView}>
               {feedoList.length > 0 && (
