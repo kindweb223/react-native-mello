@@ -138,6 +138,8 @@ const styles = StyleSheet.create({
   },
   longHoldModalContainer: {
     margin: 0,
+    alignItems: 'center',
+    justifyContent: 'center',
   },
 })
 
