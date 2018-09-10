@@ -17,6 +17,8 @@ const styles = StyleSheet.create({
   },
   heartContainer: {
     position: 'absolute',
+    justifyContent: 'center',
+    alignItems: 'center',
     width: 16,
     height: 16,
   },

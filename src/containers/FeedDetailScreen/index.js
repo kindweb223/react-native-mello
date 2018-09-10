@@ -166,7 +166,7 @@ class FeedDetailScreen extends React.Component {
   onFilterShow = (type) => {
     const { currentFeed } = this.state
 
-    this.setState({ showFilterModal: false, filterShowType: type }, () => {
+    this.setState({ filterShowType: type }, () => {
       this.filterCards(currentFeed)
     })
   }
@@ -174,7 +174,7 @@ class FeedDetailScreen extends React.Component {
   onFilterSort = (type) => {
     const { currentFeed } = this.state
 
-    this.setState({ showFilterModal: false, filterSortType: type }, () => {
+    this.setState({ filterSortType: type }, () => {
       this.filterCards(currentFeed)
     })
   }

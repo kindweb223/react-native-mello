@@ -26,7 +26,7 @@ const styles = StyleSheet.create({
     height: SEARCHBAR_HEIGHT,
     paddingHorizontal: CONSTANTS.PADDING,
     backgroundColor: '#fff',
-    zIndex: 9,
+    zIndex: 11,
     position: 'absolute',
     left: 0,
     top: 0,
@@ -34,6 +34,7 @@ const styles = StyleSheet.create({
   searchIconView: {
     width: 60,
     height: '100%',
+    backgroundColor: '#fff',
     justifyContent: 'center',
     alignItems: 'flex-start'
   },

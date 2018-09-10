@@ -61,6 +61,7 @@ import ProfileUpdateScreen from './src/containers/ProfileUpdateScreen'
 import SignUpSuccessScreen from './src/containers/SignUpSuccessScreen'
 import ResetPasswordConfirmScreen from './src/containers/ResetPasswordConfirmScreen'
 import ResetPasswordScreen from './src/containers/ResetPasswordScreen'
+import FeedFilterScreen from './src/containers/FeedFilterScreen'
 
 const store = createStore(reducers, applyMiddleware(thunk, promiseMiddleware))
 
@@ -187,6 +188,7 @@ export default class Root extends React.Component {
             <Scene key="SignUpSuccessScreen" component={ SignUpSuccessScreen } hideNavBar panHandlers={null} />
             <Scene key="ResetPasswordConfirmScreen" component={ ResetPasswordConfirmScreen } hideNavBar panHandlers={null} />
             <Scene key="ResetPasswordScreen" component={ ResetPasswordScreen } hideNavBar panHandlers={null} />
+            <Scene key="FeedFilterScreen" component={ FeedFilterScreen } hideNavBar panHandlers={null} />
           </Scene>
           <Stack key="ProfileScreen" hideNavBar>
             <Stack key="ProfileScreen" hideNavBar>
