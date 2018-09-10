@@ -79,6 +79,7 @@ export const deleteCard = (id) => {
       method: 'delete',
       url: url,
     }),
+    payload: id,
   };
 }
 
