@@ -57,7 +57,10 @@ class FeedCardComponent extends React.Component {
         </View>
         <View style={styles.subView}>
           <LikeComponent idea={idea} />
-          <CommentComponent idea={idea} />
+          <CommentComponent 
+            idea={idea} 
+            onComment={this.props.onComment}
+          />
         </View>
       </View>
     )
@@ -92,7 +95,8 @@ class FeedCardComponent extends React.Component {
 
 FeedCardComponent.propTypes = {
   idea: PropTypes.objectOf(PropTypes.any).isRequired,
-  invitees: PropTypes.arrayOf(PropTypes.any).isRequired
+  invitees: PropTypes.arrayOf(PropTypes.any).isRequired,
+  onComment: PropTypes.func,
 }
 
 const mapStateToProps = ({ card, feedo }) => ({

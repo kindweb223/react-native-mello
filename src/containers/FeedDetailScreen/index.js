@@ -56,6 +56,11 @@ const TOASTER_DURATION = 5000
 import CONSTANTS from '../../service/constants'
 import NewCardScreen from '../NewCardScreen' 
 
+const CARD_ACTION_NONE = 0;
+const CARD_ACTION_MOVE = 1;
+const CARD_ACTION_EDIT = 2;
+const CARD_ACTION_DELETE = 3;
+
 
 class FeedDetailScreen extends React.Component {
   constructor(props) {
@@ -83,10 +88,12 @@ class FeedDetailScreen extends React.Component {
       filterSortType: 'date',
       selectedLongHoldIdea: {},
       selectedLongHoldInvitees: [],
+      selectedLongHoldCardIndex: -1,
     };
     this.animatedOpacity = new Animated.Value(0)
     this.menuOpacity = new Animated.Value(0)
     this.menuZIndex = new Animated.Value(0)
+    this.animatedSelectCard = new Animated.Value(1);
 
     this.cardItemRefs = [];
   }
@@ -311,7 +318,6 @@ class FeedDetailScreen extends React.Component {
         action: 'Delete',
         feedId: this.props.data.id
       })
-
       Actions.pop()
     }
   }
@@ -383,22 +389,45 @@ class FeedDetailScreen extends React.Component {
     });
   }
 
-  onLongPressCard(idea, invitees) {
+  onLongPressCard(index, idea, invitees) {
     ReactNativeHaptic.generate('impactHeavy');
     this.setState({
-      selectedLongHoldIdea: idea,
-      selectedLongHoldInvitees: invitees,
-      isVisibleLongHoldMenu: true,
-    })
+      selectedLongHoldCardIndex: index,
+    }, () => {
+      Animated.sequence([
+        Animated.timing(this.animatedSelectCard, {
+          toValue: 0.95,
+          duration: 100,
+        }),
+        Animated.timing(this.animatedSelectCard, {
+          toValue: 1,
+          duration: 100,
+        }),
+      ]).start(() => {
+        this.setState({
+          selectedLongHoldIdea: idea,
+          selectedLongHoldInvitees: invitees,
+          isVisibleLongHoldMenu: true,
+          selectedLongHoldCardIndex: -1,
+        });
+      });
+    });
   }
 
   onMoveCard() {
+    this.setState({ isVisibleLongHoldMenu: false });
   }
   
   onEditCard() {
+    this.setState({ isVisibleLongHoldMenu: false })
   }
 
   onDeleteCard() {
+    this.setState({ 
+      isVisibleLongHoldMenu: false,
+      // isShowToaster: true,
+      // toasterTitle: 'Card deleted'
+    });
   }
 
   get renderNewCardModal() {
@@ -530,16 +559,27 @@ class FeedDetailScreen extends React.Component {
                 {
                   !_.isEmpty(currentFeed) && currentFeed && currentFeed.ideas && currentFeed.ideas.length > 0 ?
                     currentFeed.ideas.map((item, index) => (
-                      <TouchableHighlight
+                      <Animated.View 
                         key={index}
-                        ref={ref => this.cardItemRefs[index] = ref}
-                        style={{ marginHorizontal: 5, borderRadius: 5 }}
-                        underlayColor={COLORS.LIGHT_GREY}
-                        onPress={() => this.onSelectCard(item, index)}
-                        onLongPress={() => this.onLongPressCard(item, currentFeed.invitees)}
+                        style={
+                          this.state.selectedLongHoldCardIndex === index && 
+                          {
+                            transform: [
+                              { scale: this.animatedSelectCard },
+                            ],
+                          }
+                        }
                       >
-                        <FeedCardComponent idea={item} invitees={currentFeed.invitees} />
-                      </TouchableHighlight>
+                        <TouchableHighlight
+                          ref={ref => this.cardItemRefs[index] = ref}
+                          style={{ marginHorizontal: 5, borderRadius: 5 }}
+                          underlayColor={COLORS.LIGHT_GREY}
+                          onPress={() => this.onSelectCard(item, index)}
+                          onLongPress={() => this.onLongPressCard(index, item, currentFeed.invitees)}
+                        >
+                          <FeedCardComponent idea={item} invitees={currentFeed.invitees} />
+                        </TouchableHighlight>
+                      </Animated.View>
                     ))
                   : 
                     <View style={styles.emptyView}>
@@ -622,7 +662,7 @@ class FeedDetailScreen extends React.Component {
           animationOut="fadeOut"
           animationInTiming={1300}
           onModalHide={this.onLongHoldMenuHide}
-          onBackdropPress={() => this.setState({ isVisibleLongHoldMenu: false })}
+          onBackdropPress={() => this.setState({isVisibleLongHoldMenu: false})}
         >
           <CardLongHoldMenuScreen
             idea={this.state.selectedLongHoldIdea}
@@ -630,6 +670,7 @@ class FeedDetailScreen extends React.Component {
             onMove={this.onMoveCard.bind(this)}
             onEdit={this.onEditCard.bind(this)}
             onDelete={this.onDeleteCard.bind(this)}
+            onClose={() => this.setState({isVisibleLongHoldMenu: false})}
           />
         </Modal>
 
