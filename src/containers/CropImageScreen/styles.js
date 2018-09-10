@@ -11,12 +11,12 @@ export default {
     right: 0,
     left: 0,
     bottom: 0,
-    backgroudnColor: '#fff'
+    backgroundColor: '#fff'
   },
   body: {
     width: '100%',
     height: '100%',
-    backgroudnColor: '#fff',
+    backgroundColor: '#fff',
   },
   headerView: {
     width: '100%',
@@ -53,7 +53,7 @@ export default {
     justifyContent: 'center',
     alignItems: 'center',
     padding: CONSTANTS.PADDING,
-    backgroudnColor: '#fff'
+    backgroundColor: '#fff'
   },
   saveBtn: {
     height: 60,
