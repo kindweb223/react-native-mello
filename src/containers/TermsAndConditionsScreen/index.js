@@ -85,8 +85,10 @@ class TermsAndConditionsScreen extends React.Component {
         )}
 
         <View style={styles.headerView}>
-          <TouchableOpacity onPress={() => Actions.pop()} style={styles.btnBack}>
-            <Feather name="arrow-left" size={25} color={'#fff'} />
+          <TouchableOpacity onPress={() => Actions.pop()}>
+            <View style={styles.btnBack}>
+              <Feather name="arrow-left" size={25} color={'#fff'} />
+            </View>
           </TouchableOpacity>
           <Text style={styles.headerText}>Terms & Conditions</Text>
           <View />

@@ -90,14 +90,14 @@ class FeedFilterScreen extends React.Component {
         let tags = []
 
         _.forEach(feedo.tags, tag => {
-          let ft = _.filter(tagList, item => item.text === tag.text)
+          let ft = _.filter(tagList, item => item.text.toLowerCase() === tag.text.toLowerCase())
           if (ft.length > 0) {
-            tags = _.concat(tags, tag)
+            tags.push(tag)
           }
         })
 
         if (tags.length > 0) {
-          filterFeedoList = _.concat(filterFeedoList, feedo)
+          filterFeedoList.push(feedo)
         }
       })
     }
