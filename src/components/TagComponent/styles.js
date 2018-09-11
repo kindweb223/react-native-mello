@@ -23,7 +23,7 @@ export default StyleSheet.create({
     top: 0,
     bottom: 0,
     justifyContent: 'center',
-    backgroundColor: '#fff',
+    backgroundColor: 'transparent',
   },
   textLabel: {
     margin: 0,

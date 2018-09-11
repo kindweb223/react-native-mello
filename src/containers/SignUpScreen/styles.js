@@ -29,10 +29,14 @@ export default {
     fontSize: 16,
     fontWeight: '600'
   },
-  btnback: {
-    width: 100,
+  btnBack: {
+    width: 50,
     height: 30,
-    backgroundColor: '#ff0'
+  },
+  btnPass: {
+    alignItems: 'flex-end',
+    width: 50,
+    height: 30,
   },
   modalContainer: {
     borderTopLeftRadius: 18,
@@ -123,5 +127,12 @@ export default {
     color: COLORS.PURPLE,
     textDecorationLine: 'underline',
     fontWeight: '600'
-  }
+  },
+  errorTncView: {
+    height: 20,
+    justifyContent: 'center',
+    alignItems: 'flex-start',
+    paddingLeft: 40,
+    width: '100%'
+  },
 }

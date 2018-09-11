@@ -30,7 +30,7 @@ import ToasterComponent from '../../components/ToasterComponent'
 import FeedLoadingStateComponent from '../../components/FeedLoadingStateComponent'
 import ShareScreen from '../ShareScreen'
 import NewFeedScreen from '../NewFeedScreen'
-import FilterComponent from '../../components/FilterComponent'
+import CardFilterComponent from '../../components/CardFilterComponent'
 import CardLongHoldMenuScreen from '../CardLongHoldMenuScreen'
 import SelectFeedoComponent from '../../components/SelectFeedoComponent';
 
@@ -53,9 +53,10 @@ import {
 import COLORS from '../../service/colors'
 import * as COMMON_FUNC from '../../service/commonFunc'
 import styles from './styles'
+import actionStyles from '../CardLongHoldMenuScreen/styles'
 
 const EMPTY_ICON = require('../../../assets/images/empty_state/asset-emptystate.png')
-const TOASTER_DURATION = 5000
+const TOASTER_DURATION = 500
 
 import CONSTANTS from '../../service/constants'
 import NewCardScreen from '../NewCardScreen' 
@@ -99,6 +100,7 @@ class FeedDetailScreen extends React.Component {
       selectedLongHoldInvitees: [],
       selectedLongHoldCardIndex: -1,
       currentActionType: ACTION_NONE,
+      totalCardCount: 0
     };
     this.animatedOpacity = new Animated.Value(0)
     this.menuOpacity = new Animated.Value(0)
@@ -121,6 +123,7 @@ class FeedDetailScreen extends React.Component {
         (this.props.feedo.loading === 'DELETE_INVITEE_PENDING' && feedo.loading === 'DELETE_INVITEE_FULFILLED') ||
         (this.props.feedo.loading === 'UPDATE_SHARING_PREFERENCES_PENDING' && feedo.loading === 'UPDATE_SHARING_PREFERENCES_FULFILLED') ||
         (this.props.feedo.loading === 'UPDATE_INVITEE_PERMISSION_PENDING' && feedo.loading === 'UPDATE_INVITEE_PERMISSION_FULFILLED') ||
+        (this.props.feedo.loading === 'UPDATE_FEED_PENDING' && feedo.loading === 'UPDATE_FEED_FULFILLED') ||
         (this.props.feedo.loading === 'INVITE_HUNT_PENDING' && feedo.loading === 'INVITE_HUNT_FULFILLED') || 
         (this.props.card.loading === 'UPDATE_CARD_PENDING' && card.loading === 'UPDATE_CARD_FULFILLED') || 
         (this.props.card.loading === 'DELETE_CARD_PENDING' && card.loading === 'DELETE_CARD_FULFILLED') ||
@@ -130,6 +133,7 @@ class FeedDetailScreen extends React.Component {
 
       this.setState({
         loading: false,
+        totalCardCount: currentFeed.ideas.length,
         pinText: !currentFeed.pinned ? 'Pin' : 'Unpin'
       })
 
@@ -593,6 +597,8 @@ class FeedDetailScreen extends React.Component {
       })
     }
 
+    console.log('CUR_FEED_IDEAS: ', currentFeed.ideas)
+
     return (
       <SafeAreaView style={styles.safeArea}>
         <View style={styles.container}>
@@ -692,11 +698,19 @@ class FeedDetailScreen extends React.Component {
 
         <ActionSheet
           ref={ref => this.ActionSheet = ref}
-          title={'Are you sure you want to delete this feed, everything will be gone ...'}
-          options={['Delete feed', 'Cancel']}
+          title={
+            <Text style={actionStyles.titleText}>Are you sure you want to delete this feed, everything will be gone ...</Text>
+          }
+          options={
+            [
+              <Text key="0" style={actionStyles.actionButtonText}>Delete feed</Text>,
+              'Cancel'
+            ]
+          }
           cancelButtonIndex={1}
-          destructiveButtonIndex={0}
+          destructiveButtonIndex={2}
           tintColor={COLORS.PURPLE}
+          styles={actionStyles}
           onPress={(index) => this.onTapActionSheet(index)}
         />
 
@@ -775,8 +789,9 @@ class FeedDetailScreen extends React.Component {
           />
         </Modal>
 
-        <FilterComponent
+        <CardFilterComponent
           cardCount={currentFeed && currentFeed.ideas ? currentFeed.ideas.length : 0}
+          totalCardCount={this.state.totalCardCount}
           show={this.state.showFilterModal}
           onFilterShow={this.onFilterShow}
           onFilterSort={this.onFilterSort}

@@ -88,7 +88,7 @@ class Tags extends React.Component {
         this.setState({
           selectedTagIndex: index,
           activeTagName: this.props.tags[index].text,
-          isHideCursor: true,
+          // isHideCursor: true,
         });
       }
     }

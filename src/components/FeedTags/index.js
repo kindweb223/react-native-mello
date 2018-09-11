@@ -37,7 +37,7 @@ class Tags extends React.Component {
           <Tag
             key={i}
             label={tag}
-            onPress={() => {}}
+            onPress={() => this.props.onTagPress(tag)}
             tagContainerStyle={this.props.tagContainerStyle}
             tagTextStyle={this.props.tagTextStyle}
           />
@@ -50,6 +50,7 @@ class Tags extends React.Component {
 Tags.defaultProps = {
   initialTags: [],
   initialText: " ",
+  onTagPress: () => {},
   readonly: false
 };
 

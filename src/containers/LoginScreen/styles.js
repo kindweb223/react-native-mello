@@ -24,10 +24,14 @@ export default {
     width: '100%',
     paddingHorizontal: CONSTANTS.PADDING
   },
-  btnback: {
-    width: 100,
+  btnBack: {
+    width: 50,
     height: 30,
-    backgroundColor: '#ff0'
+  },
+  btnPass: {
+    alignItems: 'flex-end',
+    width: 50,
+    height: 30,
   },
   contentView: {
     width: '100%',
