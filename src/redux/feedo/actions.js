@@ -440,3 +440,10 @@ export const inviteToHunt = (feedId, data) => {
     payload: feedId
   }
 }
+
+export const addFilterTag = (data) => {
+  return {
+    type: types.ADD_FILTER_TAG,
+    payload: data
+  }
+}

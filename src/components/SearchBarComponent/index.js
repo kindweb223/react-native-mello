@@ -9,6 +9,7 @@ import {
 } from "react-native";
 
 import _ from 'lodash'
+import { connect } from 'react-redux'
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
 import Tags from "../TagComponent";
 import COLORS from '../../service/colors'
@@ -26,6 +27,17 @@ class SearchBarComponent extends React.Component {
       filteredTags: props.userTags,
       currentTagName: '',
       showFilterTags: false,
+    }
+  }
+
+  UNSAFE_componentWillReceiveProps(nextProps) {
+    const { feedo } = nextProps
+    const { selectTags } = this.state
+
+    if (feedo.loading === 'ADD_FILTER_TAG') {
+      if (_.findIndex(selectTags, item => item.text.toLowerCase() === feedo.filterTag.text.toLowerCase()) === -1) {
+        this.onSelectFilterItem(feedo.filterTag)
+      }
     }
   }
 
@@ -96,7 +108,7 @@ class SearchBarComponent extends React.Component {
     this.setState({ filteredTags: newFilteredTags, showFilterTags: text.length > 0 ? true : false })
   }
 
-  onSelectFilterItem = (item, index) => {
+  onSelectFilterItem = (item) => {
     const { filteredTags } = this.state
 
     this.onCreateTag(item.text)
@@ -106,7 +118,7 @@ class SearchBarComponent extends React.Component {
   }
 
   renderFilterTagItem = ({ item, index }) => (
-    <TouchableOpacity onPress={() => this.onSelectFilterItem(item, index)}>
+    <TouchableOpacity onPress={() => this.onSelectFilterItem(item)}>
       <View style={styles.filterItem}>
         <Image source={TAG_ICON} />
         <Text style={styles.filterItemText}>
@@ -176,6 +188,10 @@ class SearchBarComponent extends React.Component {
   }
 }
 
+const mapStateToProps = ({ feedo }) => ({
+  feedo
+})
+
 SearchBarComponent.defaultProps = {
   readonly: false,
   initialTag: [],
@@ -190,4 +206,7 @@ SearchBarComponent.propTypes = {
   changeTags: PropTypes.func
 };
 
-export default SearchBarComponent;
+export default connect(
+  mapStateToProps,
+  null
+)(SearchBarComponent)

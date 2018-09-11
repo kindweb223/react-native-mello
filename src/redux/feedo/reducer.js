@@ -929,6 +929,14 @@ export default function feedo(state = initialState, action = {}) {
         error: action.error
       }
     }
+    case types.ADD_FILTER_TAG: {
+      const data = action.payload
+      return {
+        ...state,
+        loading: types.ADD_FILTER_TAG,
+        filterTag: data
+      }
+    }
 
     default:
       return state;
