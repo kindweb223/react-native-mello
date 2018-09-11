@@ -880,6 +880,31 @@ export default function feedo(state = initialState, action = {}) {
         }
       }
     }
+
+    /**
+     * move a card
+     */
+    case cardTypes.MOVE_CARD_FULFILLED: {
+      const { currentFeed, feedoList } = state
+      const { ideaId, huntId } = action.payload;
+      const ideas = filter(currentFeed.ideas, idea => idea.id !== ideaId);
+      const movedCard = find(currentFeed.ideas, idea => idea.id === ideaId);
+      const moveToFeedIndex = findIndex(feedoList, feed => feed.id === huntId)
+      if (moveToFeedIndex !== -1) {
+        feedoList[moveToFeedIndex].ideas.push(movedCard);
+      }
+      return {
+        ...state,
+        currentFeed: {
+          ...currentFeed,
+          ideas,
+        },
+        // feedoList: {
+        //   ...feedoList,
+        // },
+      }
+    }
+
     
     /**
      * Invite contact to HUNT

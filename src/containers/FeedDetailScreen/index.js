@@ -32,6 +32,8 @@ import ShareScreen from '../ShareScreen'
 import NewFeedScreen from '../NewFeedScreen'
 import FilterComponent from '../../components/FilterComponent'
 import CardLongHoldMenuScreen from '../CardLongHoldMenuScreen'
+import SelectFeedoComponent from '../../components/SelectFeedoComponent';
+
 
 import {
   getFeedDetail,
@@ -46,6 +48,7 @@ import {
 import {
   setCurrentCard,
   deleteCard,
+  moveCard,
 } from '../../redux/card/actions'
 import COLORS from '../../service/colors'
 import * as COMMON_FUNC from '../../service/commonFunc'
@@ -57,10 +60,14 @@ const TOASTER_DURATION = 5000
 import CONSTANTS from '../../service/constants'
 import NewCardScreen from '../NewCardScreen' 
 
-const CARD_ACTION_NONE = 0;
-const CARD_ACTION_MOVE = 1;
-const CARD_ACTION_EDIT = 2;
-const CARD_ACTION_DELETE = 3;
+const ACTION_NONE = 0;
+const ACTION_FEEDO_PIN = 1;
+const ACTION_FEEDO_UNPIN = 2;
+const ACTION_FEEDO_DUPLICATE = 3;
+const ACTION_CARD_MOVE = 4;
+const ACTION_CARD_EDIT = 5;
+const ACTION_CARD_DELETE = 6;
+
 
 
 class FeedDetailScreen extends React.Component {
@@ -77,6 +84,7 @@ class FeedDetailScreen extends React.Component {
 
       isVisibleEditFeed: false,
       isVisibleLongHoldMenu: false,
+      isVisibleSelectFeedo: false,
       openMenu: false,
       isShowToaster: false,
       isShowShare: false,
@@ -90,6 +98,7 @@ class FeedDetailScreen extends React.Component {
       selectedLongHoldIdea: {},
       selectedLongHoldInvitees: [],
       selectedLongHoldCardIndex: -1,
+      currentActionType: ACTION_NONE,
     };
     this.animatedOpacity = new Animated.Value(0)
     this.menuOpacity = new Animated.Value(0)
@@ -97,6 +106,7 @@ class FeedDetailScreen extends React.Component {
     this.animatedSelectCard = new Animated.Value(1);
 
     this.cardItemRefs = [];
+    this.moveCardId = null;
   }
 
   componentDidMount() {
@@ -113,7 +123,8 @@ class FeedDetailScreen extends React.Component {
         (this.props.feedo.loading === 'UPDATE_INVITEE_PERMISSION_PENDING' && feedo.loading === 'UPDATE_INVITEE_PERMISSION_FULFILLED') ||
         (this.props.feedo.loading === 'INVITE_HUNT_PENDING' && feedo.loading === 'INVITE_HUNT_FULFILLED') || 
         (this.props.card.loading === 'UPDATE_CARD_PENDING' && card.loading === 'UPDATE_CARD_FULFILLED') || 
-        (this.props.card.loading === 'DELETE_CARD_PENDING' && card.loading === 'DELETE_CARD_FULFILLED')) {
+        (this.props.card.loading === 'DELETE_CARD_PENDING' && card.loading === 'DELETE_CARD_FULFILLED') ||
+        (this.props.card.loading === 'MOVE_CARD_PENDING' && card.loading === 'MOVE_CARD_FULFILLED')) {
       
       const currentFeed = feedo.currentFeed
 
@@ -247,9 +258,13 @@ class FeedDetailScreen extends React.Component {
   }
 
   handlePinFeed = (feedId) => {
-    this.setState({ isShowToaster: true, isPin: true, toasterTitle: 'Feed pinned', feedId, pinText: 'Unpin' })
+    this.setState({ 
+      isShowToaster: true,
+      currentActionType: ACTION_FEEDO_PIN,
+      toasterTitle: 'Feed pinned',
+      feedId, pinText: 'Unpin',
+    })
     this.props.addDummyFeed({ feedId, flag: 'pin' })
-
     setTimeout(() => {
       this.setState({ isShowToaster: false })
       this.pinFeed(feedId)
@@ -257,14 +272,20 @@ class FeedDetailScreen extends React.Component {
   }
 
   pinFeed = (feedId) => {
-    if (this.state.isPin) {
+    if (this.state.currentActionType === ACTION_FEEDO_PIN) {
       this.props.pinFeed(feedId)
-      this.setState({ isPin: false })
+      this.setState({ currentActionType: ACTION_NONE })
     }
   }
 
   handleUnpinFeed = (feedId) => {
-    this.setState({ isShowToaster: true, isUnPin: true, toasterTitle: 'Feed un-pinned', feedId, pinText: 'Pin' })
+    this.setState({ 
+      isShowToaster: true,
+      currentActionType: ACTION_FEEDO_UNPIN,
+      toasterTitle: 'Feed un-pinned',
+      feedId,
+      pinText: 'Pin',
+    })
     this.props.addDummyFeed({ feedId, flag: 'unpin' })
 
     setTimeout(() => {
@@ -274,16 +295,20 @@ class FeedDetailScreen extends React.Component {
   }
 
   unpinFeed = (feedId) => {
-    if (this.state.isUnPin) {
+    if (this.state.currentActionType === ACTION_FEEDO_UNPIN) {
       this.props.unpinFeed(feedId)
-      this.setState({ isUnPin: false })
+      this.setState({ currentActionType: ACTION_NONE })
     }
   }
 
   handleDuplicateFeed = (feedId) => {
-    this.setState({ isShowToaster: true, isDuplicate: true, toasterTitle: 'Feed duplicated', feedId })
+    this.setState({ 
+      isShowToaster: true,
+      currentActionType: ACTION_FEEDO_DUPLICATE,
+      toasterTitle: 'Feed duplicated',
+      feedId,
+    })
     this.props.duplicateFeed(feedId)
-
     setTimeout(() => {
       this.setState({ isShowToaster: false })
       this.duplicateFeed()
@@ -291,26 +316,32 @@ class FeedDetailScreen extends React.Component {
   }
   
   duplicateFeed = () => {
-    if (this.state.isDuplicate) {
-      this.setState({ isDuplicate: false })
+    if (this.state.currentActionType === ACTION_FEEDO_DUPLICATE) {
+      this.setState({ currentActionType: ACTION_NONE })
     }
   }
 
   undoAction = () => {
-    if (this.state.isPin) {
+    if (this.state.currentActionType === ACTION_FEEDO_PIN) {
       this.setState({ pinText: 'Pin' })
       this.props.removeDummyFeed({ feedId: this.state.feedId, flag: 'pin' })
-    } else if (this.state.isUnPin) {
+    } else if (this.state.currentActionType === ACTION_FEEDO_UNPIN) {
       this.setState({ pinText: 'Unpin' })
       this.props.removeDummyFeed({ feedId: this.state.feedId, flag: 'unpin' })
-    } else if (this.state.isDuplicate) {
+    } else if (this.state.currentActionType === ACTION_FEEDO_DUPLICATE) {
       if (this.props.feedo.duplicatedId) {
         this.props.deleteDuplicatedFeed(this.props.feedo.duplicatedId)
       }
+    } else if (this.state.currentActionType === ACTION_CARD_DELETE || this.state.currentActionType === ACTION_CARD_MOVE) {
+      this.setState((state) => {
+        state.currentFeed.ideas = this.props.feedo.currentFeed.ideas;
+        return state;
+      })
     }
 
     this.setState({
-      isShowToaster: false, isPin: false, isUnPin: false, isDuplicate: false
+      isShowToaster: false, 
+      currentActionType: ACTION_NONE,
     })
   }
 
@@ -416,8 +447,49 @@ class FeedDetailScreen extends React.Component {
     });
   }
 
-  onMoveCard() {
-    this.setState({ isVisibleLongHoldMenu: false });
+  onHiddenLongHoldMenu() {
+    if (this.state.currentActionType === ACTION_CARD_MOVE) {
+      this.setState({
+        isVisibleSelectFeedo: true,
+      });
+    }
+  }
+
+  onSelectFeedoToMoveCard(feedoId) {
+    this.setState((state) => { 
+      state.isVisibleSelectFeedo = false;
+      state.currentActionType = ACTION_CARD_MOVE;
+      state.isShowToaster = true;
+      state.toasterTitle = 'Card moved';
+      const filterIdeas = _.filter(state.currentFeed.ideas, idea => idea.id !== this.moveCardId)
+      state.currentFeed.ideas = filterIdeas;
+      return state;
+    });
+    setTimeout(() => {
+      this.setState({ isShowToaster: false })
+      if (this.state.currentActionType === ACTION_CARD_MOVE) {
+        this.props.moveCard(this.moveCardId, feedoId);
+        this.moveCardId = -1;
+      }
+    }, TOASTER_DURATION + 5)
+  }
+
+  onHiddenSelectFeedo() {    
+  }
+
+  onCloseSelectFeedoModal() {
+    this.setState({
+      isVisibleSelectFeedo: false,
+      currentActionType: ACTION_NONE,
+    });
+  }
+
+  onMoveCard(ideaId) {
+    this.setState({ 
+      isVisibleLongHoldMenu: false,
+      currentActionType: ACTION_CARD_MOVE,
+    });
+    this.moveCardId = ideaId;
   }
   
   onEditCard() {
@@ -425,16 +497,21 @@ class FeedDetailScreen extends React.Component {
   }
 
   onDeleteCard(ideaId) {
-    this.setState({ 
-      isVisibleLongHoldMenu: false,
-      isShowToaster: true,
-      toasterTitle: 'Card deleted'
+    this.setState((state) => { 
+      state.isVisibleLongHoldMenu = false;
+      state.currentActionType = ACTION_CARD_DELETE;
+      state.isShowToaster = true;
+      state.toasterTitle = 'Card deleted';
+      const filterIdeas = _.filter(state.currentFeed.ideas, idea => idea.id !== ideaId)
+      state.currentFeed.ideas = filterIdeas;
+      return state;
     });
     setTimeout(() => {
       this.setState({ isShowToaster: false })
-      this.props.deleteCard(ideaId)
+      if (this.state.currentActionType === ACTION_CARD_DELETE) {
+        this.props.deleteCard(ideaId)
+      }
     }, TOASTER_DURATION + 5)
-
   }
 
   get renderNewCardModal() {
@@ -668,7 +745,7 @@ class FeedDetailScreen extends React.Component {
           animationIn="fadeIn"
           animationOut="fadeOut"
           animationInTiming={1300}
-          onModalHide={this.onLongHoldMenuHide}
+          onModalHide={this.onHiddenLongHoldMenu.bind(this)}
           onBackdropPress={() => this.setState({isVisibleLongHoldMenu: false})}
         >
           <CardLongHoldMenuScreen
@@ -681,6 +758,22 @@ class FeedDetailScreen extends React.Component {
           />
         </Modal>
 
+        <Modal 
+          isVisible={this.state.isVisibleSelectFeedo}
+          style={styles.selectFeedoModalContainer}
+          backdropColor='#f5f5f5'
+          backdropOpacity={0.9}
+          animationIn="zoomInUp"
+          animationOut="zoomOutDown"
+          animationInTiming={500}
+          onModalHide={this.onHiddenSelectFeedo.bind(this)}
+          onBackdropPress={() => this.setState({isVisibleSelectFeedo: false})}
+        >
+          <SelectFeedoComponent 
+            onClose={this.onCloseSelectFeedoModal.bind(this)}
+            onSelectFeedo={this.onSelectFeedoToMoveCard.bind(this)}
+          />
+        </Modal>
 
         <FilterComponent
           cardCount={currentFeed && currentFeed.ideas ? currentFeed.ideas.length : 0}
@@ -710,7 +803,8 @@ const mapDispatchToProps = dispatch => ({
   duplicateFeed: (data) => dispatch(duplicateFeed(data)),
   deleteDuplicatedFeed: (data) => dispatch(deleteDuplicatedFeed(data)),
   setCurrentCard: (data) => dispatch(setCurrentCard(data)),
-  deleteCard: (data) => dispatch(deleteCard(data)),
+  deleteCard: (ideaId) => dispatch(deleteCard(ideaId)),
+  moveCard: (ideaId, huntId) => dispatch(moveCard(ideaId, huntId)),
 })
 
 FeedDetailScreen.defaultProps = {
