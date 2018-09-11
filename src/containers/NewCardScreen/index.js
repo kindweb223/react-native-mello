@@ -55,7 +55,7 @@ import CommentComponent from '../../components/CommentComponent';
 import ChooseLinkImages from '../../components/chooseLinkImagesComponent';
 import UserAvatarComponent from '../../components/UserAvatarComponent';
 
-const ScreenVerticalMargin = 100;
+const ScreenVerticalMinMargin = 80;
 
 
 class NewCardScreen extends React.Component {
@@ -73,7 +73,7 @@ class NewCardScreen extends React.Component {
       isShowKeyboardButton: false,
       // openGraphForNoteLinks: [],
       isVisibleChooseLinkImagesModal: false,
-      cardMaxHeight: CONSTANTS.SCREEN_HEIGHT - ScreenVerticalMargin * 2,
+      // cardMaxHeight: CONSTANTS.SCREEN_HEIGHT - ScreenVerticalMinMargin * 2,
     };
 
     this.selectedFile = null;
@@ -307,27 +307,19 @@ class NewCardScreen extends React.Component {
   keyboardWillShow(e) {
     Animated.timing(
       this.animatedKeyboardHeight, {
-        toValue: e.endCoordinates.height,
+        toValue: e.endCoordinates.height - ScreenVerticalMinMargin,
         duration: e.duration,
       }
-    ).start(() => {
-      this.setState({
-        cardMaxHeight: CONSTANTS.SCREEN_HEIGHT - e.endCoordinates.height,
-      });
-    });
+    ).start();
   }
 
   keyboardWillHide(e) {
-    this.setState({
-      cardMaxHeight: CONSTANTS.SCREEN_HEIGHT - ScreenVerticalMargin * 2,
-    }, () => {
-      Animated.timing(
-        this.animatedKeyboardHeight, {
-          toValue: 0,
-          duration: e.duration,
-        }
-      ).start();
-    });    
+    Animated.timing(
+      this.animatedKeyboardHeight, {
+        toValue: 0,
+        duration: e.duration,
+      }
+    ).start();
   }
 
   onClose() {
@@ -946,8 +938,8 @@ class NewCardScreen extends React.Component {
       this.scrollViewLayoutHeight = e.nativeEvent.layoutMeasurement.height;
       this.setState({
         isFullScreenCard: true,
-        originalCardTopY: ScreenVerticalMargin,
-        originalCardBottomY: ScreenVerticalMargin,
+        originalCardTopY: ScreenVerticalMinMargin,
+        originalCardBottomY: ScreenVerticalMinMargin,
       }, () => {
         this.animatedShow.setValue(0);
         Animated.timing(this.animatedShow, {
@@ -968,7 +960,6 @@ class NewCardScreen extends React.Component {
       });  
       cardStyle = {
         top: animatedMove,
-        bottom: this.animatedKeyboardHeight,
         opacity: this.animatedShow,
       };
     } else if (!this.state.isFullScreenCard) {
@@ -976,13 +967,8 @@ class NewCardScreen extends React.Component {
         inputRange: [0, 1],
         outputRange: [this.state.originalCardTopY, 0],
       });
-      // const animatedBottomMove = this.animatedShow.interpolate({
-      //   inputRange: [0, 1],
-      //   outputRange: [this.state.originalCardBottomY, 0],
-      // });
       cardStyle = {
         top: animatedTopMove,
-        bottom: this.animatedKeyboardHeight,
         opacity: this.animatedShow,
       };
     } else {
@@ -990,13 +976,8 @@ class NewCardScreen extends React.Component {
         inputRange: [0, 1],
         outputRange: [this.state.originalCardTopY, 0],
       });
-      // const animatedBottomMove = this.animatedShow.interpolate({
-      //   inputRange: [0, 1],
-      //   outputRange: [this.state.originalCardBottomY, 0],
-      // });
       cardStyle = {
         top: animatedTopMove,
-        bottom: this.animatedKeyboardHeight,
       };
     }
 
@@ -1008,12 +989,13 @@ class NewCardScreen extends React.Component {
         ]}
       >
         {this.renderOutside}
-        <View 
+        <Animated.View 
           style={[
             styles.contentContainer,
             { paddingTop: cardMode === CONSTANTS.MAIN_APP_CARD ?  26 : 10},
-            (viewMode === CONSTANTS.CARD_NEW || !this.state.isFullScreenCard) && {maxHeight: this.state.cardMaxHeight},
+            (viewMode === CONSTANTS.CARD_NEW || !this.state.isFullScreenCard) && {height: CONSTANTS.SCREEN_HEIGHT - ScreenVerticalMinMargin * 2},
             this.state.isFullScreenCard && {flex: 1, borderRadius: 0},
+            {paddingBottom: this.animatedKeyboardHeight}
           ]}
         >
           {this.renderHeader}
@@ -1023,20 +1005,31 @@ class NewCardScreen extends React.Component {
             onScroll={(e) => this.onScroll(e)}
           >
             {this.renderMainContent}
-            {this.renderAttachmentButtons}
-            {this.renderBottomContent}
           </ScrollView>
+          {this.renderAttachmentButtons}
+          {this.renderBottomContent}
           {
             this.state.isShowKeyboardButton && 
-            <TouchableOpacity 
-              style={[styles.buttonItemContainer, styles.hideKeyboardContainer, {backgroundColor: cardMode !== CONSTANTS.MAIN_APP_CARD ? COLORS.BLUE : COLORS.PURPLE}]}
-              activeOpacity={0.6}
-              onPress={this.onHideKeyboard.bind(this)}
+            <Animated.View
+              style={[styles.hideKeyboardContainer, {bottom: Animated.add(this.animatedKeyboardHeight, 17)}]}
             >
-              <MaterialCommunityIcons name="keyboard-close" size={20} color={'#fff'} />
-            </TouchableOpacity>
+              <TouchableOpacity 
+                style={[
+                  styles.buttonItemContainer, 
+                  {
+                    backgroundColor: cardMode !== CONSTANTS.MAIN_APP_CARD ? COLORS.BLUE : COLORS.PURPLE,
+                    borderRadius: 8,
+                    marginRight: 0,                
+                  },
+                ]}
+                activeOpacity={0.6}
+                onPress={this.onHideKeyboard.bind(this)}
+              >
+                <MaterialCommunityIcons name="keyboard-close" size={20} color={'#fff'} />
+              </TouchableOpacity>
+            </Animated.View>
           }
-        </View>
+        </Animated.View>
         {this.renderOutside}
       </Animated.View>
     );

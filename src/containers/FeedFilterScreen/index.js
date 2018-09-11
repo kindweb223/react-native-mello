@@ -44,7 +44,6 @@ class FeedFilterScreen extends React.Component {
 
     this.setState({ loading: true })
     this.props.getUserTags(user.userInfo.id)
-    console.log('aaaaaa')
 
     if (feedo.feedoList && feedo.feedoList.length > 0) {
       feedoList = feedo.feedoList.map(item => {
@@ -162,12 +161,15 @@ class FeedFilterScreen extends React.Component {
                 />
               )}
 
-              {filterFeedoList.length > 0 && (
-                <FeedoListContainer
-                  loading={false}
-                  feedoList={filterFeedoList}
-                />
-              )}
+              {filterFeedoList.length > 0
+                ? <FeedoListContainer
+                    loading={false}
+                    feedoList={filterFeedoList}
+                  />
+                : <View style={styles.emptyContainer}>
+                    <Text style={styles.emptyText}>No Results Found</Text>
+                  </View>
+              }
             </View>
           </ScrollView>
         </View>

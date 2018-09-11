@@ -865,6 +865,21 @@ export default function feedo(state = initialState, action = {}) {
       }
     }
     
+    /**
+     * delete a card
+     */
+    case cardTypes.DELETE_CARD_FULFILLED: {
+      const { currentFeed } = state
+      const ideaId = action.payload;
+      const ideas = filter(currentFeed.ideas, idea => idea.id !== ideaId);
+      return {
+        ...state,
+        currentFeed: {
+          ...currentFeed,
+          ideas,
+        }
+      }
+    }
     
     /**
      * Invite contact to HUNT

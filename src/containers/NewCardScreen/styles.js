@@ -15,6 +15,7 @@ const styles = StyleSheet.create({
     position: 'absolute',
     left: 0,
     right: 0,
+    bottom: 0,
     justifyContent: 'center',
     // zIndex: 1,
     backgroundColor: 'transparent',
@@ -44,7 +45,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     paddingLeft: 22,
     paddingRight: 16,
-    marginTop: 20,
+    marginVertical: 20,
   },
   buttonItemContainer: {
     width: 32,
@@ -53,10 +54,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
-  hideKeyboardContainer:                 {
-    backgroundColor: COLORS.PURPLE,
-    borderRadius: 8,
-    marginRight: 0,
+  hideKeyboardContainer: {
     position: 'absolute',
     right: 16,
     bottom: 17,

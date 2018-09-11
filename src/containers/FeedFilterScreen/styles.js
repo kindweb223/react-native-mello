@@ -69,6 +69,16 @@ const styles = StyleSheet.create({
     color: COLORS.PURPLE,
     fontSize: 18,
     fontWeight: '500'
+  },
+  emptyContainer: {
+    width: '100%',
+    paddingVertical: 60,
+    justifyContent: 'center',
+    alignItems: 'center'
+  },
+  emptyText: {
+    fontSize: 14,
+    color: COLORS.MEDIUM_GREY
   }
 })
 
