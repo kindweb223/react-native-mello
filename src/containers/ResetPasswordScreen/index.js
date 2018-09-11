@@ -240,8 +240,10 @@ class ResetPasswordScreen extends React.Component {
         )}
 
         <View style={styles.headerView}>
-          <TouchableOpacity onPress={() => Actions.LoginStartScreen()} style={styles.btnBack}>
-            <Feather name="arrow-left" size={25} color={'#fff'} />
+          <TouchableOpacity onPress={() => Actions.LoginStartScreen()}>
+            <View style={styles.btnBack}>
+              <Feather name="arrow-left" size={25} color={'#fff'} />
+            </View>
           </TouchableOpacity>
         </View>
 
