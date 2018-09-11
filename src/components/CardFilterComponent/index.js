@@ -56,7 +56,6 @@ class CardFilterComponent extends React.Component {
       }
     }
 
-
     return (
       <Modal
         isVisible={show}
