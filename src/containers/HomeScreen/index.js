@@ -437,7 +437,6 @@ class HomeScreen extends React.Component {
   }
 
   onSearch = () => {
-    Actions.FeedFilterScreen()
   }
 
   render () {
@@ -539,6 +538,7 @@ class HomeScreen extends React.Component {
                     loading={loading}
                     feedoList={feedoList}
                     handleFeedMenu={this.handleLongHoldMenu}
+                    page="home"
                   />
                 </View>
                 <View
@@ -551,6 +551,7 @@ class HomeScreen extends React.Component {
                     loading={loading}
                     feedoList={feedoList}
                     handleFeedMenu={this.handleLongHoldMenu}
+                    page="home"
                   />
                 </View>
                 <View
@@ -563,6 +564,7 @@ class HomeScreen extends React.Component {
                     loading={loading}
                     feedoList={feedoList}
                     handleFeedMenu={this.handleLongHoldMenu}
+                    page="home"
                   />
                 </View>
               </ScrollableTabView>

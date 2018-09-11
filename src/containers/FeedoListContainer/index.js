@@ -97,7 +97,7 @@ class FeedoListContainer extends React.Component {
               })
             }}
           >
-            <FeedItemComponent item={item} pinFlag={item.pinned ? true : false} />
+            <FeedItemComponent item={item} pinFlag={item.pinned ? true : false} page={this.props.page} />
           </TouchableOpacity>
         </ListRow>
       </Animated.View>
@@ -121,13 +121,15 @@ class FeedoListContainer extends React.Component {
 }
 
 FeedoListContainer.defaultProps = {
-  handleFeedMenu: () => {}
+  handleFeedMenu: () => {},
+  page: 'detail'
 }
 
 FeedoListContainer.propTypes = {
   loading: PropTypes.bool.isRequired,
   feedoList: PropTypes.arrayOf(PropTypes.any).isRequired,
-  handleFeedMenu: PropTypes.func
+  handleFeedMenu: PropTypes.func,
+  page: PropTypes.string
 }
 
 export default FeedoListContainer

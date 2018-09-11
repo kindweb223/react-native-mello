@@ -18,6 +18,11 @@ import Ionicons from 'react-native-vector-icons/Ionicons'
 
 import FeedoListContainer from '../FeedoListContainer'
 import SearchBarComponent from '../../components/SearchBarComponent'
+import LoadingScreen from '../LoadingScreen'
+
+import { 
+  getUserTags
+} from '../../redux/feedo/actions'
 
 import COLORS from '../../service/colors'
 import styles from './styles'
@@ -27,12 +32,18 @@ class FeedFilterScreen extends React.Component {
     super(props);
     this.state = {
       scrollY: new Animated.Value(0),
-      feedoList: []
+      feedoList: [],
+      filterFeedoList: [],
+      userTags: [],
+      loading: false
     };
   }
 
   componentDidMount() {
-    const { feedo } = this.props
+    const { feedo, initialTag, user } = this.props
+
+    this.setState({ loading: true })
+    this.props.getUserTags(user.userInfo.id)
 
     if (feedo.feedoList && feedo.feedoList.length > 0) {
       feedoList = feedo.feedoList.map(item => {
@@ -50,13 +61,57 @@ class FeedFilterScreen extends React.Component {
         ['pinned.pinned', 'pinned.pinnedDate', 'publishedDate'],
         ['asc', 'desc', 'desc']
       )
-
+      
       this.setState({ feedoList })
+      this.filterByTags(feedoList, initialTag)
     }
   }
 
-  render () {
+  UNSAFE_componentWillReceiveProps(nextProps) {
+    if (this.props.feedo.loading === 'GET_USER_TAGS_PENDING' && nextProps.feedo.loading === 'GET_USER_TAGS_FULFILLED') {
+      this.setState({
+        loading: false,
+        userTags: nextProps.feedo.userTags
+      })
+    }
+
+    if (this.props.feedo.loading === 'GET_USER_TAGS_PENDING' && nextProps.feedo.loading === 'GET_USER_TAGS_REJECTED') {
+      this.setState({
+        loading: false,
+        userTags: []
+      })
+    }
+  }
+
+  filterByTags = (feedoList, tagList) => {
+    filterFeedoList = []
+    if (tagList.length > 0) {
+      _.forEach(feedoList, feedo => {
+        let tags = []
+
+        _.forEach(feedo.tags, tag => {
+          let ft = _.filter(tagList, item => item.text === tag.text)
+          if (ft.length > 0) {
+            tags = _.concat(tags, tag)
+          }
+        })
+
+        if (tags.length > 0) {
+          filterFeedoList = _.concat(filterFeedoList, feedo)
+        }
+      })
+    }
+
+    this.setState({ filterFeedoList })
+  }
+
+  changeTags = (tags) => {
     const { feedoList } = this.state
+    this.filterByTags(feedoList, tags)
+  }
+
+  render () {
+    const { filterFeedoList, userTags } = this.state
 
     const navbarBackground = this.state.scrollY.interpolate({
       inputRange: [40, 41],
@@ -96,34 +151,56 @@ class FeedFilterScreen extends React.Component {
                 <Text style={styles.headerTitle} numberOfLines={1} ellipsizeMode="tail">Search</Text>
               </View>
             </Animated.View>
-
-            <SearchBarComponent />
             
             <View style={styles.detailView}>
-              {feedoList.length > 0 && (
-                <FeedoListContainer
-                  loading={false}
-                  feedoList={feedoList}
+              {!this.state.loading && (
+                <SearchBarComponent
+                  initialTag={this.props.initialTag}
+                  userTags={userTags}
+                  changeTags={this.changeTags}
                 />
               )}
+
+              {filterFeedoList.length > 0
+                ? <FeedoListContainer
+                    loading={false}
+                    feedoList={filterFeedoList}
+                  />
+                : <View style={styles.emptyContainer}>
+                    <Text style={styles.emptyText}>No Results Found</Text>
+                  </View>
+              }
             </View>
           </ScrollView>
         </View>
+
+        {this.state.loading && <LoadingScreen />}
       </SafeAreaView>
     )
   }
 }
 
-const mapStateToProps = ({ feedo }) => ({
-  feedo
+const mapStateToProps = ({ feedo, user }) => ({
+  feedo,
+  user
 })
 
-FeedFilterScreen.propTypes = {
-  feedo: PropTypes.objectOf(PropTypes.any),
+FeedFilterScreen.defaultProps = {
+  initialTag: []
 }
+
+FeedFilterScreen.propTypes = {
+  initialTag: PropTypes.arrayOf(PropTypes.any),
+  feedo: PropTypes.objectOf(PropTypes.any),
+  user: PropTypes.objectOf(PropTypes.any),
+}
+
+const mapDispatchToProps = dispatch => ({
+  getUserTags: (userId) => dispatch(getUserTags(userId))
+})
 
 export default connect(
   mapStateToProps,
-  null
+  mapDispatchToProps
 )(FeedFilterScreen)
 
