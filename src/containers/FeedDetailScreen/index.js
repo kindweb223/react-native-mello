@@ -30,7 +30,7 @@ import ToasterComponent from '../../components/ToasterComponent'
 import FeedLoadingStateComponent from '../../components/FeedLoadingStateComponent'
 import ShareScreen from '../ShareScreen'
 import NewFeedScreen from '../NewFeedScreen'
-import FilterComponent from '../../components/FilterComponent'
+import CardFilterComponent from '../../components/CardFilterComponent'
 import CardLongHoldMenuScreen from '../CardLongHoldMenuScreen'
 
 import {
@@ -90,6 +90,7 @@ class FeedDetailScreen extends React.Component {
       selectedLongHoldIdea: {},
       selectedLongHoldInvitees: [],
       selectedLongHoldCardIndex: -1,
+      totalCardCount: 0
     };
     this.animatedOpacity = new Animated.Value(0)
     this.menuOpacity = new Animated.Value(0)
@@ -119,6 +120,7 @@ class FeedDetailScreen extends React.Component {
 
       this.setState({
         loading: false,
+        totalCardCount: currentFeed.ideas.length,
         pinText: !currentFeed.pinned ? 'Pin' : 'Unpin'
       })
 
@@ -682,8 +684,9 @@ class FeedDetailScreen extends React.Component {
         </Modal>
 
 
-        <FilterComponent
+        <CardFilterComponent
           cardCount={currentFeed && currentFeed.ideas ? currentFeed.ideas.length : 0}
+          totalCardCount={this.state.totalCardCount}
           show={this.state.showFilterModal}
           onFilterShow={this.onFilterShow}
           onFilterSort={this.onFilterSort}
