@@ -3,7 +3,8 @@ import {
   View,
   Text,
   TouchableOpacity,
-  FlatList
+  FlatList,
+  Animated,
 } from 'react-native'
 import PropTypes from 'prop-types'
 import Octicons from 'react-native-vector-icons/Octicons'
@@ -13,22 +14,80 @@ import styles from './styles'
 import Modal from "react-native-modal"
 const MENU_ITMS = ['Duplicate', 'Edit', 'Archive', 'Delete']
 
+const SELECT_NONE = 0;
+const SELECT_PIN_UNPIN = 1;
+const SELECT_SHARE = 2;
+const SELECT_MENU = 3;
+
+
 class FeedActionBarComponent extends React.Component {
   constructor(props) {
     super(props)
     this.state = {
       isSettingMenu: false,
+      selectedButton: SELECT_NONE,
     }
+
+    this.animatedSelect = new Animated.Value(1);
   }
 
   onPressPin = () => {
-    this.props.handlePin()
-    this.setState({ isSettingMenu: false })
+    this.setState({
+      selectedButton: SELECT_PIN_UNPIN,
+    }, () => {
+      Animated.sequence([
+        Animated.timing(this.animatedSelect, {
+          toValue: 0.8,
+          duration: 100,
+        }),
+        Animated.timing(this.animatedSelect, {
+          toValue: 1,
+          duration: 100,
+        }),
+      ]).start(() => {
+        this.props.handlePin()
+        this.setState({ isSettingMenu: false })
+      });
+    });
   }
 
   onPressShare = () => {
-    this.props.handleShare()
-    this.setState({ isSettingMenu: false })
+    this.setState({
+      selectedButton: SELECT_SHARE,
+    }, () => {
+      Animated.sequence([
+        Animated.timing(this.animatedSelect, {
+          toValue: 0.8,
+          duration: 100,
+        }),
+        Animated.timing(this.animatedSelect, {
+          toValue: 1,
+          duration: 100,
+        }),
+      ]).start(() => {
+        this.props.handleShare()
+        this.setState({ isSettingMenu: false })
+      });
+    });
+  }
+
+  onPressMenu() {
+    this.setState({
+      selectedButton: SELECT_MENU,
+    }, () => {
+      Animated.sequence([
+        Animated.timing(this.animatedSelect, {
+          toValue: 0.8,
+          duration: 100,
+        }),
+        Animated.timing(this.animatedSelect, {
+          toValue: 1,
+          duration: 100,
+        }),
+      ]).start(() => {
+        this.setState(prevState => ({ isSettingMenu: !prevState.isSettingMenu }))
+      });
+    });
   }
 
   onSettingMenuHide = () => {
@@ -74,23 +133,62 @@ class FeedActionBarComponent extends React.Component {
           </Modal>
 
           <View style={styles.buttonContainer}>
-            <TouchableOpacity onPress={this.onPressPin}>
-              <View style={styles.buttonView}>
-                <Octicons name="pin" style={styles.pinIcon} />
-                <Text style={styles.buttonText}>{this.props.pinFlag ? 'Unpin' : 'Pin'}</Text>
-              </View>
+          <Animated.View
+            style={
+              this.state.selectedButton === SELECT_PIN_UNPIN &&
+              {
+                transform: [
+                  { scale: this.animatedSelect },
+                ],
+              }
+            }
+          >
+            <TouchableOpacity 
+              style={styles.buttonView}
+              activeOpacity={0.7}
+              onPress={this.onPressPin}
+            >
+              <Octicons name="pin" style={styles.pinIcon} />
+              <Text style={styles.buttonText}>{this.props.pinFlag ? 'Unpin' : 'Pin'}</Text>
             </TouchableOpacity>
-            <TouchableOpacity onPress={this.onPressShare}>
-              <View style={styles.buttonView}>
-                <Entypo name="share-alternative" style={styles.shareIcon} />
-                <Text style={styles.buttonText}>Share</Text>
-              </View>
+          </Animated.View>
+          <Animated.View
+            style={
+              this.state.selectedButton === SELECT_SHARE &&
+              {
+                transform: [
+                  { scale: this.animatedSelect },
+                ],
+              }
+            }
+          >
+            <TouchableOpacity 
+              style={styles.buttonView}
+              activeOpacity={0.7}
+              onPress={this.onPressShare}
+            >
+              <Entypo name="share-alternative" style={styles.shareIcon} />
+              <Text style={styles.buttonText}>Share</Text>
             </TouchableOpacity>
-            <TouchableOpacity onPress={() => this.setState(prevState => ({ isSettingMenu: !prevState.isSettingMenu }))}>
-              <View style={[styles.iconStyle, styles.plusButton]}>
-                <Entypo name="dots-three-horizontal" style={styles.plusButtonIcon} />
-              </View>
+          </Animated.View>
+          <Animated.View
+            style={
+              this.state.selectedButton === SELECT_MENU &&
+              {
+                transform: [
+                  { scale: this.animatedSelect },
+                ],
+              }
+            }
+          >
+            <TouchableOpacity 
+              style={[styles.iconStyle, styles.plusButton]}
+              activeOpacity={0.7}
+              onPress={() => this.onPressMenu()}
+            >
+              <Entypo name="dots-three-horizontal" style={styles.plusButtonIcon} />
             </TouchableOpacity>
+          </Animated.View>
           </View>
         </View>
       </View>

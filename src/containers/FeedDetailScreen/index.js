@@ -45,6 +45,7 @@ import {
 } from '../../redux/feedo/actions';
 import {
   setCurrentCard,
+  deleteCard,
 } from '../../redux/card/actions'
 import COLORS from '../../service/colors'
 import * as COMMON_FUNC from '../../service/commonFunc'
@@ -111,7 +112,8 @@ class FeedDetailScreen extends React.Component {
         (this.props.feedo.loading === 'UPDATE_SHARING_PREFERENCES_PENDING' && feedo.loading === 'UPDATE_SHARING_PREFERENCES_FULFILLED') ||
         (this.props.feedo.loading === 'UPDATE_INVITEE_PERMISSION_PENDING' && feedo.loading === 'UPDATE_INVITEE_PERMISSION_FULFILLED') ||
         (this.props.feedo.loading === 'INVITE_HUNT_PENDING' && feedo.loading === 'INVITE_HUNT_FULFILLED') || 
-        (this.props.card.loading === 'UPDATE_CARD_PENDING' && card.loading === 'UPDATE_CARD_FULFILLED')){
+        (this.props.card.loading === 'UPDATE_CARD_PENDING' && card.loading === 'UPDATE_CARD_FULFILLED') || 
+        (this.props.card.loading === 'DELETE_CARD_PENDING' && card.loading === 'DELETE_CARD_FULFILLED')) {
       
       const currentFeed = feedo.currentFeed
 
@@ -422,12 +424,17 @@ class FeedDetailScreen extends React.Component {
     this.setState({ isVisibleLongHoldMenu: false })
   }
 
-  onDeleteCard() {
+  onDeleteCard(ideaId) {
     this.setState({ 
       isVisibleLongHoldMenu: false,
-      // isShowToaster: true,
-      // toasterTitle: 'Card deleted'
+      isShowToaster: true,
+      toasterTitle: 'Card deleted'
     });
+    setTimeout(() => {
+      this.setState({ isShowToaster: false })
+      this.props.deleteCard(ideaId)
+    }, TOASTER_DURATION + 5)
+
   }
 
   get renderNewCardModal() {
@@ -703,6 +710,7 @@ const mapDispatchToProps = dispatch => ({
   duplicateFeed: (data) => dispatch(duplicateFeed(data)),
   deleteDuplicatedFeed: (data) => dispatch(deleteDuplicatedFeed(data)),
   setCurrentCard: (data) => dispatch(setCurrentCard(data)),
+  deleteCard: (data) => dispatch(deleteCard(data)),
 })
 
 FeedDetailScreen.defaultProps = {

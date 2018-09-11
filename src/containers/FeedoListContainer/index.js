@@ -2,13 +2,13 @@ import React from 'react'
 import {
   FlatList,
   TouchableOpacity,
-  ActivityIndicator,
   Animated,
-  View
 } from 'react-native'
 
 import PropTypes from 'prop-types'
 import { Actions } from 'react-native-router-flux'
+import ReactNativeHaptic from 'react-native-haptic'
+
 import FeedItemComponent from '../../components/FeedItemComponent'
 import FeedLoadingStateComponent from '../../components/FeedLoadingStateComponent'
 import CONSTANTS from '../../service/constants'
@@ -17,7 +17,7 @@ class ListRow extends React.Component {
   constructor(props) {
     super(props)
     this.state = {
-      scaleValue: new Animated.Value(0)
+      scaleValue: new Animated.Value(0),
     }
   }
 
@@ -41,6 +41,69 @@ class ListRow extends React.Component {
 }
 
 class FeedoListContainer extends React.Component {
+  constructor(props) {
+    super(props)
+    this.state = {
+      selectedLongHoldFeedoIndex: -1,
+    }
+    this.animatedSelectFeedo = new Animated.Value(1);
+  }
+
+  onLongPressFeedo(index, item) {
+    ReactNativeHaptic.generate('impactHeavy')
+    this.setState({
+      selectedLongHoldFeedoIndex: index,
+    }, () => {
+      Animated.sequence([
+        Animated.timing(this.animatedSelectFeedo, {
+          toValue: 0.95,
+          duration: 100,
+        }),
+        Animated.timing(this.animatedSelectFeedo, {
+          toValue: 1,
+          duration: 100,
+        }),
+      ]).start(() => {
+        this.setState({
+          selectedLongHoldFeedoIndex: -1,
+        });
+        if (this.props.handleFeedMenu) {
+          this.props.handleFeedMenu(item)
+        }
+      });
+    });
+  }
+
+  renderItem({ item, index }) {
+    return (
+      <Animated.View 
+        style={
+          this.state.selectedLongHoldFeedoIndex === index && 
+          {
+            transform: [
+              { scale: this.animatedSelectFeedo },
+            ],
+          }
+        }
+      >
+        <ListRow index={index}>
+          <TouchableOpacity
+            activeOpacity={0.8}
+            delayLongPress={1000}
+            onLongPress={() => this.onLongPressFeedo(index, item)}
+            onPress={() => {
+              Actions.FeedDetailScreen({
+                data: item
+              })
+            }}
+          >
+            <FeedItemComponent item={item} pinFlag={item.pinned ? true : false} />
+          </TouchableOpacity>
+        </ListRow>
+      </Animated.View>
+    )
+  }
+
   render() {
     const {loading, feedoList, handleFeedMenu, tabLabel} = this.props;
     if (loading) return <FeedLoadingStateComponent animating />
@@ -51,22 +114,7 @@ class FeedoListContainer extends React.Component {
         keyExtractor={item => item.id}
         scrollEnabled={false}
         automaticallyAdjustContentInsets={false}
-        renderItem={({ item, index }) => (
-          <ListRow index={index}>
-            <TouchableOpacity
-              activeOpacity={0.8}
-              delayLongPress={1000}
-              onLongPress={() => handleFeedMenu(item)}
-              onPress={() => {
-                Actions.FeedDetailScreen({
-                  data: item
-                })
-              }}
-            >
-              <FeedItemComponent item={item} pinFlag={item.pinned ? true : false} />
-            </TouchableOpacity>
-          </ListRow>
-        )}
+        renderItem={this.renderItem.bind(this)}
       />
     )
   }

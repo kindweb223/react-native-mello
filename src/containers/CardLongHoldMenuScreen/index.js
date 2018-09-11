@@ -35,7 +35,7 @@ class CardLongHoldMenuScreen extends React.Component {
 
   onTapActionSheet(index) {
     if (index === 0) {
-      this.props.onDelete(this.props.idea)
+      this.props.onDelete(this.props.idea.id)
     }
   }
 
