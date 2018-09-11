@@ -75,19 +75,24 @@ class SearchBarComponent extends React.Component {
   }
 
   filterTagsName = (text) => {
-    const { filteredTags, selectTags } = this.state
+    const { userTags } = this.props
+    const { selectTags } = this.state
+
+    let restTags = [...userTags]
+    for (let i = 0; i < selectTags.length; i ++) {
+      _.remove(restTags, item => item.text.toLowerCase() === selectTags[i].text.toLowerCase())
+    }
 
     let newFilteredTags = []
 
-    for (let i = 0; i < filteredTags.length; i ++) {
-      const tag = filteredTags[i].text.toLowerCase()
+    for (let i = 0; i < restTags.length; i ++) {
+      const tag = restTags[i].text.toLowerCase()
 
       if (tag.includes(text.toLowerCase()) && _.findIndex(selectTags, item => item.text.toLowerCase() === text.toLowerCase()) === -1) {
-        newFilteredTags.push(filteredTags[i])
+        newFilteredTags.push(restTags[i])
       }
     }
 
-    console.log('newFilteredTags: ', newFilteredTags)
     this.setState({ filteredTags: newFilteredTags, showFilterTags: text.length > 0 ? true : false })
   }
 
