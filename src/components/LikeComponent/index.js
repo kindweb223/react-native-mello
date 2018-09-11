@@ -121,12 +121,6 @@ class LikeComponent extends React.Component {
       prevLikes,
     } = this.state;
 
-    console.log('+++++++++++++++++++++++++')
-    console.log('IDEA: ',this.props.idea)
-    console.log('prevLikes: ',prevLikes)
-    console.log('likes: ',likes)
-    console.log('+++++++++++++++++++++++++')
-
     const animatedMove1 = this.animatedShow.interpolate({
       inputRange: [0, 1],
       outputRange: [8, 0],
