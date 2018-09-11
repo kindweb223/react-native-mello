@@ -50,9 +50,10 @@ import {
 import COLORS from '../../service/colors'
 import * as COMMON_FUNC from '../../service/commonFunc'
 import styles from './styles'
+import actionStyles from '../CardLongHoldMenuScreen/styles'
 
 const EMPTY_ICON = require('../../../assets/images/empty_state/asset-emptystate.png')
-const TOASTER_DURATION = 5000
+const TOASTER_DURATION = 500
 
 import CONSTANTS from '../../service/constants'
 import NewCardScreen from '../NewCardScreen' 
@@ -619,11 +620,19 @@ class FeedDetailScreen extends React.Component {
 
         <ActionSheet
           ref={ref => this.ActionSheet = ref}
-          title={'Are you sure you want to delete this feed, everything will be gone ...'}
-          options={['Delete feed', 'Cancel']}
+          title={
+            <Text style={actionStyles.titleText}>Are you sure you want to delete this feed, everything will be gone ...</Text>
+          }
+          options={
+            [
+              <Text key="0" style={actionStyles.actionButtonText}>Delete feed</Text>,
+              'Cancel'
+            ]
+          }
           cancelButtonIndex={1}
-          destructiveButtonIndex={0}
+          destructiveButtonIndex={2}
           tintColor={COLORS.PURPLE}
+          styles={actionStyles}
           onPress={(index) => this.onTapActionSheet(index)}
         />
 

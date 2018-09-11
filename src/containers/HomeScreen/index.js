@@ -60,7 +60,7 @@ const TAB_STYLES = {
   paddingHorizontal: 10,
 }
 
-const TOASTER_DURATION = 5000
+const TOASTER_DURATION = 50000
 
 
 class HomeScreen extends React.Component {

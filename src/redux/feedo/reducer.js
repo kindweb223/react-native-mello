@@ -292,7 +292,7 @@ export default function feedo(state = initialState, action = {}) {
       } else if (flag === 'delete') {
         return {
           ...state,
-          loading: types.DEL_FEED_FULFILLED,
+          loading: 'FEED_FULFILLED',
           feedoList: [
             ...restFeedoList,
             Object.assign({}, deleteFeed[0])
@@ -302,7 +302,7 @@ export default function feedo(state = initialState, action = {}) {
       } else if (flag === 'archive') {
         return {
           ...state,
-          loading: types.ARCHIVE_FEED_FULFILLED,
+          loading: 'FEED_FULFILLED',
           feedoList: [
             ...restFeedoList,
             Object.assign({}, archiveFeed[0])
