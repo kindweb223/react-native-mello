@@ -73,6 +73,26 @@ class LikeComponent extends React.Component {
           });
         });
       }
+    } else {
+      this.setState({
+        prevLikes: nextProps.idea.metadata.likes,
+        liked: nextProps.idea.metadata.liked,
+        likes: nextProps.idea.metadata.likes,
+      })
+
+      if (this.props.idea.metadata.liked) {
+        this.animatedShow.setValue(1);
+        Animated.timing(this.animatedShow, {
+          toValue: 0,
+          duration: 0,
+        }).start()
+      } else {
+        this.animatedShow.setValue(0);
+        Animated.timing(this.animatedShow, {
+          toValue: 1,
+          duration: 0,
+        }).start()
+      }
     }
   }
 
@@ -100,6 +120,12 @@ class LikeComponent extends React.Component {
       likes,
       prevLikes,
     } = this.state;
+
+    console.log('+++++++++++++++++++++++++')
+    console.log('IDEA: ',this.props.idea)
+    console.log('prevLikes: ',prevLikes)
+    console.log('likes: ',likes)
+    console.log('+++++++++++++++++++++++++')
 
     const animatedMove1 = this.animatedShow.interpolate({
       inputRange: [0, 1],
