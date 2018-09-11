@@ -44,6 +44,7 @@ class FeedFilterScreen extends React.Component {
 
     this.setState({ loading: true })
     this.props.getUserTags(user.userInfo.id)
+    console.log('aaaaaa')
 
     if (feedo.feedoList && feedo.feedoList.length > 0) {
       feedoList = feedo.feedoList.map(item => {
@@ -73,7 +74,14 @@ class FeedFilterScreen extends React.Component {
         loading: false,
         userTags: nextProps.feedo.userTags
       })
-    } 
+    }
+
+    if (this.props.feedo.loading === 'GET_USER_TAGS_PENDING' && nextProps.feedo.loading === 'GET_USER_TAGS_REJECTED') {
+      this.setState({
+        loading: false,
+        userTags: []
+      })
+    }
   }
 
   filterByTags = (feedoList, tagList) => {
@@ -99,7 +107,6 @@ class FeedFilterScreen extends React.Component {
   }
 
   changeTags = (tags) => {
-    console.log('TAGS: ', tags)
     const { feedoList } = this.state
     this.filterByTags(feedoList, tags)
   }
@@ -147,11 +154,13 @@ class FeedFilterScreen extends React.Component {
             </Animated.View>
             
             <View style={styles.detailView}>
-              <SearchBarComponent
-                initialTag={this.props.initialTag}
-                userTags={userTags}
-                changeTags={this.changeTags}
-              />
+              {!this.state.loading && (
+                <SearchBarComponent
+                  initialTag={this.props.initialTag}
+                  userTags={userTags}
+                  changeTags={this.changeTags}
+                />
+              )}
 
               {filterFeedoList.length > 0 && (
                 <FeedoListContainer

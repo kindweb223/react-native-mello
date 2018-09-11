@@ -22,30 +22,44 @@ class SearchBarComponent extends React.Component {
     super(props);
 
     this.state = {
-      selectTags: this.props.initialTag,
+      selectTags: props.initialTag,
+      filteredTags: props.userTags,
       currentTagName: '',
-      showFilterTags: false
+      showFilterTags: false,
     }
   }
 
   onCreateTag(text) {
-    let { selectTags } = this.state
-    selectTags = [
-      ...selectTags,
-      { text }
-    ]
+    const { userTags } = this.props
+    let { selectTags, filteredTags } = this.state
+
+    selectTags.push({ text })
     this.setState({ selectTags }, () => {
       this.filterFeedList()
     })
+
+    let newFilteredTags = _.filter(filteredTags, tag => tag.text.toLowerCase() !== text.toLowerCase())
+
+    this.setState({ filteredTags: newFilteredTags, currentTagName: '' })
   }
 
   onRemoveTag(tag) {
-    let { selectTags } = this.state
+    const { userTags } = this.props
+    let { selectTags, filteredTags } = this.state
+
     selectTags = _.filter(selectTags, item => item.text !== tag.text)
     this.setState({ selectTags }, () => {
       this.filterFeedList()
     })
-    console.log('REMOVE: ', tag)
+
+    const index = _.findIndex(userTags, o => o.text === tag.text)
+    const filterIndex = _.findIndex(filteredTags, o => o.text === tag.text)
+
+    if (index !== -1 && filterIndex === -1) {
+      filteredTags.push({ text: tag.text })
+    }
+
+    this.setState({ filteredTags, currentTagName: '' })
   }
 
   filterFeedList = () => {
@@ -53,22 +67,41 @@ class SearchBarComponent extends React.Component {
     this.props.changeTags(selectTags)
   }
 
-  onChangeText(text) {
-    this.setState({ showFilterTags: text.length > 0 ? true : false })
+  onChangeText = (text) => {
     this.setState({
       currentTagName: text,
     });
+    this.filterTagsName(text)
   }
 
-  onSelectFilterItem = (item) => {
+  filterTagsName = (text) => {
+    const { filteredTags, selectTags } = this.state
+
+    let newFilteredTags = []
+
+    for (let i = 0; i < filteredTags.length; i ++) {
+      const tag = filteredTags[i].text.toLowerCase()
+
+      if (tag.includes(text.toLowerCase()) && _.findIndex(selectTags, item => item.text.toLowerCase() === text.toLowerCase()) === -1) {
+        newFilteredTags.push(filteredTags[i])
+      }
+    }
+
+    console.log('newFilteredTags: ', newFilteredTags)
+    this.setState({ filteredTags: newFilteredTags, showFilterTags: text.length > 0 ? true : false })
+  }
+
+  onSelectFilterItem = (item, index) => {
+    const { filteredTags } = this.state
+
     this.onCreateTag(item.text)
-    this.setState({
-      currentTagName: '',
-    });
+
+    newFilterTags = _.filter(filteredTags, tag => tag.text !== item.text)
+    this.setState({ filteredTags: newFilterTags, showFilterTags: false, currentTagName: '' })
   }
 
-  filterTagItem = ({ item }) => (
-    <TouchableOpacity onPress={() => this.onSelectFilterItem(item)}>
+  renderFilterTagItem = ({ item, index }) => (
+    <TouchableOpacity onPress={() => this.onSelectFilterItem(item, index)}>
       <View style={styles.filterItem}>
         <Image source={TAG_ICON} />
         <Text style={styles.filterItemText}>
@@ -79,9 +112,7 @@ class SearchBarComponent extends React.Component {
   )
 
   render() {
-    const { userTags } = this.props
-    const { selectTags, showFilterTags } = this.state
-    console.log('userTags: ', userTags)
+    const { selectTags, showFilterTags, filteredTags } = this.state
 
     return (
       <View style={styles.container}>
@@ -126,8 +157,8 @@ class SearchBarComponent extends React.Component {
                 </View>
                 <FlatList
                   style={{ marginTop: 10 }}
-                  data={userTags}
-                  renderItem={this.filterTagItem}
+                  data={filteredTags}
+                  renderItem={this.renderFilterTagItem}
                   keyExtractor={(item, index) => index.toString()}
                   extraData={this.state}
                 />

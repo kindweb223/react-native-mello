@@ -46,13 +46,15 @@ const renderAvatar = (user) => {
   )
 }
 
-onTagPress = (initialTag) => {
-  Actions.FeedFilterScreen({
-    initialTag: [{ text: initialTag.text }]
-  })
+onTagPress = (initialTag, page) => {
+  if (page !== 'detail') {
+    Actions.FeedFilterScreen({
+      initialTag: [{ text: initialTag.text }]
+    })
+  }
 }
 
-const FeedItemContentComponent = ({ data, pinFlag }) => {
+const FeedItemContentComponent = ({ data, pinFlag, page }) => {
   return (
     <View style={styles.container}>
       <View style={styles.titleView}>
@@ -89,7 +91,7 @@ const FeedItemContentComponent = ({ data, pinFlag }) => {
           <Tags
             initialTags={data.tags}
             onChangeTags={() => {}}
-            onTagPress={this.onTagPress}
+            onTagPress={(tag) => this.onTagPress(tag, page)}
             inputStyle={{
               backgroundColor: 'white',
             }}

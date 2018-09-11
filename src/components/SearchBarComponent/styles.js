@@ -43,7 +43,7 @@ export default StyleSheet.create({
     paddingVertical: 5
   },
   filterItemText: {
-    color: COLORS.DARK_GREY,
+    color: '#000',
     fontSize: 16,
     marginLeft: 10,
     fontWeight: '500'
