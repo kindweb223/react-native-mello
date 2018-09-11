@@ -123,5 +123,12 @@ export default {
     color: COLORS.PURPLE,
     textDecorationLine: 'underline',
     fontWeight: '600'
-  }
+  },
+  errorTncView: {
+    height: 20,
+    justifyContent: 'center',
+    alignItems: 'flex-start',
+    paddingLeft: 40,
+    width: '100%'
+  },
 }

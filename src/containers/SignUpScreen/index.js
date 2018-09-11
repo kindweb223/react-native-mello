@@ -76,6 +76,7 @@ class SignUpScreen extends React.Component {
       passwordScore: 0,
       isPasswordFocus: false,
       isTNC: false,
+      showTncError: false,
       avatarFile: {},
       fieldErrors: [
         {
@@ -325,11 +326,10 @@ class SignUpScreen extends React.Component {
       const arr = _.split(fullName, ' ')
 
       if (!isTNC) {
-        Alert.alert(
-          'Warning',
-          'You must accept the Terms and Conditions'
-        )
+        this.setState({ showTncError: true })
       } else {
+        this.setState({ showTncError: false })
+
         this.setState({ loading: true })
 
         if (isInvite) {
@@ -538,7 +538,10 @@ class SignUpScreen extends React.Component {
                 <CheckBox
                   style={{ flex: 1, paddingVertical: 10 }}
                   onClick={() => {
-                    this.setState({ isTNC: !this.state.isTNC })
+                    this.setState({
+                      isTNC: !this.state.isTNC,
+                      showTncError: false
+                    })
                   }}
                   isChecked={this.state.isTNC}
                   rightText="I'll accept the "
@@ -547,6 +550,11 @@ class SignUpScreen extends React.Component {
                     <Text style={styles.termsText}>terms & conditions</Text>
                   </TouchableOpacity>
                 </CheckBox>
+                <View style={styles.errorTncView}>
+                  {this.state.showTncError && (
+                    <Text style={styles.errorText}>You must accept the Terms and Conditions</Text>
+                  )}
+                </View>
               </View>
 
               <TouchableOpacity onPress={() => this.onSignUp()}>
