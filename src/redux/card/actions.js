@@ -84,6 +84,29 @@ export const deleteCard = (id) => {
 }
 
 /**
+ * Move a card
+ */
+export const moveCard = (ideaId, huntId) => {
+  let url = `ideas/${ideaId}/move`
+  const data = {
+    huntId,
+  }
+  return {
+    types: [types.MOVE_CARD_PENDING, types.MOVE_CARD_FULFILLED, types.MOVE_CARD_REJECTED],
+    promise: axios({
+      method: 'post',
+      url: url,
+      data,
+    }),
+    payload: {
+      ideaId,
+      huntId,
+    },
+  };
+}
+
+
+/**
  * Like a card
  */
 export const likeCard = (id) => {

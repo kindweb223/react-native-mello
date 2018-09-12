@@ -120,6 +120,29 @@ export default function card(state = initialState, action = {}) {
       }
     }
 
+    // move a card
+    case types.MOVE_CARD_PENDING:
+      return {
+        ...state,
+        loading: types.MOVE_CARD_PENDING,
+        error: null,
+      }
+    case types.MOVE_CARD_FULFILLED: {
+      return {
+        ...state,
+        loading: types.MOVE_CARD_FULFILLED,
+        currentCard: {},
+      }
+    }
+    case types.MOVE_CARD_REJECTED: {
+      const { data } = action.error.response
+      return {
+        ...state,
+        loading: types.MOVE_CARD_REJECTED,
+        error: data,
+      }
+    }
+
     // like a card
     case types.LIKE_CARD_PENDING:
       return {
