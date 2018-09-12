@@ -56,7 +56,7 @@ class LoginStartScreen extends React.Component {
 
   UNSAFE_componentWillReceiveProps(nextProps) {
     const { user } = nextProps
-    const { email } = this.state
+    const { email, loading } = this.state
 
     if (this.props.user.loading === 'USER_LOOKUP_PENDING' && user.loading === 'USER_LOOKUP_FULFILLED') {
       this.setState({ loading: false }, () => {
@@ -65,11 +65,10 @@ class LoginStartScreen extends React.Component {
     }
 
     if (this.props.user.loading === 'USER_LOOKUP_PENDING' && user.loading === 'USER_LOOKUP_REJECTED') {
-      this.setState({ loading: false }, () => {
-        if (user.error.code === 'error.user.email.not.found') {
-          Actions.SignUpScreen({ userEmail: email })
-        }
-      })
+      if (loading && user.error.code === 'error.user.email.not.found') {
+        this.setState({ loading: false })
+        Actions.SignUpScreen({ userEmail: email })
+      }
     }
   }
 
