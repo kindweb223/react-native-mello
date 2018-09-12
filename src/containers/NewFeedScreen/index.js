@@ -57,7 +57,7 @@ class NewFeedScreen extends React.Component {
       loading: false,
       currentScreen: NewFeedMode,
     };
-    this.isNewFeed = Object.keys(this.props.feedo.currentFeed).length === 0;
+    // this.isNewFeed = Object.keys(this.props.feedo.currentFeed).length === 0;
     
     this.selectedFile = null;
     this.selectedFileMimeType = null;
@@ -71,6 +71,10 @@ class NewFeedScreen extends React.Component {
     this.animatedTagTransition = new Animated.Value(1);
   }
 
+  UNSAFE_componentWillMount() {
+    console.log('PPP: ', Object.keys(this.props.feedo.currentFeed))
+  }
+
   UNSAFE_componentWillReceiveProps(nextProps) {
     // console.log('NewFeedScreen UNSAFE_componentWillReceiveProps : ', nextProps.feedo.loading, nextProps.feedo.currentFeed);
     let loading = false;
@@ -82,7 +86,7 @@ class NewFeedScreen extends React.Component {
       loading = true;
     } else if (this.props.feedo.loading !== types.DELETE_FEED_FULFILLED && nextProps.feedo.loading === types.DELETE_FEED_FULFILLED) {
       // success in deleting a feed
-      this.onClose();
+      this.onClose(null);
       return;
     } else if (this.props.feedo.loading !== types.GET_FILE_UPLOAD_URL_PENDING && nextProps.feedo.loading === types.GET_FILE_UPLOAD_URL_PENDING) {
       // getting a file upload url
@@ -114,8 +118,8 @@ class NewFeedScreen extends React.Component {
       loading = true;
     } else if (this.props.feedo.loading !== types.UPDATE_FEED_FULFILLED && nextProps.feedo.loading === types.UPDATE_FEED_FULFILLED) {
       // success in updating a feed
-      this.onClose();
-      if (this.isNewFeed) {
+      this.onClose(nextProps.feedo.currentFeed);
+      if (nextProps.type === 'create') {
         Actions.FeedDetailScreen({ data: nextProps.feedo.currentFeed });
       } 
     } else if (this.props.feedo.loading !== types.DELETE_FILE_PENDING && nextProps.feedo.loading === types.DELETE_FILE_PENDING) {
@@ -199,14 +203,14 @@ class NewFeedScreen extends React.Component {
     ).start();
   }
 
-  onClose() {
+  onClose(data) {
     this.animatedShow.setValue(1);
     Animated.timing(this.animatedShow, {
       toValue: 0,
       duration: CONSTANTS.ANIMATEION_MILLI_SECONDS,
     }).start();
     if (this.props.onClose) {
-      this.props.onClose();
+      this.props.onClose({ currentFeed: data });
     }
   }
 
@@ -259,7 +263,7 @@ class NewFeedScreen extends React.Component {
       if (!this.props.selectedFeedId) {
         this.props.deleteDraftFeed(this.props.feedo.currentFeed.id)
       } else {
-        this.onClose();
+        this.onClose(this.props.feedo.currentFeed);
       }
     }
   }
@@ -606,6 +610,7 @@ class NewFeedScreen extends React.Component {
 
 
 NewFeedScreen.defaultProps = {
+  type: 'update',
   feedo: {},
   selectedFeedId: null,
   onClose: () => {},
@@ -613,6 +618,7 @@ NewFeedScreen.defaultProps = {
 
 
 NewFeedScreen.propTypes = {
+  type: PropTypes.string,
   feedo: PropTypes.object,
   selectedFeedId: PropTypes.string,
   onClose: PropTypes.func,

@@ -372,13 +372,21 @@ class HomeScreen extends React.Component {
     });
   }
   
-  onCloseNewFeedModal() {
+  onCloseNewFeedModal(data) {
+    // Ignore discarding feed
+    if (data.currentFeed) {
+      this.setState({
+        isLongHoldMenuVisible: true,
+        selectedFeedData: data.currentFeed
+      })
+    }
+
     this.animatedOpacity.setValue(1);
     Animated.timing(this.animatedOpacity, {
       toValue: 0,
       duration: CONSTANTS.ANIMATEION_MILLI_SECONDS,
     }).start(() => {
-      this.setState({ 
+      this.setState({
         isVisibleNewFeed: false,
       });
     });
@@ -408,8 +416,9 @@ class HomeScreen extends React.Component {
         }
         {
           this.state.isVisibleNewFeed && 
-            <NewFeedScreen 
-              onClose={() => this.onCloseNewFeedModal()}
+            <NewFeedScreen
+              type={this.state.isEditFeed ? 'update' : 'create'}
+              onClose={(data) => this.onCloseNewFeedModal(data)}
               selectedFeedId={this.state.isEditFeed ? this.state.selectedFeedData.id : null}
             />  
         }

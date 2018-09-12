@@ -597,8 +597,6 @@ class FeedDetailScreen extends React.Component {
       })
     }
 
-    console.log('CUR_FEED_IDEAS: ', currentFeed.ideas)
-
     return (
       <SafeAreaView style={styles.safeArea}>
         <View style={styles.container}>
