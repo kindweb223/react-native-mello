@@ -41,7 +41,7 @@ class CardLongHoldMenuScreen extends React.Component {
 
   onMoveCard() {
     if (this.props.onMove) {
-      this.props.onMove();
+      this.props.onMove(this.props.idea.id);
     }
   }
 
