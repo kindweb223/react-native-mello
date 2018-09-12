@@ -322,37 +322,37 @@ class SignUpScreen extends React.Component {
 
     this.setState({ fieldErrors: errors })
 
-    if (errors.length === 0) {
+    if (!isTNC) {
+      this.setState({ showTncError: true })
+    }
+
+    if (errors.length === 0 && isTNC) {
       const arr = _.split(fullName, ' ')
 
-      if (!isTNC) {
-        this.setState({ showTncError: true })
-      } else {
-        this.setState({ showTncError: false })
+      this.setState({ showTncError: false })
 
-        this.setState({ loading: true })
+      this.setState({ loading: true })
 
-        if (isInvite) {
-          const param = {
-            email: userEmail,
-            password: password,
-            firstName: arr[0],
-            lastName: arr[1],
-            tandcAccepted: true,
-            validationToken: this.props.token,
-            jobTitle: ''
-          }
-          this.props.completeInvite(param)
-        } else {
-          const param = {
-            email: userEmail,
-            password: password,
-            firstName: arr[0],
-            lastName: arr[1],
-            tandcAccepted: true
-          }
-          this.props.userSignUp(param)
+      if (isInvite) {
+        const param = {
+          email: userEmail,
+          password: password,
+          firstName: arr[0],
+          lastName: arr[1],
+          tandcAccepted: true,
+          validationToken: this.props.token,
+          jobTitle: ''
         }
+        this.props.completeInvite(param)
+      } else {
+        const param = {
+          email: userEmail,
+          password: password,
+          firstName: arr[0],
+          lastName: arr[1],
+          tandcAccepted: true
+        }
+        this.props.userSignUp(param)
       }
     }
   }
