@@ -130,9 +130,9 @@ export default {
   },
   errorTncView: {
     height: 20,
-    justifyContent: 'center',
+    justifyContent: 'flex-start',
     alignItems: 'flex-start',
-    paddingLeft: 40,
+    paddingHorizontal: 10,
     width: '100%'
   },
 }
