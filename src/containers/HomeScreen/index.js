@@ -375,10 +375,12 @@ class HomeScreen extends React.Component {
   onCloseNewFeedModal(data) {
     // Ignore discarding feed
     if (data.currentFeed) {
-      this.setState({
-        isLongHoldMenuVisible: true,
-        selectedFeedData: data.currentFeed
-      })
+      if (data.type === 'update') {
+        this.setState({
+          isLongHoldMenuVisible: true,
+          selectedFeedData: data.currentFeed
+        })
+      }
     }
 
     this.animatedOpacity.setValue(1);
