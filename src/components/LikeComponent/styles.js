@@ -24,7 +24,7 @@ const styles = StyleSheet.create({
   },
   iconText: {
     position: 'absolute',
-    top: 8,
+    top: 6,
     left: 30,
     fontSize: 14,
     color: COLORS.MEDIUM_GREY,

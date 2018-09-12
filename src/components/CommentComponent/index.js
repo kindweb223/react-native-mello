@@ -2,6 +2,7 @@ import React from 'react'
 import {
   View,
   Text,
+  Image,
   TouchableOpacity,
 } from 'react-native'
 import PropTypes from 'prop-types'
@@ -12,7 +13,8 @@ import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityI
 import COLORS from '../../service/colors'
 import CONSTANTS from '../../service/constants'
 import styles from './styles'
-
+const COMMENT_ICON_B = require('../../../assets/images/Comment/Blue.png')
+const COMMENT_ICON_G = require('../../../assets/images/Comment/Grey.png')
 
 export default class CommentComponent extends React.Component {
   constructor(props) {
@@ -40,7 +42,10 @@ export default class CommentComponent extends React.Component {
         activeOpacity={0.7}
         onPress={() => this.onComment()}
       >
-        <MaterialCommunityIcons name={comments > 0 ? "message" : "message-outline"} size={16} color={comments > 0 ? COLORS.PURPLE : COLORS.LIGHT_GREY} />
+        {comments > 0
+          ? <Image source={COMMENT_ICON_B} style={styles.commentIcon} />
+          : <Image source={COMMENT_ICON_G} style={styles.commentIcon} />
+        }
         <Text style={styles.iconText}>{comments}</Text>
       </TouchableOpacity>
     );

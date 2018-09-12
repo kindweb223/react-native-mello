@@ -12,8 +12,11 @@ const styles = StyleSheet.create({
   iconText: {
     fontSize: 14,
     color: COLORS.MEDIUM_GREY,
-    marginLeft: 5,
+    marginLeft: 5
   },
+  commentIcon: {
+    marginTop: 2
+  }
 })
 
 export default styles
