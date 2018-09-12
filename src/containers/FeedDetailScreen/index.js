@@ -56,7 +56,7 @@ import styles from './styles'
 import actionStyles from '../CardLongHoldMenuScreen/styles'
 
 const EMPTY_ICON = require('../../../assets/images/empty_state/asset-emptystate.png')
-const TOASTER_DURATION = 500
+const TOASTER_DURATION = 5000
 
 import CONSTANTS from '../../service/constants'
 import NewCardScreen from '../NewCardScreen' 

@@ -36,7 +36,7 @@ class LikeComponent extends React.Component {
     if (this.props.idea.metadata.liked) {
       animationValue = 1;
     }
-    this.animatedShow = new Animated.Value(animationValue);
+      this.animatedShow = new Animated.Value(animationValue);
   }
 
   UNSAFE_componentWillReceiveProps(nextProps) {
@@ -75,26 +75,6 @@ class LikeComponent extends React.Component {
             });
           });
         });
-      }
-    } else {
-      this.setState({
-        prevLikes: nextProps.idea.metadata.likes,
-        liked: nextProps.idea.metadata.liked,
-        likes: nextProps.idea.metadata.likes,
-      })
-
-      if (this.props.idea.metadata.liked) {
-        this.animatedShow.setValue(1);
-        Animated.timing(this.animatedShow, {
-          toValue: 0,
-          duration: 0,
-        }).start()
-      } else {
-        this.animatedShow.setValue(0);
-        Animated.timing(this.animatedShow, {
-          toValue: 1,
-          duration: 0,
-        }).start()
       }
     }
   }
