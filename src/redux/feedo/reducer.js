@@ -252,7 +252,7 @@ export default function feedo(state = initialState, action = {}) {
           archiveFeed: currentFeed,
           feedoList: [
             ...restFeedoList,
-            Object.assign({}, currentFeed[0], { status: 'ENDED' })
+            Object.assign({}, currentFeed[0], { status: 'ARCHIVED' })
           ]
         }
       }

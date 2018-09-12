@@ -95,7 +95,7 @@ export const archiveFeed = (feedId) => {
     promise: axios({
       method: 'put',
       url: url,
-      data: { status: 'ENDED' }
+      data: { status: 'ARCHIVED' }
     }),
     payload: feedId
   };
