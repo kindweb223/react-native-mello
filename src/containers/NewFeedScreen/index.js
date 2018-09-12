@@ -210,7 +210,7 @@ class NewFeedScreen extends React.Component {
       duration: CONSTANTS.ANIMATEION_MILLI_SECONDS,
     }).start();
     if (this.props.onClose) {
-      this.props.onClose({ currentFeed: data });
+      this.props.onClose({ currentFeed: data, type: this.props.type });
     }
   }
 
