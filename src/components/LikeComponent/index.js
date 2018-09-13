@@ -36,7 +36,7 @@ class LikeComponent extends React.Component {
     if (this.props.idea.metadata.liked) {
       animationValue = 1;
     }
-      this.animatedShow = new Animated.Value(animationValue);
+    this.animatedShow = new Animated.Value(animationValue);
   }
 
   UNSAFE_componentWillReceiveProps(nextProps) {

@@ -728,18 +728,17 @@ export default function feedo(state = initialState, action = {}) {
       const { data } = action.result
       const { currentFeed } = state
       const { payload } = action
-      const currentInvitee = filter(currentFeed.invitees, invitee => invitee.id === payload.inviteeId)
-      const restInviteeList = filter(currentFeed.invitees, invitee => invitee.id !== payload.inviteeId)
+
+      let invitees = currentFeed.invitees
+      for (let i = 0; i < invitees.length; i ++) {
+        if (invitees[i].id === payload.inviteeId) {
+          invitees[i].permissions = payload.type
+        }
+      }
 
       let updaedFeed = {
         ...currentFeed,
-        invitees: [
-          ...restInviteeList,
-          {
-            ...currentInvitee[0],
-            permissions: payload.type
-          }
-        ]
+        invitees
       }
 
       return {
