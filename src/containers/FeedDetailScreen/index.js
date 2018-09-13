@@ -113,6 +113,7 @@ class FeedDetailScreen extends React.Component {
   componentDidMount() {
     this.setState({ loading: true })
     this.props.getFeedDetail(this.props.data.id)
+    console.log('Current Feedo : ', this.props.data);
   }
 
   UNSAFE_componentWillReceiveProps(nextProps) {
