@@ -16,7 +16,7 @@ import PropTypes from 'prop-types'
 import _ from 'lodash'
 import { Actions } from 'react-native-router-flux'
 import Ionicons from 'react-native-vector-icons/Ionicons'
-import { ActionSheetCustom as ActionSheet } from 'react-native-actionsheet'
+import ActionSheet from 'react-native-actionsheet'
 import Modal from "react-native-modal"
 import ReactNativeHaptic from 'react-native-haptic'
 
@@ -53,7 +53,6 @@ import {
 import COLORS from '../../service/colors'
 import * as COMMON_FUNC from '../../service/commonFunc'
 import styles from './styles'
-import actionStyles from '../CardLongHoldMenuScreen/styles'
 
 const EMPTY_ICON = require('../../../assets/images/empty_state/asset-emptystate.png')
 const TOASTER_DURATION = 5000
@@ -227,7 +226,9 @@ class FeedDetailScreen extends React.Component {
         this.handleDuplicateFeed(feedId)
         return
       case 'Delete':
-        this.ActionSheet.show()
+        setTimeout(() => {
+          this.ActionSheet.show()
+        }, 200)
         return
       case 'Archive':
         this.props.setFeedDetailAction({
@@ -554,6 +555,12 @@ class FeedDetailScreen extends React.Component {
     this.setState({ showFilterModal: true })
   }
 
+  closeShareModal = () => {
+    setTimeout(() => {
+      this.setState({ isShowShare: false })
+    }, 1000)
+  }
+
   render () {
     const { currentFeed, loading, pinText } = this.state
 
@@ -694,21 +701,14 @@ class FeedDetailScreen extends React.Component {
 
         {this.renderNewCardModal}
 
+        
         <ActionSheet
           ref={ref => this.ActionSheet = ref}
-          title={
-            <Text style={actionStyles.titleText}>Are you sure you want to delete this feed, everything will be gone ...</Text>
-          }
-          options={
-            [
-              <Text key="0" style={actionStyles.actionButtonText}>Delete feed</Text>,
-              'Cancel'
-            ]
-          }
+          title={'Are you sure you want to delete this feed, everything will be gone ...'}
+          options={['Delete feed', 'Cancel']}
           cancelButtonIndex={1}
-          destructiveButtonIndex={2}
+          destructiveButtonIndex={0}
           tintColor={COLORS.PURPLE}
-          styles={actionStyles}
           onPress={(index) => this.onTapActionSheet(index)}
         />
 
@@ -720,7 +720,7 @@ class FeedDetailScreen extends React.Component {
           />
         )}
 
-        <Modal 
+        <Modal
           isVisible={this.state.isShowShare}
           style={styles.shareScreenContainer}
           backdropColor='#f5f5f5'
@@ -730,7 +730,7 @@ class FeedDetailScreen extends React.Component {
           animationInTiming={500}
           onModalHide={() => {}}
         >
-          <ShareScreen onClose={() => this.setState({ isShowShare: false })} data={currentFeed} />
+          <ShareScreen onClose={() => this.closeShareModal()} data={currentFeed} />
         </Modal>
 
         <Modal 

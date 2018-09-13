@@ -71,10 +71,6 @@ class NewFeedScreen extends React.Component {
     this.animatedTagTransition = new Animated.Value(1);
   }
 
-  UNSAFE_componentWillMount() {
-    console.log('PPP: ', Object.keys(this.props.feedo.currentFeed))
-  }
-
   UNSAFE_componentWillReceiveProps(nextProps) {
     // console.log('NewFeedScreen UNSAFE_componentWillReceiveProps : ', nextProps.feedo.loading, nextProps.feedo.currentFeed);
     let loading = false;

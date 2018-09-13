@@ -53,6 +53,10 @@ const styles = StyleSheet.create({
   cogEnableIcon: {
     color: COLORS.PURPLE,
   },
+  infoView: {
+    height: 38,
+    justifyContent: 'center',
+  }
 })
 
 export default styles
