@@ -16,6 +16,7 @@ import {
 
 import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
+import PushNotification from 'react-native-push-notification';
 import ScrollableTabView from 'react-native-scrollable-tab-view'
 import TabBar from 'react-native-underline-tabbar'
 import Modal from "react-native-modal"
@@ -52,7 +53,10 @@ import {
   setCurrentFeed,
 } from '../../redux/feedo/actions'
 
-import { setUserInfo } from '../../redux/user/actions'
+import { 
+  setUserInfo,
+  addDeviceToken,
+} from '../../redux/user/actions'
 
 const TAB_STYLES = {
   height: '100%',
@@ -91,7 +95,7 @@ class HomeScreen extends React.Component {
 
     const userInfo = await AsyncStorage.getItem('userInfo')
     this.props.setUserInfo(JSON.parse(userInfo))
-
+    this.registerPushNotification();
     this.props.getFeedoList(this.state.tabIndex)
   }
 
@@ -165,6 +169,23 @@ class HomeScreen extends React.Component {
     if (prevProps.user.loading === 'USER_SIGNOUT_PENDING' && this.props.user.loading === 'USER_SIGNOUT_FULFILLED') {
       Actions.LoginStartScreen()
     }
+  }
+
+  registerPushNotification() {
+    PushNotification.configure({
+      onRegister: (token) => {
+        console.log('TOKEN : ', token);
+        const data = {
+          deviceToken: token.token,
+          deviceTypeEnum: Platform.OS === 'ios' ? 'IPHONE' : 'ANDROID',
+        }
+        this.props.addDeviceToken(this.props.user.userInfo.id, data);
+      },
+      onNotification: (notification) => {
+        console.log('NOTIFICATION : ', notification);
+      },
+      senderID: "sender-id",
+    });
   }
 
   onChangeTab(value) {
@@ -645,7 +666,8 @@ const mapDispatchToProps = dispatch => ({
   removeDummyFeed: (data) => dispatch(removeDummyFeed(data)),
   setFeedDetailAction: (data) => dispatch(setFeedDetailAction(data)),
   setCurrentFeed: (data) => dispatch(setCurrentFeed(data)),
-  setUserInfo: (data) => dispatch(setUserInfo(data))
+  setUserInfo: (data) => dispatch(setUserInfo(data)),
+  addDeviceToken: (userId, data) => dispatch(addDeviceToken(userId, data))
 })
 
 HomeScreen.propTypes = {
