@@ -98,6 +98,7 @@ class ImageCrop extends Component {
 			);
 			let distant = Math.sqrt(dx * dx + dy * dy);
 			let scale = (distant / this.distant) * lastScale;
+			console.log('SCALE: ', scale)
 
 			this.paddingWidth = (scale - 1) * cropWidth / 2
 			this.paddingHeight = (scale - 1) * cropHeight / 2
@@ -106,8 +107,8 @@ class ImageCrop extends Component {
 				this.setState({ scale });
 			}
 		} else {
-			this.setState({ offsetX: currentOffsetX +  gestureState.dx * lastScale })
-			this.setState({ offsetY: currentOffsetY + gestureState.dy * lastScale })
+			this.setState({ offsetX: currentOffsetX +  gestureState.dx })
+			this.setState({ offsetY: currentOffsetY + gestureState.dy })
 		}
 	}
 
