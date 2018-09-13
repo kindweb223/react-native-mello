@@ -137,6 +137,7 @@ android {
 }
 
 dependencies {
+    compile project(':react-native-push-notification')
     compile project(':react-native-shared-group-preferences')
     compile project(':rn-fetch-blob')
     compile project(':react-native-image-resizer')

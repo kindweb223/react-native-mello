@@ -263,3 +263,19 @@ export const completeInvite = (data) => {
       })  
   }
 }
+
+/**
+ * add device token
+ */
+export const addDeviceToken = (userId, data) => {
+  const url = `users/${userId}/device`;
+  return {
+    types: [types.ADD_DEVICE_TOKEN_PENDING, types.ADD_DEVICE_TOKEN_FULFILLED, types.ADD_DEVICE_TOKEN_REJECTED],
+    promise:
+      axios({
+        method: 'post',
+        url,
+        data
+      })  
+  };
+}
