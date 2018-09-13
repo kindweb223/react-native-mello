@@ -240,7 +240,7 @@ class ProfileScreen extends React.Component {
               </View>
 
               <View style={styles.settingView}>
-                <View style={styles.settingItem}>
+                {/* <View style={styles.settingItem}>
                   <TouchableOpacity
                     onPress={() => this.handleSettingItem(0)}
                     activeOpacity={0.8}
@@ -256,7 +256,7 @@ class ProfileScreen extends React.Component {
                       <Ionicons name="ios-arrow-forward" color={COLORS.DARK_GREY} size={20} />
                     </View>
                   </TouchableOpacity>
-                </View>
+                </View> */}
                 {
                   SETTING_ITEMS.map((item, key) => (
                     <View key={key} style={styles.settingItem}>

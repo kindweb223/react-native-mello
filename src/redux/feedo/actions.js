@@ -95,7 +95,7 @@ export const archiveFeed = (feedId) => {
     promise: axios({
       method: 'put',
       url: url,
-      data: { status: 'ENDED' }
+      data: { status: 'ARCHIVED' }
     }),
     payload: feedId
   };
@@ -438,5 +438,12 @@ export const inviteToHunt = (feedId, data) => {
       data
     }),
     payload: feedId
+  }
+}
+
+export const addFilterTag = (data) => {
+  return {
+    type: types.ADD_FILTER_TAG,
+    payload: data
   }
 }

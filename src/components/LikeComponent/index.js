@@ -3,6 +3,7 @@ import {
   View,
   TouchableOpacity,
   Animated,
+  Image
 } from 'react-native'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
@@ -20,6 +21,8 @@ import {
   setCurrentCard,
 } from '../../redux/card/actions'
 
+const FAV_ICON_R = require('../../../assets/images/Fav/Red.png')
+const FAV_ICON_G = require('../../../assets/images/Fav/Grey.png')
 
 class LikeComponent extends React.Component {
   constructor(props) {
@@ -33,7 +36,7 @@ class LikeComponent extends React.Component {
     if (this.props.idea.metadata.liked) {
       animationValue = 1;
     }
-    this.animatedShow = new Animated.Value(animationValue);
+      this.animatedShow = new Animated.Value(animationValue);
   }
 
   UNSAFE_componentWillReceiveProps(nextProps) {
@@ -100,14 +103,14 @@ class LikeComponent extends React.Component {
       likes,
       prevLikes,
     } = this.state;
-    
+
     const animatedMove1 = this.animatedShow.interpolate({
       inputRange: [0, 1],
-      outputRange: [8, 0],
+      outputRange: [6, 0],
     });
     const animatedMove2 = this.animatedShow.interpolate({
       inputRange: [0, 1],
-      outputRange: [16, 8],
+      outputRange: [14, 6],
     });
     const animatedOpacity1 = this.animatedShow.interpolate({
       inputRange: [0, 1],
@@ -144,7 +147,7 @@ class LikeComponent extends React.Component {
               }
             ]}
           >
-            <FontAwesome name='heart' size={16} color={COLORS.RED} />
+            <Image source={FAV_ICON_R} />
           </Animated.View>
           <Animated.View 
             style={[
@@ -156,7 +159,7 @@ class LikeComponent extends React.Component {
               }
             ]}
           >
-            <FontAwesome name='heart-o' size={16} color={COLORS.LIGHT_GREY} />
+            <Image source={FAV_ICON_G} />
           </Animated.View>
         </View>
         <Animated.Text style={[styles.iconText, {top: animatedMove1, opacity: animatedOpacity1, }]}>{prevLikes}</Animated.Text>

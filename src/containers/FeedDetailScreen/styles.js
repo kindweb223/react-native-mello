@@ -134,8 +134,17 @@ const styles = StyleSheet.create({
     })
   },  
   shareScreenContainer: {
-    margin: 0
-  }
+    margin: 0,
+  },
+  longHoldModalContainer: {
+    margin: 0,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  selectFeedoModalContainer: {
+    margin: 0,
+    justifyContent: 'center',
+  },
 })
 
 export default styles

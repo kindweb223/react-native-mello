@@ -252,7 +252,7 @@ export default function feedo(state = initialState, action = {}) {
           archiveFeed: currentFeed,
           feedoList: [
             ...restFeedoList,
-            Object.assign({}, currentFeed[0], { status: 'ENDED' })
+            Object.assign({}, currentFeed[0], { status: 'ARCHIVED' })
           ]
         }
       }
@@ -292,7 +292,7 @@ export default function feedo(state = initialState, action = {}) {
       } else if (flag === 'delete') {
         return {
           ...state,
-          loading: types.DEL_FEED_FULFILLED,
+          loading: 'FEED_FULFILLED',
           feedoList: [
             ...restFeedoList,
             Object.assign({}, deleteFeed[0])
@@ -302,7 +302,7 @@ export default function feedo(state = initialState, action = {}) {
       } else if (flag === 'archive') {
         return {
           ...state,
-          loading: types.ARCHIVE_FEED_FULFILLED,
+          loading: 'FEED_FULFILLED',
           feedoList: [
             ...restFeedoList,
             Object.assign({}, archiveFeed[0])
@@ -643,14 +643,17 @@ export default function feedo(state = initialState, action = {}) {
      * Update sharing preferenecs
      */
     case types.UPDATE_SHARING_PREFERENCES_PENDING: {
+      console.log('UPDATE_SHARING_PREFERENCES_PENDING')
       return {
         ...state,
+        loading: types.UPDATE_SHARING_PREFERENCES_PENDING,
         error: null,
       }
     }
     case types.UPDATE_SHARING_PREFERENCES_FULFILLED: {
       const { feedoList, currentFeed } = state
       const { feedId, data } = action.payload
+      console.log('UPDATE_SHARING_PREFERENCES_FULFILLED')
 
       const restFeedoList = filter(feedoList, feed => feed.id !== feedId)
       let newFeed = Object.assign(
@@ -677,7 +680,7 @@ export default function feedo(state = initialState, action = {}) {
     case types.UPDATE_SHARING_PREFERENCES_REJECTED: {
       return {
         ...state,
-        loading: types.UNPIN_FEED_REJECTED,
+        loading: types.UPDATE_SHARING_PREFERENCES_REJECTED,
         error: action.error,
       }
     }
@@ -865,6 +868,46 @@ export default function feedo(state = initialState, action = {}) {
       }
     }
     
+    /**
+     * delete a card
+     */
+    case cardTypes.DELETE_CARD_FULFILLED: {
+      const { currentFeed } = state
+      const ideaId = action.payload;
+      const ideas = filter(currentFeed.ideas, idea => idea.id !== ideaId);
+      return {
+        ...state,
+        currentFeed: {
+          ...currentFeed,
+          ideas,
+        }
+      }
+    }
+
+    /**
+     * move a card
+     */
+    case cardTypes.MOVE_CARD_FULFILLED: {
+      const { currentFeed, feedoList } = state
+      const { ideaId, huntId } = action.payload;
+      const ideas = filter(currentFeed.ideas, idea => idea.id !== ideaId);
+      const movedCard = find(currentFeed.ideas, idea => idea.id === ideaId);
+      const moveToFeedIndex = findIndex(feedoList, feed => feed.id === huntId)
+      if (moveToFeedIndex !== -1) {
+        feedoList[moveToFeedIndex].ideas.push(movedCard);
+      }
+      return {
+        ...state,
+        currentFeed: {
+          ...currentFeed,
+          ideas,
+        },
+        // feedoList: {
+        //   ...feedoList,
+        // },
+      }
+    }
+
     
     /**
      * Invite contact to HUNT
@@ -912,6 +955,14 @@ export default function feedo(state = initialState, action = {}) {
         ...state,
         loading: types.INVITE_HUNT_REJECTED,
         error: action.error
+      }
+    }
+    case types.ADD_FILTER_TAG: {
+      const data = action.payload
+      return {
+        ...state,
+        loading: types.ADD_FILTER_TAG,
+        filterTag: data
       }
     }
 

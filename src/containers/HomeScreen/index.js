@@ -14,9 +14,9 @@ import {
   AsyncStorage
 } from 'react-native'
 
-import ReactNativeHaptic from 'react-native-haptic'
 import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
+import PushNotification from 'react-native-push-notification';
 import ScrollableTabView from 'react-native-scrollable-tab-view'
 import TabBar from 'react-native-underline-tabbar'
 import Modal from "react-native-modal"
@@ -53,7 +53,10 @@ import {
   setCurrentFeed,
 } from '../../redux/feedo/actions'
 
-import { setUserInfo } from '../../redux/user/actions'
+import { 
+  setUserInfo,
+  addDeviceToken,
+} from '../../redux/user/actions'
 
 const TAB_STYLES = {
   height: '100%',
@@ -92,7 +95,7 @@ class HomeScreen extends React.Component {
 
     const userInfo = await AsyncStorage.getItem('userInfo')
     this.props.setUserInfo(JSON.parse(userInfo))
-
+    this.registerPushNotification();
     this.props.getFeedoList(this.state.tabIndex)
   }
 
@@ -168,6 +171,23 @@ class HomeScreen extends React.Component {
     }
   }
 
+  registerPushNotification() {
+    PushNotification.configure({
+      onRegister: (token) => {
+        console.log('TOKEN : ', token);
+        const data = {
+          deviceToken: token.token,
+          deviceTypeEnum: Platform.OS === 'ios' ? 'IPHONE' : 'ANDROID',
+        }
+        this.props.addDeviceToken(this.props.user.userInfo.id, data);
+      },
+      onNotification: (notification) => {
+        console.log('NOTIFICATION : ', notification);
+      },
+      senderID: "sender-id",
+    });
+  }
+
   onChangeTab(value) {
     // if (value.ref.props.tabLabel.label === 'All') {
     //   this.currentRef = this.scrollTabAll;
@@ -196,7 +216,6 @@ class HomeScreen extends React.Component {
   handleLongHoldMenu = (selectedFeedData) => {
     this.setState({ selectedFeedData })
     this.setState({ isLongHoldMenuVisible: true })
-    ReactNativeHaptic.generate('impactHeavy')
   }
 
   handleArchiveFeed = (feedId) => {
@@ -374,13 +393,23 @@ class HomeScreen extends React.Component {
     });
   }
   
-  onCloseNewFeedModal() {
+  onCloseNewFeedModal(data) {
+    // Ignore discarding feed
+    if (data.currentFeed) {
+      if (data.type === 'update') {
+        this.setState({
+          isLongHoldMenuVisible: true,
+          selectedFeedData: data.currentFeed
+        })
+      }
+    }
+
     this.animatedOpacity.setValue(1);
     Animated.timing(this.animatedOpacity, {
       toValue: 0,
       duration: CONSTANTS.ANIMATEION_MILLI_SECONDS,
     }).start(() => {
-      this.setState({ 
+      this.setState({
         isVisibleNewFeed: false,
       });
     });
@@ -410,8 +439,9 @@ class HomeScreen extends React.Component {
         }
         {
           this.state.isVisibleNewFeed && 
-            <NewFeedScreen 
-              onClose={() => this.onCloseNewFeedModal()}
+            <NewFeedScreen
+              type={this.state.isEditFeed ? 'update' : 'create'}
+              onClose={(data) => this.onCloseNewFeedModal(data)}
               selectedFeedId={this.state.isEditFeed ? this.state.selectedFeedData.id : null}
             />  
         }
@@ -438,6 +468,9 @@ class HomeScreen extends React.Component {
     }
   }
 
+  onSearch = () => {
+  }
+
   render () {
     const { loading, feedoList, emptyState, tabIndex } = this.state
 
@@ -454,8 +487,8 @@ class HomeScreen extends React.Component {
     })
 
     const miniHeaderZIndex = this.state.scrollY.interpolate({
-      inputRange: [40, 80],
-      outputRange: [9, 11],
+      inputRange: [0, 40, 80],
+      outputRange: [11, 9, 11],
       extrapolate: 'clamp'
     })
 
@@ -470,7 +503,7 @@ class HomeScreen extends React.Component {
 
           <Animated.View style={[styles.navbarView, { zIndex: miniHeaderZIndex }]}>
             <View style={styles.searchIconView}>
-              <TouchableOpacity>
+              <TouchableOpacity onPress={() => this.onSearch()}>
                 <Image source={SEARCH_ICON} />
               </TouchableOpacity>
             </View>
@@ -537,6 +570,7 @@ class HomeScreen extends React.Component {
                     loading={loading}
                     feedoList={feedoList}
                     handleFeedMenu={this.handleLongHoldMenu}
+                    page="home"
                   />
                 </View>
                 <View
@@ -549,6 +583,7 @@ class HomeScreen extends React.Component {
                     loading={loading}
                     feedoList={feedoList}
                     handleFeedMenu={this.handleLongHoldMenu}
+                    page="home"
                   />
                 </View>
                 <View
@@ -561,6 +596,7 @@ class HomeScreen extends React.Component {
                     loading={loading}
                     feedoList={feedoList}
                     handleFeedMenu={this.handleLongHoldMenu}
+                    page="home"
                   />
                 </View>
               </ScrollableTabView>
@@ -630,7 +666,8 @@ const mapDispatchToProps = dispatch => ({
   removeDummyFeed: (data) => dispatch(removeDummyFeed(data)),
   setFeedDetailAction: (data) => dispatch(setFeedDetailAction(data)),
   setCurrentFeed: (data) => dispatch(setCurrentFeed(data)),
-  setUserInfo: (data) => dispatch(setUserInfo(data))
+  setUserInfo: (data) => dispatch(setUserInfo(data)),
+  addDeviceToken: (userId, data) => dispatch(addDeviceToken(userId, data))
 })
 
 HomeScreen.propTypes = {

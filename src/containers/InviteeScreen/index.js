@@ -67,10 +67,10 @@ class InviteeScreen extends React.Component {
     this.props.getContactList(userInfo.id)
   }
 
-  componentDidUpdate(prevProps) {
-    const { user, feedo, data } = this.props
+  UNSAFE_componentWillReceiveProps(nextProps) {
+    const { user, feedo, data } = nextProps
 
-    if (prevProps.feedo.loading === 'INVITE_HUNT_PENDING' && feedo.loading === 'INVITE_HUNT_FULFILLED') {
+    if (this.props.feedo.loading === 'INVITE_HUNT_PENDING' && feedo.loading === 'INVITE_HUNT_FULFILLED') {
       if (this.props.feedo.error) {
         Alert.alert(
           'Error',
@@ -83,7 +83,7 @@ class InviteeScreen extends React.Component {
       }
     }
 
-    if (prevProps.user.loading === 'GET_CONTACT_LIST_PENDING' && user.loading === 'GET_CONTACT_LIST_FULFILLED') {
+    if (this.props.user.loading === 'GET_CONTACT_LIST_PENDING' && user.loading === 'GET_CONTACT_LIST_FULFILLED') {
       this.setState({ loading: false })
       this.setState({
         contactList: this.getRecentContactList(data, user.contactList),

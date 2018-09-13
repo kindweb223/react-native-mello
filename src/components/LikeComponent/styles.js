@@ -17,12 +17,14 @@ const styles = StyleSheet.create({
   },
   heartContainer: {
     position: 'absolute',
+    justifyContent: 'center',
+    alignItems: 'center',
     width: 16,
     height: 16,
   },
   iconText: {
     position: 'absolute',
-    top: 8,
+    top: 6,
     left: 30,
     fontSize: 14,
     color: COLORS.MEDIUM_GREY,

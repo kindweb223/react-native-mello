@@ -76,6 +76,7 @@ class SignUpScreen extends React.Component {
       passwordScore: 0,
       isPasswordFocus: false,
       isTNC: false,
+      showTncError: false,
       avatarFile: {},
       fieldErrors: [
         {
@@ -321,38 +322,37 @@ class SignUpScreen extends React.Component {
 
     this.setState({ fieldErrors: errors })
 
-    if (errors.length === 0) {
+    if (!isTNC) {
+      this.setState({ showTncError: true })
+    }
+
+    if (errors.length === 0 && isTNC) {
       const arr = _.split(fullName, ' ')
 
-      if (!isTNC) {
-        Alert.alert(
-          'Warning',
-          'You must accept the Terms and Conditions'
-        )
-      } else {
-        this.setState({ loading: true })
+      this.setState({ showTncError: false })
 
-        if (isInvite) {
-          const param = {
-            email: userEmail,
-            password: password,
-            firstName: arr[0],
-            lastName: arr[1],
-            tandcAccepted: true,
-            validationToken: this.props.token,
-            jobTitle: ''
-          }
-          this.props.completeInvite(param)
-        } else {
-          const param = {
-            email: userEmail,
-            password: password,
-            firstName: arr[0],
-            lastName: arr[1],
-            tandcAccepted: true
-          }
-          this.props.userSignUp(param)
+      this.setState({ loading: true })
+
+      if (isInvite) {
+        const param = {
+          email: userEmail,
+          password: password,
+          firstName: arr[0],
+          lastName: arr[1],
+          tandcAccepted: true,
+          validationToken: this.props.token,
+          jobTitle: ''
         }
+        this.props.completeInvite(param)
+      } else {
+        const param = {
+          email: userEmail,
+          password: password,
+          firstName: arr[0],
+          lastName: arr[1],
+          tandcAccepted: true
+        }
+        this.props.userSignUp(param)
       }
     }
   }
@@ -538,7 +538,10 @@ class SignUpScreen extends React.Component {
                 <CheckBox
                   style={{ flex: 1, paddingVertical: 10 }}
                   onClick={() => {
-                    this.setState({ isTNC: !this.state.isTNC })
+                    this.setState({
+                      isTNC: !this.state.isTNC,
+                      showTncError: false
+                    })
                   }}
                   isChecked={this.state.isTNC}
                   rightText="I'll accept the "
@@ -547,6 +550,11 @@ class SignUpScreen extends React.Component {
                     <Text style={styles.termsText}>terms & conditions</Text>
                   </TouchableOpacity>
                 </CheckBox>
+                <View style={styles.errorTncView}>
+                  {this.state.showTncError && (
+                    <Text style={styles.errorText}>You must accept the Terms and Conditions</Text>
+                  )}
+                </View>
               </View>
 
               <TouchableOpacity onPress={() => this.onSignUp()}>
@@ -563,12 +571,16 @@ class SignUpScreen extends React.Component {
         )}
 
         <View style={styles.headerView}>
-          <TouchableOpacity onPress={() => Actions.pop()} style={styles.btnBack}>
-            <Feather name="arrow-left" size={25} color={'#fff'} />
+          <TouchableOpacity onPress={() => Actions.pop()}>
+            <View style={styles.btnBack}>
+              <Feather name="arrow-left" size={25} color={'#fff'} />
+            </View>
           </TouchableOpacity>
           <Text style={styles.headerText}>Create new account</Text>
           <TouchableOpacity onPress={() => {}}>
-            <MaterialCommunityIcons name="onepassword" size={25} color={'#fff'} />
+            <View style={styles.btnPass}>
+              <MaterialCommunityIcons name="onepassword" size={25} color={'#fff'} />
+            </View>
           </TouchableOpacity>
         </View>
 

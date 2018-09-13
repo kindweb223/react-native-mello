@@ -21,9 +21,9 @@ export default {
     width: CONSTANTS.SCREEN_WIDTH,
     paddingHorizontal: CONSTANTS.PADDING
   },
-  btnback: {
-    width: 100,
-    height: 30
+  btnBack: {
+    width: 50,
+    height: 30,
   },
   title: {
     fontSize: 29,

@@ -190,11 +190,15 @@ class LoginScreen extends React.Component {
         </KeyboardScrollView>
 
         <View style={styles.headerView}>
-          <TouchableOpacity onPress={() => Actions.pop()} style={styles.btnBack}>
-            <Feather name="arrow-left" size={25} color={'#fff'} />
+          <TouchableOpacity onPress={() => Actions.pop()}>
+            <View style={styles.btnBack}>
+              <Feather name="arrow-left" size={25} color={'#fff'} />
+            </View>
           </TouchableOpacity>
           <TouchableOpacity onPress={() => {}}>
-            <MaterialCommunityIcons name="onepassword" size={25} color={'#fff'} />
+            <View style={styles.btnPass}>
+              <MaterialCommunityIcons name="onepassword" size={25} color={'#fff'} />
+            </View>
           </TouchableOpacity>
         </View>
 

@@ -25,10 +25,9 @@ export default {
     fontSize: 16,
     fontWeight: '600'
   },
-  btnback: {
-    width: 100,
+  btnBack: {
+    width: 50,
     height: 30,
-    backgroundColor: '#ff0'
   },
   modalContainer: {
     flex: 1,

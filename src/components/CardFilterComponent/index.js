@@ -14,7 +14,7 @@ import COLORS from '../../service/colors'
 import styles from './styles'
 const CLOSE_ICON = require('../../../assets/images/Close/Blue.png')
 
-class FilterComponent extends React.Component {
+class CardFilterComponent extends React.Component {
   constructor(props) {
     super(props)
     this.state = {
@@ -34,8 +34,27 @@ class FilterComponent extends React.Component {
   }
 
   render () {
-    const { show } = this.props
+    const { show, totalCardCount, cardCount } = this.props
     const { showType, sortType } = this.state
+
+    let showText = ''
+    if (totalCardCount === cardCount) {
+      if (totalCardCount === 1) {
+        if (showType === 'all' && sortType === 'date') {
+          showText = `Showing all cards`  
+        } else {
+          showText = `Showing 1 card`
+        }
+      } else {
+        showText = `Showing all ${cardCount} cards`
+      }
+    } else {
+      if (cardCount === 1) {
+        showText = `Showing 1 card`  
+      } else {
+        showText = `Showing ${cardCount} cards`
+      }
+    }
 
     return (
       <Modal
@@ -58,7 +77,7 @@ class FilterComponent extends React.Component {
 
           <View style={styles.body}>
             <View style={styles.row}>
-              <Text style={styles.countText}>Showing all {this.props.cardCount} cards</Text>
+              <Text style={styles.countText}>{showText}</Text>
               <View style={styles.buttonGroup}>
                 <TouchableOpacity onPress={() => this.showCards('all')} style={styles.buttonView}>
                   <View style={[styles.button, showType === 'all' ? styles.buttonSelect : styles.buttonDeselect]}>
@@ -121,7 +140,7 @@ class FilterComponent extends React.Component {
   }
 }
 
-FilterComponent.defaultProps = {
+CardFilterComponent.defaultProps = {
   show: false,
   cardCount: 0,
   onClose: () => {},
@@ -129,12 +148,13 @@ FilterComponent.defaultProps = {
   onFilterSort: () => {}
 }
 
-FilterComponent.propTypes = {
+CardFilterComponent.propTypes = {
   show: PropTypes.bool,
   cardCount: PropTypes.number,
+  totalCardCount: PropTypes.number.isRequired,
   onClose: PropTypes.func,
   onFilterShow: PropTypes.func,
   onFilterSort: PropTypes.func
 }
 
-export default FilterComponent
+export default CardFilterComponent

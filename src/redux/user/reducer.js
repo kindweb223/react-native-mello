@@ -474,6 +474,31 @@ export default function user(state = initialState, action = {}) {
         userInfo: data
       }
     }
+
+    /**
+     * Add device token
+     */
+    case types.ADD_DEVICE_TOKEN_PENDING:
+      return {
+        ...state,
+        loading: types.ADD_DEVICE_TOKEN_PENDING,
+      }
+    case types.ADD_DEVICE_TOKEN_FULFILLED: {
+      console.log('ADD_DEVICE_TOKEN_FULFILLED : ', action.result)
+      return {
+        ...state,
+        loading: types.ADD_DEVICE_TOKEN_FULFILLED,
+      }
+    }
+    case types.ADD_DEVICE_TOKEN_REJECTED: {
+      console.log('ADD_DEVICE_TOKEN_REJECTED : ', action.error)
+      return {
+        ...state,
+        loading: types.ADD_DEVICE_TOKEN_REJECTED,
+        error: action.error.response.data
+      }
+    }
+
     default:
       return state;
   }
