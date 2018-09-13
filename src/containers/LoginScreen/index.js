@@ -80,7 +80,6 @@ class LoginScreen extends React.Component {
 
     if (prevProps.user.loading === 'GET_USER_SESSION_PENDING' && this.props.user.loading === 'GET_USER_SESSION_FULFILLED') {
       if (this.state.isLogIn) {
-        console.log('LOGIN_SESSION !!!!!')
         this.setState({ loading: false  }, () => {
           this.setState({ isLogIn: false })
 

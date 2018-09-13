@@ -212,6 +212,7 @@ class ShareScreen extends React.Component {
                         <InviteeItemComponent
                           invitee={invitee}
                           isViewOnly={false}
+                          hideLike={true}
                           isOwnerInvitee={COMMON_FUNC.checkOwnerinvitee(data, invitee)}
                         />
                       </View>

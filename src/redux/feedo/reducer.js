@@ -643,7 +643,6 @@ export default function feedo(state = initialState, action = {}) {
      * Update sharing preferenecs
      */
     case types.UPDATE_SHARING_PREFERENCES_PENDING: {
-      console.log('UPDATE_SHARING_PREFERENCES_PENDING')
       return {
         ...state,
         loading: types.UPDATE_SHARING_PREFERENCES_PENDING,
@@ -653,7 +652,6 @@ export default function feedo(state = initialState, action = {}) {
     case types.UPDATE_SHARING_PREFERENCES_FULFILLED: {
       const { feedoList, currentFeed } = state
       const { feedId, data } = action.payload
-      console.log('UPDATE_SHARING_PREFERENCES_FULFILLED')
 
       const restFeedoList = filter(feedoList, feed => feed.id !== feedId)
       let newFeed = Object.assign(
