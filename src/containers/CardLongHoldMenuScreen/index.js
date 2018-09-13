@@ -5,7 +5,7 @@ import {
 } from 'react-native'
 import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
-import { ActionSheetCustom as ActionSheet } from 'react-native-actionsheet'
+import ActionSheet from 'react-native-actionsheet'
 import FeedCardComponent from '../../components/FeedCardComponent'
 import CardActionBarComponent from '../../components/CardActionBarComponent'
 import COLORS from '../../service/colors'
@@ -25,7 +25,9 @@ class CardLongHoldMenuScreen extends React.Component {
   onHandleSettings(item) {
     switch(item) {
       case 'Delete':
-        this.actionSheetRef.show()
+        setTimeout(() => {
+          this.ActionSheet.show()
+        }, 200)
         return
       case 'Edit':
         this.props.onEdit(this.props.idea)
@@ -68,21 +70,13 @@ class CardLongHoldMenuScreen extends React.Component {
         idea={idea}
       />,
       <ActionSheet
-        key='2' 
-        ref={ref => this.actionSheetRef = ref}
-        title={
-          <Text style={styles.titleText}>This will permanentely delete your card</Text>
-        }
-        options={
-          [
-            <Text key="0" style={styles.actionButtonText}>Delete card</Text>,
-            'Cancel'
-          ]
-        }
+        key="2"
+        ref={ref => this.ActionSheet = ref}
+        title={'This will permanentely delete your card'}
+        options={['Delete card', 'Cancel']}
         cancelButtonIndex={1}
-        destructiveButtonIndex={2}
+        destructiveButtonIndex={0}
         tintColor={COLORS.PURPLE}
-        styles={styles}
         onPress={(index) => this.onTapActionSheet(index)}
       />
     ]

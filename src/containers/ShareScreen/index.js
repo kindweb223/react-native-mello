@@ -159,6 +159,8 @@ class ShareScreen extends React.Component {
     const { linkShareModal, shareModalType, shareInviteeData } = this.state
     let { invitees } = data
 
+    invitees = _.sortBy(invitees, invitee => invitee.dateCreated)
+
     return (
       <View style={styles.overlay}>
         <View style={styles.header}>
@@ -212,6 +214,7 @@ class ShareScreen extends React.Component {
                         <InviteeItemComponent
                           invitee={invitee}
                           isViewOnly={false}
+                          hideLike={true}
                           isOwnerInvitee={COMMON_FUNC.checkOwnerinvitee(data, invitee)}
                         />
                       </View>

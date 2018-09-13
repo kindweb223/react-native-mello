@@ -10,7 +10,7 @@ import styles from './styles'
 import UserAvatarComponent from '../../UserAvatarComponent';
 
 
-const InviteeItemComponent = ({ invitee, isViewOnly, isOwnerInvitee, isOnlyTitle }) => {
+const InviteeItemComponent = ({ invitee, isViewOnly, isOwnerInvitee, isOnlyTitle, hideLike }) => {
   const { userProfile } = invitee
   const userName = `${userProfile.firstName} ${userProfile.lastName}`
 
@@ -30,18 +30,27 @@ const InviteeItemComponent = ({ invitee, isViewOnly, isOwnerInvitee, isOnlyTitle
             <Text style={styles.title}>{userName}</Text>
           )}
           {!isOnlyTitle && (
-            [
-              <Text
-                key="0"
-                style={userProfile.firstName !== null && userProfile.lastName !== null ? styles.subtitle : styles.title}
-              >
-                {userProfile.email}
-              </Text>,
-              <View key="1" style={styles.cardView}>
-                <Text style={styles.subtitle}>{invitee.ideas ? invitee.ideas.length : 0} cards</Text>
-                <Text  style={styles.subtitle}>0 likes</Text>
-              </View>
-            ]
+            hideLike
+            ? [
+                <Text
+                  key="0"
+                  style={userProfile.firstName !== null && userProfile.lastName !== null ? styles.subtitle : styles.title}
+                >
+                  {userProfile.email}
+                </Text>
+              ]
+            : [
+                <Text
+                  key="0"
+                  style={userProfile.firstName !== null && userProfile.lastName !== null ? styles.subtitle : styles.title}
+                >
+                  {userProfile.email}
+                </Text>,
+                <View key="1" style={styles.cardView}>
+                  <Text style={styles.subtitle}>{invitee.ideas ? invitee.ideas.length : 0} cards</Text>
+                  <Text  style={styles.subtitle}>0 likes</Text>
+                </View>
+              ]
           )}
         </View>
       </View>
@@ -67,14 +76,16 @@ const InviteeItemComponent = ({ invitee, isViewOnly, isOwnerInvitee, isOnlyTitle
 InviteeItemComponent.defaultProps = {
   isViewOnly: true,
   isOnlyTitle: false,
-  isOwnerInvitee: false
+  isOwnerInvitee: false,
+  hideLike: false
 }
 
 InviteeItemComponent.propTypes = {
   invitee: PropTypes.objectOf(PropTypes.any).isRequired,
   isViewOnly: PropTypes.bool,
   isOnlyTitle: PropTypes.bool,
-  isOwnerInvitee: PropTypes.bool
+  isOwnerInvitee: PropTypes.bool,
+  hideLike: PropTypes.bool
 }
 
 export default InviteeItemComponent

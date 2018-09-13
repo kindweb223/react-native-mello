@@ -2,22 +2,16 @@ import React from 'react'
 import { Text } from 'react-native'
 import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
-import { ActionSheetCustom as ActionSheet } from 'react-native-actionsheet'
+import ActionSheet from 'react-native-actionsheet'
 import Modal from "react-native-modal"
 import FeedActionBarComponent from '../../components/FeedActionBarComponent'
 import FeedItemComponent from '../../components/FeedItemComponent'
 import ShareScreen from '../ShareScreen'
 import COLORS from '../../service/colors'
-import styles from './styles'
 
 import {
   getFeedDetail
 } from '../../redux/feedo/actions';
-
-const ACTIONSHEET_OPTIONS = [
-  <Text key="0" style={styles.actionButtonText}>Delete feed</Text>,
-  'Cancel'
-]
 
 class FeedLongHoldMenuScreen extends React.Component {
   constructor(props) {
@@ -52,7 +46,9 @@ class FeedLongHoldMenuScreen extends React.Component {
   handleSetting = (item) => {
     switch(item) {
       case 'Delete':
-        this.ActionSheet.show()
+        setTimeout(() => {
+          this.ActionSheet.show()
+        }, 200)
         return
       case 'Archive':
         this.props.handleArchiveFeed(this.props.feedData.id)
@@ -85,7 +81,9 @@ class FeedLongHoldMenuScreen extends React.Component {
   }
 
   closeShareModal = () => {
-    this.setState({ isShowShare: false })
+    setTimeout(() => {
+      this.setState({ isShowShare: false })
+    }, 1000)
   }
 
   render () {
@@ -105,12 +103,11 @@ class FeedLongHoldMenuScreen extends React.Component {
       <ActionSheet
         key="3"
         ref={ref => this.ActionSheet = ref}
-        title={<Text style={styles.titleText}>Are you sure you want to delete this feed, everything will be gone ...</Text>}
-        options={ACTIONSHEET_OPTIONS}
+        title={'Are you sure you want to delete this feed, everything will be gone ...'}
+        options={['Delete feed', 'Cancel']}
         cancelButtonIndex={1}
-        destructiveButtonIndex={2}
+        destructiveButtonIndex={0}
         tintColor={COLORS.PURPLE}
-        styles={styles}
         onPress={(index) => this.onTapActionSheet(index)}
       />,
       <Modal
