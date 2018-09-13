@@ -39,6 +39,27 @@ const checkOwnerEditor = (feed) => {
   return false
 }
 
+const FeedEditor = (feed) => {
+  if (!feed.metadata.owner && feed.metadata.permissions === 'EDIT') {
+    return true
+  }
+  return false
+}
+
+const FeedContributor = (feed) => {
+  if (!feed.metadata.owner && feed.metadata.permissions === 'ADD') {
+    return true
+  }
+  return false
+}
+
+const FeedGuest = (feed) => {
+  if (!feed.metadata.owner && feed.metadata.permissions === 'VIEW') {
+    return true
+  }
+  return false
+}
+
 const validateEmail = (email) => {
   let re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
   return re.test(email.toLowerCase())
@@ -49,5 +70,8 @@ export {
   checkOwnerinvitee,
   checkEditor,
   checkOwnerEditor,
-  validateEmail
+  validateEmail,
+  FeedEditor,
+  FeedContributor,
+  FeedGuest
 }
