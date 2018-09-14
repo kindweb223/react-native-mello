@@ -6,7 +6,6 @@ import {
   View,
   Text,
   Animated,
-  ActivityIndicator,
   Image,
   TouchableOpacity,
   Platform,
@@ -22,7 +21,7 @@ import TabBar from 'react-native-underline-tabbar'
 import Modal from "react-native-modal"
 import { Actions } from 'react-native-router-flux'
 import * as R from 'ramda'
-import { filter, orderBy } from 'lodash'
+import { find, filter, orderBy } from 'lodash'
 import DashboardNavigationBar from '../../navigations/DashboardNavigationBar'
 import DashboardActionBar from '../../navigations/DashboardActionBar'
 import FeedoListContainer from '../FeedoListContainer'
@@ -83,7 +82,9 @@ class HomeScreen extends React.Component {
       emptyState: true,
       isShowToaster: false,
       scrollableTabViewContainer: {},
-      scrollY: new Animated.Value(0)
+      scrollY: new Animated.Value(0),
+      currentPushNotificationType: CONSTANTS.UNKOWN_PUSH_NOTIFICATION,
+      currentPushNotificationData: null,
     };
 
     this.currentRef = null;
@@ -169,6 +170,60 @@ class HomeScreen extends React.Component {
     if (prevProps.user.loading === 'USER_SIGNOUT_PENDING' && this.props.user.loading === 'USER_SIGNOUT_FULFILLED') {
       Actions.LoginStartScreen()
     }
+
+    if (this.props.feedo.loading === 'GET_FEEDO_LIST_FULFILLED' && this.state.currentPushNotificationType === CONSTANTS.USER_INVITED_TO_HUNT && this.state.currentPushNotificationData) {
+      const { feedoList, currentPushNotificationData } = this.state
+      const matchedHunt = find(feedoList, feedo => feedo.id === currentPushNotificationData);
+      if (matchedHunt) {
+        Actions.FeedDetailScreen({
+          data: matchedHunt
+        });
+      }
+      this.setState({
+        currentPushNotificationType: CONSTANTS.UNKOWN_PUSH_NOTIFICATION,
+        currentPushNotificationData: null,
+      });
+    }
+  }
+
+  parsePushNotification(notification) {
+    console.log('NOTIFICATION : ', notification);
+    const type = notification.data.type;
+    switch (type) {
+      case CONSTANTS.USER_INVITED_TO_HUNT: {
+        const { huntId, inviteeId } = notification.data;
+        const { feedoList } = this.state
+        const matchedHunt = find(feedoList, feedo => feedo.id === huntId);
+        if (matchedHunt) {
+          Actions.FeedDetailScreen({
+            data: matchedHunt
+          });
+        } else {
+          this.setState({
+            currentPushNotificationType: CONSTANTS.USER_INVITED_TO_HUNT,
+            currentPushNotificationData: huntId,
+          });
+          this.props.getFeedoList(this.state.tabIndex);
+        }
+        break;
+      }
+      case CONSTANTS.NEW_COMMENT_ON_IDEA: {
+        const { ideaId, huntId, commentId } = notification.data;
+        break;
+      }
+      case CONSTANTS.NEW_IDEA_ADDED: {
+        const { huntId, ideaId } = notification.data;
+        break;
+      }
+      case CONSTANTS.NEW_LIKE_ON_IDEA: {
+        const { huntId, ideaId } = notification.data;
+        break;
+      }
+      case CONSTANTS.USER_JOINED_HUNT: {
+        const { huntId } = notification.data;
+        break;
+      }
+    }
   }
 
   registerPushNotification() {
@@ -182,7 +237,7 @@ class HomeScreen extends React.Component {
         this.props.addDeviceToken(this.props.user.userInfo.id, data);
       },
       onNotification: (notification) => {
-        console.log('NOTIFICATION : ', notification);
+        this.parsePushNotification(notification);
       },
       senderID: "sender-id",
     });
