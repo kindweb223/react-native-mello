@@ -52,6 +52,7 @@ const styles = StyleSheet.create({
     width: '100%',
   },
   headerTitle: {
+    lineHeight: 28,
     fontSize: 28,
     fontWeight: 'bold',
     color: COLORS.PRIMARY_BLACK,
@@ -115,8 +116,7 @@ const styles = StyleSheet.create({
     borderRadius: 20,
     backgroundColor: '#fff',
     width: 122,
-    height: 260,
-    paddingTop: 10,
+    paddingVertical: 10,
     position: 'absolute',
     right: CONSTANTS.PADDING,
     top: 140,

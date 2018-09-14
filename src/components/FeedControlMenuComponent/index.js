@@ -9,12 +9,24 @@ import PropTypes from 'prop-types'
 import Octicons from 'react-native-vector-icons/Octicons'
 import Entypo from 'react-native-vector-icons/Entypo'
 import styles from './styles'
-
-const MENU_ITMS = ['Duplicate', 'Edit', 'Archive', 'Delete']
+import * as COMMON_FUNC from '../../service/commonFunc'
 
 class FeedControlMenuComponent extends React.Component {
   render() {
     const { data, pinText } = this.props
+
+    let MENU_ITEMS = []
+    if (COMMON_FUNC.checkOwner(data)) {
+      MENU_ITEMS = ['Duplicate', 'Edit', 'Archive', 'Delete']
+    }
+
+    if (COMMON_FUNC.FeedEditor(data)) {
+      MENU_ITEMS = ['Duplicate', 'Edit']
+    }
+
+    if (COMMON_FUNC.FeedContributor(data) || COMMON_FUNC.FeedGuest(data)) {
+      MENU_ITEMS = []
+    }
 
     return (
       <View style={styles.menuContainer}>
@@ -33,9 +45,10 @@ class FeedControlMenuComponent extends React.Component {
         </TouchableOpacity>
 
         <FlatList
-          data={MENU_ITMS}
+          data={MENU_ITEMS}
           keyExtractor={item => item}
           scrollEnabled={false}
+          enableEmptySections
           renderItem={({ item }) => (
             <TouchableOpacity
               onPress={() => this.props.handleSettingItem(item)}

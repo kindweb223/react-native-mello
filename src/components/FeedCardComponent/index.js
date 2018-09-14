@@ -17,6 +17,7 @@ import LikeComponent from '../LikeComponent';
 import CommentComponent from '../CommentComponent';
 import UserAvatarComponent from '../UserAvatarComponent';
 
+import * as COMMON_FUNC from '../../service/commonFunc'
 
 class FeedCardComponent extends React.Component {
   constructor(props) {
@@ -27,7 +28,7 @@ class FeedCardComponent extends React.Component {
   }
 
   get renderBottom() {
-    const { invitees, idea } = this.props;
+    const { invitees, idea, feedo } = this.props;
     const invitee = filter(invitees, item => item.id === idea.inviteeId)[0]
     let isOnlyInvitee = false
     
@@ -57,10 +58,12 @@ class FeedCardComponent extends React.Component {
         </View>
         <View style={styles.subView}>
           <LikeComponent idea={idea} />
-          <CommentComponent 
-            idea={idea} 
-            onComment={this.props.onComment}
-          />
+          {!COMMON_FUNC.FeedGuest(feedo.currentFeed) && (
+            <CommentComponent 
+              idea={idea} 
+              onComment={this.props.onComment}
+            />
+          )}
         </View>
       </View>
     )
