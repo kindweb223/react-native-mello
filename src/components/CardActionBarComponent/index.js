@@ -6,14 +6,14 @@ import {
   FlatList,
   Animated,
 } from 'react-native'
+import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
 import Modal from 'react-native-modal'
 import Entypo from 'react-native-vector-icons/Entypo'
 import Ionicons from 'react-native-vector-icons/Ionicons'
 
+import * as COMMON_FUNC from '../../service/commonFunc'
 import styles from './styles'
-
-const MENU_ITMS = ['Edit', 'Delete']
 
 const SELECT_NONE = 0;
 const SELECT_MOVE = 1;
@@ -94,6 +94,25 @@ class CardActionBarComponent extends React.Component {
   }
 
   render() {
+    const { feedo, idea } = this.props
+
+    let MENU_ITEMS = []
+    if (COMMON_FUNC.FeedGuest(feedo.currentFeed)) {
+      MENU_ITEMS = ['Delete']
+    }
+
+    if (COMMON_FUNC.checkOwner(feedo.currentFeed) || COMMON_FUNC.FeedEditor(feedo.currentFeed)) {
+      MENU_ITEMS = ['Edit', 'Delete']
+    }
+
+    if (COMMON_FUNC.FeedContributor(feedo.currentFeed)) {
+      if (idea.metadata.owner) {
+        MENU_ITEMS = ['Edit', 'Delete']
+      } else {
+        MENU_ITEMS = ['Delete']
+      }
+    }
+
     return (
       <View style={styles.container}>
         <View style={styles.rowContainer}>
@@ -147,7 +166,7 @@ class CardActionBarComponent extends React.Component {
         >
           <FlatList
             style={styles.settingMenuContainer}
-            data={MENU_ITMS}
+            data={MENU_ITEMS}
             keyExtractor={item => item}
             renderItem={this.renderItem.bind(this)}
           />
@@ -157,10 +176,17 @@ class CardActionBarComponent extends React.Component {
   }
 }
 
+const mapStateToProps = ({ feedo }) => ({
+  feedo
+})
+
 CardActionBarComponent.propTypes = {
   onMove: PropTypes.func.isRequired,
   onHandleSettings: PropTypes.func.isRequired,
   idea: PropTypes.object,
 }
 
-export default CardActionBarComponent
+export default connect(
+  mapStateToProps,
+  null
+)(CardActionBarComponent)

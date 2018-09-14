@@ -11,8 +11,8 @@ import Octicons from 'react-native-vector-icons/Octicons'
 import Entypo from 'react-native-vector-icons/Entypo'
 import styles from './styles'
 
+import * as COMMON_FUNC from '../../service/commonFunc'
 import Modal from "react-native-modal"
-const MENU_ITMS = ['Duplicate', 'Edit', 'Archive', 'Delete']
 
 const SELECT_NONE = 0;
 const SELECT_PIN_UNPIN = 1;
@@ -99,38 +99,55 @@ class FeedActionBarComponent extends React.Component {
   }
 
   render() {
+    const { data } = this.props
+
+    let MENU_ITEMS = []
+    if (COMMON_FUNC.checkOwner(data)) {
+      MENU_ITEMS = ['Duplicate', 'Edit', 'Archive', 'Delete']
+    }
+
+    if (COMMON_FUNC.FeedEditor(data)) {
+      MENU_ITEMS = ['Duplicate', 'Edit']
+    }
+
+    if (COMMON_FUNC.FeedContributor(data) || COMMON_FUNC.FeedGuest(data)) {
+      MENU_ITEMS = []
+    }
+
     return (
       <View style={styles.container}>
         <View style={styles.innerContainer}>
-          <Modal
-            style={styles.settingMenu}
-            isVisible={this.state.isSettingMenu}
-            backdropOpacity={0}
-            animationIn="fadeIn"
-            animationOut="fadeOut"
-            animationInTiming={600}
-            onModalHide={this.onSettingMenuHide}
-            onBackdropPress={() => this.setState({ isSettingMenu: false })}
-          >
-            <View style={styles.settingMenuView}>
-              <FlatList
-                data={MENU_ITMS}
-                keyExtractor={item => item}
-                renderItem={({ item }) => (
-                  <TouchableOpacity
-                    onPress={() => this.onPressSetting(item)}
-                    activeOpacity={0.5}
-                  >
-                    <View style={styles.settingItem}>
-                      <Text style={item === 'Delete' ? styles.deleteButtonText : styles.settingButtonText}>
-                        {item}
-                      </Text>
-                    </View>
-                  </TouchableOpacity>
-                )}
-              />
-            </View>
-          </Modal>
+          {MENU_ITEMS.length > 0 && (
+            <Modal
+              style={styles.settingMenu}
+              isVisible={this.state.isSettingMenu}
+              backdropOpacity={0}
+              animationIn="fadeIn"
+              animationOut="fadeOut"
+              animationInTiming={600}
+              onModalHide={this.onSettingMenuHide}
+              onBackdropPress={() => this.setState({ isSettingMenu: false })}
+            >
+              <View style={styles.settingMenuView}>
+                <FlatList
+                  data={MENU_ITEMS}
+                  keyExtractor={item => item}
+                  renderItem={({ item }) => (
+                    <TouchableOpacity
+                      onPress={() => this.onPressSetting(item)}
+                      activeOpacity={0.5}
+                    >
+                      <View style={styles.settingItem}>
+                        <Text style={item === 'Delete' ? styles.deleteButtonText : styles.settingButtonText}>
+                          {item}
+                        </Text>
+                      </View>
+                    </TouchableOpacity>
+                  )}
+                />
+              </View>
+            </Modal>
+          )}
 
           <View style={styles.buttonContainer}>
           <Animated.View
