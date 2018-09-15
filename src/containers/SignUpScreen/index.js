@@ -455,7 +455,7 @@ class SignUpScreen extends React.Component {
                   <View style={styles.avatar}>
                     {_.isEmpty(avatarFile)
                       ? <Image source={CAMERA_ICON} />
-                      : <Image style={styles.avatarImg} source={{ uri: avatarFile.uri }} />
+                      : <Image style={styles.avatarImg} source={{ uri: avatarFile.uri, cache: 'force-cache' }} />
                     }
                   </View>
                   <Text style={styles.uploadText}>Upload avatar</Text>

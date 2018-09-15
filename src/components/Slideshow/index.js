@@ -91,7 +91,7 @@ export default class SlideShow extends React.Component {
               }}
             >
               <TouchableOpacity activeOpacity={1} onPress={() => this.handleImage()}>
-                <Image source={{ uri: item.accessUrl }} resizeMode="contain" style={{ width, height: '100%' }} />
+                <Image source={{ uri: item.accessUrl, cache: 'force-cache' }} resizeMode="contain" style={{ width, height: '100%' }} />
               </TouchableOpacity>
             </GestureRecognizer>
           ))}

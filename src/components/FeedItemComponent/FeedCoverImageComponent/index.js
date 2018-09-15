@@ -23,7 +23,7 @@ const FeedCoverImageComponent = ({ data }) => (
       >
         <Image
           style={styles.image}
-          source={{ uri: item.coverImage }}
+          source={{ uri: item.coverImage, cache: 'force-cache' }}
         />
       </View>
     ))}

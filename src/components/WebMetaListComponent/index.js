@@ -63,7 +63,7 @@ export default class WebMetaList extends React.Component {
           activeOpacity={0.7}
           onPress={() => this.onPressLink(index)}
         >
-          <Image style={styles.imageCover} source={{uri: item.imageUrl}} resizeMode='cover' />
+          <Image style={styles.imageCover} source={{uri: item.imageUrl, cache: 'force-cache'}} resizeMode='cover' />
           <View style={styles.infoContainer}>
             <Text style={styles.textTitle} numberOfLines={1}>{item.title}</Text>
             <Text style={styles.textDescription} numberOfLines={1}>{item.description}</Text>

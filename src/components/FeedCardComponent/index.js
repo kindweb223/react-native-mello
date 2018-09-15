@@ -86,7 +86,7 @@ class FeedCardComponent extends React.Component {
             <View style={styles.thumbnailsView}>
               <Image
                 style={styles.thumbnails}
-                source={{ uri: idea.coverImage }}
+                source={{ uri: idea.coverImage, cache: 'force-cache' }}
               />
             </View>
         }

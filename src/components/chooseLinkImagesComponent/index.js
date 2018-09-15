@@ -58,7 +58,7 @@ export default class ChooseLinkImages extends React.Component {
         activeOpacity={0.6}
         onPress={() => this.onSelectItem(item.item)}
       >
-        <Image style={styles.imageItem} source={{uri: item.item}} />
+        <Image style={styles.imageItem} source={{uri: item.item, cache: 'force-cache'}} />
         { 
           select && 
           <Ionicons style={styles.icon} name="ios-checkmark-circle" size={20} color={COLORS.PURPLE} /> 

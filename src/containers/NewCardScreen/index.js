@@ -638,7 +638,7 @@ class NewCardScreen extends React.Component {
   get renderCoverImage() {
     if (this.state.coverImage) {
       return (
-        <Image style={styles.imageCover} source={{ uri: this.state.coverImage }} resizeMode="cover" />
+        <Image style={styles.imageCover} source={{ uri: this.state.coverImage, cache: 'force-cache' }} resizeMode="cover" />
       );
     }
     const imageFiles = _.filter(this.props.card.currentCard.files, file => file.contentType.indexOf('image') !== -1);

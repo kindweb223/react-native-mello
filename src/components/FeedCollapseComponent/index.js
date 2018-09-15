@@ -99,7 +99,7 @@ class FeedCollapseComponent extends React.Component {
                   {images.map((item, key) => (
                     <View key={key} style={key === (images.length - 1) ? styles.feedLastImage : styles.feedImage}>
                       <TouchableOpacity onPress={() => this.onImagePreview(key)}>
-                        <Image style={styles.image} source={{ uri: item.accessUrl }} threshold={300} />
+                        <Image style={styles.image} source={{ uri: item.accessUrl, cache: 'force-cache' }} threshold={300} />
                       </TouchableOpacity>
                     </View>
                   ))}
