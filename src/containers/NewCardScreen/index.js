@@ -484,12 +484,14 @@ class NewCardScreen extends React.Component {
   checkUrl(content) {
     const { viewMode } = this.props;
     if (viewMode === CONSTANTS.CARD_NEW) {
-      const texts = content.split(/[, ]/);
-      if (texts.length === 1 && validUrl.isUri(texts[0])) {
-        this.isOpenGraphForNewCard = true;
-        this.urlForNewCard = texts[0];
-        this.props.getOpenGraph(texts[0]);
-        return true;
+      if (content) {
+        const texts = content.split(/[, ]/);
+        if (texts.length === 1 && validUrl.isUri(texts[0])) {
+          this.isOpenGraphForNewCard = true;
+          this.urlForNewCard = texts[0];
+          this.props.getOpenGraph(texts[0]);
+          return true;
+        }
       }
     }
     return false;
