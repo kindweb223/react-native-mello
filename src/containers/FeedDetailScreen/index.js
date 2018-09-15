@@ -157,7 +157,7 @@ class FeedDetailScreen extends React.Component {
     }
 
     if (filterShowType === 'like') {
-      filterIdeas = _.filter(ideas, idea => idea.metadata.likes > 0)
+      filterIdeas = _.filter(ideas, idea => idea.metadata.liked)
     }
 
     if (filterSortType === 'date') {
