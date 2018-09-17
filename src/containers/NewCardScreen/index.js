@@ -54,6 +54,7 @@ import LikeComponent from '../../components/LikeComponent';
 import CommentComponent from '../../components/CommentComponent';
 import ChooseLinkImages from '../../components/chooseLinkImagesComponent';
 import UserAvatarComponent from '../../components/UserAvatarComponent';
+import FastImage from "react-native-fast-image";
 
 const ScreenVerticalMinMargin = 80;
 
@@ -638,7 +639,7 @@ class NewCardScreen extends React.Component {
   get renderCoverImage() {
     if (this.state.coverImage) {
       return (
-        <Image style={styles.imageCover} source={{ uri: this.state.coverImage, cache: 'force-cache' }} resizeMode="cover" />
+        <FastImage style={styles.imageCover} source={{uri: this.state.coverImage}} resizeMode="cover" />
       );
     }
     const imageFiles = _.filter(this.props.card.currentCard.files, file => file.contentType.indexOf('image') !== -1);

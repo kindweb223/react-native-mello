@@ -6,6 +6,7 @@ import {
 import PropTypes from 'prop-types'
 import Image from 'react-native-image-progress'
 import styles from './styles'
+import FastImage from "react-native-fast-image";
 
 const FeedCoverImageComponent = ({ data }) => (
   <View style={styles.list}>
@@ -21,9 +22,9 @@ const FeedCoverImageComponent = ({ data }) => (
           ]
         }
       >
-        <Image
+        <FastImage
           style={styles.image}
-          source={{ uri: item.coverImage, cache: 'force-cache' }}
+          source={{uri: item.coverImage}}
         />
       </View>
     ))}

@@ -18,6 +18,7 @@ import CommentComponent from '../CommentComponent';
 import UserAvatarComponent from '../UserAvatarComponent';
 
 import * as COMMON_FUNC from '../../service/commonFunc'
+import FastImage from "react-native-fast-image";
 
 class FeedCardComponent extends React.Component {
   constructor(props) {
@@ -84,9 +85,9 @@ class FeedCardComponent extends React.Component {
         {
           idea.coverImage && idea.coverImage.length && 
             <View style={styles.thumbnailsView}>
-              <Image
+              <FastImage
                 style={styles.thumbnails}
-                source={{ uri: idea.coverImage, cache: 'force-cache' }}
+                source={{uri: idea.coverImage}}
               />
             </View>
         }

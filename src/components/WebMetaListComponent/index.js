@@ -16,6 +16,7 @@ import Ionicons from 'react-native-vector-icons/Ionicons'
 import styles from './styles'
 import CONSTANTS from '../../service/constants'
 import COLORS from '../../service/colors'
+import FastImage from "react-native-fast-image";
 
 
 export default class WebMetaList extends React.Component {
@@ -63,7 +64,7 @@ export default class WebMetaList extends React.Component {
           activeOpacity={0.7}
           onPress={() => this.onPressLink(index)}
         >
-          <Image style={styles.imageCover} source={{uri: item.imageUrl, cache: 'force-cache'}} resizeMode='cover' />
+          <FastImage style={styles.imageCover} source={{uri: item.imageUrl}} resizeMode='cover' />
           <View style={styles.infoContainer}>
             <Text style={styles.textTitle} numberOfLines={1}>{item.title}</Text>
             <Text style={styles.textDescription} numberOfLines={1}>{item.description}</Text>
