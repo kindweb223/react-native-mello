@@ -63,6 +63,7 @@ class KeyboardScrollView extends React.Component {
 
     return (
       <KeyboardAwareScrollView
+        keyboardShouldPersistTaps="handled"
         ref={c => this.scrollRef = c}
         automaticallyAdjustContentInsets={true}
         extraHeight={0}
