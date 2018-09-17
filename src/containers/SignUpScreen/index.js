@@ -579,7 +579,7 @@ class SignUpScreen extends React.Component {
           <Text style={styles.headerText}>Create new account</Text>
           <TouchableOpacity onPress={() => {}}>
             <View style={styles.btnPass}>
-              <MaterialCommunityIcons name="onepassword" size={25} color={'#fff'} />
+              {/*<MaterialCommunityIcons name="onepassword" size={25} color={'#fff'} />*/}
             </View>
           </TouchableOpacity>
         </View>
