@@ -12,6 +12,7 @@ import PropTypes from 'prop-types'
 
 import { Actions } from 'react-native-router-flux'
 import Ionicons from 'react-native-vector-icons/Ionicons'
+import SafariView from "react-native-safari-view";
 
 import styles from './styles'
 import CONSTANTS from '../../service/constants'
@@ -47,13 +48,25 @@ export default class WebMetaList extends React.Component {
 
   onPressLink(index) {
     const url = this.props.links[index].originalUrl;
-    Linking.canOpenURL(url).then(supported => {
-      if (!supported) {
-        console.log('Can\'t handle url: ' + url);
-      } else {
-        return Linking.openURL(url);
-      }
-    }).catch(error => console.error('An error occurred', error));
+
+      SafariView.isAvailable()
+          .then(SafariView.show({
+              url: url,
+              tintColor: COLORS.PURPLE
+          }))
+          .catch(error => {
+              // Fallback WebView code for iOS 8 and earlier
+              Linking.canOpenURL(url)
+                  .then(supported => {
+                      if (!supported) {
+                          console.log('Can\'t handle url: ' + url);
+                      }
+                      else {
+                          return Linking.openURL(url);
+                      }
+                  })
+                  .catch(error => console.error('An error occurred', error));
+          });
   }
 
   renderItem({item, index}) {
