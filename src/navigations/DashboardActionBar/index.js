@@ -41,7 +41,7 @@ class DashboardActionBar extends React.Component {
   }
 
   render () {
-    const { filtering, showType, sortType } = this.props
+    const { filtering, showType, sortType, notifications } = this.props
 
     return (
       <View style={[styles.container, filtering ? styles.filterContainer : styles.actionContainer]}>
@@ -59,15 +59,16 @@ class DashboardActionBar extends React.Component {
           </View>
         )}
         <View style={styles.actionView}>
-          <View style={styles.notificationView}>
-            <Ionicons
-              name="md-notifications"
-              size={20}
-              color={COLORS.PURPLE}
-            />
-            <Text style={styles.notificationText}>0</Text>
-          </View>
-
+          {notifications &&
+            <View style={styles.notificationView}>
+              <Ionicons
+                name="md-notifications"
+                size={20}
+                color={COLORS.PURPLE}
+              />
+              <Text style={styles.notificationText}>0</Text>
+            </View>
+          }
           <Animated.View 
             style={[styles.plusButtonView, 
               {
@@ -96,7 +97,8 @@ DashboardActionBar.defaultProps = {
   filtering: true,
   handleFilter: () => {},
   showType: 'all',
-  sortType: 'date'
+  sortType: 'date',
+  notifications: true
 }
 
 DashboardActionBar.propTypes = {
@@ -104,7 +106,8 @@ DashboardActionBar.propTypes = {
   sortType: PropTypes.string,
   filtering: PropTypes.bool,
   onAddFeed: PropTypes.func,
-  handleFilter: PropTypes.func
+  handleFilter: PropTypes.func,
+  notifications: PropTypes.bool
 }
 
 export default DashboardActionBar

@@ -662,7 +662,8 @@ class HomeScreen extends React.Component {
 
         {!this.state.isLongHoldMenuVisible && (
           <DashboardActionBar 
-            filtering={!emptyState} 
+            filtering={false}
+            notifications={false}
             onAddFeed={this.onOpenNewFeedModal.bind(this)}
             handleFilter={() => this.handleFilter()}
           />

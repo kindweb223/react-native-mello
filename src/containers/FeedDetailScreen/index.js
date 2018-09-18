@@ -559,7 +559,7 @@ class FeedDetailScreen extends React.Component {
   closeShareModal = () => {
     setTimeout(() => {
       this.setState({ isShowShare: false })
-    }, 1000)
+    }, 200)
   }
 
   render () {
@@ -699,6 +699,7 @@ class FeedDetailScreen extends React.Component {
           handleFilter={this.handleFilter}
           showType={this.state.filterShowType}
           sortType={this.state.filterSortType}
+          notifications={false}
         />
 
         {this.renderNewCardModal}
@@ -731,6 +732,7 @@ class FeedDetailScreen extends React.Component {
           animationOut="zoomOutDown"
           animationInTiming={500}
           onModalHide={() => {}}
+          onBackdropPress={() => this.closeShareModal()}
         >
           <ShareScreen onClose={() => this.closeShareModal()} data={currentFeed} />
         </Modal>
