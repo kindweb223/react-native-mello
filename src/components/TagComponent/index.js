@@ -55,7 +55,7 @@ class Tags extends React.Component {
       selectedTagIndex: -1,
       activeTagName: '',
     });
-    if (text.length > 1 && (text.slice(-1) === ' ' || text.slice(-1) === ',')) {
+    if (text.length > 1 && text !== ' ' && text !== '  ' &&  text !== '   ' && (text.slice(-1) === ' ' || text.slice(-1) === ',')) {
       this.onCreateTag();
     } else {
       if (this.props.onChangeText) {
@@ -69,6 +69,7 @@ class Tags extends React.Component {
       this.prevKey = event.nativeEvent.key;
       return;
     }
+
     if ((this.prevKey === '' || this.prevKey === 'Backspace' || this.prevKey === ' ' || this.prevKey === ',') && event.nativeEvent.key === 'Backspace') {
       let index = this.props.tags.length - 1;
       if (this.state.selectedTagIndex !== -1) {
@@ -112,7 +113,9 @@ class Tags extends React.Component {
   }
 
   onSubmitEditing() {
-    this.onCreateTag();
+    if (this.state.tagText !== '' && this.state.tagText !== ' ' && this.state.tagText !== '  ') {
+      this.onCreateTag()
+    }
   }
 
   renderEdit() {
@@ -133,6 +136,7 @@ class Tags extends React.Component {
             onChangeText={this.onChangeText.bind(this)}
             onKeyPress={this.onKeyPress.bind(this)}
             onSubmitEditing={() => this.onSubmitEditing()}
+            selectionColor={COLORS.PURPLE}
           />
           {
             this.state.isHideCursor &&

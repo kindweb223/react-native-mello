@@ -114,7 +114,6 @@ class FeedFilterScreen extends React.Component {
   }
 
   inputTag = (flag) => {
-    console.log('FLAG: ', flag)
     this.setState({ inputTag: flag })
   }
 

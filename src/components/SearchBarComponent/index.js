@@ -95,6 +95,8 @@ class SearchBarComponent extends React.Component {
     const { userTags } = this.props
     const { selectTags } = this.state
 
+    console.log('userTags: ', userTags)
+    console.log('selectTags: ', selectTags)
     let restTags = [...userTags]
     for (let i = 0; i < selectTags.length; i ++) {
       _.remove(restTags, item => item.text.toLowerCase() === selectTags[i].text.toLowerCase())
