@@ -71,6 +71,8 @@
 		A450134E2139BFA200A78D65 /* libRNFetchBlob.a in Frameworks */ = {isa = PBXBuildFile; fileRef = B547AE5721370AB60004D6D5 /* libRNFetchBlob.a */; };
 		A46C2E1421497101007E54FA /* libRCTPushNotification.a in Frameworks */ = {isa = PBXBuildFile; fileRef = A46C2DF1214970D5007E54FA /* libRCTPushNotification.a */; };
 		A46C2ECA2149A212007E54FA /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 13B07FB51A68108700A75B9A /* Images.xcassets */; };
+		A480B7432154DD4700634D8B /* libSafariViewManager.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 2D2167F421511EA40039FBE7 /* libSafariViewManager.a */; };
+		A480B7442154DD9B00634D8B /* libRCTPushNotification.a in Frameworks */ = {isa = PBXBuildFile; fileRef = A46C2DF1214970D5007E54FA /* libRCTPushNotification.a */; };
 		A4BF285821234CFE0054D7A9 /* CloudKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A4BF285721234CFE0054D7A9 /* CloudKit.framework */; };
 		A4CD66952139B68000874CB1 /* MainInterface.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = A4CD66932139B68000874CB1 /* MainInterface.storyboard */; };
 		A4CD66992139B68000874CB1 /* HuntMobileEx.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = A4CD668E2139B67F00874CB1 /* HuntMobileEx.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
@@ -664,6 +666,8 @@
 				A4EB9CC8213F0FE300C598B8 /* libRNVectorIcons.a in Frameworks */,
 				A43342992142AF80005EE6DE /* libFastImage.a in Frameworks */,
 				A4D2256A21408E8300539042 /* libRNReactNativeSharedGroupPreferences.a in Frameworks */,
+				A480B7432154DD4700634D8B /* libSafariViewManager.a in Frameworks */,
+				A480B7442154DD9B00634D8B /* libRCTPushNotification.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -2332,6 +2336,7 @@
 					"$(SRCROOT)/../node_modules/react-native-vector-icons/RNVectorIconsManager",
 					"$(SRCROOT)/../node_modules/react-native-shared-group-preferences/ios",
 					"$(SRCROOT)/../node_modules/react-native-safari-view",
+					"$(SRCROOT)/../node_modules/react-native/Libraries",
 				);
 				INFOPLIST_FILE = HuntMobileEx/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
@@ -2385,6 +2390,7 @@
 					"$(SRCROOT)/../node_modules/react-native-vector-icons/RNVectorIconsManager",
 					"$(SRCROOT)/../node_modules/react-native-shared-group-preferences/ios",
 					"$(SRCROOT)/../node_modules/react-native-safari-view",
+					"$(SRCROOT)/../node_modules/react-native/Libraries",
 				);
 				INFOPLIST_FILE = HuntMobileEx/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
