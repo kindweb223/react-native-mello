@@ -5,6 +5,7 @@ import {
   ScrollView,
   View,
   Text,
+  Image,
   Animated,
   TouchableOpacity,
 } from 'react-native'
@@ -26,6 +27,7 @@ import {
 
 import COLORS from '../../service/colors'
 import styles from './styles'
+const SETTING_ICON = require('../../../assets/images/Settings/Grey.png')
 
 class FeedFilterScreen extends React.Component {
   constructor(props) {
@@ -35,7 +37,8 @@ class FeedFilterScreen extends React.Component {
       feedoList: [],
       filterFeedoList: [],
       userTags: [],
-      loading: false
+      loading: false,
+      inputTag: false
     };
   }
 
@@ -110,8 +113,13 @@ class FeedFilterScreen extends React.Component {
     this.filterByTags(feedoList, tags)
   }
 
+  inputTag = (flag) => {
+    console.log('FLAG: ', flag)
+    this.setState({ inputTag: flag })
+  }
+
   render () {
-    const { filterFeedoList, userTags } = this.state
+    const { filterFeedoList, userTags, inputTag } = this.state
 
     const navbarBackground = this.state.scrollY.interpolate({
       inputRange: [40, 41],
@@ -150,6 +158,9 @@ class FeedFilterScreen extends React.Component {
               <View style={styles.headerTitleView}>
                 <Text style={styles.headerTitle} numberOfLines={1} ellipsizeMode="tail">Search</Text>
               </View>
+              <TouchableOpacity onPress={() => {}}>
+                <Image source={SETTING_ICON} />
+              </TouchableOpacity>
             </Animated.View>
             
             <View style={styles.detailView}>
@@ -158,6 +169,7 @@ class FeedFilterScreen extends React.Component {
                   initialTag={this.props.initialTag}
                   userTags={userTags}
                   changeTags={this.changeTags}
+                  inputTag={this.inputTag}
                 />
               )}
 
@@ -166,9 +178,11 @@ class FeedFilterScreen extends React.Component {
                     loading={false}
                     feedoList={filterFeedoList}
                   />
-                : <View style={styles.emptyContainer}>
-                    <Text style={styles.emptyText}>No Results Found</Text>
-                  </View>
+                : !inputTag && (
+                    <View style={styles.emptyContainer}>
+                      <Text style={styles.emptyText}>No Results Found</Text>
+                    </View>
+                  )
               }
             </View>
           </ScrollView>

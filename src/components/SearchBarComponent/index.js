@@ -53,6 +53,7 @@ class SearchBarComponent extends React.Component {
     let newFilteredTags = _.filter(filteredTags, tag => tag.text.toLowerCase() !== text.toLowerCase())
 
     this.setState({ filteredTags: newFilteredTags, currentTagName: '' })
+    this.props.inputTag(false)
   }
 
   onRemoveTag(tag) {
@@ -72,6 +73,7 @@ class SearchBarComponent extends React.Component {
     }
 
     this.setState({ filteredTags, currentTagName: '' })
+    this.props.inputTag(false)
   }
 
   filterFeedList = () => {
@@ -84,6 +86,9 @@ class SearchBarComponent extends React.Component {
       currentTagName: text,
     });
     this.filterTagsName(text)
+    if (text.length > 0) {
+      this.props.inputTag(true)
+    }
   }
 
   filterTagsName = (text) => {
