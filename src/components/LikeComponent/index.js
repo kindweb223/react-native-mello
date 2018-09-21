@@ -40,6 +40,7 @@ class LikeComponent extends React.Component {
   }
 
   UNSAFE_componentWillReceiveProps(nextProps) {
+    
     if (this.props.card.loading !== types.LIKE_CARD_FULFILLED && nextProps.card.loading === types.LIKE_CARD_FULFILLED) {
       // success in liking a card
       if (this.props.card.currentCard.id === this.props.idea.id) {
@@ -76,6 +77,18 @@ class LikeComponent extends React.Component {
           });
         });
       }
+    } else {
+      this.setState({
+        liked: nextProps.idea.metadata.liked,
+        likes: nextProps.idea.metadata.likes,
+        prevLikes: nextProps.idea.metadata.likes,
+      }, () => {
+        let animationValue = 0;
+        if (nextProps.idea.metadata.liked) {
+          animationValue = 1;
+        }
+        this.animatedShow.setValue(animationValue);
+      });
     }
   }
 

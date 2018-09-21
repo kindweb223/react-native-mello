@@ -55,6 +55,7 @@ import {
 import { 
   setUserInfo,
   addDeviceToken,
+  updateDeviceToken,
 } from '../../redux/user/actions'
 
 const TAB_STYLES = {
@@ -230,11 +231,26 @@ class HomeScreen extends React.Component {
     PushNotification.configure({
       onRegister: (token) => {
         console.log('TOKEN : ', token);
-        const data = {
-          deviceToken: token.token,
-          deviceTypeEnum: Platform.OS === 'ios' ? 'IPHONE' : 'ANDROID',
-        }
-        this.props.addDeviceToken(this.props.user.userInfo.id, data);
+        AsyncStorage.getItem(CONSTANTS.USER_DEVICE_TOKEN, (error, result) => {
+          if (error) {
+            console.log('error : ', error);
+            return;
+          }
+          console.log('result : ', result);
+          const data = {
+            deviceToken: token.token,
+            deviceTypeEnum: Platform.OS === 'ios' ? 'IPHONE' : 'ANDROID',
+          }
+          if (!result) {
+            this.props.addDeviceToken(this.props.user.userInfo.id, data);
+          } else {
+            const deviceTokenInfo = JSON.parse(result);
+            if (deviceTokenInfo.deviceToken !== token.token) {
+              this.props.updateDeviceToken(this.props.user.userInfo.id, deviceTokenInfo.id, data);
+              return;
+            }
+          }
+        });
       },
       onNotification: (notification) => {
         this.parsePushNotification(notification);
@@ -723,7 +739,8 @@ const mapDispatchToProps = dispatch => ({
   setFeedDetailAction: (data) => dispatch(setFeedDetailAction(data)),
   setCurrentFeed: (data) => dispatch(setCurrentFeed(data)),
   setUserInfo: (data) => dispatch(setUserInfo(data)),
-  addDeviceToken: (userId, data) => dispatch(addDeviceToken(userId, data))
+  addDeviceToken: (userId, data) => dispatch(addDeviceToken(userId, data)),
+  updateDeviceToken: (userId, deviceId, data) => dispatch(updateDeviceToken(userId, deviceId, data))
 })
 
 HomeScreen.propTypes = {
