@@ -32,7 +32,7 @@ export default class CommentComponent extends React.Component {
     }
     Actions.CommentScreen({
       idea: this.props.idea,
-      guest: COMMON_FUNC.FeedGuest(this.props.currentFeed)
+      guest: COMMON_FUNC.isFeedGuest(this.props.currentFeed)
     });
   }
 

@@ -408,12 +408,12 @@ class FeedDetailScreen extends React.Component {
       return (o.id == idea.inviteeId)
     });
     let cardViewMode = CONSTANTS.CARD_VIEW;
-    if (COMMON_FUNC.FeedOwner(currentFeed) || COMMON_FUNC.FeedEditor(currentFeed)) {
+    if (COMMON_FUNC.isFeedOwner(currentFeed) || COMMON_FUNC.isFeedEditor(currentFeed)) {
       cardViewMode = CONSTANTS.CARD_EDIT;
     }
 
     // Contributor can just edit own cards
-    if (COMMON_FUNC.FeedContributor(currentFeed) && COMMON_FUNC.CardOwner(idea)) {
+    if (COMMON_FUNC.isFeedContributor(currentFeed) && COMMON_FUNC.isCardOwner(idea)) {
       cardViewMode = CONSTANTS.CARD_EDIT;
     }
 

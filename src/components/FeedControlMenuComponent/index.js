@@ -16,15 +16,15 @@ class FeedControlMenuComponent extends React.Component {
     const { data, pinText } = this.props
 
     let MENU_ITEMS = []
-    if (COMMON_FUNC.FeedOwner(data)) {
+    if (COMMON_FUNC.isFeedOwner(data)) {
       MENU_ITEMS = ['Duplicate', 'Edit', 'Archive', 'Delete']
     }
 
-    if (COMMON_FUNC.FeedEditor(data)) {
+    if (COMMON_FUNC.isFeedEditor(data)) {
       MENU_ITEMS = ['Duplicate', 'Edit']
     }
 
-    if (COMMON_FUNC.FeedContributor(data) || COMMON_FUNC.FeedGuest(data)) {
+    if (COMMON_FUNC.isFeedContributor(data) || COMMON_FUNC.isFeedGuest(data)) {
       MENU_ITEMS = []
     }
 
