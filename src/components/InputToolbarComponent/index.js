@@ -51,7 +51,7 @@ export default class InputToolbarComponent extends React.Component {
             ref={ref => this.textInputRef = ref}
             style={styles.textInput}
             placeholder='Type comment...'
-            autoCorrect={false}
+            autoCorrect={true}
             multiline={true}
             underlineColorAndroid='transparent'
             value={this.props.comment}

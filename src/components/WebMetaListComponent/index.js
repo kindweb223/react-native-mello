@@ -12,10 +12,12 @@ import PropTypes from 'prop-types'
 
 import { Actions } from 'react-native-router-flux'
 import Ionicons from 'react-native-vector-icons/Ionicons'
+import SafariView from "react-native-safari-view";
 
 import styles from './styles'
 import CONSTANTS from '../../service/constants'
 import COLORS from '../../service/colors'
+import FastImage from "react-native-fast-image";
 
 
 export default class WebMetaList extends React.Component {
@@ -46,13 +48,25 @@ export default class WebMetaList extends React.Component {
 
   onPressLink(index) {
     const url = this.props.links[index].originalUrl;
-    Linking.canOpenURL(url).then(supported => {
-      if (!supported) {
-        console.log('Can\'t handle url: ' + url);
-      } else {
-        return Linking.openURL(url);
-      }
-    }).catch(error => console.error('An error occurred', error));
+
+      SafariView.isAvailable()
+          .then(SafariView.show({
+              url: url,
+              tintColor: COLORS.PURPLE
+          }))
+          .catch(error => {
+              // Fallback WebView code for iOS 8 and earlier
+              Linking.canOpenURL(url)
+                  .then(supported => {
+                      if (!supported) {
+                          console.log('Can\'t handle url: ' + url);
+                      }
+                      else {
+                          return Linking.openURL(url);
+                      }
+                  })
+                  .catch(error => console.error('An error occurred', error));
+          });
   }
 
   renderItem({item, index}) {
@@ -63,7 +77,7 @@ export default class WebMetaList extends React.Component {
           activeOpacity={0.7}
           onPress={() => this.onPressLink(index)}
         >
-          <Image style={styles.imageCover} source={{uri: item.imageUrl}} resizeMode='cover' />
+          <FastImage style={styles.imageCover} source={{uri: item.imageUrl}} resizeMode='cover' />
           <View style={styles.infoContainer}>
             <Text style={styles.textTitle} numberOfLines={1}>{item.title}</Text>
             <Text style={styles.textDescription} numberOfLines={1}>{item.description}</Text>

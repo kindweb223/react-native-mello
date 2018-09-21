@@ -64,7 +64,12 @@ class SignUpSuccessScreen extends React.Component {
         'Error',
         user.error.message,
       )
-      Actions.LoginStartScreen()
+
+      if (user.userInfo) {
+        Actions.HomeScreen()
+      } else {
+        Actions.LoginStartScreen()
+      }
     }
 
     if (this.props.user.loading === 'GET_USER_SESSION_PENDING' && user.loading === 'GET_USER_SESSION_FULFILLED') {

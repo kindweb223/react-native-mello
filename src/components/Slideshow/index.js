@@ -5,6 +5,7 @@ import React from 'react'
 import { ScrollView, View, Image, Text, TouchableOpacity, Animated } from 'react-native'
 import GestureRecognizer, { SwipeDirections } from 'react-native-swipe-gestures'
 import styles from './styles'
+import FastImage from "react-native-fast-image";
 
 export default class SlideShow extends React.Component {
   constructor (props) {
@@ -91,7 +92,7 @@ export default class SlideShow extends React.Component {
               }}
             >
               <TouchableOpacity activeOpacity={1} onPress={() => this.handleImage()}>
-                <Image source={{ uri: item.accessUrl }} resizeMode="contain" style={{ width, height: '100%' }} />
+                <FastImage source={{uri: item.accessUrl}} resizeMode="contain" style={{ width, height: '100%' }} />
               </TouchableOpacity>
             </GestureRecognizer>
           ))}

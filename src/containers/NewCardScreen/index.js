@@ -54,6 +54,7 @@ import LikeComponent from '../../components/LikeComponent';
 import CommentComponent from '../../components/CommentComponent';
 import ChooseLinkImages from '../../components/chooseLinkImagesComponent';
 import UserAvatarComponent from '../../components/UserAvatarComponent';
+import FastImage from "react-native-fast-image";
 
 const ScreenVerticalMinMargin = 80;
 
@@ -276,7 +277,7 @@ class NewCardScreen extends React.Component {
   }
 
   componentDidMount() {
-    // console.log('Current Card : ', this.props.card.currentCard);
+    console.log('Current Card : ', this.props.card.currentCard);
     const { viewMode } = this.props;
     if (viewMode === CONSTANTS.CARD_VIEW || viewMode === CONSTANTS.CARD_EDIT) {
       this.setState({
@@ -484,12 +485,14 @@ class NewCardScreen extends React.Component {
   checkUrl(content) {
     const { viewMode } = this.props;
     if (viewMode === CONSTANTS.CARD_NEW) {
-      const texts = content.split(/[, ]/);
-      if (texts.length === 1 && validUrl.isUri(texts[0])) {
-        this.isOpenGraphForNewCard = true;
-        this.urlForNewCard = texts[0];
-        this.props.getOpenGraph(texts[0]);
-        return true;
+      if (content) {
+        const texts = content.split(/[, ]/);
+        if (texts.length === 1 && validUrl.isUri(texts[0])) {
+          this.isOpenGraphForNewCard = true;
+          this.urlForNewCard = texts[0];
+          this.props.getOpenGraph(texts[0]);
+          return true;
+        }
       }
     }
     return false;
@@ -636,7 +639,7 @@ class NewCardScreen extends React.Component {
   get renderCoverImage() {
     if (this.state.coverImage) {
       return (
-        <Image style={styles.imageCover} source={{ uri: this.state.coverImage }} resizeMode="cover" />
+        <FastImage style={styles.imageCover} source={{uri: this.state.coverImage}} resizeMode="cover" />
       );
     }
     const imageFiles = _.filter(this.props.card.currentCard.files, file => file.contentType.indexOf('image') !== -1);

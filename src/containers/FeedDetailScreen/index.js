@@ -113,6 +113,7 @@ class FeedDetailScreen extends React.Component {
   componentDidMount() {
     this.setState({ loading: true })
     this.props.getFeedDetail(this.props.data.id)
+    console.log('Current Feedo : ', this.props.data);
   }
 
   UNSAFE_componentWillReceiveProps(nextProps) {
@@ -156,7 +157,7 @@ class FeedDetailScreen extends React.Component {
     }
 
     if (filterShowType === 'like') {
-      filterIdeas = _.filter(ideas, idea => idea.metadata.likes > 0)
+      filterIdeas = _.filter(ideas, idea => idea.metadata.liked)
     }
 
     if (filterSortType === 'date') {
@@ -558,7 +559,7 @@ class FeedDetailScreen extends React.Component {
   closeShareModal = () => {
     setTimeout(() => {
       this.setState({ isShowShare: false })
-    }, 1000)
+    }, 200)
   }
 
   render () {
@@ -698,6 +699,7 @@ class FeedDetailScreen extends React.Component {
           handleFilter={this.handleFilter}
           showType={this.state.filterShowType}
           sortType={this.state.filterSortType}
+          notifications={false}
         />
 
         {this.renderNewCardModal}
@@ -730,6 +732,7 @@ class FeedDetailScreen extends React.Component {
           animationOut="zoomOutDown"
           animationInTiming={500}
           onModalHide={() => {}}
+          onBackdropPress={() => this.closeShareModal()}
         >
           <ShareScreen onClose={() => this.closeShareModal()} data={currentFeed} />
         </Modal>

@@ -12,6 +12,7 @@ import Ionicons from 'react-native-vector-icons/Ionicons';
 import styles from './styles'
 import CONSTANTS from '../../service/constants'
 import COLORS from '../../service/colors'
+import FastImage from "react-native-fast-image";
 
 
 export default class ChooseLinkImages extends React.Component {
@@ -58,7 +59,7 @@ export default class ChooseLinkImages extends React.Component {
         activeOpacity={0.6}
         onPress={() => this.onSelectItem(item.item)}
       >
-        <Image style={styles.imageItem} source={{uri: item.item}} />
+        <FastImage style={styles.imageItem} source={{uri: item.item}} />
         { 
           select && 
           <Ionicons style={styles.icon} name="ios-checkmark-circle" size={20} color={COLORS.PURPLE} /> 

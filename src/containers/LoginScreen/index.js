@@ -196,7 +196,7 @@ class LoginScreen extends React.Component {
           </TouchableOpacity>
           <TouchableOpacity onPress={() => {}}>
             <View style={styles.btnPass}>
-              <MaterialCommunityIcons name="onepassword" size={25} color={'#fff'} />
+              {/*<MaterialCommunityIcons name="onepassword" size={25} color={'#fff'} />*/}
             </View>
           </TouchableOpacity>
         </View>

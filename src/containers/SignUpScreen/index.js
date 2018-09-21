@@ -36,6 +36,7 @@ import CONSTANTS from '../../service/constants'
 import resolveError from '../../service/resolveError'
 import * as COMMON_FUNC from '../../service/commonFunc'
 import styles from './styles'
+import FastImage from "react-native-fast-image";
 
 const CAMERA_ICON = require('../../../assets/images/Camera/Blue.png')
 const PASSWORD_PROGRESS = [
@@ -455,7 +456,7 @@ class SignUpScreen extends React.Component {
                   <View style={styles.avatar}>
                     {_.isEmpty(avatarFile)
                       ? <Image source={CAMERA_ICON} />
-                      : <Image style={styles.avatarImg} source={{ uri: avatarFile.uri }} />
+                      : <FastImage style={styles.avatarImg} source={{uri: avatarFile.uri}} />
                     }
                   </View>
                   <Text style={styles.uploadText}>Upload avatar</Text>
@@ -578,7 +579,7 @@ class SignUpScreen extends React.Component {
           <Text style={styles.headerText}>Create new account</Text>
           <TouchableOpacity onPress={() => {}}>
             <View style={styles.btnPass}>
-              <MaterialCommunityIcons name="onepassword" size={25} color={'#fff'} />
+              {/*<MaterialCommunityIcons name="onepassword" size={25} color={'#fff'} />*/}
             </View>
           </TouchableOpacity>
         </View>
