@@ -485,6 +485,7 @@ export default function user(state = initialState, action = {}) {
       }
     case types.ADD_DEVICE_TOKEN_FULFILLED: {
       console.log('ADD_DEVICE_TOKEN_FULFILLED : ', action.result)
+      AsyncStorage.setItem(CONSTANTS.USER_DEVICE_TOKEN, JSON.stringify(action.result.data))
       return {
         ...state,
         loading: types.ADD_DEVICE_TOKEN_FULFILLED,
@@ -498,6 +499,32 @@ export default function user(state = initialState, action = {}) {
         error: action.error.response.data
       }
     }
+
+    /**
+     * Update device token
+     */
+    case types.UPDATE_DEVICE_TOKEN_PENDING:
+      return {
+        ...state,
+        loading: types.UPDATE_DEVICE_TOKEN_PENDING,
+      }
+    case types.UPDATE_DEVICE_TOKEN_FULFILLED: {
+      console.log('UPDATE_DEVICE_TOKEN_FULFILLED : ', action.result)
+      AsyncStorage.setItem(CONSTANTS.USER_DEVICE_TOKEN, JSON.stringify(action.result.data))
+      return {
+        ...state,
+        loading: types.UPDATE_DEVICE_TOKEN_FULFILLED,
+      }
+    }
+    case types.UPDATE_DEVICE_TOKEN_REJECTED: {
+      console.log('UPDATE_DEVICE_TOKEN_REJECTED : ', action.error)
+      return {
+        ...state,
+        loading: types.UPDATE_DEVICE_TOKEN_REJECTED,
+        error: action.error.response.data
+      }
+    }
+
 
     default:
       return state;

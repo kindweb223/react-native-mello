@@ -279,3 +279,20 @@ export const addDeviceToken = (userId, data) => {
       })  
   };
 }
+
+
+/**
+ * update device token
+ */
+export const updateDeviceToken = (userId, deviceId, data) => {
+  const url = `users/${userId}/device/${deviceId}`;
+  return {
+    types: [types.UPDATE_DEVICE_TOKEN_PENDING, types.UPDATE_DEVICE_TOKEN_FULFILLED, types.UPDATE_DEVICE_TOKEN_REJECTED],
+    promise:
+      axios({
+        method: 'put',
+        url,
+        data
+      })  
+  };
+}
