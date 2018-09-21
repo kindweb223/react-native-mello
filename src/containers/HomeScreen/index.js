@@ -90,6 +90,7 @@ class HomeScreen extends React.Component {
       scrollY: new Animated.Value(0),
       currentPushNotificationType: CONSTANTS.UNKOWN_PUSH_NOTIFICATION,
       currentPushNotificationData: null,
+      currentIdea: {},
     };
 
     this.currentRef = null;
@@ -145,6 +146,13 @@ class HomeScreen extends React.Component {
         emptyState,
         apiLoading: feedo.loading
       }
+    } else if (prevState.apiLoading !== feedo.loading && (feedo.loading === 'GET_CARD_FULFILLED')) {
+      const { card } = nextProps
+      return {
+        loading: false,
+        currentIdea: card.currentCard,
+        apiLoading: feedo.loading
+      }
     }
 
     if (feedo.loading === 'ADD_DUMMY_FEED') {
@@ -186,7 +194,7 @@ class HomeScreen extends React.Component {
       });
     } else if (this.props.feedo.loading === 'GET_CARD_FULFILLED' && this.state.currentPushNotificationType === CONSTANTS.NEW_COMMENT_ON_IDEA && this.state.currentPushNotificationData) {
       Actions.CommentScreen({
-        idea: matchedIdea,
+        idea: this.state.currentIdea,
       });
     }
   }
