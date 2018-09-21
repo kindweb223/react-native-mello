@@ -113,7 +113,6 @@ class FeedDetailScreen extends React.Component {
   componentDidMount() {
     this.setState({ loading: true })
     this.props.getFeedDetail(this.props.data.id)
-    console.log('Current Feedo : ', this.props.data);
   }
 
   UNSAFE_componentWillReceiveProps(nextProps) {
@@ -409,9 +408,15 @@ class FeedDetailScreen extends React.Component {
       return (o.id == idea.inviteeId)
     });
     let cardViewMode = CONSTANTS.CARD_VIEW;
-    if (currentFeed.metadata.owner) {
+    if (COMMON_FUNC.FeedOwner(currentFeed) || COMMON_FUNC.FeedEditor(currentFeed)) {
       cardViewMode = CONSTANTS.CARD_EDIT;
     }
+
+    // Contributor can just edit own cards
+    if (COMMON_FUNC.FeedContributor(currentFeed) && COMMON_FUNC.CardOwner(idea)) {
+      cardViewMode = CONSTANTS.CARD_EDIT;
+    }
+
     this.cardItemRefs[index].measure((ox, oy, width, height, px, py) => {
       this.setState({
         isVisibleCard: true,
@@ -805,9 +810,10 @@ class FeedDetailScreen extends React.Component {
   }
 }
 
-const mapStateToProps = ({ feedo, card }) => ({
+const mapStateToProps = ({ feedo, card, user }) => ({
   feedo,
   card,
+  user
 })
 
 const mapDispatchToProps = dispatch => ({

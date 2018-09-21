@@ -48,19 +48,19 @@ class ShareScreen extends React.Component {
   }
 
   onShowInviteeModal = (feed) => {
-    if (COMMON_FUNC.checkOwnerEditor(feed)) {
+    if (COMMON_FUNC.FeedOwnerEditor(feed)) {
       this.setState({ isInviteeModal: true })
     }
   }
 
   onLinkShare = (feed) => {
-    if (COMMON_FUNC.checkOwnerEditor(feed)) {
+    if (COMMON_FUNC.FeedOwnerEditor(feed)) {
       this.setState({ linkShareModal: true, shareModalType: 'share', shareInviteeData: {} })
     }
   }
 
   onPressInvitee = (feed, invitee) => {
-    if (!COMMON_FUNC.checkOwnerinvitee(feed, invitee) && COMMON_FUNC.checkOwnerEditor(feed)) {
+    if (!COMMON_FUNC.FeedOwnerinvitee(feed, invitee) && COMMON_FUNC.FeedOwnerEditor(feed)) {
       this.setState({ linkShareModal: true, shareModalType: 'invitee', shareInviteeData: invitee })
     }
   }
@@ -215,7 +215,7 @@ class ShareScreen extends React.Component {
                           invitee={invitee}
                           isViewOnly={false}
                           hideLike={true}
-                          isOwnerInvitee={COMMON_FUNC.checkOwnerinvitee(data, invitee)}
+                          isOwnerInvitee={COMMON_FUNC.FeedOwnerinvitee(data, invitee)}
                         />
                       </View>
                     </View>

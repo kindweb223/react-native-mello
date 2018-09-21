@@ -101,7 +101,7 @@ class CardActionBarComponent extends React.Component {
       MENU_ITEMS = ['Delete']
     }
 
-    if (COMMON_FUNC.checkOwner(feedo.currentFeed) || COMMON_FUNC.FeedEditor(feedo.currentFeed)) {
+    if (COMMON_FUNC.FeedOwner(feedo.currentFeed) || COMMON_FUNC.FeedEditor(feedo.currentFeed)) {
       MENU_ITEMS = ['Edit', 'Delete']
     }
 

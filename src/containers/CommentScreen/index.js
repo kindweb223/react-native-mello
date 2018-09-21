@@ -281,15 +281,17 @@ class CommentScreen extends React.Component {
             keyExtractor={(item, index) => index.toString()}
             extraData={this.state}
           />
-          <Animated.View style={{marginBottom: this.keyboardHeight}}>
-            <InputToolbarComponent
-              ref={ref => this.inputToolbarRef = ref}
-              showKeyboard={this.state.isShowKeyboard}
-              comment={this.state.comment}
-              onChangeText={(comment) => this.onChangeText(comment)}
-              onSend={() => this.onSend()}
-            />
-          </Animated.View>
+          {!this.props.guest && (
+            <Animated.View style={{marginBottom: this.keyboardHeight}}>
+              <InputToolbarComponent
+                ref={ref => this.inputToolbarRef = ref}
+                showKeyboard={this.state.isShowKeyboard}
+                comment={this.state.comment}
+                onChangeText={(comment) => this.onChangeText(comment)}
+                onSend={() => this.onSend()}
+              />
+            </Animated.View>
+          )}
           {this.state.loading && <LoadingScreen />}
         </View>
       </SafeAreaView>
@@ -299,11 +301,13 @@ class CommentScreen extends React.Component {
 
 
 CommentScreen.defaultProps = {
+  guest: false
 }
 
 
 CommentScreen.propTypes = {
   idea: PropTypes.object,
+  guest: PropTypes.bool
 }
 
 
