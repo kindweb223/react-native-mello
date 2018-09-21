@@ -120,6 +120,7 @@ class InviteeTag extends React.Component {
             textContentType='emailAddress'
             autoCapitalize="none"
             underlineColorAndroid='transparent'
+            selectionColor={COLORS.PURPLE}
           />
         </View>
       );

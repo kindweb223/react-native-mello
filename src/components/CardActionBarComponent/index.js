@@ -97,15 +97,15 @@ class CardActionBarComponent extends React.Component {
     const { feedo, idea } = this.props
 
     let MENU_ITEMS = []
-    if (COMMON_FUNC.FeedGuest(feedo.currentFeed)) {
+    if (COMMON_FUNC.isFeedGuest(feedo.currentFeed)) {
       MENU_ITEMS = ['Delete']
     }
 
-    if (COMMON_FUNC.FeedOwner(feedo.currentFeed) || COMMON_FUNC.FeedEditor(feedo.currentFeed)) {
+    if (COMMON_FUNC.isFeedOwner(feedo.currentFeed) || COMMON_FUNC.isFeedEditor(feedo.currentFeed)) {
       MENU_ITEMS = ['Edit', 'Delete']
     }
 
-    if (COMMON_FUNC.FeedContributor(feedo.currentFeed)) {
+    if (COMMON_FUNC.isFeedContributor(feedo.currentFeed)) {
       if (idea.metadata.owner) {
         MENU_ITEMS = ['Edit', 'Delete']
       } else {

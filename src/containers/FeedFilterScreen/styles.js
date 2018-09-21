@@ -22,23 +22,21 @@ const styles = StyleSheet.create({
   },
   normalHeader: {
     height: NAV_BAR_HEIGHT,
-    justifyContent: 'center',
+    flexDirection: 'row',
+    justifyContent: 'space-between',
     alignItems: 'center',
     paddingHorizontal: CONSTANTS.PADDING
   },
   headerTitleView: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'flex-end',
-    height: '50%',
-    width: '100%',
+    height: '100%',
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   headerTitle: {
     fontSize: 28,
     fontWeight: 'bold',
     color: COLORS.PRIMARY_BLACK,
-    marginRight: 10,
-    flex: 1
+    marginRight: 10
   },
   miniNavView: {
     width: '100%',

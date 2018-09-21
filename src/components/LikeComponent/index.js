@@ -104,7 +104,7 @@ class LikeComponent extends React.Component {
 
   onLike(liked) {
     // Move to like list for Guest
-    if (COMMON_FUNC.FeedGuest(this.props.feedo.currentFeed)) {
+    if (COMMON_FUNC.isFeedGuest(this.props.feedo.currentFeed)) {
       Actions.LikesListScreen({idea: this.props.idea});
     } else {
       this.props.setCurrentCard(this.props.idea);
