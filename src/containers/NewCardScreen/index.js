@@ -819,7 +819,7 @@ class NewCardScreen extends React.Component {
           </TouchableOpacity>
           <View style={styles.rowContainer}>
             <LikeComponent idea={this.props.card.currentCard} />
-            <CommentComponent idea={this.props.card.currentCard} />
+            <CommentComponent idea={this.props.card.currentCard} currentFeed={this.props.feedo.currentFeed} />
           </View>
         </View>
       </View>

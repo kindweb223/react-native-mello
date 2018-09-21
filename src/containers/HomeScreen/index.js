@@ -58,6 +58,10 @@ import {
   updateDeviceToken,
 } from '../../redux/user/actions'
 
+import { 
+  getCard,
+} from '../../redux/card/actions'
+
 const TAB_STYLES = {
   height: '100%',
   paddingTop: 10,
@@ -166,13 +170,9 @@ class HomeScreen extends React.Component {
         this.setState({ isShowToaster: true })
         this.handleArchiveFeed(this.props.feedo.feedDetailAction.feedId)
       }
-    }
-
-    if (prevProps.user.loading === 'USER_SIGNOUT_PENDING' && this.props.user.loading === 'USER_SIGNOUT_FULFILLED') {
+    } else if (prevProps.user.loading === 'USER_SIGNOUT_PENDING' && this.props.user.loading === 'USER_SIGNOUT_FULFILLED') {
       Actions.LoginStartScreen()
-    }
-
-    if (this.props.feedo.loading === 'GET_FEEDO_LIST_FULFILLED' && this.state.currentPushNotificationType === CONSTANTS.USER_INVITED_TO_HUNT && this.state.currentPushNotificationData) {
+    } else if (this.props.feedo.loading === 'GET_FEEDO_LIST_FULFILLED' && this.state.currentPushNotificationType === CONSTANTS.USER_INVITED_TO_HUNT && this.state.currentPushNotificationData) {
       const { feedoList, currentPushNotificationData } = this.state
       const matchedHunt = find(feedoList, feedo => feedo.id === currentPushNotificationData);
       if (matchedHunt) {
@@ -183,6 +183,10 @@ class HomeScreen extends React.Component {
       this.setState({
         currentPushNotificationType: CONSTANTS.UNKOWN_PUSH_NOTIFICATION,
         currentPushNotificationData: null,
+      });
+    } else if (this.props.feedo.loading === 'GET_CARD_FULFILLED' && this.state.currentPushNotificationType === CONSTANTS.NEW_COMMENT_ON_IDEA && this.state.currentPushNotificationData) {
+      Actions.CommentScreen({
+        idea: matchedIdea,
       });
     }
   }
@@ -210,6 +214,22 @@ class HomeScreen extends React.Component {
       }
       case CONSTANTS.NEW_COMMENT_ON_IDEA: {
         const { ideaId, huntId, commentId } = notification.data;
+        const { feedoList } = this.state
+        const matchedHunt = find(feedoList, feedo => feedo.id === huntId);
+        if (matchedHunt) {
+          const matchedIdea = find(matchedHunt.ideas, idea => idea.id === ideaId);
+          if (matchedIdea) {
+            Actions.CommentScreen({
+              idea: matchedIdea,
+            });
+            return;
+          }
+        }
+        this.setState({
+          currentPushNotificationType: CONSTANTS.NEW_COMMENT_ON_IDEA,
+          currentPushNotificationData: commentId,
+        });
+        this.props.getCard(ideaId);
         break;
       }
       case CONSTANTS.NEW_IDEA_ADDED: {
@@ -740,7 +760,8 @@ const mapDispatchToProps = dispatch => ({
   setCurrentFeed: (data) => dispatch(setCurrentFeed(data)),
   setUserInfo: (data) => dispatch(setUserInfo(data)),
   addDeviceToken: (userId, data) => dispatch(addDeviceToken(userId, data)),
-  updateDeviceToken: (userId, deviceId, data) => dispatch(updateDeviceToken(userId, deviceId, data))
+  updateDeviceToken: (userId, deviceId, data) => dispatch(updateDeviceToken(userId, deviceId, data)),
+  getCard: (ideaId) => dispatch(getCard(ideaId)),
 })
 
 HomeScreen.propTypes = {

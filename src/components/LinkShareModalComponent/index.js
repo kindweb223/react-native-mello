@@ -4,6 +4,7 @@ import PropTypes from 'prop-types'
 import LinkShareItem from './LinkShareItem'
 import InviteeItemComponent from './InviteeItemComponent'
 import styles from './styles'
+import * as COMMON_FUNC from '../../service/commonFunc'
 
 const LIST_ITEM = [
   {
@@ -42,18 +43,35 @@ class LinkShareModalComponent extends React.Component {
           </View>
         )}
 
-        {LIST_ITEM.map(item => (
-          <TouchableOpacity key={item.id} onPress={() => this.onPressItem(item.id)}>
-            <View style={[styles.listItem, styles.itemNormal]}>
-              <Text style={[styles.title, styles.titleNormal]}>
-                {item.title}
-              </Text>
-              <Text style={styles.description}>
-                {item.desc}
-              </Text>
-            </View>
-          </TouchableOpacity>
-        ))}
+        {shareModalType === 'share' && (
+          LIST_ITEM.map(item => (
+            <TouchableOpacity key={item.id} onPress={() => this.onPressItem(item.id)}>
+              <View style={[styles.listItem, styles.itemNormal]}>
+                <Text style={[styles.title, styles.titleNormal]}>
+                  {item.title}
+                </Text>
+                <Text style={styles.description}>
+                  {item.desc}
+                </Text>
+              </View>
+            </TouchableOpacity>
+          ))
+        )}
+
+        {shareModalType === 'invitee' && COMMON_FUNC.isFeedOwnerEditor(feed) && (
+          LIST_ITEM.map(item => (
+            <TouchableOpacity key={item.id} onPress={() => this.onPressItem(item.id)}>
+              <View style={[styles.listItem, styles.itemNormal]}>
+                <Text style={[styles.title, styles.titleNormal]}>
+                  {item.title}
+                </Text>
+                <Text style={styles.description}>
+                  {item.desc}
+                </Text>
+              </View>
+            </TouchableOpacity>
+          ))
+        )}
 
         {!inviteePermission && (
           shareModalType === 'share'

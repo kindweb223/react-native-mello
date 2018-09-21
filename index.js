@@ -1,6 +1,3 @@
-/** @format */
-
-console.log('Index module called!')
 import {AppRegistry} from 'react-native';
 import App from './App';
 import Share from './src/share';
