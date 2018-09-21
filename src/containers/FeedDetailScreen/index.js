@@ -113,11 +113,28 @@ class FeedDetailScreen extends React.Component {
   componentDidMount() {
     this.setState({ loading: true })
     this.props.getFeedDetail(this.props.data.id)
-    console.log('Current Feedo : ', this.props.data);
   }
 
   UNSAFE_componentWillReceiveProps(nextProps) {
-    const { feedo, card } = nextProps
+    const { feedo, card, currentFeed } = nextProps
+
+    if (this.props.feedo.loading === 'DELETE_INVITEE_PENDING' && feedo.loading === 'DELETE_INVITEE_FULFILLED') {
+      if (COMMON_FUNC.isFeedEditor(feedo.currentFeed) ||
+        COMMON_FUNC.isFeedContributor(feedo.currentFeed) ||
+        COMMON_FUNC.isFeedGuest(feedo.currentFeed)) {
+        this.setState({ isShowShare: false }, () => {
+          Actions.HomeScreen()
+        })
+      }
+    }
+
+    if (this.props.feedo.loading === 'UPDATE_INVITEE_PERMISSION_PENDING' && feedo.loading === 'UPDATE_INVITEE_PERMISSION_FULFILLED') {
+      if (COMMON_FUNC.isFeedEditor(feedo.currentFeed)) {
+        this.setState({ isShowShare: false }, () => {
+          Actions.HomeScreen()
+        })
+      }
+    }
 
     if ((this.props.feedo.loading === 'GET_FEED_DETAIL_PENDING' && feedo.loading === 'GET_FEED_DETAIL_FULFILLED') ||
         (this.props.feedo.loading === 'DELETE_INVITEE_PENDING' && feedo.loading === 'DELETE_INVITEE_FULFILLED') ||
@@ -409,9 +426,15 @@ class FeedDetailScreen extends React.Component {
       return (o.id == idea.inviteeId)
     });
     let cardViewMode = CONSTANTS.CARD_VIEW;
-    if (currentFeed.metadata.owner) {
+    if (COMMON_FUNC.isFeedOwner(currentFeed) || COMMON_FUNC.isFeedEditor(currentFeed)) {
       cardViewMode = CONSTANTS.CARD_EDIT;
     }
+
+    // Contributor can just edit own cards
+    if (COMMON_FUNC.isFeedContributor(currentFeed) && COMMON_FUNC.isCardOwner(idea)) {
+      cardViewMode = CONSTANTS.CARD_EDIT;
+    }
+
     this.cardItemRefs[index].measure((ox, oy, width, height, px, py) => {
       this.setState({
         isVisibleCard: true,
@@ -805,9 +828,10 @@ class FeedDetailScreen extends React.Component {
   }
 }
 
-const mapStateToProps = ({ feedo, card }) => ({
+const mapStateToProps = ({ feedo, card, user }) => ({
   feedo,
   card,
+  user
 })
 
 const mapDispatchToProps = dispatch => ({

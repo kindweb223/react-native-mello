@@ -284,6 +284,7 @@ class InviteeScreen extends React.Component {
                   style={[styles.textInput]}
                   onChangeText={this.onChangeMessage}
                   underlineColorAndroid='transparent'
+                  selectionColor={COLORS.PURPLE}
                 />
               </View>
             )}

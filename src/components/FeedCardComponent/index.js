@@ -59,12 +59,11 @@ class FeedCardComponent extends React.Component {
         </View>
         <View style={styles.subView}>
           <LikeComponent idea={idea} />
-          {!COMMON_FUNC.FeedGuest(feedo.currentFeed) && (
-            <CommentComponent 
-              idea={idea} 
-              onComment={this.props.onComment}
-            />
-          )}
+          <CommentComponent 
+            idea={idea}
+            currentFeed={feedo.currentFeed}
+            onComment={this.props.onComment}
+          />
         </View>
       </View>
     )

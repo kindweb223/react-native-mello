@@ -20,6 +20,7 @@ import {
   unlikeCard,
   setCurrentCard,
 } from '../../redux/card/actions'
+import * as COMMON_FUNC from '../../service/commonFunc'
 
 const FAV_ICON_R = require('../../../assets/images/Fav/Red.png')
 const FAV_ICON_G = require('../../../assets/images/Fav/Grey.png')
@@ -102,11 +103,16 @@ class LikeComponent extends React.Component {
   }
 
   onLike(liked) {
-    this.props.setCurrentCard(this.props.idea);
-    if (liked) {
-      this.props.unlikeCard(this.props.idea.id);
+    // Move to like list for Guest
+    if (COMMON_FUNC.isFeedGuest(this.props.feedo.currentFeed)) {
+      Actions.LikesListScreen({idea: this.props.idea});
     } else {
-      this.props.likeCard(this.props.idea.id);
+      this.props.setCurrentCard(this.props.idea);
+      if (liked) {
+        this.props.unlikeCard(this.props.idea.id);
+      } else {
+        this.props.likeCard(this.props.idea.id);
+      }
     }
   }
 

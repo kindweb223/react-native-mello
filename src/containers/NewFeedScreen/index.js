@@ -437,6 +437,7 @@ class NewFeedScreen extends React.Component {
           underlineColorAndroid='transparent'
           value={this.state.feedName}
           onChangeText={(value) => this.setState({feedName: value})}
+          selectionColor={COLORS.PURPLE}
         />
         <TextInput
           ref={ref => this.textInputFeedNoteRef = ref}
@@ -446,6 +447,7 @@ class NewFeedScreen extends React.Component {
           underlineColorAndroid='transparent'
           value={this.state.comments}
           onChangeText={(value) => this.onChangeNote(value)}
+          selectionColor={COLORS.PURPLE}
         />
         <Tags
           tags={this.props.feedo.currentFeed.tags}
