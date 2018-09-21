@@ -101,6 +101,7 @@ class TextInputComponent extends React.Component {
             returnKeyType={returnKeyType}
             textContentType={textContentType}
             onSubmitEditing={() => this.props.onSubmitEditing()}
+            selectionColor={COLORS.PURPLE}
           />
         
           {this.props.children}
