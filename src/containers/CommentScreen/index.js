@@ -33,6 +33,7 @@ import {
 import { getDurationFromNow } from '../../service/dateUtils'
 import InputToolbarComponent from '../../components/InputToolbarComponent';
 import UserAvatarComponent from '../../components/UserAvatarComponent';
+import * as COMMON_FUNC from '../../service/commonFunc'
 
 
 class CommentScreen extends React.Component {
@@ -229,6 +230,8 @@ class CommentScreen extends React.Component {
   }
 
   renderItem({item, index}) {
+    const { currentFeed } = this.props.feedo
+
     const swipeoutBtns = [
       {
         component: this.renderEdit,
@@ -242,8 +245,16 @@ class CommentScreen extends React.Component {
       }
     ];
     const user = this.getCommentUser(item);
-    const enabled = user && user.id === this.props.user.userInfo.id;
-    const name = `${user.firstName} ${user.lastName}`;
+    // const enabled = user && user.id === this.props.user.userInfo.id;
+    let enabled = true
+    if (COMMON_FUNC.isFeedContributorGuest(currentFeed)) {
+      enabled = false
+      if (user && user.id === this.props.user.userInfo.id) {
+        enabled = true
+      }
+    }
+
+    const name = user ? `${user.firstName} ${user.lastName}` : '';
 
     return (
       <Swipeout
@@ -253,10 +264,12 @@ class CommentScreen extends React.Component {
         right={swipeoutBtns}
       > 
         <View style={styles.itemContentContainer}>
-          <UserAvatarComponent
-            user={user}
-            size={32}
-          />
+          {user && (
+            <UserAvatarComponent
+              user={user}
+              size={32}
+            />
+          )}
           <View style={styles.textsContainer}>
             <View style={styles.rowContainer}>
               <Text style={styles.textItemName}>{name}</Text>
