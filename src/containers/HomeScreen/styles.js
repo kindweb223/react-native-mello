@@ -95,6 +95,12 @@ const styles = StyleSheet.create({
     width: '100%',
     height: CONSTANTS.SCREEN_HEIGHT - CONSTANTS.ACTION_BAR_HEIGHT - 100
   },
+  emptyTabInnerView: {
+    justifyContent: 'center',
+    alignItems: 'center',
+    width: '100%',
+    height: CONSTANTS.SCREEN_HEIGHT - CONSTANTS.ACTION_BAR_HEIGHT - CONSTANTS.TAB_BAR_HEIGHT - 100
+  },
   emptyText: {
     fontSize: 14,
     color: COLORS.MEDIUM_GREY,

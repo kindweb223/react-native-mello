@@ -678,12 +678,20 @@ class HomeScreen extends React.Component {
                   tabLabel={{ label: 'Pinned' }}
                   onLayout={(event) => this.onScrollableTabViewLayout(event, 1)}
                 >
-                  <FeedoListContainer
-                    loading={loading}
-                    feedoList={feedoList}
-                    handleFeedMenu={this.handleLongHoldMenu}
-                    page="home"
-                  />
+                  {feedoList.length > 0
+                    ? <FeedoListContainer
+                        loading={loading}
+                        feedoList={feedoList}
+                        handleFeedMenu={this.handleLongHoldMenu}
+                        page="home"
+                      />
+                    : !loading && ( 
+                        <View style={styles.emptyTabInnerView}>
+                          <Image source={EMPTY_ICON} />
+                          <Text style={styles.emptyText}>Feedo is more fun with feeds</Text>
+                        </View>
+                      )
+                  }
                 </View>
                 <View
                   style={{paddingBottom: CONSTANTS.ACTION_BAR_HEIGHT}}
@@ -691,12 +699,20 @@ class HomeScreen extends React.Component {
                   tabLabel={{ label: 'Shared with me' }}
                   onLayout={(event) => this.onScrollableTabViewLayout(event, 2)}
                 >
-                  <FeedoListContainer
-                    loading={loading}
-                    feedoList={feedoList}
-                    handleFeedMenu={this.handleLongHoldMenu}
-                    page="home"
-                  />
+                  {feedoList.length > 0
+                    ? <FeedoListContainer
+                        loading={loading}
+                        feedoList={feedoList}
+                        handleFeedMenu={this.handleLongHoldMenu}
+                        page="home"
+                      />
+                    : !loading && (
+                        <View style={styles.emptyTabInnerView}>
+                          <Image source={EMPTY_ICON} />
+                          <Text style={styles.emptyText}>Feedo is more fun with feeds</Text>
+                        </View>
+                      )
+                  }
                 </View>
               </ScrollableTabView>
             }
