@@ -43,7 +43,9 @@ class ImageCrop extends Component {
 			this.setState({
 				containerWidth: CONSTANTS.SCREEN_WIDTH,
 				containerHeight: CONSTANTS.SCREEN_WIDTH / originalImageWidth * originalImageHeight,
-				containerRatio: originalImageWidth / CONSTANTS.SCREEN_WIDTH
+				containerRatio: originalImageWidth / CONSTANTS.SCREEN_WIDTH,
+				cropWidth: originalImageWidth > originalImageHeight ? originalImageHeight / (originalImageWidth / CONSTANTS.SCREEN_WIDTH) : CONSTANTS.SCREEN_WIDTH,
+				cropHeight: originalImageWidth > originalImageHeight ? originalImageHeight / (originalImageWidth / CONSTANTS.SCREEN_WIDTH) : CONSTANTS.SCREEN_WIDTH,
 			})
 		});
 	}
@@ -105,7 +107,7 @@ class ImageCrop extends Component {
 		if (!Number.isInteger(cropQuality) || cropQuality < 0 || cropQuality > 100) {
 			cropQuality = ImageCrop.defaultProps.cropQuality;
 		}
-		return ImageResizer.createResizedImage(uri, width, height, 'JPEG', cropQuality, 0, null);
+		return ImageResizer.createResizedImage(uri, 200, 200, 'JPEG', cropQuality, 0, null);
 	}
 
 	renderContainerImage() {
