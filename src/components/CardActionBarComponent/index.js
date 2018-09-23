@@ -98,7 +98,7 @@ class CardActionBarComponent extends React.Component {
 
     let MENU_ITEMS = []
     if (COMMON_FUNC.isFeedGuest(feedo.currentFeed)) {
-      MENU_ITEMS = ['Delete']
+      MENU_ITEMS = []
     }
 
     if (COMMON_FUNC.isFeedOwner(feedo.currentFeed) || COMMON_FUNC.isFeedEditor(feedo.currentFeed)) {
@@ -106,53 +106,63 @@ class CardActionBarComponent extends React.Component {
     }
 
     if (COMMON_FUNC.isFeedContributor(feedo.currentFeed)) {
-      if (idea.metadata.owner) {
+      if (COMMON_FUNC.isCardOwner(idea)) {
         MENU_ITEMS = ['Edit', 'Delete']
       } else {
-        MENU_ITEMS = ['Delete']
+        MENU_ITEMS = []
       }
+    }
+
+    let canMoveCard = false
+    if (COMMON_FUNC.isFeedOwnerEditor(feedo.currentFeed) || (COMMON_FUNC.isFeedContributor(feedo.currentFeed) && COMMON_FUNC.isCardOwner(idea))) {
+      canMoveCard = true
     }
 
     return (
       <View style={styles.container}>
         <View style={styles.rowContainer}>
-          <Animated.View
-            style={
-              this.state.selectedButton === SELECT_MOVE &&
-              {
-                transform: [
-                  { scale: this.animatedSelect },
-                ],
+          {canMoveCard && (
+            <Animated.View
+              style={
+                this.state.selectedButton === SELECT_MOVE &&
+                {
+                  transform: [
+                    { scale: this.animatedSelect },
+                  ],
+                }
               }
-            }
-          >
-            <TouchableOpacity
-              style={styles.moveButtonContainer}
-              activeOpacity={0.7}
-              onPress={this.onMove.bind(this)}
             >
-              <Ionicons name='md-arrow-forward' size={18} color='#fff' />
-              <Text style={styles.buttonText}>Move</Text>
-            </TouchableOpacity>
-          </Animated.View>
-          <Animated.View
-            style={
-              this.state.selectedButton === SELECT_MENU &&
-              {
-                transform: [
-                  { scale: this.animatedSelect },
-                ],
+              <TouchableOpacity
+                style={styles.moveButtonContainer}
+                activeOpacity={0.7}
+                onPress={this.onMove.bind(this)}
+              >
+                <Ionicons name='md-arrow-forward' size={18} color='#fff' />
+                <Text style={styles.buttonText}>Move</Text>
+              </TouchableOpacity>
+            </Animated.View>
+          )}
+
+          {MENU_ITEMS.length > 0 && (
+            <Animated.View
+              style={
+                this.state.selectedButton === SELECT_MENU &&
+                {
+                  transform: [
+                    { scale: this.animatedSelect },
+                  ],
+                }
               }
-            }
-          >
-            <TouchableOpacity 
-              style={styles.moreButtonContainer}
-              activeOpacity={0.7}
-              onPress={() => this.onShowMenu()}
             >
-              <Entypo name='dots-three-horizontal' style={styles.plusButtonIcon} />
-            </TouchableOpacity>
-          </Animated.View>
+              <TouchableOpacity 
+                style={styles.moreButtonContainer}
+                activeOpacity={0.7}
+                onPress={() => this.onShowMenu()}
+              >
+                <Entypo name='dots-three-horizontal' style={styles.plusButtonIcon} />
+              </TouchableOpacity>
+            </Animated.View>
+          )}
         </View>
         <Modal
           style={styles.settingMenu}
