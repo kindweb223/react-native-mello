@@ -91,6 +91,8 @@ class HomeScreen extends React.Component {
       currentPushNotificationType: CONSTANTS.UNKOWN_PUSH_NOTIFICATION,
       currentPushNotificationData: null,
       currentIdea: {},
+      isVisibleCard: false,
+      selectedIdeaInvitee: {},
     };
 
     this.currentRef = null;
@@ -192,11 +194,33 @@ class HomeScreen extends React.Component {
         currentPushNotificationType: CONSTANTS.UNKOWN_PUSH_NOTIFICATION,
         currentPushNotificationData: null,
       });
-    } else if (this.props.feedo.loading === 'GET_CARD_FULFILLED' && this.state.currentPushNotificationType === CONSTANTS.NEW_COMMENT_ON_IDEA && this.state.currentPushNotificationData) {
+    } else if (this.props.feedo.loading === 'GET_CARD_FULFILLED' && (this.state.currentPushNotificationType === CONSTANTS.NEW_COMMENT_ON_IDEA || this.state.currentPushNotificationType === USER_JOINED_HUNT) && this.state.currentPushNotificationData) {
       Actions.CommentScreen({
         idea: this.state.currentIdea,
       });
-    }
+      this.setState({
+        currentPushNotificationType: CONSTANTS.UNKOWN_PUSH_NOTIFICATION,
+        currentPushNotificationData: null,
+      });
+    } else if (this.props.feedo.loading === 'GET_CARD_FULFILLED' && this.state.currentPushNotificationType === CONSTANTS.NEW_IDEA_ADDED && this.state.currentPushNotificationData) {
+      const invitee = _.find(this.state.currentPushNotificationData.invitees, (o) => {
+        return (o.id == this.state.currentIdea.inviteeId)
+      });
+      this.setState({
+        isVisibleCard: true,
+        selectedIdeaInvitee: invitee,
+      });
+      this.setState({
+        currentPushNotificationType: CONSTANTS.UNKOWN_PUSH_NOTIFICATION,
+        currentPushNotificationData: null,
+      });
+    } else if (this.props.feedo.loading === 'GET_CARD_FULFILLED' && this.state.currentPushNotificationType === CONSTANTS.NEW_LIKE_ON_IDEA && this.state.currentPushNotificationData) {
+      Actions.LikesListScreen({idea: this.state.currentIdea});
+      this.setState({
+        currentPushNotificationType: CONSTANTS.UNKOWN_PUSH_NOTIFICATION,
+        currentPushNotificationData: null,
+      });
+    } 
   }
 
   parsePushNotification(notification) {
@@ -242,14 +266,62 @@ class HomeScreen extends React.Component {
       }
       case CONSTANTS.NEW_IDEA_ADDED: {
         const { huntId, ideaId } = notification.data;
+        const { feedoList } = this.state
+        const matchedHunt = find(feedoList, feedo => feedo.id === huntId);
+        if (matchedHunt) {
+          const matchedIdea = find(matchedHunt.ideas, idea => idea.id === ideaId);
+          if (matchedIdea) {
+            const invitee = _.find(matchedHunt.invitees, (o) => {
+              return (o.id == matchedIdea.inviteeId)
+            });
+            this.setState({
+              isVisibleCard: true,
+              selectedIdeaInvitee: invitee,
+            });
+            return;
+          }
+        }
+        this.setState({
+          currentPushNotificationType: CONSTANTS.NEW_IDEA_ADDED,
+          currentPushNotificationData: matchedHunt,
+        });
+        this.props.getCard(ideaId);
         break;
       }
       case CONSTANTS.NEW_LIKE_ON_IDEA: {
         const { huntId, ideaId } = notification.data;
+        const { feedoList } = this.state
+        const matchedHunt = find(feedoList, feedo => feedo.id === huntId);
+        if (matchedHunt) {
+          const matchedIdea = find(matchedHunt.ideas, idea => idea.id === ideaId);
+          if (matchedIdea) {
+            Actions.LikesListScreen({idea: matchedIdea});
+            return;
+          }
+        }
+        this.setState({
+          currentPushNotificationType: CONSTANTS.NEW_LIKE_ON_IDEA,
+          currentPushNotificationData: ideaId,
+        });
+        this.props.getCard(ideaId);
+
         break;
       }
       case CONSTANTS.USER_JOINED_HUNT: {
         const { huntId } = notification.data;
+        const { feedoList } = this.state
+        const matchedHunt = find(feedoList, feedo => feedo.id === huntId);
+        if (matchedHunt) {
+          Actions.FeedDetailScreen({
+            data: matchedHunt
+          });
+        } else {
+          this.setState({
+            currentPushNotificationType: CONSTANTS.USER_JOINED_HUNT,
+            currentPushNotificationData: huntId,
+          });
+          this.props.getFeedoList(this.state.tabIndex);
+        }
         break;
       }
     }
@@ -570,6 +642,38 @@ class HomeScreen extends React.Component {
   onSearch = () => {
   }
 
+  onCloseCardModal() {
+    this.animatedOpacity.setValue(1);
+    Animated.timing(this.animatedOpacity, {
+      toValue: 0,
+      duration: CONSTANTS.ANIMATEION_MILLI_SECONDS,
+    }).start(() => {
+      this.setState({ 
+        isVisibleCard: false,
+      });
+    });
+  }
+
+  get renderCardModal() {
+    if (!this.state.isVisibleCard ) {
+      return;
+    }
+    return (
+      <Animated.View 
+        style={[
+          styles.modalContainer,
+          {opacity: this.animatedOpacity}
+        ]}
+      >
+        <NewCardScreen 
+          viewMode={CONSTANTS.CARD_VIEW}
+          invitee={this.state.selectedIdeaInvitee}
+          onClose={() => this.onCloseCardModal()}
+        />
+      </Animated.View>
+    );
+  }
+
   render () {
     const { loading, feedoList, emptyState, tabIndex } = this.state
 
@@ -759,6 +863,8 @@ class HomeScreen extends React.Component {
             onPressButton={this.undoAction}
           />
         )}
+
+        {this.renderCardModal}
 
       </SafeAreaView>
     )
