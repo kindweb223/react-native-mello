@@ -83,7 +83,7 @@ class FeedLongHoldMenuScreen extends React.Component {
   closeShareModal = () => {
     setTimeout(() => {
       this.setState({ isShowShare: false })
-    }, 1000)
+    }, 250)
   }
 
   render () {
@@ -120,6 +120,7 @@ class FeedLongHoldMenuScreen extends React.Component {
         animationOut="zoomOutDown"
         animationInTiming={500}
         onModalHide={() => {}}
+        onBackdropPress={() => this.closeShareModal()}
       >
         <ShareScreen onClose={() => this.closeShareModal()} data={currentFeed} />
       </Modal>
