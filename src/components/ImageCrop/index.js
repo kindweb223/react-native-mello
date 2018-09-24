@@ -41,8 +41,6 @@ class ImageCrop extends Component {
 			lastScale: 1
 		};
 
-		this.pointOffsetX = 0
-		this.pointOffsetY = 0
 		this.paddingWidth = 0
 		this.paddingHeight = 0
 	}
@@ -52,10 +50,17 @@ class ImageCrop extends Component {
 
 		Image.getSize(this.props.source.uri, (originalImageWidth, originalImageHeight) => {
 			this.setState({ originalImageWidth, originalImageHeight });
+
+			const ratio = originalImageWidth > originalImageHeight ? originalImageWidth / originalImageHeight : originalImageHeight / originalImageWidth
+			const cropWidth = originalImageWidth > originalImageHeight ? CONSTANTS.SCREEN_WIDTH * ratio : CONSTANTS.SCREEN_WIDTH
+			const cropHeight = originalImageWidth > originalImageHeight ? CONSTANTS.SCREEN_WIDTH : CONSTANTS.SCREEN_WIDTH * ratio
+
 			this.setState({
 				containerWidth: CONSTANTS.SCREEN_WIDTH,
 				containerHeight: originalImageWidth > originalImageHeight ? CONSTANTS.SCREEN_WIDTH : CONSTANTS.SCREEN_WIDTH * originalImageHeight / originalImageWidth,
-				containerRatio: originalImageWidth / CONSTANTS.SCREEN_WIDTH
+				containerRatio: originalImageWidth / CONSTANTS.SCREEN_WIDTH,
+				cropWidth,
+				cropHeight
 			})
 		});
 	}
@@ -74,10 +79,70 @@ class ImageCrop extends Component {
 	}
 
 	_handlePanResponderEnd = (e, gestureState) => {
-		let { offsetX, offsetY, scale } = this.state
+		let { offsetX, offsetY, scale, cropWidth, cropHeight } = this.state
 
-		let offsetX1 = Math.abs(offsetX) < this.paddingWidth ? offsetX : (offsetX < 0 ? -this.paddingWidth * 2 : this.paddingWidth * 2)
-		let offsetY1 = Math.abs(offsetY) < this.paddingHeight ? offsetY : (offsetY < 0 ? -this.paddingHeight * 2 : this.paddingHeight * 2)
+		let offsetX1 = offsetX
+		let offsetY1 = offsetY
+
+		if (scale === 1) {
+			if (cropWidth > cropHeight) {
+				const offset = cropWidth - cropHeight
+				if (offsetX > 0) {
+					offsetX1 = 0
+				} else {
+					if (Math.abs(offsetX) > offset) {
+						offsetX1 = -offset
+					}
+				}
+				offsetY1 = 0
+			} else {
+				const offset = cropHeight - cropWidth
+				if (offsetY > 0) {
+					offsetY1 = 0
+				} else {
+					if (Math.abs(offsetY) > offset) {
+						offsetY1 = -offset
+					}
+				}
+				offsetX1 = 0
+			}
+		} else {
+			if (cropWidth > cropHeight) {
+				const offset = cropWidth - cropHeight
+				if (offsetX > this.paddingWidth) {
+					offsetX1 = this.paddingWidth
+				} else {
+					if (Math.abs(offsetX) > offset) {
+						offsetX1 = -offset
+					}
+				}
+
+				if (offsetY > this.paddingHeight) {
+					offsetY1 = this.paddingHeight
+				} else {
+					if (Math.abs(offsetY) > this.paddingHeight) {
+						offsetY1 = -this.paddingHeight
+					}
+				}
+			} else {
+				const offset = cropHeight - cropWidth
+				if (offsetY > this.paddingHeight) {
+					offsetY1 = this.paddingHeight
+				} else {
+					if (Math.abs(offsetY) > offset) {
+						offsetY1 = -offset
+					}
+				}
+
+				if (offsetX > this.paddingWidth) {
+					offsetX1 = this.paddingWidth
+				} else {
+					if (Math.abs(offsetX) > this.paddingWidth) {
+						offsetX1 = -this.paddingWidth
+					}
+				}
+			}
+		}
 
 		this.setState({
 			lastScale: scale,
@@ -98,10 +163,9 @@ class ImageCrop extends Component {
 			);
 			let distant = Math.sqrt(dx * dx + dy * dy);
 			let scale = (distant / this.distant) * lastScale;
-			console.log('SCALE: ', scale)
 
-			this.paddingWidth = (scale - 1) * cropWidth / 2
-			this.paddingHeight = (scale - 1) * cropHeight / 2
+			this.paddingWidth = (scale - 1) * cropWidth / 2 / scale
+			this.paddingHeight = (scale - 1) * cropHeight / 2 / scale
 
 			if (scale < maxScale && scale > minScale) {
 				this.setState({ scale });
@@ -113,8 +177,6 @@ class ImageCrop extends Component {
 	}
 
 	_handlePanResponderGrant = (e, gestureState) => {
-		this.setState({ isMoving: true })
-
     if (gestureState.numberActiveTouches === 2) {
       let dx = Math.abs(
         e.nativeEvent.touches[0].pageX - e.nativeEvent.touches[1].pageX
@@ -130,18 +192,32 @@ class ImageCrop extends Component {
 	crop() {
 		const { originalImageWidth, originalImageHeight, offsetX, offsetY, containerRatio, currentOffsetX, currentOffsetY, cropWidth, cropHeight, scale } = this.state
 
-		console.log('OFFSET: ', this.paddingWidth, ' : ', currentOffsetX)
-		const cropData = {
-			offset: {
-				y: (this.paddingHeight * scale - currentOffsetY),
-				x: (this.paddingWidth * scale - currentOffsetX)
-			},
-			size: {
-				width: cropWidth * containerRatio / scale,
-				height: cropHeight * containerRatio / scale
-			}
-		};
-		console.log('CROPDATA: ', cropData)
+		let cropData = {}
+		let ratio = cropWidth > cropHeight ? originalImageHeight / CONSTANTS.SCREEN_WIDTH : originalImageWidth / CONSTANTS.SCREEN_WIDTH
+
+		if (scale === 1) {
+			cropData = {
+				offset: {
+					y: -currentOffsetY * ratio,
+					x: -currentOffsetX * ratio
+				},
+				size: {
+					width: cropWidth > cropHeight ? originalImageHeight : originalImageWidth,
+					height: cropWidth > cropHeight ? originalImageHeight : originalImageWidth
+				}
+			};
+		} else {
+			cropData = {
+				offset: {
+					y: -(currentOffsetY - this.paddingHeight) * ratio,
+					x: -(currentOffsetX - this.paddingWidth) * ratio
+				},
+				size: {
+					width: cropWidth > cropHeight ? originalImageHeight / scale : originalImageWidth / scale,
+					height: cropWidth > cropHeight ? originalImageHeight / scale : originalImageWidth / scale
+				}
+			};
+		}
 
 		return new Promise((resolve, reject) => {
 			ImageEditor.cropImage(
@@ -166,24 +242,80 @@ class ImageCrop extends Component {
 		if (!Number.isInteger(cropQuality) || cropQuality < 0 || cropQuality > 100) {
 			cropQuality = ImageCrop.defaultProps.cropQuality;
 		}
-		return ImageResizer.createResizedImage(uri, width, height, 'JPEG', cropQuality, 0, null);
+		return ImageResizer.createResizedImage(uri, 200, 200, 'JPEG', cropQuality, 0, null);
 	}
 
 	renderContainerImage() {
-		const { containerWidth, containerHeight, offsetX, offsetY, scale } = this.state
+		const { containerWidth, containerHeight, cropWidth, cropHeight, offsetX, offsetY, scale } = this.state
 
-		console.log('==============================================')
-		console.log('PAN: ', this.paddingWidth, ' : ', this.paddingHeight)
-		console.log('OFFSET: ', offsetX, ' : ', offsetY)
+		let translateX = offsetX
+		let translateY = offsetY
 
-		const translateX = Math.abs(offsetX) < this.paddingWidth ? offsetX : (offsetX < 0 ? -this.paddingWidth : this.paddingWidth)
-		const translateY = Math.abs(offsetY) < this.paddingHeight ? offsetY : (offsetY < 0 ? -this.paddingHeight : this.paddingHeight)
+		if (scale === 1) {
+			if (cropWidth > cropHeight) {
+				const offset = cropWidth - cropHeight
+				if (offsetX > 0) {
+					translateX = 0
+				} else {
+					if (Math.abs(offsetX) > offset) {
+						translateX = -offset
+					}
+				}
+				translateY = 0
+			} else {
+				const offset = cropHeight - cropWidth
+				if (offsetY > 0) {
+					translateY = 0
+				} else {
+					if (Math.abs(offsetY) > offset) {
+						translateY = -offset
+					}
+				}
+				translateX = 0
+			}
+		} else {
+			if (cropWidth > cropHeight) {
+				const offset = cropWidth - cropHeight
+				if (offsetX > this.paddingWidth) {
+					translateX = this.paddingWidth
+				} else {
+					if (Math.abs(offsetX) > offset) {
+						translateX = -offset
+					}
+				}
+
+				if (offsetY > this.paddingHeight) {
+					translateY = this.paddingHeight
+				} else {
+					if (Math.abs(offsetY) > this.paddingHeight) {
+						translateY = -this.paddingHeight
+					}
+				}
+			} else {
+				const offset = cropHeight - cropWidth
+				if (offsetY > this.paddingHeight) {
+					translateY = this.paddingHeight
+				} else {
+					if (Math.abs(offsetY) > offset) {
+						translateY = -offset
+					}
+				}
+				
+				if (offsetX > this.paddingWidth) {
+					translateX = this.paddingWidth
+				} else {
+					if (Math.abs(offsetX) > this.paddingWidth) {
+						translateX = -this.paddingWidth
+					}
+				}
+			}
+		}
 
 		return (
 			<View
 				style={[styles.imageWrapper, {
-					width: containerWidth,
-					height: containerWidth,
+					width: cropWidth,
+					height: cropHeight,
 					top: 0,
 					left: 0,
 					borderRadius: 0,
@@ -213,25 +345,85 @@ class ImageCrop extends Component {
 	renderImage() {
 		const { containerWidth, containerHeight, offsetX, offsetY, cropWidth, cropHeight, scale } = this.state
 
-		const translateX = Math.abs(offsetX) < this.paddingWidth ? offsetX : (offsetX < 0 ? -this.paddingWidth : this.paddingWidth)
-		const translateY = Math.abs(offsetY) < this.paddingHeight ? offsetY : (offsetY < 0 ? -this.paddingHeight : this.paddingHeight)
+		let translateX = offsetX
+		let translateY = offsetY
+
+		if (scale === 1) {
+			if (cropWidth > cropHeight) {
+				const offset = cropWidth - cropHeight
+				if (offsetX > 0) {
+					translateX = 0
+				} else {
+					if (Math.abs(offsetX) > offset) {
+						translateX = -offset
+					}
+				}
+				translateY = 0
+			} else {
+				const offset = cropHeight - cropWidth
+				if (offsetY > 0) {
+					translateY = 0
+				} else {
+					if (Math.abs(offsetY) > offset) {
+						translateY = -offset
+					}
+				}
+				translateX = 0
+			}
+		} else {
+			if (cropWidth > cropHeight) {
+				const offset = cropWidth - cropHeight
+				if (offsetX > this.paddingWidth) {
+					translateX = this.paddingWidth
+				} else {
+					if (Math.abs(offsetX) > offset) {
+						translateX = -offset
+					}
+				}
+
+				if (offsetY > this.paddingHeight) {
+					translateY = this.paddingHeight
+				} else {
+					if (Math.abs(offsetY) > this.paddingHeight) {
+						translateY = -this.paddingHeight
+					}
+				}
+			} else {
+				const offset = cropHeight - cropWidth
+				if (offsetY > this.paddingHeight) {
+					translateY = this.paddingHeight
+				} else {
+					if (Math.abs(offsetY) > offset) {
+						translateY = -offset
+					}
+				}
+
+				if (offsetX > this.paddingWidth) {
+					translateX = this.paddingWidth
+				} else {
+					if (Math.abs(offsetX) > this.paddingWidth) {
+						translateX = -this.paddingWidth
+					}
+				}
+			}
+		}
 
 		return (
 			<View
 				style={{
-					width: cropWidth,
-					height: cropHeight,
+					width: CONSTANTS.SCREEN_WIDTH,
+					height: CONSTANTS.SCREEN_WIDTH,
 					top: 0,
 					left: 0,
-					borderRadius: cropWidth / 2,
+					borderRadius: CONSTANTS.SCREEN_WIDTH / 2,
 					overflow: 'hidden'
 				}}
 			>
 				<Image
 					source={this.props.source}
 					style={[styles.image, {
-						width: containerWidth,
-						height: containerHeight,
+						width: cropWidth,
+						height: cropHeight,
 						top: 0,
 						left: 0,
 						opacity: 1,
