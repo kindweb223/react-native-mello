@@ -764,7 +764,7 @@ export default function feedo(state = initialState, action = {}) {
 
     case cardTypes.UPDATE_CARD_FULFILLED: {
       const { data } = action.result
-      const { currentFeed, } = state
+      const { currentFeed, feedoList } = state
       const ideaIndex = findIndex(currentFeed.ideas, idea => idea.id === data.id);
       if (ideaIndex === -1) {
         currentFeed.ideas.unshift(data)  
@@ -786,11 +786,19 @@ export default function feedo(state = initialState, action = {}) {
         }
         currentFeed.invitees[inviteeIndex].ideas = inviteeIdeas;
       }
+
+      const restFeedoList = filter(feedoList, feed => feed.id !== currentFeed.id)
+
       return {
         ...state,
+        loading: 'UPDATE_CARD_FULFILLED',
         currentFeed: {
           ...currentFeed,
         },
+        feedoList: [
+          ...restFeedoList,
+          { ...currentFeed }
+        ]
       }
     }
 
@@ -864,20 +872,29 @@ export default function feedo(state = initialState, action = {}) {
         }
       }
     }
-    
+
     /**
      * delete a card
      */
     case cardTypes.DELETE_CARD_FULFILLED: {
-      const { currentFeed } = state
+      const { currentFeed, feedoList } = state
       const ideaId = action.payload;
       const ideas = filter(currentFeed.ideas, idea => idea.id !== ideaId);
+
+      const restFeedoList = filter(feedoList, feed => feed.id !== currentFeed.id)
+      const newCurrentFeed = {
+        ...currentFeed,
+        ideas,
+      }
+
       return {
         ...state,
-        currentFeed: {
-          ...currentFeed,
-          ideas,
-        }
+        loading: 'DELETE_CARD_FULFILLED',
+        currentFeed: newCurrentFeed,
+        feedoList: [
+          ...restFeedoList,
+          newCurrentFeed
+        ]
       }
     }
 
@@ -889,19 +906,27 @@ export default function feedo(state = initialState, action = {}) {
       const { ideaId, huntId } = action.payload;
       const ideas = filter(currentFeed.ideas, idea => idea.id !== ideaId);
       const movedCard = find(currentFeed.ideas, idea => idea.id === ideaId);
-      const moveToFeedIndex = findIndex(feedoList, feed => feed.id === huntId)
+
+      const restFeedoList = filter(feedoList, feed => feed.id !== currentFeed.id)
+      const moveToFeedIndex = findIndex(restFeedoList, feed => feed.id === huntId)
+
       if (moveToFeedIndex !== -1) {
-        feedoList[moveToFeedIndex].ideas.push(movedCard);
+        restFeedoList[moveToFeedIndex].ideas.push(movedCard);
       }
       return {
         ...state,
+        loading: 'MOVE_CARD_FULFILLED',
         currentFeed: {
           ...currentFeed,
           ideas,
         },
-        // feedoList: {
-        //   ...feedoList,
-        // },
+        feedoList: [
+          ...restFeedoList,
+          {
+            ...currentFeed,
+            ideas,
+          }
+        ],
       }
     }
 

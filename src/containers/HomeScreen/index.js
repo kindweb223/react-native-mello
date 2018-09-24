@@ -109,11 +109,13 @@ class HomeScreen extends React.Component {
   }
 
   static getDerivedStateFromProps(nextProps, prevState) {
-    const { feedo } = nextProps
+    const { feedo, card } = nextProps
 
     if (prevState.apiLoading !== feedo.loading && ((feedo.loading === 'GET_FEEDO_LIST_FULFILLED') || (feedo.loading === 'GET_FEEDO_LIST_REJECTED') ||
       (feedo.loading === 'FEED_FULFILLED') || (feedo.loading === 'DEL_FEED_FULFILLED') || (feedo.loading === 'ARCHIVE_FEED_FULFILLED') ||
-      (feedo.loading === 'DUPLICATE_FEED_FULFILLED') || (feedo.loading === 'UPDATE_FEED_FULFILLED'))) {
+      (feedo.loading === 'DUPLICATE_FEED_FULFILLED') || (feedo.loading === 'UPDATE_FEED_FULFILLED') ||
+      (feedo.loading === 'DELETE_CARD_FULFILLED') || (feedo.loading === 'MOVE_CARD_FULFILLED') ||
+      (feedo.loading === 'UPDATE_CARD_FULFILLED') || (feedo.loading === 'INVITE_HUNT_FULFILLED') )) {
 
       let feedoList = []
       let emptyState = prevState.emptyState
@@ -131,8 +133,8 @@ class HomeScreen extends React.Component {
 
         feedoList = orderBy(
           filter(feedoList, item => item.status === 'PUBLISHED'),
-          ['pinned.pinned', 'pinned.pinnedDate', 'publishedDate'],
-          ['asc', 'desc', 'desc']
+          ['publishedDate'],
+          ['desc']
         )
         
         if (prevState.tabIndex === 1) {
@@ -871,9 +873,10 @@ class HomeScreen extends React.Component {
   }
 }
 
-const mapStateToProps = ({ user, feedo }) => ({
+const mapStateToProps = ({ user, feedo, card }) => ({
   feedo,
-  user
+  user,
+  card
 })
 
 const mapDispatchToProps = dispatch => ({
