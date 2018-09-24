@@ -11,7 +11,8 @@ const styles = StyleSheet.create({
   settingItem: {
     width: '100%',
     paddingHorizontal: 10,
-    marginBottom: 20
+    marginTop: 10,
+    marginBottom: 5
   },
   settingButtonText: {
     color: COLORS.PURPLE,
@@ -31,6 +32,9 @@ const styles = StyleSheet.create({
     justifyContent: 'space-around',
     alignItems: 'center',
     marginBottom: 15
+  },
+  buttonShareView: {
+    marginBottom: 5
   },
   shareIcon: {
     color: '#fff',

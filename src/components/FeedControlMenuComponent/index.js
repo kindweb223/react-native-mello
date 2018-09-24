@@ -38,7 +38,7 @@ class FeedControlMenuComponent extends React.Component {
         </TouchableOpacity>
 
         <TouchableOpacity onPress={() => this.props.handleSettingItem('Share')}>
-          <View style={styles.buttonView}>
+          <View style={[styles.buttonView, styles.buttonShareView]}>
             <Entypo name="share-alternative" style={styles.shareIcon} />
             <Text style={styles.buttonText}>Share</Text>
           </View>
