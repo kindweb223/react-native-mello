@@ -599,7 +599,7 @@ class FeedDetailScreen extends React.Component {
 
     const settingMenuY = this.state.scrollY.interpolate({
       inputRange: [0, 35],
-      outputRange: [140, 80],
+      outputRange: [140 + CONSTANTS.STATUSBAR_HEIGHT - 20, 80 + CONSTANTS.STATUSBAR_HEIGHT - 20],
       extrapolate: 'clamp'
     })
 
