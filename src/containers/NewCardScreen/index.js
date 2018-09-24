@@ -392,6 +392,9 @@ class NewCardScreen extends React.Component {
   }
 
   onPressMoreActions() {
+    if (this.props.onOpenAction) {
+      this.props.onOpenAction(this.props.card.currentCard);
+    }
   }
 
   uploadFile(file, type) {
@@ -1078,6 +1081,7 @@ NewCardScreen.defaultProps = {
   cardMode: CONSTANTS.MAIN_APP_CARD,
   shareUrl: '',
   onClose: () => {},
+  onOpenAction: () => {},
 }
 
 
@@ -1085,10 +1089,11 @@ NewCardScreen.propTypes = {
   card: PropTypes.object,
   invitee: PropTypes.object,
   intialLayout: PropTypes.object,
-  onClose: PropTypes.func,
   viewMode: PropTypes.number,
   cardMode: PropTypes.number,
   shareUrl: PropTypes.string,
+  onClose: PropTypes.func,
+  onOpenAction: PropTypes.func,
 }
 
 

@@ -27,7 +27,7 @@ import { getDurationFromNow } from '../../service/dateUtils'
 import UserAvatarComponent from '../../components/UserAvatarComponent';
 
 
-class LIkesListScreen extends React.Component {
+class LikesListScreen extends React.Component {
 
   static renderLeftButton(props) {
     return (
@@ -153,11 +153,11 @@ class LIkesListScreen extends React.Component {
 }
 
 
-LIkesListScreen.defaultProps = {
+LikesListScreen.defaultProps = {
 }
 
 
-LIkesListScreen.propTypes = {
+LikesListScreen.propTypes = {
   idea: PropTypes.object.isRequired,
 }
 
@@ -173,4 +173,4 @@ const mapDispatchToProps = dispatch => ({
 })
 
 
-export default connect(mapStateToProps, mapDispatchToProps)(LIkesListScreen)
+export default connect(mapStateToProps, mapDispatchToProps)(LikesListScreen)

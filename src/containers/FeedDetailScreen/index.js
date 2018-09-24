@@ -26,6 +26,7 @@ import FeedCollapseComponent from '../../components/FeedCollapseComponent'
 import AvatarPileComponent from '../../components/AvatarPileComponent'
 import FeedNavbarSettingComponent from '../../components/FeedNavbarSettingComponent'
 import FeedControlMenuComponent from '../../components/FeedControlMenuComponent'
+import CardControlMenuComponent from '../../components/CardControlMenuComponent';
 import ToasterComponent from '../../components/ToasterComponent'
 import FeedLoadingStateComponent from '../../components/FeedLoadingStateComponent'
 import ShareScreen from '../ShareScreen'
@@ -99,7 +100,8 @@ class FeedDetailScreen extends React.Component {
       selectedLongHoldInvitees: [],
       selectedLongHoldCardIndex: -1,
       currentActionType: ACTION_NONE,
-      totalCardCount: 0
+      totalCardCount: 0,
+      isVisibleCardOpenMenu: false,
     };
     this.animatedOpacity = new Animated.Value(0)
     this.menuOpacity = new Animated.Value(0)
@@ -496,7 +498,9 @@ class FeedDetailScreen extends React.Component {
   }
 
   onMoveCard(ideaId) {
+    this.onCloseCardModal();
     this.setState({ 
+      isVisibleCardOpenMenu: false,
       isVisibleLongHoldMenu: false,
       currentActionType: ACTION_CARD_MOVE,
     });
@@ -508,9 +512,11 @@ class FeedDetailScreen extends React.Component {
   }
 
   onDeleteCard(ideaId) {
+    this.onCloseCardModal();
     this.setState((state) => { 
       state.isVisibleLongHoldMenu = false;
       state.currentActionType = ACTION_CARD_DELETE;
+      state.isVisibleCardOpenMenu = false,
       state.isShowToaster = true;
       state.toasterTitle = 'Card deleted';
       const filterIdeas = _.filter(state.currentFeed.ideas, idea => idea.id !== ideaId)
@@ -523,6 +529,13 @@ class FeedDetailScreen extends React.Component {
         this.props.deleteCard(ideaId)
       }
     }, TOASTER_DURATION + 5)
+  }
+
+  onOpenCardAction(idea) {
+    this.setState({
+      isVisibleCardOpenMenu: true,
+      selectedLongHoldIdea: idea,
+    })
   }
 
   get renderNewCardModal() {
@@ -544,6 +557,7 @@ class FeedDetailScreen extends React.Component {
               invitee={this.state.selectedIdeaInvitee}
               intialLayout={this.state.selectedIdeaLayout}
               onClose={() => this.onCloseCardModal()}
+              onOpenAction={(idea) => this.onOpenCardAction(idea)}
             />
         }
         {  
@@ -756,6 +770,25 @@ class FeedDetailScreen extends React.Component {
         >
           <Animated.View style={[styles.settingMenuView, { top: settingMenuY }]}>
             <FeedControlMenuComponent handleSettingItem={item => this.handleSettingItem(item)} data={currentFeed} pinText={pinText} />
+          </Animated.View>
+        </Modal>
+
+        <Modal 
+          isVisible={this.state.isVisibleCardOpenMenu}
+          style={styles.shareScreenContainer}
+          backdropColor='#fff'
+          backdropOpacity={0}
+          animationIn="fadeIn"
+          animationOut="fadeOut"
+          animationInTiming={500}
+          onModalHide={this.onHiddenLongHoldMenu.bind(this)}
+          onBackdropPress={() => this.setState({ isVisibleCardOpenMenu: false })}
+        >
+          <Animated.View style={[styles.settingMenuView, { top: 90 }]}>
+            <CardControlMenuComponent 
+              onMove={() => this.onMoveCard(this.state.selectedLongHoldIdea.id)}
+              onDelete={() => this.onDeleteCard(this.state.selectedLongHoldIdea.id)}
+            />
           </Animated.View>
         </Modal>
 
