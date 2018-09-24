@@ -121,6 +121,7 @@ class ProfileScreen extends React.Component {
     ImagePicker.launchImageLibrary(options, (response)  => {
       if (!response.didCancel) {
         this.setState({ avatarFile: response, isCrop: true })
+        Actions.CropImageScreen({ avatarFile: response })
       }
     });
   }
@@ -349,7 +350,7 @@ class ProfileScreen extends React.Component {
           onPress={(index) => this.onTapMediaPickerActionSheet(index)}
         />
 
-        <Modal 
+        {/* <Modal 
           isVisible={this.state.isCrop}
           style={{ margin: 0 }}
           backdropColor='#fff'
@@ -363,7 +364,7 @@ class ProfileScreen extends React.Component {
             avatarFile={this.state.avatarFile}
             onClose={() => this.setState({ isCrop: false })}
           />
-        </Modal>
+        </Modal> */}
 
         {this.state.isShowToaster && (
           <ToasterComponent

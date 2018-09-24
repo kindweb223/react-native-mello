@@ -61,6 +61,7 @@ import ProfileUpdateScreen from './src/containers/ProfileUpdateScreen'
 import SignUpSuccessScreen from './src/containers/SignUpSuccessScreen'
 import ResetPasswordConfirmScreen from './src/containers/ResetPasswordConfirmScreen'
 import ResetPasswordScreen from './src/containers/ResetPasswordScreen'
+import CropImageScreen from './src/containers/CropImageScreen'
 import FeedFilterScreen from './src/containers/FeedFilterScreen'
 
 const store = createStore(reducers, applyMiddleware(thunk, promiseMiddleware))
@@ -201,6 +202,7 @@ export default class Root extends React.Component {
         </Modal>
         <Scene key="LoadingScreen" component={ LoadingScreen } hideNavBar />
         <Scene key="ImageSliderScreen" component={ ImageSliderScreen } hideNavBar />
+        <Scene key="CropImageScreen" component={ CropImageScreen } hideNavBar panHandlers={null} />
       </Lightbox>
     );
 

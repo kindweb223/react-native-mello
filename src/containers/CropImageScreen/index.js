@@ -32,7 +32,6 @@ class CropImageScreen extends React.Component {
   componentDidUpdate(prevProps, prevState) {
     if (prevProps.user.loading === 'GET_USER_IMAGE_URL_PENDING' && this.props.user.loading === 'GET_USER_IMAGE_URL_FULFILLED') {
       const { userImageUrlData } = this.props.user
-      console.log('GET_USER_IMAGE_URL_FULFILLED: ', userImageUrlData)
       this.uploadImage(userImageUrlData)
     }
 
@@ -46,7 +45,7 @@ class CropImageScreen extends React.Component {
 
     if (prevProps.user.loading === 'UPDATE_PROFILE_PENDING' && this.props.user.loading === 'UPDATE_PROFILE_FULFILLED') {
       this.setState({ loading: false }, () => {
-        this.props.onClose()
+        Actions.pop()
       })
     }
 
@@ -84,19 +83,30 @@ class CropImageScreen extends React.Component {
       <View style={styles.container}>
         <SafeAreaView>
           <View style={styles.body}>
-            <View style={styles.headerView}>
-              <View style={styles.closeButton} />
-              <Text style={styles.title}>Update avatar</Text>
-              <TouchableOpacity onPress={() => this.props.onClose()} style={styles.closeButton}>
-                <Image source={CLOSE_ICON} />
-              </TouchableOpacity>
-            </View>
-
             <View style={styles.imageView}>
               <ImageCrop
                 ref={c => this.imageCrop = c}
                 source={{ uri: avatarFile.uri }}
               />
+            </View>
+
+            {/* <Image
+              source={{ uri: this.state.cropUrl.uri }}
+              style={{
+                width: 100,
+                height: 100,
+                borderRadius: 50,
+                bottom: 100
+              }}
+              resizeMode="cover"
+            /> */}
+
+            <View style={styles.headerView}>
+              <View style={styles.closeButton} />
+              <Text style={styles.title}>Update avatar</Text>
+              <TouchableOpacity onPress={() => Actions.pop()} style={styles.closeButton}>
+                <Image source={CLOSE_ICON} />
+              </TouchableOpacity>
             </View>
 
             <View style={styles.footerView}>
