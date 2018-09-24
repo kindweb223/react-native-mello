@@ -285,6 +285,7 @@ class ShareScreen extends React.Component {
           animationOut="fadeOutDown"
           animationInTiming={500}
           onModalHide={() => {}}
+          onBackdropPress={() => this.setState({ isInviteeModal: false })}
         >
           <InviteeScreen
             data={data}
