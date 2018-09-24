@@ -229,7 +229,7 @@ class FeedDetailScreen extends React.Component {
         return
       case 'Delete':
         setTimeout(() => {
-          this.ActionSheet.show()
+          this.feedoActionSheet.show()
         }, 200)
         return
       case 'Archive':
@@ -352,7 +352,7 @@ class FeedDetailScreen extends React.Component {
     })
   }
 
-  onTapActionSheet = (index) => {
+  onTapFeedoActionSheet = (index) => {
     if (index === 0) {
       this.props.setFeedDetailAction({
         action: 'Delete',
@@ -511,12 +511,26 @@ class FeedDetailScreen extends React.Component {
     this.setState({ isVisibleLongHoldMenu: false })
   }
 
+  onTapCardActionSheet(index) {
+    if (index === 0) {
+      this.onDeleteCard(this.state.selectedLongHoldIdea.id)
+    }
+  }
+
+  onConfirmDeleteCard() {
+    this.setState({
+      isVisibleCardOpenMenu: false,
+    })
+    setTimeout(() => {
+      this.cardActionSheet.show()
+    }, 500)
+  }
+
   onDeleteCard(ideaId) {
     this.onCloseCardModal();
     this.setState((state) => { 
       state.isVisibleLongHoldMenu = false;
       state.currentActionType = ACTION_CARD_DELETE;
-      state.isVisibleCardOpenMenu = false,
       state.isShowToaster = true;
       state.toasterTitle = 'Card deleted';
       const filterIdeas = _.filter(state.currentFeed.ideas, idea => idea.id !== ideaId)
@@ -723,16 +737,25 @@ class FeedDetailScreen extends React.Component {
         />
 
         {this.renderNewCardModal}
-
         
         <ActionSheet
-          ref={ref => this.ActionSheet = ref}
+          ref={ref => this.feedoActionSheet = ref}
           title={'Are you sure you want to delete this feed, everything will be gone ...'}
           options={['Delete feed', 'Cancel']}
           cancelButtonIndex={1}
           destructiveButtonIndex={0}
           tintColor={COLORS.PURPLE}
-          onPress={(index) => this.onTapActionSheet(index)}
+          onPress={(index) => this.onTapFeedoActionSheet(index)}
+        />
+
+        <ActionSheet
+          ref={ref => this.cardActionSheet = ref}
+          title={'This will permanentely delete your card'}
+          options={['Delete card', 'Cancel']}
+          cancelButtonIndex={1}
+          destructiveButtonIndex={0}
+          tintColor={COLORS.PURPLE}
+          onPress={(index) => this.onTapCardActionSheet(index)}
         />
 
         {this.state.isShowToaster && (
@@ -787,7 +810,7 @@ class FeedDetailScreen extends React.Component {
           <Animated.View style={[styles.settingMenuView, { top: 90 }]}>
             <CardControlMenuComponent 
               onMove={() => this.onMoveCard(this.state.selectedLongHoldIdea.id)}
-              onDelete={() => this.onDeleteCard(this.state.selectedLongHoldIdea.id)}
+              onDelete={() => this.onConfirmDeleteCard()}
             />
           </Animated.View>
         </Modal>
