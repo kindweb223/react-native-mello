@@ -84,14 +84,14 @@ class FeedItemContentComponent extends React.Component {
         <View style={styles.statsView}>
           <View style={styles.statsItemView}>
             <Ionicons name="md-person" feedIcon={15} style={[styles.feedIcon, data.metadata.newInvitees ? styles.active : styles.inActive]} />
-            <Text style={[styles.feedText, data.metadata.newInvitees ? styles.active : styles.inActive]}>
-              {data.metadata.invitees}
+            <Text style={[styles.feedText, data && data.metadata.newInvitees ? styles.active : styles.inActive]}>
+              {data.invitees.length}
             </Text>
           </View>
           <View style={styles.statsItemView}>
             <Foundation name="credit-card" feedIcon={15} style={[styles.feedIcon, data.metadata.newIdeas ? styles.active : styles.inActive]} />
-            <Text style={[styles.feedText, data.metadata.newIdeas  ? styles.active : styles.inActive]}>
-              {data.metadata.ideasSubmitted}
+            <Text style={[styles.feedText, data.metadata.newIdeas ? styles.active : styles.inActive]}>
+              {data.ideas.length}
             </Text>
           </View>
         </View>

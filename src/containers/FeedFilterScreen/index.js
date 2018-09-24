@@ -61,8 +61,8 @@ class FeedFilterScreen extends React.Component {
 
       feedoList = _.orderBy(
         _.filter(feedoList, item => item.status === 'PUBLISHED'),
-        ['pinned.pinned', 'pinned.pinnedDate', 'publishedDate'],
-        ['asc', 'desc', 'desc']
+        ['publishedDate'],
+        ['desc']
       )
       
       this.setState({ feedoList })
