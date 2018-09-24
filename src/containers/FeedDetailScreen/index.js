@@ -116,7 +116,7 @@ class FeedDetailScreen extends React.Component {
   }
 
   UNSAFE_componentWillReceiveProps(nextProps) {
-    const { feedo, card } = nextProps
+    const { feedo, card, currentFeed } = nextProps
 
     if ((this.props.feedo.loading === 'GET_FEED_DETAIL_PENDING' && feedo.loading === 'GET_FEED_DETAIL_FULFILLED') ||
         (this.props.feedo.loading === 'DELETE_INVITEE_PENDING' && feedo.loading === 'DELETE_INVITEE_FULFILLED') ||
@@ -705,6 +705,7 @@ class FeedDetailScreen extends React.Component {
           showType={this.state.filterShowType}
           sortType={this.state.filterSortType}
           notifications={false}
+          feed={currentFeed}
         />
 
         {this.renderNewCardModal}

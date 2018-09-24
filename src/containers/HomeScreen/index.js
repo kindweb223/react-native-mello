@@ -90,6 +90,7 @@ class HomeScreen extends React.Component {
       scrollY: new Animated.Value(0),
       currentPushNotificationType: CONSTANTS.UNKOWN_PUSH_NOTIFICATION,
       currentPushNotificationData: null,
+      currentIdea: {},
     };
 
     this.currentRef = null;
@@ -145,6 +146,13 @@ class HomeScreen extends React.Component {
         emptyState,
         apiLoading: feedo.loading
       }
+    } else if (prevState.apiLoading !== feedo.loading && (feedo.loading === 'GET_CARD_FULFILLED')) {
+      const { card } = nextProps
+      return {
+        loading: false,
+        currentIdea: card.currentCard,
+        apiLoading: feedo.loading
+      }
     }
 
     if (feedo.loading === 'ADD_DUMMY_FEED') {
@@ -186,7 +194,7 @@ class HomeScreen extends React.Component {
       });
     } else if (this.props.feedo.loading === 'GET_CARD_FULFILLED' && this.state.currentPushNotificationType === CONSTANTS.NEW_COMMENT_ON_IDEA && this.state.currentPushNotificationData) {
       Actions.CommentScreen({
-        idea: matchedIdea,
+        idea: this.state.currentIdea,
       });
     }
   }
@@ -670,12 +678,20 @@ class HomeScreen extends React.Component {
                   tabLabel={{ label: 'Pinned' }}
                   onLayout={(event) => this.onScrollableTabViewLayout(event, 1)}
                 >
-                  <FeedoListContainer
-                    loading={loading}
-                    feedoList={feedoList}
-                    handleFeedMenu={this.handleLongHoldMenu}
-                    page="home"
-                  />
+                  {feedoList.length > 0
+                    ? <FeedoListContainer
+                        loading={loading}
+                        feedoList={feedoList}
+                        handleFeedMenu={this.handleLongHoldMenu}
+                        page="home"
+                      />
+                    : !loading && ( 
+                        <View style={styles.emptyTabInnerView}>
+                          <Image source={EMPTY_ICON} />
+                          <Text style={styles.emptyText}>Feedo is more fun with feeds</Text>
+                        </View>
+                      )
+                  }
                 </View>
                 <View
                   style={{paddingBottom: CONSTANTS.ACTION_BAR_HEIGHT}}
@@ -683,12 +699,20 @@ class HomeScreen extends React.Component {
                   tabLabel={{ label: 'Shared with me' }}
                   onLayout={(event) => this.onScrollableTabViewLayout(event, 2)}
                 >
-                  <FeedoListContainer
-                    loading={loading}
-                    feedoList={feedoList}
-                    handleFeedMenu={this.handleLongHoldMenu}
-                    page="home"
-                  />
+                  {feedoList.length > 0
+                    ? <FeedoListContainer
+                        loading={loading}
+                        feedoList={feedoList}
+                        handleFeedMenu={this.handleLongHoldMenu}
+                        page="home"
+                      />
+                    : !loading && (
+                        <View style={styles.emptyTabInnerView}>
+                          <Image source={EMPTY_ICON} />
+                          <Text style={styles.emptyText}>Feedo is more fun with feeds</Text>
+                        </View>
+                      )
+                  }
                 </View>
               </ScrollableTabView>
             }

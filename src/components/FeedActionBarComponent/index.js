@@ -110,44 +110,42 @@ class FeedActionBarComponent extends React.Component {
       MENU_ITEMS = ['Duplicate', 'Edit']
     }
 
-    if (COMMON_FUNC.isFeedContributor(data) || COMMON_FUNC.isFeedGuest(data)) {
+    if (COMMON_FUNC.isFeedContributorGuest(data)) {
       MENU_ITEMS = []
     }
 
     return (
       <View style={styles.container}>
         <View style={styles.innerContainer}>
-          {MENU_ITEMS.length > 0 && (
-            <Modal
-              style={styles.settingMenu}
-              isVisible={this.state.isSettingMenu}
-              backdropOpacity={0}
-              animationIn="fadeIn"
-              animationOut="fadeOut"
-              animationInTiming={600}
-              onModalHide={this.onSettingMenuHide}
-              onBackdropPress={() => this.setState({ isSettingMenu: false })}
-            >
-              <View style={styles.settingMenuView}>
-                <FlatList
-                  data={MENU_ITEMS}
-                  keyExtractor={item => item}
-                  renderItem={({ item }) => (
-                    <TouchableOpacity
-                      onPress={() => this.onPressSetting(item)}
-                      activeOpacity={0.5}
-                    >
-                      <View style={styles.settingItem}>
-                        <Text style={item === 'Delete' ? styles.deleteButtonText : styles.settingButtonText}>
-                          {item}
-                        </Text>
-                      </View>
-                    </TouchableOpacity>
-                  )}
-                />
-              </View>
-            </Modal>
-          )}
+          <Modal
+            style={styles.settingMenu}
+            isVisible={this.state.isSettingMenu}
+            backdropOpacity={0}
+            animationIn="fadeIn"
+            animationOut="fadeOut"
+            animationInTiming={600}
+            onModalHide={this.onSettingMenuHide}
+            onBackdropPress={() => this.setState({ isSettingMenu: false })}
+          >
+            <View style={styles.settingMenuView}>
+              <FlatList
+                data={MENU_ITEMS}
+                keyExtractor={item => item}
+                renderItem={({ item }) => (
+                  <TouchableOpacity
+                    onPress={() => this.onPressSetting(item)}
+                    activeOpacity={0.5}
+                  >
+                    <View style={styles.settingItem}>
+                      <Text style={item === 'Delete' ? styles.deleteButtonText : styles.settingButtonText}>
+                        {item}
+                      </Text>
+                    </View>
+                  </TouchableOpacity>
+                )}
+              />
+            </View>
+          </Modal>
 
           <View style={styles.buttonContainer}>
           <Animated.View
@@ -188,24 +186,27 @@ class FeedActionBarComponent extends React.Component {
               <Text style={styles.buttonText}>Share</Text>
             </TouchableOpacity>
           </Animated.View>
-          <Animated.View
-            style={
-              this.state.selectedButton === SELECT_MENU &&
-              {
-                transform: [
-                  { scale: this.animatedSelect },
-                ],
+
+          {MENU_ITEMS.length > 0 && (
+            <Animated.View
+              style={
+                this.state.selectedButton === SELECT_MENU &&
+                {
+                  transform: [
+                    { scale: this.animatedSelect },
+                  ],
+                }
               }
-            }
-          >
-            <TouchableOpacity 
-              style={[styles.iconStyle, styles.plusButton]}
-              activeOpacity={0.7}
-              onPress={() => this.onPressMenu()}
             >
-              <Entypo name="dots-three-horizontal" style={styles.plusButtonIcon} />
-            </TouchableOpacity>
-          </Animated.View>
+              <TouchableOpacity 
+                style={[styles.iconStyle, styles.plusButton]}
+                activeOpacity={0.7}
+                onPress={() => this.onPressMenu()}
+              >
+                <Entypo name="dots-three-horizontal" style={styles.plusButtonIcon} />
+              </TouchableOpacity>
+            </Animated.View>
+          )}
           </View>
         </View>
       </View>

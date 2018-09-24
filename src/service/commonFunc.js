@@ -37,6 +37,13 @@ const isFeedOwnerEditor = (feed) => {
   return false
 }
 
+const isFeedContributorGuest = (feed) => {
+  if (isFeedContributor(feed) || isFeedGuest(feed)) {
+    return true
+  }
+  return false
+}
+
 const isFeedEditor = (feed) => {
   if (!feed.metadata.owner && feed.metadata.permissions === 'EDIT') {
     return true
@@ -76,6 +83,7 @@ export {
   isFeedOwner,
   isInviteeOwner,
   isFeedOwnerEditor,
+  isFeedContributorGuest,
   isFeedEditor,
   isFeedContributor,
   isFeedGuest,

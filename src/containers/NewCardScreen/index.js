@@ -728,6 +728,7 @@ class NewCardScreen extends React.Component {
           onKeyPress={this.onKeyPressTitle.bind(this)}
           onFocus={() => this.onFocus()}
           onBlur={() => this.onBlurTitle()}
+          selectionColor={COLORS.PURPLE}
         />
         {this.renderCoverImage}
         <TextInput 
@@ -741,6 +742,7 @@ class NewCardScreen extends React.Component {
           onKeyPress={this.onKeyPressIdea.bind(this)}
           onFocus={() => this.onFocus()}
           onBlur={() => this.onBlurIdea()}
+          selectionColor={COLORS.PURPLE}
         />
         {this.renderWebMeta}
         {this.renderImages}

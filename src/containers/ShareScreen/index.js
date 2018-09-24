@@ -15,6 +15,7 @@ import Feather from 'react-native-vector-icons/Feather'
 import Entypo from 'react-native-vector-icons/Entypo'
 import Modal from 'react-native-modal'
 import _ from 'lodash'
+import { Actions } from 'react-native-router-flux'
 import LinkShareModalComponent from '../../components/LinkShareModalComponent'
 import LinkShareItem from '../../components/LinkShareModalComponent/LinkShareItem'
 import InviteeItemComponent from '../../components/LinkShareModalComponent/InviteeItemComponent'
@@ -47,6 +48,30 @@ class ShareScreen extends React.Component {
     }
   }
 
+  UNSAFE_componentWillReceiveProps(nextProps) {
+    const { feedo, user } = nextProps
+    const { shareInviteeData } = this.state
+
+    if (this.props.feedo.loading === 'DELETE_INVITEE_PENDING' && feedo.loading === 'DELETE_INVITEE_FULFILLED') {
+      if (COMMON_FUNC.isFeedEditor(feedo.currentFeed) ||
+        COMMON_FUNC.isFeedContributor(feedo.currentFeed) ||
+        COMMON_FUNC.isFeedGuest(feedo.currentFeed)) {
+          if (user.userInfo.id === shareInviteeData.userProfile.id) {
+            Actions.HomeScreen()
+          }
+      }
+    }
+
+    if (this.props.feedo.loading === 'UPDATE_INVITEE_PERMISSION_PENDING' && feedo.loading === 'UPDATE_INVITEE_PERMISSION_FULFILLED') {
+      if (COMMON_FUNC.isFeedEditor(feedo.currentFeed)) {
+        if (user.userInfo.id === shareInviteeData.userProfile.id) {
+          this.props.onClose()
+          Actions.HomeScreen()
+        }
+      }
+    }
+  }
+
   onShowInviteeModal = (feed) => {
     if (COMMON_FUNC.isFeedOwnerEditor(feed)) {
       this.setState({ isInviteeModal: true })
@@ -60,8 +85,15 @@ class ShareScreen extends React.Component {
   }
 
   onPressInvitee = (feed, invitee) => {
+    const { user } = this.props
     if (!COMMON_FUNC.isInviteeOwner(feed, invitee)) {
-      this.setState({ linkShareModal: true, shareModalType: 'invitee', shareInviteeData: invitee })
+      if (COMMON_FUNC.isFeedOwnerEditor(feed)) {
+        this.setState({ linkShareModal: true, shareModalType: 'invitee', shareInviteeData: invitee })
+      } else {
+        if (user.userInfo.id === invitee.userProfile.id) {
+          this.setState({ linkShareModal: true, shareModalType: 'invitee', shareInviteeData: invitee })
+        }
+      }
     }
   }
 
@@ -282,8 +314,9 @@ ShareScreen.propTypes = {
   updateInviteePermission: PropTypes.func
 }
 
-const mapStateToProps = ({ feedo }) => ({
-  feedo
+const mapStateToProps = ({ feedo, user }) => ({
+  feedo,
+  user
 })
 
 const mapDispatchToProps = dispatch => ({

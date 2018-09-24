@@ -11,8 +11,10 @@ import PropTypes from 'prop-types'
 import Ionicons from 'react-native-vector-icons/Ionicons'
 import Feather from 'react-native-vector-icons/Feather'
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons'
+import _ from 'lodash'
 import COLORS from '../../service/colors'
 import styles from './styles'
+import * as COMMON_FUNC from '../../service/commonFunc'
 
 class DashboardActionBar extends React.Component {
 
@@ -41,8 +43,8 @@ class DashboardActionBar extends React.Component {
   }
 
   render () {
-    const { filtering, showType, sortType, notifications } = this.props
-
+    const { filtering, showType, sortType, notifications, feed } = this.props
+    console.log('FEED: ', feed)
     return (
       <View style={[styles.container, filtering ? styles.filterContainer : styles.actionContainer]}>
         {filtering && (
@@ -69,24 +71,28 @@ class DashboardActionBar extends React.Component {
               <Text style={styles.notificationText}>0</Text>
             </View>
           }
-          <Animated.View 
-            style={[styles.plusButtonView, 
-              {
-                transform: [
-                  { scale: this.animatedPlusButton },
-                ],
-              },
-            ]}
-          >
-            <TouchableWithoutFeedback
-              onPressIn={this.onPressInAddFeed.bind(this)}
-              onPressOut={this.onPressOutAddFeed.bind(this)}
+
+          {!(!_.isEmpty(feed) && COMMON_FUNC.isFeedGuest(feed)) && (
+            <Animated.View
+              style={[styles.plusButtonView, 
+                {
+                  transform: [
+                    { scale: this.animatedPlusButton },
+                  ],
+                },
+              ]}
             >
-              <View style={[styles.iconStyle, styles.plusButton]}>
-                <Feather name="plus" style={styles.plusButtonIcon} />
-              </View>
-            </TouchableWithoutFeedback>
-          </Animated.View>
+              <TouchableWithoutFeedback
+                onPressIn={this.onPressInAddFeed.bind(this)}
+                onPressOut={this.onPressOutAddFeed.bind(this)}
+              >
+                <View style={[styles.iconStyle, styles.plusButton]}>
+                  <Feather name="plus" style={styles.plusButtonIcon} />
+                </View>
+              </TouchableWithoutFeedback>
+            </Animated.View>
+          )}
+
         </View>
       </View>
     )
@@ -98,7 +104,8 @@ DashboardActionBar.defaultProps = {
   handleFilter: () => {},
   showType: 'all',
   sortType: 'date',
-  notifications: true
+  notifications: true,
+  feed: {}
 }
 
 DashboardActionBar.propTypes = {
@@ -107,7 +114,8 @@ DashboardActionBar.propTypes = {
   filtering: PropTypes.bool,
   onAddFeed: PropTypes.func,
   handleFilter: PropTypes.func,
-  notifications: PropTypes.bool
+  notifications: PropTypes.bool,
+  feed: PropTypes.object
 }
 
 export default DashboardActionBar

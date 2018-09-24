@@ -171,6 +171,7 @@ class LoginScreen extends React.Component {
                   errorText={errorText}
                   handleChange={text => this.handleChange(text)}
                   onSubmitEditing={() => this.onSignIn()}
+                  selectionColor={COLORS.PURPLE}
                 >
                   <TouchableOpacity onPress={() => this.onForgotPassword()} activeOpacity={0.8}>
                     <View style={styles.forgotView}>
