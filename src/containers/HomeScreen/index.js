@@ -65,7 +65,7 @@ import {
 const TAB_STYLES = {
   height: '100%',
   paddingTop: 10,
-  paddingHorizontal: 10,
+  paddingRight: 10
 }
 
 const TOASTER_DURATION = 5000
@@ -762,12 +762,12 @@ class HomeScreen extends React.Component {
                                       underlineBottomPosition={0}
                                       tabBarStyle={styles.tabBarStyle}
                                       tabBarTextStyle={styles.tabBarTextStyle}
-                                      tabMargin={10}
+                                      tabMargin={16}
                                       tabStyles={{ 'tab': TAB_STYLES }}
                                     />}
               >
                 <View
-                  style={{paddingBottom: CONSTANTS.ACTION_BAR_HEIGHT}}
+                  style={{ paddingBottom: CONSTANTS.ACTION_BAR_HEIGHT + 50 }}
                   ref={ref => this.scrollTabAll = ref} 
                   tabLabel={{ label: 'All' }}
                   onLayout={(event) => this.onScrollableTabViewLayout(event, 0)}
@@ -780,7 +780,7 @@ class HomeScreen extends React.Component {
                   />
                 </View>
                 <View
-                  style={{paddingBottom: CONSTANTS.ACTION_BAR_HEIGHT}}
+                  style={{ paddingBottom: CONSTANTS.ACTION_BAR_HEIGHT + 50 }}
                   ref={ref => this.scrollTabPinned = ref}
                   tabLabel={{ label: 'Pinned' }}
                   onLayout={(event) => this.onScrollableTabViewLayout(event, 1)}
@@ -801,7 +801,7 @@ class HomeScreen extends React.Component {
                   }
                 </View>
                 <View
-                  style={{paddingBottom: CONSTANTS.ACTION_BAR_HEIGHT}}
+                  style={{ paddingBottom: CONSTANTS.ACTION_BAR_HEIGHT + 50 }}
                   ref={ref => this.scrollTabSharedWithMe = ref}
                   tabLabel={{ label: 'Shared with me' }}
                   onLayout={(event) => this.onScrollableTabViewLayout(event, 2)}

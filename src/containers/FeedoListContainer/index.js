@@ -105,11 +105,13 @@ class FeedoListContainer extends React.Component {
   }
 
   render() {
-    const {loading, feedoList, handleFeedMenu, tabLabel} = this.props;
+    const { loading, feedoList, handleFeedMenu, tabLabel } = this.props;
+
     if (loading) return <FeedLoadingStateComponent animating />
+
     return (
       <FlatList
-        style={{paddingBottom: CONSTANTS.ACTION_BAR_HEIGHT + 50}}
+        style={{ paddingBottom: CONSTANTS.ACTION_BAR_HEIGHT + 50 }}
         data={feedoList}
         keyExtractor={item => item.id}
         scrollEnabled={false}

@@ -11,7 +11,7 @@ export default StyleSheet.create({
     flex: 1,
     width: 100,
     height: 32,
-    margin: 4,
+    marginRight: 4,
     borderRadius: 16,
     backgroundColor: "#ccc"
   },
@@ -34,7 +34,7 @@ export default StyleSheet.create({
     paddingLeft: 12,
     paddingRight: 12,
     height: 32,
-    margin: 4
+    marginRight: 4
   },
   tagLabel: {
     fontSize: 13,
