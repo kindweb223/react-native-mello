@@ -13,6 +13,7 @@ const initialState = {
   feedDetailAction: null,
   fileUploadUrl: {},
   userTags: [],
+  archivedFeedList: []
 };
 
 export default function feedo(state = initialState, action = {}) {
@@ -985,6 +986,65 @@ export default function feedo(state = initialState, action = {}) {
         ...state,
         loading: types.ADD_FILTER_TAG,
         filterTag: data
+      }
+    }
+    /**
+     * Get Archived Feed List
+     */
+    case types.GET_ARCHIVED_FEED_PENDING:
+      return {
+        ...state,
+        loading: types.GET_ARCHIVED_FEED_PENDING,
+      }
+    case types.GET_ARCHIVED_FEED_FULFILLED: {
+      const { data } = action.result
+
+      return {
+        ...state,
+        loading: types.GET_ARCHIVED_FEED_FULFILLED,
+        archivedFeedList: data.content,
+      }
+    }
+    case types.GET_ARCHIVED_FEED_REJECTED: {
+      const { data } = action.error.response
+      return {
+        ...state,
+        loading: types.GET_ARCHIVED_FEED_REJECTED,
+        archivedFeedList: [],
+        error: data,
+      }
+    }
+
+    /**
+     * Restore Archived Feed
+     */
+    case types.RESTORE_ARCHIVE_FEED_PENDING:
+      return {
+        ...state,
+        loading: types.RESTORE_ARCHIVE_FEED_PENDING,
+      }
+    case types.RESTORE_ARCHIVE_FEED_FULFILLED: {
+      const { data } = action.result
+      const { archivedFeedList, feedoList } = state
+      const feedId = action.payload
+      const restFeedoList = filter(archivedFeedList, feed => feed.id !== feedId)
+
+      return {
+        ...state,
+        loading: types.RESTORE_ARCHIVE_FEED_FULFILLED,
+        archivedFeedList: restFeedoList,
+        feedoList: [
+          ...feedoList,
+          data
+        ]
+      }
+    }
+    case types.RESTORE_ARCHIVE_FEED_REJECTED: {
+      const { data } = action.error.response
+      return {
+        ...state,
+        loading: types.RESTORE_ARCHIVE_FEED_REJECTED,
+        error: data,
       }
     }
 

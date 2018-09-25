@@ -184,6 +184,9 @@ class ProfileScreen extends React.Component {
         return
       case 3:
         return
+      case 4:
+        Actions.ArchivedFeedScreen()
+        return
       default:
         return
     }

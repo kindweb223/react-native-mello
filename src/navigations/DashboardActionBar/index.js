@@ -44,7 +44,7 @@ class DashboardActionBar extends React.Component {
 
   render () {
     const { filtering, showType, sortType, notifications, feed } = this.props
-    console.log('FEED: ', feed)
+
     return (
       <View style={[styles.container, filtering ? styles.filterContainer : styles.actionContainer]}>
         {filtering && (

@@ -96,7 +96,7 @@ class FeedItemContentComponent extends React.Component {
           </View>
         </View>
 
-        {data.tags.length > 0 && (
+        {data.tags.length > 0 && page !== 'archived' && (
           <View style={styles.tagsView}>
             <Tags
               initialTags={data.tags}
