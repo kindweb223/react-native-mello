@@ -181,9 +181,13 @@ class ShareScreen extends React.Component {
   }
 
   handleModal = () => {
-    this.setState({ isInviteeModal: false }, () => {
-      this.props.onClose()
-    })
+    setTimeout(() => {
+      this.setState({ isInviteeModal: false }, () => {
+        if (!this.state.isInviteeModal) {
+          this.props.onClose()
+        }
+      })
+    }, 200)
   }
 
   render () {
