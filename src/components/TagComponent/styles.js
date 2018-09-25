@@ -9,7 +9,7 @@ export default StyleSheet.create({
   },
   textInputContainer: {
     minWidth: 50,
-    height: 32,
+    height: 40,
     justifyContent: 'center',
   },
   textInput: {

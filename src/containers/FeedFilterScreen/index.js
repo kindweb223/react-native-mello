@@ -152,6 +152,7 @@ class FeedFilterScreen extends React.Component {
                 [{ nativeEvent: { contentOffset: { y: this.state.scrollY } } }]
               )
             }
+            keyboardShouldPersistTaps="handled"
           >       
             <Animated.View style={[styles.normalHeader, { opacity: normalHeaderOpacity }]}>
               <View style={styles.headerTitleView}>

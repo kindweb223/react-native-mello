@@ -5,14 +5,18 @@ import {
   Text,
   Image,
   FlatList,
-  TouchableOpacity
+  TouchableOpacity,
+  Animated,
+  Keyboard
 } from "react-native";
 
 import _ from 'lodash'
 import { connect } from 'react-redux'
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
+import Ionicons from 'react-native-vector-icons/Ionicons'
 import Tags from "../TagComponent";
 import COLORS from '../../service/colors'
+import CONSTANTS from '../../service/constants'
 import styles from "./styles";
 
 const SEARCH_ICON = require('../../../assets/images/Search/Grey.png')
@@ -28,6 +32,9 @@ class SearchBarComponent extends React.Component {
       currentTagName: '',
       showFilterTags: false,
     }
+    this.searchBarWidth = new Animated.Value(CONSTANTS.SCREEN_SUB_WIDTH);
+    this.cancelBtnOpacity = new Animated.Value(0);
+    this.closeBtnOpacity = new Animated.Value(0);
   }
 
   UNSAFE_componentWillReceiveProps(nextProps) {
@@ -135,39 +142,108 @@ class SearchBarComponent extends React.Component {
     </TouchableOpacity>
   )
 
+  onFocusText = () => {
+    Animated.timing(this.searchBarWidth, {
+      toValue: CONSTANTS.SCREEN_SUB_WIDTH - 60,
+      duration: 500,
+    }).start();
+
+    Animated.timing(this.cancelBtnOpacity, {
+      toValue: 1,
+      duration: 500,
+    }).start();
+
+    Animated.timing(this.closeBtnOpacity, {
+      toValue: 1,
+      duration: 500,
+    }).start();
+  }
+
+  onBtnCancel = () => {
+    Keyboard.dismiss()
+
+    this.setState({ showFilterTags: false, currentTagName: '' })
+
+    Animated.timing(this.searchBarWidth, {
+      toValue: CONSTANTS.SCREEN_SUB_WIDTH,
+      duration: 500,
+    }).start();
+
+    Animated.timing(this.cancelBtnOpacity, {
+      toValue: 0,
+      duration: 500,
+    }).start();
+
+    Animated.timing(this.closeBtnOpacity, {
+      toValue: 0,
+      duration: 500,
+    }).start();
+  }
+
+  onBtnClose = () => {
+    this.setState(state => {
+      state.showFilterTags = false
+      state.currentTagName = ''
+      state.selectTags = []
+      state.filteredTags = []
+      return state
+    })
+    this.props.changeTags([])
+    this.props.inputTag(false)
+  }
+
   render() {
     const { selectTags, showFilterTags, filteredTags } = this.state
 
     return (
       <View style={styles.container}>
         <View style={styles.searchContainer}>
-          <View style={styles.searchIconView}>
-            <Image source={SEARCH_ICON} />
-          </View>
+          <Animated.View style={[styles.searchBar, { width: this.searchBarWidth }]}>
+            <View style={styles.searchIconView}>
+              <Image source={SEARCH_ICON} />
+            </View>
 
-          <Tags
-            containerStyle={{ paddingHorizontal: 5 }}
-            tags={selectTags}
-            tagText={this.state.currentTagName}
-            placeHolder=""
-            onCreateTag={(text) => this.onCreateTag(text)}
-            onChangeText={(text) => this.onChangeText(text)}
-            onRemoveTag={(tag) => this.onRemoveTag(tag)}
-            tagContainerStyle={{
-              backgroundColor: COLORS.TAG_LIGHT_ORANGE_BACKGROUND
-            }}
-            tagTextStyle={{
-              color: COLORS.DARK_ORANGE,
-              fontSize: 16,
-            }}
-            activeTagContainerStyle={{
-              backgroundColor: COLORS.TAG_LIGHT_ORANGE_ACTIVE_BACKGROUND,
-            }}
-            activeTagTextStyle={{
-              color: '#fff',
-              fontSize: 16,
-            }}
-          />
+            <Tags
+              containerStyle={{ paddingHorizontal: 5 }}
+              tags={selectTags}
+              tagText={this.state.currentTagName}
+              placeHolder=""
+              onCreateTag={(text) => this.onCreateTag(text)}
+              onChangeText={(text) => this.onChangeText(text)}
+              onRemoveTag={(tag) => this.onRemoveTag(tag)}
+              tagContainerStyle={{
+                backgroundColor: COLORS.TAG_LIGHT_ORANGE_BACKGROUND
+              }}
+              tagTextStyle={{
+                color: COLORS.DARK_ORANGE,
+                fontSize: 16,
+              }}
+              activeTagContainerStyle={{
+                backgroundColor: COLORS.TAG_LIGHT_ORANGE_ACTIVE_BACKGROUND,
+              }}
+              activeTagTextStyle={{
+                color: '#fff',
+                fontSize: 16,
+              }}
+              onFocus={this.onFocusText}
+            />
+
+            <Animated.View style={[styles.btnCloseView, { opacity: this.closeBtnOpacity }]}>
+              <TouchableOpacity
+                style={styles.btnClose}
+                activeOpacity={0.8}
+                onPress={this.onBtnClose}
+              >
+                <Ionicons name='md-close-circle' size={18} color={COLORS.MEDIUM_GREY} />
+              </TouchableOpacity>
+            </Animated.View>
+          </Animated.View>
+          
+          <TouchableOpacity onPress={this.onBtnCancel}>
+            <Animated.View style={[styles.btnCancelView, { opacity: this.cancelBtnOpacity }]}>
+              <Text style={styles.btnCancelText}>Cancel</Text>
+            </Animated.View>
+          </TouchableOpacity>
         </View>
 
         {showFilterTags && (
