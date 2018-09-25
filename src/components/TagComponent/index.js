@@ -124,7 +124,7 @@ class Tags extends React.Component {
         <View style={styles.textInputContainer}>
           <TextInput
             ref={ref => this.tagInputRef = ref}
-            style={[styles.textInput, this.props.inputStyle, this.state.isHideCursor && {maxWidth: 50}]}
+            style={[styles.textInput, this.props.inputStyle, this.state.isHideCursor && {maxWidth: 80}]}
             maxLength={40}
             autoCapitalize='none'
             blurOnSubmit={false}
@@ -136,6 +136,8 @@ class Tags extends React.Component {
             onChangeText={this.onChangeText.bind(this)}
             onKeyPress={this.onKeyPress.bind(this)}
             onSubmitEditing={() => this.onSubmitEditing()}
+            onFocus={this.props.onFocus}
+            onBlur={this.props.onBlur}
             selectionColor={COLORS.PURPLE}
           />
           {

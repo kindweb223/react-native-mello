@@ -8,9 +8,37 @@ export default StyleSheet.create({
     paddingHorizontal: CONSTANTS.PADDING,
   },
   searchContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center'
+  },
+  btnCancelView: {
+    width: 60,
+    height: 40,
+    justifyContent: 'center',
+    alignItems: 'flex-end',
+  },
+  btnCancelText: {
+    color: COLORS.DARK_GREY,
+    fontWeight: '600'
+  },
+  btnCloseView: {
+    position: 'absolute',
+    top: 0,
+    right: 0,
+    width: 30,
+    height: 40,
+  },
+  btnClose: {
     width: '100%',
+    height: '100%',
+    justifyContent: 'center',
+    alignItems: 'center'
+  },
+  searchBar: {
     backgroundColor: COLORS.LIGHT_GREY_LINE,
-    paddingHorizontal: 5,
+    paddingLeft: 5,
+    paddingRight: 30,
     borderRadius: 16,
     flexDirection: 'row',
     justifyContent: 'flex-start',

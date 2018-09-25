@@ -115,6 +115,7 @@ class FeedoListContainer extends React.Component {
         scrollEnabled={false}
         automaticallyAdjustContentInsets={false}
         renderItem={this.renderItem.bind(this)}
+        keyboardShouldPersistTaps="never"
       />
     )
   }
