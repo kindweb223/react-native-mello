@@ -54,13 +54,10 @@ const styles = StyleSheet.create({
     width: (CONSTANTS.SCREEN_WIDTH - 22 - 30) / 3,
     height: (CONSTANTS.SCREEN_WIDTH - 22 - 30) / 3,
     margin: 5,
-    // borderRadius: 5,
   },
   imageItem: {
-    resizeMode: 'cover',
     width: '100%',
     height: '100%',
-    // borderRadius: 5,
   },
   
   icon: {

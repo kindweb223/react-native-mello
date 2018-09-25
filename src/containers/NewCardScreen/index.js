@@ -487,7 +487,7 @@ class NewCardScreen extends React.Component {
 
   checkUrl(content) {
     const { viewMode } = this.props;
-    if (viewMode === CONSTANTS.CARD_NEW) {
+    if (viewMode === CONSTANTS.CARD_NEW || viewMode === CONSTANTS.CARD_EDIT) {
       if (content) {
         const texts = content.split(/[, ]/);
         if (texts.length === 1 && validUrl.isUri(texts[0])) {
@@ -534,9 +534,10 @@ class NewCardScreen extends React.Component {
 
   async onChangeTitle(text) {
     const { viewMode } = this.props;
-    if (viewMode === CONSTANTS.CARD_NEW) {
+    if (viewMode === CONSTANTS.CARD_NEW || viewMode === CONSTANTS.CARD_EDIT){
       const clipboardContent = await Clipboard.getString();
       if (clipboardContent === text) {
+        console.log('Title : ', text);
         if (this.checkUrl(text)) {
           return;
         }
