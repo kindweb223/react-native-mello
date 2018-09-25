@@ -9,23 +9,16 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff'
   },
   container: {
-    flex: 1,
-    paddingBottom: 30
+    flex: 1
   },
-  scrollView: {
-    zIndex: 9,
-    paddingTop: NAV_BAR_HEIGHT,
-  },
-  detailView: {
-    flex: 1,
-    paddingTop: 10
-  },
-  normalHeader: {
+  navbar: {
     height: NAV_BAR_HEIGHT,
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    paddingHorizontal: CONSTANTS.PADDING
+    paddingHorizontal: CONSTANTS.PADDING,
+    borderBottomWidth: 1,
+    borderColor: COLORS.LIGHT_GREY_LINE
   },
   headerTitleView: {
     height: '100%',
@@ -33,26 +26,12 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   headerTitle: {
-    fontSize: 28,
-    fontWeight: 'bold',
+    fontSize: 16,
+    fontWeight: '600',
     color: COLORS.PRIMARY_BLACK,
-    marginRight: 10
-  },
-  miniNavView: {
-    width: '100%',
-    height: NAV_BAR_HEIGHT,
-    paddingHorizontal: CONSTANTS.PADDING,
-    backgroundColor: '#fff',
-    zIndex: 11,
-    position: 'absolute',
-    left: 0,
-    top: 0,
-    justifyContent: 'center',
-    alignItems: 'flex-start',
-    backgroundColor: 'transparent'
   },
   backView: {
-    width: 150,
+    width: 100,
     flexDirection: 'row',
     justifyContent: 'flex-start',
     alignItems: 'center',
@@ -64,15 +43,19 @@ const styles = StyleSheet.create({
     marginLeft: 5,
     color: COLORS.PURPLE,
   },
-  emptyContainer: {
-    width: '100%',
-    paddingVertical: 60,
+  emptyView: {
+    position: 'absolute',
+    top: CONSTANTS.STATUSBAR_HEIGHT + NAV_BAR_HEIGHT,
+    left: 0,
     justifyContent: 'center',
-    alignItems: 'center'
+    alignItems: 'center',
+    width: '100%',
+    height: CONSTANTS.SCREEN_HEIGHT - CONSTANTS.STATUSBAR_HEIGHT - 100
   },
   emptyText: {
     fontSize: 14,
-    color: COLORS.MEDIUM_GREY
+    color: COLORS.MEDIUM_GREY,
+    marginTop: 27
   }
 })
 
