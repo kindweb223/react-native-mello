@@ -59,10 +59,12 @@ class InviteeScreen extends React.Component {
       invalidEmail: [],
       loading: false
     }
+    this.isMount = false
   }
 
   componentDidMount() {
     const { userInfo } = this.props.user
+    this.isMount = true
     this.setState({ loading: true })
     this.props.getContactList(userInfo.id)
   }
@@ -77,25 +79,35 @@ class InviteeScreen extends React.Component {
           feedo.error
         )
       } else {
-        this.setState({ isSuccess: true }, () => {
-          this.closeModal()
-        })
+        if (this.isMount) {
+          this.setState({ isSuccess: true }, () => {
+            this.closeModal()
+          })
+        }
       }
     }
 
     if (this.props.user.loading === 'GET_CONTACT_LIST_PENDING' && user.loading === 'GET_CONTACT_LIST_FULFILLED') {
-      this.setState({ loading: false })
-      this.setState({
-        contactList: this.getRecentContactList(data, user.contactList),
-        recentContacts: this.getRecentContactList(data, user.contactList)
-      })
+      if (this.isMount) {
+        this.setState({ loading: false })
+        this.setState({
+          contactList: this.getRecentContactList(data, user.contactList),
+          recentContacts: this.getRecentContactList(data, user.contactList)
+        })
+      }
     }
+  }
+
+  componentWillUnmount() {
+    this.isMount = false
   }
 
   closeModal = () => {
     setTimeout(() => {
       this.setState({ isSuccess: false }, () => {
-        this.props.handleModal()
+        if (!this.state.isSuccess) {
+          this.props.handleModal()
+        }
       })
     }, 2000)
   }
