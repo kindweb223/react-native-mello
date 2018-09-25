@@ -24,7 +24,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     width: '100%',
     height: SEARCHBAR_HEIGHT,
-    paddingHorizontal: CONSTANTS.PADDING,
+    paddingHorizontal: 11,
     backgroundColor: '#fff',
     zIndex: 11,
     position: 'absolute',
@@ -43,7 +43,7 @@ const styles = StyleSheet.create({
     height: '100%'
   },
   minTitleView: {
-    width: CONSTANTS.SCREEN_SUB_WIDTH - 120,
+    width: CONSTANTS.SCREEN_WIDTH - 120 - 22,
     height: '100%',
     justifyContent: 'center',
     alignItems: 'center',
@@ -59,6 +59,7 @@ const styles = StyleSheet.create({
     height: '100%',
     justifyContent: 'center',
     alignItems: 'flex-end',
+    marginRight: -2
   },
   feedListView: {
     zIndex: 10,
@@ -69,11 +70,11 @@ const styles = StyleSheet.create({
     borderBottomWidth: 0,
     height: CONSTANTS.TAB_BAR_HEIGHT,
     alignItems: 'center',
-    marginTop: 0,
   },
   tabBarTextStyle: {
     fontSize: 16,
-    fontWeight: 'bold'
+    fontWeight: 'bold',
+    textAlign: 'left'
   },
   longHoldModalContainer: {
     margin: 0,
