@@ -88,7 +88,6 @@ export default function user(state = initialState, action = {}) {
      * Get user's session
      */
     case types.GET_USER_SESSION_PENDING:
-      console.log('GET_USER_SESSION_PENDING: ')
       return {
         ...state,
         loading: types.GET_USER_SESSION_PENDING,
@@ -96,7 +95,7 @@ export default function user(state = initialState, action = {}) {
       }
     case types.GET_USER_SESSION_FULFILLED: {
       const { data } = action.result
-      console.log('GET_USER_SESSION_FULFILLED: ', data)
+
       AsyncStorage.setItem('userInfo', JSON.stringify(data))
       SharedGroupPreferences.setItem('userInfo', JSON.stringify(data), CONSTANTS.APP_GROUP_USER_IDENTIFIER)
 
@@ -108,7 +107,6 @@ export default function user(state = initialState, action = {}) {
       }
     }
     case types.GET_USER_SESSION_REJECTED: {
-      console.log('GET_USER_SESSION_REJECTED: ', action.result)
       AsyncStorage.removeItem('userInfo')
       AsyncStorage.removeItem('xAuthToken')
       SharedGroupPreferences.setItem('xAuthToken', null, CONSTANTS.APP_GROUP_TOKEN_IDENTIFIER)
@@ -168,6 +166,7 @@ export default function user(state = initialState, action = {}) {
       }
     case types.USER_SIGNOUT_FULFILLED: {
       const { data } = action.result
+
       AsyncStorage.removeItem('xAuthToken')
       AsyncStorage.removeItem('userInfo')
       SharedGroupPreferences.setItem('xAuthToken', null, CONSTANTS.APP_GROUP_TOKEN_IDENTIFIER)
@@ -337,13 +336,11 @@ export default function user(state = initialState, action = {}) {
     * Confirm user's account
     */
     case types.USER_CONFIRM_ACCOUNT_PENDING:
-      console.log('USER_CONFIRM_ACCOUNT_PENDING')
       return {
         ...state,
         loading: types.USER_CONFIRM_ACCOUNT_PENDING,
       }
     case types.USER_CONFIRM_ACCOUNT_FULFILLED: {
-      console.log('USER_CONFIRM_ACCOUNT_FULFILLED')
       return {
         ...state,
         userConfirmed: true,
@@ -351,7 +348,6 @@ export default function user(state = initialState, action = {}) {
       }
     }
     case types.USER_CONFIRM_ACCOUNT_REJECTED: {
-      console.log('USER_CONFIRM_ACCOUNT_REJECTED')
       return {
         ...state,
         userConfirmed: false,
@@ -409,20 +405,17 @@ export default function user(state = initialState, action = {}) {
      * Validate invite
      */
     case types.VALIDATE_INVITE_PENDING:
-      console.log('VALIDATE_INVITE_PENDING:')
       return {
         ...state,
         loading: types.VALIDATE_INVITE_PENDING,
       }
     case types.VALIDATE_INVITE_FULFILLED: {
-      console.log('VALIDATE_INVITE_FULFILLED: ', action.result)
       return {
         ...state,
         loading: types.VALIDATE_INVITE_FULFILLED,
       }
     }
     case types.VALIDATE_INVITE_REJECTED: {
-      console.log('VALIDATE_INVITE_REJECTED: ', action.error)
       return {
         ...state,
         loading: types.VALIDATE_INVITE_REJECTED,
@@ -433,13 +426,11 @@ export default function user(state = initialState, action = {}) {
      * Complete invite
      */
     case types.COMPLETE_INVITE_PENDING:
-      console.log('COMPLETE_INVITE_PENDING:')
       return {
         ...state,
         loading: types.COMPLETE_INVITE_PENDING,
       }
     case types.COMPLETE_INVITE_FULFILLED: {
-      console.log('COMPLETE_INVITE_FULFILLED: ', action.result)
       const { headers } = action.result
       const xAuthToken = headers['x-auth-token']
       if (xAuthToken) {
@@ -457,7 +448,6 @@ export default function user(state = initialState, action = {}) {
       }
     }
     case types.COMPLETE_INVITE_REJECTED: {
-      console.log('COMPLETE_INVITE_REJECTED: ', action.error)
       return {
         ...state,
         loading: types.COMPLETE_INVITE_REJECTED,

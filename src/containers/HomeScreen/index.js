@@ -116,7 +116,7 @@ class HomeScreen extends React.Component {
       (feedo.loading === 'DUPLICATE_FEED_FULFILLED') || (feedo.loading === 'UPDATE_FEED_FULFILLED') ||
       (feedo.loading === 'DELETE_CARD_FULFILLED') || (feedo.loading === 'MOVE_CARD_FULFILLED') ||
       (feedo.loading === 'UPDATE_CARD_FULFILLED') || (feedo.loading === 'INVITE_HUNT_FULFILLED') ||
-      (feedo.loading === 'RESTORE_ARCHIVE_FEED_FULFILLED') || feedo.loading === 'ADD_DUMMY_FEED' )) {
+      (feedo.loading === 'RESTORE_ARCHIVE_FEED_FULFILLED') || (feedo.loading === 'ADD_DUMMY_FEED'))) {
 
       let feedoList = []
       let emptyState = prevState.emptyState
@@ -426,7 +426,6 @@ class HomeScreen extends React.Component {
     this.setState({ isPin: true, toasterTitle: 'Feed pinned', feedId })
 
     this.props.addDummyFeed({ feedId, flag: 'pin' })
-    this.scrollView.scrollTo({ x:0, y: 0, animated: true })
 
     setTimeout(() => {
       this.setState({ isShowToaster: false })
