@@ -6,7 +6,6 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
     borderRadius: 10,
     paddingHorizontal: CONSTANTS.PADDING,
-    marginTop: 4,
     marginBottom: 26
   },
   thumbnailsView: {
