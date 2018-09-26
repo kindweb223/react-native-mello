@@ -17,6 +17,7 @@ import Permissions from 'react-native-permissions'
 import ImagePicker from 'react-native-image-picker'
 import Modal from "react-native-modal"
 import ActionSheet from 'react-native-actionsheet'
+import VersionNumber from 'react-native-version-number'
 import _ from 'lodash'
 import ToasterComponent from '../../components/ToasterComponent'
 import UserAvatarComponent from '../../components/UserAvatarComponent';
@@ -336,7 +337,7 @@ class ProfileScreen extends React.Component {
               </View>
 
               <View style={styles.bottomView}>
-                <Text style={styles.version}>Version 1.0.0 (10000)</Text>
+                <Text style={styles.version}>Version {VersionNumber.appVersion}</Text>
                 <View style={styles.bottomItemView}>
                   <Text style={styles.version}>Crafted with</Text>
                   <MaterialIcons name='favorite' size={12} color={COLORS.MEDIUM_GREY} style={styles.favicon}/>
