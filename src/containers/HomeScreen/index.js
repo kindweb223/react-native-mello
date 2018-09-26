@@ -116,7 +116,7 @@ class HomeScreen extends React.Component {
       (feedo.loading === 'DUPLICATE_FEED_FULFILLED') || (feedo.loading === 'UPDATE_FEED_FULFILLED') ||
       (feedo.loading === 'DELETE_CARD_FULFILLED') || (feedo.loading === 'MOVE_CARD_FULFILLED') ||
       (feedo.loading === 'UPDATE_CARD_FULFILLED') || (feedo.loading === 'INVITE_HUNT_FULFILLED') ||
-      (feedo.loading === 'RESTORE_ARCHIVE_FEED_FULFILLED') )) {
+      (feedo.loading === 'RESTORE_ARCHIVE_FEED_FULFILLED') || feedo.loading === 'ADD_DUMMY_FEED' )) {
 
       let feedoList = []
       let emptyState = prevState.emptyState
@@ -156,13 +156,6 @@ class HomeScreen extends React.Component {
       return {
         loading: false,
         currentIdea: card.currentCard,
-        apiLoading: feedo.loading
-      }
-    }
-
-    if (feedo.loading === 'ADD_DUMMY_FEED') {
-      return {
-        feedoList: feedo.feedoList,
         apiLoading: feedo.loading
       }
     }
