@@ -25,12 +25,13 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    paddingHorizontal: CONSTANTS.PADDING
+    paddingHorizontal: 11
   },
   headerTitleView: {
     height: '100%',
     justifyContent: 'center',
     alignItems: 'center',
+    marginLeft: 5
   },
   headerTitle: {
     fontSize: 28,

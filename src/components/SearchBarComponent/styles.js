@@ -37,7 +37,7 @@ export default StyleSheet.create({
   },
   searchBar: {
     backgroundColor: COLORS.LIGHT_GREY_LINE,
-    paddingLeft: 5,
+    paddingLeft: 30,
     paddingRight: 30,
     borderRadius: 16,
     flexDirection: 'row',
@@ -48,7 +48,10 @@ export default StyleSheet.create({
     backgroundColor: 'transparent',
     justifyContent: 'center',
     alignItems: 'center',
-    opacity: 0.6
+    opacity: 0.6,
+    position: 'absolute',
+    top: 3,
+    left: 0
   },
   filterContainer: {
     width: '100%',

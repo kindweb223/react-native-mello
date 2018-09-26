@@ -125,7 +125,7 @@ class FeedoListContainer extends React.Component {
 
 FeedoListContainer.defaultProps = {
   handleFeedMenu: () => {},
-  page: 'detail'
+  page: 'search'
 }
 
 FeedoListContainer.propTypes = {
