@@ -525,6 +525,38 @@ export default function user(state = initialState, action = {}) {
       }
     }
 
+    /**
+     * Delete profile photo url
+     */
+    case types.DELETE_PROFILE_PHOTO_REQUEST:
+      return {
+        ...state,
+        loading: types.DELETE_PROFILE_PHOTO_REQUEST,
+      }
+    case types.DELETE_PROFILE_PHOTO_FULFILLED: {
+      const { userInfo } = state
+      const updateUserInfo = {
+        ...userInfo,
+        imageUrl: null
+      }
+
+      AsyncStorage.setItem('userInfo', JSON.stringify(updateUserInfo))
+      SharedGroupPreferences.setItem('userInfo', JSON.stringify(updateUserInfo), CONSTANTS.APP_GROUP_USER_IDENTIFIER)
+
+      return {
+        ...state,
+        userInfo: updateUserInfo,
+        loading: types.DELETE_PROFILE_PHOTO_FULFILLED,
+      }
+    }
+    case types.DELETE_PROFILE_PHOTO_REJECTED: {
+      return {
+        ...state,
+        loading: types.DELETE_PROFILE_PHOTO_REJECTED,
+        error: action.error.response.data
+      }
+    }
+
 
     default:
       return state;

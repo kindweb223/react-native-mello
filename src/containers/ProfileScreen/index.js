@@ -16,17 +16,14 @@ import Ionicons from 'react-native-vector-icons/Ionicons'
 import Permissions from 'react-native-permissions'
 import ImagePicker from 'react-native-image-picker'
 import Modal from "react-native-modal"
-import * as mime from 'react-native-mime-types'
 import ActionSheet from 'react-native-actionsheet'
 import _ from 'lodash'
 import ToasterComponent from '../../components/ToasterComponent'
-import CropImageScreen from '../CropImageScreen'
-import { userSignOut, getImageUrl, updateProfile } from '../../redux/user/actions'
-import { uploadFileToS3 } from '../../redux/card/actions'
-import COLORS from '../../service/colors'
-import * as COMMON_FUNC from '../../service/commonFunc'
-import styles from './styles'
 import UserAvatarComponent from '../../components/UserAvatarComponent';
+import LoadingScreen from '../LoadingScreen'
+import { userSignOut, deleteProfilePhoto } from '../../redux/user/actions'
+import COLORS from '../../service/colors'
+import styles from './styles'
 
 const CLOSE_ICON = require('../../../assets/images/Close/Blue.png')
 const TRASH_ICON = require('../../../assets/images/Trash/Blue.png')
@@ -70,7 +67,8 @@ class ProfileScreen extends React.Component {
       avatarFile: {},
       isCrop: false,
       isShowToaster: false,
-      toasterText: ''
+      toasterText: '',
+      loading: false
     }
   }
 
@@ -79,24 +77,31 @@ class ProfileScreen extends React.Component {
   }
 
   UNSAFE_componentWillReceiveProps(nextProps) {
-    this.setState({ userInfo: nextProps.user.userInfo })
+    const { user } = nextProps
 
-    if (this.props.user.loading === 'USER_SIGNOUT_PENDING' && nextProps.user.loading === 'USER_SIGNOUT_FULFILLED') {
+    this.setState({ userInfo: user.userInfo })
+
+    if (this.props.user.loading === 'USER_SIGNOUT_PENDING' && user.loading === 'USER_SIGNOUT_FULFILLED') {
       Actions.LoginStartScreen()
     }
 
-    if (this.props.user.loading === 'UPDATE_PROFILE_PENDING' && nextProps.user.loading === 'UPDATE_PROFILE_FULFILLED') {
+    if (this.props.user.loading === 'UPDATE_PROFILE_PENDING' && user.loading === 'UPDATE_PROFILE_FULFILLED') {
       this.setState({ isShowToaster: true, toasterText: 'Profile changed' })
       setTimeout(() => {
         this.setState({ isShowToaster: false })
       }, 2000)
     }
 
-    if (this.props.user.loading === 'UPDATE_PASSWORD_PENDING' && nextProps.user.loading === 'UPDATE_PASSWORD_FULFILLED') {
+    if (this.props.user.loading === 'UPDATE_PASSWORD_PENDING' && user.loading === 'UPDATE_PASSWORD_FULFILLED') {
       this.setState({ isShowToaster: true, toasterText: 'Password changed' })
       setTimeout(() => {
         this.setState({ isShowToaster: false })
       }, 2000)
+    }
+
+    if (this.props.user.loading === 'DELETE_PROFILE_PHOTO_REQUEST' && 
+      (user.loading === 'DELETE_PROFILE_PHOTO_FULFILLED' || user.loading === 'DELETE_PROFILE_PHOTO_REJECTED')) {
+      this.setState({ loading: false })
     }
   }
 
@@ -164,6 +169,13 @@ class ProfileScreen extends React.Component {
           Permissions.openSettings();
         }
       });
+    } else if (index === 2) {
+      // delete profile photo
+      const { user } = this.props
+      if (user.userInfo.imageUrl) {
+        this.setState({ loading: true })
+        this.props.deleteProfilePhoto(user.userInfo.id)
+      }
     }
   }
 
@@ -172,7 +184,7 @@ class ProfileScreen extends React.Component {
   }
 
   handleSettingItem = (index) => {
-    const { userInfo } = this.props.user
+    const { userInfo } = this.state
     switch(index) {
       case 0:
         return
@@ -335,6 +347,10 @@ class ProfileScreen extends React.Component {
           </ScrollView>
         )}
 
+        {this.state.loading && (
+          <LoadingScreen />
+        )}
+
         <ActionSheet
           ref={ref => this.ActionSheet = ref}
           title={'Are you sure that you would like to sign out?'}
@@ -347,27 +363,12 @@ class ProfileScreen extends React.Component {
 
         <ActionSheet
           ref={ref => this.imagePickerActionSheetRef = ref}
-          options={['Photo Library', 'Take A Photo', 'Cancel']}
-          cancelButtonIndex={2}
+          options={userInfo && userInfo.imageUrl ? ['Photo Library', 'Take A Photo', 'Delete', 'Cancel'] : ['Photo Library', 'Take A Photo', 'Cancel']}
+          cancelButtonIndex={userInfo && userInfo.imageUrl ? 3 : 2}
+          destructiveButtonIndex={userInfo && userInfo.imageUrl ? 2 : 5}
           tintColor={COLORS.PURPLE}
           onPress={(index) => this.onTapMediaPickerActionSheet(index)}
         />
-
-        {/* <Modal 
-          isVisible={this.state.isCrop}
-          style={{ margin: 0 }}
-          backdropColor='#fff'
-          backdropOpacity={1}
-          animationIn="slideInUp"
-          animationOut="slideOutDown"
-          animationInTiming={600}
-          onBackdropPress={() => this.setState({ isCrop: false })}
-        >
-          <CropImageScreen
-            avatarFile={this.state.avatarFile}
-            onClose={() => this.setState({ isCrop: false })}
-          />
-        </Modal> */}
 
         {this.state.isShowToaster && (
           <ToasterComponent
@@ -394,7 +395,8 @@ ProfileScreen.propTypes = {
 }
 
 const mapDispatchToProps =  dispatch => ({
-  userSignOut: () => dispatch(userSignOut())
+  userSignOut: () => dispatch(userSignOut()),
+  deleteProfilePhoto: (userId) => dispatch(deleteProfilePhoto(userId))
 })
 
 const mapStateToProps = ({ user }) => ({
