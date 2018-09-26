@@ -75,18 +75,9 @@ export default function feedo(state = initialState, action = {}) {
       }
     }
     case types.PIN_FEED_FULFILLED: {
-      const { feedoList } = state
-      const feedId = action.payload
-      const currentFeed = filter(feedoList, feed => feed.id === feedId)
-      const restFeedoList = filter(feedoList, feed => feed.id !== feedId)
-
       return {
         ...state,
-        loading: 'FEED_FULFILLED',
-        feedoList: [
-          ...restFeedoList,
-          Object.assign({}, currentFeed[0], { pinned: { pinned: true } })
-        ]
+        loading: types.PIN_FEED_FULFILLED,
       }
     }
     case types.PIN_FEED_REJECTED: {
@@ -106,17 +97,9 @@ export default function feedo(state = initialState, action = {}) {
       }
     }
     case types.UNPIN_FEED_FULFILLED: {
-      const { feedoList } = state
-      const feedId = action.payload
-      const currentFeed = filter(feedoList, feed => feed.id === feedId)
-      const restFeedoList = filter(feedoList, feed => feed.id !== feedId)
       return {
         ...state,
-        loading: 'FEED_FULFILLED',
-        feedoList: [
-          ...restFeedoList,
-          Object.assign({}, currentFeed[0], { pinned: null })
-        ]
+        loading: types.UNPIN_FEED_FULFILLED,
       }
     }
     case types.UNPIN_FEED_REJECTED: {
@@ -232,7 +215,7 @@ export default function feedo(state = initialState, action = {}) {
       } else if (flag === 'unpin') {
         return {
           ...state,
-          loading: 'FEED_FULFILLED',
+          loading: 'ADD_DUMMY_FEED',
           pinnedDate: currentFeed[0].pinned.pinnedDate,
           feedoList: [
             Object.assign({}, currentFeed[0], { pinned: null }),
@@ -271,6 +254,7 @@ export default function feedo(state = initialState, action = {}) {
 
       const currentFeed = filter(feedoList, feed => feed.id === feedId)
       const restFeedoList = filter(feedoList, feed => feed.id !== feedId)
+
       if (flag === 'pin') {
         return {
           ...state,
@@ -327,11 +311,6 @@ export default function feedo(state = initialState, action = {}) {
         feedDetailAction: payload
       }
     }
-
-
-
-
-
     // create a feed
     case types.CREATE_FEED_PENDING:
       return {

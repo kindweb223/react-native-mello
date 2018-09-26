@@ -177,9 +177,6 @@ export const setFeedDetailAction = (data) => {
   }
 }
 
-
-
-
 /**
  * Create a feed
  */
