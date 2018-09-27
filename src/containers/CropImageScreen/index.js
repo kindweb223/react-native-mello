@@ -69,10 +69,10 @@ class CropImageScreen extends React.Component {
 
   onSave = () => {
     const { userInfo } = this.props.user
-    this.setState({ loading: true })
+    // this.setState({ loading: true })
     this.imageCrop.crop().then((uri) => {
       this.setState({ cropUrl: uri })
-      this.props.getImageUrl(userInfo.id)
+      // this.props.getImageUrl(userInfo.id)
     })
   }
 
@@ -90,16 +90,17 @@ class CropImageScreen extends React.Component {
               />
             </View>
 
-            {/* <Image
+            <Image
               source={{ uri: this.state.cropUrl.uri }}
               style={{
-                width: 100,
-                height: 100,
-                borderRadius: 50,
+                position: 'absolute',
+                width: 200,
+                height: 200,
+                borderRadius: 100,
                 bottom: 100
               }}
               resizeMode="cover"
-            /> */}
+            />
 
             <View style={styles.headerView}>
               <View style={styles.closeButton} />

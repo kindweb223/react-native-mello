@@ -26,7 +26,6 @@ class ImageCrop extends Component {
 			imageHeight: null,
 			containerWidth: null,
 			containerHeight: null,
-			containerRatio: null,
 			offsetX: 0,
 			offsetY: 0,
 			currentOffsetX: 0, 
@@ -36,7 +35,7 @@ class ImageCrop extends Component {
 			cropQuality: 100,
 
 			scale: 1,
-			maxScale: 2,
+			maxScale: 4,
 			minScale: 1,
 			lastScale: 1
 		};
@@ -57,8 +56,7 @@ class ImageCrop extends Component {
 
 			this.setState({
 				containerWidth: CONSTANTS.SCREEN_WIDTH,
-				containerHeight: originalImageWidth > originalImageHeight ? CONSTANTS.SCREEN_WIDTH : CONSTANTS.SCREEN_WIDTH * originalImageHeight / originalImageWidth,
-				containerRatio: originalImageWidth / CONSTANTS.SCREEN_WIDTH,
+				containerHeight: originalImageWidth > originalImageHeight ? CONSTANTS.SCREEN_WIDTH : CONSTANTS.SCREEN_WIDTH * ratio,
 				cropWidth,
 				cropHeight
 			})
@@ -190,7 +188,12 @@ class ImageCrop extends Component {
   };
 
 	crop() {
-		const { originalImageWidth, originalImageHeight, offsetX, offsetY, containerRatio, currentOffsetX, currentOffsetY, cropWidth, cropHeight, scale } = this.state
+		const {
+			originalImageWidth, originalImageHeight,
+			currentOffsetX, currentOffsetY,
+			cropWidth, cropHeight,
+			scale
+		} = this.state
 
 		let cropData = {}
 		let ratio = cropWidth > cropHeight ? originalImageHeight / CONSTANTS.SCREEN_WIDTH : originalImageWidth / CONSTANTS.SCREEN_WIDTH
@@ -246,7 +249,7 @@ class ImageCrop extends Component {
 	}
 
 	renderContainerImage() {
-		const { containerWidth, containerHeight, cropWidth, cropHeight, offsetX, offsetY, scale } = this.state
+		const { cropWidth, cropHeight, offsetX, offsetY, scale } = this.state
 
 		let translateX = offsetX
 		let translateY = offsetY
@@ -343,7 +346,7 @@ class ImageCrop extends Component {
 	}
 
 	renderImage() {
-		const { containerWidth, containerHeight, offsetX, offsetY, cropWidth, cropHeight, scale } = this.state
+		const { offsetX, offsetY, cropWidth, cropHeight, scale } = this.state
 
 		let translateX = offsetX
 		let translateY = offsetY
@@ -440,14 +443,14 @@ class ImageCrop extends Component {
 	}
 
 	render() {
-		const { containerWidth, containerHeight, originalImageHeight, originalImageWidth } = this.state
+		const { containerWidth, containerHeight, originalImageWidth, originalImageHeight } = this.state
 		return (
 			<View
 				{...this.panResponder.panHandlers}
 				style={[styles.container, {
 					width: containerWidth,
 					height: containerHeight,
-					backgroundColor: 'transparent'
+					backgroundColor: 'transparent',
 				}]}
 			>
 				{ this.renderContainerImage() }
