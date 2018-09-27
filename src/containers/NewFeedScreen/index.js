@@ -34,7 +34,6 @@ import {
   getFeedDetail,
 } from '../../redux/feedo/actions'
 import * as types from '../../redux/feedo/types'
-
 import COLORS from '../../service/colors';
 import CONSTANTS from '../../service/constants';
 import styles from './styles';
