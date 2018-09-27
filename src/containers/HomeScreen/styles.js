@@ -65,6 +65,10 @@ const styles = StyleSheet.create({
     zIndex: 10,
     paddingTop: SEARCHBAR_HEIGHT,
   },
+  feedListContainer: {
+    paddingBottom: CONSTANTS.ACTION_BAR_HEIGHT + 50,
+    paddingTop: 16
+  },
   tabBarStyle: {
     borderTopWidth: 0,
     borderBottomWidth: 0,
