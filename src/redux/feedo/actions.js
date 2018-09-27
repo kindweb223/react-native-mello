@@ -102,6 +102,23 @@ export const archiveFeed = (feedId) => {
 }
 
 /**
+ * Restore archived Feed
+ */
+export const restoreArchiveFeed = (feedId) => {
+  let url = `hunts/${feedId}`
+
+  return {
+    types: [types.RESTORE_ARCHIVE_FEED_PENDING, types.RESTORE_ARCHIVE_FEED_FULFILLED, types.RESTORE_ARCHIVE_FEED_REJECTED],
+    promise: axios({
+      method: 'put',
+      url: url,
+      data: { status: 'PUBLISHED' }
+    }),
+    payload: feedId
+  };
+}
+
+/**
  * Duplicate Feed
  */
 export const duplicateFeed = (feedId) => {
@@ -159,9 +176,6 @@ export const setFeedDetailAction = (data) => {
     payload: data
   }
 }
-
-
-
 
 /**
  * Create a feed
@@ -446,4 +460,20 @@ export const addFilterTag = (data) => {
     type: types.ADD_FILTER_TAG,
     payload: data
   }
+}
+
+/**
+ * Get archived feed list
+ */
+export const getArchivedFeedList = () => {
+  let url = 'hunts?archived=true'
+
+  return {
+    types: [types.GET_ARCHIVED_FEED_PENDING, types.GET_ARCHIVED_FEED_FULFILLED, types.GET_ARCHIVED_FEED_REJECTED],
+    promise:
+      axios({
+          method: 'get',
+          url: url
+      })  
+  };
 }

@@ -63,6 +63,7 @@ import ResetPasswordConfirmScreen from './src/containers/ResetPasswordConfirmScr
 import ResetPasswordScreen from './src/containers/ResetPasswordScreen'
 import CropImageScreen from './src/containers/CropImageScreen'
 import FeedFilterScreen from './src/containers/FeedFilterScreen'
+import ArchivedFeedScreen from './src/containers/ArchivedFeedScreen'
 
 const store = createStore(reducers, applyMiddleware(thunk, promiseMiddleware))
 
@@ -197,6 +198,7 @@ export default class Root extends React.Component {
               <Scene key="ProfileUpdateScreen" component={ ProfileUpdateScreen } hideNavBar panHandlers={null} />
               <Scene key="ProfileResetPasswordConfirmScreen" component={ ResetPasswordConfirmScreen } hideNavBar panHandlers={null} />
               <Scene key="ProfileTermsAndConditionsScreen" component={ TermsAndConditionsScreen } hideNavBar panHandlers={null} />
+              <Scene key="ArchivedFeedScreen" component={ ArchivedFeedScreen } hideNavBar panHandlers={null} />
             </Stack>
           </Stack>
         </Modal>

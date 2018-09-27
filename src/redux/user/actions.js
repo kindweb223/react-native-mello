@@ -296,3 +296,18 @@ export const updateDeviceToken = (userId, deviceId, data) => {
       })  
   };
 }
+
+/**
+ * delete profile photo
+ */
+export const deleteProfilePhoto = (userId) => {
+  const url = `users/${userId}/image`;
+  return {
+    types: [types.DELETE_PROFILE_PHOTO_REQUEST, types.DELETE_PROFILE_PHOTO_FULFILLED, types.DELETE_PROFILE_PHOTO_REJECTED],
+    promise:
+      axios({
+        method: 'delete',
+        url
+      })  
+  };
+}

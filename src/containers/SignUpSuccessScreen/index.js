@@ -40,10 +40,14 @@ class SignUpSuccessScreen extends React.Component {
   }
 
   componentWillMount() {
-    const { token, deepLinking } = this.props
+    const { token, deepLinking, user } = this.props
     if (deepLinking) { // from deep_linking
-      this.setState({ loading: true })
-      this.props.confirmAccount(token)
+      if (user.userInfo) {
+        Actions.HomeScreen()
+      } else {
+        this.setState({ loading: true })
+        this.props.confirmAccount(token)
+      }
     } else {
       setTimeout(() => {
         Actions.HomeScreen()
@@ -60,10 +64,6 @@ class SignUpSuccessScreen extends React.Component {
 
     if (user.loading === 'USER_CONFIRM_ACCOUNT_REJECTED') {
       this.setState({ loading: false })
-      Alert.alert(
-        'Error',
-        user.error.message,
-      )
 
       if (user.userInfo) {
         Actions.HomeScreen()

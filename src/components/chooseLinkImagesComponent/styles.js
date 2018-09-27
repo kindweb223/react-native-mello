@@ -54,6 +54,7 @@ const styles = StyleSheet.create({
     width: (CONSTANTS.SCREEN_WIDTH - 22 - 30) / 3,
     height: (CONSTANTS.SCREEN_WIDTH - 22 - 30) / 3,
     margin: 5,
+    backgroundColor: 'rgba(0, 0, 0, 0.05);',
   },
   imageItem: {
     width: '100%',

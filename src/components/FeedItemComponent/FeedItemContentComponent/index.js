@@ -52,10 +52,12 @@ const renderAvatar = (user) => {
 }
 
 class FeedItemContentComponent extends React.Component {
-  onTagPress = (initialTag, page) => {
-    if (page === 'detail') {
+  onTagPress = (initialTag, page, clickEvent) => {
+    if (page === 'search') {
       this.props.addFilterTag(initialTag)
-    } else {
+    }
+
+    if (page === 'home' && clickEvent === 'normal') {
       Actions.FeedFilterScreen({
         initialTag: [{ text: initialTag.text }]
       })
@@ -63,7 +65,7 @@ class FeedItemContentComponent extends React.Component {
   }
 
   render() {
-    const { data, pinFlag, page } = this.props
+    const { data, pinFlag, page, clickEvent } = this.props
 
     return (
       <View style={styles.container}>
@@ -96,12 +98,12 @@ class FeedItemContentComponent extends React.Component {
           </View>
         </View>
 
-        {data.tags.length > 0 && (
+        {data.tags.length > 0 && page !== 'archived' && (
           <View style={styles.tagsView}>
             <Tags
               initialTags={data.tags}
               onChangeTags={() => {}}
-              onTagPress={(tag) => this.onTagPress(tag, page)}
+              onTagPress={(tag) => this.onTagPress(tag, page, clickEvent)}
               inputStyle={{
                 backgroundColor: 'white',
               }}

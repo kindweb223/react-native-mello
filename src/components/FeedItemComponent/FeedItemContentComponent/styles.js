@@ -13,7 +13,8 @@ const styles = StyleSheet.create({
   },
   statsView: {
     flexDirection: 'row',
-    paddingVertical: 5
+    marginTop: 5,
+    marginBottom: 3
   },
   statsItemView: {
     flexDirection: 'row',

@@ -66,7 +66,7 @@ import {
 const TAB_STYLES = {
   height: '100%',
   paddingTop: 10,
-  paddingHorizontal: 10,
+  paddingRight: 10
 }
 
 const TOASTER_DURATION = 5000
@@ -117,7 +117,8 @@ class HomeScreen extends React.Component {
       (feedo.loading === 'FEED_FULFILLED') || (feedo.loading === 'DEL_FEED_FULFILLED') || (feedo.loading === 'ARCHIVE_FEED_FULFILLED') ||
       (feedo.loading === 'DUPLICATE_FEED_FULFILLED') || (feedo.loading === 'UPDATE_FEED_FULFILLED') ||
       (feedo.loading === 'DELETE_CARD_FULFILLED') || (feedo.loading === 'MOVE_CARD_FULFILLED') ||
-      (feedo.loading === 'UPDATE_CARD_FULFILLED') || (feedo.loading === 'INVITE_HUNT_FULFILLED') )) {
+      (feedo.loading === 'UPDATE_CARD_FULFILLED') || (feedo.loading === 'INVITE_HUNT_FULFILLED') ||
+      (feedo.loading === 'RESTORE_ARCHIVE_FEED_FULFILLED') || (feedo.loading === 'ADD_DUMMY_FEED'))) {
 
       let feedoList = []
       let emptyState = prevState.emptyState
@@ -157,13 +158,6 @@ class HomeScreen extends React.Component {
       return {
         loading: false,
         currentIdea: card.currentCard,
-        apiLoading: feedo.loading
-      }
-    }
-
-    if (feedo.loading === 'ADD_DUMMY_FEED') {
-      return {
-        feedoList: feedo.feedoList,
         apiLoading: feedo.loading
       }
     }
@@ -435,7 +429,6 @@ class HomeScreen extends React.Component {
     this.setState({ isPin: true, toasterTitle: 'Feed pinned', feedId })
 
     this.props.addDummyFeed({ feedId, flag: 'pin' })
-    this.scrollView.scrollTo({ x:0, y: 0, animated: true })
 
     setTimeout(() => {
       this.setState({ isShowToaster: false })
@@ -775,12 +768,12 @@ class HomeScreen extends React.Component {
                                       underlineBottomPosition={0}
                                       tabBarStyle={styles.tabBarStyle}
                                       tabBarTextStyle={styles.tabBarTextStyle}
-                                      tabMargin={10}
+                                      tabMargin={16}
                                       tabStyles={{ 'tab': TAB_STYLES }}
                                     />}
               >
                 <View
-                  style={{paddingBottom: CONSTANTS.ACTION_BAR_HEIGHT}}
+                  style={{ paddingBottom: CONSTANTS.ACTION_BAR_HEIGHT + 50 }}
                   ref={ref => this.scrollTabAll = ref} 
                   tabLabel={{ label: 'All' }}
                   onLayout={(event) => this.onScrollableTabViewLayout(event, 0)}
@@ -793,7 +786,7 @@ class HomeScreen extends React.Component {
                   />
                 </View>
                 <View
-                  style={{paddingBottom: CONSTANTS.ACTION_BAR_HEIGHT}}
+                  style={{ paddingBottom: CONSTANTS.ACTION_BAR_HEIGHT + 50 }}
                   ref={ref => this.scrollTabPinned = ref}
                   tabLabel={{ label: 'Pinned' }}
                   onLayout={(event) => this.onScrollableTabViewLayout(event, 1)}
@@ -814,7 +807,7 @@ class HomeScreen extends React.Component {
                   }
                 </View>
                 <View
-                  style={{paddingBottom: CONSTANTS.ACTION_BAR_HEIGHT}}
+                  style={{ paddingBottom: CONSTANTS.ACTION_BAR_HEIGHT + 50 }}
                   ref={ref => this.scrollTabSharedWithMe = ref}
                   tabLabel={{ label: 'Shared with me' }}
                   onLayout={(event) => this.onScrollableTabViewLayout(event, 2)}
