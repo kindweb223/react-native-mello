@@ -386,7 +386,7 @@ export default function feedo(state = initialState, action = {}) {
       return {
         ...state,
         loading: types.DELETE_FEED_FULFILLED,
-        currentFeed: {},
+        // currentFeed: {},
       }
     }
     case types.DELETE_FEED_REJECTED: {

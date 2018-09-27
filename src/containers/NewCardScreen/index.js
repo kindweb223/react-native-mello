@@ -26,7 +26,7 @@ import * as mime from 'react-native-mime-types'
 import _ from 'lodash';
 import validUrl from 'valid-url';
 import Modal from 'react-native-modal';
-
+import FastImage from "react-native-fast-image";
 
 import { 
   createCard,
@@ -60,7 +60,8 @@ import LikeComponent from '../../components/LikeComponent';
 import CommentComponent from '../../components/CommentComponent';
 import ChooseLinkImages from '../../components/chooseLinkImagesComponent';
 import UserAvatarComponent from '../../components/UserAvatarComponent';
-import FastImage from "react-native-fast-image";
+import SelectHuntScreen from '../SelectHuntScreen';
+
 
 const ScreenVerticalMinMargin = 80;
 
@@ -78,9 +79,8 @@ class NewCardScreen extends React.Component {
       originalCardTopY: this.props.intialLayout.py,
       originalCardBottomY: this.props.intialLayout.py + this.props.intialLayout.height,
       isShowKeyboardButton: false,
-      // openGraphForNoteLinks: [],
       isVisibleChooseLinkImagesModal: false,
-      // cardMaxHeight: CONSTANTS.SCREEN_HEIGHT - ScreenVerticalMinMargin * 2,
+      isVisibleSelectFeedoModal: false,
     };
 
     this.selectedFile = null;
@@ -107,6 +107,9 @@ class NewCardScreen extends React.Component {
     this.isVisibleErrorDialog = false;
 
     this.parsingErrorLinks = [];
+
+    this.draftFeedo = null;
+    this.isUpdateDraftCard = false;
   }
 
   UNSAFE_componentWillReceiveProps(nextProps) {
@@ -122,6 +125,7 @@ class NewCardScreen extends React.Component {
           this.checkUrl(this.state.cardName);
         });
       }
+      console.log('Current Created Card : ', nextProps.card.currentCard);
     } else if (this.props.card.loading !== types.GET_FILE_UPLOAD_URL_PENDING && nextProps.card.loading === types.GET_FILE_UPLOAD_URL_PENDING) {
       // getting a file upload url
       loading = true;
@@ -263,6 +267,7 @@ class NewCardScreen extends React.Component {
       // creating a feed
       if (this.props.viewMode === CONSTANTS.CARD_NEW) {
         loading = true;
+        this.draftFeedo = nextProps.feedo.currentFeed;
         this.props.createCard(nextProps.feedo.currentFeed.id);
       }
     } else if (this.props.feedo.loading !== feedoTypes.UPDATE_FEED_PENDING && nextProps.feedo.loading === feedoTypes.UPDATE_FEED_PENDING) {
@@ -276,7 +281,11 @@ class NewCardScreen extends React.Component {
       loading = true;
     } else if (this.props.feedo.loading !== feedoTypes.DELETE_FEED_FULFILLED && nextProps.feedo.loading === feedoTypes.DELETE_FEED_FULFILLED) {
       // success in deleting a feed
-      this.onClose();
+      if (this.isUpdateDraftCard) {
+        this.onUpdateCard();
+      } else {
+        this.onClose();
+      }
       return;
     } 
 
@@ -484,6 +493,19 @@ class NewCardScreen extends React.Component {
     this.props.updateCard(this.props.feedo.currentFeed.id, id, cardName, this.state.idea, this.state.coverImage, files);
   }
 
+  onCreateCard() {
+    const {
+      id, 
+      files,
+    } = this.props.card.currentCard;
+
+    let cardName = this.state.cardName;
+    if (cardName === '') {
+      cardName = '';
+    }
+    this.props.updateCard(this.props.feedo.currentFeed.id, id, cardName, this.state.idea, this.state.coverImage, files);
+  }
+
   onAddMedia() {
     this.imagePickerActionSheetRef.show();
   }
@@ -537,11 +559,8 @@ class NewCardScreen extends React.Component {
 
   onTapLeaveActionSheet(index) {
     if (index === 1) {
-      if (!this.props.selectedFeedId) {
-        this.props.deleteDraftFeed(this.props.feedo.currentFeed.id)
-      } else {
-        this.onClose();
-      }
+      this.isUpdateDraftCard = false;
+      this.props.deleteDraftFeed(this.draftFeedo.id)
     }
   }
 
@@ -732,20 +751,26 @@ class NewCardScreen extends React.Component {
   }
 
   onSelectFeedo() {
+    this.setState({
+      isVisibleSelectFeedoModal: true,
+    });
   }
 
-  onCreateFeed() {
-    const {
-      id, 
-      status,
-      headline,
-      summary,
-      tags,
-      files,
-    } = this.props.feedo.currentFeed;
-    if (status === 'DRAFT') {
+  onUpdateFeed() {
+    if (this.draftFeedo.id === this.props.feedo.currentFeed.id) {
+      // Update Draft Feedo to Publish one
+      const {
+        id, 
+        headline,
+        summary,
+        tags,
+        files,
+      } = this.props.feedo.currentFeed;  
       this.props.updateFeed(id, headline || 'New feed', summary || ' ', tags, files);
+      return;
     }
+    this.isUpdateDraftCard = true;
+    this.props.deleteDraftFeed(this.draftFeedo.id)
   }
 
   addLinkImage(imageUrl) {
@@ -995,7 +1020,7 @@ class NewCardScreen extends React.Component {
           <TouchableOpacity 
             style={[styles.addCardButtonWapper, {backgroundColor: COLORS.PURPLE}]}
             activeOpacity={0.6}
-            onPress={this.onCreateFeed.bind(this)}
+            onPress={this.onUpdateFeed.bind(this)}
           >
             <Text style={styles.textButton}>Create card</Text>
           </TouchableOpacity>
@@ -1206,11 +1231,22 @@ class NewCardScreen extends React.Component {
     );
   }
 
+  get renderSelectHunt() {
+    if (this.state.isVisibleSelectFeedoModal) {
+      return (
+        <SelectHuntScreen
+          onClosed={() => this.setState({isVisibleSelectFeedoModal: false})}
+        />
+      );
+    }
+  }
+
   render () {
     return (
       <SafeAreaView style={styles.container}>
         {this.renderCard}
         {this.renderOutsideMoreActions}
+        {this.renderSelectHunt}
         <ActionSheet
           ref={ref => this.imagePickerActionSheetRef = ref}
           title='Select a Photo / Video'
@@ -1222,7 +1258,7 @@ class NewCardScreen extends React.Component {
         <ActionSheet
           ref={ref => this.leaveActionSheetRef = ref}
           title='Are you sure that you wish to leave?'
-          options={['Continue editing', this.props.selectedFeedId ? 'Close and discard' : 'Leave and discard', 'Cancel']}
+          options={['Continue editing', 'Leave and discard', 'Cancel']}
           cancelButtonIndex={2}
           destructiveButtonIndex={1}
           tintColor={COLORS.PURPLE}
