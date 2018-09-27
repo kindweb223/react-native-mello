@@ -108,7 +108,7 @@ export default function card(state = initialState, action = {}) {
       return {
         ...state,
         loading: types.DELETE_CARD_FULFILLED,
-        currentCard: {},
+        // currentCard: {},
       }
     }
     case types.DELETE_CARD_REJECTED: {

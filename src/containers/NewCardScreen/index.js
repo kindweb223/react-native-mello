@@ -41,7 +41,13 @@ import {
   addLink,
   deleteLink,
 } from '../../redux/card/actions'
+import { 
+  createFeed,
+  updateFeed,
+  deleteDraftFeed,
+} from '../../redux/feedo/actions'
 import * as types from '../../redux/card/types'
+import * as feedoTypes from '../../redux/feedo/types'
 import { getTimestamp } from '../../service/dateUtils'
 import COLORS from '../../service/colors';
 import CONSTANTS from '../../service/constants';
@@ -99,6 +105,8 @@ class NewCardScreen extends React.Component {
     this.animatedKeyboardHeight = new Animated.Value(0);
     this.scrollViewLayoutHeight = 0;
     this.isVisibleErrorDialog = false;
+
+    this.parsingErrorLinks = [];
   }
 
   UNSAFE_componentWillReceiveProps(nextProps) {
@@ -107,7 +115,7 @@ class NewCardScreen extends React.Component {
     if (this.props.card.loading !== types.CREATE_CARD_PENDING && nextProps.card.loading === types.CREATE_CARD_PENDING) {
       loading = true;
     } else if (this.props.card.loading !== types.CREATE_CARD_FULFILLED && nextProps.card.loading === types.CREATE_CARD_FULFILLED) {
-      if (this.props.cardMode !== CONSTANTS.MAIN_APP_CARD && this.props.shareUrl !== '') {
+      if (this.props.cardMode === CONSTANTS.EXTENTION_CARD && this.props.shareUrl !== '') {
         this.setState({
           cardName: this.props.shareUrl,
         }, () => {
@@ -248,22 +256,51 @@ class NewCardScreen extends React.Component {
       loading = true;
     } else if (this.props.card.loading !== types.UNLIKE_CARD_FULFILLED && nextProps.card.loading === types.UNLIKE_CARD_FULFILLED) {
       // success in unliking a card
-    }
+    } else if (this.props.feedo.loading !== feedoTypes.CREATE_FEED_PENDING && nextProps.feedo.loading === feedoTypes.CREATE_FEED_PENDING) {
+      // creating a feed
+      loading = true;
+    } else if (this.props.feedo.loading !== feedoTypes.CREATE_FEED_FULFILLED && nextProps.feedo.loading === feedoTypes.CREATE_FEED_FULFILLED) {
+      // creating a feed
+      if (this.props.viewMode === CONSTANTS.CARD_NEW) {
+        loading = true;
+        this.props.createCard(nextProps.feedo.currentFeed.id);
+      }
+    } else if (this.props.feedo.loading !== feedoTypes.UPDATE_FEED_PENDING && nextProps.feedo.loading === feedoTypes.UPDATE_FEED_PENDING) {
+      // updating a feed
+      loading = true;
+    } else if (this.props.feedo.loading !== feedoTypes.UPDATE_FEED_FULFILLED && nextProps.feedo.loading === feedoTypes.UPDATE_FEED_FULFILLED) {
+      // success in updating a feed
+      this.onUpdateCard();
+    } else if (this.props.feedo.loading !== feedoTypes.DELETE_FEED_PENDING && nextProps.feedo.loading === feedoTypes.DELETE_FEED_PENDING) {
+      // deleting a feed
+      loading = true;
+    } else if (this.props.feedo.loading !== feedoTypes.DELETE_FEED_FULFILLED && nextProps.feedo.loading === feedoTypes.DELETE_FEED_FULFILLED) {
+      // success in deleting a feed
+      this.onClose();
+      return;
+    } 
 
     this.setState({
       loading,
     });
 
     // showing error alert
-    if (this.props.card.loading !== nextProps.card.loading) {
-      if (nextProps.card.error) {
+    if (this.props.card.loading !== nextProps.card.loading || this.props.feedo.loading !== nextProps.feedo.loading) {
+      if (nextProps.card.error || nextProps.feedo.error) {
         let error = null;
-        if (nextProps.card.error.error) {
-          error = nextProps.card.error.error;
+        if ((nextProps.card.error && nextProps.card.error.error) || (nextProps.feedo.error && nextProps.feedo.error.error)) {
+          error = (nextProps.card.error && nextProps.card.error.error) || (nextProps.feedo.error && nextProps.feedo.error.error);
         } else {
-          error = nextProps.card.error.message;
+          error = (nextProps.card.error && nextProps.card.error.message) || (nextProps.feedo.error && nextProps.feedo.error.message);
         }
         if (error) {
+          if (nextProps.card.loading === types.GET_OPEN_GRAPH_REJECTED) {
+            if (this.parseErrorUrls(error)) {
+              error = 'Sorry, this link cannot be read';
+            } else {
+              return;
+            }
+          }
           if (!this.isVisibleErrorDialog) {
             this.isVisibleErrorDialog = true;
             Alert.alert('Error', error, [
@@ -277,8 +314,8 @@ class NewCardScreen extends React.Component {
   }
 
   componentDidMount() {
-    console.log('Current Card : ', this.props.card.currentCard);
-    const { viewMode } = this.props;
+    // console.log('Current Card : ', this.props.card.currentCard);
+    const { cardMode, viewMode } = this.props;
     if (viewMode === CONSTANTS.CARD_VIEW || viewMode === CONSTANTS.CARD_EDIT) {
       this.setState({
         cardName: this.props.card.currentCard.title,
@@ -291,7 +328,9 @@ class NewCardScreen extends React.Component {
       toValue: 1,
       duration: CONSTANTS.ANIMATEION_MILLI_SECONDS,
     }).start(() => {
-      if (viewMode === CONSTANTS.CARD_NEW) {
+      if (cardMode === CONSTANTS.MAIN_APP_CARD_FROM_DASHBOARD) {
+        this.props.createFeed();
+      } else if (viewMode === CONSTANTS.CARD_NEW) {
         this.props.createCard(this.props.feedo.currentFeed.id);
       }
     });
@@ -322,6 +361,99 @@ class NewCardScreen extends React.Component {
       }
     ).start();
   }
+
+  checkUrl(content) {
+    const { viewMode } = this.props;
+    if (viewMode === CONSTANTS.CARD_NEW || viewMode === CONSTANTS.CARD_EDIT) {
+      if (content) {
+        const texts = content.split(/[, ]/);
+        if (texts.length === 1 && validUrl.isUri(texts[0])) {
+          if (this.parsingErrorLinks.length > 0 && this.parsingErrorLinks.indexOf(texts[0] !== -1)) {
+            return true;
+          }
+          this.isOpenGraphForNewCard = true;
+          this.urlForNewCard = texts[0];
+          this.props.getOpenGraph(texts[0]);
+          return true;
+        }
+      }
+    }
+    return false;
+  }
+
+  checkUrlsInNote() {
+    if (this.checkUrl(this.state.idea)) {
+      return true;
+    }
+    const allUrls = this.state.idea.match(/\bhttps?:\/\/\S+/gi);
+    if (allUrls) {
+      let newUrls = [];
+      const {
+        links
+      } = this.props.card.currentCard;
+      if (links) {
+        allUrls.forEach(url => {
+          const index = _.findIndex(links, link => link.originalUrl === url);
+          if (index === -1) {
+            newUrls.push(url);
+          }
+        });
+      } else {
+        newUrls = allUrls;
+      }
+
+      let filteredUrls = newUrls;
+      if (this.parsingErrorLinks.length) {
+        filteredUrls = [];
+        newUrls.forEach(url => {
+          const index = _.findIndex(this.parsingErrorLinks, errorLink => errorLink === url);
+          if (index === -1) {
+            filteredUrls.push(url);
+          }
+        });
+      }
+
+      if (filteredUrls.length > 0) {
+        this.isOpenGraphForNewCard = false;
+        this.openGraphNoteIndex = 0;
+        this.openGraphForNoteLinks = [];
+        this.noteLinksForOpenGraph = filteredUrls;
+        this.props.getOpenGraph(this.noteLinksForOpenGraph[this.openGraphNoteIndex]);
+      }
+    }
+    return false;
+  }
+
+  parseErrorUrls(message) {
+    const allUrls = message.match(/\bhttps?:\/\/\S+/gi);
+    if (allUrls) {
+      let newUrls = [];
+      allUrls.forEach(url => {
+        const index = _.findIndex(this.parsingErrorLinks, errorLink => errorLink === url);
+        if (index === -1) {
+          url = url.replace('[', '');
+          url = url.replace(']', '');
+          newUrls.push(url);
+          if (this.state.cardName.includes(url)) {
+            this.setState({
+              cardName: '',
+            });
+            if (!this.state.idea.includes(url)) {
+              this.setState({
+                idea: this.state.idea + this.state.idea ? ' ' : '' + url,
+              })
+            }
+          }
+        }
+      });
+      if (newUrls.length > 0) {
+        this.parsingErrorLinks = this.parsingErrorLinks.concat(newUrls);
+      }
+      return true;
+    }
+    return false;
+  }
+
 
   onClose() {
     this.setState({
@@ -376,7 +508,7 @@ class NewCardScreen extends React.Component {
     Keyboard.dismiss();
   }
 
-  onTapOutsideCard() {
+  onUpdateCard() {
     const { viewMode } = this.props;
     if (viewMode === CONSTANTS.CARD_NEW) {
       if (this.checkUrl(this.state.cardName) || this.checkUrlsInNote()) {
@@ -389,6 +521,28 @@ class NewCardScreen extends React.Component {
     }
     this.onClose();
     return;
+  }
+
+  onTapOutside() {
+    const { cardMode } = this.props;
+    if (cardMode === CONSTANTS.MAIN_APP_CARD_FROM_DASHBOARD) {
+      // delete draft feed
+      this.leaveActionSheetRef.show();
+      return;
+    } else if (cardMode === CONSTANTS.EXTENTION_CARD) {
+      return;
+    }
+    this.onUpdateCard();
+  }
+
+  onTapLeaveActionSheet(index) {
+    if (index === 1) {
+      if (!this.props.selectedFeedId) {
+        this.props.deleteDraftFeed(this.props.feedo.currentFeed.id)
+      } else {
+        this.onClose();
+      }
+    }
   }
 
   onPressMoreActions() {
@@ -485,65 +639,24 @@ class NewCardScreen extends React.Component {
     this.props.setCoverImage(this.props.card.currentCard.id, fileId);
   }
 
-  checkUrl(content) {
-    const { viewMode } = this.props;
-    if (viewMode === CONSTANTS.CARD_NEW || viewMode === CONSTANTS.CARD_EDIT) {
-      if (content) {
-        const texts = content.split(/[, ]/);
-        if (texts.length === 1 && validUrl.isUri(texts[0])) {
-          this.isOpenGraphForNewCard = true;
-          this.urlForNewCard = texts[0];
-          this.props.getOpenGraph(texts[0]);
-          return true;
-        }
-      }
-    }
-    return false;
-  }
-
-  checkUrlsInNote() {
-    if (this.checkUrl(this.state.idea)) {
-      return true;
-    }
-    const allUrls = this.state.idea.match(/\bhttps?:\/\/\S+/gi);
-    if (allUrls) {
-      let newUrls = [];
-      const {
-        links
-      } = this.props.card.currentCard;
-      if (links) {
-        allUrls.forEach(url => {
-          const index = _.findIndex(links, link => link.originalUrl === url);
-          if (index === -1) {
-            newUrls.push(url);
-          }
-        });
-      } else {
-        newUrls = allUrls;
-      }
-      if (newUrls.length > 0) {
-        this.isOpenGraphForNewCard = false;
-        this.openGraphNoteIndex = 0;
-        this.openGraphForNoteLinks = [];
-        this.noteLinksForOpenGraph = newUrls;
-        this.props.getOpenGraph(this.noteLinksForOpenGraph[this.openGraphNoteIndex]);
-      }
-    }
-    return false;
-  }
-
   async onChangeTitle(text) {
     const { viewMode } = this.props;
+    if (this.parsingErrorLinks.length > 0 && this.parsingErrorLinks.includes(text)) {
+      this.setState({cardName: ' '});
+      setTimeout(() => {
+        this.setState({cardName: ''});
+      }, 0)
+      return;
+    }
+    this.setState({cardName: text});    
     if (viewMode === CONSTANTS.CARD_NEW || viewMode === CONSTANTS.CARD_EDIT){
       const clipboardContent = await Clipboard.getString();
       if (clipboardContent === text) {
-        console.log('Title : ', text);
         if (this.checkUrl(text)) {
           return;
         }
       }
     }
-    this.setState({cardName: text});
   }
   
   onKeyPressTitle(event) {
@@ -618,6 +731,23 @@ class NewCardScreen extends React.Component {
   onSelectCoverImage() {
   }
 
+  onSelectFeedo() {
+  }
+
+  onCreateFeed() {
+    const {
+      id, 
+      status,
+      headline,
+      summary,
+      tags,
+      files,
+    } = this.props.feedo.currentFeed;
+    if (status === 'DRAFT') {
+      this.props.updateFeed(id, headline || 'New feed', summary || ' ', tags, files);
+    }
+  }
+
   addLinkImage(imageUrl) {
     const {
       id, 
@@ -663,10 +793,7 @@ class NewCardScreen extends React.Component {
   }
 
   get renderWebMeta() {
-    const { viewMode, cardMode } = this.props;
-    // if (cardMode !== CONSTANTS.MAIN_APP_CARD) {
-    //   return;
-    // }
+    const { viewMode } = this.props;
     const { links } = this.props.card.currentCard;
     if (links && links.length > 0) {
       return (
@@ -700,7 +827,7 @@ class NewCardScreen extends React.Component {
 
   get renderDocuments() {
     const { viewMode, cardMode } = this.props;
-    if (cardMode !== CONSTANTS.MAIN_APP_CARD) {
+    if (cardMode === CONSTANTS.EXTENTION_CARD) {
       return;
     }
     const {
@@ -755,9 +882,29 @@ class NewCardScreen extends React.Component {
     );
   }
 
+  get renderSelectFeedo() {
+    const { cardMode } = this.props;
+    if (cardMode !== CONSTANTS.MAIN_APP_CARD_FROM_DASHBOARD) {
+      return;
+    }
+    return (
+      <View style={styles.selectFeedoContainer}>
+        <Text style={styles.textCreateCardIn}>Create card in:</Text>
+        <TouchableOpacity
+          style={styles.selectFeedoButtonContainer}
+          activeOpacity={0.6}
+          onPress={this.onSelectFeedo.bind(this)}
+        >
+          <Text style={[styles.textCreateCardIn, {color: COLORS.PRIMARY_BLACK, marginHorizontal: 0}]}>{this.props.feedo.currentFeed.headline || 'New feed'}</Text>
+          <Entypo name="chevron-right" size={20} color={COLORS.MEDIUM_GREY} />
+        </TouchableOpacity>
+      </View>
+    )
+  }
+
   get renderAttachmentButtons() {
     const { viewMode, cardMode } = this.props;
-    if (cardMode !== CONSTANTS.MAIN_APP_CARD) {
+    if (cardMode === CONSTANTS.EXTENTION_CARD) {
       return;
     }
     if (viewMode === CONSTANTS.CARD_VIEW) {
@@ -779,6 +926,7 @@ class NewCardScreen extends React.Component {
         >
           <Entypo name="attachment" style={styles.attachment} size={20} color={COLORS.PURPLE} />
         </TouchableOpacity>
+        {this.renderSelectFeedo}
       </View>
     );
   }
@@ -834,7 +982,26 @@ class NewCardScreen extends React.Component {
 
   get renderHeader() {
     const { cardMode } = this.props;
-    if (cardMode !== CONSTANTS.MAIN_APP_CARD) {
+    if (cardMode === CONSTANTS.MAIN_APP_CARD_FROM_DASHBOARD) {
+      return (
+        <View style={styles.shareHeaderContainer}>
+          <TouchableOpacity 
+            style={styles.closeButtonWrapper}
+            activeOpacity={0.7}
+            onPress={() => this.leaveActionSheetRef.show()}
+          >
+            <MaterialCommunityIcons name="close" size={28} color={COLORS.PURPLE} />
+          </TouchableOpacity>
+          <TouchableOpacity 
+            style={[styles.addCardButtonWapper, {backgroundColor: COLORS.PURPLE}]}
+            activeOpacity={0.6}
+            onPress={this.onCreateFeed.bind(this)}
+          >
+            <Text style={styles.textButton}>Create card</Text>
+          </TouchableOpacity>
+        </View>
+      );
+    } else if (cardMode === CONSTANTS.EXTENTION_CARD) {
       return (
         <View style={styles.shareHeaderContainer}>
           <TouchableOpacity 
@@ -847,20 +1014,19 @@ class NewCardScreen extends React.Component {
           <TouchableOpacity 
             style={styles.addCardButtonWapper}
             activeOpacity={0.6}
-            onPress={this.onTapOutsideCard.bind(this)}
+            onPress={this.onUpdateCard.bind(this)}
           >
             <Text style={styles.textButton}>Add card</Text>
           </TouchableOpacity>
         </View>
       );
-    }
-    if (this.state.isFullScreenCard) {
+    } else if (this.state.isFullScreenCard) {
       return (
         <View style={styles.mainHeaderContainer}>
           <TouchableOpacity 
             style={styles.closeButtonWrapper}
             activeOpacity={0.7}
-            onPress={() => this.onTapOutsideCard()}
+            onPress={() => this.onUpdateCard()}
           >
             <MaterialCommunityIcons name="close" size={28} color={COLORS.PURPLE} />
           </TouchableOpacity>
@@ -877,27 +1043,23 @@ class NewCardScreen extends React.Component {
   }
 
   get renderOutside() {
-    const { cardMode } = this.props;
-    if (cardMode !== CONSTANTS.MAIN_APP_CARD) {
-      return;
-    }
     if (!this.state.isFullScreenCard) {
       return (
         <TouchableOpacity 
           style={styles.backdropContainer}
           activeOpacity={1}
-          onPress={this.onTapOutsideCard.bind(this)}
+          onPress={this.onTapOutside.bind(this)}
         />
       );
     }
   }
 
   get renderOutsideMoreActions() {
-    const { cardMode } = this.props;
-    if (cardMode !== CONSTANTS.MAIN_APP_CARD) {
+    const { cardMode, viewMode } = this.props;
+    if (cardMode === CONSTANTS.EXTENTION_CARD) {
       return;
     }
-    if (!this.state.isFullScreenCard) {
+    if (!this.state.isFullScreenCard && viewMode !== CONSTANTS.CARD_NEW) {
       return (
         <View style={styles.outSideMoreActionContainer}>
           <TouchableOpacity 
@@ -914,7 +1076,7 @@ class NewCardScreen extends React.Component {
 
   get renderBottomContent() {
     const { viewMode, cardMode } = this.props;
-    if (cardMode !== CONSTANTS.MAIN_APP_CARD) {
+    if (cardMode === CONSTANTS.EXTENTION_CARD) {
       return (
         <View style={{paddingHorizontal: 16}}>
           <View style={styles.line} />
@@ -1001,7 +1163,7 @@ class NewCardScreen extends React.Component {
         <Animated.View 
           style={[
             styles.contentContainer,
-            { paddingTop: cardMode === CONSTANTS.MAIN_APP_CARD ?  26 : 10},
+            { paddingTop: cardMode !== CONSTANTS.EXTENTION_CARD ?  26 : 10},
             (viewMode === CONSTANTS.CARD_NEW || !this.state.isFullScreenCard) && {height: CONSTANTS.SCREEN_HEIGHT - ScreenVerticalMinMargin * 2},
             this.state.isFullScreenCard && {flex: 1, borderRadius: 0},
             {paddingBottom: this.animatedKeyboardHeight}
@@ -1026,7 +1188,7 @@ class NewCardScreen extends React.Component {
                 style={[
                   styles.buttonItemContainer, 
                   {
-                    backgroundColor: cardMode !== CONSTANTS.MAIN_APP_CARD ? COLORS.BLUE : COLORS.PURPLE,
+                    backgroundColor: cardMode === CONSTANTS.EXTENTION_CARD ? COLORS.BLUE : COLORS.PURPLE,
                     borderRadius: 8,
                     marginRight: 0,                
                   },
@@ -1057,6 +1219,15 @@ class NewCardScreen extends React.Component {
           tintColor={COLORS.PURPLE}
           onPress={(index) => this.onTapMediaPickerActionSheet(index)}
         />
+        <ActionSheet
+          ref={ref => this.leaveActionSheetRef = ref}
+          title='Are you sure that you wish to leave?'
+          options={['Continue editing', this.props.selectedFeedId ? 'Close and discard' : 'Leave and discard', 'Cancel']}
+          cancelButtonIndex={2}
+          destructiveButtonIndex={1}
+          tintColor={COLORS.PURPLE}
+          onPress={(index) => this.onTapLeaveActionSheet(index)}
+        />
         {this.state.loading && <LoadingScreen />}
         <Modal 
           style={{margin: 0}}
@@ -1079,7 +1250,7 @@ NewCardScreen.defaultProps = {
   invitee: {},
   intialLayout: {},
   viewMode: CONSTANTS.CARD_NEW,
-  cardMode: CONSTANTS.MAIN_APP_CARD,
+  cardMode: CONSTANTS.MAIN_APP_CARD_FROM_DETAIL,
   shareUrl: '',
   onClose: () => {},
   onOpenAction: () => {},
@@ -1105,6 +1276,10 @@ const mapStateToProps = ({ card, feedo }) => ({
 
 
 const mapDispatchToProps = dispatch => ({
+  createFeed: () => dispatch(createFeed()),
+  updateFeed: (id, name, comments, tags, files) => dispatch(updateFeed(id, name, comments, tags, files)),
+  deleteDraftFeed: (id) => dispatch(deleteDraftFeed(id)),
+
   createCard: (huntId) => dispatch(createCard(huntId)),
   getCard: (ideaId) => dispatch(getCard(ideaId)),
   updateCard: (huntId, ideaId, title, idea, coverImage, files) => dispatch(updateCard(huntId, ideaId, title, idea, coverImage, files)),

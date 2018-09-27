@@ -26,6 +26,7 @@ import DashboardNavigationBar from '../../navigations/DashboardNavigationBar'
 import DashboardActionBar from '../../navigations/DashboardActionBar'
 import FeedoListContainer from '../FeedoListContainer'
 import NewFeedScreen from '../NewFeedScreen'
+import NewCardScreen from '../NewCardScreen'
 import CreateNewFeedComponent from '../../components/CreateNewFeedComponent'
 import FeedLongHoldMenuScreen from '../FeedLongHoldMenuScreen'
 import ToasterComponent from '../../components/ToasterComponent'
@@ -92,7 +93,8 @@ class HomeScreen extends React.Component {
       currentPushNotificationData: null,
       currentIdea: {},
       isVisibleCard: false,
-      selectedIdeaInvitee: {},
+      selectedIdeaInvitee: null,
+      cardViewMode: CONSTANTS.CARD_NONE,
     };
 
     this.currentRef = null;
@@ -204,6 +206,7 @@ class HomeScreen extends React.Component {
       });
       this.setState({
         isVisibleCard: true,
+        cardViewMode: CONSTANTS.CARD_VIEW,
         selectedIdeaInvitee: invitee,
       });
       this.setState({
@@ -537,6 +540,12 @@ class HomeScreen extends React.Component {
 
   onSelectNewFeedType(type) {
     if (type === 'New Card') {
+      this.setState({
+        isVisibleCreateNewFeedModal: false,
+        isVisibleCard: true,
+        cardViewMode: CONSTANTS.CARD_NEW,
+        selectedIdeaInvitee: null,
+      });
     } else if (type === 'New Feed') {
       this.props.setCurrentFeed({});
       this.setState({ 
@@ -653,6 +662,10 @@ class HomeScreen extends React.Component {
     if (!this.state.isVisibleCard ) {
       return;
     }
+    let cardMode = CONSTANTS.MAIN_APP_CARD_FROM_DETAIL;
+    if (this.state.cardViewMode === CONSTANTS.CARD_NEW) {
+      cardMode = CONSTANTS.MAIN_APP_CARD_FROM_DASHBOARD;
+    }
     return (
       <Animated.View 
         style={[
@@ -661,7 +674,8 @@ class HomeScreen extends React.Component {
         ]}
       >
         <NewCardScreen 
-          viewMode={CONSTANTS.CARD_VIEW}
+          viewMode={this.state.cardViewMode}
+          cardMode={cardMode}
           invitee={this.state.selectedIdeaInvitee}
           onClose={() => this.onCloseCardModal()}
         />
