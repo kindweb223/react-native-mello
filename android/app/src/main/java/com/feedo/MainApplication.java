@@ -1,4 +1,4 @@
-package com.huntmobile;
+package com.feedo;
 
 import android.app.Application;
 

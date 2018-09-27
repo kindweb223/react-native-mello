@@ -35,7 +35,7 @@ RCT_EXPORT_MODULE();
     jsCodeLocation = [[RCTBundleURLProvider sharedSettings] jsBundleURLForBundleRoot:@"index" fallbackResource:nil];
   
     RCTRootView *rootView = [[RCTRootView alloc] initWithBundleURL:jsCodeLocation
-                                                        moduleName:@"HuntMobileEx"
+                                                        moduleName:@"FeedoEx"
                                                  initialProperties:nil
                                                      launchOptions:nil];
     rootView.backgroundColor = [[UIColor alloc] initWithRed:1 green:1 blue:1 alpha:0.1];
