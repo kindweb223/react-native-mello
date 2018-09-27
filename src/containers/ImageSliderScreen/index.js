@@ -174,7 +174,8 @@ class ImageSliderScreen extends React.Component {
               activeOpacity={0.6}
               onPress={() => this.onSetCoverImage()}
             >
-              <Entypo name="image" size={25} color={'#fff'} />
+              {/* <Entypo name="image" size={25} color={'#fff'} /> */}
+              <Text style={styles.coverText}>Set Cover Image</Text>
             </TouchableOpacity>
           </Animated.View>
         }

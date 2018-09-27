@@ -622,7 +622,7 @@ class FeedDetailScreen extends React.Component {
 
     const avatarPosition = this.state.scrollY.interpolate({
       inputRange: [30, 90],
-      outputRange: [0, 100],
+      outputRange: [0, 50],
       extrapolate: 'clamp'
     })
 
