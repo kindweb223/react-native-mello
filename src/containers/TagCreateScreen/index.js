@@ -153,7 +153,7 @@ class TagCreateScreen extends React.Component {
     this.setState({
       currentTagName: '',
     });
-    this.props.addTagToHunt(this.props.feedo.currentFeed.id, tag.id);
+    this.props.addTagToHunt(this.props.feedo.currentFeed.id, tag);
   }
 
   get renderTopContent() {
@@ -249,7 +249,7 @@ const mapStateToProps = ({ feedo, user}) => ({
 const mapDispatchToProps = dispatch => ({
   getUserTags: (userId) => dispatch(getUserTags(userId)),
   createUserTag: (userId, tagName) => dispatch(createUserTag(userId, tagName)),
-  addTagToHunt: (huntId, tagId) => dispatch(addTagToHunt(huntId, tagId)),
+  addTagToHunt: (huntId, tag) => dispatch(addTagToHunt(huntId, tag)),
   removeTagFromHunt: (huntId, tagId) => dispatch(removeTagFromHunt(huntId, tagId)),
 })
 
