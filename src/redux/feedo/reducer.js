@@ -570,8 +570,7 @@ export default function feedo(state = initialState, action = {}) {
         error: null,
       }
     case types.ADD_HUNT_TAG_FULFILLED: {
-      const tagId = action.payload;
-      const tag = find(state.userTags, tag => tag.id === tagId);
+      const tag = action.payload;
       let tags = state.currentFeed.tags || [];
       tags.push(tag);
       return {

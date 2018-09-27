@@ -356,15 +356,17 @@ export const createUserTag = (userId, tagName) => {
 /**
  * Add a tag to a hunt
  */
-export const addTagToHunt = (huntId, tagId) => {
-  let url = `hunts/${huntId}/tags/${tagId}`
+export const addTagToHunt = (huntId, tags) => {
+  let url = `hunts/${huntId}/tags`
+  const data = tags
   return {
     types: [types.ADD_HUNT_TAG_PENDING, types.ADD_HUNT_TAG_FULFILLED, types.ADD_HUNT_TAG_REJECTED],
     promise: axios({
       method: 'post',
       url: url,
+      data
     }),
-    payload: tagId,
+    payload: data,
   };
 }
 
