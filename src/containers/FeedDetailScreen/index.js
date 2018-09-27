@@ -436,6 +436,9 @@ class FeedDetailScreen extends React.Component {
   }
 
   onLongPressCard(index, idea, invitees) {
+    if (this.state.isShowToaster) {
+      return;
+    }
     ReactNativeHaptic.generate('impactHeavy');
     this.setState({
       selectedLongHoldCardIndex: index,
@@ -553,7 +556,7 @@ class FeedDetailScreen extends React.Component {
   }
 
   get renderNewCardModal() {
-    if (!this.state.isVisibleCard && !this.state.isVisibleEditFeed) {
+    if ((!this.state.isVisibleCard && !this.state.isVisibleEditFeed) || this.state.isShowToaster) {
       return;
     }
 
@@ -597,7 +600,7 @@ class FeedDetailScreen extends React.Component {
 
   render () {
     const { currentFeed, loading, pinText } = this.state
-    console.log('CURRENT_FEED: ', currentFeed)
+    // console.log('CURRENT_FEED: ', currentFeed)
 
     const navbarBackground = this.state.scrollY.interpolate({
       inputRange: [40, 41],

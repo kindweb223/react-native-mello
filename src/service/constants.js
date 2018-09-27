@@ -37,8 +37,9 @@ export default {
   FEEDO_MOVE_CARD_SELECT: 3,
 
   // Card type for main app or share extension
-  MAIN_APP_CARD: 1,
-  EXTENTION_CARD: 2,
+  MAIN_APP_CARD_FROM_DETAIL: 1,
+  MAIN_APP_CARD_FROM_DASHBOARD: 2,
+  EXTENTION_CARD: 3,
 
   // App Group
   APP_GROUP_USER_IDENTIFIER: 'group.hunt.mobile.user.info',

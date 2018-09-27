@@ -172,6 +172,27 @@ const styles = StyleSheet.create({
     fontSize: 16,
     lineHeight: 20,
   },
+  selectFeedoContainer: {
+    flex: 1,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'flex-end',
+  },
+  textCreateCardIn: {
+    fontSize: 14,
+    lineHeight: 21,
+    color: COLORS.DARK_GREY,
+    marginHorizontal: 9,
+  },
+  selectFeedoButtonContainer: {
+    flexDirection: 'row',
+    paddingLeft: 9,
+    height: 30,
+    borderRadius: 5,
+    backgroundColor: COLORS.LIGHT_GREY,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
 })
 
 
