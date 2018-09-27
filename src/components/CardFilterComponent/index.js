@@ -65,7 +65,7 @@ class CardFilterComponent extends React.Component {
         animationIn="slideInUp"
         animationOut="slideOutDown"
         animationInTiming={500}
-        // onBackdropPress={() => this.props.onClose()}
+        onBackdropPress={() => this.props.onClose()}
       >
         <View style={styles.overlay}>
           <View style={styles.header}>
