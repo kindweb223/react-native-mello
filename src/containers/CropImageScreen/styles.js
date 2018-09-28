@@ -45,7 +45,7 @@ export default {
     width: '100%',
     position: 'absolute',
     left: 0,
-    top: 51 + (CONSTANTS.SCREEN_HEIGHT - 141 - CONSTANTS.SCREEN_WIDTH) / 2,
+    top: 51 + (CONSTANTS.SCREEN_HEIGHT - 150 - CONSTANTS.SCREEN_WIDTH) / 2,
   },
   image: {
     width: '100%',

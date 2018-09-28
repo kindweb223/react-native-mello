@@ -107,11 +107,11 @@ class ImageCrop extends Component {
 		} else {
 			if (cropWidth > cropHeight) {
 				const offset = cropWidth - cropHeight
-				if (offsetX > this.paddingWidth + offset / 2) {
-					offsetX1 = this.paddingWidth + offset / 2
+				if (offsetX > this.paddingWidth) {
+					offsetX1 = this.paddingWidth
 				} else {
-					if (Math.abs(offsetX) > this.paddingWidth + offset / 2) {
-						offsetX1 = -(this.paddingWidth + offset / 2)
+					if (Math.abs(offsetX) > this.paddingWidth * 2) {
+						offsetX1 = -(this.paddingWidth * 2)
 					} else {
 						offsetX1 = offsetX
 					}
@@ -131,8 +131,10 @@ class ImageCrop extends Component {
 				if (offsetY > this.paddingHeight) {
 					offsetY1 = this.paddingHeight
 				} else {
-					if (Math.abs(offsetY) > offset) {
-						offsetY1 = -offset
+					if (Math.abs(offsetY) > this.paddingHeight * 2) {
+						offsetY1 = -(this.paddingHeight * 2)
+					} else {
+						offsetY1 = offsetY
 					}
 				}
 
@@ -141,6 +143,8 @@ class ImageCrop extends Component {
 				} else {
 					if (Math.abs(offsetX) > this.paddingWidth) {
 						offsetX1 = -this.paddingWidth
+					} else {
+						offsetX1 = offsetX
 					}
 				}
 			}
@@ -259,7 +263,8 @@ class ImageCrop extends Component {
 		let translateX = 0
 		let translateY = 0
 
-		console.log('offsetX: ', offsetX)
+		// console.log('offsetX: ', offsetX, this.paddingWidth)
+		// console.log('offsetY: ', offsetY, this.paddingHeight)
 
 		if (scale === 1) {
 			if (cropWidth > cropHeight) {
@@ -290,18 +295,18 @@ class ImageCrop extends Component {
 		} else {
 			if (cropWidth > cropHeight) {
 				const offset = cropWidth - cropHeight
-				if (offsetX > this.paddingWidth + offset / 2) {
-					translateX = 0
+				if (offsetX > this.paddingWidth) {
+					translateX = this.paddingWidth
 				} else {
-					if (Math.abs(offsetX) > this.paddingWidth + offset / 2) {
-						translateX = -offset - this.paddingWidth * 2
+					if (Math.abs(offsetX) > this.paddingWidth * 2) {
+						translateX = -(this.paddingWidth * 2)
 					} else {
-						translateX = -(offset / 2 - offsetX) - this.paddingWidth
+						translateX = offsetX
 					}
 				}
 
 				if (offsetY > this.paddingHeight) {
-					translateY = 0
+					translateY = this.paddingHeight
 				} else {
 					if (Math.abs(offsetY) > this.paddingHeight) {
 						translateY = -this.paddingHeight
@@ -314,8 +319,10 @@ class ImageCrop extends Component {
 				if (offsetY > this.paddingHeight) {
 					translateY = this.paddingHeight
 				} else {
-					if (Math.abs(offsetY) > offset) {
-						translateY = -offset
+					if (Math.abs(offsetY) > this.paddingHeight * 2) {
+						translateY = -(this.paddingHeight * 2)
+					} else {
+						translateY = offsetY
 					}
 				}
 				
@@ -324,14 +331,12 @@ class ImageCrop extends Component {
 				} else {
 					if (Math.abs(offsetX) > this.paddingWidth) {
 						translateX = -this.paddingWidth
+					} else {
+						translateX = offsetX
 					}
 				}
 			}
 		}
-
-
-		console.log('translateX: ', translateX)
-		console.log('translateY: ', translateY)
 
 		return (
 			<View
@@ -399,18 +404,18 @@ class ImageCrop extends Component {
 		} else {
 			if (cropWidth > cropHeight) {
 				const offset = cropWidth - cropHeight
-				if (offsetX > this.paddingWidth + offset / 2) {
-					translateX = 0
+				if (offsetX > this.paddingWidth) {
+					translateX = this.paddingWidth
 				} else {
-					if (Math.abs(offsetX) > this.paddingWidth + offset / 2) {
-						translateX = -offset - this.paddingWidth * 2
+					if (Math.abs(offsetX) > this.paddingWidth * 2) {
+						translateX = -(this.paddingWidth * 2)
 					} else {
-						translateX = -(offset / 2 - offsetX) - this.paddingWidth
+						translateX = offsetX
 					}
 				}
 
 				if (offsetY > this.paddingHeight) {
-					translateY = 0
+					translateY = this.paddingHeight
 				} else {
 					if (Math.abs(offsetY) > this.paddingHeight) {
 						translateY = -this.paddingHeight
@@ -423,8 +428,10 @@ class ImageCrop extends Component {
 				if (offsetY > this.paddingHeight) {
 					translateY = this.paddingHeight
 				} else {
-					if (Math.abs(offsetY) > offset) {
-						translateY = -offset
+					if (Math.abs(offsetY) > this.paddingHeight * 2) {
+						translateY = -(this.paddingHeight * 2)
+					} else {
+						translateY = offsetY
 					}
 				}
 
@@ -433,6 +440,8 @@ class ImageCrop extends Component {
 				} else {
 					if (Math.abs(offsetX) > this.paddingWidth) {
 						translateX = -this.paddingWidth
+					} else {
+						translateX = offsetX
 					}
 				}
 			}
