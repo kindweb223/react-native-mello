@@ -131,7 +131,6 @@ export default function card(state = initialState, action = {}) {
       return {
         ...state,
         loading: types.MOVE_CARD_FULFILLED,
-        currentCard: {},
       }
     }
     case types.MOVE_CARD_REJECTED: {
