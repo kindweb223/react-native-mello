@@ -16,6 +16,7 @@ import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityI
 import Ionicons from 'react-native-vector-icons/Ionicons'
 import _ from 'lodash'
 import Search from 'react-native-search-box';
+import NewFeedScreen from '../NewFeedScreen'
 
 import { 
   getFeedoList,
@@ -36,6 +37,7 @@ class SelectHuntScreen extends React.Component {
     super(props);
     this.state = {
       loading: false,
+      isVisibleNewFeedScreen: false,
     };
 
     this.isVisibleErrorDialog = false;
@@ -130,6 +132,20 @@ class SelectHuntScreen extends React.Component {
     this.onClose();
   }
 
+  onCreateNewFeed() {
+    this.setState({
+      isVisibleNewFeedScreen: true,
+    })
+  }
+
+  onCloseNewFeed() {
+    this.setState({
+      isVisibleNewFeedScreen: false,
+    }, () => {
+      this.props.getFeedoList(0)
+    });
+  }
+
   get renderTopContent() {
     return (
       <View style={styles.topContainer}>
@@ -150,6 +166,18 @@ class SelectHuntScreen extends React.Component {
         </TouchableOpacity>
       </View>
     );
+  }
+
+  get renderCreateNewFeed() {
+    return (
+      <TouchableOpacity 
+        style={[styles.itemContainer, {paddingHorizontal: 20, paddingTop: 10,}]}
+        activeOpacity={0.7}
+        onPress={() => this.onCreateNewFeed()}
+      >
+        <Text style={[styles.textItemTitle, {color: COLORS.PURPLE}]}>Create new feed</Text>
+      </TouchableOpacity>
+    )
   }
 
   renderItem({item, index}) {
@@ -209,6 +237,7 @@ class SelectHuntScreen extends React.Component {
                 onDelete={() => this.setState({filterText: ''})}
               />
             </View>
+            {this.renderCreateNewFeed}
             <FlatList
               style={{marginTop: 11, marginBottom: 26}}
               contentContainerStyle={{paddingHorizontal: 20}}
@@ -217,6 +246,13 @@ class SelectHuntScreen extends React.Component {
               keyExtractor={(item, index) => index.toString()}
               extraData={this.state}
             />
+            {
+              this.state.isVisibleNewFeedScreen && 
+                <NewFeedScreen 
+                  onClose={() => this.onCloseNewFeed()}
+                />
+            }
+
           </Animated.View>
         </Animated.View>
         {this.state.loading && <LoadingScreen />}

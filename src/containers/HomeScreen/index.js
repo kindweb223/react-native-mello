@@ -615,7 +615,6 @@ class HomeScreen extends React.Component {
         {
           this.state.isVisibleNewFeed && 
             <NewFeedScreen
-              type={this.state.isEditFeed ? 'update' : 'create'}
               onClose={(data) => this.onCloseNewFeedModal(data)}
               selectedFeedId={this.state.isEditFeed ? this.state.selectedFeedData.id : null}
             />  

@@ -8,7 +8,6 @@ import {
   Animated,
   Keyboard,
   Text,
-  Image,
   Clipboard,
   ScrollView,
 } from 'react-native'
@@ -40,6 +39,7 @@ import {
   setCoverImage,
   addLink,
   deleteLink,
+  moveCard,
 } from '../../redux/card/actions'
 import { 
   createFeed,
@@ -108,7 +108,8 @@ class NewCardScreen extends React.Component {
 
     this.parsingErrorLinks = [];
 
-    this.draftFeedo = null;
+    this.draftFeedoId = null;
+    this.prevFeedoId = null;
     this.isUpdateDraftCard = false;
   }
 
@@ -125,7 +126,6 @@ class NewCardScreen extends React.Component {
           this.checkUrl(this.state.cardName);
         });
       }
-      console.log('Current Created Card : ', nextProps.card.currentCard);
     } else if (this.props.card.loading !== types.GET_FILE_UPLOAD_URL_PENDING && nextProps.card.loading === types.GET_FILE_UPLOAD_URL_PENDING) {
       // getting a file upload url
       loading = true;
@@ -260,6 +260,9 @@ class NewCardScreen extends React.Component {
       loading = true;
     } else if (this.props.card.loading !== types.UNLIKE_CARD_FULFILLED && nextProps.card.loading === types.UNLIKE_CARD_FULFILLED) {
       // success in unliking a card
+    } else if (this.props.card.loading !== types.MOVE_CARD_PENDING && nextProps.card.loading === types.MOVE_CARD_PENDING) {
+      // moving card
+      loading = true;
     } else if (this.props.feedo.loading !== feedoTypes.CREATE_FEED_PENDING && nextProps.feedo.loading === feedoTypes.CREATE_FEED_PENDING) {
       // creating a feed
       loading = true;
@@ -267,7 +270,7 @@ class NewCardScreen extends React.Component {
       // creating a feed
       if (this.props.viewMode === CONSTANTS.CARD_NEW) {
         loading = true;
-        this.draftFeedo = nextProps.feedo.currentFeed;
+        this.draftFeedoId = nextProps.feedo.currentFeed.id;
         this.props.createCard(nextProps.feedo.currentFeed.id);
       }
     } else if (this.props.feedo.loading !== feedoTypes.UPDATE_FEED_PENDING && nextProps.feedo.loading === feedoTypes.UPDATE_FEED_PENDING) {
@@ -287,7 +290,7 @@ class NewCardScreen extends React.Component {
         this.onClose();
       }
       return;
-    } 
+    }
 
     this.setState({
       loading,
@@ -560,7 +563,7 @@ class NewCardScreen extends React.Component {
   onTapLeaveActionSheet(index) {
     if (index === 1) {
       this.isUpdateDraftCard = false;
-      this.props.deleteDraftFeed(this.draftFeedo.id)
+      this.props.deleteDraftFeed(this.draftFeedoId)
     }
   }
 
@@ -751,13 +754,21 @@ class NewCardScreen extends React.Component {
   }
 
   onSelectFeedo() {
+    this.prevFeedoId = this.props.feedo.currentFeed.id;
     this.setState({
       isVisibleSelectFeedoModal: true,
     });
   }
 
+  onCloseSelectHunt() {
+    this.setState({isVisibleSelectFeedoModal: false})
+    if (this.prevFeedoId !== this.props.feedo.currentFeed.id) {
+      this.props.moveCard(this.props.card.currentCard.id, this.props.feedo.currentFeed.id);
+    }
+  }
+
   onUpdateFeed() {
-    if (this.draftFeedo.id === this.props.feedo.currentFeed.id) {
+    if (this.draftFeedoId === this.props.feedo.currentFeed.id) {
       // Update Draft Feedo to Publish one
       const {
         id, 
@@ -770,7 +781,7 @@ class NewCardScreen extends React.Component {
       return;
     }
     this.isUpdateDraftCard = true;
-    this.props.deleteDraftFeed(this.draftFeedo.id)
+    this.props.deleteDraftFeed(this.draftFeedoId)
   }
 
   addLinkImage(imageUrl) {
@@ -1235,7 +1246,7 @@ class NewCardScreen extends React.Component {
     if (this.state.isVisibleSelectFeedoModal) {
       return (
         <SelectHuntScreen
-          onClosed={() => this.setState({isVisibleSelectFeedoModal: false})}
+          onClosed={() => this.onCloseSelectHunt()}
         />
       );
     }
@@ -1327,6 +1338,7 @@ const mapDispatchToProps = dispatch => ({
   getOpenGraph: (url) => dispatch(getOpenGraph(url)),
   addLink: (ideaId, originalUrl, title, description, imageUrl) => dispatch(addLink(ideaId, originalUrl, title, description, imageUrl)),
   deleteLink: (ideaId, linkId) => dispatch(deleteLink(ideaId, linkId)),
+  moveCard: (ideaId, huntId) => dispatch(moveCard(ideaId, huntId)),
 })
 
 
