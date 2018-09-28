@@ -3,7 +3,7 @@ import axios from 'axios';
 import * as types from './types'
 
 /**
- * Create a card
+ * Create a draft card
  */
 export const createCard = (huntId) => {
   const url = `ideas`
