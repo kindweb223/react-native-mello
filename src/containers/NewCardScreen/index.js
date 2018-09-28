@@ -27,7 +27,6 @@ import _ from 'lodash';
 import validUrl from 'valid-url';
 import Modal from 'react-native-modal';
 
-
 import { 
   createCard,
   getCard,
@@ -61,6 +60,7 @@ import CommentComponent from '../../components/CommentComponent';
 import ChooseLinkImages from '../../components/chooseLinkImagesComponent';
 import UserAvatarComponent from '../../components/UserAvatarComponent';
 import FastImage from "react-native-fast-image";
+import CoverImagePreviewComponent from '../../components/CoverImagePreviewComponent';
 
 const ScreenVerticalMinMargin = 80;
 
@@ -771,12 +771,26 @@ class NewCardScreen extends React.Component {
   }
 
   get renderCoverImage() {
+    const { viewMode } = this.props;
+
+    let imageFiles = _.filter(this.props.card.currentCard.files, file => file.fileType === 'MEDIA');
     if (this.state.coverImage) {
       return (
-        <FastImage style={styles.imageCover} source={{uri: this.state.coverImage}} resizeMode="cover" />
+        <View style={styles.imageCoverView}>
+          <CoverImagePreviewComponent
+            coverImage={this.state.coverImage}
+            files={imageFiles}
+            editable={viewMode !== CONSTANTS.CARD_VIEW}
+            isSetCoverImage={true}
+            onRemove={(fileId) => this.onRemoveFile(fileId)}
+            onSetCoverImage={(fileId) => this.onSetCoverImage(fileId)}
+          />
+        </View>
       );
     }
-    const imageFiles = _.filter(this.props.card.currentCard.files, file => file.contentType.indexOf('image') !== -1);
+
+    imageFiles = _.filter(this.props.card.currentCard.files, file => file.contentType.indexOf('image') !== -1);
+
     if (imageFiles.length > 0) {
       return (
         <View style={styles.coverImageSelectContainer}>
@@ -806,24 +820,24 @@ class NewCardScreen extends React.Component {
     }
   }
 
-  get renderImages() {
-    const { viewMode } = this.props;
-    const {
-      files
-    } = this.props.card.currentCard;
-    const imageFiles = _.filter(files, file => file.fileType === 'MEDIA');
-    if (imageFiles.length > 0) {
-      return (
-        <ImageList 
-          files={imageFiles}
-          editable={viewMode !== CONSTANTS.CARD_VIEW}
-          isSetCoverImage={true}
-          onRemove={(fileId) => this.onRemoveFile(fileId)}
-          onSetCoverImage={(fileId) => this.onSetCoverImage(fileId)}
-        />
-      )
-    }
-  }
+  // get renderImages() {
+  //   const { viewMode } = this.props;
+  //   const {
+  //     files
+  //   } = this.props.card.currentCard;
+  //   const imageFiles = _.filter(files, file => file.fileType === 'MEDIA');
+  //   if (imageFiles.length > 0) {
+  //     return (
+  //       <ImageList 
+  //         files={imageFiles}
+  //         editable={viewMode !== CONSTANTS.CARD_VIEW}
+  //         isSetCoverImage={true}
+  //         onRemove={(fileId) => this.onRemoveFile(fileId)}
+  //         onSetCoverImage={(fileId) => this.onSetCoverImage(fileId)}
+  //       />
+  //     )
+  //   }
+  // }
 
   get renderDocuments() {
     const { viewMode, cardMode } = this.props;
@@ -876,7 +890,7 @@ class NewCardScreen extends React.Component {
           selectionColor={COLORS.PURPLE}
         />
         {this.renderWebMeta}
-        {this.renderImages}
+        {/* {this.renderImages} */}
         {this.renderDocuments}
       </View>
     );

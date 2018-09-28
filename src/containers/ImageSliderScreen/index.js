@@ -32,7 +32,8 @@ class ImageSliderScreen extends React.Component {
       position: this.props.position,
       loading: false,
       maxImageHeight: 0,
-      isTouch: false
+      isTouch: false,
+      imageIndex: this.props.position
     };
     this.buttonOpacity = new Animated.Value(1)
   }
@@ -103,7 +104,7 @@ class ImageSliderScreen extends React.Component {
       imageFiles,
     } = this.props;
     if (this.props.onRemove) {
-      this.props.onRemove(imageFiles[this.state.position].id);
+      this.props.onRemove(imageFiles[this.state.imageIndex].id);
     }
   }
 
@@ -112,7 +113,7 @@ class ImageSliderScreen extends React.Component {
       imageFiles,
     } = this.props;
     if (this.props.onSetCoverImage) {
-      this.props.onSetCoverImage(imageFiles[this.state.position].id);
+      this.props.onSetCoverImage(imageFiles[this.state.imageIndex].id);
     }
   }
 
@@ -153,6 +154,7 @@ class ImageSliderScreen extends React.Component {
           height={CONSTANTS.SCREEN_HEIGHT - 140}
           handleImage={() => this.handleImage()}
           onSwipeUp={this.onSwipeUp}
+          setPosition={value => this.setState({ imageIndex: value.pos })}
         />
 
         <Animated.View 
@@ -174,7 +176,6 @@ class ImageSliderScreen extends React.Component {
               activeOpacity={0.6}
               onPress={() => this.onSetCoverImage()}
             >
-              {/* <Entypo name="image" size={25} color={'#fff'} /> */}
               <Text style={styles.coverText}>Set Cover Image</Text>
             </TouchableOpacity>
           </Animated.View>
