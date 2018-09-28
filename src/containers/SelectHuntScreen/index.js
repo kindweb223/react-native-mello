@@ -246,15 +246,17 @@ class SelectHuntScreen extends React.Component {
               keyExtractor={(item, index) => index.toString()}
               extraData={this.state}
             />
-            {
-              this.state.isVisibleNewFeedScreen && 
-                <NewFeedScreen 
-                  onClose={() => this.onCloseNewFeed()}
-                />
-            }
-
           </Animated.View>
         </Animated.View>
+        {
+          this.state.isVisibleNewFeedScreen && 
+            <View style={styles.newFeedContainer}>
+              <NewFeedScreen
+                feedoMode={CONSTANTS.FEEDO_FROM_CARD}
+                onClose={() => this.onCloseNewFeed()}
+              />
+            </View>
+        }
         {this.state.loading && <LoadingScreen />}
       </View>
     );

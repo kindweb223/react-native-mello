@@ -134,7 +134,7 @@ class SelectHuntScreen extends React.Component {
     return (
       <View style={styles.topContainer}>
         {
-          this.props.selectMode === CONSTANTS.FEEDO_FIRST_SELECT ?
+          this.props.selectMode === CONSTANTS.SHARE_EXTENSION_FEEDO_FIRST_SELECT ?
             <View />
           :  
             <TouchableOpacity 
@@ -233,7 +233,7 @@ class SelectHuntScreen extends React.Component {
 
 SelectHuntScreen.defaultProps = {
   feedo: {},
-  selectMode: CONSTANTS.FEEDO_FIRST_SELECT,
+  selectMode: CONSTANTS.SHARE_EXTENSION_FEEDO_FIRST_SELECT,
 }
 
 
