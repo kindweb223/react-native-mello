@@ -43,10 +43,9 @@ export default {
   },
   imageView: {
     width: '100%',
-    height: CONSTANTS.SCREEN_HEIGHT - 160,
-    marginTop: 51,
-    justifyContent: 'center',
-    alignItems: 'center'
+    position: 'absolute',
+    left: 0,
+    top: 51 + (CONSTANTS.SCREEN_HEIGHT - 150 - CONSTANTS.SCREEN_WIDTH) / 2,
   },
   image: {
     width: '100%',
