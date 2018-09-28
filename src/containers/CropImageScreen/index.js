@@ -69,7 +69,7 @@ class CropImageScreen extends React.Component {
 
   onSave = () => {
     const { userInfo } = this.props.user
-    // this.setState({ loading: true })
+    this.setState({ loading: true })
     this.imageCrop.crop().then((uri) => {
       this.setState({ cropUrl: uri })
       this.props.getImageUrl(userInfo.id)
