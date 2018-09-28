@@ -21,13 +21,14 @@ const styles = StyleSheet.create({
     position: 'absolute',
   },
   coverButton: {
-    height: 30,
-    width: 30,
-    bottom: 27,
-    right: 70,
+    bottom: 36,
+    left: 20,
     alignItems: 'center',
     justifyContent: 'center',
     position: 'absolute'
+  },
+  coverText: {
+    color: '#fff'
   },
   deleteButton: {
     height: 30,

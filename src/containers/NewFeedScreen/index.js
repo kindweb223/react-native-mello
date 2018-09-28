@@ -114,7 +114,7 @@ class NewFeedScreen extends React.Component {
     } else if (this.props.feedo.loading !== types.UPDATE_FEED_FULFILLED && nextProps.feedo.loading === types.UPDATE_FEED_FULFILLED) {
       // success in updating a feed
       this.onClose(nextProps.feedo.currentFeed);
-      if (nextProps.type === 'create') {
+      if (nextProps.selectedFeedId === null) {
         Actions.FeedDetailScreen({ data: nextProps.feedo.currentFeed });
       } 
     } else if (this.props.feedo.loading !== types.DELETE_FILE_PENDING && nextProps.feedo.loading === types.DELETE_FILE_PENDING) {
@@ -205,7 +205,7 @@ class NewFeedScreen extends React.Component {
       duration: CONSTANTS.ANIMATEION_MILLI_SECONDS,
     }).start();
     if (this.props.onClose) {
-      this.props.onClose({ currentFeed: data, type: this.props.type });
+      this.props.onClose({ currentFeed: data, type: this.props.selectedFeedId ? 'update' : 'create' });
     }
   }
 
@@ -607,7 +607,6 @@ class NewFeedScreen extends React.Component {
 
 
 NewFeedScreen.defaultProps = {
-  type: 'update',
   feedo: {},
   selectedFeedId: null,
   onClose: () => {},
@@ -615,7 +614,6 @@ NewFeedScreen.defaultProps = {
 
 
 NewFeedScreen.propTypes = {
-  type: PropTypes.string,
   feedo: PropTypes.object,
   selectedFeedId: PropTypes.string,
   onClose: PropTypes.func,

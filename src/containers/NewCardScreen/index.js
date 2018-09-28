@@ -8,7 +8,6 @@ import {
   Animated,
   Keyboard,
   Text,
-  Image,
   Clipboard,
   ScrollView,
 } from 'react-native'
@@ -27,7 +26,6 @@ import _ from 'lodash';
 import validUrl from 'valid-url';
 import Modal from 'react-native-modal';
 
-
 import { 
   createCard,
   getCard,
@@ -40,6 +38,7 @@ import {
   setCoverImage,
   addLink,
   deleteLink,
+  moveCard,
 } from '../../redux/card/actions'
 import { 
   createFeed,
@@ -61,6 +60,9 @@ import CommentComponent from '../../components/CommentComponent';
 import ChooseLinkImages from '../../components/chooseLinkImagesComponent';
 import UserAvatarComponent from '../../components/UserAvatarComponent';
 import FastImage from "react-native-fast-image";
+import CoverImagePreviewComponent from '../../components/CoverImagePreviewComponent';
+import SelectHuntScreen from '../SelectHuntScreen';
+
 
 const ScreenVerticalMinMargin = 80;
 
@@ -78,9 +80,8 @@ class NewCardScreen extends React.Component {
       originalCardTopY: this.props.intialLayout.py,
       originalCardBottomY: this.props.intialLayout.py + this.props.intialLayout.height,
       isShowKeyboardButton: false,
-      // openGraphForNoteLinks: [],
       isVisibleChooseLinkImagesModal: false,
-      // cardMaxHeight: CONSTANTS.SCREEN_HEIGHT - ScreenVerticalMinMargin * 2,
+      isVisibleSelectFeedoModal: false,
     };
 
     this.selectedFile = null;
@@ -107,6 +108,10 @@ class NewCardScreen extends React.Component {
     this.isVisibleErrorDialog = false;
 
     this.parsingErrorLinks = [];
+
+    this.draftFeedoId = null;
+    this.prevFeedoId = null;
+    this.isUpdateDraftCard = false;
   }
 
   UNSAFE_componentWillReceiveProps(nextProps) {
@@ -199,9 +204,14 @@ class NewCardScreen extends React.Component {
       loading = true;
     } else if (this.props.card.loading !== types.DELETE_FILE_FULFILLED && nextProps.card.loading === types.DELETE_FILE_FULFILLED) {
       // success in deleting a file
-      this.setState({
-        coverImage: nextProps.card.currentCard.coverImage,
-      });
+      imageFiles = _.filter(nextProps.card.currentCard.files, file => file.contentType.indexOf('image') !== -1);
+      if (imageFiles.length > 0 && !nextProps.card.currentCard.coverImage) {
+        this.onSetCoverImage(nextProps.card.currentCard.files[0].id);
+      } else {
+        this.setState({
+          coverImage: nextProps.card.currentCard.coverImage,
+        });
+      }
     } else if (this.props.card.loading !== types.GET_OPEN_GRAPH_PENDING && nextProps.card.loading === types.GET_OPEN_GRAPH_PENDING) {
       // getting open graph
       loading = true;
@@ -256,6 +266,9 @@ class NewCardScreen extends React.Component {
       loading = true;
     } else if (this.props.card.loading !== types.UNLIKE_CARD_FULFILLED && nextProps.card.loading === types.UNLIKE_CARD_FULFILLED) {
       // success in unliking a card
+    } else if (this.props.card.loading !== types.MOVE_CARD_PENDING && nextProps.card.loading === types.MOVE_CARD_PENDING) {
+      // moving card
+      loading = true;
     } else if (this.props.feedo.loading !== feedoTypes.CREATE_FEED_PENDING && nextProps.feedo.loading === feedoTypes.CREATE_FEED_PENDING) {
       // creating a feed
       loading = true;
@@ -263,6 +276,7 @@ class NewCardScreen extends React.Component {
       // creating a feed
       if (this.props.viewMode === CONSTANTS.CARD_NEW) {
         loading = true;
+        this.draftFeedoId = nextProps.feedo.currentFeed.id;
         this.props.createCard(nextProps.feedo.currentFeed.id);
       }
     } else if (this.props.feedo.loading !== feedoTypes.UPDATE_FEED_PENDING && nextProps.feedo.loading === feedoTypes.UPDATE_FEED_PENDING) {
@@ -276,9 +290,13 @@ class NewCardScreen extends React.Component {
       loading = true;
     } else if (this.props.feedo.loading !== feedoTypes.DELETE_FEED_FULFILLED && nextProps.feedo.loading === feedoTypes.DELETE_FEED_FULFILLED) {
       // success in deleting a feed
-      this.onClose();
+      if (this.isUpdateDraftCard) {
+        this.onUpdateCard();
+      } else {
+        this.onClose();
+      }
       return;
-    } 
+    }
 
     this.setState({
       loading,
@@ -484,6 +502,19 @@ class NewCardScreen extends React.Component {
     this.props.updateCard(this.props.feedo.currentFeed.id, id, cardName, this.state.idea, this.state.coverImage, files);
   }
 
+  onCreateCard() {
+    const {
+      id, 
+      files,
+    } = this.props.card.currentCard;
+
+    let cardName = this.state.cardName;
+    if (cardName === '') {
+      cardName = '';
+    }
+    this.props.updateCard(this.props.feedo.currentFeed.id, id, cardName, this.state.idea, this.state.coverImage, files);
+  }
+
   onAddMedia() {
     this.imagePickerActionSheetRef.show();
   }
@@ -537,11 +568,8 @@ class NewCardScreen extends React.Component {
 
   onTapLeaveActionSheet(index) {
     if (index === 1) {
-      if (!this.props.selectedFeedId) {
-        this.props.deleteDraftFeed(this.props.feedo.currentFeed.id)
-      } else {
-        this.onClose();
-      }
+      this.isUpdateDraftCard = false;
+      this.props.deleteDraftFeed(this.draftFeedoId)
     }
   }
 
@@ -732,20 +760,34 @@ class NewCardScreen extends React.Component {
   }
 
   onSelectFeedo() {
+    this.prevFeedoId = this.props.feedo.currentFeed.id;
+    this.setState({
+      isVisibleSelectFeedoModal: true,
+    });
   }
 
-  onCreateFeed() {
-    const {
-      id, 
-      status,
-      headline,
-      summary,
-      tags,
-      files,
-    } = this.props.feedo.currentFeed;
-    if (status === 'DRAFT') {
-      this.props.updateFeed(id, headline || 'New feed', summary || ' ', tags, files);
+  onCloseSelectHunt() {
+    this.setState({isVisibleSelectFeedoModal: false})
+    if (this.prevFeedoId !== this.props.feedo.currentFeed.id) {
+      this.props.moveCard(this.props.card.currentCard.id, this.props.feedo.currentFeed.id);
     }
+  }
+
+  onUpdateFeed() {
+    if (this.draftFeedoId === this.props.feedo.currentFeed.id) {
+      // Update Draft Feedo to Publish one
+      const {
+        id, 
+        headline,
+        summary,
+        tags,
+        files,
+      } = this.props.feedo.currentFeed;  
+      this.props.updateFeed(id, headline || 'New feed', summary || ' ', tags, files);
+      return;
+    }
+    this.isUpdateDraftCard = true;
+    this.props.deleteDraftFeed(this.draftFeedoId)
   }
 
   addLinkImage(imageUrl) {
@@ -771,25 +813,39 @@ class NewCardScreen extends React.Component {
   }
 
   get renderCoverImage() {
+    const { viewMode } = this.props;
+
+    let imageFiles = _.filter(this.props.card.currentCard.files, file => file.fileType === 'MEDIA');
     if (this.state.coverImage) {
       return (
-        <FastImage style={styles.imageCover} source={{uri: this.state.coverImage}} resizeMode="cover" />
-      );
-    }
-    const imageFiles = _.filter(this.props.card.currentCard.files, file => file.contentType.indexOf('image') !== -1);
-    if (imageFiles.length > 0) {
-      return (
-        <View style={styles.coverImageSelectContainer}>
-          <TouchableOpacity
-            style={styles.coverImageSelectButtonWrapper}
-            activeOpacity={0.6}
-            onPress={() => this.onSelectCoverImage()}
-          >
-            <Text style={styles.textSelectButton}>Select cover image</Text>
-          </TouchableOpacity>
+        <View style={styles.imageCoverView}>
+          <CoverImagePreviewComponent
+            coverImage={this.state.coverImage}
+            files={imageFiles}
+            editable={viewMode !== CONSTANTS.CARD_VIEW}
+            isSetCoverImage={true}
+            onRemove={(fileId) => this.onRemoveFile(fileId)}
+            onSetCoverImage={(fileId) => this.onSetCoverImage(fileId)}
+          />
         </View>
       );
     }
+
+    // imageFiles = _.filter(this.props.card.currentCard.files, file => file.contentType.indexOf('image') !== -1);
+
+    // if (imageFiles.length > 0) {
+    //   return (
+    //     <View style={styles.coverImageSelectContainer}>
+    //       <TouchableOpacity
+    //         style={styles.coverImageSelectButtonWrapper}
+    //         activeOpacity={0.6}
+    //         onPress={() => this.onSelectCoverImage()}
+    //       >
+    //         <Text style={styles.textSelectButton}>Select cover image</Text>
+    //       </TouchableOpacity>
+    //     </View>
+    //   );
+    // }
   }
 
   get renderWebMeta() {
@@ -806,24 +862,24 @@ class NewCardScreen extends React.Component {
     }
   }
 
-  get renderImages() {
-    const { viewMode } = this.props;
-    const {
-      files
-    } = this.props.card.currentCard;
-    const imageFiles = _.filter(files, file => file.fileType === 'MEDIA');
-    if (imageFiles.length > 0) {
-      return (
-        <ImageList 
-          files={imageFiles}
-          editable={viewMode !== CONSTANTS.CARD_VIEW}
-          isSetCoverImage={true}
-          onRemove={(fileId) => this.onRemoveFile(fileId)}
-          onSetCoverImage={(fileId) => this.onSetCoverImage(fileId)}
-        />
-      )
-    }
-  }
+  // get renderImages() {
+  //   const { viewMode } = this.props;
+  //   const {
+  //     files
+  //   } = this.props.card.currentCard;
+  //   const imageFiles = _.filter(files, file => file.fileType === 'MEDIA');
+  //   if (imageFiles.length > 0) {
+  //     return (
+  //       <ImageList 
+  //         files={imageFiles}
+  //         editable={viewMode !== CONSTANTS.CARD_VIEW}
+  //         isSetCoverImage={true}
+  //         onRemove={(fileId) => this.onRemoveFile(fileId)}
+  //         onSetCoverImage={(fileId) => this.onSetCoverImage(fileId)}
+  //       />
+  //     )
+  //   }
+  // }
 
   get renderDocuments() {
     const { viewMode, cardMode } = this.props;
@@ -876,7 +932,7 @@ class NewCardScreen extends React.Component {
           selectionColor={COLORS.PURPLE}
         />
         {this.renderWebMeta}
-        {this.renderImages}
+        {/* {this.renderImages} */}
         {this.renderDocuments}
       </View>
     );
@@ -995,7 +1051,7 @@ class NewCardScreen extends React.Component {
           <TouchableOpacity 
             style={[styles.addCardButtonWapper, {backgroundColor: COLORS.PURPLE}]}
             activeOpacity={0.6}
-            onPress={this.onCreateFeed.bind(this)}
+            onPress={this.onUpdateFeed.bind(this)}
           >
             <Text style={styles.textButton}>Create card</Text>
           </TouchableOpacity>
@@ -1206,11 +1262,22 @@ class NewCardScreen extends React.Component {
     );
   }
 
+  get renderSelectHunt() {
+    if (this.state.isVisibleSelectFeedoModal) {
+      return (
+        <SelectHuntScreen
+          onClosed={() => this.onCloseSelectHunt()}
+        />
+      );
+    }
+  }
+
   render () {
     return (
       <SafeAreaView style={styles.container}>
         {this.renderCard}
         {this.renderOutsideMoreActions}
+        {this.renderSelectHunt}
         <ActionSheet
           ref={ref => this.imagePickerActionSheetRef = ref}
           title='Select a Photo / Video'
@@ -1222,7 +1289,7 @@ class NewCardScreen extends React.Component {
         <ActionSheet
           ref={ref => this.leaveActionSheetRef = ref}
           title='Are you sure that you wish to leave?'
-          options={['Continue editing', this.props.selectedFeedId ? 'Close and discard' : 'Leave and discard', 'Cancel']}
+          options={['Continue editing', 'Leave and discard', 'Cancel']}
           cancelButtonIndex={2}
           destructiveButtonIndex={1}
           tintColor={COLORS.PURPLE}
@@ -1291,6 +1358,7 @@ const mapDispatchToProps = dispatch => ({
   getOpenGraph: (url) => dispatch(getOpenGraph(url)),
   addLink: (ideaId, originalUrl, title, description, imageUrl) => dispatch(addLink(ideaId, originalUrl, title, description, imageUrl)),
   deleteLink: (ideaId, linkId) => dispatch(deleteLink(ideaId, linkId)),
+  moveCard: (ideaId, huntId) => dispatch(moveCard(ideaId, huntId)),
 })
 
 

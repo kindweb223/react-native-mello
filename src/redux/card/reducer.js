@@ -131,7 +131,6 @@ export default function card(state = initialState, action = {}) {
       return {
         ...state,
         loading: types.MOVE_CARD_FULFILLED,
-        currentCard: {},
       }
     }
     case types.MOVE_CARD_REJECTED: {
@@ -408,6 +407,7 @@ export default function card(state = initialState, action = {}) {
       if (coverImage === deletedFile.accessUrl) {
         coverImage = null;
       }
+
       return {
         ...state,
         loading: types.DELETE_FILE_FULFILLED,

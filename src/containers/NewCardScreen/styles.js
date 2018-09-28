@@ -112,11 +112,12 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
   },
-  imageCover: {
+  imageCoverView: {
     marginHorizontal: 20,
     marginTop: 15,
     height: CONSTANTS.SCREEN_WIDTH * 0.48,
     borderRadius: 5,
+    overflow: 'hidden'
   },
   coverImageSelectContainer: {
     marginHorizontal: 20,
