@@ -77,7 +77,9 @@ export default class SlideShow extends React.Component {
           contentOffset={{ x: width * position, y: 0 }}
           scrollEventThrottle={10}
           onScroll={e => {
-            this.setState({ offset: e.nativeEvent.contentOffset.x })
+            const offset = e.nativeEvent.contentOffset.x
+            this.setState({ offset })
+            this.props.setPosition({ pos: offset / width })
           }}
           contentContainerStyle={{ height }}
         >
