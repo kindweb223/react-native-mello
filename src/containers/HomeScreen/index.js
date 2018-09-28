@@ -786,7 +786,7 @@ class HomeScreen extends React.Component {
                                     />}
               >
                 <View
-                  style={{ paddingBottom: CONSTANTS.ACTION_BAR_HEIGHT + 50 }}
+                  style={ styles.feedListContainer }
                   ref={ref => this.scrollTabAll = ref} 
                   tabLabel={{ label: 'All' }}
                   onLayout={(event) => this.onScrollableTabViewLayout(event, 0)}
@@ -799,7 +799,7 @@ class HomeScreen extends React.Component {
                   />
                 </View>
                 <View
-                  style={{ paddingBottom: CONSTANTS.ACTION_BAR_HEIGHT + 50 }}
+                  style={ styles.feedListContainer }
                   ref={ref => this.scrollTabPinned = ref}
                   tabLabel={{ label: 'Pinned' }}
                   onLayout={(event) => this.onScrollableTabViewLayout(event, 1)}
@@ -820,7 +820,7 @@ class HomeScreen extends React.Component {
                   }
                 </View>
                 <View
-                  style={{ paddingBottom: CONSTANTS.ACTION_BAR_HEIGHT + 50 }}
+                  style={ styles.feedListContainer }
                   ref={ref => this.scrollTabSharedWithMe = ref}
                   tabLabel={{ label: 'Shared with me' }}
                   onLayout={(event) => this.onScrollableTabViewLayout(event, 2)}
