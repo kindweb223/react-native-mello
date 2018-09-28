@@ -408,7 +408,7 @@ export default function card(state = initialState, action = {}) {
       if (coverImage === deletedFile.accessUrl) {
         coverImage = null;
       }
-      console.log('FILESSSSS: ', files)
+
       return {
         ...state,
         loading: types.DELETE_FILE_FULFILLED,

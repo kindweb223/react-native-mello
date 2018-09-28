@@ -199,9 +199,14 @@ class NewCardScreen extends React.Component {
       loading = true;
     } else if (this.props.card.loading !== types.DELETE_FILE_FULFILLED && nextProps.card.loading === types.DELETE_FILE_FULFILLED) {
       // success in deleting a file
-      this.setState({
-        coverImage: nextProps.card.currentCard.coverImage,
-      });
+      imageFiles = _.filter(nextProps.card.currentCard.files, file => file.contentType.indexOf('image') !== -1);
+      if (imageFiles.length > 0 && !nextProps.card.currentCard.coverImage) {
+        this.onSetCoverImage(nextProps.card.currentCard.files[0].id);
+      } else {
+        this.setState({
+          coverImage: nextProps.card.currentCard.coverImage,
+        });
+      }
     } else if (this.props.card.loading !== types.GET_OPEN_GRAPH_PENDING && nextProps.card.loading === types.GET_OPEN_GRAPH_PENDING) {
       // getting open graph
       loading = true;
@@ -789,21 +794,21 @@ class NewCardScreen extends React.Component {
       );
     }
 
-    imageFiles = _.filter(this.props.card.currentCard.files, file => file.contentType.indexOf('image') !== -1);
+    // imageFiles = _.filter(this.props.card.currentCard.files, file => file.contentType.indexOf('image') !== -1);
 
-    if (imageFiles.length > 0) {
-      return (
-        <View style={styles.coverImageSelectContainer}>
-          <TouchableOpacity
-            style={styles.coverImageSelectButtonWrapper}
-            activeOpacity={0.6}
-            onPress={() => this.onSelectCoverImage()}
-          >
-            <Text style={styles.textSelectButton}>Select cover image</Text>
-          </TouchableOpacity>
-        </View>
-      );
-    }
+    // if (imageFiles.length > 0) {
+    //   return (
+    //     <View style={styles.coverImageSelectContainer}>
+    //       <TouchableOpacity
+    //         style={styles.coverImageSelectButtonWrapper}
+    //         activeOpacity={0.6}
+    //         onPress={() => this.onSelectCoverImage()}
+    //       >
+    //         <Text style={styles.textSelectButton}>Select cover image</Text>
+    //       </TouchableOpacity>
+    //     </View>
+    //   );
+    // }
   }
 
   get renderWebMeta() {
