@@ -32,6 +32,7 @@ import {
   addFile,
   deleteFile,
   getFeedDetail,
+  setCurrentFeed,
 } from '../../redux/feedo/actions'
 import * as types from '../../redux/feedo/types'
 import COLORS from '../../service/colors';
@@ -81,6 +82,7 @@ class NewFeedScreen extends React.Component {
       loading = true;
     } else if (this.props.feedo.loading !== types.DELETE_FEED_FULFILLED && nextProps.feedo.loading === types.DELETE_FEED_FULFILLED) {
       // success in deleting a feed
+      this.props.setCurrentFeed({});
       this.onClose(null);
       return;
     } else if (this.props.feedo.loading !== types.GET_FILE_UPLOAD_URL_PENDING && nextProps.feedo.loading === types.GET_FILE_UPLOAD_URL_PENDING) {
@@ -114,7 +116,7 @@ class NewFeedScreen extends React.Component {
     } else if (this.props.feedo.loading !== types.UPDATE_FEED_FULFILLED && nextProps.feedo.loading === types.UPDATE_FEED_FULFILLED) {
       // success in updating a feed
       this.onClose(nextProps.feedo.currentFeed);
-      if (nextProps.selectedFeedId === null) {
+      if (this.props.feedoMode !== CONSTANTS.FEEDO_FROM_CARD && nextProps.selectedFeedId === null) {
         Actions.FeedDetailScreen({ data: nextProps.feedo.currentFeed });
       } 
     } else if (this.props.feedo.loading !== types.DELETE_FILE_PENDING && nextProps.feedo.loading === types.DELETE_FILE_PENDING) {
@@ -383,7 +385,7 @@ class NewFeedScreen extends React.Component {
           activeOpacity={0.6}
           onPress={this.onUpdate.bind(this)}
         >
-          <Text style={styles.textButton}>{this.props.selectedFeedId ? 'Save' : 'Create'}</Text>
+          <Text style={styles.textButton}>{this.props.selectedFeedId ? 'Save' : this.props.feedoMode === CONSTANTS.FEEDO_FROM_CARD ? 'Create feed' : 'Create'}</Text>
         </TouchableOpacity>
       </View>
     );
@@ -504,18 +506,25 @@ class NewFeedScreen extends React.Component {
   }
 
   get renderFeed() {
+    let postion = 0;
+    if (this.props.feedoMode === CONSTANTS.FEEDO_FROM_MAIN) {
+      postion = CONSTANTS.SCREEN_HEIGHT;
+    } else if (this.props.feedoMode === CONSTANTS.FEEDO_FROM_CARD) {
+      postion = CONSTANTS.SCREEN_WIDTH;
+    }
     const animatedMove  = this.animatedShow.interpolate({
       inputRange: [0, 1],
-      outputRange: [CONSTANTS.SCREEN_HEIGHT, 0],
+      outputRange: [postion, 0],
     });
     
     return (
       <Animated.View 
         style={[
           styles.feedContainer, {
-            top: animatedMove,
             opacity: this.animatedShow,
           },
+          (this.props.feedoMode === CONSTANTS.FEEDO_FROM_MAIN) && {top: animatedMove},
+          (this.props.feedoMode === CONSTANTS.FEEDO_FROM_CARD) && {left: animatedMove}
         ]}
       >
         <TouchableOpacity 
@@ -609,6 +618,7 @@ class NewFeedScreen extends React.Component {
 NewFeedScreen.defaultProps = {
   feedo: {},
   selectedFeedId: null,
+  feedoMode: CONSTANTS.FEEDO_FROM_MAIN,
   onClose: () => {},
 }
 
@@ -617,6 +627,7 @@ NewFeedScreen.propTypes = {
   feedo: PropTypes.object,
   selectedFeedId: PropTypes.string,
   onClose: PropTypes.func,
+  feedoMode: PropTypes.number,
 }
 
 
@@ -634,6 +645,7 @@ const mapDispatchToProps = dispatch => ({
   addFile: (feedId, fileType, contentType, name, objectKey) => dispatch(addFile(feedId, fileType, contentType, name, objectKey)),
   deleteFile: (feedId, fileId) => dispatch(deleteFile(feedId, fileId)),
   getFeedDetail: feedId => dispatch(getFeedDetail(feedId)),
+  setCurrentFeed: (data) => dispatch(setCurrentFeed(data)),
 })
 
 

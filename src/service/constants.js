@@ -31,12 +31,15 @@ export default {
   CARD_VIEW: 2,
   CARD_EDIT: 3,
 
-  // 
-  FEEDO_FIRST_SELECT: 1,
-  FEEDO_LATER_SELECT: 2,
-  FEEDO_MOVE_CARD_SELECT: 3,
+  // Select feedo type in main app
+  FEEDO_FROM_MAIN: 1,
+  FEEDO_FROM_CARD: 2,
 
-  // Card type for main app or share extension
+  // Select feedo type in share extension
+  SHARE_EXTENSION_FEEDO_FIRST_SELECT: 1,
+  SHARE_EXTENSION_FEEDO_LATER_SELECT: 2,
+
+  // Card type for main app (dashboard / feedo detail) or share extension
   MAIN_APP_CARD_FROM_DETAIL: 1,
   MAIN_APP_CARD_FROM_DASHBOARD: 2,
   EXTENTION_CARD: 3,
@@ -56,4 +59,5 @@ export default {
   USER_INVITED_TO_HUNT: 'USER_INVITED_TO_HUNT',
 
   USER_DEVICE_TOKEN: 'USER_DEVICE_TOKEN',
+  CARD_SAVED_FEEDO_ID: 'CARD_SAVED_FEEDO_ID',
 }

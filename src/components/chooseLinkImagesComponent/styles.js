@@ -51,20 +51,22 @@ const styles = StyleSheet.create({
   },
 
   imageContainer: {
-    width: (CONSTANTS.SCREEN_WIDTH - 22 - 30) / 3,
-    height: (CONSTANTS.SCREEN_WIDTH - 22 - 30) / 3,
+    width: Math.round((CONSTANTS.SCREEN_WIDTH - 22 - 30) / 3),
+    height: Math.round((CONSTANTS.SCREEN_WIDTH - 22 - 30) / 3),
     margin: 5,
-    backgroundColor: 'rgba(0, 0, 0, 0.05);',
   },
   imageItem: {
-    width: '100%',
-    height: '100%',
+    width: Math.round((CONSTANTS.SCREEN_WIDTH - 22 - 30) / 3) - 5,
+    height: Math.round((CONSTANTS.SCREEN_WIDTH - 22 - 30) / 3) - 5,
+    backgroundColor: 'rgba(0, 0, 0, 0.05);',
+    marginRight: 5,
+    marginTop: 5,
   },
-  
   icon: {
     position: 'absolute',
-    right: 5,
-    top: 5,
+    right: -5,
+    top: -5,
+    backgroundColor: '#fff',
   },
 })
 

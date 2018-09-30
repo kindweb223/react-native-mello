@@ -15,6 +15,7 @@ const styles = StyleSheet.create({
     position: 'absolute',
     left: 0,
     right: 0,
+    top: 0,
     bottom: 0,
   },
   contentContainer: {
@@ -38,7 +39,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 4,
   },
   createButtonWapper: {
-    width: 80,
+    paddingHorizontal: 20,
     height: 34,
     borderRadius: 17,
     backgroundColor: COLORS.PURPLE,
