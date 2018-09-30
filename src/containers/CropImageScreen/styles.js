@@ -6,12 +6,9 @@ const CIRCLE_SIZE = 70
 
 export default {
   container: {
-    position: 'absolute',
-    top: 0,
-    right: 0,
-    left: 0,
-    bottom: 0,
-    backgroundColor: '#fff'
+    width: '100%',
+    height: '100%',
+    backgroundColor: '#f00'
   },
   body: {
     width: '100%',
@@ -20,16 +17,15 @@ export default {
   },
   headerView: {
     width: '100%',
-    height: 50,
-    position: 'absolute',
-    top: 0,
-    left: 0,
+    height: 50 + CONSTANTS.STATUSBAR_HEIGHT,
+    paddingTop: CONSTANTS.STATUSBAR_HEIGHT,
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
     borderBottomWidth: 1,
     borderColor: COLORS.LIGHT_GREY_LINE,
     marginBottom: 1,
+    backgroundColor: '#fff'
   },
   closeButton: {
     width: 50,
@@ -45,7 +41,7 @@ export default {
     width: '100%',
     position: 'absolute',
     left: 0,
-    top: 51 + (CONSTANTS.SCREEN_HEIGHT - 150 - CONSTANTS.SCREEN_WIDTH) / 2,
+    top: 51 + (CONSTANTS.SCREEN_HEIGHT - 140 - CONSTANTS.SCREEN_WIDTH) / 2,
   },
   image: {
     width: '100%',
@@ -59,7 +55,8 @@ export default {
     bottom: 0,
     justifyContent: 'flex-start',
     alignItems: 'center',
-    paddingHorizontal: CONSTANTS.PADDING
+    paddingHorizontal: CONSTANTS.PADDING,
+    backgroundColor: '#fff'
   },
   saveBtn: {
     height: 60,

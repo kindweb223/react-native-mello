@@ -81,49 +81,47 @@ class CropImageScreen extends React.Component {
 
     return (
       <View style={styles.container}>
-        <SafeAreaView>
-          <View style={styles.body}>
-            <View style={styles.imageView}>
-              <ImageCrop
-                ref={c => this.imageCrop = c}
-                source={{ uri: avatarFile.uri }}
-              />
-            </View>
-
-            {/* <Image
-              source={{ uri: this.state.cropUrl.uri }}
-              style={{
-                position: 'absolute',
-                width: 200,
-                height: 200,
-                borderRadius: 100,
-                bottom: 100
-              }}
-              resizeMode="cover"
-            /> */}
-
-            <View style={styles.headerView}>
-              <View style={styles.closeButton} />
-              <Text style={styles.title}>Update avatar</Text>
-              <TouchableOpacity onPress={() => Actions.pop()} style={styles.closeButton}>
-                <Image source={CLOSE_ICON} />
-              </TouchableOpacity>
-            </View>
-
-            <View style={styles.footerView}>
-              <TouchableOpacity onPress={() => this.onSave()}>
-                <View style={styles.saveBtn}>
-                  <Text style={styles.saveText}>Save</Text>
-                </View>
-              </TouchableOpacity>
-            </View>
+        <View style={styles.body}>
+          <View style={styles.imageView}>
+            <ImageCrop
+              ref={c => this.imageCrop = c}
+              source={{ uri: avatarFile.uri }}
+            />
           </View>
 
-          {this.state.loading && (
-            <LoadingScreen />
-          )}
+          {/* <Image
+            source={{ uri: this.state.cropUrl.uri }}
+            style={{
+              position: 'absolute',
+              width: 200,
+              height: 200,
+              borderRadius: 100,
+              bottom: 100
+            }}
+            resizeMode="cover"
+          /> */}
 
-        </SafeAreaView>
+          <View style={styles.headerView}>
+            <View style={styles.closeButton} />
+            <Text style={styles.title}>Update avatar</Text>
+            <TouchableOpacity onPress={() => Actions.pop()} style={styles.closeButton}>
+              <Image source={CLOSE_ICON} />
+            </TouchableOpacity>
+          </View>
+
+          <View style={styles.footerView}>
+            <TouchableOpacity onPress={() => this.onSave()}>
+              <View style={styles.saveBtn}>
+                <Text style={styles.saveText}>Save</Text>
+              </View>
+            </TouchableOpacity>
+          </View>
+        </View>
+
+        {this.state.loading && (
+          <LoadingScreen />
+        )}
+
       </View>
     )
   }
