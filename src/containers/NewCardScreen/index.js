@@ -10,6 +10,7 @@ import {
   Text,
   Clipboard,
   ScrollView,
+  AsyncStorage,
 } from 'react-native'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
@@ -25,6 +26,7 @@ import * as mime from 'react-native-mime-types'
 import _ from 'lodash';
 import validUrl from 'valid-url';
 import Modal from 'react-native-modal';
+import moment from 'moment'
 
 import { 
   createCard,
@@ -44,6 +46,7 @@ import {
   createFeed,
   updateFeed,
   deleteDraftFeed,
+  setCurrentFeed,
 } from '../../redux/feedo/actions'
 import * as types from '../../redux/card/types'
 import * as feedoTypes from '../../redux/feedo/types'
@@ -59,7 +62,6 @@ import LikeComponent from '../../components/LikeComponent';
 import CommentComponent from '../../components/CommentComponent';
 import ChooseLinkImages from '../../components/chooseLinkImagesComponent';
 import UserAvatarComponent from '../../components/UserAvatarComponent';
-import FastImage from "react-native-fast-image";
 import CoverImagePreviewComponent from '../../components/CoverImagePreviewComponent';
 import SelectHuntScreen from '../SelectHuntScreen';
 
@@ -109,8 +111,8 @@ class NewCardScreen extends React.Component {
 
     this.parsingErrorLinks = [];
 
-    this.draftFeedoId = null;
-    this.prevFeedoId = null;
+    this.draftFeedo = null;
+    this.prevFeedo = null;
     this.isUpdateDraftCard = false;
   }
 
@@ -198,6 +200,9 @@ class NewCardScreen extends React.Component {
       loading = true;
     } else if (this.props.card.loading !== types.UPDATE_CARD_FULFILLED && nextProps.card.loading === types.UPDATE_CARD_FULFILLED) {
       // success in updating a card
+      if (this.props.cardMode === CONSTANTS.MAIN_APP_CARD_FROM_DASHBOARD) {
+        this.saveFeedId();
+      }
       this.onClose();
     } else if (this.props.card.loading !== types.DELETE_FILE_PENDING && nextProps.card.loading === types.DELETE_FILE_PENDING) {
       // deleting a file
@@ -269,33 +274,37 @@ class NewCardScreen extends React.Component {
     } else if (this.props.card.loading !== types.MOVE_CARD_PENDING && nextProps.card.loading === types.MOVE_CARD_PENDING) {
       // moving card
       loading = true;
-    } else if (this.props.feedo.loading !== feedoTypes.CREATE_FEED_PENDING && nextProps.feedo.loading === feedoTypes.CREATE_FEED_PENDING) {
-      // creating a feed
-      loading = true;
-    } else if (this.props.feedo.loading !== feedoTypes.CREATE_FEED_FULFILLED && nextProps.feedo.loading === feedoTypes.CREATE_FEED_FULFILLED) {
-      // creating a feed
-      if (this.props.viewMode === CONSTANTS.CARD_NEW) {
+    }
+
+    if (this.prevFeedo === null) {
+      if (this.props.feedo.loading !== feedoTypes.CREATE_FEED_PENDING && nextProps.feedo.loading === feedoTypes.CREATE_FEED_PENDING) {
+        // creating a feed
         loading = true;
-        this.draftFeedoId = nextProps.feedo.currentFeed.id;
-        this.props.createCard(nextProps.feedo.currentFeed.id);
-      }
-    } else if (this.props.feedo.loading !== feedoTypes.UPDATE_FEED_PENDING && nextProps.feedo.loading === feedoTypes.UPDATE_FEED_PENDING) {
-      // updating a feed
-      loading = true;
-    } else if (this.props.feedo.loading !== feedoTypes.UPDATE_FEED_FULFILLED && nextProps.feedo.loading === feedoTypes.UPDATE_FEED_FULFILLED) {
-      // success in updating a feed
-      this.onUpdateCard();
-    } else if (this.props.feedo.loading !== feedoTypes.DELETE_FEED_PENDING && nextProps.feedo.loading === feedoTypes.DELETE_FEED_PENDING) {
-      // deleting a feed
-      loading = true;
-    } else if (this.props.feedo.loading !== feedoTypes.DELETE_FEED_FULFILLED && nextProps.feedo.loading === feedoTypes.DELETE_FEED_FULFILLED) {
-      // success in deleting a feed
-      if (this.isUpdateDraftCard) {
+      } else if (this.props.feedo.loading !== feedoTypes.CREATE_FEED_FULFILLED && nextProps.feedo.loading === feedoTypes.CREATE_FEED_FULFILLED) {
+        // creating a feed
+        if (this.props.viewMode === CONSTANTS.CARD_NEW) {
+          loading = true;
+          this.draftFeedo = nextProps.feedo.currentFeed;
+          this.props.createCard(nextProps.feedo.currentFeed.id);
+        }
+      } else if (this.props.feedo.loading !== feedoTypes.UPDATE_FEED_PENDING && nextProps.feedo.loading === feedoTypes.UPDATE_FEED_PENDING) {
+        // updating a feed
+        loading = true;
+      } else if (this.props.feedo.loading !== feedoTypes.UPDATE_FEED_FULFILLED && nextProps.feedo.loading === feedoTypes.UPDATE_FEED_FULFILLED) {
+        // success in updating a feed
         this.onUpdateCard();
-      } else {
-        this.onClose();
+      } else if (this.props.feedo.loading !== feedoTypes.DELETE_FEED_PENDING && nextProps.feedo.loading === feedoTypes.DELETE_FEED_PENDING) {
+        // deleting a feed
+        loading = true;
+      } else if (this.props.feedo.loading !== feedoTypes.DELETE_FEED_FULFILLED && nextProps.feedo.loading === feedoTypes.DELETE_FEED_FULFILLED) {
+        // success in deleting a feed
+        if (this.isUpdateDraftCard) {
+          this.onUpdateCard();
+        } else {
+          this.onClose();
+        }
+        return;
       }
-      return;
     }
 
     this.setState({
@@ -345,8 +354,21 @@ class NewCardScreen extends React.Component {
     Animated.timing(this.animatedShow, {
       toValue: 1,
       duration: CONSTANTS.ANIMATEION_MILLI_SECONDS,
-    }).start(() => {
+    }).start(async () => {
       if (cardMode === CONSTANTS.MAIN_APP_CARD_FROM_DASHBOARD) {
+        const strFeedoInfo = await AsyncStorage.getItem(CONSTANTS.CARD_SAVED_FEEDO_ID);
+        if (strFeedoInfo) {
+          const feedoInfo = JSON.parse(strFeedoInfo);
+          const diffHours = moment().diff(moment(feedoInfo.time, 'LLL'), 'hours');
+          if (diffHours < 1) {
+            const currentFeed = _.find(this.props.feedo.feedoList, feed => feed.id === feedoInfo.feedoId)
+            if (currentFeed) {
+              this.props.setCurrentFeed(currentFeed);
+              this.props.createCard(this.props.feedo.currentFeed.id);
+              return;
+            }
+          }
+        }
         this.props.createFeed();
       } else if (viewMode === CONSTANTS.CARD_NEW) {
         this.props.createCard(this.props.feedo.currentFeed.id);
@@ -378,6 +400,14 @@ class NewCardScreen extends React.Component {
         duration: e.duration,
       }
     ).start();
+  }
+
+  saveFeedId() {
+    const feedoInfo = {
+      time: moment().format('LLL'),
+      feedoId: this.props.feedo.currentFeed.id,
+    }
+    AsyncStorage.setItem(CONSTANTS.CARD_SAVED_FEEDO_ID, JSON.stringify(feedoInfo));
   }
 
   checkUrl(content) {
@@ -569,7 +599,11 @@ class NewCardScreen extends React.Component {
   onTapLeaveActionSheet(index) {
     if (index === 1) {
       this.isUpdateDraftCard = false;
-      this.props.deleteDraftFeed(this.draftFeedoId)
+      if (this.draftFeedo) {
+        this.props.deleteDraftFeed(this.draftFeedo.id)
+      } else {
+        this.onClose();
+      }
     }
   }
 
@@ -760,7 +794,7 @@ class NewCardScreen extends React.Component {
   }
 
   onSelectFeedo() {
-    this.prevFeedoId = this.props.feedo.currentFeed.id;
+    this.prevFeedo = this.props.feedo.currentFeed;
     this.setState({
       isVisibleSelectFeedoModal: true,
     });
@@ -768,26 +802,34 @@ class NewCardScreen extends React.Component {
 
   onCloseSelectHunt() {
     this.setState({isVisibleSelectFeedoModal: false})
-    if (this.prevFeedoId !== this.props.feedo.currentFeed.id) {
+    if (!this.props.feedo.currentFeed.id) {
+      this.props.setCurrentFeed(this.prevFeedo);
+    }
+    if (this.prevFeedo.id !== this.props.feedo.currentFeed.id) {
       this.props.moveCard(this.props.card.currentCard.id, this.props.feedo.currentFeed.id);
     }
+    this.prevFeedo = null;
   }
 
   onUpdateFeed() {
-    if (this.draftFeedoId === this.props.feedo.currentFeed.id) {
-      // Update Draft Feedo to Publish one
-      const {
-        id, 
-        headline,
-        summary,
-        tags,
-        files,
-      } = this.props.feedo.currentFeed;  
-      this.props.updateFeed(id, headline || 'New feed', summary || ' ', tags, files);
-      return;
+    if (this.draftFeedo) {
+      if (this.draftFeedo.id === this.props.feedo.currentFeed.id) {
+        // Update Draft Feedo to Publish one
+        const {
+          id, 
+          headline,
+          summary,
+          tags,
+          files,
+        } = this.props.feedo.currentFeed;  
+        this.props.updateFeed(id, headline || 'New feed', summary || ' ', tags, files);
+        return;
+      }
+      this.isUpdateDraftCard = true;
+      this.props.deleteDraftFeed(this.draftFeedo.id)
+    } else {
+      this.onUpdateCard();
     }
-    this.isUpdateDraftCard = true;
-    this.props.deleteDraftFeed(this.draftFeedoId)
   }
 
   addLinkImage(imageUrl) {
@@ -1346,6 +1388,7 @@ const mapDispatchToProps = dispatch => ({
   createFeed: () => dispatch(createFeed()),
   updateFeed: (id, name, comments, tags, files) => dispatch(updateFeed(id, name, comments, tags, files)),
   deleteDraftFeed: (id) => dispatch(deleteDraftFeed(id)),
+  setCurrentFeed: (data) => dispatch(setCurrentFeed(data)),
 
   createCard: (huntId) => dispatch(createCard(huntId)),
   getCard: (ideaId) => dispatch(getCard(ideaId)),

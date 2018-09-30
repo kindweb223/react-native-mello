@@ -7,13 +7,20 @@ export default styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     backgroundColor: 'transparent',
-   },
+  },
   feedContainer: {
     position: 'absolute',
     left: 0,
     right: 0,
     top: ScreenVerticalMinMargin,
-    bottom: ScreenVerticalMinMargin,    
+    bottom: ScreenVerticalMinMargin,
+  },
+  newFeedContainer: {
+    position: 'absolute',
+    left: 0,
+    right: 0,
+    top: 0,
+    bottom: 0,
   },
   contentContainer: {
     borderRadius: 18,

@@ -10,7 +10,8 @@ import {
   TouchableOpacity,
   Platform,
   StatusBar,
-  AsyncStorage
+  AsyncStorage,
+  AppState,
 } from 'react-native'
 
 import { connect } from 'react-redux'
@@ -95,6 +96,7 @@ class HomeScreen extends React.Component {
       isVisibleCard: false,
       selectedIdeaInvitee: null,
       cardViewMode: CONSTANTS.CARD_NONE,
+      appState: AppState.currentState,
     };
 
     this.currentRef = null;
@@ -108,6 +110,11 @@ class HomeScreen extends React.Component {
     this.props.setUserInfo(JSON.parse(userInfo))
     this.registerPushNotification();
     this.props.getFeedoList(this.state.tabIndex)
+    AppState.addEventListener('change', this.onHandleAppStateChange.bind(this));
+  }
+
+  componentWillUnmount() {
+    AppState.removeEventListener('change', this.onHandleAppStateChange);
   }
 
   static getDerivedStateFromProps(nextProps, prevState) {
@@ -222,7 +229,14 @@ class HomeScreen extends React.Component {
     } 
   }
 
+  onHandleAppStateChange(nextAppState) {
+    this.setState({appState: nextAppState});
+  }
+
   parsePushNotification(notification) {
+    if (this.state.appState === 'active') {
+      return;
+    }
     console.log('NOTIFICATION : ', notification);
     const type = notification.data.type;
     switch (type) {
@@ -772,7 +786,7 @@ class HomeScreen extends React.Component {
                                     />}
               >
                 <View
-                  style={{ paddingBottom: CONSTANTS.ACTION_BAR_HEIGHT + 50 }}
+                  style={ styles.feedListContainer }
                   ref={ref => this.scrollTabAll = ref} 
                   tabLabel={{ label: 'All' }}
                   onLayout={(event) => this.onScrollableTabViewLayout(event, 0)}
@@ -785,7 +799,7 @@ class HomeScreen extends React.Component {
                   />
                 </View>
                 <View
-                  style={{ paddingBottom: CONSTANTS.ACTION_BAR_HEIGHT + 50 }}
+                  style={ styles.feedListContainer }
                   ref={ref => this.scrollTabPinned = ref}
                   tabLabel={{ label: 'Pinned' }}
                   onLayout={(event) => this.onScrollableTabViewLayout(event, 1)}
@@ -806,7 +820,7 @@ class HomeScreen extends React.Component {
                   }
                 </View>
                 <View
-                  style={{ paddingBottom: CONSTANTS.ACTION_BAR_HEIGHT + 50 }}
+                  style={ styles.feedListContainer }
                   ref={ref => this.scrollTabSharedWithMe = ref}
                   tabLabel={{ label: 'Shared with me' }}
                   onLayout={(event) => this.onScrollableTabViewLayout(event, 2)}
