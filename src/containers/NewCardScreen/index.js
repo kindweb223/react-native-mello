@@ -24,7 +24,6 @@ import { DocumentPicker, DocumentPickerUtil } from 'react-native-document-picker
 import Permissions from 'react-native-permissions'
 import * as mime from 'react-native-mime-types'
 import _ from 'lodash';
-import validUrl from 'valid-url';
 import Modal from 'react-native-modal';
 import moment from 'moment'
 
@@ -249,7 +248,7 @@ class NewCardScreen extends React.Component {
 
         if (this.openGraphNoteIndex < this.noteLinksForOpenGraph.length) {
           loading = true;
-          this.props.getOpenGraph(this.noteLinksForOpenGraph[this.openGraphNoteIndex]);
+          this.props.getOpenGraph(this.noteLinksForOpenGraph[this.openGraphNoteIndex].toLowerCase());
         } else {
           this.addLinkIndex = 0;
           const { id } = this.props.card.currentCard;
@@ -416,13 +415,16 @@ class NewCardScreen extends React.Component {
     if (viewMode === CONSTANTS.CARD_NEW || viewMode === CONSTANTS.CARD_EDIT) {
       if (content) {
         const texts = content.split(/[, ]/);
-        if (texts.length === 1 && validUrl.isUri(texts[0])) {
+        const allUrls = texts[0].match(/^(http:\/\/www\.|https:\/\/www\.|http:\/\/|https:\/\/)?[a-z0-9]+([\-\.]{1}[a-z0-9]+)*\.[a-z]{2,5}(:[0-9]{1,5})?(\/.*)?$/gi);
+        // if (texts.length === 1 && validUrl.isUri(texts[0])) {
+        console.log('All Urls : ', allUrls);
+        if (texts.length === 1 && allUrls.length > 0) {
           if (this.parsingErrorLinks.length > 0 && this.parsingErrorLinks.indexOf(texts[0] !== -1)) {
             return true;
           }
           this.isOpenGraphForNewCard = true;
           this.urlForNewCard = texts[0];
-          this.props.getOpenGraph(texts[0]);
+          this.props.getOpenGraph(texts[0].toLowerCase());
           return true;
         }
       }
@@ -434,7 +436,7 @@ class NewCardScreen extends React.Component {
     if (this.checkUrl(this.state.idea)) {
       return true;
     }
-    const allUrls = this.state.idea.match(/\bhttps?:\/\/\S+/gi);
+    const allUrls = this.state.idea.match(/^(http:\/\/www\.|https:\/\/www\.|http:\/\/|https:\/\/)?[a-z0-9]+([\-\.]{1}[a-z0-9]+)*\.[a-z]{2,5}(:[0-9]{1,5})?(\/.*)?$/gi);
     if (allUrls) {
       let newUrls = [];
       const {
@@ -467,14 +469,14 @@ class NewCardScreen extends React.Component {
         this.openGraphNoteIndex = 0;
         this.openGraphForNoteLinks = [];
         this.noteLinksForOpenGraph = filteredUrls;
-        this.props.getOpenGraph(this.noteLinksForOpenGraph[this.openGraphNoteIndex]);
+        this.props.getOpenGraph(this.noteLinksForOpenGraph[this.openGraphNoteIndex].toLowerCase());
       }
     }
     return false;
   }
 
   parseErrorUrls(message) {
-    const allUrls = message.match(/\bhttps?:\/\/\S+/gi);
+    const allUrls = message.match(/^(http:\/\/www\.|https:\/\/www\.|http:\/\/|https:\/\/)?[a-z0-9]+([\-\.]{1}[a-z0-9]+)*\.[a-z]{2,5}(:[0-9]{1,5})?(\/.*)?$/gi);
     if (allUrls) {
       let newUrls = [];
       allUrls.forEach(url => {
@@ -950,6 +952,7 @@ class NewCardScreen extends React.Component {
       <View style={styles.mainContentContainer}>
         <TextInput 
           style={styles.textInputCardTitle}
+          autoCorrect={false}
           editable={viewMode === CONSTANTS.CARD_NEW || viewMode === CONSTANTS.CARD_EDIT}
           placeholder='Add a name or link here'
           underlineColorAndroid='transparent'
@@ -994,7 +997,7 @@ class NewCardScreen extends React.Component {
           activeOpacity={0.6}
           onPress={this.onSelectFeedo.bind(this)}
         >
-          <Text style={[styles.textCreateCardIn, {color: COLORS.PRIMARY_BLACK, marginHorizontal: 0}]}>{this.props.feedo.currentFeed.headline || 'New feed'}</Text>
+          <Text style={styles.textFeedoName} numberOfLines={1}>{this.props.feedo.currentFeed.headline || 'New feed'}</Text>
           <Entypo name="chevron-right" size={20} color={COLORS.MEDIUM_GREY} />
         </TouchableOpacity>
       </View>
@@ -1158,10 +1161,11 @@ class NewCardScreen extends React.Component {
     if (cardMode === CONSTANTS.EXTENTION_CARD) {
       return;
     }
-
-    if (COMMON_FUNC.isFeedGuest(feedo.currentFeed) ||
-        (COMMON_FUNC.isFeedContributor(feedo.currentFeed)) && !COMMON_FUNC.isCardOwner(card.currentCard)) {
-      return
+    if (cardMode !== CONSTANTS.MAIN_APP_CARD_FROM_DASHBOARD) {
+      if (COMMON_FUNC.isFeedGuest(feedo.currentFeed) ||
+          (COMMON_FUNC.isFeedContributor(feedo.currentFeed)) && !COMMON_FUNC.isCardOwner(card.currentCard)) {
+        return
+      }
     }
 
     if (!this.state.isFullScreenCard && viewMode !== CONSTANTS.CARD_NEW) {

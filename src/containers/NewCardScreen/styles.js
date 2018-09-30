@@ -185,6 +185,12 @@ const styles = StyleSheet.create({
     color: COLORS.DARK_GREY,
     marginHorizontal: 9,
   },
+  textFeedoName: {
+    fontSize: 14,
+    lineHeight: 21,
+    maxWidth: Math.round(CONSTANTS.SCREEN_WIDTH * 0.32),
+    color: COLORS.PRIMARY_BLACK, 
+  },
   selectFeedoButtonContainer: {
     flexDirection: 'row',
     paddingLeft: 9,
@@ -193,6 +199,14 @@ const styles = StyleSheet.create({
     backgroundColor: COLORS.LIGHT_GREY,
     alignItems: 'center',
     justifyContent: 'center',
+  },
+  url: {
+    color: 'red',
+    textDecorationLine: 'underline',
+  },
+  text: {
+    color: 'black',
+    fontSize: 15,
   },
 })
 
