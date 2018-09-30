@@ -1,6 +1,7 @@
 import React from 'react'
 import { View, Text, TouchableOpacity } from 'react-native'
 import PropTypes from 'prop-types'
+import { connect } from 'react-redux'
 import LinkShareItem from './LinkShareItem'
 import InviteeItemComponent from './InviteeItemComponent'
 import styles from './styles'
@@ -30,7 +31,7 @@ class LinkShareModalComponent extends React.Component {
   }
 
   render() {
-    const { shareModalType, shareInviteeData, feed, inviteePermission } = this.props
+    const { user, shareModalType, shareInviteeData, feed, inviteePermission } = this.props
 
     return (
       <View style={styles.container}>
@@ -58,7 +59,7 @@ class LinkShareModalComponent extends React.Component {
           ))
         )}
 
-        {shareModalType === 'invitee' && COMMON_FUNC.isFeedOwnerEditor(feed) && (
+        {shareModalType === 'invitee' && COMMON_FUNC.isFeedOwnerEditor(feed) && !COMMON_FUNC.isUserInvitee(user, shareInviteeData) && (
           LIST_ITEM.map(item => (
             <TouchableOpacity key={item.id} onPress={() => this.onPressItem(item.id)}>
               <View style={[styles.listItem, styles.itemNormal]}>
@@ -99,6 +100,10 @@ class LinkShareModalComponent extends React.Component {
   }
 }
 
+const mapStateToProps = ({ user }) => ({
+  user
+})
+
 LinkShareModalComponent.defaultProps = {
   shareInviteeData: {},
   feed: {},
@@ -114,4 +119,7 @@ LinkShareModalComponent.propTypes = {
   handleShareOption: PropTypes.func.isRequired
 }
 
-export default LinkShareModalComponent
+export default connect(
+  mapStateToProps,
+  null
+)(LinkShareModalComponent)

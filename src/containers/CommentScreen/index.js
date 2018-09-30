@@ -231,20 +231,38 @@ class CommentScreen extends React.Component {
 
   renderItem({item, index}) {
     const { currentFeed } = this.props.feedo
-
-    const swipeoutBtns = [
-      {
-        component: this.renderEdit,
-        backgroundColor: COLORS.SOFT_GREY,
-        onPress: () => this.onEdit(index),
-      },
-      {
-        component: this.renderDelete,
-        backgroundColor: COLORS.DARK_RED,
-        onPress: () => this.onConfirmDelete(index),
-      }
-    ];
+    console.log('ITEM: ', item)
     const user = this.getCommentUser(item);
+
+    let editable = false
+    if (COMMON_FUNC.isFeedOwnerEditor(currentFeed) && user && user.id === this.props.user.userInfo.id) {
+      editable = true
+    }
+
+    let swipeoutBtns = []
+    if (editable) {
+      swipeoutBtns = [
+        {
+          component: this.renderEdit,
+          backgroundColor: COLORS.SOFT_GREY,
+          onPress: () => this.onEdit(index),
+        },
+        {
+          component: this.renderDelete,
+          backgroundColor: COLORS.DARK_RED,
+          onPress: () => this.onConfirmDelete(index),
+        }
+      ];
+    } else {
+      swipeoutBtns = [
+        {
+          component: this.renderDelete,
+          backgroundColor: COLORS.DARK_RED,
+          onPress: () => this.onConfirmDelete(index),
+        }
+      ];
+    }
+
     // const enabled = user && user.id === this.props.user.userInfo.id;
     let enabled = true
     if (COMMON_FUNC.isFeedContributorGuest(currentFeed)) {

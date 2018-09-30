@@ -200,6 +200,10 @@ class Tags extends React.Component {
     }
   }
 
+  focusTagInput = () => {
+    this.tagInputRef.focus();
+  }
+
   render() {
     return (
       <View

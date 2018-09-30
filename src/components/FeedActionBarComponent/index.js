@@ -116,7 +116,7 @@ class FeedActionBarComponent extends React.Component {
 
     return (
       <View style={styles.container}>
-        <View style={styles.innerContainer}>
+        <View style={MENU_ITEMS.length > 0 ? { width: 280 } : { width: 230 }}>
           <Modal
             style={styles.settingMenu}
             isVisible={this.state.isSettingMenu}
@@ -148,49 +148,9 @@ class FeedActionBarComponent extends React.Component {
           </Modal>
 
           <View style={styles.buttonContainer}>
-          <Animated.View
-            style={
-              this.state.selectedButton === SELECT_PIN_UNPIN &&
-              {
-                transform: [
-                  { scale: this.animatedSelect },
-                ],
-              }
-            }
-          >
-            <TouchableOpacity 
-              style={styles.buttonView}
-              activeOpacity={0.7}
-              onPress={this.onPressPin}
-            >
-              <Octicons name="pin" style={styles.pinIcon} />
-              <Text style={styles.buttonText}>{this.props.pinFlag ? 'Unpin' : 'Pin'}</Text>
-            </TouchableOpacity>
-          </Animated.View>
-          <Animated.View
-            style={
-              this.state.selectedButton === SELECT_SHARE &&
-              {
-                transform: [
-                  { scale: this.animatedSelect },
-                ],
-              }
-            }
-          >
-            <TouchableOpacity 
-              style={styles.buttonView}
-              activeOpacity={0.7}
-              onPress={this.onPressShare}
-            >
-              <Entypo name="share-alternative" style={styles.shareIcon} />
-              <Text style={styles.buttonText}>Share</Text>
-            </TouchableOpacity>
-          </Animated.View>
-
-          {MENU_ITEMS.length > 0 && (
             <Animated.View
               style={
-                this.state.selectedButton === SELECT_MENU &&
+                this.state.selectedButton === SELECT_PIN_UNPIN &&
                 {
                   transform: [
                     { scale: this.animatedSelect },
@@ -199,14 +159,54 @@ class FeedActionBarComponent extends React.Component {
               }
             >
               <TouchableOpacity 
-                style={[styles.iconStyle, styles.plusButton]}
+                style={styles.buttonView}
                 activeOpacity={0.7}
-                onPress={() => this.onPressMenu()}
+                onPress={this.onPressPin}
               >
-                <Entypo name="dots-three-horizontal" style={styles.plusButtonIcon} />
+                <Octicons name="pin" style={styles.pinIcon} />
+                <Text style={styles.buttonText}>{this.props.pinFlag ? 'Unpin' : 'Pin'}</Text>
               </TouchableOpacity>
             </Animated.View>
-          )}
+            <Animated.View
+              style={
+                this.state.selectedButton === SELECT_SHARE &&
+                {
+                  transform: [
+                    { scale: this.animatedSelect },
+                  ],
+                }
+              }
+            >
+              <TouchableOpacity 
+                style={styles.buttonView}
+                activeOpacity={0.7}
+                onPress={this.onPressShare}
+              >
+                <Entypo name="share-alternative" style={styles.shareIcon} />
+                <Text style={styles.buttonText}>Share</Text>
+              </TouchableOpacity>
+            </Animated.View>
+
+            {MENU_ITEMS.length > 0 && (
+              <Animated.View
+                style={
+                  this.state.selectedButton === SELECT_MENU &&
+                  {
+                    transform: [
+                      { scale: this.animatedSelect },
+                    ],
+                  }
+                }
+              >
+                <TouchableOpacity 
+                  style={[styles.iconStyle, styles.plusButton]}
+                  activeOpacity={0.7}
+                  onPress={() => this.onPressMenu()}
+                >
+                  <Entypo name="dots-three-horizontal" style={styles.plusButtonIcon} />
+                </TouchableOpacity>
+              </Animated.View>
+            )}
           </View>
         </View>
       </View>

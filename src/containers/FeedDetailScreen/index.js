@@ -436,6 +436,10 @@ class FeedDetailScreen extends React.Component {
   }
 
   onLongPressCard(index, idea, invitees) {
+    if (COMMON_FUNC.isFeedGuest(this.state.currentFeed)) {
+      return
+    }
+
     if (this.state.isShowToaster) {
       return;
     }

@@ -192,52 +192,62 @@ class SearchBarComponent extends React.Component {
     this.props.inputTag(false)
   }
 
+  onTouchSearchBar = () => {
+    console.log('Toucha searchbar')
+    this.tagRef.focusTagInput()
+  }
+
   render() {
     const { selectTags, showFilterTags, filteredTags } = this.state
 
     return (
       <View style={styles.container}>
         <View style={styles.searchContainer}>
-          <Animated.View style={[styles.searchBar, { width: this.searchBarWidth }]}>
-            <View style={styles.searchIconView}>
-              <Image source={SEARCH_ICON} />
-            </View>
+          <TouchableOpacity style={styles.innerContainer} activeOpacity={0.9} onPress={() => this.onTouchSearchBar()}>
+            <Animated.View style={[styles.searchBar, { width: this.searchBarWidth }]}>
+              <View style={styles.searchIconView}>
+                <Image source={SEARCH_ICON} />
+              </View>
 
-            <Tags
-              containerStyle={{ paddingHorizontal: 5 }}
-              tags={selectTags}
-              tagText={this.state.currentTagName}
-              placeHolder=""
-              onCreateTag={(text) => this.onCreateTag(text)}
-              onChangeText={(text) => this.onChangeText(text)}
-              onRemoveTag={(tag) => this.onRemoveTag(tag)}
-              tagContainerStyle={{
-                backgroundColor: COLORS.TAG_LIGHT_ORANGE_BACKGROUND
-              }}
-              tagTextStyle={{
-                color: COLORS.DARK_ORANGE,
-                fontSize: 16,
-              }}
-              activeTagContainerStyle={{
-                backgroundColor: COLORS.TAG_LIGHT_ORANGE_ACTIVE_BACKGROUND,
-              }}
-              activeTagTextStyle={{
-                color: '#fff',
-                fontSize: 16,
-              }}
-              onFocus={this.onFocusText}
-            />
+              <Tags
+                ref={c => this.tagRef = c}
+                containerStyle={{ paddingHorizontal: 5 }}
+                tags={selectTags}
+                tagText={this.state.currentTagName}
+                placeHolder=""
+                onCreateTag={(text) => this.onCreateTag(text)}
+                onChangeText={(text) => this.onChangeText(text)}
+                onRemoveTag={(tag) => this.onRemoveTag(tag)}
+                tagContainerStyle={{
+                  backgroundColor: COLORS.TAG_LIGHT_ORANGE_BACKGROUND
+                }}
+                tagTextStyle={{
+                  color: COLORS.DARK_ORANGE,
+                  fontSize: 16,
+                }}
+                activeTagContainerStyle={{
+                  backgroundColor: COLORS.TAG_LIGHT_ORANGE_ACTIVE_BACKGROUND,
+                }}
+                activeTagTextStyle={{
+                  color: '#fff',
+                  fontSize: 16,
+                }}
+                onFocus={this.onFocusText}
+              />
 
-            <Animated.View style={[styles.btnCloseView, { opacity: this.closeBtnOpacity }]}>
-              <TouchableOpacity
-                style={styles.btnClose}
-                activeOpacity={0.8}
-                onPress={this.onBtnClose}
-              >
-                <Ionicons name='md-close-circle' size={18} color={COLORS.MEDIUM_GREY} />
-              </TouchableOpacity>
+              {selectTags.length > 0 && (
+                <Animated.View style={[styles.btnCloseView, { opacity: this.closeBtnOpacity }]}>
+                  <TouchableOpacity
+                    style={styles.btnClose}
+                    activeOpacity={0.8}
+                    onPress={this.onBtnClose}
+                  >
+                    <Ionicons name='md-close-circle' size={18} color={COLORS.MEDIUM_GREY} />
+                  </TouchableOpacity>
+                </Animated.View>
+              )}
             </Animated.View>
-          </Animated.View>
+          </TouchableOpacity>
           
           <TouchableOpacity onPress={this.onBtnCancel}>
             <Animated.View style={[styles.btnCancelView, { opacity: this.cancelBtnOpacity }]}>

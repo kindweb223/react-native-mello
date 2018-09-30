@@ -13,12 +13,9 @@ const styles = StyleSheet.create({
     position: 'absolute',
     bottom: 0,
   },
-  innerContainer: {
-    width: 280,
-  },
   buttonContainer: {
     flexDirection: 'row',
-    justifyContent: 'space-between',
+    justifyContent: 'space-between'
   },
   plusButton: {
     borderRadius: 21,
