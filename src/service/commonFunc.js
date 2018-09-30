@@ -78,6 +78,10 @@ const validateEmail = (email) => {
   return re.test(email.toLowerCase())
 }
 
+const isUserInvitee = (user, invitee) => {
+  return user.userInfo.id === invitee.userProfile.id
+}
+
 export {
   checkUserIsInvitee,
   isFeedOwner,
@@ -88,5 +92,6 @@ export {
   isFeedContributor,
   isFeedGuest,
   isCardOwner,
-  validateEmail
+  validateEmail,
+  isUserInvitee
 }

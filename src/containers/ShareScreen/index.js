@@ -219,21 +219,23 @@ class ShareScreen extends React.Component {
             </TouchableOpacity>
           }
         </View>
-
+        
         <View style={styles.body}>
-          <View style={styles.listItemView}>
-            <TouchableOpacity onPress={() => this.onShowInviteeModal(data)}>
-              <View style={styles.listItem}>
-                <InvitePeopleItemComponent />
-              </View>
-            </TouchableOpacity>
-            
-            <TouchableOpacity onPress={() => this.onLinkShare(data)}>
-              <View style={styles.listItem}>
-                <LinkShareItem isViewOnly={false} feed={data} />
-              </View>
-            </TouchableOpacity>
-          </View>
+          {COMMON_FUNC.isFeedOwnerEditor(data) && (
+            <View style={styles.listItemView}>
+              <TouchableOpacity onPress={() => this.onShowInviteeModal(data)}>
+                <View style={styles.listItem}>
+                  <InvitePeopleItemComponent />
+                </View>
+              </TouchableOpacity>
+              
+              <TouchableOpacity onPress={() => this.onLinkShare(data)}>
+                <View style={styles.listItem}>
+                  <LinkShareItem isViewOnly={false} feed={data} />
+                </View>
+              </TouchableOpacity>
+            </View>
+          )}
 
           {invitees && invitees.length > 0 && (
             <View style={styles.inviteeListView}>

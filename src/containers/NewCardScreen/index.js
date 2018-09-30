@@ -65,6 +65,7 @@ import UserAvatarComponent from '../../components/UserAvatarComponent';
 import CoverImagePreviewComponent from '../../components/CoverImagePreviewComponent';
 import SelectHuntScreen from '../SelectHuntScreen';
 
+import * as COMMON_FUNC from '../../service/commonFunc'
 
 const ScreenVerticalMinMargin = 80;
 
@@ -1153,10 +1154,16 @@ class NewCardScreen extends React.Component {
   }
 
   get renderOutsideMoreActions() {
-    const { cardMode, viewMode } = this.props;
+    const { cardMode, viewMode, card, feedo } = this.props;
     if (cardMode === CONSTANTS.EXTENTION_CARD) {
       return;
     }
+
+    if (COMMON_FUNC.isFeedGuest(feedo.currentFeed) ||
+        (COMMON_FUNC.isFeedContributor(feedo.currentFeed)) && !COMMON_FUNC.isCardOwner(card.currentCard)) {
+      return
+    }
+
     if (!this.state.isFullScreenCard && viewMode !== CONSTANTS.CARD_NEW) {
       return (
         <View style={styles.outSideMoreActionContainer}>

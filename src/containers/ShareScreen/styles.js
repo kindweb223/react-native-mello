@@ -55,6 +55,7 @@ export default {
   },
   listItemView: {
     paddingHorizontal: CONSTANTS.PADDING,
+    marginBottom: 24,
   },
   listItem: {
     flexDirection: 'row',
@@ -84,7 +85,6 @@ export default {
     color: '#000'
   },
   inviteeListView: {
-    marginTop: 24,
     maxHeight: 400
   },
   titleContainer: {
