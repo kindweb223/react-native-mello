@@ -12,18 +12,16 @@ const styles = StyleSheet.create({
     borderRadius: 18,
   },
   title: {
-   fontSize: 16,
-   fontWeight: 'bold',
+   fontSize: 16
   },
   greyTitle: {
     fontSize: 16,
-    fontWeight: 'bold',
     color: COLORS.MEDIUM_GREY,
   },
   thumbnailsView: {
     width: '100%',
     height: 144,
-    marginTop: 5,
+    marginBottom: 5,
   },
   thumbnails: {
     width: '100%',

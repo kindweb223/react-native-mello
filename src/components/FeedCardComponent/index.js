@@ -57,14 +57,16 @@ class FeedCardComponent extends React.Component {
             {getDurationFromNow(idea.publishedDate)}
           </Text>
         </View>
-        <View style={styles.subView}>
-          <LikeComponent idea={idea} />
-          <CommentComponent 
-            idea={idea}
-            currentFeed={feedo.currentFeed}
-            onComment={this.props.onComment}
-          />
-        </View>
+        {!isOnlyInvitee && (
+          <View style={styles.subView}>
+            <LikeComponent idea={idea} />
+            <CommentComponent 
+              idea={idea}
+              currentFeed={feedo.currentFeed}
+              onComment={this.props.onComment}
+            />
+          </View>
+        )}
       </View>
     )
   }
@@ -73,22 +75,20 @@ class FeedCardComponent extends React.Component {
     const {
       idea,
     } = this.props;
+    console.log('PPP: ', idea)
     return (
       <View style={styles.container}>
-        {
-          idea.title ?
-            <Text style={styles.title}>{idea.title}</Text>
-          :
-            <Text style={styles.greyTitle}>New Card</Text>
+        {idea.coverImage && idea.coverImage.length && 
+          <View style={styles.thumbnailsView}>
+            <FastImage
+              style={styles.thumbnails}
+              source={{uri: idea.coverImage}}
+            />
+          </View>
         }
-        {
-          idea.coverImage && idea.coverImage.length && 
-            <View style={styles.thumbnailsView}>
-              <FastImage
-                style={styles.thumbnails}
-                source={{uri: idea.coverImage}}
-              />
-            </View>
+        {idea.idea
+          ? <Text style={styles.title} numberOfLines={3} ellipsizeMode="tail">{idea.idea}</Text>
+          : <Text style={styles.greyTitle}>New Card</Text>
         }
         {this.renderBottom}
       </View>
