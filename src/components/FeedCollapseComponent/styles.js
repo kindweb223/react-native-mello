@@ -2,40 +2,27 @@ import { StyleSheet, Platform } from 'react-native'
 import COLORS from '../../service/colors'
 import CONSTANTS from '../../service/constants'
 
-const HEADER_HEIGHT = 40
+const NAV_BAR_HEIGHT = 60
 
 const styles = StyleSheet.create({
-  collapseHeader: {
+  collapseView: {
+    width: '100%'
+  },
+  collapseHeaderView: {
+    width: '100%'
+  },
+  collpaseHeader: {
+    width: '100%',
     flexDirection: 'row',
-    alignItems: 'flex-start',
-    marginHorizontal: CONSTANTS.PADDING,
-    marginTop: 10,
-    justifyContent: 'space-between',
-    borderColor: COLORS.LIGHT_GREY,
-    height: HEADER_HEIGHT,
-    backgroundColor: '#fff',
-    borderBottomWidth: 1
+    alignItems: 'center',
+    justifyContent: 'space-between'
   },
-  noncollapseHeader: {
-    flexDirection: 'row',
-    alignItems: 'flex-start',
-    marginHorizontal: CONSTANTS.PADDING,
-    marginTop: 10,
-    height: 20,
-    justifyContent: 'space-between',
-    backgroundColor: '#fff',
-  },
-  headerText: {
-    color: '#000',
+  headerTitle: {
     flex: 1,
-    marginRight: 10,
-    fontSize: 16,
-  },
-  collapseHeaderText: {
-    color: COLORS.MEDIUM_GREY,
-    flex: 1,
-    marginRight: 10,
-    fontSize: 16,
+    lineHeight: 28,
+    fontSize: 28,
+    fontWeight: 'bold',
+    color: COLORS.PRIMARY_BLACK
   },
   arrowDownIcon: {
     fontSize: 20,
@@ -43,30 +30,12 @@ const styles = StyleSheet.create({
     marginTop: 5,
     fontWeight: 'bold'
   },
-  rotateIcon: {
-    // transform: [{ rotate: '180deg'}]
-  },
-  contentText:{
-    fontSize: 16
-  },
   contentView: {
-    paddingHorizontal: CONSTANTS.PADDING,
-    paddingBottom: 20,
-    borderBottomLeftRadius: 15,
-    borderBottomRightRadius: 15,
-    backgroundColor: '#fff',
-    marginBottom: 20,
-    ...Platform.select({
-      ios: {
-        shadowColor: 'black',
-        shadowOffset: { height: 10 },
-        shadowOpacity: 0.15,
-        shadowRadius: 5
-      },
-      android: {
-        elevation: 20
-      }
-    })
+    width: '100%'
+  },
+  summaryText: {
+    fontSize: 16,
+    marginTop: 10
   },
   tagView: {
     marginVertical: 10
@@ -107,7 +76,7 @@ const styles = StyleSheet.create({
   footerView: {
     width: '100%',
     justifyContent: 'center',
-    alignItems: 'center',
+    alignItems: 'center'
   },
   collapseIconView: {
     width: 60,
