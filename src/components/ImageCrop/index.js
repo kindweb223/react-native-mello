@@ -161,21 +161,21 @@ class ImageCrop extends Component {
 		let { cropWidth, cropHeight, currentOffsetX, currentOffsetY, scale, minScale, maxScale, lastScale } = this.state
 
 		if (gestureState.numberActiveTouches === 2) {
-			// let dx = Math.abs(
-			// 	e.nativeEvent.touches[0].pageX - e.nativeEvent.touches[1].pageX
-			// );
-			// let dy = Math.abs(
-			// 	e.nativeEvent.touches[0].pageY - e.nativeEvent.touches[1].pageY
-			// );
-			// let distant = Math.sqrt(dx * dx + dy * dy);
-			// let scale = (distant / this.distant) * lastScale;
+			let dx = Math.abs(
+				e.nativeEvent.touches[0].pageX - e.nativeEvent.touches[1].pageX
+			);
+			let dy = Math.abs(
+				e.nativeEvent.touches[0].pageY - e.nativeEvent.touches[1].pageY
+			);
+			let distant = Math.sqrt(dx * dx + dy * dy);
+			let scale = (distant / this.distant) * lastScale;
 
-			// this.paddingWidth = (scale - 1) * cropWidth / 2 / scale
-			// this.paddingHeight = (scale - 1) * cropHeight / 2 / scale
+			this.paddingWidth = (scale - 1) * cropWidth / 2 / scale
+			this.paddingHeight = (scale - 1) * cropHeight / 2 / scale
 
-			// if (scale < maxScale && scale > minScale) {
-			// 	this.setState({ scale });
-			// }
+			if (scale < maxScale && scale > minScale) {
+				this.setState({ scale });
+			}
 		} else {
 			this.setState({ offsetX: currentOffsetX +  gestureState.dx })
 			this.setState({ offsetY: currentOffsetY + gestureState.dy })
@@ -184,14 +184,14 @@ class ImageCrop extends Component {
 
 	_handlePanResponderGrant = (e, gestureState) => {
     if (gestureState.numberActiveTouches === 2) {
-      // let dx = Math.abs(
-      //   e.nativeEvent.touches[0].pageX - e.nativeEvent.touches[1].pageX
-      // );
-      // let dy = Math.abs(
-      //   e.nativeEvent.touches[0].pageY - e.nativeEvent.touches[1].pageY
-      // );
-			// let distant = Math.sqrt(dx * dx + dy * dy);
-			// this.distant = distant;
+      let dx = Math.abs(
+        e.nativeEvent.touches[0].pageX - e.nativeEvent.touches[1].pageX
+      );
+      let dy = Math.abs(
+        e.nativeEvent.touches[0].pageY - e.nativeEvent.touches[1].pageY
+      );
+			let distant = Math.sqrt(dx * dx + dy * dy);
+			this.distant = distant;
     }
   };
 
@@ -263,8 +263,8 @@ class ImageCrop extends Component {
 		let translateX = 0
 		let translateY = 0
 
-		// console.log('offsetX: ', offsetX, this.paddingWidth)
-		// console.log('offsetY: ', offsetY, this.paddingHeight)
+		console.log('offsetX: ', offsetX, this.paddingWidth)
+		console.log('offsetY: ', offsetY, this.paddingHeight)
 
 		if (scale === 1) {
 			if (cropWidth > cropHeight) {
