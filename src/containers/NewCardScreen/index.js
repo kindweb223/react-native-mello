@@ -417,8 +417,7 @@ class NewCardScreen extends React.Component {
         const texts = content.split(/[, ]/);
         const allUrls = texts[0].match(/^(http:\/\/www\.|https:\/\/www\.|http:\/\/|https:\/\/)?[a-z0-9]+([\-\.]{1}[a-z0-9]+)*\.[a-z]{2,5}(:[0-9]{1,5})?(\/.*)?$/gi);
         // if (texts.length === 1 && validUrl.isUri(texts[0])) {
-        console.log('All Urls : ', allUrls);
-        if (texts.length === 1 && allUrls.length > 0) {
+        if (texts.length === 1 && allUrls && allUrls.length > 0) {
           if (this.parsingErrorLinks.length > 0 && this.parsingErrorLinks.indexOf(texts[0] !== -1)) {
             return true;
           }
