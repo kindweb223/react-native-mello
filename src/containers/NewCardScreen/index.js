@@ -11,6 +11,7 @@ import {
   Clipboard,
   ScrollView,
   AsyncStorage,
+  Linking,
 } from 'react-native'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
@@ -26,6 +27,8 @@ import * as mime from 'react-native-mime-types'
 import _ from 'lodash';
 import Modal from 'react-native-modal';
 import moment from 'moment'
+import Autolink from 'react-native-autolink';
+// import ParsedText from 'react-native-parsed-text';
 
 import { 
   createCard,
@@ -84,6 +87,8 @@ class NewCardScreen extends React.Component {
       isShowKeyboardButton: false,
       isVisibleChooseLinkImagesModal: false,
       isVisibleSelectFeedoModal: false,
+
+      isEditableIdea: false,
     };
 
     this.selectedFile = null;
@@ -389,7 +394,7 @@ class NewCardScreen extends React.Component {
   keyboardWillShow(e) {
     Animated.timing(
       this.animatedKeyboardHeight, {
-        toValue: e.endCoordinates.height - ScreenVerticalMinMargin,
+        toValue: this.state.isFullScreenCard ? e.endCoordinates.height : e.endCoordinates.height - ScreenVerticalMinMargin,
         duration: e.duration,
       }
     ).start();
@@ -769,6 +774,7 @@ class NewCardScreen extends React.Component {
   onBlurIdea() {
     this.setState({
       isShowKeyboardButton: false,
+      isEditableIdea: false,
     });
     this.checkUrlsInNote();
   }
@@ -947,6 +953,60 @@ class NewCardScreen extends React.Component {
     }
   }
 
+  onPressIdea() {
+    this.setState({
+      isEditableIdea: true,
+    }, () => {
+      this.textInputIdeaRef.focus();
+    });
+  }
+
+  onPressLink(url) {
+    Linking.canOpenURL(url)
+      .then(supported => {
+        if (!supported) {
+          console.log('Can\'t handle url: ' + url);
+        } else {
+          return Linking.openURL(url);
+        }
+      })
+      .catch(error => console.error('An error occurred', error));
+  }
+
+  get renderIdea() {
+    const { viewMode } = this.props;
+    if ((this.state.idea === '' || this.state.isEditableIdea) && (viewMode === CONSTANTS.CARD_NEW || viewMode === CONSTANTS.CARD_EDIT)) {
+      return (
+        <TextInput
+          ref={ref => this.textInputIdeaRef = ref}
+          style={styles.textInputIdea}
+          autoCorrect={false}
+          placeholder='Add a note'
+          multiline={true}
+          underlineColorAndroid='transparent'
+          value={this.state.idea}
+          onChangeText={(value) => this.onChangeIdea(value)}
+          onKeyPress={this.onKeyPressIdea.bind(this)}
+          onFocus={() => this.onFocus()}
+          onBlur={() => this.onBlurIdea()}
+          selectionColor={COLORS.PURPLE}
+        />
+      )
+    }
+    return (
+      <TouchableOpacity
+        activeOpacity={1}
+        onPress={() => this.onPressIdea()}
+      >
+        <Autolink
+          style={styles.textInputIdea}
+          text={this.state.idea}
+          onPress={(url, match) => this.onPressLink(url)}
+        />
+      </TouchableOpacity>
+    )
+  }
+
   get renderMainContent() {
     const { viewMode } = this.props;
     return (
@@ -965,19 +1025,7 @@ class NewCardScreen extends React.Component {
           selectionColor={COLORS.PURPLE}
         />
         {this.renderCoverImage}
-        <TextInput 
-          style={styles.textInputIdea}
-          editable={viewMode === CONSTANTS.CARD_NEW || viewMode === CONSTANTS.CARD_EDIT}
-          placeholder='Add a note'
-          multiline={true}
-          underlineColorAndroid='transparent'
-          value={this.state.idea}
-          onChangeText={(value) => this.onChangeIdea(value)}
-          onKeyPress={this.onKeyPressIdea.bind(this)}
-          onFocus={() => this.onFocus()}
-          onBlur={() => this.onBlurIdea()}
-          selectionColor={COLORS.PURPLE}
-        />
+        {this.renderIdea}
         {this.renderWebMeta}
         {/* {this.renderImages} */}
         {this.renderDocuments}

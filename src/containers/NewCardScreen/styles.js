@@ -39,6 +39,11 @@ const styles = StyleSheet.create({
     lineHeight: 23,
     marginTop: 15,
     marginHorizontal: 20,
+    
+    paddingLeft: 0,
+    paddingRight: 0,
+    paddingTop: 0,
+    paddingBottom: 0,
   },
   attachmentButtonsContainer: {
     flexDirection: 'row',
@@ -201,12 +206,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   url: {
-    color: 'red',
-    textDecorationLine: 'underline',
-  },
-  text: {
-    color: 'black',
-    fontSize: 15,
+    color: COLORS.BLUE,
   },
 })
 
