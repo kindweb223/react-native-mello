@@ -3,7 +3,6 @@ import {
   Text,
   View,
   TouchableOpacity,
-  Image,
   FlatList,
 } from 'react-native'
 import PropTypes from 'prop-types'
