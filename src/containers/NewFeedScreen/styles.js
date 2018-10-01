@@ -19,8 +19,7 @@ const styles = StyleSheet.create({
     bottom: 0,
   },
   contentContainer: {
-    borderRadius: 18,
-    backgroundColor: '#fff',
+    backgroundColor: '#fff'
   },
   tagCreationContainer: {
     position: 'absolute',
@@ -28,17 +27,21 @@ const styles = StyleSheet.create({
     bottom: 0,
     right: 0,
     left: 0,
+    backgroundColor: COLORS.LIGHT_GREY_MODAL_BACKGROUND
   },
   topContainer: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    padding: 16,
+    paddingTop: CONSTANTS.STATUSBAR_HEIGHT + 10,
+    paddingBottom: 16,
+    paddingHorizontal: 12
   },
   closeButtonWrapper: {
     paddingHorizontal: 4,
   },
   createButtonWapper: {
+    marginRight: 4,
     paddingHorizontal: 20,
     height: 34,
     borderRadius: 17,
@@ -69,13 +72,26 @@ const styles = StyleSheet.create({
   },
   bottomContainer: {
     flexDirection: 'row',
-    marginHorizontal: 12,
-    marginVertical: 20,
+    justifyContent: 'space-between',
+    paddingHorizontal: 16,
+    paddingVertical: 16,
+    backgroundColor: '#f00'
+  },
+  bottomLeftContainer: {
+    flexDirection: 'row'
   },
   bottomItemContainer: {
     width: 32,
     height: 32,
     marginRight: 8,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  keyboardIconView: {
+    width: 32,
+    height: 32,
+    backgroundColor: COLORS.PURPLE,
+    borderRadius: 8,
     alignItems: 'center',
     justifyContent: 'center',
   },

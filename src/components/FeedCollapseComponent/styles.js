@@ -29,7 +29,7 @@ const styles = StyleSheet.create({
   },
   summaryText: {
     fontSize: 16,
-    marginTop: 10
+    marginVertical: 10
   },
   tagView: {
     marginVertical: 10
@@ -52,20 +52,6 @@ const styles = StyleSheet.create({
   },
   attachView: {
     width: '100%'
-  },
-  attachItem: {
-    flexDirection: 'row',
-    justifyContent: 'flex-start',
-    alignItems: 'center',
-    marginTop: 10,
-  },
-  attachIcon: {
-    width: 30,
-    height: 30,
-  },
-  attachFileText: {
-    marginLeft: 5,
-    fontSize: 16
   },
   footerView: {
     width: '100%',
