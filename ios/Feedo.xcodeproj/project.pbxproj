@@ -60,7 +60,6 @@
 		A43342992142AF80005EE6DE /* libFastImage.a in Frameworks */ = {isa = PBXBuildFile; fileRef = A40B3D5C2110EB62002B5EDB /* libFastImage.a */; };
 		A450133E2139BEE600A78D65 /* libRCTActionSheet.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 00C302AC1ABCB8CE00DB3ED1 /* libRCTActionSheet.a */; };
 		A450133F2139BEE600A78D65 /* libRCTAnimation.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 5E9157331DD0AC6500FF2AA8 /* libRCTAnimation.a */; };
-		A45013402139BEE600A78D65 /* libRCTAnimation.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 5E9157351DD0AC6500FF2AA8 /* libRCTAnimation.a */; };
 		A45013422139BEE600A78D65 /* libRCTGeolocation.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 00C302BA1ABCB90400DB3ED1 /* libRCTGeolocation.a */; };
 		A45013432139BEE700A78D65 /* libRCTImage.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 00C302C01ABCB91800DB3ED1 /* libRCTImage.a */; };
 		A45013442139BEE700A78D65 /* libRCTLinking.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 78C398B91ACF4ADC00677621 /* libRCTLinking.a */; };
@@ -675,7 +674,6 @@
 				A450134E2139BFA200A78D65 /* libRNFetchBlob.a in Frameworks */,
 				A450133E2139BEE600A78D65 /* libRCTActionSheet.a in Frameworks */,
 				A450133F2139BEE600A78D65 /* libRCTAnimation.a in Frameworks */,
-				A45013402139BEE600A78D65 /* libRCTAnimation.a in Frameworks */,
 				A45013422139BEE600A78D65 /* libRCTGeolocation.a in Frameworks */,
 				A45013432139BEE700A78D65 /* libRCTImage.a in Frameworks */,
 				A45013442139BEE700A78D65 /* libRCTLinking.a in Frameworks */,

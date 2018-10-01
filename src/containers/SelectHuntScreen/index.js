@@ -11,13 +11,13 @@ import {
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 
-import { Actions } from 'react-native-router-flux'
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons'
 import Ionicons from 'react-native-vector-icons/Ionicons'
 import _ from 'lodash'
 import Search from 'react-native-search-box';
-import NewFeedScreen from '../NewFeedScreen'
+import UserAvatarComponent from '../../components/UserAvatarComponent';
 
+import NewFeedScreen from '../NewFeedScreen'
 import { 
   getFeedoList,
   setCurrentFeed,
@@ -142,7 +142,8 @@ class SelectHuntScreen extends React.Component {
     this.setState({
       isVisibleNewFeedScreen: false,
     }, () => {
-      this.props.getFeedoList(0)
+      // this.props.getFeedoList(0)
+      this.onClose();
     });
   }
 
@@ -171,13 +172,30 @@ class SelectHuntScreen extends React.Component {
   get renderCreateNewFeed() {
     return (
       <TouchableOpacity 
-        style={[styles.itemContainer, {paddingHorizontal: 20, paddingTop: 10,}]}
+        style={[styles.itemContainer, {paddingHorizontal: 13, paddingTop: 10,}]}
         activeOpacity={0.7}
         onPress={() => this.onCreateNewFeed()}
       >
+        <View style={styles.avatarContainer}>
+          <Ionicons name="md-add" size={32} color={COLORS.PURPLE} />
+        </View>
         <Text style={[styles.textItemTitle, {color: COLORS.PURPLE}]}>Create new feed</Text>
       </TouchableOpacity>
     )
+  }
+
+  renderAvatar(feedo) {
+    if (feedo.metadata.owner) {
+      return;
+    }
+    return (
+      <UserAvatarComponent
+        size={32}
+        user={feedo.owner}
+        color={COLORS.LIGHT_GREY}
+        textColor={COLORS.PURPLE}
+      />
+    );
   }
 
   renderItem({item, index}) {
@@ -187,6 +205,9 @@ class SelectHuntScreen extends React.Component {
         activeOpacity={0.7}
         onPress={() => this.onSelectFeedo(item)}
       >
+        <View style={styles.avatarContainer}>
+          {this.renderAvatar(item)}
+        </View>
         <Text style={styles.textItemTitle} numberOfLines={1}>{item.headline}</Text>
       </TouchableOpacity>
     )
@@ -240,7 +261,7 @@ class SelectHuntScreen extends React.Component {
             {this.renderCreateNewFeed}
             <FlatList
               style={{marginTop: 11, marginBottom: 26}}
-              contentContainerStyle={{paddingHorizontal: 20}}
+              contentContainerStyle={{paddingHorizontal: 13}}
               data={feedoList}
               renderItem={this.renderItem.bind(this)}
               keyExtractor={(item, index) => index.toString()}

@@ -438,10 +438,6 @@ class FeedDetailScreen extends React.Component {
     if (COMMON_FUNC.isFeedGuest(this.state.currentFeed)) {
       return
     }
-
-    if (this.state.isShowToaster) {
-      return;
-    }
     ReactNativeHaptic.generate('impactHeavy');
     this.setState({
       selectedLongHoldCardIndex: index,
@@ -559,10 +555,9 @@ class FeedDetailScreen extends React.Component {
   }
 
   get renderNewCardModal() {
-    if ((!this.state.isVisibleCard && !this.state.isVisibleEditFeed) || this.state.isShowToaster) {
+    if (!this.state.isVisibleCard && !this.state.isVisibleEditFeed) {
       return;
     }
-
     return (
       <Animated.View 
         style={[

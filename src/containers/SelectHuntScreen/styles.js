@@ -61,7 +61,15 @@ export default styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
   },
+  avatarContainer: {
+    width: 32,
+    height: 32,
+    marginRight: 17,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
   textItemTitle: {
+    flex: 1,
     fontSize: 16,
     fontWeight: '500',
     lineHeight: 20,
