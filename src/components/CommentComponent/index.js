@@ -50,7 +50,9 @@ export default class CommentComponent extends React.Component {
           ? <Image source={COMMENT_ICON_B} style={styles.commentIcon} />
           : <Image source={COMMENT_ICON_G} style={styles.commentIcon} />
         }
-        <Text style={styles.iconText}>{comments}</Text>
+        {!this.props.isOnlyInvitee && (
+          <Text style={styles.iconText}>{comments}</Text>
+        )}
       </TouchableOpacity>
     );
   }

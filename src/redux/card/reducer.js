@@ -373,7 +373,7 @@ export default function card(state = initialState, action = {}) {
     case types.ADD_FILE_FULFILLED: {
       const { data } = action.result
       let files = state.currentCard.files || [];
-      files.unshift(data);
+      files.push(data);
       return {
         ...state,
         loading: types.ADD_FILE_FULFILLED,

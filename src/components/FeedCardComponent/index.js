@@ -57,16 +57,17 @@ class FeedCardComponent extends React.Component {
             {getDurationFromNow(idea.publishedDate)}
           </Text>
         </View>
-        {!isOnlyInvitee && (
-          <View style={styles.subView}>
-            <LikeComponent idea={idea} />
-            <CommentComponent 
-              idea={idea}
-              currentFeed={feedo.currentFeed}
-              onComment={this.props.onComment}
-            />
-          </View>
-        )}
+
+        <View style={styles.subView}>
+          <LikeComponent idea={idea} isOnlyInvitee={isOnlyInvitee} />
+          <CommentComponent 
+            idea={idea}
+            isOnlyInvitee={isOnlyInvitee}
+            currentFeed={feedo.currentFeed}
+            onComment={this.props.onComment}
+          />
+        </View>
+
       </View>
     )
   }
