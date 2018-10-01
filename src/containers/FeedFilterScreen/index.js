@@ -158,9 +158,9 @@ class FeedFilterScreen extends React.Component {
               <View style={styles.headerTitleView}>
                 <Text style={styles.headerTitle} numberOfLines={1} ellipsizeMode="tail">Search</Text>
               </View>
-              <TouchableOpacity onPress={() => {}}>
-                <Image source={SETTING_ICON} />
-              </TouchableOpacity>
+              {/*<TouchableOpacity onPress={() => {}}>*/}
+                {/*<Image source={SETTING_ICON} />*/}
+              {/*</TouchableOpacity>*/}
             </Animated.View>
             
             <View style={styles.detailView}>
