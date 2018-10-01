@@ -238,6 +238,7 @@ class NewCardScreen extends React.Component {
             isVisibleChooseLinkImagesModal: true,
           });
         }
+        this.onHideKeyboard();
       } else {
         this.openGraphForNoteLinks.push({
           url: this.noteLinksForOpenGraph[this.openGraphNoteIndex++],
@@ -259,6 +260,7 @@ class NewCardScreen extends React.Component {
             image,
           } = this.openGraphForNoteLinks[this.addLinkIndex++];
           this.props.addLink(id, url, title, description, image);
+          this.onHideKeyboard();
         }
       }
     } else if (this.props.card.loading !== types.LIKE_CARD_PENDING && nextProps.card.loading === types.LIKE_CARD_PENDING) {
