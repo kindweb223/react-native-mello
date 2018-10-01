@@ -1158,10 +1158,11 @@ class NewCardScreen extends React.Component {
 
   get renderOutsideMoreActions() {
     const { cardMode, viewMode, card, feedo } = this.props;
+
     if (cardMode === CONSTANTS.EXTENTION_CARD) {
       return;
     }
-    if (cardMode !== CONSTANTS.MAIN_APP_CARD_FROM_DASHBOARD) {
+    if (cardMode !== CONSTANTS.MAIN_APP_CARD_FROM_DASHBOARD && !_.isEmpty(card.currentCard)) {
       if (COMMON_FUNC.isFeedGuest(feedo.currentFeed) ||
           (COMMON_FUNC.isFeedContributor(feedo.currentFeed)) && !COMMON_FUNC.isCardOwner(card.currentCard)) {
         return
