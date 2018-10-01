@@ -37,6 +37,7 @@ class FeedFilterScreen extends React.Component {
       feedoList: [],
       filterFeedoList: [],
       userTags: [],
+      currentTags: [],
       loading: false,
       inputTag: false
     };
@@ -45,36 +46,53 @@ class FeedFilterScreen extends React.Component {
   componentDidMount() {
     const { feedo, initialTag, user } = this.props
 
-    this.setState({ loading: true })
+    this.setState({ loading: true, currentTags: initialTag })
     this.props.getUserTags(user.userInfo.id)
 
     if (feedo.feedoList && feedo.feedoList.length > 0) {
-      feedoList = feedo.feedoList.map(item => {
-        const filteredIdeas = _.filter(item.ideas, idea => idea.coverImage !== null && idea.coverImage !== '')
-
-        return Object.assign(
-          {},
-          item,
-          { coverImages: R.slice(0, filteredIdeas.length > 4 ? 4 : filteredIdeas.length, filteredIdeas) }
-        )
-      })
-
-      feedoList = _.orderBy(
-        _.filter(feedoList, item => item.status === 'PUBLISHED'),
-        ['publishedDate'],
-        ['desc']
-      )
-      
-      this.setState({ feedoList })
+      const feedoList = this.sortFeedoList(feedo)
       this.filterByTags(feedoList, initialTag)
     }
   }
 
+  sortFeedoList = feedo => {
+    feedoList = feedo.feedoList.map(item => {
+      const filteredIdeas = _.filter(item.ideas, idea => idea.coverImage !== null && idea.coverImage !== '')
+
+      return Object.assign(
+        {},
+        item,
+        { coverImages: R.slice(0, filteredIdeas.length > 4 ? 4 : filteredIdeas.length, filteredIdeas) }
+      )
+    })
+
+    feedoList = _.orderBy(
+      _.filter(feedoList, item => item.status === 'PUBLISHED'),
+      ['publishedDate'],
+      ['desc']
+    )
+    
+    this.setState({ feedoList })
+    return feedoList
+  }
+
   UNSAFE_componentWillReceiveProps(nextProps) {
-    if (this.props.feedo.loading === 'GET_USER_TAGS_PENDING' && nextProps.feedo.loading === 'GET_USER_TAGS_FULFILLED') {
+    const { feedo } = nextProps
+
+    if ((feedo.loading === 'GET_FEEDO_LIST_FULFILLED') || (feedo.loading === 'GET_FEEDO_LIST_REJECTED') ||
+      (feedo.loading === 'FEED_FULFILLED') || (feedo.loading === 'DEL_FEED_FULFILLED') || (feedo.loading === 'ARCHIVE_FEED_FULFILLED') ||
+      (feedo.loading === 'DUPLICATE_FEED_FULFILLED') || (feedo.loading === 'UPDATE_FEED_FULFILLED') ||
+      (feedo.loading === 'DELETE_CARD_FULFILLED') || (feedo.loading === 'MOVE_CARD_FULFILLED') ||
+      (feedo.loading === 'UPDATE_CARD_FULFILLED') || (feedo.loading === 'INVITE_HUNT_FULFILLED') ||
+      (feedo.loading === 'RESTORE_ARCHIVE_FEED_FULFILLED') || (feedo.loading === 'ADD_DUMMY_FEED')) {
+      const feedoList = this.sortFeedoList(feedo)
+      this.filterByTags(feedoList, this.state.currentTags)
+    }
+
+    if (this.props.feedo.loading === 'GET_USER_TAGS_PENDING' && feedo.loading === 'GET_USER_TAGS_FULFILLED') {
       this.setState({
         loading: false,
-        userTags: nextProps.feedo.userTags
+        userTags: feedo.userTags
       })
     }
 
@@ -110,6 +128,7 @@ class FeedFilterScreen extends React.Component {
 
   changeTags = (tags) => {
     const { feedoList } = this.state
+    this.setState({ currentTags: tags })
     this.filterByTags(feedoList, tags)
   }
 
@@ -178,7 +197,7 @@ class FeedFilterScreen extends React.Component {
                     loading={false}
                     feedoList={filterFeedoList}
                   />
-                : !inputTag && (
+                : !inputTag && this.props.initialTag.length > 0 && (
                     <View style={styles.emptyContainer}>
                       <Text style={styles.emptyText}>No Results Found</Text>
                     </View>

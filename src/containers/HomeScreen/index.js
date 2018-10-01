@@ -657,6 +657,9 @@ class HomeScreen extends React.Component {
   }
 
   onSearch = () => {
+    Actions.FeedFilterScreen({
+      initialTag: []
+    })
   }
 
   onCloseCardModal() {
