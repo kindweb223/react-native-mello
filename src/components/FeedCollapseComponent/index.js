@@ -116,7 +116,7 @@ class FeedCollapseComponent extends React.Component {
         <View style={styles.footerView}>
           <TouchableOpacity onPress={this.closeCollapse}>
             <View style={styles.collapseIconView}>
-              <Feather name="chevron-up" style={styles.arrowUpIcon} />
+              <Feather name="chevron-up" size={25} color={COLORS.MEDIUM_GREY} />
             </View>
           </TouchableOpacity>
         </View>
@@ -178,7 +178,7 @@ class FeedCollapseComponent extends React.Component {
             {isCollapse && (feedData.summary.length > 0 || (feedData.files && feedData.files.length > 0) || (feedData.tags && feedData.tags.length > 0)) && (
               <Animated.View style={{ marginLeft: 10, transform: [{ rotate: spin }] }}>
                 {!this.state.hideArrow && (
-                  <Feather name="chevron-down" style={styles.arrowUpIcon} />
+                  <Feather name="chevron-down" size={25} color={COLORS.MEDIUM_GREY} />
                 )}
               </Animated.View>
             )}

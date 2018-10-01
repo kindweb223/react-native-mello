@@ -636,17 +636,17 @@ class FeedDetailScreen extends React.Component {
             </View>
           </View>
 
-          {!_.isEmpty(currentFeed) && (
-            <View style={styles.collapseView}>
-              <FeedCollapseComponent feedData={currentFeed} />
-            </View>
-          )}
-
           <ScrollView
             scrollEventThrottle={16}
             style={styles.scrollView}
           >          
             <View style={styles.detailView}>
+              {!_.isEmpty(currentFeed) && (
+                <View style={styles.collapseView}>
+                  <FeedCollapseComponent feedData={currentFeed} />
+                </View>
+              )}
+
               {
                 !_.isEmpty(currentFeed) && currentFeed && currentFeed.ideas && currentFeed.ideas.length > 0 ?
                   currentFeed.ideas.map((item, index) => (

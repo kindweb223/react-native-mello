@@ -24,12 +24,6 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     color: COLORS.PRIMARY_BLACK
   },
-  arrowDownIcon: {
-    fontSize: 20,
-    color: COLORS.MEDIUM_GREY,
-    marginTop: 5,
-    fontWeight: 'bold'
-  },
   contentView: {
     width: '100%'
   },
@@ -83,10 +77,6 @@ const styles = StyleSheet.create({
     height: 30,
     alignItems: 'center',
     justifyContent: 'center',
-  },
-  arrowUpIcon: {
-    fontSize: 25,
-    color: COLORS.MEDIUM_GREY,
   },
   previewModal: {
     margin: 0,
