@@ -158,6 +158,10 @@ class NewCardScreen extends React.Component {
       if (newImageFiles.length === 1 && !nextProps.card.currentCard.coverImage) {
         loading = true;
         this.onSetCoverImage(newImageFiles[0].id);
+        this.currentSelectedLinkImageIndex ++;
+        if (this.currentSelectedLinkImageIndex < this.selectedLinkImages.length) {
+          this.addLinkImage(this.selectedLinkImages[this.currentSelectedLinkImageIndex]);
+        }
       } else {
         this.currentSelectedLinkImageIndex ++;
         if (this.currentSelectedLinkImageIndex < this.selectedLinkImages.length) {
@@ -226,17 +230,19 @@ class NewCardScreen extends React.Component {
         this.setState({
           cardName: nextProps.card.currentOpneGraph.title,
           idea: nextProps.card.currentOpneGraph.description + '\n' + this.urlForNewCard,
-          coverImage: nextProps.card.currentOpneGraph.image,
         });
-        if (nextProps.card.currentOpneGraph.image) {
-          loading = true;
-          this.addLinkImage(nextProps.card.currentOpneGraph.image);
-        } 
+
         this.allLinkImages = nextProps.card.currentOpneGraph.images;
         if (this.allLinkImages.length > 0) {
           this.setState({
             isVisibleChooseLinkImagesModal: true,
           });
+        } else {
+          if (nextProps.card.currentOpneGraph.image) {
+            loading = true;
+            this.setState({ coverImage: nextProps.card.currentOpneGraph.image })
+            this.addLinkImage(nextProps.card.currentOpneGraph.image);
+          }
         }
         this.onHideKeyboard();
       } else {

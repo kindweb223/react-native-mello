@@ -150,7 +150,7 @@ class LikeComponent extends React.Component {
 
     return (
       <TouchableOpacity
-        style={styles.container}
+        style={[styles.container, this.props.isOnlyInvitee ? { width: 25 } : { width: 45 }]}
         activeOpacity={0.7}
         onPress={() => this.onLike(liked)}
         onLongPress={() => this.onShowLikes()}
@@ -181,8 +181,12 @@ class LikeComponent extends React.Component {
             <Image source={FAV_ICON_G} />
           </Animated.View>
         </View>
-        <Animated.Text style={[styles.iconText, {top: animatedMove1, opacity: animatedOpacity1, }]}>{prevLikes}</Animated.Text>
-        <Animated.Text style={[styles.iconText, {top: animatedMove2, opacity: animatedOpacity2, }]}>{likes}</Animated.Text>
+        {!this.props.isOnlyInvitee && (
+          <Animated.Text style={[styles.iconText, {top: animatedMove1, opacity: animatedOpacity1, }]}>{prevLikes}</Animated.Text>
+        )}
+        {!this.props.isOnlyInvitee && (
+          <Animated.Text style={[styles.iconText, {top: animatedMove2, opacity: animatedOpacity2, }]}>{likes}</Animated.Text>
+        )}
       </TouchableOpacity>
     );
   }
