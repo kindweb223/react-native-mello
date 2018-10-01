@@ -75,7 +75,7 @@ class FeedCardComponent extends React.Component {
     const {
       idea,
     } = this.props;
-    console.log('PPP: ', idea)
+
     return (
       <View style={styles.container}>
         {idea.coverImage && idea.coverImage.length && 
