@@ -12,7 +12,7 @@ import PropTypes from 'prop-types'
 import { Actions } from 'react-native-router-flux'
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons'
 import Ionicons from 'react-native-vector-icons/Ionicons'
-
+import FastImage from "react-native-fast-image"
 import Permissions from 'react-native-permissions'
 import ImagePicker from 'react-native-image-picker'
 import Modal from "react-native-modal"
@@ -20,7 +20,7 @@ import ActionSheet from 'react-native-actionsheet'
 import VersionNumber from 'react-native-version-number'
 import _ from 'lodash'
 import ToasterComponent from '../../components/ToasterComponent'
-import UserAvatarComponent from '../../components/UserAvatarComponent';
+import UserAvatarComponent from '../../components/UserAvatarComponent'
 import LoadingScreen from '../LoadingScreen'
 import { userSignOut, deleteProfilePhoto } from '../../redux/user/actions'
 import COLORS from '../../service/colors'
@@ -87,6 +87,11 @@ class ProfileScreen extends React.Component {
     }
 
     if (this.props.user.loading === 'UPDATE_PROFILE_PENDING' && user.loading === 'UPDATE_PROFILE_FULFILLED') {
+      FastImage.preload([
+        {
+          uri: user.userInfo.imageUrl
+        }
+      ])
       this.setState({ isShowToaster: true, toasterText: 'Profile changed' })
       setTimeout(() => {
         this.setState({ isShowToaster: false })
