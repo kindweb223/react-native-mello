@@ -8,18 +8,16 @@ import {
   Animated
 } from 'react-native'
 import Collapsible from 'react-native-collapsible'
-import Ionicons from 'react-native-vector-icons/Ionicons'
 import Feather from 'react-native-vector-icons/Feather'
-import Image from 'react-native-image-progress'
+import FastImage from "react-native-fast-image"
 import Modal from "react-native-modal"
-import ImageSliderScreen from '../../containers/ImageSliderScreen'
 import { isEmpty, filter } from 'lodash'
 import PropTypes from 'prop-types'
+import ImageSliderScreen from '../../containers/ImageSliderScreen'
 import Tags from '../FeedTags'
 import COLORS from '../../service/colors'
 import CONSTANTS from '../../service/constants'
 import styles from './styles'
-import FastImage from "react-native-fast-image";
 const ATTACHMENT_ICON = require('../../../assets/images/Attachment/grey.png')
 
 class FeedCollapseComponent extends React.Component {
@@ -30,7 +28,6 @@ class FeedCollapseComponent extends React.Component {
       hideArrow: false,
       isCollapse: true,
       feedData: {},
-      COLLAPSE_SECTIONS: {},
       isPreview: false,
       images: [],
       position: 0,
@@ -43,11 +40,6 @@ class FeedCollapseComponent extends React.Component {
       return {
         feedData,
         images: filter(feedData.files, data => data.contentType.includes('image/')),
-        COLLAPSE_SECTIONS: {
-          titleOrigin: feedData.summary,
-          title: feedData.summary.substring(0, 40),
-          content: feedData.summary.substring(40)
-        },
       }
     }
     return null
@@ -60,73 +52,71 @@ class FeedCollapseComponent extends React.Component {
     })
   }
 
-  renderContent = (section, feedData) => {
+  renderContent = (feedData) => {
     const images = filter(feedData.files, data => data.contentType.includes('image/'))
     const files = filter(feedData.files, data => !data.contentType.includes('image/'))
 
     return (
       <View style={styles.contentView}>
-        <Text style={styles.contentText}>{section.content}</Text>
+        {feedData.summary.length > 0 && (
+          <Text style={styles.summaryText}>{feedData.summary}</Text>
+        )}
 
-        {!isEmpty(feedData) && (
-          <View>
-            {feedData.tags && (
-              <View style={styles.tagView}>
-                <Tags
-                  initialTags={feedData.tags}
-                  onChangeTags={() => {}}
-                  onTagPress={() => {}}
-                  inputStyle={{
-                    backgroundColor: 'white',
-                  }}
-                  tagContainerStyle={{
-                    backgroundColor: COLORS.TAG_LIGHT_ORANGE_BACKGROUND,
-                  }}
-                  tagTextStyle={{
-                    color: COLORS.DARK_ORANGE,
-                    fontSize: 16,
-                  }}
-                />
-              </View>
-            )}
-            
-            {images && (
-              <View style={styles.imageView}>
-                <ScrollView
-                  horizontal
-                  pagingEnabled
-                  showsHorizontalScrollIndicator={false}
-                >
-                  {images.map((item, key) => (
-                    <View key={key} style={key === (images.length - 1) ? styles.feedLastImage : styles.feedImage}>
-                      <TouchableOpacity onPress={() => this.onImagePreview(key)}>
-                        <FastImage style={styles.image} source={{uri: item.accessUrl}} threshold={300} />
-                      </TouchableOpacity>
-                    </View>
-                  ))}
-                </ScrollView>
-              </View>
-            )}
-
-            {files && (
-              <View style={styles.attachView}>
-                {files.map(item => (
-                  <TouchableOpacity key={item.id} onPress={() => {}}>
-                    <View style={styles.attachItem}>
-                      <Image style={styles.attachIcon} source={ATTACHMENT_ICON} />
-                      <Text style={styles.attachFileText}>{item.name}</Text>
-                    </View>
+        {feedData.tags && (
+          <View style={styles.tagView}>
+            <Tags
+              initialTags={feedData.tags}
+              onChangeTags={() => {}}
+              onTagPress={() => {}}
+              inputStyle={{
+                backgroundColor: 'white',
+              }}
+              tagContainerStyle={{
+                backgroundColor: COLORS.TAG_LIGHT_ORANGE_BACKGROUND,
+              }}
+              tagTextStyle={{
+                color: COLORS.DARK_ORANGE,
+                fontSize: 16,
+              }}
+            />
+          </View>
+        )}
+  
+        {images.length > 0 && (
+          <View style={styles.imageView}>
+            <ScrollView
+              horizontal
+              pagingEnabled
+              showsHorizontalScrollIndicator={false}
+            >
+              {images.map((item, key) => (
+                <View key={key} style={key === (images.length - 1) ? styles.feedLastImage : styles.feedImage}>
+                  <TouchableOpacity onPress={() => this.onImagePreview(key)}>
+                    <FastImage style={styles.image} source={{uri: item.accessUrl}} threshold={300} />
                   </TouchableOpacity>
-                ))}
-              </View>
-            )}
+                </View>
+              ))}
+            </ScrollView>
+          </View>
+        )}
+
+        {files.length > 0 && (
+          <View style={styles.attachView}>
+            {files.map(item => (
+              <TouchableOpacity key={item.id} onPress={() => {}}>
+                <View style={styles.attachItem}>
+                  <FastImage style={styles.attachIcon} source={ATTACHMENT_ICON} />
+                  <Text style={styles.attachFileText}>{item.name}</Text>
+                </View>
+              </TouchableOpacity>
+            ))}
           </View>
         )}
 
         <View style={styles.footerView}>
           <TouchableOpacity onPress={this.closeCollapse}>
             <View style={styles.collapseIconView}>
-              <Feather name="chevron-up" style={styles.arrowUpIcon} />
+              <Feather name="chevron-up" size={25} color={COLORS.MEDIUM_GREY} />
             </View>
           </TouchableOpacity>
         </View>
@@ -135,7 +125,7 @@ class FeedCollapseComponent extends React.Component {
   }
 
   handleCollapse = () => {
-    const { isCollapse, COLLAPSE_SECTIONS, feedData } = this.state
+    const { isCollapse, feedData } = this.state
 
     if (isCollapse && 
         (feedData.summary.length > 0 ||
@@ -169,7 +159,7 @@ class FeedCollapseComponent extends React.Component {
   }
 
   render() {
-    const { feedData, COLLAPSE_SECTIONS, isCollapse, isPreview, images } = this.state
+    const { feedData, isCollapse, isPreview, images } = this.state
 
     const spin = this.state.spinValue.interpolate({
       inputRange: [0, 1],
@@ -178,26 +168,25 @@ class FeedCollapseComponent extends React.Component {
 
     return (
       <View style={styles.collapseView}>
-        <TouchableOpacity onPress={this.handleCollapse}>
-          <View style={isCollapse ? styles.collapseHeader : styles.noncollapseHeader}>
+        <TouchableOpacity style={styles.collapseHeaderView} activeOpacity={0.9} onPress={this.handleCollapse}>
+          <View style={styles.collpaseHeader}>
             {isCollapse
-              ? <Text style={styles.collapseHeaderText} numberOfLines={1} ellipsizeMode="tail">
-                  {COLLAPSE_SECTIONS.titleOrigin}
-                </Text>
-              : <Text style={styles.headerText}>
-                  {COLLAPSE_SECTIONS.title}
-                </Text>
+              ? <Text style={styles.headerTitle} numberOfLines={1} ellipsizeMode="tail">{feedData.headline}</Text>
+              : <Text style={styles.headerTitle}>{feedData.headline}</Text>
             }
-            <Animated.View style={{ transform: [{ rotate: spin }] }}>
-              {!this.state.hideArrow && (
-                <Feather name="chevron-down" style={styles.arrowUpIcon} />
-              )}
-            </Animated.View>
+
+            {isCollapse && (feedData.summary.length > 0 || (feedData.files && feedData.files.length > 0) || (feedData.tags && feedData.tags.length > 0)) && (
+              <Animated.View style={{ marginLeft: 10, transform: [{ rotate: spin }] }}>
+                {!this.state.hideArrow && (
+                  <Feather name="chevron-down" size={25} color={COLORS.MEDIUM_GREY} />
+                )}
+              </Animated.View>
+            )}
           </View>
         </TouchableOpacity>
 
-        <Collapsible collapsed={isCollapse} align="center" duration={500}>
-          {this.renderContent(COLLAPSE_SECTIONS, feedData)}
+        <Collapsible collapsed={isCollapse} align="top" duration={500}>
+          {this.renderContent(feedData)}
         </Collapsible>
 
         <Modal 

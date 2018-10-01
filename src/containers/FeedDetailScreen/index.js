@@ -75,7 +75,6 @@ class FeedDetailScreen extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      scrollY: new Animated.Value(0),
       currentBackFeed: {},
       currentFeed: {},
       loading: false,
@@ -601,37 +600,7 @@ class FeedDetailScreen extends React.Component {
     const { currentFeed, loading, pinText } = this.state
     // console.log('CURRENT_FEED: ', currentFeed)
 
-    const navbarBackground = this.state.scrollY.interpolate({
-      inputRange: [40, 41],
-      outputRange: ['transparent', '#fff'],
-      extrapolate: 'clamp'
-    })
-
-    const settingViewOpacity = this.state.scrollY.interpolate({
-      inputRange: [60, 90],
-      outputRange: [0, 1],
-      extrapolate: 'clamp'
-    })
-
-    const settingMenuY = this.state.scrollY.interpolate({
-      inputRange: [0, 35],
-      outputRange: [140 + CONSTANTS.STATUSBAR_HEIGHT - 20, 80 + CONSTANTS.STATUSBAR_HEIGHT - 20],
-      extrapolate: 'clamp'
-    })
-
-    const avatarPosition = this.state.scrollY.interpolate({
-      inputRange: [30, 90],
-      outputRange: [0, 50],
-      extrapolate: 'clamp'
-    })
-
-    const normalHeaderOpacity = this.state.scrollY.interpolate({
-      inputRange: [20, 35],
-      outputRange: [1, 0],
-      extrapolate: 'clamp'
-    })
-
-    let avatars = []
+     let avatars = []
     if (!_.isEmpty(currentFeed)) {
       currentFeed.invitees.forEach((item, key) => {
         avatars = [
@@ -644,87 +613,74 @@ class FeedDetailScreen extends React.Component {
     return (
       <SafeAreaView style={styles.safeArea}>
         <View style={styles.container}>
-          <Animated.View style={[styles.miniNavView, { backgroundColor: navbarBackground }]}>
+          <View style={styles.navBar}>
             <TouchableOpacity onPress={this.backToDashboard}>
               <View style={styles.backView}>
                 <Ionicons name="ios-arrow-back" style={styles.backIcon} />
               </View>
             </TouchableOpacity>
             <View style={styles.rightHeader}>
-              <Animated.View style={[styles.settingView, { opacity: settingViewOpacity }]}>
-                <FeedNavbarSettingComponent handleSetting={() => this.handleSetting()} />
-              </Animated.View>
-              <Animated.View style={[styles.avatarView, { right: avatarPosition }]}>
+              <View style={styles.avatarView}>
                 <TouchableOpacity onPress={() => this.handleShare()}>
                   <AvatarPileComponent avatars={avatars} />
                 </TouchableOpacity>
-              </Animated.View>
+              </View>
+              <View style={styles.settingView}>
+                <FeedNavbarSettingComponent handleSetting={() => this.handleSetting()} />
+              </View>
             </View>
-          </Animated.View>
+          </View>
 
           <ScrollView
             scrollEventThrottle={16}
             style={styles.scrollView}
-            onScroll={
-              Animated.event(
-                [{ nativeEvent: { contentOffset: { y: this.state.scrollY } } }]
-              )
-            }
-          >       
-            <Animated.View style={[styles.normalHeader, { opacity: normalHeaderOpacity }]}>
-              <View key="2" style={styles.headerTitleView}>
-                <Text style={styles.headerTitle} numberOfLines={1} ellipsizeMode="tail">{currentFeed.headline}</Text>
-                <View>
-                  <FeedNavbarSettingComponent handleSetting={this.handleSetting} />
-                </View>
-              </View>
-            </Animated.View>
-            
-              <View style={styles.detailView}>
-                {!_.isEmpty(currentFeed) && 
-                  (currentFeed.summary.length > 0 ||
-                  (currentFeed.files && currentFeed.files.length > 0) ||
-                  (currentFeed.tags && currentFeed.tags.length > 0)) && (
+          >          
+            <View style={styles.detailView}>
+              {!_.isEmpty(currentFeed) && (
+                <View style={styles.collapseView}>
                   <FeedCollapseComponent feedData={currentFeed} />
-                )}
+                </View>
+              )}
 
-                {
-                  !_.isEmpty(currentFeed) && currentFeed && currentFeed.ideas && currentFeed.ideas.length > 0 ?
-                    currentFeed.ideas.map((item, index) => (
-                      <Animated.View 
-                        key={index}
-                        style={
-                          this.state.selectedLongHoldCardIndex === index && 
-                          {
-                            transform: [
-                              { scale: this.animatedSelectCard },
-                            ],
-                          }
+              {
+                !_.isEmpty(currentFeed) && currentFeed && currentFeed.ideas && currentFeed.ideas.length > 0 ?
+                  currentFeed.ideas.map((item, index) => (
+                    <Animated.View 
+                      key={index}
+                      style={
+                        this.state.selectedLongHoldCardIndex === index && 
+                        {
+                          transform: [
+                            { scale: this.animatedSelectCard },
+                          ],
                         }
+                      }
+                    >
+                      <TouchableHighlight
+                        ref={ref => this.cardItemRefs[index] = ref}
+                        style={{ marginHorizontal: 5, borderRadius: 5 }}
+                        underlayColor={COLORS.LIGHT_GREY}
+                        onPress={() => this.onSelectCard(item, index)}
+                        onLongPress={() => this.onLongPressCard(index, item, currentFeed.invitees)}
                       >
-                        <TouchableHighlight
-                          ref={ref => this.cardItemRefs[index] = ref}
-                          style={{ marginHorizontal: 5, borderRadius: 5 }}
-                          underlayColor={COLORS.LIGHT_GREY}
-                          onPress={() => this.onSelectCard(item, index)}
-                          onLongPress={() => this.onLongPressCard(index, item, currentFeed.invitees)}
-                        >
-                          <FeedCardComponent idea={item} invitees={currentFeed.invitees} />
-                        </TouchableHighlight>
-                      </Animated.View>
-                    ))
-                  : 
-                    <View style={styles.emptyView}>
-                      {loading
-                        ? <FeedLoadingStateComponent />
-                        : <View style={styles.emptyInnerView}>
-                            <Image source={EMPTY_ICON} />
-                            <Text style={styles.emptyText}>It is lonely here</Text>
-                          </View>
-                        }
-                    </View>
-                }
-              </View>
+                        <FeedCardComponent idea={item} invitees={currentFeed.invitees} />
+                      </TouchableHighlight>
+                    </Animated.View>
+                  ))
+                : 
+                  <View style={styles.emptyView}>
+                    {loading
+                      ? <View style={styles.loadingView}>
+                          <FeedLoadingStateComponent />
+                        </View>
+                      : <View style={styles.emptyInnerView}>
+                          <Image source={EMPTY_ICON} />
+                          <Text style={styles.emptyText}>It is lonely here</Text>
+                        </View>
+                      }
+                  </View>
+              }
+            </View>
           </ScrollView>
 
         </View>
@@ -793,7 +749,7 @@ class FeedDetailScreen extends React.Component {
           onModalHide={() => this.hideSettingMenu()}
           onBackdropPress={() => this.setState({ openMenu: false })}
         >
-          <Animated.View style={[styles.settingMenuView, { top: settingMenuY }]}>
+          <Animated.View style={styles.settingMenuView}>
             <FeedControlMenuComponent handleSettingItem={item => this.handleSettingItem(item)} data={currentFeed} pinText={pinText} />
           </Animated.View>
         </Modal>

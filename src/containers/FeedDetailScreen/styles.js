@@ -12,8 +12,12 @@ const styles = StyleSheet.create({
     flex: 1,
     paddingBottom: CONSTANTS.ACTION_BAR_HEIGHT,
   },
+  loadingView: {
+    width: '100%',
+    position: 'absolute'
+  },
   emptyView: {
-    flex: 1
+    flex: 1,
   },
   emptyInnerView: {
     justifyContent: 'center',
@@ -26,48 +30,12 @@ const styles = StyleSheet.create({
     color: COLORS.MEDIUM_GREY,
     marginTop: 27
   },
-  scrollView: {
-    zIndex: 9,
-    paddingTop: NAV_BAR_HEIGHT,
-  },
-  detailView: {
-    flex: 1,
-    paddingTop: 10,
-    paddingBottom: 80
-  },
-  tagView: {
-    marginVertical: 10,
-  },
-  normalHeader: {
-    height: NAV_BAR_HEIGHT,
-    justifyContent: 'center',
-    alignItems: 'center',
-    paddingHorizontal: CONSTANTS.PADDING
-  },
-  headerTitleView: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'flex-end',
-    height: '50%',
-    width: '100%',
-  },
-  headerTitle: {
-    lineHeight: 28,
-    fontSize: 28,
-    fontWeight: 'bold',
-    color: COLORS.PRIMARY_BLACK,
-    marginRight: 10,
-    flex: 1
-  },
-  miniNavView: {
+  navBar: {
     width: '100%',
     height: NAV_BAR_HEIGHT,
     paddingHorizontal: CONSTANTS.PADDING,
     backgroundColor: '#fff',
     zIndex: 11,
-    position: 'absolute',
-    left: 0,
-    top: 0,
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
@@ -91,9 +59,6 @@ const styles = StyleSheet.create({
     alignItems: 'center'
   },
   avatarView: {
-    position: 'absolute',
-    right: 0,
-    bottom: 0,
     height: '100%',
     justifyContent: 'center',
     alignItems: 'center',
@@ -101,8 +66,35 @@ const styles = StyleSheet.create({
   settingView: {
     height: '100%',
     justifyContent: 'center',
-    alignItems: 'flex-end',
-    width: 100
+    alignItems: 'center',
+    marginLeft: 15
+  },
+  collapseView: {
+    width: '100%',
+    paddingHorizontal: CONSTANTS.PADDING,
+    paddingBottom: 20,
+    paddingTop: 10,
+    marginBottom: 10,
+    backgroundColor: '#fff',
+    borderBottomLeftRadius: 15,
+    borderBottomRightRadius: 15,
+    zIndex: 11,
+    ...Platform.select({
+      ios: {
+        shadowColor: 'black',
+        shadowOffset: { height: 5 },
+        shadowOpacity: 0.15,
+        shadowRadius: 5
+      },
+      android: {
+        elevation: 20
+      }
+    })
+  },
+  scrollView: {
+  },
+  detailView: {
+    paddingVertical: 10
   },
   modalContainer: {
     position: 'absolute',
@@ -119,7 +111,7 @@ const styles = StyleSheet.create({
     paddingVertical: 10,
     position: 'absolute',
     right: CONSTANTS.PADDING,
-    top: 140,
+    top: CONSTANTS.STATUSBAR_HEIGHT + 60,
     zIndex: 0,
     ...Platform.select({
       ios: {
