@@ -22,7 +22,7 @@ const styles = StyleSheet.create({
     backgroundColor: 'transparent',
   },
   contentContainer: {
-    borderRadius: 18,
+    // borderRadius: 18,
     paddingTop: 26,
     paddingBottom: 17,
     backgroundColor: '#fff',
@@ -33,13 +33,13 @@ const styles = StyleSheet.create({
     fontSize: 18,
     lineHeight: 25,
     fontWeight: '600',
-    marginHorizontal: 20,
+    marginHorizontal: 16,
   },
   textInputIdea: {
     fontSize: 16,
     lineHeight: 23,
     marginTop: 15,
-    marginHorizontal: 20,
+    marginHorizontal: 16,
     
     paddingLeft: 0,
     paddingRight: 0,
@@ -49,21 +49,18 @@ const styles = StyleSheet.create({
   attachmentButtonsContainer: {
     flexDirection: 'row',
     alignItems: 'center',
-    paddingLeft: 22,
-    paddingRight: 16,
-    marginVertical: 20,
+    paddingHorizontal: 16,
+    marginVertical: 16,
   },
   buttonItemContainer: {
     width: 32,
     height: 32,
-    marginRight: 8,
     alignItems: 'center',
     justifyContent: 'center',
   },
   hideKeyboardContainer: {
     position: 'absolute',
     right: 16,
-    bottom: 17,
   },
   attachment: {
     transform: [
@@ -98,7 +95,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 6,
     height: 50
   },
-  shareHeaderContainer: {
+  headerContainer: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
@@ -117,16 +114,17 @@ const styles = StyleSheet.create({
     borderRadius: 20,
     justifyContent: 'center',
     alignItems: 'center',
+    marginLeft: 10,
   },
   imageCoverView: {
-    marginHorizontal: 20,
+    // marginHorizontal: 16,
     marginTop: 15,
-    height: CONSTANTS.SCREEN_WIDTH * 0.48,
-    borderRadius: 5,
+    height: Math.round(CONSTANTS.SCREEN_WIDTH * 0.565),
+    // borderRadius: 5,
     overflow: 'hidden'
   },
   coverImageSelectContainer: {
-    marginHorizontal: 20,
+    marginHorizontal: 16,
     marginTop: 15,
     height: CONSTANTS.SCREEN_WIDTH * 0.48,
     borderRadius: 5,
