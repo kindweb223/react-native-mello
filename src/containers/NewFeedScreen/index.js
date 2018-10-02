@@ -454,7 +454,7 @@ class NewFeedScreen extends React.Component {
         />
         {this.renderImages}
         {this.renderDocuments}
-        {this.props.feedo.currentFeed && this.props.feedo.currentFeed.tags.length > 0 && (
+        {!_.isEmpty(this.props.feedo.currentFeed) && this.props.feedo.currentFeed.tags.length > 0 && (
           <Tags
             tags={this.props.feedo.currentFeed.tags}
             readonly={true}
@@ -545,14 +545,9 @@ class NewFeedScreen extends React.Component {
           (this.props.feedoMode === CONSTANTS.FEEDO_FROM_CARD) && {left: animatedMove}
         ]}
       >
-        <TouchableOpacity 
-          style={styles.backdropContainer}
-          activeOpacity={1}
-          onPress={this.onOpenActionSheet.bind(this)}
-        />
         <Animated.View 
           style={[
-            styles.contentContainer, 
+            styles.contentContainer,
             {
               paddingBottom: this.animatedKeyboardHeight,
               height: CONSTANTS.SCREEN_HEIGHT
@@ -563,11 +558,6 @@ class NewFeedScreen extends React.Component {
           {this.renderCenterContent}
           {this.renderBottomContent}
         </Animated.View>
-        <TouchableOpacity 
-          style={styles.backdropContainer}
-          activeOpacity={1}
-          onPress={this.onOpenActionSheet.bind(this)}
-        />
         {this.state.loading && <LoadingScreen />}
       </Animated.View>
     );

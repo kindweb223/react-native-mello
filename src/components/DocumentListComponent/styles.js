@@ -3,10 +3,6 @@ import COLORS from '../../service/colors'
 import CONSTANTS from '../../service/constants'
 
 const styles = StyleSheet.create({
-  container: {
-    marginTop: 30,
-    marginHorizontal: 10,
-  },
   itemContainer: {
     alignSelf: 'flex-start',
     borderRadius: 30,

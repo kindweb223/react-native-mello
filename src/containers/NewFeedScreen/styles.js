@@ -5,18 +5,10 @@ import CONSTANTS from '../../service/constants'
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: 'transparent',
     justifyContent: 'center',
   },
-  backdropContainer: {
-    flex: 1,
-  },
   feedContainer: {
-    position: 'absolute',
-    left: 0,
-    right: 0,
-    top: 0,
-    bottom: 0,
+    flex: 1
   },
   contentContainer: {
     backgroundColor: '#fff'
@@ -73,9 +65,8 @@ const styles = StyleSheet.create({
   bottomContainer: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    paddingHorizontal: 16,
-    paddingVertical: 16,
-    backgroundColor: '#f00'
+    paddingHorizontal: 14,
+    paddingVertical: 14,
   },
   bottomLeftContainer: {
     flexDirection: 'row'
@@ -85,13 +76,14 @@ const styles = StyleSheet.create({
     height: 32,
     marginRight: 8,
     alignItems: 'center',
-    justifyContent: 'center',
+    justifyContent: 'center'
   },
   keyboardIconView: {
     width: 32,
     height: 32,
     backgroundColor: COLORS.PURPLE,
     borderRadius: 8,
+    marginRight: 2,
     alignItems: 'center',
     justifyContent: 'center',
   },
