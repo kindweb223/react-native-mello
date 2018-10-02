@@ -89,18 +89,6 @@ class CropImageScreen extends React.Component {
             />
           </View>
 
-          {/* <Image
-            source={{ uri: this.state.cropUrl.uri }}
-            style={{
-              position: 'absolute',
-              width: 200,
-              height: 200,
-              borderRadius: 100,
-              bottom: 100
-            }}
-            resizeMode="cover"
-          /> */}
-
           <View style={styles.headerView}>
             <View style={styles.closeButton} />
             <Text style={styles.title}>Update avatar</Text>
