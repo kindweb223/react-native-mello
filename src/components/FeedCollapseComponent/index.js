@@ -14,6 +14,7 @@ import Modal from "react-native-modal"
 import { isEmpty, filter } from 'lodash'
 import PropTypes from 'prop-types'
 import ImageSliderScreen from '../../containers/ImageSliderScreen'
+import DocumentList from '../DocumentListComponent'
 import Tags from '../FeedTags'
 import COLORS from '../../service/colors'
 import CONSTANTS from '../../service/constants'
@@ -61,26 +62,6 @@ class FeedCollapseComponent extends React.Component {
         {feedData.summary.length > 0 && (
           <Text style={styles.summaryText}>{feedData.summary}</Text>
         )}
-
-        {feedData.tags && (
-          <View style={styles.tagView}>
-            <Tags
-              initialTags={feedData.tags}
-              onChangeTags={() => {}}
-              onTagPress={() => {}}
-              inputStyle={{
-                backgroundColor: 'white',
-              }}
-              tagContainerStyle={{
-                backgroundColor: COLORS.TAG_LIGHT_ORANGE_BACKGROUND,
-              }}
-              tagTextStyle={{
-                color: COLORS.DARK_ORANGE,
-                fontSize: 16,
-              }}
-            />
-          </View>
-        )}
   
         {images.length > 0 && (
           <View style={styles.imageView}>
@@ -102,14 +83,30 @@ class FeedCollapseComponent extends React.Component {
 
         {files.length > 0 && (
           <View style={styles.attachView}>
-            {files.map(item => (
-              <TouchableOpacity key={item.id} onPress={() => {}}>
-                <View style={styles.attachItem}>
-                  <FastImage style={styles.attachIcon} source={ATTACHMENT_ICON} />
-                  <Text style={styles.attachFileText}>{item.name}</Text>
-                </View>
-              </TouchableOpacity>
-            ))}
+            <DocumentList 
+              editable={false}
+              files={files}
+            />
+          </View>
+        )}
+
+        {feedData.tags && (
+          <View style={styles.tagView}>
+            <Tags
+              initialTags={feedData.tags}
+              onChangeTags={() => {}}
+              onTagPress={() => {}}
+              inputStyle={{
+                backgroundColor: 'white',
+              }}
+              tagContainerStyle={{
+                backgroundColor: COLORS.TAG_LIGHT_ORANGE_BACKGROUND,
+              }}
+              tagTextStyle={{
+                color: COLORS.DARK_ORANGE,
+                fontSize: 16,
+              }}
+            />
           </View>
         )}
 

@@ -1383,7 +1383,7 @@ class NewCardScreen extends React.Component {
 
   render () {
     return (
-      <SafeAreaView style={styles.container}>
+      <View style={styles.container}>
         {this.renderCard}
         {this.renderOutsideMoreActions}
         {this.renderSelectHunt}
@@ -1415,7 +1415,7 @@ class NewCardScreen extends React.Component {
             onSave={this.onSaveLinkImages.bind(this)}
           />
         </Modal>
-      </SafeAreaView>
+      </View>
     );
   }
 }

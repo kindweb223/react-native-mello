@@ -4,7 +4,8 @@ import CONSTANTS from '../../service/constants'
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
+    width: CONSTANTS.SCREEN_WIDTH,
+    height: CONSTANTS.SCREEN_HEIGHT,
     backgroundColor: 'transparent',
     justifyContent: 'center',
   },

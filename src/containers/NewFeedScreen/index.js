@@ -14,6 +14,7 @@ import { connect } from 'react-redux'
 
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons'
 import Entypo from 'react-native-vector-icons/Entypo'
+import Feather from 'react-native-vector-icons/Feather'
 import Tags from '../../components/TagComponent'
 import ActionSheet from 'react-native-actionsheet'
 import { Actions } from 'react-native-router-flux'
@@ -72,7 +73,6 @@ class NewFeedScreen extends React.Component {
   }
 
   UNSAFE_componentWillReceiveProps(nextProps) {
-    // console.log('NewFeedScreen UNSAFE_componentWillReceiveProps : ', nextProps.feedo.loading, nextProps.feedo.currentFeed);
     let loading = false;
     if (this.props.feedo.loading !== types.CREATE_FEED_PENDING && nextProps.feedo.loading === types.CREATE_FEED_PENDING) {
       // creating a feed
@@ -185,7 +185,7 @@ class NewFeedScreen extends React.Component {
   keyboardWillShow(e) {
     Animated.timing(
       this.animatedKeyboardHeight, {
-        toValue: e.endCoordinates.height - ScreenVerticalMinMargin - 18, // border radius = 18
+        toValue: e.endCoordinates.height,
         duration: e.duration,
       }
     ).start();
@@ -421,10 +421,6 @@ class NewFeedScreen extends React.Component {
     }
   }
 
-  onScrollNote(event) {
-    console.log(event.nativeEvent.contentOffset);
-  }
-
   get renderCenterContent() {
     return (
       <ScrollView 
@@ -437,6 +433,7 @@ class NewFeedScreen extends React.Component {
           placeholder='Name your feed'
           underlineColorAndroid='transparent'
           value={this.state.feedName}
+          multiline
           onChangeText={(value) => this.setState({feedName: value})}
           selectionColor={COLORS.PURPLE}
         />
@@ -450,57 +447,75 @@ class NewFeedScreen extends React.Component {
           onChangeText={(value) => this.onChangeNote(value)}
           selectionColor={COLORS.PURPLE}
         />
-        <Tags
-          tags={this.props.feedo.currentFeed.tags}
-          readonly={true}
-          onPressTag={(index, tag) => this.onOpenCreationTag()}
-          containerStyle={{
-            marginHorizontal: 20,
-            marginVertical: 8,
-          }}
-          inputStyle={{
-            backgroundColor: 'white',
-          }}
-          tagContainerStyle={{
-            backgroundColor: COLORS.TAG_LIGHT_ORANGE_BACKGROUND,
-          }}
-          tagTextStyle={{
-            color: COLORS.DARK_ORANGE,
-            fontSize: 16,
-          }}
-        />
+
         {this.renderImages}
         {this.renderDocuments}
+
+        {!_.isEmpty(this.props.feedo.currentFeed) && this.props.feedo.currentFeed.tags.length > 0 && (
+          <Tags
+            tags={this.props.feedo.currentFeed.tags}
+            readonly={true}
+            placeHolder=""
+            onPressTag={(index, tag) => this.onOpenCreationTag()}
+            containerStyle={{
+              marginHorizontal: 20,
+              marginVertical: 8,
+            }}
+            inputStyle={{
+              backgroundColor: 'white',
+            }}
+            tagContainerStyle={{
+              backgroundColor: COLORS.TAG_LIGHT_ORANGE_BACKGROUND,
+            }}
+            tagTextStyle={{
+              color: COLORS.DARK_ORANGE,
+              fontSize: 16,
+            }}
+          />
+        )}
       </ScrollView>
     );
+  }
+
+  onHideKeyboard() {
+    Keyboard.dismiss();
   }
 
   get renderBottomContent() {
     return (
       <View style={styles.bottomContainer}>
-        {/*
-        <TouchableOpacity
-          style={styles.bottomItemContainer}
-          activeOpacity={0.6}
-          onPress={this.onInsertLink.bind(this)}
-        >
-          <Octicons name="zap" size={20} color={COLORS.PURPLE} />
-        </TouchableOpacity>
-        */}
-        <TouchableOpacity
-          style={styles.bottomItemContainer}
-          activeOpacity={0.6}
-          onPress={this.onAddMedia.bind(this)}
-        >
-          <Entypo name="image" size={20} color={COLORS.PURPLE} />
-        </TouchableOpacity>
-        <TouchableOpacity 
-          style={styles.bottomItemContainer}
-          activeOpacity={0.6}
-          onPress={this.onAddDocument.bind(this)}
-        >
-          <Entypo name="attachment" style={styles.attachment} size={20} color={COLORS.PURPLE} />
-        </TouchableOpacity>
+        <View style={styles.bottomLeftContainer}>
+          <TouchableOpacity
+            style={styles.bottomItemContainer}
+            activeOpacity={0.6}
+            onPress={this.onOpenCreationTag.bind(this)}
+          >
+            <Feather name="tag" size={20} color={COLORS.PURPLE} />
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={styles.bottomItemContainer}
+            activeOpacity={0.6}
+            onPress={this.onAddMedia.bind(this)}
+          >
+            <Entypo name="image" size={20} color={COLORS.PURPLE} />
+          </TouchableOpacity>
+          <TouchableOpacity 
+            style={styles.bottomItemContainer}
+            activeOpacity={0.6}
+            onPress={this.onAddDocument.bind(this)}
+          >
+            <Entypo name="attachment" style={styles.attachment} size={20} color={COLORS.PURPLE} />
+          </TouchableOpacity>
+        </View>
+        <View style={styles.bottomRightCotainer}>
+          <TouchableOpacity
+            style={styles.keyboardIconView}
+            activeOpacity={0.6}
+            onPress={this.onHideKeyboard.bind(this)}
+          >
+            <MaterialCommunityIcons name="keyboard-close" size={20} color="#fff" />
+          </TouchableOpacity>
+        </View>
       </View>
     );
   }
@@ -527,17 +542,12 @@ class NewFeedScreen extends React.Component {
           (this.props.feedoMode === CONSTANTS.FEEDO_FROM_CARD) && {left: animatedMove}
         ]}
       >
-        <TouchableOpacity 
-          style={styles.backdropContainer}
-          activeOpacity={1}
-          onPress={this.onOpenActionSheet.bind(this)}
-        />
         <Animated.View 
           style={[
-            styles.contentContainer, 
+            styles.contentContainer,
             {
               paddingBottom: this.animatedKeyboardHeight,
-              height: CONSTANTS.SCREEN_HEIGHT - ScreenVerticalMinMargin * 2,
+              height: CONSTANTS.SCREEN_HEIGHT
             },
           ]}
         >
@@ -545,12 +555,9 @@ class NewFeedScreen extends React.Component {
           {this.renderCenterContent}
           {this.renderBottomContent}
         </Animated.View>
-        <TouchableOpacity 
-          style={styles.backdropContainer}
-          activeOpacity={1}
-          onPress={this.onOpenActionSheet.bind(this)}
-        />
+
         {this.state.loading && <LoadingScreen />}
+
       </Animated.View>
     );
   }

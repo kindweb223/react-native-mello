@@ -16,6 +16,7 @@ export default styles = StyleSheet.create({
     bottom: ScreenVerticalMinMargin,
   },
   newFeedContainer: {
+    backgroundColor: '#fff',
     position: 'absolute',
     left: 0,
     right: 0,
