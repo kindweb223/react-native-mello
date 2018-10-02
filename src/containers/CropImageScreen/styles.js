@@ -8,7 +8,7 @@ export default {
   container: {
     width: '100%',
     height: '100%',
-    backgroundColor: '#f00'
+    backgroundColor: '#fff'
   },
   body: {
     width: '100%',
@@ -56,6 +56,7 @@ export default {
     justifyContent: 'flex-start',
     alignItems: 'center',
     paddingHorizontal: CONSTANTS.PADDING,
+    paddingTop: 10,
     backgroundColor: '#fff'
   },
   saveBtn: {

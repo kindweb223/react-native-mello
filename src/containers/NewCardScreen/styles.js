@@ -4,7 +4,8 @@ import CONSTANTS from '../../service/constants'
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
+    width: CONSTANTS.SCREEN_WIDTH,
+    height: CONSTANTS.SCREEN_HEIGHT,
     backgroundColor: 'transparent',
     justifyContent: 'center',
   },
@@ -39,6 +40,11 @@ const styles = StyleSheet.create({
     lineHeight: 23,
     marginTop: 15,
     marginHorizontal: 20,
+    
+    paddingLeft: 0,
+    paddingRight: 0,
+    paddingTop: 0,
+    paddingBottom: 0,
   },
   attachmentButtonsContainer: {
     flexDirection: 'row',
@@ -201,12 +207,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   url: {
-    color: 'red',
-    textDecorationLine: 'underline',
-  },
-  text: {
-    color: 'black',
-    fontSize: 15,
+    color: COLORS.BLUE,
   },
 })
 
