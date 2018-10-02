@@ -598,9 +598,8 @@ class FeedDetailScreen extends React.Component {
 
   render () {
     const { currentFeed, loading, pinText } = this.state
-    // console.log('CURRENT_FEED: ', currentFeed)
 
-     let avatars = []
+    let avatars = []
     if (!_.isEmpty(currentFeed)) {
       currentFeed.invitees.forEach((item, key) => {
         avatars = [

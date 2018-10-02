@@ -73,7 +73,6 @@ class NewFeedScreen extends React.Component {
   }
 
   UNSAFE_componentWillReceiveProps(nextProps) {
-    // console.log('NewFeedScreen UNSAFE_componentWillReceiveProps : ', nextProps.feedo.loading, nextProps.feedo.currentFeed);
     let loading = false;
     if (this.props.feedo.loading !== types.CREATE_FEED_PENDING && nextProps.feedo.loading === types.CREATE_FEED_PENDING) {
       // creating a feed
@@ -422,10 +421,6 @@ class NewFeedScreen extends React.Component {
     }
   }
 
-  onScrollNote(event) {
-    console.log(event.nativeEvent.contentOffset);
-  }
-
   get renderCenterContent() {
     return (
       <ScrollView 
@@ -452,8 +447,10 @@ class NewFeedScreen extends React.Component {
           onChangeText={(value) => this.onChangeNote(value)}
           selectionColor={COLORS.PURPLE}
         />
+
         {this.renderImages}
         {this.renderDocuments}
+
         {!_.isEmpty(this.props.feedo.currentFeed) && this.props.feedo.currentFeed.tags.length > 0 && (
           <Tags
             tags={this.props.feedo.currentFeed.tags}
@@ -558,7 +555,9 @@ class NewFeedScreen extends React.Component {
           {this.renderCenterContent}
           {this.renderBottomContent}
         </Animated.View>
+
         {this.state.loading && <LoadingScreen />}
+
       </Animated.View>
     );
   }
