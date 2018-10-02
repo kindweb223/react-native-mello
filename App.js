@@ -110,7 +110,11 @@ export default class Root extends React.Component {
             })
           } else if (type === 'check-token') {  // Confirm user
             const token = paramArray[2]
-            Actions.SignUpSuccessScreen({ token, deepLinking: true })
+            if (this.state.userInfo) {
+              Actions.HomeScreen()
+            } else {
+              Actions.SignUpSuccessScreen({ token, deepLinking: true })
+            }
           }
         }
 
