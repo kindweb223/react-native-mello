@@ -8,10 +8,7 @@ import {
 import PropTypes from 'prop-types'
 
 import { Actions } from 'react-native-router-flux'
-import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons'
 
-import COLORS from '../../service/colors'
-import CONSTANTS from '../../service/constants'
 import styles from './styles'
 import * as COMMON_FUNC from '../../service/commonFunc'
 

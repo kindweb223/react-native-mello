@@ -1,6 +1,5 @@
 import React from 'react'
 import {
-  SafeAreaView,
   TextInput,
   View,
   TouchableOpacity,
@@ -28,7 +27,7 @@ import _ from 'lodash';
 import Modal from 'react-native-modal';
 import moment from 'moment'
 import Autolink from 'react-native-autolink';
-// import ParsedText from 'react-native-parsed-text';
+import SafariView from "react-native-safari-view";
 
 import { 
   createCard,
@@ -69,19 +68,19 @@ import SelectHuntScreen from '../SelectHuntScreen';
 
 import * as COMMON_FUNC from '../../service/commonFunc'
 
-const ScreenVerticalMinMargin = 80;
+const ScreenVerticalMinMargin = 0;
 
 
 class NewCardScreen extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      cardName: '',
+      // cardName: '',
       idea: '',
       coverImage: null,
 
       loading: false,
-      isFullScreenCard: false,
+      // isFullScreenCard: false,
       originalCardTopY: this.props.intialLayout.py,
       originalCardBottomY: this.props.intialLayout.py + this.props.intialLayout.height,
       isShowKeyboardButton: false,
@@ -129,9 +128,10 @@ class NewCardScreen extends React.Component {
     } else if (this.props.card.loading !== types.CREATE_CARD_FULFILLED && nextProps.card.loading === types.CREATE_CARD_FULFILLED) {
       if (this.props.cardMode === CONSTANTS.EXTENTION_CARD && this.props.shareUrl !== '') {
         this.setState({
-          cardName: this.props.shareUrl,
+          // cardName: this.props.shareUrl,
+          idea: this.props.shareUrl,
         }, () => {
-          this.checkUrl(this.state.cardName);
+          this.checkUrl(this.state.idea);
         });
       }
     } else if (this.props.card.loading !== types.GET_FILE_UPLOAD_URL_PENDING && nextProps.card.loading === types.GET_FILE_UPLOAD_URL_PENDING) {
@@ -233,8 +233,9 @@ class NewCardScreen extends React.Component {
       // success in getting open graph
       if (this.isOpenGraphForNewCard) {
         this.setState({
-          cardName: nextProps.card.currentOpneGraph.title,
-          idea: nextProps.card.currentOpneGraph.description + '\n' + this.urlForNewCard,
+          // cardName: nextProps.card.currentOpneGraph.title,
+          // idea: nextProps.card.currentOpneGraph.description + '\n' + this.urlForNewCard,
+          idea: nextProps.card.currentOpneGraph.title,
         });
 
         this.allLinkImages = nextProps.card.currentOpneGraph.images;
@@ -358,7 +359,7 @@ class NewCardScreen extends React.Component {
     const { cardMode, viewMode } = this.props;
     if (viewMode === CONSTANTS.CARD_VIEW || viewMode === CONSTANTS.CARD_EDIT) {
       this.setState({
-        cardName: this.props.card.currentCard.title,
+        // cardName: this.props.card.currentCard.title,
         idea: this.props.card.currentCard.idea,
         coverImage: this.props.card.currentCard.coverImage,
       });
@@ -400,7 +401,8 @@ class NewCardScreen extends React.Component {
   keyboardWillShow(e) {
     Animated.timing(
       this.animatedKeyboardHeight, {
-        toValue: this.state.isFullScreenCard ? e.endCoordinates.height : e.endCoordinates.height - ScreenVerticalMinMargin,
+        // toValue: this.state.isFullScreenCard ? e.endCoordinates.height : e.endCoordinates.height - ScreenVerticalMinMargin,
+        toValue: e.endCoordinates.height,
         duration: e.duration,
       }
     ).start();
@@ -497,16 +499,22 @@ class NewCardScreen extends React.Component {
           url = url.replace('[', '');
           url = url.replace(']', '');
           newUrls.push(url);
-          if (this.state.cardName.includes(url)) {
+          // if (this.state.cardName.includes(url)) {
+          //   this.setState({
+          //     cardName: '',
+          //   });
+          //   if (!this.state.idea.includes(url)) {
+          //     this.setState({
+          //       idea: this.state.idea + this.state.idea ? ' ' : '' + url,
+          //     })
+          //   }
+          // }
+          if (!this.state.idea.includes(url)) {
             this.setState({
-              cardName: '',
-            });
-            if (!this.state.idea.includes(url)) {
-              this.setState({
-                idea: this.state.idea + this.state.idea ? ' ' : '' + url,
-              })
-            }
+              idea: this.state.idea + this.state.idea ? ' ' : '' + url,
+            })
           }
+          
         }
       });
       if (newUrls.length > 0) {
@@ -540,10 +548,11 @@ class NewCardScreen extends React.Component {
       files,
     } = this.props.card.currentCard;
 
-    let cardName = this.state.cardName;
-    if (cardName === '') {
-      cardName = '';
-    }
+    // let cardName = this.state.cardName;
+    // if (cardName === '') {
+    //   cardName = '';
+    // }
+    const cardName = '';
     this.props.updateCard(this.props.feedo.currentFeed.id, id, cardName, this.state.idea, this.state.coverImage, files);
   }
 
@@ -553,10 +562,11 @@ class NewCardScreen extends React.Component {
       files,
     } = this.props.card.currentCard;
 
-    let cardName = this.state.cardName;
-    if (cardName === '') {
-      cardName = '';
-    }
+    // let cardName = this.state.cardName;
+    // if (cardName === '') {
+    //   cardName = '';
+    // }
+    const cardName = '';
     this.props.updateCard(this.props.feedo.currentFeed.id, id, cardName, this.state.idea, this.state.coverImage, files);
   }
 
@@ -586,11 +596,11 @@ class NewCardScreen extends React.Component {
 
   onUpdateCard() {
     const { viewMode } = this.props;
-    if (viewMode === CONSTANTS.CARD_NEW) {
-      if (this.checkUrl(this.state.cardName) || this.checkUrlsInNote()) {
-        return;
-      }
-    }
+    // if (viewMode === CONSTANTS.CARD_NEW) {
+    //   if (this.checkUrl(this.state.cardName) || this.checkUrlsInNote()) {
+    //     return;
+    //   }
+    // }
     if (viewMode === CONSTANTS.CARD_NEW || viewMode === CONSTANTS.CARD_EDIT) {
       this.onUpdate();
       return;
@@ -599,17 +609,17 @@ class NewCardScreen extends React.Component {
     return;
   }
 
-  onTapOutside() {
-    const { cardMode } = this.props;
-    if (cardMode === CONSTANTS.MAIN_APP_CARD_FROM_DASHBOARD) {
-      // delete draft feed
-      this.leaveActionSheetRef.show();
-      return;
-    } else if (cardMode === CONSTANTS.EXTENTION_CARD) {
-      return;
-    }
-    this.onUpdateCard();
-  }
+  // onTapOutside() {
+  //   const { cardMode } = this.props;
+  //   if (cardMode === CONSTANTS.MAIN_APP_CARD_FROM_DASHBOARD) {
+  //     // delete draft feed
+  //     this.leaveActionSheetRef.show();
+  //     return;
+  //   } else if (cardMode === CONSTANTS.EXTENTION_CARD) {
+  //     return;
+  //   }
+  //   this.onUpdateCard();
+  // }
 
   onTapLeaveActionSheet(index) {
     if (index === 1) {
@@ -716,31 +726,31 @@ class NewCardScreen extends React.Component {
     this.props.setCoverImage(this.props.card.currentCard.id, fileId);
   }
 
-  async onChangeTitle(text) {
-    const { viewMode } = this.props;
-    if (this.parsingErrorLinks.length > 0 && this.parsingErrorLinks.includes(text)) {
-      this.setState({cardName: ' '});
-      setTimeout(() => {
-        this.setState({cardName: ''});
-      }, 0)
-      return;
-    }
-    this.setState({cardName: text});    
-    if (viewMode === CONSTANTS.CARD_NEW || viewMode === CONSTANTS.CARD_EDIT){
-      const clipboardContent = await Clipboard.getString();
-      if (clipboardContent === text) {
-        if (this.checkUrl(text)) {
-          return;
-        }
-      }
-    }
-  }
+  // async onChangeTitle(text) {
+  //   const { viewMode } = this.props;
+  //   if (this.parsingErrorLinks.length > 0 && this.parsingErrorLinks.includes(text)) {
+  //     this.setState({cardName: ' '});
+  //     setTimeout(() => {
+  //       this.setState({cardName: ''});
+  //     }, 0)
+  //     return;
+  //   }
+  //   this.setState({cardName: text});    
+  //   if (viewMode === CONSTANTS.CARD_NEW || viewMode === CONSTANTS.CARD_EDIT){
+  //     const clipboardContent = await Clipboard.getString();
+  //     if (clipboardContent === text) {
+  //       if (this.checkUrl(text)) {
+  //         return;
+  //       }
+  //     }
+  //   }
+  // }
   
-  onKeyPressTitle(event) {
-    if (event.nativeEvent.key === ' ' || event.nativeEvent.key === ',' || event.nativeEvent.key === 'Enter') {
-      this.checkUrl(this.state.cardName);
-    }
-  }
+  // onKeyPressTitle(event) {
+  //   if (event.nativeEvent.key === ' ' || event.nativeEvent.key === ',' || event.nativeEvent.key === 'Enter') {
+  //     this.checkUrl(this.state.cardName);
+  //   }
+  // }
   
   async onChangeIdea(text) {
     const { viewMode } = this.props;
@@ -770,12 +780,12 @@ class NewCardScreen extends React.Component {
     }
   }
 
-  onBlurTitle() {
-    this.setState({
-      isShowKeyboardButton: false,
-    });
-    this.checkUrl(this.state.cardName);
-  }
+  // onBlurTitle() {
+  //   this.setState({
+  //     isShowKeyboardButton: false,
+  //   });
+  //   this.checkUrl(this.state.cardName);
+  // }
 
   onBlurIdea() {
     this.setState({
@@ -968,15 +978,24 @@ class NewCardScreen extends React.Component {
   }
 
   onPressLink(url) {
-    Linking.canOpenURL(url)
-      .then(supported => {
-        if (!supported) {
-          console.log('Can\'t handle url: ' + url);
-        } else {
-          return Linking.openURL(url);
-        }
-      })
-      .catch(error => console.error('An error occurred', error));
+    SafariView.isAvailable()
+      .then(SafariView.show({
+        url: url,
+        tintColor: COLORS.PURPLE
+      }))
+      .catch(error => {
+        // Fallback WebView code for iOS 8 and earlier
+        Linking.canOpenURL(url)
+          .then(supported => {
+              if (!supported) {
+                  console.log('Can\'t handle url: ' + url);
+              }
+              else {
+                  return Linking.openURL(url);
+              }
+          })
+          .catch(error => console.error('An error occurred', error));
+      });
   }
 
   get renderIdea() {
@@ -987,7 +1006,7 @@ class NewCardScreen extends React.Component {
           ref={ref => this.textInputIdeaRef = ref}
           style={styles.textInputIdea}
           autoCorrect={false}
-          placeholder='Add a note'
+          placeholder='Add a name or link here'
           multiline={true}
           underlineColorAndroid='transparent'
           value={this.state.idea}
@@ -1017,7 +1036,7 @@ class NewCardScreen extends React.Component {
     const { viewMode } = this.props;
     return (
       <View style={styles.mainContentContainer}>
-        <TextInput 
+        {/* <TextInput 
           style={styles.textInputCardTitle}
           autoCorrect={false}
           editable={viewMode === CONSTANTS.CARD_NEW || viewMode === CONSTANTS.CARD_EDIT}
@@ -1029,7 +1048,7 @@ class NewCardScreen extends React.Component {
           onFocus={() => this.onFocus()}
           onBlur={() => this.onBlurTitle()}
           selectionColor={COLORS.PURPLE}
-        />
+        /> */}
         {this.renderCoverImage}
         {this.renderIdea}
         {this.renderWebMeta}
@@ -1101,7 +1120,7 @@ class NewCardScreen extends React.Component {
     return (
       <View>
         <View style={styles.line} />
-        <View style={[styles.rowContainer, {marginHorizontal: 22}]}>
+        <View style={[styles.rowContainer, {marginHorizontal: 16}]}>
           <UserAvatarComponent
             user={userProfile}
           />
@@ -1120,7 +1139,7 @@ class NewCardScreen extends React.Component {
     return (
       <View>
         <View style={styles.line} />
-        <View style={[styles.rowContainer, {justifyContent: 'space-between', marginHorizontal: 22}]}>
+        <View style={[styles.rowContainer, {justifyContent: 'space-between', marginHorizontal: 16, paddingBottom: 11,}]}>
           <TouchableOpacity
             style={{paddingVertical: 3,}}
             activeOpacity={0.7}
@@ -1138,29 +1157,10 @@ class NewCardScreen extends React.Component {
   }
 
   get renderHeader() {
-    const { cardMode } = this.props;
-    if (cardMode === CONSTANTS.MAIN_APP_CARD_FROM_DASHBOARD) {
+    const { cardMode, viewMode } = this.props;
+    if (cardMode === CONSTANTS.EXTENTION_CARD) {
       return (
-        <View style={styles.shareHeaderContainer}>
-          <TouchableOpacity 
-            style={styles.closeButtonWrapper}
-            activeOpacity={0.7}
-            onPress={() => this.leaveActionSheetRef.show()}
-          >
-            <MaterialCommunityIcons name="close" size={28} color={COLORS.PURPLE} />
-          </TouchableOpacity>
-          <TouchableOpacity 
-            style={[styles.addCardButtonWapper, {backgroundColor: COLORS.PURPLE}]}
-            activeOpacity={0.6}
-            onPress={this.onUpdateFeed.bind(this)}
-          >
-            <Text style={styles.textButton}>Create card</Text>
-          </TouchableOpacity>
-        </View>
-      );
-    } else if (cardMode === CONSTANTS.EXTENTION_CARD) {
-      return (
-        <View style={styles.shareHeaderContainer}>
+        <View style={styles.headerContainer}>
           <TouchableOpacity 
             style={styles.closeButtonWrapper}
             activeOpacity={0.7}
@@ -1177,67 +1177,82 @@ class NewCardScreen extends React.Component {
           </TouchableOpacity>
         </View>
       );
-    } else if (this.state.isFullScreenCard) {
-      return (
-        <View style={styles.mainHeaderContainer}>
-          <TouchableOpacity 
-            style={styles.closeButtonWrapper}
-            activeOpacity={0.7}
-            onPress={() => this.onUpdateCard()}
-          >
-            <MaterialCommunityIcons name="close" size={28} color={COLORS.PURPLE} />
-          </TouchableOpacity>
-          <TouchableOpacity 
-            style={styles.threeDotButtonWrapper}
-            activeOpacity={0.7}
-            onPress={() => this.onPressMoreActions()}
-          >
-            <Entypo name="dots-three-horizontal" size={20} color={'#fff'} />
-          </TouchableOpacity>
-        </View>
-      );
-    }
-  }
-
-  get renderOutside() {
-    if (!this.state.isFullScreenCard) {
-      return (
+    } 
+    
+    return (
+      <View style={styles.headerContainer}>
         <TouchableOpacity 
-          style={styles.backdropContainer}
-          activeOpacity={1}
-          onPress={this.onTapOutside.bind(this)}
-        />
-      );
-    }
-  }
-
-  get renderOutsideMoreActions() {
-    const { cardMode, viewMode, card, feedo } = this.props;
-
-    if (cardMode === CONSTANTS.EXTENTION_CARD) {
-      return;
-    }
-    if (cardMode !== CONSTANTS.MAIN_APP_CARD_FROM_DASHBOARD && !_.isEmpty(card.currentCard)) {
-      if (COMMON_FUNC.isFeedGuest(feedo.currentFeed) ||
-          (COMMON_FUNC.isFeedContributor(feedo.currentFeed)) && !COMMON_FUNC.isCardOwner(card.currentCard)) {
-        return
-      }
-    }
-
-    if (!this.state.isFullScreenCard && viewMode !== CONSTANTS.CARD_NEW) {
-      return (
-        <View style={styles.outSideMoreActionContainer}>
-          <TouchableOpacity 
-            style={styles.threeDotButtonWrapper}
-            activeOpacity={0.7}
-            onPress={() => this.onPressMoreActions()}
-          >
-            <Entypo name="dots-three-horizontal" size={20} color={'#fff'} />
-          </TouchableOpacity>
+          style={styles.closeButtonWrapper}
+          activeOpacity={0.7}
+          onPress={() => this.leaveActionSheetRef.show()}
+        >
+          <MaterialCommunityIcons name="close" size={28} color={COLORS.PURPLE} />
+        </TouchableOpacity>
+        <View style={styles.rowContainer}>
+          {
+            (viewMode === CONSTANTS.CARD_NEW || viewMode === CONSTANTS.CARD_EDIT) && 
+            <TouchableOpacity 
+              style={[styles.addCardButtonWapper, {backgroundColor: COLORS.PURPLE}]}
+              activeOpacity={0.6}
+              onPress={this.onUpdateFeed.bind(this)}
+            >
+              <Text style={styles.textButton}>{viewMode === CONSTANTS.CARD_NEW ? 'Create card' : 'Update card'}</Text>
+            </TouchableOpacity>
+          }
+          {
+            viewMode === CONSTANTS.CARD_EDIT && 
+            <TouchableOpacity 
+              style={styles.threeDotButtonWrapper}
+              activeOpacity={0.7}
+              onPress={() => this.onPressMoreActions()}
+            >
+              <Entypo name="dots-three-horizontal" size={20} color={'#fff'} />
+            </TouchableOpacity>
+          }
         </View>
-      );
-    }
+      </View>
+    )
   }
+
+  // get renderOutside() {
+  //   if (!this.state.isFullScreenCard) {
+  //     return (
+  //       <TouchableOpacity 
+  //         style={styles.backdropContainer}
+  //         activeOpacity={1}
+  //         onPress={this.onTapOutside.bind(this)}
+  //       />
+  //     );
+  //   }
+  // }
+
+  // get renderOutsideMoreActions() {
+  //   const { cardMode, viewMode, card, feedo } = this.props;
+
+  //   if (cardMode === CONSTANTS.EXTENTION_CARD) {
+  //     return;
+  //   }
+  //   if (cardMode !== CONSTANTS.MAIN_APP_CARD_FROM_DASHBOARD && !_.isEmpty(card.currentCard)) {
+  //     if (COMMON_FUNC.isFeedGuest(feedo.currentFeed) ||
+  //         (COMMON_FUNC.isFeedContributor(feedo.currentFeed)) && !COMMON_FUNC.isCardOwner(card.currentCard)) {
+  //       return
+  //     }
+  //   }
+
+  //   if (!this.state.isFullScreenCard && viewMode !== CONSTANTS.CARD_NEW) {
+  //     return (
+  //       <View style={styles.outSideMoreActionContainer}>
+  //         <TouchableOpacity 
+  //           style={styles.threeDotButtonWrapper}
+  //           activeOpacity={0.7}
+  //           onPress={() => this.onPressMoreActions()}
+  //         >
+  //           <Entypo name="dots-three-horizontal" size={20} color={'#fff'} />
+  //         </TouchableOpacity>
+  //       </View>
+  //     );
+  //   }
+  // }
 
   get renderBottomContent() {
     const { viewMode, cardMode } = this.props;
@@ -1263,28 +1278,28 @@ class NewCardScreen extends React.Component {
     }
   }
 
-  onScrollBeginDrag(e) {
-    this.scrollViewLayoutHeight = 0;
-  }
+  // onScrollBeginDrag(e) {
+  //   this.scrollViewLayoutHeight = 0;
+  // }
 
-  onScroll(e) {
-    const { viewMode } = this.props;
-    const currentOffsetY = e.nativeEvent.contentOffset.y;
-    if (viewMode !== CONSTANTS.CARD_NEW && !this.state.isFullScreenCard && this.scrollViewLayoutHeight === 0 && currentOffsetY > 10) {
-      this.scrollViewLayoutHeight = e.nativeEvent.layoutMeasurement.height;
-      this.setState({
-        isFullScreenCard: true,
-        originalCardTopY: ScreenVerticalMinMargin,
-        originalCardBottomY: ScreenVerticalMinMargin,
-      }, () => {
-        this.animatedShow.setValue(0);
-        Animated.timing(this.animatedShow, {
-          toValue: 1,
-          duration: CONSTANTS.ANIMATEION_MILLI_SECONDS,
-        }).start();
-      });
-    }
-  }
+  // onScroll(e) {
+  //   const { viewMode } = this.props;
+  //   const currentOffsetY = e.nativeEvent.contentOffset.y;
+  //   if (viewMode !== CONSTANTS.CARD_NEW && !this.state.isFullScreenCard && this.scrollViewLayoutHeight === 0 && currentOffsetY > 10) {
+  //     this.scrollViewLayoutHeight = e.nativeEvent.layoutMeasurement.height;
+  //     this.setState({
+  //       isFullScreenCard: true,
+  //       originalCardTopY: ScreenVerticalMinMargin,
+  //       originalCardBottomY: ScreenVerticalMinMargin,
+  //     }, () => {
+  //       this.animatedShow.setValue(0);
+  //       Animated.timing(this.animatedShow, {
+  //         toValue: 1,
+  //         duration: CONSTANTS.ANIMATEION_MILLI_SECONDS,
+  //       }).start();
+  //     });
+  //   }
+  // }
 
   get renderCard() {
     const { viewMode, cardMode } = this.props;
@@ -1298,15 +1313,14 @@ class NewCardScreen extends React.Component {
         top: animatedMove,
         opacity: this.animatedShow,
       };
-    } else if (!this.state.isFullScreenCard) {
-      const animatedTopMove = this.animatedShow.interpolate({
-        inputRange: [0, 1],
-        outputRange: [this.state.originalCardTopY, 0],
-      });
-      cardStyle = {
-        top: animatedTopMove,
-        opacity: this.animatedShow,
-      };
+    // } else if (this.state.isFullScreenCard) {
+    //   const animatedTopMove = this.animatedShow.interpolate({
+    //     inputRange: [0, 1],
+    //     outputRange: [this.state.originalCardTopY, 0],
+    //   });
+    //   cardStyle = {
+    //     top: animatedTopMove,
+    //   };
     } else {
       const animatedTopMove = this.animatedShow.interpolate({
         inputRange: [0, 1],
@@ -1314,6 +1328,7 @@ class NewCardScreen extends React.Component {
       });
       cardStyle = {
         top: animatedTopMove,
+        opacity: this.animatedShow,
       };
     }
 
@@ -1324,21 +1339,19 @@ class NewCardScreen extends React.Component {
           cardStyle,
         ]}
       >
-        {this.renderOutside}
+        {/* {this.renderOutside} */}
         <Animated.View 
           style={[
             styles.contentContainer,
             { paddingTop: cardMode !== CONSTANTS.EXTENTION_CARD ?  26 : 10},
-            (viewMode === CONSTANTS.CARD_NEW || !this.state.isFullScreenCard) && {height: CONSTANTS.SCREEN_HEIGHT - ScreenVerticalMinMargin * 2},
-            this.state.isFullScreenCard && {flex: 1, borderRadius: 0},
-            {paddingBottom: this.animatedKeyboardHeight}
+            {height: CONSTANTS.SCREEN_HEIGHT - ScreenVerticalMinMargin * 2, paddingBottom: this.animatedKeyboardHeight}
           ]}
         >
           {this.renderHeader}
           <ScrollView
             enableAutomaticScroll={false}
-            onScrollBeginDrag={(e) => this.onScrollBeginDrag(e)}
-            onScroll={(e) => this.onScroll(e)}
+            // onScrollBeginDrag={(e) => this.onScrollBeginDrag(e)}
+            // onScroll={(e) => this.onScroll(e)}
           >
             {this.renderMainContent}
           </ScrollView>
@@ -1347,7 +1360,7 @@ class NewCardScreen extends React.Component {
           {
             this.state.isShowKeyboardButton && 
             <Animated.View
-              style={[styles.hideKeyboardContainer, {bottom: Animated.add(this.animatedKeyboardHeight, 17)}]}
+              style={[styles.hideKeyboardContainer, {bottom: Animated.add(this.animatedKeyboardHeight, 16)}]}
             >
               <TouchableOpacity 
                 style={[
@@ -1355,7 +1368,6 @@ class NewCardScreen extends React.Component {
                   {
                     backgroundColor: cardMode === CONSTANTS.EXTENTION_CARD ? COLORS.BLUE : COLORS.PURPLE,
                     borderRadius: 8,
-                    marginRight: 0,                
                   },
                 ]}
                 activeOpacity={0.6}
@@ -1366,7 +1378,7 @@ class NewCardScreen extends React.Component {
             </Animated.View>
           }
         </Animated.View>
-        {this.renderOutside}
+        {/* {this.renderOutside} */}
       </Animated.View>
     );
   }
@@ -1385,7 +1397,7 @@ class NewCardScreen extends React.Component {
     return (
       <View style={styles.container}>
         {this.renderCard}
-        {this.renderOutsideMoreActions}
+        {/* {this.renderOutsideMoreActions} */}
         {this.renderSelectHunt}
         <ActionSheet
           ref={ref => this.imagePickerActionSheetRef = ref}

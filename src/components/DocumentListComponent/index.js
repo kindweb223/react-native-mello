@@ -150,10 +150,10 @@ export default class DocumentList extends React.Component {
           <Ionicons 
             name="md-attach"
             style={styles.attachment} size={18}
-            color={this.state.selectedIndex === index && this.state.isVisibleSelectedColors ? '#fff' : COLORS.MEDIUM_GREY}
+            color={this.state.selectedIndex === index && this.state.isVisibleSelectedColors ? '#fff' : COLORS.BLUE}
           />
           <Text 
-            style={[styles.textFileName, {color: this.state.selectedIndex === index && this.state.isVisibleSelectedColors ? '#fff' : '#000'}]}
+            style={[styles.textFileName, {color: this.state.selectedIndex === index && this.state.isVisibleSelectedColors ? '#fff' : COLORS.BLUE}]}
             numberOfLines={1}
           >
             {item.name}
