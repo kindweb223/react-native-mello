@@ -22,8 +22,6 @@ class ImageCrop extends Component {
 		this.state = {
 			originalImageWidth: null,
 			originalImageHeight: null,
-			imageWidth: null,
-			imageHeight: null,
 			containerWidth: null,
 			containerHeight: null,
 			offsetX: 0,
@@ -110,8 +108,8 @@ class ImageCrop extends Component {
 				if (offsetX > this.paddingWidth) {
 					offsetX1 = this.paddingWidth
 				} else {
-					if (Math.abs(offsetX) > this.paddingWidth * 2) {
-						offsetX1 = -(this.paddingWidth * 2)
+					if (Math.abs(offsetX) > offset / scale + this.paddingWidth) {
+						offsetX1 = -(offset / scale + this.paddingWidth)
 					} else {
 						offsetX1 = offsetX
 					}
@@ -131,8 +129,8 @@ class ImageCrop extends Component {
 				if (offsetY > this.paddingHeight) {
 					offsetY1 = this.paddingHeight
 				} else {
-					if (Math.abs(offsetY) > this.paddingHeight * 2) {
-						offsetY1 = -(this.paddingHeight * 2)
+					if (Math.abs(offsetY) > offset / scale + this.paddingHeight) {
+						offsetY1 = -(offset / scale + this.paddingHeight)
 					} else {
 						offsetY1 = offsetY
 					}
@@ -161,21 +159,22 @@ class ImageCrop extends Component {
 		let { cropWidth, cropHeight, currentOffsetX, currentOffsetY, scale, minScale, maxScale, lastScale } = this.state
 
 		if (gestureState.numberActiveTouches === 2) {
-			// let dx = Math.abs(
-			// 	e.nativeEvent.touches[0].pageX - e.nativeEvent.touches[1].pageX
-			// );
-			// let dy = Math.abs(
-			// 	e.nativeEvent.touches[0].pageY - e.nativeEvent.touches[1].pageY
-			// );
-			// let distant = Math.sqrt(dx * dx + dy * dy);
-			// let scale = (distant / this.distant) * lastScale;
+			let dx = Math.abs(
+				e.nativeEvent.touches[0].pageX - e.nativeEvent.touches[1].pageX
+			);
+			let dy = Math.abs(
+				e.nativeEvent.touches[0].pageY - e.nativeEvent.touches[1].pageY
+			);
+			let distant = Math.sqrt(dx * dx + dy * dy);
+			let scale = (distant / this.distant) * lastScale;
 
-			// this.paddingWidth = (scale - 1) * cropWidth / 2 / scale
-			// this.paddingHeight = (scale - 1) * cropHeight / 2 / scale
+			if (scale < maxScale && scale > minScale) {
+				this.paddingWidth = (scale - 1) * cropWidth / 2 / scale
+				this.paddingHeight = (scale - 1) * cropHeight / 2 / scale
 
-			// if (scale < maxScale && scale > minScale) {
-			// 	this.setState({ scale });
-			// }
+				this.setState({ scale });
+			}
+
 		} else {
 			this.setState({ offsetX: currentOffsetX +  gestureState.dx })
 			this.setState({ offsetY: currentOffsetY + gestureState.dy })
@@ -184,14 +183,14 @@ class ImageCrop extends Component {
 
 	_handlePanResponderGrant = (e, gestureState) => {
     if (gestureState.numberActiveTouches === 2) {
-      // let dx = Math.abs(
-      //   e.nativeEvent.touches[0].pageX - e.nativeEvent.touches[1].pageX
-      // );
-      // let dy = Math.abs(
-      //   e.nativeEvent.touches[0].pageY - e.nativeEvent.touches[1].pageY
-      // );
-			// let distant = Math.sqrt(dx * dx + dy * dy);
-			// this.distant = distant;
+      let dx = Math.abs(
+        e.nativeEvent.touches[0].pageX - e.nativeEvent.touches[1].pageX
+      );
+      let dy = Math.abs(
+        e.nativeEvent.touches[0].pageY - e.nativeEvent.touches[1].pageY
+      );
+			let distant = Math.sqrt(dx * dx + dy * dy);
+			this.distant = distant;
     }
   };
 
@@ -263,8 +262,7 @@ class ImageCrop extends Component {
 		let translateX = 0
 		let translateY = 0
 
-		// console.log('offsetX: ', offsetX, this.paddingWidth)
-		// console.log('offsetY: ', offsetY, this.paddingHeight)
+		const offset = cropHeight - cropWidth
 
 		if (scale === 1) {
 			if (cropWidth > cropHeight) {
@@ -298,8 +296,8 @@ class ImageCrop extends Component {
 				if (offsetX > this.paddingWidth) {
 					translateX = this.paddingWidth
 				} else {
-					if (Math.abs(offsetX) > this.paddingWidth * 2) {
-						translateX = -(this.paddingWidth * 2)
+					if (Math.abs(offsetX) > offset / scale + this.paddingWidth) {
+						translateX = -(offset / scale + this.paddingWidth)
 					} else {
 						translateX = offsetX
 					}
@@ -319,8 +317,8 @@ class ImageCrop extends Component {
 				if (offsetY > this.paddingHeight) {
 					translateY = this.paddingHeight
 				} else {
-					if (Math.abs(offsetY) > this.paddingHeight * 2) {
-						translateY = -(this.paddingHeight * 2)
+					if (Math.abs(offsetY) > offset / scale + this.paddingHeight) {
+						translateY = -(offset / scale + this.paddingHeight)
 					} else {
 						translateY = offsetY
 					}
@@ -407,8 +405,8 @@ class ImageCrop extends Component {
 				if (offsetX > this.paddingWidth) {
 					translateX = this.paddingWidth
 				} else {
-					if (Math.abs(offsetX) > this.paddingWidth * 2) {
-						translateX = -(this.paddingWidth * 2)
+					if (Math.abs(offsetX) > offset / scale + this.paddingWidth) {
+						translateX = -(offset / scale + this.paddingWidth)
 					} else {
 						translateX = offsetX
 					}
@@ -428,8 +426,8 @@ class ImageCrop extends Component {
 				if (offsetY > this.paddingHeight) {
 					translateY = this.paddingHeight
 				} else {
-					if (Math.abs(offsetY) > this.paddingHeight * 2) {
-						translateY = -(this.paddingHeight * 2)
+					if (Math.abs(offsetY) > offset / scale + this.paddingHeight) {
+						translateY = -(offset / scale + this.paddingHeight)
 					} else {
 						translateY = offsetY
 					}
