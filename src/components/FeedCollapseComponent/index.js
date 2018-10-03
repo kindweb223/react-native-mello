@@ -135,7 +135,7 @@ class FeedCollapseComponent extends React.Component {
           </View>
         )}
 
-        <View style={styles.footerView}>
+        <View style={[styles.footerView, COMMON_FUNC.isFeedOwnerEditor(feedData) ? { marginTop: 20 } : { marginTop: 0 }]}>
           <View style={styles.footerLeftView}>
             {COMMON_FUNC.isFeedOwnerEditor(feedData) && (
               <View style={styles.footerLeftBtnView}>
@@ -158,7 +158,7 @@ class FeedCollapseComponent extends React.Component {
                   activeOpacity={0.6}
                   onPress={this.props.onAddDocument}
                 >
-                  <Entypo name="attachment" style={styles.attachment} size={20} color={COLORS.PURPLE} />
+                  <Entypo name="attachment" style={styles.attachment} size={18} color={COLORS.PURPLE} />
                 </TouchableOpacity>
               </View>
             )}

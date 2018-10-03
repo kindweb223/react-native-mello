@@ -455,7 +455,7 @@ class NewFeedScreen extends React.Component {
 
         {this.renderImages}
 
-        <View style={{ marginLeft: 10, marginTop: 10 }}>
+        <View style={{ marginLeft: 6, marginTop: 10 }}>
           {this.renderDocuments}
         </View>
 
@@ -466,7 +466,7 @@ class NewFeedScreen extends React.Component {
             placeHolder=""
             onPressTag={(index, tag) => this.onOpenCreationTag()}
             containerStyle={{
-              marginHorizontal: 20,
+              marginHorizontal: 16,
               marginVertical: 8,
             }}
             inputStyle={{
@@ -512,7 +512,7 @@ class NewFeedScreen extends React.Component {
             activeOpacity={0.6}
             onPress={this.onAddDocument.bind(this)}
           >
-            <Entypo name="attachment" style={styles.attachment} size={20} color={COLORS.PURPLE} />
+            <Entypo name="attachment" style={styles.attachment} size={18} color={COLORS.PURPLE} />
           </TouchableOpacity>
         </View>
         <View style={styles.bottomRightCotainer}>

@@ -62,13 +62,19 @@ const styles = StyleSheet.create({
     paddingHorizontal: 6,
     marginTop: 10
   },
+  attachment: {
+    marginTop: -5,
+    transform: [
+      { rotate: '180deg' }, 
+      { rotateY: '180deg' },
+    ],
+  },
   footerView: {
     width: '100%',
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    marginTop: 20,
-    paddingHorizontal: CONSTANTS.PADDING,
+    paddingHorizontal: 12,
   },
   footerLeftBtnView: {
     flexDirection: 'row'
