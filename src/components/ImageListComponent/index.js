@@ -188,7 +188,7 @@ export default class ImageList extends React.Component {
       files,
     } = this.state;
     return (
-      <View style={{flex: 1}}>
+      <View>
         <FlatList
           style={styles.container}
           horizontal={true}

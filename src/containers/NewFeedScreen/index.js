@@ -385,7 +385,12 @@ class NewFeedScreen extends React.Component {
           activeOpacity={0.6}
           onPress={this.onUpdate.bind(this)}
         >
-          <Text style={styles.textButton}>{this.props.selectedFeedId ? 'Save' : this.props.feedoMode === CONSTANTS.FEEDO_FROM_CARD ? 'Create feed' : 'Create'}</Text>
+          <Text style={styles.textButton}>
+            {this.props.selectedFeedId
+              ? this.props.feedoMode === CONSTANTS.FEEDO_FROM_MAIN ? 'Save' : 'Done'
+              : this.props.feedoMode === CONSTANTS.FEEDO_FROM_CARD ? 'Create feed' : 'Create'
+            }
+          </Text>
         </TouchableOpacity>
       </View>
     );
@@ -449,7 +454,10 @@ class NewFeedScreen extends React.Component {
         />
 
         {this.renderImages}
-        {this.renderDocuments}
+
+        <View style={{ marginLeft: 10, marginTop: 10 }}>
+          {this.renderDocuments}
+        </View>
 
         {!_.isEmpty(this.props.feedo.currentFeed) && this.props.feedo.currentFeed.tags.length > 0 && (
           <Tags
@@ -522,7 +530,7 @@ class NewFeedScreen extends React.Component {
 
   get renderFeed() {
     let postion = 0;
-    if (this.props.feedoMode === CONSTANTS.FEEDO_FROM_MAIN) {
+    if (this.props.feedoMode === CONSTANTS.FEEDO_FROM_MAIN || this.props.feedoMode === CONSTANTS.FEEDO_FROM_COLLAPSE) {
       postion = CONSTANTS.SCREEN_HEIGHT;
     } else if (this.props.feedoMode === CONSTANTS.FEEDO_FROM_CARD) {
       postion = CONSTANTS.SCREEN_WIDTH;
@@ -538,7 +546,7 @@ class NewFeedScreen extends React.Component {
           styles.feedContainer, {
             opacity: this.animatedShow,
           },
-          (this.props.feedoMode === CONSTANTS.FEEDO_FROM_MAIN) && {top: animatedMove},
+          (this.props.feedoMode === CONSTANTS.FEEDO_FROM_MAIN || this.props.feedoMode === CONSTANTS.FEEDO_FROM_COLLAPSE) && {top: animatedMove},
           (this.props.feedoMode === CONSTANTS.FEEDO_FROM_CARD) && {left: animatedMove}
         ]}
       >

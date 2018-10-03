@@ -19,6 +19,10 @@ import Ionicons from 'react-native-vector-icons/Ionicons'
 import ActionSheet from 'react-native-actionsheet'
 import Modal from "react-native-modal"
 import ReactNativeHaptic from 'react-native-haptic'
+import ImagePicker from 'react-native-image-picker'
+import { DocumentPicker, DocumentPickerUtil } from 'react-native-document-picker'
+import Permissions from 'react-native-permissions'
+import * as mime from 'react-native-mime-types'
 
 import DashboardActionBar from '../../navigations/DashboardActionBar'
 import FeedCardComponent from '../../components/FeedCardComponent'
@@ -26,15 +30,17 @@ import FeedCollapseComponent from '../../components/FeedCollapseComponent'
 import AvatarPileComponent from '../../components/AvatarPileComponent'
 import FeedNavbarSettingComponent from '../../components/FeedNavbarSettingComponent'
 import FeedControlMenuComponent from '../../components/FeedControlMenuComponent'
-import CardControlMenuComponent from '../../components/CardControlMenuComponent';
+import CardControlMenuComponent from '../../components/CardControlMenuComponent'
 import ToasterComponent from '../../components/ToasterComponent'
 import FeedLoadingStateComponent from '../../components/FeedLoadingStateComponent'
 import ShareScreen from '../ShareScreen'
 import NewFeedScreen from '../NewFeedScreen'
 import CardFilterComponent from '../../components/CardFilterComponent'
 import CardLongHoldMenuScreen from '../CardLongHoldMenuScreen'
-import SelectFeedoComponent from '../../components/SelectFeedoComponent';
-
+import SelectFeedoComponent from '../../components/SelectFeedoComponent'
+import TagCreateScreen from '..//TagCreateScreen'
+import NewCardScreen from '../NewCardScreen'
+import LoadingScreen from '../LoadingScreen'
 
 import {
   getFeedDetail,
@@ -45,6 +51,10 @@ import {
   unpinFeed,
   duplicateFeed,
   deleteDuplicatedFeed,
+  getFileUploadUrl,
+  uploadFileToS3,
+  addFile,
+  deleteFile
 } from '../../redux/feedo/actions';
 import {
   setCurrentCard,
@@ -52,14 +62,12 @@ import {
   moveCard,
 } from '../../redux/card/actions'
 import COLORS from '../../service/colors'
+import CONSTANTS from '../../service/constants'
 import * as COMMON_FUNC from '../../service/commonFunc'
 import styles from './styles'
 
 const EMPTY_ICON = require('../../../assets/images/empty_state/asset-emptystate.png')
 const TOASTER_DURATION = 5000
-
-import CONSTANTS from '../../service/constants'
-import NewCardScreen from '../NewCardScreen' 
 
 const ACTION_NONE = 0;
 const ACTION_FEEDO_PIN = 1;
@@ -69,7 +77,8 @@ const ACTION_CARD_MOVE = 4;
 const ACTION_CARD_EDIT = 5;
 const ACTION_CARD_DELETE = 6;
 
-
+const FeedDetailMode = 1;
+const TagCreateMode = 2;
 
 class FeedDetailScreen extends React.Component {
   constructor(props) {
@@ -78,6 +87,7 @@ class FeedDetailScreen extends React.Component {
       currentBackFeed: {},
       currentFeed: {},
       loading: false,
+      apiLoading: false,
       
       isVisibleCard: false,
       cardViewMode: CONSTANTS.CARD_NONE,
@@ -101,6 +111,8 @@ class FeedDetailScreen extends React.Component {
       currentActionType: ACTION_NONE,
       totalCardCount: 0,
       isVisibleCardOpenMenu: false,
+      currentScreen: FeedDetailMode,
+      feedoMode: 1
     };
     this.animatedOpacity = new Animated.Value(0)
     this.menuOpacity = new Animated.Value(0)
@@ -109,6 +121,13 @@ class FeedDetailScreen extends React.Component {
 
     this.cardItemRefs = [];
     this.moveCardId = null;
+
+    this.animatedTagTransition = new Animated.Value(1)
+
+    this.selectedFile = null
+    this.selectedFileMimeType = null
+    this.selectedFileType = null
+    this.selectedFileName = null
   }
 
   componentDidMount() {
@@ -119,12 +138,24 @@ class FeedDetailScreen extends React.Component {
   UNSAFE_componentWillReceiveProps(nextProps) {
     const { feedo, card, currentFeed } = nextProps
 
+    if ((this.props.feedo.loading === 'ADD_FILE_PENDING' && feedo.loading === 'ADD_FILE_FULFILLED') ||
+        (this.props.feedo.loading === 'DELETE_FILE_PENDING' && feedo.loading === 'DELETE_FILE_FULFILLED')) {
+      // updating a feed
+      this.setState({
+        apiLoading: false
+      })
+    }
+
     if ((this.props.feedo.loading === 'GET_FEED_DETAIL_PENDING' && feedo.loading === 'GET_FEED_DETAIL_FULFILLED') ||
         (this.props.feedo.loading === 'DELETE_INVITEE_PENDING' && feedo.loading === 'DELETE_INVITEE_FULFILLED') ||
         (this.props.feedo.loading === 'UPDATE_SHARING_PREFERENCES_PENDING' && feedo.loading === 'UPDATE_SHARING_PREFERENCES_FULFILLED') ||
         (this.props.feedo.loading === 'UPDATE_INVITEE_PERMISSION_PENDING' && feedo.loading === 'UPDATE_INVITEE_PERMISSION_FULFILLED') ||
         (this.props.feedo.loading === 'UPDATE_FEED_PENDING' && feedo.loading === 'UPDATE_FEED_FULFILLED') ||
-        (this.props.feedo.loading === 'INVITE_HUNT_PENDING' && feedo.loading === 'INVITE_HUNT_FULFILLED') || 
+        (this.props.feedo.loading === 'INVITE_HUNT_PENDING' && feedo.loading === 'INVITE_HUNT_FULFILLED') ||
+        (this.props.feedo.loading === 'DELETE_FILE_PENDING' && feedo.loading === 'DELETE_FILE_FULFILLED') ||
+        (this.props.feedo.loading === 'ADD_FILE_PENDING' && feedo.loading === 'ADD_FILE_FULFILLED') ||
+        (this.props.feedo.loading === 'ADD_HUNT_TAG_PENDING' && feedo.loading === 'ADD_HUNT_TAG_FULFILLED') ||
+        (this.props.feedo.loading === 'REMOVE_HUNT_TAG_PENDING' && feedo.loading === 'REMOVE_HUNT_TAG_FULFILLED') ||
         (this.props.card.loading === 'UPDATE_CARD_PENDING' && card.loading === 'UPDATE_CARD_FULFILLED') || 
         (this.props.card.loading === 'DELETE_CARD_PENDING' && card.loading === 'DELETE_CARD_FULFILLED') ||
         (this.props.card.loading === 'MOVE_CARD_PENDING' && card.loading === 'MOVE_CARD_FULFILLED')) {
@@ -144,6 +175,31 @@ class FeedDetailScreen extends React.Component {
 
     if (feedo.loading === 'GET_FEED_DETAIL_PENDING') {
       this.setState({ currentFeed: {} })
+    }
+
+    if (this.props.feedo.loading === 'GET_FILE_UPLOAD_URL_PENDING' && feedo.loading === 'GET_FILE_UPLOAD_URL_FULFILLED') {
+      // success in getting a file upload url
+      this.setState({
+        apiLoading: true
+      })
+      this.props.uploadFileToS3(feedo.fileUploadUrl.uploadUrl, this.selectedFile, this.selectedFileName, this.selectedFileMimeType);
+    }
+
+    if (this.props.feedo.loading === 'UPLOAD_FILE_PENDING' && feedo.loading === 'UPLOAD_FILE_FULFILLED') {
+      // success in uploading a file
+      let { id } = this.props.feedo.currentFeed
+      const { objectKey } = this.props.feedo.fileUploadUrl
+
+      this.setState({
+        apiLoading: true
+      })
+      this.props.addFile(id, this.selectedFileType, this.selectedFileMimeType, this.selectedFileName, objectKey);
+    }
+
+    if (feedo.loading === 'GET_FILE_UPLOAD_URL_REJECTED' || feedo.loading === 'UPLOAD_FILE_REJECTED' || feedo.loading === 'ADD_FILE_REJECTED') {
+      this.setState({
+        apiLoading: false
+      })
     }
   }
 
@@ -239,6 +295,7 @@ class FeedDetailScreen extends React.Component {
         Actions.pop()
         return
       case 'Edit':
+        this.setState({ feedoMode: 1 })
         this.handleEdit(feedId);
         return
       default:
@@ -580,6 +637,7 @@ class FeedDetailScreen extends React.Component {
             <NewFeedScreen 
               onClose={() => this.onCloseEditFeedModal()}
               selectedFeedId={this.props.data.id}
+              feedoMode={this.state.feedoMode}
             />
         }
       </Animated.View>
@@ -594,6 +652,157 @@ class FeedDetailScreen extends React.Component {
     setTimeout(() => {
       this.setState({ isShowShare: false })
     }, 200)
+  }
+
+  onAddMedia = () => {
+    this.imagePickerActionSheetRef.show();
+  }
+
+  onAddDocument() {
+    DocumentPicker.show({
+      filetype: [DocumentPickerUtil.allFiles()],
+    },(error, response) => {
+      if (error === null) {
+        let type = 'FILE';
+        const mimeType = mime.lookup(response.uri);
+        if (mimeType.indexOf('image') !== -1 || mimeType.indexOf('video') !== -1) {
+          type = 'MEDIA';
+        }
+        this.uploadFile(response, type);
+      }      
+    });
+    return;
+  }
+
+  uploadFile(file, type) {
+    this.selectedFile = file.uri;
+    this.selectedFileMimeType = mime.lookup(file.uri);
+    this.selectedFileName = file.fileName;
+    this.selectedFileType = type;
+    if (this.props.feedo.currentFeed.id) {
+      this.props.getFileUploadUrl(this.props.feedo.currentFeed.id);
+    }
+  }
+
+  pickMediaFromCamera(options) {
+    ImagePicker.launchCamera(options, (response)  => {
+      if (!response.didCancel) {
+        if (!response.fileName) {
+          response.fileName = response.uri.replace(/^.*[\\\/]/, '')
+        }
+        this.uploadFile(response, 'MEDIA');
+      }
+    });
+  }
+
+  pickMediaFromLibrary(options) {
+    ImagePicker.launchImageLibrary(options, (response)  => {
+      if (!response.didCancel) {
+        this.uploadFile(response, 'MEDIA');
+      }
+    });
+  }
+
+  onTapMediaPickerActionSheet(index) {
+    var options = {
+      storageOptions: {
+        skipBackup: true,
+        path: 'feedo'
+      }
+    };
+        
+    if (index === 0) {
+      // from camera
+      Permissions.check('camera').then(response => {
+        if (response === 'authorized') {
+          this.pickMediaFromCamera(options);
+        } else if (response === 'undetermined') {
+          Permissions.request('camera').then(response => {
+            if (response === 'authorized') {
+              this.pickMediaFromCamera(options);
+            }
+          });
+        } else {
+          Permissions.openSettings();
+        }
+      });
+    } else if (index === 1) {
+      // from library
+      Permissions.check('photo').then(response => {
+        if (response === 'authorized') {
+          this.pickMediaFromLibrary(options);
+        } else if (response === 'undetermined') {
+          Permissions.request('photo').then(response => {
+            if (response === 'authorized') {
+              this.pickMediaFromLibrary(options);
+            }
+          });
+        } else {
+          Permissions.openSettings();
+        }
+      });
+    }
+  }
+
+  get renderCreateTag() {
+    if (this.state.currentScreen !== TagCreateMode) {
+      return;
+    }
+
+    const animatedMove  = this.animatedTagTransition.interpolate({
+      inputRange: [0, 1],
+      outputRange: [0, 150],
+    });
+    const animatedOpacity  = this.animatedTagTransition.interpolate({
+      inputRange: [0, 1],
+      outputRange: [1, 0],
+    });
+
+    return (
+      <Animated.View
+        style={[
+          styles.tagCreationContainer,
+          {
+            left: animatedMove,
+            opacity: animatedOpacity,
+          }
+        ]}
+      >
+        <TagCreateScreen 
+          onBack={() => this.onCloseCreationTag()}
+        />
+      </Animated.View>
+    );
+  }
+
+
+  onOpenCreationTag = () => {
+    this.setState({
+      currentScreen: TagCreateMode,
+    }, () => {
+      this.animatedTagTransition.setValue(1)
+      Animated.timing(this.animatedTagTransition, {
+        toValue: 0,
+        duration: CONSTANTS.ANIMATEION_MILLI_SECONDS,
+      }).start();
+    });
+  }
+
+  onCloseCreationTag() {
+    this.animatedTagTransition.setValue(0)
+    Animated.timing(this.animatedTagTransition, {
+      toValue: 1,
+      duration: CONSTANTS.ANIMATEION_MILLI_SECONDS,
+    }).start(() => {
+      this.setState({
+        currentScreen: FeedDetailMode,
+      });
+    });
+  }
+
+  onDeleteFile = (id, fileId) => {
+    this.setState({ apiLoading: true })
+    this.props.deleteFile(id, fileId)
   }
 
   render () {
@@ -637,7 +846,17 @@ class FeedDetailScreen extends React.Component {
             <View style={styles.detailView}>
               {!_.isEmpty(currentFeed) && (
                 <View style={styles.collapseView}>
-                  <FeedCollapseComponent feedData={currentFeed} />
+                  <FeedCollapseComponent
+                    feedData={currentFeed}
+                    onEditFeed={() => {
+                      this.setState({ feedoMode: 3 })
+                      this.handleEdit(currentFeed.id)
+                    }}
+                    onOpenCreationTag={this.onOpenCreationTag}
+                    onAddMedia={this.onAddMedia}
+                    onAddDocument={this.onAddDocument}
+                    deleteFile={this.onDeleteFile}
+                  />
                 </View>
               )}
 
@@ -683,6 +902,8 @@ class FeedDetailScreen extends React.Component {
           </ScrollView>
 
         </View>
+
+        {this.renderCreateTag}
 
         <DashboardActionBar 
           onAddFeed={this.onOpenNewCardModal.bind(this)}
@@ -819,6 +1040,17 @@ class FeedDetailScreen extends React.Component {
           onClose={() => this.setState({ showFilterModal: false }) }
         />
 
+        <ActionSheet
+          ref={ref => this.imagePickerActionSheetRef = ref}
+          title='Select a Photo / Video'
+          options={['Take A Photo', 'Select From Photos', 'Cancel']}
+          cancelButtonIndex={2}
+          tintColor={COLORS.PURPLE}
+          onPress={(index) => this.onTapMediaPickerActionSheet(index)}
+        />
+
+        {this.state.apiLoading && <LoadingScreen />}
+
       </SafeAreaView>
     )
   }
@@ -842,6 +1074,10 @@ const mapDispatchToProps = dispatch => ({
   setCurrentCard: (data) => dispatch(setCurrentCard(data)),
   deleteCard: (ideaId) => dispatch(deleteCard(ideaId)),
   moveCard: (ideaId, huntId) => dispatch(moveCard(ideaId, huntId)),
+  getFileUploadUrl: (id) => dispatch(getFileUploadUrl(id)),
+  uploadFileToS3: (signedUrl, file, fileName, mimeType) => dispatch(uploadFileToS3(signedUrl, file, fileName, mimeType)),
+  addFile: (feedId, fileType, contentType, name, objectKey) => dispatch(addFile(feedId, fileType, contentType, name, objectKey)),
+  deleteFile: (feedId, fileId) => dispatch(deleteFile(feedId, fileId))
 })
 
 FeedDetailScreen.defaultProps = {

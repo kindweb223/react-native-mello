@@ -573,13 +573,21 @@ export default function feedo(state = initialState, action = {}) {
       const tag = action.payload;
       let tags = state.currentFeed.tags || [];
       tags.push(tag);
+
+      const restFeedoList = filter(state.feedoList, feed => feed.id !== state.currentFeed.id)
+      const newCurrentFeed = {
+        ...state.currentFeed,
+        tags,
+      }
+
       return {
         ...state,
         loading: types.ADD_HUNT_TAG_FULFILLED,
-        currentFeed: {
-          ...state.currentFeed,
-          tags,
-        }
+        currentFeed: newCurrentFeed,
+        feedoList: [
+          ...restFeedoList,
+          newCurrentFeed
+        ]
       }
     }
     case types.ADD_HUNT_TAG_REJECTED: {
@@ -601,13 +609,21 @@ export default function feedo(state = initialState, action = {}) {
     case types.REMOVE_HUNT_TAG_FULFILLED: {
       const tagId = action.payload;
       const tags = filter(state.currentFeed.tags, tag => tag.id !== tagId);
+
+      const restFeedoList = filter(state.feedoList, feed => feed.id !== state.currentFeed.id)
+      const newCurrentFeed = {
+        ...state.currentFeed,
+        tags,
+      }
+
       return {
         ...state,
         loading: types.REMOVE_HUNT_TAG_FULFILLED,
-        currentFeed: {
-          ...state.currentFeed,
-          tags,
-        }
+        currentFeed: newCurrentFeed,
+        feedoList: [
+          ...restFeedoList,
+          newCurrentFeed
+        ]
       }
     }
     case types.REMOVE_HUNT_TAG_REJECTED: {
