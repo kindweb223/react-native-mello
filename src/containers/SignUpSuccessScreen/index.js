@@ -40,14 +40,10 @@ class SignUpSuccessScreen extends React.Component {
   }
 
   componentWillMount() {
-    const { token, deepLinking, user } = this.props
+    const { token, deepLinking } = this.props
     if (deepLinking) { // from deep_linking
-      if (user.userInfo) {
-        Actions.HomeScreen()
-      } else {
-        this.setState({ loading: true })
-        this.props.confirmAccount(token)
-      }
+      this.setState({ loading: true })
+      this.props.confirmAccount(token)
     } else {
       setTimeout(() => {
         Actions.HomeScreen()
