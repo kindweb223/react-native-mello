@@ -22,8 +22,6 @@ class ImageCrop extends Component {
 		this.state = {
 			originalImageWidth: null,
 			originalImageHeight: null,
-			imageWidth: null,
-			imageHeight: null,
 			containerWidth: null,
 			containerHeight: null,
 			offsetX: 0,
