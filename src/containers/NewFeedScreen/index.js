@@ -8,6 +8,7 @@ import {
   Animated,
   Keyboard,
   ScrollView,
+  Image
 } from 'react-native'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
@@ -18,10 +19,10 @@ import Feather from 'react-native-vector-icons/Feather'
 import Tags from '../../components/TagComponent'
 import ActionSheet from 'react-native-actionsheet'
 import { Actions } from 'react-native-router-flux'
-import ImagePicker from 'react-native-image-picker';
-import { DocumentPicker, DocumentPickerUtil } from 'react-native-document-picker';
+import ImagePicker from 'react-native-image-picker'
+import { DocumentPicker, DocumentPickerUtil } from 'react-native-document-picker'
 import Permissions from 'react-native-permissions'
-import * as mime from 'react-native-mime-types';
+import * as mime from 'react-native-mime-types'
 import _ from 'lodash'
 
 import { 
@@ -33,21 +34,23 @@ import {
   addFile,
   deleteFile,
   getFeedDetail,
-  setCurrentFeed,
+  setCurrentFeed
 } from '../../redux/feedo/actions'
 import * as types from '../../redux/feedo/types'
-import COLORS from '../../service/colors';
-import CONSTANTS from '../../service/constants';
-import styles from './styles';
-import LoadingScreen from '../LoadingScreen';
-import ImageList from '../../components/ImageListComponent';
-import DocumentList from '../../components/DocumentListComponent';
-import TagCreateScreen from '../TagCreateScreen';
+import COLORS from '../../service/colors'
+import CONSTANTS from '../../service/constants'
+import styles from './styles'
+import LoadingScreen from '../LoadingScreen'
+import ImageList from '../../components/ImageListComponent'
+import DocumentList from '../../components/DocumentListComponent'
+import TagCreateScreen from '../TagCreateScreen'
+
+const ATTACHMENT_ICON = require('../../../assets/images/Attachment/Blue.png')
+const IMAGE_ICON = require('../../../assets/images/Image/Blue.png')
+const TAG_ICON = require('../../../assets/images/Tag/Blue.png')
 
 const NewFeedMode = 1;
 const TagCreateMode = 2;
-const ScreenVerticalMinMargin = 80;
-
 
 class NewFeedScreen extends React.Component {
   constructor(props) {
@@ -57,8 +60,8 @@ class NewFeedScreen extends React.Component {
       comments: '',
       loading: false,
       currentScreen: NewFeedMode,
+      keyboardShow: false
     };
-    // this.isNewFeed = Object.keys(this.props.feedo.currentFeed).length === 0;
     
     this.selectedFile = null;
     this.selectedFileMimeType = null;
@@ -183,6 +186,7 @@ class NewFeedScreen extends React.Component {
   }
 
   keyboardWillShow(e) {
+    this.setState({ keyboardShow: true })
     Animated.timing(
       this.animatedKeyboardHeight, {
         toValue: e.endCoordinates.height,
@@ -192,6 +196,7 @@ class NewFeedScreen extends React.Component {
   }
 
   keyboardWillHide(e) {
+    this.setState({ keyboardShow: false })
     Animated.timing(
       this.animatedKeyboardHeight, {
         toValue: 0,
@@ -385,7 +390,12 @@ class NewFeedScreen extends React.Component {
           activeOpacity={0.6}
           onPress={this.onUpdate.bind(this)}
         >
-          <Text style={styles.textButton}>{this.props.selectedFeedId ? 'Save' : this.props.feedoMode === CONSTANTS.FEEDO_FROM_CARD ? 'Create feed' : 'Create'}</Text>
+          <Text style={styles.textButton}>
+            {this.props.selectedFeedId
+              ? this.props.feedoMode === CONSTANTS.FEEDO_FROM_MAIN ? 'Save' : 'Done'
+              : this.props.feedoMode === CONSTANTS.FEEDO_FROM_CARD ? 'Create feed' : 'Create'
+            }
+          </Text>
         </TouchableOpacity>
       </View>
     );
@@ -449,7 +459,10 @@ class NewFeedScreen extends React.Component {
         />
 
         {this.renderImages}
-        {this.renderDocuments}
+
+        <View style={styles.attachView}>
+          {this.renderDocuments}
+        </View>
 
         {!_.isEmpty(this.props.feedo.currentFeed) && this.props.feedo.currentFeed.tags.length > 0 && (
           <Tags
@@ -458,8 +471,7 @@ class NewFeedScreen extends React.Component {
             placeHolder=""
             onPressTag={(index, tag) => this.onOpenCreationTag()}
             containerStyle={{
-              marginHorizontal: 20,
-              marginVertical: 8,
+              marginHorizontal: 16
             }}
             inputStyle={{
               backgroundColor: 'white',
@@ -490,39 +502,41 @@ class NewFeedScreen extends React.Component {
             activeOpacity={0.6}
             onPress={this.onOpenCreationTag.bind(this)}
           >
-            <Feather name="tag" size={20} color={COLORS.PURPLE} />
+            <Image source={TAG_ICON} />
           </TouchableOpacity>
           <TouchableOpacity
             style={styles.bottomItemContainer}
             activeOpacity={0.6}
             onPress={this.onAddMedia.bind(this)}
           >
-            <Entypo name="image" size={20} color={COLORS.PURPLE} />
+            <Image source={IMAGE_ICON} />
           </TouchableOpacity>
           <TouchableOpacity 
             style={styles.bottomItemContainer}
             activeOpacity={0.6}
             onPress={this.onAddDocument.bind(this)}
           >
-            <Entypo name="attachment" style={styles.attachment} size={20} color={COLORS.PURPLE} />
+            <Image source={ATTACHMENT_ICON} />
           </TouchableOpacity>
         </View>
-        <View style={styles.bottomRightCotainer}>
-          <TouchableOpacity
-            style={styles.keyboardIconView}
-            activeOpacity={0.6}
-            onPress={this.onHideKeyboard.bind(this)}
-          >
-            <MaterialCommunityIcons name="keyboard-close" size={20} color="#fff" />
-          </TouchableOpacity>
-        </View>
+        {this.state.keyboardShow && (
+          <View style={styles.bottomRightCotainer}>
+            <TouchableOpacity
+              style={styles.keyboardIconView}
+              activeOpacity={0.6}
+              onPress={this.onHideKeyboard.bind(this)}
+            >
+              <MaterialCommunityIcons name="keyboard-close" size={20} color="#fff" />
+            </TouchableOpacity>
+          </View>
+        )}
       </View>
     );
   }
 
   get renderFeed() {
     let postion = 0;
-    if (this.props.feedoMode === CONSTANTS.FEEDO_FROM_MAIN) {
+    if (this.props.feedoMode === CONSTANTS.FEEDO_FROM_MAIN || this.props.feedoMode === CONSTANTS.FEEDO_FROM_COLLAPSE) {
       postion = CONSTANTS.SCREEN_HEIGHT;
     } else if (this.props.feedoMode === CONSTANTS.FEEDO_FROM_CARD) {
       postion = CONSTANTS.SCREEN_WIDTH;
@@ -538,7 +552,7 @@ class NewFeedScreen extends React.Component {
           styles.feedContainer, {
             opacity: this.animatedShow,
           },
-          (this.props.feedoMode === CONSTANTS.FEEDO_FROM_MAIN) && {top: animatedMove},
+          (this.props.feedoMode === CONSTANTS.FEEDO_FROM_MAIN || this.props.feedoMode === CONSTANTS.FEEDO_FROM_COLLAPSE) && {top: animatedMove},
           (this.props.feedoMode === CONSTANTS.FEEDO_FROM_CARD) && {left: animatedMove}
         ]}
       >

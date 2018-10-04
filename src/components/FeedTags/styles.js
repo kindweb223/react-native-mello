@@ -34,7 +34,7 @@ export default StyleSheet.create({
     paddingLeft: 12,
     paddingRight: 12,
     height: 32,
-    marginRight: 4
+    marginRight: 8
   },
   tagLabel: {
     fontSize: 13,

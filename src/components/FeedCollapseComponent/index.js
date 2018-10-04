@@ -5,21 +5,28 @@ import {
   Text,
   TouchableOpacity,
   ScrollView,
-  Animated
+  Animated,
+  Image
 } from 'react-native'
 import Collapsible from 'react-native-collapsible'
 import Feather from 'react-native-vector-icons/Feather'
+import Entypo from 'react-native-vector-icons/Entypo'
 import FastImage from "react-native-fast-image"
 import Modal from "react-native-modal"
-import { isEmpty, filter } from 'lodash'
+import _ from 'lodash'
 import PropTypes from 'prop-types'
+
 import ImageSliderScreen from '../../containers/ImageSliderScreen'
 import DocumentList from '../DocumentListComponent'
+import ImageList from '../ImageListComponent'
 import Tags from '../FeedTags'
 import COLORS from '../../service/colors'
 import CONSTANTS from '../../service/constants'
 import styles from './styles'
-const ATTACHMENT_ICON = require('../../../assets/images/Attachment/grey.png')
+import * as COMMON_FUNC from '../../service/commonFunc'
+const ATTACHMENT_ICON = require('../../../assets/images/Attachment/Blue.png')
+const IMAGE_ICON = require('../../../assets/images/Image/Blue.png')
+const TAG_ICON = require('../../../assets/images/Tag/Blue.png')
 
 class FeedCollapseComponent extends React.Component {
   constructor(props) {
@@ -31,16 +38,16 @@ class FeedCollapseComponent extends React.Component {
       feedData: {},
       isPreview: false,
       images: [],
-      position: 0,
+      position: 0
     }
   }
 
   static getDerivedStateFromProps(nextProps, prevState) {
     const { feedData } = nextProps
-    if (prevState.feedData !== feedData && !isEmpty(feedData)) {
+    if (prevState.feedData !== feedData && !_.isEmpty(feedData)) {
       return {
         feedData,
-        images: filter(feedData.files, data => data.contentType.includes('image/')),
+        images: _.filter(feedData.files, data => data.contentType.includes('image/')),
       }
     }
     return null
@@ -53,39 +60,60 @@ class FeedCollapseComponent extends React.Component {
     })
   }
 
+  onRemoveFile(fileId) {
+    const {
+      id,
+    } = this.state.feedData
+    this.props.deleteFile(id, fileId);
+  }
+
   renderContent = (feedData) => {
-    const images = filter(feedData.files, data => data.contentType.includes('image/'))
-    const files = filter(feedData.files, data => !data.contentType.includes('image/'))
+    const images = _.filter(feedData.files, data => data.contentType.includes('image/'))
+    const files = _.filter(feedData.files, data => !data.contentType.includes('image/'))
 
     return (
       <View style={styles.contentView}>
         {feedData.summary.length > 0 && (
-          <Text style={styles.summaryText}>{feedData.summary}</Text>
+          <TouchableOpacity
+            activeOpacity={0.9}
+            style={styles.summaryView}
+            onPress={() => COMMON_FUNC.isFeedOwnerEditor(feedData) ? this.props.onEditFeed() : {}}
+          >
+            <Text style={styles.summaryText}>{feedData.summary}</Text>
+          </TouchableOpacity>
         )}
-  
-        {images.length > 0 && (
-          <View style={styles.imageView}>
-            <ScrollView
-              horizontal
-              pagingEnabled
-              showsHorizontalScrollIndicator={false}
-            >
-              {images.map((item, key) => (
-                <View key={key} style={key === (images.length - 1) ? styles.feedLastImage : styles.feedImage}>
-                  <TouchableOpacity onPress={() => this.onImagePreview(key)}>
-                    <FastImage style={styles.image} source={{uri: item.accessUrl}} threshold={300} />
-                  </TouchableOpacity>
-                </View>
-              ))}
-            </ScrollView>
-          </View>
-        )}
+
+        {COMMON_FUNC.isFeedOwnerEditor(feedData)
+          ? <View>
+              <ImageList 
+                files={images}
+                onRemove={(fileId) => this.onRemoveFile(fileId)}
+              />
+            </View>
+          : images.length > 0 && (
+            <View style={styles.imageView}>
+              <ScrollView
+                horizontal
+                pagingEnabled
+                showsHorizontalScrollIndicator={false}
+              >
+                {images.map((item, key) => (
+                  <View key={key} style={key === (images.length - 1) ? styles.feedLastImage : styles.feedImage}>
+                    <TouchableOpacity onPress={() => this.onImagePreview(key)}>
+                      <FastImage style={styles.image} source={{ uri: item.accessUrl }} threshold={300} />
+                    </TouchableOpacity>
+                  </View>
+                ))}
+              </ScrollView>
+            </View>)
+        }
 
         {files.length > 0 && (
           <View style={styles.attachView}>
             <DocumentList 
-              editable={false}
+              editable={COMMON_FUNC.isFeedOwnerEditor(feedData)}
               files={files}
+              onRemove={(fileId) => this.onRemoveFile(fileId)}
             />
           </View>
         )}
@@ -110,7 +138,34 @@ class FeedCollapseComponent extends React.Component {
           </View>
         )}
 
-        <View style={styles.footerView}>
+        <View style={[styles.footerView, COMMON_FUNC.isFeedOwnerEditor(feedData) ? { marginTop: 20 } : { marginTop: 0 }]}>
+          <View style={styles.footerLeftView}>
+            {COMMON_FUNC.isFeedOwnerEditor(feedData) && (
+              <View style={styles.footerLeftBtnView}>
+                <TouchableOpacity
+                  style={styles.btnView}
+                  activeOpacity={0.6}
+                  onPress={this.props.onOpenCreationTag}
+                >
+                  <Image source={TAG_ICON} />
+                </TouchableOpacity> 
+                <TouchableOpacity
+                  style={styles.btnView}
+                  activeOpacity={0.6}
+                  onPress={this.props.onAddMedia}
+                >
+                  <Image source={IMAGE_ICON} />
+                </TouchableOpacity>
+                <TouchableOpacity 
+                  style={styles.btnView}
+                  activeOpacity={0.6}
+                  onPress={this.props.onAddDocument}
+                >
+                  <Image source={ATTACHMENT_ICON} />
+                </TouchableOpacity>
+              </View>
+            )}
+          </View>
           <TouchableOpacity onPress={this.closeCollapse}>
             <View style={styles.collapseIconView}>
               <Feather name="chevron-up" size={25} color={COLORS.MEDIUM_GREY} />
@@ -165,11 +220,16 @@ class FeedCollapseComponent extends React.Component {
 
     return (
       <View style={styles.collapseView}>
-        <TouchableOpacity style={styles.collapseHeaderView} activeOpacity={0.9} onPress={this.handleCollapse}>
+        <TouchableOpacity activeOpacity={0.9} onPress={this.handleCollapse}>
           <View style={styles.collpaseHeader}>
             {isCollapse
               ? <Text style={styles.headerTitle} numberOfLines={1} ellipsizeMode="tail">{feedData.headline}</Text>
-              : <Text style={styles.headerTitle}>{feedData.headline}</Text>
+              : <TouchableOpacity
+                  activeOpacity={0.9}
+                  onPress={() => COMMON_FUNC.isFeedOwnerEditor(feedData) ? this.props.onEditFeed() : {}}
+                >
+                  <Text style={styles.headerTitle}>{feedData.headline}</Text>
+                </TouchableOpacity>
             }
 
             {isCollapse && (feedData.summary.length > 0 || (feedData.files && feedData.files.length > 0) || (feedData.tags && feedData.tags.length > 0)) && (
@@ -202,6 +262,7 @@ class FeedCollapseComponent extends React.Component {
             onClose={() => this.setState({ isPreview: false })}
           />
         </Modal>
+
       </View>
     )
   }

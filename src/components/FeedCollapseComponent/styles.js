@@ -15,7 +15,8 @@ const styles = StyleSheet.create({
     width: '100%',
     flexDirection: 'row',
     alignItems: 'center',
-    justifyContent: 'space-between'
+    justifyContent: 'space-between',
+    paddingHorizontal: CONSTANTS.PADDING
   },
   headerTitle: {
     flex: 1,
@@ -27,15 +28,20 @@ const styles = StyleSheet.create({
   contentView: {
     width: '100%'
   },
+  summaryView: {
+    paddingHorizontal: CONSTANTS.PADDING,
+    marginTop: 20
+  },
   summaryText: {
-    fontSize: 16,
-    marginVertical: 10
+    fontSize: 16
   },
   tagView: {
-    marginVertical: 10
+    marginTop: 10,
+    paddingHorizontal: CONSTANTS.PADDING,
   },
   imageView: {
-    marginVertical: 10
+    marginTop: 20,
+    paddingHorizontal: CONSTANTS.PADDING,
   },
   feedImage: {
     width: 105,
@@ -51,17 +57,30 @@ const styles = StyleSheet.create({
     height: '100%'
   },
   attachView: {
-    width: '100%'
+    width: '100%',
+    paddingHorizontal: 6,
+    marginTop: 20
   },
   footerView: {
     width: '100%',
-    justifyContent: 'center',
-    alignItems: 'center'
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    paddingHorizontal: 12,
+  },
+  footerLeftBtnView: {
+    flexDirection: 'row'
+  },
+  btnView: {
+    paddingHorizontal: 4,
+    marginRight: 15,
+    alignItems: 'center',
+    justifyContent: 'center'
   },
   collapseIconView: {
     width: 60,
     height: 30,
-    alignItems: 'center',
+    alignItems: 'flex-end',
     justifyContent: 'center',
   },
   previewModal: {

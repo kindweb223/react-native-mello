@@ -137,7 +137,7 @@ export default class DocumentList extends React.Component {
   renderDocumentFile({item, index}) {
     return (
       <View 
-        style={[styles.itemContainer, this.props.editable ? { paddingLeft: 12 } : { paddingLeft: 3 }]}
+        style={[styles.itemContainer, this.props.editable ? { paddingLeft: 13 } : { paddingLeft: 3 }]}
         onLayout={({nativeEvent}) => this.onLayout(nativeEvent.layout, index)}
       >
         {this.renderItemBackground(index)}
@@ -181,7 +181,7 @@ export default class DocumentList extends React.Component {
     return (
       <View>
         <FlatList
-          style={this.props.editable ? { marginTop: 20, marginHorizontal: 10 } : { marginTop: 10, marginHorizontal: 0 }}
+          style={this.props.editable ? { marginTop: 0, marginHorizontal: 0 } : { marginTop: 0, marginHorizontal: 10 }}
           showsHorizontalScrollIndicator={false}
           data={files}
           renderItem={this.renderDocumentFile.bind(this)}

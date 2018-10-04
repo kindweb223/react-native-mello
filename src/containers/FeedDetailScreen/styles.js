@@ -71,7 +71,6 @@ const styles = StyleSheet.create({
   },
   collapseView: {
     width: '100%',
-    paddingHorizontal: CONSTANTS.PADDING,
     paddingBottom: 20,
     paddingTop: 10,
     marginBottom: 10,
@@ -137,6 +136,15 @@ const styles = StyleSheet.create({
     margin: 0,
     justifyContent: 'center',
   },
+  tagCreationContainer: {
+    position: 'absolute',
+    top: 0,
+    bottom: 0,
+    right: 0,
+    left: 0,
+    backgroundColor: COLORS.LIGHT_GREY_MODAL_BACKGROUND,
+    zIndex: 100
+  }
 })
 
 export default styles

@@ -27,10 +27,10 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     paddingTop: CONSTANTS.STATUSBAR_HEIGHT + 10,
     paddingBottom: 16,
-    paddingHorizontal: 12
+    paddingHorizontal: 10
   },
   closeButtonWrapper: {
-    paddingHorizontal: 4,
+    paddingHorizontal: 2,
   },
   createButtonWapper: {
     marginRight: 4,
@@ -53,28 +53,27 @@ const styles = StyleSheet.create({
     fontSize: 24,
     fontWeight: '500',
     lineHeight: 26,
-    marginHorizontal: 20,
+    marginHorizontal: 16,
     marginVertical: 8,
   },
   textInputNote: {
     fontSize: 16,
     lineHeight: 23,
-    marginHorizontal: 20,
-    marginVertical: 8,
+    marginHorizontal: 16,
+    marginTop: 8,
   },
   bottomContainer: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    paddingHorizontal: 14,
-    paddingVertical: 14,
+    paddingHorizontal: 12,
+    paddingVertical: 12,
   },
   bottomLeftContainer: {
     flexDirection: 'row'
   },
   bottomItemContainer: {
-    width: 32,
-    height: 32,
-    marginRight: 8,
+    paddingHorizontal: 4,
+    marginRight: 15,
     alignItems: 'center',
     justifyContent: 'center'
   },
@@ -83,15 +82,14 @@ const styles = StyleSheet.create({
     height: 32,
     backgroundColor: COLORS.PURPLE,
     borderRadius: 8,
-    marginRight: 2,
+    marginRight: 4,
     alignItems: 'center',
     justifyContent: 'center',
   },
-  attachment: {
-    transform: [
-      { rotate: '90deg' },
-    ],
-  },
+  attachView: {
+    marginLeft: 6,
+    marginTop: 20
+  }
 })
 
 
