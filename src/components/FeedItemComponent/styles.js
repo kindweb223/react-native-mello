@@ -4,7 +4,7 @@ import CONSTANTS from '../../service/constants'
 const styles = StyleSheet.create({
   container: {
     backgroundColor: '#fff',
-    borderRadius: 10,
+    borderRadius: 18,
     paddingHorizontal: CONSTANTS.PADDING,
     marginBottom: 26
   },

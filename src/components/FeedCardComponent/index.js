@@ -83,7 +83,7 @@ class FeedCardComponent extends React.Component {
           <View style={styles.thumbnailsView}>
             <FastImage
               style={styles.thumbnails}
-              source={{uri: idea.coverImage}}
+              source={{ uri: idea.coverImage }}
             />
           </View>
         }

@@ -7,8 +7,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     paddingTop: 11,
     paddingBottom: 6,
-    paddingLeft: 11,
-    paddingRight: 6,
+    paddingHorizontal: 11,
     borderRadius: 18,
   },
   title: {
@@ -21,7 +20,7 @@ const styles = StyleSheet.create({
   thumbnailsView: {
     width: '100%',
     height: 144,
-    marginBottom: 5,
+    marginBottom: 5
   },
   thumbnails: {
     width: '100%',
