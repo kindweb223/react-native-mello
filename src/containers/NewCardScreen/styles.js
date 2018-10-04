@@ -18,11 +18,9 @@ const styles = StyleSheet.create({
     right: 0,
     bottom: 0,
     justifyContent: 'center',
-    // zIndex: 1,
     backgroundColor: 'transparent',
   },
   contentContainer: {
-    // borderRadius: 18,
     paddingTop: 26,
     paddingBottom: 17,
     backgroundColor: '#fff',
@@ -49,12 +47,11 @@ const styles = StyleSheet.create({
   attachmentButtonsContainer: {
     flexDirection: 'row',
     alignItems: 'center',
-    paddingHorizontal: 16,
-    marginVertical: 16,
   },
   buttonItemContainer: {
     width: 32,
     height: 32,
+    marginRight: 5,
     alignItems: 'center',
     justifyContent: 'center',
   },
@@ -64,7 +61,8 @@ const styles = StyleSheet.create({
   },
   attachment: {
     transform: [
-      { rotate: '90deg' },
+      {rotateZ: '-135deg'},
+      {rotateY: '180deg'},
     ],
   },
   line: {
@@ -101,27 +99,37 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     paddingLeft: 6,
     paddingRight: 16,
-    marginBottom: 16,
   },
   closeButtonWrapper: {
     paddingHorizontal: 10,
     paddingVertical: 5,
   },
+  backButtonWrapper: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingHorizontal: 10,
+    paddingVertical: 5,
+  },
+  textBack: {
+    fontSize: 16,
+    lineHeight: 23,
+    fontWeight: '500',
+    marginLeft: 5,
+    color: COLORS.PURPLE,
+  },
   threeDotButtonWrapper: {
     width: 35,
     height: 35,
-    backgroundColor: COLORS.PURPLE,
-    borderRadius: 20,
+    // backgroundColor: COLORS.PURPLE,
+    // borderRadius: 20,
     justifyContent: 'center',
     alignItems: 'center',
-    marginLeft: 10,
   },
   imageCoverView: {
     // marginHorizontal: 16,
-    marginTop: 15,
     height: Math.round(CONSTANTS.SCREEN_WIDTH * 0.565),
     // borderRadius: 5,
-    overflow: 'hidden'
+    overflow: 'hidden',
   },
   coverImageSelectContainer: {
     marginHorizontal: 16,
@@ -206,6 +214,17 @@ const styles = StyleSheet.create({
   },
   url: {
     color: COLORS.BLUE,
+  },
+  moreButtonContainer: {
+    position: 'absolute',
+    right: 16,
+    bottom: 0,
+  },
+  textMore: {
+    fontSize: 16,
+    lineHeight: 24,
+    color: COLORS.DARK_GREY,
+    backgroundColor: '#fff',
   },
 })
 

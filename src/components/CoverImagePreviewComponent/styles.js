@@ -1,4 +1,5 @@
-import { StyleSheet } from 'react-native'
+import { StyleSheet, Platform } from 'react-native'
+import COLORS from '../../service/colors'
 
 const styles = StyleSheet.create({
   container: {
@@ -16,10 +17,30 @@ const styles = StyleSheet.create({
     width: '100%',
     height: '100%'
   },
-  layerIcon: {
+  imageNumberContainer: {
     position: 'absolute',
-    right: 10,
-    bottom: 5
+    right: 16,
+    bottom: 16,
+    borderRadius: 5,
+    paddingVertical: 6,
+    paddingHorizontal: 8,
+    backgroundColor: '#fff',
+    ...Platform.select({
+      ios: {
+        shadowColor: 'black',
+        shadowOffset: { height: 5 },
+        shadowOpacity: 0.15,
+        shadowRadius: 4,
+      },
+      android: {
+        elevation: 20
+      }
+    }),
+  },
+  textImageNumber: {
+    fontSize: 14,
+    lineHeight: 21,
+    color: COLORS.DARK_GREY,
   },
 })
 

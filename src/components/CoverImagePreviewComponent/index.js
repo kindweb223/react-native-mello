@@ -1,10 +1,8 @@
 import React from 'react'
 import {
   TouchableOpacity,
-  Animated,
   View,
-  Image,
-  FlatList,
+  Text,
 } from 'react-native'
 import PropTypes from 'prop-types'
 
@@ -15,7 +13,6 @@ import _ from 'lodash'
 import ImageSliderScreen from '../../containers/ImageSliderScreen'
 import styles from './styles'
 import CONSTANTS from '../../service/constants'
-const LAYER_ICON = require('../../../assets/images/Multi-image/White.png')
 
 export default class CoverImagePreviewComponent extends React.Component {
   constructor(props) {
@@ -48,9 +45,12 @@ export default class CoverImagePreviewComponent extends React.Component {
       <View style={styles.container}>
         <TouchableOpacity style={styles.container} onPress={() => this.onPressImage(position)}>
           <FastImage style={styles.imageCover} source={{ uri: coverImage }} resizeMode="cover" />
-          {files.length > 1 && (
-            <Image source={LAYER_ICON} style={styles.layerIcon} />
-          )}
+          {
+            files.length > 1 && 
+            <View style={styles.imageNumberContainer}>
+              <Text style={styles.textImageNumber}>+{files.length - 1}</Text>
+            </View>
+          }
         </TouchableOpacity>
 
         <Modal 
