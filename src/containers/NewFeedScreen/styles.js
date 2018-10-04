@@ -60,21 +60,20 @@ const styles = StyleSheet.create({
     fontSize: 16,
     lineHeight: 23,
     marginHorizontal: 16,
-    marginVertical: 8,
+    marginTop: 8,
   },
   bottomContainer: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     paddingHorizontal: 12,
-    paddingVertical: 14,
+    paddingVertical: 12,
   },
   bottomLeftContainer: {
     flexDirection: 'row'
   },
   bottomItemContainer: {
-    width: 32,
-    height: 32,
-    marginRight: 8,
+    paddingHorizontal: 4,
+    marginRight: 15,
     alignItems: 'center',
     justifyContent: 'center'
   },
@@ -87,12 +86,9 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
-  attachment: {
-    marginTop: -5,
-    transform: [
-      { rotate: '180deg' }, 
-      { rotateY: '180deg' },
-    ],
+  attachView: {
+    marginLeft: 6,
+    marginTop: 20
   }
 })
 

@@ -5,7 +5,8 @@ import {
   Text,
   TouchableOpacity,
   ScrollView,
-  Animated
+  Animated,
+  Image
 } from 'react-native'
 import Collapsible from 'react-native-collapsible'
 import Feather from 'react-native-vector-icons/Feather'
@@ -23,7 +24,9 @@ import COLORS from '../../service/colors'
 import CONSTANTS from '../../service/constants'
 import styles from './styles'
 import * as COMMON_FUNC from '../../service/commonFunc'
-const ATTACHMENT_ICON = require('../../../assets/images/Attachment/grey.png')
+const ATTACHMENT_ICON = require('../../../assets/images/Attachment/Blue.png')
+const IMAGE_ICON = require('../../../assets/images/Image/Blue.png')
+const TAG_ICON = require('../../../assets/images/Tag/Blue.png')
 
 class FeedCollapseComponent extends React.Component {
   constructor(props) {
@@ -81,7 +84,7 @@ class FeedCollapseComponent extends React.Component {
         )}
 
         {COMMON_FUNC.isFeedOwnerEditor(feedData)
-          ? <View style={{ marginBottom: 10 }}>
+          ? <View>
               <ImageList 
                 files={images}
                 onRemove={(fileId) => this.onRemoveFile(fileId)}
@@ -97,7 +100,7 @@ class FeedCollapseComponent extends React.Component {
                 {images.map((item, key) => (
                   <View key={key} style={key === (images.length - 1) ? styles.feedLastImage : styles.feedImage}>
                     <TouchableOpacity onPress={() => this.onImagePreview(key)}>
-                      <FastImage style={styles.image} source={{uri: item.accessUrl}} threshold={300} />
+                      <FastImage style={styles.image} source={{ uri: item.accessUrl }} threshold={300} />
                     </TouchableOpacity>
                   </View>
                 ))}
@@ -144,21 +147,21 @@ class FeedCollapseComponent extends React.Component {
                   activeOpacity={0.6}
                   onPress={this.props.onOpenCreationTag}
                 >
-                  <Feather name="tag" size={20} color={COLORS.PURPLE} />
-                </TouchableOpacity>
+                  <Image source={TAG_ICON} />
+                </TouchableOpacity> 
                 <TouchableOpacity
                   style={styles.btnView}
                   activeOpacity={0.6}
                   onPress={this.props.onAddMedia}
                 >
-                  <Entypo name="image" size={20} color={COLORS.PURPLE} />
+                  <Image source={IMAGE_ICON} />
                 </TouchableOpacity>
                 <TouchableOpacity 
                   style={styles.btnView}
                   activeOpacity={0.6}
                   onPress={this.props.onAddDocument}
                 >
-                  <Entypo name="attachment" style={styles.attachment} size={18} color={COLORS.PURPLE} />
+                  <Image source={ATTACHMENT_ICON} />
                 </TouchableOpacity>
               </View>
             )}

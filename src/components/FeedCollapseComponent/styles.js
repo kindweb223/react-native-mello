@@ -30,18 +30,17 @@ const styles = StyleSheet.create({
   },
   summaryView: {
     paddingHorizontal: CONSTANTS.PADDING,
-    marginTop: 20,
-    marginBottom: 10
+    marginTop: 20
   },
   summaryText: {
     fontSize: 16
   },
   tagView: {
-    marginVertical: 10,
+    marginTop: 10,
     paddingHorizontal: CONSTANTS.PADDING,
   },
   imageView: {
-    marginVertical: 20,
+    marginTop: 20,
     paddingHorizontal: CONSTANTS.PADDING,
   },
   feedImage: {
@@ -60,14 +59,7 @@ const styles = StyleSheet.create({
   attachView: {
     width: '100%',
     paddingHorizontal: 6,
-    marginTop: 10
-  },
-  attachment: {
-    marginTop: -5,
-    transform: [
-      { rotate: '180deg' }, 
-      { rotateY: '180deg' },
-    ],
+    marginTop: 20
   },
   footerView: {
     width: '100%',
@@ -80,9 +72,8 @@ const styles = StyleSheet.create({
     flexDirection: 'row'
   },
   btnView: {
-    width: 32,
-    height: 32,
-    marginRight: 8,
+    paddingHorizontal: 4,
+    marginRight: 15,
     alignItems: 'center',
     justifyContent: 'center'
   },
