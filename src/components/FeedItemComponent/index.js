@@ -12,7 +12,7 @@ const FeedItemComponent = ({ item, pinFlag, page, clickEvent }) => (
   <View style={
     [
       styles.container,
-      clickEvent === 'long' ? { paddingVertical: 16 } : { paddingVertical: 0 },
+      clickEvent === 'long' ? { paddingVertical: 11, paddingHorizontal: 11 } : { paddingVertical: 0 },
       page === 'search' ? { marginTop: 20 } : { marginTop: 4 }
     ]
   }>
