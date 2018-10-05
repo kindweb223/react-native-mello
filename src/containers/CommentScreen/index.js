@@ -231,9 +231,7 @@ class CommentScreen extends React.Component {
 
   renderItem({item, index}) {
     const { currentFeed } = this.props.feedo
-    console.log('ITEM: ', item)
     const user = this.getCommentUser(item);
-
     let editable = false
     if (COMMON_FUNC.isFeedOwnerEditor(currentFeed) && user && user.id === this.props.user.userInfo.id) {
       editable = true
