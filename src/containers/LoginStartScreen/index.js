@@ -60,11 +60,13 @@ class LoginStartScreen extends React.Component {
     const { email, loading } = this.state
 
     if (this.props.user.loading === 'USER_LOOKUP_PENDING' && user.loading === 'USER_LOOKUP_FULFILLED') {
-      FastImage.preload([
-        {
-          uri: user.userLookup.imageUrl
-        }
-      ])
+      if (user.userLookup.imageUrl) {
+        FastImage.preload([
+          {
+            uri: user.userLookup.imageUrl
+          }
+        ])
+      }
 
       this.setState({ loading: false }, () => {
         Actions.LoginScreen({ userData: user.userLookup })
