@@ -14,8 +14,6 @@ import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons'
-import Entypo from 'react-native-vector-icons/Entypo'
-import Feather from 'react-native-vector-icons/Feather'
 import Tags from '../../components/TagComponent'
 import ActionSheet from 'react-native-actionsheet'
 import { Actions } from 'react-native-router-flux'
@@ -101,12 +99,8 @@ class NewFeedScreen extends React.Component {
     } else if (this.props.feedo.loading !== types.UPLOAD_FILE_FULFILLED && nextProps.feedo.loading === types.UPLOAD_FILE_FULFILLED) {
       // success in uploading a file
       loading = true;
-      let {
-        id, 
-      } = this.props.feedo.currentFeed;
-      const {
-        objectKey
-      } = this.props.feedo.fileUploadUrl;
+      let { id } = this.props.feedo.currentFeed;
+      const { objectKey } = this.props.feedo.fileUploadUrl;
       this.props.addFile(id, this.selectedFileType, this.selectedFileMimeType, this.selectedFileName, objectKey);
     } else if (this.props.feedo.loading !== types.ADD_FILE_PENDING && nextProps.feedo.loading === types.ADD_FILE_PENDING) {
       // adding a file
@@ -138,9 +132,7 @@ class NewFeedScreen extends React.Component {
       });
     }
 
-    this.setState({
-      loading,
-    });
+    this.setState({ loading });
 
     // showing error alert
     if (this.props.feedo.loading !== nextProps.feedo.loading) {
@@ -218,21 +210,12 @@ class NewFeedScreen extends React.Component {
 
   onUpdate() {
     if (this.state.feedName === '') {
-      Alert.alert('', 'Please input your feed name.', [
-        {text: 'Close'},
-      ]);
+      Alert.alert('', 'Please input your feed name.', [{ text: 'Close' }]);
       return;
     }
 
-    const {
-      id, 
-      tags,
-      files,
-    } = this.props.feedo.currentFeed;
+    const { id, tags, files } = this.props.feedo.currentFeed;
     this.props.updateFeed(id, this.state.feedName, this.state.comments, tags, files);
-  }
-
-  onInsertLink() {
   }
 
   onAddMedia() {
@@ -295,7 +278,7 @@ class NewFeedScreen extends React.Component {
   }
 
   onChangeNote(value) {
-    this.setState({comments: value});
+    this.setState({ comments: value });
   }
   
   uploadFile(file, type) {
@@ -369,9 +352,7 @@ class NewFeedScreen extends React.Component {
   }
 
   onRemoveFile(fileId) {
-    const {
-      id,
-    } = this.props.feedo.currentFeed;
+    const { id } = this.props.feedo.currentFeed;
     this.props.deleteFile(id, fileId);
   }
 
@@ -402,10 +383,9 @@ class NewFeedScreen extends React.Component {
   }
 
   get renderImages() {
-    const {
-      files
-    } = this.props.feedo.currentFeed;
+    const { files } = this.props.feedo.currentFeed;
     const imageFiles = _.filter(files, file => file.fileType === 'MEDIA');
+
     if (imageFiles.length > 0) {
       return (
         <ImageList 
@@ -417,10 +397,9 @@ class NewFeedScreen extends React.Component {
   }
 
   get renderDocuments() {
-    const {
-      files
-    } = this.props.feedo.currentFeed;
+    const { files } = this.props.feedo.currentFeed;
     const documentFiles = _.filter(files, file => file.fileType === 'FILE');
+
     if (documentFiles.length > 0) {
       return (
         <DocumentList 
@@ -519,6 +498,7 @@ class NewFeedScreen extends React.Component {
             <Image source={ATTACHMENT_ICON} />
           </TouchableOpacity>
         </View>
+
         {this.state.keyboardShow && (
           <View style={styles.bottomRightCotainer}>
             <TouchableOpacity
@@ -543,17 +523,16 @@ class NewFeedScreen extends React.Component {
     }
     const animatedMove  = this.animatedShow.interpolate({
       inputRange: [0, 1],
-      outputRange: [postion, 0],
+      outputRange: [postion, 0]
     });
     
     return (
       <Animated.View 
         style={[
-          styles.feedContainer, {
-            opacity: this.animatedShow,
-          },
-          (this.props.feedoMode === CONSTANTS.FEEDO_FROM_MAIN || this.props.feedoMode === CONSTANTS.FEEDO_FROM_COLLAPSE) && {top: animatedMove},
-          (this.props.feedoMode === CONSTANTS.FEEDO_FROM_CARD) && {left: animatedMove}
+          styles.feedContainer,
+          { opacity: this.animatedShow },
+          (this.props.feedoMode === CONSTANTS.FEEDO_FROM_MAIN || this.props.feedoMode === CONSTANTS.FEEDO_FROM_COLLAPSE) && { top: animatedMove },
+          (this.props.feedoMode === CONSTANTS.FEEDO_FROM_CARD) && { left: animatedMove }
         ]}
       >
         <Animated.View 
@@ -562,7 +541,7 @@ class NewFeedScreen extends React.Component {
             {
               paddingBottom: this.animatedKeyboardHeight,
               height: CONSTANTS.SCREEN_HEIGHT
-            },
+            }
           ]}
         >
           {this.renderTopContent}
@@ -596,7 +575,7 @@ class NewFeedScreen extends React.Component {
           styles.tagCreationContainer,
           {
             left: animatedMove,
-            opacity: animatedOpacity,
+            opacity: animatedOpacity
           }
         ]}
       >
@@ -612,6 +591,7 @@ class NewFeedScreen extends React.Component {
       <View style={styles.container}>
         {this.renderFeed}
         {this.renderCreateTag}
+
         <ActionSheet
           ref={ref => this.leaveActionSheetRef = ref}
           title='Are you sure that you wish to leave?'
@@ -626,7 +606,6 @@ class NewFeedScreen extends React.Component {
           title='Select a Photo / Video'
           options={['Take A Photo', 'Select From Photos', 'Cancel']}
           cancelButtonIndex={2}
-          // destructiveButtonIndex={2}
           tintColor={COLORS.PURPLE}
           onPress={(index) => this.onTapMediaPickerActionSheet(index)}
         />

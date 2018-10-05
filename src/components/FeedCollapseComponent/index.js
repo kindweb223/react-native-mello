@@ -61,10 +61,8 @@ class FeedCollapseComponent extends React.Component {
   }
 
   onRemoveFile(fileId) {
-    const {
-      id,
-    } = this.state.feedData
-    this.props.deleteFile(id, fileId);
+    const { feedData } = this.state
+    this.props.deleteFile(feedData.id, fileId);
   }
 
   renderContent = (feedData) => {
@@ -91,21 +89,21 @@ class FeedCollapseComponent extends React.Component {
               />
             </View>
           : images.length > 0 && (
-            <View style={styles.imageView}>
-              <ScrollView
-                horizontal
-                pagingEnabled
-                showsHorizontalScrollIndicator={false}
-              >
-                {images.map((item, key) => (
-                  <View key={key} style={key === (images.length - 1) ? styles.feedLastImage : styles.feedImage}>
-                    <TouchableOpacity onPress={() => this.onImagePreview(key)}>
-                      <FastImage style={styles.image} source={{ uri: item.accessUrl }} threshold={300} />
-                    </TouchableOpacity>
-                  </View>
-                ))}
-              </ScrollView>
-            </View>)
+              <View style={styles.imageView}>
+                <ScrollView
+                  horizontal
+                  pagingEnabled
+                  showsHorizontalScrollIndicator={false}
+                >
+                  {images.map((item, key) => (
+                    <View key={key} style={key === (images.length - 1) ? styles.feedLastImage : styles.feedImage}>
+                      <TouchableOpacity onPress={() => this.onImagePreview(key)}>
+                        <FastImage style={styles.image} source={{ uri: item.accessUrl }} threshold={300} />
+                      </TouchableOpacity>
+                    </View>
+                  ))}
+                </ScrollView>
+              </View>)
         }
 
         {files.length > 0 && (

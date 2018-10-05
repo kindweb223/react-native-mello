@@ -993,11 +993,13 @@ class NewCardScreen extends React.Component {
     const documentFiles = _.filter(files, file => file.fileType === 'FILE');
     if (documentFiles.length > 0) {
       return (
-        <DocumentList
-          files={documentFiles}
-          editable={viewMode !== CONSTANTS.CARD_VIEW}
-          onRemove={(fileId) => this.onRemoveFile(fileId)}
-        />
+        <View style={{ paddingHorizontal: 6 }}>
+          <DocumentList
+            files={documentFiles}
+            editable={viewMode !== CONSTANTS.CARD_VIEW}
+            onRemove={(fileId) => this.onRemoveFile(fileId)}
+          />
+        </View>
       )
     }
   }
