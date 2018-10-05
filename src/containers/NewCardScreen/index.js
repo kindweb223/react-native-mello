@@ -2,6 +2,7 @@ import React from 'react'
 import {
   TextInput,
   View,
+  Image,
   TouchableOpacity,
   Alert,
   Animated,
@@ -72,6 +73,8 @@ import SelectHuntScreen from '../SelectHuntScreen';
 import LastCommentComponent from '../../components/LastCommentComponent';
 
 import * as COMMON_FUNC from '../../service/commonFunc'
+const ATTACHMENT_ICON = require('../../../assets/images/Attachment/Blue.png')
+const IMAGE_ICON = require('../../../assets/images/Image/Blue.png')
 
 const ScreenVerticalMinMargin = 0;
 const LineTextMaxLimit = Math.floor((Dimensions.get('window').width - 32) * Dimensions.get('window').scale / (16 * Dimensions.get('window').fontScale));
@@ -1117,18 +1120,18 @@ class NewCardScreen extends React.Component {
     return (
       <View style={styles.attachmentButtonsContainer}>
         <TouchableOpacity 
-          style={styles.buttonItemContainer}
+          style={styles.iconView}
           activeOpacity={0.6}
           onPress={this.onAddMedia.bind(this)}
         >
-          <Entypo name="image" size={22} color={COLORS.PURPLE} />
+          <Image source={IMAGE_ICON} />
         </TouchableOpacity>
         <TouchableOpacity 
-          style={styles.buttonItemContainer}
+          style={styles.iconView}
           activeOpacity={0.6}
           onPress={this.onAddDocument.bind(this)}
         >
-          <MaterialIcons name="attachment" style={styles.attachment} size={26} color={COLORS.PURPLE} />
+          <Image source={ATTACHMENT_ICON} />
         </TouchableOpacity>
         <TouchableOpacity 
           style={styles.threeDotButtonWrapper}
@@ -1149,20 +1152,20 @@ class NewCardScreen extends React.Component {
       return;
     }
     return (
-      <View style={[styles.attachmentButtonsContainer, {paddingHorizontal: 16, marginVertical: 16,}]}>
+      <View style={[styles.attachmentButtonsContainer, { paddingHorizontal: 12, marginVertical: 16 }]}>
         <TouchableOpacity 
-          style={styles.buttonItemContainer}
+          style={styles.iconView}
           activeOpacity={0.6}
           onPress={this.onAddMedia.bind(this)}
         >
-          <Entypo name="image" size={22} color={COLORS.PURPLE} />
+          <Image source={IMAGE_ICON} />
         </TouchableOpacity>
         <TouchableOpacity 
-          style={styles.buttonItemContainer}
+          style={styles.iconView}
           activeOpacity={0.6}
           onPress={this.onAddDocument.bind(this)}
         >
-          <MaterialIcons name="attachment" style={styles.attachment} size={26} color={COLORS.PURPLE} />
+          <Image source={ATTACHMENT_ICON} />
         </TouchableOpacity>
         {this.renderSelectFeedo}
       </View>
