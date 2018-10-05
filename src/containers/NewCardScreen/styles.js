@@ -51,7 +51,13 @@ const styles = StyleSheet.create({
   buttonItemContainer: {
     width: 32,
     height: 32,
-    marginRight: 5,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  iconView: {
+    paddingHorizontal: 4,
+    height: 32,
+    marginRight: 10,
     alignItems: 'center',
     justifyContent: 'center',
   },

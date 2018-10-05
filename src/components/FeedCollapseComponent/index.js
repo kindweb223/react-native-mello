@@ -119,7 +119,7 @@ class FeedCollapseComponent extends React.Component {
         )}
 
         {feedData.tags && (
-          <View style={styles.tagView}>
+          <View style={[styles.tagView, files.length === 0 ? { marginTop: 20 } : { marginTop: 10 }]}>
             <Tags
               initialTags={feedData.tags}
               onChangeTags={() => {}}

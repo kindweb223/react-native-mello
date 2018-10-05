@@ -14,6 +14,7 @@ import PropTypes from 'prop-types'
 import Modal from 'react-native-modal'
 import axios from 'axios'
 import LinearGradient from 'react-native-linear-gradient'
+import FastImage from "react-native-fast-image"
 import LoadingScreen from '../LoadingScreen'
 import KeyboardScrollView from '../../components/KeyboardScrollView'
 import TextInputComponent from '../../components/TextInputComponent'
@@ -59,6 +60,12 @@ class LoginStartScreen extends React.Component {
     const { email, loading } = this.state
 
     if (this.props.user.loading === 'USER_LOOKUP_PENDING' && user.loading === 'USER_LOOKUP_FULFILLED') {
+      FastImage.preload([
+        {
+          uri: user.userLookup.imageUrl
+        }
+      ])
+
       this.setState({ loading: false }, () => {
         Actions.LoginScreen({ userData: user.userLookup })
       })

@@ -36,7 +36,6 @@ const styles = StyleSheet.create({
     fontSize: 16
   },
   tagView: {
-    marginTop: 10,
     paddingHorizontal: CONSTANTS.PADDING,
   },
   imageView: {
