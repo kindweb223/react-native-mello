@@ -27,7 +27,6 @@ const getTimestamp = (date) => {
   // 17:15 - 22 Aug 2018
   return moment(date).format('H:mm - D MMM YYYY')
 }
-
 export {
   getDurationFromNow,
   getTimestamp,

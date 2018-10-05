@@ -11,6 +11,7 @@ import {
   ScrollView,
   AsyncStorage,
   Linking,
+  Dimensions,
 } from 'react-native'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
@@ -18,6 +19,9 @@ import { connect } from 'react-redux'
 import { Actions } from 'react-native-router-flux'
 import Entypo from 'react-native-vector-icons/Entypo'
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons'
+import MaterialIcons from 'react-native-vector-icons/MaterialIcons'
+import Ionicons from 'react-native-vector-icons/Ionicons'
+
 import ActionSheet from 'react-native-actionsheet'
 import ImagePicker from 'react-native-image-picker'
 import { DocumentPicker, DocumentPickerUtil } from 'react-native-document-picker'
@@ -51,7 +55,7 @@ import {
 } from '../../redux/feedo/actions'
 import * as types from '../../redux/card/types'
 import * as feedoTypes from '../../redux/feedo/types'
-import { getTimestamp } from '../../service/dateUtils'
+import { getDurationFromNow } from '../../service/dateUtils'
 import COLORS from '../../service/colors';
 import CONSTANTS from '../../service/constants';
 import styles from './styles';
@@ -65,10 +69,12 @@ import ChooseLinkImages from '../../components/chooseLinkImagesComponent';
 import UserAvatarComponent from '../../components/UserAvatarComponent';
 import CoverImagePreviewComponent from '../../components/CoverImagePreviewComponent';
 import SelectHuntScreen from '../SelectHuntScreen';
+import LastCommentComponent from '../../components/LastCommentComponent';
 
 import * as COMMON_FUNC from '../../service/commonFunc'
 
 const ScreenVerticalMinMargin = 0;
+const LineTextMaxLimit = Math.floor((Dimensions.get('window').width - 32) * Dimensions.get('window').scale / (16 * Dimensions.get('window').fontScale));
 
 
 class NewCardScreen extends React.Component {
@@ -88,6 +94,7 @@ class NewCardScreen extends React.Component {
       isVisibleSelectFeedoModal: false,
 
       isEditableIdea: false,
+      isVisibleMoreIdea: false,
     };
 
     this.selectedFile = null;
@@ -525,7 +532,6 @@ class NewCardScreen extends React.Component {
     return false;
   }
 
-
   onClose() {
     this.setState({
       originalCardTopY: this.props.intialLayout.py,
@@ -561,7 +567,6 @@ class NewCardScreen extends React.Component {
       id, 
       files,
     } = this.props.card.currentCard;
-
     // let cardName = this.state.cardName;
     // if (cardName === '') {
     //   cardName = '';
@@ -819,6 +824,10 @@ class NewCardScreen extends React.Component {
   onSelectCoverImage() {
   }
 
+  onBack() {
+    this.onUpdateCard();
+  }
+
   onSelectFeedo() {
     this.prevFeedo = this.props.feedo.currentFeed;
     this.setState({
@@ -858,6 +867,41 @@ class NewCardScreen extends React.Component {
     }
   }
 
+  onPressIdea() {
+    this.setState({
+      isEditableIdea: true,
+    }, () => {
+      this.textInputIdeaRef.focus();
+    });
+  }
+
+  onPressMore() {
+    this.setState({
+      isVisibleMoreIdea: !this.state.isVisibleMoreIdea,
+    });
+  }
+
+  onPressLink(url) {
+    SafariView.isAvailable()
+      .then(SafariView.show({
+        url: url,
+        tintColor: COLORS.PURPLE
+      }))
+      .catch(error => {
+        // Fallback WebView code for iOS 8 and earlier
+        Linking.canOpenURL(url)
+          .then(supported => {
+              if (!supported) {
+                  console.log('Can\'t handle url: ' + url);
+              }
+              else {
+                  return Linking.openURL(url);
+              }
+          })
+          .catch(error => console.error('An error occurred', error));
+      });
+  }
+
   addLinkImage(imageUrl) {
     const {
       id, 
@@ -867,22 +911,8 @@ class NewCardScreen extends React.Component {
     this.props.addFile(id, 'MEDIA', mimeType, filename, imageUrl);
   }
 
-  getLikedText(likes) {
-      let text = ''
-
-      if (likes === 1) {
-        text = likes + ' person liked'
-      }
-      else if (likes > 0) {
-        text = likes + ' people liked'
-      }
-
-      return text
-  }
-
   get renderCoverImage() {
     const { viewMode } = this.props;
-
     let imageFiles = _.filter(this.props.card.currentCard.files, file => file.fileType === 'MEDIA');
     if (this.state.coverImage) {
       return (
@@ -969,35 +999,6 @@ class NewCardScreen extends React.Component {
     }
   }
 
-  onPressIdea() {
-    this.setState({
-      isEditableIdea: true,
-    }, () => {
-      this.textInputIdeaRef.focus();
-    });
-  }
-
-  onPressLink(url) {
-    SafariView.isAvailable()
-      .then(SafariView.show({
-        url: url,
-        tintColor: COLORS.PURPLE
-      }))
-      .catch(error => {
-        // Fallback WebView code for iOS 8 and earlier
-        Linking.canOpenURL(url)
-          .then(supported => {
-              if (!supported) {
-                  console.log('Can\'t handle url: ' + url);
-              }
-              else {
-                  return Linking.openURL(url);
-              }
-          })
-          .catch(error => console.error('An error occurred', error));
-      });
-  }
-
   get renderIdea() {
     const { viewMode } = this.props;
     if ((this.state.idea === '' || this.state.isEditableIdea) && (viewMode === CONSTANTS.CARD_NEW || viewMode === CONSTANTS.CARD_EDIT)) {
@@ -1018,24 +1019,50 @@ class NewCardScreen extends React.Component {
         />
       )
     }
+
+    let idea = this.state.idea;
+    let isMoreText = false;
+    console.log('Idea Length : ', idea.length);
+    if (idea && idea.length > LineTextMaxLimit * 3) {
+      isMoreText = true;
+    }
+    if (!this.state.isVisibleMoreIdea && idea && idea.length > LineTextMaxLimit * 3) {
+      idea = idea.substring(0, LineTextMaxLimit * 3 - 3) + '...';
+    }
     return (
       <TouchableOpacity
         activeOpacity={1}
         onPress={() => this.onPressIdea()}
       >
         <Autolink
+          numberOfLines={this.state.isVisibleMoreIdea ? 0 : 3}
+          // ellipsizeMode='clip'
           style={styles.textInputIdea}
-          text={this.state.idea}
+          text={idea}
           onPress={(url, match) => this.onPressLink(url)}
         />
+        { 
+          isMoreText && 
+          <TouchableOpacity
+            style={styles.moreButtonContainer}
+            activeOpacity={0.7}
+            onPress={() => this.onPressMore()}
+          >
+            <Text style={styles.textMore}>{this.state.isVisibleMoreIdea ? 'less' : 'more'}</Text>
+          </TouchableOpacity>
+        }
       </TouchableOpacity>
     )
   }
 
   get renderMainContent() {
-    const { viewMode } = this.props;
     return (
-      <View style={styles.mainContentContainer}>
+      <ScrollView
+        style={styles.mainContentContainer}
+        enableAutomaticScroll={false}
+        // onScrollBeginDrag={(e) => this.onScrollBeginDrag(e)}
+        // onScroll={(e) => this.onScroll(e)}
+      >
         {/* <TextInput 
           style={styles.textInputCardTitle}
           autoCorrect={false}
@@ -1054,7 +1081,9 @@ class NewCardScreen extends React.Component {
         {this.renderWebMeta}
         {/* {this.renderImages} */}
         {this.renderDocuments}
-      </View>
+        <View style={styles.line} />
+        <LastCommentComponent />
+      </ScrollView>
     );
   }
 
@@ -1078,12 +1107,11 @@ class NewCardScreen extends React.Component {
     )
   }
 
-  get renderAttachmentButtons() {
+  get renderTopAttachmentButtons() {
     const { viewMode, cardMode } = this.props;
     if (cardMode === CONSTANTS.EXTENTION_CARD) {
       return;
-    }
-    if (viewMode === CONSTANTS.CARD_VIEW) {
+    } else if (viewMode !== CONSTANTS.CARD_EDIT) {
       return;
     }
     return (
@@ -1093,14 +1121,48 @@ class NewCardScreen extends React.Component {
           activeOpacity={0.6}
           onPress={this.onAddMedia.bind(this)}
         >
-          <Entypo name="image" size={20} color={COLORS.PURPLE} />
+          <Entypo name="image" size={22} color={COLORS.PURPLE} />
         </TouchableOpacity>
         <TouchableOpacity 
           style={styles.buttonItemContainer}
           activeOpacity={0.6}
           onPress={this.onAddDocument.bind(this)}
         >
-          <Entypo name="attachment" style={styles.attachment} size={20} color={COLORS.PURPLE} />
+          <MaterialIcons name="attachment" style={styles.attachment} size={26} color={COLORS.PURPLE} />
+        </TouchableOpacity>
+        <TouchableOpacity 
+          style={styles.threeDotButtonWrapper}
+          activeOpacity={0.6}
+          onPress={() => this.onPressMoreActions()}
+        >
+          <Entypo name="dots-three-horizontal" size={20} color={COLORS.PURPLE} />
+        </TouchableOpacity>
+      </View>
+    );
+  }
+
+  get renderBottomAttachmentButtons() {
+    const { viewMode, cardMode } = this.props;
+    if (cardMode === CONSTANTS.EXTENTION_CARD) {
+      return;
+    } else if (viewMode !== CONSTANTS.CARD_NEW) {
+      return;
+    }
+    return (
+      <View style={[styles.attachmentButtonsContainer, {paddingHorizontal: 16, marginVertical: 16,}]}>
+        <TouchableOpacity 
+          style={styles.buttonItemContainer}
+          activeOpacity={0.6}
+          onPress={this.onAddMedia.bind(this)}
+        >
+          <Entypo name="image" size={22} color={COLORS.PURPLE} />
+        </TouchableOpacity>
+        <TouchableOpacity 
+          style={styles.buttonItemContainer}
+          activeOpacity={0.6}
+          onPress={this.onAddDocument.bind(this)}
+        >
+          <MaterialIcons name="attachment" style={styles.attachment} size={26} color={COLORS.PURPLE} />
         </TouchableOpacity>
         {this.renderSelectFeedo}
       </View>
@@ -1118,40 +1180,25 @@ class NewCardScreen extends React.Component {
       fontSize = 14;
     }
     return (
-      <View>
-        <View style={styles.line} />
-        <View style={[styles.rowContainer, {marginHorizontal: 16}]}>
-          <UserAvatarComponent
-            user={userProfile}
-          />
-          <Text style={[styles.textInvitee, { marginLeft: 9, fontSize,}]} numberOfLines={1}>{name}</Text>
-          <Entypo name="dot-single" style={styles.iconDot} />
-          <Text style={styles.textInvitee}>{getTimestamp(this.props.card.currentCard.publishedDate)}</Text>
-        </View>
+      <View style={[styles.rowContainer, {flex: 1}]}>
+        <UserAvatarComponent
+          user={userProfile}
+        />
+        <Text style={[styles.textInvitee, { marginLeft: 9, fontSize,}]} numberOfLines={1}>{name}</Text>
+        <Entypo name="dot-single" style={styles.iconDot} />
+        <Text style={styles.textInvitee}>{getDurationFromNow(this.props.card.currentCard.publishedDate)}</Text>
       </View>
     );
   }
 
-  get renderLikes() {
+  get renderLikesComment() {
     const {
       likes,
     } = this.props.card.currentCard.metadata;
     return (
-      <View>
-        <View style={styles.line} />
-        <View style={[styles.rowContainer, {justifyContent: 'space-between', marginHorizontal: 16, paddingBottom: 11,}]}>
-          <TouchableOpacity
-            style={{paddingVertical: 3,}}
-            activeOpacity={0.7}
-            onPress={() => this.onShowLikes(likes)}
-          >
-            <Text style={styles.textInvitee}>{this.getLikedText(likes)}</Text>
-          </TouchableOpacity>
-          <View style={styles.rowContainer}>
-            <LikeComponent idea={this.props.card.currentCard} />
-            <CommentComponent idea={this.props.card.currentCard} currentFeed={this.props.feedo.currentFeed} />
-          </View>
-        </View>
+      <View style={styles.rowContainer}>
+        <LikeComponent idea={this.props.card.currentCard} />
+        <CommentComponent idea={this.props.card.currentCard} currentFeed={this.props.feedo.currentFeed} />
       </View>
     );
   }
@@ -1177,41 +1224,42 @@ class NewCardScreen extends React.Component {
           </TouchableOpacity>
         </View>
       );
-    } 
-    
+    }
+
+    if (viewMode === CONSTANTS.CARD_NEW) {
+      return (
+        <View style={styles.headerContainer}>
+          <TouchableOpacity 
+            style={styles.closeButtonWrapper}
+            activeOpacity={0.7}
+            onPress={() => this.leaveActionSheetRef.show()}
+          >
+            <MaterialCommunityIcons name="close" size={28} color={COLORS.PURPLE} />
+          </TouchableOpacity>
+          <TouchableOpacity 
+            style={[styles.addCardButtonWapper, {backgroundColor: COLORS.PURPLE}]}
+            activeOpacity={0.6}
+            onPress={this.onUpdateFeed.bind(this)}
+          >
+            <Text style={styles.textButton}>Create card</Text>
+          </TouchableOpacity>
+        </View>
+      )
+    }
     return (
       <View style={styles.headerContainer}>
         <TouchableOpacity 
-          style={styles.closeButtonWrapper}
+          style={styles.backButtonWrapper}
           activeOpacity={0.7}
-          onPress={() => this.leaveActionSheetRef.show()}
+          onPress={() => this.onBack()}
         >
-          <MaterialCommunityIcons name="close" size={28} color={COLORS.PURPLE} />
+          <Ionicons name="ios-arrow-back" size={30} color={COLORS.PURPLE} />
+          <Text style={styles.textBack}>Back</Text>
         </TouchableOpacity>
-        <View style={styles.rowContainer}>
-          {
-            (viewMode === CONSTANTS.CARD_NEW || viewMode === CONSTANTS.CARD_EDIT) && 
-            <TouchableOpacity 
-              style={[styles.addCardButtonWapper, {backgroundColor: COLORS.PURPLE}]}
-              activeOpacity={0.6}
-              onPress={this.onUpdateFeed.bind(this)}
-            >
-              <Text style={styles.textButton}>{viewMode === CONSTANTS.CARD_NEW ? 'Create card' : 'Update card'}</Text>
-            </TouchableOpacity>
-          }
-          {
-            viewMode === CONSTANTS.CARD_EDIT && 
-            <TouchableOpacity 
-              style={styles.threeDotButtonWrapper}
-              activeOpacity={0.7}
-              onPress={() => this.onPressMoreActions()}
-            >
-              <Entypo name="dots-three-horizontal" size={20} color={'#fff'} />
-            </TouchableOpacity>
-          }
-        </View>
+        {this.renderTopAttachmentButtons}
       </View>
     )
+
   }
 
   // get renderOutside() {
@@ -1270,9 +1318,9 @@ class NewCardScreen extends React.Component {
     }
     if (viewMode !== CONSTANTS.CARD_NEW) {
       return (
-        <View>
+        <View style={[styles.rowContainer, {justifyContent: 'space-between', marginHorizontal: 16, marginVertical: 8}]}>
           {this.renderInvitee}
-          {this.renderLikes}
+          {this.renderLikesComment}
         </View>
       );
     }
@@ -1348,14 +1396,8 @@ class NewCardScreen extends React.Component {
           ]}
         >
           {this.renderHeader}
-          <ScrollView
-            enableAutomaticScroll={false}
-            // onScrollBeginDrag={(e) => this.onScrollBeginDrag(e)}
-            // onScroll={(e) => this.onScroll(e)}
-          >
-            {this.renderMainContent}
-          </ScrollView>
-          {this.renderAttachmentButtons}
+          {this.renderMainContent}
+          {this.renderBottomAttachmentButtons}
           {this.renderBottomContent}
           {
             this.state.isShowKeyboardButton && 
@@ -1457,9 +1499,10 @@ NewCardScreen.propTypes = {
 }
 
 
-const mapStateToProps = ({ card, feedo }) => ({
+const mapStateToProps = ({ card, feedo, user, }) => ({
   card,
   feedo,
+  user,
 })
 
 
