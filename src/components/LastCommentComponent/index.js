@@ -99,6 +99,7 @@ class LastCommentComponent extends React.Component {
 
   render () {
     const { currentComments } = this.props.card;
+    const { feedo } = this.props;
     let lastComments = [];
     let oldCommentsLength = 0;
     if (currentComments) {
@@ -123,7 +124,7 @@ class LastCommentComponent extends React.Component {
             <Text style={[styles.textItemComment, {color: COLORS.DARK_GREY}]}>View {oldCommentsLength} older comments</Text>
           </TouchableOpacity>
         }
-        {this.renderAddComment}
+        {!COMMON_FUNC.isFeedGuest(feedo.currentFeed) && this.renderAddComment}
       </View>
     );
   }

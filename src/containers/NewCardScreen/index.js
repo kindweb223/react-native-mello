@@ -1060,6 +1060,16 @@ class NewCardScreen extends React.Component {
     )
   }
 
+  get renderLastComment() {
+    const { viewMode, feedo } = this.props;
+    if (viewMode === CONSTANTS.CARD_NEW) {
+      return;
+    }
+    else {
+      return <LastCommentComponent />
+    }
+  }
+
   get renderMainContent() {
     return (
       <ScrollView
@@ -1087,7 +1097,7 @@ class NewCardScreen extends React.Component {
         {/* {this.renderImages} */}
         {this.renderDocuments}
         <View style={styles.line} />
-        <LastCommentComponent />
+        {this.renderLastComment}
       </ScrollView>
     );
   }
