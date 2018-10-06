@@ -1027,7 +1027,6 @@ class NewCardScreen extends React.Component {
 
     let idea = this.state.idea;
     let isMoreText = false;
-    console.log('Idea Length : ', idea.length);
     if (idea && idea.length > LineTextMaxLimit * 3) {
       isMoreText = true;
     }
@@ -1060,6 +1059,18 @@ class NewCardScreen extends React.Component {
     )
   }
 
+  get renderComments() {
+    const { viewMode } = this.props;
+    if (viewMode !== CONSTANTS.CARD_NEW) {
+      return (
+        <View>
+          <View style={styles.line} />
+          <LastCommentComponent />
+        </View>
+      )
+    }
+  }
+
   get renderMainContent() {
     return (
       <ScrollView
@@ -1085,9 +1096,7 @@ class NewCardScreen extends React.Component {
         {this.renderIdea}
         {this.renderWebMeta}
         {/* {this.renderImages} */}
-        {this.renderDocuments}
-        <View style={styles.line} />
-        <LastCommentComponent />
+        {this.renderComments}
       </ScrollView>
     );
   }
