@@ -41,8 +41,8 @@ import ShareExtension from './shareExtension'
 import CONSTANTS from '../service/constants';
 import ShareCardScreen from './ShareCardScreen';
 import ShareModalScreen from './ShareModalScreen';
-import SelectHuntScreen from './SelectHuntScreen';
-
+import SelectHuntScreen from '../containers/SelectHuntScreen';
+import ChooseLinkImageFromExtension from './chooseLinkImageFromExtensionComponent';
 
 
 export default class Share extends Component {
@@ -80,13 +80,14 @@ export default class Share extends Component {
         <View style={styles.rootContainer} />
       );
     }
-
+    //  params={{selectMode: CONSTANTS.FEEDO_SELECT_FROM_SHARE_EXTENSION_FIRST}}
     return (
       <View style={styles.rootContainer}>
         <Provider store={store}>
           <Router>
             <Scene key="root" hideNavBar>
-              <Scene key="SelectHuntScreen" component={SelectHuntScreen} /> 
+              <Scene key="SelectHuntScreen" component={SelectHuntScreen} selectMode={CONSTANTS.FEEDO_SELECT_FROM_SHARE_EXTENSION_FIRST} />
+              <Scene key="ChooseLinkImageFromExtension" component={ChooseLinkImageFromExtension} /> 
               <Scene key="ShareCardScreen" component={ShareCardScreen} />
               <Scene key="ShareModalScreen" component={ShareModalScreen} initial={this.state.isVisibleModal} />
             </Scene>

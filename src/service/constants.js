@@ -37,13 +37,14 @@ export default {
   FEEDO_FROM_COLLAPSE: 3,
 
   // Select feedo type in share extension
-  SHARE_EXTENSION_FEEDO_FIRST_SELECT: 1,
-  SHARE_EXTENSION_FEEDO_LATER_SELECT: 2,
+  FEEDO_SELECT_FROM_MAIN: 1,
+  FEEDO_SELECT_FROM_SHARE_EXTENSION_FIRST: 2,
+  FEEDO_SELECT_FROM_SHARE_EXTENSION_LATER: 3,
 
   // Card type for main app (dashboard / feedo detail) or share extension
   MAIN_APP_CARD_FROM_DETAIL: 1,
   MAIN_APP_CARD_FROM_DASHBOARD: 2,
-  EXTENTION_CARD: 3,
+  SHARE_SHARE_EXTENTION_CARD: 3,
 
   // App Group
   APP_GROUP_USER_IDENTIFIER: 'group.hunt.mobile.user.info',
