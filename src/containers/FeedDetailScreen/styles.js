@@ -1,4 +1,5 @@
 import { StyleSheet, Platform } from 'react-native'
+import { ifIphoneX } from 'react-native-iphone-x-helper';
 import CONSTANTS from '../../service/constants'
 import COLORS from '../../service/colors'
 const NAV_BAR_HEIGHT = 60
@@ -10,7 +11,7 @@ const styles = StyleSheet.create({
   },
   container: {
     flex: 1,
-    paddingBottom: CONSTANTS.ACTION_BAR_HEIGHT,
+    paddingBottom: Platform.OS === 'ios' ? ifIphoneX(0, 85) : 85,
   },
   loadingView: {
     width: '100%',

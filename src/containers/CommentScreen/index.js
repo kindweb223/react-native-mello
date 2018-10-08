@@ -303,7 +303,7 @@ class CommentScreen extends React.Component {
     return (
       <View style={styles.container}>
         <FlatList
-          contentContainerStyle={{paddingVertical: 16}}
+          contentContainerStyle={{ paddingVertical: 16 }}
           data={this.props.card.currentComments}
           renderItem={this.renderItem.bind(this)}
           keyExtractor={(item, index) => index.toString()}
