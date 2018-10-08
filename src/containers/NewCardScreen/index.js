@@ -1096,6 +1096,7 @@ class NewCardScreen extends React.Component {
         {this.renderIdea}
         {this.renderWebMeta}
         {/* {this.renderImages} */}
+        {this.renderDocuments}
         {this.renderComments}
       </ScrollView>
     );
