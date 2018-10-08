@@ -39,7 +39,6 @@ class SelectHuntScreen extends React.Component {
       loading: false,
       isVisibleNewFeedScreen: false,
     };
-
     this.isVisibleErrorDialog = false;
     this.animatedShow = new Animated.Value(0);
     this.animatedKeyboardHeight = new Animated.Value(0);
@@ -147,7 +146,7 @@ class SelectHuntScreen extends React.Component {
     });
   }
 
-  get renderTopContent() {
+  get renderHeaderFromMain() {
     return (
       <View style={styles.topContainer}>
         <TouchableOpacity 
@@ -158,15 +157,33 @@ class SelectHuntScreen extends React.Component {
           <Ionicons name="ios-arrow-back" size={28} color={COLORS.PURPLE} />
           <Text style={styles.textBack}>Back</Text>
         </TouchableOpacity>
-        <TouchableOpacity 
+        {/* <TouchableOpacity 
           style={styles.closeButtonWrapper}
           activeOpacity={0.6}
           onPress={this.onClose.bind(this)}
         >
           <MaterialCommunityIcons name="close" size={28} color={COLORS.PURPLE} />
-        </TouchableOpacity>
+        </TouchableOpacity> */}
       </View>
     );
+  }
+
+  get renderHeaderFromExtension() {
+    return (
+      <View style={[styles.topContainer, {paddingHorizontal: 0, paddingVertical: 0, height: 43,}]}>
+        <Text style={styles.textTitle}>Choose feed</Text>
+        {
+          this.props.selectMode === CONSTANTS.FEEDO_SELECT_FROM_SHARE_EXTENSION_LATER && 
+          <TouchableOpacity 
+            style={[styles.backButtonContainer, {paddingHorizontal: 16}]}
+            activeOpacity={0.6}
+            onPress={this.onBack.bind(this)}
+          >
+            <Ionicons name="ios-arrow-back" size={28} color={COLORS.PURPLE} />
+          </TouchableOpacity>
+        }
+      </View>
+    )
   }
 
   get renderCreateNewFeed() {
@@ -242,7 +259,8 @@ class SelectHuntScreen extends React.Component {
               },
             ]}
           >
-            {this.renderTopContent}
+            {this.props.selectMode === CONSTANTS.FEEDO_SELECT_FROM_MAIN ? this.renderHeaderFromMain : this.renderHeaderFromExtension}
+            {this.props.selectMode !== CONSTANTS.FEEDO_SELECT_FROM_MAIN && <View style={styles.line} /> }
             <View style={styles.searchContainer}>
               <Search
                 inputStyle={{
@@ -287,11 +305,13 @@ class SelectHuntScreen extends React.Component {
 
 SelectHuntScreen.defaultProps = {
   onClosed: PropTypes.func,
+  selectMode: CONSTANTS.FEEDO_SELECT_FROM_MAIN,
 }
 
 
 SelectHuntScreen.propTypes = {
   onClosed: PropTypes.func,
+  selectMode: PropTypes.number,
 }
 
 

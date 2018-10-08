@@ -136,7 +136,7 @@ class NewCardScreen extends React.Component {
     if (this.props.card.loading !== types.CREATE_CARD_PENDING && nextProps.card.loading === types.CREATE_CARD_PENDING) {
       loading = true;
     } else if (this.props.card.loading !== types.CREATE_CARD_FULFILLED && nextProps.card.loading === types.CREATE_CARD_FULFILLED) {
-      if (this.props.cardMode === CONSTANTS.EXTENTION_CARD && this.props.shareUrl !== '') {
+      if (this.props.cardMode === CONSTANTS.SHARE_EXTENTION_CARD && this.props.shareUrl !== '') {
         this.setState({
           // cardName: this.props.shareUrl,
           idea: this.props.shareUrl,
@@ -623,7 +623,7 @@ class NewCardScreen extends React.Component {
   //     // delete draft feed
   //     this.leaveActionSheetRef.show();
   //     return;
-  //   } else if (cardMode === CONSTANTS.EXTENTION_CARD) {
+  //   } else if (cardMode === CONSTANTS.SHARE_EXTENTION_CARD) {
   //     return;
   //   }
   //   this.onUpdateCard();
@@ -984,7 +984,7 @@ class NewCardScreen extends React.Component {
 
   get renderDocuments() {
     const { viewMode, cardMode } = this.props;
-    if (cardMode === CONSTANTS.EXTENTION_CARD) {
+    if (cardMode === CONSTANTS.SHARE_EXTENTION_CARD) {
       return;
     }
     const {
@@ -1123,7 +1123,7 @@ class NewCardScreen extends React.Component {
 
   get renderTopAttachmentButtons() {
     const { viewMode, cardMode } = this.props;
-    if (cardMode === CONSTANTS.EXTENTION_CARD) {
+    if (cardMode === CONSTANTS.SHARE_EXTENTION_CARD) {
       return;
     } else if (viewMode !== CONSTANTS.CARD_EDIT) {
       return;
@@ -1157,7 +1157,7 @@ class NewCardScreen extends React.Component {
 
   get renderBottomAttachmentButtons() {
     const { viewMode, cardMode } = this.props;
-    if (cardMode === CONSTANTS.EXTENTION_CARD) {
+    if (cardMode === CONSTANTS.SHARE_EXTENTION_CARD) {
       return;
     } else if (viewMode !== CONSTANTS.CARD_NEW) {
       return;
@@ -1219,7 +1219,7 @@ class NewCardScreen extends React.Component {
 
   get renderHeader() {
     const { cardMode, viewMode } = this.props;
-    if (cardMode === CONSTANTS.EXTENTION_CARD) {
+    if (cardMode === CONSTANTS.SHARE_EXTENTION_CARD) {
       return (
         <View style={styles.headerContainer}>
           <TouchableOpacity 
@@ -1291,7 +1291,7 @@ class NewCardScreen extends React.Component {
   // get renderOutsideMoreActions() {
   //   const { cardMode, viewMode, card, feedo } = this.props;
 
-  //   if (cardMode === CONSTANTS.EXTENTION_CARD) {
+  //   if (cardMode === CONSTANTS.SHARE_EXTENTION_CARD) {
   //     return;
   //   }
   //   if (cardMode !== CONSTANTS.MAIN_APP_CARD_FROM_DASHBOARD && !_.isEmpty(card.currentCard)) {
@@ -1318,7 +1318,7 @@ class NewCardScreen extends React.Component {
 
   get renderBottomContent() {
     const { viewMode, cardMode } = this.props;
-    if (cardMode === CONSTANTS.EXTENTION_CARD) {
+    if (cardMode === CONSTANTS.SHARE_EXTENTION_CARD) {
       return (
         <View style={{paddingHorizontal: 16}}>
           <View style={styles.line} />
@@ -1405,7 +1405,7 @@ class NewCardScreen extends React.Component {
         <Animated.View 
           style={[
             styles.contentContainer,
-            { paddingTop: cardMode !== CONSTANTS.EXTENTION_CARD ?  26 : 10},
+            { paddingTop: cardMode !== CONSTANTS.SHARE_EXTENTION_CARD ?  26 : 10},
             {height: CONSTANTS.SCREEN_HEIGHT - ScreenVerticalMinMargin * 2, paddingBottom: this.animatedKeyboardHeight}
           ]}
         >
@@ -1422,7 +1422,7 @@ class NewCardScreen extends React.Component {
                 style={[
                   styles.buttonItemContainer, 
                   {
-                    backgroundColor: cardMode === CONSTANTS.EXTENTION_CARD ? COLORS.BLUE : COLORS.PURPLE,
+                    backgroundColor: cardMode === CONSTANTS.SHARE_EXTENTION_CARD ? COLORS.BLUE : COLORS.PURPLE,
                     borderRadius: 8,
                   },
                 ]}
