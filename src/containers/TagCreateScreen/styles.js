@@ -21,7 +21,8 @@ export default styles = StyleSheet.create({
     justifyContent: 'space-between',
     alignItems: 'center',
     
-    paddingHorizontal: 20,
+    paddingHorizontal: 16,
+    height: 60
   },
   backButtonContainer: {
     flexDirection: 'row',
