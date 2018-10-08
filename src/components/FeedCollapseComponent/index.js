@@ -8,6 +8,7 @@ import {
   Animated,
   Image
 } from 'react-native'
+import { Actions } from 'react-native-router-flux'
 import Collapsible from 'react-native-collapsible'
 import Feather from 'react-native-vector-icons/Feather'
 import Entypo from 'react-native-vector-icons/Entypo'
@@ -63,6 +64,14 @@ class FeedCollapseComponent extends React.Component {
   onRemoveFile(fileId) {
     const { feedData } = this.state
     this.props.deleteFile(feedData.id, fileId);
+  }
+
+  onTagPress = (initialTag) => {
+    if (COMMON_FUNC.isFeedOwnerEditor(this.state.feedData)) {
+      Actions.FeedFilterScreen({
+        initialTag: [{ text: initialTag.text }]
+      })
+    }
   }
 
   renderContent = (feedData) => {
@@ -121,7 +130,7 @@ class FeedCollapseComponent extends React.Component {
             <Tags
               initialTags={feedData.tags}
               onChangeTags={() => {}}
-              onTagPress={() => {}}
+              onTagPress={(tag) => this.onTagPress(tag)}
               inputStyle={{
                 backgroundColor: 'white',
               }}
@@ -177,11 +186,7 @@ class FeedCollapseComponent extends React.Component {
   handleCollapse = () => {
     const { isCollapse, feedData } = this.state
 
-    if (isCollapse && 
-        (feedData.summary.length > 0 ||
-        (feedData.tags && feedData.tags.length > 0) ||
-        (feedData.files && feedData.files.length > 0))
-    ) {
+    if (isCollapse) {
       Animated.timing(
         this.state.spinValue,
         {
@@ -230,7 +235,7 @@ class FeedCollapseComponent extends React.Component {
                 </TouchableOpacity>
             }
 
-            {isCollapse && (feedData.summary.length > 0 || (feedData.files && feedData.files.length > 0) || (feedData.tags && feedData.tags.length > 0)) && (
+            {isCollapse && (
               <Animated.View style={{ marginLeft: 10, transform: [{ rotate: spin }] }}>
                 {!this.state.hideArrow && (
                   <Feather name="chevron-down" size={25} color={COLORS.MEDIUM_GREY} />

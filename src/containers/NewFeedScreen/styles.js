@@ -67,6 +67,7 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     paddingHorizontal: 12,
     paddingVertical: 12,
+    marginBottom: CONSTANTS.STATUSBAR_HEIGHT - 20
   },
   bottomLeftContainer: {
     flexDirection: 'row'

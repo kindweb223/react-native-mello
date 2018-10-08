@@ -58,7 +58,8 @@ class NewFeedScreen extends React.Component {
       comments: '',
       loading: false,
       currentScreen: NewFeedMode,
-      keyboardShow: false
+      keyboardShow: false,
+      lastCursorPos: 0
     };
     
     this.selectedFile = null;
@@ -410,6 +411,17 @@ class NewFeedScreen extends React.Component {
     }
   }
 
+  inputSelectionChange = (event) => {
+    const cursorPos = event.nativeEvent.selection.start
+
+    if (cursorPos === this.state.lastCursorPos || cursorPos > this.state.lastCursorPos) {
+      this.scrollViewMainContentRef.scrollToEnd()
+    }
+    if (cursorPos > this.state.lastCursorPos) {
+      this.setState({ lastCursorPos: cursorPos })
+    }
+  }
+
   get renderCenterContent() {
     return (
       <ScrollView 
@@ -431,6 +443,7 @@ class NewFeedScreen extends React.Component {
           style={styles.textInputNote}
           placeholder='Add a note'
           multiline={true}
+          onSelectionChange={this.inputSelectionChange}
           underlineColorAndroid='transparent'
           value={this.state.comments}
           onChangeText={(value) => this.onChangeNote(value)}

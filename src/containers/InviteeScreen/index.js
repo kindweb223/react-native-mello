@@ -19,6 +19,7 @@ import Entypo from 'react-native-vector-icons/Entypo'
 import Octicons from 'react-native-vector-icons/Octicons'
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons'
 import Modal from 'react-native-modal'
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
 import _ from 'lodash'
 import KeyboardScrollView from '../../components/KeyboardScrollView'
 import InviteeAutoComplete from '../../components/InviteeAutoComplete'
@@ -251,82 +252,84 @@ class InviteeScreen extends React.Component {
 
     return (
       <View style={styles.overlay}>
-        <View style={styles.header}>
-          <TouchableOpacity onPress={() => this.props.onClose()}>
-            <Image source={CLOSE_ICON} />
-          </TouchableOpacity>
+        <ScrollView keyboardShouldPersistTaps="handled">
+          <View style={styles.header}>
+            <TouchableOpacity onPress={() => this.props.onClose()}>
+              <Image source={CLOSE_ICON} />
+            </TouchableOpacity>
 
-          <TouchableOpacity onPress={() => this.onSendInvitation()} activeOpacity={0.8}>
-            <View style={[styles.sendButtonView, (!isAddInvitee || isInvalidEmail) ? styles.sendDisableButtonView : styles.sendEnableButtonView]}>
-              <Text style={[styles.sendButtonText, (!isAddInvitee || isInvalidEmail) ? styles.sendDisableButtonText : styles.sendEnableButtonText]}>Send</Text>
-            </View>
-          </TouchableOpacity>
-        </View>
-
-        <View style={styles.body}>
-          <View style={styles.inputFieldView}>
-            <View style={styles.tagInputItem}>
-              <InviteeAutoComplete
-                inviteeEmails={inviteeEmails}
-                invalidEmail={invalidEmail}
-                handleInvitees={this.handleInvitees}
-                handleChange={this.handleChange}
-              />
-              <TouchableOpacity onPress={() => this.updatePermission()}>
-                <View style={styles.rightView}>
-                  <Text style={styles.viewText}>
-                    {inviteePermission}
-                  </Text>
-                  <Entypo name="cog" style={styles.cogIcon} />
-                </View>
-              </TouchableOpacity>
-            </View>
-
-            {this.state.isInput && (
-              this.renderFilteredContacts(filteredContacts)
-            )}
-
-            {!this.state.isInput && (
-              <View style={styles.messageInputItem}>
-                <TextInput
-                  ref={ref => this.messageRef = ref}
-                  value={this.state.message}
-                  placeholder="Add message"
-                  multiline={true}
-                  style={[styles.textInput]}
-                  onChangeText={this.onChangeMessage}
-                  underlineColorAndroid='transparent'
-                  selectionColor={COLORS.PURPLE}
-                />
+            <TouchableOpacity onPress={() => this.onSendInvitation()} activeOpacity={0.8}>
+              <View style={[styles.sendButtonView, (!isAddInvitee || isInvalidEmail) ? styles.sendDisableButtonView : styles.sendEnableButtonView]}>
+                <Text style={[styles.sendButtonText, (!isAddInvitee || isInvalidEmail) ? styles.sendDisableButtonText : styles.sendEnableButtonText]}>Send</Text>
               </View>
-            )}
+            </TouchableOpacity>
           </View>
 
-          {this.state.loading
-            ? <View style={styles.loadingView}>
-                <ActivityIndicator 
-                  animating
-                  color={COLORS.PURPLE}
+          <View style={styles.body}>
+            <View style={styles.inputFieldView}>
+              <View style={styles.tagInputItem}>
+                <InviteeAutoComplete
+                  inviteeEmails={inviteeEmails}
+                  invalidEmail={invalidEmail}
+                  handleInvitees={this.handleInvitees}
+                  handleChange={this.handleChange}
                 />
-              </View>
-            : (!this.state.isInput && recentContacts && recentContacts.length > 0) && (
-                <View style={styles.inviteeListView}>
-                  <View style={styles.titleView}>
-                    <Text style={styles.titleText}>Contacts</Text>
+                <TouchableOpacity onPress={() => this.updatePermission()}>
+                  <View style={styles.rightView}>
+                    <Text style={styles.viewText}>
+                      {inviteePermission}
+                    </Text>
+                    <Entypo name="cog" style={styles.cogIcon} />
                   </View>
-                  <ScrollView style={styles.inviteeList}>
-                    {recentContacts.map(item => (
-                      <TouchableOpacity key={item.id} onPress={() => this.onSelectContact(item)}>
-                        <View style={styles.inviteeItem}>
-                          <InviteeItemComponent invitee={item} isOnlyTitle={true} />
-                        </View>
-                      </TouchableOpacity>
-                    ))}
-                  </ScrollView>
+                </TouchableOpacity>
+              </View>
+
+              {this.state.isInput && (
+                this.renderFilteredContacts(filteredContacts)
+              )}
+
+              {!this.state.isInput && (
+                <View style={styles.messageInputItem}>
+                  <TextInput
+                    ref={ref => this.messageRef = ref}
+                    value={this.state.message}
+                    placeholder="Add message"
+                    multiline={true}
+                    style={[styles.textInput]}
+                    onChangeText={this.onChangeMessage}
+                    underlineColorAndroid='transparent'
+                    selectionColor={COLORS.PURPLE}
+                  />
                 </View>
-            )
-          }
-        </View>
+              )}
+            </View>
+
+            {this.state.loading
+              ? <View style={styles.loadingView}>
+                  <ActivityIndicator 
+                    animating
+                    color={COLORS.PURPLE}
+                  />
+                </View>
+              : (!this.state.isInput && recentContacts && recentContacts.length > 0) && (
+                  <View style={styles.inviteeListView}>
+                    <View style={styles.titleView}>
+                      <Text style={styles.titleText}>Contacts</Text>
+                    </View>
+                    <ScrollView style={styles.inviteeList} keyboardShouldPersistTaps="handled">
+                      {recentContacts.map(item => (
+                        <TouchableOpacity key={item.id} onPress={() => this.onSelectContact(item)}>
+                          <View style={styles.inviteeItem}>
+                            <InviteeItemComponent invitee={item} isOnlyTitle={true} />
+                          </View>
+                        </TouchableOpacity>
+                      ))}
+                    </ScrollView>
+                  </View>
+              )
+            }
+          </View>
+        </ScrollView>
 
         <Modal 
           isVisible={isPermissionModal}

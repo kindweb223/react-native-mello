@@ -5,21 +5,22 @@ import CONSTANTS from '../../service/constants'
 export default styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: 'center',
-    backgroundColor: 'transparent',
+    backgroundColor: '#fff'
   },
   contentContainer: {
+    flex: 1,
+    backgroundColor: '#fff'
+  },
+  safeView: {
     width: '100%',
     height: '100%',
-    borderRadius: 18,
-    paddingVertical: 20,
-    backgroundColor: '#fff',
-    maxHeight: CONSTANTS.SCREEN_HEIGHT - 150,
+    backgroundColor: '#fff'
   },
   topContainer: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
+    
     paddingHorizontal: 20,
   },
   backButtonContainer: {
