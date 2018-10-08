@@ -185,7 +185,7 @@ class NewFeedScreen extends React.Component {
   componentDidMount() {
     Animated.timing(this.animatedShow, {
       toValue: 1,
-      duration: CONSTANTS.ANIMATEION_MILLI_SECONDS,
+      duration: 400,
     }).start(() => {
       if (!_.isEmpty(this.props.feedData)) {
         this.props.setCurrentFeed(this.props.feedData)
