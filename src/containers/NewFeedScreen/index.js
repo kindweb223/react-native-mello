@@ -313,7 +313,6 @@ class NewFeedScreen extends React.Component {
   }
   
   uploadFile(file, type) {
-    console.log('FILE: ', file)
     this.selectedFile = file.uri;
     this.selectedFileMimeType = mime.lookup(file.uri);
     this.selectedFileName = file.fileName;

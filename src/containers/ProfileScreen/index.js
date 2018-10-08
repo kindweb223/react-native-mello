@@ -124,6 +124,7 @@ class ProfileScreen extends React.Component {
           response.fileName = response.uri.replace(/^.*[\\\/]/, '')
         }
         this.setState({ avatarFile: response, isCrop: true })
+        Actions.CropImageScreen({ avatarFile: response })
       }
     });
   }
