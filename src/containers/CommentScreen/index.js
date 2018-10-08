@@ -301,29 +301,27 @@ class CommentScreen extends React.Component {
 
   render () {
     return (
-      <SafeAreaView style={styles.container}>
-        <View style={styles.container}>
-          <FlatList
-            contentContainerStyle={{paddingVertical: 16}}
-            data={this.props.card.currentComments}
-            renderItem={this.renderItem.bind(this)}
-            keyExtractor={(item, index) => index.toString()}
-            extraData={this.state}
-          />
-          {!this.props.guest && (
-            <Animated.View style={{marginBottom: this.keyboardHeight}}>
-              <InputToolbarComponent
-                ref={ref => this.inputToolbarRef = ref}
-                showKeyboard={this.state.isShowKeyboard}
-                comment={this.state.comment}
-                onChangeText={(comment) => this.onChangeText(comment)}
-                onSend={() => this.onSend()}
-              />
-            </Animated.View>
-          )}
-          {this.state.loading && <LoadingScreen />}
-        </View>
-      </SafeAreaView>
+      <View style={styles.container}>
+        <FlatList
+          contentContainerStyle={{paddingVertical: 16}}
+          data={this.props.card.currentComments}
+          renderItem={this.renderItem.bind(this)}
+          keyExtractor={(item, index) => index.toString()}
+          extraData={this.state}
+        />
+        {!this.props.guest && (
+          <Animated.View style={{ marginBottom: this.keyboardHeight }}>
+            <InputToolbarComponent
+              ref={ref => this.inputToolbarRef = ref}
+              showKeyboard={this.state.isShowKeyboard}
+              comment={this.state.comment}
+              onChangeText={(comment) => this.onChangeText(comment)}
+              onSend={() => this.onSend()}
+            />
+          </Animated.View>
+        )}
+        {this.state.loading && <LoadingScreen />}
+      </View>
     );
   }
 }
