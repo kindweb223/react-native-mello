@@ -6,7 +6,7 @@ export default styles = StyleSheet.create({
   container: {
     flex: 1,
     justifyContent: 'center',
-    backgroundColor: 'transparent',
+    backgroundColor: '#00000060',
   },
   feedContainer: {
     position: 'absolute',
@@ -36,6 +36,15 @@ export default styles = StyleSheet.create({
   },
   closeButtonWrapper: {
     paddingHorizontal: 4,
+  },
+  textTitle: {
+    fontSize: 16,
+    lineHeight: 23,
+    fontWeight: 'bold',
+    textAlign: 'center',
+    position: 'absolute',
+    left: 0,
+    right: 0,
   },
   textButton: {
     color: '#fff',
@@ -74,5 +83,10 @@ export default styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: '500',
     lineHeight: 20,
+  },
+  line: {
+    height: 1,
+    backgroundColor: COLORS.DARK_GREY,
+    marginBottom: 10,
   },
 })
