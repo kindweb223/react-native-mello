@@ -265,6 +265,7 @@ export const uploadFileToS3 = (signedUrl, file, fileName, mimeType) => {
     name: fileName,
     type: mimeType,
   };
+  console.log('PPPPPPPPPPPP', fileData)
   return {
     types: [types.UPLOAD_FILE_PENDING, types.UPLOAD_FILE_FULFILLED, types.UPLOAD_FILE_REJECTED],
     promise:

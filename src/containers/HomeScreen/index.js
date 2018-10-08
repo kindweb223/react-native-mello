@@ -610,30 +610,33 @@ class HomeScreen extends React.Component {
   }
 
   get renderNewFeedModals() {
-    if (!this.state.isVisibleNewFeed && !this.state.isVisibleCreateNewFeedModal) {
+    const { isEditFeed, isVisibleNewFeed, isVisibleCreateNewFeedModal, selectedFeedData } = this.state
+
+    if (!isVisibleNewFeed && !isVisibleCreateNewFeedModal) {
       return;
     }
+
     return (
       <Animated.View 
         style={[
           styles.modalContainer,
-          {opacity: this.animatedOpacity}
+          { opacity: this.animatedOpacity }
         ]}
       >
-        {
-          this.state.isVisibleCreateNewFeedModal && 
-            <CreateNewFeedComponent 
-              onSelect={(type) => this.onSelectNewFeedType(type)}
-              onClose={() => this.onCloseCreateNewFeedModal()}
-            />
-        }
-        {
-          this.state.isVisibleNewFeed && 
-            <NewFeedScreen
-              onClose={(data) => this.onCloseNewFeedModal(data)}
-              selectedFeedId={this.state.isEditFeed ? this.state.selectedFeedData.id : null}
-            />  
-        }
+        {isVisibleCreateNewFeedModal && (
+          <CreateNewFeedComponent 
+            onSelect={(type) => this.onSelectNewFeedType(type)}
+            onClose={() => this.onCloseCreateNewFeedModal()}
+          />
+        )}
+
+        {isVisibleNewFeed && (
+          <NewFeedScreen
+            feedData={isEditFeed ? selectedFeedData : {}}
+            onClose={(data) => this.onCloseNewFeedModal(data)}
+            selectedFeedId={isEditFeed ? selectedFeedData.id : null}
+          />  
+        )}
       </Animated.View>
     );
   }

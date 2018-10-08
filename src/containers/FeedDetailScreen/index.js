@@ -182,7 +182,9 @@ class FeedDetailScreen extends React.Component {
       this.setState({
         apiLoading: true
       })
-      this.props.uploadFileToS3(feedo.fileUploadUrl.uploadUrl, this.selectedFile, this.selectedFileName, this.selectedFileMimeType);
+      if (this.selectedFile) {
+        this.props.uploadFileToS3(feedo.fileUploadUrl.uploadUrl, this.selectedFile, this.selectedFileName, this.selectedFileMimeType);
+      }
     }
 
     if (this.props.feedo.loading === 'UPLOAD_FILE_PENDING' && feedo.loading === 'UPLOAD_FILE_FULFILLED') {
@@ -193,7 +195,9 @@ class FeedDetailScreen extends React.Component {
       this.setState({
         apiLoading: true
       })
-      this.props.addFile(id, this.selectedFileType, this.selectedFileMimeType, this.selectedFileName, objectKey);
+      if (this.selectedFileType) {
+        this.props.addFile(id, this.selectedFileType, this.selectedFileMimeType, this.selectedFileName, objectKey);
+      }
     }
 
     if (feedo.loading === 'GET_FILE_UPLOAD_URL_REJECTED' || feedo.loading === 'UPLOAD_FILE_REJECTED' || feedo.loading === 'ADD_FILE_REJECTED') {
@@ -635,6 +639,7 @@ class FeedDetailScreen extends React.Component {
         {  
           this.state.isVisibleEditFeed && 
             <NewFeedScreen 
+              feedData={this.state.currentFeed}
               onClose={() => this.onCloseEditFeedModal()}
               selectedFeedId={this.props.data.id}
               feedoMode={this.state.feedoMode}
