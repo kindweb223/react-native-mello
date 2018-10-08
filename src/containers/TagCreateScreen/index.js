@@ -98,6 +98,7 @@ class TagCreateScreen extends React.Component {
   }
 
   filterUnusedTags(tags) {
+    console.log('PPPP: ', this.state.userTags, tags)
     const filteredTags = [];
     this.state.userTags.map((item) => {
       let isIncludeItem = false;
