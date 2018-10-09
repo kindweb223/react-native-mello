@@ -97,6 +97,7 @@ export default function user(state = initialState, action = {}) {
       const { data } = action.result
 
       AsyncStorage.setItem('userInfo', JSON.stringify(data))
+      AsyncStorage.setItem('userBackInfo', JSON.stringify(data))
       SharedGroupPreferences.setItem('userInfo', JSON.stringify(data), CONSTANTS.APP_GROUP_USER_IDENTIFIER)
 
       return {
@@ -270,6 +271,7 @@ export default function user(state = initialState, action = {}) {
       if (userInfo) {
         // update the user's info when it's not signup page
         AsyncStorage.setItem('userInfo', JSON.stringify(data))
+        AsyncStorage.setItem('userBackInfo', JSON.stringify(data))
         SharedGroupPreferences.setItem('userInfo', JSON.stringify(data), CONSTANTS.APP_GROUP_USER_IDENTIFIER)
       }
 
@@ -531,6 +533,7 @@ export default function user(state = initialState, action = {}) {
       }
 
       AsyncStorage.setItem('userInfo', JSON.stringify(updateUserInfo))
+      AsyncStorage.setItem('userBackInfo', JSON.stringify(updateUserInfo))
       SharedGroupPreferences.setItem('userInfo', JSON.stringify(updateUserInfo), CONSTANTS.APP_GROUP_USER_IDENTIFIER)
 
       return {

@@ -5,7 +5,7 @@ import CONSTANTS from '../../service/constants'
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: 'center',
+    justifyContent: 'center'
   },
   feedContainer: {
     flex: 1
@@ -25,15 +25,15 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    paddingTop: CONSTANTS.STATUSBAR_HEIGHT + 10,
+    paddingTop: 16,
     paddingBottom: 16,
-    paddingHorizontal: 10
+    paddingHorizontal: 9
   },
   closeButtonWrapper: {
     paddingHorizontal: 2,
   },
   createButtonWapper: {
-    marginRight: 4,
+    marginRight: 5,
     paddingHorizontal: 20,
     height: 34,
     borderRadius: 17,
@@ -66,8 +66,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     paddingHorizontal: 12,
-    paddingVertical: 12,
-    marginBottom: CONSTANTS.STATUSBAR_HEIGHT - 20
+    paddingVertical: 16
   },
   bottomLeftContainer: {
     flexDirection: 'row'

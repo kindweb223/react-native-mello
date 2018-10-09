@@ -19,6 +19,10 @@ class TextInputComponent extends React.Component {
     };
   }
 
+  UNSAFE_componentWillReceiveProps(nextProps) {
+    this.setState({ text: nextProps.value })
+  }
+
   onChange = text => {
     this.setState({ text })
     this.props.handleChange(text)
