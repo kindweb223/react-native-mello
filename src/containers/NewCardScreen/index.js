@@ -13,6 +13,7 @@ import {
   AsyncStorage,
   Linking,
   Dimensions,
+  SafeAreaView,
 } from 'react-native'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
@@ -20,8 +21,8 @@ import { connect } from 'react-redux'
 import { Actions } from 'react-native-router-flux'
 import Entypo from 'react-native-vector-icons/Entypo'
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons'
-import MaterialIcons from 'react-native-vector-icons/MaterialIcons'
 import Ionicons from 'react-native-vector-icons/Ionicons'
+import { isIphoneX } from 'react-native-iphone-x-helper';
 
 import ActionSheet from 'react-native-actionsheet'
 import ImagePicker from 'react-native-image-picker'
@@ -245,7 +246,7 @@ class NewCardScreen extends React.Component {
         this.setState({
           // cardName: nextProps.card.currentOpneGraph.title,
           // idea: nextProps.card.currentOpneGraph.description + '\n' + this.urlForNewCard,
-          idea: nextProps.card.currentOpneGraph.title,
+          idea: nextProps.card.currentOpneGraph.title + '\n' + this.urlForNewCard,
         });
 
         this.allLinkImages = nextProps.card.currentOpneGraph.images;
@@ -373,8 +374,13 @@ class NewCardScreen extends React.Component {
         idea: this.props.card.currentCard.idea,
         coverImage: this.props.card.currentCard.coverImage,
       });
+    } else if (viewMode === CONSTANTS.CARD_NEW) {
+      this.setState({
+        isEditableIdea : true,
+      }, () => {
+        this.textInputIdeaRef.focus();
+      });
     }
-
     Animated.timing(this.animatedShow, {
       toValue: 1,
       duration: CONSTANTS.ANIMATEION_MILLI_SECONDS,
@@ -871,10 +877,13 @@ class NewCardScreen extends React.Component {
   }
 
   onPressIdea() {
+    const { viewMode } = this.props;
     this.setState({
       isEditableIdea: true,
     }, () => {
-      this.textInputIdeaRef.focus();
+      if (viewMode === CONSTANTS.CARD_NEW || viewMode === CONSTANTS.CARD_EDIT) {
+        this.textInputIdeaRef.focus();
+      }
     });
   }
 
@@ -909,7 +918,7 @@ class NewCardScreen extends React.Component {
     const {
       id, 
     } = this.props.card.currentCard;
-    const mimeType = mime.lookup(imageUrl);
+    const mimeType = mime.lookup(imageUrl) || 'image/jpeg';
     const filename = imageUrl.replace(/^.*[\\\/]/, '')
     this.props.addFile(id, 'MEDIA', mimeType, filename, imageUrl);
   }
@@ -1006,7 +1015,7 @@ class NewCardScreen extends React.Component {
 
   get renderIdea() {
     const { viewMode } = this.props;
-    if ((this.state.idea === '' || this.state.isEditableIdea) && (viewMode === CONSTANTS.CARD_NEW || viewMode === CONSTANTS.CARD_EDIT)) {
+    if (this.state.isEditableIdea && (viewMode === CONSTANTS.CARD_NEW || viewMode === CONSTANTS.CARD_EDIT)) {
       return (
         <TextInput
           ref={ref => this.textInputIdeaRef = ref}
@@ -1186,14 +1195,31 @@ class NewCardScreen extends React.Component {
 
   get renderInvitee() {
     const {
-      userProfile
+      userProfile,
     } = this.props.invitee;
+    const {
+      currentFeed,
+    } = this.props.feedo;
+    const {
+      userInfo,
+    } = this.props.user;
     const name = `${userProfile.firstName} ${userProfile.lastName}`;
     const letterToWidthRatio = 0.5476; // Approximate this by taking the width of some representative text samples
     let fontSize = CONSTANTS.SCREEN_WIDTH * 0.42 / (name.length * letterToWidthRatio) - 4;
     if (fontSize > 14) {
       fontSize = 14;
     }
+    if (COMMON_FUNC.isFeedOwner(currentFeed)) {
+      const otherInvitees = _.filter(currentFeed.invitees, invitee => invitee.userProfile.id !== userInfo.id);
+      if (!otherInvitees || otherInvitees.length === 0) {
+        return (
+          <View style={[styles.rowContainer, {flex: 1}]}>
+            <Text style={styles.textInvitee}>{getDurationFromNow(this.props.card.currentCard.publishedDate)}</Text>
+          </View>
+        );
+      }
+    }
+
     return (
       <View style={[styles.rowContainer, {flex: 1}]}>
         <UserAvatarComponent
@@ -1268,8 +1294,7 @@ class NewCardScreen extends React.Component {
           activeOpacity={0.7}
           onPress={() => this.onBack()}
         >
-          <Ionicons name="ios-arrow-back" size={30} color={COLORS.PURPLE} />
-          <Text style={styles.textBack}>Back</Text>
+          <MaterialCommunityIcons name="close" size={28} color={COLORS.PURPLE} />
         </TouchableOpacity>
         {this.renderTopAttachmentButtons}
       </View>
@@ -1406,8 +1431,9 @@ class NewCardScreen extends React.Component {
         <Animated.View 
           style={[
             styles.contentContainer,
-            { paddingTop: cardMode !== CONSTANTS.SHARE_EXTENTION_CARD ?  26 : 10},
-            {height: CONSTANTS.SCREEN_HEIGHT - ScreenVerticalMinMargin * 2, paddingBottom: this.animatedKeyboardHeight}
+            { paddingTop: cardMode !== CONSTANTS.SHARE_EXTENTION_CARD ?  26 + (isIphoneX() ? 24 : 0) : 10},
+            { paddingBottom: Animated.add(this.animatedKeyboardHeight, isIphoneX() ? 24 : 0) },
+            { height: CONSTANTS.SCREEN_HEIGHT - ScreenVerticalMinMargin * 2 },
           ]}
         >
           {this.renderHeader}
@@ -1417,7 +1443,7 @@ class NewCardScreen extends React.Component {
           {
             this.state.isShowKeyboardButton && 
             <Animated.View
-              style={[styles.hideKeyboardContainer, {bottom: Animated.add(this.animatedKeyboardHeight, 16)}]}
+              style={[styles.hideKeyboardContainer, {bottom: Animated.add(this.animatedKeyboardHeight, isIphoneX() ? 24 + 16: 16)}]}
             >
               <TouchableOpacity 
                 style={[
@@ -1438,6 +1464,30 @@ class NewCardScreen extends React.Component {
         {/* {this.renderOutside} */}
       </Animated.View>
     );
+  }
+
+  renderKeyboardClose(cardMode) {
+    // If show keyboard button, and not quick add card from dashboard as interferes with change Feed https://cl.ly/ba004cb3a34b
+    if (this.state.isShowKeyboardButton && cardMode !== CONSTANTS.MAIN_APP_CARD_FROM_DASHBOARD) {
+      return 
+      <Animated.View
+        style={[styles.hideKeyboardContainer, {bottom: Animated.add(this.animatedKeyboardHeight, 16)}]}
+      >
+        <TouchableOpacity 
+          style={[
+            styles.buttonItemContainer, 
+            {
+              backgroundColor: cardMode === CONSTANTS.SHARE_EXTENTION_CARD ? COLORS.BLUE : COLORS.PURPLE,
+              borderRadius: 8,
+            },
+          ]}
+          activeOpacity={0.6}
+          onPress={this.onHideKeyboard.bind(this)}
+        >
+          <MaterialCommunityIcons name="keyboard-close" size={20} color={'#fff'} />
+        </TouchableOpacity>
+      </Animated.View>
+    }
   }
 
   get renderSelectHunt() {

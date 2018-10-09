@@ -34,6 +34,7 @@ import { getDurationFromNow } from '../../service/dateUtils'
 import InputToolbarComponent from '../../components/InputToolbarComponent';
 import UserAvatarComponent from '../../components/UserAvatarComponent';
 import * as COMMON_FUNC from '../../service/commonFunc'
+import { relativeTimeThreshold } from 'moment';
 
 
 class CommentScreen extends React.Component {
@@ -72,6 +73,12 @@ class CommentScreen extends React.Component {
     this.keyboardWillShowSubscription = Keyboard.addListener('keyboardWillShow', (e) => this.keyboardWillShow(e));
     this.keyboardWillHideSubscription = Keyboard.addListener('keyboardWillHide', (e) => this.keyboardWillHide(e));
     this.props.getCardComments(this.props.idea.id);
+    if (this.props.isShowKeyboard) {
+      this.setState({
+        isShowKeyboard: this.props.isShowKeyboard,
+      });
+      this.inputToolbarRef.focus();
+    }
   }
 
   componentWillUnmount() {
@@ -328,13 +335,15 @@ class CommentScreen extends React.Component {
 
 
 CommentScreen.defaultProps = {
-  guest: false
+  guest: false,
+  isShowKeyboard: false,
 }
 
 
 CommentScreen.propTypes = {
   idea: PropTypes.object,
-  guest: PropTypes.bool
+  guest: PropTypes.bool,
+  isShowKeyboard: PropTypes.bool,
 }
 
 

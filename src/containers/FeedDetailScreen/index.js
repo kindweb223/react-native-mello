@@ -517,7 +517,7 @@ class FeedDetailScreen extends React.Component {
           selectedLongHoldIdea: idea,
           selectedLongHoldInvitees: invitees,
           isVisibleLongHoldMenu: true,
-          selectedLongHoldCardIndex: -1,
+          // selectedLongHoldCardIndex: -1,
         });
       });
     });
@@ -572,6 +572,7 @@ class FeedDetailScreen extends React.Component {
   
   onEditCard() {
     this.setState({ isVisibleLongHoldMenu: false })
+    this.onSelectCard(this.state.selectedLongHoldIdea, this.state.selectedLongHoldCardIndex)
   }
 
   onTapCardActionSheet(index) {

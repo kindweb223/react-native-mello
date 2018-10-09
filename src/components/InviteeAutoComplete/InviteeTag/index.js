@@ -116,6 +116,7 @@ class InviteeTag extends React.Component {
             onKeyPress={this.onKeyPress.bind(this)}
             onSubmitEditing={() => {this.onCreateTag()}}
             keyboardType="email-address"
+            returnKeyType="next"
             autoCorrect={false}
             textContentType='emailAddress'
             autoCapitalize="none"
