@@ -13,7 +13,6 @@ import {
   AsyncStorage,
   Linking,
   Dimensions,
-  SafeAreaView,
 } from 'react-native'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
@@ -21,8 +20,8 @@ import { connect } from 'react-redux'
 import { Actions } from 'react-native-router-flux'
 import Entypo from 'react-native-vector-icons/Entypo'
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons'
-import Ionicons from 'react-native-vector-icons/Ionicons'
 import { isIphoneX } from 'react-native-iphone-x-helper';
+import ViewMoreText from 'react-native-view-more-text';
 
 import ActionSheet from 'react-native-actionsheet'
 import ImagePicker from 'react-native-image-picker'
@@ -78,7 +77,6 @@ const ATTACHMENT_ICON = require('../../../assets/images/Attachment/Blue.png')
 const IMAGE_ICON = require('../../../assets/images/Image/Blue.png')
 
 const ScreenVerticalMinMargin = 0;
-const LineTextMaxLimit = Math.floor((Dimensions.get('window').width - 32) * Dimensions.get('window').scale / (16 * Dimensions.get('window').fontScale));
 
 
 class NewCardScreen extends React.Component {
@@ -415,10 +413,10 @@ class NewCardScreen extends React.Component {
   }
 
   keyboardWillShow(e) {
+    const bottomPadding = isIphoneX() ? 24 : 0;
     Animated.timing(
       this.animatedKeyboardHeight, {
-        // toValue: this.state.isFullScreenCard ? e.endCoordinates.height : e.endCoordinates.height - ScreenVerticalMinMargin,
-        toValue: e.endCoordinates.height,
+        toValue: e.endCoordinates.height - bottomPadding,
         duration: e.duration,
       }
     ).start();
@@ -1013,13 +1011,25 @@ class NewCardScreen extends React.Component {
     }
   }
 
+  renderSeeMore(onPress){
+    return(
+      <Text style={styles.textSeeMoreLessIdea} onPress={onPress}>See more</Text>
+    );
+  }
+
+  renderSeeLess(onPress){
+    return(
+      <Text style={styles.textSeeMoreLessIdea} onPress={onPress}>See less</Text>
+    );
+  }
+
   get renderIdea() {
     const { viewMode } = this.props;
-    if (this.state.isEditableIdea && (viewMode === CONSTANTS.CARD_NEW || viewMode === CONSTANTS.CARD_EDIT)) {
+    if ((this.state.idea == '' || this.state.isEditableIdea) && (viewMode === CONSTANTS.CARD_NEW || viewMode === CONSTANTS.CARD_EDIT)) {
       return (
         <TextInput
           ref={ref => this.textInputIdeaRef = ref}
-          style={styles.textInputIdea}
+          style={[styles.textInputIdea, {maxHeight: 100}]}
           autoCorrect={false}
           placeholder='Add a name or link here'
           multiline={true}
@@ -1033,37 +1043,35 @@ class NewCardScreen extends React.Component {
         />
       )
     }
-
-    let idea = this.state.idea;
-    let isMoreText = false;
-    if (idea && idea.length > LineTextMaxLimit * 3) {
-      isMoreText = true;
-    }
-    if (!this.state.isVisibleMoreIdea && idea && idea.length > LineTextMaxLimit * 3) {
-      idea = idea.substring(0, LineTextMaxLimit * 3 - 3) + '...';
-    }
     return (
       <TouchableOpacity
         activeOpacity={1}
         onPress={() => this.onPressIdea()}
       >
-        <Autolink
-          numberOfLines={this.state.isVisibleMoreIdea ? 0 : 3}
-          // ellipsizeMode='clip'
-          style={styles.textInputIdea}
-          text={idea}
-          onPress={(url, match) => this.onPressLink(url)}
-        />
-        { 
-          isMoreText && 
-          <TouchableOpacity
-            style={styles.moreButtonContainer}
-            activeOpacity={0.7}
-            onPress={() => this.onPressMore()}
-          >
-            <Text style={styles.textMore}>{this.state.isVisibleMoreIdea ? 'less' : 'more'}</Text>
-          </TouchableOpacity>
-        }
+        <ViewMoreText
+          textStyle={styles.textInputIdea}
+          numberOfLines={3}
+          renderViewMore={this.renderSeeMore.bind(this)}
+          renderViewLess={this.renderSeeLess.bind(this)}
+        >
+          <Autolink
+            // numberOfLines={this.state.isVisibleMoreIdea ? 0 : 3}
+            // ellipsizeMode='clip'
+            style={styles.textInputIdea}
+            text={this.state.idea}
+            onPress={(url, match) => this.onPressLink(url)}
+          />
+          {/* { 
+            isMoreText && 
+            <TouchableOpacity
+              style={styles.moreButtonContainer}
+              activeOpacity={0.7}
+              onPress={() => this.onPressMore()}
+            >
+              <Text style={styles.textMore}>{this.state.isVisibleMoreIdea ? 'less' : 'more'}</Text>
+            </TouchableOpacity>
+          } */}
+        </ViewMoreText>
       </TouchableOpacity>
     )
   }
@@ -1173,7 +1181,7 @@ class NewCardScreen extends React.Component {
       return;
     }
     return (
-      <View style={[styles.attachmentButtonsContainer, { paddingHorizontal: 12, marginVertical: 16 }]}>
+      <View style={[styles.attachmentButtonsContainer, { paddingHorizontal: 16, marginVertical: 16 }]}>
         <TouchableOpacity 
           style={styles.iconView}
           activeOpacity={0.6}
@@ -1433,7 +1441,7 @@ class NewCardScreen extends React.Component {
             styles.contentContainer,
             { paddingTop: cardMode !== CONSTANTS.SHARE_EXTENTION_CARD ?  26 + (isIphoneX() ? 24 : 0) : 10},
             { paddingBottom: Animated.add(this.animatedKeyboardHeight, isIphoneX() ? 24 : 0) },
-            { height: CONSTANTS.SCREEN_HEIGHT - ScreenVerticalMinMargin * 2 },
+            { height: CONSTANTS.SCREEN_HEIGHT},
           ]}
         >
           {this.renderHeader}
