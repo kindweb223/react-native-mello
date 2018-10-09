@@ -44,6 +44,13 @@ const styles = StyleSheet.create({
     paddingTop: 0,
     paddingBottom: 0,
   },
+  textSeeMoreLessIdea: {
+    fontSize: 16,
+    lineHeight: 23,
+    marginTop: 10,
+    marginHorizontal: 16,
+    color: COLORS.PURPLE,
+  },
   attachmentButtonsContainer: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -134,6 +141,7 @@ const styles = StyleSheet.create({
   imageCoverView: {
     // marginHorizontal: 16,
     height: Math.round(CONSTANTS.SCREEN_WIDTH * 0.565),
+    marginTop: 15,
     // borderRadius: 5,
     overflow: 'hidden',
   },

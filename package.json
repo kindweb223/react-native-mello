@@ -47,6 +47,7 @@
     "react-native-user-avatar": "^1.0.3",
     "react-native-vector-icons": "^5.0.0",
     "react-native-version-number": "^0.3.4",
+    "react-native-view-more-text": "^2.0.1",
     "react-navigation": "^2.9.3",
     "react-redux": "^5.0.7",
     "redux": "^4.0.0",
