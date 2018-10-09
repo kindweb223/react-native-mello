@@ -57,7 +57,8 @@ class LastCommentComponent extends React.Component {
   onAddComment() {
     Actions.CommentScreen({
       idea: this.props.card.currentCard,
-      guest: COMMON_FUNC.isFeedGuest(this.props.feedo.currentFeed)
+      guest: COMMON_FUNC.isFeedGuest(this.props.feedo.currentFeed),
+      isShowKeyboard: true,
     });
   }
 
