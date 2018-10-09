@@ -4,6 +4,7 @@ import {
   Text,
   TouchableOpacity,
   FlatList,
+  SafeAreaView
 } from 'react-native'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
@@ -97,6 +98,7 @@ class TagCreateScreen extends React.Component {
   }
 
   filterUnusedTags(tags) {
+    console.log('PPPP: ', this.state.userTags, tags)
     const filteredTags = [];
     this.state.userTags.map((item) => {
       let isIncludeItem = false;
@@ -186,43 +188,46 @@ class TagCreateScreen extends React.Component {
   render () {
     return (
       <View style={styles.container}>
-        <View style={styles.contentContainer}>
-          {this.renderTopContent}
-          <Tags
-            containerStyle={{marginTop: 20, paddingHorizontal: 20,}}
-            tags={this.props.feedo.currentFeed.tags}
-            tagText={this.state.currentTagName}
-            onCreateTag={(text) => this.onCreateTag(text)}
-            onChangeText={(text) => this.onChangeText(text)}
-            onRemoveTag={(tag) => this.onRemoveTag(tag)}
-            tagContainerStyle={{
-              backgroundColor: COLORS.TAG_LIGHT_ORANGE_BACKGROUND,
-            }}
-            tagTextStyle={{
-              color: COLORS.DARK_ORANGE,
-              fontSize: 16,
-            }}
-            activeTagContainerStyle={{
-              backgroundColor: COLORS.TAG_LIGHT_ORANGE_ACTIVE_BACKGROUND,
-            }}
-            activeTagTextStyle={{
-              color: '#fff',
-              fontSize: 16,
-            }}
-          />
-
+        <SafeAreaView style={styles.contentContainer}>
           <KeyboardAwareScrollView
-            keyboardShouldPersistTaps='always'
+            style={styles.contentContainer}
+            keyboardShouldPersistTaps='handled'
           >
+            {this.renderTopContent}
+            <Tags
+              containerStyle={{marginTop: 20, paddingHorizontal: 20,}}
+              tags={this.props.feedo.currentFeed.tags}
+              tagText={this.state.currentTagName}
+              onCreateTag={(text) => this.onCreateTag(text)}
+              onChangeText={(text) => this.onChangeText(text)}
+              onRemoveTag={(tag) => this.onRemoveTag(tag)}
+              tagContainerStyle={{
+                backgroundColor: COLORS.TAG_LIGHT_ORANGE_BACKGROUND,
+              }}
+              tagTextStyle={{
+                color: COLORS.DARK_ORANGE,
+                fontSize: 16,
+              }}
+              activeTagContainerStyle={{
+                backgroundColor: COLORS.TAG_LIGHT_ORANGE_ACTIVE_BACKGROUND,
+              }}
+              activeTagTextStyle={{
+                color: '#fff',
+                fontSize: 16,
+              }}
+            />
+
             <FlatList
-              style={{marginTop: 10, paddingHorizontal: 20,}}
+              keyboardShouldPersistTaps='always'
+              style={{ marginTop: 10, paddingHorizontal: 20 }}
               data={this.filterTagNames()}
               renderItem={this.renderTagItem.bind(this)}
               keyExtractor={(item, index) => index.toString()}
               extraData={this.state}
             />
           </KeyboardAwareScrollView>
-        </View>
+        </SafeAreaView>
+
         {this.state.loading && <LoadingScreen />}
       </View>
     );

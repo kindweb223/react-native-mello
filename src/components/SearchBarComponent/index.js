@@ -123,10 +123,10 @@ class SearchBarComponent extends React.Component {
   }
 
   onSelectFilterItem = (item) => {
+    Keyboard.dismiss()
     const { filteredTags } = this.state
 
     this.onCreateTag(item.text)
-
     newFilterTags = _.filter(filteredTags, tag => tag.text !== item.text)
     this.setState({ filteredTags: newFilterTags, showFilterTags: false, currentTagName: '' })
   }
@@ -258,7 +258,7 @@ class SearchBarComponent extends React.Component {
 
         {showFilterTags && (
           <KeyboardAwareScrollView
-            keyboardShouldPersistTaps='always'
+            keyboardShouldPersistTaps='handled'
           >
             <View style={styles.filterContainer}>
               <View>
@@ -266,6 +266,7 @@ class SearchBarComponent extends React.Component {
                   <Text style={styles.title}>Tags</Text>
                 </View>
                 <FlatList
+                  keyboardShouldPersistTaps='handled'
                   style={{ marginTop: 10 }}
                   data={filteredTags}
                   renderItem={this.renderFilterTagItem}

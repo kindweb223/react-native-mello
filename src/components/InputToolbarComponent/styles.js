@@ -1,16 +1,21 @@
 import { StyleSheet } from 'react-native'
 import COLORS from '../../service/colors'
+import CONSTANTS from '../../service/constants'
 
 const styles = StyleSheet.create({
   container: {
-    margin: 16,
+    marginHorizontal: 16,
+    marginTop: 16,
+    marginBottom: CONSTANTS.STATUSBAR_HEIGHT,
     backgroundColor: COLORS.SOFT_GREY,
     paddingHorizontal: 16,
     paddingVertical: 13,
     borderRadius: 5,
   },
   shadowContainer: {
-    margin: 0,
+    marginHorizontal: 0,
+    marginTop: 16,
+    marginBottom: 0,
     backgroundColor: '#fff',
     shadowColor: '#000',
 		shadowOffset: { width: 0, height: 8 },

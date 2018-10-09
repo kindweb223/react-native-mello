@@ -31,7 +31,6 @@ import {
   uploadFileToS3,
   addFile,
   deleteFile,
-  getFeedDetail,
   setCurrentFeed
 } from '../../redux/feedo/actions'
 import * as types from '../../redux/feedo/types'
@@ -58,7 +57,9 @@ class NewFeedScreen extends React.Component {
       comments: '',
       loading: false,
       currentScreen: NewFeedMode,
-      keyboardShow: false
+      keyboardShow: false,
+      lastCursorPos: 0,
+      feedData: {}
     };
     
     this.selectedFile = null;
@@ -78,6 +79,10 @@ class NewFeedScreen extends React.Component {
     if (this.props.feedo.loading !== types.CREATE_FEED_PENDING && nextProps.feedo.loading === types.CREATE_FEED_PENDING) {
       // creating a feed
       loading = true;
+    } else if (this.props.feedo.loading !== types.CREATE_FEED_FULFILLED && nextProps.feedo.loading === types.CREATE_FEED_FULFILLED) {
+      this.setState({
+        feedData: nextProps.feedo.currentFeed
+      })
     } else if (this.props.feedo.loading !== types.DELETE_FEED_PENDING && nextProps.feedo.loading === types.DELETE_FEED_PENDING) {
       // deleting a feed
       loading = true;
@@ -92,21 +97,28 @@ class NewFeedScreen extends React.Component {
     } else if (this.props.feedo.loading !== types.GET_FILE_UPLOAD_URL_FULFILLED && nextProps.feedo.loading === types.GET_FILE_UPLOAD_URL_FULFILLED) {
       // success in getting a file upload url
       loading = true;
-      this.props.uploadFileToS3(nextProps.feedo.fileUploadUrl.uploadUrl, this.selectedFile, this.selectedFileName, this.selectedFileMimeType);
+      if (this.selectedFile) {
+        this.props.uploadFileToS3(nextProps.feedo.fileUploadUrl.uploadUrl, this.selectedFile, this.selectedFileName, this.selectedFileMimeType);
+      }
     } else if (this.props.feedo.loading !== types.UPLOAD_FILE_PENDING && nextProps.feedo.loading === types.UPLOAD_FILE_PENDING) {
       // uploading a file
       loading = true;
     } else if (this.props.feedo.loading !== types.UPLOAD_FILE_FULFILLED && nextProps.feedo.loading === types.UPLOAD_FILE_FULFILLED) {
       // success in uploading a file
       loading = true;
-      let { id } = this.props.feedo.currentFeed;
+      let { id } = this.state.feedData;
       const { objectKey } = this.props.feedo.fileUploadUrl;
-      this.props.addFile(id, this.selectedFileType, this.selectedFileMimeType, this.selectedFileName, objectKey);
+      if (this.selectedFileType) {
+        this.props.addFile(id, this.selectedFileType, this.selectedFileMimeType, this.selectedFileName, objectKey);
+      }
     } else if (this.props.feedo.loading !== types.ADD_FILE_PENDING && nextProps.feedo.loading === types.ADD_FILE_PENDING) {
       // adding a file
       loading = true;
     } else if (this.props.feedo.loading !== types.ADD_FILE_FULFILLED && nextProps.feedo.loading === types.ADD_FILE_FULFILLED) {
       // success in adding a file
+      this.setState({
+        feedData: nextProps.feedo.currentFeed
+      })
     } else if (this.props.feedo.loading !== types.UPDATE_FEED_PENDING && nextProps.feedo.loading === types.UPDATE_FEED_PENDING) {
       // updating a feed
       loading = true;
@@ -121,15 +133,29 @@ class NewFeedScreen extends React.Component {
       loading = true;
     } else if (this.props.feedo.loading !== types.DELETE_FILE_FULFILLED && nextProps.feedo.loading === types.DELETE_FILE_FULFILLED) {
       // success in deleting a file
+      this.setState({
+        feedData: nextProps.feedo.currentFeed
+      })
     } else if (this.props.feedo.loading !== types.GET_FEED_DETAIL_PENDING && nextProps.feedo.loading === types.GET_FEED_DETAIL_PENDING) {
       // getting a feed
       loading = true;
     } else if (this.props.feedo.loading !== types.GET_FEED_DETAIL_FULFILLED && nextProps.feedo.loading === types.GET_FEED_DETAIL_FULFILLED) {
       // success in getting a feed
       this.setState({
+        feedData: nextProps.feedo.currentFeed,
         feedName: nextProps.feedo.currentFeed.headline,
         comments: nextProps.feedo.currentFeed.summary,
       });
+    } else if (this.props.feedo.loading !== types.ADD_HUNT_TAG_FULFILLED && nextProps.feedo.loading === types.ADD_HUNT_TAG_FULFILLED) {
+      // success in add tags
+      this.setState({
+        feedData: nextProps.feedo.currentFeed
+      })
+    } else if (this.props.feedo.loading !== types.REMOVE_HUNT_TAG_FULFILLED && nextProps.feedo.loading === types.REMOVE_HUNT_TAG_FULFILLED) {
+      // success in delete tags
+      this.setState({
+        feedData: nextProps.feedo.currentFeed
+      })
     }
 
     this.setState({ loading });
@@ -161,8 +187,13 @@ class NewFeedScreen extends React.Component {
       toValue: 1,
       duration: CONSTANTS.ANIMATEION_MILLI_SECONDS,
     }).start(() => {
-      if (this.props.selectedFeedId) {
-        this.props.getFeedDetail(this.props.selectedFeedId);
+      if (!_.isEmpty(this.props.feedData)) {
+        this.props.setCurrentFeed(this.props.feedData)
+        this.setState({
+          feedData: this.props.feedData,
+          feedName: this.props.feedData.headline,
+          comments: this.props.feedData.summary,
+        });
       } else {
         this.props.createFeed();
       }
@@ -214,7 +245,7 @@ class NewFeedScreen extends React.Component {
       return;
     }
 
-    const { id, tags, files } = this.props.feedo.currentFeed;
+    const { id, tags, files } = this.state.feedData;
     this.props.updateFeed(id, this.state.feedName, this.state.comments, tags, files);
   }
 
@@ -246,9 +277,9 @@ class NewFeedScreen extends React.Component {
   onTapLeaveActionSheet(index) {
     if (index === 1) {
       if (!this.props.selectedFeedId) {
-        this.props.deleteDraftFeed(this.props.feedo.currentFeed.id)
+        this.props.deleteDraftFeed(this.state.feedData.id)
       } else {
-        this.onClose(this.props.feedo.currentFeed);
+        this.onClose(this.state.feedData);
       }
     }
   }
@@ -282,12 +313,14 @@ class NewFeedScreen extends React.Component {
   }
   
   uploadFile(file, type) {
+    console.log('FILE: ', file)
     this.selectedFile = file.uri;
     this.selectedFileMimeType = mime.lookup(file.uri);
     this.selectedFileName = file.fileName;
     this.selectedFileType = type;
-    if (this.props.feedo.currentFeed.id) {
-      this.props.getFileUploadUrl(this.props.feedo.currentFeed.id);
+
+    if (this.state.feedData.id) {
+      this.props.getFileUploadUrl(this.state.feedData.id);
     }
   }
 
@@ -352,7 +385,7 @@ class NewFeedScreen extends React.Component {
   }
 
   onRemoveFile(fileId) {
-    const { id } = this.props.feedo.currentFeed;
+    const { id } = this.state.feedData;
     this.props.deleteFile(id, fileId);
   }
 
@@ -383,7 +416,7 @@ class NewFeedScreen extends React.Component {
   }
 
   get renderImages() {
-    const { files } = this.props.feedo.currentFeed;
+    const { files } = this.state.feedData;
     const imageFiles = _.filter(files, file => file.fileType === 'MEDIA');
 
     if (imageFiles.length > 0) {
@@ -397,7 +430,7 @@ class NewFeedScreen extends React.Component {
   }
 
   get renderDocuments() {
-    const { files } = this.props.feedo.currentFeed;
+    const { files } = this.state.feedData;
     const documentFiles = _.filter(files, file => file.fileType === 'FILE');
 
     if (documentFiles.length > 0) {
@@ -407,6 +440,17 @@ class NewFeedScreen extends React.Component {
           onRemove={(fileId) => this.onRemoveFile(fileId)}
         />
       )
+    }
+  }
+
+  inputSelectionChange = (event) => {
+    const cursorPos = event.nativeEvent.selection.start
+
+    if (cursorPos === this.state.lastCursorPos || cursorPos > this.state.lastCursorPos) {
+      this.scrollViewMainContentRef.scrollToEnd()
+    }
+    if (cursorPos > this.state.lastCursorPos) {
+      this.setState({ lastCursorPos: cursorPos })
     }
   }
 
@@ -431,6 +475,7 @@ class NewFeedScreen extends React.Component {
           style={styles.textInputNote}
           placeholder='Add a note'
           multiline={true}
+          onSelectionChange={this.inputSelectionChange}
           underlineColorAndroid='transparent'
           value={this.state.comments}
           onChangeText={(value) => this.onChangeNote(value)}
@@ -443,9 +488,9 @@ class NewFeedScreen extends React.Component {
           {this.renderDocuments}
         </View>
 
-        {!_.isEmpty(this.props.feedo.currentFeed) && this.props.feedo.currentFeed.tags.length > 0 && (
+        {!_.isEmpty(this.state.feedData) && this.state.feedData.tags.length > 0 && (
           <Tags
-            tags={this.props.feedo.currentFeed.tags}
+            tags={this.state.feedData.tags}
             readonly={true}
             placeHolder=""
             onPressTag={(index, tag) => this.onOpenCreationTag()}
@@ -617,6 +662,7 @@ class NewFeedScreen extends React.Component {
 
 NewFeedScreen.defaultProps = {
   feedo: {},
+  feedData: {},
   selectedFeedId: null,
   feedoMode: CONSTANTS.FEEDO_FROM_MAIN,
   onClose: () => {},
@@ -625,6 +671,7 @@ NewFeedScreen.defaultProps = {
 
 NewFeedScreen.propTypes = {
   feedo: PropTypes.object,
+  feedData: PropTypes.object,
   selectedFeedId: PropTypes.string,
   onClose: PropTypes.func,
   feedoMode: PropTypes.number,
@@ -644,7 +691,6 @@ const mapDispatchToProps = dispatch => ({
   uploadFileToS3: (signedUrl, file, fileName, mimeType) => dispatch(uploadFileToS3(signedUrl, file, fileName, mimeType)),
   addFile: (feedId, fileType, contentType, name, objectKey) => dispatch(addFile(feedId, fileType, contentType, name, objectKey)),
   deleteFile: (feedId, fileId) => dispatch(deleteFile(feedId, fileId)),
-  getFeedDetail: feedId => dispatch(getFeedDetail(feedId)),
   setCurrentFeed: (data) => dispatch(setCurrentFeed(data)),
 })
 
