@@ -219,7 +219,7 @@ class InviteeScreen extends React.Component {
 
   renderFilteredContacts = (filteredContacts) => {
     return (
-      <ScrollView style={[ styles.contactList ]}>
+      <ScrollView style={[ styles.contactList ]} keyboardShouldPersistTaps="handled">
         {filteredContacts.map(item => (
           <TouchableOpacity onPress={() => this.onSelectContact(item)} key={item.id}>
             <View style={styles.contactItem}>
