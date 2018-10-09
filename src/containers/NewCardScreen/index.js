@@ -96,7 +96,6 @@ class NewCardScreen extends React.Component {
       isVisibleSelectFeedoModal: false,
 
       isEditableIdea: false,
-      isVisibleMoreIdea: false,
     };
 
     this.selectedFile = null;
@@ -373,10 +372,11 @@ class NewCardScreen extends React.Component {
         coverImage: this.props.card.currentCard.coverImage,
       });
     } else if (viewMode === CONSTANTS.CARD_NEW) {
+      this.textInputIdeaRef.focus();
+    }
+    if (this.props.card.currentCard.idea === '' && viewMode === CONSTANTS.CARD_EDIT) {
       this.setState({
-        isEditableIdea : true,
-      }, () => {
-        this.textInputIdeaRef.focus();
+        isEditableIdea: true,
       });
     }
     Animated.timing(this.animatedShow, {
@@ -885,12 +885,6 @@ class NewCardScreen extends React.Component {
     });
   }
 
-  onPressMore() {
-    this.setState({
-      isVisibleMoreIdea: !this.state.isVisibleMoreIdea,
-    });
-  }
-
   onPressLink(url) {
     SafariView.isAvailable()
       .then(SafariView.show({
@@ -1025,11 +1019,11 @@ class NewCardScreen extends React.Component {
 
   get renderIdea() {
     const { viewMode } = this.props;
-    if ((this.state.idea == '' || this.state.isEditableIdea) && (viewMode === CONSTANTS.CARD_NEW || viewMode === CONSTANTS.CARD_EDIT)) {
+    if ((viewMode === CONSTANTS.CARD_NEW) || ((this.state.idea == '' || this.state.isEditableIdea) && (viewMode === CONSTANTS.CARD_EDIT))) {
       return (
         <TextInput
           ref={ref => this.textInputIdeaRef = ref}
-          style={[styles.textInputIdea, {maxHeight: 100}]}
+          style={styles.textInputIdea}
           autoCorrect={false}
           placeholder='Add a name or link here'
           multiline={true}
@@ -1055,22 +1049,10 @@ class NewCardScreen extends React.Component {
           renderViewLess={this.renderSeeLess.bind(this)}
         >
           <Autolink
-            // numberOfLines={this.state.isVisibleMoreIdea ? 0 : 3}
-            // ellipsizeMode='clip'
             style={styles.textInputIdea}
             text={this.state.idea}
             onPress={(url, match) => this.onPressLink(url)}
           />
-          {/* { 
-            isMoreText && 
-            <TouchableOpacity
-              style={styles.moreButtonContainer}
-              activeOpacity={0.7}
-              onPress={() => this.onPressMore()}
-            >
-              <Text style={styles.textMore}>{this.state.isVisibleMoreIdea ? 'less' : 'more'}</Text>
-            </TouchableOpacity>
-          } */}
         </ViewMoreText>
       </TouchableOpacity>
     )
