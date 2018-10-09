@@ -179,7 +179,7 @@ const styles = StyleSheet.create({
   },
   addCardButtonWapper: {
     width: 110,
-    height: 40,
+    height: 34,
     borderRadius: 20,
     backgroundColor: COLORS.BLUE,
     justifyContent: 'center',
@@ -228,17 +228,6 @@ const styles = StyleSheet.create({
   },
   url: {
     color: COLORS.BLUE,
-  },
-  moreButtonContainer: {
-    position: 'absolute',
-    right: 16,
-    bottom: 0,
-  },
-  textMore: {
-    fontSize: 16,
-    lineHeight: 24,
-    color: COLORS.DARK_GREY,
-    backgroundColor: '#fff',
   },
 })
 
