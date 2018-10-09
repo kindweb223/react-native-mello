@@ -87,7 +87,7 @@ export default class SlideShow extends React.Component {
             <GestureRecognizer
               key={key}
               style={{ width, height }}
-              onSwipeUp={() => this.props.onSwipeUp()}
+              onSwipeDown={() => this.props.onSwipeDown()}
               config={{
                 velocityThreshold: 0.3,
                 directionalOffsetThreshold: 80

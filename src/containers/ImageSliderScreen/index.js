@@ -137,7 +137,7 @@ class ImageSliderScreen extends React.Component {
     this.setState({ isTouch: !isTouch })
   }
 
-  onSwipeUp = () => {
+  onSwipeDown = () => {
     this.props.onClose()
   }
 
@@ -153,7 +153,7 @@ class ImageSliderScreen extends React.Component {
           width={CONSTANTS.SCREEN_WIDTH}
           height={CONSTANTS.SCREEN_HEIGHT - 140}
           handleImage={() => this.handleImage()}
-          onSwipeUp={this.onSwipeUp}
+          onSwipeDown={this.onSwipeDown}
           setPosition={value => this.setState({ imageIndex: value.pos })}
         />
 

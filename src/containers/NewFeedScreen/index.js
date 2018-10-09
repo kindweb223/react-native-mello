@@ -8,7 +8,8 @@ import {
   Animated,
   Keyboard,
   ScrollView,
-  Image
+  Image,
+  SafeAreaView
 } from 'react-native'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
@@ -442,6 +443,9 @@ class NewFeedScreen extends React.Component {
     }
   }
 
+  inputContentChange = (event) => {
+  }
+
   inputSelectionChange = (event) => {
     const cursorPos = event.nativeEvent.selection.start
 
@@ -474,6 +478,7 @@ class NewFeedScreen extends React.Component {
           style={styles.textInputNote}
           placeholder='Add a note'
           multiline={true}
+          onContentSizeChange={this.inputContentChange}
           onSelectionChange={this.inputSelectionChange}
           underlineColorAndroid='transparent'
           value={this.state.comments}
@@ -588,9 +593,11 @@ class NewFeedScreen extends React.Component {
             }
           ]}
         >
-          {this.renderTopContent}
-          {this.renderCenterContent}
-          {this.renderBottomContent}
+          <SafeAreaView style={ styles.feedContainer }>
+            {this.renderTopContent}
+            {this.renderCenterContent}
+            {this.renderBottomContent}
+          </SafeAreaView>
         </Animated.View>
 
         {this.state.loading && <LoadingScreen />}

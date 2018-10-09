@@ -6,7 +6,8 @@ import {
   TextInput,
   TouchableOpacity,
   Image,
-  ActivityIndicator
+  ActivityIndicator,
+  AsyncStorage
 } from 'react-native'
 import { connect } from 'react-redux'
 import { Actions } from 'react-native-router-flux'
@@ -52,6 +53,14 @@ class LoginStartScreen extends React.Component {
       loading: false,
       isInvalidError: false,
       errorText: ''
+    }
+  }
+
+  async UNSAFE_componentWillMount() {
+    const userBackInfo = await AsyncStorage.getItem('userBackInfo')
+    if (userBackInfo) {
+      const parseInfo = JSON.parse(userBackInfo)
+      this.setState({ email: parseInfo.email })
     }
   }
 
@@ -113,8 +122,8 @@ class LoginStartScreen extends React.Component {
   }
 
   render () {
-    const { isInvalidError, errorText } = this.state
-    console.log('START !!!!')
+    const { isInvalidError, errorText, email } = this.state
+    console.log('START !!!!', email)
     return (
       <View style={styles.container}>
         <Gradient />
@@ -134,7 +143,7 @@ class LoginStartScreen extends React.Component {
 
             <View style={styles.modalContainer}>
               <TextInputComponent
-                value={this.state.email}
+                value={email}
                 placeholder="Enter email"
                 isError={isInvalidError}
                 errorText={errorText}
