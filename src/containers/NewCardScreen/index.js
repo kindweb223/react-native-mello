@@ -1430,36 +1430,31 @@ class NewCardScreen extends React.Component {
           {this.renderMainContent}
           {this.renderBottomAttachmentButtons}
           {this.renderBottomContent}
-          {this.renderKeyboardClose(cardMode)}
+          {
+            // If show keyboard button, and not quick add card from dashboard as interferes with change Feed https://cl.ly/ba004cb3a34b
+            this.state.isShowKeyboardButton && cardMode !== CONSTANTS.MAIN_APP_CARD_FROM_DASHBOARD &&
+            <Animated.View
+              style={[styles.hideKeyboardContainer, {bottom: Animated.add(this.animatedKeyboardHeight, isIphoneX() ? 24 + 16: 16)}]}
+            >
+              <TouchableOpacity
+                style={[
+                  styles.buttonItemContainer,
+                  {
+                    backgroundColor: cardMode === CONSTANTS.SHARE_EXTENTION_CARD ? COLORS.BLUE : COLORS.PURPLE,
+                    borderRadius: 8,
+                  },
+                ]}
+                activeOpacity={0.6}
+                onPress={this.onHideKeyboard.bind(this)}
+              >
+                <MaterialCommunityIcons name="keyboard-close" size={20} color={'#fff'} />
+              </TouchableOpacity>
+            </Animated.View>
+          }
         </Animated.View>
         {/* {this.renderOutside} */}
       </Animated.View>
     );
-  }
-
-  renderKeyboardClose(cardMode) {
-    // If show keyboard button, and not quick add card from dashboard as interferes with change Feed https://cl.ly/ba004cb3a34b
-    if (this.state.isShowKeyboardButton && cardMode !== CONSTANTS.MAIN_APP_CARD_FROM_DASHBOARD) {
-      return (
-        <Animated.View
-          style={[styles.hideKeyboardContainer, {bottom: Animated.add(this.animatedKeyboardHeight, isIphoneX() ? 24 + 16: 16)}]}
-        >
-          <TouchableOpacity
-            style={[
-              styles.buttonItemContainer,
-              {
-                backgroundColor: cardMode === CONSTANTS.SHARE_EXTENTION_CARD ? COLORS.BLUE : COLORS.PURPLE,
-                borderRadius: 8,
-              },
-            ]}
-            activeOpacity={0.6}
-            onPress={this.onHideKeyboard.bind(this)}
-          >
-            <MaterialCommunityIcons name="keyboard-close" size={20} color={'#fff'} />
-          </TouchableOpacity>
-        </Animated.View>
-      )
-    }
   }
 
   get renderSelectHunt() {

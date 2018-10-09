@@ -407,7 +407,7 @@ class NewFeedScreen extends React.Component {
           <Text style={styles.textButton}>
             {this.props.selectedFeedId
               ? this.props.feedoMode === CONSTANTS.FEEDO_FROM_MAIN ? 'Save' : 'Done'
-              : this.props.feedoMode === CONSTANTS.FEEDO_FROM_CARD ? 'Create feed' : 'Create'
+              : 'Create Feed'
             }
           </Text>
         </TouchableOpacity>
