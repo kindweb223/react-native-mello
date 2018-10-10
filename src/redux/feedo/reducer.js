@@ -570,10 +570,22 @@ export default function feedo(state = initialState, action = {}) {
         error: null,
       }
     case types.ADD_HUNT_TAG_FULFILLED: {
-      const tag = action.payload;
-      let tags = state.currentFeed.tags || [];
-      tags.push(tag);
+      const { data } = action.result
 
+      // Get all the new tags that were successfully added
+      const newTags = filter(data, tag => tag.wasSuccessful === true);
+      let tags = [...state.currentFeed.tags, ...newTags];
+      
+      // Also need to add newly created tags to list of user tags      
+      const userTags = [...state.userTags]
+      newTags.forEach(function (newTag) {
+        // If doesn't already exist in the users tags then add it
+        const alreadyExists = find(userTags, userTag => userTag.text === newTag.text);
+        if (!alreadyExists) {
+          userTags.push(newTag)
+        }
+      });
+      
       const restFeedoList = filter(state.feedoList, feed => feed.id !== state.currentFeed.id)
       const newCurrentFeed = {
         ...state.currentFeed,
@@ -587,7 +599,8 @@ export default function feedo(state = initialState, action = {}) {
         feedoList: [
           ...restFeedoList,
           newCurrentFeed
-        ]
+        ],
+        userTags
       }
     }
     case types.ADD_HUNT_TAG_REJECTED: {

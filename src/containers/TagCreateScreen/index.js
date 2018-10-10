@@ -61,22 +61,14 @@ class TagCreateScreen extends React.Component {
       }, () => {
         this.filterUnusedTags(nextProps.feedo.currentFeed.tags);
       });
-    } else if (this.props.feedo.loading !== types.CREATE_USER_TAG_PENDING && nextProps.feedo.loading === types.CREATE_USER_TAG_PENDING) {
-      // getting user tags
-      loading = true;
-    } else if (this.props.feedo.loading !== types.CREATE_USER_TAG_FULFILLED && nextProps.feedo.loading === types.CREATE_USER_TAG_FULFILLED) {
-      // success in getting user tags
-      loading = true;
-      this.setState({
-        userTags: nextProps.feedo.userTags,
-      }, () => {
-        this.onCreateTag(this.newTagName);
-      });
     } else if (this.props.feedo.loading !== types.ADD_HUNT_TAG_PENDING && nextProps.feedo.loading === types.ADD_HUNT_TAG_PENDING) {
       // getting user tags
       loading = true;
     } else if (this.props.feedo.loading !== types.ADD_HUNT_TAG_FULFILLED && nextProps.feedo.loading === types.ADD_HUNT_TAG_FULFILLED) {
-      // success in getting user tags
+      // success in add a user tag to a hunt
+      this.setState({
+        userTags: nextProps.feedo.userTags,
+      })
       this.filterUnusedTags(nextProps.feedo.currentFeed.tags);
     } else if (this.props.feedo.loading !== types.REMOVE_HUNT_TAG_PENDING && nextProps.feedo.loading === types.REMOVE_HUNT_TAG_PENDING) {
       // getting user tags
@@ -98,7 +90,6 @@ class TagCreateScreen extends React.Component {
   }
 
   filterUnusedTags(tags) {
-    console.log('PPPP: ', this.state.userTags, tags)
     const filteredTags = [];
     this.state.userTags.map((item) => {
       let isIncludeItem = false;
@@ -126,36 +117,25 @@ class TagCreateScreen extends React.Component {
     return tags;
   }
 
-  onCreateTag(text) {
-    const { userInfo } = this.props.user
+  onAddTag(tag) {
+    this.props.addTagToHunt(this.props.feedo.currentFeed.id, tag);
+  }
 
-    const tag = _.find(this.state.userTags, (tag) => { 
-      return tag.text.toLowerCase() == text.toLowerCase(); 
-    });
-    if (tag) { 
-      this.newTagName = '';
-      this.onSelectItem(tag);
-      return;
-    }
-    this.newTagName = text;
-    this.props.createUserTag(userInfo.id, text);
+  onCreateTag(text) {
+    const tag = {text: text}
+    this.onAddTag(tag)
   }
 
   onRemoveTag(tag) {
-    this.props.removeTagFromHunt(this.props.feedo.currentFeed.id, tag.id);
+    if(tag) {
+      this.props.removeTagFromHunt(this.props.feedo.currentFeed.id, tag.id);
+    }
   }
 
   onChangeText(text) {
     this.setState({
       currentTagName: text,
     });
-  }
-
-  onSelectItem(tag) {
-    this.setState({
-      currentTagName: '',
-    });
-    this.props.addTagToHunt(this.props.feedo.currentFeed.id, tag);
   }
 
   get renderTopContent() {
@@ -178,7 +158,7 @@ class TagCreateScreen extends React.Component {
       <TouchableOpacity
         style={styles.tagItemContainer}
         activeOpacity={0.6}
-        onPress={() => this.onSelectItem(item)}
+        onPress={() => this.onAddTag(item)}
       >
         <Text style={styles.textTagItem}>{item.text}</Text>
       </TouchableOpacity>
