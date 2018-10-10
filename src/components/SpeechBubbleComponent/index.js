@@ -3,7 +3,8 @@ import {
   View,
   Text,
   Image,
-  TouchableOpacity
+  TouchableOpacity,
+  ImageBackground
 } from 'react-native'
 import PropTypes from 'prop-types'
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons'
@@ -11,8 +12,9 @@ import MaterialIcons from 'react-native-vector-icons/MaterialIcons'
 import styles from './styles'
 import COLORS from '../../service/colors'
 
-const SPEECH_BUBBLE_MEDIUM = require('../../../assets/images/onboard/textBubble3.png')
-const SPEECH_BUBBLE_SMALL = require('../../../assets/images/onboard/textBubble2.png')
+const SPEECH_BUBBLE_TOP = require('../../../assets/images/onboard/bubbleLargeTop.png')
+const SPEECH_BUBBLE_BOTTOM = require('../../../assets/images/onboard/bubbleLargeBottom.png')
+const SPEECH_BUBBLE_MIDDLE = require('../../../assets/images/onboard/bubbleLargeMiddle.png')
 
 class SpeechBubbleComponent extends React.Component {
   constructor(props) {
@@ -21,39 +23,73 @@ class SpeechBubbleComponent extends React.Component {
 
   render() {
     const { page } = this.props
-    const margin = page === 'feed' ? 0 : 20
+
+    const marginTop = 20
+    
+    let height = 90
+    if (page === 'feed') {
+      height = 90
+    } else if (page === 'card') {
+      height = 130
+    } else if (page === 'pinned') {
+      height = 75
+    } else {
+      height = 160
+    }
 
     return (
       <View style={styles.container}>
-        <View style={[styles.bubbleView, { marginTop: margin }]}>
-          {page === 'feed'
-            ? <Image source={SPEECH_BUBBLE_SMALL} style={styles.bubble} />
-            : <Image source={SPEECH_BUBBLE_MEDIUM} style={styles.bubble} />
-          }
-          <View style={styles.bubbleContent}>
-            <Text style={styles.title}>
-              {page === 'feed'
-                ? "So you've been invited to feedo? Exciting, isn't it?!"
-                : "Feeds contain cards, Cards can have, images, text, attachments and likes. My granny enjoys liking."
-              }
-            </Text>
-            <TouchableOpacity style={styles.videoBtn} activeOpacity={0.8}>
-              <Text style={styles.videoBtnText}>
-                {page === 'feed'
-                  ? "Watch a 15sec Quick Start video"
-                  : "Watch a 15sec video about the cards"
-                }
+        <View style={styles.bubbleImageView}>
+          <Image source={SPEECH_BUBBLE_TOP} style={[styles.bubbleView, { marginTop }]} resizeMode="stretch" />
+          <ImageBackground
+            source={SPEECH_BUBBLE_MIDDLE}
+            resizeMode="stretch"
+            style={[styles.bubbleView, { height }]}
+          >
+            <View style={styles.bubbleContent}>
+              <Text style={styles.title}>
+                {page === 'feed' && (
+                  "So you've been invited to feedo? Exciting, isn't it?!"
+                )}
+                {page === 'card' && (
+                  "Feeds contain cards, Cards can have, images, text, attachments and likes. My granny enjoys liking."
+                )}
+                {page === 'pinned' && (
+                  "Your pinned items will appear here. To pin a feed tap and hold it to bring up a quick actionsand select PIN."
+                )}
+                {page === 'shared' && (
+                  "Feeds can be shared with friends and colleagues for collaboration. Feeds you've been invited to will appear here."
+                )}
               </Text>
-              <MaterialCommunityIcons name='play' size={23} color={COLORS.PURPLE} />
-            </TouchableOpacity>
-          </View>
+
+              {page !== 'pinned' && (
+                <TouchableOpacity style={styles.videoBtn} activeOpacity={0.8}>
+                  <Text style={styles.videoBtnText}>
+                    {page === 'feed' && (
+                      "Watch a 15 sec Quick Start video"
+                    )}
+                    {page === 'card' && (
+                      "Watch a 15 sec video about the cards"
+                    )}
+                    {page === 'shared' && (
+                      "All you need to know about sharing in 15sec"
+                    )}
+                    <MaterialCommunityIcons name='play' size={23} color={COLORS.PURPLE} style={styles.icon} />
+                  </Text>
+                </TouchableOpacity>
+              )}
+            </View>
+          </ImageBackground>
+          <Image source={SPEECH_BUBBLE_BOTTOM} style={styles.bubbleView} resizeMode="stretch" />
         </View>
 
-        <View style={[styles.closeBtnView, { top: margin - 10 }]}>
-          <TouchableOpacity style={styles.closeBtn} onPress={() => this.props.onCloseBubble()}>
-            <MaterialIcons name='close' size={15} color="#fff" />
-          </TouchableOpacity>
-        </View>
+        {(page === 'feed' || page === 'card') && (
+          <View style={[styles.closeBtnView, { top: marginTop - 10 }]}>
+            <TouchableOpacity style={styles.closeBtn} onPress={() => this.props.onCloseBubble()}>
+              <MaterialIcons name='close' size={15} color="#fff" />
+            </TouchableOpacity>
+          </View>
+        )}
       </View>
     )
   }

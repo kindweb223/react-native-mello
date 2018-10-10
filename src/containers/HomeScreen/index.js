@@ -806,7 +806,10 @@ class HomeScreen extends React.Component {
                   onLayout={(event) => this.onScrollableTabViewLayout(event, 0)}
                 >
                   {this.state.closeBubble && (
-                    <SpeechBubbleComponent onCloseBubble={() => this.setState({ closeBubble: false })} />
+                    <SpeechBubbleComponent
+                      page="feed"
+                      onCloseBubble={() => this.setState({ closeBubble: false })}
+                    />
                   )}
 
                   <FeedoListContainer
@@ -830,13 +833,8 @@ class HomeScreen extends React.Component {
                         page="home"
                       />
                     : !loading && ( 
-                        <View style={styles.emptyTabInnerView}>
-                          <EmptyStateComponent page="feed"
-                            onCreateNewFeed={() => {
-                              this.animatedOpacity.setValue(1);
-                              this.onSelectNewFeedType('New Feed')
-                            }}
-                          />
+                        <View style={styles.emptyTabInnerSubView}>
+                          <SpeechBubbleComponent page="pinned" />
                         </View>
                       )
                   }
@@ -855,13 +853,8 @@ class HomeScreen extends React.Component {
                         page="home"
                       />
                     : !loading && (
-                        <View style={styles.emptyTabInnerView}>
-                          <EmptyStateComponent page="feed"
-                            onCreateNewFeed={() => {
-                              this.animatedOpacity.setValue(1);
-                              this.onSelectNewFeedType('New Feed')
-                            }}
-                          />
+                        <View style={styles.emptyTabInnerSubView}>
+                          <SpeechBubbleComponent page="shared" />
                         </View>
                       )
                   }

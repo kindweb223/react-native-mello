@@ -10,38 +10,40 @@ const styles = StyleSheet.create({
   },
   doll_feed: {
     marginBottom: -125,
-    marginLeft: CONSTANTS.PADDING
+    marginLeft: 26,
+    marginRight: 33
   },
   doll_card: {
-    marginBottom: -125
+    marginBottom: -125,
+    marginRight: 27
   },
-  bubbleView: {
+  bubbleImageView: {
+    flex: 1,
     marginTop: -125,
     marginRight: CONSTANTS.PADDING
   },
+  bubbleView: {
+    width: '100%'
+  },
   bubbleContent: {
-    position: 'absolute',
-    top: 20,
-    left: 20,
-    right: 40,
-    bottom: 30,
+    flex: 1,
+    paddingLeft: 20,
+    marginRight: 30,
     justifyContent: 'space-between'
   },
   title: {
     fontSize: 16,
-    marginRight: 20
+    lineHeight: 24
   },
   videoBtn: {
-    flexDirection: 'row',
-    alignItems: 'flex-end',
-    justifyContent: 'space-between'
   },
   videoBtnText: {
     fontWeight: 'bold',
     color: COLORS.PURPLE,
     fontSize: 16,
     fontWeight: '600',
-    marginBottom: 5
+    lineHeight: 24,
+    width: '100%'
   },
   newFeedBtn: {
     width: '90%',

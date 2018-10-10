@@ -8,23 +8,22 @@ const styles = StyleSheet.create({
     paddingHorizontal: CONSTANTS.PADDING,
     marginBottom: 30
   },
+  bubbleImageView: {
+    flex: 1
+  },
   bubbleView: {
     width: '100%'
   },
-  bubble: {
-    width: '100%'
-  },
   bubbleContent: {
-    position: 'absolute',
-    top: 20,
-    left: 20,
-    right: 40,
-    bottom: 20,
+    flex: 1,
+    paddingLeft: 20,
+    paddingRight: 30,
     justifyContent: 'space-between'
   },
   title: {
     fontSize: 16,
-    marginRight: 50
+    marginRight: 20,
+    lineHeight: 24
   },
   videoBtn: {
     width: '100%',
@@ -37,12 +36,12 @@ const styles = StyleSheet.create({
     color: COLORS.PURPLE,
     fontSize: 16,
     fontWeight: '600',
-    marginRight: 5,
-    flex: 1,
+    lineHeight: 24,
+    width: '100%'
   },
   closeBtnView: {
     position: 'absolute',
-    right: 35,
+    right: 30,
     borderWidth: 2,
     width: 24,
     height: 24,
