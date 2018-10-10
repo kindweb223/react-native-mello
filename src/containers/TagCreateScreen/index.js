@@ -90,7 +90,6 @@ class TagCreateScreen extends React.Component {
   }
 
   filterUnusedTags(tags) {
-    console.log('PPPP: ', this.state.userTags, tags)
     const filteredTags = [];
     this.state.userTags.map((item) => {
       let isIncludeItem = false;
@@ -128,7 +127,9 @@ class TagCreateScreen extends React.Component {
   }
 
   onRemoveTag(tag) {
-    this.props.removeTagFromHunt(this.props.feedo.currentFeed.id, tag.id);
+    if(tag) {
+      this.props.removeTagFromHunt(this.props.feedo.currentFeed.id, tag.id);
+    }
   }
 
   onChangeText(text) {
