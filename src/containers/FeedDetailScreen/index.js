@@ -41,6 +41,8 @@ import SelectFeedoComponent from '../../components/SelectFeedoComponent'
 import TagCreateScreen from '..//TagCreateScreen'
 import NewCardScreen from '../NewCardScreen'
 import LoadingScreen from '../LoadingScreen'
+import EmptyStateComponent from '../../components/EmptyStateComponent'
+import SpeechBubbleComponent from '../../components/SpeechBubbleComponent'
 
 import {
   getFeedDetail,
@@ -112,7 +114,8 @@ class FeedDetailScreen extends React.Component {
       totalCardCount: 0,
       isVisibleCardOpenMenu: false,
       currentScreen: FeedDetailMode,
-      feedoMode: 1
+      feedoMode: 1,
+      closeBubble: true
     };
     this.animatedOpacity = new Animated.Value(0)
     this.menuOpacity = new Animated.Value(0)
@@ -866,6 +869,10 @@ class FeedDetailScreen extends React.Component {
                 </View>
               )}
 
+              {!_.isEmpty(currentFeed) && currentFeed && currentFeed.ideas && currentFeed.ideas.length > 0 && this.state.closeBubble && (
+                <SpeechBubbleComponent page="card" onCloseBubble={() => this.setState({ closeBubble: false })} />
+              )}
+
               {
                 !_.isEmpty(currentFeed) && currentFeed && currentFeed.ideas && currentFeed.ideas.length > 0 ?
                   currentFeed.ideas.map((item, index) => (
@@ -898,8 +905,7 @@ class FeedDetailScreen extends React.Component {
                           <FeedLoadingStateComponent />
                         </View>
                       : <View style={styles.emptyInnerView}>
-                          <Image source={EMPTY_ICON} />
-                          <Text style={styles.emptyText}>It is lonely here</Text>
+                          <EmptyStateComponent page="card" onCreateNewCard={this.onOpenNewCardModal.bind(this)} />
                         </View>
                       }
                   </View>

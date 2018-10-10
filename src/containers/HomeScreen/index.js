@@ -32,6 +32,8 @@ import CreateNewFeedComponent from '../../components/CreateNewFeedComponent'
 import FeedLongHoldMenuScreen from '../FeedLongHoldMenuScreen'
 import ToasterComponent from '../../components/ToasterComponent'
 import FeedLoadingStateComponent from '../../components/FeedLoadingStateComponent'
+import EmptyStateComponent from '../../components/EmptyStateComponent'
+import SpeechBubbleComponent from '../../components/SpeechBubbleComponent'
 import COLORS from '../../service/colors'
 import styles from './styles'
 import CONSTANTS from '../../service/constants';
@@ -97,6 +99,7 @@ class HomeScreen extends React.Component {
       selectedIdeaInvitee: null,
       cardViewMode: CONSTANTS.CARD_NONE,
       appState: AppState.currentState,
+      closeBubble: true
     };
 
     this.currentRef = null;
@@ -771,8 +774,12 @@ class HomeScreen extends React.Component {
                 {loading
                   ? <FeedLoadingStateComponent />
                   : <View style={styles.emptyInnerView}>
-                      <Image source={EMPTY_ICON} />
-                      <Text style={styles.emptyText}>Feedo is more fun with feeds</Text>
+                      <EmptyStateComponent page="feed"
+                        onCreateNewFeed={() => {
+                          this.animatedOpacity.setValue(1);
+                          this.onSelectNewFeedType('New Feed')
+                        }}
+                      />
                     </View>
                 }
               </View>
@@ -798,6 +805,10 @@ class HomeScreen extends React.Component {
                   tabLabel={{ label: 'All' }}
                   onLayout={(event) => this.onScrollableTabViewLayout(event, 0)}
                 >
+                  {this.state.closeBubble && (
+                    <SpeechBubbleComponent onCloseBubble={() => this.setState({ closeBubble: false })} />
+                  )}
+
                   <FeedoListContainer
                     loading={loading}
                     feedoList={feedoList}
@@ -820,8 +831,12 @@ class HomeScreen extends React.Component {
                       />
                     : !loading && ( 
                         <View style={styles.emptyTabInnerView}>
-                          <Image source={EMPTY_ICON} />
-                          <Text style={styles.emptyText}>Feedo is more fun with feeds</Text>
+                          <EmptyStateComponent page="feed"
+                            onCreateNewFeed={() => {
+                              this.animatedOpacity.setValue(1);
+                              this.onSelectNewFeedType('New Feed')
+                            }}
+                          />
                         </View>
                       )
                   }
@@ -841,8 +856,12 @@ class HomeScreen extends React.Component {
                       />
                     : !loading && (
                         <View style={styles.emptyTabInnerView}>
-                          <Image source={EMPTY_ICON} />
-                          <Text style={styles.emptyText}>Feedo is more fun with feeds</Text>
+                          <EmptyStateComponent page="feed"
+                            onCreateNewFeed={() => {
+                              this.animatedOpacity.setValue(1);
+                              this.onSelectNewFeedType('New Feed')
+                            }}
+                          />
                         </View>
                       )
                   }

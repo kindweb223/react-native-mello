@@ -18,13 +18,13 @@ const styles = StyleSheet.create({
     position: 'absolute'
   },
   emptyView: {
-    flex: 1,
+    flex: 1
   },
   emptyInnerView: {
     justifyContent: 'center',
     alignItems: 'center',
     width: '100%',
-    height: CONSTANTS.SCREEN_HEIGHT - CONSTANTS.ACTION_BAR_HEIGHT - 200,
+    height: CONSTANTS.SCREEN_HEIGHT - CONSTANTS.ACTION_BAR_HEIGHT - 100
   },
   emptyText: {
     fontSize: 14,
