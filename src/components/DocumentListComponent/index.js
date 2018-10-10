@@ -181,7 +181,7 @@ export default class DocumentList extends React.Component {
     return (
       <View>
         <FlatList
-          style={this.props.editable ? { marginTop: 0, marginHorizontal: 0 } : { marginTop: 0, marginHorizontal: 10 }}
+          style={[styles.listContainer, { marginHorizontal: this.props.editable ? 0 : 10 }]}
           showsHorizontalScrollIndicator={false}
           data={files}
           renderItem={this.renderDocumentFile.bind(this)}

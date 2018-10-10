@@ -3,12 +3,15 @@ import COLORS from '../../service/colors'
 import CONSTANTS from '../../service/constants'
 
 const styles = StyleSheet.create({
+  listContainer: {
+    marginTop: 16,
+  },
   itemContainer: {
     alignSelf: 'flex-start',
     borderRadius: 30,
     flexDirection: 'row',
     alignItems: 'center',
-    marginBottom: 10,
+    marginBottom: 8,
     paddingLeft: 15,
   },
   itemSelectBackgroundContainer: {
@@ -22,7 +25,7 @@ const styles = StyleSheet.create({
   buttonContainer: {
     flexDirection: 'row',
     alignItems: 'center',
-    paddingVertical: 5,
+    paddingVertical: 4,
   },
   attachment: {
     transform: [

@@ -47,7 +47,7 @@ const styles = StyleSheet.create({
   textSeeMoreLessIdea: {
     fontSize: 16,
     lineHeight: 23,
-    marginTop: 10,
+    marginTop: 4,
     marginHorizontal: 16,
     color: COLORS.PURPLE,
   },
