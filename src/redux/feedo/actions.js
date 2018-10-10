@@ -357,17 +357,16 @@ export const createUserTag = (userId, tagName) => {
 /**
  * Add a tag to a hunt
  */
-export const addTagToHunt = (huntId, tags) => {
+export const addTagToHunt = (huntId, tag) => {
   let url = `hunts/${huntId}/tags`
-  const data = tags
+  const data = [tag]
   return {
     types: [types.ADD_HUNT_TAG_PENDING, types.ADD_HUNT_TAG_FULFILLED, types.ADD_HUNT_TAG_REJECTED],
     promise: axios({
       method: 'post',
       url: url,
       data
-    }),
-    payload: data,
+    })
   };
 }
 
@@ -375,12 +374,14 @@ export const addTagToHunt = (huntId, tags) => {
  * Remove a tag from a hunt
  */
 export const removeTagFromHunt = (huntId, tagId) => {
-  let url = `hunts/${huntId}/tags/${tagId}`
+  let url = `hunts/${huntId}/tags`
+  const data = [{id: tagId}]  
   return {
     types: [types.REMOVE_HUNT_TAG_PENDING, types.REMOVE_HUNT_TAG_FULFILLED, types.REMOVE_HUNT_TAG_REJECTED],
     promise: axios({
       method: 'delete',
       url: url,
+      data
     }),
     payload: tagId,
   };
