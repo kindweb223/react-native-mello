@@ -1383,7 +1383,7 @@ class NewCardScreen extends React.Component {
           {this.renderBottomContent}
           {
             // If show keyboard button, and not quick add card from dashboard as interferes with change Feed https://cl.ly/ba004cb3a34b
-            this.state.isShowKeyboardButton && cardMode !== CONSTANTS.SHARE_EXTENTION_CARD &&
+            this.state.isShowKeyboardButton && cardMode !== CONSTANTS.MAIN_APP_CARD_FROM_DASHBOARD && cardMode !== CONSTANTS.SHARE_EXTENTION_CARD &&
             <Animated.View
               style={[styles.hideKeyboardContainer, {
                   bottom: cardMode === CONSTANTS.SHARE_EXTENTION_CARD ? 16 : Animated.add(this.animatedKeyboardHeight, isIphoneX() ? 24 + 16: 16)
