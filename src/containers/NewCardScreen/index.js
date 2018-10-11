@@ -12,8 +12,6 @@ import {
   ScrollView,
   AsyncStorage,
   Linking,
-  Dimensions,
-  SafeAreaView,
 } from 'react-native'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
@@ -21,8 +19,8 @@ import { connect } from 'react-redux'
 import { Actions } from 'react-native-router-flux'
 import Entypo from 'react-native-vector-icons/Entypo'
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons'
-import Ionicons from 'react-native-vector-icons/Ionicons'
 import { isIphoneX } from 'react-native-iphone-x-helper';
+import ViewMoreText from 'react-native-view-more-text';
 
 import ActionSheet from 'react-native-actionsheet'
 import ImagePicker from 'react-native-image-picker'
@@ -62,7 +60,6 @@ import COLORS from '../../service/colors';
 import CONSTANTS from '../../service/constants';
 import styles from './styles';
 import LoadingScreen from '../LoadingScreen';
-import ImageList from '../../components/ImageListComponent';
 import DocumentList from '../../components/DocumentListComponent';
 import WebMetaList from '../../components/WebMetaListComponent';
 import LikeComponent from '../../components/LikeComponent';
@@ -76,9 +73,6 @@ import LastCommentComponent from '../../components/LastCommentComponent';
 import * as COMMON_FUNC from '../../service/commonFunc'
 const ATTACHMENT_ICON = require('../../../assets/images/Attachment/Blue.png')
 const IMAGE_ICON = require('../../../assets/images/Image/Blue.png')
-
-const ScreenVerticalMinMargin = 0;
-const LineTextMaxLimit = Math.floor((Dimensions.get('window').width - 32) * Dimensions.get('window').scale / (16 * Dimensions.get('window').fontScale));
 
 
 class NewCardScreen extends React.Component {
@@ -98,7 +92,6 @@ class NewCardScreen extends React.Component {
       isVisibleSelectFeedoModal: false,
 
       isEditableIdea: false,
-      isVisibleMoreIdea: false,
     };
 
     this.selectedFile = null;
@@ -144,12 +137,13 @@ class NewCardScreen extends React.Component {
       AsyncStorage.setItem('BubbleCardFirstTimeCreated', JSON.stringify(data));
 
       if (this.props.cardMode === CONSTANTS.SHARE_EXTENTION_CARD && this.props.shareUrl !== '') {
-        this.setState({
-          // cardName: this.props.shareUrl,
-          idea: this.props.shareUrl,
-        }, () => {
-          this.checkUrl(this.state.idea);
-        });
+        // this.setState({
+        //   // cardName: this.props.shareUrl,
+        //   idea: this.props.shareUrl,
+        // }, () => {
+        //   this.checkUrl(this.state.idea);
+        // });
+        this.addLinkImage(nextProps.card.currentCard.id, this.props.shareUrl);
       }
     } else if (this.props.card.loading !== types.GET_FILE_UPLOAD_URL_PENDING && nextProps.card.loading === types.GET_FILE_UPLOAD_URL_PENDING) {
       // getting a file upload url
@@ -164,7 +158,7 @@ class NewCardScreen extends React.Component {
     } else if (this.props.card.loading !== types.UPLOAD_FILE_FULFILLED && nextProps.card.loading === types.UPLOAD_FILE_FULFILLED) {
       // success in uploading a file
       loading = true;
-      let {
+      const {
         id, 
       } = this.props.card.currentCard;
       const {
@@ -176,18 +170,21 @@ class NewCardScreen extends React.Component {
       loading = true;
     } else if (this.props.card.loading !== types.ADD_FILE_FULFILLED && nextProps.card.loading === types.ADD_FILE_FULFILLED) {
       // success in adding a file
+      const {
+        id, 
+      } = this.props.card.currentCard;
       const newImageFiles = _.filter(nextProps.card.currentCard.files, file => file.contentType.indexOf('image') !== -1);
       if (newImageFiles.length === 1 && !nextProps.card.currentCard.coverImage) {
         loading = true;
         this.onSetCoverImage(newImageFiles[0].id);
         this.currentSelectedLinkImageIndex ++;
         if (this.currentSelectedLinkImageIndex < this.selectedLinkImages.length) {
-          this.addLinkImage(this.selectedLinkImages[this.currentSelectedLinkImageIndex]);
+          this.addLinkImage(id, this.selectedLinkImages[this.currentSelectedLinkImageIndex]);
         }
       } else {
         this.currentSelectedLinkImageIndex ++;
         if (this.currentSelectedLinkImageIndex < this.selectedLinkImages.length) {
-          this.addLinkImage(this.selectedLinkImages[this.currentSelectedLinkImageIndex]);
+          this.addLinkImage(id, this.selectedLinkImages[this.currentSelectedLinkImageIndex]);
         }
       }
     } else if (this.props.card.loading !== types.ADD_LINK_PENDING && nextProps.card.loading === types.ADD_LINK_PENDING) {
@@ -263,8 +260,11 @@ class NewCardScreen extends React.Component {
         } else {
           if (nextProps.card.currentOpneGraph.image) {
             loading = true;
+            const {
+              id, 
+            } = this.props.card.currentCard;      
             this.setState({ coverImage: nextProps.card.currentOpneGraph.image })
-            this.addLinkImage(nextProps.card.currentOpneGraph.image);
+            this.addLinkImage(id, nextProps.card.currentOpneGraph.image);
           }
         }
         this.onHideKeyboard();
@@ -381,10 +381,11 @@ class NewCardScreen extends React.Component {
         coverImage: this.props.card.currentCard.coverImage,
       });
     } else if (viewMode === CONSTANTS.CARD_NEW) {
+      this.textInputIdeaRef.focus();
+    }
+    if (this.props.card.currentCard.idea === '' && viewMode === CONSTANTS.CARD_EDIT) {
       this.setState({
-        isEditableIdea : true,
-      }, () => {
-        this.textInputIdeaRef.focus();
+        isEditableIdea: true,
       });
     }
     Animated.timing(this.animatedShow, {
@@ -421,10 +422,10 @@ class NewCardScreen extends React.Component {
   }
 
   keyboardWillShow(e) {
+    const bottomPadding = isIphoneX() ? 24 : 0;
     Animated.timing(
       this.animatedKeyboardHeight, {
-        // toValue: this.state.isFullScreenCard ? e.endCoordinates.height : e.endCoordinates.height - ScreenVerticalMinMargin,
-        toValue: e.endCoordinates.height,
+        toValue: e.endCoordinates.height - bottomPadding,
         duration: e.duration,
       }
     ).start();
@@ -629,18 +630,6 @@ class NewCardScreen extends React.Component {
     return;
   }
 
-  // onTapOutside() {
-  //   const { cardMode } = this.props;
-  //   if (cardMode === CONSTANTS.MAIN_APP_CARD_FROM_DASHBOARD) {
-  //     // delete draft feed
-  //     this.leaveActionSheetRef.show();
-  //     return;
-  //   } else if (cardMode === CONSTANTS.SHARE_EXTENTION_CARD) {
-  //     return;
-  //   }
-  //   this.onUpdateCard();
-  // }
-
   onTapLeaveActionSheet(index) {
     if (index === 1) {
       this.isUpdateDraftCard = false;
@@ -828,11 +817,14 @@ class NewCardScreen extends React.Component {
   }
 
   onSaveLinkImages(selectedImages) {
+    const {
+      id, 
+    } = this.props.card.currentCard;
     this.onCloseLinkImages();
     this.selectedLinkImages = selectedImages;
     this.currentSelectedLinkImageIndex = 0;
     if (this.selectedLinkImages.length > 0) {
-      this.addLinkImage(this.selectedLinkImages[this.currentSelectedLinkImageIndex]);
+      this.addLinkImage(id, this.selectedLinkImages[this.currentSelectedLinkImageIndex]);
     }
   }
 
@@ -893,12 +885,6 @@ class NewCardScreen extends React.Component {
     });
   }
 
-  onPressMore() {
-    this.setState({
-      isVisibleMoreIdea: !this.state.isVisibleMoreIdea,
-    });
-  }
-
   onPressLink(url) {
     SafariView.isAvailable()
       .then(SafariView.show({
@@ -920,25 +906,23 @@ class NewCardScreen extends React.Component {
       });
   }
 
-  addLinkImage(imageUrl) {
-    const {
-      id, 
-    } = this.props.card.currentCard;
+  addLinkImage(id, imageUrl) {
     const mimeType = mime.lookup(imageUrl) || 'image/jpeg';
     const filename = imageUrl.replace(/^.*[\\\/]/, '')
     this.props.addFile(id, 'MEDIA', mimeType, filename, imageUrl);
   }
 
   get renderCoverImage() {
-    const { viewMode } = this.props;
+    const { viewMode, cardMode } = this.props;
     let imageFiles = _.filter(this.props.card.currentCard.files, file => file.fileType === 'MEDIA');
     if (this.state.coverImage) {
       return (
-        <View style={styles.imageCoverView}>
+        <View style={cardMode === CONSTANTS.SHARE_EXTENTION_CARD ? styles.extensionCoverImageContainer : styles.coverImageContainer}>
           <CoverImagePreviewComponent
             coverImage={this.state.coverImage}
             files={imageFiles}
             editable={viewMode !== CONSTANTS.CARD_VIEW}
+            isShowCount={cardMode !== CONSTANTS.SHARE_EXTENTION_CARD}
             isSetCoverImage={true}
             onRemove={(fileId) => this.onRemoveFile(fileId)}
             onSetCoverImage={(fileId) => this.onSetCoverImage(fileId)}
@@ -978,25 +962,6 @@ class NewCardScreen extends React.Component {
     }
   }
 
-  // get renderImages() {
-  //   const { viewMode } = this.props;
-  //   const {
-  //     files
-  //   } = this.props.card.currentCard;
-  //   const imageFiles = _.filter(files, file => file.fileType === 'MEDIA');
-  //   if (imageFiles.length > 0) {
-  //     return (
-  //       <ImageList 
-  //         files={imageFiles}
-  //         editable={viewMode !== CONSTANTS.CARD_VIEW}
-  //         isSetCoverImage={true}
-  //         onRemove={(fileId) => this.onRemoveFile(fileId)}
-  //         onSetCoverImage={(fileId) => this.onSetCoverImage(fileId)}
-  //       />
-  //     )
-  //   }
-  // }
-
   get renderDocuments() {
     const { viewMode, cardMode } = this.props;
     if (cardMode === CONSTANTS.SHARE_EXTENTION_CARD) {
@@ -1019,9 +984,21 @@ class NewCardScreen extends React.Component {
     }
   }
 
+  renderSeeMore(onPress){
+    return(
+      <Text style={styles.textSeeMoreLessIdea} onPress={onPress}>See more</Text>
+    );
+  }
+
+  renderSeeLess(onPress){
+    return(
+      <Text style={styles.textSeeMoreLessIdea} onPress={onPress}>See less</Text>
+    );
+  }
+
   get renderIdea() {
     const { viewMode } = this.props;
-    if (this.state.isEditableIdea && (viewMode === CONSTANTS.CARD_NEW || viewMode === CONSTANTS.CARD_EDIT)) {
+    if ((viewMode === CONSTANTS.CARD_NEW) || ((this.state.idea == '' || this.state.isEditableIdea) && (viewMode === CONSTANTS.CARD_EDIT))) {
       return (
         <TextInput
           ref={ref => this.textInputIdeaRef = ref}
@@ -1039,37 +1016,23 @@ class NewCardScreen extends React.Component {
         />
       )
     }
-
-    let idea = this.state.idea;
-    let isMoreText = false;
-    if (idea && idea.length > LineTextMaxLimit * 3) {
-      isMoreText = true;
-    }
-    if (!this.state.isVisibleMoreIdea && idea && idea.length > LineTextMaxLimit * 3) {
-      idea = idea.substring(0, LineTextMaxLimit * 3 - 3) + '...';
-    }
     return (
       <TouchableOpacity
         activeOpacity={1}
         onPress={() => this.onPressIdea()}
       >
-        <Autolink
-          numberOfLines={this.state.isVisibleMoreIdea ? 0 : 3}
-          // ellipsizeMode='clip'
-          style={styles.textInputIdea}
-          text={idea}
-          onPress={(url, match) => this.onPressLink(url)}
-        />
-        { 
-          isMoreText && 
-          <TouchableOpacity
-            style={styles.moreButtonContainer}
-            activeOpacity={0.7}
-            onPress={() => this.onPressMore()}
-          >
-            <Text style={styles.textMore}>{this.state.isVisibleMoreIdea ? 'less' : 'more'}</Text>
-          </TouchableOpacity>
-        }
+        <ViewMoreText
+          textStyle={styles.textInputIdea}
+          numberOfLines={3}
+          renderViewMore={this.renderSeeMore.bind(this)}
+          renderViewLess={this.renderSeeLess.bind(this)}
+        >
+          <Autolink
+            style={styles.textInputIdea}
+            text={this.state.idea}
+            onPress={(url, match) => this.onPressLink(url)}
+          />
+        </ViewMoreText>
       </TouchableOpacity>
     )
   }
@@ -1086,10 +1049,27 @@ class NewCardScreen extends React.Component {
     }
   }
 
+  get renderIdeaAndCoverImage() {
+    const { cardMode } = this.props;
+    if (cardMode === CONSTANTS.SHARE_EXTENTION_CARD) {
+      return (
+        <View style={styles.extensionRowContainer}>
+          {this.renderIdea}
+          {this.renderCoverImage}
+        </View>
+      )
+    }
+    return (
+      <View>
+        {this.renderCoverImage}
+        {this.renderIdea}
+      </View>
+    )
+  }
+
   get renderMainContent() {
     return (
       <ScrollView
-        style={styles.mainContentContainer}
         enableAutomaticScroll={false}
         // onScrollBeginDrag={(e) => this.onScrollBeginDrag(e)}
         // onScroll={(e) => this.onScroll(e)}
@@ -1107,10 +1087,8 @@ class NewCardScreen extends React.Component {
           onBlur={() => this.onBlurTitle()}
           selectionColor={COLORS.PURPLE}
         /> */}
-        {this.renderCoverImage}
-        {this.renderIdea}
+        {this.renderIdeaAndCoverImage}
         {this.renderWebMeta}
-        {/* {this.renderImages} */}
         {this.renderDocuments}
         {this.renderComments}
       </ScrollView>
@@ -1179,7 +1157,7 @@ class NewCardScreen extends React.Component {
       return;
     }
     return (
-      <View style={[styles.attachmentButtonsContainer, { paddingHorizontal: 12, marginVertical: 16 }]}>
+      <View style={[styles.attachmentButtonsContainer, { paddingHorizontal: 16, marginVertical: 16 }]}>
         <TouchableOpacity 
           style={styles.iconView}
           activeOpacity={0.6}
@@ -1239,9 +1217,6 @@ class NewCardScreen extends React.Component {
   }
 
   get renderLikesComment() {
-    const {
-      likes,
-    } = this.props.card.currentCard.metadata;
     return (
       <View style={styles.rowContainer}>
         <LikeComponent idea={this.props.card.currentCard} />
@@ -1254,20 +1229,20 @@ class NewCardScreen extends React.Component {
     const { cardMode, viewMode } = this.props;
     if (cardMode === CONSTANTS.SHARE_EXTENTION_CARD) {
       return (
-        <View style={styles.headerContainer}>
+        <View style={[styles.headerContainer, styles.extensionHeaderContainer]}>
           <TouchableOpacity 
             style={styles.closeButtonWrapper}
             activeOpacity={0.7}
             onPress={() => this.onClose()}
           >
-            <MaterialCommunityIcons name="close" size={28} color={COLORS.BLUE} />
+            <MaterialCommunityIcons name="close" size={28} color={COLORS.PURPLE} />
           </TouchableOpacity>
           <TouchableOpacity 
             style={styles.addCardButtonWapper}
             activeOpacity={0.6}
             onPress={this.onUpdateCard.bind(this)}
           >
-            <Text style={styles.textButton}>Add card</Text>
+            <Text style={[styles.textButton, {color: COLORS.PURPLE}]}>Create card</Text>
           </TouchableOpacity>
         </View>
       );
@@ -1305,60 +1280,22 @@ class NewCardScreen extends React.Component {
         {this.renderTopAttachmentButtons}
       </View>
     )
-
   }
-
-  // get renderOutside() {
-  //   if (!this.state.isFullScreenCard) {
-  //     return (
-  //       <TouchableOpacity 
-  //         style={styles.backdropContainer}
-  //         activeOpacity={1}
-  //         onPress={this.onTapOutside.bind(this)}
-  //       />
-  //     );
-  //   }
-  // }
-
-  // get renderOutsideMoreActions() {
-  //   const { cardMode, viewMode, card, feedo } = this.props;
-
-  //   if (cardMode === CONSTANTS.SHARE_EXTENTION_CARD) {
-  //     return;
-  //   }
-  //   if (cardMode !== CONSTANTS.MAIN_APP_CARD_FROM_DASHBOARD && !_.isEmpty(card.currentCard)) {
-  //     if (COMMON_FUNC.isFeedGuest(feedo.currentFeed) ||
-  //         (COMMON_FUNC.isFeedContributor(feedo.currentFeed)) && !COMMON_FUNC.isCardOwner(card.currentCard)) {
-  //       return
-  //     }
-  //   }
-
-  //   if (!this.state.isFullScreenCard && viewMode !== CONSTANTS.CARD_NEW) {
-  //     return (
-  //       <View style={styles.outSideMoreActionContainer}>
-  //         <TouchableOpacity 
-  //           style={styles.threeDotButtonWrapper}
-  //           activeOpacity={0.7}
-  //           onPress={() => this.onPressMoreActions()}
-  //         >
-  //           <Entypo name="dots-three-horizontal" size={20} color={'#fff'} />
-  //         </TouchableOpacity>
-  //       </View>
-  //     );
-  //   }
-  // }
 
   get renderBottomContent() {
     const { viewMode, cardMode } = this.props;
     if (cardMode === CONSTANTS.SHARE_EXTENTION_CARD) {
       return (
-        <View style={{paddingHorizontal: 16}}>
-          <View style={styles.line} />
-          <View style={styles.feedSelectContainer}>
-            <Text style={styles.textAddFeed}>Add to </Text>
-            <Text style={[styles.textButton, {color: COLORS.BLUE}]}>{this.props.feedo.currentFeed.headline}</Text>
-            <Text style={styles.textAddFeed}> feed</Text>
-          </View>
+        <View style={styles.extensionSelectFeedoContainer}>
+          <Text style={[styles.textCreateCardIn, {color: COLORS.PRIMARY_BLACK}]}>Create card in:</Text>
+          <TouchableOpacity
+            style={[styles.selectFeedoButtonContainer, {backgroundColor: 'transparent'}]}
+            activeOpacity={0.6}
+            onPress={this.onSelectFeedo.bind(this)}
+          >
+            <Text style={[styles.textFeedoName, {color: COLORS.PURPLE}]} numberOfLines={1}>{this.props.feedo.currentFeed.headline || 'New feed'}</Text>
+            <Entypo name="chevron-right" size={20} color={COLORS.PURPLE} />
+          </TouchableOpacity>
         </View>
       )
     }
@@ -1383,8 +1320,8 @@ class NewCardScreen extends React.Component {
   //     this.scrollViewLayoutHeight = e.nativeEvent.layoutMeasurement.height;
   //     this.setState({
   //       isFullScreenCard: true,
-  //       originalCardTopY: ScreenVerticalMinMargin,
-  //       originalCardBottomY: ScreenVerticalMinMargin,
+  //       originalCardTopY: CONSTANTS.SCREEN_VERTICAL_MIN_MARGIN,
+  //       originalCardBottomY: CONSTANTS.SCREEN_VERTICAL_MIN_MARGIN,
   //     }, () => {
   //       this.animatedShow.setValue(0);
   //       Animated.timing(this.animatedShow, {
@@ -1407,14 +1344,6 @@ class NewCardScreen extends React.Component {
         top: animatedMove,
         opacity: this.animatedShow,
       };
-    // } else if (this.state.isFullScreenCard) {
-    //   const animatedTopMove = this.animatedShow.interpolate({
-    //     inputRange: [0, 1],
-    //     outputRange: [this.state.originalCardTopY, 0],
-    //   });
-    //   cardStyle = {
-    //     top: animatedTopMove,
-    //   };
     } else {
       const animatedTopMove = this.animatedShow.interpolate({
         inputRange: [0, 1],
@@ -1426,61 +1355,73 @@ class NewCardScreen extends React.Component {
       };
     }
 
+    let contentContainerStyle = {};
+    if (cardMode === CONSTANTS.SHARE_EXTENTION_CARD) {
+      contentContainerStyle = {
+        height: Animated.subtract(CONSTANTS.SCREEN_HEIGHT - CONSTANTS.SCREEN_VERTICAL_MIN_MARGIN * 2, this.animatedKeyboardHeight),
+        marginTop: CONSTANTS.SCREEN_VERTICAL_MIN_MARGIN,
+        marginBottom: Animated.add(CONSTANTS.SCREEN_VERTICAL_MIN_MARGIN, this.animatedKeyboardHeight),
+        borderRadius: 18,
+        backgroundColor: 'rgba(255, 255, 255, .95)',
+        marginHorizontal: 10,
+      }
+    } else {
+      contentContainerStyle = {
+        paddingTop: cardMode !== CONSTANTS.SHARE_EXTENTION_CARD ?  (isIphoneX() ? 50 : 26) : 0,
+        paddingBottom: Animated.add(this.animatedKeyboardHeight, isIphoneX() ? 24 : 0),
+        height: CONSTANTS.SCREEN_HEIGHT,
+        backgroundColor: '#fff',
+      }
+    }
+
     return (
       <Animated.View 
         style={[
           styles.cardContainer,
           cardStyle,
+          cardMode === CONSTANTS.SHARE_EXTENTION_CARD && {backgroundColor: COLORS.MODAL_BACKGROUND}
         ]}
       >
-        {/* {this.renderOutside} */}
-        <Animated.View 
-          style={[
-            styles.contentContainer,
-            { paddingTop: cardMode !== CONSTANTS.SHARE_EXTENTION_CARD ?  26 + (isIphoneX() ? 24 : 0) : 10},
-            { paddingBottom: Animated.add(this.animatedKeyboardHeight, isIphoneX() ? 24 : 0) },
-            { height: CONSTANTS.SCREEN_HEIGHT - ScreenVerticalMinMargin * 2 },
-          ]}
-        >
+        <Animated.View style={contentContainerStyle}>
           {this.renderHeader}
           {this.renderMainContent}
           {this.renderBottomAttachmentButtons}
           {this.renderBottomContent}
-          {this.renderKeyboardClose(cardMode)}
+          {
+            // If show keyboard button, and not quick add card from dashboard as interferes with change Feed https://cl.ly/ba004cb3a34b
+            this.state.isShowKeyboardButton && cardMode !== CONSTANTS.MAIN_APP_CARD_FROM_DASHBOARD && cardMode !== CONSTANTS.SHARE_EXTENTION_CARD &&
+            <Animated.View
+              style={[styles.hideKeyboardContainer, {
+                  bottom: cardMode === CONSTANTS.SHARE_EXTENTION_CARD ? 16 : Animated.add(this.animatedKeyboardHeight, isIphoneX() ? 24 + 16: 16)
+                }
+              ]}
+            >
+              <TouchableOpacity
+                style={[
+                  styles.buttonItemContainer,
+                  {
+                    backgroundColor: COLORS.PURPLE,
+                    borderRadius: 8,
+                  },
+                ]}
+                activeOpacity={0.6}
+                onPress={this.onHideKeyboard.bind(this)}
+              >
+                <MaterialCommunityIcons name="keyboard-close" size={20} color={'#fff'} />
+              </TouchableOpacity>
+            </Animated.View>
+          }
         </Animated.View>
-        {/* {this.renderOutside} */}
       </Animated.View>
     );
   }
 
-  renderKeyboardClose(cardMode) {
-    // If show keyboard button, and not quick add card from dashboard as interferes with change Feed https://cl.ly/ba004cb3a34b
-    if (this.state.isShowKeyboardButton && cardMode !== CONSTANTS.MAIN_APP_CARD_FROM_DASHBOARD) {
-      return
-      <Animated.View
-        style={[styles.hideKeyboardContainer, {bottom: Animated.add(this.animatedKeyboardHeight, isIphoneX() ? 24 + 16: 16)}]}
-      >
-        <TouchableOpacity
-          style={[
-            styles.buttonItemContainer,
-            {
-              backgroundColor: cardMode === CONSTANTS.SHARE_EXTENTION_CARD ? COLORS.BLUE : COLORS.PURPLE,
-              borderRadius: 8,
-            },
-          ]}
-          activeOpacity={0.6}
-          onPress={this.onHideKeyboard.bind(this)}
-        >
-          <MaterialCommunityIcons name="keyboard-close" size={20} color={'#fff'} />
-        </TouchableOpacity>
-      </Animated.View>
-    }
-  }
-
   get renderSelectHunt() {
+    const { cardMode } = this.props;
     if (this.state.isVisibleSelectFeedoModal) {
       return (
         <SelectHuntScreen
+          selectMode={cardMode !== CONSTANTS.SHARE_EXTENTION_CARD ? CONSTANTS.FEEDO_SELECT_FROM_MAIN : CONSTANTS.FEEDO_SELECT_FROM_SHARE_EXTENSION_LATER}
           onClosed={() => this.onCloseSelectHunt()}
         />
       );
@@ -1491,7 +1432,6 @@ class NewCardScreen extends React.Component {
     return (
       <View style={styles.container}>
         {this.renderCard}
-        {/* {this.renderOutsideMoreActions} */}
         {this.renderSelectHunt}
         <ActionSheet
           ref={ref => this.imagePickerActionSheetRef = ref}

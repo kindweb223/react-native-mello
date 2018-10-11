@@ -7,6 +7,7 @@ import {
   Alert,
 } from 'react-native'
 import { connect } from 'react-redux'
+import { Actions } from 'react-native-router-flux'
 
 import styles from './styles'
 import FastImage from "react-native-fast-image";
@@ -17,6 +18,7 @@ import * as types from '../../redux/card/types'
 
 import ShareExtension from '../shareExtension'
 import LoadingScreen from '../../containers/LoadingScreen';
+import CONSTANTS from '../../service/constants'
 
 
 class ChooseLinkImageFromExtension extends React.Component {
@@ -30,7 +32,7 @@ class ChooseLinkImageFromExtension extends React.Component {
 
   async componentDidMount() {
     try {
-      const { type, value } = await ShareExtension.data()
+      const { value } = await ShareExtension.data()
       this.props.getOpenGraph(value.toLowerCase())
     } catch(e) {
       console.log('error : ', e)
@@ -88,6 +90,9 @@ class ChooseLinkImageFromExtension extends React.Component {
   }
 
   onSelectItem(image) {
+    Actions.ShareSelectHuntScreen({
+      imageUrl: image,
+    });
   }
 
   onCancel() {
@@ -95,6 +100,7 @@ class ChooseLinkImageFromExtension extends React.Component {
   }
 
   onSkip() {
+    Actions.ShareSelectHuntScreen();
   }
 
   renderImage(item) {

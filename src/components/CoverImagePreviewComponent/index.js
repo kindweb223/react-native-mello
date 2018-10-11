@@ -34,7 +34,7 @@ export default class CoverImagePreviewComponent extends React.Component {
   }
 
   render () {
-    const { coverImage } = this.props
+    const { coverImage, isShowCount } = this.props
     const {
       files,
     } = this.state;
@@ -46,7 +46,7 @@ export default class CoverImagePreviewComponent extends React.Component {
         <TouchableOpacity style={styles.container} onPress={() => this.onPressImage(position)}>
           <FastImage style={styles.imageCover} source={{ uri: coverImage }} resizeMode="cover" />
           {
-            files.length > 1 && 
+            isShowCount && files.length > 1 && 
             <View style={styles.imageNumberContainer}>
               <Text style={styles.textImageNumber}>+{files.length - 1}</Text>
             </View>
@@ -83,6 +83,7 @@ CoverImagePreviewComponent.defaultProps = {
   coverImage: '',
   editable: true,
   isSetCoverImage: false,
+  isShowCount: true,
   onRemove: () => {},
   onSetCoverImage: () => {},
 }
@@ -93,6 +94,7 @@ CoverImagePreviewComponent.propTypes = {
   coverImage: PropTypes.string,
   editable: PropTypes.bool,
   isSetCoverImage: PropTypes.bool,
+  isShowCount: PropTypes.bool,
   onRemove: PropTypes.func,
   onSetCoverImage: PropTypes.func,
 }

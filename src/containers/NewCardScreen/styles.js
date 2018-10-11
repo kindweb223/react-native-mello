@@ -20,13 +20,6 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     backgroundColor: 'transparent',
   },
-  contentContainer: {
-    paddingTop: 26,
-    paddingBottom: 17,
-    backgroundColor: '#fff',
-  },
-  mainContentContainer: {
-  },
   textInputCardTitle: {
     fontSize: 18,
     lineHeight: 25,
@@ -43,6 +36,13 @@ const styles = StyleSheet.create({
     paddingRight: 0,
     paddingTop: 0,
     paddingBottom: 0,
+  },
+  textSeeMoreLessIdea: {
+    fontSize: 16,
+    lineHeight: 23,
+    marginTop: 4,
+    marginHorizontal: 16,
+    color: COLORS.PURPLE,
   },
   attachmentButtonsContainer: {
     flexDirection: 'row',
@@ -80,6 +80,10 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
   },
+  extensionRowContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+  },
   textInvitee: {
     fontSize: 14,
     lineHeight: 21,
@@ -106,6 +110,14 @@ const styles = StyleSheet.create({
     paddingLeft: 6,
     paddingRight: 16,
   },
+  extensionHeaderContainer: {
+    // backgroundColor: '#D5D5D5',
+    paddingVertical: 5,
+    borderTopLeftRadius: 18,
+    borderTopRightRadius: 18,
+    borderBottomWidth: 1,
+    borderBottomColor: '#C6C6C6',
+  },
   closeButtonWrapper: {
     paddingHorizontal: 10,
     paddingVertical: 5,
@@ -131,11 +143,16 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
   },
-  imageCoverView: {
-    // marginHorizontal: 16,
+  coverImageContainer: {
     height: Math.round(CONSTANTS.SCREEN_WIDTH * 0.565),
-    // borderRadius: 5,
+    marginTop: 15,
     overflow: 'hidden',
+  },
+  extensionCoverImageContainer: {
+    marginTop: 15,
+    marginRight: 16,
+    height: 80,
+    width: 80,
   },
   coverImageSelectContainer: {
     marginHorizontal: 16,
@@ -171,9 +188,8 @@ const styles = StyleSheet.create({
   },
   addCardButtonWapper: {
     width: 110,
-    height: 40,
+    height: 34,
     borderRadius: 20,
-    backgroundColor: COLORS.BLUE,
     justifyContent: 'center',
   },
   textButton: {
@@ -182,20 +198,23 @@ const styles = StyleSheet.create({
     fontWeight: '500',
     textAlign: 'center',
   },
-  feedSelectContainer: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    alignItems: 'center',
-  },
-  textAddFeed: {
-    fontSize: 16,
-    lineHeight: 20,
-  },
   selectFeedoContainer: {
     flex: 1,
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'flex-end',
+  },
+  extensionSelectFeedoContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    // backgroundColor: '#D5D5D5',
+    paddingHorizontal: 7,
+    paddingVertical: 10,
+    borderBottomLeftRadius: 18,
+    borderBottomRightRadius: 18,
+    borderTopWidth: 1,
+    borderTopColor: '#C6C6C6',
   },
   textCreateCardIn: {
     fontSize: 14,
@@ -220,17 +239,6 @@ const styles = StyleSheet.create({
   },
   url: {
     color: COLORS.BLUE,
-  },
-  moreButtonContainer: {
-    position: 'absolute',
-    right: 16,
-    bottom: 0,
-  },
-  textMore: {
-    fontSize: 16,
-    lineHeight: 24,
-    color: COLORS.DARK_GREY,
-    backgroundColor: '#fff',
   },
 })
 

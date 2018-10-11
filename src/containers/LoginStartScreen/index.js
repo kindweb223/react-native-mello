@@ -132,7 +132,7 @@ class LoginStartScreen extends React.Component {
           <View style={styles.innerContainer}>
             <View style={styles.contentView}>
               <View style={styles.logoView}>
-                <Image source={LOGO} />
+                <Image style={styles.logo} source={LOGO} />
               </View>
               <View style={styles.content}>
                 <Text style={styles.title}>Get started</Text>

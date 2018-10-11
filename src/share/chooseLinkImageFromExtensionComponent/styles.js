@@ -6,19 +6,23 @@ const styles = StyleSheet.create({
   container: {
     justifyContent: 'center',
     height: CONSTANTS.SCREEN_HEIGHT,
-    backgroundColor: '#00000060',
+    backgroundColor: COLORS.MODAL_BACKGROUND,
   },
   mainContainer: {
     borderRadius: 18,
     marginHorizontal: 16,
-    backgroundColor: '#fff',
+    backgroundColor: 'rgba(255, 255, 255, .95)',
     height: CONSTANTS.SCREEN_HEIGHT - 200,
   },
   topContainer: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    padding: 16,
+    paddingHorizontal: 16,
+    // backgroundColor: '#D5D5D5',
+    borderTopLeftRadius: 18,
+    borderTopRightRadius: 18,
+    height: 50,
   },
   cancelButtonWrapper: {
     justifyContent: 'center',
@@ -54,7 +58,7 @@ const styles = StyleSheet.create({
   },
   line: {
     height: 1,
-    backgroundColor: COLORS.DARK_GREY,
+    backgroundColor: '#C6C6C6',
   },
   bottomContainer: {
     alignItems: 'center',

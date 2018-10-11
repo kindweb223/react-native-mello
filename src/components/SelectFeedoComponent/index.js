@@ -28,9 +28,6 @@ import styles from './styles';
 import LoadingScreen from '../../containers/LoadingScreen';
 
 
-const ScreenVerticalMinMargin = 80;
-
-
 class SelectFeedoComponent extends React.Component {
   constructor(props) {
     super(props);
@@ -88,7 +85,7 @@ class SelectFeedoComponent extends React.Component {
   keyboardWillShow(e) {
     Animated.timing(
       this.animatedKeyboardHeight, {
-        toValue: e.endCoordinates.height - ScreenVerticalMinMargin - 18, // border radius = 18
+        toValue: e.endCoordinates.height - CONSTANTS.SCREEN_VERTICAL_MIN_MARGIN - 18, // border radius = 18
         duration: e.duration,
       }
     ).start();
@@ -159,7 +156,7 @@ class SelectFeedoComponent extends React.Component {
             styles.contentContainer, 
             {
               paddingBottom: this.animatedKeyboardHeight,
-              height: CONSTANTS.SCREEN_HEIGHT - ScreenVerticalMinMargin * 2,
+              height: CONSTANTS.SCREEN_HEIGHT - CONSTANTS.SCREEN_VERTICAL_MIN_MARGIN * 2,
             },
           ]}
         >
