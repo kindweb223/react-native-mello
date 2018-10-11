@@ -631,6 +631,9 @@ class FeedDetailScreen extends React.Component {
           this.state.isVisibleCard && 
             <NewCardScreen 
               viewMode={this.state.cardViewMode}
+              
+              // cardMode={CONSTANTS.SHARE_EXTENTION_CARD}
+              
               invitee={this.state.selectedIdeaInvitee}
               intialLayout={this.state.selectedIdeaLayout}
               onClose={() => this.onCloseCardModal()}

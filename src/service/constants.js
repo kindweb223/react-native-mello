@@ -18,6 +18,7 @@ export default {
   ACTION_BAR_HEIGHT: 82,
   TAB_BAR_HEIGHT: 40,
   ANIMATEION_MILLI_SECONDS: 200,
+  SCREEN_VERTICAL_MIN_MARGIN: 80,
 
   // Feedo show type
   FEED_NONE: 0,
@@ -44,7 +45,7 @@ export default {
   // Card type for main app (dashboard / feedo detail) or share extension
   MAIN_APP_CARD_FROM_DETAIL: 1,
   MAIN_APP_CARD_FROM_DASHBOARD: 2,
-  SHARE_SHARE_EXTENTION_CARD: 3,
+  SHARE_EXTENTION_CARD: 3,
 
   // App Group
   APP_GROUP_USER_IDENTIFIER: 'group.hunt.mobile.user.info',

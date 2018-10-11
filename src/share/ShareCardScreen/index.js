@@ -2,6 +2,7 @@ import React from 'react'
 import {
   View,
 } from 'react-native'
+import PropTypes from 'prop-types'
 
 import ShareExtension from '../shareExtension'
 
@@ -35,14 +36,26 @@ export default class ShareCardScreen extends React.Component {
   }
 
   render() {
+    const { imageUrl } = this.props;
     return (
       <View style={styles.container}>
         <NewCardScreen
           cardMode={CONSTANTS.SHARE_EXTENTION_CARD}
-          shareUrl={this.state.value}
+          // shareUrl={this.state.value}
+          shareUrl={imageUrl}
           onClose={() => this.onClosed()}
         />
       </View>
     );
   }
+}
+
+
+ShareCardScreen.defaultProps = {
+  imageUrl: '',
+}
+
+
+ShareCardScreen.propTypes = {
+  imageUrl: PropTypes.string,
 }
