@@ -23,7 +23,6 @@ import UserAvatarComponent from '../../components/UserAvatarComponent';
 import ToasterComponent from '../../components/ToasterComponent'
 import COLORS from '../../service/colors'
 import styles from './styles'
-const LOGO = require('../../../assets/images/Login/Group.png')
 
 const Gradient = () => {
   return(
