@@ -10,8 +10,8 @@ import {
 } from 'react-native'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
+import { Actions } from 'react-native-router-flux'
 
-import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons'
 import Ionicons from 'react-native-vector-icons/Ionicons'
 import _ from 'lodash'
 import Search from 'react-native-search-box';
@@ -28,8 +28,6 @@ import COLORS from '../../service/colors';
 import CONSTANTS from '../../service/constants';
 import styles from './styles';
 import LoadingScreen from '../LoadingScreen';
-
-const ScreenVerticalMinMargin = 80;
 
 
 class SelectHuntScreen extends React.Component {
@@ -95,7 +93,7 @@ class SelectHuntScreen extends React.Component {
   keyboardWillShow(e) {
     Animated.timing(
       this.animatedKeyboardHeight, {
-        toValue: e.endCoordinates.height - ScreenVerticalMinMargin,
+        toValue: e.endCoordinates.height - CONSTANTS.SCREEN_VERTICAL_MIN_MARGIN,
         duration: e.duration,
       }
     ).start();
@@ -128,6 +126,11 @@ class SelectHuntScreen extends React.Component {
 
   onSelectFeedo(item) {
     this.props.setCurrentFeed(item);
+    if (this.props.selectMode === CONSTANTS.FEEDO_SELECT_FROM_SHARE_EXTENSION_FIRST) {
+      Actions.ChooseLinkImageFromExtension();
+      return;
+    }
+    
     this.onClose();
   }
 
@@ -157,20 +160,13 @@ class SelectHuntScreen extends React.Component {
           <Ionicons name="ios-arrow-back" size={28} color={COLORS.PURPLE} />
           <Text style={styles.textBack}>Back</Text>
         </TouchableOpacity>
-        {/* <TouchableOpacity 
-          style={styles.closeButtonWrapper}
-          activeOpacity={0.6}
-          onPress={this.onClose.bind(this)}
-        >
-          <MaterialCommunityIcons name="close" size={28} color={COLORS.PURPLE} />
-        </TouchableOpacity> */}
       </View>
     );
   }
 
   get renderHeaderFromExtension() {
     return (
-      <View style={[styles.topContainer, {paddingHorizontal: 0, paddingVertical: 0, height: 43,}]}>
+      <View style={[styles.topContainer, styles.extensionTopContainer]}>
         <Text style={styles.textTitle}>Choose feed</Text>
         {
           this.props.selectMode === CONSTANTS.FEEDO_SELECT_FROM_SHARE_EXTENSION_LATER && 
@@ -180,6 +176,7 @@ class SelectHuntScreen extends React.Component {
             onPress={this.onBack.bind(this)}
           >
             <Ionicons name="ios-arrow-back" size={28} color={COLORS.PURPLE} />
+            <Text style={styles.textBack}>Back</Text>
           </TouchableOpacity>
         }
       </View>
@@ -255,7 +252,8 @@ class SelectHuntScreen extends React.Component {
               styles.contentContainer, 
               {
                 paddingBottom: this.animatedKeyboardHeight,
-                height: CONSTANTS.SCREEN_HEIGHT - ScreenVerticalMinMargin * 2,
+                height: CONSTANTS.SCREEN_HEIGHT - CONSTANTS.SCREEN_VERTICAL_MIN_MARGIN * 2,
+                backgroundColor: this.props.selectMode === CONSTANTS.FEEDO_SELECT_FROM_MAIN ? '#fff' : '#E0E0E0',
               },
             ]}
           >
@@ -285,6 +283,7 @@ class SelectHuntScreen extends React.Component {
               keyExtractor={(item, index) => index.toString()}
               extraData={this.state}
             />
+            {this.state.loading && <LoadingScreen />}
           </Animated.View>
         </Animated.View>
         {
@@ -296,7 +295,6 @@ class SelectHuntScreen extends React.Component {
               />
             </View>
         }
-        {this.state.loading && <LoadingScreen />}
       </View>
     );
   }

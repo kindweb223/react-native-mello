@@ -11,14 +11,18 @@ const styles = StyleSheet.create({
   mainContainer: {
     borderRadius: 18,
     marginHorizontal: 16,
-    backgroundColor: '#fff',
+    backgroundColor: '#E0E0E0',
     height: CONSTANTS.SCREEN_HEIGHT - 200,
   },
   topContainer: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    padding: 16,
+    paddingHorizontal: 16,
+    backgroundColor: '#D5D5D5',
+    borderTopLeftRadius: 18,
+    borderTopRightRadius: 18,
+    height: 50,
   },
   cancelButtonWrapper: {
     justifyContent: 'center',
@@ -54,7 +58,7 @@ const styles = StyleSheet.create({
   },
   line: {
     height: 1,
-    backgroundColor: COLORS.DARK_GREY,
+    backgroundColor: '#C6C6C6',
   },
   bottomContainer: {
     alignItems: 'center',

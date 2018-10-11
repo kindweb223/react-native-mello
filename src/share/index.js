@@ -80,7 +80,6 @@ export default class Share extends Component {
         <View style={styles.rootContainer} />
       );
     }
-    //  params={{selectMode: CONSTANTS.FEEDO_SELECT_FROM_SHARE_EXTENSION_FIRST}}
     return (
       <View style={styles.rootContainer}>
         <Provider store={store}>

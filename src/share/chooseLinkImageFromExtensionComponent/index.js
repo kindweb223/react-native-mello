@@ -7,6 +7,7 @@ import {
   Alert,
 } from 'react-native'
 import { connect } from 'react-redux'
+import { Actions } from 'react-native-router-flux'
 
 import styles from './styles'
 import FastImage from "react-native-fast-image";
@@ -30,7 +31,7 @@ class ChooseLinkImageFromExtension extends React.Component {
 
   async componentDidMount() {
     try {
-      const { type, value } = await ShareExtension.data()
+      const { value } = await ShareExtension.data()
       this.props.getOpenGraph(value.toLowerCase())
     } catch(e) {
       console.log('error : ', e)
@@ -88,6 +89,7 @@ class ChooseLinkImageFromExtension extends React.Component {
   }
 
   onSelectItem(image) {
+    Actions.ShareCardScreen({imageUrl: image});
   }
 
   onCancel() {
@@ -95,6 +97,7 @@ class ChooseLinkImageFromExtension extends React.Component {
   }
 
   onSkip() {
+    Actions.ShareCardScreen();
   }
 
   renderImage(item) {

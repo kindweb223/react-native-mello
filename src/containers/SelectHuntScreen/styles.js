@@ -1,6 +1,7 @@
 import { StyleSheet } from 'react-native'
 import COLORS from '../../service/colors'
-const ScreenVerticalMinMargin = 80;
+import CONSTANTS from '../../service/constants'
+
 
 export default styles = StyleSheet.create({
   container: {
@@ -12,8 +13,8 @@ export default styles = StyleSheet.create({
     position: 'absolute',
     left: 0,
     right: 0,
-    top: ScreenVerticalMinMargin,
-    bottom: ScreenVerticalMinMargin,
+    top: CONSTANTS.SCREEN_VERTICAL_MIN_MARGIN,
+    bottom: CONSTANTS.SCREEN_VERTICAL_MIN_MARGIN,
   },
   newFeedContainer: {
     backgroundColor: '#fff',
@@ -33,6 +34,13 @@ export default styles = StyleSheet.create({
     alignItems: 'center',
     paddingHorizontal: 20,
     paddingVertical: 18,
+    borderTopLeftRadius: 18,
+    borderTopRightRadius: 18,
+  },
+  extensionTopContainer: {
+    paddingHorizontal: 0, 
+    height: 50,
+    backgroundColor: '#D5D5D5',
   },
   closeButtonWrapper: {
     paddingHorizontal: 4,
@@ -86,7 +94,7 @@ export default styles = StyleSheet.create({
   },
   line: {
     height: 1,
-    backgroundColor: COLORS.DARK_GREY,
+    backgroundColor: '#C6C6C6',
     marginBottom: 10,
   },
 })
