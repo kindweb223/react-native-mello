@@ -29,7 +29,7 @@ class SpeechBubbleComponent extends React.Component {
   }
 
   render() {
-    const { page } = this.props
+    const { page, title, subTitle } = this.props
     const { showCloseBtn } = this.state
 
     const marginTop = 20
@@ -55,33 +55,20 @@ class SpeechBubbleComponent extends React.Component {
             style={[styles.bubbleView]}
           >
             <View style={styles.bubbleContent}>
-              <Text style={styles.title}>
-                {page === 'feed' && (
-                  "So you've been invited to feedo? Exciting, isn't it?!"
-                )}
-                {page === 'card' && (
-                  "Feeds contain cards. Cards can have, images, text, attachments and likes. My granny enjoys liking."
-                )}
-                {page === 'pinned' && (
-                  "Your pinned items will appear here. To pin a feed tap and hold it to bring up a quick actions and select PIN."
-                )}
-                {page === 'shared' && (
-                  "Feeds can be shared with friends and colleagues for collaboration. Feeds you've been invited to will appear here."
-                )}
-              </Text>
+              {page === 'pinned' 
+                ? <Text style={styles.title}>
+                    <Text>{title}</Text>
+                    <Text style={{ fontWeight: 'bold'}}> PIN.</Text>
+                  </Text>
+                : <Text style={styles.title}>
+                    {title}
+                  </Text>
+              }
 
               {page !== 'pinned' && (
                 <TouchableOpacity style={styles.videoBtn} activeOpacity={0.8}>
                   <Text style={styles.videoBtnText}>
-                    {page === 'feed' && (
-                      "Watch a 15 sec Quick Start video "
-                    )}
-                    {page === 'card' && (
-                      "Watch a 15 sec video about the cards "
-                    )}
-                    {page === 'shared' && (
-                      "All you need to know about sharing in 15 sec "
-                    )}
+                    {subTitle}
                     <MaterialCommunityIcons name='play' size={23} color={COLORS.PURPLE} />
                   </Text>
                 </TouchableOpacity>
@@ -91,7 +78,7 @@ class SpeechBubbleComponent extends React.Component {
           <Image source={SPEECH_BUBBLE_BOTTOM} style={styles.bubbleView} resizeMode="stretch" />
         </View>
 
-        {(page === 'feed' || page === 'card') && showCloseBtn && (
+        {showCloseBtn && (
           <View style={[styles.closeBtnView, { top: marginTop - 10 }]}>
             <TouchableOpacity style={styles.closeBtn} onPress={() => this.props.onCloseBubble()}>
               <MaterialIcons name='close' size={15} color="#fff" />
@@ -105,11 +92,15 @@ class SpeechBubbleComponent extends React.Component {
 
 SpeechBubbleComponent.defaultProps = {
   page: 'feed',
+  title: '',
+  subTitle: '',
   isShowCloseBubble: false
 }
 
 SpeechBubbleComponent.propTypes = {
   page: PropTypes.string,
+  title: PropTypes.string,
+  subTitle: PropTypes.string,
   isShowCloseBubble: PropTypes.bool
 }
 

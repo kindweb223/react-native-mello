@@ -13,13 +13,17 @@ const styles = StyleSheet.create({
     marginLeft: 26,
     marginRight: 33
   },
+  doll_feed_exist: {
+    marginBottom: -40,
+    marginLeft: 26,
+    marginRight: 33
+  },
   doll_card: {
     marginBottom: -125,
     marginRight: 27
   },
   bubbleImageView: {
     flex: 1,
-    marginTop: -125,
     marginRight: CONSTANTS.PADDING
   },
   bubbleView: {

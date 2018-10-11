@@ -24,24 +24,39 @@ class EmptyStateComponent extends React.Component {
 
   onStart = () => {
     const { page } = this.props
-    if (page === 'feed') {
-      this.props.onCreateNewFeed()
-    } else {
+    if (page === 'card') {
       this.props.onCreateNewCard()
+    } else {
+      this.props.onCreateNewFeed()
     }
   }
 
   render() {
-    const { page } = this.props
-    const height = page === 'feed' ? 190 : 190
+    const { page, title, subTitle, ctaTitle } = this.props
+
+    let height = 190
+    if (page === 'feed_exist') {
+      height = 80
+    }
+
+    let marginTop = -125
+    if (page === 'feed_exist') {
+      marginTop = -40
+    }
 
     return (
       <View style={styles.container}>
-        {page === 'feed'
-          ? <Image source={DOLL_FEED} style={styles.doll_feed} />
-          : <Image source={DOLL_CARD} style={styles.doll_card} />
-        }
-        <View style={styles.bubbleImageView}>
+        {page === 'card' && (
+          <Image source={DOLL_CARD} style={styles.doll_card} />
+        )}
+        {page === 'feed' && (
+          <Image source={DOLL_FEED} style={styles.doll_feed} />
+        )}
+        {page === 'feed_exist' && (
+          <Image source={DOLL_FEED} style={styles.doll_feed_exist} />
+        )}
+
+        <View style={[styles.bubbleImageView, { marginTop }]}>
           <Image source={SPEECH_BUBBLE_TOP} style={styles.bubbleView} resizeMode="stretch" />
           <ImageBackground
             source={SPEECH_BUBBLE_MIDDLE}
@@ -50,19 +65,18 @@ class EmptyStateComponent extends React.Component {
           >
             <View style={styles.bubbleContent}>
               <Text style={styles.title}>
-                {page === 'feed'
-                  ? "First time here? No worries, you are in good hands..."
-                  : "It's pretty boring here... Let's create some cards!"
-                }
+                {title}
               </Text>
-              <TouchableOpacity style={styles.videoBtn} activeOpacity={0.8}>
-                <Text style={styles.videoBtnText}>
-                  Watch a 15 sec video about creating {page === 'feed' ? 'feeds ' : 'cards '}
-                  <MaterialCommunityIcons name='play' size={23} color={COLORS.PURPLE} />
-                </Text>
-              </TouchableOpacity>
+              {subTitle.length > 0 && (
+                <TouchableOpacity style={styles.videoBtn} activeOpacity={0.8}>
+                  <Text style={styles.videoBtnText}>
+                    {subTitle}
+                    <MaterialCommunityIcons name='play' size={23} color={COLORS.PURPLE} />
+                  </Text>
+                </TouchableOpacity>
+              )}
               <TouchableOpacity style={styles.newFeedBtn} activeOpacity={0.8} onPress={this.onStart}>
-                <Text style={styles.newFeedBtnText}>Start your first {page}</Text>
+                <Text style={styles.newFeedBtnText}>{ctaTitle}</Text>
               </TouchableOpacity>
             </View>
           </ImageBackground>
@@ -74,11 +88,17 @@ class EmptyStateComponent extends React.Component {
 }
 
 EmptyStateComponent.defaultProps = {
-  page: 'feed'
+  page: 'feed',
+  title: '',
+  subTitle: '',
+  ctaTitle: ''
 }
 
 EmptyStateComponent.propTypes = {
-  page: PropTypes.string
+  page: PropTypes.string,
+  title: PropTypes.string,
+  subTitle: PropTypes.string,
+  ctaTitle: PropTypes.string
 }
 
 export default EmptyStateComponent

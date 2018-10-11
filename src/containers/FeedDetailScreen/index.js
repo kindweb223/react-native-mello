@@ -117,7 +117,9 @@ class FeedDetailScreen extends React.Component {
       currentScreen: FeedDetailMode,
       feedoMode: 1,
       showBubble: false,
-      isShowCloseBubble: false
+      isShowCloseBubble: false,
+      isExistingUser: false,
+      showEmptyBubble: false,
     };
     this.animatedOpacity = new Animated.Value(0)
     this.menuOpacity = new Animated.Value(0)
@@ -167,16 +169,7 @@ class FeedDetailScreen extends React.Component {
       
       const currentFeed = feedo.currentFeed
 
-      const showSpeechBubble = await AsyncStorage.getItem('showCardSpeechBubble')
-      if (JSON.parse(showSpeechBubble) !== 'false') {      
-        const ownCards = _.filter(currentFeed.ideas, idea => idea.metadata.owner === true)
-        if (currentFeed.ideas.length > 0 && ownCards.length === 0) {
-          this.setState({ showBubble: true })
-          setTimeout(() => {
-            this.setState({ isShowCloseBubble: true })
-          }, 60000)
-        }
-      }
+      this.setBubbles(currentFeed)
 
       this.setState({
         loading: false,
@@ -221,6 +214,43 @@ class FeedDetailScreen extends React.Component {
         apiLoading: false
       })
     }
+  }
+
+  async setBubbles(currentFeed) {
+    let bubbleAsyncData = await AsyncStorage.getItem('CardBubbleState')
+    let bubbleData = JSON.parse(bubbleAsyncData)
+    if (!bubbleData || (bubbleData.userId === this.props.user.userInfo.id && bubbleData.state !== 'false')) {
+      const ownCards = _.filter(currentFeed.ideas, idea => idea.metadata.owner === true)
+      if (currentFeed.ideas.length > 0 && ownCards.length === 0) {
+        this.setState({ showBubble: true })
+        setTimeout(() => {
+          this.setState({ isShowCloseBubble: true })
+        }, 30000)
+      } else {
+        this.setState({ showBubble: false })
+      }
+    }
+
+    if (currentFeed.ideas.length === 0) {
+      bubbleAsyncData = await AsyncStorage.getItem('BubbleCardFirstTimeCreated')
+      bubbleData = JSON.parse(bubbleAsyncData)
+      this.setState({ showEmptyBubble: true })
+      if (bubbleData && (bubbleData.userId === this.props.user.userInfo.id && bubbleData.state === 'true')) {
+        // Existing user, no feeds
+        this.setState({ isExistingUser: true })
+      } else {
+        this.setState({ isExistingUser: false })
+      }
+    }
+  }
+
+  closeBubble = () => {
+    this.setState({ showBubble: false })
+    const data = {
+      userId: this.props.user.userInfo.id,
+      state: 'false'
+    }
+    AsyncStorage.setItem('CardBubbleState', JSON.stringify(data));
   }
 
   filterCards = (currentFeed) => {
@@ -827,11 +857,6 @@ class FeedDetailScreen extends React.Component {
     this.props.deleteFile(id, fileId)
   }
 
-  closeBubble = () => {
-    this.setState({ showBubble: false })
-    AsyncStorage.setItem('showCardSpeechBubble', JSON.stringify('false'));
-  }
-
   render () {
     const { currentFeed, loading, pinText } = this.state
 
@@ -888,7 +913,12 @@ class FeedDetailScreen extends React.Component {
               )}
 
               {!_.isEmpty(currentFeed) && currentFeed && currentFeed.ideas && currentFeed.ideas.length > 0 && this.state.showBubble && (
-                <SpeechBubbleComponent page="card" onCloseBubble={() => this.closeBubble()} isShowCloseBubble={this.state.isShowCloseBubble} />
+                <SpeechBubbleComponent
+                  title="Feeds contain cards. Cards can have, images, text, attachments and likes. My granny enjoys liking."
+                  subTitle="Watch a 15 sec video about the cards "
+                  onCloseBubble={() => this.closeBubble()}
+                  isShowCloseBubble={this.state.isShowCloseBubble}
+                />
               )}
 
               {
@@ -923,7 +953,23 @@ class FeedDetailScreen extends React.Component {
                           <FeedLoadingStateComponent />
                         </View>
                       : <View style={styles.emptyInnerView}>
-                          <EmptyStateComponent page="card" onCreateNewCard={this.onOpenNewCardModal.bind(this)} />
+                          {this.state.showEmptyBubble && (
+                            this.state.isExistingUser
+                            ? <EmptyStateComponent
+                                page="card"
+                                title="Ah, that sense of freshness! Let's start a new day."
+                                subTitle="Need a few hints on all awesome ways to create a card?"
+                                ctaTitle="Create a card"
+                                onCreateNewCard={this.onOpenNewCardModal.bind(this)}
+                              />
+                            : <EmptyStateComponent
+                                page="card"
+                                title="It's pretty boring here... Let's create some cards!"
+                                subTitle="Watch a 15 sec video about creating cards"
+                                ctaTitle="Create your first card"
+                                onCreateNewCard={this.onOpenNewCardModal.bind(this)}
+                              />
+                          )}
                         </View>
                       }
                   </View>

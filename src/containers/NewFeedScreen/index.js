@@ -9,7 +9,8 @@ import {
   Keyboard,
   ScrollView,
   Image,
-  SafeAreaView
+  SafeAreaView,
+  AsyncStorage
 } from 'react-native'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
@@ -81,6 +82,12 @@ class NewFeedScreen extends React.Component {
       // creating a feed
       loading = true;
     } else if (this.props.feedo.loading !== types.CREATE_FEED_FULFILLED && nextProps.feedo.loading === types.CREATE_FEED_FULFILLED) {
+      const data = {
+        userId: nextProps.user.userInfo.id,
+        state: 'true'
+      }
+      AsyncStorage.setItem('BubbleFeedFirstTimeCreated', JSON.stringify(data));
+
       this.setState({
         feedData: nextProps.feedo.currentFeed
       })
@@ -684,8 +691,9 @@ NewFeedScreen.propTypes = {
 }
 
 
-const mapStateToProps = ({ feedo }) => ({
+const mapStateToProps = ({ feedo, user }) => ({
   feedo,
+  user
 })
 
 
