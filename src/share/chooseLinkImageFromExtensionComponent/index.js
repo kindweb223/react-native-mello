@@ -18,6 +18,7 @@ import * as types from '../../redux/card/types'
 
 import ShareExtension from '../shareExtension'
 import LoadingScreen from '../../containers/LoadingScreen';
+import CONSTANTS from '../../service/constants'
 
 
 class ChooseLinkImageFromExtension extends React.Component {
@@ -89,7 +90,9 @@ class ChooseLinkImageFromExtension extends React.Component {
   }
 
   onSelectItem(image) {
-    Actions.ShareCardScreen({imageUrl: image});
+    Actions.ShareSelectHuntScreen({
+      imageUrl: image,
+    });
   }
 
   onCancel() {
@@ -97,7 +100,7 @@ class ChooseLinkImageFromExtension extends React.Component {
   }
 
   onSkip() {
-    Actions.ShareCardScreen();
+    Actions.ShareSelectHuntScreen();
   }
 
   renderImage(item) {

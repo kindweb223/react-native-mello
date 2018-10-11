@@ -6,12 +6,12 @@ const styles = StyleSheet.create({
   container: {
     justifyContent: 'center',
     height: CONSTANTS.SCREEN_HEIGHT,
-    backgroundColor: '#00000060',
+    backgroundColor: COLORS.MODAL_BACKGROUND,
   },
   mainContainer: {
     borderRadius: 18,
     marginHorizontal: 16,
-    backgroundColor: '#E0E0E0',
+    backgroundColor: 'rgba(255, 255, 255, .95)',
     height: CONSTANTS.SCREEN_HEIGHT - 200,
   },
   topContainer: {
@@ -19,7 +19,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'space-between',
     paddingHorizontal: 16,
-    backgroundColor: '#D5D5D5',
+    // backgroundColor: '#D5D5D5',
     borderTopLeftRadius: 18,
     borderTopRightRadius: 18,
     height: 50,

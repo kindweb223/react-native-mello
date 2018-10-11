@@ -111,7 +111,7 @@ const styles = StyleSheet.create({
     paddingRight: 16,
   },
   extensionHeaderContainer: {
-    backgroundColor: '#D5D5D5',
+    // backgroundColor: '#D5D5D5',
     paddingVertical: 5,
     borderTopLeftRadius: 18,
     borderTopRightRadius: 18,
@@ -208,7 +208,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    backgroundColor: '#D5D5D5',
+    // backgroundColor: '#D5D5D5',
     paddingHorizontal: 7,
     paddingVertical: 10,
     borderBottomLeftRadius: 18,

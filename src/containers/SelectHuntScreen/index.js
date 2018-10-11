@@ -127,7 +127,8 @@ class SelectHuntScreen extends React.Component {
   onSelectFeedo(item) {
     this.props.setCurrentFeed(item);
     if (this.props.selectMode === CONSTANTS.FEEDO_SELECT_FROM_SHARE_EXTENSION_FIRST) {
-      Actions.ChooseLinkImageFromExtension();
+      const { imageUrl } = this.props;
+      Actions.ShareCardScreen({imageUrl});
       return;
     }
     
@@ -253,7 +254,8 @@ class SelectHuntScreen extends React.Component {
               {
                 paddingBottom: this.animatedKeyboardHeight,
                 height: CONSTANTS.SCREEN_HEIGHT - CONSTANTS.SCREEN_VERTICAL_MIN_MARGIN * 2,
-                backgroundColor: this.props.selectMode === CONSTANTS.FEEDO_SELECT_FROM_MAIN ? '#fff' : '#E0E0E0',
+                backgroundColor: this.props.selectMode === CONSTANTS.FEEDO_SELECT_FROM_MAIN ? '#fff' : 'rgba(255, 255, 255, .95)',
+                marginHorizontal: this.props.selectMode === CONSTANTS.FEEDO_SELECT_FROM_MAIN ? 0 : 10,
               },
             ]}
           >
@@ -302,14 +304,16 @@ class SelectHuntScreen extends React.Component {
 
 
 SelectHuntScreen.defaultProps = {
-  onClosed: PropTypes.func,
   selectMode: CONSTANTS.FEEDO_SELECT_FROM_MAIN,
+  imageUrl: '',
+  onClosed: PropTypes.func,
 }
 
 
 SelectHuntScreen.propTypes = {
-  onClosed: PropTypes.func,
   selectMode: PropTypes.number,
+  imageUrl: PropTypes.string,
+  onClosed: PropTypes.func,
 }
 
 
