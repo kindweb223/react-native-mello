@@ -7,7 +7,7 @@ export default styles = StyleSheet.create({
   container: {
     flex: 1,
     justifyContent: 'center',
-    backgroundColor: '#00000060',
+    backgroundColor: COLORS.MODAL_BACKGROUND,
   },
   feedContainer: {
     position: 'absolute',
@@ -40,7 +40,8 @@ export default styles = StyleSheet.create({
   extensionTopContainer: {
     paddingHorizontal: 0, 
     height: 50,
-    backgroundColor: '#D5D5D5',
+    paddingVertical: 0,
+    // backgroundColor: '#D5D5D5',
   },
   closeButtonWrapper: {
     paddingHorizontal: 4,

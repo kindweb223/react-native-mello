@@ -1356,7 +1356,7 @@ class NewCardScreen extends React.Component {
         marginTop: CONSTANTS.SCREEN_VERTICAL_MIN_MARGIN,
         marginBottom: Animated.add(CONSTANTS.SCREEN_VERTICAL_MIN_MARGIN, this.animatedKeyboardHeight),
         borderRadius: 18,
-        backgroundColor: '#E0E0E0',
+        backgroundColor: 'rgba(255, 255, 255, .95)',
         marginHorizontal: 10,
       }
     } else {
@@ -1373,6 +1373,7 @@ class NewCardScreen extends React.Component {
         style={[
           styles.cardContainer,
           cardStyle,
+          cardMode === CONSTANTS.SHARE_EXTENTION_CARD && {backgroundColor: COLORS.MODAL_BACKGROUND}
         ]}
       >
         <Animated.View style={contentContainerStyle}>
@@ -1382,7 +1383,7 @@ class NewCardScreen extends React.Component {
           {this.renderBottomContent}
           {
             // If show keyboard button, and not quick add card from dashboard as interferes with change Feed https://cl.ly/ba004cb3a34b
-            this.state.isShowKeyboardButton && cardMode !== CONSTANTS.MAIN_APP_CARD_FROM_DASHBOARD &&
+            this.state.isShowKeyboardButton && cardMode !== CONSTANTS.SHARE_EXTENTION_CARD &&
             <Animated.View
               style={[styles.hideKeyboardContainer, {
                   bottom: cardMode === CONSTANTS.SHARE_EXTENTION_CARD ? 16 : Animated.add(this.animatedKeyboardHeight, isIphoneX() ? 24 + 16: 16)
