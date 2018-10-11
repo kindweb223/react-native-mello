@@ -19,23 +19,31 @@ const SPEECH_BUBBLE_MIDDLE = require('../../../assets/images/onboard/bubbleLarge
 class SpeechBubbleComponent extends React.Component {
   constructor(props) {
     super(props);
+    this.state = {
+      showCloseBtn: false
+    }
+  }
+
+  UNSAFE_componentWillReceiveProps(nextProps) {
+    this.setState({ showCloseBtn: nextProps.isShowCloseBubble })
   }
 
   render() {
     const { page } = this.props
+    const { showCloseBtn } = this.state
 
     const marginTop = 20
     
-    let height = 90
-    if (page === 'feed') {
-      height = 90
-    } else if (page === 'card') {
-      height = 130
-    } else if (page === 'pinned') {
-      height = 75
-    } else {
-      height = 160
-    }
+    // let height = 90
+    // if (page === 'feed') {
+    //   height = 90
+    // } else if (page === 'card') {
+    //   height = 130
+    // } else if (page === 'pinned') {
+    //   height = 75
+    // } else {
+    //   height = 160
+    // }
 
     return (
       <View style={styles.container}>
@@ -44,7 +52,7 @@ class SpeechBubbleComponent extends React.Component {
           <ImageBackground
             source={SPEECH_BUBBLE_MIDDLE}
             resizeMode="stretch"
-            style={[styles.bubbleView, { height }]}
+            style={[styles.bubbleView]}
           >
             <View style={styles.bubbleContent}>
               <Text style={styles.title}>
@@ -52,10 +60,10 @@ class SpeechBubbleComponent extends React.Component {
                   "So you've been invited to feedo? Exciting, isn't it?!"
                 )}
                 {page === 'card' && (
-                  "Feeds contain cards, Cards can have, images, text, attachments and likes. My granny enjoys liking."
+                  "Feeds contain cards. Cards can have, images, text, attachments and likes. My granny enjoys liking."
                 )}
                 {page === 'pinned' && (
-                  "Your pinned items will appear here. To pin a feed tap and hold it to bring up a quick actionsand select PIN."
+                  "Your pinned items will appear here. To pin a feed tap and hold it to bring up a quick actions and select PIN."
                 )}
                 {page === 'shared' && (
                   "Feeds can be shared with friends and colleagues for collaboration. Feeds you've been invited to will appear here."
@@ -66,15 +74,15 @@ class SpeechBubbleComponent extends React.Component {
                 <TouchableOpacity style={styles.videoBtn} activeOpacity={0.8}>
                   <Text style={styles.videoBtnText}>
                     {page === 'feed' && (
-                      "Watch a 15 sec Quick Start video"
+                      "Watch a 15 sec Quick Start video "
                     )}
                     {page === 'card' && (
-                      "Watch a 15 sec video about the cards"
+                      "Watch a 15 sec video about the cards "
                     )}
                     {page === 'shared' && (
-                      "All you need to know about sharing in 15sec"
+                      "All you need to know about sharing in 15 sec "
                     )}
-                    <MaterialCommunityIcons name='play' size={23} color={COLORS.PURPLE} style={styles.icon} />
+                    <MaterialCommunityIcons name='play' size={23} color={COLORS.PURPLE} />
                   </Text>
                 </TouchableOpacity>
               )}
@@ -83,7 +91,7 @@ class SpeechBubbleComponent extends React.Component {
           <Image source={SPEECH_BUBBLE_BOTTOM} style={styles.bubbleView} resizeMode="stretch" />
         </View>
 
-        {(page === 'feed' || page === 'card') && (
+        {(page === 'feed' || page === 'card') && showCloseBtn && (
           <View style={[styles.closeBtnView, { top: marginTop - 10 }]}>
             <TouchableOpacity style={styles.closeBtn} onPress={() => this.props.onCloseBubble()}>
               <MaterialIcons name='close' size={15} color="#fff" />
@@ -96,11 +104,13 @@ class SpeechBubbleComponent extends React.Component {
 }
 
 SpeechBubbleComponent.defaultProps = {
-  page: 'feed'
+  page: 'feed',
+  isShowCloseBubble: false
 }
 
 SpeechBubbleComponent.propTypes = {
-  page: PropTypes.string
+  page: PropTypes.string,
+  isShowCloseBubble: PropTypes.bool
 }
 
 export default SpeechBubbleComponent

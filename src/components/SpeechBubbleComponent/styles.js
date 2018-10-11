@@ -16,8 +16,8 @@ const styles = StyleSheet.create({
   },
   bubbleContent: {
     flex: 1,
-    paddingLeft: 20,
-    paddingRight: 30,
+    marginLeft: 20,
+    marginRight: 40,
     justifyContent: 'space-between'
   },
   title: {
@@ -27,9 +27,7 @@ const styles = StyleSheet.create({
   },
   videoBtn: {
     width: '100%',
-    flexDirection: 'row',
-    justifyContent: 'flex-start',
-    alignItems: 'flex-start'
+    marginTop: 15
   },
   videoBtnText: {
     fontWeight: 'bold',
@@ -56,6 +54,9 @@ const styles = StyleSheet.create({
     height: '100%',
     justifyContent: 'center',
     alignItems: 'center'
+  },
+  icon: {
+    left: 50
   }
 })
 

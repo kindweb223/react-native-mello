@@ -99,7 +99,8 @@ class HomeScreen extends React.Component {
       selectedIdeaInvitee: null,
       cardViewMode: CONSTANTS.CARD_NONE,
       appState: AppState.currentState,
-      closeBubble: true
+      showBubble: false,
+      isShowCloseBubble: false
     };
 
     this.currentRef = null;
@@ -178,7 +179,20 @@ class HomeScreen extends React.Component {
     }
   }
 
-  componentDidUpdate(prevProps) {
+  async componentDidUpdate(prevProps) {
+    const { feedoList } = this.props.feedo
+
+    const showSpeechBubble = await AsyncStorage.getItem('showFeedSpeechBubble')
+    if (prevProps.feedo.feedoList !== feedoList && JSON.parse(showSpeechBubble) !== 'false') {
+      const ownFeeds = filter(feedoList, feed => feed.metadata.owner === true)
+      if (feedoList.length > 0 && ownFeeds.length === 0) {
+        this.setState({ showBubble: true })
+        setTimeout(() => {
+          this.setState({ isShowCloseBubble: true })
+        }, 60000)
+      }
+    }
+
     if (this.props.feedo.loading === 'SET_FEED_DETAIL_ACTION' && prevProps.feedo.feedDetailAction !== this.props.feedo.feedDetailAction) {
       if (this.props.feedo.feedDetailAction.action === 'Delete') {
         this.setState({ isShowToaster: true })
@@ -706,9 +720,14 @@ class HomeScreen extends React.Component {
     );
   }
 
+  closeBubble = () => {
+    this.setState({ showBubble: false })
+    AsyncStorage.setItem('showFeedSpeechBubble', JSON.stringify('false'));
+  }
+
   render () {
     const { loading, feedoList, emptyState, tabIndex } = this.state
-
+    
     const normalHeaderOpacity = this.state.scrollY.interpolate({
       inputRange: [20, 60],
       outputRange: [1, 0],
@@ -805,10 +824,11 @@ class HomeScreen extends React.Component {
                   tabLabel={{ label: 'All' }}
                   onLayout={(event) => this.onScrollableTabViewLayout(event, 0)}
                 >
-                  {this.state.closeBubble && (
+                  {this.state.showBubble && (
                     <SpeechBubbleComponent
                       page="feed"
-                      onCloseBubble={() => this.setState({ closeBubble: false })}
+                      isShowCloseBubble={this.state.isShowCloseBubble}
+                      onCloseBubble={() => this.closeBubble()}
                     />
                   )}
 

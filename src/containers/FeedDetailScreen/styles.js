@@ -111,7 +111,7 @@ const styles = StyleSheet.create({
     paddingVertical: 10,
     position: 'absolute',
     right: CONSTANTS.PADDING,
-    top: CONSTANTS.STATUSBAR_HEIGHT + 60,
+    top: CONSTANTS.STATUSBAR_HEIGHT + ifIphoneX(70, 60),
     zIndex: 0,
     ...Platform.select({
       ios: {

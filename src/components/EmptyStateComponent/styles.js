@@ -36,6 +36,7 @@ const styles = StyleSheet.create({
     lineHeight: 24
   },
   videoBtn: {
+    width: '100%'
   },
   videoBtnText: {
     fontWeight: 'bold',

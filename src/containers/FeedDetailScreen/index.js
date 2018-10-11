@@ -9,6 +9,7 @@ import {
   Animated,
   TouchableOpacity,
   TouchableHighlight,
+  AsyncStorage
 } from 'react-native'
 
 import { connect } from 'react-redux'
@@ -115,7 +116,8 @@ class FeedDetailScreen extends React.Component {
       isVisibleCardOpenMenu: false,
       currentScreen: FeedDetailMode,
       feedoMode: 1,
-      closeBubble: true
+      showBubble: false,
+      isShowCloseBubble: false
     };
     this.animatedOpacity = new Animated.Value(0)
     this.menuOpacity = new Animated.Value(0)
@@ -138,8 +140,8 @@ class FeedDetailScreen extends React.Component {
     this.props.getFeedDetail(this.props.data.id)
   }
 
-  UNSAFE_componentWillReceiveProps(nextProps) {
-    const { feedo, card, currentFeed } = nextProps
+  async UNSAFE_componentWillReceiveProps(nextProps) {
+    const { feedo, card } = nextProps    
 
     if ((this.props.feedo.loading === 'ADD_FILE_PENDING' && feedo.loading === 'ADD_FILE_FULFILLED') ||
         (this.props.feedo.loading === 'DELETE_FILE_PENDING' && feedo.loading === 'DELETE_FILE_FULFILLED')) {
@@ -164,6 +166,17 @@ class FeedDetailScreen extends React.Component {
         (this.props.card.loading === 'MOVE_CARD_PENDING' && card.loading === 'MOVE_CARD_FULFILLED')) {
       
       const currentFeed = feedo.currentFeed
+
+      const showSpeechBubble = await AsyncStorage.getItem('showCardSpeechBubble')
+      if (JSON.parse(showSpeechBubble) !== 'false') {      
+        const ownCards = _.filter(currentFeed.ideas, idea => idea.metadata.owner === true)
+        if (currentFeed.ideas.length > 0 && ownCards.length === 0) {
+          this.setState({ showBubble: true })
+          setTimeout(() => {
+            this.setState({ isShowCloseBubble: true })
+          }, 60000)
+        }
+      }
 
       this.setState({
         loading: false,
@@ -814,6 +827,11 @@ class FeedDetailScreen extends React.Component {
     this.props.deleteFile(id, fileId)
   }
 
+  closeBubble = () => {
+    this.setState({ showBubble: false })
+    AsyncStorage.setItem('showCardSpeechBubble', JSON.stringify('false'));
+  }
+
   render () {
     const { currentFeed, loading, pinText } = this.state
 
@@ -869,8 +887,8 @@ class FeedDetailScreen extends React.Component {
                 </View>
               )}
 
-              {!_.isEmpty(currentFeed) && currentFeed && currentFeed.ideas && currentFeed.ideas.length > 0 && this.state.closeBubble && (
-                <SpeechBubbleComponent page="card" onCloseBubble={() => this.setState({ closeBubble: false })} />
+              {!_.isEmpty(currentFeed) && currentFeed && currentFeed.ideas && currentFeed.ideas.length > 0 && this.state.showBubble && (
+                <SpeechBubbleComponent page="card" onCloseBubble={() => this.closeBubble()} isShowCloseBubble={this.state.isShowCloseBubble} />
               )}
 
               {
@@ -997,7 +1015,7 @@ class FeedDetailScreen extends React.Component {
           onModalHide={this.onHiddenLongHoldMenu.bind(this)}
           onBackdropPress={() => this.setState({ isVisibleCardOpenMenu: false })}
         >
-          <Animated.View style={[styles.settingMenuView, { top: 60 + CONSTANTS.STATUSBAR_HEIGHT }]}>
+          <Animated.View style={styles.settingMenuView}>
             <CardControlMenuComponent 
               onMove={() => this.onMoveCard(this.state.selectedLongHoldIdea.id)}
               onDelete={() => this.onConfirmDeleteCard()}

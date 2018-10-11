@@ -47,9 +47,6 @@ class EmptyStateComponent extends React.Component {
             source={SPEECH_BUBBLE_MIDDLE}
             resizeMode="stretch"
             style={[styles.bubbleView, { height }]}
-            capInsets={{
-              left: 10, right: 30, top: 10, bottom: 10
-            }}
           >
             <View style={styles.bubbleContent}>
               <Text style={styles.title}>
@@ -60,7 +57,7 @@ class EmptyStateComponent extends React.Component {
               </Text>
               <TouchableOpacity style={styles.videoBtn} activeOpacity={0.8}>
                 <Text style={styles.videoBtnText}>
-                  Watch a 15 sec video about cre {page === 'feed' ? 'feeds' : 'cards'}
+                  Watch a 15 sec video about creating {page === 'feed' ? 'feeds ' : 'cards '}
                   <MaterialCommunityIcons name='play' size={23} color={COLORS.PURPLE} />
                 </Text>
               </TouchableOpacity>
