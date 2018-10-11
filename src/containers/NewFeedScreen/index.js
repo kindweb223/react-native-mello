@@ -126,7 +126,7 @@ class NewFeedScreen extends React.Component {
     } else if (this.props.feedo.loading !== types.UPDATE_FEED_FULFILLED && nextProps.feedo.loading === types.UPDATE_FEED_FULFILLED) {
       // success in updating a feed
       this.onClose(nextProps.feedo.currentFeed);
-      if (this.props.feedoMode !== CONSTANTS.FEEDO_FROM_CARD && nextProps.selectedFeedId === null) {
+      if (this.props.viewMode !== CONSTANTS.FEEDO_FROM_CARD && nextProps.selectedFeedId === null) {
         Actions.FeedDetailScreen({ data: nextProps.feedo.currentFeed });
       } 
     } else if (this.props.feedo.loading !== types.DELETE_FILE_PENDING && nextProps.feedo.loading === types.DELETE_FILE_PENDING) {
@@ -271,6 +271,11 @@ class NewFeedScreen extends React.Component {
   }
   
   onOpenActionSheet() {
+    const { feedoMode } = this.props;
+    if (feedoMode === CONSTANTS.SHARE_EXTENTION_FEEDO) {
+      this.props.deleteDraftFeed(this.state.feedData.id)
+      return;
+    }
     this.leaveActionSheetRef.show();
     return;
   }
@@ -389,7 +394,29 @@ class NewFeedScreen extends React.Component {
     this.props.deleteFile(id, fileId);
   }
 
-  get renderTopContent() {
+  get renderHeader() {
+    const { feedoMode } = this.props;
+    if (feedoMode === CONSTANTS.SHARE_EXTENTION_FEEDO) {
+      return (
+        <View style={styles.extensionTopContainer}>
+          <TouchableOpacity 
+            style={styles.closeButtonWrapper}
+            activeOpacity={0.6}
+            onPress={this.onOpenActionSheet.bind(this)}
+          >
+            <MaterialCommunityIcons name="close" size={32} color={COLORS.PURPLE} />
+          </TouchableOpacity>
+          <TouchableOpacity 
+            style={styles.extensionCreateButtonWapper}
+            activeOpacity={0.6}
+            onPress={this.onUpdate.bind(this)}
+          >
+            <Text style={[styles.textButton, {color: COLORS.PURPLE}]}>Create Feed</Text>
+          </TouchableOpacity>
+        </View>
+      );
+    }
+
     return (
       <View style={styles.topContainer}>
         <TouchableOpacity 
@@ -406,7 +433,7 @@ class NewFeedScreen extends React.Component {
         >
           <Text style={styles.textButton}>
             {this.props.selectedFeedId
-              ? this.props.feedoMode === CONSTANTS.FEEDO_FROM_MAIN ? 'Save' : 'Done'
+              ? this.props.viewMode === CONSTANTS.FEEDO_FROM_MAIN ? 'Save' : 'Done'
               : 'Create Feed'
             }
           </Text>
@@ -522,6 +549,10 @@ class NewFeedScreen extends React.Component {
   }
 
   get renderBottomContent() {
+    const { feedoMode } = this.props;
+    if (feedoMode === CONSTANTS.SHARE_EXTENTION_FEEDO) {
+      return;
+    }
     return (
       <View style={styles.bottomContainer}>
         <View style={styles.bottomLeftContainer}>
@@ -565,9 +596,10 @@ class NewFeedScreen extends React.Component {
 
   get renderFeed() {
     let postion = 0;
-    if (this.props.feedoMode === CONSTANTS.FEEDO_FROM_MAIN || this.props.feedoMode === CONSTANTS.FEEDO_FROM_COLLAPSE) {
+    const { feedoMode, viewMode } = this.props;
+    if (viewMode === CONSTANTS.FEEDO_FROM_MAIN || viewMode === CONSTANTS.FEEDO_FROM_COLLAPSE) {
       postion = CONSTANTS.SCREEN_HEIGHT;
-    } else if (this.props.feedoMode === CONSTANTS.FEEDO_FROM_CARD) {
+    } else if (viewMode === CONSTANTS.FEEDO_FROM_CARD) {
       postion = CONSTANTS.SCREEN_WIDTH;
     }
     const animatedMove  = this.animatedShow.interpolate({
@@ -575,26 +607,37 @@ class NewFeedScreen extends React.Component {
       outputRange: [postion, 0]
     });
     
+    let contentContainerStyle = {};
+    if (feedoMode === CONSTANTS.SHARE_EXTENTION_FEEDO) {
+      contentContainerStyle = {
+        height: Animated.subtract(CONSTANTS.SCREEN_HEIGHT - CONSTANTS.SCREEN_VERTICAL_MIN_MARGIN * 2, this.animatedKeyboardHeight),
+        marginTop: CONSTANTS.SCREEN_VERTICAL_MIN_MARGIN,
+        marginBottom: Animated.add(CONSTANTS.SCREEN_VERTICAL_MIN_MARGIN, this.animatedKeyboardHeight),
+        borderRadius: 18,
+        backgroundColor: '#fff',
+        // backgroundColor: 'rgba(255, 255, 255, .95)',
+        marginHorizontal: 10,
+      }
+    } else {
+      contentContainerStyle = {
+        paddingBottom: this.animatedKeyboardHeight,
+        height: CONSTANTS.SCREEN_HEIGHT,
+        backgroundColor: '#fff'
+      }
+    }
+
     return (
       <Animated.View 
         style={[
           styles.feedContainer,
           { opacity: this.animatedShow },
-          (this.props.feedoMode === CONSTANTS.FEEDO_FROM_MAIN || this.props.feedoMode === CONSTANTS.FEEDO_FROM_COLLAPSE) && { top: animatedMove },
-          (this.props.feedoMode === CONSTANTS.FEEDO_FROM_CARD) && { left: animatedMove }
+          (viewMode === CONSTANTS.FEEDO_FROM_MAIN || viewMode === CONSTANTS.FEEDO_FROM_COLLAPSE) && { top: animatedMove },
+          (viewMode === CONSTANTS.FEEDO_FROM_CARD) && { left: animatedMove }
         ]}
       >
-        <Animated.View 
-          style={[
-            styles.contentContainer,
-            {
-              paddingBottom: this.animatedKeyboardHeight,
-              height: CONSTANTS.SCREEN_HEIGHT
-            }
-          ]}
-        >
+        <Animated.View style={contentContainerStyle}>
           <SafeAreaView style={ styles.feedContainer }>
-            {this.renderTopContent}
+            {this.renderHeader}
             {this.renderCenterContent}
             {this.renderBottomContent}
           </SafeAreaView>
@@ -670,7 +713,8 @@ NewFeedScreen.defaultProps = {
   feedo: {},
   feedData: {},
   selectedFeedId: null,
-  feedoMode: CONSTANTS.FEEDO_FROM_MAIN,
+  viewMode: CONSTANTS.FEEDO_FROM_MAIN,
+  feedoMode: CONSTANTS.MAIN_APP_FEEDO,
   onClose: () => {},
 }
 
@@ -680,6 +724,7 @@ NewFeedScreen.propTypes = {
   feedData: PropTypes.object,
   selectedFeedId: PropTypes.string,
   onClose: PropTypes.func,
+  viewMode: PropTypes.number,
   feedoMode: PropTypes.number,
 }
 
