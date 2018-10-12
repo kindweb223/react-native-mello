@@ -217,7 +217,7 @@ class NewCardScreen extends React.Component {
       loading = true;
     } else if (this.props.card.loading !== types.UPDATE_CARD_FULFILLED && nextProps.card.loading === types.UPDATE_CARD_FULFILLED) {
       // success in updating a card
-      if (this.props.cardMode === CONSTANTS.MAIN_APP_CARD_FROM_DASHBOARD) {
+      if (this.props.cardMode === CONSTANTS.MAIN_APP_CARD_FROM_DASHBOARD || this.props.cardMode === CONSTANTS.SHARE_EXTENTION_CARD) {
         this.saveFeedId();
       }
       this.onClose();
@@ -386,7 +386,7 @@ class NewCardScreen extends React.Component {
       toValue: 1,
       duration: CONSTANTS.ANIMATEION_MILLI_SECONDS,
     }).start(async () => {
-      if (cardMode === CONSTANTS.MAIN_APP_CARD_FROM_DASHBOARD) {
+      if ((cardMode === CONSTANTS.MAIN_APP_CARD_FROM_DASHBOARD) || (cardMode === CONSTANTS.SHARE_EXTENTION_CARD)) {
         const strFeedoInfo = await AsyncStorage.getItem(CONSTANTS.CARD_SAVED_FEEDO_ID);
         if (strFeedoInfo) {
           const feedoInfo = JSON.parse(strFeedoInfo);
@@ -1234,7 +1234,7 @@ class NewCardScreen extends React.Component {
           <TouchableOpacity 
             style={styles.addCardButtonWapper}
             activeOpacity={0.6}
-            onPress={this.onUpdateCard.bind(this)}
+            onPress={this.onUpdateFeed.bind(this)}
           >
             <Text style={[styles.textButton, {color: COLORS.PURPLE}]}>Create card</Text>
           </TouchableOpacity>
@@ -1415,7 +1415,7 @@ class NewCardScreen extends React.Component {
     if (this.state.isVisibleSelectFeedoModal) {
       return (
         <SelectHuntScreen
-          selectMode={cardMode !== CONSTANTS.SHARE_EXTENTION_CARD ? CONSTANTS.FEEDO_SELECT_FROM_MAIN : CONSTANTS.FEEDO_SELECT_FROM_SHARE_EXTENSION_LATER}
+          selectMode={cardMode !== CONSTANTS.SHARE_EXTENTION_CARD ? CONSTANTS.FEEDO_SELECT_FROM_MAIN : CONSTANTS.FEEDO_SELECT_FROM_SHARE_EXTENSION}
           onClosed={() => this.onCloseSelectHunt()}
         />
       );

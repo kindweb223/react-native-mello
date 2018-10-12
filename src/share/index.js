@@ -41,7 +41,6 @@ import ShareExtension from './shareExtension'
 import CONSTANTS from '../service/constants';
 import ShareCardScreen from './ShareCardScreen';
 import ShareModalScreen from './ShareModalScreen';
-import ShareSelectHuntScreen from './ShareSelectHuntScreen';
 import ChooseLinkImageFromExtension from './chooseLinkImageFromExtensionComponent';
 
 
@@ -86,7 +85,6 @@ export default class Share extends Component {
           <Router>
             <Scene key="root" hideNavBar>
               <Scene key="ChooseLinkImageFromExtension" component={ChooseLinkImageFromExtension} /> 
-              <Scene key="ShareSelectHuntScreen" component={ShareSelectHuntScreen} />
               <Scene key="ShareCardScreen" component={ShareCardScreen} />
               <Scene key="ShareModalScreen" component={ShareModalScreen} initial={this.state.isVisibleModal} />
             </Scene>
