@@ -15,6 +15,11 @@ const styles = StyleSheet.create({
     marginLeft: 10,
     paddingRight: 10,
   },
+  itemSmallContainer: {
+    flex: 1,
+    height: 41,
+    marginBottom: 5,
+  },
   buttonContainer: {
     flex: 1,
     flexDirection: 'row',
@@ -26,6 +31,12 @@ const styles = StyleSheet.create({
     width: 84,
     height: 84,
     borderRadius: 5,
+  },
+  imageSmallCover: {
+    width: 25,
+    height: 25,
+    borderRadius: 2,
+    marginLeft: 8,
   },
   infoContainer: {
     flex: 1,
@@ -43,6 +54,13 @@ const styles = StyleSheet.create({
     fontSize: 14,
     lineHeight: 21,
     color: COLORS.DARK_GREY,
+  },
+  textLink: {
+    flex: 1,
+    fontSize: 14,
+    lineHeight: 21,
+    color: COLORS.BLUE,
+    marginLeft: 10,
   },
   closeButtonContainer: {
     position: 'absolute',

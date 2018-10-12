@@ -13,8 +13,7 @@ const styles = StyleSheet.create({
   },
   statsView: {
     flexDirection: 'row',
-    marginTop: 5,
-    marginBottom: 3
+    marginTop: 5
   },
   statsItemView: {
     flexDirection: 'row',
@@ -46,6 +45,9 @@ const styles = StyleSheet.create({
   },
   avatarView: {
     marginLeft: 10
+  },
+  tagsView: {
+    marginTop: 3
   }
 })
 

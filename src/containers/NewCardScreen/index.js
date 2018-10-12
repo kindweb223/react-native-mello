@@ -122,6 +122,8 @@ class NewCardScreen extends React.Component {
     this.draftFeedo = null;
     this.prevFeedo = null;
     this.isUpdateDraftCard = false;
+
+    this.isUploadShareImage = props.shareImageUrl !== '';
   }
 
   UNSAFE_componentWillReceiveProps(nextProps) {
@@ -137,13 +139,12 @@ class NewCardScreen extends React.Component {
       AsyncStorage.setItem('BubbleCardFirstTimeCreated', JSON.stringify(data));
 
       if (this.props.cardMode === CONSTANTS.SHARE_EXTENTION_CARD && this.props.shareUrl !== '') {
-        // this.setState({
-        //   // cardName: this.props.shareUrl,
-        //   idea: this.props.shareUrl,
-        // }, () => {
-        //   this.checkUrl(this.state.idea);
-        // });
-        this.addLinkImage(nextProps.card.currentCard.id, this.props.shareUrl);
+        this.setState({
+          // cardName: this.props.shareUrl,
+          idea: this.props.shareUrl,
+        }, () => {
+          this.checkUrl(this.state.idea);
+        });
       }
     } else if (this.props.card.loading !== types.GET_FILE_UPLOAD_URL_PENDING && nextProps.card.loading === types.GET_FILE_UPLOAD_URL_PENDING) {
       // getting a file upload url
@@ -192,7 +193,11 @@ class NewCardScreen extends React.Component {
       loading = true;
     } else if (this.props.card.loading !== types.ADD_LINK_FULFILLED && nextProps.card.loading === types.ADD_LINK_FULFILLED) {
       // success in adding a link
-      if (this.addLinkIndex < this.openGraphForNoteLinks.length) {
+      if (this.isOpenGraphForNewCard && this.props.cardMode === CONSTANTS.SHARE_EXTENTION_CARD && this.isUploadShareImage) {
+        this.isUploadShareImage = false;
+        const { id } = this.props.card.currentCard;
+        this.addLinkImage(id, this.props.shareImageUrl);
+      } else if (this.addLinkIndex < this.openGraphForNoteLinks.length) {
         const { id } = this.props.card.currentCard;
         const {
           url,
@@ -223,7 +228,7 @@ class NewCardScreen extends React.Component {
       loading = true;
     } else if (this.props.card.loading !== types.UPDATE_CARD_FULFILLED && nextProps.card.loading === types.UPDATE_CARD_FULFILLED) {
       // success in updating a card
-      if (this.props.cardMode === CONSTANTS.MAIN_APP_CARD_FROM_DASHBOARD) {
+      if (this.props.cardMode === CONSTANTS.MAIN_APP_CARD_FROM_DASHBOARD || this.props.cardMode === CONSTANTS.SHARE_EXTENTION_CARD) {
         this.saveFeedId();
       }
       this.onClose();
@@ -246,27 +251,39 @@ class NewCardScreen extends React.Component {
     } else if (this.props.card.loading !== types.GET_OPEN_GRAPH_FULFILLED && nextProps.card.loading === types.GET_OPEN_GRAPH_FULFILLED) {
       // success in getting open graph
       if (this.isOpenGraphForNewCard) {
-        this.setState({
-          // cardName: nextProps.card.currentOpneGraph.title,
-          // idea: nextProps.card.currentOpneGraph.description + '\n' + this.urlForNewCard,
-          idea: nextProps.card.currentOpneGraph.title + '\n' + this.urlForNewCard,
-        });
-
-        this.allLinkImages = nextProps.card.currentOpneGraph.images;
-        if (this.allLinkImages.length > 0) {
+        if (this.props.cardMode === CONSTANTS.SHARE_EXTENTION_CARD) {
           this.setState({
-            isVisibleChooseLinkImagesModal: true,
-          });
+            // cardName: nextProps.card.currentOpneGraph.title,
+            // idea: nextProps.card.currentOpneGraph.description + '\n' + this.urlForNewCard,
+            idea: nextProps.card.currentOpneGraph.title,
+          });  
+          loading = true;
+          const { id } = this.props.card.currentCard;
+          const url = this.props.shareUrl || nextProps.card.currentOpneGraph.url;
+          const title = nextProps.card.currentOpneGraph.title;
+          const description = nextProps.card.currentOpneGraph.description;
+          const image =  nextProps.card.currentOpneGraph.image || this.props.shareImageUrl;
+          this.props.addLink(id, url, title, description, image);
         } else {
-          if (nextProps.card.currentOpneGraph.image) {
-            loading = true;
-            const {
-              id, 
-            } = this.props.card.currentCard;      
-            this.setState({ coverImage: nextProps.card.currentOpneGraph.image })
-            this.addLinkImage(id, nextProps.card.currentOpneGraph.image);
+          this.setState({
+            // cardName: nextProps.card.currentOpneGraph.title,
+            // idea: nextProps.card.currentOpneGraph.description + '\n' + this.urlForNewCard,
+            idea: nextProps.card.currentOpneGraph.title + '\n' + this.urlForNewCard,
+          });  
+          this.allLinkImages = nextProps.card.currentOpneGraph.images;
+          if (this.allLinkImages.length > 0) {
+            this.setState({
+              isVisibleChooseLinkImagesModal: true,
+            });
+          } else {
+            if (nextProps.card.currentOpneGraph.image) {
+              loading = true;
+              const { id } = this.props.card.currentCard;      
+              this.setState({ coverImage: nextProps.card.currentOpneGraph.image })
+              this.addLinkImage(id, nextProps.card.currentOpneGraph.image);
+            }
           }
-        }
+        } 
         this.onHideKeyboard();
       } else {
         this.openGraphForNoteLinks.push({
@@ -392,7 +409,7 @@ class NewCardScreen extends React.Component {
       toValue: 1,
       duration: CONSTANTS.ANIMATEION_MILLI_SECONDS,
     }).start(async () => {
-      if (cardMode === CONSTANTS.MAIN_APP_CARD_FROM_DASHBOARD) {
+      if ((cardMode === CONSTANTS.MAIN_APP_CARD_FROM_DASHBOARD) || (cardMode === CONSTANTS.SHARE_EXTENTION_CARD)) {
         const strFeedoInfo = await AsyncStorage.getItem(CONSTANTS.CARD_SAVED_FEEDO_ID);
         if (strFeedoInfo) {
           const feedoInfo = JSON.parse(strFeedoInfo);
@@ -569,13 +586,17 @@ class NewCardScreen extends React.Component {
       id, 
       files,
     } = this.props.card.currentCard;
+    const { idea } = this.state
 
     // let cardName = this.state.cardName;
     // if (cardName === '') {
     //   cardName = '';
     // }
-    const cardName = '';
-    this.props.updateCard(this.props.feedo.currentFeed.id, id, cardName, this.state.idea, this.state.coverImage, files);
+
+    if (idea.length > 0 || (files && files.length > 0)) {
+      const cardName = '';
+      this.props.updateCard(this.props.feedo.currentFeed.id, id, cardName, this.state.idea, this.state.coverImage, files);
+    }
   }
 
   onCreateCard() {
@@ -949,12 +970,13 @@ class NewCardScreen extends React.Component {
   }
 
   get renderWebMeta() {
-    const { viewMode } = this.props;
+    const { viewMode, cardMode } = this.props;
     const { links } = this.props.card.currentCard;
     if (links && links.length > 0) {
       return (
         <WebMetaList 
           links={links}
+          small={cardMode === CONSTANTS.SHARE_EXTENTION_CARD}
           editable={viewMode !== CONSTANTS.CARD_VIEW}
           onRemove={(linkId) => this.onDeleteLink(linkId)}
         />
@@ -1003,8 +1025,8 @@ class NewCardScreen extends React.Component {
         <TextInput
           ref={ref => this.textInputIdeaRef = ref}
           style={styles.textInputIdea}
-          autoCorrect={false}
-          placeholder='Add a name or link here'
+          autoCorrect={true}
+          placeholder='Type text or paste a link'
           multiline={true}
           underlineColorAndroid='transparent'
           value={this.state.idea}
@@ -1076,9 +1098,9 @@ class NewCardScreen extends React.Component {
       >
         {/* <TextInput 
           style={styles.textInputCardTitle}
-          autoCorrect={false}
+          autoCorrect={true}
           editable={viewMode === CONSTANTS.CARD_NEW || viewMode === CONSTANTS.CARD_EDIT}
-          placeholder='Add a name or link here'
+          placeholder='Type text or paste a link'
           underlineColorAndroid='transparent'
           value={this.state.cardName}
           onChangeText={(value) => this.onChangeTitle(value)}
@@ -1240,7 +1262,7 @@ class NewCardScreen extends React.Component {
           <TouchableOpacity 
             style={styles.addCardButtonWapper}
             activeOpacity={0.6}
-            onPress={this.onUpdateCard.bind(this)}
+            onPress={this.onUpdateFeed.bind(this)}
           >
             <Text style={[styles.textButton, {color: COLORS.PURPLE}]}>Create card</Text>
           </TouchableOpacity>
@@ -1421,7 +1443,7 @@ class NewCardScreen extends React.Component {
     if (this.state.isVisibleSelectFeedoModal) {
       return (
         <SelectHuntScreen
-          selectMode={cardMode !== CONSTANTS.SHARE_EXTENTION_CARD ? CONSTANTS.FEEDO_SELECT_FROM_MAIN : CONSTANTS.FEEDO_SELECT_FROM_SHARE_EXTENSION_LATER}
+          selectMode={cardMode !== CONSTANTS.SHARE_EXTENTION_CARD ? CONSTANTS.FEEDO_SELECT_FROM_MAIN : CONSTANTS.FEEDO_SELECT_FROM_SHARE_EXTENSION}
           onClosed={() => this.onCloseSelectHunt()}
         />
       );
@@ -1474,6 +1496,7 @@ NewCardScreen.defaultProps = {
   viewMode: CONSTANTS.CARD_NEW,
   cardMode: CONSTANTS.MAIN_APP_CARD_FROM_DETAIL,
   shareUrl: '',
+  shareImageUrl: '',
   onClose: () => {},
   onOpenAction: () => {},
 }
@@ -1486,6 +1509,7 @@ NewCardScreen.propTypes = {
   viewMode: PropTypes.number,
   cardMode: PropTypes.number,
   shareUrl: PropTypes.string,
+  shareImageUrl: PropTypes.string,
   onClose: PropTypes.func,
   onOpenAction: PropTypes.func,
 }

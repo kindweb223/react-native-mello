@@ -72,9 +72,9 @@ const styles = StyleSheet.create({
   },
   collapseView: {
     width: '100%',
-    paddingBottom: 20,
-    paddingTop: 10,
-    marginBottom: 10,
+    paddingBottom: 16,
+    paddingTop: 0,
+    marginBottom: 16,
     backgroundColor: '#fff',
     borderBottomLeftRadius: 15,
     borderBottomRightRadius: 15,
@@ -82,9 +82,9 @@ const styles = StyleSheet.create({
     ...Platform.select({
       ios: {
         shadowColor: 'black',
-        shadowOffset: { height: 5 },
-        shadowOpacity: 0.15,
-        shadowRadius: 3
+        shadowOffset: { height: 4 },
+        shadowOpacity: 0.08,
+        shadowRadius: 2
       },
       android: {
         elevation: 20
@@ -94,7 +94,8 @@ const styles = StyleSheet.create({
   scrollView: {
   },
   detailView: {
-    paddingVertical: 10
+    paddingTop: 10,
+    paddingBottom: Platform.OS === 'ios' ? ifIphoneX(50, 10) : 10,
   },
   modalContainer: {
     position: 'absolute',
@@ -145,6 +146,11 @@ const styles = StyleSheet.create({
     left: 0,
     backgroundColor: COLORS.LIGHT_GREY_MODAL_BACKGROUND,
     zIndex: 100
+  },
+  separator: {
+    borderBottomWidth: 1,
+    borderBottomColor: COLORS.LIGHT_GREY_LINE,
+    marginTop: 6,
   }
 })
 

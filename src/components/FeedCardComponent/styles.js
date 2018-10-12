@@ -5,13 +5,15 @@ import CONSTANTS from '../../service/constants'
 const styles = StyleSheet.create({
   container: {
     justifyContent: 'center',
-    paddingTop: 11,
+    paddingTop: 10,
     paddingBottom: 6,
     paddingHorizontal: 11,
-    borderRadius: 18,
+    borderRadius: 18
   },
   title: {
-   fontSize: 16
+   fontSize: 16,
+   fontWeight: '600',
+   lineHeight: 26
   },
   greyTitle: {
     fontSize: 16,
@@ -20,7 +22,7 @@ const styles = StyleSheet.create({
   thumbnailsView: {
     width: '100%',
     height: 144,
-    marginBottom: 5
+    marginVertical: 6
   },
   thumbnails: {
     width: '100%',
@@ -49,6 +51,9 @@ const styles = StyleSheet.create({
   dotIcon: {
     marginRight: 5,
     color: COLORS.MEDIUM_GREY,
+  },
+  linkStyle: {
+    color: '#000'
   }
 })
 

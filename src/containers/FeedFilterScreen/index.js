@@ -184,12 +184,14 @@ class FeedFilterScreen extends React.Component {
             
             <View style={styles.detailView}>
               {!this.state.loading && (
-                <SearchBarComponent
-                  initialTag={this.props.initialTag}
-                  userTags={userTags}
-                  changeTags={this.changeTags}
-                  inputTag={this.inputTag}
-                />
+                <View style={styles.searchView}>
+                  <SearchBarComponent
+                    initialTag={this.props.initialTag}
+                    userTags={userTags}
+                    changeTags={this.changeTags}
+                    inputTag={this.inputTag}
+                  />
+                </View>
               )}
 
               {filterFeedoList.length > 0

@@ -66,7 +66,7 @@ const styles = StyleSheet.create({
     paddingTop: SEARCHBAR_HEIGHT,
   },
   feedListContainer: {
-    paddingBottom: CONSTANTS.ACTION_BAR_HEIGHT + 50,
+    paddingBottom: CONSTANTS.ACTION_BAR_HEIGHT,
     paddingTop: 16
   },
   tabBarStyle: {

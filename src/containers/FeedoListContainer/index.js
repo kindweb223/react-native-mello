@@ -3,6 +3,7 @@ import {
   FlatList,
   TouchableOpacity,
   Animated,
+  View
 } from 'react-native'
 
 import PropTypes from 'prop-types'
@@ -12,6 +13,8 @@ import ReactNativeHaptic from 'react-native-haptic'
 import FeedItemComponent from '../../components/FeedItemComponent'
 import FeedLoadingStateComponent from '../../components/FeedLoadingStateComponent'
 import CONSTANTS from '../../service/constants'
+import COLORS from '../../service/colors'
+import styles from './styles'
 
 class ListRow extends React.Component {
   constructor(props) {
@@ -99,6 +102,10 @@ class FeedoListContainer extends React.Component {
           >
             <FeedItemComponent item={item} pinFlag={item.pinned ? true : false} page={this.props.page} />
           </TouchableOpacity>
+
+          {this.props.feedoList.length > 1 && index !== (this.props.feedoList.length - 1) && (
+            <View style={styles.separator} />
+          )}
         </ListRow>
       </Animated.View>
     )
@@ -111,7 +118,7 @@ class FeedoListContainer extends React.Component {
 
     return (
       <FlatList
-        style={{ paddingBottom: CONSTANTS.ACTION_BAR_HEIGHT + 50 }}
+        style={styles.flatList}
         data={feedoList}
         keyExtractor={item => item.id}
         scrollEnabled={false}

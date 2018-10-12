@@ -19,6 +19,7 @@ import UserAvatarComponent from '../UserAvatarComponent';
 
 import * as COMMON_FUNC from '../../service/commonFunc'
 import FastImage from "react-native-fast-image";
+import Autolink from 'react-native-autolink';
 
 class FeedCardComponent extends React.Component {
   constructor(props) {
@@ -87,20 +88,37 @@ class FeedCardComponent extends React.Component {
             />
           </View>
         }
-        {idea.idea
-          ? <Text style={styles.title} numberOfLines={3} ellipsizeMode="tail">{idea.idea}</Text>
-          : <Text style={styles.greyTitle}>New Card</Text>
-        }
+
+        {idea.idea.length > 0 && (
+          <Autolink
+            style={styles.title}
+            linkStyle={styles.linkStyle}
+            text={idea.idea}
+            numberOfLines={3}
+            ellipsizeMode="tail"
+            onPress={() => this.props.onLinkPress()}
+            onLongPress={() => this.props.onLinkLongPress()}
+            suppressHighlighting={true}
+          />
+        )}
+
         {this.renderBottom}
       </View>
     )
   }
 }
 
+FeedCardComponent.defaultProps = {
+  onLinkPress: () => {},
+  onLinkLongPress: () => {}
+}
+
 FeedCardComponent.propTypes = {
   idea: PropTypes.objectOf(PropTypes.any).isRequired,
   invitees: PropTypes.arrayOf(PropTypes.any).isRequired,
   onComment: PropTypes.func,
+  onLinkPress: PropTypes.func,
+  onLinkLongPress: PropTypes.func
 }
 
 const mapStateToProps = ({ card, feedo }) => ({

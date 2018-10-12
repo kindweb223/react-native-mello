@@ -10,9 +10,6 @@ const styles = StyleSheet.create({
   feedContainer: {
     flex: 1
   },
-  contentContainer: {
-    backgroundColor: '#fff'
-  },
   tagCreationContainer: {
     position: 'absolute',
     top: 0,
@@ -25,9 +22,17 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    paddingTop: 16,
-    paddingBottom: 16,
+    paddingVertical: 16,
     paddingHorizontal: 9
+  },
+  extensionTopContainer: {
+    flexDirection: 'row',
+    height: 50,
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    paddingHorizontal: 9,
+    borderBottomWidth: 1,
+    borderBottomColor: '#C6C6C6',
   },
   closeButtonWrapper: {
     paddingHorizontal: 2,
@@ -38,6 +43,11 @@ const styles = StyleSheet.create({
     height: 34,
     borderRadius: 17,
     backgroundColor: COLORS.PURPLE,
+    justifyContent: 'center',
+  },
+  extensionCreateButtonWapper: {
+    paddingHorizontal: 16,
+    height: 34,
     justifyContent: 'center',
   },
   textButton: {

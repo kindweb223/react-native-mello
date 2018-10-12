@@ -20,6 +20,10 @@ const styles = StyleSheet.create({
     flex: 1,
     paddingTop: 10
   },
+  searchView: {
+    width: '100%',
+    marginBottom: 20
+  },
   normalHeader: {
     height: NAV_BAR_HEIGHT,
     flexDirection: 'row',

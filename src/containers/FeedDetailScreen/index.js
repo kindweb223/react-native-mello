@@ -120,6 +120,7 @@ class FeedDetailScreen extends React.Component {
       showBubbleCloseButton: false,
       isExistingUser: false,
       showEmptyBubble: false,
+      feedoViewMode: CONSTANTS.FEEDO_FROM_MAIN,
     };
     this.animatedOpacity = new Animated.Value(0)
     this.menuOpacity = new Animated.Value(0)
@@ -345,7 +346,7 @@ class FeedDetailScreen extends React.Component {
         Actions.pop()
         return
       case 'Edit':
-        this.setState({ feedoMode: 1 })
+        this.setState({ feedoViewMode: CONSTANTS.FEEDO_FROM_MAIN })
         this.handleEdit(feedId);
         return
       default:
@@ -677,13 +678,14 @@ class FeedDetailScreen extends React.Component {
           this.state.isVisibleCard && 
             <NewCardScreen 
               viewMode={this.state.cardViewMode}
-              
-              // cardMode={CONSTANTS.SHARE_EXTENTION_CARD}
-              
               invitee={this.state.selectedIdeaInvitee}
               intialLayout={this.state.selectedIdeaLayout}
               onClose={() => this.onCloseCardModal()}
               onOpenAction={(idea) => this.onOpenCardAction(idea)}
+
+              // cardMode={CONSTANTS.SHARE_EXTENTION_CARD}
+              // shareUrl='https://trello.com'
+              // shareImageUrl='https://d2k1ftgv7pobq7.cloudfront.net/meta/p/res/images/fb4de993e22034b76539da073ea8d35c/home-hero.png'
             />
         }
         {  
@@ -692,7 +694,7 @@ class FeedDetailScreen extends React.Component {
               feedData={this.state.currentFeed}
               onClose={() => this.onCloseEditFeedModal()}
               selectedFeedId={this.props.data.id}
-              feedoMode={this.state.feedoMode}
+              viewMode={this.state.feedoViewMode}
             />
         }
       </Animated.View>
@@ -904,7 +906,7 @@ class FeedDetailScreen extends React.Component {
                   <FeedCollapseComponent
                     feedData={currentFeed}
                     onEditFeed={() => {
-                      this.setState({ feedoMode: 3 })
+                      this.setState({ feedoViewMode: CONSTANTS.FEEDO_FROM_COLLAPSE })
                       this.handleEdit(currentFeed.id)
                     }}
                     onOpenCreationTag={this.onOpenCreationTag}
@@ -946,8 +948,17 @@ class FeedDetailScreen extends React.Component {
                         onPress={() => this.onSelectCard(item, index)}
                         onLongPress={() => this.onLongPressCard(index, item, currentFeed.invitees)}
                       >
-                        <FeedCardComponent idea={item} invitees={currentFeed.invitees} />
+                        <FeedCardComponent
+                          idea={item}
+                          invitees={currentFeed.invitees}
+                          onLinkPress={() => this.onSelectCard(item, index)}
+                          onLinkLongPress={() => this.onLongPressCard(index, item, currentFeed.invitees)}
+                        />
                       </TouchableHighlight>
+
+                      {currentFeed.ideas.length > 1 && index !== (currentFeed.ideas.length - 1) && (
+                        <View style={styles.separator} />
+                      )}
                     </Animated.View>
                   ))
                 : 

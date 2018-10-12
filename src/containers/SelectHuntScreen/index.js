@@ -126,12 +126,6 @@ class SelectHuntScreen extends React.Component {
 
   onSelectFeedo(item) {
     this.props.setCurrentFeed(item);
-    if (this.props.selectMode === CONSTANTS.FEEDO_SELECT_FROM_SHARE_EXTENSION_FIRST) {
-      const { imageUrl } = this.props;
-      Actions.ShareCardScreen({imageUrl});
-      return;
-    }
-    
     this.onClose();
   }
 
@@ -169,17 +163,14 @@ class SelectHuntScreen extends React.Component {
     return (
       <View style={[styles.topContainer, styles.extensionTopContainer]}>
         <Text style={styles.textTitle}>Choose feed</Text>
-        {
-          this.props.selectMode === CONSTANTS.FEEDO_SELECT_FROM_SHARE_EXTENSION_LATER && 
-          <TouchableOpacity 
-            style={[styles.backButtonContainer, {paddingHorizontal: 16}]}
-            activeOpacity={0.6}
-            onPress={this.onBack.bind(this)}
-          >
-            <Ionicons name="ios-arrow-back" size={28} color={COLORS.PURPLE} />
-            <Text style={styles.textBack}>Back</Text>
-          </TouchableOpacity>
-        }
+        <TouchableOpacity 
+          style={[styles.backButtonContainer, {paddingHorizontal: 16}]}
+          activeOpacity={0.6}
+          onPress={this.onBack.bind(this)}
+        >
+          <Ionicons name="ios-arrow-back" size={28} color={COLORS.PURPLE} />
+          <Text style={styles.textBack}>Back</Text>
+        </TouchableOpacity>
       </View>
     )
   }
@@ -237,7 +228,7 @@ class SelectHuntScreen extends React.Component {
     if (feedoList && feedoList.length > 0 && this.state.filterText) {
       feedoList = _.filter(feedoList, feedo => feedo.headline.toLowerCase().indexOf(this.state.filterText.toLowerCase()) !== -1);
     }
-
+    const { selectMode } = this.props;
     return (
       <View style={styles.container}>
         <Animated.View 
@@ -254,13 +245,13 @@ class SelectHuntScreen extends React.Component {
               {
                 paddingBottom: this.animatedKeyboardHeight,
                 height: CONSTANTS.SCREEN_HEIGHT - CONSTANTS.SCREEN_VERTICAL_MIN_MARGIN * 2,
-                backgroundColor: this.props.selectMode === CONSTANTS.FEEDO_SELECT_FROM_MAIN ? '#fff' : 'rgba(255, 255, 255, .95)',
-                marginHorizontal: this.props.selectMode === CONSTANTS.FEEDO_SELECT_FROM_MAIN ? 0 : 10,
+                backgroundColor: selectMode === CONSTANTS.FEEDO_SELECT_FROM_MAIN ? '#fff' : 'rgba(255, 255, 255, .95)',
+                marginHorizontal: selectMode === CONSTANTS.FEEDO_SELECT_FROM_MAIN ? 0 : 10,
               },
             ]}
           >
-            {this.props.selectMode === CONSTANTS.FEEDO_SELECT_FROM_MAIN ? this.renderHeaderFromMain : this.renderHeaderFromExtension}
-            {this.props.selectMode !== CONSTANTS.FEEDO_SELECT_FROM_MAIN && <View style={styles.line} /> }
+            {selectMode === CONSTANTS.FEEDO_SELECT_FROM_MAIN ? this.renderHeaderFromMain : this.renderHeaderFromExtension}
+            {selectMode !== CONSTANTS.FEEDO_SELECT_FROM_MAIN && <View style={styles.line} /> }
             <View style={styles.searchContainer}>
               <Search
                 inputStyle={{
@@ -292,7 +283,8 @@ class SelectHuntScreen extends React.Component {
           this.state.isVisibleNewFeedScreen && 
             <View style={styles.newFeedContainer}>
               <NewFeedScreen
-                feedoMode={CONSTANTS.FEEDO_FROM_CARD}
+                viewMode={CONSTANTS.FEEDO_FROM_CARD}
+                feedoMode={selectMode === CONSTANTS.FEEDO_SELECT_FROM_MAIN ? CONSTANTS.MAIN_APP_FEEDO : CONSTANTS.SHARE_EXTENTION_FEEDO}
                 onClose={() => this.onCloseNewFeed()}
               />
             </View>
@@ -305,14 +297,12 @@ class SelectHuntScreen extends React.Component {
 
 SelectHuntScreen.defaultProps = {
   selectMode: CONSTANTS.FEEDO_SELECT_FROM_MAIN,
-  imageUrl: '',
   onClosed: PropTypes.func,
 }
 
 
 SelectHuntScreen.propTypes = {
   selectMode: PropTypes.number,
-  imageUrl: PropTypes.string,
   onClosed: PropTypes.func,
 }
 
