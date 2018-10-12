@@ -11,7 +11,7 @@ const styles = StyleSheet.create({
   },
   container: {
     flex: 1,
-    paddingBottom: Platform.OS === 'ios' ? ifIphoneX(0, 85) : 85,
+    paddingBottom: Platform.OS === 'ios' ? ifIphoneX(0, 56) : 56,
   },
   loadingView: {
     width: '100%',
