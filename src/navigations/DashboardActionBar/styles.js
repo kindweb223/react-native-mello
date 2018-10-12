@@ -1,4 +1,4 @@
-import { StyleSheet } from 'react-native'
+import { StyleSheet, Platform } from 'react-native'
 import COLORS from '../../service/colors'
 import CONSTANTS from '../../service/constants'
 
@@ -8,7 +8,7 @@ const styles = StyleSheet.create({
     height: CONSTANTS.ACTION_BAR_HEIGHT,
     width: '100%',
     paddingHorizontal: CONSTANTS.PADDING,
-    paddingVertical: 16,
+    paddingTop: 8,
     position: 'absolute',
     backgroundColor: '#fff',
     bottom: 0
