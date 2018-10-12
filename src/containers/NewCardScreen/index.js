@@ -997,7 +997,7 @@ class NewCardScreen extends React.Component {
         <TextInput
           ref={ref => this.textInputIdeaRef = ref}
           style={styles.textInputIdea}
-          autoCorrect={false}
+          autoCorrect={true}
           placeholder='Add a name or link here'
           multiline={true}
           underlineColorAndroid='transparent'
@@ -1070,7 +1070,7 @@ class NewCardScreen extends React.Component {
       >
         {/* <TextInput 
           style={styles.textInputCardTitle}
-          autoCorrect={false}
+          autoCorrect={true}
           editable={viewMode === CONSTANTS.CARD_NEW || viewMode === CONSTANTS.CARD_EDIT}
           placeholder='Add a name or link here'
           underlineColorAndroid='transparent'
