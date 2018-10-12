@@ -41,8 +41,8 @@ export default class ShareCardScreen extends React.Component {
       <View style={styles.container}>
         <NewCardScreen
           cardMode={CONSTANTS.SHARE_EXTENTION_CARD}
-          // shareUrl={this.state.value}
-          shareUrl={imageUrl}
+          shareUrl={this.state.value}
+          shareImageUrl={imageUrl}
           onClose={() => this.onClosed()}
         />
       </View>
