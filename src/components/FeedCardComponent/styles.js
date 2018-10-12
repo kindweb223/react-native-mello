@@ -5,13 +5,15 @@ import CONSTANTS from '../../service/constants'
 const styles = StyleSheet.create({
   container: {
     justifyContent: 'center',
-    paddingTop: 11,
-    paddingBottom: 6,
+    paddingTop: 10,
+    paddingBottom: 10,
     paddingHorizontal: 11,
-    borderRadius: 18,
+    borderRadius: 18
   },
   title: {
-   fontSize: 16
+   fontSize: 16,
+   fontWeight: '600',
+   lineHeight: 26
   },
   greyTitle: {
     fontSize: 16,

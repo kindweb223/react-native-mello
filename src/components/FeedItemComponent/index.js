@@ -12,8 +12,7 @@ const FeedItemComponent = ({ item, pinFlag, page, clickEvent }) => (
   <View style={
     [
       styles.container,
-      clickEvent === 'long' ? { paddingVertical: 11, paddingHorizontal: 11 } : { paddingVertical: 0 },
-      page === 'search' ? { marginTop: 20 } : { marginTop: 4 }
+      clickEvent === 'long' ? { paddingVertical: 11, paddingHorizontal: 11 } : { paddingVertical: 0 }
     ]
   }>
     {item.coverImages && item.coverImages.length > 0 && (

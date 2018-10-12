@@ -82,8 +82,8 @@ const styles = StyleSheet.create({
     ...Platform.select({
       ios: {
         shadowColor: 'black',
-        shadowOffset: { height: 5 },
-        shadowOpacity: 0.15,
+        shadowOffset: { height: 3 },
+        shadowOpacity: 0.1,
         shadowRadius: 3
       },
       android: {
@@ -145,6 +145,11 @@ const styles = StyleSheet.create({
     left: 0,
     backgroundColor: COLORS.LIGHT_GREY_MODAL_BACKGROUND,
     zIndex: 100
+  },
+  separator: {
+    borderBottomWidth: 1,
+    borderBottomColor: COLORS.LIGHT_GREY_LINE,
+    marginTop: 6,
   }
 })
 
