@@ -563,13 +563,17 @@ class NewCardScreen extends React.Component {
       id, 
       files,
     } = this.props.card.currentCard;
+    const { idea } = this.state
 
     // let cardName = this.state.cardName;
     // if (cardName === '') {
     //   cardName = '';
     // }
-    const cardName = '';
-    this.props.updateCard(this.props.feedo.currentFeed.id, id, cardName, this.state.idea, this.state.coverImage, files);
+
+    if (idea.length > 0 || (files && files.length > 0)) {
+      const cardName = '';
+      this.props.updateCard(this.props.feedo.currentFeed.id, id, cardName, this.state.idea, this.state.coverImage, files);
+    }
   }
 
   onCreateCard() {

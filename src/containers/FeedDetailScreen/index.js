@@ -887,7 +887,12 @@ class FeedDetailScreen extends React.Component {
                         onPress={() => this.onSelectCard(item, index)}
                         onLongPress={() => this.onLongPressCard(index, item, currentFeed.invitees)}
                       >
-                        <FeedCardComponent idea={item} invitees={currentFeed.invitees} />
+                        <FeedCardComponent
+                          idea={item}
+                          invitees={currentFeed.invitees}
+                          onLinkPress={() => this.onSelectCard(item, index)}
+                          onLinkLongPress={() => this.onLongPressCard(index, item, currentFeed.invitees)}
+                        />
                       </TouchableHighlight>
 
                       {currentFeed.ideas.length > 1 && index !== (currentFeed.ideas.length - 1) && (
