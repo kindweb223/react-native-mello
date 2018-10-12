@@ -1,7 +1,8 @@
 import React from 'react'
 import {
   View,
-  Text
+  Text,
+  Image
 } from 'react-native'
 
 import PropTypes from 'prop-types'
@@ -15,6 +16,12 @@ import UserAvatar from 'react-native-user-avatar'
 import Tags from "../../../components/FeedTags"
 import styles from './styles'
 import COLORS from '../../../service/colors'
+
+const CARD_ICON_GREY = require('../../../../assets/images/Card/Grey.png')
+const CARD_ICON_PURPLE = require('../../../../assets/images/Card/Purple.png')
+const PROFILE_ICON_GREY = require('../../../../assets/images/Users/Grey.png')
+const PROFILE_ICON_PURPLE = require('../../../../assets/images/Users/Blue.png')
+
 
 import { 
   addFilterTag
@@ -85,13 +92,21 @@ class FeedItemContentComponent extends React.Component {
 
         <View style={styles.statsView}>
           <View style={styles.statsItemView}>
-            <Ionicons name="md-person" feedIcon={15} style={[styles.feedIcon, data.metadata.newInvitees ? styles.active : styles.inActive]} />
+            {
+              data.metadata.newInvitees > 0 ?
+              <Image source={PROFILE_ICON_PURPLE} style={styles.profileIcon} /> :
+              <Image source={PROFILE_ICON_GREY} style={styles.profileIcon} />
+            }
             <Text style={[styles.feedText, data && data.metadata.newInvitees ? styles.active : styles.inActive]}>
               {data.invitees.length}
             </Text>
           </View>
           <View style={styles.statsItemView}>
-            <Foundation name="credit-card" feedIcon={15} style={[styles.feedIcon, data.metadata.newIdeas ? styles.active : styles.inActive]} />
+            {
+              data.metadata.newIdeas > 0 ? 
+              <Image source={CARD_ICON_PURPLE} style={styles.cardIcon} /> :
+              <Image source={CARD_ICON_GREY} style={styles.cardIcon} />
+            }
             <Text style={[styles.feedText, data.metadata.newIdeas ? styles.active : styles.inActive]}>
               {data.ideas.length}
             </Text>

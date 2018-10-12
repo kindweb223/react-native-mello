@@ -23,6 +23,17 @@ const styles = StyleSheet.create({
   feedIcon: {
     marginRight: 5
   },
+  cardIcon: {
+    height: 9,
+    width: 13,
+    marginRight: 5
+  },
+  profileIcon: {
+    height: 11.67,
+    width: 10,
+    marginRight: 5,
+    marginBottom: 2
+  },
   feedText: {
     fontSize: 13
   },
@@ -47,7 +58,7 @@ const styles = StyleSheet.create({
     marginLeft: 10
   },
   tagsView: {
-    marginTop: 3
+    marginTop: 7
   }
 })
 
