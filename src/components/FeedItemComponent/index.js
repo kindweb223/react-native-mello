@@ -13,7 +13,7 @@ const FeedItemComponent = ({ item, pinFlag, page, clickEvent }) => (
     [
       styles.container,
       clickEvent === 'long' ? { paddingVertical: 11, paddingHorizontal: 11 } : { paddingVertical: 0 },
-      page === 'search' ? { marginTop: 20 } : { marginTop: 4 }
+      page === 'search' ? { marginTop: 0 } : { marginTop: 4 }
     ]
   }>
     {item.coverImages && item.coverImages.length > 0 && (

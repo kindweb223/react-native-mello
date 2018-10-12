@@ -889,6 +889,10 @@ class FeedDetailScreen extends React.Component {
                       >
                         <FeedCardComponent idea={item} invitees={currentFeed.invitees} />
                       </TouchableHighlight>
+
+                      {currentFeed.ideas.length > 1 && index !== (currentFeed.ideas.length - 1) && (
+                        <View style={styles.separator} />
+                      )}
                     </Animated.View>
                   ))
                 : 
