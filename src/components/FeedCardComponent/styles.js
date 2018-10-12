@@ -6,7 +6,7 @@ const styles = StyleSheet.create({
   container: {
     justifyContent: 'center',
     paddingTop: 10,
-    paddingBottom: 10,
+    paddingBottom: 6,
     paddingHorizontal: 11,
     borderRadius: 18
   },
