@@ -126,12 +126,6 @@ class SelectHuntScreen extends React.Component {
 
   onSelectFeedo(item) {
     this.props.setCurrentFeed(item);
-    if (this.props.selectMode === CONSTANTS.FEEDO_SELECT_FROM_SHARE_EXTENSION_FIRST) {
-      const { imageUrl } = this.props;
-      Actions.ShareCardScreen({imageUrl});
-      return;
-    }
-    
     this.onClose();
   }
 
@@ -146,7 +140,7 @@ class SelectHuntScreen extends React.Component {
       isVisibleNewFeedScreen: false,
     }, () => {
       // this.props.getFeedoList(0)
-      // this.onClose();
+      this.onClose();
     });
   }
 
@@ -169,17 +163,14 @@ class SelectHuntScreen extends React.Component {
     return (
       <View style={[styles.topContainer, styles.extensionTopContainer]}>
         <Text style={styles.textTitle}>Choose feed</Text>
-        {
-          this.props.selectMode === CONSTANTS.FEEDO_SELECT_FROM_SHARE_EXTENSION_LATER && 
-          <TouchableOpacity 
-            style={[styles.backButtonContainer, {paddingHorizontal: 16}]}
-            activeOpacity={0.6}
-            onPress={this.onBack.bind(this)}
-          >
-            <Ionicons name="ios-arrow-back" size={28} color={COLORS.PURPLE} />
-            <Text style={styles.textBack}>Back</Text>
-          </TouchableOpacity>
-        }
+        <TouchableOpacity 
+          style={[styles.backButtonContainer, {paddingHorizontal: 16}]}
+          activeOpacity={0.6}
+          onPress={this.onBack.bind(this)}
+        >
+          <Ionicons name="ios-arrow-back" size={28} color={COLORS.PURPLE} />
+          <Text style={styles.textBack}>Back</Text>
+        </TouchableOpacity>
       </View>
     )
   }
@@ -306,14 +297,12 @@ class SelectHuntScreen extends React.Component {
 
 SelectHuntScreen.defaultProps = {
   selectMode: CONSTANTS.FEEDO_SELECT_FROM_MAIN,
-  imageUrl: '',
   onClosed: PropTypes.func,
 }
 
 
 SelectHuntScreen.propTypes = {
   selectMode: PropTypes.number,
-  imageUrl: PropTypes.string,
   onClosed: PropTypes.func,
 }
 

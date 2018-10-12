@@ -6,7 +6,7 @@ import resolveError from './../../service/resolveError'
 const initialState = {
   loading: null,
   error: null,
-  feedoList: null,
+  feedoList: [],
   currentFeed: {},
   pinResult: null,
   duplicaetdId: null,
@@ -358,7 +358,6 @@ export default function feedo(state = initialState, action = {}) {
         feedoList = state.feedoList;
         feedoList[index] = data;
       }
-
       return {
         ...state,
         loading: types.UPDATE_FEED_FULFILLED,

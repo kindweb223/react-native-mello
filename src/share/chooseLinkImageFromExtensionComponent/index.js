@@ -18,7 +18,6 @@ import * as types from '../../redux/card/types'
 
 import ShareExtension from '../shareExtension'
 import LoadingScreen from '../../containers/LoadingScreen';
-import CONSTANTS from '../../service/constants'
 
 
 class ChooseLinkImageFromExtension extends React.Component {
@@ -89,9 +88,9 @@ class ChooseLinkImageFromExtension extends React.Component {
     }
   }
 
-  onSelectItem(image) {
-    Actions.ShareSelectHuntScreen({
-      imageUrl: image,
+  onSelectItem(imageUrl) {
+    Actions.ShareCardScreen({
+      imageUrl,
     });
   }
 
@@ -100,7 +99,7 @@ class ChooseLinkImageFromExtension extends React.Component {
   }
 
   onSkip() {
-    Actions.ShareSelectHuntScreen();
+    Actions.ShareCardScreen();
   }
 
   renderImage(item) {
@@ -110,7 +109,7 @@ class ChooseLinkImageFromExtension extends React.Component {
         activeOpacity={0.6}
         onPress={() => this.onSelectItem(item.item)}
       >
-        <FastImage style={styles.imageItem} source={{uri: item.item}} resizeMode={FastImage.resizeMode.cover}/>
+        <FastImage style={styles.imageItem} source={{uri: item.item}} resizeMode={FastImage.resizeMode.cover} />
       </TouchableOpacity>
     );
   }
