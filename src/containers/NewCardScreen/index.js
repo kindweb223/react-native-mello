@@ -590,6 +590,8 @@ class NewCardScreen extends React.Component {
     if (idea.length > 0 || (files && files.length > 0)) {
       const cardName = '';
       this.props.updateCard(this.props.feedo.currentFeed.id, id, cardName, this.state.idea, this.state.coverImage, files);
+    } else {
+      Alert.alert('Error', 'Enter some text or add an image')
     }
   }
 
