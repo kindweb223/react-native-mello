@@ -98,6 +98,7 @@ class FeedCardComponent extends React.Component {
             ellipsizeMode="tail"
             onPress={() => this.props.onLinkPress()}
             onLongPress={() => this.props.onLinkLongPress()}
+            suppressHighlighting={true}
           />
         )}
 

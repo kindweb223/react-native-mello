@@ -22,7 +22,7 @@ const styles = StyleSheet.create({
   thumbnailsView: {
     width: '100%',
     height: 144,
-    marginBottom: 5
+    marginVertical: 6
   },
   thumbnails: {
     width: '100%',

@@ -94,7 +94,8 @@ const styles = StyleSheet.create({
   scrollView: {
   },
   detailView: {
-    paddingVertical: 10
+    paddingTop: 10,
+    paddingBottom: Platform.OS === 'ios' ? ifIphoneX(50, 10) : 10,
   },
   modalContainer: {
     position: 'absolute',
