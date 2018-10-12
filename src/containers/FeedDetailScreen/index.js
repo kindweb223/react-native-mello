@@ -112,7 +112,7 @@ class FeedDetailScreen extends React.Component {
       totalCardCount: 0,
       isVisibleCardOpenMenu: false,
       currentScreen: FeedDetailMode,
-      feedoMode: 1
+      feedoViewMode: CONSTANTS.FEEDO_FROM_MAIN,
     };
     this.animatedOpacity = new Animated.Value(0)
     this.menuOpacity = new Animated.Value(0)
@@ -299,7 +299,7 @@ class FeedDetailScreen extends React.Component {
         Actions.pop()
         return
       case 'Edit':
-        this.setState({ feedoMode: 1 })
+        this.setState({ feedoViewMode: CONSTANTS.FEEDO_FROM_MAIN })
         this.handleEdit(feedId);
         return
       default:
@@ -631,9 +631,6 @@ class FeedDetailScreen extends React.Component {
           this.state.isVisibleCard && 
             <NewCardScreen 
               viewMode={this.state.cardViewMode}
-              
-              // cardMode={CONSTANTS.SHARE_EXTENTION_CARD}
-              
               invitee={this.state.selectedIdeaInvitee}
               intialLayout={this.state.selectedIdeaLayout}
               onClose={() => this.onCloseCardModal()}
@@ -646,7 +643,7 @@ class FeedDetailScreen extends React.Component {
               feedData={this.state.currentFeed}
               onClose={() => this.onCloseEditFeedModal()}
               selectedFeedId={this.props.data.id}
-              feedoMode={this.state.feedoMode}
+              viewMode={this.state.feedoViewMode}
             />
         }
       </Animated.View>
@@ -858,7 +855,7 @@ class FeedDetailScreen extends React.Component {
                   <FeedCollapseComponent
                     feedData={currentFeed}
                     onEditFeed={() => {
-                      this.setState({ feedoMode: 3 })
+                      this.setState({ feedoViewMode: CONSTANTS.FEEDO_FROM_COLLAPSE })
                       this.handleEdit(currentFeed.id)
                     }}
                     onOpenCreationTag={this.onOpenCreationTag}

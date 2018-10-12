@@ -37,6 +37,9 @@ export default {
   FEEDO_FROM_CARD: 2,
   FEEDO_FROM_COLLAPSE: 3,
 
+  MAIN_APP_FEEDO: 1,
+  SHARE_EXTENTION_FEEDO: 2,
+
   // Select feedo type in share extension
   FEEDO_SELECT_FROM_MAIN: 1,
   FEEDO_SELECT_FROM_SHARE_EXTENSION_FIRST: 2,
