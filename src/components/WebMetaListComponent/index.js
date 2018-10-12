@@ -26,7 +26,6 @@ export default class WebMetaList extends React.Component {
     this.state = {
       links: [...this.props.links],
     };
-    this.animatedSelect = new Animated.Value(0);
     this.linksCount = this.props.links.length || 0;
   }
 
@@ -48,30 +47,43 @@ export default class WebMetaList extends React.Component {
 
   onPressLink(index) {
     const url = this.props.links[index].originalUrl;
-
-      SafariView.isAvailable()
-          .then(SafariView.show({
-              url: url,
-              tintColor: COLORS.PURPLE
-          }))
-          .catch(error => {
-              // Fallback WebView code for iOS 8 and earlier
-              Linking.canOpenURL(url)
-                  .then(supported => {
-                      if (!supported) {
-                          console.log('Can\'t handle url: ' + url);
-                      }
-                      else {
-                          return Linking.openURL(url);
-                      }
-                  })
-                  .catch(error => console.error('An error occurred', error));
-          });
+    SafariView.isAvailable()
+      .then(SafariView.show({
+        url: url,
+        tintColor: COLORS.PURPLE
+      }))
+      .catch(error => {
+        // Fallback WebView code for iOS 8 and earlier
+        Linking.canOpenURL(url)
+          .then(supported => {
+            if (!supported) {
+              console.log('Can\'t handle url: ' + url);
+            } else {
+              return Linking.openURL(url);
+            }
+          })
+          .catch(error => console.error('An error occurred', error));
+      });
   }
 
   renderItem({item, index}) {
+    if (this.props.small) {
+      return (
+        <View style={styles.itemSmallContainer}>
+          <TouchableOpacity 
+            style={[styles.buttonContainer, {backgroundColor: '#ECECEC'}]}
+            activeOpacity={0.7}
+            onPress={() => this.onPressLink(index)}
+          >
+            <FastImage style={styles.imageSmallCover} source={{uri: item.imageUrl}} resizeMode='cover' />
+            <Text style={styles.textLink} numberOfLines={1}>{item.originalUrl}</Text>
+          </TouchableOpacity>
+        </View>
+      )
+    }
+
     return (
-      <Animated.View style={styles.itemContainer}>
+      <View style={styles.itemContainer}>
         <TouchableOpacity 
           style={styles.buttonContainer}
           activeOpacity={0.7}
@@ -92,7 +104,7 @@ export default class WebMetaList extends React.Component {
             <Ionicons name="md-close" size={18} color={'#fff'} style={{marginTop: 2, marginLeft: 1}} />
           </View>
         </TouchableOpacity>
-      </Animated.View>
+      </View>
     )
   }
 
@@ -114,6 +126,7 @@ export default class WebMetaList extends React.Component {
 
 WebMetaList.defaultProps = {
   links: [],
+  small: false,
   editable: true,
   onRemove: () => {},
 }
@@ -121,6 +134,7 @@ WebMetaList.defaultProps = {
 
 WebMetaList.propTypes = {
   links: PropTypes.array,
+  small: PropTypes.bool,
   editable: PropTypes.bool,
   onRemove: PropTypes.func,
 }
