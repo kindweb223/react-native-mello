@@ -25,7 +25,7 @@ class SpeechBubbleComponent extends React.Component {
   }
 
   UNSAFE_componentWillReceiveProps(nextProps) {
-    this.setState({ showCloseBtn: nextProps.isShowCloseBubble })
+    this.setState({ showCloseBtn: nextProps.showBubbleCloseButton })
   }
 
   render() {
@@ -52,7 +52,7 @@ class SpeechBubbleComponent extends React.Component {
           <ImageBackground
             source={SPEECH_BUBBLE_MIDDLE}
             resizeMode="stretch"
-            style={[styles.bubbleView]}
+            style={[styles.bubbleView, page === 'feed' && { height: 90 }]}
           >
             <View style={styles.bubbleContent}>
               {page === 'pinned' 
@@ -94,14 +94,14 @@ SpeechBubbleComponent.defaultProps = {
   page: 'feed',
   title: '',
   subTitle: '',
-  isShowCloseBubble: false
+  showBubbleCloseButton: false
 }
 
 SpeechBubbleComponent.propTypes = {
   page: PropTypes.string,
   title: PropTypes.string,
   subTitle: PropTypes.string,
-  isShowCloseBubble: PropTypes.bool
+  showBubbleCloseButton: PropTypes.bool
 }
 
 export default SpeechBubbleComponent

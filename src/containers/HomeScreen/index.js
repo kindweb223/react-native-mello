@@ -100,7 +100,7 @@ class HomeScreen extends React.Component {
       cardViewMode: CONSTANTS.CARD_NONE,
       appState: AppState.currentState,
       showFeedInvitedNewUserBubble: false,
-      isShowCloseBubble: false,
+      showBubbleCloseButton: false,
       isExistingUser: false,
       showEmptyBubble: false
     };
@@ -185,8 +185,6 @@ class HomeScreen extends React.Component {
     const { feedo } = this.props
     const { feedoList } = feedo
 
-    console.log('QQQQQ: ', feedo.loading)
-
     if ((prevProps.feedo.loading === 'GET_FEEDO_LIST_PENDING' && feedo.loading === 'GET_FEEDO_LIST_FULFILLED') ||
         (prevProps.feedo.loading !== 'UPDATE_FEED_FULFILLED' && feedo.loading === 'UPDATE_FEED_FULFILLED') ||
         (prevProps.feedo.loading !== 'FEED_FULFILLED' && feedo.loading === 'FEED_FULFILLED') ||
@@ -264,7 +262,7 @@ class HomeScreen extends React.Component {
         if (ownFeeds.length === 0) {
           this.setState({ showFeedInvitedNewUserBubble: true })
           setTimeout(() => {
-            this.setState({ isShowCloseBubble: true })
+            this.setState({ showBubbleCloseButton: true })
           }, 30000)
         } else {
           this.setState({ showFeedInvitedNewUserBubble: false })
@@ -884,12 +882,15 @@ class HomeScreen extends React.Component {
                   onLayout={(event) => this.onScrollableTabViewLayout(event, 0)}
                 >
                   {this.state.showFeedInvitedNewUserBubble && (
-                    <SpeechBubbleComponent
-                      title="So you've been invited to feedo? Exciting, isn't it?!"
-                      subTitle="Watch a 15 sec Quick Start video "
-                      isShowCloseBubble={this.state.isShowCloseBubble}
-                      onCloseBubble={() => this.closeBubble()}
-                    />
+                    <View style={{ height: 200 }}>
+                      <SpeechBubbleComponent
+                        page="feed"
+                        title="So you've been invited to feedo? Exciting, isn't it?!"
+                        subTitle="Watch a 15 sec Quick Start video "
+                        showBubbleCloseButton={this.state.showBubbleCloseButton}
+                        onCloseBubble={() => this.closeBubble()}
+                      />
+                    </View>
                   )}
 
                   <FeedoListContainer
@@ -915,9 +916,9 @@ class HomeScreen extends React.Component {
                     : !loading && ( 
                         <View style={styles.emptyTabInnerSubView}>
                           <SpeechBubbleComponent
+                            page="pinned"
                             title="Your pinned items will appear here. To pin a feed tap and hold it to bring up a quick actions and select"
                             subTitle="Watch a 15 sec Quick Start video "
-                            page="pinned"
                           />
                         </View>
                       )
@@ -939,6 +940,7 @@ class HomeScreen extends React.Component {
                     : !loading && (
                         <View style={styles.emptyTabInnerSubView}>
                           <SpeechBubbleComponent
+                            page="shared"
                             title="Feeds can be shared with friends and colleagues for collaboration. Feeds you've been invited to will appear here."
                             subTitle="All you need to know about sharing in 15 sec "
                           />

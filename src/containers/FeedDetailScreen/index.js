@@ -117,7 +117,7 @@ class FeedDetailScreen extends React.Component {
       currentScreen: FeedDetailMode,
       feedoMode: 1,
       showBubble: false,
-      isShowCloseBubble: false,
+      showBubbleCloseButton: false,
       isExistingUser: false,
       showEmptyBubble: false,
     };
@@ -224,7 +224,7 @@ class FeedDetailScreen extends React.Component {
       if (currentFeed.ideas.length > 0 && ownCards.length === 0) {
         this.setState({ showBubble: true })
         setTimeout(() => {
-          this.setState({ isShowCloseBubble: true })
+          this.setState({ showBubbleCloseButton: true })
         }, 30000)
       } else {
         this.setState({ showBubble: false })
@@ -917,10 +917,11 @@ class FeedDetailScreen extends React.Component {
 
               {!_.isEmpty(currentFeed) && currentFeed && currentFeed.ideas && currentFeed.ideas.length > 0 && this.state.showBubble && (
                 <SpeechBubbleComponent
+                  page="detail"
                   title="Feeds contain cards. Cards can have, images, text, attachments and likes. My granny enjoys liking."
                   subTitle="Watch a 15 sec video about the cards "
                   onCloseBubble={() => this.closeBubble()}
-                  isShowCloseBubble={this.state.isShowCloseBubble}
+                  isShowCloseBubble={this.state.showBubbleCloseButton}
                 />
               )}
 
