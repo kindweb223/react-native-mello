@@ -87,10 +87,11 @@ class FeedCardComponent extends React.Component {
             />
           </View>
         }
-        {idea.idea
-          ? <Text style={styles.title} numberOfLines={3} ellipsizeMode="tail">{idea.idea}</Text>
-          : <Text style={styles.greyTitle}>New Card</Text>
-        }
+
+        {idea.idea.length > 0 && (
+          <Text style={styles.title} numberOfLines={3} ellipsizeMode="tail">{idea.idea}</Text>
+        )}
+
         {this.renderBottom}
       </View>
     )
