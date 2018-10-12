@@ -72,9 +72,9 @@ const styles = StyleSheet.create({
   },
   collapseView: {
     width: '100%',
-    paddingBottom: 20,
-    paddingTop: 10,
-    marginBottom: 10,
+    paddingBottom: 16,
+    paddingTop: 0,
+    marginBottom: 16,
     backgroundColor: '#fff',
     borderBottomLeftRadius: 15,
     borderBottomRightRadius: 15,

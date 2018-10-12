@@ -35,6 +35,7 @@ export default class ShareModalScreen extends React.Component {
   }
 
   onPressClose() {
+    console.log("CLOSE")
     this.setState({
       isVisible: false,
     });
@@ -56,8 +57,8 @@ export default class ShareModalScreen extends React.Component {
           <View style={styles.modalContainer}>
             <View style={styles.modalContentContainer}>
               <View style={styles.topContainer}>
-                <Text style={styles.textTitle}>Hunt Mobile</Text>
-                <Text style={styles.textDescription}>You should sign in at the first</Text>
+                <Text style={styles.textTitle}>Feedo</Text>
+                <Text style={styles.textDescription}>Oops, you appear to be signed out of Feedo. Tap OK to log in again and try again</Text>
               </View>
               <View style={styles.bottomContainer}>
                 <TouchableOpacity 

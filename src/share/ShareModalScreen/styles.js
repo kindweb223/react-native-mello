@@ -14,7 +14,7 @@ export default styles = StyleSheet.create({
   },
   modalContentContainer: {
     backgroundColor: '#F4F4F4',
-    height: 150,
+    height: 166,
     width: 300,
     borderRadius: 20,
   },
@@ -46,10 +46,13 @@ export default styles = StyleSheet.create({
     fontSize: 16,
     lineHeight: 20,
     fontWeight: 'bold',
+    marginTop: 8,
   },
   textDescription: {
     fontSize: 16,
     lineHeight: 20,
+    paddingHorizontal: 16,
+    marginVertical: 8
   },
   textButton: {
     fontSize: 17,
