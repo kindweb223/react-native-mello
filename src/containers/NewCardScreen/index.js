@@ -18,6 +18,7 @@ import { connect } from 'react-redux'
 
 import { Actions } from 'react-native-router-flux'
 import Entypo from 'react-native-vector-icons/Entypo'
+import Ionicons from 'react-native-vector-icons/Ionicons'
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons'
 import { isIphoneX } from 'react-native-iphone-x-helper';
 import ViewMoreText from 'react-native-view-more-text';
@@ -1251,10 +1252,9 @@ class NewCardScreen extends React.Component {
             activeOpacity={0.7}
             onPress={() => this.onClose()}
           >
-            <MaterialCommunityIcons name="close" size={28} color={COLORS.PURPLE} />
+            <Ionicons name="ios-arrow-back" size={28} color={COLORS.PURPLE} />
           </TouchableOpacity>
           <TouchableOpacity 
-            style={styles.addCardButtonWapper}
             activeOpacity={0.6}
             onPress={this.onUpdateFeed.bind(this)}
           >
@@ -1305,7 +1305,7 @@ class NewCardScreen extends React.Component {
         <View style={styles.extensionSelectFeedoContainer}>
           <Text style={[styles.textCreateCardIn, {color: COLORS.PRIMARY_BLACK}]}>Create card in:</Text>
           <TouchableOpacity
-            style={[styles.selectFeedoButtonContainer, {backgroundColor: 'transparent'}]}
+            style={[styles.selectFeedoButtonContainer, {backgroundColor: 'transparent', paddingRight: 3}]}
             activeOpacity={0.6}
             onPress={this.onSelectFeedo.bind(this)}
           >
@@ -1370,16 +1370,19 @@ class NewCardScreen extends React.Component {
         opacity: this.animatedShow,
       };
     }
-
     let contentContainerStyle = {};
     if (cardMode === CONSTANTS.SHARE_EXTENTION_CARD) {
+      let bottomMargin = CONSTANTS.SCREEN_VERTICAL_MIN_MARGIN;
+      if (this.state.isShowKeyboardButton) {
+        bottomMargin = 20;
+      }
       contentContainerStyle = {
-        height: Animated.subtract(CONSTANTS.SCREEN_HEIGHT - CONSTANTS.SCREEN_VERTICAL_MIN_MARGIN * 2, this.animatedKeyboardHeight),
+        height: Animated.subtract(CONSTANTS.SCREEN_HEIGHT - CONSTANTS.SCREEN_VERTICAL_MIN_MARGIN - bottomMargin, this.animatedKeyboardHeight),
         marginTop: CONSTANTS.SCREEN_VERTICAL_MIN_MARGIN,
-        marginBottom: Animated.add(CONSTANTS.SCREEN_VERTICAL_MIN_MARGIN, this.animatedKeyboardHeight),
+        marginBottom: Animated.add(bottomMargin, this.animatedKeyboardHeight),
         borderRadius: 18,
         backgroundColor: 'rgba(255, 255, 255, .95)',
-        marginHorizontal: 10,
+        marginHorizontal: 16,
       }
     } else {
       contentContainerStyle = {
