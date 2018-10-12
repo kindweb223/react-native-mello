@@ -49,7 +49,7 @@ const styles = StyleSheet.create({
   },
   settingMenuContainer: {
     position: 'absolute',
-    bottom: 98,
+    bottom: CONSTANTS.ACTION_BAR_HEIGHT + 20,
     borderRadius: 20,
     backgroundColor: '#fff',
     paddingVertical: 12,

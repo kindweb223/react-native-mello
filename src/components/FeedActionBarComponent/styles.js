@@ -63,7 +63,7 @@ const styles = StyleSheet.create({
     width: 122,
     paddingVertical: 10,
     position: 'absolute',
-    bottom: 100,
+    bottom: CONSTANTS.ACTION_BAR_HEIGHT + 20,
     right: (CONSTANTS.SCREEN_WIDTH - 280) / 2,
     ...Platform.select({
       ios: {
