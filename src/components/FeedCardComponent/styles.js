@@ -51,6 +51,9 @@ const styles = StyleSheet.create({
   dotIcon: {
     marginRight: 5,
     color: COLORS.MEDIUM_GREY,
+  },
+  linkStyle: {
+    color: '#000'
   }
 })
 
