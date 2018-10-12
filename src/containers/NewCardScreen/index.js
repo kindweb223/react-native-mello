@@ -1002,7 +1002,7 @@ class NewCardScreen extends React.Component {
           ref={ref => this.textInputIdeaRef = ref}
           style={styles.textInputIdea}
           autoCorrect={true}
-          placeholder='Add a name or link here'
+          placeholder='Type text or paste a link'
           multiline={true}
           underlineColorAndroid='transparent'
           value={this.state.idea}
@@ -1076,7 +1076,7 @@ class NewCardScreen extends React.Component {
           style={styles.textInputCardTitle}
           autoCorrect={true}
           editable={viewMode === CONSTANTS.CARD_NEW || viewMode === CONSTANTS.CARD_EDIT}
-          placeholder='Add a name or link here'
+          placeholder='Type text or paste a link'
           underlineColorAndroid='transparent'
           value={this.state.cardName}
           onChangeText={(value) => this.onChangeTitle(value)}
