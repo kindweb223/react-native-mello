@@ -10,7 +10,7 @@ const styles = StyleSheet.create({
     borderBottomWidth: 1,
     borderBottomColor: COLORS.LIGHT_GREY_LINE,
     marginTop: 16,
-    marginBottom: 11
+    marginBottom: 12
   }
 })
 
