@@ -76,20 +76,9 @@ const styles = StyleSheet.create({
     paddingTop: 0,
     marginBottom: 16,
     backgroundColor: '#fff',
-    borderBottomLeftRadius: 15,
-    borderBottomRightRadius: 15,
+    borderBottomColor: COLORS.LIGHT_GREY_LINE,
+    borderBottomWidth: 1,
     zIndex: 11,
-    ...Platform.select({
-      ios: {
-        shadowColor: 'black',
-        shadowOffset: { height: 4 },
-        shadowOpacity: 0.08,
-        shadowRadius: 2
-      },
-      android: {
-        elevation: 20
-      }
-    })
   },
   scrollView: {
   },
