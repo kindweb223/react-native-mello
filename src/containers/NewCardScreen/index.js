@@ -290,7 +290,7 @@ class NewCardScreen extends React.Component {
 
         if (this.openGraphNoteIndex < this.noteLinksForOpenGraph.length) {
           loading = true;
-          this.props.getOpenGraph(this.noteLinksForOpenGraph[this.openGraphNoteIndex].toLowerCase());
+          this.props.getOpenGraph(this.noteLinksForOpenGraph[this.openGraphNoteIndex]);
         } else {
           this.addLinkIndex = 0;
           const { id } = this.props.card.currentCard;
@@ -473,7 +473,7 @@ class NewCardScreen extends React.Component {
           }
           this.isOpenGraphForNewCard = true;
           this.urlForNewCard = texts[0];
-          this.props.getOpenGraph(texts[0].toLowerCase());
+          this.props.getOpenGraph(texts[0]);
           return true;
         }
       }
@@ -518,7 +518,7 @@ class NewCardScreen extends React.Component {
         this.openGraphNoteIndex = 0;
         this.openGraphForNoteLinks = [];
         this.noteLinksForOpenGraph = filteredUrls;
-        this.props.getOpenGraph(this.noteLinksForOpenGraph[this.openGraphNoteIndex].toLowerCase());
+        this.props.getOpenGraph(this.noteLinksForOpenGraph[this.openGraphNoteIndex]);
       }
     }
     return false;
