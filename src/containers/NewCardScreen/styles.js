@@ -29,7 +29,7 @@ const styles = StyleSheet.create({
   textInputIdea: {
     fontSize: 16,
     lineHeight: 23,
-    marginTop: 15,
+    marginTop: 16,
     marginHorizontal: 16,
     
     paddingLeft: 0,
@@ -111,12 +111,12 @@ const styles = StyleSheet.create({
     paddingRight: 16,
   },
   extensionHeaderContainer: {
-    // backgroundColor: '#D5D5D5',
     paddingVertical: 5,
     borderTopLeftRadius: 18,
     borderTopRightRadius: 18,
     borderBottomWidth: 1,
-    borderBottomColor: '#C6C6C6',
+    borderBottomColor: COLORS.LIGHT_GREY_LINE,
+    height: 44,
   },
   closeButtonWrapper: {
     paddingHorizontal: 10,
@@ -186,7 +186,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: CONSTANTS.PADDING,
     paddingVertical: CONSTANTS.PADDING / 2,
   },
-  addCardButtonWapper: {
+  addCardButtonWapper: {    
     width: 110,
     height: 34,
     borderRadius: 20,
@@ -205,16 +205,16 @@ const styles = StyleSheet.create({
     justifyContent: 'flex-end',
   },
   extensionSelectFeedoContainer: {
+    height: 44,
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
     // backgroundColor: '#D5D5D5',
     paddingHorizontal: 7,
-    paddingVertical: 10,
     borderBottomLeftRadius: 18,
     borderBottomRightRadius: 18,
     borderTopWidth: 1,
-    borderTopColor: '#C6C6C6',
+    borderTopColor: COLORS.LIGHT_GREY_LINE,
   },
   textCreateCardIn: {
     fontSize: 14,

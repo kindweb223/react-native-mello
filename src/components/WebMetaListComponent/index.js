@@ -111,7 +111,7 @@ export default class WebMetaList extends React.Component {
   render () {
     return (
       <FlatList
-        style={styles.container}
+        style={this.props.small ? styles.smallContainer : styles.container}
         showsHorizontalScrollIndicator={false}
         data={this.state.links}
         renderItem={this.renderItem.bind(this)}
