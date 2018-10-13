@@ -635,8 +635,6 @@ class HomeScreen extends React.Component {
             feedData={isEditFeed ? selectedFeedData : {}}
             onClose={(data) => this.onCloseNewFeedModal(data)}
             selectedFeedId={isEditFeed ? selectedFeedData.id : null}
-            
-            feedoMode={CONSTANTS.SHARE_EXTENTION_FEEDO}
           />  
         )}
       </Animated.View>
