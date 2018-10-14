@@ -32,6 +32,8 @@ import CreateNewFeedComponent from '../../components/CreateNewFeedComponent'
 import FeedLongHoldMenuScreen from '../FeedLongHoldMenuScreen'
 import ToasterComponent from '../../components/ToasterComponent'
 import FeedLoadingStateComponent from '../../components/FeedLoadingStateComponent'
+import EmptyStateComponent from '../../components/EmptyStateComponent'
+import SpeechBubbleComponent from '../../components/SpeechBubbleComponent'
 import COLORS from '../../service/colors'
 import styles from './styles'
 import CONSTANTS from '../../service/constants';
@@ -97,6 +99,10 @@ class HomeScreen extends React.Component {
       selectedIdeaInvitee: null,
       cardViewMode: CONSTANTS.CARD_NONE,
       appState: AppState.currentState,
+      showFeedInvitedNewUserBubble: false,
+      showBubbleCloseButton: false,
+      isExistingUser: false,
+      showEmptyBubble: false
     };
 
     this.currentRef = null;
@@ -175,7 +181,18 @@ class HomeScreen extends React.Component {
     }
   }
 
-  componentDidUpdate(prevProps) {
+  async componentDidUpdate(prevProps) {
+    const { feedo } = this.props
+    const { feedoList } = feedo
+
+    if ((prevProps.feedo.loading === 'GET_FEEDO_LIST_PENDING' && feedo.loading === 'GET_FEEDO_LIST_FULFILLED') ||
+        (prevProps.feedo.loading !== 'UPDATE_FEED_FULFILLED' && feedo.loading === 'UPDATE_FEED_FULFILLED') ||
+        (prevProps.feedo.loading !== 'FEED_FULFILLED' && feedo.loading === 'FEED_FULFILLED') ||
+        (prevProps.feedo.loading !== 'DEL_FEED_FULFILLED' && feedo.loading === 'DEL_FEED_FULFILLED') ||
+        (prevProps.feedo.loading !== 'ARCHIVE_FEED_FULFILLED' && feedo.loading === 'ARCHIVE_FEED_FULFILLED')) {
+      await this.setBubbles(feedoList)
+    }
+
     if (this.props.feedo.loading === 'SET_FEED_DETAIL_ACTION' && prevProps.feedo.feedDetailAction !== this.props.feedo.feedDetailAction) {
       if (this.props.feedo.feedDetailAction.action === 'Delete') {
         this.setState({ isShowToaster: true })
@@ -190,6 +207,7 @@ class HomeScreen extends React.Component {
       Actions.LoginStartScreen()
     } else if (this.props.feedo.loading === 'GET_FEEDO_LIST_FULFILLED' && this.state.currentPushNotificationType === CONSTANTS.USER_INVITED_TO_HUNT && this.state.currentPushNotificationData) {
       const { feedoList, currentPushNotificationData } = this.state
+
       const matchedHunt = find(feedoList, feedo => feedo.id === currentPushNotificationData);
       if (matchedHunt) {
         Actions.FeedDetailScreen({
@@ -228,6 +246,50 @@ class HomeScreen extends React.Component {
         currentPushNotificationData: null,
       });
     } 
+  }
+
+  async setBubbles(feedoList) {
+    const { user } = this.props
+
+    // New user, invited to existing feed
+    if (feedoList && feedoList.length > 0) {
+      let bubbleAsyncData = await AsyncStorage.getItem('BubbleFeedInvitedNewUser')
+      let bubbleData = JSON.parse(bubbleAsyncData)
+
+      if(!bubbleData || (bubbleData.userId === user.userInfo.id && bubbleData.state !== 'false')) {
+        const ownFeeds = filter(feedoList, feed => feed.metadata.owner === true)
+        console.log('FEEDO: ', feedoList)
+        if (ownFeeds.length === 0) {
+          this.setState({ showFeedInvitedNewUserBubble: true })
+          setTimeout(() => {
+            this.setState({ showBubbleCloseButton: true })
+          }, 30000)
+        } else {
+          this.setState({ showFeedInvitedNewUserBubble: false })
+        }
+      }
+    }
+
+    if (feedoList && feedoList.length === 0) {
+      const bubbleAsyncData = await AsyncStorage.getItem('BubbleFeedFirstTimeCreated')
+      const bubbleData = JSON.parse(bubbleAsyncData)
+
+      this.setState({ emptyState: true, showEmptyBubble: true })
+      if (bubbleData && (bubbleData.userId === user.userInfo.id && bubbleData.state === 'true')) {
+        this.setState({ isExistingUser: true })     // Existing user, no feeds
+      } else {
+        this.setState({ isExistingUser: false })    // New user, no feeds
+      }
+    }
+  }
+
+  closeBubble = () => {
+    this.setState({ showFeedInvitedNewUserBubble: false })
+    const data = {
+      userId: this.props.user.userInfo.id,
+      state: 'false'
+    }
+    AsyncStorage.setItem('BubbleFeedInvitedNewUser', JSON.stringify(data));
   }
 
   onHandleAppStateChange(nextAppState) {
@@ -705,7 +767,7 @@ class HomeScreen extends React.Component {
 
   render () {
     const { loading, feedoList, emptyState, tabIndex } = this.state
-
+    
     const normalHeaderOpacity = this.state.scrollY.interpolate({
       inputRange: [20, 60],
       outputRange: [1, 0],
@@ -766,13 +828,34 @@ class HomeScreen extends React.Component {
               <DashboardNavigationBar handleSetting={this.handleSetting} />
             </Animated.View>
 
-            {emptyState > 0 && (tabIndex === 0 && feedoList.length === 0)
+            {emptyState && (tabIndex === 0 && feedoList.length === 0)
             ? <View style={styles.emptyView}>
                 {loading
                   ? <FeedLoadingStateComponent />
                   : <View style={styles.emptyInnerView}>
-                      <Image source={EMPTY_ICON} />
-                      <Text style={styles.emptyText}>Feedo is more fun with feeds</Text>
+                      {this.state.showEmptyBubble && (
+                        this.state.isExistingUser
+                          ? <EmptyStateComponent
+                              page="feed_exist"
+                              title="It's awesome to start fresh!"
+                              subTitle=""
+                              ctaTitle="Start a new feed"
+                              onCreateNewFeed={() => {
+                                this.animatedOpacity.setValue(1);
+                                this.onSelectNewFeedType('New Feed')
+                              }}
+                            />
+                          : <EmptyStateComponent
+                              page="feed"
+                              title="First time here? No worries, you are in good hands..."
+                              subTitle="Watch a 15 sec video about creating feeds"
+                              ctaTitle="Start your first feed"
+                              onCreateNewFeed={() => {
+                                this.animatedOpacity.setValue(1);
+                                this.onSelectNewFeedType('New Feed')
+                              }}
+                            />
+                      )}
                     </View>
                 }
               </View>
@@ -798,6 +881,18 @@ class HomeScreen extends React.Component {
                   tabLabel={{ label: 'All' }}
                   onLayout={(event) => this.onScrollableTabViewLayout(event, 0)}
                 >
+                  {this.state.showFeedInvitedNewUserBubble && (
+                    <View style={{ height: 200 }}>
+                      <SpeechBubbleComponent
+                        page="feed"
+                        title="So you've been invited to feedo? Exciting, isn't it?!"
+                        subTitle="Watch a 15 sec Quick Start video "
+                        showBubbleCloseButton={this.state.showBubbleCloseButton}
+                        onCloseBubble={() => this.closeBubble()}
+                      />
+                    </View>
+                  )}
+
                   <FeedoListContainer
                     loading={loading}
                     feedoList={feedoList}
@@ -819,9 +914,12 @@ class HomeScreen extends React.Component {
                         page="home"
                       />
                     : !loading && ( 
-                        <View style={styles.emptyTabInnerView}>
-                          <Image source={EMPTY_ICON} />
-                          <Text style={styles.emptyText}>Feedo is more fun with feeds</Text>
+                        <View style={styles.emptyTabInnerSubView}>
+                          <SpeechBubbleComponent
+                            page="pinned"
+                            title="Your pinned items will appear here. To pin a feed tap and hold it to bring up a quick actions and select"
+                            subTitle="Watch a 15 sec Quick Start video "
+                          />
                         </View>
                       )
                   }
@@ -840,9 +938,12 @@ class HomeScreen extends React.Component {
                         page="home"
                       />
                     : !loading && (
-                        <View style={styles.emptyTabInnerView}>
-                          <Image source={EMPTY_ICON} />
-                          <Text style={styles.emptyText}>Feedo is more fun with feeds</Text>
+                        <View style={styles.emptyTabInnerSubView}>
+                          <SpeechBubbleComponent
+                            page="shared"
+                            title="Feeds can be shared with friends and colleagues for collaboration. Feeds you've been invited to will appear here."
+                            subTitle="All you need to know about sharing in 15 sec "
+                          />
                         </View>
                       )
                   }

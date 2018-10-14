@@ -46,7 +46,7 @@ import {
   setCoverImage,
   addLink,
   deleteLink,
-  moveCard,
+  moveCard
 } from '../../redux/card/actions'
 import { 
   createFeed,
@@ -133,6 +133,12 @@ class NewCardScreen extends React.Component {
     if (this.props.card.loading !== types.CREATE_CARD_PENDING && nextProps.card.loading === types.CREATE_CARD_PENDING) {
       loading = true;
     } else if (this.props.card.loading !== types.CREATE_CARD_FULFILLED && nextProps.card.loading === types.CREATE_CARD_FULFILLED) {
+      const data = {
+        userId: nextProps.user.userInfo.id,
+        state: 'true'
+      }
+      AsyncStorage.setItem('BubbleCardFirstTimeCreated', JSON.stringify(data));
+
       if (this.props.cardMode === CONSTANTS.SHARE_EXTENTION_CARD && this.props.shareUrl !== '') {
         this.setState({
           // cardName: this.props.shareUrl,

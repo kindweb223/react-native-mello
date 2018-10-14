@@ -9,6 +9,7 @@ import {
   Animated,
   TouchableOpacity,
   TouchableHighlight,
+  AsyncStorage
 } from 'react-native'
 
 import { connect } from 'react-redux'
@@ -41,6 +42,8 @@ import SelectFeedoComponent from '../../components/SelectFeedoComponent'
 import TagCreateScreen from '..//TagCreateScreen'
 import NewCardScreen from '../NewCardScreen'
 import LoadingScreen from '../LoadingScreen'
+import EmptyStateComponent from '../../components/EmptyStateComponent'
+import SpeechBubbleComponent from '../../components/SpeechBubbleComponent'
 
 import {
   getFeedDetail,
@@ -112,6 +115,11 @@ class FeedDetailScreen extends React.Component {
       totalCardCount: 0,
       isVisibleCardOpenMenu: false,
       currentScreen: FeedDetailMode,
+      feedoMode: 1,
+      showBubble: false,
+      showBubbleCloseButton: false,
+      isExistingUser: false,
+      showEmptyBubble: false,
       feedoViewMode: CONSTANTS.FEEDO_FROM_MAIN,
     };
     this.animatedOpacity = new Animated.Value(0)
@@ -135,8 +143,8 @@ class FeedDetailScreen extends React.Component {
     this.props.getFeedDetail(this.props.data.id)
   }
 
-  UNSAFE_componentWillReceiveProps(nextProps) {
-    const { feedo, card, currentFeed } = nextProps
+  async UNSAFE_componentWillReceiveProps(nextProps) {
+    const { feedo, card } = nextProps    
 
     if ((this.props.feedo.loading === 'ADD_FILE_PENDING' && feedo.loading === 'ADD_FILE_FULFILLED') ||
         (this.props.feedo.loading === 'DELETE_FILE_PENDING' && feedo.loading === 'DELETE_FILE_FULFILLED')) {
@@ -161,6 +169,8 @@ class FeedDetailScreen extends React.Component {
         (this.props.card.loading === 'MOVE_CARD_PENDING' && card.loading === 'MOVE_CARD_FULFILLED')) {
       
       const currentFeed = feedo.currentFeed
+
+      this.setBubbles(currentFeed)
 
       this.setState({
         loading: false,
@@ -205,6 +215,43 @@ class FeedDetailScreen extends React.Component {
         apiLoading: false
       })
     }
+  }
+
+  async setBubbles(currentFeed) {
+    let bubbleAsyncData = await AsyncStorage.getItem('CardBubbleState')
+    let bubbleData = JSON.parse(bubbleAsyncData)
+    if (!bubbleData || (bubbleData.userId === this.props.user.userInfo.id && bubbleData.state !== 'false')) {
+      const ownCards = _.filter(currentFeed.ideas, idea => idea.metadata.owner === true)
+      if (currentFeed.ideas.length > 0 && ownCards.length === 0) {
+        this.setState({ showBubble: true })
+        setTimeout(() => {
+          this.setState({ showBubbleCloseButton: true })
+        }, 30000)
+      } else {
+        this.setState({ showBubble: false })
+      }
+    }
+
+    if (currentFeed.ideas.length === 0) {
+      bubbleAsyncData = await AsyncStorage.getItem('BubbleCardFirstTimeCreated')
+      bubbleData = JSON.parse(bubbleAsyncData)
+      this.setState({ showEmptyBubble: true })
+      if (bubbleData && (bubbleData.userId === this.props.user.userInfo.id && bubbleData.state === 'true')) {
+        // Existing user, no feeds
+        this.setState({ isExistingUser: true })
+      } else {
+        this.setState({ isExistingUser: false })
+      }
+    }
+  }
+
+  closeBubble = () => {
+    this.setState({ showBubble: false })
+    const data = {
+      userId: this.props.user.userInfo.id,
+      state: 'false'
+    }
+    AsyncStorage.setItem('CardBubbleState', JSON.stringify(data));
   }
 
   filterCards = (currentFeed) => {
@@ -870,6 +917,16 @@ class FeedDetailScreen extends React.Component {
                 </View>
               )}
 
+              {!_.isEmpty(currentFeed) && currentFeed && currentFeed.ideas && currentFeed.ideas.length > 0 && this.state.showBubble && (
+                <SpeechBubbleComponent
+                  page="detail"
+                  title="Feeds contain cards. Cards can have, images, text, attachments and likes. My granny enjoys liking."
+                  subTitle="Watch a 15 sec video about the cards "
+                  onCloseBubble={() => this.closeBubble()}
+                  isShowCloseBubble={this.state.showBubbleCloseButton}
+                />
+              )}
+
               {
                 !_.isEmpty(currentFeed) && currentFeed && currentFeed.ideas && currentFeed.ideas.length > 0 ?
                   currentFeed.ideas.map((item, index) => (
@@ -911,8 +968,23 @@ class FeedDetailScreen extends React.Component {
                           <FeedLoadingStateComponent />
                         </View>
                       : <View style={styles.emptyInnerView}>
-                          <Image source={EMPTY_ICON} />
-                          <Text style={styles.emptyText}>It is lonely here</Text>
+                          {this.state.showEmptyBubble && (
+                            this.state.isExistingUser
+                            ? <EmptyStateComponent
+                                page="card"
+                                title="Ah, that sense of freshness! Let's start a new day."
+                                subTitle="Need a few hints on all awesome ways to create a card?"
+                                ctaTitle="Create a card"
+                                onCreateNewCard={this.onOpenNewCardModal.bind(this)}
+                              />
+                            : <EmptyStateComponent
+                                page="card"
+                                title="It's pretty boring here... Let's create some cards!"
+                                subTitle="Watch a 15 sec video about creating cards"
+                                ctaTitle="Create your first card"
+                                onCreateNewCard={this.onOpenNewCardModal.bind(this)}
+                              />
+                          )}
                         </View>
                       }
                   </View>
@@ -1004,7 +1076,7 @@ class FeedDetailScreen extends React.Component {
           onModalHide={this.onHiddenLongHoldMenu.bind(this)}
           onBackdropPress={() => this.setState({ isVisibleCardOpenMenu: false })}
         >
-          <Animated.View style={[styles.settingMenuView, { top: 70 }]}>
+          <Animated.View style={styles.settingMenuView}>
             <CardControlMenuComponent 
               onMove={() => this.onMoveCard(this.state.selectedLongHoldIdea.id)}
               onDelete={() => this.onConfirmDeleteCard()}

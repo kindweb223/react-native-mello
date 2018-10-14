@@ -18,13 +18,13 @@ const styles = StyleSheet.create({
     position: 'absolute'
   },
   emptyView: {
-    flex: 1,
+    flex: 1
   },
   emptyInnerView: {
     justifyContent: 'center',
     alignItems: 'center',
     width: '100%',
-    height: CONSTANTS.SCREEN_HEIGHT - CONSTANTS.ACTION_BAR_HEIGHT - 200,
+    height: CONSTANTS.SCREEN_HEIGHT - CONSTANTS.ACTION_BAR_HEIGHT - 100
   },
   emptyText: {
     fontSize: 14,
@@ -101,7 +101,7 @@ const styles = StyleSheet.create({
     paddingVertical: 10,
     position: 'absolute',
     right: CONSTANTS.PADDING,
-    top: CONSTANTS.STATUSBAR_HEIGHT + 70,
+    top: CONSTANTS.STATUSBAR_HEIGHT + ifIphoneX(70, 60),
     zIndex: 0,
     ...Platform.select({
       ios: {
