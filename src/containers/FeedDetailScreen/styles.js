@@ -84,7 +84,7 @@ const styles = StyleSheet.create({
   },
   detailView: {
     paddingTop: 10,
-    paddingBottom: Platform.OS === 'ios' ? ifIphoneX(50, 10) : 10,
+    paddingBottom: Platform.OS === 'ios' ? ifIphoneX(120, 10) : 10,
   },
   modalContainer: {
     position: 'absolute',

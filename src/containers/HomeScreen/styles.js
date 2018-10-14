@@ -1,4 +1,5 @@
-import { StyleSheet } from 'react-native'
+import { StyleSheet, Platform } from 'react-native'
+import { ifIphoneX } from 'react-native-iphone-x-helper';
 import COLORS from '../../service/colors'
 import CONSTANTS from '../../service/constants'
 
@@ -64,7 +65,7 @@ const styles = StyleSheet.create({
   feedListView: {
     zIndex: 10,
     paddingTop: SEARCHBAR_HEIGHT,
-    marginBottom: CONSTANTS.ACTION_BAR_HEIGHT
+    marginBottom: Platform.OS === 'ios' ? ifIphoneX(0, 56) : 56
   },
   feedListContainer: {
     paddingTop: 16

@@ -897,18 +897,14 @@ class FeedDetailScreen extends React.Component {
             </View>
           </View>
 
-          <GestureRecognizer
-            style={{ width: '100%', height: '100%' }}
-            onSwipeRight={this.backToDashboard}
-            config={{
-              velocityThreshold: 0.3,
-              directionalOffsetThreshold: 80
-            }}
-          >
-            <ScrollView
-              scrollEventThrottle={16}
-              style={styles.scrollView}
-            >          
+          <ScrollView
+            scrollEventThrottle={16}
+            style={styles.scrollView}
+          >     
+            <GestureRecognizer
+              style={{ width: '100%', height: '100%' }}
+              onSwipeRight={this.backToDashboard}
+            >
               <View style={styles.detailView}>
                 {!_.isEmpty(currentFeed) && (
                   <View style={styles.collapseView}>
@@ -999,8 +995,8 @@ class FeedDetailScreen extends React.Component {
                     </View>
                 }
               </View>
-            </ScrollView>
-          </GestureRecognizer>
+            </GestureRecognizer>
+          </ScrollView>
 
         </View>
 
