@@ -92,7 +92,7 @@ class EmptyStateComponent extends React.Component {
 
         <Video
           ref={(ref) => { this.player = ref }}
-          source={{ uri: 'https://player.vimeo.com/video/289041385' }}
+          source={{ uri: 'https://d5qq4b94z26us.cloudfront.net/solvers/videos/SOLVERS_FINAL.mp4' }}
           style={styles.video}
           resizeMode='cover'
           autoplay={false}
