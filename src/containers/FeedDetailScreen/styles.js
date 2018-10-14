@@ -18,13 +18,13 @@ const styles = StyleSheet.create({
     position: 'absolute'
   },
   emptyView: {
-    flex: 1,
+    flex: 1
   },
   emptyInnerView: {
     justifyContent: 'center',
     alignItems: 'center',
     width: '100%',
-    height: CONSTANTS.SCREEN_HEIGHT - CONSTANTS.ACTION_BAR_HEIGHT - 200,
+    height: CONSTANTS.SCREEN_HEIGHT - CONSTANTS.ACTION_BAR_HEIGHT - 100
   },
   emptyText: {
     fontSize: 14,
@@ -76,20 +76,9 @@ const styles = StyleSheet.create({
     paddingTop: 0,
     marginBottom: 16,
     backgroundColor: '#fff',
-    borderBottomLeftRadius: 15,
-    borderBottomRightRadius: 15,
+    borderBottomColor: COLORS.LIGHT_GREY_LINE,
+    borderBottomWidth: 1,
     zIndex: 11,
-    ...Platform.select({
-      ios: {
-        shadowColor: 'black',
-        shadowOffset: { height: 4 },
-        shadowOpacity: 0.08,
-        shadowRadius: 2
-      },
-      android: {
-        elevation: 20
-      }
-    })
   },
   scrollView: {
   },
@@ -112,7 +101,7 @@ const styles = StyleSheet.create({
     paddingVertical: 10,
     position: 'absolute',
     right: CONSTANTS.PADDING,
-    top: CONSTANTS.STATUSBAR_HEIGHT + 70,
+    top: CONSTANTS.STATUSBAR_HEIGHT + ifIphoneX(70, 60),
     zIndex: 0,
     ...Platform.select({
       ios: {

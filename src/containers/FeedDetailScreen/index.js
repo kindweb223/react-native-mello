@@ -9,6 +9,7 @@ import {
   Animated,
   TouchableOpacity,
   TouchableHighlight,
+  AsyncStorage
 } from 'react-native'
 
 import { connect } from 'react-redux'
@@ -23,6 +24,7 @@ import ImagePicker from 'react-native-image-picker'
 import { DocumentPicker, DocumentPickerUtil } from 'react-native-document-picker'
 import Permissions from 'react-native-permissions'
 import * as mime from 'react-native-mime-types'
+import GestureRecognizer from 'react-native-swipe-gestures'
 
 import DashboardActionBar from '../../navigations/DashboardActionBar'
 import FeedCardComponent from '../../components/FeedCardComponent'
@@ -41,6 +43,8 @@ import SelectFeedoComponent from '../../components/SelectFeedoComponent'
 import TagCreateScreen from '..//TagCreateScreen'
 import NewCardScreen from '../NewCardScreen'
 import LoadingScreen from '../LoadingScreen'
+import EmptyStateComponent from '../../components/EmptyStateComponent'
+import SpeechBubbleComponent from '../../components/SpeechBubbleComponent'
 
 import {
   getFeedDetail,
@@ -112,6 +116,11 @@ class FeedDetailScreen extends React.Component {
       totalCardCount: 0,
       isVisibleCardOpenMenu: false,
       currentScreen: FeedDetailMode,
+      feedoMode: 1,
+      showBubble: false,
+      showBubbleCloseButton: false,
+      isExistingUser: false,
+      showEmptyBubble: false,
       feedoViewMode: CONSTANTS.FEEDO_FROM_MAIN,
     };
     this.animatedOpacity = new Animated.Value(0)
@@ -135,8 +144,8 @@ class FeedDetailScreen extends React.Component {
     this.props.getFeedDetail(this.props.data.id)
   }
 
-  UNSAFE_componentWillReceiveProps(nextProps) {
-    const { feedo, card, currentFeed } = nextProps
+  async UNSAFE_componentWillReceiveProps(nextProps) {
+    const { feedo, card } = nextProps    
 
     if ((this.props.feedo.loading === 'ADD_FILE_PENDING' && feedo.loading === 'ADD_FILE_FULFILLED') ||
         (this.props.feedo.loading === 'DELETE_FILE_PENDING' && feedo.loading === 'DELETE_FILE_FULFILLED')) {
@@ -161,6 +170,8 @@ class FeedDetailScreen extends React.Component {
         (this.props.card.loading === 'MOVE_CARD_PENDING' && card.loading === 'MOVE_CARD_FULFILLED')) {
       
       const currentFeed = feedo.currentFeed
+
+      this.setBubbles(currentFeed)
 
       this.setState({
         loading: false,
@@ -205,6 +216,43 @@ class FeedDetailScreen extends React.Component {
         apiLoading: false
       })
     }
+  }
+
+  async setBubbles(currentFeed) {
+    let bubbleAsyncData = await AsyncStorage.getItem('CardBubbleState')
+    let bubbleData = JSON.parse(bubbleAsyncData)
+    if (!bubbleData || (bubbleData.userId === this.props.user.userInfo.id && bubbleData.state !== 'false')) {
+      const ownCards = _.filter(currentFeed.ideas, idea => idea.metadata.owner === true)
+      if (currentFeed.ideas.length > 0 && ownCards.length === 0) {
+        this.setState({ showBubble: true })
+        setTimeout(() => {
+          this.setState({ showBubbleCloseButton: true })
+        }, 30000)
+      } else {
+        this.setState({ showBubble: false })
+      }
+    }
+
+    if (currentFeed.ideas.length === 0) {
+      bubbleAsyncData = await AsyncStorage.getItem('BubbleCardFirstTimeCreated')
+      bubbleData = JSON.parse(bubbleAsyncData)
+      this.setState({ showEmptyBubble: true })
+      if (bubbleData && (bubbleData.userId === this.props.user.userInfo.id && bubbleData.state === 'true')) {
+        // Existing user, no feeds
+        this.setState({ isExistingUser: true })
+      } else {
+        this.setState({ isExistingUser: false })
+      }
+    }
+  }
+
+  closeBubble = () => {
+    this.setState({ showBubble: false })
+    const data = {
+      userId: this.props.user.userInfo.id,
+      state: 'false'
+    }
+    AsyncStorage.setItem('CardBubbleState', JSON.stringify(data));
   }
 
   filterCards = (currentFeed) => {
@@ -849,76 +897,110 @@ class FeedDetailScreen extends React.Component {
             </View>
           </View>
 
-          <ScrollView
-            scrollEventThrottle={16}
-            style={styles.scrollView}
-          >          
-            <View style={styles.detailView}>
-              {!_.isEmpty(currentFeed) && (
-                <View style={styles.collapseView}>
-                  <FeedCollapseComponent
-                    feedData={currentFeed}
-                    onEditFeed={() => {
-                      this.setState({ feedoViewMode: CONSTANTS.FEEDO_FROM_COLLAPSE })
-                      this.handleEdit(currentFeed.id)
-                    }}
-                    onOpenCreationTag={this.onOpenCreationTag}
-                    onAddMedia={this.onAddMedia}
-                    onAddDocument={this.onAddDocument}
-                    deleteFile={this.onDeleteFile}
-                  />
-                </View>
-              )}
-
-              {
-                !_.isEmpty(currentFeed) && currentFeed && currentFeed.ideas && currentFeed.ideas.length > 0 ?
-                  currentFeed.ideas.map((item, index) => (
-                    <Animated.View 
-                      key={index}
-                      style={
-                        this.state.selectedLongHoldCardIndex === index && 
-                        {
-                          transform: [
-                            { scale: this.animatedSelectCard },
-                          ],
-                        }
-                      }
-                    >
-                      <TouchableHighlight
-                        ref={ref => this.cardItemRefs[index] = ref}
-                        style={{ marginHorizontal: 5, borderRadius: 5 }}
-                        underlayColor={COLORS.LIGHT_GREY}
-                        onPress={() => this.onSelectCard(item, index)}
-                        onLongPress={() => this.onLongPressCard(index, item, currentFeed.invitees)}
-                      >
-                        <FeedCardComponent
-                          idea={item}
-                          invitees={currentFeed.invitees}
-                          onLinkPress={() => this.onSelectCard(item, index)}
-                          onLinkLongPress={() => this.onLongPressCard(index, item, currentFeed.invitees)}
-                        />
-                      </TouchableHighlight>
-
-                      {currentFeed.ideas.length > 1 && index !== (currentFeed.ideas.length - 1) && (
-                        <View style={styles.separator} />
-                      )}
-                    </Animated.View>
-                  ))
-                : 
-                  <View style={styles.emptyView}>
-                    {loading
-                      ? <View style={styles.loadingView}>
-                          <FeedLoadingStateComponent />
-                        </View>
-                      : <View style={styles.emptyInnerView}>
-                          <Image source={EMPTY_ICON} />
-                          <Text style={styles.emptyText}>It is lonely here</Text>
-                        </View>
-                      }
+          <GestureRecognizer
+            style={{ width: '100%', height: '100%' }}
+            onSwipeRight={this.backToDashboard}
+            config={{
+              velocityThreshold: 0.3,
+              directionalOffsetThreshold: 80
+            }}
+          >
+            <ScrollView
+              scrollEventThrottle={16}
+              style={styles.scrollView}
+            >          
+              <View style={styles.detailView}>
+                {!_.isEmpty(currentFeed) && (
+                  <View style={styles.collapseView}>
+                    <FeedCollapseComponent
+                      feedData={currentFeed}
+                      onEditFeed={() => {
+                        this.setState({ feedoViewMode: CONSTANTS.FEEDO_FROM_COLLAPSE })
+                        this.handleEdit(currentFeed.id)
+                      }}
+                      onOpenCreationTag={this.onOpenCreationTag}
+                      onAddMedia={this.onAddMedia}
+                      onAddDocument={this.onAddDocument}
+                      deleteFile={this.onDeleteFile}
+                    />
                   </View>
-              }
-            </View>
-          </ScrollView>
+                )}
+
+                {!_.isEmpty(currentFeed) && currentFeed && currentFeed.ideas && currentFeed.ideas.length > 0 && this.state.showBubble && (
+                  <SpeechBubbleComponent
+                    page="detail"
+                    title="Feeds contain cards. Cards can have, images, text, attachments and likes. My granny enjoys liking."
+                    subTitle="Watch a 15 sec video about the cards "
+                    onCloseBubble={() => this.closeBubble()}
+                    isShowCloseBubble={this.state.showBubbleCloseButton}
+                  />
+                )}
+
+                {
+                  !_.isEmpty(currentFeed) && currentFeed && currentFeed.ideas && currentFeed.ideas.length > 0 ?
+                    currentFeed.ideas.map((item, index) => (
+                      <Animated.View 
+                        key={index}
+                        style={
+                          this.state.selectedLongHoldCardIndex === index && 
+                          {
+                            transform: [
+                              { scale: this.animatedSelectCard },
+                            ],
+                          }
+                        }
+                      >
+                        <TouchableHighlight
+                          ref={ref => this.cardItemRefs[index] = ref}
+                          style={{ marginHorizontal: 5, borderRadius: 5 }}
+                          underlayColor={COLORS.LIGHT_GREY}
+                          onPress={() => this.onSelectCard(item, index)}
+                          onLongPress={() => this.onLongPressCard(index, item, currentFeed.invitees)}
+                        >
+                          <FeedCardComponent
+                            idea={item}
+                            invitees={currentFeed.invitees}
+                            onLinkPress={() => this.onSelectCard(item, index)}
+                            onLinkLongPress={() => this.onLongPressCard(index, item, currentFeed.invitees)}
+                          />
+                        </TouchableHighlight>
+
+                        {currentFeed.ideas.length > 1 && index !== (currentFeed.ideas.length - 1) && (
+                          <View style={styles.separator} />
+                        )}
+                      </Animated.View>
+                    ))
+                  : 
+                    <View style={styles.emptyView}>
+                      {loading
+                        ? <View style={styles.loadingView}>
+                            <FeedLoadingStateComponent />
+                          </View>
+                        : <View style={styles.emptyInnerView}>
+                            {this.state.showEmptyBubble && (
+                              this.state.isExistingUser
+                              ? <EmptyStateComponent
+                                  page="card"
+                                  title="Ah, that sense of freshness! Let's start a new day."
+                                  subTitle="Need a few hints on all awesome ways to create a card?"
+                                  ctaTitle="Create a card"
+                                  onCreateNewCard={this.onOpenNewCardModal.bind(this)}
+                                />
+                              : <EmptyStateComponent
+                                  page="card"
+                                  title="It's pretty boring here... Let's create some cards!"
+                                  subTitle="Watch a 15 sec video about creating cards"
+                                  ctaTitle="Create your first card"
+                                  onCreateNewCard={this.onOpenNewCardModal.bind(this)}
+                                />
+                            )}
+                          </View>
+                        }
+                    </View>
+                }
+              </View>
+            </ScrollView>
+          </GestureRecognizer>
 
         </View>
 

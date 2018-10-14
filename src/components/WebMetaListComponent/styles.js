@@ -7,6 +7,9 @@ const styles = StyleSheet.create({
     marginTop: 30,
     marginHorizontal: 10,
   },
+  smallContainer: {
+    margin: 16,
+  },
   itemContainer: {
     flex: 1,
     height: 94,
@@ -17,7 +20,7 @@ const styles = StyleSheet.create({
   },
   itemSmallContainer: {
     flex: 1,
-    height: 41,
+    height: 40,
     marginBottom: 5,
   },
   buttonContainer: {
@@ -25,6 +28,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     borderRadius: 5,
+    paddingHorizontal: 10,
     backgroundColor:  COLORS.SOFT_GREY,
   },
   imageCover: {
@@ -33,10 +37,8 @@ const styles = StyleSheet.create({
     borderRadius: 5,
   },
   imageSmallCover: {
-    width: 25,
-    height: 25,
-    borderRadius: 2,
-    marginLeft: 8,
+    width: 24,
+    height: 24,
   },
   infoContainer: {
     flex: 1,
@@ -57,10 +59,10 @@ const styles = StyleSheet.create({
   },
   textLink: {
     flex: 1,
-    fontSize: 14,
-    lineHeight: 21,
+    fontSize: 16,
+    lineHeight: 24,
     color: COLORS.BLUE,
-    marginLeft: 10,
+    marginLeft: 12,
   },
   closeButtonContainer: {
     position: 'absolute',

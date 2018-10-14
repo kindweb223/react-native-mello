@@ -182,19 +182,19 @@ export default class Root extends React.Component {
         <Modal hideNavBar>
           <Scene key="root">
             <Scene key="LoginStartScreen" component={ LoginStartScreen } hideNavBar panHandlers={null} />
-            <Scene key="LoginScreen" component={ LoginScreen } hideNavBar panHandlers={null} />
-            <Scene key="SignUpScreen" component={ SignUpScreen } hideNavBar panHandlers={null} />
+            <Scene key="LoginScreen" component={ LoginScreen } hideNavBar />
+            <Scene key="SignUpScreen" component={ SignUpScreen } hideNavBar />
             <Scene key="SignUpConfirmScreen" component={ SignUpConfirmScreen } hideNavBar panHandlers={null} />
-            <Scene key="TermsAndConditionsScreen" component={ TermsAndConditionsScreen } hideNavBar panHandlers={null} />
+            <Scene key="TermsAndConditionsScreen" component={ TermsAndConditionsScreen } hideNavBar />
             <Scene key="HomeScreen" component={ HomeScreen } hideNavBar panHandlers={null} />
             <Scene key="FeedDetailScreen" component={ FeedDetailScreen } hideNavBar panHandlers={null} />
             <Scene key="DocumentSliderScreen" component={ DocumentSliderScreen } hideNavBar />
             <Scene key="LikesListScreen" component={ LikesListScreen } navigationBarStyle={styles.defaultNavigationBar} />
             <Scene key="CommentScreen" component={ CommentScreen } navigationBarStyle={styles.defaultNavigationBar} />
             <Scene key="SignUpSuccessScreen" component={ SignUpSuccessScreen } hideNavBar panHandlers={null} />
-            <Scene key="ResetPasswordConfirmScreen" component={ ResetPasswordConfirmScreen } hideNavBar panHandlers={null} />
+            <Scene key="ResetPasswordConfirmScreen" component={ ResetPasswordConfirmScreen } hideNavBar />
             <Scene key="ResetPasswordScreen" component={ ResetPasswordScreen } hideNavBar panHandlers={null} />
-            <Scene key="FeedFilterScreen" component={ FeedFilterScreen } hideNavBar panHandlers={null} />
+            <Scene key="FeedFilterScreen" component={ FeedFilterScreen } hideNavBar />
           </Scene>
           <Stack key="ProfileScreen" hideNavBar>
             <Stack key="ProfileScreen">

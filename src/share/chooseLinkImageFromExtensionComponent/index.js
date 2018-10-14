@@ -32,7 +32,7 @@ class ChooseLinkImageFromExtension extends React.Component {
   async componentDidMount() {
     try {
       const { value } = await ShareExtension.data()
-      this.props.getOpenGraph(value.toLowerCase())
+      this.props.getOpenGraph(value)
     } catch(e) {
       console.log('error : ', e)
     }

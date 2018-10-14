@@ -62,27 +62,29 @@ class LoginScreen extends React.Component {
     }, 5000)
   }
 
-  componentDidUpdate(prevProps) {
-    if (prevProps.user.loading === 'USER_SIGNIN_PENDING' && this.props.user.loading === 'USER_SIGNIN_FULFILLED') {
+  UNSAFE_componentWillReceiveProps(nextProps) {
+    const { user } = nextProps
+
+    if (this.props.user.loading === 'USER_SIGNIN_PENDING' && user.loading === 'USER_SIGNIN_FULFILLED') {
       this.props.getUserSession()
       this.setState({ isLogIn: true })
     }
 
-    if (prevProps.user.loading === 'USER_SIGNIN_PENDING' && this.props.user.loading === 'USER_SIGNIN_REJECTED') {
+    if (this.props.user.loading === 'USER_SIGNIN_PENDING' && user.loading === 'USER_SIGNIN_REJECTED') {
       this.setState({ loading: false }, () => {
         Alert.alert(
           'Warning',
-          this.props.user.error
+          user.error
         )
       })
     }
 
-    if (prevProps.user.loading === 'GET_USER_SESSION_PENDING' && this.props.user.loading === 'GET_USER_SESSION_FULFILLED') {
+    if (this.props.user.loading === 'GET_USER_SESSION_PENDING' && user.loading === 'GET_USER_SESSION_FULFILLED') {
       if (this.state.isLogIn) {
         this.setState({ loading: false  }, () => {
           this.setState({ isLogIn: false })
 
-          if (this.props.user.userInfo.emailConfirmed) {
+          if (user.userInfo.emailConfirmed) {
             Actions.HomeScreen()
           } else {
             Actions.SignUpConfirmScreen({ userEmail:  this.props.userData.email })
@@ -91,15 +93,15 @@ class LoginScreen extends React.Component {
       }
     }
 
-    if (prevProps.user.loading === 'GET_USER_SESSION_PENDING' && this.props.user.loading === 'GET_USER_SESSION_REJECTED') {
+    if (this.props.user.loading === 'GET_USER_SESSION_PENDING' && user.loading === 'GET_USER_SESSION_REJECTED') {
       this.setState({ loading: false, isLogIn: false }, () => {
         Actions.SignUpConfirmScreen({ userEmail:  this.props.userData.email })
       })
     }
 
-    if (prevProps.user.loading === 'SEND_RESET_PASSWORD_EMAIL_PENDING' && this.props.user.loading === 'SEND_RESET_PASSWORD_EMAIL_FULFILLED') {
+    if (this.props.user.loading === 'SEND_RESET_PASSWORD_EMAIL_PENDING' && user.loading === 'SEND_RESET_PASSWORD_EMAIL_FULFILLED') {
       this.setState({ loading: false }, () => {
-        if (!this.props.user.userInfo) {
+        if (!user.userInfo) {
           Actions.ResetPasswordConfirmScreen({ userEmail: this.props.userData.email })
         }
       })

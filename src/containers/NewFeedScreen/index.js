@@ -9,12 +9,14 @@ import {
   Keyboard,
   ScrollView,
   Image,
-  SafeAreaView
+  SafeAreaView,
+  AsyncStorage
 } from 'react-native'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons'
+import Ionicons from 'react-native-vector-icons/Ionicons'
 import Tags from '../../components/TagComponent'
 import ActionSheet from 'react-native-actionsheet'
 import { Actions } from 'react-native-router-flux'
@@ -58,7 +60,7 @@ class NewFeedScreen extends React.Component {
       comments: '',
       loading: false,
       currentScreen: NewFeedMode,
-      keyboardShow: false,
+      isKeyboardShow: false,
       lastCursorPos: 0,
       feedData: {}
     };
@@ -81,6 +83,12 @@ class NewFeedScreen extends React.Component {
       // creating a feed
       loading = true;
     } else if (this.props.feedo.loading !== types.CREATE_FEED_FULFILLED && nextProps.feedo.loading === types.CREATE_FEED_FULFILLED) {
+      const data = {
+        userId: nextProps.user.userInfo.id,
+        state: 'true'
+      }
+      AsyncStorage.setItem('BubbleFeedFirstTimeCreated', JSON.stringify(data));
+
       this.setState({
         feedData: nextProps.feedo.currentFeed
       })
@@ -210,7 +218,7 @@ class NewFeedScreen extends React.Component {
   }
 
   keyboardWillShow(e) {
-    this.setState({ keyboardShow: true })
+    this.setState({ isKeyboardShow: true })
     Animated.timing(
       this.animatedKeyboardHeight, {
         toValue: e.endCoordinates.height,
@@ -220,7 +228,7 @@ class NewFeedScreen extends React.Component {
   }
 
   keyboardWillHide(e) {
-    this.setState({ keyboardShow: false })
+    this.setState({ isKeyboardShow: false })
     Animated.timing(
       this.animatedKeyboardHeight, {
         toValue: 0,
@@ -404,14 +412,14 @@ class NewFeedScreen extends React.Component {
             activeOpacity={0.6}
             onPress={this.onOpenActionSheet.bind(this)}
           >
-            <MaterialCommunityIcons name="close" size={32} color={COLORS.PURPLE} />
+            <Ionicons name="ios-arrow-back" size={28} color={COLORS.PURPLE} />
           </TouchableOpacity>
           <TouchableOpacity 
             style={styles.extensionCreateButtonWapper}
             activeOpacity={0.6}
             onPress={this.onUpdate.bind(this)}
           >
-            <Text style={[styles.textButton, {color: COLORS.PURPLE}]}>Create Feed</Text>
+            <Text style={[styles.textButton, {color: COLORS.PURPLE}]}>Create feed</Text>
           </TouchableOpacity>
         </View>
       );
@@ -579,7 +587,7 @@ class NewFeedScreen extends React.Component {
           </TouchableOpacity>
         </View>
 
-        {this.state.keyboardShow && (
+        {this.state.isKeyboardShow && (
           <View style={styles.bottomRightCotainer}>
             <TouchableOpacity
               style={styles.keyboardIconView}
@@ -606,17 +614,19 @@ class NewFeedScreen extends React.Component {
       inputRange: [0, 1],
       outputRange: [postion, 0]
     });
-    
     let contentContainerStyle = {};
     if (feedoMode === CONSTANTS.SHARE_EXTENTION_FEEDO) {
+      let bottomMargin = CONSTANTS.SCREEN_VERTICAL_MIN_MARGIN;
+      if (this.state.isKeyboardShow) {
+        bottomMargin = CONSTANTS.SCREEN_VERTICAL_MIN_MARGIN / 2;
+      }  
       contentContainerStyle = {
-        height: Animated.subtract(CONSTANTS.SCREEN_HEIGHT - CONSTANTS.SCREEN_VERTICAL_MIN_MARGIN * 2, this.animatedKeyboardHeight),
+        height: Animated.subtract(CONSTANTS.SCREEN_HEIGHT - CONSTANTS.SCREEN_VERTICAL_MIN_MARGIN  - bottomMargin, this.animatedKeyboardHeight),
         marginTop: CONSTANTS.SCREEN_VERTICAL_MIN_MARGIN,
-        marginBottom: Animated.add(CONSTANTS.SCREEN_VERTICAL_MIN_MARGIN, this.animatedKeyboardHeight),
+        marginBottom: Animated.add(bottomMargin, this.animatedKeyboardHeight),
         borderRadius: 18,
-        backgroundColor: '#fff',
-        // backgroundColor: 'rgba(255, 255, 255, .95)',
-        marginHorizontal: 10,
+        backgroundColor: 'rgba(255, 255, 255, .95)',
+        marginHorizontal: 16,
       }
     } else {
       contentContainerStyle = {
@@ -636,7 +646,7 @@ class NewFeedScreen extends React.Component {
         ]}
       >
         <Animated.View style={contentContainerStyle}>
-          <SafeAreaView style={ styles.feedContainer }>
+          <SafeAreaView style={styles.feedContainer}>
             {this.renderHeader}
             {this.renderCenterContent}
             {this.renderBottomContent}
@@ -729,8 +739,9 @@ NewFeedScreen.propTypes = {
 }
 
 
-const mapStateToProps = ({ feedo }) => ({
+const mapStateToProps = ({ feedo, user }) => ({
   feedo,
+  user
 })
 
 

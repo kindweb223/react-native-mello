@@ -39,7 +39,7 @@ export default styles = StyleSheet.create({
   },
   extensionTopContainer: {
     paddingHorizontal: 0, 
-    height: 50,
+    height: 44,
     paddingVertical: 0,
     // backgroundColor: '#D5D5D5',
   },
@@ -95,7 +95,7 @@ export default styles = StyleSheet.create({
   },
   line: {
     height: 1,
-    backgroundColor: '#C6C6C6',
+    backgroundColor: COLORS.LIGHT_GREY_LINE,
     marginBottom: 10,
   },
 })

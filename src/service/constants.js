@@ -19,7 +19,7 @@ export default {
   STATUS_BOTTOM_BAR_HEIGHT: Platform.OS === 'ios' ? ifIphoneX(16, 0) : 0,
   TAB_BAR_HEIGHT: 40,
   ANIMATEION_MILLI_SECONDS: 200,
-  SCREEN_VERTICAL_MIN_MARGIN: 80,
+  SCREEN_VERTICAL_MIN_MARGIN: Math.round(height * 0.145),
 
   // Feedo show type
   FEED_NONE: 0,

@@ -64,9 +64,9 @@ const styles = StyleSheet.create({
   feedListView: {
     zIndex: 10,
     paddingTop: SEARCHBAR_HEIGHT,
+    marginBottom: CONSTANTS.ACTION_BAR_HEIGHT
   },
   feedListContainer: {
-    paddingBottom: CONSTANTS.ACTION_BAR_HEIGHT,
     paddingTop: 16
   },
   tabBarStyle: {
@@ -89,7 +89,7 @@ const styles = StyleSheet.create({
     right: 0,
     top: 0,
     bottom: 0,
-    backgroundColor: COLORS.LIGHT_GREY_MODAL_BACKGROUND,
+    backgroundColor: COLORS.MODAL_BACKGROUND,
   },
   emptyView: {
     flex: 1,
@@ -105,6 +105,11 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     width: '100%',
     height: CONSTANTS.SCREEN_HEIGHT - CONSTANTS.ACTION_BAR_HEIGHT - CONSTANTS.TAB_BAR_HEIGHT - 100
+  },
+  emptyTabInnerSubView: {
+    justifyContent: 'flex-start',
+    alignItems: 'center',
+    width: '100%'
   },
   emptyText: {
     fontSize: 14,

@@ -61,7 +61,9 @@ export default class ChooseLinkImages extends React.Component {
         <FastImage style={styles.imageItem} source={{uri: item.item}} resizeMode={FastImage.resizeMode.cover}/>
         { 
           select && 
-          <Ionicons style={styles.icon} name="ios-checkmark-circle" size={20} color={COLORS.BLUE} /> 
+          <View style={styles.icon} >
+            <Ionicons name="ios-checkmark-circle" size={22} color={COLORS.BLUE} style={{marginTop: 0, marginLeft: 1}} /> 
+          </View>
         }
       </TouchableOpacity>
     );
