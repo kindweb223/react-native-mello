@@ -27,15 +27,15 @@ const styles = StyleSheet.create({
   },
   extensionTopContainer: {
     flexDirection: 'row',
-    height: 50,
+    height: 44,
     justifyContent: 'space-between',
     alignItems: 'center',
     paddingHorizontal: 9,
     borderBottomWidth: 1,
-    borderBottomColor: '#C6C6C6',
+    borderBottomColor: COLORS.LIGHT_GREY_LINE,
   },
   closeButtonWrapper: {
-    paddingHorizontal: 2,
+    paddingHorizontal: 7,
   },
   createButtonWapper: {
     marginRight: 5,
@@ -46,8 +46,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   extensionCreateButtonWapper: {
-    paddingHorizontal: 16,
-    height: 34,
+    paddingHorizontal: 7,
     justifyContent: 'center',
   },
   textButton: {
