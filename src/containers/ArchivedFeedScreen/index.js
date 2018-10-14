@@ -28,6 +28,25 @@ import styles from './styles'
 const EMPTY_ICON = require('../../../assets/images/empty_state/asset-emptystate.png')
 
 class ArchivedFeedScreen extends React.Component {
+  static renderLeftButton(props) {
+    return (
+      <TouchableOpacity 
+        style={styles.buttonWrapper}
+        activeOpacity={0.6}
+        onPress={() => Actions.pop()}
+      >
+        <Ionicons name="ios-arrow-back" size={27} color={COLORS.PURPLE} />
+        <Text style={styles.textBack}>Profile</Text>
+      </TouchableOpacity>
+    );
+  }
+
+  static renderTitle(props) {
+    return (
+      <Text style={styles.textTitle}>Archived feeds</Text>
+    );
+  }
+
   constructor(props) {
     super(props);
     this.state = {
@@ -97,43 +116,28 @@ class ArchivedFeedScreen extends React.Component {
     archivedFeedList = _.orderBy(archivedFeedList, ['publishedDate'], ['desc'])
 
     return (
-      <SafeAreaView style={styles.safeArea}>
-        <View style={styles.container}>
-          <View style={styles.navbar}>
-            <TouchableOpacity onPress={() => Actions.pop()}>
-              <View style={styles.backView}>
-                <Ionicons name="ios-arrow-back" size={30} color={COLORS.PURPLE} />
-                <Text style={styles.backTitle}>Profile</Text>
-              </View>
-            </TouchableOpacity>
-            <View style={styles.headerTitleView}>
-              <Text style={styles.headerTitle}>Archived feeds</Text>
-            </View>
-            <View style={styles.backView} />
+      <View style={styles.container}>
+        <ArchivedFeedoListContainer
+          loading={loading}
+          feedoList={archivedFeedList}
+          restoreFeed={this.showToaster}
+        />
+
+        {archivedFeedList.length === 0 && !loading && (
+          <View style={styles.emptyView}>
+            <Image source={EMPTY_ICON} />
+            <Text style={styles.emptyText}>Feedo is more fun with feeds</Text>
           </View>
+        )}
 
-          <ArchivedFeedoListContainer
-            loading={loading}
-            feedoList={archivedFeedList}
-            restoreFeed={this.showToaster}
+        {isShowToaster && (
+          <ToasterComponent
+            isVisible={isShowToaster}
+            title="Feedo restored."
+            onPressButton={this.undoAction}
           />
-
-          {archivedFeedList.length === 0 && !loading && (
-            <View style={styles.emptyView}>
-              <Image source={EMPTY_ICON} />
-              <Text style={styles.emptyText}>Feedo is more fun with feeds</Text>
-            </View>
-          )}
-
-          {isShowToaster && (
-            <ToasterComponent
-              isVisible={isShowToaster}
-              title="Feedo restored."
-              onPressButton={this.undoAction}
-            />
-          )}
-        </View>
-      </SafeAreaView>
+        )}
+      </View>
     )
   }
 }

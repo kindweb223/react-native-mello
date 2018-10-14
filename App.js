@@ -197,12 +197,12 @@ export default class Root extends React.Component {
             <Scene key="FeedFilterScreen" component={ FeedFilterScreen } hideNavBar />
           </Scene>
           <Stack key="ProfileScreen" hideNavBar>
-            <Stack key="ProfileScreen" hideNavBar>
-              <Scene key="ProfileScreen" component={ ProfileScreen } hideNavBar />
-              <Scene key="ProfileUpdateScreen" component={ ProfileUpdateScreen } hideNavBar />
-              <Scene key="ProfileResetPasswordConfirmScreen" component={ ResetPasswordConfirmScreen } hideNavBar />
-              <Scene key="ProfileTermsAndConditionsScreen" component={ TermsAndConditionsScreen } hideNavBar />
-              <Scene key="ArchivedFeedScreen" component={ ArchivedFeedScreen } hideNavBar />
+            <Stack key="ProfileScreen">
+              <Scene key="ProfileScreen" component={ ProfileScreen } hideNavBar panHandlers={null} navigationBarStyle={styles.defaultNavigationBar} />
+              <Scene key="ProfileUpdateScreen" component={ ProfileUpdateScreen } panHandlers={null} navigationBarStyle={styles.defaultNavigationBar} />
+              <Scene key="ProfileResetPasswordConfirmScreen" component={ ResetPasswordConfirmScreen } hideNavBar panHandlers={null} />
+              <Scene key="ProfileTermsAndConditionsScreen" component={ TermsAndConditionsScreen } hideNavBar panHandlers={null} />
+              <Scene key="ArchivedFeedScreen" component={ ArchivedFeedScreen } panHandlers={null} navigationBarStyle={styles.defaultNavigationBar} />
             </Stack>
           </Stack>
         </Modal>

@@ -32,6 +32,25 @@ const PASSWORD_PROGRESS = [
 ]
 
 class ProfileUpdateScreen extends React.Component {
+  static renderLeftButton(props) {
+    return (
+      <TouchableOpacity 
+        style={styles.buttonWrapper}
+        activeOpacity={0.6}
+        onPress={() => Actions.pop()}
+      >
+        <Ionicons name="ios-arrow-back" size={27} color={COLORS.PURPLE} />
+        <Text style={styles.textBack}>Profile</Text>
+      </TouchableOpacity>
+    );
+  }
+
+  static renderTitle(props) {
+    return (
+      <Text style={styles.textTitle}>{props.title}</Text>
+    );
+  }
+
   constructor(props) {
     super(props)
     this.state = {
@@ -237,40 +256,13 @@ class ProfileUpdateScreen extends React.Component {
     const { page } = this.props
 
     return (
-      <View style={styles.main}>
-        <SafeAreaView style={styles.container}>
-          {this.renderNavBar()}
-          
-          {page === 'user' && this.renderUserContent()}
-          {page === 'password' && this.renderPasswordContent()}
-          
-          {this.state.loading && (
-            <LoadingScreen />
-          )}
-        </SafeAreaView>
-      </View>
-    );
-  }
-
-  renderNavBar = () => {
-    return (
-      <View style={styles.navBar}>
-        <TouchableOpacity 
-          style={styles.navLeftWrapper}
-          activeOpacity={0.6}
-          onPress={() => Actions.pop()}
-        >
-          <Ionicons name="ios-arrow-back" size={30} color={COLORS.PURPLE} />
-          <Text style={styles.headerTextBack}>Profile</Text>
-        </TouchableOpacity>
-
-        <Text style={styles.headerTextTitle}>{this.props.title}</Text>
-
-        <TouchableOpacity
-          style={styles.navRightWrapper}
-          activeOpacity={1}
-          onPress={() => {}}
-        />
+      <View style={styles.container}>
+        {page === 'user' && this.renderUserContent()}
+        {page === 'password' && this.renderPasswordContent()}
+        
+        {this.state.loading && (
+          <LoadingScreen />
+        )}
       </View>
     );
   }
@@ -287,7 +279,7 @@ class ProfileUpdateScreen extends React.Component {
 
     return (
       <View style={styles.subContainer}>
-        <KeyboardScrollView style={{ flex: 1 }}>
+        <KeyboardScrollView>
           <TextInputComponent
             label='Email'
             placeholder="Email"

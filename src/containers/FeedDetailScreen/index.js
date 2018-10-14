@@ -1086,7 +1086,7 @@ class FeedDetailScreen extends React.Component {
           onModalHide={this.onHiddenLongHoldMenu.bind(this)}
           onBackdropPress={() => this.setState({ isVisibleCardOpenMenu: false })}
         >
-          <Animated.View style={styles.settingMenuView}>
+          <Animated.View style={[styles.settingMenuView, { top: CONSTANTS.STATUSBAR_HEIGHT + 60 }]}>
             <CardControlMenuComponent 
               onMove={() => this.onMoveCard(this.state.selectedLongHoldIdea.id)}
               onDelete={() => this.onConfirmDeleteCard()}

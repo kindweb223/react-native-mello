@@ -1,7 +1,7 @@
 import { Dimensions, Platform } from 'react-native'
 import { ifIphoneX } from 'react-native-iphone-x-helper';
 
-const STATUSBAR_HEIGHT = Platform.OS === 'ios' ? ifIphoneX(34, 20) : 20;
+const STATUSBAR_HEIGHT = Platform.OS === 'ios' ? ifIphoneX(36, 20) : 20;
 
 const width = Dimensions.get('window').width
 const height = Dimensions.get('window').height
@@ -16,6 +16,7 @@ export default {
   MINI_NAVIGATION_BAR_HEIGTH: 60,
   FILTER_HEIGHT: 62,
   ACTION_BAR_HEIGHT: Platform.OS === 'ios' ? ifIphoneX(82, 56) : 56,
+  STATUS_BOTTOM_BAR_HEIGHT: Platform.OS === 'ios' ? ifIphoneX(16, 0) : 0,
   TAB_BAR_HEIGHT: 40,
   ANIMATEION_MILLI_SECONDS: 200,
   SCREEN_VERTICAL_MIN_MARGIN: Math.round(height * 0.145),
