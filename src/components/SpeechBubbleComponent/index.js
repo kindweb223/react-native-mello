@@ -9,6 +9,8 @@ import {
 import PropTypes from 'prop-types'
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons'
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons'
+import Video from 'react-native-video'
+
 import styles from './styles'
 import COLORS from '../../service/colors'
 
@@ -26,6 +28,11 @@ class SpeechBubbleComponent extends React.Component {
 
   UNSAFE_componentWillReceiveProps(nextProps) {
     this.setState({ showCloseBtn: nextProps.showBubbleCloseButton })
+  }
+
+  showVideo = () => {
+    this.player.presentFullscreenPlayer();
+    this.player.seek(0);
   }
 
   render() {
@@ -66,7 +73,7 @@ class SpeechBubbleComponent extends React.Component {
               }
 
               {page !== 'pinned' && (
-                <TouchableOpacity style={styles.videoBtn} activeOpacity={0.8}>
+                <TouchableOpacity style={styles.videoBtn} activeOpacity={0.8} onPress={this.showVideo}>
                   <Text style={styles.videoBtnText}>
                     {subTitle}
                     <MaterialCommunityIcons name='play' size={23} color={COLORS.PURPLE} />
@@ -85,6 +92,15 @@ class SpeechBubbleComponent extends React.Component {
             </TouchableOpacity>
           </View>
         )}
+
+        <Video
+          ref={(ref) => { this.player = ref }}
+          source={{ uri: 'https://player.vimeo.com/video/289041385' }}
+          style={styles.video}
+          resizeMode='cover'
+          autoplay={false}
+          paused  
+        />
       </View>
     )
   }

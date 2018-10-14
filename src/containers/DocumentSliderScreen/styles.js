@@ -26,6 +26,10 @@ const styles = StyleSheet.create({
   slideContainer: {
     flex: 1,
     marginBottom: 45,
+    backgroundColor: '#fff'
+  },
+  slideContentContainer: {
+    flex: 1
   },
   deleteButtonWrapper: {
     position: 'absolute',
