@@ -3,6 +3,7 @@ package com.feedo;
 import android.app.Application;
 
 import com.facebook.react.ReactApplication;
+import com.brentvatne.react.ReactVideoPackage;
 import com.apsl.versionnumber.RNVersionNumberPackage;
 import com.dieam.reactnativepushnotification.ReactNativePushNotificationPackage;
 import com.poppop.RNReactNativeSharedGroupPreferences.RNReactNativeSharedGroupPreferencesPackage;
@@ -33,6 +34,7 @@ public class MainApplication extends Application implements ReactApplication {
     protected List<ReactPackage> getPackages() {
       return Arrays.<ReactPackage>asList(
           new MainReactPackage(),
+            new ReactVideoPackage(),
             new RNVersionNumberPackage(),
             new ReactNativePushNotificationPackage(),
             new RNReactNativeSharedGroupPreferencesPackage(),
