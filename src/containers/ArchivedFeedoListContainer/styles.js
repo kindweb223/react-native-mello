@@ -4,8 +4,10 @@ import CONSTANTS from '../../service/constants'
 
 const styles = StyleSheet.create({
   listView: {
-    paddingTop: 20,
-    paddingBottom: CONSTANTS.ACTION_BAR_HEIGHT + 20 
+    paddingTop: 20
+  },
+  listContentView: {
+    paddingBottom: CONSTANTS.STATUS_BOTTOM_BAR_HEIGHT + 20
   },
   listItem: {
     paddingHorizontal: CONSTANTS.PADDING,

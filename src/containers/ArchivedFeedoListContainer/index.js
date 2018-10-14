@@ -60,6 +60,7 @@ class ArchivedFeedoListContainer extends React.Component {
       <FlatList
         key="0"
         style={styles.listView}
+        contentContainerStyle={styles.listContentView}
         data={feedoList}
         keyExtractor={item => item.id}
         automaticallyAdjustContentInsets={false}

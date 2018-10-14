@@ -3,10 +3,6 @@ import COLORS from '../../service/colors'
 import CONSTANTS from '../../service/constants'
 
 const styles = StyleSheet.create({
-  main: {
-    width: CONSTANTS.SCREEN_WIDTH,
-    height: CONSTANTS.SCREEN_HEIGHT
-  },
   container: {
     flex: 1,
     backgroundColor: '#fff',
@@ -17,35 +13,23 @@ const styles = StyleSheet.create({
     paddingHorizontal: CONSTANTS.PADDING,
     paddingVertical: 30
   },
-  navBar: {
-    height: 54,
-    paddingTop: 5,
-    borderBottomWidth: 1,
-    borderColor: COLORS.LIGHT_GREY_LINE,
+  buttonWrapper: {
     flexDirection: 'row',
-    justifyContent: 'space-between',
     alignItems: 'center',
-    paddingHorizontal: CONSTANTS.PADDING
+    paddingLeft: 10,
+    marginBottom: 5,
   },
-  navLeftWrapper: {
-    width: 80,
-    flexDirection: 'row',
-    alignItems: 'center'
-  },
-  navRightWrapper: {
-    width: 80,
-    alignItems: 'flex-end',
-    justifyContent: 'center'
-  },
-  headerTextBack: {
+  textBack: {
     fontSize: 16,
+    lineHeight: 23,
     fontWeight: '500',
     marginLeft: 5,
     color: COLORS.PURPLE,
   },
-  headerTextTitle: {
+  textTitle: {
     fontSize: 16,
-    fontWeight: '600',
+    lineHeight: 23,
+    fontWeight: '500',
     textAlign: 'center',
     marginBottom: 5,
   },
@@ -73,30 +57,6 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     backgroundColor: 'transparent'
-  },
-  avatarView: {
-    marginBottom: 30,
-    width: '100%',
-    flexDirection: 'row',
-    alignItems: 'center',
-  },
-  avatar: {
-    width: 60,
-    height: 60,
-    borderRadius: 30,
-    backgroundColor: COLORS.SOFT_GREY,
-    justifyContent: 'center',
-    alignItems: 'center',
-    marginRight: 20,
-    overflow: 'hidden'
-  },
-  avatarImg: {
-    width: '100%',
-    height: '100%'
-  },
-  uploadText: {
-    color: COLORS.DARK_GREY,
-    fontSize: 14
   },
   passwordScoreView: {
     flexDirection: 'row',
