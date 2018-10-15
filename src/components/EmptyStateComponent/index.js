@@ -29,7 +29,7 @@ class EmptyStateComponent extends React.Component {
 
   onStart = () => {
     const { page } = this.props
-    if (page === 'card') {
+    if (page === 'card' || page === 'card_exist') {
       this.props.onCreateNewCard()
     } else {
       this.props.onCreateNewFeed()

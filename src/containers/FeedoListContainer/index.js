@@ -122,7 +122,7 @@ class FeedoListContainer extends React.Component {
         data={feedoList}
         keyExtractor={item => item.id}
         scrollEnabled={false}
-        automaticallyAdjustContentInsets={false}
+        automaticallyAdjustContentInsets={true}
         renderItem={this.renderItem.bind(this)}
         keyboardShouldPersistTaps="handled"
       />
