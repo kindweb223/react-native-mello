@@ -7,14 +7,14 @@ export default styles = StyleSheet.create({
   container: {
     flex: 1,
     justifyContent: 'center',
-    backgroundColor: COLORS.MODAL_BACKGROUND,
+    // backgroundColor: COLORS.MODAL_BACKGROUND,
   },
   feedContainer: {
     position: 'absolute',
     left: 0,
     right: 0,
-    top: CONSTANTS.SCREEN_VERTICAL_MIN_MARGIN,
-    bottom: CONSTANTS.SCREEN_VERTICAL_MIN_MARGIN,
+    top: 0,
+    bottom: 0,
   },
   newFeedContainer: {
     // backgroundColor: '#fff',

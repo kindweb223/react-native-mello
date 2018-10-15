@@ -697,6 +697,8 @@ class HomeScreen extends React.Component {
             feedData={isEditFeed ? selectedFeedData : {}}
             onClose={(data) => this.onCloseNewFeedModal(data)}
             selectedFeedId={isEditFeed ? selectedFeedData.id : null}
+
+            // feedoMode={CONSTANTS.SHARE_EXTENTION_FEEDO}
           />  
         )}
       </Animated.View>
@@ -757,9 +759,13 @@ class HomeScreen extends React.Component {
       >
         <NewCardScreen 
           viewMode={this.state.cardViewMode}
-          cardMode={cardMode}
+          // cardMode={cardMode}
           invitee={this.state.selectedIdeaInvitee}
           onClose={() => this.onCloseCardModal()}
+
+          // cardMode={CONSTANTS.SHARE_EXTENTION_CARD}
+          // shareUrl='https://trello.com'
+          // shareImageUrl='https://d2k1ftgv7pobq7.cloudfront.net/meta/p/res/images/fb4de993e22034b76539da073ea8d35c/home-hero.png'
         />
       </Animated.View>
     );

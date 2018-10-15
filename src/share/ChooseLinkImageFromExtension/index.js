@@ -47,11 +47,12 @@ class ChooseLinkImageFromExtension extends React.Component {
     } else if (this.props.card.loading !== types.GET_OPEN_GRAPH_FULFILLED && nextProps.card.loading === types.GET_OPEN_GRAPH_FULFILLED) {
       // success in getting open graph
       const images = nextProps.card.currentOpneGraph.images;
-      console.log('nextProps.card.currentOpneGraph : ', images)
       if (images && images.length > 0) {
         this.setState({
           images,
         });
+      } else {
+        this.onSkip();
       }
     }
 

@@ -64,6 +64,7 @@ const styles = StyleSheet.create({
   hideKeyboardContainer: {
     position: 'absolute',
     right: 16,
+    bottom: 16,
   },
   attachment: {
     transform: [
@@ -79,10 +80,6 @@ const styles = StyleSheet.create({
   rowContainer: {
     flexDirection: 'row',
     alignItems: 'center',
-  },
-  extensionRowContainer: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
   },
   textInvitee: {
     fontSize: 14,
@@ -149,10 +146,12 @@ const styles = StyleSheet.create({
     overflow: 'hidden',
   },
   extensionCoverImageContainer: {
-    marginTop: 15,
-    marginRight: 16,
-    height: 80,
-    width: 80,
+    height: Math.round(CONSTANTS.SCREEN_WIDTH * 0.336),
+    width: CONSTANTS.SCREEN_WIDTH - 64,
+    marginHorizontal: 16,
+    borderBottomLeftRadius: 5,
+    borderBottomRightRadius: 5,
+    overflow: 'hidden',
   },
   coverImageSelectContainer: {
     marginHorizontal: 16,

@@ -36,12 +36,12 @@ axios.interceptors.response.use(
   }
 )
 
-
-import ShareExtension from './shareExtension'
 import CONSTANTS from '../service/constants';
+import ShareExtension from './shareExtension'
 import ShareCardScreen from './ShareCardScreen';
 import ShareModalScreen from './ShareModalScreen';
-import ChooseLinkImageFromExtension from './chooseLinkImageFromExtensionComponent';
+import ChooseLinkImageFromExtension from './ChooseLinkImageFromExtension';
+import ShareSuccessScreen from './ShareSuccessScreen';
 
 
 export default class Share extends Component {
@@ -86,6 +86,7 @@ export default class Share extends Component {
             <Scene key="root" hideNavBar>
               <Scene key="ChooseLinkImageFromExtension" component={ChooseLinkImageFromExtension} /> 
               <Scene key="ShareCardScreen" component={ShareCardScreen} />
+              <Scene key="ShareSuccessScreen" component={ShareSuccessScreen} />
               <Scene key="ShareModalScreen" component={ShareModalScreen} initial={this.state.isVisibleModal} />
             </Scene>
           </Router>
