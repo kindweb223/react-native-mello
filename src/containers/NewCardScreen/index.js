@@ -12,6 +12,7 @@ import {
   ScrollView,
   AsyncStorage,
   Linking,
+  SafeAreaView,
 } from 'react-native'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
@@ -133,12 +134,6 @@ class NewCardScreen extends React.Component {
     if (this.props.card.loading !== types.CREATE_CARD_PENDING && nextProps.card.loading === types.CREATE_CARD_PENDING) {
       loading = true;
     } else if (this.props.card.loading !== types.CREATE_CARD_FULFILLED && nextProps.card.loading === types.CREATE_CARD_FULFILLED) {
-      const data = {
-        userId: nextProps.user.userInfo.id,
-        state: 'true'
-      }
-      AsyncStorage.setItem('BubbleCardFirstTimeCreated', JSON.stringify(data));
-
       if (this.props.cardMode === CONSTANTS.SHARE_EXTENTION_CARD && this.props.shareUrl !== '') {
         this.setState({
           // cardName: this.props.shareUrl,
@@ -146,6 +141,12 @@ class NewCardScreen extends React.Component {
         }, () => {
           this.checkUrl(this.state.idea);
         });
+      } else {
+        const data = {
+          userId: nextProps.user.userInfo.id,
+          state: 'true'
+        }
+        AsyncStorage.setItem('BubbleCardFirstTimeCreated', JSON.stringify(data));
       }
     } else if (this.props.card.loading !== types.GET_FILE_UPLOAD_URL_PENDING && nextProps.card.loading === types.GET_FILE_UPLOAD_URL_PENDING) {
       // getting a file upload url
@@ -440,10 +441,9 @@ class NewCardScreen extends React.Component {
   }
 
   keyboardWillShow(e) {
-    const bottomPadding = isIphoneX() ? 24 : 0;
     Animated.timing(
       this.animatedKeyboardHeight, {
-        toValue: e.endCoordinates.height - bottomPadding,
+        toValue: e.endCoordinates.height,
         duration: e.duration,
       }
     ).start();
@@ -1078,9 +1078,10 @@ class NewCardScreen extends React.Component {
     const { cardMode } = this.props;
     if (cardMode === CONSTANTS.SHARE_EXTENTION_CARD) {
       return (
-        <View style={styles.extensionRowContainer}>
-          {this.renderIdea}
+        <View>
           {this.renderCoverImage}
+          {this.renderWebMeta}
+          {this.renderIdea}
         </View>
       )
     }
@@ -1088,6 +1089,7 @@ class NewCardScreen extends React.Component {
       <View>
         {this.renderCoverImage}
         {this.renderIdea}
+        {this.renderWebMeta}
       </View>
     )
   }
@@ -1113,7 +1115,6 @@ class NewCardScreen extends React.Component {
           selectionColor={COLORS.PURPLE}
         /> */}
         {this.renderIdeaAndCoverImage}
-        {this.renderWebMeta}
         {this.renderDocuments}
         {this.renderComments}
       </ScrollView>
@@ -1258,7 +1259,8 @@ class NewCardScreen extends React.Component {
           <TouchableOpacity 
             style={styles.closeButtonWrapper}
             activeOpacity={0.7}
-            onPress={() => this.onClose()}
+            // onPress={() => this.onClose()}
+            onPress={() => Actions.pop()}
           >
             <Ionicons name="ios-arrow-back" size={28} color={COLORS.PURPLE} />
           </TouchableOpacity>
@@ -1389,13 +1391,13 @@ class NewCardScreen extends React.Component {
         marginTop: CONSTANTS.SCREEN_VERTICAL_MIN_MARGIN,
         marginBottom: Animated.add(bottomMargin, this.animatedKeyboardHeight),
         borderRadius: 18,
-        backgroundColor: 'rgba(255, 255, 255, .95)',
+        backgroundColor: '#fff',
         marginHorizontal: 16,
       }
     } else {
       contentContainerStyle = {
-        paddingTop: cardMode !== CONSTANTS.SHARE_EXTENTION_CARD ?  (isIphoneX() ? 50 : 26) : 0,
-        paddingBottom: Animated.add(this.animatedKeyboardHeight, isIphoneX() ? 24 : 0),
+        paddingTop: 0,
+        paddingBottom: this.animatedKeyboardHeight,
         height: CONSTANTS.SCREEN_HEIGHT,
         backgroundColor: '#fff',
       }
@@ -1410,34 +1412,31 @@ class NewCardScreen extends React.Component {
         ]}
       >
         <Animated.View style={contentContainerStyle}>
-          {this.renderHeader}
-          {this.renderMainContent}
-          {this.renderBottomAttachmentButtons}
-          {this.renderBottomContent}
-          {
-            // If show keyboard button, and not quick add card from dashboard as interferes with change Feed https://cl.ly/ba004cb3a34b
-            this.state.isShowKeyboardButton && cardMode !== CONSTANTS.MAIN_APP_CARD_FROM_DASHBOARD && cardMode !== CONSTANTS.SHARE_EXTENTION_CARD &&
-            <Animated.View
-              style={[styles.hideKeyboardContainer, {
-                  bottom: cardMode === CONSTANTS.SHARE_EXTENTION_CARD ? 16 : Animated.add(this.animatedKeyboardHeight, isIphoneX() ? 24 + 16: 16)
-                }
-              ]}
-            >
-              <TouchableOpacity
-                style={[
-                  styles.buttonItemContainer,
-                  {
-                    backgroundColor: COLORS.PURPLE,
-                    borderRadius: 8,
-                  },
-                ]}
-                activeOpacity={0.6}
-                onPress={this.onHideKeyboard.bind(this)}
-              >
-                <MaterialCommunityIcons name="keyboard-close" size={20} color={'#fff'} />
-              </TouchableOpacity>
-            </Animated.View>
-          }
+          <SafeAreaView style={{flex: 1}}>
+            {this.renderHeader}
+            {this.renderMainContent}
+            {this.renderBottomAttachmentButtons}
+            {this.renderBottomContent}
+            {
+              // If show keyboard button, and not quick add card from dashboard as interferes with change Feed https://cl.ly/ba004cb3a34b
+              this.state.isShowKeyboardButton && cardMode !== CONSTANTS.MAIN_APP_CARD_FROM_DASHBOARD && cardMode !== CONSTANTS.SHARE_EXTENTION_CARD &&
+              <Animated.View style={styles.hideKeyboardContainer}>
+                <TouchableOpacity
+                  style={[
+                    styles.buttonItemContainer,
+                    {
+                      backgroundColor: COLORS.PURPLE,
+                      borderRadius: 8,
+                    },
+                  ]}
+                  activeOpacity={0.6}
+                  onPress={this.onHideKeyboard.bind(this)}
+                >
+                  <MaterialCommunityIcons name="keyboard-close" size={20} color={'#fff'} />
+                </TouchableOpacity>
+              </Animated.View>
+            }
+          </SafeAreaView>
         </Animated.View>
       </Animated.View>
     );

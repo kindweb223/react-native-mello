@@ -11,7 +11,7 @@ const styles = StyleSheet.create({
   mainContainer: {
     borderRadius: 18,
     marginHorizontal: 16,
-    backgroundColor: 'rgba(255, 255, 255, .95)',
+    backgroundColor: '#fff',
     height: CONSTANTS.SCREEN_HEIGHT - CONSTANTS.SCREEN_VERTICAL_MIN_MARGIN * 2,
   },
   topContainer: {
