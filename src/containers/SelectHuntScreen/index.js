@@ -36,6 +36,7 @@ class SelectHuntScreen extends React.Component {
     this.state = {
       loading: false,
       isVisibleNewFeedScreen: false,
+      isKeyboardShow: false,
     };
     this.isVisibleErrorDialog = false;
     this.animatedShow = new Animated.Value(0);
@@ -91,15 +92,17 @@ class SelectHuntScreen extends React.Component {
   }
 
   keyboardWillShow(e) {
+    this.setState({ isKeyboardShow: true })
     Animated.timing(
       this.animatedKeyboardHeight, {
-        toValue: e.endCoordinates.height - CONSTANTS.SCREEN_VERTICAL_MIN_MARGIN,
+        toValue: e.endCoordinates.height,
         duration: e.duration,
       }
     ).start();
   }
 
   keyboardWillHide(e) {
+    this.setState({ isKeyboardShow: false })
     Animated.timing(
       this.animatedKeyboardHeight, {
         toValue: 0,
@@ -229,6 +232,10 @@ class SelectHuntScreen extends React.Component {
       feedoList = _.filter(feedoList, feedo => feedo.headline.toLowerCase().indexOf(this.state.filterText.toLowerCase()) !== -1);
     }
     const { selectMode } = this.props;
+    let bottomMargin = CONSTANTS.SCREEN_VERTICAL_MIN_MARGIN;
+    if (this.state.isKeyboardShow) {
+      bottomMargin = CONSTANTS.SCREEN_VERTICAL_MIN_MARGIN / 2;
+    }
     return (
       <View style={styles.container}>
         <Animated.View 
@@ -243,10 +250,10 @@ class SelectHuntScreen extends React.Component {
             style={[
               styles.contentContainer, 
               {
-                paddingBottom: this.animatedKeyboardHeight,
-                height: CONSTANTS.SCREEN_HEIGHT - CONSTANTS.SCREEN_VERTICAL_MIN_MARGIN * 2,
-                backgroundColor: selectMode === CONSTANTS.FEEDO_SELECT_FROM_MAIN ? '#fff' : 'rgba(255, 255, 255, .95)',
-                marginHorizontal: selectMode === CONSTANTS.FEEDO_SELECT_FROM_MAIN ? 0 : 10,
+                height: Animated.subtract(CONSTANTS.SCREEN_HEIGHT - CONSTANTS.SCREEN_VERTICAL_MIN_MARGIN - bottomMargin, this.animatedKeyboardHeight),
+                marginTop: CONSTANTS.SCREEN_VERTICAL_MIN_MARGIN,
+                marginBottom: Animated.add(bottomMargin, this.animatedKeyboardHeight),
+                marginHorizontal: selectMode === CONSTANTS.FEEDO_SELECT_FROM_MAIN ? 0 : 16,
               },
             ]}
           >

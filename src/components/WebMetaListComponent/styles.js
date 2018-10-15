@@ -8,7 +8,8 @@ const styles = StyleSheet.create({
     marginHorizontal: 10,
   },
   smallContainer: {
-    margin: 16,
+    marginHorizontal: 16,
+    marginTop: 16,
   },
   itemContainer: {
     flex: 1,

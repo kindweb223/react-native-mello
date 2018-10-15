@@ -83,12 +83,13 @@ class NewFeedScreen extends React.Component {
       // creating a feed
       loading = true;
     } else if (this.props.feedo.loading !== types.CREATE_FEED_FULFILLED && nextProps.feedo.loading === types.CREATE_FEED_FULFILLED) {
-      const data = {
-        userId: nextProps.user.userInfo.id,
-        state: 'true'
+      if (this.props.feedoMode !== CONSTANTS.SHARE_EXTENTION_FEEDO) {
+        const data = {
+          userId: nextProps.user.userInfo.id,
+          state: 'true'
+        }
+        AsyncStorage.setItem('BubbleFeedFirstTimeCreated', JSON.stringify(data));
       }
-      AsyncStorage.setItem('BubbleFeedFirstTimeCreated', JSON.stringify(data));
-
       this.setState({
         feedData: nextProps.feedo.currentFeed
       })
@@ -619,13 +620,13 @@ class NewFeedScreen extends React.Component {
       let bottomMargin = CONSTANTS.SCREEN_VERTICAL_MIN_MARGIN;
       if (this.state.isKeyboardShow) {
         bottomMargin = CONSTANTS.SCREEN_VERTICAL_MIN_MARGIN / 2;
-      }  
+      }
       contentContainerStyle = {
         height: Animated.subtract(CONSTANTS.SCREEN_HEIGHT - CONSTANTS.SCREEN_VERTICAL_MIN_MARGIN  - bottomMargin, this.animatedKeyboardHeight),
         marginTop: CONSTANTS.SCREEN_VERTICAL_MIN_MARGIN,
         marginBottom: Animated.add(bottomMargin, this.animatedKeyboardHeight),
         borderRadius: 18,
-        backgroundColor: 'rgba(255, 255, 255, .95)',
+        backgroundColor: '#fff',
         marginHorizontal: 16,
       }
     } else {

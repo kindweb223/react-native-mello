@@ -722,7 +722,7 @@ class FeedDetailScreen extends React.Component {
     this.imagePickerActionSheetRef.show();
   }
 
-  onAddDocument() {
+  onAddDocument = () => {
     DocumentPicker.show({
       filetype: [DocumentPickerUtil.allFiles()],
     },(error, response) => {
