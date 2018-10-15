@@ -62,6 +62,9 @@ const styles = StyleSheet.create({
     color: '#fff',
     fontSize: 15,
     fontWeight: '500'
+  },
+  video: {
+    display: 'none'
   }
 })
 

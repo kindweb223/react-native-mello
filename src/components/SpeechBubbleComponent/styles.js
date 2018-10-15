@@ -57,6 +57,9 @@ const styles = StyleSheet.create({
   },
   icon: {
     left: 50
+  },
+  video: {
+    display: 'none'
   }
 })
 

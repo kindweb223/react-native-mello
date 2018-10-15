@@ -8,6 +8,8 @@ import {
 } from 'react-native'
 import PropTypes from 'prop-types'
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons'
+import Video from 'react-native-video'
+
 import styles from './styles'
 import COLORS from '../../service/colors'
 
@@ -29,6 +31,11 @@ class EmptyStateComponent extends React.Component {
     } else {
       this.props.onCreateNewFeed()
     }
+  }
+
+  showVideo = () => {
+    this.player.presentFullscreenPlayer();
+    this.player.seek(0);
   }
 
   render() {
@@ -68,7 +75,7 @@ class EmptyStateComponent extends React.Component {
                 {title}
               </Text>
               {subTitle.length > 0 && (
-                <TouchableOpacity style={styles.videoBtn} activeOpacity={0.8}>
+                <TouchableOpacity style={styles.videoBtn} activeOpacity={0.8} onPress={this.showVideo}>
                   <Text style={styles.videoBtnText}>
                     {subTitle}
                     <MaterialCommunityIcons name='play' size={23} color={COLORS.PURPLE} />
@@ -82,6 +89,15 @@ class EmptyStateComponent extends React.Component {
           </ImageBackground>
           <Image source={SPEECH_BUBBLE_BOTTOM} style={styles.bubbleView} resizeMode="stretch" />
         </View>
+
+        <Video
+          ref={(ref) => { this.player = ref }}
+          source={{ uri: 'https://d5qq4b94z26us.cloudfront.net/solvers/videos/SOLVERS_FINAL.mp4' }}
+          style={styles.video}
+          resizeMode='cover'
+          autoplay={false}
+          paused
+        />
       </View>
     )
   }

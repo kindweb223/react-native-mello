@@ -891,7 +891,7 @@ class HomeScreen extends React.Component {
                     <View style={{ height: 200 }}>
                       <SpeechBubbleComponent
                         page="feed"
-                        title="So you've been invited to feedo? Exciting, isn't it?!"
+                        title="So you've been invited to feedo? Exciting isn't it?!"
                         subTitle="Watch a 15 sec Quick Start video "
                         showBubbleCloseButton={this.state.showBubbleCloseButton}
                         onCloseBubble={() => this.closeBubble()}
@@ -923,7 +923,7 @@ class HomeScreen extends React.Component {
                         <View style={styles.emptyTabInnerSubView}>
                           <SpeechBubbleComponent
                             page="pinned"
-                            title="Your pinned items will appear here. To pin a feed tap and hold it to bring up a quick actions and select"
+                            title="Your pinned items will appear here. To pin a feed tap and hold it to bring up quick actions and select"
                             subTitle="Watch a 15 sec Quick Start video "
                           />
                         </View>
@@ -948,7 +948,7 @@ class HomeScreen extends React.Component {
                           <SpeechBubbleComponent
                             page="shared"
                             title="Feeds can be shared with friends and colleagues for collaboration. Feeds you've been invited to will appear here."
-                            subTitle="All you need to know about sharing in 15 sec "
+                            subTitle="All you need to know about sharing in 15 secs "
                           />
                         </View>
                       )

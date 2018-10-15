@@ -4,6 +4,8 @@ import {
   View,
   Text,
   WebView,
+  ScrollView,
+  RefreshControl
 } from 'react-native'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
@@ -26,7 +28,7 @@ class DocumentSliderScreen extends React.Component {
     super(props);
     this.state = {
       position: this.props.position,
-      loading: false,
+      loading: false
     };
   }
 
@@ -84,6 +86,10 @@ class DocumentSliderScreen extends React.Component {
     }
   }
 
+  onRefreshWebView = () => {
+    this.props.onClose()
+  }
+
   render () {
     const {
       docFiles,
@@ -112,13 +118,23 @@ class DocumentSliderScreen extends React.Component {
             {
               docFiles.map((file, index) => {
                 return (
-                  <View key={index} style={styles.slideContainer}>
+                  <ScrollView
+                    key={index}
+                    style={styles.slideContainer}
+                    contentContainerStyle={styles.slideContentContainer}
+                    refreshControl={
+                      <RefreshControl
+                        tintColor="#fff"
+                        onRefresh={() => this.onRefreshWebView()}
+                      />
+                    }
+                  >
                     <WebView 
                       source={{uri: file.accessUrl}}
                       onLoadStart={() =>  this.setState({loading: true})}
                       onLoadEnd={() =>  this.setState({loading: false})}
                     />
-                  </View>
+                  </ScrollView>
                 )
               })
             }
