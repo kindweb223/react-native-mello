@@ -22,7 +22,8 @@ class SpeechBubbleComponent extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      showCloseBtn: false
+      showCloseBtn: false,
+      videoPaused: true
     }
   }
 
@@ -33,6 +34,7 @@ class SpeechBubbleComponent extends React.Component {
   showVideo = () => {
     this.player.presentFullscreenPlayer();
     this.player.seek(0);
+    this.setState({ videoPaused: false })
   }
 
   render() {
@@ -99,7 +101,10 @@ class SpeechBubbleComponent extends React.Component {
           style={styles.video}
           resizeMode='cover'
           autoplay={false}
-          paused
+          paused={this.state.videoPaused}
+          onFullscreenPlayerWillDismiss={() => {
+            this.setState({ videoPaused: true })
+          }}
         />
       </View>
     )

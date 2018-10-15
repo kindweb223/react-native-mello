@@ -251,6 +251,9 @@ class HomeScreen extends React.Component {
   async setBubbles(feedoList) {
     const { user } = this.props
 
+    let bubbleFirstFeedAsyncData = await AsyncStorage.getItem('BubbleFeedFirstTimeCreated')
+    let bubbleFirstFeedData = JSON.parse(bubbleFirstFeedAsyncData)
+
     // New user, invited to existing feed
     if (feedoList && feedoList.length > 0) {
       let bubbleAsyncData = await AsyncStorage.getItem('BubbleFeedInvitedNewUser')
@@ -258,8 +261,8 @@ class HomeScreen extends React.Component {
 
       if(!bubbleData || (bubbleData.userId === user.userInfo.id && bubbleData.state !== 'false')) {
         const ownFeeds = filter(feedoList, feed => feed.metadata.owner === true)
-        console.log('FEEDO: ', feedoList)
-        if (ownFeeds.length === 0) {
+
+        if (ownFeeds.length === 0 && !(bubbleFirstFeedData && (bubbleFirstFeedData.userId === user.userInfo.id && bubbleFirstFeedData.state === 'true'))) {
           this.setState({ showFeedInvitedNewUserBubble: true })
           setTimeout(() => {
             this.setState({ showBubbleCloseButton: true })
@@ -271,11 +274,8 @@ class HomeScreen extends React.Component {
     }
 
     if (feedoList && feedoList.length === 0) {
-      const bubbleAsyncData = await AsyncStorage.getItem('BubbleFeedFirstTimeCreated')
-      const bubbleData = JSON.parse(bubbleAsyncData)
-
       this.setState({ emptyState: true, showEmptyBubble: true })
-      if (bubbleData && (bubbleData.userId === user.userInfo.id && bubbleData.state === 'true')) {
+      if (bubbleFirstFeedData && (bubbleFirstFeedData.userId === user.userInfo.id && bubbleFirstFeedData.state === 'true')) {
         this.setState({ isExistingUser: true })     // Existing user, no feeds
       } else {
         this.setState({ isExistingUser: false })    // New user, no feeds
