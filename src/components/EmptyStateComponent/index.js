@@ -22,6 +22,9 @@ const DOLL_CARD= require('../../../assets/images/onboard/adamStatic2.png')
 class EmptyStateComponent extends React.Component {
   constructor(props) {
     super(props);
+    this.state = {
+      videoPaused: true
+    }
   }
 
   onStart = () => {
@@ -36,24 +39,33 @@ class EmptyStateComponent extends React.Component {
   showVideo = () => {
     this.player.presentFullscreenPlayer();
     this.player.seek(0);
+    this.setState({ videoPaused: false })
   }
 
   render() {
     const { page, title, subTitle, ctaTitle } = this.props
 
     let height = 190
+    let marginTop = -125
+
     if (page === 'feed_exist') {
-      height = 80
+      height = 95
+      marginTop = -40
     }
 
-    let marginTop = -125
-    if (page === 'feed_exist') {
-      marginTop = -40
+    if (page === 'card') {
+      height = 170
+      marginTop = -125
+    }
+
+    if (page === 'card_exist') {
+      height = 210
+      marginTop = -150
     }
 
     return (
       <View style={styles.container}>
-        {page === 'card' && (
+        {(page === 'card' || page === 'card_exist') && (
           <Image source={DOLL_CARD} style={styles.doll_card} />
         )}
         {page === 'feed' && (
@@ -92,11 +104,14 @@ class EmptyStateComponent extends React.Component {
 
         <Video
           ref={(ref) => { this.player = ref }}
-          source={{ uri: 'https://player.vimeo.com/video/289041385' }}
+          source={{ uri: 'https://d5qq4b94z26us.cloudfront.net/solvers/videos/SOLVERS_FINAL.mp4' }}
           style={styles.video}
           resizeMode='cover'
           autoplay={false}
-          paused
+          paused={this.state.videoPaused}
+          onFullscreenPlayerWillDismiss={() => {
+            this.setState({ videoPaused: true })
+          }}
         />
       </View>
     )

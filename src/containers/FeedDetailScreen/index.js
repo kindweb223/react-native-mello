@@ -219,29 +219,35 @@ class FeedDetailScreen extends React.Component {
   }
 
   async setBubbles(currentFeed) {
-    let bubbleAsyncData = await AsyncStorage.getItem('CardBubbleState')
-    let bubbleData = JSON.parse(bubbleAsyncData)
-    if (!bubbleData || (bubbleData.userId === this.props.user.userInfo.id && bubbleData.state !== 'false')) {
-      const ownCards = _.filter(currentFeed.ideas, idea => idea.metadata.owner === true)
-      if (currentFeed.ideas.length > 0 && ownCards.length === 0) {
-        this.setState({ showBubble: true })
-        setTimeout(() => {
-          this.setState({ showBubbleCloseButton: true })
-        }, 30000)
-      } else {
-        this.setState({ showBubble: false })
+    const { user } = this.props
+
+    let bubbleFirstCardAsyncData = await AsyncStorage.getItem('BubbleCardFirstTimeCreated')
+    let bubbleFirstCardData = JSON.parse(bubbleFirstCardAsyncData)
+
+    if (currentFeed.ideas.length === 0) {
+      const bubbleAsyncData = await AsyncStorage.getItem('CardBubbleState')
+      const bubbleData = JSON.parse(bubbleAsyncData)
+
+      if (!bubbleData || (bubbleData.userId === user.userInfo.id && bubbleData.state !== 'false')) {
+        const ownCards = _.filter(currentFeed.ideas, idea => idea.metadata.owner === true)
+
+        if (ownCards.length === 0 && !(bubbleFirstCardData && (bubbleFirstCardData.userId === user.userInfo.id && bubbleFirstCardData.state === 'true'))) {
+          this.setState({ showBubble: true })
+          setTimeout(() => {
+            this.setState({ showBubbleCloseButton: true })
+          }, 30000)
+        } else {
+          this.setState({ showBubble: false })
+        }
       }
     }
 
     if (currentFeed.ideas.length === 0) {
-      bubbleAsyncData = await AsyncStorage.getItem('BubbleCardFirstTimeCreated')
-      bubbleData = JSON.parse(bubbleAsyncData)
       this.setState({ showEmptyBubble: true })
-      if (bubbleData && (bubbleData.userId === this.props.user.userInfo.id && bubbleData.state === 'true')) {
-        // Existing user, no feeds
-        this.setState({ isExistingUser: true })
+      if (bubbleFirstCardData && (bubbleFirstCardData.userId === user.userInfo.id && bubbleFirstCardData.state === 'true')) {
+        this.setState({ isExistingUser: true })     // Existing user, no cards
       } else {
-        this.setState({ isExistingUser: false })
+        this.setState({ isExistingUser: false })    // New user, no cards
       }
     }
   }
@@ -928,7 +934,7 @@ class FeedDetailScreen extends React.Component {
                     title="Feeds contain cards. Cards can have, images, text, attachments and likes. My granny enjoys liking."
                     subTitle="Watch a 15 sec video about the cards "
                     onCloseBubble={() => this.closeBubble()}
-                    isShowCloseBubble={this.state.showBubbleCloseButton}
+                    showBubbleCloseButton={this.state.showBubbleCloseButton}
                   />
                 )}
 
@@ -976,7 +982,7 @@ class FeedDetailScreen extends React.Component {
                             {this.state.showEmptyBubble && (
                               this.state.isExistingUser
                               ? <EmptyStateComponent
-                                  page="card"
+                                  page="card_exist"
                                   title="Ah, that sense of freshness! Let's start a new day."
                                   subTitle="Need a few hints on all awesome ways to create a card?"
                                   ctaTitle="Create a card"
