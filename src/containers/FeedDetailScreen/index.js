@@ -684,9 +684,9 @@ class FeedDetailScreen extends React.Component {
               onClose={() => this.onCloseCardModal()}
               onOpenAction={(idea) => this.onOpenCardAction(idea)}
 
-              cardMode={CONSTANTS.SHARE_EXTENTION_CARD}
-              shareUrl='https://trello.com'
-              shareImageUrl='https://d2k1ftgv7pobq7.cloudfront.net/meta/p/res/images/fb4de993e22034b76539da073ea8d35c/home-hero.png'
+              // cardMode={CONSTANTS.SHARE_EXTENTION_CARD}
+              // shareUrl='https://trello.com'
+              // shareImageUrl='https://d2k1ftgv7pobq7.cloudfront.net/meta/p/res/images/fb4de993e22034b76539da073ea8d35c/home-hero.png'
             />
         }
         {  
