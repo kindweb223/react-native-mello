@@ -233,6 +233,10 @@ class NewCardScreen extends React.Component {
       if (this.props.cardMode === CONSTANTS.MAIN_APP_CARD_FROM_DASHBOARD || this.props.cardMode === CONSTANTS.SHARE_EXTENTION_CARD) {
         this.saveFeedId();
       }
+      if (this.props.cardMode === CONSTANTS.SHARE_EXTENTION_CARD) {
+        Actions.ShareSuccessScreen();
+        return;
+      }
       this.onClose();
     } else if (this.props.card.loading !== types.DELETE_FILE_PENDING && nextProps.card.loading === types.DELETE_FILE_PENDING) {
       // deleting a file
