@@ -68,7 +68,8 @@ const styles = StyleSheet.create({
     marginBottom: Platform.OS === 'ios' ? ifIphoneX(0, 56) : 56
   },
   feedListContainer: {
-    paddingTop: 16
+    paddingTop: 16,
+    backgroundColor: '#ff0'
   },
   tabBarStyle: {
     borderTopWidth: 0,

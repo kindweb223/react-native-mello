@@ -718,7 +718,7 @@ class HomeScreen extends React.Component {
       if (!this.state.scrollableTabViewContainer.height || event.nativeEvent.layout.height > this.state.scrollableTabViewContainer.height) {
         const height = event.nativeEvent.layout.height;
         setTimeout(() => {
-          this.setState({ scrollableTabViewContainer: { height: height + 150 } });
+          this.setState({ scrollableTabViewContainer: { height: height + 200 } });
         }, 0);
       }
     }
