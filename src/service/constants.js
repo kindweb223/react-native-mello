@@ -66,4 +66,8 @@ export default {
 
   USER_DEVICE_TOKEN: 'USER_DEVICE_TOKEN',
   CARD_SAVED_FEEDO_ID: 'CARD_SAVED_FEEDO_ID',
+
+  // share extension modal buttons
+  MODAL_OK: 1,
+  MODAL_CLOSE: 2,
 }

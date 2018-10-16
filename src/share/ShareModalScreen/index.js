@@ -4,6 +4,7 @@ import {
   TouchableOpacity,
   Text,
 } from 'react-native'
+import PropTypes from 'prop-types'
 
 import ShareExtension from '../shareExtension'
 import styles from './styles'
@@ -30,22 +31,57 @@ export default class ShareModalScreen extends React.Component {
     this.setState({
       isVisible: false,
     });
-    ShareExtension.goToMainApp();
-    ShareExtension.close();
+
+    this.props.onOk();
   }
 
   onPressClose() {
-    console.log("CLOSE")
     this.setState({
       isVisible: false,
     });
+    this.props.onClose();
+  }
+
+  get renderOkButton() {
+    if (this.props.buttons & CONSTANTS.MODAL_OK) {
+      return (
+        <TouchableOpacity 
+          style={styles.buttonContainer}
+          activeOpacity={0.7}
+          onPress={this.onPressOk.bind(this)}
+        >
+          <Text style={styles.textButton}>OK</Text>
+        </TouchableOpacity>
+      );
+    }
+  }
+
+  get renderLine() {
+    if (this.props.buttons & CONSTANTS.MODAL_OK && this.props.buttons & CONSTANTS.MODAL_CLOSE) {
+      return (
+        <View style={styles.line} />
+      );
+    }
+  }
+
+  get renderCloseButton() {
+    if (this.props.buttons & CONSTANTS.MODAL_CLOSE) {
+      return (
+        <TouchableOpacity 
+          style={styles.buttonContainer}
+          activeOpacity={0.7}
+          onPress={this.onPressClose.bind(this)}
+        >
+          <Text style={styles.textButton}>Close</Text>
+        </TouchableOpacity>
+      );
+    }
   }
 
   render() {
     return (
       <View style={styles.container}>
         <Modal
-          // backdrop={false}
           style={{ backgroundColor: 'transparent' }}
           scrollOffset={CONSTANTS.SCREEN_HEIGHT}
           position="center"
@@ -58,24 +94,12 @@ export default class ShareModalScreen extends React.Component {
             <View style={styles.modalContentContainer}>
               <View style={styles.topContainer}>
                 <Text style={styles.textTitle}>Feedo</Text>
-                <Text style={styles.textDescription}>Oops, you appear to be signed out of Feedo. Tap OK to log in again and try again</Text>
+                <Text style={styles.textDescription}>{this.props.message}</Text>
               </View>
               <View style={styles.bottomContainer}>
-                <TouchableOpacity 
-                  style={styles.buttonContainer}
-                  activeOpacity={0.7}
-                  onPress={this.onPressOk.bind(this)}
-                >
-                  <Text style={styles.textButton}>OK</Text>
-                </TouchableOpacity>
-                <View style={styles.line} />
-                <TouchableOpacity 
-                  style={styles.buttonContainer}
-                  activeOpacity={0.7}
-                  onPress={this.onPressClose.bind(this)}
-                >
-                  <Text style={styles.textButton}>Close</Text>
-                </TouchableOpacity>
+                {this.renderOkButton}
+                {this.renderLine}
+                {this.renderCloseButton}
               </View>
             </View>
           </View>
@@ -83,4 +107,22 @@ export default class ShareModalScreen extends React.Component {
       </View>
     );
   }
+}
+
+
+ShareModalScreen.defaultProps = {
+  message: 'Oops, you appear to be signed out of Feedo. Tap OK to log in again and try again',
+  buttons: CONSTANTS.MODAL_OK | CONSTANTS.MODAL_CLOSE,
+  onOk: () => {
+    ShareExtension.goToMainApp();
+  },
+  onClose: () => {},
+}
+
+
+ShareModalScreen.propTypes = {
+  message: PropTypes.string,
+  buttons: PropTypes.number,
+  onOk: PropTypes.func,
+  onClose: PropTypes.func,
 }
