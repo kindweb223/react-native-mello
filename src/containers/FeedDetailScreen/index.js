@@ -224,7 +224,7 @@ class FeedDetailScreen extends React.Component {
     let bubbleFirstCardAsyncData = await AsyncStorage.getItem('BubbleCardFirstTimeCreated')
     let bubbleFirstCardData = JSON.parse(bubbleFirstCardAsyncData)
 
-    if (currentFeed.ideas.length === 0) {
+    if (currentFeed.ideas.length > 0) {
       const bubbleAsyncData = await AsyncStorage.getItem('CardBubbleState')
       const bubbleData = JSON.parse(bubbleAsyncData)
 
