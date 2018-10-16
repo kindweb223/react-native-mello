@@ -16,7 +16,9 @@ import {
 } from '../../redux/card/actions'
 import * as types from '../../redux/card/types'
 
+import CONSTANTS from '../../service/constants'
 import ShareExtension from '../shareExtension'
+import ShareModalScreen from '../ShareModalScreen';
 import LoadingScreen from '../../containers/LoadingScreen';
 
 
@@ -26,6 +28,8 @@ class ChooseLinkImageFromExtension extends React.Component {
     this.state = {
       loading: false,
       images: [],
+      isVisibleAlert: false,
+      errorMessage: '',
     };
   }
 
@@ -39,7 +43,7 @@ class ChooseLinkImageFromExtension extends React.Component {
   }
 
   UNSAFE_componentWillReceiveProps(nextProps) {
-    // console.log('NewCardScreen UNSAFE_componentWillReceiveProps : ', nextProps.card);
+    console.log('UNSAFE_componentWillReceiveProps : ', nextProps.card)
     let loading = false;
     if (this.props.card.loading !== types.GET_OPEN_GRAPH_PENDING && nextProps.card.loading === types.GET_OPEN_GRAPH_PENDING) {
       // getting open graph
@@ -71,17 +75,13 @@ class ChooseLinkImageFromExtension extends React.Component {
         }
         if (error) {
           if (nextProps.card.loading === types.GET_OPEN_GRAPH_REJECTED) {
-            if (this.parseErrorUrls(error)) {
-              error = 'Sorry, this link cannot be read';
-            } else {
-              return;
-            }
+            error = 'Sorry, this link cannot be read';
           }
-          if (!this.isVisibleErrorDialog) {
-            this.isVisibleErrorDialog = true;
-            Alert.alert('Error', error, [
-              {text: 'Close', onPress: () => this.isVisibleErrorDialog = false},
-            ]);
+          if (!this.state.isVisibleAlert) {
+            this.setState({
+              isVisibleAlert: true,
+              errorMessage: error,
+            });
           }
         }
         return;
@@ -162,6 +162,15 @@ class ChooseLinkImageFromExtension extends React.Component {
         </View>
         {this.renderFooter}
         {this.state.loading && <LoadingScreen />}
+        {
+          this.state.isVisibleAlert &&
+          <View style={styles.modalContainer}>
+            <ShareModalScreen
+              buttons={CONSTANTS.MODAL_OK}
+              message={this.state.errorMessage}
+            />
+          </View>
+        }
       </View>
     );
   }
