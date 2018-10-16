@@ -146,7 +146,7 @@ class NewCardScreen extends React.Component {
           userId: nextProps.user.userInfo.id,
           state: 'true'
         }
-        AsyncStorage.setItem('BubbleCardFirstTimeCreated', JSON.stringify(data));
+        AsyncStorage.setItem('BubbleFirstCardTimeCreated', JSON.stringify(data));
       }
     } else if (this.props.card.loading !== types.GET_FILE_UPLOAD_URL_PENDING && nextProps.card.loading === types.GET_FILE_UPLOAD_URL_PENDING) {
       // getting a file upload url

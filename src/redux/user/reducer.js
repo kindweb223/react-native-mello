@@ -96,6 +96,7 @@ export default function user(state = initialState, action = {}) {
     case types.GET_USER_SESSION_FULFILLED: {
       const { data } = action.result
 
+      AsyncStorage.setItem('xAuthToken', axios.defaults.headers['x-auth-token'])
       AsyncStorage.setItem('userInfo', JSON.stringify(data))
       AsyncStorage.setItem('userBackInfo', JSON.stringify(data))
       SharedGroupPreferences.setItem('userInfo', JSON.stringify(data), CONSTANTS.APP_GROUP_USER_IDENTIFIER)
