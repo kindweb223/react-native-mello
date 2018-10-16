@@ -63,7 +63,7 @@ class ShareSuccessScreen extends React.Component {
           activeOpacity={0.7}
           onPress={this.openFeedo.bind(this)}
         >
-          <Text style={styles.textButton}>Opne Feedo</Text>
+          <Text style={styles.textButton}>Open Feedo</Text>
         </TouchableOpacity>
       </Animated.View>
     );
