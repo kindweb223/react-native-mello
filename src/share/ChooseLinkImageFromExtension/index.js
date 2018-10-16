@@ -36,7 +36,7 @@ class ChooseLinkImageFromExtension extends React.Component {
   async componentDidMount() {
     try {
       const { value } = await ShareExtension.data()
-      this.props.getOpenGraph(value)
+      this.props.getOpenGraph(value, true)
     } catch(e) {
       console.log('error : ', e)
     }
@@ -191,7 +191,7 @@ const mapStateToProps = ({ card }) => ({
 
 
 const mapDispatchToProps = dispatch => ({
-  getOpenGraph: (url) => dispatch(getOpenGraph(url)),
+  getOpenGraph: (url, isSharing) => dispatch(getOpenGraph(url, isSharing)),
 })
 
 
