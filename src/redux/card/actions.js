@@ -354,11 +354,14 @@ export const deleteLink = (ideaId, linkId) => {
 /**
  * Get a Open Graph
  */
-export const getOpenGraph = (urlPath) => {
+export const getOpenGraph = (urlPath, isSharing = false) => {
   const url = 'extract';
   const data = {
     url: urlPath,
+    isSharing,
   };
+
+  console.log("data: ", data)
   return {
     types: [types.GET_OPEN_GRAPH_PENDING, types.GET_OPEN_GRAPH_FULFILLED, types.GET_OPEN_GRAPH_REJECTED],
     promise: axios({
