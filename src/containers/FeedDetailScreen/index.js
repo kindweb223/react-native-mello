@@ -221,7 +221,7 @@ class FeedDetailScreen extends React.Component {
   async setBubbles(currentFeed) {
     const { user } = this.props
 
-    let bubbleFirstCardAsyncData = await AsyncStorage.getItem('BubbleCardFirstTimeCreated')
+    let bubbleFirstCardAsyncData = await AsyncStorage.getItem('BubbleFirstCardTimeCreated')
     let bubbleFirstCardData = JSON.parse(bubbleFirstCardAsyncData)
 
     if (currentFeed.ideas.length > 0) {
@@ -655,6 +655,7 @@ class FeedDetailScreen extends React.Component {
       state.currentFeed.ideas = filterIdeas;
       return state;
     });
+    this.setBubbles(this.state.currentFeed)
     setTimeout(() => {
       this.setState({ isShowToaster: false })
       if (this.state.currentActionType === ACTION_CARD_DELETE) {
