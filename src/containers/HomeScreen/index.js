@@ -759,7 +759,7 @@ class HomeScreen extends React.Component {
       >
         <NewCardScreen 
           viewMode={this.state.cardViewMode}
-          // cardMode={cardMode}
+          cardMode={cardMode}
           invitee={this.state.selectedIdeaInvitee}
           onClose={() => this.onCloseCardModal()}
 
