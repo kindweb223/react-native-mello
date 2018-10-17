@@ -30,41 +30,45 @@ class CropImageScreen extends React.Component {
   }
 
   componentDidUpdate(prevProps, prevState) {
-    if (prevProps.user.loading === 'GET_USER_IMAGE_URL_PENDING' && this.props.user.loading === 'GET_USER_IMAGE_URL_FULFILLED') {
-      const { userImageUrlData } = this.props.user
-      this.uploadImage(userImageUrlData)
-    }
-
-    if (prevProps.user.loading === 'UPLOAD_FILE_PENDING' && this.props.user.loading === 'UPLOAD_FILE_FULFILLED') {
-      const { userInfo, userImageUrlData } = this.props.user
-      const param = {
-        imageUrl: userImageUrlData.objectKey
+    if (Actions.currentScene === 'CropImageScreen') {
+      if (prevProps.user.loading === 'GET_USER_IMAGE_URL_PENDING' && this.props.user.loading === 'GET_USER_IMAGE_URL_FULFILLED') {
+        const { userImageUrlData } = this.props.user
+        this.uploadImage(userImageUrlData)
       }
-      this.props.updateProfile(userInfo.id, param)
-    }
 
-    if (prevProps.user.loading === 'UPDATE_PROFILE_PENDING' && this.props.user.loading === 'UPDATE_PROFILE_FULFILLED') {
-      this.setState({ loading: false }, () => {
-        Actions.pop()
-      })
-    }
+      if (prevProps.user.loading === 'UPLOAD_FILE_PENDING' && this.props.user.loading === 'UPLOAD_FILE_FULFILLED') {
+        const { userInfo, userImageUrlData } = this.props.user
+        const param = {
+          imageUrl: userImageUrlData.objectKey
+        }
+        this.props.updateProfile(userInfo.id, param)
+      }
 
-    if (this.props.user.loading === 'GET_USER_IMAGE_URL_REJECTED' ||
-        this.props.user.loading === 'UPLOAD_FILE_REJECTED' ||
-        this.props.user.loading === 'UPDATE_PROFILE_REJECTED') {
-      this.setState({ loading: false })
+      if (prevProps.user.loading === 'UPDATE_PROFILE_PENDING' && this.props.user.loading === 'UPDATE_PROFILE_FULFILLED') {
+        this.setState({ loading: false }, () => {
+          Actions.pop()
+        })
+      }
+
+      if (this.props.user.loading === 'GET_USER_IMAGE_URL_REJECTED' ||
+          this.props.user.loading === 'UPLOAD_FILE_REJECTED' ||
+          this.props.user.loading === 'UPDATE_PROFILE_REJECTED') {
+        this.setState({ loading: false })
+      }
     }
   }
 
   uploadImage = (userImageUrlData) => {
     const { avatarFile, cropUrl } = this.state
 
-    const baseUrl = userImageUrlData.uploadUrl
-    const fileUrl = cropUrl.uri
-    const fileName = cropUrl.name
-    const fileType = mime.lookup(fileUrl);
+    if (!_.isEmpty(cropUrl)) {
+      const baseUrl = userImageUrlData.uploadUrl
+      const fileUrl = cropUrl.uri
+      const fileName = cropUrl.name
+      const fileType = mime.lookup(fileUrl);
 
-    this.props.uploadFileToS3(baseUrl, fileUrl, fileName, fileType);
+      this.props.uploadFileToS3(baseUrl, fileUrl, fileName, fileType);
+    }
   }
 
   onSave = () => {

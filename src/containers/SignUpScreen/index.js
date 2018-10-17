@@ -107,106 +107,111 @@ class SignUpScreen extends React.Component {
   }
 
   componentDidUpdate(prevProps, prevState) {
-    if (prevProps.user.loading === 'USER_SIGNUP_PENDING' && this.props.user.loading === 'USER_SIGNUP_FULFILLED') {
-      const { userSignUpData } = this.props.user
-      if (_.isEmpty(this.state.avatarFile)) {
+    if (Actions.currentScene === 'SignUpScreen') {
+      if (prevProps.user.loading === 'USER_SIGNUP_PENDING' && this.props.user.loading === 'USER_SIGNUP_FULFILLED') {
+        const { userSignUpData } = this.props.user
+        if (_.isEmpty(this.state.avatarFile)) {
+          this.setState({ loading: false }, () => {
+            Actions.SignUpConfirmScreen({ userEmail: this.state.userEmail })
+          })        
+        } else {
+          this.props.getImageUrl(userSignUpData.id)
+        }
+      }
+
+      if (prevProps.user.loading === 'USER_SIGNUP_PENDING' && this.props.user.loading === 'USER_SIGNUP_REJECTED') {
+        const { error } = this.props.user
+        this.setState({ loading: false }, () => {
+          Alert.alert(
+            'Error',
+            error.message
+          )
+        })
+      }
+
+      if (prevProps.user.loading === 'GET_USER_IMAGE_URL_PENDING' && this.props.user.loading === 'GET_USER_IMAGE_URL_FULFILLED') {
+        const { userImageUrlData } = this.props.user
+        this.uploadImage(userImageUrlData)
+      }
+
+      if (prevProps.user.loading === 'UPLOAD_FILE_PENDING' && this.props.user.loading === 'UPLOAD_FILE_FULFILLED' && !_.isEmpty(this.state.avatarFile)) {
+        const { userSignUpData, userImageUrlData } = this.props.user
+        const param = {
+          imageUrl: userImageUrlData.objectKey
+        }
+        this.props.updateProfile(userSignUpData.id, param)
+      }
+
+      if (prevProps.user.loading === 'UPDATE_PROFILE_PENDING' && this.props.user.loading === 'UPDATE_PROFILE_FULFILLED') {
         this.setState({ loading: false }, () => {
           Actions.SignUpConfirmScreen({ userEmail: this.state.userEmail })
-        })        
-      } else {
-        this.props.getImageUrl(userSignUpData.id)
+        })
       }
-    }
 
-    if (prevProps.user.loading === 'USER_SIGNUP_PENDING' && this.props.user.loading === 'USER_SIGNUP_REJECTED') {
-      const { error } = this.props.user
-      this.setState({ loading: false }, () => {
+      if (this.props.user.loading === 'GET_USER_IMAGE_URL_REJECTED' ||
+          this.props.user.loading === 'UPLOAD_FILE_REJECTED' ||
+          this.props.user.loading === 'UPDATE_PROFILE_REJECTED') {
+        this.setState({ loading: false })
+      }
+
+      if (prevProps.user.loading === 'VALIDATE_INVITE_PENDING' && this.props.user.loading === 'VALIDATE_INVITE_FULFILLED') {
+        this.setState({ loading: false })
+      }
+
+      if (prevProps.user.loading === 'VALIDATE_INVITE_PENDING' && this.props.user.loading === 'VALIDATE_INVITE_REJECTED') {
+        // Invitation has expired
+        const { error } = this.props.user
+        this.setState({ loading: false, isInvite: false })
         Alert.alert(
           'Error',
           error.message
         )
-      })
-    }
-
-    if (prevProps.user.loading === 'GET_USER_IMAGE_URL_PENDING' && this.props.user.loading === 'GET_USER_IMAGE_URL_FULFILLED') {
-      const { userImageUrlData } = this.props.user
-      this.uploadImage(userImageUrlData)
-    }
-
-    if (prevProps.user.loading === 'UPLOAD_FILE_PENDING' && this.props.user.loading === 'UPLOAD_FILE_FULFILLED') {
-      const { userSignUpData, userImageUrlData } = this.props.user
-      const param = {
-        imageUrl: userImageUrlData.objectKey
       }
-      this.props.updateProfile(userSignUpData.id, param)
-    }
 
-    if (prevProps.user.loading === 'UPDATE_PROFILE_PENDING' && this.props.user.loading === 'UPDATE_PROFILE_FULFILLED') {
-      this.setState({ loading: false }, () => {
-        Actions.SignUpConfirmScreen({ userEmail: this.state.userEmail })
-      })
-    }
-
-    if (this.props.user.loading === 'GET_USER_IMAGE_URL_REJECTED' ||
-        this.props.user.loading === 'UPLOAD_FILE_REJECTED' ||
-        this.props.user.loading === 'UPDATE_PROFILE_REJECTED') {
-      this.setState({ loading: false })
-    }
-
-    if (prevProps.user.loading === 'VALIDATE_INVITE_PENDING' && this.props.user.loading === 'VALIDATE_INVITE_FULFILLED') {
-      this.setState({ loading: false })
-    }
-
-    if (prevProps.user.loading === 'VALIDATE_INVITE_PENDING' && this.props.user.loading === 'VALIDATE_INVITE_REJECTED') {
-      // Invitation has expired
-      const { error } = this.props.user
-      this.setState({ loading: false, isInvite: false })
-      Alert.alert(
-        'Error',
-        error.message
-      )
-    }
-
-    if (prevProps.user.loading === 'COMPLETE_INVITE_PENDING' && this.props.user.loading === 'COMPLETE_INVITE_FULFILLED') {
-      this.props.getUserSession()
-      this.setState({ isSignup: true })
-    }
-
-    if (prevProps.user.loading === 'COMPLETE_INVITE_PENDING' && this.props.user.loading === 'COMPLETE_INVITE_REJECTED') {
-      const { error } = this.props.user
-      this.setState({ loading: false, isInvite: false })
-      Alert.alert(
-        'Error',
-        error.message
-      )
-    }
-
-    if (prevProps.user.loading === 'GET_USER_SESSION_PENDING' && this.props.user.loading === 'GET_USER_SESSION_FULFILLED') {
-      if (this.state.isSignup && this.props.isInvite) {
-        this.setState({ loading: false }, () => {
-          this.setState({ isSignup: false })
-          if (this.props.user.userInfo.emailConfirmed) {
-            Actions.SignUpSuccessScreen()
-          }
-        })
+      if (prevProps.user.loading === 'COMPLETE_INVITE_PENDING' && this.props.user.loading === 'COMPLETE_INVITE_FULFILLED') {
+        this.props.getUserSession()
+        this.setState({ isSignup: true })
       }
-    }
 
-    if (prevProps.user.loading === 'GET_USER_SESSION_PENDING' && this.props.user.loading === 'GET_USER_SESSION_REJECTED') {
-      this.setState({ loading: false, isSignup: false })
+      if (prevProps.user.loading === 'COMPLETE_INVITE_PENDING' && this.props.user.loading === 'COMPLETE_INVITE_REJECTED') {
+        const { error } = this.props.user
+        this.setState({ loading: false, isInvite: false })
+        Alert.alert(
+          'Error',
+          error.message
+        )
+      }
+
+      if (prevProps.user.loading === 'GET_USER_SESSION_PENDING' && this.props.user.loading === 'GET_USER_SESSION_FULFILLED') {
+        if (this.state.isSignup && this.props.isInvite) {
+          this.setState({ loading: false }, () => {
+            this.setState({ isSignup: false })
+            if (this.props.user.userInfo.emailConfirmed) {
+              Actions.SignUpSuccessScreen()
+            }
+          })
+        }
+      }
+
+      if (prevProps.user.loading === 'GET_USER_SESSION_PENDING' && this.props.user.loading === 'GET_USER_SESSION_REJECTED') {
+        this.setState({ loading: false, isSignup: false })
+      }
     }
   }
 
   uploadImage = (userImageUrlData) => {
     const { avatarFile } = this.state
 
-    const baseUrl = userImageUrlData.uploadUrl
-    const fileUrl = avatarFile.uri
-    const urlArray = fileUrl.split('/')
-    const fileName = urlArray[urlArray.length - 1]
-    const fileType = mime.lookup(fileUrl);
+    console.log('avatarFile: ', avatarFile)
+    if (!_.isEmpty(avatarFile)) {
+      const baseUrl = userImageUrlData.uploadUrl
+      const fileUrl = avatarFile.uri
+      const urlArray = fileUrl.split('/')
+      const fileName = urlArray[urlArray.length - 1]
+      const fileType = mime.lookup(fileUrl);
 
-    this.props.uploadFileToS3(baseUrl, fileUrl, fileName, fileType);
+      this.props.uploadFileToS3(baseUrl, fileUrl, fileName, fileType);
+    }
   }
 
   changeFullName = text => {
