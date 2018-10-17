@@ -36,12 +36,14 @@ axios.interceptors.response.use(
   }
 )
 
+
 import CONSTANTS from '../service/constants';
 import ShareExtension from './shareExtension'
 import ShareCardScreen from './ShareCardScreen';
 import ShareModalScreen from './ShareModalScreen';
 import ChooseLinkImageFromExtension from './ChooseLinkImageFromExtension';
 import ShareSuccessScreen from './ShareSuccessScreen';
+import LoadingScreen from '../containers/LoadingScreen';
 
 
 export default class Share extends Component {
@@ -56,7 +58,6 @@ export default class Share extends Component {
   async componentDidMount() {
     try {
       const xAuthToken = await SharedGroupPreferences.getItem("xAuthToken", CONSTANTS.APP_GROUP_TOKEN_IDENTIFIER);
-      console.log('xAuthToken : ', xAuthToken);
       if (xAuthToken) {
         axios.defaults.headers['x-auth-token'] = xAuthToken;
         this.setState({
@@ -76,7 +77,7 @@ export default class Share extends Component {
   render() {
     if (!this.state.initialized) {
       return (
-        <View style={styles.rootContainer} />
+        <LoadingScreen />
       );
     }
     return (
