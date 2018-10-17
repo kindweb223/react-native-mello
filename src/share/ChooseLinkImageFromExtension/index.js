@@ -43,7 +43,10 @@ class ChooseLinkImageFromExtension extends React.Component {
   }
 
   UNSAFE_componentWillReceiveProps(nextProps) {
-    console.log('UNSAFE_componentWillReceiveProps : ', nextProps.card)
+    // console.log('UNSAFE_componentWillReceiveProps : ', nextProps.card)
+    if (Actions.currentScene !== 'ChooseLinkImageFromExtension') {
+      return;
+    }
     let loading = false;
     if (this.props.card.loading !== types.GET_OPEN_GRAPH_PENDING && nextProps.card.loading === types.GET_OPEN_GRAPH_PENDING) {
       // getting open graph
