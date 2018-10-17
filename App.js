@@ -61,6 +61,7 @@ import ProfileUpdateScreen from './src/containers/ProfileUpdateScreen'
 import SignUpSuccessScreen from './src/containers/SignUpSuccessScreen'
 import ResetPasswordConfirmScreen from './src/containers/ResetPasswordConfirmScreen'
 import ResetPasswordScreen from './src/containers/ResetPasswordScreen'
+import ResetPasswordSuccessScreen from './src/containers/ResetPasswordSuccessScreen'
 import CropImageScreen from './src/containers/CropImageScreen'
 import FeedFilterScreen from './src/containers/FeedFilterScreen'
 import ArchivedFeedScreen from './src/containers/ArchivedFeedScreen'
@@ -194,6 +195,7 @@ export default class Root extends React.Component {
             <Scene key="SignUpSuccessScreen" component={ SignUpSuccessScreen } hideNavBar panHandlers={null} />
             <Scene key="ResetPasswordConfirmScreen" component={ ResetPasswordConfirmScreen } hideNavBar />
             <Scene key="ResetPasswordScreen" component={ ResetPasswordScreen } hideNavBar panHandlers={null} />
+            <Scene key="ResetPasswordSuccessScreen" component={ ResetPasswordSuccessScreen } hideNavBar panHandlers={null} />
             <Scene key="FeedFilterScreen" component={ FeedFilterScreen } hideNavBar />
           </Scene>
           <Stack key="ProfileScreen" hideNavBar>

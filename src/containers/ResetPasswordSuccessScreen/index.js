@@ -1,15 +1,28 @@
 import React from 'react'
 import {
   View,
-  Text
+  Text,
+  Image
 } from 'react-native'
 import { Actions } from 'react-native-router-flux'
+import { connect } from 'react-redux'
+import PropTypes from 'prop-types'
 import styles from './styles'
+const SUCCESS_ICON = require('../../../assets/images/Success/adamStatic3.png')
 
 class ResetPasswordSuccessScreen extends React.Component {
+
   componentWillMount() {
+    const { user } = this.props
+
     setTimeout(() => {
-      Actions.LoginStartScreen()
+      const { userInfo } = user
+
+      if (userInfo) {
+        Actions.LoginScreen({ userData: user.userInfo, isReset: false })
+      } else {
+        Actions.LoginStartScreen()
+      }
     }, 2000)
   }
 
@@ -25,9 +38,24 @@ class ResetPasswordSuccessScreen extends React.Component {
             <Text style={styles.title}>Success!</Text>
             <Text style={styles.subTitle}>Your password has been changed</Text>
           </View>
+        </View>
       </View>
     )
   }
 }
 
-export default ResetPasswordSuccessScreen
+ResetPasswordSuccessScreen.defaultProps = {
+  userData: {},
+  isReset: false
+}
+
+ResetPasswordSuccessScreen.propTypes = {
+  userData: PropTypes.objectOf(PropTypes.any),
+  isReset: PropTypes.bool
+}
+
+const mapStateToProps = ({ user }) => ({
+  user
+})
+
+export default connect(mapStateToProps, null)(ResetPasswordSuccessScreen)

@@ -81,9 +81,9 @@ class ResetPasswordScreen extends React.Component {
       const { userInfo } = user
       this.setState({ loading: false }, () => {
         if (userInfo) {
-          Actions.LoginScreen({ userData: user.userInfo, isReset: true })
+          Actions.ResetPasswordSuccessScreen({ userData: user.userInfo, isReset: true })
         } else {
-          Actions.LoginStartScreen()
+          Actions.ResetPasswordSuccessScreen()
         }
       })
     }
