@@ -82,32 +82,34 @@ class ProfileScreen extends React.Component {
 
     this.setState({ userInfo: user.userInfo })
 
-    if (this.props.user.loading === 'USER_SIGNOUT_PENDING' && user.loading === 'USER_SIGNOUT_FULFILLED') {
-      Actions.LoginStartScreen()
-    }
+    if (Actions.currentScene === 'ProfileScreen') {
+      if (this.props.user.loading === 'USER_SIGNOUT_PENDING' && user.loading === 'USER_SIGNOUT_FULFILLED') {
+        Actions.LoginStartScreen()
+      }
 
-    if (this.props.user.loading === 'UPDATE_PROFILE_PENDING' && user.loading === 'UPDATE_PROFILE_FULFILLED') {
-      FastImage.preload([
-        {
-          uri: user.userInfo.imageUrl
-        }
-      ])
-      this.setState({ isShowToaster: true, toasterText: 'Profile changed' })
-      setTimeout(() => {
-        this.setState({ isShowToaster: false })
-      }, 2000)
-    }
+      if (this.props.user.loading === 'UPDATE_PROFILE_PENDING' && user.loading === 'UPDATE_PROFILE_FULFILLED') {
+        FastImage.preload([
+          {
+            uri: user.userInfo.imageUrl
+          }
+        ])
+        this.setState({ isShowToaster: true, toasterText: 'Profile changed' })
+        setTimeout(() => {
+          this.setState({ isShowToaster: false })
+        }, 2000)
+      }
 
-    if (this.props.user.loading === 'UPDATE_PASSWORD_PENDING' && user.loading === 'UPDATE_PASSWORD_FULFILLED') {
-      this.setState({ isShowToaster: true, toasterText: 'Password changed' })
-      setTimeout(() => {
-        this.setState({ isShowToaster: false })
-      }, 2000)
-    }
+      if (this.props.user.loading === 'UPDATE_PASSWORD_PENDING' && user.loading === 'UPDATE_PASSWORD_FULFILLED') {
+        this.setState({ isShowToaster: true, toasterText: 'Password changed' })
+        setTimeout(() => {
+          this.setState({ isShowToaster: false })
+        }, 2000)
+      }
 
-    if (this.props.user.loading === 'DELETE_PROFILE_PHOTO_REQUEST' && 
-      (user.loading === 'DELETE_PROFILE_PHOTO_FULFILLED' || user.loading === 'DELETE_PROFILE_PHOTO_REJECTED')) {
-      this.setState({ loading: false })
+      if (this.props.user.loading === 'DELETE_PROFILE_PHOTO_REQUEST' && 
+        (user.loading === 'DELETE_PROFILE_PHOTO_FULFILLED' || user.loading === 'DELETE_PROFILE_PHOTO_REJECTED')) {
+        this.setState({ loading: false })
+      }
     }
   }
 
