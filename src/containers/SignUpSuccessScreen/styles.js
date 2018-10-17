@@ -15,13 +15,7 @@ export default {
     justifyContent: 'center'
   },
   successView: {
-    width: 134,
-    height: 134,
-    borderRadius: 67,
-    marginBottom: 50,
-    justifyContent: 'center',
-    alignItems: 'center',
-    overflow: 'hidden'
+    marginBottom: 43
   },
   titleView: {
     justifyContent: 'center',
@@ -29,6 +23,7 @@ export default {
   },
   title: {
     fontSize: 28,
+    lineHeight: 29,
     fontWeight: 'bold',
     marginBottom: 14
   },
