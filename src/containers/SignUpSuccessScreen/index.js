@@ -2,34 +2,17 @@ import React from 'react'
 import {
   View,
   Text,
-  Alert
+  Alert,
+  Image
 } from 'react-native'
 import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
 import { Actions } from 'react-native-router-flux'
-import Feather from 'react-native-vector-icons/Feather'
-import LinearGradient from 'react-native-linear-gradient'
 import LoadingScreen from '../LoadingScreen'
 import { confirmAccount, getUserSession } from '../../redux/user/actions'
 import COLORS from '../../service/colors'
 import styles from './styles'
-
-const Gradient = () => {
-  return(
-    <LinearGradient
-      colors={[COLORS.PURPLE, COLORS.RED]}
-      start={{ x: 0.0, y: 0.0 }}
-      end={{ x: 1.0, y: 0.0 }}
-      style={{
-        position: 'absolute',
-        top: 0,
-        left: 0,
-        bottom: 0,
-        right: 0
-      }}
-    />
-  )
-}
+const SUCCESS_ICON = require('../../../assets/images/Success/adamStatic3.png')
 
 class SignUpSuccessScreen extends React.Component {
   constructor(props) {
@@ -88,13 +71,12 @@ class SignUpSuccessScreen extends React.Component {
           ? <LoadingScreen />
           : <View style={styles.body}>
               <View style={styles.successView}>
-                <Gradient />
-                <Feather name="check" size={60} color={'#fff'} />
+                <Image source={SUCCESS_ICON} />
               </View>
 
               <View style={styles.titleView}>
-                <Text style={styles.title}>Congratulations</Text>
-                <Text style={styles.subTitle}>You're all signed up for Feedo</Text>
+                <Text style={styles.title}>Success!</Text>
+                <Text style={styles.subTitle}>Welcome to Feedo!</Text>
               </View>
             </View>
         }
