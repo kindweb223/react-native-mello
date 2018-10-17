@@ -23,7 +23,7 @@ class ResetPasswordSuccessScreen extends React.Component {
 
           <View style={styles.titleView}>
             <Text style={styles.title}>Success!</Text>
-            <Text style={styles.subTitle}>Welcome to Feedo!</Text>
+            <Text style={styles.subTitle}>Your password has been changed</Text>
           </View>
       </View>
     )
