@@ -25,7 +25,7 @@ class SignUpConfirmScreen extends React.Component {
       <TouchableOpacity 
         style={styles.btnBack}
         activeOpacity={0.6}
-        onPress={() => Actions.pop()}
+        onPress={() => Actions.LoginStartScreen({type: 'replace'})}
       >
         <Ionicons name="ios-arrow-back" size={30} color={COLORS.PURPLE} />
       </TouchableOpacity>
@@ -124,7 +124,7 @@ class SignUpConfirmScreen extends React.Component {
 }
 
 SignUpConfirmScreen.defaultProps = {
-  userEmail: 'data-seed@gmail.com'
+  userEmail: ''
 }
 
 SignUpConfirmScreen.propTypes = {
