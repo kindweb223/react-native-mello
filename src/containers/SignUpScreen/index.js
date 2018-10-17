@@ -11,17 +11,11 @@ import {
   Keyboard
 } from 'react-native'
 import axios from 'axios';
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
 import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
 import { Actions } from 'react-native-router-flux'
-import LinearGradient from 'react-native-linear-gradient'
-import Feather from 'react-native-vector-icons/Feather'
-import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons'
 import Ionicons from 'react-native-vector-icons/Ionicons'
-import ActionSheet from 'react-native-actionsheet'
-import Permissions from 'react-native-permissions'
-import ImagePicker from 'react-native-image-picker'
-import * as mime from 'react-native-mime-types'
 import * as Progress from 'react-native-progress'
 import CheckBox from '../../components/CheckBoxComponent'
 import zxcvbn from 'zxcvbn'
@@ -29,16 +23,15 @@ import _ from 'lodash'
 import KeyboardScrollView from '../../components/KeyboardScrollView'
 import LoadingScreen from '../LoadingScreen'
 import TextInputComponent from '../../components/TextInputComponent'
-import { userSignUp, getImageUrl, updateProfile, validateInvite, completeInvite, getUserSession } from '../../redux/user/actions'
-import { uploadFileToS3 } from '../../redux/card/actions'
+import { userSignUp, validateInvite, completeInvite, getUserSession } from '../../redux/user/actions'
 import COLORS from '../../service/colors'
 import CONSTANTS from '../../service/constants'
 import resolveError from '../../service/resolveError'
 import * as COMMON_FUNC from '../../service/commonFunc'
 import styles from './styles'
-import FastImage from "react-native-fast-image";
 
-const CAMERA_ICON = require('../../../assets/images/Camera/Blue.png')
+const LOGO = require('../../../assets/images/Login/icon_40pt.png')
+
 const PASSWORD_PROGRESS = [
   { color: COLORS.RED, text: 'Weak' },
   { color: COLORS.MEDIUM_RED, text: 'Medium' },
@@ -46,24 +39,25 @@ const PASSWORD_PROGRESS = [
   { color: COLORS.PURPLE, text: 'Very Strong' }
 ]
 
-const Gradient = () => {
-  return(
-    <LinearGradient
-      colors={[COLORS.PURPLE, COLORS.RED]}
-      start={{ x: 0.0, y: 0.0 }}
-      end={{ x: 1.0, y: 0.0 }}
-      style={{
-        position: 'absolute',
-        top: 0,
-        left: 0,
-        bottom: 0,
-        right: 0
-      }}
-    />
-  )
-}
-
 class SignUpScreen extends React.Component {
+  static renderLeftButton(props) {
+    return (
+      <TouchableOpacity 
+        style={styles.btnBack}
+        activeOpacity={0.6}
+        onPress={() => Actions.LoginScreen({ type: 'replace' })}
+      >
+        <Ionicons name="ios-arrow-back" size={30} color={COLORS.PURPLE} />
+      </TouchableOpacity>
+    );
+  }
+
+  static renderTitle(props) {
+    return (
+      <Image source={LOGO} />
+    );
+  }
+
   constructor(props) {
     super(props)
     this.state = {
@@ -110,13 +104,10 @@ class SignUpScreen extends React.Component {
     if (Actions.currentScene === 'SignUpScreen') {
       if (prevProps.user.loading === 'USER_SIGNUP_PENDING' && this.props.user.loading === 'USER_SIGNUP_FULFILLED') {
         const { userSignUpData } = this.props.user
-        if (_.isEmpty(this.state.avatarFile)) {
-          this.setState({ loading: false }, () => {
-            Actions.SignUpConfirmScreen({ userEmail: this.state.userEmail })
-          })        
-        } else {
-          this.props.getImageUrl(userSignUpData.id)
-        }
+
+        this.setState({ loading: false }, () => {
+          Actions.SignUpConfirmScreen({ userEmail: this.state.userEmail })
+        })
       }
 
       if (prevProps.user.loading === 'USER_SIGNUP_PENDING' && this.props.user.loading === 'USER_SIGNUP_REJECTED') {
@@ -127,31 +118,6 @@ class SignUpScreen extends React.Component {
             error.message
           )
         })
-      }
-
-      if (prevProps.user.loading === 'GET_USER_IMAGE_URL_PENDING' && this.props.user.loading === 'GET_USER_IMAGE_URL_FULFILLED') {
-        const { userImageUrlData } = this.props.user
-        this.uploadImage(userImageUrlData)
-      }
-
-      if (prevProps.user.loading === 'UPLOAD_FILE_PENDING' && this.props.user.loading === 'UPLOAD_FILE_FULFILLED' && !_.isEmpty(this.state.avatarFile)) {
-        const { userSignUpData, userImageUrlData } = this.props.user
-        const param = {
-          imageUrl: userImageUrlData.objectKey
-        }
-        this.props.updateProfile(userSignUpData.id, param)
-      }
-
-      if (prevProps.user.loading === 'UPDATE_PROFILE_PENDING' && this.props.user.loading === 'UPDATE_PROFILE_FULFILLED') {
-        this.setState({ loading: false }, () => {
-          Actions.SignUpConfirmScreen({ userEmail: this.state.userEmail })
-        })
-      }
-
-      if (this.props.user.loading === 'GET_USER_IMAGE_URL_REJECTED' ||
-          this.props.user.loading === 'UPLOAD_FILE_REJECTED' ||
-          this.props.user.loading === 'UPDATE_PROFILE_REJECTED') {
-        this.setState({ loading: false })
       }
 
       if (prevProps.user.loading === 'VALIDATE_INVITE_PENDING' && this.props.user.loading === 'VALIDATE_INVITE_FULFILLED') {
@@ -196,21 +162,6 @@ class SignUpScreen extends React.Component {
       if (prevProps.user.loading === 'GET_USER_SESSION_PENDING' && this.props.user.loading === 'GET_USER_SESSION_REJECTED') {
         this.setState({ loading: false, isSignup: false })
       }
-    }
-  }
-
-  uploadImage = (userImageUrlData) => {
-    const { avatarFile } = this.state
-
-    console.log('avatarFile: ', avatarFile)
-    if (!_.isEmpty(avatarFile)) {
-      const baseUrl = userImageUrlData.uploadUrl
-      const fileUrl = avatarFile.uri
-      const urlArray = fileUrl.split('/')
-      const fileName = urlArray[urlArray.length - 1]
-      const fileType = mime.lookup(fileUrl);
-
-      this.props.uploadFileToS3(baseUrl, fileUrl, fileName, fileType);
     }
   }
 
@@ -362,76 +313,16 @@ class SignUpScreen extends React.Component {
     }
   }
 
-  pickMediaFromCamera(options) {
-    ImagePicker.launchCamera(options, (response)  => {
-      if (!response.didCancel) {
-        if (!response.fileName) {
-          response.fileName = response.uri.replace(/^.*[\\\/]/, '')
-        }
-        this.setState({ avatarFile: response })
-      }
-    });
-  }
-
-  pickMediaFromLibrary(options) {
-    ImagePicker.launchImageLibrary(options, (response)  => {
-      if (!response.didCancel) {
-        this.setState({ avatarFile: response })
-      }
-    });
-  }
-
-  onTapMediaPickerActionSheet(index) {
-    const options = {
-      storageOptions: {
-        skipBackup: true,
-        path: 'feedo'
-      }
-    };
-        
-    if (index === 1) {
-      // from camera
-      Permissions.check('camera').then(response => {
-        if (response === 'authorized') {
-          this.pickMediaFromCamera(options);
-        } else if (response === 'undetermined') {
-          Permissions.request('camera').then(response => {
-            if (response === 'authorized') {
-              this.pickMediaFromCamera(options);
-            }
-          });
-        } else {
-          Permissions.openSettings();
-        }
-      });
-    } else if (index === 0) {
-      // from library
-      Permissions.check('photo').then(response => {
-        if (response === 'authorized') {
-          this.pickMediaFromLibrary(options);
-        } else if (response === 'undetermined') {
-          Permissions.request('photo').then(response => {
-            if (response === 'authorized') {
-              this.pickMediaFromLibrary(options);
-            }
-          });
-        } else {
-          Permissions.openSettings();
-        }
-      });
-    }
-  }
-
-  uploadPhoto = () => {
-    this.imagePickerActionSheetRef.show();
-  }
-
   onNextEmail = () => {
-    this.fullnameRef.textRef.focus()
+    this.passwordRef.textRef.focus()
   }
 
   onNextFullName = () => {
-    this.passwordRef.textRef.focus()
+    this.emailRef.textRef.focus()
+  }
+
+  onSignIn = () => {
+    Actions.LoginScreen()
   }
 
   render () {
@@ -450,152 +341,120 @@ class SignUpScreen extends React.Component {
 
     return (
       <View style={styles.container}>
-        <Gradient />
-
-        <KeyboardScrollView>
+        <KeyboardAwareScrollView keyboardShouldPersistTaps="handled">
           <View style={styles.innerContainer}>
+            <TextInputComponent
+              ref={ref => this.fullnameRef = ref}
+              placeholder="Full name"
+              value={this.state.fullName}
+              isError={nameError.length > 0 ? true : false}
+              errorText={nameError.length > 0 ? resolveError(nameError[0].code, nameError[0].message) : ''}
+              handleChange={text => this.changeFullName(text)}
+              returnKeyType="next"
+              autoCapitalize="words"
+              textContentType="name"
+              onSubmitEditing={() => this.onNextFullName()}
+            />
 
-            <View style={styles.modalContainer}>
-              <TouchableOpacity onPress={() => this.uploadPhoto()} activeOpacity={0.8}>
-                <View style={styles.avatarView}>
-                  <View style={styles.avatar}>
-                    {_.isEmpty(avatarFile)
-                      ? <Image source={CAMERA_ICON} />
-                      : <FastImage style={styles.avatarImg} source={{uri: avatarFile.uri}} />
+            <TextInputComponent
+              ref={ref => this.emailRef = ref}
+              placeholder="Enter Email"
+              value={this.state.userEmail}
+              isError={emailError.length > 0 ? true : false}
+              errorText={emailError.length > 0 ? resolveError(emailError[0].code, emailError[0].message) : ''}
+              handleChange={text => this.changeEmail(text)}
+              returnKeyType="next"
+              keyboardType="email-address"
+              textContentType='emailAddress'
+              onSubmitEditing={() => this.onNextEmail()}
+            />
+
+            <View>
+              <TextInputComponent
+                ref={ref => this.passwordRef = ref}
+                placeholder="Enter Password"
+                isSecure={this.state.isSecure}
+                ContainerStyle={{ marginBottom: 0 }}
+                isErrorView={false}
+                isError={passwordError.length > 0 ? true : false}
+                handleChange={text => this.changePassword(text)}
+                onFocus={() => this.onPasswordFocus(true)}
+                onBlur={() => this.onPasswordFocus(false)}
+                onSubmitEditing={() => this.onSignUp()}
+              >
+                <TouchableOpacity onPress={() => this.setState({ isSecure: !isSecure}) } activeOpacity={0.8}>
+                  <View style={styles.passwordPreview}>
+                    {isSecure
+                      ? <Ionicons name="md-eye" size={20} color={isPasswordFocus ? COLORS.PURPLE : COLORS.MEDIUM_GREY} />
+                      : <Ionicons name="md-eye-off" size={20} color={isPasswordFocus ? COLORS.PURPLE : COLORS.MEDIUM_GREY} />
                     }
                   </View>
-                  <Text style={styles.uploadText}>Upload avatar</Text>
-                </View>
-              </TouchableOpacity>
-
-              <TextInputComponent
-                ref={ref => this.emailRef = ref}
-                placeholder="Enter Email"
-                value={this.state.userEmail}
-                isError={emailError.length > 0 ? true : false}
-                errorText={emailError.length > 0 ? resolveError(emailError[0].code, emailError[0].message) : ''}
-                handleChange={text => this.changeEmail(text)}
-                returnKeyType="next"
-                keyboardType="email-address"
-                textContentType='emailAddress'
-                onSubmitEditing={() => this.onNextEmail()}
-              />
-
-              <TextInputComponent
-                ref={ref => this.fullnameRef = ref}
-                placeholder="Full name"
-                value={this.state.fullName}
-                isError={nameError.length > 0 ? true : false}
-                errorText={nameError.length > 0 ? resolveError(nameError[0].code, nameError[0].message) : ''}
-                handleChange={text => this.changeFullName(text)}
-                returnKeyType="next"
-                autoCapitalize="words"
-                textContentType="name"
-                onSubmitEditing={() => this.onNextFullName()}
-              />
-
-              <View>
-                <TextInputComponent
-                  ref={ref => this.passwordRef = ref}
-                  placeholder="Enter Password"
-                  isSecure={this.state.isSecure}
-                  ContainerStyle={{ marginBottom: 0 }}
-                  isErrorView={false}
-                  isError={passwordError.length > 0 ? true : false}
-                  handleChange={text => this.changePassword(text)}
-                  onFocus={() => this.onPasswordFocus(true)}
-                  onBlur={() => this.onPasswordFocus(false)}
-                  onSubmitEditing={() => this.onSignUp()}
-                >
-                  <TouchableOpacity onPress={() => this.setState({ isSecure: !isSecure}) } activeOpacity={0.8}>
-                    <View style={styles.passwordPreview}>
-                      {isSecure
-                        ? <Ionicons name="md-eye" size={20} color={isPasswordFocus ? COLORS.PURPLE : COLORS.MEDIUM_GREY} />
-                        : <Ionicons name="md-eye-off" size={20} color={isPasswordFocus ? COLORS.PURPLE : COLORS.MEDIUM_GREY} />
-                      }
-                    </View>
-                  </TouchableOpacity>
-                </TextInputComponent>
-                
-                {password.length > 0 &&
-                  <View style={styles.passwordScoreView}>
-                    <Progress.Bar
-                      progress={(passwordScore + 1) * 0.25}
-                      width={CONSTANTS.SCREEN_SUB_WIDTH - 90}
-                      color={PASSWORD_PROGRESS[passwordScore].color}
-                      unfilledColor={COLORS.LIGHT_GREY}
-                      borderColor={COLORS.LIGHT_GREY}
-                      borderWidth={0}
-                      height={3}
-                    />
-                    <Text style={styles.passwordScoreText}>{PASSWORD_PROGRESS[passwordScore].text}</Text>
-                  </View>
-                }
-
-                <View style={styles.errorView}>
-                  {passwordError.length > 0 && (
-                    <Text style={styles.errorText}>{resolveError(passwordError[0].code, passwordError[0].message)}</Text>
-                  )}
-                </View>
-              </View>
+                </TouchableOpacity>
+              </TextInputComponent>
               
-              <View style={styles.checkboxView}>
-                <CheckBox
-                  style={{ flex: 1, paddingVertical: 10 }}
-                  onClick={() => {
-                    this.setState({
-                      isTNC: !this.state.isTNC,
-                      showTncError: false
-                    })
-                  }}
-                  isChecked={this.state.isTNC}
-                  rightText="I'll accept the "
-                >
-                  <TouchableOpacity onPress={() => Actions.TermsAndConditionsScreen()}>
-                    <Text style={styles.termsText}>terms & conditions</Text>
-                  </TouchableOpacity>
-                </CheckBox>
-                <View style={styles.errorTncView}>
-                  {this.state.showTncError && (
-                    <Text style={styles.errorText}>You must accept the Terms and Conditions</Text>
-                  )}
+              {password.length > 0 &&
+                <View style={styles.passwordScoreView}>
+                  <Progress.Bar
+                    progress={(passwordScore + 1) * 0.25}
+                    width={CONSTANTS.SCREEN_SUB_WIDTH - 90}
+                    color={PASSWORD_PROGRESS[passwordScore].color}
+                    unfilledColor={COLORS.LIGHT_GREY}
+                    borderColor={COLORS.LIGHT_GREY}
+                    borderWidth={0}
+                    height={3}
+                  />
+                  <Text style={styles.passwordScoreText}>{PASSWORD_PROGRESS[passwordScore].text}</Text>
                 </View>
-              </View>
+              }
 
-              <TouchableOpacity onPress={() => this.onSignUp()}>
-                <View style={styles.buttonView}>
-                  <Text style={styles.buttonText}>Continue</Text>
-                </View>
+              <View style={styles.errorView}>
+                {passwordError.length > 0 && (
+                  <Text style={styles.errorText}>{resolveError(passwordError[0].code, passwordError[0].message)}</Text>
+                )}
+              </View>
+            </View>
+            
+            <View style={styles.checkboxView}>
+              <CheckBox
+                style={{ flex: 1, paddingVertical: 10 }}
+                onClick={() => {
+                  this.setState({
+                    isTNC: !this.state.isTNC,
+                    showTncError: false
+                  })
+                }}
+                isChecked={this.state.isTNC}
+                rightText="I'll accept the "
+              >
+                <TouchableOpacity onPress={() => Actions.TermsAndConditionsScreen()}>
+                  <Text style={styles.termsText}>terms & conditions</Text>
+                </TouchableOpacity>
+              </CheckBox>
+              <View style={styles.errorTncView}>
+                {this.state.showTncError && (
+                  <Text style={styles.errorText}>You must accept the Terms and Conditions</Text>
+                )}
+              </View>
+            </View>
+
+            <TouchableOpacity onPress={() => this.onSignUp()}>
+              <View style={styles.buttonView}>
+                <Text style={styles.buttonText}>Continue</Text>
+              </View>
+            </TouchableOpacity>
+
+            <View style={styles.loginButtonView}>
+              <Text style={[styles.btnSend, { color: COLORS.MEDIUM_GREY }]}>Already have an account? </Text>
+              <TouchableOpacity onPress={() => this.onSignIn()}>
+                <Text style={[styles.btnSend, { color: COLORS.PURPLE }]}>Sign in.</Text>
               </TouchableOpacity>
             </View>
           </View>
-        </KeyboardScrollView>
+        </KeyboardAwareScrollView>
 
         {this.state.loading && (
           <LoadingScreen />
         )}
-
-        <View style={styles.headerView}>
-          <TouchableOpacity onPress={() => Actions.pop()}>
-            <View style={styles.btnBack}>
-              <Feather name="arrow-left" size={25} color={'#fff'} />
-            </View>
-          </TouchableOpacity>
-          <Text style={styles.headerText}>Create new account</Text>
-          <TouchableOpacity onPress={() => {}}>
-            <View style={styles.btnPass}>
-              {/*<MaterialCommunityIcons name="onepassword" size={25} color={'#fff'} />*/}
-            </View>
-          </TouchableOpacity>
-        </View>
-
-        <ActionSheet
-          ref={ref => this.imagePickerActionSheetRef = ref}
-          options={['Photo Library', 'Take Photo', 'Cancel']}
-          cancelButtonIndex={2}
-          tintColor={COLORS.PURPLE}
-          onPress={(index) => this.onTapMediaPickerActionSheet(index)}
-        />
       </View>
     )
   }
@@ -619,9 +478,6 @@ const mapStateToProps = ({ user }) => ({
 
 const mapDispatchToProps = dispatch => ({
   userSignUp: (data) => dispatch(userSignUp(data)),
-  getImageUrl: (data) => dispatch(getImageUrl(data)),
-  updateProfile: (userId, data) => dispatch(updateProfile(userId, data)),
-  uploadFileToS3: (signedUrl, file, fileName, mimeType) => dispatch(uploadFileToS3(signedUrl, file, fileName, mimeType)),
   validateInvite: (data) => dispatch(validateInvite(data)),
   completeInvite: (data) => dispatch(completeInvite(data)),
   getUserSession: () => dispatch(getUserSession()),

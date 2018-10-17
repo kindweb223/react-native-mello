@@ -184,7 +184,7 @@ export default class Root extends React.Component {
           <Scene key="root">
             <Scene key="LoginStartScreen" component={ LoginStartScreen } hideNavBar panHandlers={null} />
             <Scene key="LoginScreen" component={ LoginScreen } hideNavBar />
-            <Scene key="SignUpScreen" component={ SignUpScreen } hideNavBar />
+            <Scene key="SignUpScreen" component={ SignUpScreen }  navigationBarStyle={styles.emptyBorderNavigationBar} />
             <Scene key="SignUpConfirmScreen" component={ SignUpConfirmScreen } panHandlers={null} navigationBarStyle={styles.emptyBorderNavigationBar} />
             <Scene key="TermsAndConditionsScreen" component={ TermsAndConditionsScreen } hideNavBar />
             <Scene key="HomeScreen" component={ HomeScreen } hideNavBar panHandlers={null} />
@@ -244,7 +244,7 @@ const styles = StyleSheet.create({
   emptyBorderNavigationBar: {
     height: 54,
     paddingHorizontal: 6,
-    backgroundColor: '#FFF',
+    backgroundColor: '#fff',
     borderBottomWidth: 0,
   },
   loadingContainer: {
