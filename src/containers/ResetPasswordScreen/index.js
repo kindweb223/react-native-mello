@@ -78,13 +78,8 @@ class ResetPasswordScreen extends React.Component {
     const { user } = this.props
 
     if (prevProps.user.loading === 'RESET_PASSWORD_PENDING' && user.loading === 'RESET_PASSWORD_FULFILLED') {
-      const { userInfo } = user
       this.setState({ loading: false }, () => {
-        if (userInfo) {
-          Actions.ResetPasswordSuccessScreen({ userData: user.userInfo, isReset: true })
-        } else {
-          Actions.ResetPasswordSuccessScreen()
-        }
+        Actions.ResetPasswordSuccessScreen()
       })
     }
 

@@ -19,7 +19,7 @@ class ResetPasswordSuccessScreen extends React.Component {
       const { userInfo } = user
 
       if (userInfo) {
-        Actions.LoginScreen({ userData: user.userInfo, isReset: false })
+        Actions.LoginScreen({ userData: user.userInfo })
       } else {
         Actions.LoginStartScreen()
       }
@@ -42,16 +42,6 @@ class ResetPasswordSuccessScreen extends React.Component {
       </View>
     )
   }
-}
-
-ResetPasswordSuccessScreen.defaultProps = {
-  userData: {},
-  isReset: false
-}
-
-ResetPasswordSuccessScreen.propTypes = {
-  userData: PropTypes.objectOf(PropTypes.any),
-  isReset: PropTypes.bool
 }
 
 const mapStateToProps = ({ user }) => ({

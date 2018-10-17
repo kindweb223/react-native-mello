@@ -50,16 +50,8 @@ class LoginScreen extends React.Component {
       loading: false,
       isInvalidError: false,
       errorText: '',
-      isLogIn: false,
-      isResetSuccess: false
+      isLogIn: false
     }
-  }
-
-  UNSAFE_componentWillMount() {
-    this.setState({ isResetSuccess: true })
-    setTimeout(() => {
-      this.setState({ isResetSuccess: false })
-    }, 5000)
   }
 
   UNSAFE_componentWillReceiveProps(nextProps) {
@@ -206,28 +198,17 @@ class LoginScreen extends React.Component {
         {this.state.loading && (
           <LoadingScreen />
         )}
-
-        {this.props.isReset && (
-          <ToasterComponent
-            isVisible={this.state.isResetSuccess}
-            title="Password changed successfully"
-            buttonTitle="OK"
-            onPressButton={() => this.setState({ isResetSuccess: false })}
-          />
-        )}
       </View>
     )
   }
 }
 
 LoginScreen.defaultProps = {
-  userData: {},
-  isReset: false
+  userData: {}
 }
 
 LoginScreen.propTypes = {
-  userData: PropTypes.objectOf(PropTypes.any),
-  isReset: PropTypes.bool
+  userData: PropTypes.objectOf(PropTypes.any)
 }
 
 const mapStateToProps = ({ user }) => ({
