@@ -34,7 +34,7 @@ export default class CoverImagePreviewComponent extends React.Component {
     this.setState({ isPreview: true, position: index })
   }
 
-  renderCoverImage(coverImage, position) {
+  renderCoverImage(files, coverImage, position) {
     const { isFastImage } = this.props;
     if (isFastImage) {
       return (
@@ -66,7 +66,7 @@ export default class CoverImagePreviewComponent extends React.Component {
 
     return (
       <View style={styles.container}>
-        {this.renderCoverImage(coverImage, position)}
+        {this.renderCoverImage(files, coverImage, position)}
         <Modal 
           isVisible={this.state.isPreview}
           style={styles.previewModal}
