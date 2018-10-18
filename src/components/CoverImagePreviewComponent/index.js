@@ -3,6 +3,7 @@ import {
   TouchableOpacity,
   View,
   Text,
+  Image,
 } from 'react-native'
 import PropTypes from 'prop-types'
 
@@ -33,8 +34,30 @@ export default class CoverImagePreviewComponent extends React.Component {
     this.setState({ isPreview: true, position: index })
   }
 
+  renderCoverImage(coverImage, position) {
+    const { isFastImage } = this.props;
+    if (isFastImage) {
+      return (
+        <TouchableOpacity style={styles.container} onPress={() => this.onPressImage(position)}>
+          <FastImage style={styles.imageCover} source={{ uri: coverImage }} resizeMode="cover" />
+          {
+            files.length > 1 && 
+            <View style={styles.imageNumberContainer}>
+              <Text style={styles.textImageNumber}>+{files.length - 1}</Text>
+            </View>
+          }
+        </TouchableOpacity>
+      );
+    }
+    return (
+      <TouchableOpacity style={styles.container} onPress={() => this.onPressImage(position)}>
+        <Image style={styles.imageCover} source={{ uri: coverImage }} resizeMode="cover" />
+      </TouchableOpacity>
+    );
+  }
+
   render () {
-    const { coverImage, isShowCount } = this.props
+    const { coverImage, isFastImage } = this.props
     const {
       files,
     } = this.state;
@@ -43,16 +66,7 @@ export default class CoverImagePreviewComponent extends React.Component {
 
     return (
       <View style={styles.container}>
-        <TouchableOpacity style={styles.container} onPress={() => this.onPressImage(position)}>
-          <FastImage style={styles.imageCover} source={{ uri: coverImage }} resizeMode="cover" />
-          {
-            isShowCount && files.length > 1 && 
-            <View style={styles.imageNumberContainer}>
-              <Text style={styles.textImageNumber}>+{files.length - 1}</Text>
-            </View>
-          }
-        </TouchableOpacity>
-
+        {this.renderCoverImage(coverImage, position)}
         <Modal 
           isVisible={this.state.isPreview}
           style={styles.previewModal}
@@ -67,6 +81,7 @@ export default class CoverImagePreviewComponent extends React.Component {
             position={position}
             removal={this.props.editable}
             isSetCoverImage={this.props.isSetCoverImage}
+            isFastImage={isFastImage}
             onRemove={(id) => this.props.onRemove(id)}
             onSetCoverImage={(id) => this.props.onSetCoverImage(id)}
             onClose={() => this.setState({ isPreview: false })}
@@ -83,7 +98,7 @@ CoverImagePreviewComponent.defaultProps = {
   coverImage: '',
   editable: true,
   isSetCoverImage: false,
-  isShowCount: true,
+  isFastImage: true,
   onRemove: () => {},
   onSetCoverImage: () => {},
 }
@@ -94,7 +109,7 @@ CoverImagePreviewComponent.propTypes = {
   coverImage: PropTypes.string,
   editable: PropTypes.bool,
   isSetCoverImage: PropTypes.bool,
-  isShowCount: PropTypes.bool,
+  isFastImage: PropTypes.bool,
   onRemove: PropTypes.func,
   onSetCoverImage: PropTypes.func,
 }

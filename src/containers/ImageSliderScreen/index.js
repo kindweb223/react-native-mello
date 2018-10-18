@@ -10,12 +10,10 @@ import {
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 
-import { Actions } from 'react-native-router-flux'
 import Slideshow from '../../components/Slideshow'
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons'
 import Feather from 'react-native-vector-icons/Feather'
-import Entypo from 'react-native-vector-icons/Entypo'
-import { max, filter } from 'lodash'
+import { max } from 'lodash'
 
 import styles from './styles'
 import LoadingScreen from '../LoadingScreen';
@@ -23,6 +21,7 @@ import * as feedTypes from '../../redux/feedo/types'
 import * as cardTypes from '../../redux/card/types'
 
 import CONSTANTS from '../../service/constants'
+
 
 class ImageSliderScreen extends React.Component {
   constructor(props) {
@@ -143,7 +142,7 @@ class ImageSliderScreen extends React.Component {
 
   render () {
     const { maxImageHeight } = this.state
-    const { imageFiles } = this.props;
+    const { imageFiles, isFastImage } = this.props;
 
     return (
       <View style={styles.container}>
@@ -152,6 +151,7 @@ class ImageSliderScreen extends React.Component {
           imageFiles={imageFiles}
           width={CONSTANTS.SCREEN_WIDTH}
           height={CONSTANTS.SCREEN_HEIGHT - 140}
+          isFastImage={isFastImage}
           handleImage={() => this.handleImage()}
           onSwipeDown={this.onSwipeDown}
           setPosition={value => this.setState({ imageIndex: value.pos })}
@@ -204,6 +204,7 @@ ImageSliderScreen.defaultProps = {
   imageFiles: [],
   position: 0,
   removal: true,
+  isFastImage: true,
   isSetCoverImage: false,
   onRemove: () => {},
   onSetCoverImage: () => {},
@@ -215,6 +216,7 @@ ImageSliderScreen.propTypes = {
   imageFiles: PropTypes.array,
   position: PropTypes.number,
   removal: PropTypes.bool,
+  isFastImage: PropTypes.bool,
   isSetCoverImage: PropTypes.bool,
   onRemove: PropTypes.func,
   onSetCoverImage: PropTypes.func,
