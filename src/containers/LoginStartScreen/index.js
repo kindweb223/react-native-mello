@@ -13,6 +13,7 @@ import { Actions } from 'react-native-router-flux'
 import PropTypes from 'prop-types'
 import FastImage from "react-native-fast-image"
 import Swiper from 'react-native-swiper'
+import Video from 'react-native-video'
 
 import LoadingScreen from '../LoadingScreen'
 import TextRollingComponent from '../../components/TextRollingComponent'
@@ -32,6 +33,19 @@ const BACK_COLORS = [
 ]
 
 class SwipeFirstScreen extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      videoPaused: true
+    }
+  }
+
+  onShowVideo = () => {
+    this.player.presentFullscreenPlayer();
+    this.player.seek(0);
+    this.setState({ videoPaused: false })
+  }
+
   render() {
     return (
       <View style={styles.swipeContainer}>
@@ -46,12 +60,26 @@ class SwipeFirstScreen extends React.Component {
         <View style={styles.sliderFirstImagView}>
           <Image source={FIRST_IMAGE} />
         </View>
-        <View style={styles.videoLInkView}>
-          <Text style={styles.linkText}>
-            All about Feedo in 90 seconds 
-          </Text>
-          <MaterialCommunityIcons name='play' size={20} color={COLORS.PURPLE} />
-        </View>
+        <TouchableOpacity onPress={() => this.onShowVideo()}>
+          <View style={styles.videoLInkView}>
+            <Text style={styles.linkText}>
+              All about Feedo in 90 seconds 
+            </Text>
+            <MaterialCommunityIcons name='play' size={20} color={COLORS.PURPLE} />
+          </View>
+        </TouchableOpacity>
+
+        <Video
+          ref={(ref) => { this.player = ref }}
+          source={{ uri: 'https://d5qq4b94z26us.cloudfront.net/solvers/videos/SOLVERS_FINAL.mp4' }}
+          style={styles.video}
+          resizeMode='cover'
+          autoplay={false}
+          paused={this.state.videoPaused}
+          onFullscreenPlayerWillDismiss={() => {
+            this.setState({ videoPaused: true })
+          }}
+        />
       </View>
     )
   }
@@ -78,6 +106,14 @@ class LoginStartScreen extends React.Component {
     this.state = {
       postion: 0
     }
+  }
+
+  onLogin = () => {
+    Actions.LoginScreen()
+  }
+
+  onSignUp = () => {
+    Actions.SignUpScreen()
   }
 
   render () {
@@ -110,7 +146,13 @@ class LoginStartScreen extends React.Component {
               </View>
             </TouchableOpacity>
             <View style={styles.signinView}>
-              <Text style={styles.signinText}>Already have an account? Sign in.</Text>
+              <Text
+                onPress={() => this.onLogin()}
+                suppressHighlighting={true}
+                style={styles.signinText}
+              >
+                Already have an account? Sign in.
+              </Text>
             </View>
           </View>
         </SafeAreaView>

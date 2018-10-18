@@ -950,7 +950,7 @@ class NewCardScreen extends React.Component {
             coverImage={this.state.coverImage}
             files={imageFiles}
             editable={viewMode !== CONSTANTS.CARD_VIEW}
-            isShowCount={cardMode !== CONSTANTS.SHARE_EXTENTION_CARD}
+            isFastImage={cardMode !== CONSTANTS.SHARE_EXTENTION_CARD}
             isSetCoverImage={true}
             onRemove={(fileId) => this.onRemoveFile(fileId)}
             onSetCoverImage={(fileId) => this.onSetCoverImage(fileId)}
@@ -983,7 +983,7 @@ class NewCardScreen extends React.Component {
       return (
         <WebMetaList 
           links={links}
-          small={cardMode === CONSTANTS.SHARE_EXTENTION_CARD}
+          isFastImage={cardMode !== CONSTANTS.SHARE_EXTENTION_CARD}
           editable={viewMode !== CONSTANTS.CARD_VIEW}
           onRemove={(linkId) => this.onDeleteLink(linkId)}
         />

@@ -61,6 +61,7 @@ import ProfileUpdateScreen from './src/containers/ProfileUpdateScreen'
 import SignUpSuccessScreen from './src/containers/SignUpSuccessScreen'
 import ResetPasswordConfirmScreen from './src/containers/ResetPasswordConfirmScreen'
 import ResetPasswordScreen from './src/containers/ResetPasswordScreen'
+import ResetPasswordSuccessScreen from './src/containers/ResetPasswordSuccessScreen'
 import CropImageScreen from './src/containers/CropImageScreen'
 import FeedFilterScreen from './src/containers/FeedFilterScreen'
 import ArchivedFeedScreen from './src/containers/ArchivedFeedScreen'
@@ -184,7 +185,7 @@ export default class Root extends React.Component {
             <Scene key="LoginStartScreen" component={ LoginStartScreen } hideNavBar panHandlers={null} />
             <Scene key="LoginScreen" component={ LoginScreen } hideNavBar />
             <Scene key="SignUpScreen" component={ SignUpScreen } hideNavBar />
-            <Scene key="SignUpConfirmScreen" component={ SignUpConfirmScreen } hideNavBar panHandlers={null} />
+            <Scene key="SignUpConfirmScreen" component={ SignUpConfirmScreen } panHandlers={null} navigationBarStyle={styles.emptyBorderNavigationBar} />
             <Scene key="TermsAndConditionsScreen" component={ TermsAndConditionsScreen } hideNavBar />
             <Scene key="HomeScreen" component={ HomeScreen } hideNavBar panHandlers={null} />
             <Scene key="FeedDetailScreen" component={ FeedDetailScreen } hideNavBar panHandlers={null} />
@@ -194,6 +195,7 @@ export default class Root extends React.Component {
             <Scene key="SignUpSuccessScreen" component={ SignUpSuccessScreen } hideNavBar panHandlers={null} />
             <Scene key="ResetPasswordConfirmScreen" component={ ResetPasswordConfirmScreen } hideNavBar />
             <Scene key="ResetPasswordScreen" component={ ResetPasswordScreen } hideNavBar panHandlers={null} />
+            <Scene key="ResetPasswordSuccessScreen" component={ ResetPasswordSuccessScreen } hideNavBar panHandlers={null} />
             <Scene key="FeedFilterScreen" component={ FeedFilterScreen } hideNavBar />
           </Scene>
           <Stack key="ProfileScreen" hideNavBar>
@@ -238,6 +240,12 @@ const styles = StyleSheet.create({
     paddingHorizontal: 6,
     backgroundColor: '#FEFEFE',
     // borderBottomWidth: 0,
+  },
+  emptyBorderNavigationBar: {
+    height: 54,
+    paddingHorizontal: 6,
+    backgroundColor: '#FFF',
+    borderBottomWidth: 0,
   },
   loadingContainer: {
     width: CONSTANTS.SCREEN_WIDTH,

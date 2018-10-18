@@ -42,7 +42,7 @@ class TextRollingComponent extends React.Component {
       {
         toValue: 400,
         duration: 400,
-        delay: 1200
+        delay: 1400
       }
     ).start(() => {
       this.animate()
@@ -51,7 +51,7 @@ class TextRollingComponent extends React.Component {
 
   render() {
     const { rollIndex } = this.state
-    console.log('INDEX: ', rollIndex)
+
     const translateY = this.animatedValue.interpolate({
       inputRange: [0, 400],
       outputRange: [-32 * (rollIndex - 2), -32 * (rollIndex - 1)],

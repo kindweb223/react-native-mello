@@ -105,7 +105,7 @@ class ResetPasswordConfirmScreen extends React.Component {
 }
 
 ResetPasswordConfirmScreen.defaultProps = {
-  userEmail: 'data-seed@gmail.com'
+  userEmail: ''
 }
 
 ResetPasswordConfirmScreen.propTypes = {
