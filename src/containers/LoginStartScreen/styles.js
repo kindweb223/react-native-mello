@@ -8,50 +8,19 @@ const MODAL_HEIGHT = 220
 export default {
   container: {
     width: CONSTANTS.SCREEN_WIDTH,
-    height: CONSTANTS.SCREEN_HEIGHT + ifIphoneX(34, 0)
-  },
-  innerContainer: {
-    width: CONSTANTS.SCREEN_WIDTH,
     height: CONSTANTS.SCREEN_HEIGHT
   },
-  contentView: {
+  safeView: {
+    flex: 1
+  },
+  dotStyle: {
+    width: 6,
+    height: 6
+  },
+  bottomContainer: {
     width: '100%',
-    height: CONSTANTS.SCREEN_HEIGHT - MODAL_HEIGHT,
-    justifyContent: 'center',
-    alignItems: 'center'
-  },
-  logoView: {
-    marginTop: CONSTANTS.STATUSBAR_HEIGHT,
-    marginBottom: 32
-  },
-  logo: {
-    width: 75,
-    height: 75
-  },
-  content: {
-    alignItems: 'center',
-    justifyContent: 'center'
-  },
-  title: {
-    fontWeight: 'bold',
-    fontSize: 39,
-    color: '#fff'
-  },
-  subTitle: {
-    marginTop: 22,
-    fontSize: 14,
-    color: '#fff'
-  },
-  modalContainer: {
-    borderTopLeftRadius: 18,
-    borderTopRightRadius: 18,
-    backgroundColor: '#fff',
-    padding: CONSTANTS.PADDING,
-    height: MODAL_HEIGHT,
-    position: 'absolute',
-    bottom: 0,
-    left: 0,
-    right: 0
+    paddingHorizontal: CONSTANTS.PADDING,
+    paddingVertical: 24
   },
   buttonView: {
     borderRadius: 14,
@@ -64,5 +33,57 @@ export default {
   buttonText: {
     color: '#fff',
     fontSize: 18
-  }
+  },
+  signinView: {
+    width: '100%',
+    alignItems: 'center',
+    justifyContent: 'center'
+  },
+  signinText: {
+    color: COLORS.PURPLE,
+    fontSize: 16,
+    marginVertical: 21
+  },
+  swipeContainer: {
+    flex: 1,
+    justifyContent: 'center'
+  },
+  titleView: {
+    width: '100%',
+    paddingHorizontal: CONSTANTS.PADDING
+  },
+  titleText: {
+    fontSize: 26,
+    lineHeight: 32,
+    fontWeight: 'bold',
+    letterSpacing: 1.2
+  },
+  lastTextView: {
+    flexDirection: 'row'
+  },
+  sliderFirstImagView: {
+    width: '100%',
+    height: 270,
+    overflow: 'hidden',
+    marginVertical: 20
+  },
+  videoLInkView: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingHorizontal: CONSTANTS.PADDING
+  },
+  linkText: {
+    color: COLORS.PURPLE,
+    fontSize: 16,
+    fontWeight: '600'
+  },
+  // Second screen
+  sliderSecondImagView: {
+    width: '100%',
+    justifyContent: 'flex-start',
+    alignItems: 'center',
+    height: 400,
+    overflow: 'hidden',
+    marginVertical: 20
+  },
 }
