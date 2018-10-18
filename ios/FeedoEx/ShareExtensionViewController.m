@@ -25,7 +25,6 @@ RCT_EXPORT_MODULE();
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-
     //object variable for extension doesn't work for react-native. It must be assign to gloabl
     //variable extensionContext. in this way, both exported method can touch extensionContext
     extensionContext = self.extensionContext;
@@ -46,6 +45,7 @@ RCT_EXPORT_MODULE();
 RCT_EXPORT_METHOD(close) {
     [extensionContext completeRequestReturningItems:nil
                                   completionHandler:nil];
+    exit(0);
 }
 
 

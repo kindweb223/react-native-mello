@@ -2,7 +2,6 @@ import React from 'react'
 import {
   TouchableOpacity,
   View,
-  Animated,
   FlatList,
   Image,
   Text,
@@ -67,45 +66,44 @@ export default class WebMetaList extends React.Component {
   }
 
   renderItem({item, index}) {
-    if (this.props.small) {
+    if (this.props.isFastImage) {
       return (
-        <View style={styles.itemSmallContainer}>
+        <View style={styles.itemContainer}>
           <TouchableOpacity 
-            style={[styles.buttonContainer, {backgroundColor: '#ECECEC'}]}
+            style={styles.buttonContainer}
             activeOpacity={0.7}
             onPress={() => this.onPressLink(index)}
           >
-            <FastImage style={styles.imageSmallCover} source={{uri: item.imageUrl}} resizeMode='cover' />
-            <Text style={styles.textLink} numberOfLines={1}>{item.originalUrl}</Text>
+            <FastImage style={styles.imageCover} source={{uri: item.imageUrl}} resizeMode='cover' />
+            <View style={styles.infoContainer}>
+              <Text style={styles.textTitle} numberOfLines={1}>{item.title}</Text>
+              <Text style={styles.textDescription} numberOfLines={1}>{item.description}</Text>
+            </View>
+          </TouchableOpacity>
+          <TouchableOpacity 
+            style={styles.closeButtonContainer}
+            activeOpacity={0.8}
+            onPress={() => this.onRemove(index)}
+          >
+            <View style={styles.closeSubButtonContainer}>
+              <Ionicons name="md-close" size={18} color={'#fff'} style={{marginTop: 2, marginLeft: 1}} />
+            </View>
           </TouchableOpacity>
         </View>
       )
     }
-
     return (
-      <View style={styles.itemContainer}>
+      <View style={styles.itemSmallContainer}>
         <TouchableOpacity 
-          style={styles.buttonContainer}
+          style={[styles.buttonContainer, {backgroundColor: '#ECECEC'}]}
           activeOpacity={0.7}
           onPress={() => this.onPressLink(index)}
         >
-          <FastImage style={styles.imageCover} source={{uri: item.imageUrl}} resizeMode='cover' />
-          <View style={styles.infoContainer}>
-            <Text style={styles.textTitle} numberOfLines={1}>{item.title}</Text>
-            <Text style={styles.textDescription} numberOfLines={1}>{item.description}</Text>
-          </View>
-        </TouchableOpacity>
-        <TouchableOpacity 
-          style={styles.closeButtonContainer}
-          activeOpacity={0.8}
-          onPress={() => this.onRemove(index)}
-        >
-          <View style={styles.closeSubButtonContainer}>
-            <Ionicons name="md-close" size={18} color={'#fff'} style={{marginTop: 2, marginLeft: 1}} />
-          </View>
+          <Image style={styles.imageSmallCover} source={{uri: item.imageUrl}} resizeMode='cover' />
+          <Text style={styles.textLink} numberOfLines={1}>{item.originalUrl}</Text>
         </TouchableOpacity>
       </View>
-    )
+    );
   }
 
   render () {
@@ -126,7 +124,7 @@ export default class WebMetaList extends React.Component {
 
 WebMetaList.defaultProps = {
   links: [],
-  small: false,
+  isFastImage: true,
   editable: true,
   onRemove: () => {},
 }
@@ -134,7 +132,7 @@ WebMetaList.defaultProps = {
 
 WebMetaList.propTypes = {
   links: PropTypes.array,
-  small: PropTypes.bool,
+  isFastImage: PropTypes.bool,
   editable: PropTypes.bool,
   onRemove: PropTypes.func,
 }
