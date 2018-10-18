@@ -13,7 +13,7 @@ export default {
     flex: 1,
     paddingHorizontal: CONSTANTS.PADDING,
     justifyContent: 'center',
-    marginTop: (CONSTANTS.SCREEN_HEIGHT - NAVBAR_HEIGHT - 480) / 2
+    marginTop: 48
   },
   btnBack: {
     width: 50,
@@ -77,11 +77,11 @@ export default {
     color: COLORS.DARK_GREY
   },
   errorView: {
-    height: 20,
+    height: 24,
     justifyContent: 'center',
     alignItems: 'flex-start',
-    paddingHorizontal: 10,
-    paddingTop: 4,
+    paddingHorizontal: 8,
+    paddingTop: 8,
     width: '100%'
   },
   errorText: {
@@ -90,7 +90,8 @@ export default {
     fontSize: 12
   },
   checkboxView: {
-    width: 300
+    width: 300,
+    marginTop: 8
   },
   termsText: {
     fontSize: 14,
