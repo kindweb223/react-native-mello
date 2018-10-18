@@ -25,7 +25,6 @@ RCT_EXPORT_MODULE();
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    NSLog(@"ShareExtension - viewDidLoad");
     //object variable for extension doesn't work for react-native. It must be assign to gloabl
     //variable extensionContext. in this way, both exported method can touch extensionContext
     extensionContext = self.extensionContext;
@@ -55,7 +54,6 @@ RCT_REMAP_METHOD(data,
                  resolver:(RCTPromiseResolveBlock)resolve
                  rejecter:(RCTPromiseRejectBlock)reject)
 {
-    NSLog(@"ShareExtension - data");
     [self extractDataFromContext: extensionContext withCallback:^(NSString* val, NSString* contentType, NSException* err) {
         if(err) {
             reject(@"error", err.description, nil);

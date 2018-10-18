@@ -4,13 +4,13 @@ import {
   View,
   TouchableOpacity,
   FlatList,
-  Alert,
+  Image,
 } from 'react-native'
 import { connect } from 'react-redux'
 import { Actions } from 'react-native-router-flux'
 
 import styles from './styles'
-import FastImage from "react-native-fast-image";
+// import FastImage from "react-native-fast-image";
 import { 
   getOpenGraph,
 } from '../../redux/card/actions'
@@ -113,7 +113,7 @@ class ChooseLinkImageFromExtension extends React.Component {
         activeOpacity={0.6}
         onPress={() => this.onSelectItem(item.item)}
       >
-        <FastImage style={styles.imageItem} source={{uri: item.item}} resizeMode={FastImage.resizeMode.cover} />
+        <Image style={styles.imageItem} source={{uri: item.item}} resizeMode='cover' />
       </TouchableOpacity>
     );
   }
