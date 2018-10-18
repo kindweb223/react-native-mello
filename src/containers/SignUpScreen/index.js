@@ -358,7 +358,7 @@ class SignUpScreen extends React.Component {
 
             <TextInputComponent
               ref={ref => this.emailRef = ref}
-              placeholder="Enter Email"
+              placeholder="Email"
               value={this.state.userEmail}
               isError={emailError.length > 0 ? true : false}
               errorText={emailError.length > 0 ? resolveError(emailError[0].code, emailError[0].message) : ''}
@@ -372,7 +372,7 @@ class SignUpScreen extends React.Component {
             <View>
               <TextInputComponent
                 ref={ref => this.passwordRef = ref}
-                placeholder="Enter Password"
+                placeholder="Password"
                 isSecure={this.state.isSecure}
                 ContainerStyle={{ marginBottom: 0 }}
                 isErrorView={false}
@@ -439,7 +439,7 @@ class SignUpScreen extends React.Component {
 
             <TouchableOpacity onPress={() => this.onSignUp()}>
               <View style={styles.buttonView}>
-                <Text style={styles.buttonText}>Continue</Text>
+                <Text style={styles.buttonText}>Sign up</Text>
               </View>
             </TouchableOpacity>
 
