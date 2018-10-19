@@ -2,53 +2,23 @@ import { StyleSheet, Platform } from 'react-native'
 import { ifIphoneX } from 'react-native-iphone-x-helper';
 import COLORS from '../../service/colors'
 import CONSTANTS from '../../service/constants'
-const MODAL_HEIGHT = 200
+const NAVBAR_HEIGHT = 54
 
 export default {
   container: {
-    width: CONSTANTS.SCREEN_WIDTH,
-    height: CONSTANTS.SCREEN_HEIGHT + ifIphoneX(34, 0),
-    alignItems: 'center',
-    justifyContent: 'center'
+    flex: 1,
+    backgroundColor: '#fff'
   },
   innerContainer: {
-    width: CONSTANTS.SCREEN_WIDTH,
-    height: CONSTANTS.SCREEN_HEIGHT
-  },
-  headerView: {
-    position: 'absolute',
-    top: CONSTANTS.STATUSBAR_HEIGHT + 20,
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    flexDirection: 'row',
-    width: '100%',
-    paddingHorizontal: CONSTANTS.PADDING
-  },
-  headerText: {
-    color: '#fff',
-    fontSize: 16,
-    fontWeight: '600'
+    flex: 1,
+    paddingHorizontal: CONSTANTS.PADDING,
+    justifyContent: 'center',
+    marginTop: 48
   },
   btnBack: {
     width: 50,
     height: 30,
-  },
-  btnPass: {
-    alignItems: 'flex-end',
-    width: 50,
-    height: 30,
-  },
-  modalContainer: {
-    borderTopLeftRadius: 18,
-    borderTopRightRadius: 18,
-    backgroundColor: '#fff',
-    paddingHorizontal: CONSTANTS.PADDING,
-    paddingTop: 40,
-    paddingBottom: 55,
-    position: 'absolute',
-    bottom: 0,
-    left: 0,
-    right: 0
+    paddingLeft: 10
   },
   buttonView: {
     borderRadius: 14,
@@ -107,11 +77,11 @@ export default {
     color: COLORS.DARK_GREY
   },
   errorView: {
-    height: 20,
+    height: 24,
     justifyContent: 'center',
     alignItems: 'flex-start',
-    paddingHorizontal: 10,
-    paddingTop: 4,
+    paddingHorizontal: 8,
+    paddingTop: 8,
     width: '100%'
   },
   errorText: {
@@ -120,7 +90,8 @@ export default {
     fontSize: 12
   },
   checkboxView: {
-    width: '100%'
+    width: 300,
+    marginTop: 8
   },
   termsText: {
     fontSize: 14,
@@ -135,4 +106,13 @@ export default {
     paddingHorizontal: 10,
     width: '100%'
   },
+  loginButtonView: {
+    padding: 24,
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center'
+  },
+  btnSend: {
+    fontSize: 16,
+  }
 }
