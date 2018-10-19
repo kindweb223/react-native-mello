@@ -77,6 +77,9 @@ export default {
     fontSize: 16,
     fontWeight: '600'
   },
+  video: {
+    display: 'none'
+  },
   // Second screen
   sliderSecondImagView: {
     width: '100%',

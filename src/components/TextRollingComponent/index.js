@@ -14,7 +14,8 @@ const SENTENCE_LIST = [
   'feedback',
   'answers',
   'opinions',
-  'ideas'
+  'ideas',
+  'inspiration'
 ]
 
 class TextRollingComponent extends React.Component {
@@ -31,11 +32,6 @@ class TextRollingComponent extends React.Component {
   }
 
   animate() {
-    this.setState((state) => {
-      state.rollIndex = state.rollIndex === SENTENCE_LIST.length - 1 ? 0 : state.rollIndex + 1
-      return state
-    })
-
     this.animatedValue.setValue(0);
     Animated.timing(
       this.animatedValue,
@@ -45,7 +41,13 @@ class TextRollingComponent extends React.Component {
         delay: 1400
       }
     ).start(() => {
-      this.animate()
+      this.setState((state) => {
+        state.rollIndex = state.rollIndex === SENTENCE_LIST.length - 2 ? 0 : state.rollIndex + 1
+        return state
+      }, () => {
+        this.animate()
+      })
+      
     })
   }
 
@@ -54,7 +56,7 @@ class TextRollingComponent extends React.Component {
 
     const translateY = this.animatedValue.interpolate({
       inputRange: [0, 400],
-      outputRange: [-32 * (rollIndex - 2), -32 * (rollIndex - 1)],
+      outputRange: [-32 * (rollIndex - 1), -32 * rollIndex],
       extrapolate: 'clamp'
     })
 

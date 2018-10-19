@@ -131,7 +131,7 @@ class LoginStartScreen extends React.Component {
             activeDotColor={COLORS.PURPLE}
             dotColor={COLORS.MEDIUM_GREY}
             onIndexChanged={(index) => this.setState({ position: index })}
-          >
+          >           
             <SwipeFirstScreen />
             <SwipeSecondScreen />
             <SwipeFirstScreen />
