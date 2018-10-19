@@ -5,7 +5,7 @@ import CONSTANTS from '../../service/constants'
 const styles = StyleSheet.create({
   container: {
     width: '100%',
-    marginBottom: 10,
+    marginBottom: 16,
   },
   inputView: {
     borderRadius: 9,

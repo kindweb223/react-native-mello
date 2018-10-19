@@ -111,11 +111,11 @@ class TextInputComponent extends React.Component {
           {this.props.children}
         </View>
         {isErrorView && (
-          <View style={styles.errorView}>
-            {isError && errorText.length > 0 && (
+          isError && errorText.length > 0 && (
+            <View style={styles.errorView}>
               <Text style={styles.errorText}>{errorText}</Text>
-            )}
-          </View>
+            </View>
+          )
         )}
       </View>
     )
