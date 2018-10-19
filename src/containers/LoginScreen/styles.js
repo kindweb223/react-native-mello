@@ -2,89 +2,63 @@ import { StyleSheet, Platform } from 'react-native'
 import { ifIphoneX } from 'react-native-iphone-x-helper';
 import COLORS from '../../service/colors'
 import CONSTANTS from '../../service/constants'
-const MODAL_HEIGHT = 220
+const NAVBAR_HEIGHT = 54
 
 export default {
   container: {
-    width: CONSTANTS.SCREEN_WIDTH,
-    height: CONSTANTS.SCREEN_HEIGHT + ifIphoneX(34, 0),
-    alignItems: 'center',
-    justifyContent: 'center'
+    flex: 1,
+    backgroundColor: '#fff'
   },
   innerContainer: {
-    width: CONSTANTS.SCREEN_WIDTH,
-    height: CONSTANTS.SCREEN_HEIGHT
-  },
-  headerView: {
-    position: 'absolute',
-    top: CONSTANTS.STATUSBAR_HEIGHT + 20,
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    flexDirection: 'row',
-    width: '100%',
-    paddingHorizontal: CONSTANTS.PADDING
+    flex: 1,
+    paddingHorizontal: CONSTANTS.PADDING,
+    justifyContent: 'center',
+    marginTop: 48
   },
   btnBack: {
     width: 50,
     height: 30,
-  },
-  btnPass: {
-    alignItems: 'flex-end',
-    width: 50,
-    height: 30,
-  },
-  contentView: {
-    width: '100%',
-    height: CONSTANTS.SCREEN_HEIGHT - MODAL_HEIGHT,
-    justifyContent: 'center',
-    alignItems: 'center'
-  },
-  avatar: {
-    width: '100%',
-    height: '100%',
-  },
-  defaultAvatar: {
-    marginTop: 25,
-    width: 100,
-    height: 100,
-  },
-  subTitle: {
-    fontSize: 14,
-    color: '#fff',
-    marginTop: 15,
-  },
-  content: {
-    alignItems: 'center',
-    justifyContent: 'center',
-    marginTop: 30,
-  },
-  title: {
-    fontWeight: 'bold',
-    fontSize: 39,
-    color: '#fff'
-  },
-  modalContainer: {
-    borderTopLeftRadius: 18,
-    borderTopRightRadius: 18,
-    backgroundColor: '#fff',
-    padding: CONSTANTS.PADDING,
-    height: MODAL_HEIGHT,
-    position: 'absolute',
-    bottom: 0,
-    left: 0,
-    right: 0
+    paddingLeft: 10
   },
   buttonView: {
     borderRadius: 14,
     width: '100%',
     height: 60,
+    marginTop: 10,
     backgroundColor: COLORS.PURPLE,
     alignItems: 'center',
     justifyContent: 'center'
   },
   buttonText: {
     color: '#fff',
-    fontSize: 18
+    fontSize: 18,
+    fontWeight: '600'
+  },
+  passwordScoreText: {
+    fontSize: 12,
+    color: COLORS.DARK_GREY
+  },
+  errorView: {
+    height: 24,
+    justifyContent: 'center',
+    alignItems: 'flex-start',
+    paddingHorizontal: 8,
+    paddingTop: 8,
+    width: '100%'
+  },
+  errorText: {
+    color: COLORS.MEDIUM_RED,
+    fontWeight: '600',
+    fontSize: 12
+  },
+  signupButtonView: {
+    padding: 24,
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center'
+  },
+  btnSend: {
+    fontSize: 16,
   },
   forgotView: {
     height: 50,

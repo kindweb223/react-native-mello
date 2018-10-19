@@ -5,21 +5,20 @@ import {
   Text,
   TextInput,
   TouchableOpacity,
+  ActivityIndicator,
   Image,
   Alert,
   Keyboard
 } from 'react-native'
 import axios from 'axios';
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
 import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
 import { Actions } from 'react-native-router-flux'
-import LinearGradient from 'react-native-linear-gradient'
-import Feather from 'react-native-vector-icons/Feather'
 import Ionicons from 'react-native-vector-icons/Ionicons'
 import * as Progress from 'react-native-progress'
 import zxcvbn from 'zxcvbn'
 import _ from 'lodash'
-import KeyboardScrollView from '../../components/KeyboardScrollView'
 import LoadingScreen from '../LoadingScreen'
 import TextInputComponent from '../../components/TextInputComponent'
 import { resetPassword } from '../../redux/user/actions'
@@ -29,6 +28,8 @@ import resolveError from '../../service/resolveError'
 import * as COMMON_FUNC from '../../service/commonFunc'
 import styles from './styles'
 
+const LOGO = require('../../../assets/images/Login/icon_40pt.png')
+
 const PASSWORD_PROGRESS = [
   { color: COLORS.RED, text: 'Weak' },
   { color: COLORS.MEDIUM_RED, text: 'Medium' },
@@ -36,24 +37,25 @@ const PASSWORD_PROGRESS = [
   { color: COLORS.PURPLE, text: 'Very Strong' }
 ]
 
-const Gradient = () => {
-  return(
-    <LinearGradient
-      colors={[COLORS.PURPLE, COLORS.RED]}
-      start={{ x: 0.0, y: 0.0 }}
-      end={{ x: 1.0, y: 0.0 }}
-      style={{
-        position: 'absolute',
-        top: 0,
-        left: 0,
-        bottom: 0,
-        right: 0
-      }}
-    />
-  )
-}
-
 class ResetPasswordScreen extends React.Component {
+  static renderLeftButton(props) {
+    return (
+      <TouchableOpacity 
+        style={styles.btnBack}
+        activeOpacity={0.6}
+        onPress={() => Actions.LoginStartScreen({ type: 'replace' })}
+      >
+        <Ionicons name="ios-arrow-back" size={30} color={COLORS.PURPLE} />
+      </TouchableOpacity>
+    );
+  }
+
+  static renderTitle(props) {
+    return (
+      <Image source={LOGO} />
+    );
+  }
+
   constructor(props) {
     super(props)
     this.state = {
@@ -74,16 +76,16 @@ class ResetPasswordScreen extends React.Component {
     }
   }
 
-  componentDidUpdate(prevProps, prevState) {
-    const { user } = this.props
+  UNSAFE_componentWillReceiveProps(nextProps) {
+    const { user } = nextProps
 
-    if (prevProps.user.loading === 'RESET_PASSWORD_PENDING' && user.loading === 'RESET_PASSWORD_FULFILLED') {
+    if (this.props.user.loading === 'RESET_PASSWORD_PENDING' && user.loading === 'RESET_PASSWORD_FULFILLED') {
       this.setState({ loading: false }, () => {
         Actions.ResetPasswordSuccessScreen()
       })
     }
 
-    if (prevProps.user.loading === 'RESET_PASSWORD_PENDING' && user.loading === 'RESET_PASSWORD_REJECTED') {
+    if (this.props.user.loading === 'RESET_PASSWORD_PENDING' && user.loading === 'RESET_PASSWORD_REJECTED') {
       this.setState({ loading: false })
       Alert.alert(
         'Error',
@@ -148,6 +150,7 @@ class ResetPasswordScreen extends React.Component {
 
       this.setState({ loading: true })
       this.props.resetPassword(param)
+      Keyboard.dismiss()
     }
   }
 
@@ -164,84 +167,63 @@ class ResetPasswordScreen extends React.Component {
 
     return (
       <View style={styles.container}>
-        <Gradient />
-
-        <KeyboardScrollView>
+        <KeyboardAwareScrollView keyboardShouldPersistTaps="handled">
           <View style={styles.innerContainer}>
-
-            <View style={styles.contentView}>
-              <View style={styles.content}>
-                <Text style={styles.title}>Create new</Text>
-                <Text style={styles.title}>password</Text>
-              </View>
-            </View>
-
-            <View style={styles.modalContainer}>
-              <View>
-                <TextInputComponent
-                  ref={ref => this.passwordRef = ref}
-                  placeholder="Enter Password"
-                  isSecure={this.state.isSecure}
-                  ContainerStyle={{ marginBottom: 0 }}
-                  isErrorView={false}
-                  handleChange={text => this.changePassword(text)}
-                  onFocus={() => this.onPasswordFocus(true)}
-                  onBlur={() => this.onPasswordFocus(false)}
-                  onSubmitEditing={() => this.onContinue()}
-                >
-                  <TouchableOpacity onPress={() => this.setState({ isSecure: !isSecure}) } activeOpacity={0.8}>
-                    <View style={styles.passwordPreview}>
-                      {isSecure
-                        ? <Ionicons name="md-eye" size={20} color={isPasswordFocus ? COLORS.PURPLE : COLORS.MEDIUM_GREY} />
-                        : <Ionicons name="md-eye-off" size={20} color={isPasswordFocus ? COLORS.PURPLE : COLORS.MEDIUM_GREY} />
-                      }
-                    </View>
-                  </TouchableOpacity>
-                </TextInputComponent>
-                
-                {password.length > 0 &&
-                  <View style={styles.passwordScoreView}>
-                    <Progress.Bar
-                      progress={(passwordScore + 1) * 0.25}
-                      width={CONSTANTS.SCREEN_SUB_WIDTH - 90}
-                      color={PASSWORD_PROGRESS[passwordScore].color}
-                      unfilledColor={COLORS.LIGHT_GREY}
-                      borderColor={COLORS.LIGHT_GREY}
-                      borderWidth={0}
-                      height={3}
-                    />
-                    <Text style={styles.passwordScoreText}>{PASSWORD_PROGRESS[passwordScore].text}</Text>
+            <View>
+              <TextInputComponent
+                ref={ref => this.passwordRef = ref}
+                placeholder="Enter Password"
+                isSecure={this.state.isSecure}
+                ContainerStyle={{ marginBottom: 0 }}
+                isErrorView={false}
+                handleChange={text => this.changePassword(text)}
+                onFocus={() => this.onPasswordFocus(true)}
+                onBlur={() => this.onPasswordFocus(false)}
+                onSubmitEditing={() => this.onContinue()}
+              >
+                <TouchableOpacity onPress={() => this.setState({ isSecure: !isSecure}) } activeOpacity={0.8}>
+                  <View style={styles.passwordPreview}>
+                    {isSecure
+                      ? <Ionicons name="md-eye" size={20} color={isPasswordFocus ? COLORS.PURPLE : COLORS.MEDIUM_GREY} />
+                      : <Ionicons name="md-eye-off" size={20} color={isPasswordFocus ? COLORS.PURPLE : COLORS.MEDIUM_GREY} />
+                    }
                   </View>
-                }
-
-                <View style={styles.errorView}>
-                  {passwordError.length > 0 && (
-                    <Text style={styles.errorText}>{resolveError(passwordError[0].code, passwordError[0].message)}</Text>
-                  )}
+                </TouchableOpacity>
+              </TextInputComponent>
+              
+              {password.length > 0 &&
+                <View style={styles.passwordScoreView}>
+                  <Progress.Bar
+                    progress={(passwordScore + 1) * 0.25}
+                    width={CONSTANTS.SCREEN_SUB_WIDTH - 90}
+                    color={PASSWORD_PROGRESS[passwordScore].color}
+                    unfilledColor={COLORS.LIGHT_GREY}
+                    borderColor={COLORS.LIGHT_GREY}
+                    borderWidth={0}
+                    height={3}
+                  />
+                  <Text style={styles.passwordScoreText}>{PASSWORD_PROGRESS[passwordScore].text}</Text>
                 </View>
+              }
+
+              <View style={[styles.errorView, password.length === 0 ? { paddingTop: 8 } : { paddingTop: 3 }]}>
+                {passwordError.length > 0 && (
+                  <Text style={styles.errorText}>{resolveError(passwordError[0].code, passwordError[0].message)}</Text>
+                )}
               </View>
-
-              <TouchableOpacity onPress={() => this.onContinue()}>
-                <View style={styles.buttonView}>
-                  <Text style={styles.buttonText}>Continue</Text>
-                </View>
-              </TouchableOpacity>
             </View>
+
+            <TouchableOpacity onPress={() => this.onContinue()}>
+              <View style={styles.buttonView}>
+                <Text style={styles.buttonText}>Continue</Text>
+              </View>
+            </TouchableOpacity>
           </View>
-        </KeyboardScrollView>
+        </KeyboardAwareScrollView>
 
         {this.state.loading && (
           <LoadingScreen />
         )}
-
-        <View style={styles.headerView}>
-          <TouchableOpacity onPress={() => Actions.LoginStartScreen()}>
-            <View style={styles.btnBack}>
-              <Feather name="arrow-left" size={25} color={'#fff'} />
-            </View>
-          </TouchableOpacity>
-        </View>
-
       </View>
     )
   }

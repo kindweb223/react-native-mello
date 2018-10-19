@@ -20,7 +20,6 @@ import * as Progress from 'react-native-progress'
 import CheckBox from '../../components/CheckBoxComponent'
 import zxcvbn from 'zxcvbn'
 import _ from 'lodash'
-import KeyboardScrollView from '../../components/KeyboardScrollView'
 import LoadingScreen from '../LoadingScreen'
 import TextInputComponent from '../../components/TextInputComponent'
 import { userSignUp, validateInvite, completeInvite, getUserSession } from '../../redux/user/actions'
@@ -300,6 +299,7 @@ class SignUpScreen extends React.Component {
           jobTitle: ''
         }
         this.props.completeInvite(param)
+        Keyboard.dismiss()
       } else {
         const param = {
           email: userEmail,
@@ -309,6 +309,7 @@ class SignUpScreen extends React.Component {
           tandcAccepted: true
         }
         this.props.userSignUp(param)
+        Keyboard.dismiss()
       }
     }
   }
@@ -407,7 +408,7 @@ class SignUpScreen extends React.Component {
                 </View>
               }
 
-              <View style={styles.errorView}>
+              <View style={[styles.errorView, password.length === 0 ? { paddingTop: 8 } : { paddingTop: 3 }]}>
                 {passwordError.length > 0 && (
                   <Text style={styles.errorText}>{resolveError(passwordError[0].code, passwordError[0].message)}</Text>
                 )}

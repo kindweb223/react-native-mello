@@ -57,9 +57,9 @@ export default {
     borderRadius: 14,
     width: '100%',
     height: 60,
-    backgroundColor: COLORS.PURPLE,
     alignItems: 'center',
-    justifyContent: 'center'
+    justifyContent: 'center',
+    backgroundColor: COLORS.PURPLE,
   },
   buttonText: {
     color: '#fff',
