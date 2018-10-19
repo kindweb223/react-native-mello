@@ -104,7 +104,7 @@ class LoginStartScreen extends React.Component {
   constructor(props) {
     super(props)
     this.state = {
-      postion: 0
+      position: 0
     }
   }
 

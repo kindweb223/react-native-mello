@@ -20,7 +20,7 @@ export default {
   bottomContainer: {
     width: '100%',
     paddingHorizontal: CONSTANTS.PADDING,
-    paddingVertical: 24
+    paddingTop: 24
   },
   buttonView: {
     borderRadius: 14,
@@ -32,7 +32,8 @@ export default {
   },
   buttonText: {
     color: '#fff',
-    fontSize: 18
+    fontSize: 18,
+    fontWeight: '600'
   },
   signinView: {
     width: '100%',
@@ -42,7 +43,8 @@ export default {
   signinText: {
     color: COLORS.PURPLE,
     fontSize: 16,
-    marginVertical: 21
+    marginTop: 21,
+    marginBottom: 30
   },
   swipeContainer: {
     flex: 1,
@@ -85,7 +87,7 @@ export default {
     width: '100%',
     justifyContent: 'flex-start',
     alignItems: 'center',
-    height: 400,
+    height: 430,
     overflow: 'hidden',
     marginVertical: 20
   },
