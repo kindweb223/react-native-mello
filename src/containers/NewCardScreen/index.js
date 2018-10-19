@@ -54,6 +54,7 @@ import {
   updateFeed,
   deleteDraftFeed,
   setCurrentFeed,
+  getFeedoList,
 } from '../../redux/feedo/actions'
 import * as types from '../../redux/card/types'
 import * as feedoTypes from '../../redux/feedo/types'
@@ -328,7 +329,12 @@ class NewCardScreen extends React.Component {
     } else if (this.props.card.loading !== types.MOVE_CARD_PENDING && nextProps.card.loading === types.MOVE_CARD_PENDING) {
       // moving card
       loading = true;
+    } else if (this.props.feedo.loading !== feedoTypes.GET_FEEDO_LIST_PENDING && nextProps.feedo.loading === feedoTypes.GET_FEEDO_LIST_PENDING) {
+      loading = true;
+    } else if (this.props.feedo.loading !== feedoTypes.GET_FEEDO_LIST_FULFILLED && nextProps.feedo.loading === feedoTypes.GET_FEEDO_LIST_FULFILLED) {
+      this.createCard(nextProps);
     }
+
 
     if (this.prevFeedo === null) {
       if (this.props.feedo.loading !== feedoTypes.CREATE_FEED_PENDING && nextProps.feedo.loading === feedoTypes.CREATE_FEED_PENDING) {
@@ -379,9 +385,10 @@ class NewCardScreen extends React.Component {
             if (this.parseErrorUrls(error)) {
               error = 'Sorry, this link cannot be read';
             } else {
-              return;
+              // return;
             }
           }
+          error = 'Sorry, this link cannot be read';
           if (!this.isVisibleErrorDialog) {
             this.isVisibleErrorDialog = true;
             Alert.alert('Error', error, [
@@ -395,8 +402,7 @@ class NewCardScreen extends React.Component {
   }
 
   componentDidMount() {
-    // console.log('Current Card : ', this.props.card.currentCard);
-    const { cardMode, viewMode } = this.props;
+    const { viewMode } = this.props;
     if (viewMode === CONSTANTS.CARD_VIEW || viewMode === CONSTANTS.CARD_EDIT) {
       this.setState({
         // cardName: this.props.card.currentCard.title,
@@ -414,24 +420,11 @@ class NewCardScreen extends React.Component {
     Animated.timing(this.animatedShow, {
       toValue: 1,
       duration: CONSTANTS.ANIMATEION_MILLI_SECONDS,
-    }).start(async () => {
-      if ((cardMode === CONSTANTS.MAIN_APP_CARD_FROM_DASHBOARD) || (cardMode === CONSTANTS.SHARE_EXTENTION_CARD)) {
-        const strFeedoInfo = await AsyncStorage.getItem(CONSTANTS.CARD_SAVED_FEEDO_ID);
-        if (strFeedoInfo) {
-          const feedoInfo = JSON.parse(strFeedoInfo);
-          const diffHours = moment().diff(moment(feedoInfo.time, 'LLL'), 'hours');
-          if (diffHours < 1) {
-            const currentFeed = _.find(this.props.feedo.feedoList, feed => feed.id === feedoInfo.feedoId)
-            if (currentFeed) {
-              this.props.setCurrentFeed(currentFeed);
-              this.props.createCard(this.props.feedo.currentFeed.id);
-              return;
-            }
-          }
-        }
-        this.props.createFeed();
-      } else if (viewMode === CONSTANTS.CARD_NEW) {
-        this.props.createCard(this.props.feedo.currentFeed.id);
+    }).start(() => {
+      if (this.props.feedo.feedoList.length == 0) {
+        this.props.getFeedoList(0);
+      } else {
+        this.createCard(this.props);
       }
     });
 
@@ -460,6 +453,28 @@ class NewCardScreen extends React.Component {
         duration: e.duration,
       }
     ).start();
+  }
+
+  async createCard(currentProps) {
+    const { cardMode, viewMode } = this.props;
+    if ((cardMode === CONSTANTS.MAIN_APP_CARD_FROM_DASHBOARD) || (cardMode === CONSTANTS.SHARE_EXTENTION_CARD)) {
+      const strFeedoInfo = await AsyncStorage.getItem(CONSTANTS.CARD_SAVED_FEEDO_ID);
+      if (strFeedoInfo) {
+        const feedoInfo = JSON.parse(strFeedoInfo);
+        const diffHours = moment().diff(moment(feedoInfo.time, 'LLL'), 'hours');
+        if (diffHours < 1) {
+          const currentFeed = _.find(currentProps.feedo.feedoList, feed => feed.id === feedoInfo.feedoId)
+          if (currentFeed) {
+            this.props.setCurrentFeed(currentFeed);
+            this.props.createCard(this.props.feedo.currentFeed.id);
+            return;
+          }
+        }
+      }
+      this.props.createFeed();
+    } else if (viewMode === CONSTANTS.CARD_NEW) {
+      this.props.createCard(this.props.feedo.currentFeed.id);
+    }
   }
 
   saveFeedId() {
@@ -640,6 +655,10 @@ class NewCardScreen extends React.Component {
   }
   
   onHideKeyboard() {
+    const { cardMode } = this.props;
+    if (cardMode === CONSTANTS.SHARE_EXTENTION_CARD) {
+      return;
+    }
     Keyboard.dismiss();
   }
 
@@ -1263,10 +1282,14 @@ class NewCardScreen extends React.Component {
           <TouchableOpacity 
             style={styles.closeButtonWrapper}
             activeOpacity={0.7}
-            // onPress={() => this.onClose()}
-            onPress={() => Actions.pop()}
+            onPress={() => this.props.shareImageUrl !== '' ? Actions.pop() : this.props.onClose()}
           >
-            <Ionicons name="ios-arrow-back" size={28} color={COLORS.PURPLE} />
+            {
+              this.props.shareImageUrl !== '' ?
+                <Ionicons name="ios-arrow-back" size={28} color={COLORS.PURPLE} />
+              :
+                <Text style={[styles.textButton, {color: COLORS.PURPLE}]}>Cancel</Text>
+            }
           </TouchableOpacity>
           <TouchableOpacity 
             activeOpacity={0.6}
@@ -1452,6 +1475,7 @@ class NewCardScreen extends React.Component {
       return (
         <SelectHuntScreen
           selectMode={cardMode !== CONSTANTS.SHARE_EXTENTION_CARD ? CONSTANTS.FEEDO_SELECT_FROM_MAIN : CONSTANTS.FEEDO_SELECT_FROM_SHARE_EXTENSION}
+          feedos={this.props.feedo.feedoList}
           onClosed={() => this.onCloseSelectHunt()}
         />
       );
@@ -1535,6 +1559,7 @@ const mapDispatchToProps = dispatch => ({
   updateFeed: (id, name, comments, tags, files) => dispatch(updateFeed(id, name, comments, tags, files)),
   deleteDraftFeed: (id) => dispatch(deleteDraftFeed(id)),
   setCurrentFeed: (data) => dispatch(setCurrentFeed(data)),
+  getFeedoList: (index) => dispatch(getFeedoList(index)),
 
   createCard: (huntId) => dispatch(createCard(huntId)),
   getCard: (ideaId) => dispatch(getCard(ideaId)),

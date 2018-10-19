@@ -146,11 +146,11 @@ const styles = StyleSheet.create({
     overflow: 'hidden',
   },
   extensionCoverImageContainer: {
-    height: Math.round(CONSTANTS.SCREEN_WIDTH * 0.336),
+    height: Math.round(CONSTANTS.SCREEN_WIDTH * 0.468),
     width: CONSTANTS.SCREEN_WIDTH - 64,
     marginHorizontal: 16,
-    borderBottomLeftRadius: 5,
-    borderBottomRightRadius: 5,
+    marginTop: 15,
+    borderRadius: 5,
     overflow: 'hidden',
   },
   coverImageSelectContainer: {

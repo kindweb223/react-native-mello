@@ -14,18 +14,17 @@ export default styles = StyleSheet.create({
   },
   modalContentContainer: {
     backgroundColor: '#F4F4F4',
-    height: 166,
-    width: 300,
-    borderRadius: 20,
+    width: Math.round(CONSTANTS.SCREEN_WIDTH * 0.75),
+    borderRadius: 12,
   },
   topContainer: {
-    flex: 2,
-    // padding: 20,
+    paddingHorizontal: 16,
+    paddingVertical: 20,
     alignItems: 'center',
     justifyContent: 'center',
   },
   bottomContainer: {
-    flex: 1,
+    height: 45,
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
@@ -43,20 +42,17 @@ export default styles = StyleSheet.create({
     height: '100%',
   },
   textTitle: {
-    fontSize: 16,
+    fontSize: 17,
     lineHeight: 20,
-    fontWeight: 'bold',
-    marginTop: 8,
+    fontWeight: '500',
   },
   textDescription: {
-    fontSize: 16,
+    fontSize: 13,
     lineHeight: 20,
-    paddingHorizontal: 16,
-    marginVertical: 8
+    textAlign: 'center',
   },
   textButton: {
-    fontSize: 17,
-    fontWeight: 'bold',
-    color: COLORS.PURPLE,
+    fontSize: 16,
+    color: COLORS.BLUE,
   }
 })
