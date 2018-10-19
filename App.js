@@ -37,7 +37,7 @@ axios.interceptors.response.use(
       AsyncStorage.removeItem('xAuthToken')
       SharedGroupPreferences.setItem('xAuthToken', null, CONSTANTS.APP_GROUP_TOKEN_IDENTIFIER)
 
-      Actions.LoginStartScreen()
+      Actions.LoginScreen()
     }
     throw error
   }
@@ -133,7 +133,7 @@ export default class Root extends React.Component {
           if (this.state.userInfo) {
             Actions.FeedDetailScreen({ data })
           } else {
-            Actions.LoginStartScreen()
+            Actions.LoginScreen()
           }
         }
 

@@ -47,7 +47,7 @@ class SignUpSuccessScreen extends React.Component {
       if (user.userInfo) {
         Actions.HomeScreen()
       } else {
-        Actions.LoginStartScreen()
+        Actions.LoginScreen()
       }
     }
 
