@@ -25,11 +25,10 @@ const styles = StyleSheet.create({
     fontSize: 16
   },
   errorView: {
-    height: 20,
     justifyContent: 'center',
     alignItems: 'flex-start',
-    paddingHorizontal: 10,
-    paddingTop: 4,
+    paddingHorizontal: 8,
+    paddingTop: 8,
     width: '100%'
   },
   errorText: {

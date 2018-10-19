@@ -206,7 +206,7 @@ class ResetPasswordScreen extends React.Component {
                 </View>
               }
 
-              <View style={styles.errorView}>
+              <View style={[styles.errorView, password.length === 0 ? { paddingTop: 8 } : { paddingTop: 3 }]}>
                 {passwordError.length > 0 && (
                   <Text style={styles.errorText}>{resolveError(passwordError[0].code, passwordError[0].message)}</Text>
                 )}

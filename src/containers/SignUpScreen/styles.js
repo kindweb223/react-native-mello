@@ -45,7 +45,6 @@ export default {
     justifyContent: 'space-between',
     height: 15,
     marginTop: 5,
-    paddingHorizontal: 10,
     width: '100%'
   },
   passwordScoreText: {
@@ -53,7 +52,6 @@ export default {
     color: COLORS.DARK_GREY
   },
   errorView: {
-    height: 24,
     justifyContent: 'center',
     alignItems: 'flex-start',
     paddingHorizontal: 8,
