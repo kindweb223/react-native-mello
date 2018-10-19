@@ -39,30 +39,6 @@ export default {
     alignItems: 'center',
     backgroundColor: 'transparent'
   },
-  avatarView: {
-    marginBottom: 30,
-    width: '100%',
-    flexDirection: 'row',
-    alignItems: 'center',
-  },
-  avatar: {
-    width: 60,
-    height: 60,
-    borderRadius: 30,
-    backgroundColor: COLORS.SOFT_GREY,
-    justifyContent: 'center',
-    alignItems: 'center',
-    marginRight: 20,
-    overflow: 'hidden'
-  },
-  avatarImg: {
-    width: '100%',
-    height: '100%'
-  },
-  uploadText: {
-    color: COLORS.DARK_GREY,
-    fontSize: 14
-  },
   passwordScoreView: {
     flexDirection: 'row',
     alignItems: 'center',

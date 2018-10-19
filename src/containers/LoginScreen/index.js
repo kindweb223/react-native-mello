@@ -1,199 +1,274 @@
 import React from 'react'
 import {
-  SafeAreaView,
   View,
   Text,
   TextInput,
   TouchableOpacity,
-  ActivityIndicator,
   Image,
-  Alert
+  Alert,
+  Keyboard,
+  AsyncStorage
 } from 'react-native'
+
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
 import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
 import { Actions } from 'react-native-router-flux'
-import LinearGradient from 'react-native-linear-gradient'
-import Feather from 'react-native-vector-icons/Feather'
-import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons'
-import KeyboardScrollView from '../../components/KeyboardScrollView'
+import Ionicons from 'react-native-vector-icons/Ionicons'
+import _ from 'lodash'
 import LoadingScreen from '../LoadingScreen'
 import TextInputComponent from '../../components/TextInputComponent'
 import { userSignIn, getUserSession, sendResetPasswordEmail } from '../../redux/user/actions'
-import UserAvatarComponent from '../../components/UserAvatarComponent';
-import ToasterComponent from '../../components/ToasterComponent'
 import COLORS from '../../service/colors'
+import resolveError from '../../service/resolveError'
+import * as COMMON_FUNC from '../../service/commonFunc'
 import styles from './styles'
 
-const Gradient = () => {
-  return(
-    <LinearGradient
-      colors={[COLORS.PURPLE, COLORS.RED]}
-      start={{ x: 0.0, y: 0.0 }}
-      end={{ x: 1.0, y: 0.0 }}
-      style={{
-        position: 'absolute',
-        top: 0,
-        left: 0,
-        bottom: 0,
-        right: 0
-      }}
-    />
-  )
-}
+const LOGO = require('../../../assets/images/Login/icon_40pt.png')
 
 class LoginScreen extends React.Component {
+  static renderLeftButton(props) {
+    return (
+      <TouchableOpacity 
+        style={styles.btnBack}
+        activeOpacity={0.6}
+        onPress={() => Actions.LoginStartScreen({ type: 'replace' })}
+      >
+        <Ionicons name="ios-arrow-back" size={30} color={COLORS.PURPLE} />
+      </TouchableOpacity>
+    );
+  }
+
+  static renderTitle(props) {
+    return (
+      <Image source={LOGO} />
+    );
+  }
+
   constructor(props) {
     super(props)
     this.state = {
-      // password: 'Qwerty123',
       password: '',
+      userEmail: '',
       loading: false,
-      isInvalidError: false,
-      errorText: '',
-      isLogIn: false
+      isError: false,
+      fieldErrors: [
+        {
+          code: '',
+          field: '',
+          message: ''
+        }
+      ]
+    }
+  }
+
+  async UNSAFE_componentWillMount() {
+    const userBackInfo = await AsyncStorage.getItem('userBackInfo')
+    if (userBackInfo) {
+      const parseInfo = JSON.parse(userBackInfo)
+      this.setState({ userEmail: parseInfo.email })
     }
   }
 
   UNSAFE_componentWillReceiveProps(nextProps) {
     const { user } = nextProps
+    const { userEmail } = this.state
 
-    if (this.props.user.loading === 'USER_SIGNIN_PENDING' && user.loading === 'USER_SIGNIN_FULFILLED') {
-      this.props.getUserSession()
-      this.setState({ isLogIn: true })
-    }
+    if (Actions.currentScene === 'LoginScreen') {
+      if (this.props.user.loading === 'USER_SIGNIN_PENDING' && user.loading === 'USER_SIGNIN_FULFILLED') {
+        this.props.getUserSession()
+      }
 
-    if (this.props.user.loading === 'USER_SIGNIN_PENDING' && user.loading === 'USER_SIGNIN_REJECTED') {
-      this.setState({ loading: false }, () => {
-        Alert.alert(
-          'Warning',
-          user.error
-        )
-      })
-    }
+      if (this.props.user.loading === 'USER_SIGNIN_PENDING' && user.loading === 'USER_SIGNIN_REJECTED') {
+        this.setState({ loading: false }, () => {
+          Alert.alert(
+            'Warning',
+            user.error
+          )
+        })
+      }
 
-    if (this.props.user.loading === 'GET_USER_SESSION_PENDING' && user.loading === 'GET_USER_SESSION_FULFILLED') {
-      if (this.state.isLogIn) {
+      if (this.props.user.loading === 'GET_USER_SESSION_PENDING' && user.loading === 'GET_USER_SESSION_FULFILLED') {
         this.setState({ loading: false  }, () => {
-          this.setState({ isLogIn: false })
-
           if (user.userInfo.emailConfirmed) {
             Actions.HomeScreen()
           } else {
-            Actions.SignUpConfirmScreen({ userEmail:  this.props.userData.email })
+            Actions.SignUpConfirmScreen({ userEmail })
+          }
+        })
+      }
+
+      if (this.props.user.loading === 'GET_USER_SESSION_PENDING' && user.loading === 'GET_USER_SESSION_REJECTED') {
+        this.setState({ loading: false }, () => {
+          Actions.SignUpConfirmScreen({ userEmail })
+        })
+      }
+
+      if (this.props.user.loading === 'SEND_RESET_PASSWORD_EMAIL_PENDING' && user.loading === 'SEND_RESET_PASSWORD_EMAIL_FULFILLED') {
+        this.setState({ loading: false }, () => {
+          if (!user.userInfo) {
+            Actions.ResetPasswordConfirmScreen({ userEmail })
           }
         })
       }
     }
-
-    if (this.props.user.loading === 'GET_USER_SESSION_PENDING' && user.loading === 'GET_USER_SESSION_REJECTED') {
-      this.setState({ loading: false, isLogIn: false }, () => {
-        Actions.SignUpConfirmScreen({ userEmail:  this.props.userData.email })
-      })
-    }
-
-    if (this.props.user.loading === 'SEND_RESET_PASSWORD_EMAIL_PENDING' && user.loading === 'SEND_RESET_PASSWORD_EMAIL_FULFILLED') {
-      this.setState({ loading: false }, () => {
-        if (!user.userInfo) {
-          Actions.ResetPasswordConfirmScreen({ userEmail: this.props.userData.email })
-        }
-      })
-    }
   }
 
-  onSignIn = () => {
-    const { password } = this.state
-    if (password.length === 0) {
-      this.setState({ isInvalidError: true, errorText: 'Password is required' })
-      return
-    }
-
-    const param = {
-      username: this.props.userData.email,
-      password
-    }
-    this.setState({ loading: true })
-    this.props.userSignIn(param)
-  }
-
-  handleChange = text => {
+  changeEmail = text => {
     if (text.length > 0) {
-      this.setState({ isInvalidError: false })
+      const { fieldErrors } = this.state
+      const restErrors = _.filter(fieldErrors, item => item.field !== 'email')
+      this.setState({ fieldErrors: restErrors })
+    }
+    this.setState({ userEmail: text })
+  }
+  
+  changePassword = text => {
+    if (text.length > 0) {
+      const { fieldErrors } = this.state
+      const restErrors = _.filter(fieldErrors, item => item.field !== 'password')
+      this.setState({ fieldErrors: restErrors })
     }
     this.setState({ password: text })
   }
 
   onForgotPassword = () => {
-    this.setState({ loading: true })
-    const param = {
-      email: this.props.userData.email
+    const { userEmail } = this.state
+
+    if (userEmail.length === 0) {
+      Alert.alert('Error', 'Email is required')
+    } else if (!COMMON_FUNC.validateEmail(userEmail)) {
+      Alert.alert('Error', 'Email is invalid')
+    } else {
+      this.setState({ loading: true })
+      const param = {
+        email: userEmail
+      }
+      this.props.sendResetPasswordEmail(param)
+      Keyboard.dismiss()
     }
-    this.props.sendResetPasswordEmail(param)
+  }
+
+  onSignIn = () => {
+    const {
+      fieldErrors,
+      userEmail,
+      password
+    } = this.state
+
+    let errors = []
+
+    if (userEmail.length === 0) {
+      errors = [
+        ...errors,
+        {
+          code: 'com.signup.email.empty',
+          field: 'email',
+          message: 'Email is required'
+        }
+      ]
+    } else {
+      if (!COMMON_FUNC.validateEmail(userEmail)) {
+        errors = [
+          ...errors,
+          {
+            code: 'com.signup.email.invalid',
+            field: 'email',
+            message: 'Email is invalid'
+          }
+        ]
+      }
+    }
+
+    if (password.length === 0) {
+      errors = [
+        ...errors,
+        {
+          code: 'com.signup.password.empty',
+          field: 'password',
+          message: 'Password is required'
+        }
+      ]
+    }
+
+    this.setState({ fieldErrors: errors })
+
+    if (errors.length === 0) {
+      const param = {
+        username: userEmail,
+        password
+      }
+      this.setState({ loading: true })
+      this.props.userSignIn(param)
+      Keyboard.dismiss()
+    }
+  }
+
+  onNextEmail = () => {
+    this.passwordRef.textRef.focus()
+  }
+
+  onSignUp = () => {
+    Actions.SignUpScreen()
   }
 
   render () {
-    const { userData } = this.props
-    const { isInvalidError, errorText } = this.state
+    const {
+      fieldErrors
+    } = this.state
+
+    const emailError = (_.filter(fieldErrors, item => item.field === 'email'))
+    const passwordError = (_.filter(fieldErrors, item => item.field === 'password'))
 
     return (
       <View style={styles.container}>
-        <Gradient />
-
-        <KeyboardScrollView>
+        <KeyboardAwareScrollView keyboardShouldPersistTaps="handled">
           <View style={styles.innerContainer}>
-            <View style={styles.contentView}>
-              <UserAvatarComponent
-                user={userData}
-                size={72}
-                color="#fff"
-                textColor={COLORS.PURPLE}
-              />
-              <Text style={styles.subTitle}>{userData.email}</Text>
-              <View style={styles.content}>
-                <Text style={styles.title}>Welcome back</Text>
-                <Text style={styles.title}>{userData.firstName}</Text>
-              </View>
-            </View>
+            <TextInputComponent
+              ref={ref => this.emailRef = ref}
+              placeholder="E-mail"
+              value={this.state.userEmail}
+              isError={emailError.length > 0 ? true : false}
+              errorText={emailError.length > 0 ? resolveError(emailError[0].code, emailError[0].message) : ''}
+              handleChange={text => this.changeEmail(text)}
+              returnKeyType="next"
+              keyboardType="email-address"
+              textContentType='emailAddress'
+              onSubmitEditing={() => this.onNextEmail()}
+            />
 
-            <View style={styles.modalContainer}>
-              <View style={styles.inputView}>
-                <TextInputComponent
-                  value={this.state.password}
-                  placeholder="Enter Password"
-                  isSecure={true}
-                  isError={isInvalidError}
-                  errorText={errorText}
-                  handleChange={text => this.handleChange(text)}
-                  onSubmitEditing={() => this.onSignIn()}
-                  selectionColor={COLORS.PURPLE}
-                >
-                  <TouchableOpacity onPress={() => this.onForgotPassword()} activeOpacity={0.8}>
-                    <View style={styles.forgotView}>
-                      <Text style={styles.forgotText}>Forgot?</Text>
-                    </View>
-                  </TouchableOpacity>
-                </TextInputComponent>
-              </View>
-              <TouchableOpacity onPress={() => this.onSignIn()}>
-                <View style={styles.buttonView}>
-                  <Text style={styles.buttonText}>Sign In</Text>
+            <TextInputComponent
+              ref={ref => this.passwordRef = ref}
+              placeholder="Password"
+              value={this.state.password}
+              isSecure={true}
+              isError={passwordError.length > 0 ? true : false}
+              errorText={passwordError.length > 0 ? resolveError(passwordError[0].code, passwordError[0].message) : ''}
+              handleChange={text => this.changePassword(text)}
+              onSubmitEditing={() => this.onSignIn()}
+              selectionColor={COLORS.PURPLE}
+            >
+              <TouchableOpacity onPress={() => this.onForgotPassword()} activeOpacity={0.8}>
+                <View style={styles.forgotView}>
+                  <Text style={styles.forgotText}>Forgot?</Text>
                 </View>
+              </TouchableOpacity>
+            </TextInputComponent>
+
+            <TouchableOpacity onPress={() => this.onSignIn()}>
+              <View style={styles.buttonView}>
+                <Text style={styles.buttonText}>Sign in</Text>
+              </View>
+            </TouchableOpacity>
+
+            <View style={styles.signupButtonView}>
+              <Text style={[styles.btnSend, { color: COLORS.MEDIUM_GREY }]}>Don't have an account? </Text>
+              <TouchableOpacity onPress={() => this.onSignUp()}>
+                <Text style={[styles.btnSend, { color: COLORS.PURPLE }]}>Sign up.</Text>
               </TouchableOpacity>
             </View>
           </View>
-        </KeyboardScrollView>
-
-        <View style={styles.headerView}>
-          <TouchableOpacity onPress={() => Actions.pop()}>
-            <View style={styles.btnBack}>
-              <Feather name="arrow-left" size={25} color={'#fff'} />
-            </View>
-          </TouchableOpacity>
-          <TouchableOpacity onPress={() => {}}>
-            <View style={styles.btnPass}>
-              {/*<MaterialCommunityIcons name="onepassword" size={25} color={'#fff'} />*/}
-            </View>
-          </TouchableOpacity>
-        </View>
+        </KeyboardAwareScrollView>
 
         {this.state.loading && (
           <LoadingScreen />
@@ -201,14 +276,6 @@ class LoginScreen extends React.Component {
       </View>
     )
   }
-}
-
-LoginScreen.defaultProps = {
-  userData: {}
-}
-
-LoginScreen.propTypes = {
-  userData: PropTypes.objectOf(PropTypes.any)
 }
 
 const mapStateToProps = ({ user }) => ({

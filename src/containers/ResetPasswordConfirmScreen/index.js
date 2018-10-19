@@ -3,7 +3,8 @@ import {
   View,
   Text,
   TouchableOpacity,
-  Alert
+  Alert,
+  Image
 } from 'react-native'
 import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
@@ -17,24 +18,28 @@ import COLORS from '../../service/colors'
 import CONSTANTS from '../../service/constants'
 import styles from './styles'
 
-const Gradient = () => {
-  return(
-    <LinearGradient
-      colors={[COLORS.PURPLE, COLORS.RED]}
-      start={{ x: 0.0, y: 0.0 }}
-      end={{ x: 1.0, y: 0.0 }}
-      style={{
-        position: 'absolute',
-        top: 0,
-        left: 0,
-        bottom: 0,
-        right: 0
-      }}
-    />
-  )
-}
+const LOGO = require('../../../assets/images/Login/icon_40pt.png')
+const MAIL_ICON = require('../../../assets/images/Success/iconMailBig.png')
 
 class ResetPasswordConfirmScreen extends React.Component {
+  static renderLeftButton(props) {
+    return (
+      <TouchableOpacity 
+        style={styles.btnBack}
+        activeOpacity={0.6}
+        onPress={() => Actions.pop()}
+      >
+        <Ionicons name="ios-arrow-back" size={30} color={COLORS.PURPLE} />
+      </TouchableOpacity>
+    );
+  }
+
+  static renderTitle(props) {
+    return (
+      <Image source={LOGO} />
+    );
+  }
+
   constructor(props) {
     super(props)
     this.state = {
@@ -72,14 +77,13 @@ class ResetPasswordConfirmScreen extends React.Component {
 
     return (
       <View style={styles.container}>
-        <Gradient />
-
         {this.state.loading && (
           <LoadingScreen />
         )}
 
         <View style={styles.innerContainer}>
-          <Ionicons name="ios-mail" size={90} color={'#fff'} />
+          <Image source={MAIL_ICON} style={styles.mailIcon} />
+
           <Text style={styles.title}>Reset</Text>
           <Text style={styles.title}>password</Text>
           <View style={styles.subTitleView}>
@@ -89,14 +93,6 @@ class ResetPasswordConfirmScreen extends React.Component {
 
           <TouchableOpacity onPress={() => this.onResend()} style={styles.buttonView}>
             <Text style={styles.btnSend}>Resend</Text>
-          </TouchableOpacity>
-        </View>
-
-        <View style={styles.headerView}>
-          <TouchableOpacity onPress={() => Actions.pop()}>
-            <View style={styles.btnBack}>
-              <Feather name="arrow-left" size={25} color={'#fff'} />
-            </View>
           </TouchableOpacity>
         </View>
       </View>
