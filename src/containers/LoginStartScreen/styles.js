@@ -87,7 +87,7 @@ export default {
     width: '100%',
     justifyContent: 'flex-start',
     alignItems: 'center',
-    height: 430,
+    height: 380,
     overflow: 'hidden',
     marginVertical: 20
   },
