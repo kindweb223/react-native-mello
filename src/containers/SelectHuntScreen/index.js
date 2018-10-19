@@ -155,8 +155,8 @@ class SelectHuntScreen extends React.Component {
           activeOpacity={0.6}
           onPress={this.onBack.bind(this)}
         >
-          <Ionicons name="ios-arrow-back" size={28} color={COLORS.PURPLE} />
-          <Text style={styles.textBack}>Back</Text>
+          <Ionicons name="ios-arrow-back" size={32} color={COLORS.PURPLE} />
+          {/* <Text style={styles.textBack}>Back</Text> */}
         </TouchableOpacity>
       </View>
     );
