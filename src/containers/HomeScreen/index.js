@@ -294,6 +294,10 @@ class HomeScreen extends React.Component {
 
   onHandleAppStateChange(nextAppState) {
     this.setState({appState: nextAppState});
+
+    if (nextAppState === 'active') {
+      this.props.getFeedoList(this.state.tabIndex)
+    }
   }
 
   parsePushNotification(notification) {

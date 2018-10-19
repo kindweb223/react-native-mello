@@ -62,9 +62,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    height: 15,
-    marginTop: 5,
-    paddingHorizontal: 10,
+    marginTop: 8,
     width: '100%'
   },
   passwordScoreText: {
@@ -72,10 +70,10 @@ const styles = StyleSheet.create({
     color: COLORS.DARK_GREY
   },
   errorView: {
-    height: 20,
+    marginTop: 8,
     justifyContent: 'center',
     alignItems: 'flex-start',
-    paddingHorizontal: 10,
+    paddingHorizontal: 8,
     width: '100%'
   },
   errorText: {

@@ -1,12 +1,11 @@
 import { StyleSheet, Platform } from 'react-native'
 import COLORS from '../../service/colors'
 import CONSTANTS from '../../service/constants'
-const MODAL_HEIGHT = 200
 
 export default {
   container: {
-    width: CONSTANTS.SCREEN_WIDTH,
-    height: CONSTANTS.SCREEN_HEIGHT,
+    flex: 1,
+    backgroundColor: '#fff',
     alignItems: 'center',
     justifyContent: 'center'
   },
@@ -14,39 +13,41 @@ export default {
     justifyContent: 'center',
     alignItems: 'center'
   },
-  headerView: {
-    position: 'absolute',
-    top: CONSTANTS.STATUSBAR_HEIGHT + 20,
-    left: 0,
-    width: CONSTANTS.SCREEN_WIDTH,
-    paddingHorizontal: CONSTANTS.PADDING
-  },
   btnBack: {
+    marginLeft: 10,
     width: 50,
     height: 30,
   },
+  logo: {
+    width: 30,
+    height: 30
+  },
+  mailIcon: {
+    marginBottom: 29
+  },
   title: {
-    fontSize: 29,
+    fontSize: 28,
+    lineHeight:29,
     fontWeight: 'bold',
-    color: '#fff',
     textAlign: 'center'
   },
   subTitleView: {
-    marginTop: 25
+    marginTop: 36
   },
   subTitle: {
     fontSize: 14,
-    color: '#fff',
+    lineHeight: 21,
+    color: COLORS.MEDIUM_GREY,
     textAlign: 'center'
   },
   buttonView: {
-    padding: 25,
+    padding: 24,
     justifyContent: 'center',
     alignItems: 'center'
   },
   btnSend: {
     fontSize: 14,
     fontWeight: '600',
-    color: '#fff'
+    color: COLORS.PURPLE
   }
 }

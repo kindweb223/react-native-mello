@@ -39,37 +39,12 @@ export default {
     alignItems: 'center',
     backgroundColor: 'transparent'
   },
-  avatarView: {
-    marginBottom: 30,
-    width: '100%',
-    flexDirection: 'row',
-    alignItems: 'center',
-  },
-  avatar: {
-    width: 60,
-    height: 60,
-    borderRadius: 30,
-    backgroundColor: COLORS.SOFT_GREY,
-    justifyContent: 'center',
-    alignItems: 'center',
-    marginRight: 20,
-    overflow: 'hidden'
-  },
-  avatarImg: {
-    width: '100%',
-    height: '100%'
-  },
-  uploadText: {
-    color: COLORS.DARK_GREY,
-    fontSize: 14
-  },
   passwordScoreView: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
     height: 15,
     marginTop: 5,
-    paddingHorizontal: 10,
     width: '100%'
   },
   passwordScoreText: {
@@ -77,7 +52,6 @@ export default {
     color: COLORS.DARK_GREY
   },
   errorView: {
-    height: 24,
     justifyContent: 'center',
     alignItems: 'flex-start',
     paddingHorizontal: 8,
