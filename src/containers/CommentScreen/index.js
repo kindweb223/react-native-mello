@@ -45,8 +45,8 @@ class CommentScreen extends React.Component {
         activeOpacity={0.6}
         onPress={() => Actions.pop()}
       >
-        <Ionicons name="ios-arrow-back" size={27} color={COLORS.PURPLE} />
-        <Text style={styles.textBack}>Back</Text>
+        <Ionicons name="ios-arrow-back" size={32} color={COLORS.PURPLE} />
+        {/* <Text style={styles.textBack}>Back</Text> */}
       </TouchableOpacity>
     );
   }

@@ -49,7 +49,6 @@ const styles = StyleSheet.create({
     height: '100%'
   },
   backIcon: {
-    fontSize: 32,
     color: COLORS.PURPLE,
     marginRight: 6
   },

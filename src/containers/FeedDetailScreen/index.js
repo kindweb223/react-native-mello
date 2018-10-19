@@ -889,7 +889,7 @@ class FeedDetailScreen extends React.Component {
           <View style={styles.navBar}>
             <TouchableOpacity onPress={this.backToDashboard}>
               <View style={styles.backView}>
-                <Ionicons name="ios-arrow-back" style={styles.backIcon} />
+                <Ionicons name="ios-arrow-back" size={32} color={COLORS.PURPLE} />
               </View>
             </TouchableOpacity>
             <View style={styles.rightHeader}>

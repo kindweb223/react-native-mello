@@ -147,7 +147,7 @@ class TagCreateScreen extends React.Component {
           onPress={this.onBack.bind(this)}
         >
           <Ionicons name="ios-arrow-back" size={32} color={COLORS.PURPLE} />
-          <Text style={styles.textBack}>Back</Text>
+          {/* <Text style={styles.textBack}>Back</Text> */}
         </TouchableOpacity>
       </View>
     );

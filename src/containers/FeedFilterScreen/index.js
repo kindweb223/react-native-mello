@@ -157,8 +157,8 @@ class FeedFilterScreen extends React.Component {
           <Animated.View style={[styles.miniNavView, { backgroundColor: navbarBackground }]}>
             <TouchableOpacity onPress={() => Actions.pop()}>
               <View style={styles.backView}>
-                <Ionicons name="ios-arrow-back" size={30} color={COLORS.PURPLE} />
-                <Text style={styles.backTitle}>My feeds</Text>
+                <Ionicons name="ios-arrow-back" size={32} color={COLORS.PURPLE} />
+                {/* <Text style={styles.backTitle}>My feeds</Text> */}
               </View>
             </TouchableOpacity>
           </Animated.View>
