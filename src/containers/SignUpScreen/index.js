@@ -45,7 +45,7 @@ class SignUpScreen extends React.Component {
       <TouchableOpacity 
         style={styles.btnBack}
         activeOpacity={0.6}
-        onPress={() => Actions.LoginStartScreen({ type: 'replace' })}
+        onPress={() => Actions.pop()}
       >
         <Ionicons name="ios-arrow-back" size={30} color={COLORS.PURPLE} />
       </TouchableOpacity>
