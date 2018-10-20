@@ -37,7 +37,7 @@ axios.interceptors.response.use(
       AsyncStorage.removeItem('xAuthToken')
       SharedGroupPreferences.setItem('xAuthToken', null, CONSTANTS.APP_GROUP_TOKEN_IDENTIFIER)
 
-      Actions.LoginScreen()
+      Actions.LoginScreen({type: 'replace'})
     }
     throw error
   }

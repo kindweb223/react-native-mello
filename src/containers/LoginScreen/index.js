@@ -76,6 +76,7 @@ class LoginScreen extends React.Component {
 
     if (Actions.currentScene === 'LoginScreen') {
       if (this.props.user.loading === 'USER_SIGNIN_PENDING' && user.loading === 'USER_SIGNIN_FULFILLED') {
+        console.log("USER_SIGNIN_FULFILLED - this.props.getUserSession()????????")
         this.props.getUserSession()
       }
 
@@ -91,8 +92,10 @@ class LoginScreen extends React.Component {
       if (this.props.user.loading === 'GET_USER_SESSION_PENDING' && user.loading === 'GET_USER_SESSION_FULFILLED') {
         this.setState({ loading: false  }, () => {
           if (user.userInfo.emailConfirmed) {
+            console.log("GET_USER_SESSION_FULFILLED - Actions.HomeScreen()")
             Actions.HomeScreen()
           } else {
+            console.log("GET_USER_SESSION_FULFILLED - Actions.SignUpConfirmScreen({ userEmail })")
             Actions.SignUpConfirmScreen({ userEmail })
           }
         })
@@ -100,6 +103,9 @@ class LoginScreen extends React.Component {
 
       if (this.props.user.loading === 'GET_USER_SESSION_PENDING' && user.loading === 'GET_USER_SESSION_REJECTED') {
         this.setState({ loading: false }, () => {
+          console.log("GET_USER_SESSION_REJECTED - Actions.SignUpConfirmScreen({ userEmail })")
+          console.log("this.props.user: ", this.props.user)
+          console.log("user: ", user)
           Actions.SignUpConfirmScreen({ userEmail })
         })
       }
