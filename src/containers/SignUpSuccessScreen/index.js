@@ -38,7 +38,6 @@ class SignUpSuccessScreen extends React.Component {
     const { user, deepLinking } = nextProps
 
     if (user.loading === 'USER_CONFIRM_ACCOUNT_FULFILLED') {
-      console.log('USER_CONFIRM_ACCOUNT_FULFILLED: this.props.getUserSession()')
       this.props.getUserSession()
     }
 
@@ -46,11 +45,8 @@ class SignUpSuccessScreen extends React.Component {
       this.setState({ loading: false })
 
       if (user.userInfo) {
-        console.log('USER_CONFIRM_ACCOUNT_REJECTED: Actions.HomeScreen()')
         Actions.HomeScreen()
       } else {
-        console.log('USER_CONFIRM_ACCOUNT_REJECTED: Actions.SignUpConfirmScreen({type: \'replace\'})')
-        console.log('USER_CONFIRM_ACCOUNT_REJECTED: user: ', user)
         Alert.alert(
           "Error", "Your confirmation token is no longer valid.\nJust tap resend and we will send you another one"
         )
@@ -59,8 +55,6 @@ class SignUpSuccessScreen extends React.Component {
     }
 
     if (this.props.user.loading === 'GET_USER_SESSION_PENDING' && user.loading === 'GET_USER_SESSION_FULFILLED') {
-      console.log('GET_USER_SESSION_FULFILLED: deepLinking: ', deepLinking)
-
       if (deepLinking) {
         this.setState({ loading: false }, () => {
           if (user.userInfo.emailConfirmed) {
