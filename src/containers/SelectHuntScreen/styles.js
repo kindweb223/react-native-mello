@@ -7,7 +7,6 @@ export default styles = StyleSheet.create({
   container: {
     flex: 1,
     justifyContent: 'center',
-    // backgroundColor: COLORS.MODAL_BACKGROUND,
   },
   feedContainer: {
     position: 'absolute',

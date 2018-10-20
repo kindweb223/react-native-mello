@@ -171,6 +171,7 @@ class ChooseLinkImageFromExtension extends React.Component {
             <ShareModalScreen
               buttons={CONSTANTS.MODAL_OK}
               message={this.state.errorMessage}
+              onOk={() => this.onCancel()}
             />
           </View>
         }

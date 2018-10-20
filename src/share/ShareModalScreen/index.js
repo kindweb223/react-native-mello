@@ -84,9 +84,10 @@ export default class ShareModalScreen extends React.Component {
         <Modal
           style={{ backgroundColor: 'transparent' }}
           scrollOffset={CONSTANTS.SCREEN_HEIGHT}
+          backdropOpacity={0.2}
+          swipeToClose={false}
           position="center"
-          animationIn="zoomInDown"
-          animationOut="zoomOutUp"
+          backdropPressToClose={false}
           isOpen={this.state.isVisible}
           onClosed={this.onClosed.bind(this)}
         >
