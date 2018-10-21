@@ -132,7 +132,7 @@ class LoginScreen extends React.Component {
 
   onForgotPassword = () => {
     const { userEmail } = this.state
-    console.log('userEmail: ', userEmail)
+
     if (userEmail.length === 0) {
       Alert.alert('Error', 'Email is required')
     } else if (!COMMON_FUNC.validateEmail(userEmail)) {

@@ -43,7 +43,7 @@ class ResetPasswordScreen extends React.Component {
       <TouchableOpacity 
         style={styles.btnBack}
         activeOpacity={0.6}
-        onPress={() => Actions.LoginStartScreen({ type: 'replace' })}
+        onPress={() => Actions.LoginScreen({ type: 'replace' })}
       >
         <Ionicons name="ios-arrow-back" size={32} color={COLORS.PURPLE} />
       </TouchableOpacity>
@@ -92,7 +92,7 @@ class ResetPasswordScreen extends React.Component {
         user.error.message,
         [{
           text: 'OK',
-          onPress: () => Actions.LoginStartScreen()
+          onPress: () => Actions.LoginScreen({ type: 'replace' })
         }]
       )
     }
