@@ -20,24 +20,25 @@ import styles from './styles'
 import markdownStyles from './markdownStyles'
 import { TNC_URL } from '../../service/api'
 
-const Gradient = () => {
-  return(
-    <LinearGradient
-      colors={[COLORS.PURPLE, COLORS.RED]}
-      start={{ x: 0.0, y: 0.0 }}
-      end={{ x: 1.0, y: 0.0 }}
-      style={{
-        position: 'absolute',
-        top: 0,
-        left: 0,
-        bottom: 0,
-        right: 0
-      }}
-    />
-  )
-}
-
 class TermsAndConditionsScreen extends React.Component {
+  static renderLeftButton(props) {
+    return (
+      <TouchableOpacity 
+        style={styles.buttonWrapper}
+        activeOpacity={0.6}
+        onPress={() => Actions.pop()}
+      >
+        <Ionicons name="ios-arrow-back" size={32} color={COLORS.PURPLE} />
+      </TouchableOpacity>
+    );
+  }
+
+  static renderTitle(props) {
+    return (
+      <Text style={styles.textTitle}>Terms & Conditions</Text>
+    );
+  }
+
   constructor(props) {
     super(props)
     this.state = {
@@ -78,26 +79,15 @@ class TermsAndConditionsScreen extends React.Component {
 
     return (
       <View style={styles.container}>
-        <Gradient />
-
         {this.state.loading && (
           <LoadingScreen />
         )}
-
-        <View style={styles.headerView}>
-          <TouchableOpacity onPress={() => Actions.pop()}>
-            <View style={styles.btnBack}>
-              <Feather name="arrow-left" size={25} color={'#fff'} />
-            </View>
-          </TouchableOpacity>
-          <Text style={styles.headerText}>Terms & Conditions</Text>
-          <View />
-        </View>
 
         <View style={styles.modalContainer}>
           <ScrollView
             ref={c => this.scrollView = c}
             style={{ flex: 1 }}
+            contentContainerStyle={styles.scrollView}
           >
             <View style={styles.innerContainer}>
               <MarkdownView

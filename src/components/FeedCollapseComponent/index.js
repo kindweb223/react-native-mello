@@ -125,7 +125,7 @@ class FeedCollapseComponent extends React.Component {
           </View>
         )}
 
-        {feedData.tags && (
+        {feedData.tags.length > 0 && (
           <View style={[styles.tagView, files.length === 0 ? { marginTop: 20 } : { marginTop: 10 }]}>
             <Tags
               initialTags={feedData.tags}
@@ -145,7 +145,7 @@ class FeedCollapseComponent extends React.Component {
           </View>
         )}
 
-        <View style={[styles.footerView, COMMON_FUNC.isFeedOwnerEditor(feedData) ? { marginTop: 20 } : { marginTop: 0 }]}>
+        <View style={[styles.footerView]}>
           <View style={styles.footerLeftView}>
             {COMMON_FUNC.isFeedOwnerEditor(feedData) && (
               <View style={styles.footerLeftBtnView}>

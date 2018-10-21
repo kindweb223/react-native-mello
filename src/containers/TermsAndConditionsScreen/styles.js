@@ -5,37 +5,26 @@ const MODAL_HEIGHT = 200
 
 export default {
   container: {
-    width: CONSTANTS.SCREEN_WIDTH,
-    height: CONSTANTS.SCREEN_HEIGHT,
-    alignItems: 'center',
-    justifyContent: 'center'
-  },
-  headerView: {
-    paddingTop: CONSTANTS.STATUSBAR_HEIGHT,
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    flexDirection: 'row',
-    width: '100%',
-    height: 80,
-    marginBottom: 20,
-    paddingHorizontal: CONSTANTS.PADDING
-  },
-  headerText: {
-    color: '#fff',
-    fontSize: 16,
-    fontWeight: '600'
-  },
-  btnBack: {
-    width: 50,
-    height: 30,
-  },
-  modalContainer: {
     flex: 1,
-    width: '100%',
-    borderTopLeftRadius: 18,
-    borderTopRightRadius: 18,
-    backgroundColor: '#fff',
-    paddingVertical: 30,
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: '#fff'
+  },
+  buttonWrapper: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingLeft: 10,
+    marginBottom: 5,
+  },
+  textTitle: {
+    fontSize: 16,
+    lineHeight: 23,
+    fontWeight: '600',
+    textAlign: 'center',
+    marginBottom: 5,
+  },
+  scrollView: {
+    paddingVertical: 20
   },
   innerContainer: {
     width: '100%',
