@@ -191,7 +191,7 @@ export default class Root extends React.Component {
             <Scene key="LoginScreen" component={ LoginScreen } navigationBarStyle={styles.emptyBorderNavigationBar} />
             <Scene key="SignUpScreen" component={ SignUpScreen } navigationBarStyle={styles.emptyBorderNavigationBar} />
             <Scene key="SignUpConfirmScreen" component={ SignUpConfirmScreen } panHandlers={null} navigationBarStyle={styles.emptyBorderNavigationBar} />
-            <Scene key="TermsAndConditionsScreen" component={ TermsAndConditionsScreen } hideNavBar />
+            <Scene key="TermsAndConditionsScreen" component={ TermsAndConditionsScreen } navigationBarStyle={styles.emptyBorderNavigationBar} />
             <Scene key="HomeScreen" component={ HomeScreen } hideNavBar panHandlers={null} />
             <Scene key="FeedDetailScreen" component={ FeedDetailScreen } hideNavBar panHandlers={null} />
             <Scene key="DocumentSliderScreen" component={ DocumentSliderScreen } hideNavBar />
@@ -208,7 +208,7 @@ export default class Root extends React.Component {
               <Scene key="ProfileScreen" component={ ProfileScreen } hideNavBar navigationBarStyle={styles.defaultNavigationBar} />
               <Scene key="ProfileUpdateScreen" component={ ProfileUpdateScreen } navigationBarStyle={styles.defaultNavigationBar} />
               <Scene key="ProfileResetPasswordConfirmScreen" component={ ResetPasswordConfirmScreen } panHandlers={null} navigationBarStyle={styles.defaultNavigationBar} />
-              <Scene key="ProfileTermsAndConditionsScreen" component={ TermsAndConditionsScreen } hideNavBar />
+              <Scene key="ProfileTermsAndConditionsScreen" component={ TermsAndConditionsScreen } navigationBarStyle={styles.emptyBorderNavigationBar} />
               <Scene key="ArchivedFeedScreen" component={ ArchivedFeedScreen } navigationBarStyle={styles.defaultNavigationBar} />
             </Stack>
           </Stack>
