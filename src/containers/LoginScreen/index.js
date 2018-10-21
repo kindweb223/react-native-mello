@@ -32,7 +32,13 @@ class LoginScreen extends React.Component {
       <TouchableOpacity 
         style={styles.btnBack}
         activeOpacity={0.6}
-        onPress={() => Actions.LoginStartScreen()}
+        onPress={() => {
+          if (props.page === 'Signup') {
+            Actions.pop()
+          } else {
+            Actions.LoginStartScreen()
+          }
+        }}
       >
         <Ionicons name="ios-arrow-back" size={32} color={COLORS.PURPLE} />
       </TouchableOpacity>
@@ -275,6 +281,14 @@ class LoginScreen extends React.Component {
       </View>
     )
   }
+}
+
+LoginScreen.defaultProps = {
+  page: 'Other'
+}
+
+LoginScreen.propTypes = {
+  page: PropTypes.string
 }
 
 const mapStateToProps = ({ user }) => ({
