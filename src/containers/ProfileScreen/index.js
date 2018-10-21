@@ -142,6 +142,7 @@ class ProfileScreen extends React.Component {
 
   onTapMediaPickerActionSheet(index) {
     const options = {
+      cameraType: 'front',
       storageOptions: {
         skipBackup: true,
         path: 'feedo'

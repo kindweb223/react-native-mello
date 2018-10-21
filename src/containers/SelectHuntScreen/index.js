@@ -19,7 +19,6 @@ import UserAvatarComponent from '../../components/UserAvatarComponent';
 
 import NewFeedScreen from '../NewFeedScreen'
 import { 
-  getFeedoList,
   setCurrentFeed,
 } from '../../redux/feedo/actions'
 import * as types from '../../redux/feedo/types'
@@ -43,45 +42,11 @@ class SelectHuntScreen extends React.Component {
     this.animatedKeyboardHeight = new Animated.Value(0);
   }
 
-  UNSAFE_componentWillReceiveProps(nextProps) {
-    let loading = false;
-    if (this.props.feedo.loading !== types.GET_FEEDO_LIST_PENDING && nextProps.feedo.loading === types.GET_FEEDO_LIST_PENDING) {
-      loading = true;
-    } else if (this.props.feedo.loading !== types.GET_FEEDO_LIST_FULFILLED && nextProps.feedo.loading === types.GET_FEEDO_LIST_FULFILLED) {
-      loading = false;
-    }
-    this.setState({
-      loading,
-    });
-    // showing error alert
-    if (this.props.feedo.loading !== nextProps.feedo.loading) {
-      if (nextProps.feedo.error) {
-        let error = null;
-        if (nextProps.feedo.error.error) {
-          error = nextProps.feedo.error.error;
-        } else {
-          error = nextProps.feedo.error.message;
-        }
-        if (error) {
-          if (!this.isVisibleErrorDialog) {
-            this.isVisibleErrorDialog = true;
-            Alert.alert('Error', error, [
-              {text: 'Close', onPress: () => this.isVisibleErrorDialog = false},
-            ]);
-          }
-        }
-        return;
-      }
-    }
-  }
-
   componentDidMount() {
     Animated.timing(this.animatedShow, {
       toValue: 1,
       duration: CONSTANTS.ANIMATEION_MILLI_SECONDS * 1.5,
-    }).start(() => {
-      this.props.getFeedoList(0)
-    });
+    }).start();
     this.keyboardWillShowSubscription = Keyboard.addListener('keyboardWillShow', (e) => this.keyboardWillShow(e));
     this.keyboardWillHideSubscription = Keyboard.addListener('keyboardWillHide', (e) => this.keyboardWillHide(e));
   }
@@ -142,7 +107,6 @@ class SelectHuntScreen extends React.Component {
     this.setState({
       isVisibleNewFeedScreen: false,
     }, () => {
-      // this.props.getFeedoList(0)
       this.onClose();
     });
   }
@@ -226,7 +190,7 @@ class SelectHuntScreen extends React.Component {
       inputRange: [0, 1],
       outputRange: [CONSTANTS.SCREEN_WIDTH, 0],
     });
-    let feedoList = this.props.feedo.feedoList;
+    let feedoList = this.props.feedos;
     if (feedoList && feedoList.length > 0 && this.state.filterText) {
       feedoList = _.filter(feedoList, feedo => feedo.headline.toLowerCase().indexOf(this.state.filterText.toLowerCase()) !== -1);
     }
@@ -236,7 +200,7 @@ class SelectHuntScreen extends React.Component {
       bottomMargin = CONSTANTS.SCREEN_VERTICAL_MIN_MARGIN / 2;
     }
     return (
-      <View style={styles.container}>
+      <View style={[styles.container, selectMode === CONSTANTS.FEEDO_SELECT_FROM_MAIN && {backgroundColor: COLORS.MODAL_BACKGROUND}]}>
         <Animated.View 
           style={[
             styles.feedContainer, {
@@ -303,12 +267,14 @@ class SelectHuntScreen extends React.Component {
 
 SelectHuntScreen.defaultProps = {
   selectMode: CONSTANTS.FEEDO_SELECT_FROM_MAIN,
-  onClosed: PropTypes.func,
+  feedos: [],
+  onClosed: () => {},
 }
 
 
 SelectHuntScreen.propTypes = {
   selectMode: PropTypes.number,
+  feedos: PropTypes.array,
   onClosed: PropTypes.func,
 }
 
@@ -319,7 +285,6 @@ const mapStateToProps = ({ feedo }) => ({
 
 
 const mapDispatchToProps = dispatch => ({
-  getFeedoList: (index) => dispatch(getFeedoList(index)),
   setCurrentFeed: (data) => dispatch(setCurrentFeed(data)),
 })
 
