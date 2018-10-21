@@ -160,9 +160,10 @@ export default class Root extends React.Component {
           const data = {
             id: feedId
           }
-
           if (this.state.userInfo) {
-            Actions.FeedDetailScreen({ data })
+            setTimeout(() => {
+              Actions.FeedDetailScreen({ data })
+            }, 1000); // Time in milliseconds
           } else {
             Actions.LoginScreen()
           }

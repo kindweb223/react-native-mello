@@ -33,7 +33,7 @@ import Modal from 'react-native-modal';
 import moment from 'moment'
 import Autolink from 'react-native-autolink';
 import SafariView from "react-native-safari-view";
-import SharedGroupPreferences from 'react-native-shared-group-preferences'
+import SharedGroupPreferences from 'react-native-shared-group-preferences';
 
 import { 
   createCard,
@@ -449,18 +449,22 @@ class NewCardScreen extends React.Component {
   async createCard(currentProps) {
     const { cardMode, viewMode } = this.props;
     if ((cardMode === CONSTANTS.MAIN_APP_CARD_FROM_DASHBOARD) || (cardMode === CONSTANTS.SHARE_EXTENTION_CARD)) {
-      const strFeedoInfo = await SharedGroupPreferences.getItem(CONSTANTS.CARD_SAVED_LAST_FEEDO_INFO, CONSTANTS.APP_GROUP_LAST_USED_FEEDO);
-      if (strFeedoInfo) {
-        const feedoInfo = JSON.parse(strFeedoInfo);
-        const diffHours = moment().diff(moment(feedoInfo.time, 'LLL'), 'hours');
-        if (diffHours < 1) {
-          const currentFeed = _.find(currentProps.feedo.feedoList, feed => feed.id === feedoInfo.feedoId)
-          if (currentFeed) {
-            this.props.setCurrentFeed(currentFeed);
-            this.props.createCard(this.props.feedo.currentFeed.id);
-            return;
+      try {
+        const strFeedoInfo = await SharedGroupPreferences.getItem(CONSTANTS.CARD_SAVED_LAST_FEEDO_INFO, CONSTANTS.APP_GROUP_LAST_USED_FEEDO);
+        if (strFeedoInfo) {
+          const feedoInfo = JSON.parse(strFeedoInfo);
+          const diffHours = moment().diff(moment(feedoInfo.time, 'LLL'), 'hours');
+          if (diffHours < 1) {
+            const currentFeed = _.find(currentProps.feedo.feedoList, feed => feed.id === feedoInfo.feedoId)
+            if (currentFeed) {
+              this.props.setCurrentFeed(currentFeed);
+              this.props.createCard(this.props.feedo.currentFeed.id);
+              return;
+            }
           }
         }
+      } catch (error) {
+        console.log('error code : ', error);
       }
       this.props.createFeed();
     } else if (viewMode === CONSTANTS.CARD_NEW) {
