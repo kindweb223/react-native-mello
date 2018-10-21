@@ -207,7 +207,7 @@ export default class Root extends React.Component {
             <Stack key="ProfileScreen">
               <Scene key="ProfileScreen" component={ ProfileScreen } hideNavBar navigationBarStyle={styles.defaultNavigationBar} />
               <Scene key="ProfileUpdateScreen" component={ ProfileUpdateScreen } navigationBarStyle={styles.defaultNavigationBar} />
-              <Scene key="ProfileResetPasswordConfirmScreen" component={ ResetPasswordConfirmScreen } panHandlers={null} navigationBarStyle={styles.defaultNavigationBar} />
+              <Scene key="ProfileResetPasswordConfirmScreen" component={ ResetPasswordConfirmScreen } navigationBarStyle={styles.defaultNavigationBar} />
               <Scene key="ProfileTermsAndConditionsScreen" component={ TermsAndConditionsScreen } navigationBarStyle={styles.emptyBorderNavigationBar} />
               <Scene key="ArchivedFeedScreen" component={ ArchivedFeedScreen } navigationBarStyle={styles.defaultNavigationBar} />
             </Stack>
