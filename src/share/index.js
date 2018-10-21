@@ -29,7 +29,7 @@ axios.interceptors.response.use(
   ),
   (error) => {
     if (error.response === undefined || (error.response.status === 401 && error.response.data.code === 'session.expired')) {
-      ShareExtension.goToMainApp();
+      ShareExtension.goToMainApp('demos.solvers.io://');
     }
     console.log('ERROR: ', error)
     throw error
@@ -88,7 +88,7 @@ export default class Share extends Component {
               <Scene key="ChooseLinkImageFromExtension" component={ChooseLinkImageFromExtension} /> 
               <Scene key="ShareCardScreen" component={ShareCardScreen} />
               <Scene key="ShareSuccessScreen" component={ShareSuccessScreen} />
-              <Scene key="ShareModalScreen" component={ShareModalScreen} initial={this.state.isVisibleModal} />
+              <Scene key="ShareModalScreen" component={ShareModalScreen} okLabel='Sign In' initial={this.state.isVisibleModal} />
             </Scene>
           </Router>
         </Provider>

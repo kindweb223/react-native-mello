@@ -35,7 +35,7 @@ class ShareSuccessScreen extends React.Component {
   }
 
   openFeedo() {
-    ShareExtension.goToMainApp();
+    ShareExtension.goToMainApp(`demos.solvers.io://feed/${this.props.feedo.currentFeed.id}`);
     ShareExtension.close();
   }
 
@@ -79,8 +79,8 @@ ShareSuccessScreen.propTypes = {
 }
 
 
-const mapStateToProps = ({ card }) => ({
-  card,
+const mapStateToProps = ({ feedo, }) => ({
+  feedo,
 })
 
 

@@ -172,6 +172,7 @@ class ChooseLinkImageFromExtension extends React.Component {
               buttons={CONSTANTS.MODAL_OK}
               message={this.state.errorMessage}
               onOk={() => this.onCancel()}
+              okLabel='OK'
             />
           </View>
         }

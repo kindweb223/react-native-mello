@@ -21,7 +21,6 @@ import { Actions } from 'react-native-router-flux'
 import Entypo from 'react-native-vector-icons/Entypo'
 import Ionicons from 'react-native-vector-icons/Ionicons'
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons'
-import { isIphoneX } from 'react-native-iphone-x-helper';
 import ViewMoreText from 'react-native-view-more-text';
 
 import ActionSheet from 'react-native-actionsheet'
@@ -34,6 +33,7 @@ import Modal from 'react-native-modal';
 import moment from 'moment'
 import Autolink from 'react-native-autolink';
 import SafariView from "react-native-safari-view";
+import SharedGroupPreferences from 'react-native-shared-group-preferences'
 
 import { 
   createCard,
@@ -102,18 +102,18 @@ class NewCardScreen extends React.Component {
     this.selectedFileType = null;
     this.selectedFileName = null;
 
-    this.isOpenGraphForNewCard = false;
-    this.urlForNewCard = '';
+    // this.isOpenGraphForNewCard = false;
+    // this.urlForNewCard = '';
 
     this.allLinkImages = [];
     this.selectedLinkImages = [];
     this.currentSelectedLinkImageIndex = 0;
 
+    this.indexForOpenGraph = 0;
+    this.linksForOpenGraph = [];
 
-    this.openGraphNoteIndex = 0;
-    this.addLinkIndex = 0;
-    this.noteLinksForOpenGraph = [];
-    this.openGraphForNoteLinks = [];
+    this.indexForAddedLinks = 0;
+    this.openGraphLinksInfo = [];
 
     this.animatedShow = new Animated.Value(0);
     this.animatedKeyboardHeight = new Animated.Value(0);
@@ -140,7 +140,7 @@ class NewCardScreen extends React.Component {
           // cardName: this.props.shareUrl,
           idea: this.props.shareUrl,
         }, () => {
-          this.checkUrl(this.state.idea);
+          this.checkUrls();
         });
       } else {
         const data = {
@@ -196,19 +196,23 @@ class NewCardScreen extends React.Component {
       loading = true;
     } else if (this.props.card.loading !== types.ADD_LINK_FULFILLED && nextProps.card.loading === types.ADD_LINK_FULFILLED) {
       // success in adding a link
-      if (this.isOpenGraphForNewCard && this.props.cardMode === CONSTANTS.SHARE_EXTENTION_CARD && this.isUploadShareImage) {
+      if (this.props.cardMode === CONSTANTS.SHARE_EXTENTION_CARD && this.isUploadShareImage) {
         this.isUploadShareImage = false;
         const { id } = this.props.card.currentCard;
         this.addLinkImage(id, this.props.shareImageUrl);
-      } else if (this.addLinkIndex < this.openGraphForNoteLinks.length) {
+      } else if (this.indexForAddedLinks < this.openGraphLinksInfo.length) {
         const { id } = this.props.card.currentCard;
         const {
           url,
           title,
           description,
           image,
-        } = this.openGraphForNoteLinks[this.addLinkIndex++];
+        } = this.openGraphLinksInfo[this.indexForAddedLinks++];
         this.props.addLink(id, url, title, description, image);
+      } else if (this.props.cardMode !== CONSTANTS.SHARE_EXTENTION_CARD && this.allLinkImages.length > 0) {
+        this.setState({
+          isVisibleChooseLinkImagesModal: true,
+        });
       }
     } else if (this.props.card.loading !== types.DELETE_LINK_PENDING && nextProps.card.loading === types.DELETE_LINK_PENDING) {
       // deleting a link
@@ -222,9 +226,7 @@ class NewCardScreen extends React.Component {
       this.setState({
         coverImage: nextProps.card.currentCard.coverImage,
       });
-      if (this.isOpenGraphForNewCard) {
-        this.checkUrlsInNote();
-      }
+      this.checkUrls();
       // success in setting a file as cover image
     } else if (this.props.card.loading !== types.UPDATE_CARD_PENDING && nextProps.card.loading === types.UPDATE_CARD_PENDING) {
       // updating a card
@@ -257,61 +259,49 @@ class NewCardScreen extends React.Component {
       loading = true;
     } else if (this.props.card.loading !== types.GET_OPEN_GRAPH_FULFILLED && nextProps.card.loading === types.GET_OPEN_GRAPH_FULFILLED) {
       // success in getting open graph
-      if (this.isOpenGraphForNewCard) {
-        if (this.props.cardMode === CONSTANTS.SHARE_EXTENTION_CARD) {
+      loading = true;
+      if (this.props.cardMode === CONSTANTS.SHARE_EXTENTION_CARD) {
+        this.setState({
+          // cardName: nextProps.card.currentOpneGraph.title,
+          idea: nextProps.card.currentOpneGraph.title,
+        });  
+        const { id } = this.props.card.currentCard;
+        const url = this.props.shareUrl || nextProps.card.currentOpneGraph.url;
+        const title = nextProps.card.currentOpneGraph.title;
+        const description = nextProps.card.currentOpneGraph.description;
+        const image =  nextProps.card.currentOpneGraph.image || this.props.shareImageUrl;
+        this.props.addLink(id, url, title, description, image);
+      } else {        
+        if (this.allLinkImages.length === 0) {
+          if (nextProps.card.currentOpneGraph.images) {
+            this.allLinkImages = nextProps.card.currentOpneGraph.images;
+          } else if (nextProps.card.currentOpneGraph.image) {
+            this.allLinkImages.push(nextProps.card.currentOpneGraph.image);
+          }
+        }
+        if (this.state.idea.toLowerCase().indexOf(nextProps.card.currentOpneGraph.url) !== -1 || nextProps.card.currentOpneGraph.url.indexOf(this.state.idea) !== -1) {
           this.setState({
-            // cardName: nextProps.card.currentOpneGraph.title,
-            // idea: nextProps.card.currentOpneGraph.description + '\n' + this.urlForNewCard,
             idea: nextProps.card.currentOpneGraph.title,
           });  
-          loading = true;
-          const { id } = this.props.card.currentCard;
-          const url = this.props.shareUrl || nextProps.card.currentOpneGraph.url;
-          const title = nextProps.card.currentOpneGraph.title;
-          const description = nextProps.card.currentOpneGraph.description;
-          const image =  nextProps.card.currentOpneGraph.image || this.props.shareImageUrl;
-          this.props.addLink(id, url, title, description, image);
-        } else {
-          this.setState({
-            // cardName: nextProps.card.currentOpneGraph.title,
-            // idea: nextProps.card.currentOpneGraph.description + '\n' + this.urlForNewCard,
-            idea: nextProps.card.currentOpneGraph.title + '\n' + this.urlForNewCard,
-          });  
-          this.allLinkImages = nextProps.card.currentOpneGraph.images;
-          if (this.allLinkImages.length > 0) {
-            this.setState({
-              isVisibleChooseLinkImagesModal: true,
-            });
-          } else {
-            if (nextProps.card.currentOpneGraph.image) {
-              loading = true;
-              const { id } = this.props.card.currentCard;      
-              this.setState({ coverImage: nextProps.card.currentOpneGraph.image })
-              this.addLinkImage(id, nextProps.card.currentOpneGraph.image);
-            }
-          }
-        } 
-        this.onHideKeyboard();
-      } else {
-        this.openGraphForNoteLinks.push({
-          url: this.noteLinksForOpenGraph[this.openGraphNoteIndex++],
+        }
+        this.openGraphLinksInfo.push({
+          url: this.linksForOpenGraph[this.indexForOpenGraph++],
           title: nextProps.card.currentOpneGraph.title,
           description: nextProps.card.currentOpneGraph.description,
           image: nextProps.card.currentOpneGraph.image
         });
 
-        if (this.openGraphNoteIndex < this.noteLinksForOpenGraph.length) {
-          loading = true;
-          this.props.getOpenGraph(this.noteLinksForOpenGraph[this.openGraphNoteIndex]);
+        if (this.indexForOpenGraph < this.linksForOpenGraph.length) {
+          this.props.getOpenGraph(this.linksForOpenGraph[this.indexForOpenGraph]);
         } else {
-          this.addLinkIndex = 0;
+          this.indexForAddedLinks = 0;
           const { id } = this.props.card.currentCard;
           const {
             url,
             title,
             description,
             image,
-          } = this.openGraphForNoteLinks[this.addLinkIndex++];
+          } = this.openGraphLinksInfo[this.indexForAddedLinks++];
           this.props.addLink(id, url, title, description, image);
           this.onHideKeyboard();
         }
@@ -402,6 +392,7 @@ class NewCardScreen extends React.Component {
   }
 
   componentDidMount() {
+    // console.log('Current Card : ', this.props.card.currentCard);
     const { viewMode } = this.props;
     if (viewMode === CONSTANTS.CARD_VIEW || viewMode === CONSTANTS.CARD_EDIT) {
       this.setState({
@@ -458,7 +449,7 @@ class NewCardScreen extends React.Component {
   async createCard(currentProps) {
     const { cardMode, viewMode } = this.props;
     if ((cardMode === CONSTANTS.MAIN_APP_CARD_FROM_DASHBOARD) || (cardMode === CONSTANTS.SHARE_EXTENTION_CARD)) {
-      const strFeedoInfo = await AsyncStorage.getItem(CONSTANTS.CARD_SAVED_FEEDO_ID);
+      const strFeedoInfo = await SharedGroupPreferences.getItem(CONSTANTS.CARD_SAVED_LAST_FEEDO_INFO, CONSTANTS.APP_GROUP_LAST_USED_FEEDO);
       if (strFeedoInfo) {
         const feedoInfo = JSON.parse(strFeedoInfo);
         const diffHours = moment().diff(moment(feedoInfo.time, 'LLL'), 'hours');
@@ -482,35 +473,35 @@ class NewCardScreen extends React.Component {
       time: moment().format('LLL'),
       feedoId: this.props.feedo.currentFeed.id,
     }
-    AsyncStorage.setItem(CONSTANTS.CARD_SAVED_FEEDO_ID, JSON.stringify(feedoInfo));
+    SharedGroupPreferences.setItem(CONSTANTS.CARD_SAVED_LAST_FEEDO_INFO, JSON.stringify(feedoInfo), CONSTANTS.APP_GROUP_LAST_USED_FEEDO)
   }
 
-  checkUrl(content) {
-    const { viewMode } = this.props;
-    if (viewMode === CONSTANTS.CARD_NEW || viewMode === CONSTANTS.CARD_EDIT) {
-      if (content) {
-        const texts = content.split(/[, ]/);
-        const allUrls = texts[0].match(/^(http:\/\/www\.|https:\/\/www\.|http:\/\/|https:\/\/)?[a-z0-9]+([\-\.]{1}[a-z0-9]+)*\.[a-z]{2,5}(:[0-9]{1,5})?(\/.*)?$/gi);
-        // if (texts.length === 1 && validUrl.isUri(texts[0])) {
-        if (texts.length === 1 && allUrls && allUrls.length > 0) {
-          if (this.parsingErrorLinks.length > 0 && this.parsingErrorLinks.indexOf(texts[0] !== -1)) {
-            return true;
-          }
-          this.isOpenGraphForNewCard = true;
-          this.urlForNewCard = texts[0];
-          this.props.getOpenGraph(texts[0]);
-          return true;
-        }
-      }
-    }
-    return false;
-  }
+  // checkUrl(content) {
+  //   const { viewMode } = this.props;
+  //   if (viewMode === CONSTANTS.CARD_NEW || viewMode === CONSTANTS.CARD_EDIT) {
+  //     if (content) {
+  //       const texts = content.split(/[, ]/);
+  //       const allUrls = texts[0].match(/^(http:\/\/www\.|https:\/\/www\.|http:\/\/|https:\/\/)?[a-z0-9]+([\-\.]{1}[a-z0-9]+)*\.[a-z]{2,5}(:[0-9]{1,5})?(\/.*)?$/gi);
+  //       // if (texts.length === 1 && validUrl.isUri(texts[0])) {
+  //       if (texts.length === 1 && allUrls && allUrls.length > 0) {
+  //         if (this.parsingErrorLinks.length > 0 && this.parsingErrorLinks.indexOf(texts[0] !== -1)) {
+  //           return true;
+  //         }
+  //         this.isOpenGraphForNewCard = true;
+  //         this.urlForNewCard = texts[0];
+  //         this.props.getOpenGraph(texts[0]);
+  //         return true;
+  //       }
+  //     }
+  //   }
+  //   return false;
+  // }
 
-  checkUrlsInNote() {
-    if (this.checkUrl(this.state.idea)) {
-      return true;
-    }
-    const allUrls = this.state.idea.match(/^(http:\/\/www\.|https:\/\/www\.|http:\/\/|https:\/\/)?[a-z0-9]+([\-\.]{1}[a-z0-9]+)*\.[a-z]{2,5}(:[0-9]{1,5})?(\/.*)?$/gi);
+  checkUrls() {
+    // if (this.checkUrl(this.state.idea)) {
+    //   return true;
+    // }
+    const allUrls = this.state.idea.match(/\bhttps?:\/\/\S+/gi);
     if (allUrls) {
       let newUrls = [];
       const {
@@ -518,7 +509,7 @@ class NewCardScreen extends React.Component {
       } = this.props.card.currentCard;
       if (links) {
         allUrls.forEach(url => {
-          const index = _.findIndex(links, link => link.originalUrl === url);
+          const index = _.findIndex(links, link => link.originalUrl.toLowerCase() === url.toLowerCase());
           if (index === -1) {
             newUrls.push(url);
           }
@@ -531,7 +522,7 @@ class NewCardScreen extends React.Component {
       if (this.parsingErrorLinks.length) {
         filteredUrls = [];
         newUrls.forEach(url => {
-          const index = _.findIndex(this.parsingErrorLinks, errorLink => errorLink === url);
+          const index = _.findIndex(this.parsingErrorLinks, errorLink => errorLink.toLowerCase() === url.toLowerCase());
           if (index === -1) {
             filteredUrls.push(url);
           }
@@ -539,18 +530,18 @@ class NewCardScreen extends React.Component {
       }
 
       if (filteredUrls.length > 0) {
-        this.isOpenGraphForNewCard = false;
-        this.openGraphNoteIndex = 0;
-        this.openGraphForNoteLinks = [];
-        this.noteLinksForOpenGraph = filteredUrls;
-        this.props.getOpenGraph(this.noteLinksForOpenGraph[this.openGraphNoteIndex]);
+        // this.isOpenGraphForNewCard = false;
+        this.indexForOpenGraph = 0;
+        this.openGraphLinksInfo = [];
+        this.linksForOpenGraph = filteredUrls;
+        this.props.getOpenGraph(this.linksForOpenGraph[this.indexForOpenGraph]);
       }
     }
     return false;
   }
 
   parseErrorUrls(message) {
-    const allUrls = message.match(/^(http:\/\/www\.|https:\/\/www\.|http:\/\/|https:\/\/)?[a-z0-9]+([\-\.]{1}[a-z0-9]+)*\.[a-z]{2,5}(:[0-9]{1,5})?(\/.*)?$/gi);
+    const allUrls = message.match(/\bhttps?:\/\/\S+/gi);
     if (allUrls) {
       let newUrls = [];
       allUrls.forEach(url => {
@@ -665,7 +656,7 @@ class NewCardScreen extends React.Component {
   onUpdateCard() {
     const { viewMode } = this.props;
     // if (viewMode === CONSTANTS.CARD_NEW) {
-    //   if (this.checkUrl(this.state.cardName) || this.checkUrlsInNote()) {
+    //   if (this.checkUrl(this.state.cardName) || this.checkUrls()) {
     //     return;
     //   }
     // }
@@ -808,22 +799,25 @@ class NewCardScreen extends React.Component {
   //   }
   // }
   
-  async onChangeIdea(text) {
-    const { viewMode } = this.props;
-    if (viewMode === CONSTANTS.CARD_NEW) {
-      const clipboardContent = await Clipboard.getString();
-      if (clipboardContent === text) {
-        if (this.checkUrl(text)) {
-          return;
+  onChangeIdea(text) {
+    this.setState({
+      idea: text,
+    }, async () => {
+      const { viewMode } = this.props;
+      if (viewMode === CONSTANTS.CARD_NEW) {
+        const clipboardContent = await Clipboard.getString();
+        if (clipboardContent === text) {
+          if (this.checkUrls()) {
+            return;
+          }
         }
       }
-    }
-    this.setState({idea: text});
+    });
   }
 
   onKeyPressIdea(event) {
     if (event.nativeEvent.key === ' ' || event.nativeEvent.key === ',' || event.nativeEvent.key === 'Enter') {
-      this.checkUrlsInNote();
+      this.checkUrls();
     }
   }
 
@@ -848,7 +842,7 @@ class NewCardScreen extends React.Component {
       isShowKeyboardButton: false,
       isEditableIdea: false,
     });
-    this.checkUrlsInNote();
+    this.checkUrls();
   }
 
   onShowLikes(likes) {
@@ -1003,6 +997,7 @@ class NewCardScreen extends React.Component {
         <WebMetaList 
           links={links}
           isFastImage={cardMode !== CONSTANTS.SHARE_EXTENTION_CARD}
+          isShowInSafari={true}
           editable={viewMode !== CONSTANTS.CARD_VIEW}
           onRemove={(linkId) => this.onDeleteLink(linkId)}
         />
@@ -1098,49 +1093,24 @@ class NewCardScreen extends React.Component {
   }
 
   get renderIdeaAndCoverImage() {
-    const { cardMode } = this.props;
-    if (cardMode === CONSTANTS.SHARE_EXTENTION_CARD) {
-      return (
-        <View>
-          {this.renderCoverImage}
-          {this.renderWebMeta}
-          {this.renderIdea}
-        </View>
-      )
-    }
     return (
       <View>
         {this.renderCoverImage}
-        {this.renderIdea}
         {this.renderWebMeta}
+        {this.renderIdea}
       </View>
     )
   }
 
   get renderMainContent() {
     return (
-      <ScrollView
-        enableAutomaticScroll={false}
-        // onScrollBeginDrag={(e) => this.onScrollBeginDrag(e)}
-        // onScroll={(e) => this.onScroll(e)}
-      >
-        {/* <TextInput 
-          style={styles.textInputCardTitle}
-          autoCorrect={true}
-          editable={viewMode === CONSTANTS.CARD_NEW || viewMode === CONSTANTS.CARD_EDIT}
-          placeholder='Type text or paste a link'
-          underlineColorAndroid='transparent'
-          value={this.state.cardName}
-          onChangeText={(value) => this.onChangeTitle(value)}
-          onKeyPress={this.onKeyPressTitle.bind(this)}
-          onFocus={() => this.onFocus()}
-          onBlur={() => this.onBlurTitle()}
-          selectionColor={COLORS.PURPLE}
-        /> */}
-        {this.renderIdeaAndCoverImage}
-        {this.renderDocuments}
-        {this.renderComments}
-      </ScrollView>
+        <ScrollView
+          enableAutomaticScroll={false}
+        >
+          {this.renderIdeaAndCoverImage}
+          {this.renderDocuments}
+          {this.renderComments}
+        </ScrollView>
     );
   }
 
@@ -1361,29 +1331,6 @@ class NewCardScreen extends React.Component {
       );
     }
   }
-
-  // onScrollBeginDrag(e) {
-  //   this.scrollViewLayoutHeight = 0;
-  // }
-
-  // onScroll(e) {
-  //   const { viewMode } = this.props;
-  //   const currentOffsetY = e.nativeEvent.contentOffset.y;
-  //   if (viewMode !== CONSTANTS.CARD_NEW && !this.state.isFullScreenCard && this.scrollViewLayoutHeight === 0 && currentOffsetY > 10) {
-  //     this.scrollViewLayoutHeight = e.nativeEvent.layoutMeasurement.height;
-  //     this.setState({
-  //       isFullScreenCard: true,
-  //       originalCardTopY: CONSTANTS.SCREEN_VERTICAL_MIN_MARGIN,
-  //       originalCardBottomY: CONSTANTS.SCREEN_VERTICAL_MIN_MARGIN,
-  //     }, () => {
-  //       this.animatedShow.setValue(0);
-  //       Animated.timing(this.animatedShow, {
-  //         toValue: 1,
-  //         duration: CONSTANTS.ANIMATEION_MILLI_SECONDS,
-  //       }).start();
-  //     });
-  //   }
-  // }
 
   get renderCard() {
     const { viewMode, cardMode } = this.props;

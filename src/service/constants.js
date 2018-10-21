@@ -53,6 +53,7 @@ export default {
   // App Group
   APP_GROUP_USER_IDENTIFIER: 'group.hunt.mobile.user.info',
   APP_GROUP_TOKEN_IDENTIFIER: 'group.hunt.mobile.token',
+  APP_GROUP_LAST_USED_FEEDO: 'group.hunt.mobile.last.feedo',
 
   // Push Notification
   UNKOWN_PUSH_NOTIFICATION: 'UNKOWN_PUSH_NOTIFICATION',
@@ -65,7 +66,7 @@ export default {
   USER_INVITED_TO_HUNT: 'USER_INVITED_TO_HUNT',
 
   USER_DEVICE_TOKEN: 'USER_DEVICE_TOKEN',
-  CARD_SAVED_FEEDO_ID: 'CARD_SAVED_FEEDO_ID',
+  CARD_SAVED_LAST_FEEDO_INFO: 'CARD_SAVED_LAST_FEEDO_INFO',
 
   // share extension modal buttons
   MODAL_OK: 1,

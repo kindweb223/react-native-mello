@@ -45,7 +45,7 @@ RCT_EXPORT_MODULE();
 RCT_EXPORT_METHOD(close) {
     [extensionContext completeRequestReturningItems:nil
                                   completionHandler:nil];
-//    exit(0);
+    exit(0);
 }
 
 
@@ -125,9 +125,8 @@ RCT_REMAP_METHOD(data,
     }
 }
 
-RCT_EXPORT_METHOD(goToMainApp) {
-  NSString* MainAppURL = @"demos.solvers.io://";
-  NSURL * url = [ NSURL URLWithString: MainAppURL ];
+RCT_EXPORT_METHOD(goToMainApp:(NSString*)mainAppURL) {
+  NSURL * url = [ NSURL URLWithString: mainAppURL ];
   NSString *className = @"UIApplication";
   if ( NSClassFromString(className )) {
     id object = [ NSClassFromString(className) performSelector: @selector(sharedApplication)];
