@@ -29,7 +29,7 @@ class ResetPasswordConfirmScreen extends React.Component {
         activeOpacity={0.6}
         onPress={() => Actions.pop()}
       >
-        <Ionicons name="ios-arrow-back" size={30} color={COLORS.PURPLE} />
+        <Ionicons name="ios-arrow-back" size={32} color={COLORS.PURPLE} />
       </TouchableOpacity>
     );
   }
@@ -47,20 +47,14 @@ class ResetPasswordConfirmScreen extends React.Component {
     }
   }
 
-  componentDidUpdate(prevProps) {
-    const { user } = this.props
+  UNSAFE_componentWillReceiveProps(nextProps) {
+    const { user } = nextProps
 
-    if (prevProps.user.loading === 'RESEND_CONFIRMATION_EMAIL_PENDING' && user.loading === 'RESEND_CONFIRMATION_EMAIL_FULFILLED') {
-      this.setState({ loading: false }, () => {
-        Alert.alert(
-          "We've resent a confirmation email"
-        )
-      })
-    }
-
-    if ((prevProps.user.loading === 'SEND_RESET_PASSWORD_EMAIL_PENDING' && user.loading === 'SEND_RESET_PASSWORD_EMAIL_FULFILLED') ||
-      (prevProps.user.loading === 'SEND_RESET_PASSWORD_EMAIL_PENDING' && user.loading === 'SEND_RESET_PASSWORD_EMAIL_REJECTED')) {
-      this.setState({ loading: false })
+    if (Actions.currentScene === 'ResetPasswordConfirmScreen' || Actions.currentScene === 'ProfileResetPasswordConfirmScreen') {
+      if ((this.props.user.loading === 'SEND_RESET_PASSWORD_EMAIL_PENDING' && user.loading === 'SEND_RESET_PASSWORD_EMAIL_FULFILLED') ||
+        (this.props.user.loading === 'SEND_RESET_PASSWORD_EMAIL_PENDING' && user.loading === 'SEND_RESET_PASSWORD_EMAIL_REJECTED')) {
+        this.setState({ loading: false })
+      }
     }
   }
 

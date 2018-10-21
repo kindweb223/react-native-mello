@@ -80,15 +80,22 @@ class FeedCollapseComponent extends React.Component {
 
     return (
       <View style={styles.contentView}>
-        {feedData.summary.length > 0 && (
-          <TouchableOpacity
-            activeOpacity={0.9}
-            style={styles.summaryView}
-            onPress={() => COMMON_FUNC.isFeedOwnerEditor(feedData) ? this.props.onEditFeed() : {}}
-          >
-            <Text style={styles.summaryText}>{feedData.summary}</Text>
-          </TouchableOpacity>
-        )}
+        {feedData.summary.length > 0
+          ? <TouchableOpacity
+              activeOpacity={0.9}
+              style={styles.summaryView}
+              onPress={() => COMMON_FUNC.isFeedOwnerEditor(feedData) ? this.props.onEditFeed() : {}}
+            >
+              <Text style={styles.summaryText}>{feedData.summary}</Text>
+            </TouchableOpacity>
+          : <TouchableOpacity
+              activeOpacity={0.9}
+              style={styles.summaryView}
+              onPress={() => COMMON_FUNC.isFeedOwnerEditor(feedData) ? this.props.onEditFeed() : {}}
+            >
+              <Text style={styles.summaryPlaceHolderText}>Add a note</Text>
+            </TouchableOpacity>
+        }
 
         {COMMON_FUNC.isFeedOwnerEditor(feedData)
           ? <View>
@@ -125,7 +132,7 @@ class FeedCollapseComponent extends React.Component {
           </View>
         )}
 
-        {feedData.tags && (
+        {feedData.tags.length > 0 && (
           <View style={[styles.tagView, files.length === 0 ? { marginTop: 20 } : { marginTop: 10 }]}>
             <Tags
               initialTags={feedData.tags}
@@ -145,7 +152,7 @@ class FeedCollapseComponent extends React.Component {
           </View>
         )}
 
-        <View style={[styles.footerView, COMMON_FUNC.isFeedOwnerEditor(feedData) ? { marginTop: 20 } : { marginTop: 0 }]}>
+        <View style={[styles.footerView]}>
           <View style={styles.footerLeftView}>
             {COMMON_FUNC.isFeedOwnerEditor(feedData) && (
               <View style={styles.footerLeftBtnView}>

@@ -37,7 +37,7 @@ axios.interceptors.response.use(
       AsyncStorage.removeItem('xAuthToken')
       SharedGroupPreferences.setItem('xAuthToken', null, CONSTANTS.APP_GROUP_TOKEN_IDENTIFIER)
 
-      Actions.LoginStartScreen()
+      Actions.LoginScreen({type: 'replace'})
     }
     throw error
   }
@@ -77,6 +77,37 @@ export default class Root extends React.Component {
     }
 
     this.handleOpenURL = this.handleOpenURL.bind(this)
+  }
+
+  async UNSAFE_componentWillMount() {
+    Linking.getInitialURL()
+    .then((url) => {
+      if (url) {
+        this.resetStackToProperRoute(url)
+      }
+    })
+
+    Linking.addEventListener('url', this.handleOpenURL)
+
+    try {
+      const xAuthToken = await AsyncStorage.getItem('xAuthToken')
+      const userInfo = await AsyncStorage.getItem('userInfo')
+      this.setState({ userInfo })
+      console.log('xAuthToken: ', xAuthToken)
+
+      if (xAuthToken && userInfo) {
+        axios.defaults.headers['x-auth-token'] = xAuthToken
+        Actions.HomeScreen()
+      } else {
+        const userBackInfo = await AsyncStorage.getItem('userBackInfo')
+        if (userBackInfo) {
+          Actions.LoginScreen()
+        }
+      }
+      this.setState({ loading: false })
+    } catch(error) {
+      this.setState({ loading: false })
+    }
   }
 
   componentDidMount() {
@@ -133,7 +164,7 @@ export default class Root extends React.Component {
           if (this.state.userInfo) {
             Actions.FeedDetailScreen({ data })
           } else {
-            Actions.LoginStartScreen()
+            Actions.LoginScreen()
           }
         }
 
@@ -150,32 +181,6 @@ export default class Root extends React.Component {
   handleOpenURL({ url }) {
     this.resetStackToProperRoute(url)
   }
-  
-  async UNSAFE_componentWillMount() {
-    Linking.getInitialURL()
-    .then((url) => {
-      if (url) {
-        this.resetStackToProperRoute(url)
-      }
-    })
-
-    Linking.addEventListener('url', this.handleOpenURL)
-
-    try {
-      const xAuthToken = await AsyncStorage.getItem('xAuthToken')
-      const userInfo = await AsyncStorage.getItem('userInfo')
-      this.setState({ userInfo })
-      console.log('xAuthToken: ', xAuthToken)
-
-      if (xAuthToken && userInfo) {
-        axios.defaults.headers['x-auth-token'] = xAuthToken
-        Actions.HomeScreen()
-      }
-      this.setState({ loading: false })
-    } catch(error) {
-      this.setState({ loading: false })
-    }
-  }
 
   render() {
     const scenes = Actions.create(
@@ -186,14 +191,14 @@ export default class Root extends React.Component {
             <Scene key="LoginScreen" component={ LoginScreen } navigationBarStyle={styles.emptyBorderNavigationBar} />
             <Scene key="SignUpScreen" component={ SignUpScreen } navigationBarStyle={styles.emptyBorderNavigationBar} />
             <Scene key="SignUpConfirmScreen" component={ SignUpConfirmScreen } panHandlers={null} navigationBarStyle={styles.emptyBorderNavigationBar} />
-            <Scene key="TermsAndConditionsScreen" component={ TermsAndConditionsScreen } hideNavBar />
-            <Scene key="HomeScreen" component={ HomeScreen } abcde='abcde' hideNavBar panHandlers={null} />
+            <Scene key="TermsAndConditionsScreen" component={ TermsAndConditionsScreen } navigationBarStyle={styles.emptyBorderNavigationBar} />
+            <Scene key="HomeScreen" component={ HomeScreen } hideNavBar panHandlers={null} />
             <Scene key="FeedDetailScreen" component={ FeedDetailScreen } hideNavBar panHandlers={null} />
             <Scene key="DocumentSliderScreen" component={ DocumentSliderScreen } hideNavBar />
             <Scene key="LikesListScreen" component={ LikesListScreen } navigationBarStyle={styles.defaultNavigationBar} />
             <Scene key="CommentScreen" component={ CommentScreen } navigationBarStyle={styles.defaultNavigationBar} />
             <Scene key="SignUpSuccessScreen" component={ SignUpSuccessScreen } hideNavBar panHandlers={null} />
-            <Scene key="ResetPasswordConfirmScreen" component={ ResetPasswordConfirmScreen } panHandlers={null} navigationBarStyle={styles.emptyBorderNavigationBar} />
+            <Scene key="ResetPasswordConfirmScreen" component={ ResetPasswordConfirmScreen } navigationBarStyle={styles.emptyBorderNavigationBar} />
             <Scene key="ResetPasswordScreen" component={ ResetPasswordScreen } panHandlers={null} navigationBarStyle={styles.emptyBorderNavigationBar} />
             <Scene key="ResetPasswordSuccessScreen" component={ ResetPasswordSuccessScreen } hideNavBar panHandlers={null} />
             <Scene key="FeedFilterScreen" component={ FeedFilterScreen } hideNavBar />
@@ -202,8 +207,8 @@ export default class Root extends React.Component {
             <Stack key="ProfileScreen">
               <Scene key="ProfileScreen" component={ ProfileScreen } hideNavBar navigationBarStyle={styles.defaultNavigationBar} />
               <Scene key="ProfileUpdateScreen" component={ ProfileUpdateScreen } navigationBarStyle={styles.defaultNavigationBar} />
-              <Scene key="ProfileResetPasswordConfirmScreen" component={ ResetPasswordConfirmScreen } panHandlers={null} navigationBarStyle={styles.defaultNavigationBar} />
-              <Scene key="ProfileTermsAndConditionsScreen" component={ TermsAndConditionsScreen } hideNavBar />
+              <Scene key="ProfileResetPasswordConfirmScreen" component={ ResetPasswordConfirmScreen } navigationBarStyle={styles.defaultNavigationBar} />
+              <Scene key="ProfileTermsAndConditionsScreen" component={ TermsAndConditionsScreen } navigationBarStyle={styles.emptyBorderNavigationBar} />
               <Scene key="ArchivedFeedScreen" component={ ArchivedFeedScreen } navigationBarStyle={styles.defaultNavigationBar} />
             </Stack>
           </Stack>

@@ -16,7 +16,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    paddingHorizontal: CONSTANTS.PADDING
+    paddingHorizontal: CONSTANTS.PADDING    
   },
   headerTitle: {
     flex: 1,
@@ -35,8 +35,13 @@ const styles = StyleSheet.create({
   summaryText: {
     fontSize: 16
   },
+  summaryPlaceHolderText: {
+    fontSize: 16,
+    color: COLORS.MEDIUM_GREY
+  },
   tagView: {
     paddingHorizontal: CONSTANTS.PADDING,
+    marginBottom: 10
   },
   imageView: {
     marginTop: 20,
@@ -66,6 +71,7 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     alignItems: 'center',
     paddingHorizontal: 12,
+    marginTop: 10
   },
   footerLeftBtnView: {
     flexDirection: 'row'

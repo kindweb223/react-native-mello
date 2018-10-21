@@ -47,7 +47,10 @@ class SignUpSuccessScreen extends React.Component {
       if (user.userInfo) {
         Actions.HomeScreen()
       } else {
-        Actions.LoginStartScreen()
+        Alert.alert(
+          "Error", "Your confirmation token is no longer valid.\nJust tap resend and we will send you another one"
+        )
+        Actions.SignUpConfirmScreen({type: 'replace'})
       }
     }
 
