@@ -36,7 +36,7 @@ class LoginScreen extends React.Component {
           if (props.page === 'Signup') {
             Actions.pop()
           } else {
-            Actions.LoginStartScreen()
+            Actions.LoginStartScreen({type:'replace'})
           }
         }}
       >

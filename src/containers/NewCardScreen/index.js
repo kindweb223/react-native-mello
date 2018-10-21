@@ -505,7 +505,7 @@ class NewCardScreen extends React.Component {
     // if (this.checkUrl(this.state.idea)) {
     //   return true;
     // }
-    const allUrls = this.state.idea.match(/\bhttps?:\/\/\S+/gi);
+    const allUrls = this.state.idea.match(/^(http:\/\/www\.|https:\/\/www\.|http:\/\/|https:\/\/)?[a-z0-9]+([\-\.]{1}[a-z0-9]+)*\.[a-z]{2,5}(:[0-9]{1,5})?(\/.*)?$/gi);
     if (allUrls) {
       let newUrls = [];
       const {
@@ -545,7 +545,7 @@ class NewCardScreen extends React.Component {
   }
 
   parseErrorUrls(message) {
-    const allUrls = message.match(/\bhttps?:\/\/\S+/gi);
+    const allUrls = message.match(/^(http:\/\/www\.|https:\/\/www\.|http:\/\/|https:\/\/)?[a-z0-9]+([\-\.]{1}[a-z0-9]+)*\.[a-z]{2,5}(:[0-9]{1,5})?(\/.*)?$/gi);
     if (allUrls) {
       let newUrls = [];
       allUrls.forEach(url => {
