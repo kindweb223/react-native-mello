@@ -204,7 +204,7 @@ class HomeScreen extends React.Component {
         this.handleArchiveFeed(this.props.feedo.feedDetailAction.feedId)
       }
     } else if (prevProps.user.loading === 'USER_SIGNOUT_PENDING' && this.props.user.loading === 'USER_SIGNOUT_FULFILLED') {
-      Actions.LoginStartScreen()
+      Actions.LoginScreen()
     } else if (this.props.feedo.loading === 'GET_FEEDO_LIST_FULFILLED' && this.state.currentPushNotificationType === CONSTANTS.USER_INVITED_TO_HUNT && this.state.currentPushNotificationData) {
       const { feedoList, currentPushNotificationData } = this.state
 
