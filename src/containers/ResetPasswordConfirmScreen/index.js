@@ -27,13 +27,7 @@ class ResetPasswordConfirmScreen extends React.Component {
       <TouchableOpacity 
         style={styles.btnBack}
         activeOpacity={0.6}
-        onPress={() => {
-          if (props.page === 'Login') {
-            Actions.LoginScreen()
-          } else {
-            Actions.pop()
-          }
-        }}
+        onPress={() => Actions.pop()}
       >
         <Ionicons name="ios-arrow-back" size={32} color={COLORS.PURPLE} />
       </TouchableOpacity>

@@ -79,6 +79,37 @@ export default class Root extends React.Component {
     this.handleOpenURL = this.handleOpenURL.bind(this)
   }
 
+  async UNSAFE_componentWillMount() {
+    Linking.getInitialURL()
+    .then((url) => {
+      if (url) {
+        this.resetStackToProperRoute(url)
+      }
+    })
+
+    Linking.addEventListener('url', this.handleOpenURL)
+
+    try {
+      const xAuthToken = await AsyncStorage.getItem('xAuthToken')
+      const userInfo = await AsyncStorage.getItem('userInfo')
+      this.setState({ userInfo })
+      console.log('xAuthToken: ', xAuthToken)
+
+      if (xAuthToken && userInfo) {
+        axios.defaults.headers['x-auth-token'] = xAuthToken
+        Actions.HomeScreen()
+      } else {
+        const userBackInfo = await AsyncStorage.getItem('userBackInfo')
+        if (userBackInfo) {
+          Actions.LoginScreen()
+        }
+      }
+      this.setState({ loading: false })
+    } catch(error) {
+      this.setState({ loading: false })
+    }
+  }
+
   componentDidMount() {
     YellowBox.ignoreWarnings(['Module RNDocumentPicker'])
     YellowBox.ignoreWarnings(['Module ReactNativeShareExtension'])
@@ -150,37 +181,6 @@ export default class Root extends React.Component {
   handleOpenURL({ url }) {
     this.resetStackToProperRoute(url)
   }
-  
-  async UNSAFE_componentWillMount() {
-    Linking.getInitialURL()
-    .then((url) => {
-      if (url) {
-        this.resetStackToProperRoute(url)
-      }
-    })
-
-    Linking.addEventListener('url', this.handleOpenURL)
-
-    try {
-      const xAuthToken = await AsyncStorage.getItem('xAuthToken')
-      const userInfo = await AsyncStorage.getItem('userInfo')
-      this.setState({ userInfo })
-      console.log('xAuthToken: ', xAuthToken)
-
-      if (xAuthToken && userInfo) {
-        axios.defaults.headers['x-auth-token'] = xAuthToken
-        Actions.HomeScreen()
-      } else {
-        const userBackInfo = await AsyncStorage.getItem('userBackInfo')
-        if (userBackInfo) {
-          Actions.LoginScreen()
-        }
-      }
-      this.setState({ loading: false })
-    } catch(error) {
-      this.setState({ loading: false })
-    }
-  }
 
   render() {
     const scenes = Actions.create(
@@ -198,7 +198,7 @@ export default class Root extends React.Component {
             <Scene key="LikesListScreen" component={ LikesListScreen } navigationBarStyle={styles.defaultNavigationBar} />
             <Scene key="CommentScreen" component={ CommentScreen } navigationBarStyle={styles.defaultNavigationBar} />
             <Scene key="SignUpSuccessScreen" component={ SignUpSuccessScreen } hideNavBar panHandlers={null} />
-            <Scene key="ResetPasswordConfirmScreen" component={ ResetPasswordConfirmScreen } panHandlers={null} navigationBarStyle={styles.emptyBorderNavigationBar} />
+            <Scene key="ResetPasswordConfirmScreen" component={ ResetPasswordConfirmScreen } navigationBarStyle={styles.emptyBorderNavigationBar} />
             <Scene key="ResetPasswordScreen" component={ ResetPasswordScreen } panHandlers={null} navigationBarStyle={styles.emptyBorderNavigationBar} />
             <Scene key="ResetPasswordSuccessScreen" component={ ResetPasswordSuccessScreen } hideNavBar panHandlers={null} />
             <Scene key="FeedFilterScreen" component={ FeedFilterScreen } hideNavBar />
