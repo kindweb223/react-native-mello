@@ -32,7 +32,7 @@ class LoginScreen extends React.Component {
       <TouchableOpacity 
         style={styles.btnBack}
         activeOpacity={0.6}
-        onPress={() => Actions.pop()}
+        onPress={() => Actions.LoginStartScreen()}
       >
         <Ionicons name="ios-arrow-back" size={32} color={COLORS.PURPLE} />
       </TouchableOpacity>
@@ -106,9 +106,7 @@ class LoginScreen extends React.Component {
 
       if (this.props.user.loading === 'SEND_RESET_PASSWORD_EMAIL_PENDING' && user.loading === 'SEND_RESET_PASSWORD_EMAIL_FULFILLED') {
         this.setState({ loading: false }, () => {
-          if (!user.userInfo) {
-            Actions.ResetPasswordConfirmScreen({ userEmail })
-          }
+          Actions.ResetPasswordConfirmScreen({ userEmail, page: 'Login' })
         })
       }
     }
@@ -214,7 +212,8 @@ class LoginScreen extends React.Component {
 
   render () {
     const {
-      fieldErrors
+      fieldErrors,
+      loading
     } = this.state
 
     const emailError = (_.filter(fieldErrors, item => item.field === 'email'))
@@ -270,7 +269,7 @@ class LoginScreen extends React.Component {
           </View>
         </KeyboardAwareScrollView>
 
-        {this.state.loading && (
+        {loading && (
           <LoadingScreen />
         )}
       </View>

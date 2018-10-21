@@ -16,7 +16,7 @@ class ResetPasswordSuccessScreen extends React.Component {
     const { user } = this.props
 
     setTimeout(() => {
-        Actions.LoginScreen()
+      Actions.LoginScreen()
     }, 2000)
   }
 

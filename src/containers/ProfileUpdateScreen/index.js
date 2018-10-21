@@ -65,36 +65,39 @@ class ProfileUpdateScreen extends React.Component {
     }
   }
 
-  componentDidUpdate(prevProps, prevState) {
-    const { user } = this.props
-    if (prevProps.user.loading === 'UPDATE_PROFILE_PENDING' && user.loading === 'UPDATE_PROFILE_FULFILLED') {
-      this.setState({ loading: false }, () => {
-        Actions.pop()
-      })
-    }
+  UNSAFE_componentWillReceiveProps(nextProps) {
+    const { user } = nextProps
 
-    if (prevProps.user.loading === 'UPDATE_PROFILE_PENDING' && user.loading === 'UPDATE_PROFILE_FULFILLED') {
-      this.setState({ loading: false })
-    }
+    if (Actions.currentScene === 'ProfileUpdateScreen') {
+      if (this.props.user.loading === 'UPDATE_PROFILE_PENDING' && user.loading === 'UPDATE_PROFILE_FULFILLED') {
+        this.setState({ loading: false }, () => {
+          Actions.pop()
+        })
+      }
 
-    if (prevProps.user.loading === 'UPDATE_PASSWORD_PENDING' && user.loading === 'UPDATE_PASSWORD_FULFILLED') {
-      this.setState({ loading: false }, () => {
-        Actions.pop()
-      })
-    }
+      if (this.props.user.loading === 'UPDATE_PROFILE_PENDING' && user.loading === 'UPDATE_PROFILE_FULFILLED') {
+        this.setState({ loading: false })
+      }
 
-    if (prevProps.user.loading === 'UPDATE_PASSWORD_PENDING' && user.loading === 'UPDATE_PASSWORD_REJECTED') {
-      this.setState({ loading: false }, () => {
-        Alert.alert('Error', resolveError(user.error.code, user.error.message));
-      })
-    }
+      if (this.props.user.loading === 'UPDATE_PASSWORD_PENDING' && user.loading === 'UPDATE_PASSWORD_FULFILLED') {
+        this.setState({ loading: false }, () => {
+          Actions.pop()
+        })
+      }
 
-    if (prevProps.user.loading === 'SEND_RESET_PASSWORD_EMAIL_PENDING' && user.loading === 'SEND_RESET_PASSWORD_EMAIL_FULFILLED') {
-      this.setState({ loading: false }, () => {
-        if (user.userInfo) {
-          Actions.ProfileResetPasswordConfirmScreen({ userEmail: this.state.userEmail })
-        }
-      })
+      if (this.props.user.loading === 'UPDATE_PASSWORD_PENDING' && user.loading === 'UPDATE_PASSWORD_REJECTED') {
+        this.setState({ loading: false }, () => {
+          Alert.alert('Error', resolveError(user.error.code, user.error.message));
+        })
+      }
+
+      if (this.props.user.loading === 'SEND_RESET_PASSWORD_EMAIL_PENDING' && user.loading === 'SEND_RESET_PASSWORD_EMAIL_FULFILLED') {
+        this.setState({ loading: false }, () => {
+          if (user.userInfo) {
+            Actions.ProfileResetPasswordConfirmScreen({ userEmail: this.state.userEmail, page: 'Profile' })
+          }
+        })
+      }
     }
   }
 

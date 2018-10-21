@@ -170,6 +170,11 @@ export default class Root extends React.Component {
       if (xAuthToken && userInfo) {
         axios.defaults.headers['x-auth-token'] = xAuthToken
         Actions.HomeScreen()
+      } else {
+        const userBackInfo = await AsyncStorage.getItem('userBackInfo')
+        if (userBackInfo) {
+          Actions.LoginScreen()
+        }
       }
       this.setState({ loading: false })
     } catch(error) {

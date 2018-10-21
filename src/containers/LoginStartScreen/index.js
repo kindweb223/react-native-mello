@@ -19,6 +19,7 @@ import LoadingScreen from '../LoadingScreen'
 import TextRollingComponent from '../../components/TextRollingComponent'
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons'
 import COLORS from '../../service/colors'
+import CONSTANTS from '../../service/constants'
 import styles from './styles'
 
 const FIRST_IMAGE= require('../../../assets/images/LoginSlider/first.png')
@@ -36,7 +37,8 @@ class SwipeFirstScreen extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      videoPaused: true
+      videoPaused: true,
+      offset: 0
     }
   }
 
@@ -116,6 +118,10 @@ class LoginStartScreen extends React.Component {
     Actions.SignUpScreen()
   }
 
+  onMomentumScrollEnd = (e, state, context) => {
+    this.setState({ position: context.state.index })
+  }
+
   render () {
     const { position } = this.state
 
@@ -130,7 +136,7 @@ class LoginStartScreen extends React.Component {
             activeDotStyle={styles.dotStyle}
             activeDotColor={COLORS.PURPLE}
             dotColor={COLORS.MEDIUM_GREY}
-            onIndexChanged={(index) => this.setState({ position: index })}
+            onMomentumScrollEnd={this.onMomentumScrollEnd}
           >           
             <SwipeFirstScreen />
             <SwipeSecondScreen />
