@@ -35,6 +35,10 @@ const styles = StyleSheet.create({
   summaryText: {
     fontSize: 16
   },
+  summaryPlaceHolderText: {
+    fontSize: 16,
+    color: COLORS.MEDIUM_GREY
+  },
   tagView: {
     paddingHorizontal: CONSTANTS.PADDING,
     marginBottom: 10

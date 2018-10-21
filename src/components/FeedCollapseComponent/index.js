@@ -80,15 +80,22 @@ class FeedCollapseComponent extends React.Component {
 
     return (
       <View style={styles.contentView}>
-        {feedData.summary.length > 0 && (
-          <TouchableOpacity
-            activeOpacity={0.9}
-            style={styles.summaryView}
-            onPress={() => COMMON_FUNC.isFeedOwnerEditor(feedData) ? this.props.onEditFeed() : {}}
-          >
-            <Text style={styles.summaryText}>{feedData.summary}</Text>
-          </TouchableOpacity>
-        )}
+        {feedData.summary.length > 0
+          ? <TouchableOpacity
+              activeOpacity={0.9}
+              style={styles.summaryView}
+              onPress={() => COMMON_FUNC.isFeedOwnerEditor(feedData) ? this.props.onEditFeed() : {}}
+            >
+              <Text style={styles.summaryText}>{feedData.summary}</Text>
+            </TouchableOpacity>
+          : <TouchableOpacity
+              activeOpacity={0.9}
+              style={styles.summaryView}
+              onPress={() => COMMON_FUNC.isFeedOwnerEditor(feedData) ? this.props.onEditFeed() : {}}
+            >
+              <Text style={styles.summaryPlaceHolderText}>Add a note</Text>
+            </TouchableOpacity>
+        }
 
         {COMMON_FUNC.isFeedOwnerEditor(feedData)
           ? <View>
