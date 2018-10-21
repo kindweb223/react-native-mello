@@ -94,7 +94,7 @@ class ProfileUpdateScreen extends React.Component {
       if (this.props.user.loading === 'SEND_RESET_PASSWORD_EMAIL_PENDING' && user.loading === 'SEND_RESET_PASSWORD_EMAIL_FULFILLED') {
         this.setState({ loading: false }, () => {
           if (user.userInfo) {
-            Actions.ProfileResetPasswordConfirmScreen({ userEmail: this.state.userEmail, page: 'Profile' })
+            Actions.ProfileResetPasswordConfirmScreen({ userEmail: this.state.userEmail })
           }
         })
       }

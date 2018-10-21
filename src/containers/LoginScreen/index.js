@@ -111,9 +111,7 @@ class LoginScreen extends React.Component {
       }
 
       if (this.props.user.loading === 'SEND_RESET_PASSWORD_EMAIL_PENDING' && user.loading === 'SEND_RESET_PASSWORD_EMAIL_FULFILLED') {
-        this.setState({ loading: false }, () => {
-          Actions.ResetPasswordConfirmScreen({ userEmail, page: 'Login' })
-        })
+        Actions.ResetPasswordConfirmScreen({ userEmail })
       }
     }
   }
@@ -144,7 +142,6 @@ class LoginScreen extends React.Component {
     } else if (!COMMON_FUNC.validateEmail(userEmail)) {
       Alert.alert('Error', 'Email is invalid')
     } else {
-      this.setState({ loading: true })
       const param = {
         email: userEmail
       }
@@ -275,7 +272,7 @@ class LoginScreen extends React.Component {
           </View>
         </KeyboardAwareScrollView>
 
-        {loading && (
+        {(this.props.user.loading === 'SEND_RESET_PASSWORD_EMAIL_PENDING' || loading) && (
           <LoadingScreen />
         )}
       </View>
