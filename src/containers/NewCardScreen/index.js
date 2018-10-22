@@ -62,6 +62,7 @@ import { getDurationFromNow } from '../../service/dateUtils'
 import COLORS from '../../service/colors';
 import CONSTANTS from '../../service/constants';
 import styles from './styles';
+import InputScrollView from '../../components/InputScrollView';
 import LoadingScreen from '../LoadingScreen';
 import DocumentList from '../../components/DocumentListComponent';
 import WebMetaList from '../../components/WebMetaListComponent';
@@ -95,6 +96,7 @@ class NewCardScreen extends React.Component {
       isVisibleSelectFeedoModal: false,
 
       isEditableIdea: false,
+      isGettingFeedoList: false,
     };
 
     this.selectedFile = null;
@@ -322,7 +324,10 @@ class NewCardScreen extends React.Component {
     } else if (this.props.feedo.loading !== feedoTypes.GET_FEEDO_LIST_PENDING && nextProps.feedo.loading === feedoTypes.GET_FEEDO_LIST_PENDING) {
       loading = true;
     } else if (this.props.feedo.loading !== feedoTypes.GET_FEEDO_LIST_FULFILLED && nextProps.feedo.loading === feedoTypes.GET_FEEDO_LIST_FULFILLED) {
-      this.createCard(nextProps);
+      if (this.isGettingFeedoList) {
+        this.isGettingFeedoList = false;
+        this.createCard(nextProps);
+      }
     }
 
 
@@ -413,6 +418,7 @@ class NewCardScreen extends React.Component {
       duration: CONSTANTS.ANIMATEION_MILLI_SECONDS,
     }).start(() => {
       if (this.props.feedo.feedoList.length == 0) {
+        this.isGettingFeedoList = true;
         this.props.getFeedoList(0);
       } else {
         this.createCard(this.props);
@@ -1003,7 +1009,7 @@ class NewCardScreen extends React.Component {
           isFastImage={cardMode !== CONSTANTS.SHARE_EXTENTION_CARD}
           isShowInSafari={true}
           editable={viewMode !== CONSTANTS.CARD_VIEW}
-          onRemove={(linkId) => this.onDeleteLink(linkId)}
+          // onRemove={(linkId) => this.onDeleteLink(linkId)}
         />
       )
     }
@@ -1109,7 +1115,7 @@ class NewCardScreen extends React.Component {
   get renderMainContent() {
     return (
         <ScrollView
-          enableAutomaticScroll={false}
+          // enableAutomaticScroll={false}
         >
           {this.renderIdeaAndCoverImage}
           {this.renderDocuments}

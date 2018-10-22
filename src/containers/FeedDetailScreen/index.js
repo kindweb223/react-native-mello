@@ -145,8 +145,7 @@ class FeedDetailScreen extends React.Component {
   }
 
   async UNSAFE_componentWillReceiveProps(nextProps) {
-    const { feedo, card } = nextProps    
-
+    const { feedo, card } = nextProps
     if ((this.props.feedo.loading === 'ADD_FILE_PENDING' && feedo.loading === 'ADD_FILE_FULFILLED') ||
         (this.props.feedo.loading === 'DELETE_FILE_PENDING' && feedo.loading === 'DELETE_FILE_FULFILLED')) {
       // updating a feed
@@ -155,7 +154,7 @@ class FeedDetailScreen extends React.Component {
       })
     }
 
-    if ((this.props.feedo.loading === 'GET_FEED_DETAIL_PENDING' && feedo.loading === 'GET_FEED_DETAIL_FULFILLED') ||
+    if ((this.props.feedo.loading !== 'GET_FEED_DETAIL_FULFILLED' && feedo.loading === 'GET_FEED_DETAIL_FULFILLED') ||
         (this.props.feedo.loading === 'DELETE_INVITEE_PENDING' && feedo.loading === 'DELETE_INVITEE_FULFILLED') ||
         (this.props.feedo.loading === 'UPDATE_SHARING_PREFERENCES_PENDING' && feedo.loading === 'UPDATE_SHARING_PREFERENCES_FULFILLED') ||
         (this.props.feedo.loading === 'UPDATE_INVITEE_PERMISSION_PENDING' && feedo.loading === 'UPDATE_INVITEE_PERMISSION_FULFILLED') ||
@@ -168,11 +167,9 @@ class FeedDetailScreen extends React.Component {
         (this.props.card.loading === 'UPDATE_CARD_PENDING' && card.loading === 'UPDATE_CARD_FULFILLED') || 
         (this.props.card.loading === 'DELETE_CARD_PENDING' && card.loading === 'DELETE_CARD_FULFILLED') ||
         (this.props.card.loading === 'MOVE_CARD_PENDING' && card.loading === 'MOVE_CARD_FULFILLED')) {
-      
+
       const currentFeed = feedo.currentFeed
-
       this.setBubbles(currentFeed)
-
       this.setState({
         loading: false,
         totalCardCount: currentFeed.ideas.length,
