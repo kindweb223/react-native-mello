@@ -871,7 +871,7 @@ class HomeScreen extends React.Component {
               </View>
             : <ScrollableTabView
                 style={this.state.scrollableTabViewContainer}
-                prerenderingSiblingsNumber={0}
+                content
                 tabBarActiveTextColor={COLORS.PURPLE}
                 tabBarInactiveTextColor={COLORS.MEDIUM_GREY}
                 onChangeTab={this.onChangeTab.bind(this)}

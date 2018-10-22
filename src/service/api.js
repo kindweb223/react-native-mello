@@ -11,3 +11,4 @@ export const xSecretToken = '-kTpbC0bhCQQY2ZKKW7DGAiuK86Ii-t72O-OrUAnBuD4FC2Aw6F
 
 export const SCHEME = 'demos.solvers.io://'
 export const TNC_URL = 'https://d5qq4b94z26us.cloudfront.net/feedo/legal/TandC.md'
+export const PRIVACY_POLICY_URL = 'https://d5qq4b94z26us.cloudfront.net/feedo/legal/privacy-policy.md'

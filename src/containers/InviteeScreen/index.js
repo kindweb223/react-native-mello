@@ -320,7 +320,7 @@ class InviteeScreen extends React.Component {
                       {recentContacts.map(item => (
                         <TouchableOpacity key={item.id} onPress={() => this.onSelectContact(item)}>
                           <View style={styles.inviteeItem}>
-                            <InviteeItemComponent invitee={item} isOnlyTitle={true} />
+                            <InviteeItemComponent invitee={item} hideLike />
                           </View>
                         </TouchableOpacity>
                       ))}
