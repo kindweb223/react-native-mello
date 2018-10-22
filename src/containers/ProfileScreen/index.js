@@ -221,6 +221,7 @@ class ProfileScreen extends React.Component {
       case 1:
         return
       case 2:
+        Actions.ProfilePrivacyPolicyScreen()
         return
       case 3:
         Actions.ProfileTermsAndConditionsScreen()

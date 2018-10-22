@@ -19,25 +19,25 @@ export default StyleSheet.create({
   textInput: {
     margin: 0,
     padding: 0,
-    paddingLeft: 12,
-    paddingRight: 12,
+    paddingLeft: 10,
+    paddingRight: 10,
     flex: 1,
-    height: 32,
-    fontSize: 13,
+    height: 25,
+    fontSize: 14,
     color: "rgba(0, 0, 0, 0.87)"
   },
 
   tag: {
     justifyContent: "center",
     backgroundColor: "#e0e0e0",
-    borderRadius: 16,
-    paddingLeft: 12,
-    paddingRight: 12,
-    height: 32,
+    borderRadius: 12.5,
+    paddingLeft: 10,
+    paddingRight: 10,
+    height: 25,
     marginRight: 8
   },
   tagLabel: {
-    fontSize: 13,
+    fontSize: 14,
     color: "rgba(0, 0, 0, 0.87)"
   }
 });

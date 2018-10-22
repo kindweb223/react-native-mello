@@ -718,12 +718,15 @@ class HomeScreen extends React.Component {
 
   onScrollableTabViewLayout(event, selectedIndex) {
     const { loading } = this.state
-    if (this.state.tabIndex === selectedIndex && !loading) {
-      if (!this.state.scrollableTabViewContainer.height || event.nativeEvent.layout.height > this.state.scrollableTabViewContainer.height) {
-        const height = event.nativeEvent.layout.height;
-        setTimeout(() => {
-          this.setState({ scrollableTabViewContainer: { height: height + 200 } });
-        }, 0);
+
+    if (selectedIndex !== 0) {
+      if (this.state.tabIndex === selectedIndex && !loading) {
+        if (!this.state.scrollableTabViewContainer.height || event.nativeEvent.layout.height > this.state.scrollableTabViewContainer.height) {
+          const height = event.nativeEvent.layout.height;
+          setTimeout(() => {
+            this.setState({ scrollableTabViewContainer: { height: height + CONSTANTS.TAB_BAR_HEIGHT } });
+          }, 0);
+        }
       }
     }
   }
@@ -871,7 +874,7 @@ class HomeScreen extends React.Component {
               </View>
             : <ScrollableTabView
                 style={this.state.scrollableTabViewContainer}
-                prerenderingSiblingsNumber={0}
+                content
                 tabBarActiveTextColor={COLORS.PURPLE}
                 tabBarInactiveTextColor={COLORS.MEDIUM_GREY}
                 onChangeTab={this.onChangeTab.bind(this)}
@@ -886,7 +889,7 @@ class HomeScreen extends React.Component {
                                     />}
               >
                 <View
-                  style={ styles.feedListContainer }
+                  style={styles.feedListContainer}
                   ref={ref => this.scrollTabAll = ref} 
                   tabLabel={{ label: 'All' }}
                   onLayout={(event) => this.onScrollableTabViewLayout(event, 0)}
@@ -911,7 +914,7 @@ class HomeScreen extends React.Component {
                   />
                 </View>
                 <View
-                  style={ styles.feedListContainer }
+                  style={styles.feedListContainer}
                   ref={ref => this.scrollTabPinned = ref}
                   tabLabel={{ label: 'Pinned' }}
                   onLayout={(event) => this.onScrollableTabViewLayout(event, 1)}
@@ -935,7 +938,7 @@ class HomeScreen extends React.Component {
                   }
                 </View>
                 <View
-                  style={ styles.feedListContainer }
+                  style={styles.feedListContainer}
                   ref={ref => this.scrollTabSharedWithMe = ref}
                   tabLabel={{ label: 'Shared with me' }}
                   onLayout={(event) => this.onScrollableTabViewLayout(event, 2)}

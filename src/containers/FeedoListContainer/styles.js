@@ -4,7 +4,7 @@ import COLORS from '../../service/colors'
 
 const styles = StyleSheet.create({
   flatList: {
-    paddingBottom: CONSTANTS.ACTION_BAR_HEIGHT + 50
+    paddingBottom: CONSTANTS.ACTION_BAR_HEIGHT
   },
   separator: {
     borderBottomWidth: 1,
