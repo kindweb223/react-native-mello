@@ -146,7 +146,7 @@ class FeedCollapseComponent extends React.Component {
               }}
               tagTextStyle={{
                 color: COLORS.DARK_ORANGE,
-                fontSize: 16,
+                fontSize: 14,
               }}
             />
           </View>

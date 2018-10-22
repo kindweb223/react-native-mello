@@ -123,11 +123,11 @@ class FeedItemContentComponent extends React.Component {
                 backgroundColor: 'white',
               }}
               tagContainerStyle={{
-                backgroundColor: 'rgba(255, 208, 173, 0.35)'
+                backgroundColor: COLORS.TAG_LIGHT_ORANGE_BACKGROUND
               }}
               tagTextStyle={{
                 color: COLORS.DARK_ORANGE,
-                fontSize: 16,
+                fontSize: 14,
               }}
             />
           </View>
