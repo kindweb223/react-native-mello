@@ -9,8 +9,6 @@ import {
 } from 'react-native'
 import PropTypes from 'prop-types'
 
-import { Actions } from 'react-native-router-flux'
-import Ionicons from 'react-native-vector-icons/Ionicons'
 import SafariView from "react-native-safari-view";
 
 import styles from './styles'
@@ -46,6 +44,19 @@ export default class WebMetaList extends React.Component {
 
   onPressLink(index) {
     const url = this.props.links[index].originalUrl;
+    if (this.props.isShowInSafari) {
+      Linking.canOpenURL(url)
+        .then(supported => {
+          if (!supported) {
+            console.log('Can\'t handle url: ' + url);
+          } else {
+            return Linking.openURL(url);
+          }
+        })
+        .catch(error => console.error('An error occurred', error));
+      return;
+    }
+
     SafariView.isAvailable()
       .then(SafariView.show({
         url: url,
@@ -66,32 +77,34 @@ export default class WebMetaList extends React.Component {
   }
 
   renderItem({item, index}) {
-    if (this.props.isFastImage) {
-      return (
-        <View style={styles.itemContainer}>
-          <TouchableOpacity 
-            style={styles.buttonContainer}
-            activeOpacity={0.7}
-            onPress={() => this.onPressLink(index)}
-          >
-            <FastImage style={styles.imageCover} source={{uri: item.imageUrl}} resizeMode='cover' />
-            <View style={styles.infoContainer}>
-              <Text style={styles.textTitle} numberOfLines={1}>{item.title}</Text>
-              <Text style={styles.textDescription} numberOfLines={1}>{item.description}</Text>
-            </View>
-          </TouchableOpacity>
-          <TouchableOpacity 
-            style={styles.closeButtonContainer}
-            activeOpacity={0.8}
-            onPress={() => this.onRemove(index)}
-          >
-            <View style={styles.closeSubButtonContainer}>
-              <Ionicons name="md-close" size={18} color={'#fff'} style={{marginTop: 2, marginLeft: 1}} />
-            </View>
-          </TouchableOpacity>
-        </View>
-      )
-    }
+    const ImageView = this.props.isFastImage ? FastImage : Image;
+
+    // if (this.props.isFastImage) {
+    //   return (
+    //     <View style={styles.itemContainer}>
+    //       <TouchableOpacity 
+    //         style={styles.buttonContainer}
+    //         activeOpacity={0.7}
+    //         onPress={() => this.onPressLink(index)}
+    //       >
+    //         <FastImage style={styles.imageCover} source={{uri: item.imageUrl}} resizeMode='cover' />
+    //         <View style={styles.infoContainer}>
+    //           <Text style={styles.textTitle} numberOfLines={1}>{item.title}</Text>
+    //           <Text style={styles.textDescription} numberOfLines={1}>{item.description}</Text>
+    //         </View>
+    //       </TouchableOpacity>
+    //       <TouchableOpacity 
+    //         style={styles.closeButtonContainer}
+    //         activeOpacity={0.8}
+    //         onPress={() => this.onRemove(index)}
+    //       >
+    //         <View style={styles.closeSubButtonContainer}>
+    //           <Ionicons name="md-close" size={18} color={'#fff'} style={{marginTop: 2, marginLeft: 1}} />
+    //         </View>
+    //       </TouchableOpacity>
+    //     </View>
+    //   )
+    // }
     return (
       <View style={styles.itemSmallContainer}>
         <TouchableOpacity 
@@ -99,7 +112,7 @@ export default class WebMetaList extends React.Component {
           activeOpacity={0.7}
           onPress={() => this.onPressLink(index)}
         >
-          { item.imageUrl !== '' && <Image style={styles.imageSmallCover} source={{uri: item.imageUrl}} resizeMode='cover' /> }
+          { item.imageUrl !== '' && <ImageView style={styles.imageSmallCover} source={{uri: item.imageUrl}} resizeMode='cover' /> }
           <Text style={styles.textLink} numberOfLines={1}>{item.originalUrl}</Text>
         </TouchableOpacity>
       </View>
@@ -125,6 +138,7 @@ export default class WebMetaList extends React.Component {
 WebMetaList.defaultProps = {
   links: [],
   isFastImage: true,
+  isShowInSafari: false,
   editable: true,
   onRemove: () => {},
 }
@@ -133,6 +147,7 @@ WebMetaList.defaultProps = {
 WebMetaList.propTypes = {
   links: PropTypes.array,
   isFastImage: PropTypes.bool,
+  isShowInSafari: PropTypes.bool,
   editable: PropTypes.bool,
   onRemove: PropTypes.func,
 }

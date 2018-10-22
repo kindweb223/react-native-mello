@@ -4,13 +4,11 @@ import {
   FlatList,
   View,
   TouchableOpacity,
-  Alert,
   Animated,
   Keyboard,
 } from 'react-native'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
-import { Actions } from 'react-native-router-flux'
 
 import Ionicons from 'react-native-vector-icons/Ionicons'
 import _ from 'lodash'
@@ -21,7 +19,6 @@ import NewFeedScreen from '../NewFeedScreen'
 import { 
   setCurrentFeed,
 } from '../../redux/feedo/actions'
-import * as types from '../../redux/feedo/types'
 
 import COLORS from '../../service/colors';
 import CONSTANTS from '../../service/constants';
@@ -37,7 +34,6 @@ class SelectHuntScreen extends React.Component {
       isVisibleNewFeedScreen: false,
       isKeyboardShow: false,
     };
-    this.isVisibleErrorDialog = false;
     this.animatedShow = new Animated.Value(0);
     this.animatedKeyboardHeight = new Animated.Value(0);
   }
@@ -240,6 +236,7 @@ class SelectHuntScreen extends React.Component {
             {this.renderCreateNewFeed}
             <FlatList
               style={{marginTop: 11, marginBottom: 26}}
+              keyboardShouldPersistTaps='handled'
               contentContainerStyle={{paddingHorizontal: 13}}
               data={feedoList}
               renderItem={this.renderItem.bind(this)}

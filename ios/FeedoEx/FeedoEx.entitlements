@@ -6,6 +6,7 @@
 	<array>
 		<string>group.hunt.mobile.user.info</string>
 		<string>group.hunt.mobile.token</string>
+		<string>group.hunt.mobile.last.feedo</string>
 	</array>
 </dict>
 </plist>

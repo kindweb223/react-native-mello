@@ -50,7 +50,7 @@ export default class ShareModalScreen extends React.Component {
           activeOpacity={0.7}
           onPress={this.onPressOk.bind(this)}
         >
-          <Text style={styles.textButton}>OK</Text>
+          <Text style={styles.textButton}>{this.props.okLabel}</Text>
         </TouchableOpacity>
       );
     }
@@ -114,8 +114,9 @@ export default class ShareModalScreen extends React.Component {
 ShareModalScreen.defaultProps = {
   message: 'Oops, you appear to be signed out of Feedo. Tap OK to log in again and try again',
   buttons: CONSTANTS.MODAL_OK | CONSTANTS.MODAL_CLOSE,
+  okLabel: 'OK',
   onOk: () => {
-    ShareExtension.goToMainApp();
+    ShareExtension.goToMainApp('demos.solvers.io://');
   },
   onClose: () => {},
 }
@@ -124,6 +125,7 @@ ShareModalScreen.defaultProps = {
 ShareModalScreen.propTypes = {
   message: PropTypes.string,
   buttons: PropTypes.number,
+  okLabel: PropTypes.string,
   onOk: PropTypes.func,
   onClose: PropTypes.func,
 }
