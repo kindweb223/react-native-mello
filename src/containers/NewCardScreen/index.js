@@ -209,8 +209,9 @@ class NewCardScreen extends React.Component {
           title,
           description,
           image,
+          favicon,
         } = this.openGraphLinksInfo[this.indexForAddedLinks++];
-        this.props.addLink(id, url, title, description, image);
+        this.props.addLink(id, url, title, description, image, favicon);
       } else if (this.props.cardMode !== CONSTANTS.SHARE_EXTENTION_CARD && this.allLinkImages.length > 0) {
         this.setState({
           isVisibleChooseLinkImagesModal: true,
@@ -272,7 +273,8 @@ class NewCardScreen extends React.Component {
         const title = nextProps.card.currentOpneGraph.title;
         const description = nextProps.card.currentOpneGraph.description;
         const image =  nextProps.card.currentOpneGraph.image || this.props.shareImageUrl;
-        this.props.addLink(id, url, title, description, image);
+        const favicon =  nextProps.card.currentOpneGraph.favicon;
+        this.props.addLink(id, url, title, description, image, favicon);
       } else {        
         if (this.allLinkImages.length === 0) {
           if (nextProps.card.currentOpneGraph.images) {
@@ -290,7 +292,8 @@ class NewCardScreen extends React.Component {
           url: this.linksForOpenGraph[this.indexForOpenGraph++],
           title: nextProps.card.currentOpneGraph.title,
           description: nextProps.card.currentOpneGraph.description,
-          image: nextProps.card.currentOpneGraph.image
+          image: nextProps.card.currentOpneGraph.image,
+          favicon: nextProps.card.currentOpneGraph.favicon
         });
 
         if (this.indexForOpenGraph < this.linksForOpenGraph.length) {
@@ -303,8 +306,9 @@ class NewCardScreen extends React.Component {
             title,
             description,
             image,
+            favicon,
           } = this.openGraphLinksInfo[this.indexForAddedLinks++];
-          this.props.addLink(id, url, title, description, image);
+          this.props.addLink(id, url, title, description, image, favicon);
           this.onHideKeyboard();
         }
       }
@@ -1541,7 +1545,7 @@ const mapDispatchToProps = dispatch => ({
   deleteFile: (ideaId, fileId) => dispatch(deleteFile(ideaId, fileId)),
   setCoverImage: (ideaId, fileId) => dispatch(setCoverImage(ideaId, fileId)),
   getOpenGraph: (url) => dispatch(getOpenGraph(url)),
-  addLink: (ideaId, originalUrl, title, description, imageUrl) => dispatch(addLink(ideaId, originalUrl, title, description, imageUrl)),
+  addLink: (ideaId, originalUrl, title, description, imageUrl, faviconUrl) => dispatch(addLink(ideaId, originalUrl, title, description, imageUrl, faviconUrl)),
   deleteLink: (ideaId, linkId) => dispatch(deleteLink(ideaId, linkId)),
   moveCard: (ideaId, huntId) => dispatch(moveCard(ideaId, huntId)),
 })
