@@ -75,7 +75,7 @@ class ProfileUpdateScreen extends React.Component {
         })
       }
 
-      if (this.props.user.loading === 'UPDATE_PROFILE_PENDING' && user.loading === 'UPDATE_PROFILE_FULFILLED') {
+      if (this.props.user.loading === 'UPDATE_PROFILE_PENDING' && user.loading === 'UPDATE_PROFILE_REJECTED') {
         this.setState({ loading: false })
       }
 

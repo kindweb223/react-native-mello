@@ -644,12 +644,18 @@ class NewCardScreen extends React.Component {
       filetype: [DocumentPickerUtil.allFiles()],
     },(error, response) => {
       if (error === null) {
-        let type = 'FILE';
-        const mimeType = mime.lookup(response.uri);
-        if (mimeType.indexOf('image') !== -1 || mimeType.indexOf('video') !== -1) {
-          type = 'MEDIA';
+        if (response.fileSize > 1024 * 1024 * 10) {
+          Alert.alert('Warning', 'File size must be less than 10MB')
+        } else {
+          let type = 'FILE';
+          const mimeType = mime.lookup(response.uri);
+          if (mimeType !== false) {
+            if (mimeType.indexOf('image') !== -1 || mimeType.indexOf('video') !== -1) {
+              type = 'MEDIA';
+            }
+          }
+          this.uploadFile(response, type);
         }
-        this.uploadFile(response, type);
       }      
     });
     return;
@@ -708,10 +714,14 @@ class NewCardScreen extends React.Component {
   pickMediaFromCamera(options) {
     ImagePicker.launchCamera(options, (response)  => {
       if (!response.didCancel) {
-        if (!response.fileName) {
-          response.fileName = response.uri.replace(/^.*[\\\/]/, '')
+        if (response.fileSize > 1024 * 1024 * 10) {
+          Alert.alert('Warning', 'File size must be less than 10MB')
+        } else {
+          if (!response.fileName) {
+            response.fileName = response.uri.replace(/^.*[\\\/]/, '')
+          }
+          this.uploadFile(response, 'MEDIA');
         }
-        this.uploadFile(response, 'MEDIA');
       }
     });
   }
@@ -719,7 +729,11 @@ class NewCardScreen extends React.Component {
   pickMediaFromLibrary(options) {
     ImagePicker.launchImageLibrary(options, (response)  => {
       if (!response.didCancel) {
-        this.uploadFile(response, 'MEDIA');
+        if (response.fileSize > 1024 * 1024 * 10) {
+          Alert.alert('Warning', 'File size must be less than 10MB')
+        } else {
+          this.uploadFile(response, 'MEDIA');
+        }
       }
     });
   }
