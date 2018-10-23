@@ -4,7 +4,8 @@ import {
   Text,
   TouchableOpacity,
   Image,
-  SafeAreaView
+  SafeAreaView,
+  Alert
 } from 'react-native'
 import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
@@ -53,7 +54,9 @@ class CropImageScreen extends React.Component {
       }
 
       if (user.loading === 'GET_USER_IMAGE_URL_REJECTED' || user.loading === 'UPLOAD_FILE_REJECTED' || user.loading === 'UPDATE_PROFILE_REJECTED') {
-        this.setState({ loading: false })
+        this.setState({ loading: false }, () => {
+          Alert.alert('Error', 'Server is failed')
+        })
       }
     }
   }
@@ -68,15 +71,21 @@ class CropImageScreen extends React.Component {
       const fileType = mime.lookup(fileUrl);
 
       this.props.uploadFileToS3(baseUrl, fileUrl, fileName, fileType);
+    } else {
+      this.setState({ loading: false }, () => {
+        Alert.alert('Error', 'Cropping is failed')
+      })
     }
   }
 
   onSave = () => {
     const { userInfo } = this.props.user
+
     this.setState({ loading: true })
     this.imageCrop.crop().then((uri) => {
-      this.setState({ cropUrl: uri })
-      this.props.getImageUrl(userInfo.id)
+      this.setState({ cropUrl: uri }, () => {
+        this.props.getImageUrl(userInfo.id)
+      })
     })
   }
 

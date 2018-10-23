@@ -5,7 +5,8 @@ import {
   TouchableOpacity,
   Image,
   ScrollView,
-  FlatList
+  FlatList,
+  Alert
 } from 'react-native'
 import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
@@ -65,8 +66,6 @@ class ProfileScreen extends React.Component {
   constructor(props) {
     super(props)
     this.state = {
-      avatarFile: {},
-      isCrop: false,
       isShowToaster: false,
       toasterText: '',
       loading: false
@@ -122,11 +121,14 @@ class ProfileScreen extends React.Component {
   pickMediaFromCamera(options) {
     ImagePicker.launchCamera(options, (response)  => {
       if (!response.didCancel) {
-        if (!response.fileName) {
-          response.fileName = response.uri.replace(/^.*[\\\/]/, '')
+        if (response.fileSize > 1024 * 1024 * 10) {
+          Alert.alert('Warning', 'File size must be less than 10MB')
+        } else {
+          if (!response.fileName) {
+            response.fileName = response.uri.replace(/^.*[\\\/]/, '')
+          }
+          Actions.CropImageScreen({ avatarFile: response })
         }
-        this.setState({ avatarFile: response, isCrop: true })
-        Actions.CropImageScreen({ avatarFile: response })
       }
     });
   }
@@ -134,8 +136,11 @@ class ProfileScreen extends React.Component {
   pickMediaFromLibrary(options) {
     ImagePicker.launchImageLibrary(options, (response)  => {
       if (!response.didCancel) {
-        this.setState({ avatarFile: response, isCrop: true })
-        Actions.CropImageScreen({ avatarFile: response })
+        if (response.fileSize > 1024 * 1024 * 10) {
+          Alert.alert('Warning', 'File size must be less than 10MB')
+        } else {
+          Actions.CropImageScreen({ avatarFile: response })
+        }
       }
     });
   }

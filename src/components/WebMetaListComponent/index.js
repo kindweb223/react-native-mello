@@ -112,7 +112,7 @@ export default class WebMetaList extends React.Component {
           activeOpacity={0.7}
           onPress={() => this.onPressLink(index)}
         >
-          { item.imageUrl !== '' && <ImageView style={styles.imageSmallCover} source={{uri: item.imageUrl}} resizeMode='cover' /> }
+          { item.faviconUrl && <ImageView style={styles.imageSmallCover} source={{uri: item.faviconUrl}} resizeMode='cover' /> }
           <Text style={styles.textLink} numberOfLines={1}>{item.originalUrl}</Text>
         </TouchableOpacity>
       </View>

@@ -318,13 +318,14 @@ export const setCoverImage = (ideaId, fileId,) => {
 /**
  * Add a link
  */
-export const addLink = (ideaId, originalUrl, title, description, imageUrl) => {
+export const addLink = (ideaId, originalUrl, title, description, imageUrl, faviconUrl) => {
   let url = `ideas/${ideaId}/links`
   const data = {
     originalUrl,
     title,
     description,
     imageUrl,
+    faviconUrl
   }
   return {
     types: [types.ADD_LINK_PENDING, types.ADD_LINK_FULFILLED, types.ADD_LINK_REJECTED],

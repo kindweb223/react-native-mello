@@ -52,31 +52,33 @@ class SignUpConfirmScreen extends React.Component {
   componentDidUpdate(prevProps) {
     const { user } = this.props
 
-    if (prevProps.user.loading === 'RESEND_CONFIRMATION_EMAIL_PENDING' && user.loading === 'RESEND_CONFIRMATION_EMAIL_FULFILLED') {
-      this.setState({ loading: false }, () => {
-        Alert.alert(
-          "We've resent a confirmation email"
-        )
-      })
-    }
-
-    if (prevProps.user.loading === 'RESEND_CONFIRMATION_EMAIL_PENDING' && user.loading === 'RESEND_CONFIRMATION_EMAIL_FAILED') {
-      this.setState({ loading: false })
-    }
-
-    if (prevProps.user.loading === 'GET_USER_SESSION_PENDING' && user.loading === 'GET_USER_SESSION_FULFILLED') {
-      // Verified from web app
-      clearInterval(this.intervalId)
-      this.intervalId = null
-
-      if (!user.userConfirmed && user.userInfo.emailConfirmed) {
-        Actions.SignUpSuccessScreen()
+    if (Actions.currentScene === 'SignUpConfirmScreen') {
+      if (prevProps.user.loading === 'RESEND_CONFIRMATION_EMAIL_PENDING' && user.loading === 'RESEND_CONFIRMATION_EMAIL_FULFILLED') {
+        this.setState({ loading: false }, () => {
+          Alert.alert(
+            "We've resent a confirmation email"
+          )
+        })
       }
-    }
 
-    if (user.loading === 'USER_CONFIRM_ACCOUNT_PENDING') {
-      clearInterval(this.intervalId)
-      this.intervalId = null
+      if (prevProps.user.loading === 'RESEND_CONFIRMATION_EMAIL_PENDING' && user.loading === 'RESEND_CONFIRMATION_EMAIL_FAILED') {
+        this.setState({ loading: false })
+      }
+
+      if (prevProps.user.loading === 'GET_USER_SESSION_PENDING' && user.loading === 'GET_USER_SESSION_FULFILLED') {
+        // Verified from web app
+        clearInterval(this.intervalId)
+        this.intervalId = null
+
+        if (!user.userConfirmed && user.userInfo.emailConfirmed) {
+          Actions.SignUpSuccessScreen()
+        }
+      }
+
+      if (user.loading === 'USER_CONFIRM_ACCOUNT_PENDING') {
+        clearInterval(this.intervalId)
+        this.intervalId = null
+      }
     }
   }
 
