@@ -121,14 +121,10 @@ class ProfileScreen extends React.Component {
   pickMediaFromCamera(options) {
     ImagePicker.launchCamera(options, (response)  => {
       if (!response.didCancel) {
-        if (response.fileSize > 1024 * 1024 * 10) {
-          Alert.alert('Warning', 'File size must be less than 10MB')
-        } else {
-          if (!response.fileName) {
-            response.fileName = response.uri.replace(/^.*[\\\/]/, '')
-          }
-          Actions.CropImageScreen({ avatarFile: response })
+        if (!response.fileName) {
+          response.fileName = response.uri.replace(/^.*[\\\/]/, '')
         }
+        Actions.CropImageScreen({ avatarFile: response })
       }
     });
   }
@@ -136,11 +132,7 @@ class ProfileScreen extends React.Component {
   pickMediaFromLibrary(options) {
     ImagePicker.launchImageLibrary(options, (response)  => {
       if (!response.didCancel) {
-        if (response.fileSize > 1024 * 1024 * 10) {
-          Alert.alert('Warning', 'File size must be less than 10MB')
-        } else {
-          Actions.CropImageScreen({ avatarFile: response })
-        }
+        Actions.CropImageScreen({ avatarFile: response })
       }
     });
   }
