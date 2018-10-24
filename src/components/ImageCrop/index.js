@@ -159,21 +159,21 @@ class ImageCrop extends Component {
 		let { cropWidth, cropHeight, currentOffsetX, currentOffsetY, scale, minScale, maxScale, lastScale } = this.state
 
 		if (gestureState.numberActiveTouches === 2) {
-			let dx = Math.abs(
-				e.nativeEvent.touches[0].pageX - e.nativeEvent.touches[1].pageX
-			);
-			let dy = Math.abs(
-				e.nativeEvent.touches[0].pageY - e.nativeEvent.touches[1].pageY
-			);
-			let distant = Math.sqrt(dx * dx + dy * dy);
-			let scale = (distant / this.distant) * lastScale;
+			// let dx = Math.abs(
+			// 	e.nativeEvent.touches[0].pageX - e.nativeEvent.touches[1].pageX
+			// );
+			// let dy = Math.abs(
+			// 	e.nativeEvent.touches[0].pageY - e.nativeEvent.touches[1].pageY
+			// );
+			// let distant = Math.sqrt(dx * dx + dy * dy);
+			// let scale = (distant / this.distant) * lastScale;
 
-			if (scale < maxScale && scale > minScale) {
-				this.paddingWidth = (scale - 1) * cropWidth / 2 / scale
-				this.paddingHeight = (scale - 1) * cropHeight / 2 / scale
+			// if (scale < maxScale && scale > minScale) {
+			// 	this.paddingWidth = (scale - 1) * cropWidth / 2 / scale
+			// 	this.paddingHeight = (scale - 1) * cropHeight / 2 / scale
 
-				this.setState({ scale });
-			}
+			// 	this.setState({ scale });
+			// }
 
 		} else {
 			this.setState({ offsetX: currentOffsetX +  gestureState.dx })
