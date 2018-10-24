@@ -10,9 +10,10 @@ import {
 import PropTypes from 'prop-types'
 
 import SafariView from "react-native-safari-view";
+import SvgUri from 'react-native-svg-uri';
+import * as mime from 'react-native-mime-types'
 
 import styles from './styles'
-import CONSTANTS from '../../service/constants'
 import COLORS from '../../service/colors'
 import FastImage from "react-native-fast-image";
 
@@ -76,43 +77,34 @@ export default class WebMetaList extends React.Component {
       });
   }
 
-  renderItem({item, index}) {
-    const ImageView = this.props.isFastImage ? FastImage : Image;
+  renderImage(item) {
+    if (item.faviconUrl) {
+      const mimeType = mime.lookup(item.faviconUrl);
+      if (mimeType !== false && mimeType.indexOf('svg') !== -1) {
+        return (
+          <SvgUri
+            width="24"
+            height="24"
+            source={{uri: item.faviconUrl}}
+          />
+        );
+      }
+      const ImageView = this.props.isFastImage ? FastImage : Image;
+      return (
+        <ImageView style={styles.imageCover} source={{uri: item.faviconUrl}} resizeMode='cover' />
+      );
+    }
+  }
 
-    // if (this.props.isFastImage) {
-    //   return (
-    //     <View style={styles.itemContainer}>
-    //       <TouchableOpacity 
-    //         style={styles.buttonContainer}
-    //         activeOpacity={0.7}
-    //         onPress={() => this.onPressLink(index)}
-    //       >
-    //         <FastImage style={styles.imageCover} source={{uri: item.imageUrl}} resizeMode='cover' />
-    //         <View style={styles.infoContainer}>
-    //           <Text style={styles.textTitle} numberOfLines={1}>{item.title}</Text>
-    //           <Text style={styles.textDescription} numberOfLines={1}>{item.description}</Text>
-    //         </View>
-    //       </TouchableOpacity>
-    //       <TouchableOpacity 
-    //         style={styles.closeButtonContainer}
-    //         activeOpacity={0.8}
-    //         onPress={() => this.onRemove(index)}
-    //       >
-    //         <View style={styles.closeSubButtonContainer}>
-    //           <Ionicons name="md-close" size={18} color={'#fff'} style={{marginTop: 2, marginLeft: 1}} />
-    //         </View>
-    //       </TouchableOpacity>
-    //     </View>
-    //   )
-    // }
+  renderItem({item, index}) {
     return (
-      <View style={styles.itemSmallContainer}>
+      <View style={styles.itemContainer}>
         <TouchableOpacity 
           style={[styles.buttonContainer, {backgroundColor: '#ECECEC'}]}
           activeOpacity={0.7}
           onPress={() => this.onPressLink(index)}
         >
-          { item.imageUrl !== '' && <ImageView style={styles.imageSmallCover} source={{uri: item.imageUrl}} resizeMode='cover' /> }
+          {this.renderImage(item)}
           <Text style={styles.textLink} numberOfLines={1}>{item.originalUrl}</Text>
         </TouchableOpacity>
       </View>
@@ -122,7 +114,7 @@ export default class WebMetaList extends React.Component {
   render () {
     return (
       <FlatList
-        style={this.props.small ? styles.smallContainer : styles.container}
+        style={styles.container}
         showsHorizontalScrollIndicator={false}
         data={this.state.links}
         renderItem={this.renderItem.bind(this)}

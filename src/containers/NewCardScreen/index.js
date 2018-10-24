@@ -97,6 +97,7 @@ class NewCardScreen extends React.Component {
 
       isEditableIdea: false,
       isGettingFeedoList: false,
+      textInputHeight: null,
     };
 
     this.selectedFile = null;
@@ -209,8 +210,9 @@ class NewCardScreen extends React.Component {
           title,
           description,
           image,
+          favicon,
         } = this.openGraphLinksInfo[this.indexForAddedLinks++];
-        this.props.addLink(id, url, title, description, image);
+        this.props.addLink(id, url, title, description, image, favicon);
       } else if (this.props.cardMode !== CONSTANTS.SHARE_EXTENTION_CARD && this.allLinkImages.length > 0) {
         this.setState({
           isVisibleChooseLinkImagesModal: true,
@@ -227,6 +229,12 @@ class NewCardScreen extends React.Component {
     } else if (this.props.card.loading !== types.SET_COVER_IMAGE_FULFILLED && nextProps.card.loading === types.SET_COVER_IMAGE_FULFILLED) {
       this.setState({
         coverImage: nextProps.card.currentCard.coverImage,
+      }, () => {
+        if (this.props.cardMode === CONSTANTS.SHARE_EXTENTION_CARD) {
+          setTimeout(() => {
+            this.inputScrollViewRef.scrollToEnd();
+          }, 0);
+        }
       });
       this.checkUrls();
       // success in setting a file as cover image
@@ -272,7 +280,8 @@ class NewCardScreen extends React.Component {
         const title = nextProps.card.currentOpneGraph.title;
         const description = nextProps.card.currentOpneGraph.description;
         const image =  nextProps.card.currentOpneGraph.image || this.props.shareImageUrl;
-        this.props.addLink(id, url, title, description, image);
+        const favicon =  nextProps.card.currentOpneGraph.favicon;
+        this.props.addLink(id, url, title, description, image, favicon);
       } else {        
         if (this.allLinkImages.length === 0) {
           if (nextProps.card.currentOpneGraph.images) {
@@ -281,18 +290,22 @@ class NewCardScreen extends React.Component {
             this.allLinkImages.push(nextProps.card.currentOpneGraph.image);
           }
         }
-        if (this.state.idea.toLowerCase().indexOf(nextProps.card.currentOpneGraph.url) !== -1 || nextProps.card.currentOpneGraph.url.indexOf(this.state.idea) !== -1) {
+        if (this.state.idea.indexOf(this.linksForOpenGraph[this.indexForOpenGraph]) !== -1 
+          || nextProps.card.currentOpneGraph.url.indexOf(this.linksForOpenGraph[this.indexForOpenGraph]) !== -1) {
           this.setState({
             idea: nextProps.card.currentOpneGraph.title,
           });  
         }
         this.openGraphLinksInfo.push({
-          url: this.linksForOpenGraph[this.indexForOpenGraph++],
+          url: nextProps.card.currentOpneGraph.url,
           title: nextProps.card.currentOpneGraph.title,
           description: nextProps.card.currentOpneGraph.description,
-          image: nextProps.card.currentOpneGraph.image
+          image: nextProps.card.currentOpneGraph.image,
+          favicon: nextProps.card.currentOpneGraph.favicon
         });
-
+        
+        this.indexForOpenGraph ++;
+        
         if (this.indexForOpenGraph < this.linksForOpenGraph.length) {
           this.props.getOpenGraph(this.linksForOpenGraph[this.indexForOpenGraph]);
         } else {
@@ -303,8 +316,9 @@ class NewCardScreen extends React.Component {
             title,
             description,
             image,
+            favicon,
           } = this.openGraphLinksInfo[this.indexForAddedLinks++];
-          this.props.addLink(id, url, title, description, image);
+          this.props.addLink(id, url, title, description, image, favicon);
           this.onHideKeyboard();
         }
       }
@@ -1063,47 +1077,6 @@ class NewCardScreen extends React.Component {
     );
   }
 
-  get renderIdea() {
-    const { viewMode } = this.props;
-    if ((viewMode === CONSTANTS.CARD_NEW) || ((this.state.idea == '' || this.state.isEditableIdea) && (viewMode === CONSTANTS.CARD_EDIT))) {
-      return (
-        <TextInput
-          ref={ref => this.textInputIdeaRef = ref}
-          style={styles.textInputIdea}
-          autoCorrect={true}
-          placeholder='Type text or paste a link'
-          multiline={true}
-          underlineColorAndroid='transparent'
-          value={this.state.idea}
-          onChangeText={(value) => this.onChangeIdea(value)}
-          onKeyPress={this.onKeyPressIdea.bind(this)}
-          onFocus={() => this.onFocus()}
-          onBlur={() => this.onBlurIdea()}
-          selectionColor={COLORS.PURPLE}
-        />
-      )
-    }
-    return (
-      <TouchableOpacity
-        activeOpacity={1}
-        onPress={() => this.onPressIdea()}
-      >
-        <ViewMoreText
-          textStyle={styles.textInputIdea}
-          numberOfLines={3}
-          renderViewMore={this.renderSeeMore.bind(this)}
-          renderViewLess={this.renderSeeLess.bind(this)}
-        >
-          <Autolink
-            style={styles.textInputIdea}
-            text={this.state.idea}
-            onPress={(url, match) => this.onPressLink(url)}
-          />
-        </ViewMoreText>
-      </TouchableOpacity>
-    )
-  }
-
   get renderComments() {
     const { viewMode } = this.props;
     if (viewMode !== CONSTANTS.CARD_NEW) {
@@ -1116,25 +1089,61 @@ class NewCardScreen extends React.Component {
     }
   }
 
-  get renderIdeaAndCoverImage() {
-    return (
-      <View>
-        {this.renderCoverImage}
-        {this.renderWebMeta}
-        {this.renderIdea}
-      </View>
-    )
+  onContentSizeChange({nativeEvent: event}) {
+    this.setState({ textInputHeight: event.contentSize.height });
   }
 
   get renderMainContent() {
+    const { viewMode } = this.props;
+    let isShowTextInput = false;
+    if ((viewMode === CONSTANTS.CARD_NEW) || ((this.state.idea == '' || this.state.isEditableIdea) && (viewMode === CONSTANTS.CARD_EDIT))) {
+      isShowTextInput = true;
+    }
+
     return (
-        <ScrollView
-          // enableAutomaticScroll={false}
+      <View style={{flex: 1}}>
+        <InputScrollView
+          ref={ref => this.inputScrollViewRef = ref}
         >
-          {this.renderIdeaAndCoverImage}
+          {this.renderCoverImage}
+          {this.renderWebMeta}
+          {
+            isShowTextInput ?
+              <TextInput
+                ref={ref => this.textInputIdeaRef = ref}
+                style={[styles.textInputIdea, {height: this.state.textInputHeight}]}
+                autoCorrect={true}
+                placeholder='Type text or paste a link'
+                multiline={true}
+                underlineColorAndroid='transparent'
+                value={this.state.idea}
+                onChangeText={(value) => this.onChangeIdea(value)}
+                onKeyPress={this.onKeyPressIdea.bind(this)}
+                onFocus={() => this.onFocus()}
+                onBlur={() => this.onBlurIdea()}
+                onContentSizeChange={this.onContentSizeChange.bind(this)}
+                selectionColor={COLORS.PURPLE}
+              />
+            :
+              <TouchableOpacity activeOpacity={1} onPress={() => this.onPressIdea()}>
+                <ViewMoreText
+                  textStyle={styles.textInputIdea}
+                  numberOfLines={3}
+                  renderViewMore={this.renderSeeMore.bind(this)}
+                  renderViewLess={this.renderSeeLess.bind(this)}
+                >
+                  <Autolink
+                    style={styles.textInputIdea}
+                    text={this.state.idea}
+                    onPress={(url, match) => this.onPressLink(url)}
+                  />
+                </ViewMoreText>
+              </TouchableOpacity>
+          }
           {this.renderDocuments}
           {this.renderComments}
-        </ScrollView>
+        </InputScrollView>
+      </View>
     );
   }
 
@@ -1541,7 +1550,7 @@ const mapDispatchToProps = dispatch => ({
   deleteFile: (ideaId, fileId) => dispatch(deleteFile(ideaId, fileId)),
   setCoverImage: (ideaId, fileId) => dispatch(setCoverImage(ideaId, fileId)),
   getOpenGraph: (url) => dispatch(getOpenGraph(url)),
-  addLink: (ideaId, originalUrl, title, description, imageUrl) => dispatch(addLink(ideaId, originalUrl, title, description, imageUrl)),
+  addLink: (ideaId, originalUrl, title, description, imageUrl, faviconUrl) => dispatch(addLink(ideaId, originalUrl, title, description, imageUrl, faviconUrl)),
   deleteLink: (ideaId, linkId) => dispatch(deleteLink(ideaId, linkId)),
   moveCard: (ideaId, huntId) => dispatch(moveCard(ideaId, huntId)),
 })
