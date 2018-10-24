@@ -20,6 +20,7 @@ export default {
   TAB_BAR_HEIGHT: 40,
   ANIMATEION_MILLI_SECONDS: 200,
   SCREEN_VERTICAL_MIN_MARGIN: Math.round(height * 0.145),
+  TEXT_INPUT_LINE_HEIGHT: 23,
 
   // Feedo show type
   FEED_NONE: 0,
