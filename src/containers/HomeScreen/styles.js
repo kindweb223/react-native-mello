@@ -64,7 +64,8 @@ const styles = StyleSheet.create({
   },
   feedListView: {
     zIndex: 10,
-    paddingTop: SEARCHBAR_HEIGHT,
+    marginTop: SEARCHBAR_HEIGHT - 15,
+    paddingTop: 15,
     marginBottom: Platform.OS === 'ios' ? ifIphoneX(0, 56) : 56
   },
   feedListContainer: {

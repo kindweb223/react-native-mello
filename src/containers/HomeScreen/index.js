@@ -12,6 +12,7 @@ import {
   StatusBar,
   AsyncStorage,
   AppState,
+  RefreshControl
 } from 'react-native'
 
 import { connect } from 'react-redux'
@@ -102,7 +103,8 @@ class HomeScreen extends React.Component {
       showFeedInvitedNewUserBubble: false,
       showBubbleCloseButton: false,
       isExistingUser: false,
-      showEmptyBubble: false
+      showEmptyBubble: false,
+      isRefreshing: false
     };
 
     this.currentRef = null;
@@ -190,6 +192,7 @@ class HomeScreen extends React.Component {
         (prevProps.feedo.loading !== 'FEED_FULFILLED' && feedo.loading === 'FEED_FULFILLED') ||
         (prevProps.feedo.loading !== 'DEL_FEED_FULFILLED' && feedo.loading === 'DEL_FEED_FULFILLED') ||
         (prevProps.feedo.loading !== 'ARCHIVE_FEED_FULFILLED' && feedo.loading === 'ARCHIVE_FEED_FULFILLED')) {
+      this.setState({ isRefreshing: false })
       await this.setBubbles(feedoList)
     }
 
@@ -778,23 +781,28 @@ class HomeScreen extends React.Component {
     );
   }
 
+  onRefreshFeed = () => {
+    this.setState({ isRefreshing: true })
+    this.props.getFeedoList(this.state.tabIndex)
+  }
+
   render () {
     const { loading, feedoList, emptyState, tabIndex } = this.state
     
     const normalHeaderOpacity = this.state.scrollY.interpolate({
-      inputRange: [20, 60],
+      inputRange: [0, 40],
       outputRange: [1, 0],
       extrapolate: 'clamp'
     })
 
     const miniHeaderOpacity = this.state.scrollY.interpolate({
-      inputRange: [60, 120],
+      inputRange: [40, 100],
       outputRange: [0, 1],
       extrapolate: 'clamp'
     })
 
     const miniHeaderZIndex = this.state.scrollY.interpolate({
-      inputRange: [0, 40, 80],
+      inputRange: [0, 20, 40],
       outputRange: [11, 9, 11],
       extrapolate: 'clamp'
     })
@@ -827,6 +835,13 @@ class HomeScreen extends React.Component {
           </Animated.View>          
 
           <ScrollView
+            refreshControl={
+              <RefreshControl
+                tintColor={COLORS.PURPLE}
+                refreshing={this.state.isRefreshing}
+                onRefresh={() => this.onRefreshFeed()}
+              />
+            }
             ref={ref => this.scrollView = ref}
             scrollEventThrottle={16}
             scrollEnabled={emptyState && tabIndex === 0 ? false : true}
