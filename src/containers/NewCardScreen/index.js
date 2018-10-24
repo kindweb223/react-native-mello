@@ -62,7 +62,6 @@ import { getDurationFromNow } from '../../service/dateUtils'
 import COLORS from '../../service/colors';
 import CONSTANTS from '../../service/constants';
 import styles from './styles';
-import InputScrollView from '../../components/InputScrollView';
 import LoadingScreen from '../LoadingScreen';
 import DocumentList from '../../components/DocumentListComponent';
 import WebMetaList from '../../components/WebMetaListComponent';
@@ -85,6 +84,7 @@ class NewCardScreen extends React.Component {
     this.state = {
       // cardName: '',
       idea: '',
+      textByCursor: '',
       coverImage: null,
 
       loading: false,
@@ -97,7 +97,6 @@ class NewCardScreen extends React.Component {
 
       isEditableIdea: false,
       isGettingFeedoList: false,
-      textInputHeight: null,
     };
 
     this.selectedFile = null;
@@ -130,6 +129,9 @@ class NewCardScreen extends React.Component {
     this.isUpdateDraftCard = false;
 
     this.isUploadShareImage = props.shareImageUrl !== '';
+    this.scrollViewHeight = 0;
+    this.textInputPositionY = 0;
+    this.textInputHeightByCursor = 0;
   }
 
   UNSAFE_componentWillReceiveProps(nextProps) {
@@ -232,7 +234,7 @@ class NewCardScreen extends React.Component {
       }, () => {
         if (this.props.cardMode === CONSTANTS.SHARE_EXTENTION_CARD) {
           setTimeout(() => {
-            this.inputScrollViewRef.scrollToEnd();
+            this.scrollViewRef.scrollToEnd();
           }, 0);
         }
       });
@@ -838,6 +840,7 @@ class NewCardScreen extends React.Component {
   // }
   
   onChangeIdea(text) {
+    // console.log('TextInput - onChangeIdea : ', text);
     this.setState({
       idea: text,
     }, async () => {
@@ -955,8 +958,10 @@ class NewCardScreen extends React.Component {
 
   onPressIdea() {
     const { viewMode } = this.props;
+    this.textInputHeightByCursor = 0;
     this.setState({
       isEditableIdea: true,
+      textByCursor: '',
     }, () => {
       if (viewMode === CONSTANTS.CARD_NEW || viewMode === CONSTANTS.CARD_EDIT) {
         this.textInputIdeaRef.focus();
@@ -1009,22 +1014,103 @@ class NewCardScreen extends React.Component {
         </View>
       );
     }
+  }
 
-    // imageFiles = _.filter(this.props.card.currentCard.files, file => file.contentType.indexOf('image') !== -1);
+  // scroll functions for TextInput
+  scrollContent() {
+    const yPosition = this.textInputPositionY + this.textInputHeightByCursor;
+    if (this.scrollViewHeight > 0 && yPosition > this.scrollViewHeight) {
+      this.scrollViewRef.scrollTo({x: 0, y: yPosition - this.scrollViewHeight + CONSTANTS.TEXT_INPUT_LINE_HEIGHT});
+    }
+  }
 
-    // if (imageFiles.length > 0) {
-    //   return (
-    //     <View style={styles.coverImageSelectContainer}>
-    //       <TouchableOpacity
-    //         style={styles.coverImageSelectButtonWrapper}
-    //         activeOpacity={0.6}
-    //         onPress={() => this.onSelectCoverImage()}
-    //       >
-    //         <Text style={styles.textSelectButton}>Select cover image</Text>
-    //       </TouchableOpacity>
-    //     </View>
-    //   );
-    // }
+  onContentSizeChange({nativeEvent}) {
+    const height = nativeEvent.contentSize.height;
+    if (this.textInputHeightByCursor !== height) {
+      this.textInputHeightByCursor = height;
+      this.scrollContent();
+    }
+  }
+
+  onSelectionChange({nativeEvent}) {
+    const cursorPosition = nativeEvent.selection.end;
+    setTimeout(() => {
+      const textByCursor = this.state.idea.substring(0, cursorPosition);
+      this.setState({
+        textByCursor,
+      });
+    }, 0);    
+  }
+
+  onLayoutTextInput({nativeEvent: {layout}}) {
+    this.textInputPositionY = layout.y;
+  }
+
+  onLayoutScrollView({nativeEvent: {layout}}) {
+    this.scrollViewHeight = layout.height;
+    this.scrollContent();
+  }
+
+  get renderText() {
+    const { viewMode } = this.props;
+    let isShowTextInput = false;
+    if ((viewMode === CONSTANTS.CARD_NEW) || ((this.state.idea == '' || this.state.isEditableIdea) && (viewMode === CONSTANTS.CARD_EDIT))) {
+      isShowTextInput = true;
+    }
+    if (isShowTextInput) {
+      return (
+        <View 
+          style={{flex: 1}}
+          onLayout={this.onLayoutTextInput.bind(this)}
+        >
+          <TextInput
+            style={[styles.textInputIdea, {
+              position: 'absolute',
+              left: 0,
+              right: 0,
+              top: 0,
+              opacity: 0,
+            }]}
+            autoCorrect={false}
+            multiline={true}
+            underlineColorAndroid='transparent'
+            value={this.state.textByCursor}
+            onContentSizeChange={this.onContentSizeChange.bind(this)}
+          />
+          <TextInput
+            ref={ref => this.textInputIdeaRef = ref}
+            style={styles.textInputIdea}
+            autoCorrect={true}
+            placeholder='Type text or paste a link'
+            multiline={true}
+            underlineColorAndroid='transparent'
+            value={this.state.idea}
+            onChangeText={(value) => this.onChangeIdea(value)}
+            onKeyPress={this.onKeyPressIdea.bind(this)}
+            onFocus={() => this.onFocus()}
+            onBlur={() => this.onBlurIdea()}
+            onSelectionChange={this.onSelectionChange.bind(this)}
+            selectionColor={COLORS.PURPLE}
+          />
+        </View>
+      );
+    }
+    return (
+      <TouchableOpacity activeOpacity={1} onPress={() => this.onPressIdea()}>
+        <ViewMoreText
+          textStyle={styles.textInputIdea}
+          numberOfLines={3}
+          renderViewMore={this.renderSeeMore.bind(this)}
+          renderViewLess={this.renderSeeLess.bind(this)}
+        >
+          <Autolink
+            style={styles.textInputIdea}
+            text={this.state.idea}
+            onPress={(url, match) => this.onPressLink(url)}
+          />
+        </ViewMoreText>
+      </TouchableOpacity>
+    );
   }
 
   get renderWebMeta() {
@@ -1035,7 +1121,6 @@ class NewCardScreen extends React.Component {
         <WebMetaList 
           links={links}
           isFastImage={cardMode !== CONSTANTS.SHARE_EXTENTION_CARD}
-          isShowInSafari={true}
           editable={viewMode !== CONSTANTS.CARD_VIEW}
           // onRemove={(linkId) => this.onDeleteLink(linkId)}
         />
@@ -1089,61 +1174,18 @@ class NewCardScreen extends React.Component {
     }
   }
 
-  onContentSizeChange({nativeEvent: event}) {
-    this.setState({ textInputHeight: event.contentSize.height });
-  }
-
   get renderMainContent() {
-    const { viewMode } = this.props;
-    let isShowTextInput = false;
-    if ((viewMode === CONSTANTS.CARD_NEW) || ((this.state.idea == '' || this.state.isEditableIdea) && (viewMode === CONSTANTS.CARD_EDIT))) {
-      isShowTextInput = true;
-    }
-
     return (
-      <View style={{flex: 1}}>
-        <InputScrollView
-          ref={ref => this.inputScrollViewRef = ref}
-        >
-          {this.renderCoverImage}
-          {this.renderWebMeta}
-          {
-            isShowTextInput ?
-              <TextInput
-                ref={ref => this.textInputIdeaRef = ref}
-                style={[styles.textInputIdea, {height: this.state.textInputHeight}]}
-                autoCorrect={true}
-                placeholder='Type text or paste a link'
-                multiline={true}
-                underlineColorAndroid='transparent'
-                value={this.state.idea}
-                onChangeText={(value) => this.onChangeIdea(value)}
-                onKeyPress={this.onKeyPressIdea.bind(this)}
-                onFocus={() => this.onFocus()}
-                onBlur={() => this.onBlurIdea()}
-                onContentSizeChange={this.onContentSizeChange.bind(this)}
-                selectionColor={COLORS.PURPLE}
-              />
-            :
-              <TouchableOpacity activeOpacity={1} onPress={() => this.onPressIdea()}>
-                <ViewMoreText
-                  textStyle={styles.textInputIdea}
-                  numberOfLines={3}
-                  renderViewMore={this.renderSeeMore.bind(this)}
-                  renderViewLess={this.renderSeeLess.bind(this)}
-                >
-                  <Autolink
-                    style={styles.textInputIdea}
-                    text={this.state.idea}
-                    onPress={(url, match) => this.onPressLink(url)}
-                  />
-                </ViewMoreText>
-              </TouchableOpacity>
-          }
-          {this.renderDocuments}
-          {this.renderComments}
-        </InputScrollView>
-      </View>
+      <ScrollView
+        ref={ref => this.scrollViewRef = ref}
+        onLayout={this.onLayoutScrollView.bind(this)}
+      >
+        {this.renderCoverImage}
+        {this.renderWebMeta}
+        {this.renderText}
+        {this.renderDocuments}
+        {this.renderComments}
+      </ScrollView>
     );
   }
 
