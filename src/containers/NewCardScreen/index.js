@@ -229,6 +229,12 @@ class NewCardScreen extends React.Component {
     } else if (this.props.card.loading !== types.SET_COVER_IMAGE_FULFILLED && nextProps.card.loading === types.SET_COVER_IMAGE_FULFILLED) {
       this.setState({
         coverImage: nextProps.card.currentCard.coverImage,
+      }, () => {
+        if (this.props.cardMode === CONSTANTS.SHARE_EXTENTION_CARD) {
+          setTimeout(() => {
+            this.inputScrollViewRef.scrollToEnd();
+          }, 0);
+        }
       });
       this.checkUrls();
       // success in setting a file as cover image
@@ -1096,7 +1102,9 @@ class NewCardScreen extends React.Component {
 
     return (
       <View style={{flex: 1}}>
-        <InputScrollView>
+        <InputScrollView
+          ref={ref => this.inputScrollViewRef = ref}
+        >
           {this.renderCoverImage}
           {this.renderWebMeta}
           {
