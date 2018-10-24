@@ -92,12 +92,12 @@ export default class extends Component {
         this._topOffset = 0;
         this._inputInfoMap = {};
 
-        this._addListener();
+        // this._addListener();
         this._extendScrollViewFunc();
     }
 
     componentWillUnmount() {
-        this._removeListener();
+        // this._removeListener();
     }
 
     render() {
@@ -121,7 +121,7 @@ export default class extends Component {
         const ScrollComponent = useAnimatedScrollView ? Animated.ScrollView : ScrollView;
 
         return (
-            <KeyboardAvoidingView behavior={isIOS ? 'padding' : null}>
+            // <KeyboardAvoidingView behavior={isIOS ? 'padding' : null}>
                 <View style={styles.wrap}>
                     <ScrollComponent ref={this._onRef}
                                      onMomentumScrollEnd={this._onMomentumScrollEnd}
@@ -146,7 +146,7 @@ export default class extends Component {
                         </View>
                     </ScrollComponent>
                 </View>
-            </KeyboardAvoidingView>
+            // </KeyboardAvoidingView>
         );
     }
 
