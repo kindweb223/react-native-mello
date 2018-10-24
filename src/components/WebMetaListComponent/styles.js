@@ -10,7 +10,7 @@ const styles = StyleSheet.create({
   itemContainer: {
     flex: 1,
     height: 40,
-    marginBottom: 5,
+    marginBottom: 0,
   },
   buttonContainer: {
     flex: 1,

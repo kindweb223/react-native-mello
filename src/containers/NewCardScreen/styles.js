@@ -29,7 +29,8 @@ const styles = StyleSheet.create({
   textInputIdea: {
     fontSize: 16,
     lineHeight: 23,
-    marginTop: 16,
+    marginTop: 8,
+    marginBottom: 16,
     marginHorizontal: 16,
     
     paddingLeft: 0,
