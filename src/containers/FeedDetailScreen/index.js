@@ -10,7 +10,8 @@ import {
   TouchableOpacity,
   TouchableHighlight,
   AsyncStorage,
-  Alert
+  Alert,
+  RefreshControl
 } from 'react-native'
 
 import { connect } from 'react-redux'
@@ -123,6 +124,8 @@ class FeedDetailScreen extends React.Component {
       isExistingUser: false,
       showEmptyBubble: false,
       feedoViewMode: CONSTANTS.FEEDO_FROM_MAIN,
+      isRefreshing: false,
+      avatars: []
     };
     this.animatedOpacity = new Animated.Value(0)
     this.menuOpacity = new Animated.Value(0)
@@ -173,6 +176,7 @@ class FeedDetailScreen extends React.Component {
       this.setBubbles(currentFeed)
       this.setState({
         loading: false,
+        isRefreshing: false,
         totalCardCount: currentFeed.ideas.length,
         pinText: !currentFeed.pinned ? 'Pin' : 'Unpin'
       })
@@ -182,9 +186,9 @@ class FeedDetailScreen extends React.Component {
       })
     }
 
-    if (feedo.loading === 'GET_FEED_DETAIL_PENDING') {
-      this.setState({ currentFeed: {} })
-    }
+    // if (feedo.loading === 'GET_FEED_DETAIL_PENDING') {
+    //   this.setState({ currentFeed: {} })
+    // }
 
     if (this.props.feedo.loading === 'GET_FILE_UPLOAD_URL_PENDING' && feedo.loading === 'GET_FILE_UPLOAD_URL_FULFILLED') {
       // success in getting a file upload url
@@ -284,11 +288,23 @@ class FeedDetailScreen extends React.Component {
       sortIdeas = _.orderBy(filterIdeas, ['metadata.comments'], ['desc'])
     }
 
+    let avatars = []
+    if (!_.isEmpty(currentFeed)) {
+      currentFeed.invitees.forEach((item, key) => {
+        avatars = [
+          ...avatars,
+          item.userProfile
+        ]
+      })
+      this.setState({ avatars })
+    }
+
     this.setState({
       currentFeed: {
         ...currentFeed,
         ideas: sortIdeas
-      }
+      },
+      avatars
     })
   }
 
@@ -882,18 +898,13 @@ class FeedDetailScreen extends React.Component {
     this.props.deleteFile(id, fileId)
   }
 
-  render () {
-    const { currentFeed, loading, pinText } = this.state
+  onRefreshFeed = () => {
+    this.setState({ isRefreshing: true })
+    this.props.getFeedDetail(this.props.data.id)
+  }
 
-    let avatars = []
-    if (!_.isEmpty(currentFeed)) {
-      currentFeed.invitees.forEach((item, key) => {
-        avatars = [
-          ...avatars,
-          item.userProfile
-        ]
-      })
-    }
+  render () {
+    const { currentFeed, loading, pinText, avatars } = this.state
 
     return (
       <SafeAreaView style={styles.safeArea}>
@@ -917,6 +928,13 @@ class FeedDetailScreen extends React.Component {
           </View>
 
           <ScrollView
+            refreshControl={
+              <RefreshControl
+                tintColor={COLORS.PURPLE}
+                refreshing={this.state.isRefreshing}
+                onRefresh={() => this.onRefreshFeed()}
+              />
+            }
             scrollEventThrottle={16}
             style={styles.scrollView}
           >     
