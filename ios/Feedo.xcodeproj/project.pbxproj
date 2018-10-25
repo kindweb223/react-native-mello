@@ -1323,7 +1323,7 @@
 					};
 					13B07F861A680F5B00A75B9A = {
 						DevelopmentTeam = B2TWZYTK2Q;
-						ProvisioningStyle = Automatic;
+						ProvisioningStyle = Manual;
 						SystemCapabilities = {
 							com.apple.ApplicationGroups.iOS = {
 								enabled = 1;
@@ -1351,7 +1351,7 @@
 					A4CD668D2139B67F00874CB1 = {
 						CreatedOnToolsVersion = 9.4.1;
 						DevelopmentTeam = B2TWZYTK2Q;
-						ProvisioningStyle = Automatic;
+						ProvisioningStyle = Manual;
 						SystemCapabilities = {
 							com.apple.ApplicationGroups.iOS = {
 								enabled = 1;
@@ -2231,7 +2231,7 @@
 				CODE_SIGN_ENTITLEMENTS = Feedo/Feedo.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
-				CODE_SIGN_STYLE = Automatic;
+				CODE_SIGN_STYLE = Manual;
 				CURRENT_PROJECT_VERSION = 1;
 				DEAD_CODE_STRIPPING = NO;
 				DEVELOPMENT_TEAM = B2TWZYTK2Q;
@@ -2264,8 +2264,8 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = io.solvers.feedo;
 				PRODUCT_NAME = Feedo;
-				PROVISIONING_PROFILE = "";
-				PROVISIONING_PROFILE_SPECIFIER = "";
+				PROVISIONING_PROFILE = "f246c801-94fd-49d5-ac01-1a96b8ac7b8a";
+				PROVISIONING_PROFILE_SPECIFIER = "Feedo Dev";
 				VERSIONING_SYSTEM = "apple-generic";
 			};
 			name = Debug;
@@ -2276,8 +2276,8 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_ENTITLEMENTS = Feedo/Feedo.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Distribution";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
-				CODE_SIGN_STYLE = Automatic;
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution";
+				CODE_SIGN_STYLE = Manual;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = B2TWZYTK2Q;
 				HEADER_SEARCH_PATHS = (
@@ -2309,8 +2309,8 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = io.solvers.feedo;
 				PRODUCT_NAME = Feedo;
-				PROVISIONING_PROFILE = "";
-				PROVISIONING_PROFILE_SPECIFIER = "";
+				PROVISIONING_PROFILE = "ee85223c-26f6-476e-9dcd-2659d75c232d";
+				PROVISIONING_PROFILE_SPECIFIER = "Feedo Dist";
 				VERSIONING_SYSTEM = "apple-generic";
 			};
 			name = Release;
@@ -2616,7 +2616,7 @@
 				CODE_SIGN_ENTITLEMENTS = FeedoEx/FeedoEx.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
-				CODE_SIGN_STYLE = Automatic;
+				CODE_SIGN_STYLE = Manual;
 				DEBUG_INFORMATION_FORMAT = dwarf;
 				DEVELOPMENT_TEAM = B2TWZYTK2Q;
 				ENABLE_TESTABILITY = YES;
@@ -2645,8 +2645,8 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = io.solvers.feedo.ex;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE = "";
-				PROVISIONING_PROFILE_SPECIFIER = "";
+				PROVISIONING_PROFILE = "b608c733-5a0b-4ceb-8e94-6c9e4d269aa3";
+				PROVISIONING_PROFILE_SPECIFIER = "Feedo Ex Dev";
 				SKIP_INSTALL = YES;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
@@ -2672,9 +2672,9 @@
 				CLANG_WARN_SUSPICIOUS_MOVE = YES;
 				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
 				CODE_SIGN_ENTITLEMENTS = FeedoEx/FeedoEx.entitlements;
-				CODE_SIGN_IDENTITY = "iPhone Distribution";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
-				CODE_SIGN_STYLE = Automatic;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution";
+				CODE_SIGN_STYLE = Manual;
 				COPY_PHASE_STRIP = NO;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				DEVELOPMENT_TEAM = B2TWZYTK2Q;
@@ -2703,8 +2703,8 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = io.solvers.feedo.ex;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE = "";
-				PROVISIONING_PROFILE_SPECIFIER = "";
+				PROVISIONING_PROFILE = "3de6438d-df14-464d-bc54-cb31fd5445de";
+				PROVISIONING_PROFILE_SPECIFIER = "Feedo Ex Dist";
 				SKIP_INSTALL = YES;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
