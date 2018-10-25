@@ -11,7 +11,7 @@ import PropTypes from 'prop-types'
 import { Actions } from 'react-native-router-flux'
 import Ionicons from 'react-native-vector-icons/Ionicons'
 import LoadingScreen from '../LoadingScreen'
-import { resendConfirmationEmail, getUserSession } from '../../redux/user/actions'
+import { confirmAccount, resendConfirmationEmail, getUserSession } from '../../redux/user/actions'
 import COLORS from '../../service/colors'
 import CONSTANTS from '../../service/constants'
 import styles from './styles'
@@ -46,14 +46,21 @@ class SignUpConfirmScreen extends React.Component {
   }
 
   componentDidMount() {
-    this.intervalId = setInterval(this.pollSession, 5000)
+    const { token, deepLinking } = this.props
+
+    if (deepLinking) { // from deep_linking (signup confirm)
+      this.setState({ loading: true })
+      this.props.confirmAccount(token)
+    } else {
+      this.intervalId = setInterval(this.pollSession, 5000)
+    }
   }
 
-  componentDidUpdate(prevProps) {
-    const { user } = this.props
+  UNSAFE_componentWillReceiveProps(nextProps) {
+    const { user, deepLinking } = nextProps
 
     if (Actions.currentScene === 'SignUpConfirmScreen') {
-      if (prevProps.user.loading === 'RESEND_CONFIRMATION_EMAIL_PENDING' && user.loading === 'RESEND_CONFIRMATION_EMAIL_FULFILLED') {
+      if (this.props.user.loading === 'RESEND_CONFIRMATION_EMAIL_PENDING' && user.loading === 'RESEND_CONFIRMATION_EMAIL_FULFILLED') {
         this.setState({ loading: false }, () => {
           Alert.alert(
             "We've resent a confirmation email"
@@ -61,23 +68,40 @@ class SignUpConfirmScreen extends React.Component {
         })
       }
 
-      if (prevProps.user.loading === 'RESEND_CONFIRMATION_EMAIL_PENDING' && user.loading === 'RESEND_CONFIRMATION_EMAIL_FAILED') {
+      if (this.props.loading === 'RESEND_CONFIRMATION_EMAIL_PENDING' && user.loading === 'RESEND_CONFIRMATION_EMAIL_FAILED') {
         this.setState({ loading: false })
-      }
-
-      if (prevProps.user.loading === 'GET_USER_SESSION_PENDING' && user.loading === 'GET_USER_SESSION_FULFILLED') {
-        // Verified from web app
-        clearInterval(this.intervalId)
-        this.intervalId = null
-
-        if (!user.userConfirmed && user.userInfo.emailConfirmed) {
-          Actions.SignUpSuccessScreen()
-        }
       }
 
       if (user.loading === 'USER_CONFIRM_ACCOUNT_PENDING') {
         clearInterval(this.intervalId)
         this.intervalId = null
+      }
+
+      if (this.props.user.loading === 'USER_CONFIRM_ACCOUNT_PENDING' && user.loading === 'USER_CONFIRM_ACCOUNT_FULFILLED') {
+        this.props.getUserSession()
+      }
+
+      if (this.props.user.loading === 'USER_CONFIRM_ACCOUNT_PENDING' && user.loading === 'USER_CONFIRM_ACCOUNT_REJECTED') {
+        this.setState({ loading: false })
+
+        if (user.userInfo) {
+          Actions.HomeScreen()
+        } else {
+          Alert.alert(
+            "Error", "Your confirmation token is no longer valid.\nJust tap resend and we will send you another one"
+          )
+        }
+      }
+
+      if (this.props.loading === 'GET_USER_SESSION_PENDING' && user.loading === 'GET_USER_SESSION_FULFILLED') {
+        if (!deepLinking) {     // Verified from web app
+          clearInterval(this.intervalId)
+          this.intervalId = null
+        }
+
+        if (!user.userConfirmed && user.userInfo.emailConfirmed) {
+          Actions.SignUpSuccessScreen()
+        }
       }
     }
   }
@@ -126,11 +150,15 @@ class SignUpConfirmScreen extends React.Component {
 }
 
 SignUpConfirmScreen.defaultProps = {
-  userEmail: ''
+  userEmail: '',
+  token: 'null',
+  deepLinking: false
 }
 
 SignUpConfirmScreen.propTypes = {
-  userEmail: PropTypes.string
+  userEmail: PropTypes.string,
+  token: PropTypes.string,
+  deepLinking: PropTypes.bool
 }
 
 const mapStateToProps = ({ user }) => ({
@@ -138,6 +166,7 @@ const mapStateToProps = ({ user }) => ({
 })
 
 const mapDispatchToProps = dispatch => ({
+  confirmAccount: (token) => dispatch(confirmAccount(token)),
   resendConfirmationEmail: () => dispatch(resendConfirmationEmail()),
   getUserSession: () => dispatch(getUserSession())
 })
