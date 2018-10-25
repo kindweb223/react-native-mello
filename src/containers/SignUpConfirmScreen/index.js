@@ -11,7 +11,7 @@ import PropTypes from 'prop-types'
 import { Actions } from 'react-native-router-flux'
 import Ionicons from 'react-native-vector-icons/Ionicons'
 import LoadingScreen from '../LoadingScreen'
-import { resendConfirmationEmail, getUserSession } from '../../redux/user/actions'
+import { confirmAccount, resendConfirmationEmail, getUserSession } from '../../redux/user/actions'
 import COLORS from '../../service/colors'
 import CONSTANTS from '../../service/constants'
 import styles from './styles'
@@ -45,17 +45,15 @@ class SignUpConfirmScreen extends React.Component {
     }
   }
 
-  componentWillMount() {
+  componentDidMount() {
     const { token, deepLinking } = this.props
 
     if (deepLinking) { // from deep_linking (signup confirm)
       this.setState({ loading: true })
       this.props.confirmAccount(token)
+    } else {
+      this.intervalId = setInterval(this.pollSession, 5000)
     }
-  }
-
-  componentDidMount() {
-    this.intervalId = setInterval(this.pollSession, 5000)
   }
 
   UNSAFE_componentWillReceiveProps(nextProps) {
@@ -168,6 +166,7 @@ const mapStateToProps = ({ user }) => ({
 })
 
 const mapDispatchToProps = dispatch => ({
+  confirmAccount: (token) => dispatch(confirmAccount(token)),
   resendConfirmationEmail: () => dispatch(resendConfirmationEmail()),
   getUserSession: () => dispatch(getUserSession())
 })
