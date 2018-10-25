@@ -37,32 +37,34 @@ class SignUpSuccessScreen extends React.Component {
   UNSAFE_componentWillReceiveProps(nextProps) {
     const { user, deepLinking } = nextProps
 
-    if (user.loading === 'USER_CONFIRM_ACCOUNT_FULFILLED') {
-      this.props.getUserSession()
-    }
-
-    if (user.loading === 'USER_CONFIRM_ACCOUNT_REJECTED') {
-      this.setState({ loading: false })
-
-      if (user.userInfo) {
-        Actions.HomeScreen()
-      } else {
-        Alert.alert(
-          "Error", "Your confirmation token is no longer valid.\nJust tap resend and we will send you another one"
-        )
-        Actions.SignUpConfirmScreen({type: 'replace'})
+    if (Actions.currentScene === 'SignUpSuccessScreen') {
+      if (user.loading === 'USER_CONFIRM_ACCOUNT_FULFILLED') {
+        this.props.getUserSession()
       }
-    }
 
-    if (this.props.user.loading === 'GET_USER_SESSION_PENDING' && user.loading === 'GET_USER_SESSION_FULFILLED') {
-      if (deepLinking) {
-        this.setState({ loading: false }, () => {
-          if (user.userInfo.emailConfirmed) {
-            setTimeout(() => {
-              Actions.HomeScreen()
-            }, 2000)
-          }
-        })
+      if (user.loading === 'USER_CONFIRM_ACCOUNT_REJECTED') {
+        this.setState({ loading: false })
+
+        if (user.userInfo) {
+          Actions.HomeScreen()
+        } else {
+          Alert.alert(
+            "Error", "Your confirmation token is no longer valid.\nJust tap resend and we will send you another one"
+          )
+          Actions.SignUpConfirmScreen({type: 'replace'})
+        }
+      }
+
+      if (this.props.user.loading === 'GET_USER_SESSION_PENDING' && user.loading === 'GET_USER_SESSION_FULFILLED') {
+        if (deepLinking) {
+          this.setState({ loading: false }, () => {
+            if (user.userInfo.emailConfirmed) {
+              setTimeout(() => {
+                Actions.HomeScreen()
+              }, 2000)
+            }
+          })
+        }
       }
     }
   }
