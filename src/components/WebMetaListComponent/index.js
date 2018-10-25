@@ -45,19 +45,6 @@ export default class WebMetaList extends React.Component {
 
   onPressLink(index) {
     const url = this.props.links[index].originalUrl;
-    if (this.props.isShowInSafari) {
-      Linking.canOpenURL(url)
-        .then(supported => {
-          if (!supported) {
-            console.log('Can\'t handle url: ' + url);
-          } else {
-            return Linking.openURL(url);
-          }
-        })
-        .catch(error => console.error('An error occurred', error));
-      return;
-    }
-
     SafariView.isAvailable()
       .then(SafariView.show({
         url: url,
@@ -130,7 +117,6 @@ export default class WebMetaList extends React.Component {
 WebMetaList.defaultProps = {
   links: [],
   isFastImage: true,
-  isShowInSafari: false,
   editable: true,
   onRemove: () => {},
 }
@@ -139,7 +125,6 @@ WebMetaList.defaultProps = {
 WebMetaList.propTypes = {
   links: PropTypes.array,
   isFastImage: PropTypes.bool,
-  isShowInSafari: PropTypes.bool,
   editable: PropTypes.bool,
   onRemove: PropTypes.func,
 }
