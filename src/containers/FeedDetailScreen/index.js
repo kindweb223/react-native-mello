@@ -303,8 +303,7 @@ class FeedDetailScreen extends React.Component {
       currentFeed: {
         ...currentFeed,
         ideas: sortIdeas
-      },
-      avatars
+      }
     })
   }
 
