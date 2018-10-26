@@ -122,10 +122,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
-  selectFeedoModalContainer: {
-    margin: 0,
-    justifyContent: 'center',
-  },
   tagCreationContainer: {
     position: 'absolute',
     top: 0,
