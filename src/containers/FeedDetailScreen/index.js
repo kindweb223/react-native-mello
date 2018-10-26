@@ -152,6 +152,9 @@ class FeedDetailScreen extends React.Component {
 
   async UNSAFE_componentWillReceiveProps(nextProps) {
     const { feedo, card } = nextProps
+    if (this.state.isVisibleSelectFeedo) {
+      return;
+    }
     if ((this.props.feedo.loading === 'ADD_FILE_PENDING' && feedo.loading === 'ADD_FILE_FULFILLED') ||
         (this.props.feedo.loading === 'DELETE_FILE_PENDING' && feedo.loading === 'DELETE_FILE_FULFILLED')) {
       // updating a feed
@@ -172,8 +175,7 @@ class FeedDetailScreen extends React.Component {
         (this.props.feedo.loading === 'REMOVE_HUNT_TAG_PENDING' && feedo.loading === 'REMOVE_HUNT_TAG_FULFILLED') ||
         (this.props.card.loading === 'UPDATE_CARD_PENDING' && card.loading === 'UPDATE_CARD_FULFILLED') || 
         (this.props.card.loading === 'DELETE_CARD_PENDING' && card.loading === 'DELETE_CARD_FULFILLED') ||
-        (this.props.card.loading === 'MOVE_CARD_PENDING' && card.loading === 'MOVE_CARD_FULFILLED') ||
-        (this.props.feedo.loading !== 'SET_CURRENT_FEED' && feedo.loading === 'SET_CURRENT_FEED')) {
+        (this.props.card.loading === 'MOVE_CARD_PENDING' && card.loading === 'MOVE_CARD_FULFILLED')) {
 
       const currentFeed = feedo.currentFeed
       this.setBubbles(currentFeed)
@@ -916,11 +918,13 @@ class FeedDetailScreen extends React.Component {
 
   get renderSelectHunt() {
     if (this.state.isVisibleSelectFeedo) {
+      const { currentFeed } = this.state
       return (
         <View style={[styles.modalContainer, {backgroundColor: 'transparent'}]}>
           <SelectHuntScreen
             selectMode={CONSTANTS.FEEDO_SELECT_FROM_MOVE_CARD}
             feedos={this.props.feedo.feedoList}
+            hiddenFeedoId={currentFeed.id}
             direction='top'
             onClosed={() => this.onCloseSelectFeedoModal()}
           />

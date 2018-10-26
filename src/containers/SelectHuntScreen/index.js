@@ -213,6 +213,9 @@ class SelectHuntScreen extends React.Component {
       outputRange: [CONSTANTS.SCREEN_WIDTH, 0],
     });
     let feedoList = this.props.feedos;
+    if (this.props.hiddenFeedoId) {
+      feedoList = _.filter(feedoList, feedo => feedo.id !== this.props.hiddenFeedoId);
+    }
     if (feedoList && feedoList.length > 0 && this.state.filterText) {
       feedoList = _.filter(feedoList, feedo => feedo.headline.toLowerCase().indexOf(this.state.filterText.toLowerCase()) !== -1);
     }
@@ -290,6 +293,7 @@ class SelectHuntScreen extends React.Component {
 SelectHuntScreen.defaultProps = {
   selectMode: CONSTANTS.FEEDO_SELECT_FROM_MAIN,
   feedos: [],
+  hiddenFeedoId: null,
   direction: 'left',
   onClosed: () => {},
 }
@@ -298,6 +302,7 @@ SelectHuntScreen.defaultProps = {
 SelectHuntScreen.propTypes = {
   selectMode: PropTypes.number,
   feedos: PropTypes.array,
+  hiddenFeedoId: PropTypes.string,
   direction: PropTypes.string,
   onClosed: PropTypes.func,
 }
