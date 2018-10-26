@@ -152,8 +152,8 @@ class FeedCollapseComponent extends React.Component {
           </View>
         )}
 
-        <View style={[styles.footerView]}>
-          <View style={styles.footerLeftView}>
+        <View style={styles.footerView}>
+          <View>
             {COMMON_FUNC.isFeedOwnerEditor(feedData) && (
               <View style={styles.footerLeftBtnView}>
                 <TouchableOpacity
