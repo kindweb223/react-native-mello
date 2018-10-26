@@ -41,7 +41,7 @@ import ShareScreen from '../ShareScreen'
 import NewFeedScreen from '../NewFeedScreen'
 import CardFilterComponent from '../../components/CardFilterComponent'
 import CardLongHoldMenuScreen from '../CardLongHoldMenuScreen'
-import SelectFeedoComponent from '../../components/SelectFeedoComponent'
+import SelectHuntScreen from '../SelectHuntScreen';
 import TagCreateScreen from '..//TagCreateScreen'
 import NewCardScreen from '../NewCardScreen'
 import LoadingScreen from '../LoadingScreen'
@@ -60,7 +60,8 @@ import {
   getFileUploadUrl,
   uploadFileToS3,
   addFile,
-  deleteFile
+  deleteFile,
+  setCurrentFeed
 } from '../../redux/feedo/actions';
 import {
   setCurrentCard,
@@ -141,6 +142,7 @@ class FeedDetailScreen extends React.Component {
     this.selectedFileMimeType = null
     this.selectedFileType = null
     this.selectedFileName = null
+    this.prevFeedo = null;
   }
 
   componentDidMount() {
@@ -170,7 +172,8 @@ class FeedDetailScreen extends React.Component {
         (this.props.feedo.loading === 'REMOVE_HUNT_TAG_PENDING' && feedo.loading === 'REMOVE_HUNT_TAG_FULFILLED') ||
         (this.props.card.loading === 'UPDATE_CARD_PENDING' && card.loading === 'UPDATE_CARD_FULFILLED') || 
         (this.props.card.loading === 'DELETE_CARD_PENDING' && card.loading === 'DELETE_CARD_FULFILLED') ||
-        (this.props.card.loading === 'MOVE_CARD_PENDING' && card.loading === 'MOVE_CARD_FULFILLED')) {
+        (this.props.card.loading === 'MOVE_CARD_PENDING' && card.loading === 'MOVE_CARD_FULFILLED') ||
+        (this.props.feedo.loading !== 'SET_CURRENT_FEED' && feedo.loading === 'SET_CURRENT_FEED')) {
 
       const currentFeed = feedo.currentFeed
       this.setBubbles(currentFeed)
@@ -592,39 +595,11 @@ class FeedDetailScreen extends React.Component {
 
   onHiddenLongHoldMenu() {
     if (this.state.currentActionType === ACTION_CARD_MOVE) {
+      this.prevFeedo = this.props.feedo.currentFeed;
       this.setState({
         isVisibleSelectFeedo: true,
       });
     }
-  }
-
-  onSelectFeedoToMoveCard(feedoId) {
-    this.setState((state) => { 
-      state.isVisibleSelectFeedo = false;
-      state.currentActionType = ACTION_CARD_MOVE;
-      state.isShowToaster = true;
-      state.toasterTitle = 'Card moved';
-      const filterIdeas = _.filter(state.currentFeed.ideas, idea => idea.id !== this.moveCardId)
-      state.currentFeed.ideas = filterIdeas;
-      return state;
-    });
-    setTimeout(() => {
-      this.setState({ isShowToaster: false })
-      if (this.state.currentActionType === ACTION_CARD_MOVE) {
-        this.props.moveCard(this.moveCardId, feedoId);
-        this.moveCardId = -1;
-      }
-    }, TOASTER_DURATION + 5)
-  }
-
-  onHiddenSelectFeedo() {    
-  }
-
-  onCloseSelectFeedoModal() {
-    this.setState({
-      isVisibleSelectFeedo: false,
-      currentActionType: ACTION_NONE,
-    });
   }
 
   onMoveCard(ideaId) {
@@ -902,6 +877,58 @@ class FeedDetailScreen extends React.Component {
     this.props.getFeedDetail(this.props.data.id)
   }
 
+
+  onSelectFeedoToMoveCard(feedoId) {
+    this.prevFeedo = null;
+    this.setState((state) => { 
+      state.isVisibleSelectFeedo = false;
+      state.currentActionType = ACTION_CARD_MOVE;
+      state.isShowToaster = true;
+      state.toasterTitle = 'Card moved';
+      const filterIdeas = _.filter(state.currentFeed.ideas, idea => idea.id !== this.moveCardId)
+      state.currentFeed.ideas = filterIdeas;
+      return state;
+    });
+    setTimeout(() => {
+      this.setState({ isShowToaster: false })
+      if (this.state.currentActionType === ACTION_CARD_MOVE) {
+        this.props.moveCard(this.moveCardId, feedoId);
+        this.moveCardId = -1;
+      }
+    }, TOASTER_DURATION + 5)
+  }
+
+  onCloseSelectFeedoModal() {
+    if (this.prevFeedo.id !== this.props.feedo.currentFeed.id) {
+      const moveToFeedo = this.props.feedo.currentFeed;
+      this.props.setCurrentFeed(this.prevFeedo);
+      if (moveToFeedo.id) {
+        this.onSelectFeedoToMoveCard(moveToFeedo.id);
+        return;
+      }
+    }
+    this.prevFeedo = null;
+    this.setState({
+      isVisibleSelectFeedo: false,
+      currentActionType: ACTION_NONE,
+    });
+  }
+
+  get renderSelectHunt() {
+    if (this.state.isVisibleSelectFeedo) {
+      return (
+        <View style={[styles.modalContainer, {backgroundColor: 'transparent'}]}>
+          <SelectHuntScreen
+            selectMode={CONSTANTS.FEEDO_SELECT_FROM_MOVE_CARD}
+            feedos={this.props.feedo.feedoList}
+            direction='top'
+            onClosed={() => this.onCloseSelectFeedoModal()}
+          />
+        </View>
+      );
+    }
+  }
+
   render () {
     const { currentFeed, loading, pinText, avatars } = this.state
 
@@ -1033,7 +1060,6 @@ class FeedDetailScreen extends React.Component {
               </View>
             </GestureRecognizer>
           </ScrollView>
-
         </View>
 
         {this.renderCreateTag}
@@ -1048,7 +1074,8 @@ class FeedDetailScreen extends React.Component {
         />
 
         {this.renderNewCardModal}
-        
+        {this.renderSelectHunt}
+
         <ActionSheet
           ref={ref => this.feedoActionSheet = ref}
           title={'Are you sure you want to delete this feed, everything will be gone ...'}
@@ -1147,23 +1174,6 @@ class FeedDetailScreen extends React.Component {
           />
         </Modal>
 
-        <Modal 
-          isVisible={this.state.isVisibleSelectFeedo}
-          style={styles.selectFeedoModalContainer}
-          backdropColor='#f5f5f5'
-          backdropOpacity={0.9}
-          animationIn="zoomInUp"
-          animationOut="zoomOutDown"
-          animationInTiming={500}
-          onModalHide={this.onHiddenSelectFeedo.bind(this)}
-          onBackdropPress={() => this.setState({isVisibleSelectFeedo: false})}
-        >
-          <SelectFeedoComponent 
-            onClose={this.onCloseSelectFeedoModal.bind(this)}
-            onSelectFeedo={this.onSelectFeedoToMoveCard.bind(this)}
-          />
-        </Modal>
-
         <CardFilterComponent
           cardCount={currentFeed && currentFeed.ideas ? currentFeed.ideas.length : 0}
           totalCardCount={this.state.totalCardCount}
@@ -1210,7 +1220,8 @@ const mapDispatchToProps = dispatch => ({
   getFileUploadUrl: (id) => dispatch(getFileUploadUrl(id)),
   uploadFileToS3: (signedUrl, file, fileName, mimeType) => dispatch(uploadFileToS3(signedUrl, file, fileName, mimeType)),
   addFile: (feedId, fileType, contentType, name, objectKey) => dispatch(addFile(feedId, fileType, contentType, name, objectKey)),
-  deleteFile: (feedId, fileId) => dispatch(deleteFile(feedId, fileId))
+  deleteFile: (feedId, fileId) => dispatch(deleteFile(feedId, fileId)),
+  setCurrentFeed: (data) => dispatch(setCurrentFeed(data)),
 })
 
 FeedDetailScreen.defaultProps = {
