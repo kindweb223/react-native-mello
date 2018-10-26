@@ -60,7 +60,7 @@ import {
 import { 
   setUserInfo,
   addDeviceToken,
-  updateDeviceToken,
+  updateDeviceToken
 } from '../../redux/user/actions'
 
 import { 
@@ -184,7 +184,7 @@ class HomeScreen extends React.Component {
   }
 
   async componentDidUpdate(prevProps) {
-    const { feedo } = this.props
+    const { feedo, user } = this.props
     const { feedoList } = feedo
 
     if ((prevProps.feedo.loading === 'GET_FEEDO_LIST_PENDING' && feedo.loading === 'GET_FEEDO_LIST_FULFILLED') ||
@@ -1050,7 +1050,7 @@ const mapDispatchToProps = dispatch => ({
   setUserInfo: (data) => dispatch(setUserInfo(data)),
   addDeviceToken: (userId, data) => dispatch(addDeviceToken(userId, data)),
   updateDeviceToken: (userId, deviceId, data) => dispatch(updateDeviceToken(userId, deviceId, data)),
-  getCard: (ideaId) => dispatch(getCard(ideaId)),
+  getCard: (ideaId) => dispatch(getCard(ideaId))
 })
 
 HomeScreen.propTypes = {

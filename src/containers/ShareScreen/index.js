@@ -20,7 +20,7 @@ import LinkShareModalComponent from '../../components/LinkShareModalComponent'
 import LinkShareItem from '../../components/LinkShareModalComponent/LinkShareItem'
 import InviteeItemComponent from '../../components/LinkShareModalComponent/InviteeItemComponent'
 import InviteeScreen from '../InviteeScreen'
-import { SERVER_URL } from '../../service/api'
+import { SHARE_LINK_URL } from '../../service/api'
 import { updateSharingPreferences, deleteInvitee, updateInviteePermission } from '../../redux/feedo/actions'
 import COLORS from '../../service/colors'
 import * as COMMON_FUNC from '../../service/commonFunc'
@@ -102,7 +102,7 @@ class ShareScreen extends React.Component {
 
     Share.share({
       message: data.summary,
-      url: `${SERVER_URL}${data.id}`,
+      url: `${SHARE_LINK_URL}${data.id}`,
       title: data.headline
     },{
       dialogTitle: data.headline,
