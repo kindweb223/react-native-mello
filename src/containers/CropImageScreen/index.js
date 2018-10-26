@@ -34,12 +34,12 @@ class CropImageScreen extends React.Component {
     const { user } = nextProps
 
     if (Actions.currentScene === 'CropImageScreen') {
-      if (this.props.user.loading === 'GET_USER_IMAGE_URL_PENDING' && user.loading === 'GET_USER_IMAGE_URL_FULFILLED') {
+      if (this.props.user.loading !== 'GET_USER_IMAGE_URL_FULFILLED' && user.loading === 'GET_USER_IMAGE_URL_FULFILLED') {
         const { userImageUrlData } = user
         this.uploadImage(userImageUrlData)
       }
 
-      if (this.props.user.loading === 'UPLOAD_FILE_PENDING' && user.loading === 'UPLOAD_FILE_FULFILLED') {
+      if (this.props.user.loading !== 'UPLOAD_FILE_FULFILLED' && user.loading === 'UPLOAD_FILE_FULFILLED') {
         const { userInfo, userImageUrlData } = user
         const param = {
           imageUrl: userImageUrlData.objectKey
@@ -47,7 +47,7 @@ class CropImageScreen extends React.Component {
         this.props.updateProfile(userInfo.id, param)
       }
 
-      if (this.props.user.loading === 'UPDATE_PROFILE_PENDING' && user.loading === 'UPDATE_PROFILE_FULFILLED') {
+      if (this.props.user.loading !== 'UPDATE_PROFILE_FULFILLED' && user.loading === 'UPDATE_PROFILE_FULFILLED') {
         this.setState({ loading: false }, () => {
           Actions.pop()
         })
