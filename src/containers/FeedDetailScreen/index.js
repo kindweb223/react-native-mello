@@ -986,6 +986,7 @@ class FeedDetailScreen extends React.Component {
                       onAddDocument={this.onAddDocument}
                       deleteFile={this.onDeleteFile}
                     />
+                    <View style={[styles.separator, styles.collpaseSeparator]} />
                   </View>
                 )}
 

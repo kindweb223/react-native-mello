@@ -16,13 +16,14 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    paddingHorizontal: CONSTANTS.PADDING    
+    paddingHorizontal: 12
   },
   headerTitle: {
     flex: 1,
     lineHeight: 28,
     fontSize: 28,
     fontWeight: 'bold',
+    marginLeft: 4,
     color: COLORS.PRIMARY_BLACK
   },
   contentView: {

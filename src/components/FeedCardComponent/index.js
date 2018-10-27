@@ -47,7 +47,7 @@ class FeedCardComponent extends React.Component {
                 <View key="0" style={styles.avatar}>
                   <UserAvatarComponent
                     user={invitee.userProfile}
-                    size={30}
+                    size={24}
                   />
                 </View>,
                 <Text key="1" style={styles.text}>{invitee.userProfile.firstName}</Text>,
