@@ -99,7 +99,7 @@ class SignUpConfirmScreen extends React.Component {
           this.intervalId = null
         }
 
-        if (!user.userConfirmed && user.userInfo.emailConfirmed) {
+        if (user.userInfo.emailConfirmed) {
           Actions.SignUpSuccessScreen()
         }
       }
