@@ -44,7 +44,8 @@ export default {
 
   // Select feedo type in share extension
   FEEDO_SELECT_FROM_MAIN: 1,
-  FEEDO_SELECT_FROM_SHARE_EXTENSION: 2,
+  FEEDO_SELECT_FROM_MOVE_CARD: 2,
+  FEEDO_SELECT_FROM_SHARE_EXTENSION: 3,
 
   // Card type for main app (dashboard / feedo detail) or share extension
   MAIN_APP_CARD_FROM_DETAIL: 1,

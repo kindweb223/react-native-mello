@@ -554,7 +554,6 @@ export default function user(state = initialState, action = {}) {
       }
     }
 
-
     default:
       return state;
   }

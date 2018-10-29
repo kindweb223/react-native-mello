@@ -71,19 +71,17 @@ const styles = StyleSheet.create({
   },
   collapseView: {
     width: '100%',
-    paddingBottom: 16,
-    paddingTop: 0,
     marginBottom: 16,
+    paddingTop: 0,
     backgroundColor: '#fff',
-    borderBottomColor: COLORS.LIGHT_GREY_LINE,
-    borderBottomWidth: 1,
-    zIndex: 11,
+    zIndex: 11
   },
-  scrollView: {
+  collpaseSeparator: {
+    marginTop: 16
   },
   detailView: {
     paddingTop: 10,
-    paddingBottom: Platform.OS === 'ios' ? ifIphoneX(120, 10) : 10,
+    paddingBottom: Platform.OS === 'ios' ? ifIphoneX(120, 10) : 10
   },
   modalContainer: {
     position: 'absolute',
@@ -122,10 +120,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
-  selectFeedoModalContainer: {
-    margin: 0,
-    justifyContent: 'center',
-  },
   tagCreationContainer: {
     position: 'absolute',
     top: 0,
@@ -136,9 +130,10 @@ const styles = StyleSheet.create({
     zIndex: 100
   },
   separator: {
-    borderBottomWidth: 1,
-    borderBottomColor: COLORS.LIGHT_GREY_LINE,
-    marginTop: 6,
+    backgroundColor: COLORS.LIGHT_GREY_LINE,
+    width: CONSTANTS.SCREEN_SUB_WIDTH,
+    height: 1,
+    marginLeft: CONSTANTS.PADDING
   }
 })
 
