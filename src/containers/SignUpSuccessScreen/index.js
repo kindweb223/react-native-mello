@@ -22,7 +22,7 @@ class SignUpSuccessScreen extends React.Component {
   componentWillMount() {
     setTimeout(() => {
       Actions.HomeScreen()
-    }, 2000)
+    }, 4000)
   }
 
   render () {

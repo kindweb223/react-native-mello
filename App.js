@@ -147,7 +147,7 @@ export default class Root extends React.Component {
               Actions.HomeScreen()
             } else {
               // Actions.SignUpSuccessScreen({ token, deepLinking: true })
-              Actions.SignUpConfirmScreen({ token, deepLinking: true })
+              Actions.replace('SignUpConfirmScreen', { token, deepLinking: true })
             }
           }
         }
