@@ -60,7 +60,7 @@ class SignUpConfirmScreen extends React.Component {
     const { user, deepLinking } = nextProps
 
     if (Actions.currentScene === 'SignUpConfirmScreen') {
-      if (this.props.user.loading === 'RESEND_CONFIRMATION_EMAIL_PENDING' && user.loading === 'RESEND_CONFIRMATION_EMAIL_FULFILLED') {
+      if (this.props.user.loading !== 'RESEND_CONFIRMATION_EMAIL_FULFILLED' && user.loading === 'RESEND_CONFIRMATION_EMAIL_FULFILLED') {
         this.setState({ loading: false }, () => {
           Alert.alert(
             "We've resent a confirmation email"
@@ -68,20 +68,20 @@ class SignUpConfirmScreen extends React.Component {
         })
       }
 
-      if (this.props.user.loading === 'RESEND_CONFIRMATION_EMAIL_PENDING' && user.loading === 'RESEND_CONFIRMATION_EMAIL_FAILED') {
+      if (this.props.user.loading !== 'RESEND_CONFIRMATION_EMAIL_FAILED' && user.loading === 'RESEND_CONFIRMATION_EMAIL_FAILED') {
         this.setState({ loading: false })
       }
 
-      if (user.loading === 'USER_CONFIRM_ACCOUNT_PENDING') {
+      if (this.props.user.loading !== 'USER_CONFIRM_ACCOUNT_PENDING' && user.loading === 'USER_CONFIRM_ACCOUNT_PENDING') {
         clearInterval(this.intervalId)
         this.intervalId = null
       }
 
-      if (this.props.user.loading === 'USER_CONFIRM_ACCOUNT_PENDING' && user.loading === 'USER_CONFIRM_ACCOUNT_FULFILLED') {
+      if (this.props.user.loading !== 'USER_CONFIRM_ACCOUNT_FULFILLED' && user.loading === 'USER_CONFIRM_ACCOUNT_FULFILLED') {
         this.props.getUserSession()
       }
 
-      if (this.props.user.loading === 'USER_CONFIRM_ACCOUNT_PENDING' && user.loading === 'USER_CONFIRM_ACCOUNT_REJECTED') {
+      if (this.props.user.loading !== 'USER_CONFIRM_ACCOUNT_REJECTED' && user.loading === 'USER_CONFIRM_ACCOUNT_REJECTED') {
         this.setState({ loading: false })
 
         if (user.userInfo) {
@@ -93,14 +93,18 @@ class SignUpConfirmScreen extends React.Component {
         }
       }
 
-      if (this.props.user.loading === 'GET_USER_SESSION_PENDING' && user.loading === 'GET_USER_SESSION_FULFILLED') {
+      if (this.props.user.loading !== 'GET_USER_SESSION_FULFILLED' && user.loading === 'GET_USER_SESSION_FULFILLED') {
         if (!deepLinking) {     // Verified from web app
           clearInterval(this.intervalId)
           this.intervalId = null
         }
 
-        if (user.userInfo.emailConfirmed) {
-          Actions.SignUpSuccessScreen()
+        Actions.SignUpSuccessScreen()
+      }
+
+      if (this.props.user.loading !== 'GET_USER_SESSION_REJECTED' && user.loading === 'GET_USER_SESSION_REJECTED') {
+        if (this.state.loading) {
+          this.setState({ loading: false })
         }
       }
     }
