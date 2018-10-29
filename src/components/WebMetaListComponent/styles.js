@@ -4,12 +4,12 @@ import COLORS from '../../service/colors'
 
 const styles = StyleSheet.create({
   container: {
-    marginTop: 16,
     marginHorizontal: 16,
   },
   itemContainer: {
     flex: 1,
     height: 40,
+    marginTop: 12,
     marginBottom: 0,
   },
   buttonContainer: {
