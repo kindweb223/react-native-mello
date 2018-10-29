@@ -68,7 +68,7 @@ class SignUpConfirmScreen extends React.Component {
         })
       }
 
-      if (this.props.loading === 'RESEND_CONFIRMATION_EMAIL_PENDING' && user.loading === 'RESEND_CONFIRMATION_EMAIL_FAILED') {
+      if (this.props.user.loading === 'RESEND_CONFIRMATION_EMAIL_PENDING' && user.loading === 'RESEND_CONFIRMATION_EMAIL_FAILED') {
         this.setState({ loading: false })
       }
 
@@ -93,7 +93,7 @@ class SignUpConfirmScreen extends React.Component {
         }
       }
 
-      if (this.props.loading === 'GET_USER_SESSION_PENDING' && user.loading === 'GET_USER_SESSION_FULFILLED') {
+      if (this.props.user.loading === 'GET_USER_SESSION_PENDING' && user.loading === 'GET_USER_SESSION_FULFILLED') {
         if (!deepLinking) {     // Verified from web app
           clearInterval(this.intervalId)
           this.intervalId = null
