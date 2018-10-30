@@ -69,6 +69,16 @@ export const setCurrentCard = (idea) => {
 }
 
 /**
+ * reset an error
+ */
+export const resetCardError = () => {
+  return {
+    type: types.RESET_CARD_ERROR,
+    payload: {},
+  };
+}
+
+/**
  * Delete a card
  */
 export const deleteCard = (id) => {
