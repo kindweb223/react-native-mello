@@ -125,7 +125,7 @@ class SignUpConfirmScreen extends React.Component {
   }
 
   render () {
-    const { userEmail } = this.props
+    const { userEmail, deepLinking } = this.props
 
     return (
       <View style={styles.container}>
@@ -139,10 +139,15 @@ class SignUpConfirmScreen extends React.Component {
           <Text style={styles.title}>Confirm email</Text>
           <Text style={styles.title}>address</Text>
 
-          <View style={styles.subTitleView}>
-            <Text style={styles.subTitle}>We have sent a confirmation</Text>
-            <Text style={styles.subTitle}>email to {userEmail}</Text>
-          </View>
+          {deepLinking
+            ? <View style={styles.subTitleView}>
+                <Text style={styles.subTitle}>We have sent you a confirmation email</Text>
+              </View>
+            : <View style={styles.subTitleView}>
+                <Text style={styles.subTitle}>We have sent a confirmation</Text>
+                <Text style={styles.subTitle}>email to {userEmail}</Text>
+              </View>
+          }
 
           <TouchableOpacity onPress={() => this.onResend()} style={styles.buttonView}>
             <Text style={styles.btnSend}>Resend</Text>
