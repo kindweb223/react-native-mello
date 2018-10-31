@@ -143,6 +143,9 @@ class FeedDetailScreen extends React.Component {
     this.selectedFileType = null
     this.selectedFileName = null
     this.prevFeedo = null;
+
+    this.userActions = [];
+    this.userActionTimer = null;
   }
 
   componentDidMount() {
@@ -178,6 +181,13 @@ class FeedDetailScreen extends React.Component {
         (this.props.card.loading === 'MOVE_CARD_PENDING' && card.loading === 'MOVE_CARD_FULFILLED')) {
 
       const currentFeed = feedo.currentFeed
+      let filterIdeas = currentFeed.ideas;
+      for (let i = 0; i < this.userActions.length; i ++) {
+        const cardInfo = this.userActions[i];
+        filterIdeas = _.filter(filterIdeas, idea => idea.id !== cardInfo.ideaId)
+      }
+      currentFeed.ideas = filterIdeas;
+
       this.setBubbles(currentFeed)
       this.setState({
         loading: false,
@@ -451,7 +461,7 @@ class FeedDetailScreen extends React.Component {
     setTimeout(() => {
       this.setState({ isShowToaster: false })
       this.duplicateFeed()
-    }, TOASTER_DURATION + 5)
+    }, TOASTER_DURATION)
   }
   
   duplicateFeed = () => {
@@ -472,12 +482,25 @@ class FeedDetailScreen extends React.Component {
         this.props.deleteDuplicatedFeed(this.props.feedo.duplicatedId)
       }
     } else if (this.state.currentActionType === ACTION_CARD_DELETE || this.state.currentActionType === ACTION_CARD_MOVE) {
-      this.setState((state) => {
-        state.currentFeed.ideas = this.props.feedo.currentFeed.ideas;
-        return state;
-      })
-    }
+      clearTimeout(this.userActionTimer);
+      this.userActionTimer = null;
+      this.userActions.shift();
 
+      this.setState((state) => { 
+        let filterIdeas = this.props.feedo.currentFeed.ideas;
+        for(let i = 0; i < this.userActions.length; i ++) {
+          const cardInfo = this.userActions[i];
+          filterIdeas = _.filter(filterIdeas, idea => idea.id !== cardInfo.ideaId)
+        }
+        state.currentFeed.ideas = filterIdeas;
+        return state;
+      }, () => {
+        this.setBubbles(this.state.currentFeed)
+      });
+  
+      this.processCardActions();
+      return;
+    }
     this.setState({
       isShowToaster: false, 
       currentActionType: ACTION_NONE,
@@ -634,24 +657,113 @@ class FeedDetailScreen extends React.Component {
     }, 500)
   }
 
+  processCardActions() {
+    if (this.userActionTimer) {
+      // this.setState({
+      //   isShowToaster: false, 
+      //   currentActionType: ACTION_NONE,
+      // });
+      return;
+    }
+    if (this.userActions.length === 0) {
+      this.setState({
+        isShowToaster: false, 
+        currentActionType: ACTION_NONE,
+      });
+      return;
+    }
+    const currentCardInfo = this.userActions[0];
+    this.setState({ 
+      currentActionType: currentCardInfo.currentActionType,
+      isShowToaster: true,
+      toasterTitle: currentCardInfo.toasterTitle,
+    });
+    this.userActionTimer = setTimeout(() => {
+      // this.setState({ isShowToaster: false })
+      if (this.state.currentActionType === ACTION_CARD_DELETE) {
+        this.props.deleteCard(currentCardInfo.ideaId)
+      } else if (this.state.currentActionType === ACTION_CARD_MOVE) {
+        this.props.moveCard(currentCardInfo.ideaId, currentCardInfo.feedoId);
+      }
+      this.userActionTimer = null;
+      this.userActions.shift();
+      this.processCardActions();
+    }, TOASTER_DURATION + 5);
+  }
+
   onDeleteCard(ideaId) {
     this.onCloseCardModal();
+    this.setState({
+      isVisibleLongHoldMenu: false,
+      isShowToaster: true,
+    });
+
+    const cardInfo = {};
+    cardInfo.currentActionType = ACTION_CARD_DELETE;
+    cardInfo.toasterTitle = 'Card deleted';
+    cardInfo.ideaId = ideaId;
+    this.userActions.push(cardInfo);
+
     this.setState((state) => { 
-      state.isVisibleLongHoldMenu = false;
-      state.currentActionType = ACTION_CARD_DELETE;
-      state.isShowToaster = true;
-      state.toasterTitle = 'Card deleted';
-      const filterIdeas = _.filter(state.currentFeed.ideas, idea => idea.id !== ideaId)
+      let filterIdeas = state.currentFeed.ideas;
+      for(let i = 0; i < this.userActions.length; i ++) {
+        const cardInfo = this.userActions[i];
+        filterIdeas = _.filter(filterIdeas, idea => idea.id !== cardInfo.ideaId)
+      }
       state.currentFeed.ideas = filterIdeas;
       return state;
+    }, () => {
+      this.setBubbles(this.state.currentFeed)
     });
-    this.setBubbles(this.state.currentFeed)
-    setTimeout(() => {
-      this.setState({ isShowToaster: false })
-      if (this.state.currentActionType === ACTION_CARD_DELETE) {
-        this.props.deleteCard(ideaId)
+
+    this.processCardActions();
+  }
+
+  onSelectFeedoToMoveCard(feedoId) {
+    this.prevFeedo = null;
+
+    this.setState({
+      isVisibleSelectFeedo: false,
+      isShowToaster: true,
+    });
+
+    const cardInfo = {};
+    cardInfo.currentActionType = ACTION_CARD_MOVE;
+    cardInfo.toasterTitle = 'Card moved';
+    cardInfo.ideaId = this.moveCardId;
+    cardInfo.feedoId = feedoId;
+    this.userActions.push(cardInfo);
+
+    this.setState((state) => { 
+      let filterIdeas = state.currentFeed.ideas;
+      for(let i = 0; i < this.userActions.length; i ++) {
+        const cardInfo = this.userActions[i];
+        filterIdeas = _.filter(filterIdeas, idea => idea.id !== cardInfo.ideaId)
       }
-    }, TOASTER_DURATION + 5)
+      state.currentFeed.ideas = filterIdeas;
+      return state;
+    }, () => {
+      this.setBubbles(this.state.currentFeed)
+    });
+
+    this.processCardActions();
+    this.moveCardId = null;
+  }
+
+  onCloseSelectFeedoModal() {
+    if (this.prevFeedo.id !== this.props.feedo.currentFeed.id) {
+      const moveToFeedo = this.props.feedo.currentFeed;
+      this.props.setCurrentFeed(this.prevFeedo);
+      if (moveToFeedo.id) {
+        this.onSelectFeedoToMoveCard(moveToFeedo.id);
+        return;
+      }
+    }
+    this.prevFeedo = null;
+    this.setState({
+      isVisibleSelectFeedo: false,
+      currentActionType: ACTION_NONE,
+    });
   }
 
   onOpenCardAction(idea) {
@@ -877,43 +989,6 @@ class FeedDetailScreen extends React.Component {
   onRefreshFeed = () => {
     this.setState({ isRefreshing: true })
     this.props.getFeedDetail(this.props.data.id)
-  }
-
-
-  onSelectFeedoToMoveCard(feedoId) {
-    this.prevFeedo = null;
-    this.setState((state) => { 
-      state.isVisibleSelectFeedo = false;
-      state.currentActionType = ACTION_CARD_MOVE;
-      state.isShowToaster = true;
-      state.toasterTitle = 'Card moved';
-      const filterIdeas = _.filter(state.currentFeed.ideas, idea => idea.id !== this.moveCardId)
-      state.currentFeed.ideas = filterIdeas;
-      return state;
-    });
-    setTimeout(() => {
-      this.setState({ isShowToaster: false })
-      if (this.state.currentActionType === ACTION_CARD_MOVE) {
-        this.props.moveCard(this.moveCardId, feedoId);
-        this.moveCardId = -1;
-      }
-    }, TOASTER_DURATION + 5)
-  }
-
-  onCloseSelectFeedoModal() {
-    if (this.prevFeedo.id !== this.props.feedo.currentFeed.id) {
-      const moveToFeedo = this.props.feedo.currentFeed;
-      this.props.setCurrentFeed(this.prevFeedo);
-      if (moveToFeedo.id) {
-        this.onSelectFeedoToMoveCard(moveToFeedo.id);
-        return;
-      }
-    }
-    this.prevFeedo = null;
-    this.setState({
-      isVisibleSelectFeedo: false,
-      currentActionType: ACTION_NONE,
-    });
   }
 
   get renderSelectHunt() {
