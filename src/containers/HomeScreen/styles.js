@@ -74,10 +74,10 @@ const styles = StyleSheet.create({
   },
   tabBarStyle: {
     borderTopWidth: 0,
-    borderBottomWidth: 1,
-    borderBottomColor: COLORS.LIGHT_GREY_LINE,
+    borderBottomWidth: 0,
     height: CONSTANTS.TAB_BAR_HEIGHT,
     alignItems: 'center',
+    marginBottom: 10
   },
   tabBarTextStyle: {
     fontSize: 16,

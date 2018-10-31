@@ -9,7 +9,8 @@ const styles = StyleSheet.create({
   title: {
     flex: 1,
     fontSize: 18,
-    fontWeight: 'bold',
+    lineHeight: 25,
+    fontWeight: '600',
   },
   statsView: {
     flexDirection: 'row',
@@ -35,7 +36,8 @@ const styles = StyleSheet.create({
     marginBottom: 2
   },
   feedText: {
-    fontSize: 13
+    fontSize: 14,
+    lineHeight: 21
   },
   active: {
     color: COLORS.PURPLE
@@ -58,7 +60,8 @@ const styles = StyleSheet.create({
     marginLeft: 10
   },
   tagsView: {
-    marginTop: 7
+    marginTop: 9,
+    marginBottom: 4
   }
 })
 
