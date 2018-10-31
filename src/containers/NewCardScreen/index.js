@@ -322,7 +322,6 @@ class NewCardScreen extends React.Component {
             favicon,
           } = this.openGraphLinksInfo[this.indexForAddedLinks++];
           this.props.addLink(id, url, title, description, image, favicon);
-          this.onHideKeyboard();
         }
       }
     } else if (this.props.card.loading !== types.LIKE_CARD_PENDING && nextProps.card.loading === types.LIKE_CARD_PENDING) {
@@ -557,7 +556,6 @@ class NewCardScreen extends React.Component {
       }
 
       if (filteredUrls.length > 0) {
-        this.onHideKeyboard();
         // this.isOpenGraphForNewCard = false;
         this.indexForOpenGraph = 0;
         this.openGraphLinksInfo = [];

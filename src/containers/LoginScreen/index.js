@@ -89,7 +89,7 @@ class LoginScreen extends React.Component {
         this.setState({ loading: false }, () => {
           Alert.alert(
             'Warning',
-            user.error
+            resolveError(user.error.code, user.error.message)
           )
         })
       }
