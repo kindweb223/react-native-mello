@@ -186,15 +186,10 @@ class NewCardScreen extends React.Component {
       if (newImageFiles.length === 1 && !nextProps.card.currentCard.coverImage) {
         loading = true;
         this.onSetCoverImage(newImageFiles[0].id);
-        this.currentSelectedLinkImageIndex ++;
-        if (this.currentSelectedLinkImageIndex < this.selectedLinkImages.length) {
-          this.addLinkImage(id, this.selectedLinkImages[this.currentSelectedLinkImageIndex]);
-        }
-      } else {
-        this.currentSelectedLinkImageIndex ++;
-        if (this.currentSelectedLinkImageIndex < this.selectedLinkImages.length) {
-          this.addLinkImage(id, this.selectedLinkImages[this.currentSelectedLinkImageIndex]);
-        }
+      }
+      this.currentSelectedLinkImageIndex ++;
+      if (this.currentSelectedLinkImageIndex < this.selectedLinkImages.length) {
+        this.addLinkImage(id, this.selectedLinkImages[this.currentSelectedLinkImageIndex]);
       }
     } else if (this.props.card.loading !== types.ADD_LINK_PENDING && nextProps.card.loading === types.ADD_LINK_PENDING) {
       // adding a link
@@ -215,7 +210,8 @@ class NewCardScreen extends React.Component {
           favicon,
         } = this.openGraphLinksInfo[this.indexForAddedLinks++];
         this.props.addLink(id, url, title, description, image, favicon);
-      } else if (this.props.cardMode !== CONSTANTS.SHARE_EXTENTION_CARD && this.allLinkImages.length > 0) {
+      } else if (this.props.cardMode !== CONSTANTS.SHARE_EXTENTION_CARD && this.allLinkImages.length > 0 
+        && (this.props.card.currentCard.links === null || this.props.card.currentCard.links.length === 0)) {
         this.setState({
           isVisibleChooseLinkImagesModal: true,
         });
