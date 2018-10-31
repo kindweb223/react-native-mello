@@ -320,7 +320,6 @@ class NewCardScreen extends React.Component {
             favicon,
           } = this.openGraphLinksInfo[this.indexForAddedLinks++];
           this.props.addLink(id, url, title, description, image, favicon);
-          this.onHideKeyboard();
         }
       }
     } else if (this.props.card.loading !== types.LIKE_CARD_PENDING && nextProps.card.loading === types.LIKE_CARD_PENDING) {
@@ -455,7 +454,9 @@ class NewCardScreen extends React.Component {
         toValue: e.endCoordinates.height,
         duration: e.duration,
       }
-    ).start();
+    ).start(() => {
+      this.textInputIdeaRef.focus();
+    });
   }
 
   keyboardWillHide(e) {
