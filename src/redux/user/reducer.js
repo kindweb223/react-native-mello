@@ -81,7 +81,7 @@ export default function user(state = initialState, action = {}) {
         ...state,
         loading: types.USER_SIGNIN_REJECTED,
         userInfo: null,
-        error: resolveError('error.login.invalid', 'Your email or password is incorrect')
+        error: action.error.response.data
       }
     }
     /**
