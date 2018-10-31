@@ -47,7 +47,8 @@ import {
   setCoverImage,
   addLink,
   deleteLink,
-  moveCard
+  moveCard,
+  resetCardError,
 } from '../../redux/card/actions'
 import { 
   createFeed,
@@ -397,7 +398,6 @@ class NewCardScreen extends React.Component {
               // return;
             }
           }
-          error = 'Sorry, this link cannot be read';
           if (!this.isVisibleErrorDialog) {
             this.isVisibleErrorDialog = true;
             Alert.alert('Error', error, [
@@ -405,6 +405,7 @@ class NewCardScreen extends React.Component {
             ]);
           }
         }
+        this.props.resetCardError();
         return;
       }
     }
@@ -589,6 +590,7 @@ class NewCardScreen extends React.Component {
       allUrls.forEach(url => {
         const index = _.findIndex(this.parsingErrorLinks, errorLink => errorLink === url);
         if (index === -1) {
+          console.log('Url : ', url);
           url = url.replace('[', '');
           url = url.replace(']', '');
           newUrls.push(url);
@@ -602,12 +604,6 @@ class NewCardScreen extends React.Component {
           //     })
           //   }
           // }
-          if (!this.state.idea.includes(url)) {
-            this.setState({
-              idea: this.state.idea + this.state.idea ? ' ' : '' + url,
-            })
-          }
-          
         }
       });
       if (newUrls.length > 0) {
@@ -1612,6 +1608,7 @@ const mapDispatchToProps = dispatch => ({
   addLink: (ideaId, originalUrl, title, description, imageUrl, faviconUrl) => dispatch(addLink(ideaId, originalUrl, title, description, imageUrl, faviconUrl)),
   deleteLink: (ideaId, linkId) => dispatch(deleteLink(ideaId, linkId)),
   moveCard: (ideaId, huntId) => dispatch(moveCard(ideaId, huntId)),
+  resetCardError: () => dispatch(resetCardError()),
 })
 
 
