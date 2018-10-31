@@ -32,8 +32,8 @@ axios.interceptors.response.use(
     response
   ),
   (error) => {
-    console.log('ERROR: ', error)
-    if (error.response === undefined || (error.response.status === 401 && error.response.data.code === 'session.expired')) {
+    console.log('ERROR: ', error.response)
+    if (error.response && (error.response.status === 401 && error.response.data.code === 'session.expired')) {
       AsyncStorage.removeItem('xAuthToken')
       SharedGroupPreferences.setItem('xAuthToken', null, CONSTANTS.APP_GROUP_TOKEN_IDENTIFIER)
 

@@ -28,10 +28,9 @@ axios.interceptors.response.use(
     response
   ),
   (error) => {
-    if (error.response === undefined || (error.response.status === 401 && error.response.data.code === 'session.expired')) {
+    if (error.response && (error.response.status === 401 && error.response.data.code === 'session.expired')) {
       ShareExtension.goToMainApp('demos.solvers.io://');
     }
-    console.log('ERROR: ', error)
     throw error
   }
 )

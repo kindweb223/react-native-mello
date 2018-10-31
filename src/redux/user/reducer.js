@@ -48,6 +48,7 @@ export default function user(state = initialState, action = {}) {
      * User signIn
      */
     case types.USER_SIGNIN_PENDING:
+      console.log('USER_SIGNIN_PENDING')
       return {
         ...state,
         userConfirmed: false,
@@ -77,6 +78,7 @@ export default function user(state = initialState, action = {}) {
       }
     }
     case types.USER_SIGNIN_REJECTED: {
+      console.log('USER_SIGNIN_REJECTED')
       return {
         ...state,
         loading: types.USER_SIGNIN_REJECTED,
