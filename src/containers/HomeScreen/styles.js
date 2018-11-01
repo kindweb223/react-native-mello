@@ -81,7 +81,7 @@ const styles = StyleSheet.create({
   },
   tabBarTextStyle: {
     fontSize: 16,
-    fontWeight: 'bold',
+    fontWeight: '500',
     textAlign: 'left'
   },
   longHoldModalContainer: {
