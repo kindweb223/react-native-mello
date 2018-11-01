@@ -722,14 +722,28 @@ class HomeScreen extends React.Component {
   onScrollableTabViewLayout(event, selectedIndex) {
     const { loading } = this.state
 
+    const tabContentHeight = CONSTANTS.SCREEN_HEIGHT - CONSTANTS.ACTION_BAR_HEIGHT - CONSTANTS.TAB_BAR_HEIGHT - 60 - 50
+
     if (selectedIndex !== 0) {
       if (this.state.tabIndex === selectedIndex && !loading) {
         if (!this.state.scrollableTabViewContainer.height || event.nativeEvent.layout.height > this.state.scrollableTabViewContainer.height) {
-          const height = event.nativeEvent.layout.height;
+          let height = event.nativeEvent.layout.height;
+          if (height < tabContentHeight) {
+            height = tabContentHeight
+          }
+
           setTimeout(() => {
             this.setState({ scrollableTabViewContainer: { height: height + CONSTANTS.TAB_BAR_HEIGHT } });
           }, 0);
         }
+      }
+    } else {
+      let height = event.nativeEvent.layout.height;
+      if (height < tabContentHeight) {
+        height = tabContentHeight
+        setTimeout(() => {
+          this.setState({ scrollableTabViewContainer: { height: height + CONSTANTS.TAB_BAR_HEIGHT } });
+        }, 0);
       }
     }
   }
