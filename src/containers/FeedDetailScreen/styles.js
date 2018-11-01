@@ -71,7 +71,7 @@ const styles = StyleSheet.create({
   },
   collapseView: {
     width: '100%',
-    marginBottom: 16,
+    marginBottom: 35,
     paddingTop: 0,
     backgroundColor: '#fff',
     zIndex: 11
@@ -130,10 +130,9 @@ const styles = StyleSheet.create({
     zIndex: 100
   },
   separator: {
-    backgroundColor: COLORS.LIGHT_GREY_LINE,
-    width: CONSTANTS.SCREEN_SUB_WIDTH,
-    height: 1,
-    marginLeft: CONSTANTS.PADDING
+    backgroundColor: COLORS.SEPARATOR_GREY,
+    width: '100%',
+    height: 0.5,
   }
 })
 
