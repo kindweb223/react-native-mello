@@ -12,7 +12,6 @@ const styles = StyleSheet.create({
   },
   title: {
    fontSize: 16,
-   fontWeight: '600',
    lineHeight: 22
   },
   greyTitle: {
@@ -46,6 +45,7 @@ const styles = StyleSheet.create({
   text: {
     fontSize: 14,
     color: COLORS.MEDIUM_GREY,
+    lineHeight: 21,
     marginRight: 5 
   },
   dotIcon: {
