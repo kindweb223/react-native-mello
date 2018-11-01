@@ -10,8 +10,8 @@ const styles = StyleSheet.create({
   },
   thumbnailsView: {
     width: '100%',
-    height: 137,
-    marginVertical: 8,
+    height: 133,
+    marginVertical: 6,
   },
 })
 

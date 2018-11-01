@@ -108,7 +108,7 @@ class FeedoListContainer extends React.Component {
           </TouchableOpacity>
 
           {this.props.feedoList.length > 1 && index !== (this.props.feedoList.length - 1) && (
-            <View style={[styles.separator, { marginTop: 17 }]} />
+            <View style={[styles.separator, { marginTop: 16 }]} />
           )}
         </ListRow>
       </Animated.View>

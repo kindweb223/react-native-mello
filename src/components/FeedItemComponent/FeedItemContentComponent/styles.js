@@ -13,8 +13,7 @@ const styles = StyleSheet.create({
     fontWeight: '600',
   },
   statsView: {
-    flexDirection: 'row',
-    marginTop: 5
+    flexDirection: 'row'
   },
   statsItemView: {
     flexDirection: 'row',
@@ -53,14 +52,11 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center'
   },
-  pinIcon: {
-    transform: [{ rotate: '-90deg' }]
-  },
   avatarView: {
     marginLeft: 10
   },
   tagsView: {
-    marginTop: 9,
+    marginTop: 5,
     marginBottom: 4
   }
 })
