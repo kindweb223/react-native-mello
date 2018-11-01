@@ -92,7 +92,7 @@ export default class Root extends React.Component {
     try {
       const xAuthToken = await AsyncStorage.getItem('xAuthToken')
       const userInfo = await AsyncStorage.getItem('userInfo')
-      this.setState({ userInfo })
+      this.setState({ userInfo: JSON.parse(userInfo) })
       console.log('xAuthToken: ', xAuthToken)
 
       if (xAuthToken && userInfo) {
@@ -124,7 +124,7 @@ export default class Root extends React.Component {
       if (supported) {
         let params = _.split(decodeURIComponent(url), '/')
         const path = params[params.length - 2]
-        console.log('UNIVERSAL_LINK: ', decodeURIComponent(url))
+        console.log('UNIVERSAL_LINK: ', decodeURIComponent(url), ' Path: ', path)
 
         if (path === 'get-started') {  
           const lastParam = params[params.length - 1]
@@ -145,7 +145,6 @@ export default class Root extends React.Component {
             if (this.state.userInfo) {
               Actions.HomeScreen()
             } else {
-              // Actions.SignUpSuccessScreen({ token, deepLinking: true })
               Actions.replace('SignUpConfirmScreen', { token, deepLinking: true })
             }
           }
@@ -158,13 +157,16 @@ export default class Root extends React.Component {
 
         if (path === 'feed') { // Share an Idea
           const feedId = params[params.length - 1]
-          const data = {
-            id: feedId
-          }
-          if (this.state.userInfo) {
-            Actions.FeedDetailScreen({ data })
-          } else {
-            Actions.LoginScreen()
+          const data = { id: feedId }
+
+          try {
+            const userInfo = AsyncStorage.getItem('userInfo')
+            if (userInfo) {
+              Actions.FeedDetailScreen({ data })
+            } else {
+              Actions.LoginScreen()
+            }
+          } catch (e) {
           }
         }
 
