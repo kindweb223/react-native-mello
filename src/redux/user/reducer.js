@@ -1,8 +1,7 @@
-import { AsyncStorage } from 'react-native'
+import { AsyncStorage, Alert } from 'react-native'
 import axios from 'axios'
 import * as types from './types'
 import * as cardTypes from '../card/types'
-import resolveError from './../../service/resolveError'
 import CONSTANTS from '../../../src/service/constants'
 import SharedGroupPreferences from 'react-native-shared-group-preferences'
 
@@ -19,6 +18,12 @@ const initialState = {
 
 export default function user(state = initialState, action = {}) {
   switch (action.type) {
+    case 'NETWORK_FAILED':
+      Alert.alert('Error', 'No Internet Connection')
+      return {
+        ...state,
+        error: null
+      }
     case types.USER_LOOKUP_PENDING:
       return {
         ...state,
@@ -48,7 +53,6 @@ export default function user(state = initialState, action = {}) {
      * User signIn
      */
     case types.USER_SIGNIN_PENDING:
-      console.log('USER_SIGNIN_PENDING')
       return {
         ...state,
         userConfirmed: false,
@@ -78,7 +82,6 @@ export default function user(state = initialState, action = {}) {
       }
     }
     case types.USER_SIGNIN_REJECTED: {
-      console.log('USER_SIGNIN_REJECTED')
       return {
         ...state,
         loading: types.USER_SIGNIN_REJECTED,
