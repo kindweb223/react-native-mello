@@ -7,7 +7,7 @@ const styles = StyleSheet.create({
     paddingBottom: CONSTANTS.ACTION_BAR_HEIGHT - 45
   },
   separator: {
-    borderBottomWidth: 0.5,
+    borderBottomWidth: 1,
     borderBottomColor: COLORS.SEPARATOR_GREY,
     marginBottom: 15
   }
