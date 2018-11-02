@@ -87,7 +87,9 @@ class ProfileUpdateScreen extends React.Component {
 
       if (this.props.user.loading === 'UPDATE_PASSWORD_PENDING' && user.loading === 'UPDATE_PASSWORD_REJECTED') {
         this.setState({ loading: false }, () => {
-          Alert.alert('Error', resolveError(user.error.code, user.error.message));
+          if (user.error) {
+            Alert.alert('Error', resolveError(user.error.code, user.error.message));
+          }
         })
       }
 
