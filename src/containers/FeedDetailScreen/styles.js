@@ -2,7 +2,7 @@ import { StyleSheet, Platform } from 'react-native'
 import { ifIphoneX } from 'react-native-iphone-x-helper';
 import CONSTANTS from '../../service/constants'
 import COLORS from '../../service/colors'
-const NAV_BAR_HEIGHT = 60
+const NAV_BAR_HEIGHT = 55
 
 const styles = StyleSheet.create({
   safeArea: {
@@ -56,7 +56,9 @@ const styles = StyleSheet.create({
     height: '100%',
     flexDirection: 'row',
     justifyContent: 'center',
-    alignItems: 'center'
+    alignItems: 'center',
+    backgroundColor: '#fff',
+    paddingBottom: 10
   },
   avatarView: {
     height: '100%',
@@ -67,11 +69,11 @@ const styles = StyleSheet.create({
     height: '100%',
     justifyContent: 'center',
     alignItems: 'center',
-    marginLeft: 15
+    marginLeft: 13
   },
   collapseView: {
     width: '100%',
-    marginBottom: 35,
+    marginBottom: 30,
     paddingTop: 0,
     backgroundColor: '#fff',
     zIndex: 11
@@ -132,7 +134,7 @@ const styles = StyleSheet.create({
   separator: {
     backgroundColor: COLORS.SEPARATOR_GREY,
     width: '100%',
-    height: 0.5,
+    height: 1,
   }
 })
 

@@ -24,6 +24,7 @@ const styles = StyleSheet.create({
     fontSize: 28,
     fontWeight: 'bold',
     marginLeft: 4,
+    marginTop: 4,
     color: COLORS.PRIMARY_BLACK
   },
   contentView: {
