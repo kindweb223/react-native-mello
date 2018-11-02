@@ -194,7 +194,9 @@ class NewCardScreen extends React.Component {
       }
     } else if (this.props.card.loading !== types.ADD_LINK_PENDING && nextProps.card.loading === types.ADD_LINK_PENDING) {
       // adding a link
-      loading = true;
+      if (this.props.card.currentCard.links === null || this.props.card.currentCard.links.length === 0) {
+        loading = true;
+      }
     } else if (this.props.card.loading !== types.ADD_LINK_FULFILLED && nextProps.card.loading === types.ADD_LINK_FULFILLED) {
       // success in adding a link
       if (this.props.cardMode === CONSTANTS.SHARE_EXTENTION_CARD && this.isUploadShareImage) {
@@ -265,10 +267,14 @@ class NewCardScreen extends React.Component {
       }
     } else if (this.props.card.loading !== types.GET_OPEN_GRAPH_PENDING && nextProps.card.loading === types.GET_OPEN_GRAPH_PENDING) {
       // getting open graph
-      loading = true;
+      if (this.props.card.currentCard.links === null || this.props.card.currentCard.links.length === 0) {
+        loading = true;
+      }
     } else if (this.props.card.loading !== types.GET_OPEN_GRAPH_FULFILLED && nextProps.card.loading === types.GET_OPEN_GRAPH_FULFILLED) {
       // success in getting open graph
-      loading = true;
+      if (this.props.card.currentCard.links === null || this.props.card.currentCard.links.length === 0) {
+        loading = true;
+      }
       if (this.props.cardMode === CONSTANTS.SHARE_EXTENTION_CARD) {
         this.setState({
           // cardName: nextProps.card.currentOpneGraph.title,
@@ -392,10 +398,14 @@ class NewCardScreen extends React.Component {
         }
         if (error) {
           if (nextProps.card.loading === types.GET_OPEN_GRAPH_REJECTED) {
-            if (this.parseErrorUrls(error)) {
-              error = 'Sorry, this link cannot be read';
+            if (this.props.card.currentCard.links === null || this.props.card.currentCard.links.length === 0) {
+              if (this.parseErrorUrls(error)) {
+                error = 'Sorry, this link cannot be read';
+              } else {
+                // return;
+              }
             } else {
-              // return;
+              this.isVisibleErrorDialog = true;
             }
           }
           if (!this.isVisibleErrorDialog) {
