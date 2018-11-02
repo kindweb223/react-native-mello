@@ -16,10 +16,13 @@ import _ from 'lodash'
 import promiseMiddleware from './src/service/promiseMiddleware'
 import { Actions, Scene, Router, Modal, Lightbox, Stack } from 'react-native-router-flux'
 import SharedGroupPreferences from 'react-native-shared-group-preferences'
+import { Client } from 'bugsnag-react-native'
 import axios from 'axios'
 import CONSTANTS from './src/service/constants'
 import COLORS from './src/service/colors'
 import { BASE_URL, SCHEME } from './src/service/api'
+
+const bugsnag = new Client('6ccdbeb5ea2913007e72bea3229f6efd')
 
 axios.defaults.baseURL = BASE_URL
 axios.defaults.headers.get['Content-Type'] = 'application/json'
