@@ -1,5 +1,5 @@
 import React from 'react'
-import { 
+import {
   StyleSheet,
   AsyncStorage,
   ActivityIndicator,
@@ -159,22 +159,29 @@ export default class Root extends React.Component {
         }
 
         if (path === 'feed') { // Share an Idea
-          const feedId = params[params.length - 1]
-          const data = {
-            id: feedId}
-
-          try {
-            const userInfo = AsyncStorage.getItem('userInfo')if (userInfo) {
-            const currentFeedo = store.getState().feedo.currentFeed;
-            if (Actions.currentScene === 'FeedDetailScreen' && currentFeedo.id === feedId) {
-              Actions.FeedDetailScreen({ type: 'replace', data });
-            } else {
-              Actions.FeedDetailScreen({ data })
+            const feedId = params[params.length - 1]
+            const data = {
+              id: feedId
             }
-          } else {
-            Actions.LoginScreen()}
-          } catch (e) {
-          }
+
+            try {
+              const userInfo = AsyncStorage.getItem('userInfo')
+
+              if (userInfo) {
+                  const currentFeedo = store.getState().feedo.currentFeed;
+                  if (Actions.currentScene === 'FeedDetailScreen' && currentFeedo.id === feedId) {
+                      Actions.FeedDetailScreen({type: 'replace', data});
+                  } 
+                  else {
+                      Actions.FeedDetailScreen({data})
+                  }
+              } 
+              else {
+                  Actions.LoginScreen()
+              }
+            } 
+            catch (e) {
+            }
         }
 
       } else {
