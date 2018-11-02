@@ -107,7 +107,7 @@ class FeedoListContainer extends React.Component {
             <FeedItemComponent item={item} pinFlag={item.pinned ? true : false} page={this.props.page} />
           </TouchableOpacity>
 
-          {this.props.feedoList.length > 1 && index !== (this.props.feedoList.length - 1) && (
+          {this.props.feedoList.length > 1 && (
             <View style={[styles.separator, { marginTop: 16 }]} />
           )}
         </ListRow>
