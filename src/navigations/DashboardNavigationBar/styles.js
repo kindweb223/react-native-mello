@@ -13,6 +13,7 @@ const styles = StyleSheet.create({
   },
   title: {
     fontSize: 28,
+    lineHeight: 29,
     fontWeight: 'bold',
     color: COLORS.PRIMARY_BLACK,
     marginLeft: 5

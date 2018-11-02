@@ -21,6 +21,8 @@ const CARD_ICON_GREY = require('../../../../assets/images/Card/Grey.png')
 const CARD_ICON_PURPLE = require('../../../../assets/images/Card/Purple.png')
 const PROFILE_ICON_GREY = require('../../../../assets/images/Users/Grey.png')
 const PROFILE_ICON_PURPLE = require('../../../../assets/images/Users/Blue.png')
+const PIN_ICON_GREY = require('../../../../assets/images/Pin/Grey.png')
+const PIN_ICON_PURPLE = require('../../../../assets/images/Pin/Blue.png')
 
 
 import { 
@@ -80,7 +82,7 @@ class FeedItemContentComponent extends React.Component {
           <Text style={styles.title} numberOfLines={1} ellipsizeMode="tail">{data.headline}</Text>
           <View style={styles.rightView}>
             {pinFlag && (
-              <Octicons name="pin" size={18} style={[styles.pinIcon, styles.active]} />
+              <Image source={PIN_ICON_PURPLE} />
             )}
             {!data.metadata.owner && (
               <View style={styles.avatarView}>

@@ -8,9 +8,8 @@ const styles = StyleSheet.create({
   },
   separator: {
     borderBottomWidth: 1,
-    borderBottomColor: COLORS.LIGHT_GREY_LINE,
-    marginTop: 16,
-    marginBottom: 12
+    borderBottomColor: COLORS.SEPARATOR_GREY,
+    marginBottom: 15
   }
 })
 

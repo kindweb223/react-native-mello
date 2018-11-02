@@ -9,11 +9,11 @@ const styles = StyleSheet.create({
   title: {
     flex: 1,
     fontSize: 18,
-    fontWeight: 'bold',
+    lineHeight: 25,
+    fontWeight: '600',
   },
   statsView: {
-    flexDirection: 'row',
-    marginTop: 5
+    flexDirection: 'row'
   },
   statsItemView: {
     flexDirection: 'row',
@@ -35,7 +35,8 @@ const styles = StyleSheet.create({
     marginBottom: 2
   },
   feedText: {
-    fontSize: 13
+    fontSize: 14,
+    lineHeight: 21
   },
   active: {
     color: COLORS.PURPLE
@@ -51,14 +52,12 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center'
   },
-  pinIcon: {
-    transform: [{ rotate: '-90deg' }]
-  },
   avatarView: {
     marginLeft: 10
   },
   tagsView: {
-    marginTop: 7
+    marginTop: 5,
+    marginBottom: 4
   }
 })
 
