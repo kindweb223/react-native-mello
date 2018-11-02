@@ -87,10 +87,12 @@ class LoginScreen extends React.Component {
 
       if (this.props.user.loading === 'USER_SIGNIN_PENDING' && user.loading === 'USER_SIGNIN_REJECTED') {
         this.setState({ loading: false }, () => {
-          Alert.alert(
-            'Warning',
-            resolveError(user.error.code, user.error.message)
-          )
+          if (user.error) {
+            Alert.alert(
+              'Warning',
+              resolveError(user.error.code, user.error.message)
+            )
+          }
         })
       }
 

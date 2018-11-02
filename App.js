@@ -32,12 +32,14 @@ axios.interceptors.response.use(
     response
   ),
   (error) => {
-    console.log('ERROR: ', error)
-    if (error.response === undefined || (error.response.status === 401 && error.response.data.code === 'session.expired')) {
+    if (error.response && (
+      (error.response.status === 401 && error.response.data.code === 'session.expired') ||
+      (error.response.status === 403 && error.response.data.code === 'error.user.not.authenticated')
+    )) {
       AsyncStorage.removeItem('xAuthToken')
       SharedGroupPreferences.setItem('xAuthToken', null, CONSTANTS.APP_GROUP_TOKEN_IDENTIFIER)
 
-      Actions.LoginScreen({type: 'replace'})
+      Actions.LoginScreen({ type: 'replace' })
     }
     throw error
   }
@@ -93,7 +95,7 @@ export default class Root extends React.Component {
     try {
       const xAuthToken = await AsyncStorage.getItem('xAuthToken')
       const userInfo = await AsyncStorage.getItem('userInfo')
-      this.setState({ userInfo })
+      this.setState({ userInfo: JSON.parse(userInfo) })
       console.log('xAuthToken: ', xAuthToken)
 
       if (xAuthToken && userInfo) {
@@ -125,7 +127,7 @@ export default class Root extends React.Component {
       if (supported) {
         let params = _.split(decodeURIComponent(url), '/')
         const path = params[params.length - 2]
-        console.log('UNIVERSAL_LINK: ', decodeURIComponent(url))
+        console.log('UNIVERSAL_LINK: ', decodeURIComponent(url), ' Path: ', path)
 
         if (path === 'get-started') {  
           const lastParam = params[params.length - 1]
@@ -146,7 +148,6 @@ export default class Root extends React.Component {
             if (this.state.userInfo) {
               Actions.HomeScreen()
             } else {
-              // Actions.SignUpSuccessScreen({ token, deepLinking: true })
               Actions.replace('SignUpConfirmScreen', { token, deepLinking: true })
             }
           }
@@ -160,9 +161,10 @@ export default class Root extends React.Component {
         if (path === 'feed') { // Share an Idea
           const feedId = params[params.length - 1]
           const data = {
-            id: feedId
-          }
-          if (this.state.userInfo) {
+            id: feedId}
+
+          try {
+            const userInfo = AsyncStorage.getItem('userInfo')if (userInfo) {
             const currentFeedo = store.getState().feedo.currentFeed;
             if (Actions.currentScene === 'FeedDetailScreen' && currentFeedo.id === feedId) {
               Actions.FeedDetailScreen({ type: 'replace', data });
@@ -170,7 +172,8 @@ export default class Root extends React.Component {
               Actions.FeedDetailScreen({ data })
             }
           } else {
-            Actions.LoginScreen()
+            Actions.LoginScreen()}
+          } catch (e) {
           }
         }
 
