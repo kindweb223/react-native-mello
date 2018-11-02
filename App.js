@@ -163,7 +163,12 @@ export default class Root extends React.Component {
             id: feedId
           }
           if (this.state.userInfo) {
-            Actions.FeedDetailScreen({ data })
+            const currentFeedo = store.getState().feedo.currentFeed;
+            if (Actions.currentScene === 'FeedDetailScreen' && currentFeedo.id === feedId) {
+              Actions.FeedDetailScreen({ type: 'replace', data });
+            } else {
+              Actions.FeedDetailScreen({ data })
+            }
           } else {
             Actions.LoginScreen()
           }
@@ -194,7 +199,7 @@ export default class Root extends React.Component {
             <Scene key="SignUpConfirmScreen" component={ SignUpConfirmScreen } panHandlers={null} navigationBarStyle={styles.emptyBorderNavigationBar} />
             <Scene key="TermsAndConditionsScreen" component={ TermsAndConditionsScreen } navigationBarStyle={styles.emptyBorderNavigationBar} />
             <Scene key="HomeScreen" component={ HomeScreen } hideNavBar panHandlers={null} />
-            <Scene key="FeedDetailScreen" component={ FeedDetailScreen } hideNavBar panHandlers={null} />
+            <Scene key="FeedDetailScreen" component={ FeedDetailScreen } clone hideNavBar panHandlers={null} />
             <Scene key="DocumentSliderScreen" component={ DocumentSliderScreen } hideNavBar />
             <Scene key="LikesListScreen" component={ LikesListScreen } navigationBarStyle={styles.defaultNavigationBar} />
             <Scene key="CommentScreen" component={ CommentScreen } navigationBarStyle={styles.defaultNavigationBar} />
