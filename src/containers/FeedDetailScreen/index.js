@@ -1061,7 +1061,6 @@ class FeedDetailScreen extends React.Component {
                       onAddDocument={this.onAddDocument}
                       deleteFile={this.onDeleteFile}
                     />
-                    <View style={[styles.separator, styles.collpaseSeparator]} />
                   </View>
                 )}
 
@@ -1089,6 +1088,10 @@ class FeedDetailScreen extends React.Component {
                           }
                         }
                       >
+                        {currentFeed.ideas.length > 0 && index === 0 && (
+                          <View style={styles.separator} />
+                        )}
+
                         <TouchableHighlight
                           ref={ref => this.cardItemRefs[index] = ref}
                           style={{ marginHorizontal: 5, borderRadius: 5 }}

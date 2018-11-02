@@ -11,7 +11,7 @@ const styles = StyleSheet.create({
   iconText: {
     fontSize: 14,
     color: COLORS.MEDIUM_GREY,
-    marginLeft: 10
+    marginLeft: 5
   }
 })
 

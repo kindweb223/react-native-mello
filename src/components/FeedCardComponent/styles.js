@@ -6,14 +6,13 @@ const styles = StyleSheet.create({
   container: {
     justifyContent: 'center',
     paddingTop: 16,
-    paddingBottom: 16,
+    paddingBottom: 17,
     paddingHorizontal: 11,
     borderRadius: 18
   },
   title: {
    fontSize: 16,
-   fontWeight: '600',
-   lineHeight: 22
+   lineHeight: 22,
   },
   greyTitle: {
     fontSize: 16,
@@ -22,7 +21,8 @@ const styles = StyleSheet.create({
   thumbnailsView: {
     width: '100%',
     height: 144,
-    marginVertical: 6
+    marginTop: 4,
+    marginBottom: 8
   },
   thumbnails: {
     width: '100%',
@@ -30,7 +30,7 @@ const styles = StyleSheet.create({
     borderRadius: 6,
   },
   bottomContainer: {
-    marginTop: 5,
+    marginTop: 3,
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
@@ -41,11 +41,12 @@ const styles = StyleSheet.create({
     alignItems: 'center'
   },
   avatar: {
-    marginRight: 5,
+    marginRight: 10,
   },
   text: {
     fontSize: 14,
     color: COLORS.MEDIUM_GREY,
+    lineHeight: 21,
     marginRight: 5 
   },
   dotIcon: {
