@@ -6,7 +6,6 @@ import {
   View,
   YellowBox,
   Linking,
-  Alert,
   Platform
 } from 'react-native'
 import { createStore, applyMiddleware } from 'redux'
@@ -16,10 +15,15 @@ import _ from 'lodash'
 import promiseMiddleware from './src/service/promiseMiddleware'
 import { Actions, Scene, Router, Modal, Lightbox, Stack } from 'react-native-router-flux'
 import SharedGroupPreferences from 'react-native-shared-group-preferences'
+import { Client, Configuration  } from 'bugsnag-react-native'
 import axios from 'axios'
 import CONSTANTS from './src/service/constants'
 import COLORS from './src/service/colors'
-import { BASE_URL, SCHEME } from './src/service/api'
+import { BASE_URL, BUGSNAG_KEY, APP_LOCALE, APP_NAME, APP_STORE_ID, PLAY_STORE_ID } from './src/service/api'
+
+const config = new Configuration(BUGSNAG_KEY);
+config.appVersion = require('./package.json').version;
+const bugsnag = new Client(config);
 
 axios.defaults.baseURL = BASE_URL
 axios.defaults.headers.get['Content-Type'] = 'application/json'
@@ -52,12 +56,12 @@ import SignUpScreen from './src/containers/SignUpScreen'
 import SignUpConfirmScreen from './src/containers/SignUpConfirmScreen'
 import TermsAndConditionsScreen from './src/containers/TermsAndConditionsScreen'
 import HomeScreen from './src/containers/HomeScreen'
-import LoadingScreen from './src/containers/LoadingScreen';
-import ImageSliderScreen from './src/containers/ImageSliderScreen';
-import FeedDetailScreen from './src/containers/FeedDetailScreen';
-import DocumentSliderScreen from './src/containers/DocumentSliderScreen';
-import LikesListScreen from './src/containers/LikesListScreen';
-import CommentScreen from './src/containers/CommentScreen';
+import LoadingScreen from './src/containers/LoadingScreen'
+import ImageSliderScreen from './src/containers/ImageSliderScreen'
+import FeedDetailScreen from './src/containers/FeedDetailScreen'
+import DocumentSliderScreen from './src/containers/DocumentSliderScreen'
+import LikesListScreen from './src/containers/LikesListScreen'
+import CommentScreen from './src/containers/CommentScreen'
 import ProfileScreen from './src/containers/ProfileScreen'
 import ProfileUpdateScreen from './src/containers/ProfileUpdateScreen'
 import SignUpSuccessScreen from './src/containers/SignUpSuccessScreen'
@@ -186,9 +190,9 @@ export default class Root extends React.Component {
 
       } else {
         if (Platform.OS === 'ios') {
-          // Linking.openURL(`https://itunes.apple.com/${appStoreLocale}/app/${appName}/id${appStoreId}`);
+          Linking.openURL(`https://itunes.apple.com/${APP_LOCALE}/app/${APP_NAME}/id${APP_STORE_ID}`)
         } else {
-          // Linking.openURL(`https://play.google.com/store/apps/details?id=${playStoreId}`);
+          // Linking.openURL(`https://play.google.com/store/apps/details?id=${PLAY_STORE_ID}`)
         }
       }
     })
@@ -260,14 +264,13 @@ const styles = StyleSheet.create({
   defaultNavigationBar: {
     height: 54,
     paddingHorizontal: 6,
-    backgroundColor: '#FEFEFE',
-    // borderBottomWidth: 0,
+    backgroundColor: '#FEFEFE'
   },
   emptyBorderNavigationBar: {
     height: 54,
     paddingHorizontal: 6,
     backgroundColor: '#fff',
-    borderBottomWidth: 0,
+    borderBottomWidth: 0
   },
   loadingContainer: {
     width: CONSTANTS.SCREEN_WIDTH,
