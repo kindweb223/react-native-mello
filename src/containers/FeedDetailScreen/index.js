@@ -1107,7 +1107,7 @@ class FeedDetailScreen extends React.Component {
                           />
                         </TouchableHighlight>
 
-                        {currentFeed.ideas.length > 1 && (
+                        {currentFeed.ideas.length > 0 && (
                           <View style={styles.separator} />
                         )}
                       </Animated.View>
