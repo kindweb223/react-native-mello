@@ -32,20 +32,17 @@ const styles = StyleSheet.create({
     height: 11.67,
     width: 10,
     marginRight: 5,
-    marginBottom: 2
+    marginBottom: 0
   },
   feedText: {
-    fontSize: 14,
-    lineHeight: 21
+    fontSize: 12,
+    lineHeight: 21,
   },
   active: {
     color: COLORS.PURPLE
   },
   inActive: {
-    color: COLORS.LIGHT_GREY
-  },
-  inActiveText: {
-    color: COLORS.MEDIUM_GREY
+    color: COLORS.DARK_GREY
   },
   rightView: {
     flexDirection: 'row',
