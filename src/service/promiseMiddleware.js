@@ -20,8 +20,7 @@ export default function promiseMiddleware(){
             
             .catch((error) => {
                 let networkError = error
-                console.log('ERROR_NETWORK: ', error.response)
-                if (error.response === undefined) {     // For network failed
+                if (error.response === undefined && error.toString().includes('Error: Network Error')) {     // For network failed
                     networkError['response'] = { data: null }
                     next({ ...rest, error, type: 'NETWORK_FAILED' });
                 }
