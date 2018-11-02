@@ -3,7 +3,7 @@ import { ifIphoneX } from 'react-native-iphone-x-helper';
 import COLORS from '../../service/colors'
 import CONSTANTS from '../../service/constants'
 
-const SEARCHBAR_HEIGHT = 60
+const SEARCHBAR_HEIGHT = 40
 
 const styles = StyleSheet.create({
   safeArea: {
@@ -33,7 +33,7 @@ const styles = StyleSheet.create({
     top: 0,
   },
   searchIconView: {
-    width: 60,
+    width: 70,
     height: '100%',
     backgroundColor: '#fff',
     justifyContent: 'center',
@@ -74,14 +74,15 @@ const styles = StyleSheet.create({
   },
   tabBarStyle: {
     borderTopWidth: 0,
-    borderBottomWidth: 1,
-    borderBottomColor: COLORS.LIGHT_GREY_LINE,
+    borderBottomWidth: 0,
     height: CONSTANTS.TAB_BAR_HEIGHT,
     alignItems: 'center',
+    backgroundColor: '#fff',
+    marginTop: 0
   },
   tabBarTextStyle: {
     fontSize: 16,
-    fontWeight: 'bold',
+    fontWeight: '500',
     textAlign: 'left'
   },
   longHoldModalContainer: {

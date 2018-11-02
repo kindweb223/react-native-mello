@@ -97,6 +97,15 @@ export default function card(state = initialState, action = {}) {
       }
     }
     
+    // reset card error
+    case types.RESET_CARD_ERROR: {
+      return {
+        ...state,
+        loading: types.RESET_CARD_ERROR,
+        error: null,
+      }
+    }
+    
     // delete a card
     case types.DELETE_CARD_PENDING:
       return {

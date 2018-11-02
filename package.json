@@ -1,12 +1,13 @@
 {
   "name": "Feedo",
-  "version": "1.0.27",
+  "version": "1.0.28",
   "private": true,
   "scripts": {
     "start": "node node_modules/react-native/local-cli/cli.js start"
   },
   "dependencies": {
     "axios": "^0.18.0",
+    "bugsnag-react-native": "^2.12.1",
     "lodash": "^4.17.10",
     "lottie-react-native": "^2.5.9",
     "moment": "^2.22.2",

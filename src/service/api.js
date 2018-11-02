@@ -18,3 +18,12 @@ export const xSecretToken = '-kTpbC0bhCQQY2ZKKW7DGAiuK86Ii-t72O-OrUAnBuD4FC2Aw6F
 export const SCHEME = 'demos.solvers.io://'
 export const TNC_URL = 'https://d5qq4b94z26us.cloudfront.net/feedo/legal/TandC.md'
 export const PRIVACY_POLICY_URL = 'https://d5qq4b94z26us.cloudfront.net/feedo/legal/privacy-policy.md'
+
+// Appstore, Google play store
+export const APP_LOCALE = 'us'
+export const APP_NAME = 'Mello'
+export const APP_STORE_ID = '1426601338'
+export const PLAY_STORE_ID = ''
+
+// BugSnag
+export const BUGSNAG_KEY = 'ff91b9f4357b0367f0fac2f9f70855c5'

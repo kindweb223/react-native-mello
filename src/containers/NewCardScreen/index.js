@@ -47,7 +47,8 @@ import {
   setCoverImage,
   addLink,
   deleteLink,
-  moveCard
+  moveCard,
+  resetCardError,
 } from '../../redux/card/actions'
 import { 
   createFeed,
@@ -186,19 +187,16 @@ class NewCardScreen extends React.Component {
       if (newImageFiles.length === 1 && !nextProps.card.currentCard.coverImage) {
         loading = true;
         this.onSetCoverImage(newImageFiles[0].id);
-        this.currentSelectedLinkImageIndex ++;
-        if (this.currentSelectedLinkImageIndex < this.selectedLinkImages.length) {
-          this.addLinkImage(id, this.selectedLinkImages[this.currentSelectedLinkImageIndex]);
-        }
-      } else {
-        this.currentSelectedLinkImageIndex ++;
-        if (this.currentSelectedLinkImageIndex < this.selectedLinkImages.length) {
-          this.addLinkImage(id, this.selectedLinkImages[this.currentSelectedLinkImageIndex]);
-        }
+      }
+      this.currentSelectedLinkImageIndex ++;
+      if (this.currentSelectedLinkImageIndex < this.selectedLinkImages.length) {
+        this.addLinkImage(id, this.selectedLinkImages[this.currentSelectedLinkImageIndex]);
       }
     } else if (this.props.card.loading !== types.ADD_LINK_PENDING && nextProps.card.loading === types.ADD_LINK_PENDING) {
       // adding a link
-      loading = true;
+      if (this.props.card.currentCard.links === null || this.props.card.currentCard.links.length === 0) {
+        loading = true;
+      }
     } else if (this.props.card.loading !== types.ADD_LINK_FULFILLED && nextProps.card.loading === types.ADD_LINK_FULFILLED) {
       // success in adding a link
       if (this.props.cardMode === CONSTANTS.SHARE_EXTENTION_CARD && this.isUploadShareImage) {
@@ -215,7 +213,8 @@ class NewCardScreen extends React.Component {
           favicon,
         } = this.openGraphLinksInfo[this.indexForAddedLinks++];
         this.props.addLink(id, url, title, description, image, favicon);
-      } else if (this.props.cardMode !== CONSTANTS.SHARE_EXTENTION_CARD && this.allLinkImages.length > 0) {
+      } else if (this.props.cardMode !== CONSTANTS.SHARE_EXTENTION_CARD && this.allLinkImages.length > 0 
+        && (this.props.card.currentCard.links === null || this.props.card.currentCard.links.length === 0)) {
         this.setState({
           isVisibleChooseLinkImagesModal: true,
         });
@@ -268,10 +267,14 @@ class NewCardScreen extends React.Component {
       }
     } else if (this.props.card.loading !== types.GET_OPEN_GRAPH_PENDING && nextProps.card.loading === types.GET_OPEN_GRAPH_PENDING) {
       // getting open graph
-      loading = true;
+      if (this.props.card.currentCard.links === null || this.props.card.currentCard.links.length === 0) {
+        loading = true;
+      }
     } else if (this.props.card.loading !== types.GET_OPEN_GRAPH_FULFILLED && nextProps.card.loading === types.GET_OPEN_GRAPH_FULFILLED) {
       // success in getting open graph
-      loading = true;
+      if (this.props.card.currentCard.links === null || this.props.card.currentCard.links.length === 0) {
+        loading = true;
+      }
       if (this.props.cardMode === CONSTANTS.SHARE_EXTENTION_CARD) {
         this.setState({
           // cardName: nextProps.card.currentOpneGraph.title,
@@ -292,11 +295,14 @@ class NewCardScreen extends React.Component {
             this.allLinkImages.push(nextProps.card.currentOpneGraph.image);
           }
         }
-        if (this.state.idea.indexOf(this.linksForOpenGraph[this.indexForOpenGraph]) !== -1 
-          || nextProps.card.currentOpneGraph.url.indexOf(this.linksForOpenGraph[this.indexForOpenGraph]) !== -1) {
+        let currentIdea = this.state.idea;
+        currentIdea = currentIdea.replace(' ', '');
+        currentIdea = currentIdea.replace(',', '');
+        currentIdea = currentIdea.replace('\n', '');
+        if (currentIdea.toLowerCase() === this.linksForOpenGraph[this.indexForOpenGraph].toLowerCase()) {
           this.setState({
             idea: nextProps.card.currentOpneGraph.title,
-          });  
+          });
         }
         this.openGraphLinksInfo.push({
           url: nextProps.card.currentOpneGraph.url,
@@ -321,7 +327,6 @@ class NewCardScreen extends React.Component {
             favicon,
           } = this.openGraphLinksInfo[this.indexForAddedLinks++];
           this.props.addLink(id, url, title, description, image, favicon);
-          this.onHideKeyboard();
         }
       }
     } else if (this.props.card.loading !== types.LIKE_CARD_PENDING && nextProps.card.loading === types.LIKE_CARD_PENDING) {
@@ -393,13 +398,16 @@ class NewCardScreen extends React.Component {
         }
         if (error) {
           if (nextProps.card.loading === types.GET_OPEN_GRAPH_REJECTED) {
-            if (this.parseErrorUrls(error)) {
-              error = 'Sorry, this link cannot be read';
+            if (this.props.card.currentCard.links === null || this.props.card.currentCard.links.length === 0) {
+              if (this.parseErrorUrls(error)) {
+                error = 'Sorry, this link cannot be read';
+              } else {
+                // return;
+              }
             } else {
-              // return;
+              this.isVisibleErrorDialog = true;
             }
           }
-          error = 'Sorry, this link cannot be read';
           if (!this.isVisibleErrorDialog) {
             this.isVisibleErrorDialog = true;
             Alert.alert('Error', error, [
@@ -407,6 +415,7 @@ class NewCardScreen extends React.Component {
             ]);
           }
         }
+        this.props.resetCardError();
         return;
       }
     }
@@ -456,7 +465,9 @@ class NewCardScreen extends React.Component {
         toValue: e.endCoordinates.height,
         duration: e.duration,
       }
-    ).start();
+    ).start(() => {
+      this.textInputIdeaRef.focus();
+    });
   }
 
   keyboardWillHide(e) {
@@ -507,7 +518,7 @@ class NewCardScreen extends React.Component {
   //   if (viewMode === CONSTANTS.CARD_NEW || viewMode === CONSTANTS.CARD_EDIT) {
   //     if (content) {
   //       const texts = content.split(/[, ]/);
-  //       const allUrls = texts[0].match(/^(http:\/\/www\.|https:\/\/www\.|http:\/\/|https:\/\/)?[a-z0-9]+([\-\.]{1}[a-z0-9]+)*\.[a-z]{2,5}(:[0-9]{1,5})?(\/.*)?$/gi);
+  //       const allUrls = texts[0].match(/((?:(http|https|Http|Https|rtsp|Rtsp):\/\/(?:(?:[a-zA-Z0-9\$\-\_\.\+\!\*\'\(\)\,\;\?\&\=]|(?:\%[a-fA-F0-9]{2})){1,64}(?:\:(?:[a-zA-Z0-9\$\-\_\.\+\!\*\'\(\)\,\;\?\&\=]|(?:\%[a-fA-F0-9]{2})){1,25})?\@)?)?((?:(?:[a-zA-Z0-9][a-zA-Z0-9\-]{0,64}\.)+(?:(?:aero|arpa|asia|a[cdefgilmnoqrstuwxz])|(?:biz|b[abdefghijmnorstvwyz])|(?:cat|com|coop|c[acdfghiklmnoruvxyz])|d[ejkmoz]|(?:edu|e[cegrstu])|f[ijkmor]|(?:gov|g[abdefghilmnpqrstuwy])|h[kmnrtu]|(?:info|int|i[delmnoqrst])|(?:jobs|j[emop])|k[eghimnrwyz]|l[abcikrstuvy]|(?:mil|mobi|museum|m[acdghklmnopqrstuvwxyz])|(?:name|net|n[acefgilopruz])|(?:org|om)|(?:pro|p[aefghklmnrstwy])|qa|r[eouw]|s[abcdeghijklmnortuvyz]|(?:tel|travel|t[cdfghjklmnoprtvwz])|u[agkmsyz]|v[aceginu]|w[fs]|y[etu]|z[amw]))|(?:(?:25[0-5]|2[0-4][0-9]|[0-1][0-9]{2}|[1-9][0-9]|[1-9])\.(?:25[0-5]|2[0-4][0-9]|[0-1][0-9]{2}|[1-9][0-9]|[1-9]|0)\.(?:25[0-5]|2[0-4][0-9]|[0-1][0-9]{2}|[1-9][0-9]|[1-9]|0)\.(?:25[0-5]|2[0-4][0-9]|[0-1][0-9]{2}|[1-9][0-9]|[0-9])))(?:\:\d{1,5})?)(\/(?:(?:[a-zA-Z0-9\;\/\?\:\@\&\=\#\~\-\.\+\!\*\'\(\)\,\_])|(?:\%[a-fA-F0-9]{2}))*)?(?:\b|$)/gi);
   //       // if (texts.length === 1 && validUrl.isUri(texts[0])) {
   //       if (texts.length === 1 && allUrls && allUrls.length > 0) {
   //         if (this.parsingErrorLinks.length > 0 && this.parsingErrorLinks.indexOf(texts[0] !== -1)) {
@@ -522,12 +533,28 @@ class NewCardScreen extends React.Component {
   //   }
   //   return false;
   // }
+  compareUrls(linkUrl, currentUrl) {
+    const linkUrls = linkUrl.match(/(((?:(?:[a-zA-Z0-9\$\-\_\.\+\!\*\'\(\)\,\;\?\&\=]|(?:\%[a-fA-F0-9]{2})){1,64}(?:\:(?:[a-zA-Z0-9\$\-\_\.\+\!\*\'\(\)\,\;\?\&\=]|(?:\%[a-fA-F0-9]{2})){1,25})?\@)?)?((?:(?:[a-zA-Z0-9][a-zA-Z0-9\-]{0,64}\.)+(?:(?:aero|arpa|asia|a[cdefgilmnoqrstuwxz])|(?:biz|b[abdefghijmnorstvwyz])|(?:cat|com|coop|c[acdfghiklmnoruvxyz])|d[ejkmoz]|(?:edu|e[cegrstu])|f[ijkmor]|(?:gov|g[abdefghilmnpqrstuwy])|h[kmnrtu]|(?:info|int|i[delmnoqrst])|(?:jobs|j[emop])|k[eghimnrwyz]|l[abcikrstuvy]|(?:mil|mobi|museum|m[acdghklmnopqrstuvwxyz])|(?:name|net|n[acefgilopruz])|(?:org|om)|(?:pro|p[aefghklmnrstwy])|qa|r[eouw]|s[abcdeghijklmnortuvyz]|(?:tel|travel|t[cdfghjklmnoprtvwz])|u[agkmsyz]|v[aceginu]|w[fs]|y[etu]|z[amw]))|(?:(?:25[0-5]|2[0-4][0-9]|[0-1][0-9]{2}|[1-9][0-9]|[1-9])\.(?:25[0-5]|2[0-4][0-9]|[0-1][0-9]{2}|[1-9][0-9]|[1-9]|0)\.(?:25[0-5]|2[0-4][0-9]|[0-1][0-9]{2}|[1-9][0-9]|[1-9]|0)\.(?:25[0-5]|2[0-4][0-9]|[0-1][0-9]{2}|[1-9][0-9]|[0-9])))(?:\:\d{1,5})?)(\/(?:(?:[a-zA-Z0-9\;\/\?\:\@\&\=\#\~\-\.\+\!\*\'\(\)\,\_])|(?:\%[a-fA-F0-9]{2}))*)?(?:\b|$)/gi);
+    let filterdLinkUrl = linkUrls[0].toLowerCase();
+    const currentUrls = currentUrl.match(/(((?:(?:[a-zA-Z0-9\$\-\_\.\+\!\*\'\(\)\,\;\?\&\=]|(?:\%[a-fA-F0-9]{2})){1,64}(?:\:(?:[a-zA-Z0-9\$\-\_\.\+\!\*\'\(\)\,\;\?\&\=]|(?:\%[a-fA-F0-9]{2})){1,25})?\@)?)?((?:(?:[a-zA-Z0-9][a-zA-Z0-9\-]{0,64}\.)+(?:(?:aero|arpa|asia|a[cdefgilmnoqrstuwxz])|(?:biz|b[abdefghijmnorstvwyz])|(?:cat|com|coop|c[acdfghiklmnoruvxyz])|d[ejkmoz]|(?:edu|e[cegrstu])|f[ijkmor]|(?:gov|g[abdefghilmnpqrstuwy])|h[kmnrtu]|(?:info|int|i[delmnoqrst])|(?:jobs|j[emop])|k[eghimnrwyz]|l[abcikrstuvy]|(?:mil|mobi|museum|m[acdghklmnopqrstuvwxyz])|(?:name|net|n[acefgilopruz])|(?:org|om)|(?:pro|p[aefghklmnrstwy])|qa|r[eouw]|s[abcdeghijklmnortuvyz]|(?:tel|travel|t[cdfghjklmnoprtvwz])|u[agkmsyz]|v[aceginu]|w[fs]|y[etu]|z[amw]))|(?:(?:25[0-5]|2[0-4][0-9]|[0-1][0-9]{2}|[1-9][0-9]|[1-9])\.(?:25[0-5]|2[0-4][0-9]|[0-1][0-9]{2}|[1-9][0-9]|[1-9]|0)\.(?:25[0-5]|2[0-4][0-9]|[0-1][0-9]{2}|[1-9][0-9]|[1-9]|0)\.(?:25[0-5]|2[0-4][0-9]|[0-1][0-9]{2}|[1-9][0-9]|[0-9])))(?:\:\d{1,5})?)(\/(?:(?:[a-zA-Z0-9\;\/\?\:\@\&\=\#\~\-\.\+\!\*\'\(\)\,\_])|(?:\%[a-fA-F0-9]{2}))*)?(?:\b|$)/gi);
+    let filterdCurrentUrl = currentUrls[0].toLowerCase();
+    if (filterdLinkUrl.startsWith('www.') && !filterdCurrentUrl.startsWith('www.')) {
+      filterdCurrentUrl = 'www.' + filterdCurrentUrl;
+    }
+    if (filterdCurrentUrl.startsWith('www.') && !filterdLinkUrl.startsWith('www.')) {
+      filterdLinkUrl = 'www.' + filterdLinkUrl;
+    }
+    if (filterdLinkUrl.endsWith('/') && !filterdCurrentUrl.endsWith('/')) {
+      filterdCurrentUrl = filterdCurrentUrl + '/';
+    }
+    return filterdLinkUrl === filterdCurrentUrl;
+  }
 
   checkUrls() {
     // if (this.checkUrl(this.state.idea)) {
     //   return true;
     // }
-    const allUrls = this.state.idea.match(/^(http:\/\/www\.|https:\/\/www\.|http:\/\/|https:\/\/)?[a-z0-9]+([\-\.]{1}[a-z0-9]+)*\.[a-z]{2,5}(:[0-9]{1,5})?(\/.*)?$/gi);
+    const allUrls = this.state.idea.match(/((?:(http|https|Http|Https|rtsp|Rtsp):\/\/(?:(?:[a-zA-Z0-9\$\-\_\.\+\!\*\'\(\)\,\;\?\&\=]|(?:\%[a-fA-F0-9]{2})){1,64}(?:\:(?:[a-zA-Z0-9\$\-\_\.\+\!\*\'\(\)\,\;\?\&\=]|(?:\%[a-fA-F0-9]{2})){1,25})?\@)?)?((?:(?:[a-zA-Z0-9][a-zA-Z0-9\-]{0,64}\.)+(?:(?:aero|arpa|asia|a[cdefgilmnoqrstuwxz])|(?:biz|b[abdefghijmnorstvwyz])|(?:cat|com|coop|c[acdfghiklmnoruvxyz])|d[ejkmoz]|(?:edu|e[cegrstu])|f[ijkmor]|(?:gov|g[abdefghilmnpqrstuwy])|h[kmnrtu]|(?:info|int|i[delmnoqrst])|(?:jobs|j[emop])|k[eghimnrwyz]|l[abcikrstuvy]|(?:mil|mobi|museum|m[acdghklmnopqrstuvwxyz])|(?:name|net|n[acefgilopruz])|(?:org|om)|(?:pro|p[aefghklmnrstwy])|qa|r[eouw]|s[abcdeghijklmnortuvyz]|(?:tel|travel|t[cdfghjklmnoprtvwz])|u[agkmsyz]|v[aceginu]|w[fs]|y[etu]|z[amw]))|(?:(?:25[0-5]|2[0-4][0-9]|[0-1][0-9]{2}|[1-9][0-9]|[1-9])\.(?:25[0-5]|2[0-4][0-9]|[0-1][0-9]{2}|[1-9][0-9]|[1-9]|0)\.(?:25[0-5]|2[0-4][0-9]|[0-1][0-9]{2}|[1-9][0-9]|[1-9]|0)\.(?:25[0-5]|2[0-4][0-9]|[0-1][0-9]{2}|[1-9][0-9]|[0-9])))(?:\:\d{1,5})?)(\/(?:(?:[a-zA-Z0-9\;\/\?\:\@\&\=\#\~\-\.\+\!\*\'\(\)\,\_])|(?:\%[a-fA-F0-9]{2}))*)?(?:\b|$)/gi);
     if (allUrls) {
       let newUrls = [];
       const {
@@ -535,7 +562,7 @@ class NewCardScreen extends React.Component {
       } = this.props.card.currentCard;
       if (links) {
         allUrls.forEach(url => {
-          const index = _.findIndex(links, link => link.originalUrl.toLowerCase() === url.toLowerCase());
+          const index = _.findIndex(links, link => this.compareUrls(link.originalUrl, url));
           if (index === -1) {
             newUrls.push(url);
           }
@@ -548,7 +575,7 @@ class NewCardScreen extends React.Component {
       if (this.parsingErrorLinks.length) {
         filteredUrls = [];
         newUrls.forEach(url => {
-          const index = _.findIndex(this.parsingErrorLinks, errorLink => errorLink.toLowerCase() === url.toLowerCase());
+          const index = _.findIndex(this.parsingErrorLinks, errorLink => this.compareUrls(errorLink, url));
           if (index === -1) {
             filteredUrls.push(url);
           }
@@ -567,12 +594,13 @@ class NewCardScreen extends React.Component {
   }
 
   parseErrorUrls(message) {
-    const allUrls = message.match(/^(http:\/\/www\.|https:\/\/www\.|http:\/\/|https:\/\/)?[a-z0-9]+([\-\.]{1}[a-z0-9]+)*\.[a-z]{2,5}(:[0-9]{1,5})?(\/.*)?$/gi);
+    const allUrls = message.match(/((?:(http|https|Http|Https|rtsp|Rtsp):\/\/(?:(?:[a-zA-Z0-9\$\-\_\.\+\!\*\'\(\)\,\;\?\&\=]|(?:\%[a-fA-F0-9]{2})){1,64}(?:\:(?:[a-zA-Z0-9\$\-\_\.\+\!\*\'\(\)\,\;\?\&\=]|(?:\%[a-fA-F0-9]{2})){1,25})?\@)?)?((?:(?:[a-zA-Z0-9][a-zA-Z0-9\-]{0,64}\.)+(?:(?:aero|arpa|asia|a[cdefgilmnoqrstuwxz])|(?:biz|b[abdefghijmnorstvwyz])|(?:cat|com|coop|c[acdfghiklmnoruvxyz])|d[ejkmoz]|(?:edu|e[cegrstu])|f[ijkmor]|(?:gov|g[abdefghilmnpqrstuwy])|h[kmnrtu]|(?:info|int|i[delmnoqrst])|(?:jobs|j[emop])|k[eghimnrwyz]|l[abcikrstuvy]|(?:mil|mobi|museum|m[acdghklmnopqrstuvwxyz])|(?:name|net|n[acefgilopruz])|(?:org|om)|(?:pro|p[aefghklmnrstwy])|qa|r[eouw]|s[abcdeghijklmnortuvyz]|(?:tel|travel|t[cdfghjklmnoprtvwz])|u[agkmsyz]|v[aceginu]|w[fs]|y[etu]|z[amw]))|(?:(?:25[0-5]|2[0-4][0-9]|[0-1][0-9]{2}|[1-9][0-9]|[1-9])\.(?:25[0-5]|2[0-4][0-9]|[0-1][0-9]{2}|[1-9][0-9]|[1-9]|0)\.(?:25[0-5]|2[0-4][0-9]|[0-1][0-9]{2}|[1-9][0-9]|[1-9]|0)\.(?:25[0-5]|2[0-4][0-9]|[0-1][0-9]{2}|[1-9][0-9]|[0-9])))(?:\:\d{1,5})?)(\/(?:(?:[a-zA-Z0-9\;\/\?\:\@\&\=\#\~\-\.\+\!\*\'\(\)\,\_])|(?:\%[a-fA-F0-9]{2}))*)?(?:\b|$)/gi);
     if (allUrls) {
       let newUrls = [];
       allUrls.forEach(url => {
         const index = _.findIndex(this.parsingErrorLinks, errorLink => errorLink === url);
         if (index === -1) {
+          console.log('Url : ', url);
           url = url.replace('[', '');
           url = url.replace(']', '');
           newUrls.push(url);
@@ -586,12 +614,6 @@ class NewCardScreen extends React.Component {
           //     })
           //   }
           // }
-          if (!this.state.idea.includes(url)) {
-            this.setState({
-              idea: this.state.idea + this.state.idea ? ' ' : '' + url,
-            })
-          }
-          
         }
       });
       if (newUrls.length > 0) {
@@ -883,7 +905,6 @@ class NewCardScreen extends React.Component {
       isShowKeyboardButton: false,
       isEditableIdea: false,
     });
-    this.checkUrls();
   }
 
   onShowLikes(likes) {
@@ -893,6 +914,7 @@ class NewCardScreen extends React.Component {
   }
 
   onCloseLinkImages() {
+    this.allLinkImages = [];
     this.setState({
       isVisibleChooseLinkImagesModal: false,
     });
@@ -1117,9 +1139,10 @@ class NewCardScreen extends React.Component {
     const { viewMode, cardMode } = this.props;
     const { links } = this.props.card.currentCard;
     if (links && links.length > 0) {
+      const firstLink = links[0];
       return (
         <WebMetaList 
-          links={links}
+          links={[firstLink]}
           isFastImage={cardMode !== CONSTANTS.SHARE_EXTENTION_CARD}
           editable={viewMode !== CONSTANTS.CARD_VIEW}
           // onRemove={(linkId) => this.onDeleteLink(linkId)}
@@ -1595,6 +1618,7 @@ const mapDispatchToProps = dispatch => ({
   addLink: (ideaId, originalUrl, title, description, imageUrl, faviconUrl) => dispatch(addLink(ideaId, originalUrl, title, description, imageUrl, faviconUrl)),
   deleteLink: (ideaId, linkId) => dispatch(deleteLink(ideaId, linkId)),
   moveCard: (ideaId, huntId) => dispatch(moveCard(ideaId, huntId)),
+  resetCardError: () => dispatch(resetCardError()),
 })
 
 

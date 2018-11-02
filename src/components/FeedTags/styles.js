@@ -19,8 +19,8 @@ export default StyleSheet.create({
   textInput: {
     margin: 0,
     padding: 0,
-    paddingLeft: 10,
-    paddingRight: 10,
+    paddingLeft: 13,
+    paddingRight: 13,
     flex: 1,
     height: 25,
     fontSize: 14,
@@ -31,8 +31,8 @@ export default StyleSheet.create({
     justifyContent: "center",
     backgroundColor: "#e0e0e0",
     borderRadius: 12.5,
-    paddingLeft: 10,
-    paddingRight: 10,
+    paddingLeft: 13,
+    paddingRight: 13,
     height: 25,
     marginRight: 8
   },

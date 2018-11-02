@@ -9,11 +9,11 @@ const styles = StyleSheet.create({
   title: {
     flex: 1,
     fontSize: 18,
-    fontWeight: 'bold',
+    lineHeight: 25,
+    fontWeight: '600',
   },
   statsView: {
-    flexDirection: 'row',
-    marginTop: 5
+    flexDirection: 'row'
   },
   statsItemView: {
     flexDirection: 'row',
@@ -32,33 +32,29 @@ const styles = StyleSheet.create({
     height: 11.67,
     width: 10,
     marginRight: 5,
-    marginBottom: 2
+    marginBottom: 0
   },
   feedText: {
-    fontSize: 13
+    fontSize: 12,
+    lineHeight: 21,
   },
   active: {
     color: COLORS.PURPLE
   },
   inActive: {
-    color: COLORS.LIGHT_GREY
-  },
-  inActiveText: {
-    color: COLORS.MEDIUM_GREY
+    color: COLORS.DARK_GREY
   },
   rightView: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center'
   },
-  pinIcon: {
-    transform: [{ rotate: '-90deg' }]
-  },
   avatarView: {
     marginLeft: 10
   },
   tagsView: {
-    marginTop: 7
+    marginTop: 5,
+    marginBottom: 4
   }
 })
 

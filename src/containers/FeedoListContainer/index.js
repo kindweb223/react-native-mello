@@ -90,6 +90,10 @@ class FeedoListContainer extends React.Component {
         }
       >
         <ListRow index={index}>
+          {this.props.feedoList.length > 0 && index === 0 && (
+            <View style={styles.separator} />
+          )}
+
           <TouchableOpacity
             activeOpacity={0.8}
             delayLongPress={1000}
@@ -103,8 +107,8 @@ class FeedoListContainer extends React.Component {
             <FeedItemComponent item={item} pinFlag={item.pinned ? true : false} page={this.props.page} />
           </TouchableOpacity>
 
-          {this.props.feedoList.length > 1 && index !== (this.props.feedoList.length - 1) && (
-            <View style={styles.separator} />
+          {this.props.feedoList.length > 0 && (
+            <View style={[styles.separator, { marginTop: 16 }]} />
           )}
         </ListRow>
       </Animated.View>

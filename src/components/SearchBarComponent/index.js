@@ -145,17 +145,17 @@ class SearchBarComponent extends React.Component {
   onFocusText = () => {
     Animated.timing(this.searchBarWidth, {
       toValue: CONSTANTS.SCREEN_SUB_WIDTH - 60,
-      duration: 500,
+      duration: 250,
     }).start();
 
     Animated.timing(this.cancelBtnOpacity, {
       toValue: 1,
-      duration: 500,
+      duration: 250,
     }).start();
 
     Animated.timing(this.closeBtnOpacity, {
       toValue: 1,
-      duration: 500,
+      duration: 250,
     }).start();
   }
 
@@ -166,17 +166,17 @@ class SearchBarComponent extends React.Component {
 
     Animated.timing(this.searchBarWidth, {
       toValue: CONSTANTS.SCREEN_SUB_WIDTH,
-      duration: 500,
+      duration: 250,
     }).start();
 
     Animated.timing(this.cancelBtnOpacity, {
       toValue: 0,
-      duration: 500,
+      duration: 250,
     }).start();
 
     Animated.timing(this.closeBtnOpacity, {
       toValue: 0,
-      duration: 500,
+      duration: 250,
     }).start();
   }
 
