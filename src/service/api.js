@@ -22,7 +22,7 @@ export const PRIVACY_POLICY_URL = 'https://d5qq4b94z26us.cloudfront.net/feedo/le
 // Appstore, Google play store
 export const APP_LOCALE = 'us'
 export const APP_NAME = 'Mello'
-export const APP_STORE_ID = ''
+export const APP_STORE_ID = '1426601338'
 export const PLAY_STORE_ID = ''
 
 // BugSnag

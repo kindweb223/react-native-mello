@@ -175,7 +175,7 @@ export default class Root extends React.Component {
 
       } else {
         if (Platform.OS === 'ios') {
-          // Linking.openURL(`https://itunes.apple.com/${APP_LOCALE}/app/${APP_NAME}/id${APP_STORE_ID}`)
+          Linking.openURL(`https://itunes.apple.com/${APP_LOCALE}/app/${APP_NAME}/id${APP_STORE_ID}`)
         } else {
           // Linking.openURL(`https://play.google.com/store/apps/details?id=${PLAY_STORE_ID}`)
         }
