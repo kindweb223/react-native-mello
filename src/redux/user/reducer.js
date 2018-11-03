@@ -1,7 +1,6 @@
 import { AsyncStorage, Alert } from 'react-native'
 import axios from 'axios'
 import * as types from './types'
-import * as cardTypes from '../card/types'
 import CONSTANTS from '../../../src/service/constants'
 import SharedGroupPreferences from 'react-native-shared-group-preferences'
 
@@ -246,23 +245,22 @@ export default function user(state = initialState, action = {}) {
     /**
      * Upload image to S3
      */
-    case cardTypes.UPLOAD_FILE_PENDING:
+    case types.UPLOAD_FILE_PENDING:
       return {
         ...state,
-        loading: 'UPLOAD_FILE_PENDING',
+        loading: types.UPLOAD_FILE_PENDING,
         error: null,
       }
-    case cardTypes.UPLOAD_FILE_FULFILLED: {
+    case types.UPLOAD_FILE_FULFILLED: {
       return {
         ...state,
-        loading: 'UPLOAD_FILE_FULFILLED',
+        loading: types.UPLOAD_FILE_FULFILLED,
       }
     }
-    case cardTypes.UPLOAD_FILE_REJECTED: {
+    case types.UPLOAD_FILE_REJECTED: {
       return {
         ...state,
-        loading: 'UPLOAD_FILE_REJECTED',
-        error: action.error,
+        loading: types.UPLOAD_FILE_REJECTED
       }
     }
     /**
