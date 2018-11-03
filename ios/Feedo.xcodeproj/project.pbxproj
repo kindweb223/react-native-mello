@@ -39,6 +39,7 @@
 		2D02E4C71E0B4AEC006451C7 /* libRCTText-tvOS.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 3DAD3E941DF850E9000B6D8A /* libRCTText-tvOS.a */; };
 		2D02E4C81E0B4AEC006451C7 /* libRCTWebSocket-tvOS.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 3DAD3E991DF850E9000B6D8A /* libRCTWebSocket-tvOS.a */; };
 		2D16E6881FA4F8E400B85C8A /* libReact.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 2D16E6891FA4F8E400B85C8A /* libReact.a */; };
+		2D52C42B218E625B003C52C8 /* libBugsnagReactNative.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 4CD459EE218C8D3600E5AD2F /* libBugsnagReactNative.a */; };
 		2DCD954D1E0B4F2C00145EB5 /* FeedoTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 00E356F21AD99517003FC87E /* FeedoTests.m */; };
 		2DF0FFEE2056DD460020B375 /* libReact.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 3DAD3EA31DF850E9000B6D8A /* libReact.a */; };
 		422DE7522DC141888C856AFB /* libReactNativeHaptic.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 63B0B597FA904A7BBE354801 /* libReactNativeHaptic.a */; };
@@ -770,6 +771,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				2D52C42B218E625B003C52C8 /* libBugsnagReactNative.a in Frameworks */,
 				B5C9088721735F2200C3CD9A /* libRCTVideo.a in Frameworks */,
 				A450134D2139BFA200A78D65 /* libRCTBlob.a in Frameworks */,
 				A450134E2139BFA200A78D65 /* libRNFetchBlob.a in Frameworks */,
