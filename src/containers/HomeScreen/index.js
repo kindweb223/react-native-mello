@@ -413,7 +413,7 @@ class HomeScreen extends React.Component {
   registerPushNotification() {
     PushNotification.configure({
       onRegister: (token) => {
-        console.log('TOKEN : ', token);
+        console.log('PUSH TOKEN : ', token);
         AsyncStorage.getItem(CONSTANTS.USER_DEVICE_TOKEN, (error, result) => {
           if (error) {
             console.log('error : ', error);
