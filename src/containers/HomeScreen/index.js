@@ -60,7 +60,8 @@ import {
 import { 
   setUserInfo,
   addDeviceToken,
-  updateDeviceToken
+  updateDeviceToken,
+  appOpened,
 } from '../../redux/user/actions'
 
 import { 
@@ -119,6 +120,7 @@ class HomeScreen extends React.Component {
     this.registerPushNotification();
     this.props.getFeedoList(this.state.tabIndex)
     AppState.addEventListener('change', this.onHandleAppStateChange.bind(this));
+    appOpened(this.props.user.userInfo.id);
   }
 
   componentWillUnmount() {
@@ -299,6 +301,7 @@ class HomeScreen extends React.Component {
     this.setState({appState: nextAppState});
 
     if (nextAppState === 'active') {
+      appOpened(this.props.user.userInfo.id);
       this.props.getFeedoList(this.state.tabIndex)
     }
   }
