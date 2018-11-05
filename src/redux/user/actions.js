@@ -311,3 +311,15 @@ export const deleteProfilePhoto = (userId) => {
       })  
   };
 }
+
+/**
+ * app opened by user
+ */
+export const appOpened = (userId) => {
+  const url = `users/${userId}/appOpened`;
+  axios({
+    method: 'post',
+    url,
+  });
+}
+
