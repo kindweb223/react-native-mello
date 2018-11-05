@@ -24,6 +24,8 @@ import Modal from "react-native-modal"
 import { Actions } from 'react-native-router-flux'
 import * as R from 'ramda'
 import { find, filter, orderBy } from 'lodash'
+import DeviceInfo from 'react-native-device-info';
+
 import DashboardNavigationBar from '../../navigations/DashboardNavigationBar'
 import DashboardActionBar from '../../navigations/DashboardActionBar'
 import FeedoListContainer from '../FeedoListContainer'
@@ -426,7 +428,11 @@ class HomeScreen extends React.Component {
           const data = {
             deviceToken: token.token,
             deviceTypeEnum: Platform.OS === 'ios' ? 'IPHONE' : 'ANDROID',
+            deviceManufacturer: DeviceInfo.getManufacturer(),
+            deviceModel: DeviceInfo.getModel(),
+            osVersion: DeviceInfo.getSystemVersion(),
           }
+          console.log('Device Info : ', data);
           if (!result) {
             this.props.addDeviceToken(this.props.user.userInfo.id, data);
           } else {
