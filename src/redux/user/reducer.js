@@ -246,18 +246,21 @@ export default function user(state = initialState, action = {}) {
      * Upload image to S3
      */
     case types.UPLOAD_FILE_PENDING:
+      console.log('UPLOAD_FILE_PENDING:')
       return {
         ...state,
         loading: types.UPLOAD_FILE_PENDING,
         error: null,
       }
     case types.UPLOAD_FILE_FULFILLED: {
+      console.log('UPLOAD_FILE_FULFILLED:')
       return {
         ...state,
         loading: types.UPLOAD_FILE_FULFILLED,
       }
     }
     case types.UPLOAD_FILE_REJECTED: {
+      console.log('UPLOAD_FILE_REJECTED:')
       return {
         ...state,
         loading: types.UPLOAD_FILE_REJECTED

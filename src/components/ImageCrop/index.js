@@ -235,18 +235,19 @@ class ImageCrop extends Component {
 				this.props.source.uri,
 				cropData,
 				(croppedUrl) => {
-					this.resize(
-						croppedUrl
-					).then((resizedUrl) => {
-						return resolve(resizedUrl)
-          }).catch((error) => {
-						console.log('ResizeError', error)
-            bugsnag.notify(error, function(report) {
-              report.metadata = {
-                "errorTitle": 'Resize Image Error'
-              }
-            })
-          });
+					resolve(croppedUrl)
+					// this.resize(
+					// 	croppedUrl
+					// ).then((resizedUrl) => {
+					// 	return resolve(resizedUrl)
+          // }).catch((error) => {
+					// 	console.log('ResizeError', error)
+          //   bugsnag.notify(error, function(report) {
+          //     report.metadata = {
+          //       "errorTitle": 'Resize Image Error'
+          //     }
+          //   })
+          // });
 				},
 				(failure) => {
           bugsnag.notify(error, function(report) {
