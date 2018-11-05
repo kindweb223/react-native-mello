@@ -55,7 +55,7 @@ RCT_REMAP_METHOD(data,
                  rejecter:(RCTPromiseRejectBlock)reject)
 {
     [self extractDataFromContext: extensionContext withCallback:^(NSString* val, NSString* contentType, NSException* err) {
-        if(err) {
+        if (err) {
             reject(@"error", err.description, nil);
         } else {
             resolve(@{
@@ -76,7 +76,7 @@ RCT_REMAP_METHOD(data,
         __block NSItemProvider *textProvider = nil;
 
         [attachments enumerateObjectsUsingBlock:^(NSItemProvider *provider, NSUInteger idx, BOOL *stop) {
-            if([provider hasItemConformingToTypeIdentifier:URL_IDENTIFIER]) {
+            if ([provider hasItemConformingToTypeIdentifier:URL_IDENTIFIER]) {
                 urlProvider = provider;
                 *stop = YES;
             } else if ([provider hasItemConformingToTypeIdentifier:TEXT_IDENTIFIER]){
@@ -88,11 +88,11 @@ RCT_REMAP_METHOD(data,
             }
         }];
 
-        if(urlProvider) {
+        if (urlProvider) {
             [urlProvider loadItemForTypeIdentifier:URL_IDENTIFIER options:nil completionHandler:^(id<NSSecureCoding> item, NSError *error) {
                 NSURL *url = (NSURL *)item;
 
-                if(callback) {
+                if (callback) {
                     callback([url absoluteString], @"text/plain", nil);
                 }
             }];
@@ -100,7 +100,7 @@ RCT_REMAP_METHOD(data,
             [imageProvider loadItemForTypeIdentifier:IMAGE_IDENTIFIER options:nil completionHandler:^(id<NSSecureCoding> item, NSError *error) {
                 NSURL *url = (NSURL *)item;
 
-                if(callback) {
+                if (callback) {
                     callback([url absoluteString], [[[url absoluteString] pathExtension] lowercaseString], nil);
                 }
             }];
@@ -108,18 +108,18 @@ RCT_REMAP_METHOD(data,
             [textProvider loadItemForTypeIdentifier:TEXT_IDENTIFIER options:nil completionHandler:^(id<NSSecureCoding> item, NSError *error) {
                 NSString *text = (NSString *)item;
 
-                if(callback) {
+                if (callback) {
                     callback(text, @"text/plain", nil);
                 }
             }];
         } else {
-            if(callback) {
+            if (callback) {
                 callback(nil, nil, [NSException exceptionWithName:@"Error" reason:@"couldn't find provider" userInfo:nil]);
             }
         }
     }
     @catch (NSException *exception) {
-        if(callback) {
+        if (callback) {
             callback(nil, nil, exception);
         }
     }
@@ -128,7 +128,7 @@ RCT_REMAP_METHOD(data,
 RCT_EXPORT_METHOD(goToMainApp:(NSString*)mainAppURL) {
   NSURL * url = [ NSURL URLWithString: mainAppURL ];
   NSString *className = @"UIApplication";
-  if ( NSClassFromString(className )) {
+  if (NSClassFromString(className)) {
     id object = [ NSClassFromString(className) performSelector: @selector(sharedApplication)];
     [object performSelector: @selector(openURL:) withObject:url];
   }
