@@ -183,7 +183,7 @@ export const setFeedDetailAction = (data) => {
 export const createFeed = () => {
   const url = `hunts`
   const data = {
-    status: 'DRAFT',
+    status: 'TEMP',
   }
   return {
     types: [types.CREATE_FEED_PENDING, types.CREATE_FEED_FULFILLED, types.CREATE_FEED_REJECTED],

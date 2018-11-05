@@ -8,7 +8,7 @@ import * as types from './types'
 export const createCard = (huntId) => {
   const url = `ideas`
   const data = {
-    status: 'DRAFT',
+    status: 'TEMP',
     huntId,
   }
   return {
