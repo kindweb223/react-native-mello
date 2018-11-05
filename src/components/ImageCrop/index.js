@@ -183,16 +183,16 @@ class ImageCrop extends Component {
 
 	_handlePanResponderGrant = (e, gestureState) => {
     if (gestureState.numberActiveTouches === 2) {
-      let dx = Math.abs(
-        e.nativeEvent.touches[0].pageX - e.nativeEvent.touches[1].pageX
-      );
-      let dy = Math.abs(
-        e.nativeEvent.touches[0].pageY - e.nativeEvent.touches[1].pageY
-      );
-			let distant = Math.sqrt(dx * dx + dy * dy);
-			this.distant = distant;
-    }
-  };
+		let dx = Math.abs(
+			e.nativeEvent.touches[0].pageX - e.nativeEvent.touches[1].pageX
+		);
+		let dy = Math.abs(
+			e.nativeEvent.touches[0].pageY - e.nativeEvent.touches[1].pageY
+		);
+				let distant = Math.sqrt(dx * dx + dy * dy);
+				this.distant = distant;
+		}
+	};
 
 	crop() {
 		const {
@@ -236,19 +236,30 @@ class ImageCrop extends Component {
 				cropData,
 				(croppedUrl) => {
 					this.resize(
-						croppedUrl,
-						cropData.size.width,
-						cropData.size.height
+						croppedUrl
 					).then((resizedUrl) => {
 						return resolve(resizedUrl)
-					});
+          }).catch((error) => {
+            bugsnag.notify(error, function(report) {
+              report.metadata = {
+                "errorTitle": 'Resize Image Error'
+              }
+            })
+          });
 				},
-				(failure) => reject(failure)
+				(failure) => {
+          bugsnag.notify(error, function(report) {
+            report.metadata = {
+              "errorTitle": 'Crop Image Error'
+            }
+          })
+          reject(failure)
+        }
 			);
 		});
 	}
 
-	resize(uri, width, height) {
+	resize(uri) {
 		let { cropQuality } = this.state;
 		if (!Number.isInteger(cropQuality) || cropQuality < 0 || cropQuality > 100) {
 			cropQuality = ImageCrop.defaultProps.cropQuality;
