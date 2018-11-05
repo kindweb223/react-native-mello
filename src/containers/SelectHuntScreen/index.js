@@ -182,12 +182,16 @@ class SelectHuntScreen extends React.Component {
     if (feedo.metadata.owner) {
       return;
     }
+    
+    const { selectMode } = this.props;
+
     return (
       <UserAvatarComponent
         size={32}
         user={feedo.owner}
         color={COLORS.LIGHT_GREY}
         textColor={COLORS.PURPLE}
+        isFastImage={selectMode !== CONSTANTS.FEEDO_SELECT_FROM_SHARE_EXTENSION}
       />
     );
   }
