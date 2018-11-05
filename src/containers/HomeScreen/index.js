@@ -120,7 +120,7 @@ class HomeScreen extends React.Component {
     this.registerPushNotification();
     this.props.getFeedoList(this.state.tabIndex)
     AppState.addEventListener('change', this.onHandleAppStateChange.bind(this));
-    this.props.appOpened(this.props.user.userInfo.id);
+    appOpened(this.props.user.userInfo.id);
   }
 
   componentWillUnmount() {
@@ -301,6 +301,7 @@ class HomeScreen extends React.Component {
     this.setState({appState: nextAppState});
 
     if (nextAppState === 'active') {
+      appOpened(this.props.user.userInfo.id);
       this.props.getFeedoList(this.state.tabIndex)
     }
   }
@@ -1066,7 +1067,6 @@ const mapDispatchToProps = dispatch => ({
   setUserInfo: (data) => dispatch(setUserInfo(data)),
   addDeviceToken: (userId, data) => dispatch(addDeviceToken(userId, data)),
   updateDeviceToken: (userId, deviceId, data) => dispatch(updateDeviceToken(userId, deviceId, data)),
-  appOpened: (userId) => dispatch(appOpened(userId)),
   getCard: (ideaId) => dispatch(getCard(ideaId))
 })
 

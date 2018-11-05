@@ -317,9 +317,9 @@ export const deleteProfilePhoto = (userId) => {
  */
 export const appOpened = (userId) => {
   const url = `users/${userId}/appOpened`;
-  axios({
-    method: 'post',
-    url,
-  });
+  // axios({
+  //   method: 'post',
+  //   url,
+  // });
 }
 
