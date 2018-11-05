@@ -240,6 +240,7 @@ class ImageCrop extends Component {
 					).then((resizedUrl) => {
 						return resolve(resizedUrl)
           }).catch((error) => {
+						console.log('ResizeError', error)
             bugsnag.notify(error, function(report) {
               report.metadata = {
                 "errorTitle": 'Resize Image Error'
@@ -249,6 +250,7 @@ class ImageCrop extends Component {
 				},
 				(failure) => {
           bugsnag.notify(error, function(report) {
+						console.log('CropError', error)
             report.metadata = {
               "errorTitle": 'Crop Image Error'
             }
