@@ -1354,7 +1354,7 @@ class NewCardScreen extends React.Component {
       return (
         <View style={[styles.headerContainer, styles.extensionHeaderContainer]}>
           <TouchableOpacity 
-            style={styles.closeButtonWrapper}
+            style={styles.closeButtonShareWrapper}
             activeOpacity={0.7}
             onPress={() => this.props.shareImageUrl !== '' ? Actions.pop() : this.props.onClose()}
           >
@@ -1383,7 +1383,7 @@ class NewCardScreen extends React.Component {
             activeOpacity={0.7}
             onPress={() => this.leaveActionSheetRef.show()}
           >
-            <MaterialCommunityIcons name="close" size={28} color={COLORS.PURPLE} />
+            <MaterialCommunityIcons name="close" size={32} color={COLORS.PURPLE} />
           </TouchableOpacity>
           <TouchableOpacity 
             style={[styles.addCardButtonWapper, {backgroundColor: COLORS.PURPLE}]}
