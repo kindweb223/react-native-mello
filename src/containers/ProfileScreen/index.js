@@ -346,7 +346,7 @@ class ProfileScreen extends React.Component {
               </View>
 
               <View style={styles.bottomView}>
-                <Text style={styles.version}>Version {VersionNumber.appVersion}</Text>
+                <Text style={styles.version}>Version {VersionNumber.appVersion}.{VersionNumber.buildVersion}</Text>
                 <View style={styles.bottomItemView}>
                   <Text style={styles.version}>Crafted with</Text>
                   <MaterialIcons name='favorite' size={12} color={COLORS.MEDIUM_GREY} style={styles.favicon}/>
