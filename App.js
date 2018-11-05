@@ -100,7 +100,7 @@ export default class Root extends React.Component {
       const xAuthToken = await AsyncStorage.getItem('xAuthToken')
       const userInfo = await AsyncStorage.getItem('userInfo')
       this.setState({ userInfo: JSON.parse(userInfo) })
-      console.log('xAuthToken: ', xAuthToken)
+      console.log('Has xAuthToken: ', xAuthToken !== null)
 
       if (xAuthToken && userInfo) {
         axios.defaults.headers['x-auth-token'] = xAuthToken

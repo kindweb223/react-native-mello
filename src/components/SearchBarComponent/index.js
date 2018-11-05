@@ -193,7 +193,6 @@ class SearchBarComponent extends React.Component {
   }
 
   onTouchSearchBar = () => {
-    console.log('Toucha searchbar')
     this.tagRef.focusTagInput()
   }
 
