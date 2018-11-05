@@ -460,6 +460,9 @@ class NewCardScreen extends React.Component {
   }
 
   keyboardWillShow(e) {
+    if (Actions.currentScene !== 'NewCardScreen') {
+      return;
+    }
     Animated.timing(
       this.animatedKeyboardHeight, {
         toValue: e.endCoordinates.height,
@@ -471,6 +474,9 @@ class NewCardScreen extends React.Component {
   }
 
   keyboardWillHide(e) {
+    if (Actions.currentScene !== 'NewCardScreen') {
+      return;
+    }
     Animated.timing(
       this.animatedKeyboardHeight, {
         toValue: 0,
