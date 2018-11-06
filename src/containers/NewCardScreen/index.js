@@ -460,7 +460,7 @@ class NewCardScreen extends React.Component {
   }
 
   keyboardWillShow(e) {
-    if (Actions.currentScene !== 'NewCardScreen') {
+    if (Actions.currentScene === 'CommentScreen') {
       return;
     }
     Animated.timing(
@@ -474,7 +474,7 @@ class NewCardScreen extends React.Component {
   }
 
   keyboardWillHide(e) {
-    if (Actions.currentScene !== 'NewCardScreen') {
+    if (Actions.currentScene === 'CommentScreen') {
       return;
     }
     Animated.timing(
