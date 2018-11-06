@@ -5,6 +5,7 @@ import {
 	StyleSheet,
 	ImageEditor,
 	PanResponder,
+	ImageStore
 } from 'react-native';
 import PropTypes from 'prop-types';
 import ImageResizer from 'react-native-image-resizer';
@@ -30,7 +31,7 @@ class ImageCrop extends Component {
 			currentOffsetY: 0,
 			cropWidth: CONSTANTS.SCREEN_WIDTH,
 			cropHeight: CONSTANTS.SCREEN_WIDTH,
-			cropQuality: 100,
+			cropQuality: 10,
 
 			scale: 1,
 			maxScale: 4,
@@ -183,16 +184,16 @@ class ImageCrop extends Component {
 
 	_handlePanResponderGrant = (e, gestureState) => {
     if (gestureState.numberActiveTouches === 2) {
-      let dx = Math.abs(
-        e.nativeEvent.touches[0].pageX - e.nativeEvent.touches[1].pageX
-      );
-      let dy = Math.abs(
-        e.nativeEvent.touches[0].pageY - e.nativeEvent.touches[1].pageY
-      );
-			let distant = Math.sqrt(dx * dx + dy * dy);
-			this.distant = distant;
-    }
-  };
+		let dx = Math.abs(
+			e.nativeEvent.touches[0].pageX - e.nativeEvent.touches[1].pageX
+		);
+		let dy = Math.abs(
+			e.nativeEvent.touches[0].pageY - e.nativeEvent.touches[1].pageY
+		);
+				let distant = Math.sqrt(dx * dx + dy * dy);
+				this.distant = distant;
+		}
+	};
 
 	crop() {
 		const {
@@ -235,20 +236,26 @@ class ImageCrop extends Component {
 				this.props.source.uri,
 				cropData,
 				(croppedUrl) => {
-					this.resize(
-						croppedUrl,
-						cropData.size.width,
-						cropData.size.height
-					).then((resizedUrl) => {
-						return resolve(resizedUrl)
-					});
+					ImageStore.hasImageForTag(croppedUrl, () => {
+						this.resize(
+							croppedUrl,
+							cropData
+						).then((resizedUrl) => {
+							ImageStore.removeImageForTag(croppedUrl)
+							return resolve(resizedUrl)
+						}).catch((error) => {
+							ImageStore.removeImageForTag(croppedUrl)
+							reject(error)
+						})
+					})
 				},
-				(failure) => reject(failure)
-			);
-		});
+				(failure) => {
+					reject(failure)
+				});
+			});
 	}
 
-	resize(uri, width, height) {
+	resize(uri, cropData) {
 		let { cropQuality } = this.state;
 		if (!Number.isInteger(cropQuality) || cropQuality < 0 || cropQuality > 100) {
 			cropQuality = ImageCrop.defaultProps.cropQuality;

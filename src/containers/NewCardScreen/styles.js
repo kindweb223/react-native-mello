@@ -117,6 +117,10 @@ const styles = StyleSheet.create({
     height: 44,
   },
   closeButtonWrapper: {
+    paddingHorizontal: 3,
+    paddingVertical: 5,
+  },
+  closeButtonShareWrapper: {
     paddingHorizontal: 10,
     paddingVertical: 5,
   },

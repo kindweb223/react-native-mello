@@ -1,6 +1,7 @@
 import React from 'react'
 import {
   View,
+  Image,
 } from 'react-native'
 import PropTypes from 'prop-types'
 import UserAvatar from 'react-native-user-avatar'
@@ -30,6 +31,7 @@ export default class UserAvatarComponent extends React.Component {
       size,
       color,
       textColor,
+      isFastImage,
     } = this.props;
     if (user.imageUrl || user.firstName || user.lastName) {
       const name = `${this.capitalizeFirstLetter(user.firstName)} ${this.capitalizeFirstLetter(user.lastName)}`;
@@ -39,7 +41,7 @@ export default class UserAvatarComponent extends React.Component {
           name={name}
           color={color}
           textColor={textColor}
-          component={FastImage}
+          component={isFastImage ? FastImage : Image}
           src={user.imageUrl}
         />
       );
@@ -66,6 +68,7 @@ UserAvatarComponent.defaultProps = {
   size: 24,
   color: '#000',
   textColor: '#fff',
+  isFastImage: true,
 }
 
 
@@ -74,4 +77,5 @@ UserAvatarComponent.propTypes = {
   size: PropTypes.number,
   color: PropTypes.string,
   textColor: PropTypes.string,
+  isFastImage: PropTypes.bool,
 }

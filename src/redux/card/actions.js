@@ -8,7 +8,7 @@ import * as types from './types'
 export const createCard = (huntId) => {
   const url = `ideas`
   const data = {
-    status: 'DRAFT',
+    status: 'TEMP',
     huntId,
   }
   return {
@@ -372,7 +372,7 @@ export const getOpenGraph = (urlPath, isSharing = false) => {
     isSharing,
   };
 
-  console.log("data: ", data)
+  console.log("getOpenGraph data: ", data)
   return {
     types: [types.GET_OPEN_GRAPH_PENDING, types.GET_OPEN_GRAPH_FULFILLED, types.GET_OPEN_GRAPH_REJECTED],
     promise: axios({

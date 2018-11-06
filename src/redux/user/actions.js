@@ -311,3 +311,52 @@ export const deleteProfilePhoto = (userId) => {
       })  
   };
 }
+
+/**
+ * Upload a file
+ */
+export const uploadFileToS3 = (signedUrl, file, fileName, mimeType) => {
+  const fileData = {
+    uri: file,
+    name: fileName,
+    type: mimeType,
+  };
+
+  return {
+    types: [types.UPLOAD_FILE_PENDING, types.UPLOAD_FILE_FULFILLED, types.UPLOAD_FILE_REJECTED],
+    promise:
+      new Promise((resolve, reject) => {
+        const xhr = new XMLHttpRequest();
+        // xhr.upload.onprogress = (function(e) {
+        //   if (e.lengthComputable) {
+        //     let percent =  (e.loaded / e.total) * 100
+        //     console.log('PERCENT: ', percent)
+        //   }
+        // })
+        xhr.open('PUT', signedUrl);
+        xhr.setRequestHeader('Content-Type', fileData.type)
+        xhr.onreadystatechange = function() {
+          if (xhr.readyState === 4) {
+            if (xhr.status === 200) {
+              resolve('success');
+            } else {
+              reject('Could not upload file.');
+            }
+          }
+        };
+        xhr.send(fileData);
+      })
+  };
+}
+
+/**
+ * app opened by user
+ */
+export const appOpened = (userId) => {
+  const url = `users/${userId}/appOpened`;
+  axios({
+    method: 'post',
+    url,
+  });
+}
+

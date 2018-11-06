@@ -11,6 +11,7 @@
 #import <React/RCTRootView.h>
 #import "React/RCTLinkingManager.h"
 #import <React/RCTPushNotificationManager.h>
+#import <BugsnagReactNative/BugsnagReactNative.h>
 
 
 @implementation AppDelegate
@@ -30,6 +31,8 @@
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
+  [BugsnagReactNative start];
+  
   NSURL *jsCodeLocation;
 
   jsCodeLocation = [[RCTBundleURLProvider sharedSettings] jsBundleURLForBundleRoot:@"index" fallbackResource:nil];

@@ -242,17 +242,19 @@ class ProfileScreen extends React.Component {
 
               <View style={styles.headerView}>
                 <View>
-                  <UserAvatarComponent
-                    user={userInfo}
-                    size={100}
-                    color="#fff"
-                    textColor={COLORS.PURPLE}
-                  />
-                  <View style={styles.editView}>
-                    <TouchableOpacity onPress={() => this.updatePhoto()}>
-                      <Image source={EDIT_ICON} style={styles.editIcon} />
-                    </TouchableOpacity>
-                  </View>
+                  <TouchableOpacity
+                    activeOpacity={1}
+                    onPress={() => this.updatePhoto()}>
+                    <UserAvatarComponent
+                      user={userInfo}
+                      size={100}
+                      color="#fff"
+                      textColor={COLORS.PURPLE}
+                    />
+                    <View style={styles.editView}>
+                        <Image source={EDIT_ICON} style={styles.editIcon} />
+                    </View>
+                  </TouchableOpacity>
                 </View>
                 <Text style={styles.name}>
                   {userInfo.firstName} {userInfo.lastName}
@@ -344,7 +346,7 @@ class ProfileScreen extends React.Component {
               </View>
 
               <View style={styles.bottomView}>
-                <Text style={styles.version}>Version {VersionNumber.appVersion}</Text>
+                <Text style={styles.version}>Version {VersionNumber.appVersion}.{VersionNumber.buildVersion}</Text>
                 <View style={styles.bottomItemView}>
                   <Text style={styles.version}>Crafted with</Text>
                   <MaterialIcons name='favorite' size={12} color={COLORS.MEDIUM_GREY} style={styles.favicon}/>
