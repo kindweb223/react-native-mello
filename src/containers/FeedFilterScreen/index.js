@@ -8,6 +8,7 @@ import {
   Image,
   Animated,
   TouchableOpacity,
+  Keyboard
 } from 'react-native'
 
 import { connect } from 'react-redux'
@@ -167,11 +168,12 @@ class FeedFilterScreen extends React.Component {
             keyboardShouldPersistTaps="handled"
             scrollEventThrottle={16}
             style={styles.scrollView}
-            onScroll={
+            onScroll={() => {
+              Keyboard.dismiss()
               Animated.event(
                 [{ nativeEvent: { contentOffset: { y: this.state.scrollY } } }]
               )
-            }
+            }}
           >       
             <Animated.View style={[styles.normalHeader, { opacity: normalHeaderOpacity }]}>
               <View style={styles.headerTitleView}>
