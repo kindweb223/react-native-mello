@@ -11,8 +11,6 @@ import PropTypes from 'prop-types';
 import ImageResizer from 'react-native-image-resizer';
 import styles from './styles'
 import CONSTANTS from '../../service/constants'
-import { RESEND_CONFIRMATION_EMAIL_REJECTED } from '../../redux/user/types';
-import bugsnag from '../../lib/bugsnag'
 
 class ImageCrop extends Component {
 	static propTypes = {
@@ -240,61 +238,20 @@ class ImageCrop extends Component {
 				this.props.source.uri,
 				cropData,
 				(croppedUrl) => {
-
-					console.log("IMAGE CROPPED SUCCESS")
-					bugsnag.notify(new Error('IMAGE CROPPED SUCCESS'), function(report) {
-						report.metadata = {
-							"cropped": {
-								"message": 'IMAGE CROPPED SUCCESS',
-								"croppedUrl": croppedUrl,
-								"tmpUri": tmpUri,
-								"cropData": cropData
-							}
-						}
-					});
-
 					ImageStore.hasImageForTag(croppedUrl, () => {
 						this.resize(
 							croppedUrl,
 							cropData
 						).then((resizedUrl) => {
-							console.log("IMAGE RESIZED SUCCESS")
-							bugsnag.notify(new Error('IMAGE RESIZED SUCCESS'), function(report) {
-								report.metadata = {
-									"resized": {
-										"message": 'IMAGE RESIZED SUCCESS',
-										"croppedUrl": croppedUrl
-									}
-								}
-							});
-
 							ImageStore.removeImageForTag(croppedUrl)
 							return resolve(resizedUrl)
 						}).catch((error) => {
-							console.log('RESIZE FAILURE: ', error)
-							bugsnag.notify(error, function(report) {
-								report.metadata = {
-									"resized": {
-										"message": 'Resize Image Error',
-									}
-								}
-							})
-
 							ImageStore.removeImageForTag(croppedUrl)
 							reject(error)
 						})
 					})
 				},
 				(failure) => {
-					console.log('CROP FAILURE', failure)
-					bugsnag.notify(failure, function(report) {
-						report.metadata = {
-							"cropped": {
-								"message": 'Crop Image Error'
-							}
-						}
-					})
-
 					reject(failure)
 				});
 			});
