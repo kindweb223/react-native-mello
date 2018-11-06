@@ -14,9 +14,8 @@ import * as mime from 'react-native-mime-types'
 import _ from 'lodash'
 import ImageCrop from '../../components/ImageCrop'
 import { getImageUrl, updateProfile } from '../../redux/user/actions'
-import { uploadFileToS3 } from '../../redux/card/actions'
+import { uploadFileToS3 } from '../../redux/user/actions'
 import LoadingScreen from '../LoadingScreen'
-import COLORS from '../../service/colors'
 import styles from './styles'
 const CLOSE_ICON = require('../../../assets/images/Close/Blue.png')
 
@@ -34,6 +33,10 @@ class CropImageScreen extends React.Component {
     const { user } = nextProps
 
     if (Actions.currentScene === 'CropImageScreen') {
+      if (this.props.user.loading !== 'GET_USER_IMAGE_URL_PENDING' && user.loading === 'GET_USER_IMAGE_URL_PENDING') {
+        this.setState({ loading: true })
+      }
+
       if (this.props.user.loading !== 'GET_USER_IMAGE_URL_FULFILLED' && user.loading === 'GET_USER_IMAGE_URL_FULFILLED') {
         const { userImageUrlData } = user
         this.uploadImage(userImageUrlData)
@@ -81,7 +84,6 @@ class CropImageScreen extends React.Component {
   onSave = () => {
     const { userInfo } = this.props.user
 
-    this.setState({ loading: true })
     this.imageCrop.crop().then((uri) => {
       this.setState({ cropUrl: uri }, () => {
         this.props.getImageUrl(userInfo.id)
@@ -101,6 +103,11 @@ class CropImageScreen extends React.Component {
               source={{ uri: avatarFile.uri }}
             />
           </View>
+          {/* <Image
+            source={{ uri: this.state.cropUrl.uri }}
+            style={{ width: 200, height: 200, position: 'absolute', bottom: 90, left: 0 }}
+            resizeMode="contain"
+          /> */}
 
           <View style={styles.headerView}>
             <View style={styles.closeButton} />
