@@ -247,22 +247,11 @@ class ImageCrop extends Component {
 						}).catch((error) => {
 							ImageStore.removeImageForTag(croppedUrl)
 							console.log('ResizeError', error)
-							bugsnag.notify(error, function(report) {
-								report.metadata = {
-									"errorTitle": 'Resize Image Error'
-								}
-							})
 							reject(error)
 						})
 					})
 				},
 				(failure) => {
-          bugsnag.notify(error, function(report) {
-						console.log('CropError', error)
-            report.metadata = {
-              "errorTitle": 'Crop Image Error'
-            }
-          })
           reject(failure)
         }
 			);
