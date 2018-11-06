@@ -327,6 +327,12 @@ export const uploadFileToS3 = (signedUrl, file, fileName, mimeType) => {
     promise:
       new Promise((resolve, reject) => {
         const xhr = new XMLHttpRequest();
+        xhr.upload.onprogress = (function(e) {
+          if (e.lengthComputable) {
+            let percent =  (e.loaded / e.total) * 100
+            console.log('PERCENT: ', percent)
+          }
+        })
         xhr.open('PUT', signedUrl);
         xhr.setRequestHeader('Content-Type', fileData.type)
         xhr.onreadystatechange = function() {

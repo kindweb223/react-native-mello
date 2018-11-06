@@ -5,11 +5,13 @@ import {
 	StyleSheet,
 	ImageEditor,
 	PanResponder,
+	ImageStore
 } from 'react-native';
 import PropTypes from 'prop-types';
 import ImageResizer from 'react-native-image-resizer';
 import styles from './styles'
 import CONSTANTS from '../../service/constants'
+import { RESEND_CONFIRMATION_EMAIL_REJECTED } from '../../redux/user/types';
 
 class ImageCrop extends Component {
 	static propTypes = {
@@ -235,19 +237,33 @@ class ImageCrop extends Component {
 				this.props.source.uri,
 				cropData,
 				(croppedUrl) => {
-					resolve(croppedUrl)
-					// this.resize(
-					// 	croppedUrl
-					// ).then((resizedUrl) => {
-					// 	return resolve(resizedUrl)
-          // }).catch((error) => {
-					// 	console.log('ResizeError', error)
-          //   bugsnag.notify(error, function(report) {
-          //     report.metadata = {
-          //       "errorTitle": 'Resize Image Error'
-          //     }
-          //   })
-          // });
+					ImageStore.getBase64ForTag(croppedUrl,
+						(base64Data) => {
+							return resolve(base64Data)
+						},
+						(error) => {
+							console.log('BASE64_ERROR: ', error)
+							reject(error)
+						}
+					)
+					// ImageStore.hasImageForTag(croppedUrl, () => {
+					// 	this.resize(
+					// 		croppedUrl,
+					// 		cropData
+					// 	).then((resizedUrl) => {
+					// 		ImageStore.removeImageForTag(croppedUrl)
+					// 		return resolve(resizedUrl)
+					// 	}).catch((error) => {
+					// 		ImageStore.removeImageForTag(croppedUrl)
+					// 		console.log('ResizeError', error)
+					// 		bugsnag.notify(error, function(report) {
+					// 			report.metadata = {
+					// 				"errorTitle": 'Resize Image Error'
+					// 			}
+					// 		})
+					// 		reject(error)
+					// 	})
+					// })
 				},
 				(failure) => {
           bugsnag.notify(error, function(report) {
@@ -262,12 +278,12 @@ class ImageCrop extends Component {
 		});
 	}
 
-	resize(uri) {
+	resize(uri, cropData) {
 		let { cropQuality } = this.state;
 		if (!Number.isInteger(cropQuality) || cropQuality < 0 || cropQuality > 100) {
 			cropQuality = ImageCrop.defaultProps.cropQuality;
 		}
-		return ImageResizer.createResizedImage(uri, 200, 200, 'JPEG', cropQuality, 0, null);
+		return ImageResizer.createResizedImage(uri, cropData.size.width, cropData.size.height, 'JPEG', cropQuality, 0, null);
 	}
 
 	renderContainerImage() {
