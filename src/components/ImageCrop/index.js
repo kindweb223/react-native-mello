@@ -260,7 +260,7 @@ class ImageCrop extends Component {
 		if (!Number.isInteger(cropQuality) || cropQuality < 0 || cropQuality > 100) {
 			cropQuality = ImageCrop.defaultProps.cropQuality;
 		}
-		return ImageResizer.createResizedImage(uri, 200, 200, 'JPEG', cropQuality, 0, null);
+		return ImageResizer.createResizedImage(uri, cropData.size.width, cropData.size.height, 'JPEG', cropQuality, 0, null);
 	}
 
 	renderContainerImage() {
