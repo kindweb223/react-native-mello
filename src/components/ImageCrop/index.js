@@ -233,6 +233,8 @@ class ImageCrop extends Component {
 			};
 		}
 
+		const tmpUri = this.props.source.uri
+
 		return new Promise((resolve, reject) => {
 			ImageEditor.cropImage(
 				this.props.source.uri,
@@ -244,7 +246,9 @@ class ImageCrop extends Component {
 						report.metadata = {
 							"cropped": {
 								"message": 'IMAGE CROPPED SUCCESS',
-								"croppedUrl": croppedUrl
+								"croppedUrl": croppedUrl,
+								"tmpUri": tmpUri,
+								"cropData": cropData
 							}
 						}
 					});
