@@ -348,3 +348,15 @@ export const uploadFileToS3 = (signedUrl, file, fileName, mimeType) => {
       })
   };
 }
+
+/**
+ * app opened by user
+ */
+export const appOpened = (userId) => {
+  const url = `users/${userId}/appOpened`;
+  axios({
+    method: 'post',
+    url,
+  });
+}
+

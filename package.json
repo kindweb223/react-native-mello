@@ -19,6 +19,7 @@
     "react-native-autolink": "^1.4.0",
     "react-native-awesome-alerts": "^1.0.8",
     "react-native-collapsible": "^0.13.0",
+    "react-native-device-info": "^0.24.3",
     "react-native-document-picker": "^2.1.0",
     "react-native-fast-image": "^4.0.14",
     "react-native-haptic": "^1.0.9",

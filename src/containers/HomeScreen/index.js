@@ -24,6 +24,8 @@ import Modal from "react-native-modal"
 import { Actions } from 'react-native-router-flux'
 import * as R from 'ramda'
 import { find, filter, orderBy } from 'lodash'
+import DeviceInfo from 'react-native-device-info';
+
 import DashboardNavigationBar from '../../navigations/DashboardNavigationBar'
 import DashboardActionBar from '../../navigations/DashboardActionBar'
 import FeedoListContainer from '../FeedoListContainer'
@@ -60,7 +62,8 @@ import {
 import { 
   setUserInfo,
   addDeviceToken,
-  updateDeviceToken
+  updateDeviceToken,
+  appOpened,
 } from '../../redux/user/actions'
 
 import { 
@@ -119,6 +122,7 @@ class HomeScreen extends React.Component {
     this.registerPushNotification();
     this.props.getFeedoList(this.state.tabIndex)
     AppState.addEventListener('change', this.onHandleAppStateChange.bind(this));
+    appOpened(this.props.user.userInfo.id);
   }
 
   componentWillUnmount() {
@@ -299,6 +303,7 @@ class HomeScreen extends React.Component {
     this.setState({appState: nextAppState});
 
     if (nextAppState === 'active') {
+      appOpened(this.props.user.userInfo.id);
       this.props.getFeedoList(this.state.tabIndex)
     }
   }
@@ -423,7 +428,11 @@ class HomeScreen extends React.Component {
           const data = {
             deviceToken: token.token,
             deviceTypeEnum: Platform.OS === 'ios' ? 'IPHONE' : 'ANDROID',
+            deviceManufacturer: DeviceInfo.getManufacturer(),
+            deviceModel: DeviceInfo.getModel(),
+            osVersion: DeviceInfo.getSystemVersion(),
           }
+          console.log('Device Info : ', data);
           if (!result) {
             this.props.addDeviceToken(this.props.user.userInfo.id, data);
           } else {
