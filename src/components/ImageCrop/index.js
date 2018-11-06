@@ -237,33 +237,24 @@ class ImageCrop extends Component {
 				this.props.source.uri,
 				cropData,
 				(croppedUrl) => {
-					ImageStore.getBase64ForTag(croppedUrl,
-						(base64Data) => {
-							return resolve(base64Data)
-						},
-						(error) => {
-							console.log('BASE64_ERROR: ', error)
+					ImageStore.hasImageForTag(croppedUrl, () => {
+						this.resize(
+							croppedUrl,
+							cropData
+						).then((resizedUrl) => {
+							ImageStore.removeImageForTag(croppedUrl)
+							return resolve(resizedUrl)
+						}).catch((error) => {
+							ImageStore.removeImageForTag(croppedUrl)
+							console.log('ResizeError', error)
+							bugsnag.notify(error, function(report) {
+								report.metadata = {
+									"errorTitle": 'Resize Image Error'
+								}
+							})
 							reject(error)
-						}
-					)
-					// ImageStore.hasImageForTag(croppedUrl, () => {
-					// 	this.resize(
-					// 		croppedUrl,
-					// 		cropData
-					// 	).then((resizedUrl) => {
-					// 		ImageStore.removeImageForTag(croppedUrl)
-					// 		return resolve(resizedUrl)
-					// 	}).catch((error) => {
-					// 		ImageStore.removeImageForTag(croppedUrl)
-					// 		console.log('ResizeError', error)
-					// 		bugsnag.notify(error, function(report) {
-					// 			report.metadata = {
-					// 				"errorTitle": 'Resize Image Error'
-					// 			}
-					// 		})
-					// 		reject(error)
-					// 	})
-					// })
+						})
+					})
 				},
 				(failure) => {
           bugsnag.notify(error, function(report) {

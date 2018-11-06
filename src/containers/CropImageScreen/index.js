@@ -67,53 +67,29 @@ class CropImageScreen extends React.Component {
   }
 
   uploadImage = (userImageUrlData) => {
-    const { avatarFile, cropUrl, cropBase64 } = this.state
+    const { avatarFile, cropUrl } = this.state
 
-    // if (!_.isEmpty(cropUrl)) {
-    //   const baseUrl = userImageUrlData.uploadUrl
-    //   const fileUrl = cropUrl.uri
-    //   const fileName = cropUrl.name
-    //   const fileType = mime.lookup(fileUrl);
+    if (!_.isEmpty(cropUrl)) {
+      const baseUrl = userImageUrlData.uploadUrl
+      const fileUrl = cropUrl.uri
+      const fileName = cropUrl.name
+      const fileType = mime.lookup(fileUrl);
 
-    //   this.props.uploadFileToS3(baseUrl, fileUrl, fileName, fileType);
-    // } else {
-    //   this.setState({ loading: false }, () => {
-    //     Alert.alert('Error', 'Cropping is failed')
-    //   })
-    // }
-    const baseUrl = userImageUrlData.uploadUrl
-    const fileType = mime.lookup(avatarFile.uri);
-
-    RNFetchBlob.fetch('PUT', baseUrl, {
-      'Content-Type': fileType
-    }, cropBase64)
-    .uploadProgress((written, total) => {
-      console.log('UPLOAD_PROGRESS: ', written / total)
-    })
-    .then((resp) => {
-      console.log('RESPONSE: ', resp)
-      const { userInfo, userImageUrlData } = this.props.user
-        const param = {
-          imageUrl: userImageUrlData.objectKey
-        }
-        this.props.updateProfile(userInfo.id, param)
-    })
-    .catch((error) => {
-      console.log('UPLOAD_FAILEd', error)
-      this.setState({ loading: false })
-    })
+      this.props.uploadFileToS3(baseUrl, fileUrl, fileName, fileType);
+    } else {
+      this.setState({ loading: false }, () => {
+        Alert.alert('Error', 'Cropping is failed')
+      })
+    }
   }
 
   onSave = () => {
     const { userInfo } = this.props.user
 
     this.imageCrop.crop().then((uri) => {
-      this.setState({ cropBase64: uri }, () => {
+      this.setState({ cropUrl: uri }, () => {
         this.props.getImageUrl(userInfo.id)
       })
-      // this.setState({ cropUrl: uri }, () => {
-      //   this.props.getImageUrl(userInfo.id)
-      // })
     })
   }
 
