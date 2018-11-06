@@ -32,7 +32,7 @@ class ImageCrop extends Component {
 			currentOffsetY: 0,
 			cropWidth: CONSTANTS.SCREEN_WIDTH,
 			cropHeight: CONSTANTS.SCREEN_WIDTH,
-			cropQuality: 100,
+			cropQuality: 10,
 
 			scale: 1,
 			maxScale: 4,
