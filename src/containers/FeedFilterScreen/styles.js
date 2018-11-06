@@ -53,8 +53,7 @@ const styles = StyleSheet.create({
     left: 0,
     top: 0,
     justifyContent: 'center',
-    alignItems: 'flex-start',
-    backgroundColor: 'transparent'
+    alignItems: 'flex-start'
   },
   backView: {
     width: 150,

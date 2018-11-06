@@ -142,7 +142,7 @@ class FeedFilterScreen extends React.Component {
 
     const navbarBackground = this.state.scrollY.interpolate({
       inputRange: [40, 41],
-      outputRange: ['transparent', '#fff'],
+      outputRange: ['#fff', '#fff'],
       extrapolate: 'clamp'
     })
 
