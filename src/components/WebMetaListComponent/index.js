@@ -67,6 +67,10 @@ export default class WebMetaList extends React.Component {
 
   renderImage(item) {
     if (item.faviconUrl) {
+      if (item.faviconUrl.indexOf('data:image/svg+xml;base64') !== -1) {
+        console.log('SVG Base64 Image');
+        return;
+      }
       const mimeType = mime.lookup(item.faviconUrl);
       if (mimeType !== false && mimeType.indexOf('svg') !== -1) {
         return (
