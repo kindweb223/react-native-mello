@@ -11,13 +11,11 @@ import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
 import { Actions } from 'react-native-router-flux'
 import * as mime from 'react-native-mime-types'
-import RNFetchBlob from 'rn-fetch-blob'
 import _ from 'lodash'
 import ImageCrop from '../../components/ImageCrop'
 import { getImageUrl, updateProfile } from '../../redux/user/actions'
 import { uploadFileToS3 } from '../../redux/user/actions'
 import LoadingScreen from '../LoadingScreen'
-import COLORS from '../../service/colors'
 import styles from './styles'
 const CLOSE_ICON = require('../../../assets/images/Close/Blue.png')
 
