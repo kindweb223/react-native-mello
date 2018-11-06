@@ -80,7 +80,7 @@ class FeedCollapseComponent extends React.Component {
 
     return (
       <View style={styles.contentView}>
-        {feedData.summary.length > 0
+        {feedData.summary && feedData.summary.length > 0
           ? <TouchableOpacity
               activeOpacity={0.9}
               style={styles.summaryView}
