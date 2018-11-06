@@ -12,6 +12,7 @@ import PropTypes from 'prop-types'
 import SafariView from "react-native-safari-view";
 import * as mime from 'react-native-mime-types';
 import SVGImage from 'react-native-remote-svg';
+import SvgUri from 'react-native-svg-uri';
 
 
 import styles from './styles'
@@ -68,8 +69,13 @@ export default class WebMetaList extends React.Component {
   renderImage(item) {
     if (item.faviconUrl) {
       if (item.faviconUrl.indexOf('data:image/svg+xml;base64') !== -1) {
-        console.log('SVG Base64 Image');
-        return;
+        return (
+          <SvgUri
+            width="24"
+            height="24"
+            source={{uri: item.faviconUrl}}
+          />
+        );
       }
       const mimeType = mime.lookup(item.faviconUrl);
       if (mimeType !== false && mimeType.indexOf('svg') !== -1) {
