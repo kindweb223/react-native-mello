@@ -974,7 +974,7 @@ class NewCardScreen extends React.Component {
           tags,
           files,
         } = this.props.feedo.currentFeed;  
-        this.props.updateFeed(id, headline || 'New feed', summary || ' ', tags, files);
+        this.props.updateFeed(id, headline || 'New feed', summary || '', tags, files);
         return;
       }
       this.isUpdateDraftCard = true;
