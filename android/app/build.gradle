@@ -137,6 +137,7 @@ android {
 }
 
 dependencies {
+    compile project(':react-native-firebase')
     compile project(':react-native-device-info')
     compile project(':bugsnag-react-native')
     compile project(':lottie-react-native')
