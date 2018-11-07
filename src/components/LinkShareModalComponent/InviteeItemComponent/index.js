@@ -45,11 +45,11 @@ const InviteeItemComponent = ({ invitee, isViewOnly, isOwnerInvitee, isOnlyTitle
                   style={userProfile.firstName !== null && userProfile.lastName !== null ? styles.subtitle : styles.title}
                 >
                   {userProfile.email}
-                </Text>,
-                <View key="1" style={styles.cardView}>
-                  <Text style={styles.subtitle}>{invitee.ideas ? invitee.ideas.length : 0} cards</Text>
-                  <Text  style={styles.subtitle}>0 likes</Text>
-                </View>
+                </Text>
+                // <View key="1" style={styles.cardView}>
+                //   <Text style={styles.subtitle}>{invitee.ideas ? invitee.ideas.length : 0} cards</Text>
+                //   <Text  style={styles.subtitle}>0 likes</Text>
+                // </View>
               ]
           )}
         </View>
