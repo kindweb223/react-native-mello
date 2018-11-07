@@ -15,9 +15,8 @@ export default {
     alignItems: 'center'
   },
   btnBack: {
-    marginLeft: 10,
-    width: 50,
-    height: 30,
+    paddingHorizontal: 10,
+    paddingVertical: 5,
   },
   logo: {
     width: 30,

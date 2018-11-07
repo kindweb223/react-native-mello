@@ -14,7 +14,6 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   closeButtonWrapper: {
-    padding: 10,
     top: 30,
     left: 10,
     alignSelf: 'flex-end',

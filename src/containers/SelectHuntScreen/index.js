@@ -153,7 +153,7 @@ class SelectHuntScreen extends React.Component {
       <View style={[styles.topContainer, styles.extensionTopContainer]}>
         <Text style={styles.textTitle}>Choose feed</Text>
         <TouchableOpacity 
-          style={[styles.backButtonContainer, {paddingHorizontal: 16}]}
+          style={styles.backButtonContainer}
           activeOpacity={0.6}
           onPress={this.onBack.bind(this)}
         >
