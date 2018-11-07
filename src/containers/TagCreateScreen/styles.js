@@ -20,20 +20,12 @@ export default styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    
-    paddingHorizontal: 16,
     height: 60
   },
   backButtonContainer: {
     flexDirection: 'row',
     alignItems: 'center',
-  },
-  textBack: {
-    color: COLORS.PURPLE,
-    fontSize: 16,
-    fontWeight: '500',
-    textAlign: 'center',
-    marginLeft: 5,
+    paddingHorizontal: 16,
   },
   mainContentContainer: {
     marginTop: 20,

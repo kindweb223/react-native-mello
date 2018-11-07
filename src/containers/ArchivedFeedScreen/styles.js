@@ -11,15 +11,8 @@ const styles = StyleSheet.create({
   buttonWrapper: {
     flexDirection: 'row',
     alignItems: 'center',
-    paddingLeft: 10,
-    marginBottom: 5,
-  },
-  textBack: {
-    fontSize: 16,
-    lineHeight: 23,
-    fontWeight: '500',
-    marginLeft: 5,
-    color: COLORS.PURPLE,
+    paddingHorizontal: 10,
+    paddingVertical: 5,
   },
   textTitle: {
     fontSize: 16,

@@ -36,7 +36,6 @@ class ArchivedFeedScreen extends React.Component {
         onPress={() => Actions.pop()}
       >
         <Ionicons name="ios-arrow-back" size={32} color={COLORS.PURPLE} />
-        {/* <Text style={styles.textBack}>Profile</Text> */}
       </TouchableOpacity>
     );
   }
