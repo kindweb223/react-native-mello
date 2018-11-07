@@ -31,12 +31,14 @@ class ChooseLinkImageFromExtension extends React.Component {
       isVisibleAlert: false,
       errorMessage: '',
     };
+    this.shareUrl = '';
   }
 
   async componentDidMount() {
     try {
-      const { value } = await ShareExtension.data()
+      const { value } = await ShareExtension.data();
       const urls = value.match(/((?:(http|https|Http|Https|rtsp|Rtsp):\/\/(?:(?:[a-zA-Z0-9\$\-\_\.\+\!\*\'\(\)\,\;\?\&\=]|(?:\%[a-fA-F0-9]{2})){1,64}(?:\:(?:[a-zA-Z0-9\$\-\_\.\+\!\*\'\(\)\,\;\?\&\=]|(?:\%[a-fA-F0-9]{2})){1,25})?\@)?)?((?:(?:[a-zA-Z0-9][a-zA-Z0-9\-]{0,64}\.)+((?:(?:[a-zA-Z0-9])(?:[a-zA-Z0-9]))|(?:(?:[a-zA-Z0-9])(?:[a-zA-Z0-9])(?:[a-zA-Z0-9]))))|(?:(?:25[0-5]|2[0-4][0-9]|[0-1][0-9]{2}|[1-9][0-9]|[1-9])\.(?:25[0-5]|2[0-4][0-9]|[0-1][0-9]{2}|[1-9][0-9]|[1-9]|0)\.(?:25[0-5]|2[0-4][0-9]|[0-1][0-9]{2}|[1-9][0-9]|[1-9]|0)\.(?:25[0-5]|2[0-4][0-9]|[0-1][0-9]{2}|[1-9][0-9]|[0-9])))(?:\:\d{1,5})?)(\/(?:(?:[a-zA-Z0-9\;\/\?\:\@\&\=\#\~\-\.\+\!\*\'\(\)\,\_])|(?:\%[a-fA-F0-9]{2}))*)?(?:\b|$)/gi);
+      this.shareUrl = urls[0]
       this.props.getOpenGraph(urls[0], true)
     } catch(e) {
       console.log('error : ', e)
@@ -54,6 +56,8 @@ class ChooseLinkImageFromExtension extends React.Component {
       loading = true;
     } else if (this.props.card.loading !== types.GET_OPEN_GRAPH_FULFILLED && nextProps.card.loading === types.GET_OPEN_GRAPH_FULFILLED) {
       // success in getting open graph
+      this.shareUrl = nextProps.card.currentOpneGraph.url;
+      console.log('this.shareUrl : ', this.shareUrl);
       const images = nextProps.card.currentOpneGraph.images;
       if (images && images.length > 0) {
         this.setState({
@@ -96,6 +100,7 @@ class ChooseLinkImageFromExtension extends React.Component {
   onSelectItem(imageUrl) {
     Actions.ShareCardScreen({
       imageUrl,
+      shareUrl: this.shareUrl,
     });
   }
 
@@ -104,7 +109,9 @@ class ChooseLinkImageFromExtension extends React.Component {
   }
 
   onSkip() {
-    Actions.ShareCardScreen();
+    Actions.ShareCardScreen({
+      shareUrl: this.shareUrl,
+    });
   }
 
   renderImage(item) {
