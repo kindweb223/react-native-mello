@@ -16,9 +16,8 @@ export default {
     marginTop: 48
   },
   btnBack: {
-    width: 50,
-    height: 30,
-    paddingLeft: 10
+    paddingHorizontal: 10,
+    paddingVertical: 5,
   },
   buttonView: {
     borderRadius: 14,

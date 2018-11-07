@@ -1,7 +1,6 @@
 import { StyleSheet, Platform } from 'react-native'
 import COLORS from '../../service/colors'
 import CONSTANTS from '../../service/constants'
-const MODAL_HEIGHT = 200
 
 export default {
   container: {
@@ -13,8 +12,8 @@ export default {
   buttonWrapper: {
     flexDirection: 'row',
     alignItems: 'center',
-    paddingLeft: 10,
-    marginBottom: 5,
+    paddingHorizontal: 10,
+    paddingVertical: 5,
   },
   textTitle: {
     fontSize: 16,

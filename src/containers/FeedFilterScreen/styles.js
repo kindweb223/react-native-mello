@@ -46,22 +46,20 @@ const styles = StyleSheet.create({
   miniNavView: {
     width: '100%',
     height: NAV_BAR_HEIGHT,
-    paddingHorizontal: CONSTANTS.PADDING,
     backgroundColor: '#fff',
     zIndex: 11,
     position: 'absolute',
     left: 0,
     top: 0,
     justifyContent: 'center',
-    alignItems: 'flex-start',
-    backgroundColor: 'transparent'
+    alignItems: 'flex-start'
   },
   backView: {
-    width: 150,
     flexDirection: 'row',
     justifyContent: 'flex-start',
     alignItems: 'center',
-    height: '100%'
+    height: '100%',
+    paddingHorizontal: CONSTANTS.PADDING,
   },
   backTitle: {
     fontSize: 16,

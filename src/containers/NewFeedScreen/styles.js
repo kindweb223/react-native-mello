@@ -30,12 +30,12 @@ const styles = StyleSheet.create({
     height: 44,
     justifyContent: 'space-between',
     alignItems: 'center',
-    paddingHorizontal: 9,
+    paddingRight: 9,
     borderBottomWidth: 1,
     borderBottomColor: COLORS.LIGHT_GREY_LINE,
   },
   closeButtonWrapper: {
-    paddingHorizontal: 0,
+    paddingHorizontal: 9,
   },
   createButtonWapper: {
     marginRight: 5,

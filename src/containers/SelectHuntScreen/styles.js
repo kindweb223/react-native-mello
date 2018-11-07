@@ -31,7 +31,7 @@ export default styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    paddingHorizontal: 20,
+    // paddingHorizontal: 20,
     paddingVertical: 18,
     borderTopLeftRadius: 18,
     borderTopRightRadius: 18,
@@ -66,13 +66,7 @@ export default styles = StyleSheet.create({
   backButtonContainer: {
     flexDirection: 'row',
     alignItems: 'center',
-  },
-  textBack: {
-    color: COLORS.PURPLE,
-    fontSize: 16,
-    fontWeight: '500',
-    textAlign: 'center',
-    marginLeft: 5,
+    paddingHorizontal: 16,
   },
   itemContainer: {
     height: 42,

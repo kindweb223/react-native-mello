@@ -12,19 +12,13 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    padding: 16,
+    paddingVertical: 16,
   },
   backButtonWrapper: {
     flexDirection: 'row',
     alignItems: 'center',
     paddingVertical: 5,
-  },
-  textBack: {
-    fontSize: 16,
-    lineHeight: 22,
-    fontWeight: '500',
-    marginLeft: 5,
-    color: COLORS.PURPLE,
+    paddingHorizontal: 16,
   },
   saveButtonWapper: {
     width: 80,
@@ -33,6 +27,7 @@ const styles = StyleSheet.create({
     backgroundColor: COLORS.PURPLE,
     justifyContent: 'center',
     alignItems: 'center',
+    marginHorizontal: 16,
   },
   textSave: {
     color: '#fff',

@@ -8,6 +8,7 @@ import {
   Image,
   Animated,
   TouchableOpacity,
+  Keyboard
 } from 'react-native'
 
 import { connect } from 'react-redux'
@@ -141,7 +142,7 @@ class FeedFilterScreen extends React.Component {
 
     const navbarBackground = this.state.scrollY.interpolate({
       inputRange: [40, 41],
-      outputRange: ['transparent', '#fff'],
+      outputRange: ['#fff', '#fff'],
       extrapolate: 'clamp'
     })
 
@@ -155,11 +156,8 @@ class FeedFilterScreen extends React.Component {
       <SafeAreaView style={styles.safeArea}>
         <View style={styles.container}>
           <Animated.View style={[styles.miniNavView, { backgroundColor: navbarBackground }]}>
-            <TouchableOpacity onPress={() => Actions.pop()}>
-              <View style={styles.backView}>
-                <Ionicons name="ios-arrow-back" size={32} color={COLORS.PURPLE} />
-                {/* <Text style={styles.backTitle}>My feeds</Text> */}
-              </View>
+            <TouchableOpacity style={styles.backView} onPress={() => Actions.pop()}>
+              <Ionicons name="ios-arrow-back" size={32} color={COLORS.PURPLE} />
             </TouchableOpacity>
           </Animated.View>
 
@@ -167,11 +165,12 @@ class FeedFilterScreen extends React.Component {
             keyboardShouldPersistTaps="handled"
             scrollEventThrottle={16}
             style={styles.scrollView}
-            onScroll={
+            onScroll={() => {
+              Keyboard.dismiss()
               Animated.event(
                 [{ nativeEvent: { contentOffset: { y: this.state.scrollY } } }]
               )
-            }
+            }}
           >       
             <Animated.View style={[styles.normalHeader, { opacity: normalHeaderOpacity }]}>
               <View style={styles.headerTitleView}>
