@@ -4,6 +4,7 @@ import android.app.Application;
 
 import com.facebook.react.ReactApplication;
 import io.invertase.firebase.RNFirebasePackage;
+import com.horcrux.svg.SvgPackage;
 import com.learnium.RNDeviceInfo.RNDeviceInfo;
 import com.bugsnag.BugsnagReactNative;
 import com.airbnb.android.react.lottie.LottiePackage;
@@ -38,7 +39,11 @@ public class MainApplication extends Application implements ReactApplication {
     protected List<ReactPackage> getPackages() {
       return Arrays.<ReactPackage>asList(
           new MainReactPackage(),
+<<<<<<< HEAD
             new RNFirebasePackage(),
+=======
+            new SvgPackage(),
+>>>>>>> develop
             new RNDeviceInfo(),
             BugsnagReactNative.getPackage(),
             new LottiePackage(),

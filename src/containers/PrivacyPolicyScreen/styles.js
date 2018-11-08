@@ -13,8 +13,8 @@ export default {
   buttonWrapper: {
     flexDirection: 'row',
     alignItems: 'center',
-    paddingLeft: 10,
-    marginBottom: 5,
+    paddingHorizontal: 10,
+    paddingVertical: 5,
   },
   textTitle: {
     fontSize: 16,
