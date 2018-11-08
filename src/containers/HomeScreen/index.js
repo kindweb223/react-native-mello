@@ -25,6 +25,7 @@ import { Actions } from 'react-native-router-flux'
 import * as R from 'ramda'
 import { find, filter, orderBy } from 'lodash'
 import DeviceInfo from 'react-native-device-info';
+import Analytics from '../../lib/firebase'
 
 import DashboardNavigationBar from '../../navigations/DashboardNavigationBar'
 import DashboardActionBar from '../../navigations/DashboardActionBar'
@@ -78,7 +79,6 @@ const TAB_STYLES = {
 
 const TOASTER_DURATION = 5000
 
-
 class HomeScreen extends React.Component {
   constructor(props) {
     super(props);
@@ -115,6 +115,8 @@ class HomeScreen extends React.Component {
   }
 
   async componentDidMount() {
+    Analytics.setCurrentScreen('HomeScreen')
+
     this.setState({ loading: true })
 
     const userInfo = await AsyncStorage.getItem('userInfo')
@@ -418,6 +420,8 @@ class HomeScreen extends React.Component {
   registerPushNotification() {
     PushNotification.configure({
       onRegister: (token) => {
+        Analytics.logEvent('register_push_notification', {})
+
         console.log('PUSH TOKEN : ', token);
         AsyncStorage.getItem(CONSTANTS.USER_DEVICE_TOKEN, (error, result) => {
           if (error) {
@@ -494,6 +498,8 @@ class HomeScreen extends React.Component {
 
   archiveFeed = (feedId) => {
     if (this.state.isArchive) {
+      Analytics.logEvent('archive_feed', {})
+
       this.props.archiveFeed(feedId)
       this.setState({ isArchive: false })
     }
@@ -512,6 +518,8 @@ class HomeScreen extends React.Component {
 
   deleteFeed = (feedId) => {
     if (this.state.isDelete) {
+      Analytics.logEvent('delete_feed', {})
+
       this.props.deleteFeed(feedId)
       this.setState({ isDelete: false })
     }
@@ -531,6 +539,8 @@ class HomeScreen extends React.Component {
 
   pinFeed = (feedId) => {
     if (this.state.isPin) {
+      Analytics.logEvent('pin_feed', {})
+
       this.props.pinFeed(feedId)
       this.setState({ isPin: false })
     }
@@ -549,6 +559,8 @@ class HomeScreen extends React.Component {
 
   unpinFeed = (feedId) => {
     if (this.state.isUnPin) {
+      Analytics.logEvent('unpin_feed', {})
+
       this.props.unpinFeed(feedId)
       this.setState({ isUnPin: false })
     }
@@ -567,6 +579,8 @@ class HomeScreen extends React.Component {
   
   duplicateFeed = () => {
     if (this.state.isDuplicate) {
+      Analytics.logEvent('duplicate_feed', {})
+
       this.setState({ isDuplicate: false })
     }
   }
@@ -633,6 +647,8 @@ class HomeScreen extends React.Component {
 
   onSelectNewFeedType(type) {
     if (type === 'New Card') {
+      Analytics.logEvent('new_card', {})
+
       this.setState({
         isVisibleCreateNewFeedModal: false,
         isVisibleCard: true,
@@ -640,6 +656,8 @@ class HomeScreen extends React.Component {
         selectedIdeaInvitee: null,
       });
     } else if (type === 'New Feed') {
+      Analytics.logEvent('new_feed', {})
+
       this.props.setCurrentFeed({});
       this.setState({ 
         isVisibleCreateNewFeedModal: false,
@@ -725,6 +743,8 @@ class HomeScreen extends React.Component {
   }
 
   handleSetting = () => {
+    Analytics.logEvent('dashboard_settings', {})
+
     Actions.ProfileScreen()
   }
 
@@ -758,6 +778,8 @@ class HomeScreen extends React.Component {
   }
 
   onSearch = () => {
+    Analytics.logEvent('dashboard_search', {})
+
     Actions.FeedFilterScreen({
       initialTag: []
     })

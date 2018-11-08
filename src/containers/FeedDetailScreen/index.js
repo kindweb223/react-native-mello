@@ -73,6 +73,8 @@ import CONSTANTS from '../../service/constants'
 import * as COMMON_FUNC from '../../service/commonFunc'
 import styles from './styles'
 
+import Analytics from '../../lib/firebase'
+
 const EMPTY_ICON = require('../../../assets/images/empty_state/asset-emptystate.png')
 const TOASTER_DURATION = 5000
 
@@ -343,11 +345,15 @@ class FeedDetailScreen extends React.Component {
   }
 
   handleSetting = () => {
+    Analytics.logEvent('detail_settings', {})
+
     const { openMenu } = this.state
     this.setState({ openMenu: !openMenu, settingItem: null })
   }
 
   handleShare = () => {
+    Analytics.logEvent('share', {})
+
     this.setState({ isShowShare: true })
   }
 
@@ -374,6 +380,8 @@ class FeedDetailScreen extends React.Component {
         }, 200)
         return
       case 'Archive':
+        Analytics.logEvent('archive_feed', {})
+
         this.props.setFeedDetailAction({
           action: 'Archive',
           feedId
@@ -390,6 +398,8 @@ class FeedDetailScreen extends React.Component {
   }
 
   handleEdit = (feedId) => {
+    Analytics.logEvent('edit_feed', {})
+
     this.setState({
       isVisibleEditFeed: true,
     }, () => {
@@ -422,6 +432,8 @@ class FeedDetailScreen extends React.Component {
 
   pinFeed = (feedId) => {
     if (this.state.currentActionType === ACTION_FEEDO_PIN) {
+      Analytics.logEvent('pin_feed', {})
+
       this.props.pinFeed(feedId)
       this.setState({ currentActionType: ACTION_NONE })
     }
@@ -445,6 +457,8 @@ class FeedDetailScreen extends React.Component {
 
   unpinFeed = (feedId) => {
     if (this.state.currentActionType === ACTION_FEEDO_UNPIN) {
+      Analytics.logEvent('unpin_feed', {})
+
       this.props.unpinFeed(feedId)
       this.setState({ currentActionType: ACTION_NONE })
     }
@@ -466,6 +480,8 @@ class FeedDetailScreen extends React.Component {
   
   duplicateFeed = () => {
     if (this.state.currentActionType === ACTION_FEEDO_DUPLICATE) {
+      Analytics.logEvent('duplicate_feed', {})
+
       this.setState({ currentActionType: ACTION_NONE })
     }
   }
@@ -509,6 +525,8 @@ class FeedDetailScreen extends React.Component {
 
   onTapFeedoActionSheet = (index) => {
     if (index === 0) {
+      Analytics.logEvent('delete_feed', {})
+
       this.props.setFeedDetailAction({
         action: 'Delete',
         feedId: this.props.data.id
@@ -628,6 +646,8 @@ class FeedDetailScreen extends React.Component {
   }
 
   onMoveCard(ideaId) {
+    Analytics.logEvent('move_card', {})
+
     this.onCloseCardModal();
     this.setState({ 
       isVisibleCardOpenMenu: false,
@@ -638,6 +658,8 @@ class FeedDetailScreen extends React.Component {
   }
   
   onEditCard() {
+    Analytics.logEvent('edit_card', {})
+
     this.setState({ isVisibleLongHoldMenu: false })
     this.onSelectCard(this.state.selectedLongHoldIdea, this.state.selectedLongHoldCardIndex)
   }
@@ -692,6 +714,8 @@ class FeedDetailScreen extends React.Component {
   }
 
   onDeleteCard(ideaId) {
+    Analytics.logEvent('delete_card', {})
+
     this.onCloseCardModal();
     this.setState({
       isVisibleLongHoldMenu: false,
@@ -812,6 +836,8 @@ class FeedDetailScreen extends React.Component {
   }
   
   handleFilter = () => {
+    Analytics.logEvent('filter_card', {})
+
     this.setState({ showFilterModal: true })
   }
 

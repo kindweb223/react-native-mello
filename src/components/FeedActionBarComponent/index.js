@@ -10,6 +10,7 @@ import PropTypes from 'prop-types'
 import Octicons from 'react-native-vector-icons/Octicons'
 import Entypo from 'react-native-vector-icons/Entypo'
 import styles from './styles'
+import Analytics from '../../lib/firebase'
 
 import * as COMMON_FUNC from '../../service/commonFunc'
 import Modal from "react-native-modal"
@@ -65,6 +66,8 @@ class FeedActionBarComponent extends React.Component {
           duration: 100,
         }),
       ]).start(() => {
+        Analytics.logEvent('share', {})
+
         this.props.handleShare()
         this.setState({ isSettingMenu: false })
       });

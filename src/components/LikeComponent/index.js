@@ -22,6 +22,8 @@ import {
 } from '../../redux/card/actions'
 import * as COMMON_FUNC from '../../service/commonFunc'
 
+import Analytics from '../../lib/firebase'
+
 const FAV_ICON_R = require('../../../assets/images/Fav/Red.png')
 const FAV_ICON_G = require('../../../assets/images/Fav/Grey.png')
 
@@ -111,6 +113,8 @@ class LikeComponent extends React.Component {
       if (liked) {
         this.props.unlikeCard(this.props.idea.id);
       } else {
+        Analytics.logEvent('move_card', {})
+
         this.props.likeCard(this.props.idea.id);
       }
     }

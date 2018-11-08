@@ -1,16 +1,12 @@
 import React from 'react'
 import {
-  SafeAreaView,
   View,
   Text,
-  TextInput,
   TouchableOpacity,
-  ActivityIndicator,
   Image,
   Alert,
   Keyboard
 } from 'react-native'
-import axios from 'axios';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
 import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
@@ -20,6 +16,7 @@ import * as Progress from 'react-native-progress'
 import CheckBox from '../../components/CheckBoxComponent'
 import zxcvbn from 'zxcvbn'
 import _ from 'lodash'
+import Analytics from '../../lib/firebase'
 import LoadingScreen from '../LoadingScreen'
 import TextInputComponent from '../../components/TextInputComponent'
 import { userSignUp, validateInvite, completeInvite, getUserSession } from '../../redux/user/actions'
@@ -88,6 +85,8 @@ class SignUpScreen extends React.Component {
     const { token } = this.props
     const { isInvite } = this.state
 
+    Analytics.setCurrentScreen('SignupScreen')
+
     // For invited user
     if (isInvite) {
       const param = {
@@ -102,8 +101,6 @@ class SignUpScreen extends React.Component {
   componentDidUpdate(prevProps, prevState) {
     if (Actions.currentScene === 'SignUpScreen') {
       if (prevProps.user.loading === 'USER_SIGNUP_PENDING' && this.props.user.loading === 'USER_SIGNUP_FULFILLED') {
-        const { userSignUpData } = this.props.user
-
         this.setState({ loading: false }, () => {
           Actions.SignUpConfirmScreen({ userEmail: this.state.userEmail })
         })
@@ -201,6 +198,8 @@ class SignUpScreen extends React.Component {
   }
 
   onSignUp = () => {
+    Analytics.logEvent('user_signup', {})
+
     const {
       fieldErrors,
       userEmail,
