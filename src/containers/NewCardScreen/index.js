@@ -1416,7 +1416,7 @@ class NewCardScreen extends React.Component {
           activeOpacity={0.7}
           onPress={() => this.onBack()}
         >
-          <MaterialCommunityIcons name="close" size={28} color={COLORS.PURPLE} />
+          <MaterialCommunityIcons name="close" size={32} color={COLORS.PURPLE} />
         </TouchableOpacity>
         {this.renderTopAttachmentButtons}
       </View>

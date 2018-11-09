@@ -29,10 +29,9 @@ const styles = StyleSheet.create({
   textInputIdea: {
     fontSize: 16,
     lineHeight: CONSTANTS.TEXT_INPUT_LINE_HEIGHT,
-    marginTop: 8,
+    marginTop: 16,
     marginBottom: 16,
     marginHorizontal: 16,
-    
     paddingLeft: 0,
     paddingRight: 0,
     paddingTop: 0,
@@ -56,7 +55,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   iconView: {
-    paddingHorizontal: 4,
+    paddingHorizontal: 8,
     height: 32,
     marginRight: 10,
     alignItems: 'center',
@@ -105,8 +104,8 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    paddingLeft: 6,
-    paddingRight: 16,
+    paddingLeft: 4,
+    paddingRight: 8,
   },
   extensionHeaderContainer: {
     paddingVertical: 5,
@@ -127,8 +126,8 @@ const styles = StyleSheet.create({
   backButtonWrapper: {
     flexDirection: 'row',
     alignItems: 'center',
-    paddingHorizontal: 10,
-    paddingVertical: 5,
+    paddingHorizontal: 4,
+    paddingTop: 8,
   },
   textBack: {
     fontSize: 16,
@@ -146,8 +145,8 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   coverImageContainer: {
-    height: Math.round(CONSTANTS.SCREEN_WIDTH * 0.565),
-    marginTop: 15,
+    height: Math.round(CONSTANTS.SCREEN_WIDTH * 0.75),
+    marginTop: 16,
     overflow: 'hidden',
   },
   extensionCoverImageContainer: {
