@@ -4,6 +4,8 @@
 <dict>
 	<key>BugsnagAPIKey</key>
 	<string>ff91b9f4357b0367f0fac2f9f70855c5</string>
+	<key>BundleEntryFilename</key>
+	<string>index.js</string>
 	<key>CFBundleDevelopmentRegion</key>
 	<string>en</string>
 	<key>CFBundleDisplayName</key>
@@ -36,7 +38,7 @@
 		</dict>
 	</array>
 	<key>CFBundleVersion</key>
-	<string>31</string>
+	<string>31.2</string>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
 	<key>NSAppTransportSecurity</key>
