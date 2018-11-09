@@ -487,7 +487,7 @@ class NewCardScreen extends React.Component {
   }
 
   async createCard(currentProps) {
-    Analytics.logEvent('new_card', {})
+    Analytics.logEvent('new_card_new_card', {})
 
     const { cardMode, viewMode } = this.props;
     if ((cardMode === CONSTANTS.MAIN_APP_CARD_FROM_DASHBOARD) || (cardMode === CONSTANTS.SHARE_EXTENTION_CARD)) {
@@ -592,7 +592,7 @@ class NewCardScreen extends React.Component {
       }
 
       if (filteredUrls.length > 0) {
-        Analytics.logEvent('typed_link', {})
+        Analytics.logEvent('new_card_typed_link', {})
 
         // this.isOpenGraphForNewCard = false;
         this.indexForOpenGraph = 0;
@@ -985,7 +985,7 @@ class NewCardScreen extends React.Component {
       this.isUpdateDraftCard = true;
       this.props.deleteDraftFeed(this.draftFeedo.id)
     } else {
-      Analytics.logEvent('update_card', {})
+      Analytics.logEvent('new_card_update_card', {})
 
       this.onUpdateCard();
     }

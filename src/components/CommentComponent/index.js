@@ -23,7 +23,7 @@ export default class CommentComponent extends React.Component {
   }
 
   onComment() {
-    Analytics.logEvent('comment_card', {})
+    Analytics.logEvent('edit_card_commnet_icon', {})
 
     // Ignore Guest
     if (this.props.onComment) {

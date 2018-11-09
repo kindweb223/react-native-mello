@@ -420,7 +420,7 @@ class HomeScreen extends React.Component {
   registerPushNotification() {
     PushNotification.configure({
       onRegister: (token) => {
-        Analytics.logEvent('register_push_notification', {})
+        Analytics.logEvent('dashboard_register_push_notification', {})
 
         console.log('PUSH TOKEN : ', token);
         AsyncStorage.getItem(CONSTANTS.USER_DEVICE_TOKEN, (error, result) => {
@@ -498,7 +498,7 @@ class HomeScreen extends React.Component {
 
   archiveFeed = (feedId) => {
     if (this.state.isArchive) {
-      Analytics.logEvent('archive_feed', {})
+      Analytics.logEvent('dashboard_archive_feed', {})
 
       this.props.archiveFeed(feedId)
       this.setState({ isArchive: false })
@@ -518,7 +518,7 @@ class HomeScreen extends React.Component {
 
   deleteFeed = (feedId) => {
     if (this.state.isDelete) {
-      Analytics.logEvent('delete_feed', {})
+      Analytics.logEvent('dashboard_delete_feed', {})
 
       this.props.deleteFeed(feedId)
       this.setState({ isDelete: false })
@@ -539,7 +539,7 @@ class HomeScreen extends React.Component {
 
   pinFeed = (feedId) => {
     if (this.state.isPin) {
-      Analytics.logEvent('pin_feed', {})
+      Analytics.logEvent('dashboard_pin_feed', {})
 
       this.props.pinFeed(feedId)
       this.setState({ isPin: false })
@@ -559,7 +559,7 @@ class HomeScreen extends React.Component {
 
   unpinFeed = (feedId) => {
     if (this.state.isUnPin) {
-      Analytics.logEvent('unpin_feed', {})
+      Analytics.logEvent('dashboard_unpin_feed', {})
 
       this.props.unpinFeed(feedId)
       this.setState({ isUnPin: false })
@@ -579,7 +579,7 @@ class HomeScreen extends React.Component {
   
   duplicateFeed = () => {
     if (this.state.isDuplicate) {
-      Analytics.logEvent('duplicate_feed', {})
+      Analytics.logEvent('dashboard_duplicate_feed', {})
 
       this.setState({ isDuplicate: false })
     }
@@ -647,7 +647,7 @@ class HomeScreen extends React.Component {
 
   onSelectNewFeedType(type) {
     if (type === 'New Card') {
-      Analytics.logEvent('new_card', {})
+      Analytics.logEvent('dashboard_new_card', {})
 
       this.setState({
         isVisibleCreateNewFeedModal: false,
@@ -656,7 +656,7 @@ class HomeScreen extends React.Component {
         selectedIdeaInvitee: null,
       });
     } else if (type === 'New Feed') {
-      Analytics.logEvent('new_feed', {})
+      Analytics.logEvent('dashboard_new_feed', {})
 
       this.props.setCurrentFeed({});
       this.setState({ 

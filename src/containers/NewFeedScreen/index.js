@@ -251,7 +251,7 @@ class NewFeedScreen extends React.Component {
   }
 
   onUpdate() {
-    Analytics.logEvent('create_new_feed', {})
+    Analytics.logEvent('new_feed_create_new_feed', {})
 
     if (this.state.feedName === '') {
       Alert.alert('', 'Please input your feed name.', [{ text: 'Close' }]);
@@ -274,7 +274,7 @@ class NewFeedScreen extends React.Component {
         if (response.fileSize > 1024 * 1024 * 10) {
           Alert.alert('Warning', 'File size must be less than 10MB')
         } else {
-          Analytics.logEvent('add_file', {})
+          Analytics.logEvent('new_feed_add_file', {})
 
           let type = 'FILE';
           const mimeType = mime.lookup(response.uri);
@@ -314,7 +314,7 @@ class NewFeedScreen extends React.Component {
     this.setState({
       currentScreen: TagCreateMode,
     }, () => {
-      Analytics.logEvent('add_tag', {})
+      Analytics.logEvent('new_feed_add_tag', {})
 
       this.animatedTagTransition.setValue(1)
       Animated.timing(this.animatedTagTransition, {
@@ -357,7 +357,7 @@ class NewFeedScreen extends React.Component {
         if (response.fileSize > 1024 * 1024 * 10) {
           Alert.alert('Warning', 'File size must be less than 10MB')
         } else {
-          Analytics.logEvent('add_image', {})
+          Analytics.logEvent('new_feed_add_camera_image', {})
 
           if (!response.fileName) {
             response.fileName = response.uri.replace(/^.*[\\\/]/, '')
@@ -374,7 +374,7 @@ class NewFeedScreen extends React.Component {
         if (response.fileSize > 1024 * 1024 * 10) {
           Alert.alert('Warning', 'File size must be less than 10MB')
         } else {
-          Analytics.logEvent('add_image', {})
+          Analytics.logEvent('new_feed_add_library_image', {})
 
           this.uploadFile(response, 'MEDIA');
         }

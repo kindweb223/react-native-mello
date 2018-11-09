@@ -66,7 +66,7 @@ class FeedActionBarComponent extends React.Component {
           duration: 100,
         }),
       ]).start(() => {
-        Analytics.logEvent('share', {})
+        Analytics.logEvent('dashboard_share', {})
 
         this.props.handleShare()
         this.setState({ isSettingMenu: false })

@@ -350,7 +350,7 @@ class FeedDetailScreen extends React.Component {
   }
 
   handleShare = () => {
-    Analytics.logEvent('share', {})
+    Analytics.logEvent('feed_detail_share', {})
 
     this.setState({ isShowShare: true })
   }
@@ -378,7 +378,7 @@ class FeedDetailScreen extends React.Component {
         }, 200)
         return
       case 'Archive':
-        Analytics.logEvent('archive_feed', {})
+        Analytics.logEvent('feed_detail_archive_feed', {})
 
         this.props.setFeedDetailAction({
           action: 'Archive',
@@ -396,7 +396,7 @@ class FeedDetailScreen extends React.Component {
   }
 
   handleEdit = (feedId) => {
-    Analytics.logEvent('edit_feed', {})
+    Analytics.logEvent('feed_detail_edit_feed', {})
 
     this.setState({
       isVisibleEditFeed: true,
@@ -430,7 +430,7 @@ class FeedDetailScreen extends React.Component {
 
   pinFeed = (feedId) => {
     if (this.state.currentActionType === ACTION_FEEDO_PIN) {
-      Analytics.logEvent('pin_feed', {})
+      Analytics.logEvent('feed_detail_pin_feed', {})
 
       this.props.pinFeed(feedId)
       this.setState({ currentActionType: ACTION_NONE })
@@ -455,7 +455,7 @@ class FeedDetailScreen extends React.Component {
 
   unpinFeed = (feedId) => {
     if (this.state.currentActionType === ACTION_FEEDO_UNPIN) {
-      Analytics.logEvent('unpin_feed', {})
+      Analytics.logEvent('feed_detail_unpin_feed', {})
 
       this.props.unpinFeed(feedId)
       this.setState({ currentActionType: ACTION_NONE })
@@ -478,7 +478,7 @@ class FeedDetailScreen extends React.Component {
   
   duplicateFeed = () => {
     if (this.state.currentActionType === ACTION_FEEDO_DUPLICATE) {
-      Analytics.logEvent('duplicate_feed', {})
+      Analytics.logEvent('feed_detail_duplicate_feed', {})
 
       this.setState({ currentActionType: ACTION_NONE })
     }
@@ -523,7 +523,7 @@ class FeedDetailScreen extends React.Component {
 
   onTapFeedoActionSheet = (index) => {
     if (index === 0) {
-      Analytics.logEvent('delete_feed', {})
+      Analytics.logEvent('feed_detail_delete_feed', {})
 
       this.props.setFeedDetailAction({
         action: 'Delete',
@@ -654,7 +654,7 @@ class FeedDetailScreen extends React.Component {
   }
   
   onEditCard() {
-    Analytics.logEvent('edit_card', {})
+    Analytics.logEvent('feed_detail_edit_card', {})
 
     this.setState({ isVisibleLongHoldMenu: false })
     this.onSelectCard(this.state.selectedLongHoldIdea, this.state.selectedLongHoldCardIndex)
@@ -699,10 +699,10 @@ class FeedDetailScreen extends React.Component {
     this.userActionTimer = setTimeout(() => {
       // this.setState({ isShowToaster: false })
       if (this.state.currentActionType === ACTION_CARD_DELETE) {
-        Analytics.logEvent('delete_card', {})
+        Analytics.logEvent('feed_detail_delete_card', {})
         this.props.deleteCard(currentCardInfo.ideaId)
       } else if (this.state.currentActionType === ACTION_CARD_MOVE) {
-        Analytics.logEvent('move_card', {})
+        Analytics.logEvent('feed_detail_move_card', {})
         this.props.moveCard(currentCardInfo.ideaId, currentCardInfo.feedoId);
       }
       this.userActionTimer = null;
@@ -832,7 +832,7 @@ class FeedDetailScreen extends React.Component {
   }
   
   handleFilter = () => {
-    Analytics.logEvent('filter_card', {})
+    Analytics.logEvent('feed_detail_filter_card', {})
 
     this.setState({ showFilterModal: true })
   }

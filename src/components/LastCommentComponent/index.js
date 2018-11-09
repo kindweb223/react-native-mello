@@ -55,7 +55,7 @@ class LastCommentComponent extends React.Component {
   }
 
   onAddComment() {
-    Analytics.logEvent('add_comment', {})
+    Analytics.logEvent('edit_card_add_comment', {})
 
     Actions.CommentScreen({
       idea: this.props.card.currentCard,
@@ -65,7 +65,7 @@ class LastCommentComponent extends React.Component {
   }
 
   onViewOldComments() {
-    Analytics.logEvent('view_old_comments', {})
+    Analytics.logEvent('edit_card_view_old_comments', {})
 
     Actions.CommentScreen({
       idea: this.props.card.currentCard,

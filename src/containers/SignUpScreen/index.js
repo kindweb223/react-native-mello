@@ -198,7 +198,7 @@ class SignUpScreen extends React.Component {
   }
 
   onSignUp = () => {
-    Analytics.logEvent('user_signup', {})
+    Analytics.logEvent('signup_signup', {})
 
     const {
       fieldErrors,

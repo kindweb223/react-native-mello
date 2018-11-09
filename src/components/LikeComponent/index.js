@@ -97,7 +97,7 @@ class LikeComponent extends React.Component {
       likes,
     } = this.state;
     if (likes > 0) {
-      Analytics.logEvent('show_like_list', {})
+      Analytics.logEvent('feed_detail_show_like_list', {})
       Actions.LikesListScreen({idea: this.props.idea});
     }
   }
@@ -105,16 +105,16 @@ class LikeComponent extends React.Component {
   onLike(liked) {
     // Move to like list for Guest
     if (COMMON_FUNC.isFeedGuest(this.props.feedo.currentFeed)) {
-      Analytics.logEvent('show_like_list', {})
+      Analytics.logEvent('feed_detail_show_like_list', {})
       Actions.LikesListScreen({idea: this.props.idea});
     } else {
       this.props.setCurrentCard(this.props.idea);
       if (liked) {
-        Analytics.logEvent('unlike_card', {})
+        Analytics.logEvent('feed_detail_unlike_card', {})
 
         this.props.unlikeCard(this.props.idea.id);
       } else {
-        Analytics.logEvent('like_card', {})
+        Analytics.logEvent('feed_detail_like_card', {})
 
         this.props.likeCard(this.props.idea.id);
       }

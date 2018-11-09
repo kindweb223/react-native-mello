@@ -260,7 +260,7 @@ class ProfileUpdateScreen extends React.Component {
         const param = {
           email: this.state.userEmail
         }
-        Analytics.logEvent('reset_password', {})
+        Analytics.logEvent('profile_update_reset_password', {})
         this.props.sendResetPasswordEmail(param)
       }
     })

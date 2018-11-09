@@ -109,7 +109,7 @@ class ProfileScreen extends React.Component {
 
   onTapActionSheet = (index) => {
     if (index === 0) {
-      Analytics.logEvent('user_signout', {})
+      Analytics.logEvent('profile_signout', {})
 
       this.props.userSignOut()
     }
@@ -121,7 +121,7 @@ class ProfileScreen extends React.Component {
         if (!response.fileName) {
           response.fileName = response.uri.replace(/^.*[\\\/]/, '')
         }
-        Analytics.logEvent('add_profile_photo_from_camera', {})
+        Analytics.logEvent('profile_add_camera_image', {})
         Actions.CropImageScreen({ avatarFile: response })
       }
     });
@@ -130,7 +130,7 @@ class ProfileScreen extends React.Component {
   pickMediaFromLibrary(options) {
     ImagePicker.launchImageLibrary(options, (response)  => {
       if (!response.didCancel) {
-        Analytics.logEvent('add_profile_photo_from_gallery', {})
+        Analytics.logEvent('profile_add_library_image', {})
         Actions.CropImageScreen({ avatarFile: response })
       }
     });

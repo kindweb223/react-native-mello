@@ -142,7 +142,7 @@ class LoginScreen extends React.Component {
   onForgotPassword = () => {
     const { userEmail } = this.state
 
-    Analytics.logEvent('reset_password', {})
+    Analytics.logEvent('login_reset_password', {})
 
     if (userEmail.length === 0) {
       Alert.alert('Error', 'Email is required')
@@ -158,7 +158,7 @@ class LoginScreen extends React.Component {
   }
 
   onSignIn = () => {
-    Analytics.logEvent('user_login', {})
+    Analytics.logEvent('login_login', {})
 
     const {
       fieldErrors,
