@@ -423,7 +423,7 @@ class NewFeedScreen extends React.Component {
       return (
         <View style={styles.extensionTopContainer}>
           <TouchableOpacity 
-            style={styles.closeButtonWrapper}
+            style={styles.backButtonWrapper}
             activeOpacity={0.6}
             onPress={this.onOpenActionSheet.bind(this)}
           >

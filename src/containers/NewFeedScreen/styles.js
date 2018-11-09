@@ -23,7 +23,8 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     alignItems: 'center',
     paddingVertical: 16,
-    paddingHorizontal: 9
+    marginLeft: 6,
+    marginRight: 16,
   },
   extensionTopContainer: {
     flexDirection: 'row',
@@ -34,11 +35,13 @@ const styles = StyleSheet.create({
     borderBottomWidth: 1,
     borderBottomColor: COLORS.LIGHT_GREY_LINE,
   },
-  closeButtonWrapper: {
+  backButtonWrapper: {
     paddingHorizontal: 16,
   },
+  closeButtonWrapper: {
+    paddingHorizontal: 6,
+  },
   createButtonWapper: {
-    marginRight: 5,
     paddingHorizontal: 20,
     height: 34,
     borderRadius: 17,
