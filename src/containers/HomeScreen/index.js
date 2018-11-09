@@ -449,6 +449,7 @@ class HomeScreen extends React.Component {
         });
       },
       onNotification: (notification) => {
+        Analytics.logEvent('dashboard_parse_push_notification', {})
         this.parsePushNotification(notification);
       },
       senderID: "sender-id",
