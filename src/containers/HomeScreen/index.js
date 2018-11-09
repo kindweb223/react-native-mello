@@ -320,9 +320,12 @@ class HomeScreen extends React.Component {
         const { feedoList } = this.state
         const matchedHunt = find(feedoList, feedo => feedo.id === huntId);
         if (matchedHunt) {
-          Actions.FeedDetailScreen({
-            data: matchedHunt
-          });
+          const currentFeedo = this.props.feedo.currentFeed;
+          if (Actions.currentScene === 'FeedDetailScreen' && currentFeedo.id === feedId) {
+            Actions.FeedDetailScreen({type: 'replace', data: matchedHunt});
+          } else {
+            Actions.FeedDetailScreen({data: matchedHunt})
+          }
         } else {
           this.setState({
             currentPushNotificationType: CONSTANTS.USER_INVITED_TO_HUNT,
@@ -359,13 +362,15 @@ class HomeScreen extends React.Component {
         if (matchedHunt) {
           const matchedIdea = find(matchedHunt.ideas, idea => idea.id === ideaId);
           if (matchedIdea) {
-            const invitee = _.find(matchedHunt.invitees, (o) => {
-              return (o.id == matchedIdea.inviteeId)
-            });
-            this.setState({
-              isVisibleCard: true,
-              selectedIdeaInvitee: invitee,
-            });
+            console.log('Current Feedo Invitees : ', matchedHunt);
+            console.log('Current Card : ', matchedIdea);
+
+            const invitee = find(matchedHunt.invitees, (o) => o.id == matchedIdea.inviteeId);
+            console.log('Current Ivitee : ', invitee);
+            // this.setState({
+            //   isVisibleCard: true,
+            //   selectedIdeaInvitee: invitee,
+            // });
             return;
           }
         }
@@ -432,7 +437,6 @@ class HomeScreen extends React.Component {
             deviceModel: DeviceInfo.getModel(),
             osVersion: DeviceInfo.getSystemVersion(),
           }
-          console.log('Device Info : ', data);
           if (!result) {
             this.props.addDeviceToken(this.props.user.userInfo.id, data);
           } else {
