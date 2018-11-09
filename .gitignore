@@ -18,6 +18,7 @@ build/
 DerivedData
 *.hmap
 *.ipa
+ios/Pods
 
 # Android/IntelliJ
 #
