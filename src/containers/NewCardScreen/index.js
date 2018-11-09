@@ -1379,6 +1379,7 @@ class NewCardScreen extends React.Component {
             }
           </TouchableOpacity>
           <TouchableOpacity 
+            style={styles.closeButtonShareWrapper}
             activeOpacity={0.6}
             onPress={this.onUpdateFeed.bind(this)}
           >
