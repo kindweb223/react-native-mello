@@ -45,7 +45,7 @@ class TermsAndConditionsScreen extends React.Component {
   }
 
   async componentWillMount() {
-    Analytics.setCurrentScreen('Terms&ConditionsScreen')
+    Analytics.setCurrentScreen('TermsAndConditionsScreen')
 
     this.setState({ loading: true })
     await RNFetchBlob.fetch('GET', TNC_URL)

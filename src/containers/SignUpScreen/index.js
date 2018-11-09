@@ -85,7 +85,7 @@ class SignUpScreen extends React.Component {
     const { token } = this.props
     const { isInvite } = this.state
 
-    Analytics.setCurrentScreen('SignupScreen')
+    Analytics.setCurrentScreen('SignUpScreen')
 
     // For invited user
     if (isInvite) {

@@ -78,6 +78,10 @@ class NewFeedScreen extends React.Component {
     this.animatedTagTransition = new Animated.Value(1);
   }
 
+  componentDidMount() {
+    Analytics.setCurrentScreen('NewFeedScreen')
+  }
+
   UNSAFE_componentWillReceiveProps(nextProps) {
     let loading = false;
     if (this.props.feedo.loading !== types.CREATE_FEED_PENDING && nextProps.feedo.loading === types.CREATE_FEED_PENDING) {

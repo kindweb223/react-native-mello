@@ -151,6 +151,8 @@ class FeedDetailScreen extends React.Component {
   }
 
   componentDidMount() {
+    Analytics.setCurrentScreen('FeedDetailScreen')
+
     this.setState({ loading: true })
     this.props.getFeedDetail(this.props.data.id)
   }

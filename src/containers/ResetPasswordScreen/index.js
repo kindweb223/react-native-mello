@@ -1,16 +1,13 @@
 import React from 'react'
 import {
-  SafeAreaView,
   View,
   Text,
-  TextInput,
   TouchableOpacity,
-  ActivityIndicator,
   Image,
   Alert,
   Keyboard
 } from 'react-native'
-import axios from 'axios';
+
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
 import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
@@ -25,9 +22,8 @@ import { resetPassword } from '../../redux/user/actions'
 import COLORS from '../../service/colors'
 import CONSTANTS from '../../service/constants'
 import resolveError from '../../service/resolveError'
-import * as COMMON_FUNC from '../../service/commonFunc'
 import styles from './styles'
-
+import Analytics from '../../lib/firebase'
 const LOGO = require('../../../assets/images/Login/icon_40pt.png')
 
 const PASSWORD_PROGRESS = [
@@ -74,6 +70,10 @@ class ResetPasswordScreen extends React.Component {
         }
       ]
     }
+  }
+
+  componentDidMount() {
+    Analytics.setCurrentScreen('ResetPasswordScreen')
   }
 
   UNSAFE_componentWillReceiveProps(nextProps) {

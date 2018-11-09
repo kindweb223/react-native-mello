@@ -13,8 +13,8 @@ import Ionicons from 'react-native-vector-icons/Ionicons'
 import LoadingScreen from '../LoadingScreen'
 import { confirmAccount, resendConfirmationEmail, getUserSession } from '../../redux/user/actions'
 import COLORS from '../../service/colors'
-import CONSTANTS from '../../service/constants'
 import styles from './styles'
+import Analytics from '../../lib/firebase'
 
 const LOGO = require('../../../assets/images/Login/icon_40pt.png')
 const MAIL_ICON = require('../../../assets/images/Success/iconMailBig.png')
@@ -46,6 +46,8 @@ class SignUpConfirmScreen extends React.Component {
   }
 
   componentDidMount() {
+    Analytics.setCurrentScreen('SignUpConfirmScreen')
+
     const { token, deepLinking } = this.props
 
     if (deepLinking) { // from deep_linking (signup confirm)

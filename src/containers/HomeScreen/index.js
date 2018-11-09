@@ -115,7 +115,7 @@ class HomeScreen extends React.Component {
   }
 
   async componentDidMount() {
-    Analytics.setCurrentScreen('HomeScreen')
+    Analytics.setCurrentScreen('DashboardScreen')
 
     this.setState({ loading: true })
 

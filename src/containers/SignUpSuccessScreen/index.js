@@ -2,16 +2,13 @@ import React from 'react'
 import {
   View,
   Text,
-  Alert,
   Image
 } from 'react-native'
-import { connect } from 'react-redux'
-import PropTypes from 'prop-types'
+
 import { Actions } from 'react-native-router-flux'
-import LoadingScreen from '../LoadingScreen'
-import { confirmAccount, getUserSession } from '../../redux/user/actions'
-import COLORS from '../../service/colors'
 import styles from './styles'
+import Analytics from '../../lib/firebase'
+
 const SUCCESS_ICON = require('../../../assets/images/Success/adamStatic3.png')
 
 class SignUpSuccessScreen extends React.Component {
@@ -20,6 +17,8 @@ class SignUpSuccessScreen extends React.Component {
   }
 
   componentWillMount() {
+    Analytics.setCurrentScreen('SignUpSuccessScreen')
+
     setTimeout(() => {
       Actions.HomeScreen()
     }, 4000)
