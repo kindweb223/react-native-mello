@@ -133,6 +133,8 @@ class NewCardScreen extends React.Component {
     this.scrollViewHeight = 0;
     this.textInputPositionY = 0;
     this.textInputHeightByCursor = 0;
+
+    this.isShowSafariView = false;
   }
 
   UNSAFE_componentWillReceiveProps(nextProps) {
@@ -452,15 +454,19 @@ class NewCardScreen extends React.Component {
 
     this.keyboardWillShowSubscription = Keyboard.addListener('keyboardWillShow', (e) => this.keyboardWillShow(e));
     this.keyboardWillHideSubscription = Keyboard.addListener('keyboardWillHide', (e) => this.keyboardWillHide(e));
+    this.safariViewShowSubscription = SafariView.addEventListener('onShow', () => this.safariViewShow());
+    this.safariViewDismissSubscription = SafariView.addEventListener('onDismiss', () => this.safariViewDismiss());
   }
 
   componentWillUnmount() {
     this.keyboardWillShowSubscription.remove();
     this.keyboardWillHideSubscription.remove();
+    this.safariViewShowSubscription.remove();
+    this.safariViewDismissSubscription.remove();
   }
 
   keyboardWillShow(e) {
-    if (Actions.currentScene === 'CommentScreen') {
+    if (Actions.currentScene === 'CommentScreen' || this.isShowSafariView === true) {
       return;
     }
     Animated.timing(
@@ -474,7 +480,7 @@ class NewCardScreen extends React.Component {
   }
 
   keyboardWillHide(e) {
-    if (Actions.currentScene === 'CommentScreen') {
+    if (Actions.currentScene === 'CommentScreen' || this.isShowSafariView === true) {
       return;
     }
     Animated.timing(
@@ -483,6 +489,14 @@ class NewCardScreen extends React.Component {
         duration: e.duration,
       }
     ).start();
+  }
+
+  safariViewShow() {
+    this.isShowSafariView = true;
+  }
+
+  safariViewDismiss() {
+    this.isShowSafariView = false;
   }
 
   async createCard(currentProps) {
@@ -974,7 +988,7 @@ class NewCardScreen extends React.Component {
           tags,
           files,
         } = this.props.feedo.currentFeed;  
-        this.props.updateFeed(id, headline || 'New feed', summary || ' ', tags, files);
+        this.props.updateFeed(id, headline || 'New feed', summary || '', tags, files);
         return;
       }
       this.isUpdateDraftCard = true;
@@ -1402,7 +1416,7 @@ class NewCardScreen extends React.Component {
           activeOpacity={0.7}
           onPress={() => this.onBack()}
         >
-          <MaterialCommunityIcons name="close" size={28} color={COLORS.PURPLE} />
+          <MaterialCommunityIcons name="close" size={32} color={COLORS.PURPLE} />
         </TouchableOpacity>
         {this.renderTopAttachmentButtons}
       </View>

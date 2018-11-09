@@ -101,7 +101,7 @@ class ShareScreen extends React.Component {
     const { data } = this.props
 
     Share.share({
-      message: data.summary,
+      message: data.summary || '',
       url: `${SHARE_LINK_URL}${data.id}`,
       title: data.headline
     },{

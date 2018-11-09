@@ -29,8 +29,6 @@ import styles from './styles'
 
 const CLOSE_ICON = require('../../../assets/images/Close/Blue.png')
 const TRASH_ICON = require('../../../assets/images/Trash/Blue.png')
-const BELL_ICON = require('../../../assets/images/Bell/Blue.png')
-const QUOTE_ICON = require('../../../assets/images/Quote/Blue.png')
 const LOCK_ICON = require('../../../assets/images/Lock/Blue.png')
 const EDIT_ICON = require('../../../assets/images/Edit/Blue.png')
 const PROFILE_ICON = require('../../../assets/images/Profile/Blue.png')
@@ -51,10 +49,6 @@ const SETTING_ITEMS = [
   {
     icon: <Image source={LOCK_ICON} style={styles.leftIcon} />,
     title: 'Security'
-  },
-  {
-    icon: <Image source={BELL_ICON} style={styles.leftIcon} />,
-    title: 'Notifications'
   },
   {
     icon: <Image source={TRASH_ICON} style={styles.leftIcon} />,
@@ -198,12 +192,10 @@ class ProfileScreen extends React.Component {
       case 1: // Profile
         Actions.ProfileUpdateScreen({ page: 'user', data: userInfo, title: 'Edit Profile' })
         return
-      case 2:
+      case 2: // Security
         Actions.ProfileUpdateScreen({ page: 'password', data: userInfo, title: 'Edit Password' })
         return
-      case 3:
-        return
-      case 4:
+      case 3: // Archived feeds
         Actions.ArchivedFeedScreen()
         return
       default:

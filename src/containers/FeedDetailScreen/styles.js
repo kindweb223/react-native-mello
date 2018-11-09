@@ -34,7 +34,7 @@ const styles = StyleSheet.create({
   navBar: {
     width: '100%',
     height: NAV_BAR_HEIGHT,
-    paddingHorizontal: CONSTANTS.PADDING,
+    paddingRight: CONSTANTS.PADDING,
     backgroundColor: '#fff',
     zIndex: 11,
     flexDirection: 'row',
@@ -44,9 +44,10 @@ const styles = StyleSheet.create({
   },
   backView: {
     width: 50,
+    paddingHorizontal: CONSTANTS.PADDING,
     justifyContent: 'center',
     alignItems: 'flex-start',
-    height: '100%'
+    height: '100%',
   },
   backIcon: {
     color: COLORS.PURPLE,

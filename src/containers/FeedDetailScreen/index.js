@@ -1015,10 +1015,8 @@ class FeedDetailScreen extends React.Component {
       <SafeAreaView style={styles.safeArea}>
         <View style={styles.container}>
           <View style={styles.navBar}>
-            <TouchableOpacity onPress={this.backToDashboard}>
-              <View style={styles.backView}>
-                <Ionicons name="ios-arrow-back" size={32} color={COLORS.PURPLE} />
-              </View>
+            <TouchableOpacity style={styles.backView} onPress={this.backToDashboard}>
+              <Ionicons name="ios-arrow-back" size={32} color={COLORS.PURPLE} />
             </TouchableOpacity>
             <View style={styles.rightHeader}>
               <View style={styles.avatarView}>
