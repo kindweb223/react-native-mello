@@ -134,7 +134,7 @@ class NewCardScreen extends React.Component {
     this.textInputPositionY = 0;
     this.textInputHeightByCursor = 0;
 
-    this.isShowSafariView = false;
+    this.isDisabledKeyboard = false;
   }
 
   UNSAFE_componentWillReceiveProps(nextProps) {
@@ -466,7 +466,8 @@ class NewCardScreen extends React.Component {
   }
 
   keyboardWillShow(e) {
-    if (Actions.currentScene === 'CommentScreen' || this.isShowSafariView === true) {
+    console.log('NewCardScreen : keyboardWillShow');
+    if (Actions.currentScene === 'CommentScreen' || this.isDisabledKeyboard === true) {
       return;
     }
     Animated.timing(
@@ -480,9 +481,10 @@ class NewCardScreen extends React.Component {
   }
 
   keyboardWillHide(e) {
-    if (Actions.currentScene === 'CommentScreen' || this.isShowSafariView === true) {
-      return;
-    }
+    console.log('NewCardScreen : keyboardWillHide');
+    // if (Actions.currentScene === 'CommentScreen' || this.isDisabledKeyboard === true) {
+    //   return;
+    // }
     Animated.timing(
       this.animatedKeyboardHeight, {
         toValue: 0,
@@ -492,11 +494,11 @@ class NewCardScreen extends React.Component {
   }
 
   safariViewShow() {
-    this.isShowSafariView = true;
+    this.isDisabledKeyboard = true;
   }
 
   safariViewDismiss() {
-    this.isShowSafariView = false;
+    this.isDisabledKeyboard = false;
   }
 
   async createCard(currentProps) {
@@ -961,12 +963,15 @@ class NewCardScreen extends React.Component {
 
   onSelectFeedo() {
     this.prevFeedo = this.props.feedo.currentFeed;
+    this.isDisabledKeyboard = true;
     this.setState({
       isVisibleSelectFeedoModal: true,
     });
   }
 
   onCloseSelectHunt() {
+    console.log('NewCardScreen : onCloseSelectHunt');
+    this.isDisabledKeyboard = false;
     this.setState({isVisibleSelectFeedoModal: false})
     if (!this.props.feedo.currentFeed.id) {
       this.props.setCurrentFeed(this.prevFeedo);
