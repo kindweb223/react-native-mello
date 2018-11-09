@@ -69,6 +69,7 @@ import {
 import { 
   getCard,
 } from '../../redux/card/actions'
+import constants from '../../service/constants';
 
 const TAB_STYLES = {
   height: '100%',
@@ -173,12 +174,11 @@ class HomeScreen extends React.Component {
         emptyState,
         apiLoading: feedo.loading
       }
-    } else if (prevState.apiLoading !== feedo.loading && (feedo.loading === 'GET_CARD_FULFILLED')) {
-      const { card } = nextProps
+    } else if (prevState.apiLoading !== card.loading && (card.loading === 'GET_CARD_FULFILLED')) {
       return {
         loading: false,
         currentIdea: card.currentCard,
-        apiLoading: feedo.loading
+        apiLoading: card.loading
       }
     }
 
@@ -225,7 +225,7 @@ class HomeScreen extends React.Component {
         currentPushNotificationType: CONSTANTS.UNKOWN_PUSH_NOTIFICATION,
         currentPushNotificationData: null,
       });
-    } else if (this.props.feedo.loading === 'GET_CARD_FULFILLED' && (this.state.currentPushNotificationType === CONSTANTS.NEW_COMMENT_ON_IDEA || this.state.currentPushNotificationType === USER_JOINED_HUNT) && this.state.currentPushNotificationData) {
+    } else if (this.props.card.loading === 'GET_CARD_FULFILLED' && (this.state.currentPushNotificationType === CONSTANTS.NEW_COMMENT_ON_IDEA || this.state.currentPushNotificationType === CONSTANTS.USER_JOINED_HUNT) && this.state.currentPushNotificationData) {
       Actions.CommentScreen({
         idea: this.state.currentIdea,
       });
@@ -233,8 +233,8 @@ class HomeScreen extends React.Component {
         currentPushNotificationType: CONSTANTS.UNKOWN_PUSH_NOTIFICATION,
         currentPushNotificationData: null,
       });
-    } else if (this.props.feedo.loading === 'GET_CARD_FULFILLED' && this.state.currentPushNotificationType === CONSTANTS.NEW_IDEA_ADDED && this.state.currentPushNotificationData) {
-      const invitee = _.find(this.state.currentPushNotificationData.invitees, (o) => {
+    } else if (this.props.card.loading === 'GET_CARD_FULFILLED' && this.state.currentPushNotificationType === CONSTANTS.NEW_IDEA_ADDED && this.state.currentPushNotificationData) {
+      const invitee = find(this.state.currentPushNotificationData.invitees, (o) => {
         return (o.id == this.state.currentIdea.inviteeId)
       });
       this.setState({
@@ -242,11 +242,16 @@ class HomeScreen extends React.Component {
         cardViewMode: CONSTANTS.CARD_VIEW,
         selectedIdeaInvitee: invitee,
       });
+      this.animatedOpacity.setValue(0);
+      Animated.timing(this.animatedOpacity, {
+        toValue: 1,
+        duration: CONSTANTS.ANIMATEION_MILLI_SECONDS,
+      }).start();
       this.setState({
         currentPushNotificationType: CONSTANTS.UNKOWN_PUSH_NOTIFICATION,
         currentPushNotificationData: null,
       });
-    } else if (this.props.feedo.loading === 'GET_CARD_FULFILLED' && this.state.currentPushNotificationType === CONSTANTS.NEW_LIKE_ON_IDEA && this.state.currentPushNotificationData) {
+    } else if (this.props.card.loading === 'GET_CARD_FULFILLED' && this.state.currentPushNotificationType === CONSTANTS.NEW_LIKE_ON_IDEA && this.state.currentPushNotificationData) {
       Actions.LikesListScreen({idea: this.state.currentIdea});
       this.setState({
         currentPushNotificationType: CONSTANTS.UNKOWN_PUSH_NOTIFICATION,
@@ -267,7 +272,7 @@ class HomeScreen extends React.Component {
       let bubbleData = JSON.parse(bubbleAsyncData)
 
       if(!bubbleData || (bubbleData.userId === user.userInfo.id && bubbleData.state !== 'false')) {
-        const ownFeeds = filter(feedoList, feed => feed.metadata.owner === true)
+        const ownFeeds = filter(feedoList, feed => feed.metadata && feed.metadata.owner === true)
 
         if (ownFeeds.length === 0 && !(bubbleFirstFeedData && (bubbleFirstFeedData.userId === user.userInfo.id && bubbleFirstFeedData.state === 'true'))) {
           this.setState({ showFeedInvitedNewUserBubble: true })
@@ -359,21 +364,6 @@ class HomeScreen extends React.Component {
         const { huntId, ideaId } = notification.data;
         const { feedoList } = this.state
         const matchedHunt = find(feedoList, feedo => feedo.id === huntId);
-        if (matchedHunt) {
-          const matchedIdea = find(matchedHunt.ideas, idea => idea.id === ideaId);
-          if (matchedIdea) {
-            console.log('Current Feedo Invitees : ', matchedHunt);
-            console.log('Current Card : ', matchedIdea);
-
-            const invitee = find(matchedHunt.invitees, (o) => o.id == matchedIdea.inviteeId);
-            console.log('Current Ivitee : ', invitee);
-            // this.setState({
-            //   isVisibleCard: true,
-            //   selectedIdeaInvitee: invitee,
-            // });
-            return;
-          }
-        }
         this.setState({
           currentPushNotificationType: CONSTANTS.NEW_IDEA_ADDED,
           currentPushNotificationData: matchedHunt,
