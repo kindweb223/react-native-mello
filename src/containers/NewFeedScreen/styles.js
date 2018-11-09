@@ -35,7 +35,7 @@ const styles = StyleSheet.create({
     borderBottomColor: COLORS.LIGHT_GREY_LINE,
   },
   closeButtonWrapper: {
-    paddingHorizontal: 9,
+    paddingHorizontal: 16,
   },
   createButtonWapper: {
     marginRight: 5,
