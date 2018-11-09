@@ -21,7 +21,7 @@ class FeedControlMenuComponent extends React.Component {
     }
 
     if (COMMON_FUNC.isFeedEditor(data)) {
-      MENU_ITEMS = ['Duplicate', 'Edit']
+      MENU_ITEMS = ['Duplicate', 'Edit', 'Leave Feed']
     }
 
     if (COMMON_FUNC.isFeedContributor(data) || COMMON_FUNC.isFeedGuest(data)) {

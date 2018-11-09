@@ -149,6 +149,7 @@ export default function feedo(state = initialState, action = {}) {
     case types.ARCHIVE_FEED_PENDING: {
       return {
         ...state,
+        loading: types.ARCHIVE_FEED_PENDING,
         error: null,
       }
     }
@@ -165,6 +166,32 @@ export default function feedo(state = initialState, action = {}) {
         error: action.error,
       }
     }
+    /**
+     * Leave Feed
+     */
+    case types.LEAVE_FEED_PENDING: {
+      return {
+        ...state,
+        loading: LEAVE_FEED_PENDING,
+        error: null
+      }
+    }
+    case types.LEAVE_FEED_FULFILLED: {
+      return {
+        ...state,
+        loading: types.LEAVE_FEED_FULFILLED,
+      }
+    }
+    case types.LEAVE_FEED_REJECTED: {
+      return {
+        ...state,
+        loading: types.LEAVE_FEED_REJECTED,
+        error: action.error,
+      }
+    }
+    /**
+     * Duplicate Feed
+     */
     case types.DUPLICATE_FEED_PENDING: {
       return {
         ...state,
@@ -239,6 +266,15 @@ export default function feedo(state = initialState, action = {}) {
             Object.assign({}, currentFeed[0], { status: 'ARCHIVED' })
           ]
         }
+      } else if (flag === 'leave') {
+        return {
+          ...state,
+          loading: types.LEAVE_FEED_FULFILLED,
+          leaveFeed: currentFeed,
+          feedoList: [
+            ...restFeedoList
+          ]
+        }
       }
       
       return {
@@ -250,7 +286,7 @@ export default function feedo(state = initialState, action = {}) {
      */
     case types.REMOVE_DUMMY_FEED: {
       const { payload: { feedId, flag } } = action
-      const { feedoList, pinnedDate, deleteFeed, archiveFeed } = state
+      const { feedoList, pinnedDate, deleteFeed, archiveFeed, leaveFeed } = state
 
       const currentFeed = filter(feedoList, feed => feed.id === feedId)
       const restFeedoList = filter(feedoList, feed => feed.id !== feedId)
@@ -294,6 +330,16 @@ export default function feedo(state = initialState, action = {}) {
           ],
           archiveFeed: null,
         }
+      } else if (flag === 'leave') {
+        return {
+          ...state,
+          loading: 'FEED_FULFILLED',
+          feedoList: [
+            ...restFeedoList,
+            Object.assign({}, leaveFeed[0])
+          ],
+          leaveFeed: null,
+        }
       }
       
       return {
@@ -301,7 +347,7 @@ export default function feedo(state = initialState, action = {}) {
       }
     }
     /**
-     * Set Feed detail action (Delete, Archive)
+     * Set Feed detail action (Delete, Archive, Leave)
      */
     case types.SET_FEED_DETAIL_ACTION: {
       const { payload } = action

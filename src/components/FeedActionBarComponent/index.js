@@ -107,7 +107,7 @@ class FeedActionBarComponent extends React.Component {
     }
 
     if (COMMON_FUNC.isFeedEditor(data)) {
-      MENU_ITEMS = ['Duplicate', 'Edit']
+      MENU_ITEMS = ['Duplicate', 'Edit', 'Leave Feed']
     }
 
     if (COMMON_FUNC.isFeedContributorGuest(data)) {
@@ -219,7 +219,8 @@ FeedActionBarComponent.propTypes = {
   handleShare: PropTypes.func.isRequired,
   handleSetting: PropTypes.func.isRequired,
   data: PropTypes.objectOf(PropTypes.any).isRequired,
-  pinFlag: PropTypes.bool.isRequired
+  pinFlag: PropTypes.bool.isRequired,
+  userInfo: PropTypes.object
 }
 
 export default FeedActionBarComponent
