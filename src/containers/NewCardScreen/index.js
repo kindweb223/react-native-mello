@@ -985,6 +985,8 @@ class NewCardScreen extends React.Component {
       this.isUpdateDraftCard = true;
       this.props.deleteDraftFeed(this.draftFeedo.id)
     } else {
+      Analytics.logEvent('update_card', {})
+
       this.onUpdateCard();
     }
   }

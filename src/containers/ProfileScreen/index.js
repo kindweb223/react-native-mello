@@ -5,8 +5,7 @@ import {
   TouchableOpacity,
   Image,
   ScrollView,
-  FlatList,
-  Alert
+  FlatList
 } from 'react-native'
 import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
@@ -16,7 +15,6 @@ import Ionicons from 'react-native-vector-icons/Ionicons'
 import FastImage from "react-native-fast-image"
 import Permissions from 'react-native-permissions'
 import ImagePicker from 'react-native-image-picker'
-import Modal from "react-native-modal"
 import ActionSheet from 'react-native-actionsheet'
 import VersionNumber from 'react-native-version-number'
 import _ from 'lodash'
@@ -26,6 +24,7 @@ import LoadingScreen from '../LoadingScreen'
 import { userSignOut, deleteProfilePhoto } from '../../redux/user/actions'
 import COLORS from '../../service/colors'
 import styles from './styles'
+import Analytics from '../../lib/firebase'
 
 const CLOSE_ICON = require('../../../assets/images/Close/Blue.png')
 const TRASH_ICON = require('../../../assets/images/Trash/Blue.png')
@@ -67,6 +66,8 @@ class ProfileScreen extends React.Component {
   }
 
   componentDidMount() {
+    Analytics.setCurrentScreen('ProfileScren')
+
     this.setState({ userInfo: this.props.user.userInfo })
   }
 
@@ -108,6 +109,8 @@ class ProfileScreen extends React.Component {
 
   onTapActionSheet = (index) => {
     if (index === 0) {
+      Analytics.logEvent('user_signout', {})
+
       this.props.userSignOut()
     }
   }
@@ -118,6 +121,7 @@ class ProfileScreen extends React.Component {
         if (!response.fileName) {
           response.fileName = response.uri.replace(/^.*[\\\/]/, '')
         }
+        Analytics.logEvent('add_profile_photo_from_camera', {})
         Actions.CropImageScreen({ avatarFile: response })
       }
     });
@@ -126,6 +130,7 @@ class ProfileScreen extends React.Component {
   pickMediaFromLibrary(options) {
     ImagePicker.launchImageLibrary(options, (response)  => {
       if (!response.didCancel) {
+        Analytics.logEvent('add_profile_photo_from_gallery', {})
         Actions.CropImageScreen({ avatarFile: response })
       }
     });

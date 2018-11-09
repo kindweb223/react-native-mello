@@ -5,20 +5,16 @@ import {
   TouchableOpacity,
   ScrollView
 } from 'react-native'
-import { connect } from 'react-redux'
-import PropTypes from 'prop-types'
 import { Actions } from 'react-native-router-flux'
-import LinearGradient from 'react-native-linear-gradient'
 import Ionicons from 'react-native-vector-icons/Ionicons'
-import Feather from 'react-native-vector-icons/Feather'
 import { MarkdownView } from 'react-native-markdown-view'
 import RNFetchBlob from 'rn-fetch-blob'
 import LoadingScreen from '../LoadingScreen'
 import COLORS from '../../service/colors'
-import CONSTANTS from '../../service/constants'
 import styles from './styles'
 import markdownStyles from './markdownStyles'
 import { TNC_URL } from '../../service/api'
+import Analytics from '../../lib/firebase'
 
 class TermsAndConditionsScreen extends React.Component {
   static renderLeftButton(props) {
@@ -49,6 +45,8 @@ class TermsAndConditionsScreen extends React.Component {
   }
 
   async componentWillMount() {
+    Analytics.setCurrentScreen('Terms&ConditionsScreen')
+
     this.setState({ loading: true })
     await RNFetchBlob.fetch('GET', TNC_URL)
     .then((res) => {

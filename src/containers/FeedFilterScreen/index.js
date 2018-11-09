@@ -5,7 +5,6 @@ import {
   ScrollView,
   View,
   Text,
-  Image,
   Animated,
   TouchableOpacity,
   Keyboard
@@ -21,6 +20,7 @@ import Ionicons from 'react-native-vector-icons/Ionicons'
 import FeedoListContainer from '../FeedoListContainer'
 import SearchBarComponent from '../../components/SearchBarComponent'
 import LoadingScreen from '../LoadingScreen'
+import Analytics from '../../lib/firebase'
 
 import { 
   getUserTags
@@ -28,7 +28,6 @@ import {
 
 import COLORS from '../../service/colors'
 import styles from './styles'
-const SETTING_ICON = require('../../../assets/images/Settings/Grey.png')
 
 class FeedFilterScreen extends React.Component {
   constructor(props) {
@@ -45,6 +44,8 @@ class FeedFilterScreen extends React.Component {
   }
 
   componentDidMount() {
+    Analytics.setCurrentScreen('SearchScreen')
+
     const { feedo, initialTag, user } = this.props
 
     this.setState({ loading: true, currentTags: initialTag })

@@ -345,8 +345,6 @@ class FeedDetailScreen extends React.Component {
   }
 
   handleSetting = () => {
-    Analytics.logEvent('detail_settings', {})
-
     const { openMenu } = this.state
     this.setState({ openMenu: !openMenu, settingItem: null })
   }
@@ -646,8 +644,6 @@ class FeedDetailScreen extends React.Component {
   }
 
   onMoveCard(ideaId) {
-    Analytics.logEvent('move_card', {})
-
     this.onCloseCardModal();
     this.setState({ 
       isVisibleCardOpenMenu: false,
@@ -703,8 +699,10 @@ class FeedDetailScreen extends React.Component {
     this.userActionTimer = setTimeout(() => {
       // this.setState({ isShowToaster: false })
       if (this.state.currentActionType === ACTION_CARD_DELETE) {
+        Analytics.logEvent('delete_card', {})
         this.props.deleteCard(currentCardInfo.ideaId)
       } else if (this.state.currentActionType === ACTION_CARD_MOVE) {
+        Analytics.logEvent('move_card', {})
         this.props.moveCard(currentCardInfo.ideaId, currentCardInfo.feedoId);
       }
       this.userActionTimer = null;
@@ -714,8 +712,6 @@ class FeedDetailScreen extends React.Component {
   }
 
   onDeleteCard(ideaId) {
-    Analytics.logEvent('delete_card', {})
-
     this.onCloseCardModal();
     this.setState({
       isVisibleLongHoldMenu: false,
