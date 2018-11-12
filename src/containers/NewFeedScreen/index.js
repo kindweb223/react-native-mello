@@ -423,11 +423,11 @@ class NewFeedScreen extends React.Component {
       return (
         <View style={styles.extensionTopContainer}>
           <TouchableOpacity 
-            style={styles.closeButtonWrapper}
+            style={styles.backButtonWrapper}
             activeOpacity={0.6}
             onPress={this.onOpenActionSheet.bind(this)}
           >
-            <Ionicons name="ios-arrow-back" size={32} color={COLORS.PURPLE} />
+            <Ionicons name="ios-arrow-back" size={28} color={COLORS.PURPLE} />
           </TouchableOpacity>
           <TouchableOpacity 
             style={styles.extensionCreateButtonWapper}
