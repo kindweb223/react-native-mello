@@ -526,7 +526,7 @@ class NewFeedScreen extends React.Component {
         <TextInput
           ref={ref => this.textInputFeedNoteRef = ref}
           style={styles.textInputNote}
-          placeholder='Add a note'
+          placeholder='Tap to add description'
           multiline={true}
           onContentSizeChange={this.inputContentChange}
           onSelectionChange={this.inputSelectionChange}
