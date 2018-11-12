@@ -407,6 +407,26 @@ class HomeScreen extends React.Component {
         }
         break;
       }
+      case CONSTANTS.USER_EDITED_HUNT: {
+        const { huntId } = notification.data;
+        const { feedoList } = this.state
+        const matchedHunt = find(feedoList, feedo => feedo.id === huntId);
+        if (matchedHunt) {
+          const currentFeedo = this.props.feedo.currentFeed;
+          if (Actions.currentScene === 'FeedDetailScreen' && currentFeedo.id === feedId) {
+            Actions.FeedDetailScreen({type: 'replace', data: matchedHunt});
+          } else {
+            Actions.FeedDetailScreen({data: matchedHunt})
+          }
+        } else {
+          this.setState({
+            currentPushNotificationType: CONSTANTS.USER_INVITED_TO_HUNT,
+            currentPushNotificationData: huntId,
+          });
+          this.props.getFeedoList(this.state.tabIndex);
+        }
+        break;
+      }
     }
   }
 
