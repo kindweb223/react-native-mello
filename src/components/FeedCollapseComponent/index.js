@@ -25,8 +25,8 @@ import COLORS from '../../service/colors'
 import CONSTANTS from '../../service/constants'
 import styles from './styles'
 import * as COMMON_FUNC from '../../service/commonFunc'
-const ATTACHMENT_ICON = require('../../../assets/images/Attachment/Blue.png')
-const IMAGE_ICON = require('../../../assets/images/Image/Blue.png')
+// const ATTACHMENT_ICON = require('../../../assets/images/Attachment/Blue.png')
+// const IMAGE_ICON = require('../../../assets/images/Image/Blue.png')
 const TAG_ICON = require('../../../assets/images/Tag/Blue.png')
 
 class FeedCollapseComponent extends React.Component {
@@ -163,7 +163,7 @@ class FeedCollapseComponent extends React.Component {
                 >
                   <Image source={TAG_ICON} />
                 </TouchableOpacity> 
-                <TouchableOpacity
+                {/* <TouchableOpacity
                   style={styles.btnView}
                   activeOpacity={0.6}
                   onPress={this.props.onAddMedia}
@@ -176,7 +176,7 @@ class FeedCollapseComponent extends React.Component {
                   onPress={this.props.onAddDocument}
                 >
                   <Image source={ATTACHMENT_ICON} />
-                </TouchableOpacity>
+                </TouchableOpacity> */}
               </View>
             )}
           </View>
