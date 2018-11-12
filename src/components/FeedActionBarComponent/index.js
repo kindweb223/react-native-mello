@@ -107,16 +107,16 @@ class FeedActionBarComponent extends React.Component {
     }
 
     if (COMMON_FUNC.isFeedEditor(data)) {
-      MENU_ITEMS = ['Duplicate', 'Edit']
+      MENU_ITEMS = ['Duplicate', 'Edit', 'Leave Feed']
     }
 
     if (COMMON_FUNC.isFeedContributorGuest(data)) {
-      MENU_ITEMS = []
+      MENU_ITEMS = ['Leave Feed']
     }
 
     return (
       <View style={styles.container}>
-        <View style={MENU_ITEMS.length > 0 ? { width: 280 } : { width: 230 }}>
+        <View style={{ width: 280 }}>
           <Modal
             style={styles.settingMenu}
             isVisible={this.state.isSettingMenu}
@@ -137,7 +137,7 @@ class FeedActionBarComponent extends React.Component {
                     activeOpacity={0.5}
                   >
                     <View style={styles.settingItem}>
-                      <Text style={item === 'Delete' ? styles.deleteButtonText : styles.settingButtonText}>
+                      <Text style={(item === 'Delete' || item === 'Leave Feed') ? styles.deleteButtonText : styles.settingButtonText}>
                         {item}
                       </Text>
                     </View>
@@ -219,7 +219,8 @@ FeedActionBarComponent.propTypes = {
   handleShare: PropTypes.func.isRequired,
   handleSetting: PropTypes.func.isRequired,
   data: PropTypes.objectOf(PropTypes.any).isRequired,
-  pinFlag: PropTypes.bool.isRequired
+  pinFlag: PropTypes.bool.isRequired,
+  userInfo: PropTypes.object
 }
 
 export default FeedActionBarComponent

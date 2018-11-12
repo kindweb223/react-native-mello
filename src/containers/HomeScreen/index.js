@@ -41,7 +41,6 @@ import COLORS from '../../service/colors'
 import styles from './styles'
 import CONSTANTS from '../../service/constants';
 
-const EMPTY_ICON = require('../../../assets/images/empty_state/asset-emptystate.png')
 const SEARCH_ICON = require('../../../assets/images/Search/Grey.png')
 const SETTING_ICON = require('../../../assets/images/Settings/Grey.png')
 
@@ -57,6 +56,7 @@ import {
   removeDummyFeed,
   setFeedDetailAction,
   setCurrentFeed,
+  deleteInvitee
 } from '../../redux/feedo/actions'
 
 import { 
@@ -134,7 +134,7 @@ class HomeScreen extends React.Component {
 
     if (prevState.apiLoading !== feedo.loading && ((feedo.loading === 'GET_FEEDO_LIST_FULFILLED') || (feedo.loading === 'GET_FEEDO_LIST_REJECTED') ||
       (feedo.loading === 'FEED_FULFILLED') || (feedo.loading === 'DEL_FEED_FULFILLED') || (feedo.loading === 'ARCHIVE_FEED_FULFILLED') ||
-      (feedo.loading === 'DUPLICATE_FEED_FULFILLED') || (feedo.loading === 'UPDATE_FEED_FULFILLED') ||
+      (feedo.loading === 'DUPLICATE_FEED_FULFILLED') || (feedo.loading === 'UPDATE_FEED_FULFILLED') || (feedo.loading === 'LEAVE_FEED_FULFILLED') ||
       (feedo.loading === 'DELETE_CARD_FULFILLED') || (feedo.loading === 'MOVE_CARD_FULFILLED') ||
       (feedo.loading === 'UPDATE_CARD_FULFILLED') || (feedo.loading === 'INVITE_HUNT_FULFILLED') ||
       (feedo.loading === 'ADD_HUNT_TAG_FULFILLED') || (feedo.loading === 'REMOVE_HUNT_TAG_FULFILLED') ||
@@ -209,6 +209,11 @@ class HomeScreen extends React.Component {
       if (this.props.feedo.feedDetailAction.action === 'Archive') {
         this.setState({ isShowToaster: true })
         this.handleArchiveFeed(this.props.feedo.feedDetailAction.feedId)
+      }
+
+      if (this.props.feedo.feedDetailAction.action === 'Leave') {
+        this.setState({ isShowToaster: true })
+        this.handleLeaveFeed(this.props.feedo.feedDetailAction.feedId)
       }
     } else if (prevProps.user.loading === 'USER_SIGNOUT_PENDING' && this.props.user.loading === 'USER_SIGNOUT_FULFILLED') {
       Actions.LoginScreen()
@@ -517,6 +522,27 @@ class HomeScreen extends React.Component {
     }
   }
 
+  handleLeaveFeed = (feedId) => {
+    this.setState({ isLongHoldMenuVisible: false })
+    this.setState({ isLeave: true, toasterTitle: 'Left Feedo', feedId })
+    this.props.addDummyFeed({ feedId, flag: 'leave' })
+
+    setTimeout(() => {
+      this.setState({ isShowToaster: false })
+      this.leaveFeed(feedId)
+    }, TOASTER_DURATION)
+  }
+
+  leaveFeed = (feedId) => {
+    if (this.state.isLeave) {
+      const { feedo, user } = this.props
+
+      const invitee = filter(feedo.leaveFeed[0].invitees, invitee => invitee.userProfile.id === user.userInfo.id)
+      this.props.deleteInvitee(feedId, invitee[0].id)
+      this.setState({ isLeave: false })
+    }
+  }
+
   handlePinFeed = (feedId) => {
     this.setState({ isLongHoldMenuVisible: false })
     this.setState({ isPin: true, toasterTitle: 'Feed pinned', feedId })
@@ -604,17 +630,19 @@ class HomeScreen extends React.Component {
       if (this.props.feedo.duplicatedId) {
         this.props.deleteDuplicatedFeed(this.props.feedo.duplicatedId)
       }
+    } else if (this.state.isLeave) {
+      this.props.removeDummyFeed({ feedId: this.state.feedId, flag: 'leave' })
     }
 
     this.setState({
-      isShowToaster: false, isArchive: false, isDelete: false, isPin: false, isUnPin: false, isDuplicate: false
+      isShowToaster: false, isArchive: false, isDelete: false, isPin: false, isUnPin: false, isDuplicate: false, isLeave: false
     })
   }
 
   onLongHoldMenuHide = () => {
-    const { isArchive, isDelete, isPin, isUnPin, isDuplicate, feedId } = this.state
+    const { isArchive, isDelete, isPin, isUnPin, isDuplicate, isLeave } = this.state
 
-    if (isArchive || isDelete || isPin || isUnPin || isDuplicate) {
+    if (isArchive || isDelete || isPin || isUnPin || isDuplicate || isLeave) {
       this.setState({ isShowToaster: true })
     }
   }
@@ -1034,6 +1062,7 @@ class HomeScreen extends React.Component {
             handleUnpinFeed={this.handleUnpinFeed}
             handleDuplicateFeed={this.handleDuplicateFeed}
             handleEditFeed={this.handleEditFeed}
+            handleLeaveFeed={this.handleLeaveFeed}
           />
         </Modal>
 
@@ -1073,7 +1102,8 @@ const mapDispatchToProps = dispatch => ({
   setUserInfo: (data) => dispatch(setUserInfo(data)),
   addDeviceToken: (userId, data) => dispatch(addDeviceToken(userId, data)),
   updateDeviceToken: (userId, deviceId, data) => dispatch(updateDeviceToken(userId, deviceId, data)),
-  getCard: (ideaId) => dispatch(getCard(ideaId))
+  getCard: (ideaId) => dispatch(getCard(ideaId)),
+  deleteInvitee: (feedId, inviteeId) => dispatch(deleteInvitee(feedId, inviteeId))
 })
 
 HomeScreen.propTypes = {
@@ -1089,6 +1119,7 @@ HomeScreen.propTypes = {
   removeDummyFeed: PropTypes.func.isRequired,
   setFeedDetailAction: PropTypes.func.isRequired,
   setUserInfo: PropTypes.func.isRequired,
+  deleteInvitee: PropTypes.func.isRequired
 }
 
 export default connect(

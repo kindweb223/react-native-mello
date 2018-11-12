@@ -60,7 +60,7 @@ const styles = StyleSheet.create({
   settingMenuView: {
     borderRadius: 20,
     backgroundColor: '#fff',
-    width: 122,
+    width: 135,
     paddingVertical: 10,
     position: 'absolute',
     bottom: CONSTANTS.ACTION_BAR_HEIGHT + 20,
