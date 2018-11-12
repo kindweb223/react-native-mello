@@ -55,7 +55,7 @@ class FeedControlMenuComponent extends React.Component {
               activeOpacity={0.5}
             >
               <View style={styles.settingItem}>
-                <Text style={item === 'Delete' ? styles.deleteButtonText : styles.settingButtonText}>
+                <Text style={(item === 'Delete' || item === 'Leave Feed') ? styles.deleteButtonText : styles.settingButtonText}>
                   {item}
                 </Text>
               </View>
