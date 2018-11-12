@@ -393,6 +393,8 @@ class FeedDetailScreen extends React.Component {
         this.handleEdit(feedId);
         return
       case 'Leave Feed':
+        Analytics.logEvent('feed_detail_leave_feed', {})
+
         this.props.setFeedDetailAction({
           action: 'Leave',
           feedId

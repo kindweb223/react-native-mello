@@ -49,6 +49,7 @@
 		47CA4A9854C645189A59042C /* libRNDocumentPicker.a in Frameworks */ = {isa = PBXBuildFile; fileRef = CEF9CE0D4C3B419DAD8284A6 /* libRNDocumentPicker.a */; };
 		4C030DDBB9734D8CB1045CEB /* libBVLinearGradient.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 1AE0342E1F8E4EB593320F3B /* libBVLinearGradient.a */; };
 		4C3145432191BCE8009A40C5 /* libRNDeviceInfo.a in Frameworks */ = {isa = PBXBuildFile; fileRef = A46A87CD2190EE9D009D3FB3 /* libRNDeviceInfo.a */; };
+		4C3C63F62199E8BC00B68196 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 4C3C63F52199E8BC00B68196 /* GoogleService-Info.plist */; };
 		4CC861B921933F8F00481DED /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 4CC8617A21933F8A00481DED /* GoogleService-Info.plist */; };
 		4CF0DB4F2199BBA6000ED175 /* libRNFirebase.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 4CC8621D2193408300481DED /* libRNFirebase.a */; };
 		4D155804DAC84ABD8370724D /* FontAwesome5_Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 9AFE45238BF344909F881B0C /* FontAwesome5_Regular.ttf */; };
@@ -681,6 +682,7 @@
 		47BA3513B6514BE58476D7B4 /* libRNImagePicker.a */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = archive.ar; path = libRNImagePicker.a; sourceTree = "<group>"; };
 		49E66C7627DA4206B745FC76 /* Entypo.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = Entypo.ttf; path = "../node_modules/react-native-vector-icons/Fonts/Entypo.ttf"; sourceTree = "<group>"; };
 		4A542F7F6D91BEC591EF445A /* libPods-FeedoEx.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-FeedoEx.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+		4C3C63F52199E8BC00B68196 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		4CC8617A21933F8A00481DED /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		4CF0DB4C219983A6000ED175 /* libFirebaseCore.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; path = libFirebaseCore.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		5394A3ED34ED4B6EB2B6B100 /* libRNReactNativeSharedGroupPreferences.a */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = archive.ar; path = libRNReactNativeSharedGroupPreferences.a; sourceTree = "<group>"; };
@@ -1232,6 +1234,7 @@
 		A4CD668F2139B68000874CB1 /* FeedoEx */ = {
 			isa = PBXGroup;
 			children = (
+				4C3C63F52199E8BC00B68196 /* GoogleService-Info.plist */,
 				A4EB9D06213F41D300C598B8 /* FeedoEx.entitlements */,
 				A4CD66932139B68000874CB1 /* MainInterface.storyboard */,
 				A4EB9D07213F42DA00C598B8 /* ShareExtensionViewController.h */,
@@ -2194,6 +2197,7 @@
 				A4EB9D00213F114300C598B8 /* Ionicons.ttf in Resources */,
 				A4EB9D01213F114300C598B8 /* MaterialCommunityIcons.ttf in Resources */,
 				A4EB9D02213F114300C598B8 /* MaterialIcons.ttf in Resources */,
+				4C3C63F62199E8BC00B68196 /* GoogleService-Info.plist in Resources */,
 				A4EB9D03213F114300C598B8 /* Octicons.ttf in Resources */,
 				A4EB9D04213F114300C598B8 /* SimpleLineIcons.ttf in Resources */,
 				A4EB9D05213F114300C598B8 /* Zocial.ttf in Resources */,

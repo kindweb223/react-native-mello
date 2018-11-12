@@ -558,6 +558,7 @@ class HomeScreen extends React.Component {
 
   leaveFeed = (feedId) => {
     if (this.state.isLeave) {
+      Analytics.logEvent('dashboard_leave_feed', {})
       const { feedo, user } = this.props
 
       const invitee = filter(feedo.leaveFeed[0].invitees, invitee => invitee.userProfile.id === user.userInfo.id)
