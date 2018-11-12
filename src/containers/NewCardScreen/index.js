@@ -1443,7 +1443,7 @@ class NewCardScreen extends React.Component {
     if (viewMode !== CONSTANTS.CARD_NEW) {
       return (
         <View style={[styles.rowContainer, {justifyContent: 'space-between', marginHorizontal: 16, marginVertical: 8}]}>
-          {/* {this.renderInvitee} */}
+          {this.renderInvitee}
           {this.renderLikesComment}
         </View>
       );
