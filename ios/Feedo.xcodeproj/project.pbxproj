@@ -50,6 +50,7 @@
 		4C030DDBB9734D8CB1045CEB /* libBVLinearGradient.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 1AE0342E1F8E4EB593320F3B /* libBVLinearGradient.a */; };
 		4C3145432191BCE8009A40C5 /* libRNDeviceInfo.a in Frameworks */ = {isa = PBXBuildFile; fileRef = A46A87CD2190EE9D009D3FB3 /* libRNDeviceInfo.a */; };
 		4CC861B921933F8F00481DED /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 4CC8617A21933F8A00481DED /* GoogleService-Info.plist */; };
+		4CF0DB4F2199BBA6000ED175 /* libRNFirebase.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 4CC8621D2193408300481DED /* libRNFirebase.a */; };
 		4D155804DAC84ABD8370724D /* FontAwesome5_Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 9AFE45238BF344909F881B0C /* FontAwesome5_Regular.ttf */; };
 		4DF31AFCC7DA42929C8B67CC /* libLottieReactNative.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 1BBE45B3BBA8440189B9842C /* libLottieReactNative.a */; };
 		4F7697CE36E840CDA629D4D2 /* Entypo.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 49E66C7627DA4206B745FC76 /* Entypo.ttf */; };
@@ -113,6 +114,7 @@
 		B5C9088721735F2200C3CD9A /* libRCTVideo.a in Frameworks */ = {isa = PBXBuildFile; fileRef = B5C9088421735EE900C3CD9A /* libRCTVideo.a */; };
 		BB896AB9E6414964B0B4FC39 /* Zocial.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 6ABC6722E2BF4E8E89696E69 /* Zocial.ttf */; };
 		BDF2DA279A484FA7B04A157F /* FontAwesome.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 7574CA4FAF3A401FBE3E75F4 /* FontAwesome.ttf */; };
+		BE54F4BFC1F6E6C82EFDB59C /* libPods-FeedoEx.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 4A542F7F6D91BEC591EF445A /* libPods-FeedoEx.a */; };
 		C42873B476E444FCB67126E3 /* libRCTVideo.a in Frameworks */ = {isa = PBXBuildFile; fileRef = D1563032C77F49209E54DB70 /* libRCTVideo.a */; };
 		C7AF4BF1CB6546ADBC6BF01B /* Ionicons.ttf in Resources */ = {isa = PBXBuildFile; fileRef = D09AE13BB9DB4E5887135009 /* Ionicons.ttf */; };
 		D5CD4B10CDF14C0989676146 /* MaterialCommunityIcons.ttf in Resources */ = {isa = PBXBuildFile; fileRef = A91519045FC74D37A0B5D694 /* MaterialCommunityIcons.ttf */; };
@@ -680,6 +682,7 @@
 		49E66C7627DA4206B745FC76 /* Entypo.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = Entypo.ttf; path = "../node_modules/react-native-vector-icons/Fonts/Entypo.ttf"; sourceTree = "<group>"; };
 		4A542F7F6D91BEC591EF445A /* libPods-FeedoEx.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-FeedoEx.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		4CC8617A21933F8A00481DED /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
+		4CF0DB4C219983A6000ED175 /* libFirebaseCore.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; path = libFirebaseCore.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		5394A3ED34ED4B6EB2B6B100 /* libRNReactNativeSharedGroupPreferences.a */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = archive.ar; path = libRNReactNativeSharedGroupPreferences.a; sourceTree = "<group>"; };
 		5604B7BB394C40CF89F6501C /* RNDeviceInfo.xcodeproj */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = "wrapper.pb-project"; name = RNDeviceInfo.xcodeproj; path = "../node_modules/react-native-device-info/ios/RNDeviceInfo.xcodeproj"; sourceTree = "<group>"; };
 		5E91572D1DD0AC6500FF2AA8 /* RCTAnimation.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RCTAnimation.xcodeproj; path = "../node_modules/react-native/Libraries/NativeAnimation/RCTAnimation.xcodeproj"; sourceTree = "<group>"; };
@@ -690,8 +693,8 @@
 		6B464A25DB9D4E45B976C1EC /* libLottie.a */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = archive.ar; path = libLottie.a; sourceTree = "<group>"; };
 		6DCC07EC76FC4C7FB3BBECE6 /* Feather.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = Feather.ttf; path = "../node_modules/react-native-vector-icons/Fonts/Feather.ttf"; sourceTree = "<group>"; };
 		6DDC407B5B624A7C8F6AD515 /* EvilIcons.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = EvilIcons.ttf; path = "../node_modules/react-native-vector-icons/Fonts/EvilIcons.ttf"; sourceTree = "<group>"; };
-		74503380E51C466EAD133FB9 /* libRNFirebase.a */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = archive.ar; path = libRNFirebase.a; sourceTree = "<group>"; };
 		6F3D386719FC416CB3C92A02 /* RNSVG.xcodeproj */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = "wrapper.pb-project"; name = RNSVG.xcodeproj; path = "../node_modules/react-native-svg/ios/RNSVG.xcodeproj"; sourceTree = "<group>"; };
+		74503380E51C466EAD133FB9 /* libRNFirebase.a */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = archive.ar; path = libRNFirebase.a; sourceTree = "<group>"; };
 		7574CA4FAF3A401FBE3E75F4 /* FontAwesome.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = FontAwesome.ttf; path = "../node_modules/react-native-vector-icons/Fonts/FontAwesome.ttf"; sourceTree = "<group>"; };
 		77E9C8AEA81B42B39062B950 /* libFastImage.a */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = archive.ar; path = libFastImage.a; sourceTree = "<group>"; };
 		78C398B01ACF4ADC00677621 /* RCTLinking.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RCTLinking.xcodeproj; path = "../node_modules/react-native/Libraries/LinkingIOS/RCTLinking.xcodeproj"; sourceTree = "<group>"; };
@@ -699,6 +702,7 @@
 		7FF9F77D31634DD9B9D15601 /* libz.tbd */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libz.tbd; path = usr/lib/libz.tbd; sourceTree = SDKROOT; };
 		832341B01AAA6A8300B99B32 /* RCTText.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RCTText.xcodeproj; path = "../node_modules/react-native/Libraries/Text/RCTText.xcodeproj"; sourceTree = "<group>"; };
 		83A3A57F49D18643DC5B7A36 /* Pods-Feedo.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Feedo.debug.xcconfig"; path = "Pods/Target Support Files/Pods-Feedo/Pods-Feedo.debug.xcconfig"; sourceTree = "<group>"; };
+		88B878D7356F3D2796D7E02F /* Pods-FeedoEx.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-FeedoEx.debug.xcconfig"; path = "Pods/Target Support Files/Pods-FeedoEx/Pods-FeedoEx.debug.xcconfig"; sourceTree = "<group>"; };
 		8A848E2C3FF045DE85911225 /* libRNDeviceInfo-tvOS.a */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = archive.ar; path = "libRNDeviceInfo-tvOS.a"; sourceTree = "<group>"; };
 		94856EBACEF342CC8953358A /* libSafariViewManager.a */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = archive.ar; path = libSafariViewManager.a; sourceTree = "<group>"; };
 		94BDD0529B2B41739DBEBD1D /* SafariViewManager.xcodeproj */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = "wrapper.pb-project"; name = SafariViewManager.xcodeproj; path = "../node_modules/react-native-safari-view/SafariViewManager.xcodeproj"; sourceTree = "<group>"; };
@@ -732,6 +736,7 @@
 		B3A57268A8CF4DC8B8159490 /* libRNVersionNumber-tvOS.a */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = archive.ar; path = "libRNVersionNumber-tvOS.a"; sourceTree = "<group>"; };
 		B74E433CEE1F41BC9567AFCD /* ReactNativePermissions.xcodeproj */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = "wrapper.pb-project"; name = ReactNativePermissions.xcodeproj; path = "../node_modules/react-native-permissions/ios/ReactNativePermissions.xcodeproj"; sourceTree = "<group>"; };
 		B9577B0B9C0042FEBD2572D5 /* FontAwesome5_Brands.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = FontAwesome5_Brands.ttf; path = "../node_modules/react-native-vector-icons/Fonts/FontAwesome5_Brands.ttf"; sourceTree = "<group>"; };
+		B9DC685E0A3B033E4BF9FC62 /* Pods-FeedoEx.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-FeedoEx.release.xcconfig"; path = "Pods/Target Support Files/Pods-FeedoEx/Pods-FeedoEx.release.xcconfig"; sourceTree = "<group>"; };
 		C01A3DFF0BBD47CA8E552943 /* Octicons.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = Octicons.ttf; path = "../node_modules/react-native-vector-icons/Fonts/Octicons.ttf"; sourceTree = "<group>"; };
 		C71C50B610D14398A80BB51C /* Lottie.framework */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = wrapper.framework; name = Lottie.framework; path = System/Library/Frameworks/Lottie.framework; sourceTree = SDKROOT; };
 		C7747C3163BF42E093C0FFE0 /* MaterialIcons.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = MaterialIcons.ttf; path = "../node_modules/react-native-vector-icons/Fonts/MaterialIcons.ttf"; sourceTree = "<group>"; };
@@ -835,6 +840,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				4CF0DB4F2199BBA6000ED175 /* libRNFirebase.a in Frameworks */,
 				4C3145432191BCE8009A40C5 /* libRNDeviceInfo.a in Frameworks */,
 				2D52C42B218E625B003C52C8 /* libBugsnagReactNative.a in Frameworks */,
 				B5C9088721735F2200C3CD9A /* libRCTVideo.a in Frameworks */,
@@ -856,6 +862,7 @@
 				A4D2256A21408E8300539042 /* libRNReactNativeSharedGroupPreferences.a in Frameworks */,
 				A480B7432154DD4700634D8B /* libSafariViewManager.a in Frameworks */,
 				A480B7442154DD9B00634D8B /* libRCTPushNotification.a in Frameworks */,
+				BE54F4BFC1F6E6C82EFDB59C /* libPods-FeedoEx.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -983,6 +990,7 @@
 		2D16E6871FA4F8E400B85C8A /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				4CF0DB4C219983A6000ED175 /* libFirebaseCore.a */,
 				A43563E0213837A200A6D4EA /* libSDWebImage iOS static.a */,
 				A43563E2213837A200A6D4EA /* libSDWebImage watchOS static.a */,
 				A43563E4213837A200A6D4EA /* SDWebImage.framework */,
@@ -1052,6 +1060,8 @@
 			children = (
 				83A3A57F49D18643DC5B7A36 /* Pods-Feedo.debug.xcconfig */,
 				D987827413CAB2D1572A10CA /* Pods-Feedo.release.xcconfig */,
+				88B878D7356F3D2796D7E02F /* Pods-FeedoEx.debug.xcconfig */,
+				B9DC685E0A3B033E4BF9FC62 /* Pods-FeedoEx.release.xcconfig */,
 			);
 			name = Pods;
 			sourceTree = "<group>";
@@ -1432,6 +1442,7 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = A4CD669A2139B68000874CB1 /* Build configuration list for PBXNativeTarget "FeedoEx" */;
 			buildPhases = (
+				F8482088474C5A2FFC624808 /* [CP] Check Pods Manifest.lock */,
 				A4CD668A2139B67F00874CB1 /* Sources */,
 				A4CD668B2139B67F00874CB1 /* Frameworks */,
 				A4CD668C2139B67F00874CB1 /* Resources */,
@@ -2257,6 +2268,28 @@
 			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
 			showEnvVarsInLog = 0;
 		};
+		F8482088474C5A2FFC624808 /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
+				"${PODS_ROOT}/Manifest.lock",
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+				"$(DERIVED_FILE_DIR)/Pods-FeedoEx-checkManifestLockResult.txt",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
+			showEnvVarsInLog = 0;
+		};
 /* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
@@ -2874,6 +2907,7 @@
 		};
 		A4CD669B2139B68000874CB1 /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 88B878D7356F3D2796D7E02F /* Pods-FeedoEx.debug.xcconfig */;
 			buildSettings = {
 				CLANG_ANALYZER_NONNULL = YES;
 				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
@@ -2927,6 +2961,7 @@
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 				);
 				OTHER_LDFLAGS = (
+					"$(inherited)",
 					"-ObjC",
 					"-lc++",
 				);
@@ -2941,6 +2976,7 @@
 		};
 		A4CD669C2139B68000874CB1 /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = B9DC685E0A3B033E4BF9FC62 /* Pods-FeedoEx.release.xcconfig */;
 			buildSettings = {
 				CLANG_ANALYZER_NONNULL = YES;
 				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
@@ -2994,6 +3030,7 @@
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 				);
 				OTHER_LDFLAGS = (
+					"$(inherited)",
 					"-ObjC",
 					"-lc++",
 				);
