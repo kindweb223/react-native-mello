@@ -19,7 +19,7 @@ import _ from 'lodash'
 import Ionicons from 'react-native-vector-icons/Ionicons'
 
 import FeedoListContainer from '../FeedoListContainer'
-import SearchBarComponent from '../../components/SearchBarComponent'
+// import SearchBarComponent from '../../components/SearchBarComponent'
 import LoadingScreen from '../LoadingScreen'
 
 import { 
@@ -182,7 +182,7 @@ class FeedFilterScreen extends React.Component {
             </Animated.View>
             
             <View style={styles.detailView}>
-              {!this.state.loading && (
+              {/* {!this.state.loading && (
                 <View style={styles.searchView}>
                   <SearchBarComponent
                     initialTag={this.props.initialTag}
@@ -191,7 +191,7 @@ class FeedFilterScreen extends React.Component {
                     inputTag={this.inputTag}
                   />
                 </View>
-              )}
+              )} */}
 
               {filterFeedoList.length > 0
                 ? <FeedoListContainer
