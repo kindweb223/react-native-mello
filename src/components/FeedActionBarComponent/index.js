@@ -111,12 +111,12 @@ class FeedActionBarComponent extends React.Component {
     }
 
     if (COMMON_FUNC.isFeedContributorGuest(data)) {
-      MENU_ITEMS = []
+      MENU_ITEMS = ['Leave Feed']
     }
 
     return (
       <View style={styles.container}>
-        <View style={MENU_ITEMS.length > 0 ? { width: 280 } : { width: 230 }}>
+        <View style={{ width: 280 }}>
           <Modal
             style={styles.settingMenu}
             isVisible={this.state.isSettingMenu}

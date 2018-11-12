@@ -25,7 +25,7 @@ class FeedControlMenuComponent extends React.Component {
     }
 
     if (COMMON_FUNC.isFeedContributor(data) || COMMON_FUNC.isFeedGuest(data)) {
-      MENU_ITEMS = []
+      MENU_ITEMS = ['Leave Feed']
     }
 
     return (
