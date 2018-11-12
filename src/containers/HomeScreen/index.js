@@ -42,7 +42,6 @@ import COLORS from '../../service/colors'
 import styles from './styles'
 import CONSTANTS from '../../service/constants';
 
-const EMPTY_ICON = require('../../../assets/images/empty_state/asset-emptystate.png')
 const SEARCH_ICON = require('../../../assets/images/Search/Grey.png')
 const SETTING_ICON = require('../../../assets/images/Settings/Grey.png')
 
@@ -58,6 +57,7 @@ import {
   removeDummyFeed,
   setFeedDetailAction,
   setCurrentFeed,
+  deleteInvitee
 } from '../../redux/feedo/actions'
 
 import { 
@@ -70,6 +70,7 @@ import {
 import { 
   getCard,
 } from '../../redux/card/actions'
+import constants from '../../service/constants';
 
 const TAB_STYLES = {
   height: '100%',
@@ -136,7 +137,7 @@ class HomeScreen extends React.Component {
 
     if (prevState.apiLoading !== feedo.loading && ((feedo.loading === 'GET_FEEDO_LIST_FULFILLED') || (feedo.loading === 'GET_FEEDO_LIST_REJECTED') ||
       (feedo.loading === 'FEED_FULFILLED') || (feedo.loading === 'DEL_FEED_FULFILLED') || (feedo.loading === 'ARCHIVE_FEED_FULFILLED') ||
-      (feedo.loading === 'DUPLICATE_FEED_FULFILLED') || (feedo.loading === 'UPDATE_FEED_FULFILLED') ||
+      (feedo.loading === 'DUPLICATE_FEED_FULFILLED') || (feedo.loading === 'UPDATE_FEED_FULFILLED') || (feedo.loading === 'LEAVE_FEED_FULFILLED') ||
       (feedo.loading === 'DELETE_CARD_FULFILLED') || (feedo.loading === 'MOVE_CARD_FULFILLED') ||
       (feedo.loading === 'UPDATE_CARD_FULFILLED') || (feedo.loading === 'INVITE_HUNT_FULFILLED') ||
       (feedo.loading === 'ADD_HUNT_TAG_FULFILLED') || (feedo.loading === 'REMOVE_HUNT_TAG_FULFILLED') ||
@@ -175,12 +176,11 @@ class HomeScreen extends React.Component {
         emptyState,
         apiLoading: feedo.loading
       }
-    } else if (prevState.apiLoading !== feedo.loading && (feedo.loading === 'GET_CARD_FULFILLED')) {
-      const { card } = nextProps
+    } else if (prevState.apiLoading !== card.loading && (card.loading === 'GET_CARD_FULFILLED')) {
       return {
         loading: false,
         currentIdea: card.currentCard,
-        apiLoading: feedo.loading
+        apiLoading: card.loading
       }
     }
 
@@ -212,6 +212,11 @@ class HomeScreen extends React.Component {
         this.setState({ isShowToaster: true })
         this.handleArchiveFeed(this.props.feedo.feedDetailAction.feedId)
       }
+
+      if (this.props.feedo.feedDetailAction.action === 'Leave') {
+        this.setState({ isShowToaster: true })
+        this.handleLeaveFeed(this.props.feedo.feedDetailAction.feedId)
+      }
     } else if (prevProps.user.loading === 'USER_SIGNOUT_PENDING' && this.props.user.loading === 'USER_SIGNOUT_FULFILLED') {
       Actions.LoginScreen()
     } else if (this.props.feedo.loading === 'GET_FEEDO_LIST_FULFILLED' && this.state.currentPushNotificationType === CONSTANTS.USER_INVITED_TO_HUNT && this.state.currentPushNotificationData) {
@@ -227,7 +232,7 @@ class HomeScreen extends React.Component {
         currentPushNotificationType: CONSTANTS.UNKOWN_PUSH_NOTIFICATION,
         currentPushNotificationData: null,
       });
-    } else if (this.props.feedo.loading === 'GET_CARD_FULFILLED' && (this.state.currentPushNotificationType === CONSTANTS.NEW_COMMENT_ON_IDEA || this.state.currentPushNotificationType === USER_JOINED_HUNT) && this.state.currentPushNotificationData) {
+    } else if (this.props.card.loading === 'GET_CARD_FULFILLED' && (this.state.currentPushNotificationType === CONSTANTS.NEW_COMMENT_ON_IDEA || this.state.currentPushNotificationType === CONSTANTS.USER_JOINED_HUNT) && this.state.currentPushNotificationData) {
       Actions.CommentScreen({
         idea: this.state.currentIdea,
       });
@@ -235,8 +240,8 @@ class HomeScreen extends React.Component {
         currentPushNotificationType: CONSTANTS.UNKOWN_PUSH_NOTIFICATION,
         currentPushNotificationData: null,
       });
-    } else if (this.props.feedo.loading === 'GET_CARD_FULFILLED' && this.state.currentPushNotificationType === CONSTANTS.NEW_IDEA_ADDED && this.state.currentPushNotificationData) {
-      const invitee = _.find(this.state.currentPushNotificationData.invitees, (o) => {
+    } else if (this.props.card.loading === 'GET_CARD_FULFILLED' && this.state.currentPushNotificationType === CONSTANTS.NEW_IDEA_ADDED && this.state.currentPushNotificationData) {
+      const invitee = find(this.state.currentPushNotificationData.invitees, (o) => {
         return (o.id == this.state.currentIdea.inviteeId)
       });
       this.setState({
@@ -244,11 +249,16 @@ class HomeScreen extends React.Component {
         cardViewMode: CONSTANTS.CARD_VIEW,
         selectedIdeaInvitee: invitee,
       });
+      this.animatedOpacity.setValue(0);
+      Animated.timing(this.animatedOpacity, {
+        toValue: 1,
+        duration: CONSTANTS.ANIMATEION_MILLI_SECONDS,
+      }).start();
       this.setState({
         currentPushNotificationType: CONSTANTS.UNKOWN_PUSH_NOTIFICATION,
         currentPushNotificationData: null,
       });
-    } else if (this.props.feedo.loading === 'GET_CARD_FULFILLED' && this.state.currentPushNotificationType === CONSTANTS.NEW_LIKE_ON_IDEA && this.state.currentPushNotificationData) {
+    } else if (this.props.card.loading === 'GET_CARD_FULFILLED' && this.state.currentPushNotificationType === CONSTANTS.NEW_LIKE_ON_IDEA && this.state.currentPushNotificationData) {
       Actions.LikesListScreen({idea: this.state.currentIdea});
       this.setState({
         currentPushNotificationType: CONSTANTS.UNKOWN_PUSH_NOTIFICATION,
@@ -269,7 +279,7 @@ class HomeScreen extends React.Component {
       let bubbleData = JSON.parse(bubbleAsyncData)
 
       if(!bubbleData || (bubbleData.userId === user.userInfo.id && bubbleData.state !== 'false')) {
-        const ownFeeds = filter(feedoList, feed => feed.metadata.owner === true)
+        const ownFeeds = filter(feedoList, feed => feed.metadata && feed.metadata.owner === true)
 
         if (ownFeeds.length === 0 && !(bubbleFirstFeedData && (bubbleFirstFeedData.userId === user.userInfo.id && bubbleFirstFeedData.state === 'true'))) {
           this.setState({ showFeedInvitedNewUserBubble: true })
@@ -322,9 +332,12 @@ class HomeScreen extends React.Component {
         const { feedoList } = this.state
         const matchedHunt = find(feedoList, feedo => feedo.id === huntId);
         if (matchedHunt) {
-          Actions.FeedDetailScreen({
-            data: matchedHunt
-          });
+          const currentFeedo = this.props.feedo.currentFeed;
+          if (Actions.currentScene === 'FeedDetailScreen' && currentFeedo.id === feedId) {
+            Actions.FeedDetailScreen({type: 'replace', data: matchedHunt});
+          } else {
+            Actions.FeedDetailScreen({data: matchedHunt})
+          }
         } else {
           this.setState({
             currentPushNotificationType: CONSTANTS.USER_INVITED_TO_HUNT,
@@ -358,19 +371,6 @@ class HomeScreen extends React.Component {
         const { huntId, ideaId } = notification.data;
         const { feedoList } = this.state
         const matchedHunt = find(feedoList, feedo => feedo.id === huntId);
-        if (matchedHunt) {
-          const matchedIdea = find(matchedHunt.ideas, idea => idea.id === ideaId);
-          if (matchedIdea) {
-            const invitee = _.find(matchedHunt.invitees, (o) => {
-              return (o.id == matchedIdea.inviteeId)
-            });
-            this.setState({
-              isVisibleCard: true,
-              selectedIdeaInvitee: invitee,
-            });
-            return;
-          }
-        }
         this.setState({
           currentPushNotificationType: CONSTANTS.NEW_IDEA_ADDED,
           currentPushNotificationData: matchedHunt,
@@ -414,6 +414,26 @@ class HomeScreen extends React.Component {
         }
         break;
       }
+      case CONSTANTS.USER_EDITED_HUNT: {
+        const { huntId } = notification.data;
+        const { feedoList } = this.state
+        const matchedHunt = find(feedoList, feedo => feedo.id === huntId);
+        if (matchedHunt) {
+          const currentFeedo = this.props.feedo.currentFeed;
+          if (Actions.currentScene === 'FeedDetailScreen' && currentFeedo.id === feedId) {
+            Actions.FeedDetailScreen({type: 'replace', data: matchedHunt});
+          } else {
+            Actions.FeedDetailScreen({data: matchedHunt})
+          }
+        } else {
+          this.setState({
+            currentPushNotificationType: CONSTANTS.USER_INVITED_TO_HUNT,
+            currentPushNotificationData: huntId,
+          });
+          this.props.getFeedoList(this.state.tabIndex);
+        }
+        break;
+      }
     }
   }
 
@@ -436,7 +456,6 @@ class HomeScreen extends React.Component {
             deviceModel: DeviceInfo.getModel(),
             osVersion: DeviceInfo.getSystemVersion(),
           }
-          console.log('Device Info : ', data);
           if (!result) {
             this.props.addDeviceToken(this.props.user.userInfo.id, data);
           } else {
@@ -523,6 +542,27 @@ class HomeScreen extends React.Component {
 
       this.props.deleteFeed(feedId)
       this.setState({ isDelete: false })
+    }
+  }
+
+  handleLeaveFeed = (feedId) => {
+    this.setState({ isLongHoldMenuVisible: false })
+    this.setState({ isLeave: true, toasterTitle: 'Left Feedo', feedId })
+    this.props.addDummyFeed({ feedId, flag: 'leave' })
+
+    setTimeout(() => {
+      this.setState({ isShowToaster: false })
+      this.leaveFeed(feedId)
+    }, TOASTER_DURATION)
+  }
+
+  leaveFeed = (feedId) => {
+    if (this.state.isLeave) {
+      const { feedo, user } = this.props
+
+      const invitee = filter(feedo.leaveFeed[0].invitees, invitee => invitee.userProfile.id === user.userInfo.id)
+      this.props.deleteInvitee(feedId, invitee[0].id)
+      this.setState({ isLeave: false })
     }
   }
 
@@ -619,17 +659,19 @@ class HomeScreen extends React.Component {
       if (this.props.feedo.duplicatedId) {
         this.props.deleteDuplicatedFeed(this.props.feedo.duplicatedId)
       }
+    } else if (this.state.isLeave) {
+      this.props.removeDummyFeed({ feedId: this.state.feedId, flag: 'leave' })
     }
 
     this.setState({
-      isShowToaster: false, isArchive: false, isDelete: false, isPin: false, isUnPin: false, isDuplicate: false
+      isShowToaster: false, isArchive: false, isDelete: false, isPin: false, isUnPin: false, isDuplicate: false, isLeave: false
     })
   }
 
   onLongHoldMenuHide = () => {
-    const { isArchive, isDelete, isPin, isUnPin, isDuplicate, feedId } = this.state
+    const { isArchive, isDelete, isPin, isUnPin, isDuplicate, isLeave } = this.state
 
-    if (isArchive || isDelete || isPin || isUnPin || isDuplicate) {
+    if (isArchive || isDelete || isPin || isUnPin || isDuplicate || isLeave) {
       this.setState({ isShowToaster: true })
     }
   }
@@ -1057,6 +1099,7 @@ class HomeScreen extends React.Component {
             handleUnpinFeed={this.handleUnpinFeed}
             handleDuplicateFeed={this.handleDuplicateFeed}
             handleEditFeed={this.handleEditFeed}
+            handleLeaveFeed={this.handleLeaveFeed}
           />
         </Modal>
 
@@ -1096,7 +1139,8 @@ const mapDispatchToProps = dispatch => ({
   setUserInfo: (data) => dispatch(setUserInfo(data)),
   addDeviceToken: (userId, data) => dispatch(addDeviceToken(userId, data)),
   updateDeviceToken: (userId, deviceId, data) => dispatch(updateDeviceToken(userId, deviceId, data)),
-  getCard: (ideaId) => dispatch(getCard(ideaId))
+  getCard: (ideaId) => dispatch(getCard(ideaId)),
+  deleteInvitee: (feedId, inviteeId) => dispatch(deleteInvitee(feedId, inviteeId))
 })
 
 HomeScreen.propTypes = {
@@ -1112,6 +1156,7 @@ HomeScreen.propTypes = {
   removeDummyFeed: PropTypes.func.isRequired,
   setFeedDetailAction: PropTypes.func.isRequired,
   setUserInfo: PropTypes.func.isRequired,
+  deleteInvitee: PropTypes.func.isRequired
 }
 
 export default connect(

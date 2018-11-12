@@ -14,7 +14,7 @@ const checkUserIsInvitee = (user, invitee) => {
  * If the user is feed owner, return true
  */
 const isFeedOwner = (feed) => {
-  return feed.metadata.owner
+  return feed && feed.metadata && feed.metadata.owner
 }
 
 /**
@@ -45,21 +45,21 @@ const isFeedContributorGuest = (feed) => {
 }
 
 const isFeedEditor = (feed) => {
-  if (!feed.metadata.owner && feed.metadata.permissions === 'EDIT') {
+  if (feed && feed.metadata && !feed.metadata.owner && feed.metadata.permissions === 'EDIT') {
     return true
   }
   return false
 }
 
 const isFeedContributor = (feed) => {
-  if (!feed.metadata.owner && feed.metadata.permissions === 'ADD') {
+  if (feed && feed.metadata && !feed.metadata.owner && feed.metadata.permissions === 'ADD') {
     return true
   }
   return false
 }
 
 const isFeedGuest = (feed) => {
-  if (!feed.metadata.owner && feed.metadata.permissions === 'VIEW') {
+  if (feed && feed.metadata && !feed.metadata.owner && feed.metadata.permissions === 'VIEW') {
     return true
   }
   return false

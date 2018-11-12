@@ -425,7 +425,7 @@ class NewCardScreen extends React.Component {
   }
 
   componentDidMount() {
-    // console.log('Current Card : ', this.props.card.currentCard);
+    console.log('Current Card : ', this.props.card.currentCard);
     const { viewMode } = this.props;
     if (viewMode === CONSTANTS.CARD_VIEW || viewMode === CONSTANTS.CARD_EDIT) {
       this.setState({
@@ -1386,6 +1386,7 @@ class NewCardScreen extends React.Component {
             }
           </TouchableOpacity>
           <TouchableOpacity 
+            style={styles.closeButtonShareWrapper}
             activeOpacity={0.6}
             onPress={this.onUpdateFeed.bind(this)}
           >
@@ -1410,7 +1411,7 @@ class NewCardScreen extends React.Component {
             activeOpacity={0.6}
             onPress={this.onUpdateFeed.bind(this)}
           >
-            <Text style={styles.textButton}>Create card</Text>
+            <Text style={styles.textButton}>Done</Text>
           </TouchableOpacity>
         </View>
       )

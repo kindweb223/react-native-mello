@@ -50,7 +50,7 @@ class FeedCardComponent extends React.Component {
                     size={24}
                   />
                 </View>,
-                <Text key="1" style={styles.text}>{invitee.userProfile.firstName}</Text>,
+                <Text key="1" style={styles.text}>{invitee.userProfile.firstName} {invitee.userProfile.lastName}</Text>,
                 <Entypo key="2" name="dot-single" style={styles.dotIcon} />
               ]
           }
