@@ -1404,7 +1404,7 @@ class NewCardScreen extends React.Component {
             activeOpacity={0.6}
             onPress={this.onUpdateFeed.bind(this)}
           >
-            <Text style={styles.textButton}>Create card</Text>
+            <Text style={styles.textButton}>Done</Text>
           </TouchableOpacity>
         </View>
       )
