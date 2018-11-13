@@ -45,6 +45,7 @@ import ImageList from '../../components/ImageListComponent'
 import DocumentList from '../../components/DocumentListComponent'
 import TagCreateScreen from '../TagCreateScreen'
 import { TAGS_FEATURE } from '../../service/api'
+import Analytics from '../../lib/firebase'
 
 // const ATTACHMENT_ICON = require('../../../assets/images/Attachment/Blue.png')
 // const IMAGE_ICON = require('../../../assets/images/Image/Blue.png')
@@ -76,6 +77,10 @@ class NewFeedScreen extends React.Component {
     this.animatedShow = new Animated.Value(0);
     this.animatedKeyboardHeight = new Animated.Value(0);
     this.animatedTagTransition = new Animated.Value(1);
+  }
+
+  componentDidMount() {
+    Analytics.setCurrentScreen('NewFeedScreen')
   }
 
   UNSAFE_componentWillReceiveProps(nextProps) {
@@ -251,6 +256,8 @@ class NewFeedScreen extends React.Component {
   }
 
   onUpdate() {
+    Analytics.logEvent('new_feed_create_new_feed', {})
+
     if (this.state.feedName === '') {
       Alert.alert('', 'Please input your feed name.', [{ text: 'Close' }]);
       return;
@@ -272,6 +279,8 @@ class NewFeedScreen extends React.Component {
         if (response.fileSize > 1024 * 1024 * 10) {
           Alert.alert('Warning', 'File size must be less than 10MB')
         } else {
+          Analytics.logEvent('new_feed_add_file', {})
+
           let type = 'FILE';
           const mimeType = mime.lookup(response.uri);
           if (mimeType !== false) {
@@ -310,6 +319,8 @@ class NewFeedScreen extends React.Component {
     this.setState({
       currentScreen: TagCreateMode,
     }, () => {
+      Analytics.logEvent('new_feed_add_tag', {})
+
       this.animatedTagTransition.setValue(1)
       Animated.timing(this.animatedTagTransition, {
         toValue: 0,
@@ -351,6 +362,8 @@ class NewFeedScreen extends React.Component {
         if (response.fileSize > 1024 * 1024 * 10) {
           Alert.alert('Warning', 'File size must be less than 10MB')
         } else {
+          Analytics.logEvent('new_feed_add_camera_image', {})
+
           if (!response.fileName) {
             response.fileName = response.uri.replace(/^.*[\\\/]/, '')
           }
@@ -366,6 +379,8 @@ class NewFeedScreen extends React.Component {
         if (response.fileSize > 1024 * 1024 * 10) {
           Alert.alert('Warning', 'File size must be less than 10MB')
         } else {
+          Analytics.logEvent('new_feed_add_library_image', {})
+
           this.uploadFile(response, 'MEDIA');
         }
       }

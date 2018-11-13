@@ -18,6 +18,7 @@ import Ionicons from 'react-native-vector-icons/Ionicons'
 import _ from 'lodash'
 import LoadingScreen from '../LoadingScreen'
 import TextInputComponent from '../../components/TextInputComponent'
+import Analytics from '../../lib/firebase'
 import { userSignIn, getUserSession, sendResetPasswordEmail } from '../../redux/user/actions'
 import COLORS from '../../service/colors'
 import resolveError from '../../service/resolveError'
@@ -69,6 +70,8 @@ class LoginScreen extends React.Component {
   }
 
   async UNSAFE_componentWillMount() {
+    Analytics.setCurrentScreen('LoginScreen')
+
     const userBackInfo = await AsyncStorage.getItem('userBackInfo')
     if (userBackInfo) {
       const parseInfo = JSON.parse(userBackInfo)
@@ -139,6 +142,8 @@ class LoginScreen extends React.Component {
   onForgotPassword = () => {
     const { userEmail } = this.state
 
+    Analytics.logEvent('login_reset_password', {})
+
     if (userEmail.length === 0) {
       Alert.alert('Error', 'Email is required')
     } else if (!COMMON_FUNC.validateEmail(userEmail)) {
@@ -153,6 +158,8 @@ class LoginScreen extends React.Component {
   }
 
   onSignIn = () => {
+    Analytics.logEvent('login_login', {})
+
     const {
       fieldErrors,
       userEmail,

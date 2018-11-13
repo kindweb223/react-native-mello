@@ -27,6 +27,7 @@ import CONSTANTS from '../../service/constants';
 import styles from './styles';
 import LoadingScreen from '../LoadingScreen';
 
+import Analytics from '../../lib/firebase'
 
 class SelectHuntScreen extends React.Component {
   constructor(props) {
@@ -41,6 +42,8 @@ class SelectHuntScreen extends React.Component {
   }
 
   componentDidMount() {
+    Analytics.setCurrentScreen('SelectHuntScreen')
+
     Animated.timing(this.animatedShow, {
       toValue: 1,
       duration: CONSTANTS.ANIMATEION_MILLI_SECONDS * 1.5,

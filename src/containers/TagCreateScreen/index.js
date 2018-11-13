@@ -9,7 +9,6 @@ import {
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 
-import { Actions } from 'react-native-router-flux'
 import Ionicons from 'react-native-vector-icons/Ionicons'
 import _ from 'lodash';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
@@ -19,6 +18,7 @@ import COLORS from '../../service/colors';
 import CONSTANTS from '../../service/constants';
 import Tags from '../../components/TagComponent';
 import LoadingScreen from '../LoadingScreen';
+import Analytics from '../../lib/firebase'
 
 import { 
   getUserTags,
@@ -41,6 +41,8 @@ class TagCreateScreen extends React.Component {
   }
 
   componentDidMount() {
+    Analytics.setCurrentScreen('TagCreateScreen')
+
     const { userInfo } = this.props.user
 
     setTimeout(() => {

@@ -73,6 +73,7 @@ import UserAvatarComponent from '../../components/UserAvatarComponent';
 import CoverImagePreviewComponent from '../../components/CoverImagePreviewComponent';
 import SelectHuntScreen from '../SelectHuntScreen';
 import LastCommentComponent from '../../components/LastCommentComponent';
+import Analytics from '../../lib/firebase'
 
 import * as COMMON_FUNC from '../../service/commonFunc'
 const ATTACHMENT_ICON = require('../../../assets/images/Attachment/Blue.png')
@@ -497,6 +498,8 @@ class NewCardScreen extends React.Component {
   }
 
   async createCard(currentProps) {
+    Analytics.logEvent('new_card_new_card', {})
+
     const { cardMode, viewMode } = this.props;
     if ((cardMode === CONSTANTS.MAIN_APP_CARD_FROM_DASHBOARD) || (cardMode === CONSTANTS.SHARE_EXTENTION_CARD)) {
       try {
@@ -600,6 +603,8 @@ class NewCardScreen extends React.Component {
       }
 
       if (filteredUrls.length > 0) {
+        Analytics.logEvent('new_card_typed_link', {})
+
         // this.isOpenGraphForNewCard = false;
         this.indexForOpenGraph = 0;
         this.openGraphLinksInfo = [];
@@ -993,6 +998,8 @@ class NewCardScreen extends React.Component {
       this.isUpdateDraftCard = true;
       this.props.deleteDraftFeed(this.draftFeedo.id)
     } else {
+      Analytics.logEvent('new_card_update_card', {})
+
       this.onUpdateCard();
     }
   }

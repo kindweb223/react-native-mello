@@ -6,14 +6,14 @@ import {
 } from 'react-native'
 import { Actions } from 'react-native-router-flux'
 import { connect } from 'react-redux'
-import PropTypes from 'prop-types'
 import styles from './styles'
+import Analytics from '../../lib/firebase'
+
 const SUCCESS_ICON = require('../../../assets/images/Success/adamStatic3.png')
 
 class ResetPasswordSuccessScreen extends React.Component {
-
   componentWillMount() {
-    const { user } = this.props
+    Analytics.setCurrentScreen('ResetPasswordSuccessScreen')
 
     setTimeout(() => {
       Actions.LoginScreen()

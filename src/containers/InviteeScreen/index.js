@@ -2,26 +2,19 @@ import React from 'react'
 import {
   View,
   Text, 
-  TouchableWithoutFeedback,
   TouchableOpacity,
-  Animated,
   Image,
-  Share,
   TextInput,
   ScrollView,
   ActivityIndicator,
-  Alert,
-  KeyboardAvoidingView
+  Alert
 } from 'react-native'
 import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
 import Entypo from 'react-native-vector-icons/Entypo'
 import Octicons from 'react-native-vector-icons/Octicons'
-import MaterialIcons from 'react-native-vector-icons/MaterialIcons'
 import Modal from 'react-native-modal'
-import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
 import _ from 'lodash'
-import KeyboardScrollView from '../../components/KeyboardScrollView'
 import InviteeAutoComplete from '../../components/InviteeAutoComplete'
 import LinkShareModalComponent from '../../components/LinkShareModalComponent'
 import InviteeItemComponent from '../../components/LinkShareModalComponent/InviteeItemComponent'
@@ -30,17 +23,9 @@ import { inviteToHunt } from '../../redux/feedo/actions'
 import * as COMMON_FUNC from '../../service/commonFunc'
 import COLORS from '../../service/colors'
 import styles from './styles'
-const PLUS_ICON = require('../../../assets/images/Add/White.png')
-const CLOSE_ICON = require('../../../assets/images/Close/Blue.png')
+import Analytics from '../../lib/firebase'
 
-const InvitePeopleItemComponent = () => (
-  <View style={styles.innerView}>
-    <View style={styles.plusButton}>
-      <Image source={PLUS_ICON} />
-    </View>
-    <Text style={styles.title}>Invite people</Text>
-  </View>
-)
+const CLOSE_ICON = require('../../../assets/images/Close/Blue.png')
 
 class InviteeScreen extends React.Component {
   constructor(props) {
@@ -64,6 +49,8 @@ class InviteeScreen extends React.Component {
   }
 
   componentDidMount() {
+    Analytics.setCurrentScreen('InviteeScreen')
+
     const { userInfo } = this.props.user
     this.isMount = true
     this.setState({ loading: true })

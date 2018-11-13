@@ -3,20 +3,17 @@ import {
   View,
   Text,
   TouchableOpacity,
-  Alert,
   Image
 } from 'react-native'
 import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
 import { Actions } from 'react-native-router-flux'
-import LinearGradient from 'react-native-linear-gradient'
 import Ionicons from 'react-native-vector-icons/Ionicons'
-import Feather from 'react-native-vector-icons/Feather'
 import LoadingScreen from '../LoadingScreen'
 import { sendResetPasswordEmail } from '../../redux/user/actions'
 import COLORS from '../../service/colors'
-import CONSTANTS from '../../service/constants'
 import styles from './styles'
+import Analytics from '../../lib/firebase'
 
 const LOGO = require('../../../assets/images/Login/icon_40pt.png')
 const MAIL_ICON = require('../../../assets/images/Success/iconMailBig.png')
@@ -45,6 +42,10 @@ class ResetPasswordConfirmScreen extends React.Component {
     this.state = {
       loading: false
     }
+  }
+
+  componentDidMount() {
+    Analytics.setCurrentScreen('ResetPasswordConfirmScreen')
   }
 
   UNSAFE_componentWillReceiveProps(nextProps) {

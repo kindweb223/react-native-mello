@@ -74,6 +74,8 @@ import * as COMMON_FUNC from '../../service/commonFunc'
 import styles from './styles'
 import {TAGS_FEATURE} from "../../service/api";
 
+import Analytics from '../../lib/firebase'
+
 const EMPTY_ICON = require('../../../assets/images/empty_state/asset-emptystate.png')
 const TOASTER_DURATION = 5000
 
@@ -150,6 +152,8 @@ class FeedDetailScreen extends React.Component {
   }
 
   componentDidMount() {
+    Analytics.setCurrentScreen('FeedDetailScreen')
+
     this.setState({ loading: true })
     this.props.getFeedDetail(this.props.data.id)
   }
@@ -349,6 +353,8 @@ class FeedDetailScreen extends React.Component {
   }
 
   handleShare = () => {
+    Analytics.logEvent('feed_detail_share', {})
+
     this.setState({ isShowShare: true })
   }
 
@@ -375,6 +381,8 @@ class FeedDetailScreen extends React.Component {
         }, 200)
         return
       case 'Archive':
+        Analytics.logEvent('feed_detail_archive_feed', {})
+
         this.props.setFeedDetailAction({
           action: 'Archive',
           feedId
@@ -386,6 +394,8 @@ class FeedDetailScreen extends React.Component {
         this.handleEdit(feedId);
         return
       case 'Leave Feed':
+        Analytics.logEvent('feed_detail_leave_feed', {})
+
         this.props.setFeedDetailAction({
           action: 'Leave',
           feedId
@@ -398,6 +408,8 @@ class FeedDetailScreen extends React.Component {
   }
 
   handleEdit = (feedId) => {
+    Analytics.logEvent('feed_detail_edit_feed', {})
+
     this.setState({
       isVisibleEditFeed: true,
     }, () => {
@@ -430,6 +442,8 @@ class FeedDetailScreen extends React.Component {
 
   pinFeed = (feedId) => {
     if (this.state.currentActionType === ACTION_FEEDO_PIN) {
+      Analytics.logEvent('feed_detail_pin_feed', {})
+
       this.props.pinFeed(feedId)
       this.setState({ currentActionType: ACTION_NONE })
     }
@@ -453,6 +467,8 @@ class FeedDetailScreen extends React.Component {
 
   unpinFeed = (feedId) => {
     if (this.state.currentActionType === ACTION_FEEDO_UNPIN) {
+      Analytics.logEvent('feed_detail_unpin_feed', {})
+
       this.props.unpinFeed(feedId)
       this.setState({ currentActionType: ACTION_NONE })
     }
@@ -474,6 +490,8 @@ class FeedDetailScreen extends React.Component {
   
   duplicateFeed = () => {
     if (this.state.currentActionType === ACTION_FEEDO_DUPLICATE) {
+      Analytics.logEvent('feed_detail_duplicate_feed', {})
+
       this.setState({ currentActionType: ACTION_NONE })
     }
   }
@@ -517,6 +535,8 @@ class FeedDetailScreen extends React.Component {
 
   onTapFeedoActionSheet = (index) => {
     if (index === 0) {
+      Analytics.logEvent('feed_detail_delete_feed', {})
+
       this.props.setFeedDetailAction({
         action: 'Delete',
         feedId: this.props.data.id
@@ -646,6 +666,8 @@ class FeedDetailScreen extends React.Component {
   }
   
   onEditCard() {
+    Analytics.logEvent('feed_detail_edit_card', {})
+
     this.setState({ isVisibleLongHoldMenu: false })
     this.onSelectCard(this.state.selectedLongHoldIdea, this.state.selectedLongHoldCardIndex)
   }
@@ -689,8 +711,10 @@ class FeedDetailScreen extends React.Component {
     this.userActionTimer = setTimeout(() => {
       // this.setState({ isShowToaster: false })
       if (this.state.currentActionType === ACTION_CARD_DELETE) {
+        Analytics.logEvent('feed_detail_delete_card', {})
         this.props.deleteCard(currentCardInfo.ideaId)
       } else if (this.state.currentActionType === ACTION_CARD_MOVE) {
+        Analytics.logEvent('feed_detail_move_card', {})
         this.props.moveCard(currentCardInfo.ideaId, currentCardInfo.feedoId);
       }
       this.userActionTimer = null;
@@ -820,6 +844,8 @@ class FeedDetailScreen extends React.Component {
   }
   
   handleFilter = () => {
+    Analytics.logEvent('feed_detail_filter_card', {})
+
     this.setState({ showFilterModal: true })
   }
 

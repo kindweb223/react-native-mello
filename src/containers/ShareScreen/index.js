@@ -1,17 +1,14 @@
 import React from 'react'
 import {
   View,
-  Text, 
-  TouchableWithoutFeedback,
+  Text,
   TouchableOpacity,
-  Animated,
   Image,
   Share,
   ScrollView
 } from 'react-native'
 import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
-import Feather from 'react-native-vector-icons/Feather'
 import Entypo from 'react-native-vector-icons/Entypo'
 import Modal from 'react-native-modal'
 import _ from 'lodash'
@@ -25,6 +22,8 @@ import { updateSharingPreferences, deleteInvitee, updateInviteePermission } from
 import COLORS from '../../service/colors'
 import * as COMMON_FUNC from '../../service/commonFunc'
 import styles from './styles'
+import Analytics from '../../lib/firebase'
+
 const PLUS_ICON = require('../../../assets/images/Add/White.png')
 const CLOSE_ICON = require('../../../assets/images/Close/Blue.png')
 
@@ -46,6 +45,10 @@ class ShareScreen extends React.Component {
       shareInviteeData: {},
       isInviteeModal: false
     }
+  }
+
+  componentDidMount() {
+    Analytics.setCurrentScreen('ShareScreen')
   }
 
   UNSAFE_componentWillReceiveProps(nextProps) {

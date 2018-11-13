@@ -16,7 +16,6 @@ import FontAwesome from 'react-native-vector-icons/FontAwesome'
 import _ from 'lodash';
 
 import styles from './styles'
-import CONSTANTS from '../../service/constants'
 import COLORS from '../../service/colors'
 import LoadingScreen from '../LoadingScreen';
 import * as types from '../../redux/card/types'
@@ -26,6 +25,7 @@ import {
 import { getDurationFromNow } from '../../service/dateUtils'
 import UserAvatarComponent from '../../components/UserAvatarComponent';
 
+import Analytics from '../../lib/firebase'
 
 class LikesListScreen extends React.Component {
 
@@ -56,6 +56,8 @@ class LikesListScreen extends React.Component {
   }
 
   componentDidMount() {
+    Analytics.setCurrentScreen('LikesListScreen')
+    
     this.props.getCardLikes(this.props.idea.id);
   }
 

@@ -19,9 +19,8 @@ import styles from './styles'
 import LoadingScreen from '../LoadingScreen';
 import * as feedTypes from '../../redux/feedo/types'
 import * as cardTypes from '../../redux/card/types'
-
 import CONSTANTS from '../../service/constants'
-
+import Analytics from '../../lib/firebase'
 
 class ImageSliderScreen extends React.Component {
   constructor(props) {
@@ -38,6 +37,8 @@ class ImageSliderScreen extends React.Component {
   }
 
   componentDidMount() {
+    Analytics.setCurrentScreen('ImageSliderScreen')
+
     const {
       imageFiles,
     } = this.props;

@@ -24,6 +24,8 @@ import COLORS from '../../service/colors'
 import resolveError from '../../service/resolveError'
 import styles from './styles'
 
+import Analytics from '../../lib/firebase'
+
 const PASSWORD_PROGRESS = [
   { color: COLORS.RED, text: 'Weak' },
   { color: COLORS.MEDIUM_RED, text: 'Medium' },
@@ -61,6 +63,13 @@ class ProfileUpdateScreen extends React.Component {
       isSecure: true,
       passwordScore: 0,
       isPasswordFocus: false
+    }
+  }
+  componentDidMount() {
+    if (this.props.page === 'user') {
+      Analytics.setCurrentScreen('ProfileUpdateScreen')
+    } else {
+      Analytics.setCurrentScreen('ProfileSecurityScreen')
     }
   }
 
@@ -251,6 +260,7 @@ class ProfileUpdateScreen extends React.Component {
         const param = {
           email: this.state.userEmail
         }
+        Analytics.logEvent('profile_update_reset_password', {})
         this.props.sendResetPasswordEmail(param)
       }
     })
