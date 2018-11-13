@@ -907,9 +907,9 @@ class HomeScreen extends React.Component {
 
           <Animated.View style={[styles.navbarView, { zIndex: miniHeaderZIndex }]}>
             <View style={styles.searchIconView}>
-              <TouchableOpacity onPress={() => this.onSearch()}>
+              {/* <TouchableOpacity onPress={() => this.onSearch()}>
                 <Image source={SEARCH_ICON} />
-              </TouchableOpacity>
+              </TouchableOpacity> */}
             </View>
             <Animated.View style={[styles.minHeader, { opacity: miniHeaderOpacity }]}>
               <View style={styles.minTitleView}>

@@ -72,6 +72,7 @@ import COLORS from '../../service/colors'
 import CONSTANTS from '../../service/constants'
 import * as COMMON_FUNC from '../../service/commonFunc'
 import styles from './styles'
+import {TAGS_FEATURE} from "../../service/api";
 
 import Analytics from '../../lib/firebase'
 
@@ -982,7 +983,7 @@ class FeedDetailScreen extends React.Component {
           }
         ]}
       >
-        <TagCreateScreen 
+        <TagCreateScreen
           onBack={() => this.onCloseCreationTag()}
         />
       </Animated.View>
@@ -1176,7 +1177,7 @@ class FeedDetailScreen extends React.Component {
           </ScrollView>
         </View>
 
-        {this.renderCreateTag}
+        {TAGS_FEATURE && this.renderCreateTag}
 
         <DashboardActionBar 
           onAddFeed={this.onOpenNewCardModal.bind(this)}

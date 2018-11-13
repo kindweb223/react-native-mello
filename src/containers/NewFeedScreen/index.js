@@ -44,10 +44,11 @@ import LoadingScreen from '../LoadingScreen'
 import ImageList from '../../components/ImageListComponent'
 import DocumentList from '../../components/DocumentListComponent'
 import TagCreateScreen from '../TagCreateScreen'
+import { TAGS_FEATURE } from '../../service/api'
 import Analytics from '../../lib/firebase'
 
-const ATTACHMENT_ICON = require('../../../assets/images/Attachment/Blue.png')
-const IMAGE_ICON = require('../../../assets/images/Image/Blue.png')
+// const ATTACHMENT_ICON = require('../../../assets/images/Attachment/Blue.png')
+// const IMAGE_ICON = require('../../../assets/images/Image/Blue.png')
 const TAG_ICON = require('../../../assets/images/Tag/Blue.png')
 
 const NewFeedMode = 1;
@@ -289,7 +290,7 @@ class NewFeedScreen extends React.Component {
           }
           this.uploadFile(response, type);
         }
-      }      
+      }
     });
     return;
   }
@@ -557,7 +558,7 @@ class NewFeedScreen extends React.Component {
           {this.renderDocuments}
         </View>
 
-        {!_.isEmpty(this.state.feedData) && this.state.feedData.tags.length > 0 && (
+        {TAGS_FEATURE && !_.isEmpty(this.state.feedData) && this.state.feedData.tags.length > 0 && (
           <Tags
             tags={this.state.feedData.tags}
             readonly={true}
@@ -594,6 +595,7 @@ class NewFeedScreen extends React.Component {
     return (
       <View style={styles.bottomContainer}>
         <View style={styles.bottomLeftContainer}>
+          {TAGS_FEATURE && (
           <TouchableOpacity
             style={styles.bottomItemContainer}
             activeOpacity={0.6}
@@ -601,7 +603,8 @@ class NewFeedScreen extends React.Component {
           >
             <Image source={TAG_ICON} />
           </TouchableOpacity>
-          <TouchableOpacity
+          )}
+          {/* <TouchableOpacity
             style={styles.bottomItemContainer}
             activeOpacity={0.6}
             onPress={this.onAddMedia.bind(this)}
@@ -614,7 +617,7 @@ class NewFeedScreen extends React.Component {
             onPress={this.onAddDocument.bind(this)}
           >
             <Image source={ATTACHMENT_ICON} />
-          </TouchableOpacity>
+          </TouchableOpacity> */}
         </View>
 
         {this.state.isKeyboardShow && (
@@ -713,7 +716,7 @@ class NewFeedScreen extends React.Component {
           }
         ]}
       >
-        <TagCreateScreen 
+        <TagCreateScreen
           onBack={() => this.onCloseCreationTag()}
         />
       </Animated.View>
@@ -724,7 +727,7 @@ class NewFeedScreen extends React.Component {
     return (
       <View style={styles.container}>
         {this.renderFeed}
-        {this.renderCreateTag}
+        {TAGS_FEATURE && this.renderCreateTag}
 
         <ActionSheet
           ref={ref => this.leaveActionSheetRef = ref}
