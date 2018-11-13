@@ -16,6 +16,7 @@ import UserAvatar from 'react-native-user-avatar'
 import Tags from "../../../components/FeedTags"
 import styles from './styles'
 import COLORS from '../../../service/colors'
+import { TAGS_FEATURE } from '../../../service/api'
 
 const CARD_ICON_GREY = require('../../../../assets/images/Card/Grey.png')
 const CARD_ICON_PURPLE = require('../../../../assets/images/Card/Purple.png')
@@ -115,7 +116,7 @@ class FeedItemContentComponent extends React.Component {
           </View>
         </View>
 
-        {data.tags.length > 0 && page !== 'archived' && (
+        {TAGS_FEATURE && data.tags.length > 0 && page !== 'archived' && (
           <View style={styles.tagsView}>
             <Tags
               initialTags={data.tags}
