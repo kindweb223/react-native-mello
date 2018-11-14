@@ -1,6 +1,7 @@
 import { StyleSheet } from 'react-native'
 import COLORS from '../../service/colors'
 import CONSTANTS from '../../service/constants'
+import colors from '../../service/colors';
 
 const styles = StyleSheet.create({
   container: {
@@ -44,7 +45,6 @@ const styles = StyleSheet.create({
     marginVertical: 28,
     paddingHorizontal: 11,
   },
-
   imageContainer: {
     width: Math.round((CONSTANTS.SCREEN_WIDTH - 22 - 30) / 3),
     height: Math.round((CONSTANTS.SCREEN_WIDTH - 22 - 30) / 3),
@@ -56,17 +56,38 @@ const styles = StyleSheet.create({
     backgroundColor: 'rgba(0, 0, 0, 0.05);',
     marginRight: 5,
     marginTop: 5,
+    borderRadius: 5,
+  },
+  selectedIcon: {
+    position: 'absolute',
+    right: 10,
+    bottom: 5,
+    justifyContent: 'center',
+    alignItems: 'center',
+    width: 18,
+    height: 18,
+    borderRadius: 45,
+    backgroundColor: '#FFFFFF',
   },
   icon: {
     position: 'absolute',
-    right: -5,
-    top: -5,
-    borderRadius: 45,
-    backgroundColor: '#fff',
+    right: 10,
+    bottom: 5,
     justifyContent: 'center',
     alignItems: 'center',
-    width: 22,
-    height: 22
+    width: 18,
+    height: 18,
+    borderRadius: 45,
+    backgroundColor: '#FFFFFF',
+    borderWidth: 1,
+    borderColor: COLORS.MEDIUM_GREY
+  },
+  checkIcon: {
+    position: 'absolute',
+    left: 0,
+    top: -2,
+    fontSize: 22,
+    color: COLORS.PURPLE,
   },
 })
 
