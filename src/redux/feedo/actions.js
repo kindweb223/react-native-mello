@@ -6,7 +6,7 @@ import * as types from './types'
 /**
  * Get feedo list
  */
-export const getFeedoList = (index) => {
+export const getFeedoList = (index, isForCardMove=false) => {
   let url = 'hunts'
 
   if (index === 1) {
@@ -19,9 +19,10 @@ export const getFeedoList = (index) => {
     types: [types.GET_FEEDO_LIST_PENDING, types.GET_FEEDO_LIST_FULFILLED, types.GET_FEEDO_LIST_REJECTED],
     promise:
       axios({
-          method: 'get',
-          url: url
-      })  
+        method: 'get',
+        url: url
+      }),
+    payload: isForCardMove
   };
 }
 
@@ -37,7 +38,7 @@ export const getFeedDetail = (feedId) => {
     promise: axios({
       method: 'get',
       url: url
-    })
+    }),
   };
 }
 

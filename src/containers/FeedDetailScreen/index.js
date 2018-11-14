@@ -161,6 +161,17 @@ class FeedDetailScreen extends React.Component {
   async UNSAFE_componentWillReceiveProps(nextProps) {
     const { feedo, card } = nextProps
     if (this.state.isVisibleSelectFeedo) {
+      if (this.props.feedo.loading !== 'GET_FEEDO_LIST_PENDING' && feedo.loading === 'GET_FEEDO_LIST_PENDING') {
+        // success in getting feedo list
+        this.setState({
+          apiLoading: true
+        });
+      } else if (this.props.feedo.loading === 'GET_FEEDO_LIST_PENDING' && (feedo.loading === 'GET_FEEDO_LIST_FULFILLED' || feedo.loading === 'GET_FEEDO_LIST_REJECTED')) {
+        // success in getting feedo list
+        this.setState({
+          apiLoading: false
+        });
+      }  
       return;
     }
     if ((this.props.feedo.loading === 'ADD_FILE_PENDING' && feedo.loading === 'ADD_FILE_FULFILLED') ||
@@ -1032,7 +1043,6 @@ class FeedDetailScreen extends React.Component {
         <View style={[styles.modalContainer, {backgroundColor: 'transparent'}]}>
           <SelectHuntScreen
             selectMode={CONSTANTS.FEEDO_SELECT_FROM_MOVE_CARD}
-            feedos={this.props.feedo.feedoList}
             hiddenFeedoId={currentFeed.id}
             direction='top'
             onClosed={() => this.onCloseSelectFeedoModal()}
