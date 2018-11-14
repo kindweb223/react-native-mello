@@ -4,14 +4,13 @@ import {
   SafeAreaView,
   ScrollView,
   View,
-  Text,
-  Image,
   Animated,
   TouchableOpacity,
   TouchableHighlight,
   AsyncStorage,
   Alert,
-  RefreshControl
+  RefreshControl,
+  AppState,
 } from 'react-native'
 
 import { connect } from 'react-redux'
@@ -155,7 +154,12 @@ class FeedDetailScreen extends React.Component {
     Analytics.setCurrentScreen('FeedDetailScreen')
 
     this.setState({ loading: true })
-    this.props.getFeedDetail(this.props.data.id)
+    this.props.getFeedDetail(this.props.data.id);
+    AppState.addEventListener('change', this.onHandleAppStateChange.bind(this));
+  }
+
+  componentWillUnmount() {
+    AppState.removeEventListener('change', this.onHandleAppStateChange);
   }
 
   async UNSAFE_componentWillReceiveProps(nextProps) {
@@ -239,6 +243,14 @@ class FeedDetailScreen extends React.Component {
       })
     }
   }
+
+  onHandleAppStateChange(nextAppState) {
+    if (nextAppState === 'active' && Actions.currentScene === 'FeedDetailScreen') {
+      this.setState({ loading: true })
+      this.props.getFeedDetail(this.props.data.id);
+    }
+  }
+
 
   async setBubbles(currentFeed) {
     const { user } = this.props
