@@ -7,6 +7,7 @@ const initialState = {
   loading: null,
   error: null,
   feedoList: [],
+  feedoListForCardMove: [],
   currentFeed: {},
   pinResult: null,
   duplicaetdId: null,
@@ -24,14 +25,23 @@ export default function feedo(state = initialState, action = {}) {
     case types.GET_FEEDO_LIST_PENDING:
       return {
         ...state,
+        feedoListForCardMove: [],
         loading: types.GET_FEEDO_LIST_PENDING,
       }
     case types.GET_FEEDO_LIST_FULFILLED: {
       const { data } = action.result
+      const isForCardMove = action.payload;
+      if (!isForCardMove) {
+        return {
+          ...state,
+          loading: types.GET_FEEDO_LIST_FULFILLED,
+          feedoList: data.content,
+        }
+      }
       return {
         ...state,
         loading: types.GET_FEEDO_LIST_FULFILLED,
-        feedoList: data.content,
+        feedoListForCardMove: data.content,
       }
     }
     case types.GET_FEEDO_LIST_REJECTED: {

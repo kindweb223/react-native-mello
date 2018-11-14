@@ -44,9 +44,9 @@ class EmptyStateComponent extends React.Component {
 
   render() {
     const { page, title, subTitle, ctaTitle } = this.props
-
-    let height = 190
-    let marginTop = -125
+    console.log('PAGE: ', page)
+    let height = 115
+    let marginTop = -50
 
     if (page === 'feed_exist') {
       height = 95
@@ -54,13 +54,13 @@ class EmptyStateComponent extends React.Component {
     }
 
     if (page === 'card') {
-      height = 170
-      marginTop = -125
+      height = 120
+      marginTop = -100
     }
 
     if (page === 'card_exist') {
-      height = 210
-      marginTop = -150
+      height = 120
+      marginTop = -100
     }
 
     return (
@@ -86,14 +86,14 @@ class EmptyStateComponent extends React.Component {
               <Text style={styles.title}>
                 {title}
               </Text>
-              {subTitle.length > 0 && (
+              {/* {subTitle.length > 0 && (
                 <TouchableOpacity style={styles.videoBtn} activeOpacity={0.8} onPress={this.showVideo}>
                   <Text style={styles.videoBtnText}>
                     {subTitle}
                     <MaterialCommunityIcons name='play' size={23} color={COLORS.PURPLE} />
                   </Text>
                 </TouchableOpacity>
-              )}
+              )} */}
               <TouchableOpacity style={styles.newFeedBtn} activeOpacity={0.8} onPress={this.onStart}>
                 <Text style={styles.newFeedBtnText}>{ctaTitle}</Text>
               </TouchableOpacity>

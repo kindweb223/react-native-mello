@@ -229,7 +229,7 @@ const styles = StyleSheet.create({
     fontSize: 14,
     lineHeight: 21,
     maxWidth: Math.round(CONSTANTS.SCREEN_WIDTH * 0.32),
-    color: COLORS.PRIMARY_BLACK, 
+    color: COLORS.PURPLE
   },
   selectFeedoButtonContainer: {
     flexDirection: 'row',

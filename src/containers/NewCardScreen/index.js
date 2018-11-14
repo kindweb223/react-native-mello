@@ -1252,7 +1252,7 @@ class NewCardScreen extends React.Component {
           onPress={this.onSelectFeedo.bind(this)}
         >
           <Text style={styles.textFeedoName} numberOfLines={1}>{this.props.feedo.currentFeed.headline || 'New feed'}</Text>
-          <Entypo name="chevron-right" size={20} color={COLORS.MEDIUM_GREY} />
+          <Entypo name="chevron-right" size={20} color={COLORS.PURPLE} />
         </TouchableOpacity>
       </View>
     )
@@ -1437,11 +1437,11 @@ class NewCardScreen extends React.Component {
         <View style={styles.extensionSelectFeedoContainer}>
           <Text style={[styles.textCreateCardIn, {color: COLORS.PRIMARY_BLACK}]}>Create card in:</Text>
           <TouchableOpacity
-            style={[styles.selectFeedoButtonContainer, {backgroundColor: 'transparent', paddingRight: 3}]}
+            style={[styles.selectFeedoButtonContainer, {paddingRight: 3}]}
             activeOpacity={0.6}
             onPress={this.onSelectFeedo.bind(this)}
           >
-            <Text style={[styles.textFeedoName, {color: COLORS.PURPLE}]} numberOfLines={1}>{this.props.feedo.currentFeed.headline || 'New feed'}</Text>
+            <Text style={styles.textFeedoName} numberOfLines={1}>{this.props.feedo.currentFeed.headline || 'New feed'}</Text>
             <Entypo name="chevron-right" size={20} color={COLORS.PURPLE} />
           </TouchableOpacity>
         </View>
@@ -1547,7 +1547,6 @@ class NewCardScreen extends React.Component {
       return (
         <SelectHuntScreen
           selectMode={cardMode !== CONSTANTS.SHARE_EXTENTION_CARD ? CONSTANTS.FEEDO_SELECT_FROM_MAIN : CONSTANTS.FEEDO_SELECT_FROM_SHARE_EXTENSION}
-          feedos={this.props.feedo.feedoList}
           onClosed={() => this.onCloseSelectHunt()}
         />
       );

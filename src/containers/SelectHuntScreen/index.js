@@ -20,6 +20,7 @@ import UserAvatarComponent from '../../components/UserAvatarComponent';
 import NewFeedScreen from '../NewFeedScreen'
 import { 
   setCurrentFeed,
+  getFeedoList,
 } from '../../redux/feedo/actions'
 
 import COLORS from '../../service/colors';
@@ -28,6 +29,7 @@ import styles from './styles';
 import LoadingScreen from '../LoadingScreen';
 
 import Analytics from '../../lib/firebase'
+
 
 class SelectHuntScreen extends React.Component {
   constructor(props) {
@@ -43,7 +45,7 @@ class SelectHuntScreen extends React.Component {
 
   componentDidMount() {
     Analytics.setCurrentScreen('SelectHuntScreen')
-
+    this.props.getFeedoList(0, true);
     Animated.timing(this.animatedShow, {
       toValue: 1,
       duration: CONSTANTS.ANIMATEION_MILLI_SECONDS * 1.5,
@@ -185,9 +187,7 @@ class SelectHuntScreen extends React.Component {
     if (feedo.metadata.owner) {
       return;
     }
-    
     const { selectMode } = this.props;
-
     return (
       <UserAvatarComponent
         size={32}
@@ -219,7 +219,7 @@ class SelectHuntScreen extends React.Component {
       inputRange: [0, 1],
       outputRange: [CONSTANTS.SCREEN_WIDTH, 0],
     });
-    let feedoList = this.props.feedos;
+    let feedoList = this.props.feedo.feedoListForCardMove;
     if (this.props.hiddenFeedoId) {
       feedoList = _.filter(feedoList, feedo => feedo.id !== this.props.hiddenFeedoId);
     }
@@ -299,7 +299,6 @@ class SelectHuntScreen extends React.Component {
 
 SelectHuntScreen.defaultProps = {
   selectMode: CONSTANTS.FEEDO_SELECT_FROM_MAIN,
-  feedos: [],
   hiddenFeedoId: null,
   direction: 'left',
   onClosed: () => {},
@@ -308,7 +307,6 @@ SelectHuntScreen.defaultProps = {
 
 SelectHuntScreen.propTypes = {
   selectMode: PropTypes.number,
-  feedos: PropTypes.array,
   hiddenFeedoId: PropTypes.string,
   direction: PropTypes.string,
   onClosed: PropTypes.func,
@@ -322,6 +320,7 @@ const mapStateToProps = ({ feedo }) => ({
 
 const mapDispatchToProps = dispatch => ({
   setCurrentFeed: (data) => dispatch(setCurrentFeed(data)),
+  getFeedoList: (index, isForCardMove) => dispatch(getFeedoList(index, isForCardMove)),
 })
 
 

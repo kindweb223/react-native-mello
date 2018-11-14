@@ -8,6 +8,7 @@ import {
 } from 'react-native'
 import { connect } from 'react-redux'
 import { Actions } from 'react-native-router-flux'
+import Ionicons from 'react-native-vector-icons/Ionicons';
 
 import styles from './styles'
 // import FastImage from "react-native-fast-image";
@@ -28,6 +29,7 @@ class ChooseLinkImageFromExtension extends React.Component {
     this.state = {
       loading: false,
       images: [],
+      selectedIndex: -1,
       isVisibleAlert: false,
       errorMessage: '',
     };
@@ -96,7 +98,10 @@ class ChooseLinkImageFromExtension extends React.Component {
     }
   }
 
-  onSelectItem(imageUrl) {
+  onSelectItem(imageUrl, index) {
+    this.setState({
+      selectedIndex: index,
+    });
     Actions.ShareCardScreen({
       imageUrl,
       shareUrl: this.shareUrl,
@@ -113,14 +118,28 @@ class ChooseLinkImageFromExtension extends React.Component {
     });
   }
 
-  renderImage(item) {
+  renderIcon(index) {
+    if (this.state.selectedIndex === index) {
+      return (
+        <View style={styles.selectedIcon}>
+          <Ionicons style={styles.checkIcon} name='ios-checkmark-circle' /> 
+        </View>
+      );
+    }
+    return (
+      <View style={styles.icon} />
+    );
+  }
+
+  renderImage({item, index}) {
     return (
       <TouchableOpacity 
         style={styles.imageContainer}
         activeOpacity={0.6}
-        onPress={() => this.onSelectItem(item.item)}
+        onPress={() => this.onSelectItem(item, index)}
       >
-        <Image style={styles.imageItem} source={{uri: item.item}} resizeMode='cover' />
+        <Image style={styles.imageItem} source={{uri: item}} resizeMode='cover' />
+        {this.renderIcon(index)}
       </TouchableOpacity>
     );
   }
