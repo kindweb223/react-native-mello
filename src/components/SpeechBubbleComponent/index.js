@@ -74,14 +74,14 @@ class SpeechBubbleComponent extends React.Component {
                   </Text>
               }
 
-              {page !== 'pinned' && (
+              {/* {page !== 'pinned' && (
                 <TouchableOpacity style={styles.videoBtn} activeOpacity={0.8} onPress={this.showVideo}>
                   <Text style={styles.videoBtnText}>
                     {subTitle}
                     <MaterialCommunityIcons name='play' size={23} color={COLORS.PURPLE} />
                   </Text>
                 </TouchableOpacity>
-              )}
+              )} */}
             </View>
           </ImageBackground>
           <Image source={SPEECH_BUBBLE_BOTTOM} style={styles.bubbleView} resizeMode="stretch" />
