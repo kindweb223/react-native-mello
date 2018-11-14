@@ -57,10 +57,11 @@ const styles = StyleSheet.create({
   },
   settingIconView: {
     width: 60,
-    height: '100%',
     justifyContent: 'center',
     alignItems: 'flex-end',
-    marginRight: -2
+    position: 'absolute',
+    right: 12,
+    top: 0
   },
   feedListView: {
     zIndex: 10,
@@ -69,7 +70,7 @@ const styles = StyleSheet.create({
     marginBottom: Platform.OS === 'ios' ? ifIphoneX(0, 56) : 56
   },
   feedListContainer: {
-    paddingTop: 16,
+    paddingTop: 8,
     paddingBottom: 30
   },
   tabBarStyle: {
@@ -78,12 +79,23 @@ const styles = StyleSheet.create({
     height: CONSTANTS.TAB_BAR_HEIGHT,
     alignItems: 'center',
     backgroundColor: '#fff',
-    marginTop: 0
+    marginTop: 0,
+    paddingLeft: 16
   },
   tabBarTextStyle: {
-    fontSize: 16,
-    fontWeight: '500',
-    textAlign: 'left'
+    fontSize: 14,
+    fontWeight: '600',
+    textAlign: 'left',
+    borderRadius: 16,
+    paddingVertical: 7,
+    paddingHorizontal: 12,
+    height: '100%',
+    overflow: 'hidden',
+    color: COLORS.MEDIUM_GREY
+  },
+  activeTabBarTextStyle: {
+    backgroundColor: COLORS.LIGHT_GREY,
+    color: '#000'
   },
   longHoldModalContainer: {
     margin: 0,
