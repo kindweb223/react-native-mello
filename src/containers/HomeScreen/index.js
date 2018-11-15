@@ -2,17 +2,14 @@
 import React from 'react'
 import {
   SafeAreaView,
-  ScrollView,
   View,
-  Text,
   Animated,
   Image,
   TouchableOpacity,
   Platform,
   StatusBar,
   AsyncStorage,
-  AppState,
-  RefreshControl
+  AppState
 } from 'react-native'
 
 import { connect } from 'react-redux'
@@ -74,8 +71,9 @@ import constants from '../../service/constants';
 
 const TAB_STYLES = {
   height: '100%',
-  paddingTop: 10,
-  paddingRight: 10
+  paddingTop: 0,
+  paddingLeft: 0,
+  paddingRight: 0
 }
 
 const TOASTER_DURATION = 5000
@@ -150,10 +148,20 @@ class HomeScreen extends React.Component {
         feedoList = feedo.feedoList.map(item => {
           const filteredIdeas = filter(item.ideas, idea => idea.coverImage !== null && idea.coverImage !== '')
 
+          let coverImages = []
+          if (filteredIdeas.length > 4) {
+            coverImages = R.slice(0, 4, filteredIdeas)
+          } else {
+            coverImages = R.slice(0, 4, filteredIdeas)
+            for (let i = 0; i < 4 - filteredIdeas.length; i ++) {
+              coverImages.push(null)
+            }
+          }
+
           return Object.assign(
             {},
             item,
-            { coverImages: R.slice(0, filteredIdeas.length > 4 ? 4 : filteredIdeas.length, filteredIdeas) }
+            { coverImages }
           )
         })
 
@@ -879,23 +887,23 @@ class HomeScreen extends React.Component {
   render () {
     const { loading, feedoList, emptyState, tabIndex } = this.state
     
-    const normalHeaderOpacity = this.state.scrollY.interpolate({
-      inputRange: [0, 40],
-      outputRange: [1, 0],
-      extrapolate: 'clamp'
-    })
+    // const normalHeaderOpacity = this.state.scrollY.interpolate({
+    //   inputRange: [0, 40],
+    //   outputRange: [1, 0],
+    //   extrapolate: 'clamp'
+    // })
 
-    const miniHeaderOpacity = this.state.scrollY.interpolate({
-      inputRange: [40, 100],
-      outputRange: [0, 1],
-      extrapolate: 'clamp'
-    })
+    // const miniHeaderOpacity = this.state.scrollY.interpolate({
+    //   inputRange: [40, 100],
+    //   outputRange: [0, 1],
+    //   extrapolate: 'clamp'
+    // })
 
-    const miniHeaderZIndex = this.state.scrollY.interpolate({
-      inputRange: [0, 20, 40],
-      outputRange: [11, 9, 11],
-      extrapolate: 'clamp'
-    })
+    // const miniHeaderZIndex = this.state.scrollY.interpolate({
+    //   inputRange: [0, 20, 40],
+    //   outputRange: [11, 9, 11],
+    //   extrapolate: 'clamp'
+    // })
 
     return (
       <SafeAreaView style={styles.safeArea}>
@@ -906,11 +914,11 @@ class HomeScreen extends React.Component {
             <View style={styles.statusBarUnderlay} />
           )}
 
-          <Animated.View style={[styles.navbarView, { zIndex: miniHeaderZIndex }]}>
+          {/* <Animated.View style={[styles.navbarView, { zIndex: miniHeaderZIndex }]}>
             <View style={styles.searchIconView}>
-              {/* <TouchableOpacity onPress={() => this.onSearch()}>
+              <TouchableOpacity onPress={() => this.onSearch()}>
                 <Image source={SEARCH_ICON} />
-              </TouchableOpacity> */}
+              </TouchableOpacity>
             </View>
             <Animated.View style={[styles.minHeader, { opacity: miniHeaderOpacity }]}>
               <View style={styles.minTitleView}>
@@ -922,9 +930,9 @@ class HomeScreen extends React.Component {
                 </TouchableOpacity>
               </View>
             </Animated.View>
-          </Animated.View>          
+          </Animated.View>  */}
 
-          <ScrollView
+          {/* <ScrollView
             refreshControl={
               <RefreshControl
                 tintColor={COLORS.PURPLE}
@@ -941,134 +949,146 @@ class HomeScreen extends React.Component {
                 [{ nativeEvent: { contentOffset: { y: this.state.scrollY } } }]
               )
             }
-          >
-            <Animated.View style={[styles.normalHeader, { opacity: normalHeaderOpacity }]}>
+          > */}
+            {/* <Animated.View style={[styles.normalHeader, { opacity: normalHeaderOpacity }]}>
               <DashboardNavigationBar handleSetting={this.handleSetting} />
-            </Animated.View>
+            </Animated.View> */}
+          <View style={{ flex: 1 }}>
+            <ScrollableTabView
+              style={this.state.scrollableTabViewContainer}
+              content
+              onChangeTab={this.onChangeTab.bind(this)}
+              prerenderingSiblingsNumber={0}
+              renderTabBar={() => <TabBar
+                                    underlineHeight={0}
+                                    underlineBottomPosition={0}
+                                    tabBarStyle={styles.tabBarStyle}
+                                    tabBarTextStyle={styles.tabBarTextStyle}
+                                    activeTabTextStyle={styles.activeTabBarTextStyle}
+                                    tabMargin={1}
+                                    tabStyles={{ 'tab': TAB_STYLES }}
+                                  />}
+            >
+              <View
+                style={styles.feedListContainer}
+                ref={ref => this.scrollTabAll = ref} 
+                tabLabel={{ label: 'My flows' }}
+                onLayout={(event) => this.onScrollableTabViewLayout(event, 0)}
+              >
+                {this.state.showFeedInvitedNewUserBubble && (
+                  <View style={{ height: 200 }}>
+                    <SpeechBubbleComponent
+                      page="feed"
+                      title="So you've been invited to feedo? Exciting isn't it?!"
+                      subTitle="Watch a 15 sec Quick Start video "
+                      showBubbleCloseButton={this.state.showBubbleCloseButton}
+                      onCloseBubble={() => this.closeBubble()}
+                    />
+                  </View>
+                )}
 
-            {emptyState && (tabIndex === 0 && feedoList.length === 0)
-            ? <View style={styles.emptyView}>
-                {loading
-                  ? <FeedLoadingStateComponent />
-                  : <View style={styles.emptyInnerView}>
-                      {this.state.showEmptyBubble && (
-                        this.state.isExistingUser
-                          ? <EmptyStateComponent
-                              page="feed_exist"
-                              title="It's awesome to start fresh!"
-                              subTitle=""
-                              ctaTitle="Start a new feed"
-                              onCreateNewFeed={() => {
-                                this.animatedOpacity.setValue(1);
-                                this.onSelectNewFeedType('New Feed')
-                              }}
-                            />
-                          : <EmptyStateComponent
-                              page="feed"
-                              title="First time here? No worries, you are in good hands..."
-                              subTitle="Watch a 15 sec video about creating feeds"
-                              ctaTitle="Start your first feed"
-                              onCreateNewFeed={() => {
-                                this.animatedOpacity.setValue(1);
-                                this.onSelectNewFeedType('New Feed')
-                              }}
-                            />
-                      )}
-                    </View>
+                {emptyState && (tabIndex === 0 && feedoList.length === 0) && (
+                  <View style={styles.emptyView}>
+                    {loading
+                      ? <FeedLoadingStateComponent />
+                      : <View style={styles.emptyInnerView}>
+                          {this.state.showEmptyBubble && (
+                            this.state.isExistingUser
+                              ? <EmptyStateComponent
+                                  page="feed_exist"
+                                  title="It's awesome to start fresh!"
+                                  subTitle=""
+                                  ctaTitle="Start a new feed"
+                                  onCreateNewFeed={() => {
+                                    this.animatedOpacity.setValue(1);
+                                    this.onSelectNewFeedType('New Feed')
+                                  }}
+                                />
+                              : <EmptyStateComponent
+                                  page="feed"
+                                  title="First time here? No worries, you are in good hands..."
+                                  subTitle="Watch a 15 sec video about creating feeds"
+                                  ctaTitle="Start your first feed"
+                                  onCreateNewFeed={() => {
+                                    this.animatedOpacity.setValue(1);
+                                    this.onSelectNewFeedType('New Feed')
+                                  }}
+                                />
+                          )}
+                        </View>
+                    }
+                  </View>
+                )}
+
+                <FeedoListContainer
+                  loading={loading}
+                  feedoList={feedoList}
+                  handleFeedMenu={this.handleLongHoldMenu}
+                  page="home"
+                  isRefreshing={this.state.isRefreshing}
+                  onRefreshFeed={() => this.onRefreshFeed()}
+                />
+              </View>
+              <View
+                style={styles.feedListContainer}
+                ref={ref => this.scrollTabSharedWithMe = ref}
+                tabLabel={{ label: 'Shared with me' }}
+                onLayout={(event) => this.onScrollableTabViewLayout(event, 2)}
+              >
+                {feedoList.length > 0
+                  ? <FeedoListContainer
+                      loading={loading}
+                      feedoList={feedoList}
+                      handleFeedMenu={this.handleLongHoldMenu}
+                      page="home"
+                      isRefreshing={this.state.isRefreshing}
+                      onRefreshFeed={() => this.onRefreshFeed()}
+                    />
+                  : !loading && (
+                      <View style={styles.emptyTabInnerSubView}>
+                        <SpeechBubbleComponent
+                          page="shared"
+                          title="Feeds can be shared with friends and colleagues for collaboration. Feeds you've been invited to will appear here."
+                          subTitle="All you need to know about sharing in 15 secs "
+                        />
+                      </View>
+                    )
                 }
               </View>
-            : <ScrollableTabView
-                style={this.state.scrollableTabViewContainer}
-                content
-                tabBarActiveTextColor={COLORS.PURPLE}
-                tabBarInactiveTextColor={COLORS.MEDIUM_GREY}
-                onChangeTab={this.onChangeTab.bind(this)}
-                prerenderingSiblingsNumber={0}
-                renderTabBar={() => <TabBar
-                                      underlineHeight={0}
-                                      underlineBottomPosition={0}
-                                      tabBarStyle={styles.tabBarStyle}
-                                      tabBarTextStyle={styles.tabBarTextStyle}
-                                      tabMargin={16}
-                                      tabStyles={{ 'tab': TAB_STYLES }}
-                                    />}
+              <View
+                style={styles.feedListContainer}
+                ref={ref => this.scrollTabPinned = ref}
+                tabLabel={{ label: 'Pinned' }}
+                onLayout={(event) => this.onScrollableTabViewLayout(event, 1)}
               >
-                <View
-                  style={styles.feedListContainer}
-                  ref={ref => this.scrollTabAll = ref} 
-                  tabLabel={{ label: 'All' }}
-                  onLayout={(event) => this.onScrollableTabViewLayout(event, 0)}
-                >
-                  {this.state.showFeedInvitedNewUserBubble && (
-                    <View style={{ height: 200 }}>
-                      <SpeechBubbleComponent
-                        page="feed"
-                        title="So you've been invited to feedo? Exciting isn't it?!"
-                        subTitle="Watch a 15 sec Quick Start video "
-                        showBubbleCloseButton={this.state.showBubbleCloseButton}
-                        onCloseBubble={() => this.closeBubble()}
-                      />
-                    </View>
-                  )}
+                {feedoList.length > 0
+                  ? <FeedoListContainer
+                      loading={loading}
+                      feedoList={feedoList}
+                      handleFeedMenu={this.handleLongHoldMenu}
+                      page="home"
+                      isRefreshing={this.state.isRefreshing}
+                      onRefreshFeed={() => this.onRefreshFeed()}
+                    />
+                  : !loading && ( 
+                      <View style={styles.emptyTabInnerSubView}>
+                        <SpeechBubbleComponent
+                          page="pinned"
+                          title="Your pinned items will appear here. To pin a feed tap and hold it to bring up quick actions and select"
+                          subTitle="Watch a 15 sec Quick Start video "
+                        />
+                      </View>
+                    )
+                }
+              </View>
+            </ScrollableTabView>
 
-                  <FeedoListContainer
-                    loading={loading}
-                    feedoList={feedoList}
-                    handleFeedMenu={this.handleLongHoldMenu}
-                    page="home"
-                  />
-                </View>
-                <View
-                  style={styles.feedListContainer}
-                  ref={ref => this.scrollTabPinned = ref}
-                  tabLabel={{ label: 'Pinned' }}
-                  onLayout={(event) => this.onScrollableTabViewLayout(event, 1)}
-                >
-                  {feedoList.length > 0
-                    ? <FeedoListContainer
-                        loading={loading}
-                        feedoList={feedoList}
-                        handleFeedMenu={this.handleLongHoldMenu}
-                        page="home"
-                      />
-                    : !loading && ( 
-                        <View style={styles.emptyTabInnerSubView}>
-                          <SpeechBubbleComponent
-                            page="pinned"
-                            title="Your pinned items will appear here. To pin a feed tap and hold it to bring up quick actions and select"
-                            subTitle="Watch a 15 sec Quick Start video "
-                          />
-                        </View>
-                      )
-                  }
-                </View>
-                <View
-                  style={styles.feedListContainer}
-                  ref={ref => this.scrollTabSharedWithMe = ref}
-                  tabLabel={{ label: 'Shared with me' }}
-                  onLayout={(event) => this.onScrollableTabViewLayout(event, 2)}
-                >
-                  {feedoList.length > 0
-                    ? <FeedoListContainer
-                        loading={loading}
-                        feedoList={feedoList}
-                        handleFeedMenu={this.handleLongHoldMenu}
-                        page="home"
-                      />
-                    : !loading && (
-                        <View style={styles.emptyTabInnerSubView}>
-                          <SpeechBubbleComponent
-                            page="shared"
-                            title="Feeds can be shared with friends and colleagues for collaboration. Feeds you've been invited to will appear here."
-                            subTitle="All you need to know about sharing in 15 secs "
-                          />
-                        </View>
-                      )
-                  }
-                </View>
-              </ScrollableTabView>
-            }
-          </ScrollView>
+            <View style={styles.settingIconView}>
+              <TouchableOpacity onPress={() => this.handleSetting()}>
+                <Image source={SETTING_ICON} />
+              </TouchableOpacity>
+            </View>
+          </View>
 
         </View>
 

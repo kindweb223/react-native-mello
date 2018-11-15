@@ -3,7 +3,8 @@ import {
   FlatList,
   TouchableOpacity,
   Animated,
-  View
+  View,
+  RefreshControl
 } from 'react-native'
 
 import PropTypes from 'prop-types'
@@ -108,7 +109,7 @@ class FeedoListContainer extends React.Component {
           </TouchableOpacity>
 
           {this.props.feedoList.length > 0 && (
-            <View style={[styles.separator, { marginTop: 16 }]} />
+            <View style={[styles.separator, { marginTop: 14 }]} />
           )}
         </ListRow>
       </Animated.View>
@@ -116,16 +117,22 @@ class FeedoListContainer extends React.Component {
   }
 
   render() {
-    const { loading, feedoList, handleFeedMenu, tabLabel } = this.props;
+    const { loading, refresh, feedoList, handleFeedMenu, tabLabel } = this.props;
 
     if (loading) return <FeedLoadingStateComponent animating />
 
     return (
       <FlatList
+        refreshControl={
+          <RefreshControl
+            tintColor={COLORS.PURPLE}
+            refreshing={this.props.isRefreshing}
+            onRefresh={() => refresh ? this.props.onRefreshFeed() : {}}
+          />
+        }
         style={styles.flatList}
         data={feedoList}
         keyExtractor={item => item.id}
-        scrollEnabled={false}
         automaticallyAdjustContentInsets={true}
         renderItem={this.renderItem.bind(this)}
         keyboardShouldPersistTaps="handled"
@@ -136,11 +143,15 @@ class FeedoListContainer extends React.Component {
 
 FeedoListContainer.defaultProps = {
   handleFeedMenu: () => {},
-  page: 'search'
+  page: 'search',
+  refresh: true,
+  isRefresh: false
 }
 
 FeedoListContainer.propTypes = {
   loading: PropTypes.bool.isRequired,
+  refresh: PropTypes.bool.isRequired,
+  isRefresh: PropTypes.bool,
   feedoList: PropTypes.arrayOf(PropTypes.any).isRequired,
   handleFeedMenu: PropTypes.func,
   page: PropTypes.string

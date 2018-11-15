@@ -22,10 +22,13 @@ const FeedCoverImageComponent = ({ data }) => (
           ]
         }
       >
-        <FastImage
-          style={styles.image}
-          source={{uri: item.coverImage}}
-        />
+        {item
+          ? <FastImage
+              style={styles.image}
+              source={{uri: item.coverImage}}
+            />
+          : <View style={styles.emptyCoverImageView} />
+        }
       </View>
     ))}
   </View>

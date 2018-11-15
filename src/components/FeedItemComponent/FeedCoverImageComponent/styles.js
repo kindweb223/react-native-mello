@@ -1,4 +1,5 @@
 import { StyleSheet } from 'react-native'
+import COLORS from '../../../service/colors'
 
 const styles = StyleSheet.create({
   list: {
@@ -31,6 +32,10 @@ const styles = StyleSheet.create({
   },
   image: {
     flex: 1
+  },
+  emptyCoverImageView: {
+    flex: 1,
+    backgroundColor: COLORS.LIGHT_GREY_PLACEHOLDER
   }
 })
 

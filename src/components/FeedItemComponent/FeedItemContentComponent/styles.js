@@ -8,12 +8,13 @@ const styles = StyleSheet.create({
   },
   title: {
     flex: 1,
-    fontSize: 18,
-    lineHeight: 25,
+    fontSize: 16,
+    lineHeight: 22,
     fontWeight: '600',
   },
   statsView: {
-    flexDirection: 'row'
+    flexDirection: 'row',
+    marginTop: 2
   },
   statsItemView: {
     flexDirection: 'row',

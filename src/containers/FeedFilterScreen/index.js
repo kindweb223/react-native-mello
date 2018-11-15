@@ -61,10 +61,20 @@ class FeedFilterScreen extends React.Component {
     feedoList = feedo.feedoList.map(item => {
       const filteredIdeas = _.filter(item.ideas, idea => idea.coverImage !== null && idea.coverImage !== '')
 
+      let coverImages = []
+      if (filteredIdeas.length > 4) {
+        coverImages = R.slice(0, 4, filteredIdeas)
+      } else {
+        coverImages = R.slice(0, 4, filteredIdeas)
+        for (let i = 0; i < 4 - filteredIdeas.length; i ++) {
+          coverImages.push(null)
+        }
+      }
+
       return Object.assign(
         {},
         item,
-        { coverImages: R.slice(0, filteredIdeas.length > 4 ? 4 : filteredIdeas.length, filteredIdeas) }
+        { coverImages }
       )
     })
 
@@ -198,6 +208,7 @@ class FeedFilterScreen extends React.Component {
                 ? <FeedoListContainer
                     loading={false}
                     feedoList={filterFeedoList}
+                    refresh={false}
                   />
                 : !inputTag && this.props.initialTag.length > 0 && (
                     <View style={styles.emptyContainer}>

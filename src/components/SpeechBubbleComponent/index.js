@@ -43,16 +43,14 @@ class SpeechBubbleComponent extends React.Component {
 
     const marginTop = 20
     
-    // let height = 90
-    // if (page === 'feed') {
-    //   height = 90
-    // } else if (page === 'card') {
-    //   height = 130
-    // } else if (page === 'pinned') {
-    //   height = 75
-    // } else {
-    //   height = 160
-    // }
+    let height = 90
+    if (page === 'feed') {
+      height = 90
+    } else if (page === 'card') {
+      height = 130
+    } else if (page === 'pinned') {
+      height = 75
+    }
 
     return (
       <View style={styles.container}>
@@ -61,7 +59,7 @@ class SpeechBubbleComponent extends React.Component {
           <ImageBackground
             source={SPEECH_BUBBLE_MIDDLE}
             resizeMode="stretch"
-            style={[styles.bubbleView, page === 'feed' && { height: 90 }]}
+            style={[styles.bubbleView, { height }]}
           >
             <View style={styles.bubbleContent}>
               {page === 'pinned' 
