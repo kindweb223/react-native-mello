@@ -171,7 +171,7 @@ class HomeScreen extends React.Component {
           ['desc']
         )
         
-        if (prevState.tabIndex === 1) {
+        if (prevState.tabIndex === 2) {
           feedoList = filter(feedoList, item => item.pinned !== null)
         }
 
