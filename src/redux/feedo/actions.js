@@ -26,6 +26,21 @@ export const getFeedoList = (index, isForCardMove=false) => {
   };
 }
 
+/**
+ * Get feedo list
+ */
+export const getInvitedFeedList = () => {
+  let url = 'hunts?invitationStatus=INVITED'
+
+  return {
+    types: [types.GET_INVITED_FEEDO_LIST_PENDING, types.GET_INVITED_FEEDO_LIST_FULFILLED, types.GET_INVITED_FEEDO_LIST_REJECTED],
+    promise:
+      axios({
+        method: 'get',
+        url: url
+      })
+  };
+}
 
 /**
  * Get Feed detail

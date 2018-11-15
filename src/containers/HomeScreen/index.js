@@ -54,14 +54,15 @@ import {
   removeDummyFeed,
   setFeedDetailAction,
   setCurrentFeed,
-  deleteInvitee
+  deleteInvitee,
+  getInvitedFeedList
 } from '../../redux/feedo/actions'
 
 import { 
   setUserInfo,
   addDeviceToken,
   updateDeviceToken,
-  appOpened,
+  appOpened
 } from '../../redux/user/actions'
 
 import { 
@@ -122,6 +123,7 @@ class HomeScreen extends React.Component {
     this.props.setUserInfo(JSON.parse(userInfo))
     this.registerPushNotification();
     this.props.getFeedoList(this.state.tabIndex)
+    this.props.getInvitedFeedList()
     AppState.addEventListener('change', this.onHandleAppStateChange.bind(this));
     appOpened(this.props.user.userInfo.id);
   }
@@ -171,7 +173,7 @@ class HomeScreen extends React.Component {
           ['desc']
         )
         
-        if (prevState.tabIndex === 1) {
+        if (prevState.tabIndex === 2) {
           feedoList = filter(feedoList, item => item.pinned !== null)
         }
 
@@ -1093,9 +1095,9 @@ class HomeScreen extends React.Component {
         </View>
 
         {!this.state.isLongHoldMenuVisible && (
-          <DashboardActionBar 
+          <DashboardActionBar
             filtering={false}
-            notifications={false}
+            notifications={true}
             onAddFeed={this.onOpenNewFeedModal.bind(this)}
             handleFilter={() => this.handleFilter()}
           />
@@ -1162,7 +1164,8 @@ const mapDispatchToProps = dispatch => ({
   addDeviceToken: (userId, data) => dispatch(addDeviceToken(userId, data)),
   updateDeviceToken: (userId, deviceId, data) => dispatch(updateDeviceToken(userId, deviceId, data)),
   getCard: (ideaId) => dispatch(getCard(ideaId)),
-  deleteInvitee: (feedId, inviteeId) => dispatch(deleteInvitee(feedId, inviteeId))
+  deleteInvitee: (feedId, inviteeId) => dispatch(deleteInvitee(feedId, inviteeId)),
+  getInvitedFeedList: () => dispatch(getInvitedFeedList())
 })
 
 HomeScreen.propTypes = {
@@ -1178,7 +1181,8 @@ HomeScreen.propTypes = {
   removeDummyFeed: PropTypes.func.isRequired,
   setFeedDetailAction: PropTypes.func.isRequired,
   setUserInfo: PropTypes.func.isRequired,
-  deleteInvitee: PropTypes.func.isRequired
+  deleteInvitee: PropTypes.func.isRequired,
+  getInvitedFeedList: PropTypes.func.isRequired
 }
 
 export default connect(
