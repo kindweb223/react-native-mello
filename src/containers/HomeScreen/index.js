@@ -9,7 +9,8 @@ import {
   Platform,
   StatusBar,
   AsyncStorage,
-  AppState
+  AppState,
+  Clipboard,
 } from 'react-native'
 
 import { connect } from 'react-redux'
@@ -35,6 +36,7 @@ import ToasterComponent from '../../components/ToasterComponent'
 import FeedLoadingStateComponent from '../../components/FeedLoadingStateComponent'
 import EmptyStateComponent from '../../components/EmptyStateComponent'
 import SpeechBubbleComponent from '../../components/SpeechBubbleComponent'
+import ClipboardToasterComponent from '../../components/ClipboardToasterComponent'
 import COLORS from '../../service/colors'
 import styles from './styles'
 import CONSTANTS from '../../service/constants';
@@ -92,7 +94,7 @@ class HomeScreen extends React.Component {
       selectedFeedData: {},
       tabIndex: 0,
       emptyState: true,
-      isShowToaster: false,
+      isShowActionToaster: false,
       scrollableTabViewContainer: {},
       scrollY: new Animated.Value(0),
       currentPushNotificationType: CONSTANTS.UNKOWN_PUSH_NOTIFICATION,
@@ -106,11 +108,14 @@ class HomeScreen extends React.Component {
       showBubbleCloseButton: false,
       isExistingUser: false,
       showEmptyBubble: false,
-      isRefreshing: false
+      isRefreshing: false,
+      isShowClipboardToaster: false,
+      copiedUrl: '',
     };
 
     this.currentRef = null;
     this.animatedOpacity = new Animated.Value(0);
+    this.showClipboardTimeout = null;
   }
 
   async componentDidMount() {
@@ -212,17 +217,17 @@ class HomeScreen extends React.Component {
 
     if (this.props.feedo.loading === 'SET_FEED_DETAIL_ACTION' && prevProps.feedo.feedDetailAction !== this.props.feedo.feedDetailAction) {
       if (this.props.feedo.feedDetailAction.action === 'Delete') {
-        this.setState({ isShowToaster: true })
+        this.setState({ isShowActionToaster: true })
         this.handleDeleteFeed(this.props.feedo.feedDetailAction.feedId)
       }
 
       if (this.props.feedo.feedDetailAction.action === 'Archive') {
-        this.setState({ isShowToaster: true })
+        this.setState({ isShowActionToaster: true })
         this.handleArchiveFeed(this.props.feedo.feedDetailAction.feedId)
       }
 
       if (this.props.feedo.feedDetailAction.action === 'Leave') {
-        this.setState({ isShowToaster: true })
+        this.setState({ isShowActionToaster: true })
         this.handleLeaveFeed(this.props.feedo.feedDetailAction.feedId)
       }
     } else if (prevProps.user.loading === 'USER_SIGNOUT_PENDING' && this.props.user.loading === 'USER_SIGNOUT_FULFILLED') {
@@ -256,6 +261,7 @@ class HomeScreen extends React.Component {
         isVisibleCard: true,
         cardViewMode: CONSTANTS.CARD_VIEW,
         selectedIdeaInvitee: invitee,
+        copiedUrl: '',
       });
       this.animatedOpacity.setValue(0);
       Animated.timing(this.animatedOpacity, {
@@ -319,12 +325,29 @@ class HomeScreen extends React.Component {
     AsyncStorage.setItem('BubbleFeedInvitedNewUser', JSON.stringify(data));
   }
 
-  onHandleAppStateChange(nextAppState) {
+  async onHandleAppStateChange(nextAppState) {
     this.setState({appState: nextAppState});
     if (nextAppState === 'active') {
       appOpened(this.props.user.userInfo.id);
       if (Actions.currentScene === 'HomeScreen') {
-        this.props.getFeedoList(this.state.tabIndex)
+        this.props.getFeedoList(this.state.tabIndex);
+      }
+      if (Actions.currentScene !== 'FeedDetailScreen') {
+        const clipboardContent = await Clipboard.getString();
+        const lastClipboardData = await AsyncStorage.getItem(CONSTANTS.CLIPBOARD_DATA)
+        if (clipboardContent !== '' && clipboardContent !== lastClipboardData) {
+          AsyncStorage.setItem(CONSTANTS.CLIPBOARD_DATA, clipboardContent);
+          this.setState({
+            isShowClipboardToaster: true,
+            copiedUrl: clipboardContent,
+          })
+          this.showClipboardTimeout = setTimeout(() => {
+            this.setState({
+              isShowClipboardToaster: false,
+              copiedUrl: '',
+            });
+          }, CONSTANTS.CLIPBOARD_DATA_CONFIRM_DURATION + 500);
+        }
       }
     }
   }
@@ -520,7 +543,7 @@ class HomeScreen extends React.Component {
     this.props.addDummyFeed({ feedId, flag: 'archive' })
 
     setTimeout(() => {
-      this.setState({ isShowToaster: false })
+      this.setState({ isShowActionToaster: false })
       this.archiveFeed(feedId)
     }, TOASTER_DURATION)
   }
@@ -540,7 +563,7 @@ class HomeScreen extends React.Component {
     this.props.addDummyFeed({ feedId, flag: 'delete' })
 
     setTimeout(() => {
-      this.setState({ isShowToaster: false })
+      this.setState({ isShowActionToaster: false })
       this.deleteFeed(feedId)
     }, TOASTER_DURATION)
   }
@@ -560,7 +583,7 @@ class HomeScreen extends React.Component {
     this.props.addDummyFeed({ feedId, flag: 'leave' })
 
     setTimeout(() => {
-      this.setState({ isShowToaster: false })
+      this.setState({ isShowActionToaster: false })
       this.leaveFeed(feedId)
     }, TOASTER_DURATION)
   }
@@ -583,7 +606,7 @@ class HomeScreen extends React.Component {
     this.props.addDummyFeed({ feedId, flag: 'pin' })
 
     setTimeout(() => {
-      this.setState({ isShowToaster: false })
+      this.setState({ isShowActionToaster: false })
       this.pinFeed(feedId)
     }, TOASTER_DURATION)
   }
@@ -603,7 +626,7 @@ class HomeScreen extends React.Component {
     this.props.addDummyFeed({ feedId, flag: 'unpin' })
 
     setTimeout(() => {
-      this.setState({ isShowToaster: false })
+      this.setState({ isShowActionToaster: false })
       this.unpinFeed(feedId)
     }, TOASTER_DURATION)
   }
@@ -623,7 +646,7 @@ class HomeScreen extends React.Component {
     this.props.duplicateFeed(feedId)
 
     setTimeout(() => {
-      this.setState({ isShowToaster: false })
+      this.setState({ isShowActionToaster: false })
       this.duplicateFeed()
     }, TOASTER_DURATION + 5)
   }
@@ -674,15 +697,29 @@ class HomeScreen extends React.Component {
     }
 
     this.setState({
-      isShowToaster: false, isArchive: false, isDelete: false, isPin: false, isUnPin: false, isDuplicate: false, isLeave: false
+      isShowActionToaster: false, isArchive: false, isDelete: false, isPin: false, isUnPin: false, isDuplicate: false, isLeave: false
     })
+  }
+
+  onAddClipboardLink = () => {
+    clearTimeout(this.showClipboardTimeout);
+    this.showClipboardTimeout = null;
+    this.setState({
+      isShowClipboardToaster: false,
+    });
+    this.animatedOpacity.setValue(0);
+    Animated.timing(this.animatedOpacity, {
+      toValue: 1,
+      duration: CONSTANTS.ANIMATEION_MILLI_SECONDS,
+    }).start();
+    this.onSelectNewFeedType('New Card');
   }
 
   onLongHoldMenuHide = () => {
     const { isArchive, isDelete, isPin, isUnPin, isDuplicate, isLeave } = this.state
 
     if (isArchive || isDelete || isPin || isUnPin || isDuplicate || isLeave) {
-      this.setState({ isShowToaster: true })
+      this.setState({ isShowActionToaster: true })
     }
   }
 
@@ -846,6 +883,7 @@ class HomeScreen extends React.Component {
     }).start(() => {
       this.setState({ 
         isVisibleCard: false,
+        copiedUrl: '',
       });
     });
   }
@@ -869,6 +907,7 @@ class HomeScreen extends React.Component {
           viewMode={this.state.cardViewMode}
           cardMode={cardMode}
           invitee={this.state.selectedIdeaInvitee}
+          shareUrl={this.state.copiedUrl}
           onClose={() => this.onCloseCardModal()}
 
           // cardMode={CONSTANTS.SHARE_EXTENTION_CARD}
@@ -1125,15 +1164,35 @@ class HomeScreen extends React.Component {
           />
         </Modal>
 
-        {this.state.isShowToaster && (
+        {this.state.isShowActionToaster && (
           <ToasterComponent
-            isVisible={this.state.isShowToaster}
+            isVisible={this.state.isShowActionToaster}
             title={this.state.toasterTitle}
             onPressButton={this.undoAction}
           />
         )}
 
         {this.renderCardModal}
+
+        {/* {this.state.isShowClipboardToaster && (
+          <ClipboardToasterComponent
+            isVisible={this.state.isShowClipboardToaster}
+            description='https://apple.com'
+            onPress={() => this.onAddClipboardLink()}
+          />
+        )} */}
+
+        <Modal 
+          isVisible={this.state.isShowClipboardToaster}
+          style={styles.longHoldModalContainer}
+          backdropOpacity={0.3}
+        >
+          <ClipboardToasterComponent
+            description={this.state.copiedUrl}
+            onPress={() => this.onAddClipboardLink()}
+          />
+        </Modal>
+
 
       </SafeAreaView>
     )
