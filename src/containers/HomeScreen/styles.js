@@ -92,7 +92,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 12,
     height: '100%',
     overflow: 'hidden',
-    color: COLORS.MEDIUM_GREY
+    color: COLORS.DARK_GREY
   },
   activeTabBarTextStyle: {
     backgroundColor: COLORS.LIGHT_GREY_PLACEHOLDER,
