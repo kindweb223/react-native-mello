@@ -10,9 +10,9 @@ export const getFeedoList = (index, isForCardMove=false) => {
   let url = 'hunts'
 
   if (index === 1) {
-    url = 'hunts?pinned=true'
-  } else if (index === 2) {
     url = 'hunts?owner=false'
+  } else if (index === 2) {
+    url = 'hunts?pinned=true'
   }
 
   return {

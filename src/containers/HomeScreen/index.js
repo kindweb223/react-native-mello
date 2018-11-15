@@ -2,17 +2,14 @@
 import React from 'react'
 import {
   SafeAreaView,
-  ScrollView,
   View,
-  Text,
   Animated,
   Image,
   TouchableOpacity,
   Platform,
   StatusBar,
   AsyncStorage,
-  AppState,
-  RefreshControl
+  AppState
 } from 'react-native'
 
 import { connect } from 'react-redux'
@@ -807,13 +804,11 @@ class HomeScreen extends React.Component {
     const { loading } = this.state
 
     const tabContentHeight = CONSTANTS.SCREEN_HEIGHT - CONSTANTS.ACTION_BAR_HEIGHT - CONSTANTS.TAB_BAR_HEIGHT - 60 - 50
-    console.log('tabContentHeight: ', tabContentHeight)
 
     if (selectedIndex !== 0) {
       if (this.state.tabIndex === selectedIndex && !loading) {
         if (!this.state.scrollableTabViewContainer.height || event.nativeEvent.layout.height > this.state.scrollableTabViewContainer.height) {
           let height = event.nativeEvent.layout.height;
-          console.log('height1: ', height)
           if (height < tabContentHeight) {
             height = tabContentHeight
           }
@@ -825,7 +820,6 @@ class HomeScreen extends React.Component {
       }
     } else {
       let height = event.nativeEvent.layout.height;
-      console.log('height2: ', height)
       if (height < tabContentHeight) {
         height = tabContentHeight
         setTimeout(() => {
@@ -892,25 +886,24 @@ class HomeScreen extends React.Component {
   render () {
     const { loading, feedoList, emptyState, tabIndex } = this.state
     
-    const normalHeaderOpacity = this.state.scrollY.interpolate({
-      inputRange: [0, 40],
-      outputRange: [1, 0],
-      extrapolate: 'clamp'
-    })
+    // const normalHeaderOpacity = this.state.scrollY.interpolate({
+    //   inputRange: [0, 40],
+    //   outputRange: [1, 0],
+    //   extrapolate: 'clamp'
+    // })
 
-    const miniHeaderOpacity = this.state.scrollY.interpolate({
-      inputRange: [40, 100],
-      outputRange: [0, 1],
-      extrapolate: 'clamp'
-    })
+    // const miniHeaderOpacity = this.state.scrollY.interpolate({
+    //   inputRange: [40, 100],
+    //   outputRange: [0, 1],
+    //   extrapolate: 'clamp'
+    // })
 
-    const miniHeaderZIndex = this.state.scrollY.interpolate({
-      inputRange: [0, 20, 40],
-      outputRange: [11, 9, 11],
-      extrapolate: 'clamp'
-    })
+    // const miniHeaderZIndex = this.state.scrollY.interpolate({
+    //   inputRange: [0, 20, 40],
+    //   outputRange: [11, 9, 11],
+    //   extrapolate: 'clamp'
+    // })
 
-    console.log('scrollableTabViewContainer: ', this.state.scrollableTabViewContainer)
     return (
       <SafeAreaView style={styles.safeArea}>
         <View feedAction="null" />

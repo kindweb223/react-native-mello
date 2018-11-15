@@ -12,6 +12,7 @@ const styles = StyleSheet.create({
   },
   container: {
     flex: 1,
+    paddingTop: Platform.OS === 'ios' ? ifIphoneX(0, 10) : 10
   },
   statusBarUnderlay: {
     height: 24,
@@ -94,7 +95,7 @@ const styles = StyleSheet.create({
     color: COLORS.MEDIUM_GREY
   },
   activeTabBarTextStyle: {
-    backgroundColor: COLORS.LIGHT_GREY,
+    backgroundColor: COLORS.LIGHT_GREY_PLACEHOLDER,
     color: '#000'
   },
   longHoldModalContainer: {

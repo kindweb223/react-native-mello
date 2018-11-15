@@ -35,7 +35,7 @@ const styles = StyleSheet.create({
   },
   emptyCoverImageView: {
     flex: 1,
-    backgroundColor: COLORS.LIGHT_GREY
+    backgroundColor: COLORS.LIGHT_GREY_PLACEHOLDER
   }
 })
 
