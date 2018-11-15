@@ -313,10 +313,11 @@ class HomeScreen extends React.Component {
 
   onHandleAppStateChange(nextAppState) {
     this.setState({appState: nextAppState});
-
     if (nextAppState === 'active') {
       appOpened(this.props.user.userInfo.id);
-      this.props.getFeedoList(this.state.tabIndex)
+      if (Actions.currentScene === 'HomeScreen') {
+        this.props.getFeedoList(this.state.tabIndex)
+      }
     }
   }
 
