@@ -803,7 +803,8 @@ class NewCardScreen extends React.Component {
       storageOptions: {
         skipBackup: true,
         path: 'feedo'
-      }
+      },
+      mediaType: 'mixed'
     };
         
     if (index === 0) {
