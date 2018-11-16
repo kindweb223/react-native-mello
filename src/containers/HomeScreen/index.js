@@ -539,7 +539,7 @@ class HomeScreen extends React.Component {
 
   handleArchiveFeed = (feedId) => {
     this.setState({ isLongHoldMenuVisible: false })
-    this.setState({ isArchive: true, toasterTitle: 'Feedo archived', feedId })
+    this.setState({ isArchive: true, toasterTitle: 'Mello archived', feedId })
     this.props.addDummyFeed({ feedId, flag: 'archive' })
 
     setTimeout(() => {
@@ -559,7 +559,7 @@ class HomeScreen extends React.Component {
 
   handleDeleteFeed = (feedId) => {
     this.setState({ isLongHoldMenuVisible: false })
-    this.setState({ isDelete: true, toasterTitle: 'Feedo deleted', feedId })
+    this.setState({ isDelete: true, toasterTitle: 'Mello deleted', feedId })
     this.props.addDummyFeed({ feedId, flag: 'delete' })
 
     setTimeout(() => {
@@ -579,7 +579,7 @@ class HomeScreen extends React.Component {
 
   handleLeaveFeed = (feedId) => {
     this.setState({ isLongHoldMenuVisible: false })
-    this.setState({ isLeave: true, toasterTitle: 'Left Feedo', feedId })
+    this.setState({ isLeave: true, toasterTitle: 'Left Mello', feedId })
     this.props.addDummyFeed({ feedId, flag: 'leave' })
 
     setTimeout(() => {

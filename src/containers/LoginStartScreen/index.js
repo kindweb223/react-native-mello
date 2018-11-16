@@ -53,7 +53,7 @@ class SwipeFirstScreen extends React.Component {
     return (
       <View style={styles.swipeContainer}>
         <View style={styles.titleView}>
-          <Text style={styles.titleText}>Welcome to Feedo -</Text>
+          <Text style={styles.titleText}>Welcome to Mello -</Text>
           <Text style={styles.titleText}>your favourite little app</Text>
           <View style={styles.lastTextView}>
             <Text style={styles.titleText}>to collect </Text>
@@ -66,7 +66,7 @@ class SwipeFirstScreen extends React.Component {
         <TouchableOpacity onPress={() => this.onShowVideo()}>
           <View style={styles.videoLInkView}>
             <Text style={styles.linkText}>
-              All about Feedo in 90 seconds 
+              All about Mello in 90 seconds 
             </Text>
             <MaterialCommunityIcons name='play' size={20} color={COLORS.PURPLE} />
           </View>

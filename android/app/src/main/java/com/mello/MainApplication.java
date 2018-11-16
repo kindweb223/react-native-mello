@@ -1,4 +1,4 @@
-package com.feedo;
+package com.mello;
 
 import android.app.Application;
 

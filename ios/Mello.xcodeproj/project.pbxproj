@@ -12,7 +12,7 @@
 		00C302E81ABCBA2D00DB3ED1 /* libRCTImage.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 00C302C01ABCB91800DB3ED1 /* libRCTImage.a */; };
 		00C302E91ABCBA2D00DB3ED1 /* libRCTNetwork.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 00C302DC1ABCB9D200DB3ED1 /* libRCTNetwork.a */; };
 		00C302EA1ABCBA2D00DB3ED1 /* libRCTVibration.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 00C302E41ABCB9EE00DB3ED1 /* libRCTVibration.a */; };
-		00E356F31AD99517003FC87E /* FeedoTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 00E356F21AD99517003FC87E /* FeedoTests.m */; };
+		00E356F31AD99517003FC87E /* MelloTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 00E356F21AD99517003FC87E /* MelloTests.m */; };
 		0A790EEC82F644B5A5380ED4 /* libRCTImageResizer.a in Frameworks */ = {isa = PBXBuildFile; fileRef = E11AA4DCF86945E6A2B20097 /* libRCTImageResizer.a */; };
 		0D5D373B6936457E95E37A56 /* libSafariViewManager.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 94856EBACEF342CC8953358A /* libSafariViewManager.a */; };
 		133E29F31AD74F7200F7D852 /* libRCTLinking.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 78C398B91ACF4ADC00677621 /* libRCTLinking.a */; };
@@ -42,7 +42,7 @@
 		2D02E4C81E0B4AEC006451C7 /* libRCTWebSocket-tvOS.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 3DAD3E991DF850E9000B6D8A /* libRCTWebSocket-tvOS.a */; };
 		2D16E6881FA4F8E400B85C8A /* libReact.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 2D16E6891FA4F8E400B85C8A /* libReact.a */; };
 		2D52C42B218E625B003C52C8 /* libBugsnagReactNative.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 4CD459EE218C8D3600E5AD2F /* libBugsnagReactNative.a */; };
-		2DCD954D1E0B4F2C00145EB5 /* FeedoTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 00E356F21AD99517003FC87E /* FeedoTests.m */; };
+		2DCD954D1E0B4F2C00145EB5 /* MelloTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 00E356F21AD99517003FC87E /* MelloTests.m */; };
 		2DF0FFEE2056DD460020B375 /* libReact.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 3DAD3EA31DF850E9000B6D8A /* libReact.a */; };
 		422DE7522DC141888C856AFB /* libReactNativeHaptic.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 63B0B597FA904A7BBE354801 /* libReactNativeHaptic.a */; };
 		45A806F94F774736BDFCF564 /* libBugsnagReactNative.a in Frameworks */ = {isa = PBXBuildFile; fileRef = D9E1BD18BB5B4D62B4263950 /* libBugsnagReactNative.a */; };
@@ -69,7 +69,7 @@
 		832341BD1AAA6AB300B99B32 /* libRCTText.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 832341B51AAA6A8300B99B32 /* libRCTText.a */; };
 		8D2B584D1B954CA58C0936B6 /* SimpleLineIcons.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 2E7C184AF38D495CA598BB2B /* SimpleLineIcons.ttf */; };
 		9984E80312CC41B9AA567B8E /* EvilIcons.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 6DDC407B5B624A7C8F6AD515 /* EvilIcons.ttf */; };
-		9CD6677E73B85E6F01711321 /* libPods-Feedo.a in Frameworks */ = {isa = PBXBuildFile; fileRef = EA8FF63A41537B5124E94788 /* libPods-Feedo.a */; };
+		9CD6677E73B85E6F01711321 /* libPods-Mello.a in Frameworks */ = {isa = PBXBuildFile; fileRef = EA8FF63A41537B5124E94788 /* libPods-Mello.a */; };
 		A43342992142AF80005EE6DE /* libFastImage.a in Frameworks */ = {isa = PBXBuildFile; fileRef = A40B3D5C2110EB62002B5EDB /* libFastImage.a */; };
 		A450133E2139BEE600A78D65 /* libRCTActionSheet.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 00C302AC1ABCB8CE00DB3ED1 /* libRCTActionSheet.a */; };
 		A450133F2139BEE600A78D65 /* libRCTAnimation.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 5E9157331DD0AC6500FF2AA8 /* libRCTAnimation.a */; };
@@ -90,7 +90,7 @@
 		A480B7442154DD9B00634D8B /* libRCTPushNotification.a in Frameworks */ = {isa = PBXBuildFile; fileRef = A46C2DF1214970D5007E54FA /* libRCTPushNotification.a */; };
 		A4BF285821234CFE0054D7A9 /* CloudKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A4BF285721234CFE0054D7A9 /* CloudKit.framework */; };
 		A4CD66952139B68000874CB1 /* MainInterface.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = A4CD66932139B68000874CB1 /* MainInterface.storyboard */; };
-		A4CD66992139B68000874CB1 /* FeedoEx.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = A4CD668E2139B67F00874CB1 /* FeedoEx.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		A4CD66992139B68000874CB1 /* MelloEx.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = A4CD668E2139B67F00874CB1 /* MelloEx.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		A4D2256A21408E8300539042 /* libRNReactNativeSharedGroupPreferences.a in Frameworks */ = {isa = PBXBuildFile; fileRef = A466CC352140042C00B3430F /* libRNReactNativeSharedGroupPreferences.a */; };
 		A4EB9CC8213F0FE300C598B8 /* libRNVectorIcons.a in Frameworks */ = {isa = PBXBuildFile; fileRef = B554B64B210DFC7800A36A10 /* libRNVectorIcons.a */; };
 		A4EB9CF8213F114300C598B8 /* Entypo.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 49E66C7627DA4206B745FC76 /* Entypo.ttf */; };
@@ -115,7 +115,7 @@
 		B5C9088721735F2200C3CD9A /* libRCTVideo.a in Frameworks */ = {isa = PBXBuildFile; fileRef = B5C9088421735EE900C3CD9A /* libRCTVideo.a */; };
 		BB896AB9E6414964B0B4FC39 /* Zocial.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 6ABC6722E2BF4E8E89696E69 /* Zocial.ttf */; };
 		BDF2DA279A484FA7B04A157F /* FontAwesome.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 7574CA4FAF3A401FBE3E75F4 /* FontAwesome.ttf */; };
-		BE54F4BFC1F6E6C82EFDB59C /* libPods-FeedoEx.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 4A542F7F6D91BEC591EF445A /* libPods-FeedoEx.a */; };
+		BE54F4BFC1F6E6C82EFDB59C /* libPods-MelloEx.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 4A542F7F6D91BEC591EF445A /* libPods-MelloEx.a */; };
 		C42873B476E444FCB67126E3 /* libRCTVideo.a in Frameworks */ = {isa = PBXBuildFile; fileRef = D1563032C77F49209E54DB70 /* libRCTVideo.a */; };
 		C7AF4BF1CB6546ADBC6BF01B /* Ionicons.ttf in Resources */ = {isa = PBXBuildFile; fileRef = D09AE13BB9DB4E5887135009 /* Ionicons.ttf */; };
 		D5CD4B10CDF14C0989676146 /* MaterialCommunityIcons.ttf in Resources */ = {isa = PBXBuildFile; fileRef = A91519045FC74D37A0B5D694 /* MaterialCommunityIcons.ttf */; };
@@ -167,7 +167,7 @@
 			containerPortal = 83CBB9F71A601CBA00E9B192 /* Project object */;
 			proxyType = 1;
 			remoteGlobalIDString = 13B07F861A680F5B00A75B9A;
-			remoteInfo = Feedo;
+			remoteInfo = Mello;
 		};
 		139105C01AF99BAD00B5F7CC /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
@@ -195,7 +195,7 @@
 			containerPortal = 83CBB9F71A601CBA00E9B192 /* Project object */;
 			proxyType = 1;
 			remoteGlobalIDString = 2D02E47A1E0B4A5D006451C7;
-			remoteInfo = "Feedo-tvOS";
+			remoteInfo = "Mello-tvOS";
 		};
 		2D16E6711FA4F8DC00B85C8A /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
@@ -496,7 +496,7 @@
 			containerPortal = 83CBB9F71A601CBA00E9B192 /* Project object */;
 			proxyType = 1;
 			remoteGlobalIDString = A4CD668D2139B67F00874CB1;
-			remoteInfo = FeedoEx;
+			remoteInfo = MelloEx;
 		};
 		ADBDB9261DFEBF0700ED6528 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
@@ -626,7 +626,7 @@
 			dstPath = "";
 			dstSubfolderSpec = 13;
 			files = (
-				A4CD66992139B68000874CB1 /* FeedoEx.appex in Embed App Extensions */,
+				A4CD66992139B68000874CB1 /* MelloEx.appex in Embed App Extensions */,
 			);
 			name = "Embed App Extensions";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -651,28 +651,28 @@
 		00C302BB1ABCB91800DB3ED1 /* RCTImage.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RCTImage.xcodeproj; path = "../node_modules/react-native/Libraries/Image/RCTImage.xcodeproj"; sourceTree = "<group>"; };
 		00C302D31ABCB9D200DB3ED1 /* RCTNetwork.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RCTNetwork.xcodeproj; path = "../node_modules/react-native/Libraries/Network/RCTNetwork.xcodeproj"; sourceTree = "<group>"; };
 		00C302DF1ABCB9EE00DB3ED1 /* RCTVibration.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RCTVibration.xcodeproj; path = "../node_modules/react-native/Libraries/Vibration/RCTVibration.xcodeproj"; sourceTree = "<group>"; };
-		00E356EE1AD99517003FC87E /* FeedoTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = FeedoTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		00E356EE1AD99517003FC87E /* MelloTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = MelloTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		00E356F11AD99517003FC87E /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		00E356F21AD99517003FC87E /* FeedoTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = FeedoTests.m; sourceTree = "<group>"; };
+		00E356F21AD99517003FC87E /* MelloTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = MelloTests.m; sourceTree = "<group>"; };
 		02E97D88AA95480983B98802 /* RNVectorIcons.xcodeproj */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = "wrapper.pb-project"; name = RNVectorIcons.xcodeproj; path = "../node_modules/react-native-vector-icons/RNVectorIcons.xcodeproj"; sourceTree = "<group>"; };
 		139105B61AF99BAD00B5F7CC /* RCTSettings.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RCTSettings.xcodeproj; path = "../node_modules/react-native/Libraries/Settings/RCTSettings.xcodeproj"; sourceTree = "<group>"; };
 		139FDEE61B06529A00C62182 /* RCTWebSocket.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RCTWebSocket.xcodeproj; path = "../node_modules/react-native/Libraries/WebSocket/RCTWebSocket.xcodeproj"; sourceTree = "<group>"; };
-		13B07F961A680F5B00A75B9A /* Feedo.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Feedo.app; sourceTree = BUILT_PRODUCTS_DIR; };
-		13B07FAF1A68108700A75B9A /* AppDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AppDelegate.h; path = Feedo/AppDelegate.h; sourceTree = "<group>"; };
-		13B07FB01A68108700A75B9A /* AppDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = AppDelegate.m; path = Feedo/AppDelegate.m; sourceTree = "<group>"; };
+		13B07F961A680F5B00A75B9A /* Mello.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Mello.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		13B07FAF1A68108700A75B9A /* AppDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AppDelegate.h; path = Mello/AppDelegate.h; sourceTree = "<group>"; };
+		13B07FB01A68108700A75B9A /* AppDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = AppDelegate.m; path = Mello/AppDelegate.m; sourceTree = "<group>"; };
 		13B07FB21A68108700A75B9A /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/LaunchScreen.xib; sourceTree = "<group>"; };
-		13B07FB51A68108700A75B9A /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; name = Images.xcassets; path = Feedo/Images.xcassets; sourceTree = "<group>"; };
-		13B07FB61A68108700A75B9A /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = Info.plist; path = Feedo/Info.plist; sourceTree = "<group>"; };
-		13B07FB71A68108700A75B9A /* main.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = main.m; path = Feedo/main.m; sourceTree = "<group>"; };
-		13FCFEF276102F879641FBDF /* libPods-Feedo-tvOSTests.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-Feedo-tvOSTests.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+		13B07FB51A68108700A75B9A /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; name = Images.xcassets; path = Mello/Images.xcassets; sourceTree = "<group>"; };
+		13B07FB61A68108700A75B9A /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = Info.plist; path = Mello/Info.plist; sourceTree = "<group>"; };
+		13B07FB71A68108700A75B9A /* main.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = main.m; path = Mello/main.m; sourceTree = "<group>"; };
+		13FCFEF276102F879641FBDF /* libPods-Mello-tvOSTests.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-Mello-tvOSTests.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		146833FF1AC3E56700842450 /* React.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = React.xcodeproj; path = "../node_modules/react-native/React/React.xcodeproj"; sourceTree = "<group>"; };
 		18636AE54B124B8A962E377E /* Lottie.xcodeproj */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = "wrapper.pb-project"; name = Lottie.xcodeproj; path = "../node_modules/lottie-ios/Lottie.xcodeproj"; sourceTree = "<group>"; };
 		1AE0342E1F8E4EB593320F3B /* libBVLinearGradient.a */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = archive.ar; path = libBVLinearGradient.a; sourceTree = "<group>"; };
 		1BBE45B3BBA8440189B9842C /* libLottieReactNative.a */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = archive.ar; path = libLottieReactNative.a; sourceTree = "<group>"; };
 		212DE1171C3D4A89BC6BDD44 /* FontAwesome5_Solid.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = FontAwesome5_Solid.ttf; path = "../node_modules/react-native-vector-icons/Fonts/FontAwesome5_Solid.ttf"; sourceTree = "<group>"; };
 		2866BBFC826843B8A6FFB69C /* RNFirebase.xcodeproj */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = "wrapper.pb-project"; name = RNFirebase.xcodeproj; path = "../node_modules/react-native-firebase/ios/RNFirebase.xcodeproj"; sourceTree = "<group>"; };
-		2D02E47B1E0B4A5D006451C7 /* Feedo-tvOS.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Feedo-tvOS.app"; sourceTree = BUILT_PRODUCTS_DIR; };
-		2D02E4901E0B4A5D006451C7 /* Feedo-tvOSTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "Feedo-tvOSTests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
+		2D02E47B1E0B4A5D006451C7 /* Mello-tvOS.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Mello-tvOS.app"; sourceTree = BUILT_PRODUCTS_DIR; };
+		2D02E4901E0B4A5D006451C7 /* Mello-tvOSTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "Mello-tvOSTests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		2D16E6891FA4F8E400B85C8A /* libReact.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; path = libReact.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		2E7C184AF38D495CA598BB2B /* SimpleLineIcons.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = SimpleLineIcons.ttf; path = "../node_modules/react-native-vector-icons/Fonts/SimpleLineIcons.ttf"; sourceTree = "<group>"; };
 		2F28E02440D142FE96E32D75 /* RCTVideo.xcodeproj */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = "wrapper.pb-project"; name = RCTVideo.xcodeproj; path = "../node_modules/react-native-video/ios/RCTVideo.xcodeproj"; sourceTree = "<group>"; };
@@ -681,7 +681,7 @@
 		44C268ED8ACC4BCE9CDA61FC /* libRNDeviceInfo.a */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = archive.ar; path = libRNDeviceInfo.a; sourceTree = "<group>"; };
 		47BA3513B6514BE58476D7B4 /* libRNImagePicker.a */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = archive.ar; path = libRNImagePicker.a; sourceTree = "<group>"; };
 		49E66C7627DA4206B745FC76 /* Entypo.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = Entypo.ttf; path = "../node_modules/react-native-vector-icons/Fonts/Entypo.ttf"; sourceTree = "<group>"; };
-		4A542F7F6D91BEC591EF445A /* libPods-FeedoEx.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-FeedoEx.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+		4A542F7F6D91BEC591EF445A /* libPods-MelloEx.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-MelloEx.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		4C3C63F52199E8BC00B68196 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		4CC8617A21933F8A00481DED /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		4CF0DB4C219983A6000ED175 /* libFirebaseCore.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; path = libFirebaseCore.a; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -703,8 +703,8 @@
 		78F9B7C6AC83469A950CD8B2 /* FastImage.xcodeproj */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = "wrapper.pb-project"; name = FastImage.xcodeproj; path = "../node_modules/react-native-fast-image/ios/FastImage.xcodeproj"; sourceTree = "<group>"; };
 		7FF9F77D31634DD9B9D15601 /* libz.tbd */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libz.tbd; path = usr/lib/libz.tbd; sourceTree = SDKROOT; };
 		832341B01AAA6A8300B99B32 /* RCTText.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RCTText.xcodeproj; path = "../node_modules/react-native/Libraries/Text/RCTText.xcodeproj"; sourceTree = "<group>"; };
-		83A3A57F49D18643DC5B7A36 /* Pods-Feedo.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Feedo.debug.xcconfig"; path = "Pods/Target Support Files/Pods-Feedo/Pods-Feedo.debug.xcconfig"; sourceTree = "<group>"; };
-		88B878D7356F3D2796D7E02F /* Pods-FeedoEx.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-FeedoEx.debug.xcconfig"; path = "Pods/Target Support Files/Pods-FeedoEx/Pods-FeedoEx.debug.xcconfig"; sourceTree = "<group>"; };
+		83A3A57F49D18643DC5B7A36 /* Pods-Mello.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Mello.debug.xcconfig"; path = "Pods/Target Support Files/Pods-Mello/Pods-Mello.debug.xcconfig"; sourceTree = "<group>"; };
+		88B878D7356F3D2796D7E02F /* Pods-MelloEx.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-MelloEx.debug.xcconfig"; path = "Pods/Target Support Files/Pods-MelloEx/Pods-MelloEx.debug.xcconfig"; sourceTree = "<group>"; };
 		8A848E2C3FF045DE85911225 /* libRNDeviceInfo-tvOS.a */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = archive.ar; path = "libRNDeviceInfo-tvOS.a"; sourceTree = "<group>"; };
 		94856EBACEF342CC8953358A /* libSafariViewManager.a */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = archive.ar; path = libSafariViewManager.a; sourceTree = "<group>"; };
 		94BDD0529B2B41739DBEBD1D /* SafariViewManager.xcodeproj */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = "wrapper.pb-project"; name = SafariViewManager.xcodeproj; path = "../node_modules/react-native-safari-view/SafariViewManager.xcodeproj"; sourceTree = "<group>"; };
@@ -720,14 +720,14 @@
 		A43563E8213837A200A6D4EA /* SDWebImage.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = SDWebImage.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		A43563EA213837A200A6D4EA /* SDWebImage.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = SDWebImage.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		A46C2DDB214970D5007E54FA /* RCTPushNotification.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RCTPushNotification.xcodeproj; path = "../node_modules/react-native/Libraries/PushNotificationIOS/RCTPushNotification.xcodeproj"; sourceTree = "<group>"; };
-		A48B0150210F8F9C001C33B5 /* Feedo.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; name = Feedo.entitlements; path = Feedo/Feedo.entitlements; sourceTree = "<group>"; };
+		A48B0150210F8F9C001C33B5 /* Mello.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; name = Mello.entitlements; path = Mello/Mello.entitlements; sourceTree = "<group>"; };
 		A4BF285721234CFE0054D7A9 /* CloudKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CloudKit.framework; path = System/Library/Frameworks/CloudKit.framework; sourceTree = SDKROOT; };
-		A4CD668E2139B67F00874CB1 /* FeedoEx.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = FeedoEx.appex; sourceTree = BUILT_PRODUCTS_DIR; };
+		A4CD668E2139B67F00874CB1 /* MelloEx.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = MelloEx.appex; sourceTree = BUILT_PRODUCTS_DIR; };
 		A4CD66942139B68000874CB1 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/MainInterface.storyboard; sourceTree = "<group>"; };
 		A4CD66962139B68000874CB1 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		A4CD76AA21198ECA002BE387 /* AssetsLibrary.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AssetsLibrary.framework; path = System/Library/Frameworks/AssetsLibrary.framework; sourceTree = SDKROOT; };
 		A4CD76D821198ED8002BE387 /* QuickLook.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuickLook.framework; path = System/Library/Frameworks/QuickLook.framework; sourceTree = SDKROOT; };
-		A4EB9D06213F41D300C598B8 /* FeedoEx.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = FeedoEx.entitlements; sourceTree = "<group>"; };
+		A4EB9D06213F41D300C598B8 /* MelloEx.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = MelloEx.entitlements; sourceTree = "<group>"; };
 		A4EB9D07213F42DA00C598B8 /* ShareExtensionViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ShareExtensionViewController.h; sourceTree = "<group>"; };
 		A4EB9D08213F42DA00C598B8 /* ShareExtensionViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ShareExtensionViewController.m; sourceTree = "<group>"; };
 		A4ED2C5426FB4A1DAD19663F /* libRNVectorIcons.a */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = archive.ar; path = libRNVectorIcons.a; sourceTree = "<group>"; };
@@ -738,7 +738,7 @@
 		B3A57268A8CF4DC8B8159490 /* libRNVersionNumber-tvOS.a */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = archive.ar; path = "libRNVersionNumber-tvOS.a"; sourceTree = "<group>"; };
 		B74E433CEE1F41BC9567AFCD /* ReactNativePermissions.xcodeproj */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = "wrapper.pb-project"; name = ReactNativePermissions.xcodeproj; path = "../node_modules/react-native-permissions/ios/ReactNativePermissions.xcodeproj"; sourceTree = "<group>"; };
 		B9577B0B9C0042FEBD2572D5 /* FontAwesome5_Brands.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = FontAwesome5_Brands.ttf; path = "../node_modules/react-native-vector-icons/Fonts/FontAwesome5_Brands.ttf"; sourceTree = "<group>"; };
-		B9DC685E0A3B033E4BF9FC62 /* Pods-FeedoEx.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-FeedoEx.release.xcconfig"; path = "Pods/Target Support Files/Pods-FeedoEx/Pods-FeedoEx.release.xcconfig"; sourceTree = "<group>"; };
+		B9DC685E0A3B033E4BF9FC62 /* Pods-MelloEx.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-MelloEx.release.xcconfig"; path = "Pods/Target Support Files/Pods-MelloEx/Pods-MelloEx.release.xcconfig"; sourceTree = "<group>"; };
 		C01A3DFF0BBD47CA8E552943 /* Octicons.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = Octicons.ttf; path = "../node_modules/react-native-vector-icons/Fonts/Octicons.ttf"; sourceTree = "<group>"; };
 		C71C50B610D14398A80BB51C /* Lottie.framework */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = wrapper.framework; name = Lottie.framework; path = System/Library/Frameworks/Lottie.framework; sourceTree = SDKROOT; };
 		C7747C3163BF42E093C0FFE0 /* MaterialIcons.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = MaterialIcons.ttf; path = "../node_modules/react-native-vector-icons/Fonts/MaterialIcons.ttf"; sourceTree = "<group>"; };
@@ -747,15 +747,15 @@
 		D1563032C77F49209E54DB70 /* libRCTVideo.a */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = archive.ar; path = libRCTVideo.a; sourceTree = "<group>"; };
 		D210E3B691F245F2BC9636EF /* RNVersionNumber.xcodeproj */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = "wrapper.pb-project"; name = RNVersionNumber.xcodeproj; path = "../node_modules/react-native-version-number/ios/RNVersionNumber.xcodeproj"; sourceTree = "<group>"; };
 		D430FA82BA004D78B4B43DEB /* BugsnagReactNative.xcodeproj */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = "wrapper.pb-project"; name = BugsnagReactNative.xcodeproj; path = "../node_modules/bugsnag-react-native/cocoa/BugsnagReactNative.xcodeproj"; sourceTree = "<group>"; };
-		D987827413CAB2D1572A10CA /* Pods-Feedo.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Feedo.release.xcconfig"; path = "Pods/Target Support Files/Pods-Feedo/Pods-Feedo.release.xcconfig"; sourceTree = "<group>"; };
+		D987827413CAB2D1572A10CA /* Pods-Mello.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Mello.release.xcconfig"; path = "Pods/Target Support Files/Pods-Mello/Pods-Mello.release.xcconfig"; sourceTree = "<group>"; };
 		D9E1BD18BB5B4D62B4263950 /* libBugsnagReactNative.a */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = archive.ar; path = libBugsnagReactNative.a; sourceTree = "<group>"; };
 		DDF2F7A8F2BB4EE4B265F759 /* RNImagePicker.xcodeproj */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = "wrapper.pb-project"; name = RNImagePicker.xcodeproj; path = "../node_modules/react-native-image-picker/ios/RNImagePicker.xcodeproj"; sourceTree = "<group>"; };
 		E11AA4DCF86945E6A2B20097 /* libRCTImageResizer.a */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = archive.ar; path = libRCTImageResizer.a; sourceTree = "<group>"; };
 		E1CBEF82D4354C2B972EC9F2 /* RCTImageResizer.xcodeproj */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = "wrapper.pb-project"; name = RCTImageResizer.xcodeproj; path = "../node_modules/react-native-image-resizer/ios/RCTImageResizer.xcodeproj"; sourceTree = "<group>"; };
 		E57D5DDA7F1640AB94755FB9 /* BVLinearGradient.xcodeproj */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = "wrapper.pb-project"; name = BVLinearGradient.xcodeproj; path = "../node_modules/react-native-linear-gradient/BVLinearGradient.xcodeproj"; sourceTree = "<group>"; };
-		EA8FF63A41537B5124E94788 /* libPods-Feedo.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-Feedo.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+		EA8FF63A41537B5124E94788 /* libPods-Mello.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-Mello.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		F392C297832F4FAFB46C1123 /* RNDocumentPicker.xcodeproj */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = "wrapper.pb-project"; name = RNDocumentPicker.xcodeproj; path = "../node_modules/react-native-document-picker/ios/RNDocumentPicker.xcodeproj"; sourceTree = "<group>"; };
-		F89F93B2A8EF63BAB20E0016 /* libPods-FeedoTests.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-FeedoTests.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+		F89F93B2A8EF63BAB20E0016 /* libPods-MelloTests.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-MelloTests.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -807,7 +807,7 @@
 				5248C0FBBFFA4DEE80F990D9 /* libz.tbd in Frameworks */,
 				6EBDD815484C4CB6A8095806 /* libRNDeviceInfo.a in Frameworks */,
 				EDE5891B255E490C98FF3E06 /* libRNFirebase.a in Frameworks */,
-				9CD6677E73B85E6F01711321 /* libPods-Feedo.a in Frameworks */,
+				9CD6677E73B85E6F01711321 /* libPods-Mello.a in Frameworks */,
 				AFEEEFE4828B4646B48CC6F0 /* libRNSVG.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -864,7 +864,7 @@
 				A4D2256A21408E8300539042 /* libRNReactNativeSharedGroupPreferences.a in Frameworks */,
 				A480B7432154DD4700634D8B /* libSafariViewManager.a in Frameworks */,
 				A480B7442154DD9B00634D8B /* libRCTPushNotification.a in Frameworks */,
-				BE54F4BFC1F6E6C82EFDB59C /* libPods-FeedoEx.a in Frameworks */,
+				BE54F4BFC1F6E6C82EFDB59C /* libPods-MelloEx.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -913,13 +913,13 @@
 			name = Products;
 			sourceTree = "<group>";
 		};
-		00E356EF1AD99517003FC87E /* FeedoTests */ = {
+		00E356EF1AD99517003FC87E /* MelloTests */ = {
 			isa = PBXGroup;
 			children = (
-				00E356F21AD99517003FC87E /* FeedoTests.m */,
+				00E356F21AD99517003FC87E /* MelloTests.m */,
 				00E356F01AD99517003FC87E /* Supporting Files */,
 			);
-			path = FeedoTests;
+			path = MelloTests;
 			sourceTree = "<group>";
 		};
 		00E356F01AD99517003FC87E /* Supporting Files */ = {
@@ -950,10 +950,10 @@
 			name = Products;
 			sourceTree = "<group>";
 		};
-		13B07FAE1A68108700A75B9A /* Feedo */ = {
+		13B07FAE1A68108700A75B9A /* Mello */ = {
 			isa = PBXGroup;
 			children = (
-				A48B0150210F8F9C001C33B5 /* Feedo.entitlements */,
+				A48B0150210F8F9C001C33B5 /* Mello.entitlements */,
 				008F07F21AC5B25A0029DE68 /* main.jsbundle */,
 				13B07FAF1A68108700A75B9A /* AppDelegate.h */,
 				13B07FB01A68108700A75B9A /* AppDelegate.m */,
@@ -963,7 +963,7 @@
 				13B07FB11A68108700A75B9A /* LaunchScreen.xib */,
 				13B07FB71A68108700A75B9A /* main.m */,
 			);
-			name = Feedo;
+			name = Mello;
 			sourceTree = "<group>";
 		};
 		146834001AC3E56700842450 /* Products */ = {
@@ -1004,10 +1004,10 @@
 				A4CD76AA21198ECA002BE387 /* AssetsLibrary.framework */,
 				2D16E6891FA4F8E400B85C8A /* libReact.a */,
 				7FF9F77D31634DD9B9D15601 /* libz.tbd */,
-				EA8FF63A41537B5124E94788 /* libPods-Feedo.a */,
-				13FCFEF276102F879641FBDF /* libPods-Feedo-tvOSTests.a */,
-				4A542F7F6D91BEC591EF445A /* libPods-FeedoEx.a */,
-				F89F93B2A8EF63BAB20E0016 /* libPods-FeedoTests.a */,
+				EA8FF63A41537B5124E94788 /* libPods-Mello.a */,
+				13FCFEF276102F879641FBDF /* libPods-Mello-tvOSTests.a */,
+				4A542F7F6D91BEC591EF445A /* libPods-MelloEx.a */,
+				F89F93B2A8EF63BAB20E0016 /* libPods-MelloTests.a */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -1060,10 +1060,10 @@
 		5684B0E0BE49C917AB54FE18 /* Pods */ = {
 			isa = PBXGroup;
 			children = (
-				83A3A57F49D18643DC5B7A36 /* Pods-Feedo.debug.xcconfig */,
-				D987827413CAB2D1572A10CA /* Pods-Feedo.release.xcconfig */,
-				88B878D7356F3D2796D7E02F /* Pods-FeedoEx.debug.xcconfig */,
-				B9DC685E0A3B033E4BF9FC62 /* Pods-FeedoEx.release.xcconfig */,
+				83A3A57F49D18643DC5B7A36 /* Pods-Mello.debug.xcconfig */,
+				D987827413CAB2D1572A10CA /* Pods-Mello.release.xcconfig */,
+				88B878D7356F3D2796D7E02F /* Pods-MelloEx.debug.xcconfig */,
+				B9DC685E0A3B033E4BF9FC62 /* Pods-MelloEx.release.xcconfig */,
 			);
 			name = Pods;
 			sourceTree = "<group>";
@@ -1137,10 +1137,10 @@
 		83CBB9F61A601CBA00E9B192 = {
 			isa = PBXGroup;
 			children = (
-				13B07FAE1A68108700A75B9A /* Feedo */,
+				13B07FAE1A68108700A75B9A /* Mello */,
 				832341AE1AAA6A7D00B99B32 /* Libraries */,
-				00E356EF1AD99517003FC87E /* FeedoTests */,
-				A4CD668F2139B68000874CB1 /* FeedoEx */,
+				00E356EF1AD99517003FC87E /* MelloTests */,
+				A4CD668F2139B68000874CB1 /* MelloEx */,
 				83CBBA001A601CBA00E9B192 /* Products */,
 				2D16E6871FA4F8E400B85C8A /* Frameworks */,
 				4836FCAAE7F14E69A4ACF664 /* Resources */,
@@ -1155,11 +1155,11 @@
 		83CBBA001A601CBA00E9B192 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				13B07F961A680F5B00A75B9A /* Feedo.app */,
-				00E356EE1AD99517003FC87E /* FeedoTests.xctest */,
-				2D02E47B1E0B4A5D006451C7 /* Feedo-tvOS.app */,
-				2D02E4901E0B4A5D006451C7 /* Feedo-tvOSTests.xctest */,
-				A4CD668E2139B67F00874CB1 /* FeedoEx.appex */,
+				13B07F961A680F5B00A75B9A /* Mello.app */,
+				00E356EE1AD99517003FC87E /* MelloTests.xctest */,
+				2D02E47B1E0B4A5D006451C7 /* Mello-tvOS.app */,
+				2D02E4901E0B4A5D006451C7 /* Mello-tvOSTests.xctest */,
+				A4CD668E2139B67F00874CB1 /* MelloEx.appex */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -1231,17 +1231,17 @@
 			name = Products;
 			sourceTree = "<group>";
 		};
-		A4CD668F2139B68000874CB1 /* FeedoEx */ = {
+		A4CD668F2139B68000874CB1 /* MelloEx */ = {
 			isa = PBXGroup;
 			children = (
 				4C3C63F52199E8BC00B68196 /* GoogleService-Info.plist */,
-				A4EB9D06213F41D300C598B8 /* FeedoEx.entitlements */,
+				A4EB9D06213F41D300C598B8 /* MelloEx.entitlements */,
 				A4CD66932139B68000874CB1 /* MainInterface.storyboard */,
 				A4EB9D07213F42DA00C598B8 /* ShareExtensionViewController.h */,
 				A4EB9D08213F42DA00C598B8 /* ShareExtensionViewController.m */,
 				A4CD66962139B68000874CB1 /* Info.plist */,
 			);
-			path = FeedoEx;
+			path = MelloEx;
 			sourceTree = "<group>";
 		};
 		ADBDB9201DFEBF0600ED6528 /* Products */ = {
@@ -1364,9 +1364,9 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		00E356ED1AD99517003FC87E /* FeedoTests */ = {
+		00E356ED1AD99517003FC87E /* MelloTests */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 00E357021AD99517003FC87E /* Build configuration list for PBXNativeTarget "FeedoTests" */;
+			buildConfigurationList = 00E357021AD99517003FC87E /* Build configuration list for PBXNativeTarget "MelloTests" */;
 			buildPhases = (
 				00E356EA1AD99517003FC87E /* Sources */,
 				00E356EB1AD99517003FC87E /* Frameworks */,
@@ -1377,14 +1377,14 @@
 			dependencies = (
 				00E356F51AD99517003FC87E /* PBXTargetDependency */,
 			);
-			name = FeedoTests;
-			productName = FeedoTests;
-			productReference = 00E356EE1AD99517003FC87E /* FeedoTests.xctest */;
+			name = MelloTests;
+			productName = MelloTests;
+			productReference = 00E356EE1AD99517003FC87E /* MelloTests.xctest */;
 			productType = "com.apple.product-type.bundle.unit-test";
 		};
-		13B07F861A680F5B00A75B9A /* Feedo */ = {
+		13B07F861A680F5B00A75B9A /* Mello */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 13B07F931A680F5B00A75B9A /* Build configuration list for PBXNativeTarget "Feedo" */;
+			buildConfigurationList = 13B07F931A680F5B00A75B9A /* Build configuration list for PBXNativeTarget "Mello" */;
 			buildPhases = (
 				C272A68C1907409EB7735F34 /* [CP] Check Pods Manifest.lock */,
 				13B07F871A680F5B00A75B9A /* Sources */,
@@ -1400,14 +1400,14 @@
 				A4CD66982139B68000874CB1 /* PBXTargetDependency */,
 				B509BBF621778AA6006ED535 /* PBXTargetDependency */,
 			);
-			name = Feedo;
+			name = Mello;
 			productName = "Hello World";
-			productReference = 13B07F961A680F5B00A75B9A /* Feedo.app */;
+			productReference = 13B07F961A680F5B00A75B9A /* Mello.app */;
 			productType = "com.apple.product-type.application";
 		};
-		2D02E47A1E0B4A5D006451C7 /* Feedo-tvOS */ = {
+		2D02E47A1E0B4A5D006451C7 /* Mello-tvOS */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 2D02E4BA1E0B4A5E006451C7 /* Build configuration list for PBXNativeTarget "Feedo-tvOS" */;
+			buildConfigurationList = 2D02E4BA1E0B4A5E006451C7 /* Build configuration list for PBXNativeTarget "Mello-tvOS" */;
 			buildPhases = (
 				2D02E4771E0B4A5D006451C7 /* Sources */,
 				2D02E4781E0B4A5D006451C7 /* Frameworks */,
@@ -1418,14 +1418,14 @@
 			);
 			dependencies = (
 			);
-			name = "Feedo-tvOS";
-			productName = "Feedo-tvOS";
-			productReference = 2D02E47B1E0B4A5D006451C7 /* Feedo-tvOS.app */;
+			name = "Mello-tvOS";
+			productName = "Mello-tvOS";
+			productReference = 2D02E47B1E0B4A5D006451C7 /* Mello-tvOS.app */;
 			productType = "com.apple.product-type.application";
 		};
-		2D02E48F1E0B4A5D006451C7 /* Feedo-tvOSTests */ = {
+		2D02E48F1E0B4A5D006451C7 /* Mello-tvOSTests */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 2D02E4BB1E0B4A5E006451C7 /* Build configuration list for PBXNativeTarget "Feedo-tvOSTests" */;
+			buildConfigurationList = 2D02E4BB1E0B4A5E006451C7 /* Build configuration list for PBXNativeTarget "Mello-tvOSTests" */;
 			buildPhases = (
 				2D02E48C1E0B4A5D006451C7 /* Sources */,
 				2D02E48D1E0B4A5D006451C7 /* Frameworks */,
@@ -1436,14 +1436,14 @@
 			dependencies = (
 				2D02E4921E0B4A5D006451C7 /* PBXTargetDependency */,
 			);
-			name = "Feedo-tvOSTests";
-			productName = "Feedo-tvOSTests";
-			productReference = 2D02E4901E0B4A5D006451C7 /* Feedo-tvOSTests.xctest */;
+			name = "Mello-tvOSTests";
+			productName = "Mello-tvOSTests";
+			productReference = 2D02E4901E0B4A5D006451C7 /* Mello-tvOSTests.xctest */;
 			productType = "com.apple.product-type.bundle.unit-test";
 		};
-		A4CD668D2139B67F00874CB1 /* FeedoEx */ = {
+		A4CD668D2139B67F00874CB1 /* MelloEx */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = A4CD669A2139B68000874CB1 /* Build configuration list for PBXNativeTarget "FeedoEx" */;
+			buildConfigurationList = A4CD669A2139B68000874CB1 /* Build configuration list for PBXNativeTarget "MelloEx" */;
 			buildPhases = (
 				F8482088474C5A2FFC624808 /* [CP] Check Pods Manifest.lock */,
 				A4CD668A2139B67F00874CB1 /* Sources */,
@@ -1455,9 +1455,9 @@
 			);
 			dependencies = (
 			);
-			name = FeedoEx;
-			productName = FeedoEx;
-			productReference = A4CD668E2139B67F00874CB1 /* FeedoEx.appex */;
+			name = MelloEx;
+			productName = MelloEx;
+			productReference = A4CD668E2139B67F00874CB1 /* MelloEx.appex */;
 			productType = "com.apple.product-type.app-extension";
 		};
 /* End PBXNativeTarget section */
@@ -1517,7 +1517,7 @@
 					};
 				};
 			};
-			buildConfigurationList = 83CBB9FA1A601CBA00E9B192 /* Build configuration list for PBXProject "Feedo" */;
+			buildConfigurationList = 83CBB9FA1A601CBA00E9B192 /* Build configuration list for PBXProject "Mello" */;
 			compatibilityVersion = "Xcode 3.2";
 			developmentRegion = English;
 			hasScannedForEncodings = 0;
@@ -1660,11 +1660,11 @@
 			);
 			projectRoot = "";
 			targets = (
-				13B07F861A680F5B00A75B9A /* Feedo */,
-				00E356ED1AD99517003FC87E /* FeedoTests */,
-				2D02E47A1E0B4A5D006451C7 /* Feedo-tvOS */,
-				2D02E48F1E0B4A5D006451C7 /* Feedo-tvOSTests */,
-				A4CD668D2139B67F00874CB1 /* FeedoEx */,
+				13B07F861A680F5B00A75B9A /* Mello */,
+				00E356ED1AD99517003FC87E /* MelloTests */,
+				2D02E47A1E0B4A5D006451C7 /* Mello-tvOS */,
+				2D02E48F1E0B4A5D006451C7 /* Mello-tvOSTests */,
+				A4CD668D2139B67F00874CB1 /* MelloEx */,
 			);
 		};
 /* End PBXProject section */
@@ -2220,7 +2220,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "export NODE_BINARY=node\n#export ENTRY_FILENAME=index\n../bin/react-native-xcode.sh";
+			shellScript = "export NODE_BINARY=node\n#export ENTRY_FILENAME=index\n../bin/react-native-xcode.sh\n";
 		};
 		2D02E4CB1E0B4B27006451C7 /* Bundle React Native Code And Images */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -2248,7 +2248,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "export NODE_BINARY=node\n../bin/react-native-xcode.sh";
+			shellScript = "export NODE_BINARY=node\n../bin/react-native-xcode.sh\n";
 		};
 		C272A68C1907409EB7735F34 /* [CP] Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -2265,7 +2265,7 @@
 			outputFileListPaths = (
 			);
 			outputPaths = (
-				"$(DERIVED_FILE_DIR)/Pods-Feedo-checkManifestLockResult.txt",
+				"$(DERIVED_FILE_DIR)/Pods-Mello-checkManifestLockResult.txt",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
@@ -2287,7 +2287,7 @@
 			outputFileListPaths = (
 			);
 			outputPaths = (
-				"$(DERIVED_FILE_DIR)/Pods-FeedoEx-checkManifestLockResult.txt",
+				"$(DERIVED_FILE_DIR)/Pods-MelloEx-checkManifestLockResult.txt",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
@@ -2301,7 +2301,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				00E356F31AD99517003FC87E /* FeedoTests.m in Sources */,
+				00E356F31AD99517003FC87E /* MelloTests.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -2327,7 +2327,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				2DCD954D1E0B4F2C00145EB5 /* FeedoTests.m in Sources */,
+				2DCD954D1E0B4F2C00145EB5 /* MelloTests.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -2344,17 +2344,17 @@
 /* Begin PBXTargetDependency section */
 		00E356F51AD99517003FC87E /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			target = 13B07F861A680F5B00A75B9A /* Feedo */;
+			target = 13B07F861A680F5B00A75B9A /* Mello */;
 			targetProxy = 00E356F41AD99517003FC87E /* PBXContainerItemProxy */;
 		};
 		2D02E4921E0B4A5D006451C7 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			target = 2D02E47A1E0B4A5D006451C7 /* Feedo-tvOS */;
+			target = 2D02E47A1E0B4A5D006451C7 /* Mello-tvOS */;
 			targetProxy = 2D02E4911E0B4A5D006451C7 /* PBXContainerItemProxy */;
 		};
 		A4CD66982139B68000874CB1 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			target = A4CD668D2139B67F00874CB1 /* FeedoEx */;
+			target = A4CD668D2139B67F00874CB1 /* MelloEx */;
 			targetProxy = A4CD66972139B68000874CB1 /* PBXContainerItemProxy */;
 		};
 		B509BBF621778AA6006ED535 /* PBXTargetDependency */ = {
@@ -2371,7 +2371,7 @@
 				13B07FB21A68108700A75B9A /* Base */,
 			);
 			name = LaunchScreen.xib;
-			path = Feedo;
+			path = Mello;
 			sourceTree = "<group>";
 		};
 		A4CD66932139B68000874CB1 /* MainInterface.storyboard */ = {
@@ -2418,7 +2418,7 @@
 					"$(SRCROOT)/../node_modules/react-native-firebase/ios/RNFirebase/**",
 					"$(SRCROOT)/../node_modules/react-native-svg/ios/**",
 				);
-				INFOPLIST_FILE = FeedoTests/Info.plist;
+				INFOPLIST_FILE = MelloTests/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				LIBRARY_SEARCH_PATHS = (
@@ -2436,7 +2436,7 @@
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Feedo.app/Feedo";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Mello.app/Mello";
 			};
 			name = Debug;
 		};
@@ -2471,7 +2471,7 @@
 					"$(SRCROOT)/../node_modules/react-native-firebase/ios/RNFirebase/**",
 					"$(SRCROOT)/../node_modules/react-native-svg/ios/**",
 				);
-				INFOPLIST_FILE = FeedoTests/Info.plist;
+				INFOPLIST_FILE = MelloTests/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				LIBRARY_SEARCH_PATHS = (
@@ -2489,16 +2489,16 @@
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Feedo.app/Feedo";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Mello.app/Mello";
 			};
 			name = Release;
 		};
 		13B07F941A680F5B00A75B9A /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 83A3A57F49D18643DC5B7A36 /* Pods-Feedo.debug.xcconfig */;
+			baseConfigurationReference = 83A3A57F49D18643DC5B7A36 /* Pods-Mello.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				CODE_SIGN_ENTITLEMENTS = Feedo/Feedo.entitlements;
+				CODE_SIGN_ENTITLEMENTS = Mello/Mello.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				CODE_SIGN_STYLE = Manual;
@@ -2528,7 +2528,7 @@
 					"$(SRCROOT)/../node_modules/react-native-firebase/ios/RNFirebase/**",
 					"$(SRCROOT)/../node_modules/react-native-svg/ios/**",
 				);
-				INFOPLIST_FILE = Feedo/Info.plist;
+				INFOPLIST_FILE = Mello/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				OTHER_LDFLAGS = (
@@ -2537,7 +2537,7 @@
 					"-lc++",
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = io.solvers.feedo;
-				PRODUCT_NAME = Feedo;
+				PRODUCT_NAME = Mello;
 				PROVISIONING_PROFILE = "f246c801-94fd-49d5-ac01-1a96b8ac7b8a";
 				PROVISIONING_PROFILE_SPECIFIER = "Feedo Dev";
 				VERSIONING_SYSTEM = "apple-generic";
@@ -2546,10 +2546,10 @@
 		};
 		13B07F951A680F5B00A75B9A /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = D987827413CAB2D1572A10CA /* Pods-Feedo.release.xcconfig */;
+			baseConfigurationReference = D987827413CAB2D1572A10CA /* Pods-Mello.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				CODE_SIGN_ENTITLEMENTS = Feedo/Feedo.entitlements;
+				CODE_SIGN_ENTITLEMENTS = Mello/Mello.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Distribution";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution";
 				CODE_SIGN_STYLE = Manual;
@@ -2578,7 +2578,7 @@
 					"$(SRCROOT)/../node_modules/react-native-firebase/ios/RNFirebase/**",
 					"$(SRCROOT)/../node_modules/react-native-svg/ios/**",
 				);
-				INFOPLIST_FILE = Feedo/Info.plist;
+				INFOPLIST_FILE = Mello/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				OTHER_LDFLAGS = (
@@ -2587,7 +2587,7 @@
 					"-lc++",
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = io.solvers.feedo;
-				PRODUCT_NAME = Feedo;
+				PRODUCT_NAME = Mello;
 				PROVISIONING_PROFILE = "ee85223c-26f6-476e-9dcd-2659d75c232d";
 				PROVISIONING_PROFILE_SPECIFIER = "Feedo Dist";
 				VERSIONING_SYSTEM = "apple-generic";
@@ -2632,7 +2632,7 @@
 					"$(SRCROOT)/../node_modules/react-native-firebase/ios/RNFirebase/**",
 					"$(SRCROOT)/../node_modules/react-native-svg/ios/**",
 				);
-				INFOPLIST_FILE = "Feedo-tvOS/Info.plist";
+				INFOPLIST_FILE = "Mello-tvOS/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
@@ -2647,7 +2647,7 @@
 					"-ObjC",
 					"-lc++",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = "com.facebook.REACT.Feedo-tvOS";
+				PRODUCT_BUNDLE_IDENTIFIER = "com.facebook.REACT.Mello-tvOS";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "";
 				PROVISIONING_PROFILE_SPECIFIER = "";
@@ -2695,7 +2695,7 @@
 					"$(SRCROOT)/../node_modules/react-native-firebase/ios/RNFirebase/**",
 					"$(SRCROOT)/../node_modules/react-native-svg/ios/**",
 				);
-				INFOPLIST_FILE = "Feedo-tvOS/Info.plist";
+				INFOPLIST_FILE = "Mello-tvOS/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
@@ -2710,7 +2710,7 @@
 					"-ObjC",
 					"-lc++",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = "com.facebook.REACT.Feedo-tvOS";
+				PRODUCT_BUNDLE_IDENTIFIER = "com.facebook.REACT.Mello-tvOS";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SDKROOT = appletvos;
@@ -2753,7 +2753,7 @@
 					"$(SRCROOT)/../node_modules/react-native-firebase/ios/RNFirebase/**",
 					"$(SRCROOT)/../node_modules/react-native-svg/ios/**",
 				);
-				INFOPLIST_FILE = "Feedo-tvOSTests/Info.plist";
+				INFOPLIST_FILE = "Mello-tvOSTests/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
@@ -2768,10 +2768,10 @@
 					"-ObjC",
 					"-lc++",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = "com.facebook.REACT.Feedo-tvOSTests";
+				PRODUCT_BUNDLE_IDENTIFIER = "com.facebook.REACT.Mello-tvOSTests";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = appletvos;
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Feedo-tvOS.app/Feedo-tvOS";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Mello-tvOS.app/Mello-tvOS";
 				TVOS_DEPLOYMENT_TARGET = 10.1;
 			};
 			name = Debug;
@@ -2810,7 +2810,7 @@
 					"$(SRCROOT)/../node_modules/react-native-firebase/ios/RNFirebase/**",
 					"$(SRCROOT)/../node_modules/react-native-svg/ios/**",
 				);
-				INFOPLIST_FILE = "Feedo-tvOSTests/Info.plist";
+				INFOPLIST_FILE = "Mello-tvOSTests/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
@@ -2825,10 +2825,10 @@
 					"-ObjC",
 					"-lc++",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = "com.facebook.REACT.Feedo-tvOSTests";
+				PRODUCT_BUNDLE_IDENTIFIER = "com.facebook.REACT.Mello-tvOSTests";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = appletvos;
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Feedo-tvOS.app/Feedo-tvOS";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Mello-tvOS.app/Mello-tvOS";
 				TVOS_DEPLOYMENT_TARGET = 10.1;
 			};
 			name = Release;
@@ -2911,7 +2911,7 @@
 		};
 		A4CD669B2139B68000874CB1 /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 88B878D7356F3D2796D7E02F /* Pods-FeedoEx.debug.xcconfig */;
+			baseConfigurationReference = 88B878D7356F3D2796D7E02F /* Pods-MelloEx.debug.xcconfig */;
 			buildSettings = {
 				CLANG_ANALYZER_NONNULL = YES;
 				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
@@ -2929,7 +2929,7 @@
 				CLANG_WARN_STRICT_PROTOTYPES = YES;
 				CLANG_WARN_SUSPICIOUS_MOVE = YES;
 				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
-				CODE_SIGN_ENTITLEMENTS = FeedoEx/FeedoEx.entitlements;
+				CODE_SIGN_ENTITLEMENTS = MelloEx/MelloEx.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				CODE_SIGN_STYLE = Manual;
@@ -2952,7 +2952,7 @@
 					"$(SRCROOT)/../node_modules/react-native-firebase/ios/RNFirebase/**",
 					"$(SRCROOT)/../node_modules/react-native-svg/ios/**",
 				);
-				INFOPLIST_FILE = FeedoEx/Info.plist;
+				INFOPLIST_FILE = MelloEx/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @executable_path/../../Frameworks";
 				LIBRARY_SEARCH_PATHS = (
@@ -2980,7 +2980,7 @@
 		};
 		A4CD669C2139B68000874CB1 /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = B9DC685E0A3B033E4BF9FC62 /* Pods-FeedoEx.release.xcconfig */;
+			baseConfigurationReference = B9DC685E0A3B033E4BF9FC62 /* Pods-MelloEx.release.xcconfig */;
 			buildSettings = {
 				CLANG_ANALYZER_NONNULL = YES;
 				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
@@ -2998,7 +2998,7 @@
 				CLANG_WARN_STRICT_PROTOTYPES = YES;
 				CLANG_WARN_SUSPICIOUS_MOVE = YES;
 				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
-				CODE_SIGN_ENTITLEMENTS = FeedoEx/FeedoEx.entitlements;
+				CODE_SIGN_ENTITLEMENTS = MelloEx/MelloEx.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution";
 				CODE_SIGN_STYLE = Manual;
@@ -3021,7 +3021,7 @@
 					"$(SRCROOT)/../node_modules/react-native-firebase/ios/RNFirebase/**",
 					"$(SRCROOT)/../node_modules/react-native-svg/ios/**",
 				);
-				INFOPLIST_FILE = FeedoEx/Info.plist;
+				INFOPLIST_FILE = MelloEx/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @executable_path/../../Frameworks";
 				LIBRARY_SEARCH_PATHS = (
@@ -3050,7 +3050,7 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		00E357021AD99517003FC87E /* Build configuration list for PBXNativeTarget "FeedoTests" */ = {
+		00E357021AD99517003FC87E /* Build configuration list for PBXNativeTarget "MelloTests" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				00E356F61AD99517003FC87E /* Debug */,
@@ -3059,7 +3059,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		13B07F931A680F5B00A75B9A /* Build configuration list for PBXNativeTarget "Feedo" */ = {
+		13B07F931A680F5B00A75B9A /* Build configuration list for PBXNativeTarget "Mello" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				13B07F941A680F5B00A75B9A /* Debug */,
@@ -3068,7 +3068,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		2D02E4BA1E0B4A5E006451C7 /* Build configuration list for PBXNativeTarget "Feedo-tvOS" */ = {
+		2D02E4BA1E0B4A5E006451C7 /* Build configuration list for PBXNativeTarget "Mello-tvOS" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				2D02E4971E0B4A5E006451C7 /* Debug */,
@@ -3077,7 +3077,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		2D02E4BB1E0B4A5E006451C7 /* Build configuration list for PBXNativeTarget "Feedo-tvOSTests" */ = {
+		2D02E4BB1E0B4A5E006451C7 /* Build configuration list for PBXNativeTarget "Mello-tvOSTests" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				2D02E4991E0B4A5E006451C7 /* Debug */,
@@ -3086,7 +3086,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		83CBB9FA1A601CBA00E9B192 /* Build configuration list for PBXProject "Feedo" */ = {
+		83CBB9FA1A601CBA00E9B192 /* Build configuration list for PBXProject "Mello" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				83CBBA201A601CBA00E9B192 /* Debug */,
@@ -3095,7 +3095,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		A4CD669A2139B68000874CB1 /* Build configuration list for PBXNativeTarget "FeedoEx" */ = {
+		A4CD669A2139B68000874CB1 /* Build configuration list for PBXNativeTarget "MelloEx" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				A4CD669B2139B68000874CB1 /* Debug */,

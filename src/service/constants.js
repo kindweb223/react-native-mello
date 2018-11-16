@@ -23,7 +23,7 @@ export default {
   TEXT_INPUT_LINE_HEIGHT: 23,
   CLIPBOARD_DATA_CONFIRM_DURATION: 6000,
 
-  // Feedo show type
+  // Mello show type
   FEED_NONE: 0,
   FEED_NEW: 1,
   FEED_VIEW: 2,
