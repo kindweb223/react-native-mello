@@ -33,9 +33,9 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'center',
     alignItems: 'center',
-    height: 34,
+    height: 30,
     width: 90,
-    borderRadius: 17,
+    borderRadius: 15,
     marginRight: 15
   },
   acceptButtonView: {
