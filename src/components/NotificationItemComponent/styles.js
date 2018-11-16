@@ -8,7 +8,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row'
   },
   leftContainer: {
-    width: 55
+    width: 50
   },
   rightContainer: {
     flex: 1
