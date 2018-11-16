@@ -81,7 +81,7 @@ const FeedLoadingStateComponent = () => (
     <FeedLoadingStateItem />
     <FeedLoadingStateItem />
     <FeedLoadingStateItem />
-    <FeedLoadingStateItem />   
+    <FeedLoadingStateItem />
   </View>
 )
 

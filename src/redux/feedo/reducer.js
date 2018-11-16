@@ -1,6 +1,6 @@
 import * as types from './types'
 import * as cardTypes from '../card/types'
-import { filter, find, findIndex } from 'lodash'
+import { filter, find, findIndex, isEmpty } from 'lodash'
 import resolveError from './../../service/resolveError'
 
 const initialState = {
@@ -48,6 +48,90 @@ export default function feedo(state = initialState, action = {}) {
       return {
         ...state,
         loading: types.GET_FEEDO_LIST_REJECTED,
+        error: action.error,
+      }
+    }
+    /**
+     * Get Invited Feed List
+     */
+    case types.GET_INVITED_FEEDO_LIST_PENDING:
+      return {
+        ...state,
+        invitedFeedList: [],
+        loading: types.GET_INVITED_FEEDO_LIST_PENDING,
+      }
+    case types.GET_INVITED_FEEDO_LIST_FULFILLED: {
+      const { data } = action.result
+      return {
+        ...state,
+        loading: types.GET_INVITED_FEEDO_LIST_FULFILLED,
+        invitedFeedList: data.content
+      }
+    }
+    case types.GET_INVITED_FEEDO_LIST_REJECTED: {
+      return {
+        ...state,
+        loading: types.GET_INVITED_FEEDO_LIST_REJECTED,
+        error: action.error,
+      }
+    }
+    /**
+     * Update feedo invitation (accept, ignore)
+     */
+    case types.UPDTE_FEED_INVITATION_PENDING:
+      return {
+        ...state,
+        loading: types.UPDTE_FEED_INVITATION_PENDING,
+      }
+    case types.UPDTE_FEED_INVITATION_FULFILLED: {
+      const { feedId, type } = action.payload
+      const { invitedFeedList, feedoList, currentFeed } = state
+
+      const restInvitedFeedList = filter(invitedFeedList, feed => feed.id !== feedId)
+
+      // Update feed list
+      let updateFeed = null
+      let restFeedoList = []
+      if (feedoList.length > 0) {
+        restFeedoList = filter(feedoList, feed => feed.id !== feedId)
+        let filterUpdateFeed = filter(feedoList, feed => feed.id === feedId)
+        updateFeed = filterUpdateFeed[0]
+
+        if (filterUpdateFeed.length > 0) {
+          updateFeed = {
+            ...updateFeed,
+            metadata: {
+              ...updateFeed.metadata,
+              myInviteStatus: 'ACCEPTED'
+            }
+          }
+        }
+      }
+
+      // Update current feed
+      let newCurrentFeed = {}
+      if (!isEmpty(currentFeed)) {
+        newCurrentFeed = {
+          ...currentFeed,
+          metadata: {
+            ...currentFeed.metadata,
+            myInviteStatus: type ? 'ACCEPTED' : 'DECLINED'
+          }
+        }
+      }
+
+      return {
+        ...state,
+        loading: types.UPDTE_FEED_INVITATION_FULFILLED,
+        invitedFeedList: restInvitedFeedList,
+        feedoList: type ? (updateFeed ? [...restFeedoList, updateFeed] : restFeedoList) : restFeedoList,
+        currentFeed: newCurrentFeed
+      }
+    }
+    case types.UPDTE_FEED_INVITATION_REJECTED: {
+      return {
+        ...state,
+        loading: types.UPDTE_FEED_INVITATION_REJECTED,
         error: action.error,
       }
     }

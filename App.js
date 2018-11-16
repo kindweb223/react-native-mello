@@ -72,6 +72,7 @@ import CropImageScreen from './src/containers/CropImageScreen'
 import FeedFilterScreen from './src/containers/FeedFilterScreen'
 import ArchivedFeedScreen from './src/containers/ArchivedFeedScreen'
 import PrivacyPolicyScreen from './src/containers/PrivacyPolicyScreen'
+import NotificationScreen from './src/containers/NotificationScreen'
 
 const store = createStore(reducers, applyMiddleware(thunk, promiseMiddleware))
 
@@ -233,6 +234,11 @@ export default class Root extends React.Component {
               <Scene key="ArchivedFeedScreen" component={ ArchivedFeedScreen } navigationBarStyle={styles.defaultNavigationBar} />
             </Stack>
           </Stack>
+          <Stack key="NotificationScreen" hideNavBar>
+            <Stack key="NotificationScreen">
+              <Scene key="NotificationScreen" component={ NotificationScreen } navigationBarStyle={styles.defaultNavigationBar} />
+            </Stack>
+          </Stack>            
         </Modal>
         <Scene key="LoadingScreen" component={ LoadingScreen } hideNavBar />
         <Scene key="ImageSliderScreen" component={ ImageSliderScreen } hideNavBar />

@@ -136,6 +136,36 @@ const styles = StyleSheet.create({
     backgroundColor: COLORS.SEPARATOR_GREY,
     width: '100%',
     height: 1,
+  },
+  buttonContainer: {
+    paddingHorizontal: CONSTANTS.PADDING,
+    marginBottom: 30,
+    flexDirection: 'row'
+  },
+  buttonView: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
+    height: 34,
+    width: 90,
+    borderRadius: 17,
+    marginRight: 15
+  },
+  acceptButtonView: {
+    backgroundColor: COLORS.PURPLE
+  },
+  ignoreButtonView: {
+    backgroundColor: COLORS.MEDIUM_GREY
+  },
+  buttonText: {
+    fontSize: 14,
+    fontWeight: '600'
+  },
+  acceptButtonText: {
+    color: '#fff'
+  },
+  ignoreButtonText: {
+    color: '#fff'
   }
 })
 

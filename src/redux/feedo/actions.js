@@ -7,7 +7,7 @@ import * as types from './types'
  * Get feedo list
  */
 export const getFeedoList = (index, isForCardMove=false) => {
-  let url = 'hunts'
+  let url = 'hunts?owner=true'
 
   if (index === 1) {
     url = 'hunts?owner=false'
@@ -39,6 +39,26 @@ export const getInvitedFeedList = () => {
         method: 'get',
         url: url
       })
+  };
+}
+
+/**
+ * Update feed invitation (accept, ignore)
+ */
+export const updateInvitation = (feedId, type) => {
+  let url = `hunts/${feedId}/invitees/invitation`
+
+  return {
+    types: [types.UPDTE_FEED_INVITATION_PENDING, types.UPDTE_FEED_INVITATION_FULFILLED, types.UPDTE_FEED_INVITATION_REJECTED],
+    promise: axios({
+      method: 'put',
+      url: url,
+      data: { accepted: type }
+    }),
+    payload: {
+      feedId,
+      type
+    },
   };
 }
 
