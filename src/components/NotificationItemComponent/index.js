@@ -12,6 +12,7 @@ import _ from 'lodash'
 import R from 'ramda'
 import UserAvatar from 'react-native-user-avatar'
 import EvilIcons from 'react-native-vector-icons/EvilIcons'
+import FastImage from "react-native-fast-image";
 
 import FeedCoverImageComponent from '../FeedItemComponent/FeedCoverImageComponent'
 import {
@@ -32,6 +33,7 @@ const renderAvatar = (user) => {
         color={COLORS.LIGHT_GREY}
         textColor="#000"
         src={user.imageUrl}
+        component={FastImage}
       />
     );
   }
