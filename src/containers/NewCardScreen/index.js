@@ -144,7 +144,7 @@ class NewCardScreen extends React.Component {
     if (this.props.card.loading !== types.CREATE_CARD_PENDING && nextProps.card.loading === types.CREATE_CARD_PENDING) {
       loading = true;
     } else if (this.props.card.loading !== types.CREATE_CARD_FULFILLED && nextProps.card.loading === types.CREATE_CARD_FULFILLED) {
-      if (this.props.cardMode === CONSTANTS.SHARE_EXTENTION_CARD && this.props.shareUrl !== '') {
+      if ((this.props.cardMode === CONSTANTS.SHARE_EXTENTION_CARD || this.props.viewMode === CONSTANTS.CARD_NEW) && this.props.shareUrl !== '') {
         this.setState({
           // cardName: this.props.shareUrl,
           idea: this.props.shareUrl,
