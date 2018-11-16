@@ -10,48 +10,16 @@ import { Actions } from 'react-native-router-flux'
 import PropTypes from 'prop-types'
 import _ from 'lodash'
 import R from 'ramda'
-import UserAvatar from 'react-native-user-avatar'
 import EvilIcons from 'react-native-vector-icons/EvilIcons'
 import FastImage from "react-native-fast-image"
 
 import FeedCoverImageComponent from '../FeedItemComponent/FeedCoverImageComponent'
+import UserAvatarComponent from '../../components/UserAvatarComponent'
 import {
   updateInvitation
 } from '../../redux/feedo/actions'
 import COLORS from '../../service/colors'
 import styles from './styles'
-
-const renderAvatar = (user) => {
-  const size = 35
-  const name = `${user.firstName} ${user.lastName}`;
-
-  if (user.imageUrl || user.firstName || user.lastName) {
-    return (
-      <UserAvatar
-        size={size}
-        name={name}
-        color={COLORS.LIGHT_GREY}
-        textColor="#000"
-        src={user.imageUrl}
-        component={FastImage}
-      />
-    );
-  }
-  return (
-    <View
-      style={{
-        width: size,
-        height: size,
-        borderRadius: size / 2,
-        backgroundColor: COLORS.LIGHT_GREY,
-        alignItems: 'center',
-        justifyContent: 'center',
-      }}
-    >
-      <EvilIcons name="envelope" size={32} color={COLORS.PURPLE} />
-    </View>
-  )
-}
 
 const NotificationItemComponent = ({ item, hideTumbnail, updateInvitation }) => {
   const filteredIdeas = _.filter(item.ideas, idea => idea.coverImage !== null && idea.coverImage !== '')
@@ -72,7 +40,7 @@ const NotificationItemComponent = ({ item, hideTumbnail, updateInvitation }) => 
     <View style={styles.container}>
       <View style={styles.leftContainer}>
         <View style={styles.avatarView}>
-          {renderAvatar(item.owner)}
+          <UserAvatarComponent user={item.owner} size={35} />
         </View>
       </View>
 
