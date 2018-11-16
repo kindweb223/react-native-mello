@@ -8,9 +8,7 @@ import {
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 import { Actions } from 'react-native-router-flux'
-import Foundation from 'react-native-vector-icons/Foundation'
-import Ionicons from 'react-native-vector-icons/Ionicons'
-import Octicons from 'react-native-vector-icons/Octicons'
+import FastImage from "react-native-fast-image";
 import EvilIcons from 'react-native-vector-icons/EvilIcons'
 import UserAvatar from 'react-native-user-avatar'
 import Tags from "../../../components/FeedTags"
@@ -42,6 +40,7 @@ const renderAvatar = (user) => {
         color={COLORS.LIGHT_GREY}
         textColor="#000"
         src={user.imageUrl}
+        component={FastImage}
       />
     );
   }
