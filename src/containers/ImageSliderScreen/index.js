@@ -40,11 +40,11 @@ class ImageSliderScreen extends React.Component {
     Analytics.setCurrentScreen('ImageSliderScreen')
 
     const {
-      imageFiles,
+      mediaFiles,
     } = this.props;
 
     let imageHeightList = []
-    imageFiles.forEach(element => {
+    mediaFiles.forEach(element => {
       Image.getSize(element.accessUrl, (width, height) => {
         imageHeightList = [ ...imageHeightList, CONSTANTS.SCREEN_WIDTH / width * height ];
         this.setState({ maxImageHeight: max(imageHeightList) })
@@ -101,19 +101,19 @@ class ImageSliderScreen extends React.Component {
 
   onDelete() {
     const {
-      imageFiles,
+      mediaFiles,
     } = this.props;
     if (this.props.onRemove) {
-      this.props.onRemove(imageFiles[this.state.imageIndex].id);
+      this.props.onRemove(mediaFiles[this.state.imageIndex].id);
     }
   }
 
   onSetCoverImage() {
     const {
-      imageFiles,
+      mediaFiles,
     } = this.props;
     if (this.props.onSetCoverImage) {
-      this.props.onSetCoverImage(imageFiles[this.state.imageIndex].id);
+      this.props.onSetCoverImage(mediaFiles[this.state.imageIndex].id);
     }
   }
 
@@ -143,13 +143,17 @@ class ImageSliderScreen extends React.Component {
 
   render () {
     const { maxImageHeight } = this.state
-    const { imageFiles, isFastImage } = this.props;
-
+    const { mediaFiles, isFastImage } = this.props;
+    let isImage = true;
+    if (mediaFiles.length > 0) {
+      const mediaFile = mediaFiles[this.state.imageIndex];
+      isImage = mediaFile && mediaFile.contentType.toLowerCase().indexOf('image') !== -1;
+    }
     return (
       <View style={styles.container}>
         <Slideshow 
           position={this.state.position}
-          imageFiles={imageFiles}
+          mediaFiles={mediaFiles}
           width={CONSTANTS.SCREEN_WIDTH}
           height={CONSTANTS.SCREEN_HEIGHT - 140}
           isFastImage={isFastImage}
@@ -170,7 +174,7 @@ class ImageSliderScreen extends React.Component {
           </TouchableOpacity>
         </Animated.View>
         {
-          this.props.removal && this.props.isSetCoverImage && 
+          this.props.removal && this.props.isSetCoverImage && isImage &&
           <Animated.View 
             style={[styles.coverButton, { opacity: this.buttonOpacity }]}
           >
@@ -203,7 +207,7 @@ class ImageSliderScreen extends React.Component {
 
 
 ImageSliderScreen.defaultProps = {
-  imageFiles: [],
+  mediaFiles: [],
   position: 0,
   removal: true,
   isFastImage: true,
@@ -215,7 +219,7 @@ ImageSliderScreen.defaultProps = {
 
 
 ImageSliderScreen.propTypes = {
-  imageFiles: PropTypes.array,
+  mediaFiles: PropTypes.array,
   position: PropTypes.number,
   removal: PropTypes.bool,
   isFastImage: PropTypes.bool,

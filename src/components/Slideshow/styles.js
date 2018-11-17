@@ -4,6 +4,10 @@ const styles = StyleSheet.create({
   container: {
     marginTop: 0
   },
+  mainContentContainer: {
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
   renderButtonWrapper: {
     marginBottom: -30
   },

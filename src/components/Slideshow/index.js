@@ -1,11 +1,9 @@
-'use strict'
-/** @flow */
-
 import React from 'react'
 import { ScrollView, View, Image, TouchableOpacity, Animated } from 'react-native'
 import GestureRecognizer from 'react-native-swipe-gestures'
 import styles from './styles'
 import FastImage from "react-native-fast-image";
+import Video from 'react-native-video'
 
 
 export default class SlideShow extends React.Component {
@@ -13,26 +11,29 @@ export default class SlideShow extends React.Component {
     super(props)
 
     this.state = {
-      offset: 0,
+      currentIndex: 0,
       isTouch: false
     }
     this.buttonOpacity = new Animated.Value(1)
   }
 
-  renderBubbles = (width) => {
-    const { imageFiles } = this.props
+  onSetPostion() {
+  }
 
-    const { offset } =  this.state
+  renderBubbles = () => {
+    const { mediaFiles } = this.props
+
+    const { currentIndex } =  this.state
     let bubbles = []
 
-    for (let i = 0; i < imageFiles.length; i++) {
-      bubbles.push(<View style={[ styles.bubbles, styles.emptyBubble ]} key={width * i} />)
+    for (let i = 0; i < mediaFiles.length; i++) {
+      bubbles.push(<View style={[ styles.bubbles, styles.emptyBubble ]} key={i} />)
     }
 
-    if (offset % width === 0) {
+    if (currentIndex === 0) {
       bubbles.map(v => {
-        if (v.key == offset) {
-          bubbles[v.key / width] = <View style={[ styles.bubbles, styles.filledBubble ]} key={v.key} />
+        if (v.key == currentIndex) {
+          bubbles[v.key] = <View style={[ styles.bubbles, styles.filledBubble ]} key={v.key} />
         }
       })
     }
@@ -61,15 +62,49 @@ export default class SlideShow extends React.Component {
     this.setState({ isTouch: !this.state.isTouch })
     this.props.handleImage()
   }
+
+  renderItem(item, index) {
+    const {
+      width,
+      isFastImage,
+    } = this.props;
+    const isImage = item.contentType.toLowerCase().indexOf('image') !== -1;
+    if (isImage) {
+      return (
+        <TouchableOpacity
+          activeOpacity={1}
+          onPress={() => this.handleImage()}
+        >
+          {
+            isFastImage ? 
+              <FastImage source={{uri: item.accessUrl}} resizeMode="contain" style={{ width, height: '100%' }} />
+            : 
+              <Image source={{uri: item.accessUrl}} resizeMode="contain" style={{ width, height: '100%' }} />
+          }
+        </TouchableOpacity>
+      );
+    }
+    const height = Math.round(width * 0.666);
+    return (
+      <View style={{width, height, backgroundColor: '#CCC'}}>
+        <Video
+          style={{width, height}}
+          source={{uri: item.accessUrl}}
+          controls={true}
+          resizeMode='cover'
+          paused={this.state.currentIndex !== index}
+        />
+      </View>
+    );
+  }
+
   render () {
     const {
-      imageFiles,
+      mediaFiles,
       height,
       width,
       position,
-      isFastImage,
     } = this.props
-
     return (
       <View style={[styles.container, { width, height }]}>
         <ScrollView
@@ -80,37 +115,30 @@ export default class SlideShow extends React.Component {
           scrollEventThrottle={10}
           onScroll={e => {
             const offset = e.nativeEvent.contentOffset.x
-            this.setState({ offset })
-            this.props.setPosition({ pos: offset / width })
+            const currentIndex = offset / width;
+            this.setState({ currentIndex })
+            this.props.setPosition({ pos: currentIndex })
           }}
           contentContainerStyle={{ height }}
         >
-          {imageFiles.map((item, key) => (
-            <GestureRecognizer
-              key={key}
-              style={{ width, height }}
-              onSwipeDown={() => this.props.onSwipeDown()}
-              config={{
-                velocityThreshold: 0.3,
-                directionalOffsetThreshold: 80
-              }}
-            >
-              <TouchableOpacity activeOpacity={1} onPress={() => this.handleImage()}>
-                {
-                  isFastImage ? 
-                    <FastImage source={{uri: item.accessUrl}} resizeMode="contain" style={{ width, height: '100%' }} />
-                  : 
-                    <Image source={{uri: item.accessUrl}} resizeMode="contain" style={{ width, height: '100%' }} />
-                }
-              </TouchableOpacity>
-            </GestureRecognizer>
-          ))}
-        </ScrollView>
-        
-        <Animated.View 
-          style={[styles.renderButtonWrapper, { opacity: this.buttonOpacity }]}
-        >
-          {this.renderBubbles(width)}
+          {
+            mediaFiles.map((item, index) => (
+              <GestureRecognizer
+                key={index}
+                style={[styles.mainContentContainer, {width, height}]}
+                onSwipeDown={() => this.props.onSwipeDown()}
+                config={{
+                  velocityThreshold: 0.3,
+                  directionalOffsetThreshold: 80
+                }}
+              >
+                {this.renderItem(item, index)}
+              </GestureRecognizer>
+            ))
+          }
+        </ScrollView>        
+        <Animated.View style={[styles.renderButtonWrapper, { opacity: this.buttonOpacity }]}>
+          {this.renderBubbles()}
         </Animated.View>
       </View>
     )

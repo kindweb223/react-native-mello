@@ -208,7 +208,7 @@ export default class ImageList extends React.Component {
           animationOutTiming={100}
         >
           <ImageSliderScreen 
-            imageFiles={this.props.files}
+            mediaFiles={this.props.files}
             position={this.state.position}
             removal={this.props.editable}
             isSetCoverImage={this.props.isSetCoverImage}
