@@ -3,6 +3,7 @@ import React from 'react'
 import {
   SafeAreaView,
   View,
+  Text,
   Animated,
   Image,
   TouchableOpacity,
@@ -56,14 +57,15 @@ import {
   removeDummyFeed,
   setFeedDetailAction,
   setCurrentFeed,
-  deleteInvitee
+  deleteInvitee,
+  getInvitedFeedList
 } from '../../redux/feedo/actions'
 
 import { 
   setUserInfo,
   addDeviceToken,
   updateDeviceToken,
-  appOpened,
+  appOpened
 } from '../../redux/user/actions'
 
 import { 
@@ -109,6 +111,7 @@ class HomeScreen extends React.Component {
       isExistingUser: false,
       showEmptyBubble: false,
       isRefreshing: false,
+      invitedFeedList: [],
       isShowClipboardToaster: false,
       copiedUrl: '',
     };
@@ -127,6 +130,7 @@ class HomeScreen extends React.Component {
     this.props.setUserInfo(JSON.parse(userInfo))
     this.registerPushNotification();
     this.props.getFeedoList(this.state.tabIndex)
+    this.props.getInvitedFeedList()
     AppState.addEventListener('change', this.onHandleAppStateChange.bind(this));
     appOpened(this.props.user.userInfo.id);
   }
@@ -141,7 +145,7 @@ class HomeScreen extends React.Component {
     if (prevState.apiLoading !== feedo.loading && ((feedo.loading === 'GET_FEEDO_LIST_FULFILLED') || (feedo.loading === 'GET_FEEDO_LIST_REJECTED') ||
       (feedo.loading === 'FEED_FULFILLED') || (feedo.loading === 'DEL_FEED_FULFILLED') || (feedo.loading === 'ARCHIVE_FEED_FULFILLED') ||
       (feedo.loading === 'DUPLICATE_FEED_FULFILLED') || (feedo.loading === 'UPDATE_FEED_FULFILLED') || (feedo.loading === 'LEAVE_FEED_FULFILLED') ||
-      (feedo.loading === 'DELETE_CARD_FULFILLED') || (feedo.loading === 'MOVE_CARD_FULFILLED') ||
+      (feedo.loading === 'DELETE_CARD_FULFILLED') || (feedo.loading === 'MOVE_CARD_FULFILLED') || (feedo.loading === 'UPDTE_FEED_INVITATION_FULFILLED') ||
       (feedo.loading === 'UPDATE_CARD_FULFILLED') || (feedo.loading === 'INVITE_HUNT_FULFILLED') ||
       (feedo.loading === 'ADD_HUNT_TAG_FULFILLED') || (feedo.loading === 'REMOVE_HUNT_TAG_FULFILLED') ||
       (feedo.loading === 'RESTORE_ARCHIVE_FEED_FULFILLED') || (feedo.loading === 'ADD_DUMMY_FEED'))) {
@@ -185,6 +189,7 @@ class HomeScreen extends React.Component {
 
       return {
         feedoList,
+        invitedFeedList: feedo.invitedFeedList,
         loading: false,
         emptyState,
         apiLoading: feedo.loading
@@ -197,6 +202,12 @@ class HomeScreen extends React.Component {
       }
     }
 
+    if (feedo.loading === 'GET_INVITED_FEEDO_LIST_FULFILLED') {
+      return {
+        invitedFeedList: feedo.invitedFeedList
+      }
+    }
+
     return {
       apiLoading: feedo.loading
     }
@@ -206,7 +217,7 @@ class HomeScreen extends React.Component {
     const { feedo, user } = this.props
     const { feedoList } = feedo
 
-    if ((prevProps.feedo.loading === 'GET_FEEDO_LIST_PENDING' && feedo.loading === 'GET_FEEDO_LIST_FULFILLED') ||
+    if ((prevProps.feedo.loading !== 'GET_FEEDO_LIST_FULFILLED' && feedo.loading === 'GET_FEEDO_LIST_FULFILLED') ||
         (prevProps.feedo.loading !== 'UPDATE_FEED_FULFILLED' && feedo.loading === 'UPDATE_FEED_FULFILLED') ||
         (prevProps.feedo.loading !== 'FEED_FULFILLED' && feedo.loading === 'FEED_FULFILLED') ||
         (prevProps.feedo.loading !== 'DEL_FEED_FULFILLED' && feedo.loading === 'DEL_FEED_FULFILLED') ||
@@ -295,7 +306,7 @@ class HomeScreen extends React.Component {
       if(!bubbleData || (bubbleData.userId === user.userInfo.id && bubbleData.state !== 'false')) {
         const ownFeeds = filter(feedoList, feed => feed.metadata && feed.metadata.owner === true)
 
-        if (ownFeeds.length === 0 && !(bubbleFirstFeedData && (bubbleFirstFeedData.userId === user.userInfo.id && bubbleFirstFeedData.state === 'true'))) {
+        if (this.state.tabIndex === 0 && ownFeeds.length === 0 && !(bubbleFirstFeedData && (bubbleFirstFeedData.userId === user.userInfo.id && bubbleFirstFeedData.state === 'true'))) {
           this.setState({ showFeedInvitedNewUserBubble: true })
           setTimeout(() => {
             this.setState({ showBubbleCloseButton: true })
@@ -924,7 +935,7 @@ class HomeScreen extends React.Component {
   }
 
   render () {
-    const { loading, feedoList, emptyState, tabIndex } = this.state
+    const { loading, feedoList, emptyState, tabIndex, invitedFeedList } = this.state
     
     // const normalHeaderOpacity = this.state.scrollY.interpolate({
     //   inputRange: [0, 40],
@@ -1006,12 +1017,29 @@ class HomeScreen extends React.Component {
                                     activeTabTextStyle={styles.activeTabBarTextStyle}
                                     tabMargin={1}
                                     tabStyles={{ 'tab': TAB_STYLES }}
+                                    renderTab={(tab, page, isTabActive, onPressHandler) => (
+                                      <TouchableOpacity
+                                        key={page}
+                                        onPress={onPressHandler}
+                                      >
+                                        <View style={[styles.tabBarItemStyle, isTabActive && (styles.activeTabBarItemStyle)]}>
+                                          <Text style={[styles.tabBarTextStyle, isTabActive && (styles.activeTabBarTextStyle)]}>
+                                            {tab.label}
+                                          </Text>
+                                          {invitedFeedList.length > 0 && page === 1 && (
+                                            <View style={styles.badgeView}>
+                                              <Text style={styles.badgeText}>{tab.badge}</Text>
+                                            </View>
+                                          )}
+                                        </View>
+                                      </TouchableOpacity>
+                                    )}
                                   />}
             >
               <View
                 style={styles.feedListContainer}
                 ref={ref => this.scrollTabAll = ref} 
-                tabLabel={{ label: 'My flows' }}
+                tabLabel={{ label: 'My flows', badge: invitedFeedList.length }}
                 onLayout={(event) => this.onScrollableTabViewLayout(event, 0)}
               >
                 {this.state.showFeedInvitedNewUserBubble && (
@@ -1028,34 +1056,33 @@ class HomeScreen extends React.Component {
 
                 {emptyState && (tabIndex === 0 && feedoList.length === 0) && (
                   <View style={styles.emptyView}>
-                    {loading
-                      ? <FeedLoadingStateComponent />
-                      : <View style={styles.emptyInnerView}>
-                          {this.state.showEmptyBubble && (
-                            this.state.isExistingUser
-                              ? <EmptyStateComponent
-                                  page="feed_exist"
-                                  title="It's awesome to start fresh!"
-                                  subTitle=""
-                                  ctaTitle="Start a new feed"
-                                  onCreateNewFeed={() => {
-                                    this.animatedOpacity.setValue(1);
-                                    this.onSelectNewFeedType('New Feed')
-                                  }}
-                                />
-                              : <EmptyStateComponent
-                                  page="feed"
-                                  title="First time here? No worries, you are in good hands..."
-                                  subTitle="Watch a 15 sec video about creating feeds"
-                                  ctaTitle="Start your first feed"
-                                  onCreateNewFeed={() => {
-                                    this.animatedOpacity.setValue(1);
-                                    this.onSelectNewFeedType('New Feed')
-                                  }}
-                                />
-                          )}
-                        </View>
-                    }
+                    {!loading && (
+                      <View style={styles.emptyInnerView}>
+                        {this.state.showEmptyBubble && (
+                          this.state.isExistingUser
+                            ? <EmptyStateComponent
+                                page="feed_exist"
+                                title="It's awesome to start fresh!"
+                                subTitle=""
+                                ctaTitle="Start a new feed"
+                                onCreateNewFeed={() => {
+                                  this.animatedOpacity.setValue(1);
+                                  this.onSelectNewFeedType('New Feed')
+                                }}
+                              />
+                            : <EmptyStateComponent
+                                page="feed"
+                                title="First time here? No worries, you are in good hands..."
+                                subTitle="Watch a 15 sec video about creating feeds"
+                                ctaTitle="Start your first feed"
+                                onCreateNewFeed={() => {
+                                  this.animatedOpacity.setValue(1);
+                                  this.onSelectNewFeedType('New Feed')
+                                }}
+                              />
+                        )}
+                      </View>
+                    )}
                   </View>
                 )}
 
@@ -1071,7 +1098,7 @@ class HomeScreen extends React.Component {
               <View
                 style={styles.feedListContainer}
                 ref={ref => this.scrollTabSharedWithMe = ref}
-                tabLabel={{ label: 'Shared with me' }}
+                tabLabel={{ label: 'Shared with me', badge: invitedFeedList.length }}
                 onLayout={(event) => this.onScrollableTabViewLayout(event, 2)}
               >
                 {feedoList.length > 0
@@ -1083,21 +1110,22 @@ class HomeScreen extends React.Component {
                       isRefreshing={this.state.isRefreshing}
                       onRefreshFeed={() => this.onRefreshFeed()}
                     />
-                  : !loading && (
-                      <View style={styles.emptyTabInnerSubView}>
-                        <SpeechBubbleComponent
-                          page="shared"
-                          title="Feeds can be shared with friends and colleagues for collaboration. Feeds you've been invited to will appear here."
-                          subTitle="All you need to know about sharing in 15 secs "
-                        />
-                      </View>
-                    )
+                  : loading 
+                      ? <FeedLoadingStateComponent animating />
+                      : <View style={styles.emptyTabInnerSubView}>
+                          <SpeechBubbleComponent
+                            page="shared"
+                            title="Feeds can be shared with friends and colleagues for collaboration. Feeds you've been invited to will appear here."
+                            subTitle="All you need to know about sharing in 15 secs "
+                          />
+                        </View>
+                    
                 }
               </View>
               <View
                 style={styles.feedListContainer}
                 ref={ref => this.scrollTabPinned = ref}
-                tabLabel={{ label: 'Pinned' }}
+                tabLabel={{ label: 'Pinned', badge: invitedFeedList.length }}
                 onLayout={(event) => this.onScrollableTabViewLayout(event, 1)}
               >
                 {feedoList.length > 0
@@ -1109,15 +1137,15 @@ class HomeScreen extends React.Component {
                       isRefreshing={this.state.isRefreshing}
                       onRefreshFeed={() => this.onRefreshFeed()}
                     />
-                  : !loading && ( 
-                      <View style={styles.emptyTabInnerSubView}>
-                        <SpeechBubbleComponent
-                          page="pinned"
-                          title="Your pinned items will appear here. To pin a feed tap and hold it to bring up quick actions and select"
-                          subTitle="Watch a 15 sec Quick Start video "
-                        />
-                      </View>
-                    )
+                  : loading
+                      ? <FeedLoadingStateComponent animating />
+                      : <View style={styles.emptyTabInnerSubView}>
+                          <SpeechBubbleComponent
+                            page="pinned"
+                            title="Your pinned items will appear here. To pin a feed tap and hold it to bring up quick actions and select"
+                            subTitle="Watch a 15 sec Quick Start video "
+                          />
+                        </View>
                 }
               </View>
             </ScrollableTabView>
@@ -1132,11 +1160,12 @@ class HomeScreen extends React.Component {
         </View>
 
         {!this.state.isLongHoldMenuVisible && (
-          <DashboardActionBar 
+          <DashboardActionBar
             filtering={false}
-            notifications={false}
+            notifications={true}
             onAddFeed={this.onOpenNewFeedModal.bind(this)}
             handleFilter={() => this.handleFilter()}
+            invitedFeedList={invitedFeedList}
           />
         )}
 
@@ -1221,7 +1250,8 @@ const mapDispatchToProps = dispatch => ({
   addDeviceToken: (userId, data) => dispatch(addDeviceToken(userId, data)),
   updateDeviceToken: (userId, deviceId, data) => dispatch(updateDeviceToken(userId, deviceId, data)),
   getCard: (ideaId) => dispatch(getCard(ideaId)),
-  deleteInvitee: (feedId, inviteeId) => dispatch(deleteInvitee(feedId, inviteeId))
+  deleteInvitee: (feedId, inviteeId) => dispatch(deleteInvitee(feedId, inviteeId)),
+  getInvitedFeedList: () => dispatch(getInvitedFeedList())
 })
 
 HomeScreen.propTypes = {
@@ -1237,7 +1267,8 @@ HomeScreen.propTypes = {
   removeDummyFeed: PropTypes.func.isRequired,
   setFeedDetailAction: PropTypes.func.isRequired,
   setUserInfo: PropTypes.func.isRequired,
-  deleteInvitee: PropTypes.func.isRequired
+  deleteInvitee: PropTypes.func.isRequired,
+  getInvitedFeedList: PropTypes.func.isRequired
 }
 
 export default connect(

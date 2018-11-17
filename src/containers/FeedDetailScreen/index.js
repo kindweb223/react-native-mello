@@ -4,6 +4,7 @@ import {
   SafeAreaView,
   ScrollView,
   View,
+  Text,
   Animated,
   TouchableOpacity,
   TouchableHighlight,
@@ -62,7 +63,8 @@ import {
   uploadFileToS3,
   addFile,
   deleteFile,
-  setCurrentFeed
+  setCurrentFeed,
+  updateInvitation
 } from '../../redux/feedo/actions';
 import {
   setCurrentCard,
@@ -202,7 +204,12 @@ class FeedDetailScreen extends React.Component {
         (this.props.feedo.loading === 'REMOVE_HUNT_TAG_PENDING' && feedo.loading === 'REMOVE_HUNT_TAG_FULFILLED') ||
         (this.props.card.loading === 'UPDATE_CARD_PENDING' && card.loading === 'UPDATE_CARD_FULFILLED') || 
         (this.props.card.loading === 'DELETE_CARD_PENDING' && card.loading === 'DELETE_CARD_FULFILLED') ||
-        (this.props.card.loading === 'MOVE_CARD_PENDING' && card.loading === 'MOVE_CARD_FULFILLED')) {
+        (this.props.card.loading === 'MOVE_CARD_PENDING' && card.loading === 'MOVE_CARD_FULFILLED') ||
+        (this.props.feedo.loading === 'UPDTE_FEED_INVITATION_PENDING' && feedo.loading === 'UPDTE_FEED_INVITATION_FULFILLED')) {
+
+      if (feedo.currentFeed.metadata.myInviteStatus === 'DECLINED') {
+        Actions.pop()
+      }
 
       const currentFeed = feedo.currentFeed
       let filterIdeas = currentFeed.ideas;
@@ -1096,6 +1103,10 @@ class FeedDetailScreen extends React.Component {
     }
   }
 
+  onUpdateInvitation = (feedId, type) => {
+    this.props.updateInvitation(feedId, type)
+  }
+
   render () {
     const { currentFeed, loading, pinText, avatars } = this.state
 
@@ -1147,6 +1158,21 @@ class FeedDetailScreen extends React.Component {
                       onAddDocument={this.onAddDocument}
                       deleteFile={this.onDeleteFile}
                     />
+                  </View>
+                )}
+
+                {!_.isEmpty(currentFeed) && currentFeed.metadata.myInviteStatus === 'INVITED' && (
+                  <View style={styles.buttonContainer}>
+                    <TouchableOpacity onPress={() => this.onUpdateInvitation(currentFeed.id, true)} activeOpacity={0.8}>
+                      <View style={[styles.buttonView, styles.acceptButtonView]}>
+                        <Text style={[styles.buttonText, styles.acceptButtonText]}>Accept</Text>
+                      </View>
+                    </TouchableOpacity>
+                    <TouchableOpacity onPress={() => this.onUpdateInvitation(currentFeed.id, false)} activeOpacity={0.8}>
+                      <View style={[styles.buttonView, styles.ignoreButtonView]}>
+                        <Text style={[styles.buttonText, styles.ignoreButtonText]}>Ignore</Text>
+                      </View>
+                    </TouchableOpacity>
                   </View>
                 )}
 
@@ -1402,12 +1428,13 @@ const mapDispatchToProps = dispatch => ({
   addFile: (feedId, fileType, contentType, name, objectKey) => dispatch(addFile(feedId, fileType, contentType, name, objectKey)),
   deleteFile: (feedId, fileId) => dispatch(deleteFile(feedId, fileId)),
   setCurrentFeed: (data) => dispatch(setCurrentFeed(data)),
+  updateInvitation: (feedId, type) => dispatch(updateInvitation(feedId, type))
 })
 
 FeedDetailScreen.defaultProps = {
   data: [],
   getFeedDetail: () => {},
-  setFeedDetailAction: () => {}
+  setFeedDetailAction: () => {},
 }
 
 FeedDetailScreen.propTypes = {
@@ -1421,6 +1448,7 @@ FeedDetailScreen.propTypes = {
   unpinFeed: PropTypes.func.isRequired,
   duplicateFeed: PropTypes.func.isRequired,
   deleteDuplicatedFeed: PropTypes.func.isRequired,
+  
 }
 
 export default connect(
