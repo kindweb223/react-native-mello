@@ -44,7 +44,7 @@ class DashboardActionBar extends React.Component {
   }
 
   render () {
-    const { filtering, showType, sortType, notifications, feed, invitedFeedList } = this.props
+    const { filtering, showType, sortType, notifications, feed, badgeCount } = this.props
     return (
       <View style={[styles.container, filtering ? styles.filterContainer : styles.actionContainer]}>
         {filtering && (
@@ -68,7 +68,7 @@ class DashboardActionBar extends React.Component {
                 size={20}
                 color={COLORS.PURPLE}
               />
-              <Text style={styles.notificationText}>{invitedFeedList.length}</Text>
+              <Text style={styles.notificationText}>{badgeCount}</Text>
             </TouchableOpacity>
           }
 
@@ -106,7 +106,7 @@ DashboardActionBar.defaultProps = {
   sortType: 'date',
   notifications: true,
   feed: {},
-  invitedFeedList: []
+  badgeCount: 0
 }
 
 DashboardActionBar.propTypes = {
@@ -117,7 +117,7 @@ DashboardActionBar.propTypes = {
   handleFilter: PropTypes.func,
   notifications: PropTypes.bool,
   feed: PropTypes.object,
-  invitedFeedList: PropTypes.array
+  badgeCount: PropTypes.number
 }
 
 export default DashboardActionBar

@@ -112,6 +112,7 @@ class HomeScreen extends React.Component {
       showEmptyBubble: false,
       isRefreshing: false,
       invitedFeedList: [],
+      badgeCount: 0,
       isShowClipboardToaster: false,
       copiedUrl: '',
     };
@@ -190,6 +191,7 @@ class HomeScreen extends React.Component {
       return {
         feedoList,
         invitedFeedList: feedo.invitedFeedList,
+        badgeCount: feedo.invitedFeedList.length,
         loading: false,
         emptyState,
         apiLoading: feedo.loading
@@ -204,7 +206,8 @@ class HomeScreen extends React.Component {
 
     if (feedo.loading === 'GET_INVITED_FEEDO_LIST_FULFILLED') {
       return {
-        invitedFeedList: feedo.invitedFeedList
+        invitedFeedList: feedo.invitedFeedList,
+        badgeCount: feedo.invitedFeedList.length
       }
     }
 
@@ -384,9 +387,10 @@ class HomeScreen extends React.Component {
         } else {
           this.setState({
             currentPushNotificationType: CONSTANTS.USER_INVITED_TO_HUNT,
-            currentPushNotificationData: huntId,
+            currentPushNotificationData: huntId
           });
           this.props.getFeedoList(this.state.tabIndex);
+          this.props.getInvitedFeedList()
         }
         break;
       }
@@ -935,7 +939,7 @@ class HomeScreen extends React.Component {
   }
 
   render () {
-    const { loading, feedoList, emptyState, tabIndex, invitedFeedList } = this.state
+    const { loading, feedoList, emptyState, tabIndex, invitedFeedList, badgeCount } = this.state
     
     // const normalHeaderOpacity = this.state.scrollY.interpolate({
     //   inputRange: [0, 40],
@@ -1026,7 +1030,7 @@ class HomeScreen extends React.Component {
                                           <Text style={[styles.tabBarTextStyle, isTabActive && (styles.activeTabBarTextStyle)]}>
                                             {tab.label}
                                           </Text>
-                                          {invitedFeedList.length > 0 && page === 1 && (
+                                          {badgeCount > 0 && page === 1 && (
                                             <View style={styles.badgeView}>
                                               <Text style={styles.badgeText}>{tab.badge}</Text>
                                             </View>
@@ -1039,7 +1043,7 @@ class HomeScreen extends React.Component {
               <View
                 style={styles.feedListContainer}
                 ref={ref => this.scrollTabAll = ref} 
-                tabLabel={{ label: 'My flows', badge: invitedFeedList.length }}
+                tabLabel={{ label: 'My flows', badge: badgeCount }}
                 onLayout={(event) => this.onScrollableTabViewLayout(event, 0)}
               >
                 {this.state.showFeedInvitedNewUserBubble && (
@@ -1098,7 +1102,7 @@ class HomeScreen extends React.Component {
               <View
                 style={styles.feedListContainer}
                 ref={ref => this.scrollTabSharedWithMe = ref}
-                tabLabel={{ label: 'Shared with me', badge: invitedFeedList.length }}
+                tabLabel={{ label: 'Shared with me', badge: badgeCount }}
                 onLayout={(event) => this.onScrollableTabViewLayout(event, 2)}
               >
                 {feedoList.length > 0
@@ -1125,7 +1129,7 @@ class HomeScreen extends React.Component {
               <View
                 style={styles.feedListContainer}
                 ref={ref => this.scrollTabPinned = ref}
-                tabLabel={{ label: 'Pinned', badge: invitedFeedList.length }}
+                tabLabel={{ label: 'Pinned', badge: badgeCount }}
                 onLayout={(event) => this.onScrollableTabViewLayout(event, 1)}
               >
                 {feedoList.length > 0
@@ -1165,7 +1169,7 @@ class HomeScreen extends React.Component {
             notifications={true}
             onAddFeed={this.onOpenNewFeedModal.bind(this)}
             handleFilter={() => this.handleFilter()}
-            invitedFeedList={invitedFeedList}
+            badgeCount={badgeCount}
           />
         )}
 
