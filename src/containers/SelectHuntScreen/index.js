@@ -38,6 +38,7 @@ class SelectHuntScreen extends React.Component {
       loading: false,
       isVisibleNewFeedScreen: false,
       isKeyboardShow: false,
+      filterText: ''
     };
     this.animatedShow = new Animated.Value(0);
     this.animatedKeyboardHeight = new Animated.Value(0);
@@ -224,7 +225,7 @@ class SelectHuntScreen extends React.Component {
       feedoList = _.filter(feedoList, feedo => feedo.id !== this.props.hiddenFeedoId);
     }
     if (feedoList && feedoList.length > 0 && this.state.filterText) {
-      feedoList = _.filter(feedoList, feedo => feedo.headline.toLowerCase().indexOf(this.state.filterText.toLowerCase()) !== -1);
+      feedoList = _.filter(feedoList, feedo => feedo.headline && feedo.headline.toLowerCase().indexOf(this.state.filterText.toLowerCase()) !== -1);
     }
     const { selectMode } = this.props;
     let bottomMargin = CONSTANTS.SCREEN_VERTICAL_MIN_MARGIN;
