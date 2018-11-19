@@ -15,7 +15,8 @@ const initialState = {
   feedDetailAction: null,
   fileUploadUrl: {},
   userTags: [],
-  archivedFeedList: []
+  archivedFeedList: [],
+  invitedFeedList: []
 };
 
 export default function feedo(state = initialState, action = {}) {
@@ -58,7 +59,6 @@ export default function feedo(state = initialState, action = {}) {
     case types.GET_INVITED_FEEDO_LIST_PENDING:
       return {
         ...state,
-        invitedFeedList: [],
         loading: types.GET_INVITED_FEEDO_LIST_PENDING,
       }
     case types.GET_INVITED_FEEDO_LIST_FULFILLED: {
