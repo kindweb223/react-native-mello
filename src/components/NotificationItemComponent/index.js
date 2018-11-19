@@ -22,7 +22,11 @@ import COLORS from '../../service/colors'
 import styles from './styles'
 
 const NotificationItemComponent = ({ item, hideTumbnail, updateInvitation }) => {
-  const filteredIdeas = _.filter(item.ideas, idea => idea.coverImage !== null && idea.coverImage !== '')
+  const filteredIdeas = _.orderBy(
+    _.filter(item.ideas, idea => idea.coverImage !== null && idea.coverImage !== ''),
+    ['publishedDate'],
+    ['asc']
+  )
 
   let coverImages = []
   if (filteredIdeas.length > 4) {

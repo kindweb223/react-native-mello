@@ -45,14 +45,25 @@ class NotificationScreen extends React.Component {
   componentDidMount() {
     Analytics.setCurrentScreen('NotificationScreen')
 
-    const { feedo } = this.props
-    this.setState({ invitedFeedList: feedo.invitedFeedList })
+    let { invitedFeedList } = this.props.feedo
+    invitedFeedList = _.orderBy(
+      invitedFeedList,
+      ['publishedDate'],
+      ['desc']
+    )
+    this.setState({ invitedFeedList })
   }
 
   UNSAFE_componentWillReceiveProps(nextProps) {
     const { feedo } = nextProps
     if (this.props.feedo.loading === 'UPDTE_FEED_INVITATION_PENDING' && feedo.loading === 'UPDTE_FEED_INVITATION_FULFILLED') {
-      this.setState({ invitedFeedList: feedo.invitedFeedList })
+        let { invitedFeedList } = feedo
+        invitedFeedList = _.orderBy(
+          invitedFeedList,
+          ['publishedDate'],
+          ['desc']
+        )
+        this.setState({ invitedFeedList })
     }
   }
 
