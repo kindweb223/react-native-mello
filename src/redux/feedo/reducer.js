@@ -1,3 +1,4 @@
+import PushNotification from 'react-native-push-notification'
 import * as types from './types'
 import * as cardTypes from '../card/types'
 import { filter, find, findIndex, isEmpty } from 'lodash'
@@ -84,6 +85,12 @@ export default function feedo(state = initialState, action = {}) {
         loading: types.UPDTE_FEED_INVITATION_PENDING,
       }
     case types.UPDTE_FEED_INVITATION_FULFILLED: {
+      PushNotification.getApplicationIconBadgeNumber((badgeCount) => {
+        if (badgeCount && badgeCount > 0) {
+          PushNotification.setApplicationIconBadgeNumber(badgeCount - 1)
+        }
+      })
+
       const { feedId, type } = action.payload
       const { invitedFeedList, feedoList, currentFeed } = state
 

@@ -495,7 +495,7 @@ class HomeScreen extends React.Component {
             console.log('error : ', error);
             return;
           }
-          console.log('result : ', result);
+          console.log('TOKEN_RESULT : ', result);
           const data = {
             deviceToken: token.token,
             deviceTypeEnum: Platform.OS === 'ios' ? 'IPHONE' : 'ANDROID',
