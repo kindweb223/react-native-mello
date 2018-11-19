@@ -143,26 +143,31 @@ class HomeScreen extends React.Component {
   static getDerivedStateFromProps(nextProps, prevState) {
     const { feedo, card } = nextProps
 
-    if (prevState.apiLoading !== feedo.loading && ((feedo.loading === 'GET_FEEDO_LIST_FULFILLED') || (feedo.loading === 'GET_FEEDO_LIST_REJECTED') ||
+    if ((prevState.apiLoading !== feedo.loading && ((feedo.loading === 'GET_FEEDO_LIST_FULFILLED') || (feedo.loading === 'GET_FEEDO_LIST_REJECTED') ||
       (feedo.loading === 'FEED_FULFILLED') || (feedo.loading === 'DEL_FEED_FULFILLED') || (feedo.loading === 'ARCHIVE_FEED_FULFILLED') ||
       (feedo.loading === 'DUPLICATE_FEED_FULFILLED') || (feedo.loading === 'UPDATE_FEED_FULFILLED') || (feedo.loading === 'LEAVE_FEED_FULFILLED') ||
-      (feedo.loading === 'DELETE_CARD_FULFILLED') || (feedo.loading === 'MOVE_CARD_FULFILLED') || (feedo.loading === 'UPDTE_FEED_INVITATION_FULFILLED') ||
-      (feedo.loading === 'UPDATE_CARD_FULFILLED') || (feedo.loading === 'INVITE_HUNT_FULFILLED') ||
+      (feedo.loading === 'UPDTE_FEED_INVITATION_FULFILLED') || (feedo.loading === 'INVITE_HUNT_FULFILLED') ||
       (feedo.loading === 'ADD_HUNT_TAG_FULFILLED') || (feedo.loading === 'REMOVE_HUNT_TAG_FULFILLED') ||
-      (feedo.loading === 'RESTORE_ARCHIVE_FEED_FULFILLED') || (feedo.loading === 'ADD_DUMMY_FEED'))) {
+      (feedo.loading === 'RESTORE_ARCHIVE_FEED_FULFILLED') || (feedo.loading === 'ADD_DUMMY_FEED'))) ||
+      (feedo.loading === 'DELETE_CARD_FULFILLED') || (feedo.loading === 'MOVE_CARD_FULFILLED') || (feedo.loading === 'UPDATE_CARD_FULFILLED'))
+    {
 
       let feedoList = []
       let emptyState = prevState.emptyState
 
-      if (feedo.feedoList && feedo.feedoList.length > 0) {
+      if (feedo.feedoList && feedo.feedoList.length > 0) {        
         feedoList = feedo.feedoList.map(item => {
-          const filteredIdeas = filter(item.ideas, idea => idea.coverImage !== null && idea.coverImage !== '')
+          const filteredIdeas = orderBy(
+            filter(item.ideas, idea => idea.coverImage !== null && idea.coverImage !== ''),
+            ['publishedDate'],
+            ['asc']
+          )
 
           let coverImages = []
           if (filteredIdeas.length > 4) {
             coverImages = R.slice(0, 4, filteredIdeas)
           } else {
-            coverImages = R.slice(0, 4, filteredIdeas)
+            coverImages = R.slice(0, filteredIdeas.length, filteredIdeas)
             for (let i = 0; i < 4 - filteredIdeas.length; i ++) {
               coverImages.push(null)
             }

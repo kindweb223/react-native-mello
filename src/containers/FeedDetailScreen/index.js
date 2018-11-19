@@ -617,19 +617,21 @@ class FeedDetailScreen extends React.Component {
   }
 
   onOpenNewCardModal() {
-    this.props.setCurrentCard({});
-    this.setState({
-      isVisibleCard: true,
-      cardViewMode: CONSTANTS.CARD_NEW,
-      selectedIdeaInvitee: null,
-      selectedIdeaLayout: {},
-    }, () => {
-      this.animatedOpacity.setValue(0);
-      Animated.timing(this.animatedOpacity, {
-        toValue: 1,
-        duration: CONSTANTS.ANIMATEION_MILLI_SECONDS,
-      }).start();
-    });
+    if (!COMMON_FUNC.isFeedGuest(this.state.currentFeed)) {
+      this.props.setCurrentCard({});
+      this.setState({
+        isVisibleCard: true,
+        cardViewMode: CONSTANTS.CARD_NEW,
+        selectedIdeaInvitee: null,
+        selectedIdeaLayout: {},
+      }, () => {
+        this.animatedOpacity.setValue(0);
+        Animated.timing(this.animatedOpacity, {
+          toValue: 1,
+          duration: CONSTANTS.ANIMATEION_MILLI_SECONDS,
+        }).start();
+      });
+    }
   }
 
   onCloseCardModal() {
