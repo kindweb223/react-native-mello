@@ -155,7 +155,11 @@ class HomeScreen extends React.Component {
 
       if (feedo.feedoList && feedo.feedoList.length > 0) {
         feedoList = feedo.feedoList.map(item => {
-          const filteredIdeas = filter(item.ideas, idea => idea.coverImage !== null && idea.coverImage !== '')
+          const filteredIdeas = orderBy(
+            filter(item.ideas, idea => idea.coverImage !== null && idea.coverImage !== ''),
+            ['publishedDate'],
+            ['asc']
+          )
 
           let coverImages = []
           if (filteredIdeas.length > 4) {

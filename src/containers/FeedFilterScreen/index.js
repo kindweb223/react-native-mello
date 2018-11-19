@@ -59,7 +59,11 @@ class FeedFilterScreen extends React.Component {
 
   sortFeedoList = feedo => {
     feedoList = feedo.feedoList.map(item => {
-      const filteredIdeas = _.filter(item.ideas, idea => idea.coverImage !== null && idea.coverImage !== '')
+      const filteredIdeas = _.orderBy(
+        _.filter(item.ideas, idea => idea.coverImage !== null && idea.coverImage !== ''),
+        ['publishedDate'],
+        ['asc']
+      )
 
       let coverImages = []
       if (filteredIdeas.length > 4) {
