@@ -56,8 +56,7 @@ class NotificationScreen extends React.Component {
 
   UNSAFE_componentWillReceiveProps(nextProps) {
     const { feedo } = nextProps
-    if ((this.props.feedo.loading === 'UPDTE_FEED_INVITATION_PENDING' && feedo.loading === 'UPDTE_FEED_INVITATION_FULFILLED') ||
-      (feedo.loading === 'UPDATE_CARD_FULFILLED') || (feedo.loading === 'DELETE_CARD_FULFILLED')) {
+    if (this.props.feedo.loading === 'UPDTE_FEED_INVITATION_PENDING' && feedo.loading === 'UPDTE_FEED_INVITATION_FULFILLED') {
         let { invitedFeedList } = feedo
         invitedFeedList = _.orderBy(
           invitedFeedList,
