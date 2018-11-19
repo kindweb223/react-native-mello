@@ -83,11 +83,16 @@ const IMAGE_ICON = require('../../../assets/images/Image/Blue.png')
 class NewCardScreen extends React.Component {
   constructor(props) {
     super(props);
+    let coverImage = null;
+    if (props.cardMode === CONSTANTS.SHARE_EXTENTION_CARD && props.shareImageUrl) {
+      coverImage = props.shareImageUrl;
+    }
+
     this.state = {
       // cardName: '',
       idea: '',
       textByCursor: '',
-      coverImage: null,
+      coverImage,
 
       loading: false,
       // isFullScreenCard: false,
