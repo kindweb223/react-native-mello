@@ -20,12 +20,15 @@ import UserAvatarComponent from '../../components/UserAvatarComponent';
 import NewFeedScreen from '../NewFeedScreen'
 import { 
   setCurrentFeed,
+  getFeedoList,
 } from '../../redux/feedo/actions'
 
 import COLORS from '../../service/colors';
 import CONSTANTS from '../../service/constants';
 import styles from './styles';
 import LoadingScreen from '../LoadingScreen';
+
+import Analytics from '../../lib/firebase'
 
 
 class SelectHuntScreen extends React.Component {
@@ -35,12 +38,15 @@ class SelectHuntScreen extends React.Component {
       loading: false,
       isVisibleNewFeedScreen: false,
       isKeyboardShow: false,
+      filterText: ''
     };
     this.animatedShow = new Animated.Value(0);
     this.animatedKeyboardHeight = new Animated.Value(0);
   }
 
   componentDidMount() {
+    Analytics.setCurrentScreen('SelectHuntScreen')
+    this.props.getFeedoList(3, true);
     Animated.timing(this.animatedShow, {
       toValue: 1,
       duration: CONSTANTS.ANIMATEION_MILLI_SECONDS * 1.5,
@@ -182,9 +188,7 @@ class SelectHuntScreen extends React.Component {
     if (feedo.metadata.owner) {
       return;
     }
-    
     const { selectMode } = this.props;
-
     return (
       <UserAvatarComponent
         size={32}
@@ -216,18 +220,23 @@ class SelectHuntScreen extends React.Component {
       inputRange: [0, 1],
       outputRange: [CONSTANTS.SCREEN_WIDTH, 0],
     });
-    let feedoList = this.props.feedos;
+
+    let feedoList = this.props.feedo.feedoListForCardMove;
     if (this.props.hiddenFeedoId) {
       feedoList = _.filter(feedoList, feedo => feedo.id !== this.props.hiddenFeedoId);
     }
+    feedoList = _.filter(feedoList, feedo => feedo.status === 'PUBLISHED');
     if (feedoList && feedoList.length > 0 && this.state.filterText) {
-      feedoList = _.filter(feedoList, feedo => feedo.headline.toLowerCase().indexOf(this.state.filterText.toLowerCase()) !== -1);
+      feedoList = _.filter(feedoList, feedo => feedo.headline && feedo.headline.toLowerCase().indexOf(this.state.filterText.toLowerCase()) !== -1);
     }
+    feedoList = _.filter(feedoList, feedo => feedo.status === 'PUBLISHED' && feedo.metadata.myInviteStatus === 'ACCEPTED');
+
     const { selectMode } = this.props;
     let bottomMargin = CONSTANTS.SCREEN_VERTICAL_MIN_MARGIN;
     if (this.state.isKeyboardShow) {
       bottomMargin = CONSTANTS.SCREEN_VERTICAL_MIN_MARGIN / 2;
     }
+
     return (
       <View style={[styles.container, selectMode !== CONSTANTS.FEEDO_SELECT_FROM_SHARE_EXTENSION && {backgroundColor: COLORS.MODAL_BACKGROUND}]}>
         <Animated.View 
@@ -296,7 +305,6 @@ class SelectHuntScreen extends React.Component {
 
 SelectHuntScreen.defaultProps = {
   selectMode: CONSTANTS.FEEDO_SELECT_FROM_MAIN,
-  feedos: [],
   hiddenFeedoId: null,
   direction: 'left',
   onClosed: () => {},
@@ -305,7 +313,6 @@ SelectHuntScreen.defaultProps = {
 
 SelectHuntScreen.propTypes = {
   selectMode: PropTypes.number,
-  feedos: PropTypes.array,
   hiddenFeedoId: PropTypes.string,
   direction: PropTypes.string,
   onClosed: PropTypes.func,
@@ -319,6 +326,7 @@ const mapStateToProps = ({ feedo }) => ({
 
 const mapDispatchToProps = dispatch => ({
   setCurrentFeed: (data) => dispatch(setCurrentFeed(data)),
+  getFeedoList: (index, isForCardMove) => dispatch(getFeedoList(index, isForCardMove)),
 })
 
 

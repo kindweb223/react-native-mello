@@ -4,14 +4,11 @@ import {
   View,
   Text,
   TouchableOpacity,
-  Image,
-  ActivityIndicator,
-  AsyncStorage
+  Image
 } from 'react-native'
 import { connect } from 'react-redux'
 import { Actions } from 'react-native-router-flux'
 import PropTypes from 'prop-types'
-import FastImage from "react-native-fast-image"
 import Swiper from 'react-native-swiper'
 import Video from 'react-native-video'
 
@@ -19,8 +16,8 @@ import LoadingScreen from '../LoadingScreen'
 import TextRollingComponent from '../../components/TextRollingComponent'
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons'
 import COLORS from '../../service/colors'
-import CONSTANTS from '../../service/constants'
 import styles from './styles'
+import Analytics from '../../lib/firebase'
 
 const FIRST_IMAGE= require('../../../assets/images/LoginSlider/first.png')
 const SECOND_IMAGE= require('../../../assets/images/LoginSlider/second.png')
@@ -40,6 +37,10 @@ class SwipeFirstScreen extends React.Component {
       videoPaused: true,
       offset: 0
     }
+  }
+
+  componentDidMount() {
+    Analytics.setCurrentScreen('LoginStartScreen')
   }
 
   onShowVideo = () => {

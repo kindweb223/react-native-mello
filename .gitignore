@@ -13,14 +13,13 @@ build/
 !default.mode2v3
 *.perspectivev3
 !default.perspectivev3
-xcuserdata
 *.xccheckout
 *.moved-aside
 DerivedData
 *.hmap
 *.ipa
-*.xcuserstate
-project.xcworkspace
+ios/Pods
+ios/Podfile.lock
 
 # Android/IntelliJ
 #

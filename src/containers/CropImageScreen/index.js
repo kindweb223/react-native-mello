@@ -4,7 +4,6 @@ import {
   Text,
   TouchableOpacity,
   Image,
-  SafeAreaView,
   Alert
 } from 'react-native'
 import { connect } from 'react-redux'
@@ -17,6 +16,7 @@ import { getImageUrl, updateProfile } from '../../redux/user/actions'
 import { uploadFileToS3 } from '../../redux/user/actions'
 import LoadingScreen from '../LoadingScreen'
 import styles from './styles'
+import Analytics from '../../lib/firebase'
 const CLOSE_ICON = require('../../../assets/images/Close/Blue.png')
 
 class CropImageScreen extends React.Component {
@@ -27,6 +27,10 @@ class CropImageScreen extends React.Component {
       avatarFile: props.avatarFile,
       cropUrl: props.avatarFile
     }
+  }
+
+  componentDidMount() {
+    Analytics.setCurrentScreen('CropImageScreen')
   }
 
   UNSAFE_componentWillReceiveProps(nextProps) {

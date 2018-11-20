@@ -8,14 +8,11 @@ import {
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 import { Actions } from 'react-native-router-flux'
-import Foundation from 'react-native-vector-icons/Foundation'
-import Ionicons from 'react-native-vector-icons/Ionicons'
-import Octicons from 'react-native-vector-icons/Octicons'
-import EvilIcons from 'react-native-vector-icons/EvilIcons'
-import UserAvatar from 'react-native-user-avatar'
+import UserAvatarComponent from '../../UserAvatarComponent'
 import Tags from "../../../components/FeedTags"
 import styles from './styles'
 import COLORS from '../../../service/colors'
+import { TAGS_FEATURE } from '../../../service/api'
 
 const CARD_ICON_GREY = require('../../../../assets/images/Card/Grey.png')
 const CARD_ICON_PURPLE = require('../../../../assets/images/Card/Purple.png')
@@ -28,37 +25,6 @@ const PIN_ICON_PURPLE = require('../../../../assets/images/Pin/Blue.png')
 import { 
   addFilterTag
 } from '../../../redux/feedo/actions'
-
-const renderAvatar = (user) => {
-  const size = 22
-  const name = `${user.firstName} ${user.lastName}`;
-
-  if (user.imageUrl || user.firstName || user.lastName) {
-    return (
-      <UserAvatar
-        size={size}
-        name={name}
-        color={COLORS.LIGHT_GREY}
-        textColor="#000"
-        src={user.imageUrl}
-      />
-    );
-  }
-  return (
-    <View
-      style={{
-        width: size,
-        height: size,
-        borderRadius: size / 2,
-        backgroundColor: COLORS.LIGHT_GREY,
-        alignItems: 'center',
-        justifyContent: 'center',
-      }}
-    >
-      <EvilIcons name="envelope" size={18} color={COLORS.PURPLE} />
-    </View>
-  )
-}
 
 class FeedItemContentComponent extends React.Component {
   onTagPress = (initialTag, page, clickEvent) => {
@@ -86,7 +52,7 @@ class FeedItemContentComponent extends React.Component {
             )}
             {!data.metadata.owner && (
               <View style={styles.avatarView}>
-                {renderAvatar(data.owner)}
+                <UserAvatarComponent user={data.owner} size={22} />
               </View>
             )}
           </View>
@@ -115,7 +81,7 @@ class FeedItemContentComponent extends React.Component {
           </View>
         </View>
 
-        {data.tags.length > 0 && page !== 'archived' && (
+        {TAGS_FEATURE && data.tags.length > 0 && page !== 'archived' && (
           <View style={styles.tagsView}>
             <Tags
               initialTags={data.tags}

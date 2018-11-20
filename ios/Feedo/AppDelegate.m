@@ -12,7 +12,7 @@
 #import "React/RCTLinkingManager.h"
 #import <React/RCTPushNotificationManager.h>
 #import <BugsnagReactNative/BugsnagReactNative.h>
-
+@import Firebase;
 
 @implementation AppDelegate
 
@@ -37,6 +37,8 @@
 
   jsCodeLocation = [[RCTBundleURLProvider sharedSettings] jsBundleURLForBundleRoot:@"index" fallbackResource:nil];
 
+  [FIRApp configure];
+
   RCTRootView *rootView = [[RCTRootView alloc] initWithBundleURL:jsCodeLocation
                                                       moduleName:@"Feedo"
                                                initialProperties:nil
@@ -48,6 +50,7 @@
   rootViewController.view = rootView;
   self.window.rootViewController = rootViewController;
   [self.window makeKeyAndVisible];
+
   return YES;
 }
 

@@ -6,25 +6,63 @@ import * as types from './types'
 /**
  * Get feedo list
  */
-export const getFeedoList = (index) => {
-  let url = 'hunts'
+export const getFeedoList = (index, isForCardMove=false) => {
+  let url = 'hunts?owner=true'
 
   if (index === 1) {
-    url = 'hunts?pinned=true'
-  } else if (index === 2) {
     url = 'hunts?owner=false'
+  } else if (index === 2) {
+    url = 'hunts?pinned=true'
+  } else if (index === 3) {
+    url = 'hunts'
   }
 
   return {
     types: [types.GET_FEEDO_LIST_PENDING, types.GET_FEEDO_LIST_FULFILLED, types.GET_FEEDO_LIST_REJECTED],
     promise:
       axios({
-          method: 'get',
-          url: url
-      })  
+        method: 'get',
+        url: url
+      }),
+    payload: isForCardMove
   };
 }
 
+/**
+ * Get feedo list
+ */
+export const getInvitedFeedList = () => {
+  let url = 'hunts?invitationStatus=INVITED'
+
+  return {
+    types: [types.GET_INVITED_FEEDO_LIST_PENDING, types.GET_INVITED_FEEDO_LIST_FULFILLED, types.GET_INVITED_FEEDO_LIST_REJECTED],
+    promise:
+      axios({
+        method: 'get',
+        url: url
+      })
+  };
+}
+
+/**
+ * Update feed invitation (accept, ignore)
+ */
+export const updateInvitation = (feedId, type) => {
+  let url = `hunts/${feedId}/invitees/invitation`
+
+  return {
+    types: [types.UPDTE_FEED_INVITATION_PENDING, types.UPDTE_FEED_INVITATION_FULFILLED, types.UPDTE_FEED_INVITATION_REJECTED],
+    promise: axios({
+      method: 'put',
+      url: url,
+      data: { accepted: type }
+    }),
+    payload: {
+      feedId,
+      type
+    },
+  };
+}
 
 /**
  * Get Feed detail
@@ -37,7 +75,7 @@ export const getFeedDetail = (feedId) => {
     promise: axios({
       method: 'get',
       url: url
-    })
+    }),
   };
 }
 
@@ -479,5 +517,22 @@ export const getArchivedFeedList = () => {
           method: 'get',
           url: url
       })  
+  };
+}
+
+/**
+ * Leave Feed
+ */
+export const leaveFeed = (feedId) => {
+  let url = `hunts/${feedId}`
+
+  return {
+    types: [types.LEAVE_FEED_PENDING, types.LEAVE_FEED_FULFILLED, types.LEAVE_FEED_REJECTED],
+    promise: axios({
+      method: 'put',
+      url: url,
+      data: { status: 'ARCHIVED' }
+    }),
+    payload: feedId
   };
 }

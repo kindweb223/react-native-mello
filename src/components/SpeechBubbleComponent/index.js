@@ -43,16 +43,14 @@ class SpeechBubbleComponent extends React.Component {
 
     const marginTop = 20
     
-    // let height = 90
-    // if (page === 'feed') {
-    //   height = 90
-    // } else if (page === 'card') {
-    //   height = 130
-    // } else if (page === 'pinned') {
-    //   height = 75
-    // } else {
-    //   height = 160
-    // }
+    let height = 90
+    if (page === 'feed') {
+      height = 90
+    } else if (page === 'card') {
+      height = 130
+    } else if (page === 'pinned') {
+      height = 75
+    }
 
     return (
       <View style={styles.container}>
@@ -61,7 +59,7 @@ class SpeechBubbleComponent extends React.Component {
           <ImageBackground
             source={SPEECH_BUBBLE_MIDDLE}
             resizeMode="stretch"
-            style={[styles.bubbleView, page === 'feed' && { height: 90 }]}
+            style={[styles.bubbleView, { height }]}
           >
             <View style={styles.bubbleContent}>
               {page === 'pinned' 
@@ -74,14 +72,14 @@ class SpeechBubbleComponent extends React.Component {
                   </Text>
               }
 
-              {page !== 'pinned' && (
+              {/* {page !== 'pinned' && (
                 <TouchableOpacity style={styles.videoBtn} activeOpacity={0.8} onPress={this.showVideo}>
                   <Text style={styles.videoBtnText}>
                     {subTitle}
                     <MaterialCommunityIcons name='play' size={23} color={COLORS.PURPLE} />
                   </Text>
                 </TouchableOpacity>
-              )}
+              )} */}
             </View>
           </ImageBackground>
           <Image source={SPEECH_BUBBLE_BOTTOM} style={styles.bubbleView} resizeMode="stretch" />

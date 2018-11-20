@@ -1,0 +1,42 @@
+{
+  "project_info": {
+    "project_number": "887924189900",
+    "firebase_url": "https://feedo-solvers.firebaseio.com",
+    "project_id": "feedo-solvers",
+    "storage_bucket": "feedo-solvers.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:887924189900:android:8ee722487372de0b",
+        "android_client_info": {
+          "package_name": "io.solvers.feedo"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "887924189900-rar93hbeqrsr8bd4a1bhrf7gkdosfqqm.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBs-8OsfIN7DN6FIydARXLHP2yLNziGpYo"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

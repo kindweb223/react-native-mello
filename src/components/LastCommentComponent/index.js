@@ -18,7 +18,7 @@ import {
 } from '../../redux/card/actions'
 import UserAvatarComponent from '../../components/UserAvatarComponent';
 import * as COMMON_FUNC from '../../service/commonFunc'
-
+import Analytics from '../../lib/firebase'
 
 class LastCommentComponent extends React.Component {
   constructor(props) {
@@ -55,6 +55,8 @@ class LastCommentComponent extends React.Component {
   }
 
   onAddComment() {
+    Analytics.logEvent('edit_card_add_comment', {})
+
     Actions.CommentScreen({
       idea: this.props.card.currentCard,
       guest: COMMON_FUNC.isFeedGuest(this.props.feedo.currentFeed),
@@ -63,6 +65,8 @@ class LastCommentComponent extends React.Component {
   }
 
   onViewOldComments() {
+    Analytics.logEvent('edit_card_view_old_comments', {})
+
     Actions.CommentScreen({
       idea: this.props.card.currentCard,
       guest: COMMON_FUNC.isFeedGuest(this.props.feedo.currentFeed)

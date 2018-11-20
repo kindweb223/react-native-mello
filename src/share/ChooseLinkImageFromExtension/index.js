@@ -8,9 +8,9 @@ import {
 } from 'react-native'
 import { connect } from 'react-redux'
 import { Actions } from 'react-native-router-flux'
+import Ionicons from 'react-native-vector-icons/Ionicons';
 
 import styles from './styles'
-// import FastImage from "react-native-fast-image";
 import { 
   getOpenGraph,
 } from '../../redux/card/actions'
@@ -28,20 +28,29 @@ class ChooseLinkImageFromExtension extends React.Component {
     this.state = {
       loading: false,
       images: [],
+      selectedIndex: -1,
       isVisibleAlert: false,
       errorMessage: '',
+      initialized: false,
     };
     this.shareUrl = '';
   }
 
   async componentDidMount() {
     try {
-      const { value } = await ShareExtension.data();
-      const urls = value.match(/((?:(http|https|Http|Https|rtsp|Rtsp):\/\/(?:(?:[a-zA-Z0-9\$\-\_\.\+\!\*\'\(\)\,\;\?\&\=]|(?:\%[a-fA-F0-9]{2})){1,64}(?:\:(?:[a-zA-Z0-9\$\-\_\.\+\!\*\'\(\)\,\;\?\&\=]|(?:\%[a-fA-F0-9]{2})){1,25})?\@)?)?((?:(?:[a-zA-Z0-9][a-zA-Z0-9\-]{0,64}\.)+((?:(?:[a-zA-Z0-9])(?:[a-zA-Z0-9]))|(?:(?:[a-zA-Z0-9])(?:[a-zA-Z0-9])(?:[a-zA-Z0-9]))))|(?:(?:25[0-5]|2[0-4][0-9]|[0-1][0-9]{2}|[1-9][0-9]|[1-9])\.(?:25[0-5]|2[0-4][0-9]|[0-1][0-9]{2}|[1-9][0-9]|[1-9]|0)\.(?:25[0-5]|2[0-4][0-9]|[0-1][0-9]{2}|[1-9][0-9]|[1-9]|0)\.(?:25[0-5]|2[0-4][0-9]|[0-1][0-9]{2}|[1-9][0-9]|[0-9])))(?:\:\d{1,5})?)(\/(?:(?:[a-zA-Z0-9\;\/\?\:\@\&\=\#\~\-\.\+\!\*\'\(\)\,\_])|(?:\%[a-fA-F0-9]{2}))*)?(?:\b|$)/gi);
-      this.shareUrl = urls[0]
-      this.props.getOpenGraph(urls[0], true)
-    } catch(e) {
-      console.log('error : ', e)
+      const { type, value } = await ShareExtension.data();
+      if (type === 'text/plain') {
+        this.setState({initialized: true});
+        const urls = value.match(/((?:(http|https|Http|Https|rtsp|Rtsp):\/\/(?:(?:[a-zA-Z0-9\$\-\_\.\+\!\*\'\(\)\,\;\?\&\=]|(?:\%[a-fA-F0-9]{2})){1,64}(?:\:(?:[a-zA-Z0-9\$\-\_\.\+\!\*\'\(\)\,\;\?\&\=]|(?:\%[a-fA-F0-9]{2})){1,25})?\@)?)?((?:(?:[a-zA-Z0-9][a-zA-Z0-9\-]{0,64}\.)+((?:(?:[a-zA-Z0-9])(?:[a-zA-Z0-9]))|(?:(?:[a-zA-Z0-9])(?:[a-zA-Z0-9])(?:[a-zA-Z0-9]))))|(?:(?:25[0-5]|2[0-4][0-9]|[0-1][0-9]{2}|[1-9][0-9]|[1-9])\.(?:25[0-5]|2[0-4][0-9]|[0-1][0-9]{2}|[1-9][0-9]|[1-9]|0)\.(?:25[0-5]|2[0-4][0-9]|[0-1][0-9]{2}|[1-9][0-9]|[1-9]|0)\.(?:25[0-5]|2[0-4][0-9]|[0-1][0-9]{2}|[1-9][0-9]|[0-9])))(?:\:\d{1,5})?)(\/(?:(?:[a-zA-Z0-9\;\/\?\:\@\&\=\#\~\-\.\+\!\*\'\(\)\,\_])|(?:\%[a-fA-F0-9]{2}))*)?(?:\b|$)/gi);
+        this.shareUrl = urls[0]
+        this.props.getOpenGraph(urls[0], true)
+      } else {
+        Actions.ShareCardScreen({
+          imageUrl: value,
+        });
+      }
+    } catch(error) {
+      console.log('error : ', error)
     }
   }
 
@@ -57,7 +66,6 @@ class ChooseLinkImageFromExtension extends React.Component {
     } else if (this.props.card.loading !== types.GET_OPEN_GRAPH_FULFILLED && nextProps.card.loading === types.GET_OPEN_GRAPH_FULFILLED) {
       // success in getting open graph
       this.shareUrl = nextProps.card.currentOpneGraph.url;
-      console.log('this.shareUrl : ', this.shareUrl);
       const images = nextProps.card.currentOpneGraph.images;
       if (images && images.length > 0) {
         this.setState({
@@ -97,7 +105,10 @@ class ChooseLinkImageFromExtension extends React.Component {
     }
   }
 
-  onSelectItem(imageUrl) {
+  onSelectItem(imageUrl, index) {
+    this.setState({
+      selectedIndex: index,
+    });
     Actions.ShareCardScreen({
       imageUrl,
       shareUrl: this.shareUrl,
@@ -114,14 +125,28 @@ class ChooseLinkImageFromExtension extends React.Component {
     });
   }
 
-  renderImage(item) {
+  renderIcon(index) {
+    if (this.state.selectedIndex === index) {
+      return (
+        <View style={styles.selectedIcon}>
+          <Ionicons style={styles.checkIcon} name='ios-checkmark-circle' /> 
+        </View>
+      );
+    }
+    return (
+      <View style={styles.icon} />
+    );
+  }
+
+  renderImage({item, index}) {
     return (
       <TouchableOpacity 
         style={styles.imageContainer}
         activeOpacity={0.6}
-        onPress={() => this.onSelectItem(item.item)}
+        onPress={() => this.onSelectItem(item, index)}
       >
-        <Image style={styles.imageItem} source={{uri: item.item}} resizeMode='cover' />
+        <Image style={styles.imageItem} source={{uri: item}} resizeMode='cover' />
+        {this.renderIcon(index)}
       </TouchableOpacity>
     );
   }
@@ -156,7 +181,15 @@ class ChooseLinkImageFromExtension extends React.Component {
   render() {
     const {
       images,
+      initialized,
     } = this.state;
+    if (!initialized) {
+      return (
+        <View style={styles.container}>
+          <LoadingScreen />
+        </View>
+      );
+    }
     return (
       <View style={styles.container}>
         <View style={styles.mainContainer}>

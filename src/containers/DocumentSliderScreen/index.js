@@ -2,7 +2,6 @@ import React from 'react'
 import {
   TouchableOpacity,
   View,
-  Text,
   WebView,
   ScrollView,
   RefreshControl
@@ -10,18 +9,17 @@ import {
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 
-import Swiper from 'react-native-swiper';
-import { Actions } from 'react-native-router-flux'
+import Swiper from 'react-native-swiper'
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons'
 import Feather from 'react-native-vector-icons/Feather'
 
 import styles from './styles'
-import CONSTANTS from '../../service/constants'
 import COLORS from '../../service/colors'
-import LoadingScreen from '../LoadingScreen';
+import LoadingScreen from '../LoadingScreen'
 import * as feedTypes from '../../redux/feedo/types'
 import * as cardTypes from '../../redux/card/types'
 
+import Analytics from '../../lib/firebase'
 
 class DocumentSliderScreen extends React.Component {
   constructor(props) {
@@ -33,6 +31,7 @@ class DocumentSliderScreen extends React.Component {
   }
 
   componentDidMount() {
+    Analytics.setCurrentScreen('DocumentSliderScreen')
   }
 
   UNSAFE_componentWillReceiveProps(nextProps) {

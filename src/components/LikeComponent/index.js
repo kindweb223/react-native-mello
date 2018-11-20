@@ -9,9 +9,6 @@ import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 
 import { Actions } from 'react-native-router-flux'
-import FontAwesome from 'react-native-vector-icons/FontAwesome'
-
-import COLORS from '../../service/colors'
 import CONSTANTS from '../../service/constants'
 import styles from './styles'
 import * as types from '../../redux/card/types'
@@ -21,6 +18,8 @@ import {
   setCurrentCard,
 } from '../../redux/card/actions'
 import * as COMMON_FUNC from '../../service/commonFunc'
+
+import Analytics from '../../lib/firebase'
 
 const FAV_ICON_R = require('../../../assets/images/Fav/Red.png')
 const FAV_ICON_G = require('../../../assets/images/Fav/Grey.png')
@@ -98,6 +97,7 @@ class LikeComponent extends React.Component {
       likes,
     } = this.state;
     if (likes > 0) {
+      Analytics.logEvent('feed_detail_show_like_list', {})
       Actions.LikesListScreen({idea: this.props.idea});
     }
   }
@@ -105,12 +105,17 @@ class LikeComponent extends React.Component {
   onLike(liked) {
     // Move to like list for Guest
     if (COMMON_FUNC.isFeedGuest(this.props.feedo.currentFeed)) {
+      Analytics.logEvent('feed_detail_show_like_list', {})
       Actions.LikesListScreen({idea: this.props.idea});
     } else {
       this.props.setCurrentCard(this.props.idea);
       if (liked) {
+        Analytics.logEvent('feed_detail_unlike_card', {})
+
         this.props.unlikeCard(this.props.idea.id);
       } else {
+        Analytics.logEvent('feed_detail_like_card', {})
+
         this.props.likeCard(this.props.idea.id);
       }
     }

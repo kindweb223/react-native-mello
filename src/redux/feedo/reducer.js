@@ -1,19 +1,22 @@
+import PushNotification from 'react-native-push-notification'
 import * as types from './types'
 import * as cardTypes from '../card/types'
-import { filter, find, findIndex } from 'lodash'
+import { filter, find, findIndex, isEmpty } from 'lodash'
 import resolveError from './../../service/resolveError'
 
 const initialState = {
   loading: null,
   error: null,
   feedoList: [],
+  feedoListForCardMove: [],
   currentFeed: {},
   pinResult: null,
   duplicaetdId: null,
   feedDetailAction: null,
   fileUploadUrl: {},
   userTags: [],
-  archivedFeedList: []
+  archivedFeedList: [],
+  invitedFeedList: []
 };
 
 export default function feedo(state = initialState, action = {}) {
@@ -24,20 +27,118 @@ export default function feedo(state = initialState, action = {}) {
     case types.GET_FEEDO_LIST_PENDING:
       return {
         ...state,
+        feedoListForCardMove: [],
         loading: types.GET_FEEDO_LIST_PENDING,
       }
     case types.GET_FEEDO_LIST_FULFILLED: {
       const { data } = action.result
+      const isForCardMove = action.payload;
+      if (!isForCardMove) {
+        return {
+          ...state,
+          loading: types.GET_FEEDO_LIST_FULFILLED,
+          feedoList: data.content,
+        }
+      }
       return {
         ...state,
         loading: types.GET_FEEDO_LIST_FULFILLED,
-        feedoList: data.content,
+        feedoListForCardMove: data.content,
       }
     }
     case types.GET_FEEDO_LIST_REJECTED: {
       return {
         ...state,
         loading: types.GET_FEEDO_LIST_REJECTED,
+        error: action.error,
+      }
+    }
+    /**
+     * Get Invited Feed List
+     */
+    case types.GET_INVITED_FEEDO_LIST_PENDING:
+      return {
+        ...state,
+        loading: types.GET_INVITED_FEEDO_LIST_PENDING,
+      }
+    case types.GET_INVITED_FEEDO_LIST_FULFILLED: {
+      const { data } = action.result
+      return {
+        ...state,
+        loading: types.GET_INVITED_FEEDO_LIST_FULFILLED,
+        invitedFeedList: data.content
+      }
+    }
+    case types.GET_INVITED_FEEDO_LIST_REJECTED: {
+      return {
+        ...state,
+        loading: types.GET_INVITED_FEEDO_LIST_REJECTED,
+        error: action.error,
+      }
+    }
+    /**
+     * Update feedo invitation (accept, ignore)
+     */
+    case types.UPDTE_FEED_INVITATION_PENDING:
+      return {
+        ...state,
+        loading: types.UPDTE_FEED_INVITATION_PENDING,
+      }
+    case types.UPDTE_FEED_INVITATION_FULFILLED: {
+      PushNotification.getApplicationIconBadgeNumber((badgeCount) => {
+        if (badgeCount && badgeCount > 0) {
+          PushNotification.setApplicationIconBadgeNumber(badgeCount - 1)
+        }
+      })
+
+      const { feedId, type } = action.payload
+      const { invitedFeedList, feedoList, currentFeed } = state
+
+      const restInvitedFeedList = filter(invitedFeedList, feed => feed.id !== feedId)
+
+      // Update feed list
+      let updateFeed = null
+      let restFeedoList = []
+      if (feedoList.length > 0) {
+        restFeedoList = filter(feedoList, feed => feed.id !== feedId)
+        let filterUpdateFeed = filter(feedoList, feed => feed.id === feedId)
+        updateFeed = filterUpdateFeed[0]
+
+        if (filterUpdateFeed.length > 0) {
+          updateFeed = {
+            ...updateFeed,
+            metadata: {
+              ...updateFeed.metadata,
+              myInviteStatus: 'ACCEPTED'
+            }
+          }
+        }
+      }
+
+      // Update current feed
+      let newCurrentFeed = {}
+      if (!isEmpty(currentFeed)) {
+        newCurrentFeed = {
+          ...currentFeed,
+          metadata: {
+            ...currentFeed.metadata,
+            myInviteStatus: type ? 'ACCEPTED' : 'DECLINED'
+          }
+        }
+      }
+
+      return {
+        ...state,
+        loading: types.UPDTE_FEED_INVITATION_FULFILLED,
+        invitedFeedList: restInvitedFeedList,
+        feedoList: type ? (updateFeed ? [...restFeedoList, updateFeed] : restFeedoList) : restFeedoList,
+        currentFeed: newCurrentFeed
+      }
+    }
+    case types.UPDTE_FEED_INVITATION_REJECTED: {
+      return {
+        ...state,
+        loading: types.UPDTE_FEED_INVITATION_REJECTED,
         error: action.error,
       }
     }
@@ -149,6 +250,7 @@ export default function feedo(state = initialState, action = {}) {
     case types.ARCHIVE_FEED_PENDING: {
       return {
         ...state,
+        loading: types.ARCHIVE_FEED_PENDING,
         error: null,
       }
     }
@@ -165,6 +267,32 @@ export default function feedo(state = initialState, action = {}) {
         error: action.error,
       }
     }
+    /**
+     * Leave Feed
+     */
+    case types.LEAVE_FEED_PENDING: {
+      return {
+        ...state,
+        loading: LEAVE_FEED_PENDING,
+        error: null
+      }
+    }
+    case types.LEAVE_FEED_FULFILLED: {
+      return {
+        ...state,
+        loading: types.LEAVE_FEED_FULFILLED,
+      }
+    }
+    case types.LEAVE_FEED_REJECTED: {
+      return {
+        ...state,
+        loading: types.LEAVE_FEED_REJECTED,
+        error: action.error,
+      }
+    }
+    /**
+     * Duplicate Feed
+     */
     case types.DUPLICATE_FEED_PENDING: {
       return {
         ...state,
@@ -239,6 +367,15 @@ export default function feedo(state = initialState, action = {}) {
             Object.assign({}, currentFeed[0], { status: 'ARCHIVED' })
           ]
         }
+      } else if (flag === 'leave') {
+        return {
+          ...state,
+          loading: types.LEAVE_FEED_FULFILLED,
+          leaveFeed: currentFeed,
+          feedoList: [
+            ...restFeedoList
+          ]
+        }
       }
       
       return {
@@ -250,7 +387,7 @@ export default function feedo(state = initialState, action = {}) {
      */
     case types.REMOVE_DUMMY_FEED: {
       const { payload: { feedId, flag } } = action
-      const { feedoList, pinnedDate, deleteFeed, archiveFeed } = state
+      const { feedoList, pinnedDate, deleteFeed, archiveFeed, leaveFeed } = state
 
       const currentFeed = filter(feedoList, feed => feed.id === feedId)
       const restFeedoList = filter(feedoList, feed => feed.id !== feedId)
@@ -294,6 +431,16 @@ export default function feedo(state = initialState, action = {}) {
           ],
           archiveFeed: null,
         }
+      } else if (flag === 'leave') {
+        return {
+          ...state,
+          loading: 'FEED_FULFILLED',
+          feedoList: [
+            ...restFeedoList,
+            Object.assign({}, leaveFeed[0])
+          ],
+          leaveFeed: null,
+        }
       }
       
       return {
@@ -301,7 +448,7 @@ export default function feedo(state = initialState, action = {}) {
       }
     }
     /**
-     * Set Feed detail action (Delete, Archive)
+     * Set Feed detail action (Delete, Archive, Leave)
      */
     case types.SET_FEED_DETAIL_ACTION: {
       const { payload } = action

@@ -7,6 +7,7 @@ import {
   Animated,
 } from 'react-native'
 
+import { Actions } from 'react-native-router-flux'
 import PropTypes from 'prop-types'
 import Ionicons from 'react-native-vector-icons/Ionicons'
 import Feather from 'react-native-vector-icons/Feather'
@@ -43,7 +44,7 @@ class DashboardActionBar extends React.Component {
   }
 
   render () {
-    const { filtering, showType, sortType, notifications, feed } = this.props
+    const { filtering, showType, sortType, notifications, feed, badgeCount } = this.props
     return (
       <View style={[styles.container, filtering ? styles.filterContainer : styles.actionContainer]}>
         {filtering && (
@@ -61,14 +62,14 @@ class DashboardActionBar extends React.Component {
         )}
         <View style={styles.actionView}>
           {notifications &&
-            <View style={styles.notificationView}>
+            <TouchableOpacity style={styles.notificationView} onPress={() => Actions.NotificationScreen()}>
               <Ionicons
                 name="md-notifications"
                 size={20}
                 color={COLORS.PURPLE}
               />
-              <Text style={styles.notificationText}>0</Text>
-            </View>
+              <Text style={styles.notificationText}>{badgeCount}</Text>
+            </TouchableOpacity>
           }
 
           {!(!_.isEmpty(feed) && COMMON_FUNC.isFeedGuest(feed)) && (
@@ -104,7 +105,8 @@ DashboardActionBar.defaultProps = {
   showType: 'all',
   sortType: 'date',
   notifications: true,
-  feed: {}
+  feed: {},
+  badgeCount: 0
 }
 
 DashboardActionBar.propTypes = {
@@ -114,7 +116,8 @@ DashboardActionBar.propTypes = {
   onAddFeed: PropTypes.func,
   handleFilter: PropTypes.func,
   notifications: PropTypes.bool,
-  feed: PropTypes.object
+  feed: PropTypes.object,
+  badgeCount: PropTypes.number
 }
 
 export default DashboardActionBar

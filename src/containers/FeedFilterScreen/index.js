@@ -5,7 +5,6 @@ import {
   ScrollView,
   View,
   Text,
-  Image,
   Animated,
   TouchableOpacity,
   Keyboard
@@ -21,6 +20,7 @@ import Ionicons from 'react-native-vector-icons/Ionicons'
 import FeedoListContainer from '../FeedoListContainer'
 import SearchBarComponent from '../../components/SearchBarComponent'
 import LoadingScreen from '../LoadingScreen'
+import Analytics from '../../lib/firebase'
 
 import { 
   getUserTags
@@ -28,7 +28,6 @@ import {
 
 import COLORS from '../../service/colors'
 import styles from './styles'
-const SETTING_ICON = require('../../../assets/images/Settings/Grey.png')
 
 class FeedFilterScreen extends React.Component {
   constructor(props) {
@@ -45,6 +44,8 @@ class FeedFilterScreen extends React.Component {
   }
 
   componentDidMount() {
+    Analytics.setCurrentScreen('SearchScreen')
+
     const { feedo, initialTag, user } = this.props
 
     this.setState({ loading: true, currentTags: initialTag })
@@ -58,12 +59,26 @@ class FeedFilterScreen extends React.Component {
 
   sortFeedoList = feedo => {
     feedoList = feedo.feedoList.map(item => {
-      const filteredIdeas = _.filter(item.ideas, idea => idea.coverImage !== null && idea.coverImage !== '')
+      const filteredIdeas = _.orderBy(
+        _.filter(item.ideas, idea => idea.coverImage !== null && idea.coverImage !== ''),
+        ['publishedDate'],
+        ['asc']
+      )
+
+      let coverImages = []
+      if (filteredIdeas.length > 4) {
+        coverImages = R.slice(0, 4, filteredIdeas)
+      } else {
+        coverImages = R.slice(0, 4, filteredIdeas)
+        for (let i = 0; i < 4 - filteredIdeas.length; i ++) {
+          coverImages.push(null)
+        }
+      }
 
       return Object.assign(
         {},
         item,
-        { coverImages: R.slice(0, filteredIdeas.length > 4 ? 4 : filteredIdeas.length, filteredIdeas) }
+        { coverImages }
       )
     })
 
@@ -197,6 +212,7 @@ class FeedFilterScreen extends React.Component {
                 ? <FeedoListContainer
                     loading={false}
                     feedoList={filterFeedoList}
+                    refresh={false}
                   />
                 : !inputTag && this.props.initialTag.length > 0 && (
                     <View style={styles.emptyContainer}>

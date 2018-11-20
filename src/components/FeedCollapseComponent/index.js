@@ -25,8 +25,9 @@ import COLORS from '../../service/colors'
 import CONSTANTS from '../../service/constants'
 import styles from './styles'
 import * as COMMON_FUNC from '../../service/commonFunc'
-const ATTACHMENT_ICON = require('../../../assets/images/Attachment/Blue.png')
-const IMAGE_ICON = require('../../../assets/images/Image/Blue.png')
+import { TAGS_FEATURE } from '../../service/api'
+// const ATTACHMENT_ICON = require('../../../assets/images/Attachment/Blue.png')
+// const IMAGE_ICON = require('../../../assets/images/Image/Blue.png')
 const TAG_ICON = require('../../../assets/images/Tag/Blue.png')
 
 class FeedCollapseComponent extends React.Component {
@@ -93,7 +94,7 @@ class FeedCollapseComponent extends React.Component {
               style={styles.summaryView}
               onPress={() => COMMON_FUNC.isFeedOwnerEditor(feedData) ? this.props.onEditFeed() : {}}
             >
-              <Text style={styles.summaryPlaceHolderText}>Add a note</Text>
+              <Text style={styles.summaryPlaceHolderText}>Tap to add description</Text>
             </TouchableOpacity>
         }
 
@@ -132,7 +133,7 @@ class FeedCollapseComponent extends React.Component {
           </View>
         )}
 
-        {feedData.tags.length > 0 && (
+        {TAGS_FEATURE && feedData.tags.length > 0 && (
           <View style={[styles.tagView, files.length === 0 ? { marginTop: 20 } : { marginTop: 10 }]}>
             <Tags
               initialTags={feedData.tags}
@@ -156,14 +157,16 @@ class FeedCollapseComponent extends React.Component {
           <View>
             {COMMON_FUNC.isFeedOwnerEditor(feedData) && (
               <View style={styles.footerLeftBtnView}>
+                {TAGS_FEATURE && (
                 <TouchableOpacity
                   style={styles.btnView}
                   activeOpacity={0.6}
                   onPress={this.props.onOpenCreationTag}
                 >
                   <Image source={TAG_ICON} />
-                </TouchableOpacity> 
-                <TouchableOpacity
+                </TouchableOpacity>
+                )}
+                {/* <TouchableOpacity
                   style={styles.btnView}
                   activeOpacity={0.6}
                   onPress={this.props.onAddMedia}
@@ -176,7 +179,7 @@ class FeedCollapseComponent extends React.Component {
                   onPress={this.props.onAddDocument}
                 >
                   <Image source={ATTACHMENT_ICON} />
-                </TouchableOpacity>
+                </TouchableOpacity> */}
               </View>
             )}
           </View>
@@ -267,7 +270,7 @@ class FeedCollapseComponent extends React.Component {
         >
           <ImageSliderScreen
             position={this.state.position}
-            imageFiles={images}
+            mediaFiles={images}
             removal={false}
             onClose={() => this.setState({ isPreview: false })}
           />

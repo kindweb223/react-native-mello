@@ -17,15 +17,18 @@ const FeedCoverImageComponent = ({ data }) => (
           [
             styles.thumbnails,
             key === 0
-              ? (data.length === 1 ? styles.all : styles.first)
-              : (data.length > 1 && key === data.length - 1 ? styles.last : styles.middle)
+              ? styles.first
+              : key === data.length - 1 ? styles.last : styles.middle
           ]
         }
       >
-        <FastImage
-          style={styles.image}
-          source={{uri: item.coverImage}}
-        />
+        {item
+          ? <FastImage
+              style={styles.image}
+              source={{uri: item.coverImage}}
+            />
+          : <View style={styles.emptyCoverImageView} />
+        }
       </View>
     ))}
   </View>

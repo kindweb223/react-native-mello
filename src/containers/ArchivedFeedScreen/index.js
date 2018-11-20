@@ -1,7 +1,6 @@
 /* global require */
 import React from 'react'
 import {
-  SafeAreaView,
   View,
   Text,
   Image,
@@ -11,12 +10,12 @@ import {
 import { connect } from 'react-redux'
 import { Actions } from 'react-native-router-flux'
 import PropTypes from 'prop-types'
-import * as R from 'ramda'
 import _ from 'lodash'
 import Ionicons from 'react-native-vector-icons/Ionicons'
 import ToasterComponent from '../../components/ToasterComponent'
 import ArchivedFeedoListContainer from '../ArchivedFeedoListContainer'
-import LoadingScreen from '../LoadingScreen'
+
+import Analytics from '../../lib/firebase'
 
 import { 
   getArchivedFeedList,
@@ -56,6 +55,8 @@ class ArchivedFeedScreen extends React.Component {
   }
 
   componentDidMount() {
+    Analytics.setCurrentScreen('ArchivedScreen')
+
     this.setState({ loading: true })
     this.props.getArchivedFeedList()
   }

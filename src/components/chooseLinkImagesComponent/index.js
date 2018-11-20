@@ -47,6 +47,19 @@ export default class ChooseLinkImages extends React.Component {
     }
   }
 
+  renderIcon(select) {
+    if (select) {
+      return (
+        <View style={styles.selectedIcon}>
+          <Ionicons style={styles.checkIcon} name='ios-checkmark-circle' /> 
+        </View>
+      );
+    }
+    return (
+      <View style={styles.icon} />
+    );
+  }
+
   renderImage(item) {
     let select = true;
     if (this.state.selectedImages.indexOf(item.item) === -1) {
@@ -59,12 +72,7 @@ export default class ChooseLinkImages extends React.Component {
         onPress={() => this.onSelectItem(item.item)}
       >
         <FastImage style={styles.imageItem} source={{uri: item.item}} resizeMode={FastImage.resizeMode.cover}/>
-        { 
-          select && 
-          <View style={styles.icon} >
-            <Ionicons name="ios-checkmark-circle" size={22} color={COLORS.BLUE} style={{marginTop: 0, marginLeft: 1}} /> 
-          </View>
-        }
+        {this.renderIcon(select)}
       </TouchableOpacity>
     );
   }

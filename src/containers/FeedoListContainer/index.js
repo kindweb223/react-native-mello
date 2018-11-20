@@ -3,16 +3,18 @@ import {
   FlatList,
   TouchableOpacity,
   Animated,
-  View
+  View,
+  RefreshControl
 } from 'react-native'
 
 import PropTypes from 'prop-types'
 import { Actions } from 'react-native-router-flux'
 import ReactNativeHaptic from 'react-native-haptic'
+import _ from 'lodash'
 
 import FeedItemComponent from '../../components/FeedItemComponent'
 import FeedLoadingStateComponent from '../../components/FeedLoadingStateComponent'
-import CONSTANTS from '../../service/constants'
+import NotificationItemComponent from '../../components/NotificationItemComponent'
 import COLORS from '../../service/colors'
 import styles from './styles'
 
@@ -86,46 +88,58 @@ class FeedoListContainer extends React.Component {
             transform: [
               { scale: this.animatedSelectFeedo },
             ],
+            backgroundColor: '#fff',
           }
         }
       >
-        <ListRow index={index}>
-          {this.props.feedoList.length > 0 && index === 0 && (
-            <View style={styles.separator} />
-          )}
+        {item.metadata.myInviteStatus !== 'DECLINED' && (
+          <ListRow index={index}>
+            {this.props.feedoList.length > 0 && index === 0 && (
+              <View style={styles.separator} />
+            )}
 
-          <TouchableOpacity
-            activeOpacity={0.8}
-            delayLongPress={1000}
-            onLongPress={() => this.onLongPressFeedo(index, item)}
-            onPress={() => {
-              Actions.FeedDetailScreen({
-                data: item
-              })
-            }}
-          >
-            <FeedItemComponent item={item} pinFlag={item.pinned ? true : false} page={this.props.page} />
-          </TouchableOpacity>
+            {item.metadata.myInviteStatus === 'ACCEPTED'
+              ? <TouchableOpacity
+                  activeOpacity={0.8}
+                  delayLongPress={1000}
+                  onLongPress={() => this.onLongPressFeedo(index, item)}
+                  onPress={() => {
+                    Actions.FeedDetailScreen({
+                      data: item
+                    })
+                  }}
+                >
+                  <FeedItemComponent item={item} pinFlag={item.pinned ? true : false} page={this.props.page} />
+                </TouchableOpacity>
+              : <NotificationItemComponent item={item} hideTumbnail={true} />
+            }
 
-          {this.props.feedoList.length > 0 && (
-            <View style={[styles.separator, { marginTop: 16 }]} />
-          )}
-        </ListRow>
+            {this.props.feedoList.length > 0 && (
+              <View style={[styles.separator, { marginTop: 14 }]} />
+            )}
+          </ListRow>
+        )}
       </Animated.View>
     )
   }
 
   render() {
-    const { loading, feedoList, handleFeedMenu, tabLabel } = this.props;
+    const { loading, refresh, feedoList, handleFeedMenu, tabLabel } = this.props;
 
     if (loading) return <FeedLoadingStateComponent animating />
 
     return (
       <FlatList
+        refreshControl={
+          <RefreshControl
+            tintColor={COLORS.PURPLE}
+            refreshing={this.props.isRefreshing}
+            onRefresh={() => refresh ? this.props.onRefreshFeed() : {}}
+          />
+        }
         style={styles.flatList}
         data={feedoList}
         keyExtractor={item => item.id}
-        scrollEnabled={false}
         automaticallyAdjustContentInsets={true}
         renderItem={this.renderItem.bind(this)}
         keyboardShouldPersistTaps="handled"
@@ -136,11 +150,15 @@ class FeedoListContainer extends React.Component {
 
 FeedoListContainer.defaultProps = {
   handleFeedMenu: () => {},
-  page: 'search'
+  page: 'search',
+  refresh: true,
+  isRefresh: false
 }
 
 FeedoListContainer.propTypes = {
   loading: PropTypes.bool.isRequired,
+  refresh: PropTypes.bool.isRequired,
+  isRefresh: PropTypes.bool,
   feedoList: PropTypes.arrayOf(PropTypes.any).isRequired,
   handleFeedMenu: PropTypes.func,
   page: PropTypes.string

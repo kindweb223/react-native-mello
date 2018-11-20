@@ -1,7 +1,6 @@
 import React from 'react'
 import {
   View,
-  SafeAreaView,
   Text,
   FlatList,
   TouchableOpacity,
@@ -20,7 +19,6 @@ import _ from 'lodash';
 import Swipeout from 'react-native-swipeout';
 
 import styles from './styles'
-import CONSTANTS from '../../service/constants'
 import COLORS from '../../service/colors'
 import LoadingScreen from '../LoadingScreen';
 import * as types from '../../redux/card/types'
@@ -34,8 +32,8 @@ import { getDurationFromNow } from '../../service/dateUtils'
 import InputToolbarComponent from '../../components/InputToolbarComponent';
 import UserAvatarComponent from '../../components/UserAvatarComponent';
 import * as COMMON_FUNC from '../../service/commonFunc'
-import { relativeTimeThreshold } from 'moment';
 
+import Analytics from '../../lib/firebase'
 
 class CommentScreen extends React.Component {
   static renderLeftButton(props) {
@@ -69,6 +67,8 @@ class CommentScreen extends React.Component {
   }
 
   componentDidMount() {
+    Analytics.setCurrentScreen('CommentScreen')
+
     this.keyboardWillShowSubscription = Keyboard.addListener('keyboardWillShow', (e) => this.keyboardWillShow(e));
     this.keyboardWillHideSubscription = Keyboard.addListener('keyboardWillHide', (e) => this.keyboardWillHide(e));
     this.props.getCardComments(this.props.idea.id);

@@ -17,10 +17,11 @@ export default {
   FILTER_HEIGHT: 62,
   ACTION_BAR_HEIGHT: Platform.OS === 'ios' ? ifIphoneX(82, 64) : 56,
   STATUS_BOTTOM_BAR_HEIGHT: Platform.OS === 'ios' ? ifIphoneX(16, 0) : 0,
-  TAB_BAR_HEIGHT: 55,
+  TAB_BAR_HEIGHT: 45,
   ANIMATEION_MILLI_SECONDS: 200,
   SCREEN_VERTICAL_MIN_MARGIN: Math.round(height * 0.145),
   TEXT_INPUT_LINE_HEIGHT: 23,
+  CLIPBOARD_DATA_CONFIRM_DURATION: 6000,
 
   // Feedo show type
   FEED_NONE: 0,
@@ -69,6 +70,8 @@ export default {
 
   USER_DEVICE_TOKEN: 'USER_DEVICE_TOKEN',
   CARD_SAVED_LAST_FEEDO_INFO: 'CARD_SAVED_LAST_FEEDO_INFO',
+
+  CLIPBOARD_DATA: 'CLIPBOARD_DATA',
 
   // share extension modal buttons
   MODAL_OK: 1,
