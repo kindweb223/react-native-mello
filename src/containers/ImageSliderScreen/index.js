@@ -147,7 +147,9 @@ class ImageSliderScreen extends React.Component {
     let isImage = true;
     if (mediaFiles.length > 0) {
       const mediaFile = mediaFiles[this.state.imageIndex];
-      isImage = mediaFile && mediaFile.contentType.toLowerCase().indexOf('image') !== -1;
+      if (mediaFile) {
+        isImage = mediaFile && mediaFile.contentType.toLowerCase().indexOf('image') !== -1;
+      }
     }
     return (
       <View style={styles.container}>
