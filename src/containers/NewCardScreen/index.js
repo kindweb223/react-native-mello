@@ -365,6 +365,7 @@ class NewCardScreen extends React.Component {
       loading = true;
     } else if (this.props.feedo.loading !== feedoTypes.GET_FEEDO_LIST_FULFILLED && nextProps.feedo.loading === feedoTypes.GET_FEEDO_LIST_FULFILLED) {
       if (this.isGettingFeedoList) {
+        loading = true;
         this.isGettingFeedoList = false;
         this.createCard(nextProps);
       }
