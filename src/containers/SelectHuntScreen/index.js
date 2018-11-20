@@ -225,6 +225,7 @@ class SelectHuntScreen extends React.Component {
     if (this.props.hiddenFeedoId) {
       feedoList = _.filter(feedoList, feedo => feedo.id !== this.props.hiddenFeedoId);
     }
+    feedoList = _.filter(feedoList, feedo => feedo.status === 'PUBLISHED');
     if (feedoList && feedoList.length > 0 && this.state.filterText) {
       feedoList = _.filter(feedoList, feedo => feedo.headline && feedo.headline.toLowerCase().indexOf(this.state.filterText.toLowerCase()) !== -1);
     }

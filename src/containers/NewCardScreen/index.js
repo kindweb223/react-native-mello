@@ -83,11 +83,16 @@ const IMAGE_ICON = require('../../../assets/images/Image/Blue.png')
 class NewCardScreen extends React.Component {
   constructor(props) {
     super(props);
+    let coverImage = null;
+    if (props.cardMode === CONSTANTS.SHARE_EXTENTION_CARD && props.shareImageUrl) {
+      coverImage = props.shareImageUrl;
+    }
+
     this.state = {
       // cardName: '',
       idea: '',
       textByCursor: '',
-      coverImage: null,
+      coverImage,
 
       loading: false,
       // isFullScreenCard: false,
@@ -151,12 +156,23 @@ class NewCardScreen extends React.Component {
         }, () => {
           this.checkUrls();
         });
-      } else {
-        const data = {
-          userId: nextProps.user.userInfo.id,
-          state: 'true'
+      } else if (this.props.cardMode === CONSTANTS.SHARE_EXTENTION_CARD && this.isUploadShareImage) {
+        this.isUploadShareImage = false;
+        const { shareImageUrl } = this.props;
+        const fileName = shareImageUrl.substring(shareImageUrl.lastIndexOf("/") + 1, shareImageUrl.length);
+        const response = {
+          uri: this.props.shareImageUrl,
+          fileName,
         }
-        AsyncStorage.setItem('BubbleFirstCardTimeCreated', JSON.stringify(data));
+        this.uploadFile(nextProps.card.currentCard, response, 'MEDIA');
+      } else {
+        if (nextProps.user && nextProps.user.userInfo && nextProps.user.userInfo.id) {
+          const data = {
+            userId: nextProps.user.userInfo.id,
+            state: 'true'
+          }
+          AsyncStorage.setItem('BubbleFirstCardTimeCreated', JSON.stringify(data));
+        }
       }
     } else if (this.props.card.loading !== types.GET_FILE_UPLOAD_URL_PENDING && nextProps.card.loading === types.GET_FILE_UPLOAD_URL_PENDING) {
       // getting a file upload url
@@ -349,6 +365,7 @@ class NewCardScreen extends React.Component {
       loading = true;
     } else if (this.props.feedo.loading !== feedoTypes.GET_FEEDO_LIST_FULFILLED && nextProps.feedo.loading === feedoTypes.GET_FEEDO_LIST_FULFILLED) {
       if (this.isGettingFeedoList) {
+        loading = true;
         this.isGettingFeedoList = false;
         this.createCard(nextProps);
       }
@@ -425,7 +442,7 @@ class NewCardScreen extends React.Component {
   }
 
   componentDidMount() {
-    console.log('Current Card : ', this.props.card.currentCard);
+    // console.log('Current Card : ', this.props.card.currentCard);
     const { viewMode } = this.props;
     if (viewMode === CONSTANTS.CARD_VIEW || viewMode === CONSTANTS.CARD_EDIT) {
       this.setState({
@@ -622,7 +639,6 @@ class NewCardScreen extends React.Component {
       allUrls.forEach(url => {
         const index = _.findIndex(this.parsingErrorLinks, errorLink => errorLink === url);
         if (index === -1) {
-          console.log('Url : ', url);
           url = url.replace('[', '');
           url = url.replace(']', '');
           newUrls.push(url);
@@ -714,7 +730,7 @@ class NewCardScreen extends React.Component {
               type = 'MEDIA';
             }
           }
-          this.uploadFile(response, type);
+          this.uploadFile(this.props.card.currentCard, response, type);
         }
       }      
     });
@@ -761,13 +777,13 @@ class NewCardScreen extends React.Component {
     }
   }
 
-  uploadFile(file, type) {
+  uploadFile(currentCard, file, type) {
     this.selectedFile = file.uri;
     this.selectedFileMimeType = mime.lookup(file.uri);
     this.selectedFileName = file.fileName;
     this.selectedFileType = type;
-    if (this.props.card.currentCard.id) {
-      this.props.getFileUploadUrl(this.props.feedo.currentFeed.id, this.props.card.currentCard.id);
+    if (currentCard.id) {
+      this.props.getFileUploadUrl(this.props.feedo.currentFeed.id, currentCard.id);
     }
   }
 
@@ -780,7 +796,7 @@ class NewCardScreen extends React.Component {
           if (!response.fileName) {
             response.fileName = response.uri.replace(/^.*[\\\/]/, '')
           }
-          this.uploadFile(response, 'MEDIA');
+          this.uploadFile(this.props.card.currentCard, response, 'MEDIA');
         }
       }
     });
@@ -792,7 +808,7 @@ class NewCardScreen extends React.Component {
         if (response.fileSize > 1024 * 1024 * 10) {
           Alert.alert('Warning', 'File size must be less than 10MB')
         } else {
-          this.uploadFile(response, 'MEDIA');
+          this.uploadFile(this.props.card.currentCard, response, 'MEDIA');
         }
       }
     });
@@ -1377,10 +1393,10 @@ class NewCardScreen extends React.Component {
           <TouchableOpacity 
             style={styles.closeButtonShareWrapper}
             activeOpacity={0.7}
-            onPress={() => this.props.shareImageUrl !== '' ? Actions.pop() : this.props.onClose()}
+            onPress={() => this.props.shareUrl !== '' && this.props.shareImageUrl !== '' ? Actions.pop() : this.props.onClose()}
           >
             {
-              this.props.shareImageUrl !== '' ?
+              this.props.shareUrl !== '' && this.props.shareImageUrl !== '' ?
                 <Ionicons name="ios-arrow-back" size={28} color={COLORS.PURPLE} />
               :
                 <Text style={[styles.textButton, {color: COLORS.PURPLE}]}>Cancel</Text>
