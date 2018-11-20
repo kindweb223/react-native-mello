@@ -13,6 +13,8 @@ export const getFeedoList = (index, isForCardMove=false) => {
     url = 'hunts?owner=false'
   } else if (index === 2) {
     url = 'hunts?pinned=true'
+  } else if (index === 3) {
+    url = 'hunts'
   }
 
   return {

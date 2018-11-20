@@ -22,7 +22,11 @@ import COLORS from '../../service/colors'
 import styles from './styles'
 
 const NotificationItemComponent = ({ item, hideTumbnail, updateInvitation }) => {
-  const filteredIdeas = _.filter(item.ideas, idea => idea.coverImage !== null && idea.coverImage !== '')
+  const filteredIdeas = _.orderBy(
+    _.filter(item.ideas, idea => idea.coverImage !== null && idea.coverImage !== ''),
+    ['publishedDate'],
+    ['asc']
+  )
 
   let coverImages = []
   if (filteredIdeas.length > 4) {
@@ -45,17 +49,21 @@ const NotificationItemComponent = ({ item, hideTumbnail, updateInvitation }) => 
       </View>
 
       <View style={styles.rightContainer}>
-        <View style={styles.titleView}>
-          <Text><Text style={styles.title}>{name}</Text> has invited you to this flow</Text>
-        </View>
-        {!hideTumbnail && (
-          <TouchableOpacity style={styles.thumbnailsView} onPress={() => Actions.FeedDetailScreen({ data: item })}>
-            <FeedCoverImageComponent data={coverImages} />
-          </TouchableOpacity>
-        )}
-        <Text style={styles.title} onPress={() => hideTumbnail ? {} : Actions.FeedDetailScreen({ data: item })}>
-          {item.headline}
-        </Text>
+        <TouchableOpacity onPress={() => hideTumbnail ? {} : Actions.FeedDetailScreen({ data: item })}>
+          <View>
+            <View style={styles.titleView}>
+              <Text><Text style={styles.title}>{name}</Text> has invited you to this flow</Text>
+            </View>
+            {!hideTumbnail && (
+              <View style={styles.thumbnailsView}>
+                <FeedCoverImageComponent data={coverImages} />
+              </View>
+            )}
+            <Text style={styles.title}>
+              {item.headline}
+            </Text>
+          </View>
+        </TouchableOpacity>
 
         <View style={styles.buttonContainer}>
           <TouchableOpacity onPress={() => updateInvitation(item.id, true)} activeOpacity={0.8}>
