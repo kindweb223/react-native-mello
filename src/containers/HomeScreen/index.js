@@ -65,7 +65,8 @@ import {
   setUserInfo,
   addDeviceToken,
   updateDeviceToken,
-  appOpened
+  appOpened,
+  getUserSession
 } from '../../redux/user/actions'
 
 import { 
@@ -372,6 +373,7 @@ class HomeScreen extends React.Component {
           }, CONSTANTS.CLIPBOARD_DATA_CONFIRM_DURATION + 500);
         }
       }
+      this.props.getUserSession()
     }
   }
 
@@ -1268,7 +1270,8 @@ const mapDispatchToProps = dispatch => ({
   updateDeviceToken: (userId, deviceId, data) => dispatch(updateDeviceToken(userId, deviceId, data)),
   getCard: (ideaId) => dispatch(getCard(ideaId)),
   deleteInvitee: (feedId, inviteeId) => dispatch(deleteInvitee(feedId, inviteeId)),
-  getInvitedFeedList: () => dispatch(getInvitedFeedList())
+  getInvitedFeedList: () => dispatch(getInvitedFeedList()),
+  getUserSession: () => dispatch(getUserSession())
 })
 
 HomeScreen.propTypes = {
@@ -1285,7 +1288,8 @@ HomeScreen.propTypes = {
   setFeedDetailAction: PropTypes.func.isRequired,
   setUserInfo: PropTypes.func.isRequired,
   deleteInvitee: PropTypes.func.isRequired,
-  getInvitedFeedList: PropTypes.func.isRequired
+  getInvitedFeedList: PropTypes.func.isRequired,
+  getUserSession: PropTypes.func.isRequired
 }
 
 export default connect(
