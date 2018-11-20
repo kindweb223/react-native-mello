@@ -1404,7 +1404,8 @@ class FeedDetailScreen extends React.Component {
         >
           <GestureRecognizer
             style={{width: '100%', height: '100%'}}
-            onSwipe={() => this.onSwipeToDismissClipboardToaster()}
+            onSwipeLeft={() => this.onSwipeToDismissClipboardToaster()}
+            onSwipeRight={() => this.onSwipeToDismissClipboardToaster()}
           >
             <ClipboardToasterComponent
               description={this.state.copiedUrl}
