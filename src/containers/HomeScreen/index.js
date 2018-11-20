@@ -24,6 +24,8 @@ import { Actions } from 'react-native-router-flux'
 import * as R from 'ramda'
 import { find, filter, orderBy } from 'lodash'
 import DeviceInfo from 'react-native-device-info';
+import GestureRecognizer from 'react-native-swipe-gestures'
+
 import Analytics from '../../lib/firebase'
 
 import DashboardNavigationBar from '../../navigations/DashboardNavigationBar'
@@ -743,6 +745,14 @@ class HomeScreen extends React.Component {
     this.onSelectNewFeedType('New Card');
   }
 
+  onSwipeToDismissClipboardToaster() {
+    clearTimeout(this.showClipboardTimeout);
+    this.showClipboardTimeout = null;
+    this.setState({
+      isShowClipboardToaster: false,
+    });
+  }
+
   onLongHoldMenuHide = () => {
     const { isArchive, isDelete, isPin, isUnPin, isDuplicate, isLeave } = this.state
 
@@ -1220,23 +1230,20 @@ class HomeScreen extends React.Component {
 
         {this.renderCardModal}
 
-        {/* {this.state.isShowClipboardToaster && (
-          <ClipboardToasterComponent
-            isVisible={this.state.isShowClipboardToaster}
-            description='https://apple.com'
-            onPress={() => this.onAddClipboardLink()}
-          />
-        )} */}
-
         <Modal 
           isVisible={this.state.isShowClipboardToaster}
           style={styles.longHoldModalContainer}
           backdropOpacity={0.3}
         >
-          <ClipboardToasterComponent
-            description={this.state.copiedUrl}
-            onPress={() => this.onAddClipboardLink()}
-          />
+          <GestureRecognizer
+            style={{width: '100%', height: '100%'}}
+            onSwipe={() => this.onSwipeToDismissClipboardToaster()}
+          >
+            <ClipboardToasterComponent
+              description={this.state.copiedUrl}
+              onPress={() => this.onAddClipboardLink()}
+            />
+          </GestureRecognizer>
         </Modal>
 
 

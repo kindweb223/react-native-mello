@@ -299,6 +299,14 @@ class FeedDetailScreen extends React.Component {
     this.onOpenNewCardModal();
   }
 
+  onSwipeToDismissClipboardToaster() {
+    clearTimeout(this.showClipboardTimeout);
+    this.showClipboardTimeout = null;
+    this.setState({
+      isShowClipboardToaster: false,
+    });
+  }
+
   async setBubbles(currentFeed) {
     const { user } = this.props
 
@@ -1394,10 +1402,15 @@ class FeedDetailScreen extends React.Component {
           style={styles.longHoldModalContainer}
           backdropOpacity={0.3}
         >
-          <ClipboardToasterComponent
-            description={this.state.copiedUrl}
-            onPress={() => this.onAddClipboardLink()}
-          />
+          <GestureRecognizer
+            style={{width: '100%', height: '100%'}}
+            onSwipe={() => this.onSwipeToDismissClipboardToaster()}
+          >
+            <ClipboardToasterComponent
+              description={this.state.copiedUrl}
+              onPress={() => this.onAddClipboardLink()}
+            />
+          </GestureRecognizer>
         </Modal>
 
         {this.state.apiLoading && <LoadingScreen />}
