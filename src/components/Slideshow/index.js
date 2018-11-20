@@ -30,13 +30,11 @@ export default class SlideShow extends React.Component {
       bubbles.push(<View style={[ styles.bubbles, styles.emptyBubble ]} key={i} />)
     }
 
-    if (currentIndex === 0) {
-      bubbles.map(v => {
-        if (v.key == currentIndex) {
-          bubbles[v.key] = <View style={[ styles.bubbles, styles.filledBubble ]} key={v.key} />
-        }
-      })
-    }
+    bubbles.map(v => {
+      if (v.key == currentIndex) {
+        bubbles[v.key] = <View style={[ styles.bubbles, styles.filledBubble ]} key={v.key} />
+      }
+    })
 
     return (
       <View style={styles.bubbleView}>
