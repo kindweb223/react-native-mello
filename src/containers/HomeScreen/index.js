@@ -376,11 +376,15 @@ class HomeScreen extends React.Component {
   }
 
   parsePushNotification(notification) {
-    if (this.state.appState === 'active') {
-      return;
-    }
+    // if (this.state.appState === 'active') {
+    //   return;
+    // }
     console.log('NOTIFICATION : ', notification);
     const type = notification.data.type;
+    if (notification.badge) {
+      PushNotification.setApplicationIconBadgeNumber(notification.badge)
+    }
+
     switch (type) {
       case CONSTANTS.USER_INVITED_TO_HUNT: {
         const { huntId, inviteeId } = notification.data;
