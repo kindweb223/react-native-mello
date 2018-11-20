@@ -135,6 +135,7 @@ class FeedDetailScreen extends React.Component {
       avatars: [],
       isShowClipboardToaster: false,
       copiedUrl: '',
+      appState: AppState.currentState
     };
     this.animatedOpacity = new Animated.Value(0)
     this.menuOpacity = new Animated.Value(0)
@@ -158,10 +159,9 @@ class FeedDetailScreen extends React.Component {
 
   componentDidMount() {
     Analytics.setCurrentScreen('FeedDetailScreen')
-
     this.setState({ loading: true })
     this.props.getFeedDetail(this.props.data.id);
-    AppState.addEventListener('change', this.onHandleAppStateChange.bind(this));
+    AppState.addEventListener('change', this.onHandleAppStateChange);
   }
 
   componentWillUnmount() {
@@ -266,28 +266,30 @@ class FeedDetailScreen extends React.Component {
     }
   }
 
-  async onHandleAppStateChange(nextAppState) {
-    if (nextAppState === 'active' && Actions.currentScene === 'FeedDetailScreen') {
-      this.setState({ loading: true })
-      this.props.getFeedDetail(this.props.data.id);
-
-      const clipboardContent = await Clipboard.getString();
-      const lastClipboardData = await AsyncStorage.getItem(CONSTANTS.CLIPBOARD_DATA);
-      if (clipboardContent !== '' && clipboardContent !== lastClipboardData) {
-        AsyncStorage.setItem(CONSTANTS.CLIPBOARD_DATA, clipboardContent);
-        this.setState({
-          isShowClipboardToaster: true,
-          copiedUrl: clipboardContent,
-        })
-        this.showClipboardTimeout = setTimeout(() => {
+  onHandleAppStateChange = async(nextAppState) => {
+    if (this.state.appState.match(/inactive|background/) && nextAppState === 'active' && Actions.currentScene === 'FeedDetailScreen') {
+      if (this.state.loading === false) {
+        this.setState({ loading: true })
+        this.props.getFeedDetail(this.props.data.id);
+        const clipboardContent = await Clipboard.getString();
+        const lastClipboardData = await AsyncStorage.getItem(CONSTANTS.CLIPBOARD_DATA);
+        if (clipboardContent !== '' && clipboardContent !== lastClipboardData) {
+          AsyncStorage.setItem(CONSTANTS.CLIPBOARD_DATA, clipboardContent);
           this.setState({
-            isShowClipboardToaster: false,
-            copiedUrl: '',
-          });
-        }, CONSTANTS.CLIPBOARD_DATA_CONFIRM_DURATION + 500);
+            isShowClipboardToaster: true,
+            copiedUrl: clipboardContent,
+          })
+          this.showClipboardTimeout = setTimeout(() => {
+            this.setState({
+              isShowClipboardToaster: false,
+              copiedUrl: '',
+            });
+          }, CONSTANTS.CLIPBOARD_DATA_CONFIRM_DURATION + 500);
+        }
       }
-
     }
+    this.setState({appState: nextAppState});
+    return;
   }
 
   onAddClipboardLink = () => {

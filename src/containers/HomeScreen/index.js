@@ -348,7 +348,7 @@ class HomeScreen extends React.Component {
     AsyncStorage.setItem('BubbleFeedInvitedNewUser', JSON.stringify(data));
   }
 
-  async onHandleAppStateChange(nextAppState) {
+  onHandleAppStateChange = async(nextAppState) => {
     this.setState({appState: nextAppState});
     if (nextAppState === 'active') {
       appOpened(this.props.user.userInfo.id);
@@ -392,7 +392,7 @@ class HomeScreen extends React.Component {
         const matchedHunt = find(feedoList, feedo => feedo.id === huntId);
         if (matchedHunt) {
           const currentFeedo = this.props.feedo.currentFeed;
-          if (Actions.currentScene === 'FeedDetailScreen' && currentFeedo.id === feedId) {
+          if (Actions.currentScene === 'FeedDetailScreen') {
             Actions.FeedDetailScreen({type: 'replace', data: matchedHunt});
           } else {
             Actions.FeedDetailScreen({data: matchedHunt})
@@ -480,7 +480,7 @@ class HomeScreen extends React.Component {
         const matchedHunt = find(feedoList, feedo => feedo.id === huntId);
         if (matchedHunt) {
           const currentFeedo = this.props.feedo.currentFeed;
-          if (Actions.currentScene === 'FeedDetailScreen' && currentFeedo.id === feedId) {
+          if (Actions.currentScene === 'FeedDetailScreen') {
             Actions.FeedDetailScreen({type: 'replace', data: matchedHunt});
           } else {
             Actions.FeedDetailScreen({data: matchedHunt})
