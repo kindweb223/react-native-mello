@@ -94,8 +94,7 @@ export default function user(state = initialState, action = {}) {
     case types.GET_USER_SESSION_PENDING:
       return {
         ...state,
-        loading: types.GET_USER_SESSION_PENDING,
-        userInfo: null,
+        loading: types.GET_USER_SESSION_PENDING
       }
     case types.GET_USER_SESSION_FULFILLED: {
       const { data } = action.result
