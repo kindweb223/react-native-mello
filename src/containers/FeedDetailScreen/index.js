@@ -405,7 +405,7 @@ class FeedDetailScreen extends React.Component {
   }
 
   backToDashboard = () => {
-    Actions.pop()
+    Actions.popTo('HomeScreen');
   }
 
   handleSetting = () => {
