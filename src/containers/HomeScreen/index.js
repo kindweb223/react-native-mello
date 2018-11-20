@@ -185,6 +185,10 @@ class HomeScreen extends React.Component {
           ['desc']
         )
         
+        if (prevState.tabIndex === 1) {
+          feedoList = filter(feedoList, item => item.metadata.myInviteStatus !== 'INVITED')
+        }
+
         if (prevState.tabIndex === 2) {
           feedoList = filter(feedoList, item => item.pinned !== null)
         }
@@ -1031,11 +1035,11 @@ class HomeScreen extends React.Component {
                                           <Text style={[styles.tabBarTextStyle, isTabActive && (styles.activeTabBarTextStyle)]}>
                                             {tab.label}
                                           </Text>
-                                          {invitedFeedList.length > 0 && page === 1 && (
+                                          {/* {invitedFeedList.length > 0 && page === 1 && (
                                             <View style={styles.badgeView}>
                                               <Text style={styles.badgeText}>{tab.badge}</Text>
                                             </View>
-                                          )}
+                                          )} */}
                                         </View>
                                       </TouchableOpacity>
                                     )}
