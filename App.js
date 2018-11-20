@@ -173,16 +173,15 @@ export default class Root extends React.Component {
               const userInfo = AsyncStorage.getItem('userInfo')
 
               if (userInfo) {
-                  const currentFeedo = store.getState().feedo.currentFeed;
-                  if (Actions.currentScene === 'FeedDetailScreen' && currentFeedo.id === feedId) {
-                      Actions.FeedDetailScreen({type: 'replace', data});
-                  } 
-                  else {
-                      Actions.FeedDetailScreen({data})
-                  }
+                if (Actions.currentScene === 'FeedDetailScreen') {
+                  Actions.FeedDetailScreen({type: 'replace', data});
+                } 
+                else {
+                  Actions.FeedDetailScreen({data})
+                }
               } 
               else {
-                  Actions.LoginScreen()
+                Actions.LoginScreen()
               }
             } 
             catch (e) {
