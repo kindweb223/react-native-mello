@@ -77,7 +77,7 @@ export default class CoverImagePreviewComponent extends React.Component {
           animationOutTiming={100}
         >
           <ImageSliderScreen 
-            imageFiles={files}
+            mediaFiles={files}
             position={position}
             removal={this.props.editable}
             isSetCoverImage={this.props.isSetCoverImage}

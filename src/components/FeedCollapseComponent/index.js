@@ -270,7 +270,7 @@ class FeedCollapseComponent extends React.Component {
         >
           <ImageSliderScreen
             position={this.state.position}
-            imageFiles={images}
+            mediaFiles={images}
             removal={false}
             onClose={() => this.setState({ isPreview: false })}
           />

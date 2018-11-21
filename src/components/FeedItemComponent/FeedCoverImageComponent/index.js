@@ -17,8 +17,8 @@ const FeedCoverImageComponent = ({ data }) => (
           [
             styles.thumbnails,
             key === 0
-              ? (data.length === 1 ? styles.all : styles.first)
-              : (data.length > 1 && key === data.length - 1 ? styles.last : styles.middle)
+              ? styles.first
+              : key === data.length - 1 ? styles.last : styles.middle
           ]
         }
       >

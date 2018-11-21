@@ -62,7 +62,7 @@ const styles = StyleSheet.create({
     alignItems: 'flex-end',
     position: 'absolute',
     right: 12,
-    top: 0
+    top: 5
   },
   feedListView: {
     zIndex: 10,
@@ -83,19 +83,25 @@ const styles = StyleSheet.create({
     marginTop: 0,
     paddingLeft: 16
   },
+  tabBarItemStyle: {
+    paddingHorizontal: 12,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderRadius: 16,
+    overflow: 'hidden',
+    height: 30
+  },
+  activeTabBarItemStyle: {
+    backgroundColor: COLORS.LIGHT_GREY_PLACEHOLDER,
+  },
   tabBarTextStyle: {
     fontSize: 14,
     fontWeight: '600',
     textAlign: 'left',
-    borderRadius: 16,
-    paddingVertical: 7,
-    paddingHorizontal: 12,
-    height: '100%',
-    overflow: 'hidden',
     color: COLORS.DARK_GREY
   },
   activeTabBarTextStyle: {
-    backgroundColor: COLORS.LIGHT_GREY_PLACEHOLDER,
     color: '#000'
   },
   longHoldModalContainer: {
@@ -133,6 +139,20 @@ const styles = StyleSheet.create({
     fontSize: 14,
     color: COLORS.MEDIUM_GREY,
     marginTop: 27
+  },
+  badgeView: {
+    width: 18,
+    height: 18,
+    marginLeft: 5,
+    borderRadius: 9,
+    backgroundColor: COLORS.PURPLE,
+    overflow: 'hidden',
+    alignItems: 'center',
+    justifyContent: 'center'
+  },
+  badgeText: {
+    color: '#fff',
+    fontSize: 10
   }
 })
 

@@ -17,8 +17,8 @@ const styles = StyleSheet.create({
   },
   thumbnailsView: {
     width: '100%',
-    height: 133,
-    borderRadius: 6,
+    height: (CONSTANTS.SCREEN_SUB_WIDTH - 3) / 4,
+    borderRadius: 10,
     backgroundColor: 'rgba(219, 220, 223, .32)'
   },
   feedInfoView: {

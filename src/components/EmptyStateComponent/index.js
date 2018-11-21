@@ -44,7 +44,7 @@ class EmptyStateComponent extends React.Component {
 
   render() {
     const { page, title, subTitle, ctaTitle } = this.props
-    console.log('PAGE: ', page)
+
     let height = 115
     let marginTop = -50
 

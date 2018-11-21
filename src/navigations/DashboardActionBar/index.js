@@ -5,8 +5,10 @@ import {
   TouchableOpacity,
   TouchableWithoutFeedback,
   Animated,
+  Image
 } from 'react-native'
 
+import { Actions } from 'react-native-router-flux'
 import PropTypes from 'prop-types'
 import Ionicons from 'react-native-vector-icons/Ionicons'
 import Feather from 'react-native-vector-icons/Feather'
@@ -15,6 +17,9 @@ import _ from 'lodash'
 import COLORS from '../../service/colors'
 import styles from './styles'
 import * as COMMON_FUNC from '../../service/commonFunc'
+
+const BELL_ICON_B = require('../../../assets/images/Bell/Blue.png')
+const BELL_ICON_G = require('../../../assets/images/Bell/Grey.png')
 
 class DashboardActionBar extends React.Component {
 
@@ -43,7 +48,7 @@ class DashboardActionBar extends React.Component {
   }
 
   render () {
-    const { filtering, showType, sortType, notifications, feed } = this.props
+    const { filtering, showType, sortType, notifications, feed, badgeCount } = this.props
     return (
       <View style={[styles.container, filtering ? styles.filterContainer : styles.actionContainer]}>
         {filtering && (
@@ -61,14 +66,15 @@ class DashboardActionBar extends React.Component {
         )}
         <View style={styles.actionView}>
           {notifications &&
-            <View style={styles.notificationView}>
-              <Ionicons
-                name="md-notifications"
-                size={20}
-                color={COLORS.PURPLE}
-              />
-              <Text style={styles.notificationText}>0</Text>
-            </View>
+            <TouchableOpacity
+              style={[styles.notificationView, badgeCount === 0 && styles.notificationEmptyView]}
+              onPress={() => badgeCount > 0 ? Actions.NotificationScreen() : {}}
+            >
+              <Image source={badgeCount > 0 ? BELL_ICON_B : BELL_ICON_G} />
+              {badgeCount > 0 && (
+                <Text style={styles.notificationText}>{badgeCount}</Text>
+              )}
+            </TouchableOpacity>
           }
 
           {!(!_.isEmpty(feed) && COMMON_FUNC.isFeedGuest(feed)) && (
@@ -104,7 +110,8 @@ DashboardActionBar.defaultProps = {
   showType: 'all',
   sortType: 'date',
   notifications: true,
-  feed: {}
+  feed: {},
+  badgeCount: 0
 }
 
 DashboardActionBar.propTypes = {
@@ -114,7 +121,8 @@ DashboardActionBar.propTypes = {
   onAddFeed: PropTypes.func,
   handleFilter: PropTypes.func,
   notifications: PropTypes.bool,
-  feed: PropTypes.object
+  feed: PropTypes.object,
+  badgeCount: PropTypes.number
 }
 
 export default DashboardActionBar

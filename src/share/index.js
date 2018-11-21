@@ -2,6 +2,7 @@ import React, { Component } from 'react'
 import {
   StyleSheet,
   View,
+  YellowBox,
 } from 'react-native'
 import { createStore, applyMiddleware } from 'redux'
 import { Provider } from 'react-redux'
@@ -55,6 +56,7 @@ export default class Share extends Component {
       initialized: false,
       isVisibleModal: false,
     }
+    YellowBox.ignoreWarnings(['RCTBridge'])
   }
 
   async componentDidMount() {
