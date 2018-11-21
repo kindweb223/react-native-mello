@@ -345,7 +345,8 @@ export const uploadFileToS3 = (signedUrl, file, fileName, mimeType) => {
           }
         };
         xhr.send(fileData);
-      })
+      }),
+      payload: file
   };
 }
 
