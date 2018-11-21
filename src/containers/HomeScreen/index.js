@@ -380,15 +380,14 @@ class HomeScreen extends React.Component {
   }
 
   parsePushNotification(notification) {
-    // if (this.state.appState === 'active') {
-    //   return;
-    // }
     console.log('NOTIFICATION : ', notification);
+
     const type = notification.data.type;
     if (notification.badge) {
       PushNotification.setApplicationIconBadgeNumber(notification.badge)
     }
 
+    // Handle background and foreground notifications
     switch (type) {
       case CONSTANTS.USER_INVITED_TO_HUNT: {
         const { huntId, inviteeId } = notification.data;
@@ -411,6 +410,14 @@ class HomeScreen extends React.Component {
         }
         break;
       }
+    }
+
+    // Return if app as active. The remaining cases should only be processed if app is in background
+    if (this.state.appState === 'active') {
+      return;
+    }
+
+    switch (type) {
       case CONSTANTS.NEW_COMMENT_ON_IDEA: {
         const { ideaId, huntId, commentId } = notification.data;
         const { feedoList } = this.state
