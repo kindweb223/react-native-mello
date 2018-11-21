@@ -5,6 +5,7 @@ import {
   TouchableOpacity,
   TouchableWithoutFeedback,
   Animated,
+  Image
 } from 'react-native'
 
 import { Actions } from 'react-native-router-flux'
@@ -16,6 +17,9 @@ import _ from 'lodash'
 import COLORS from '../../service/colors'
 import styles from './styles'
 import * as COMMON_FUNC from '../../service/commonFunc'
+
+const BELL_ICON_B = require('../../../assets/images/Bell/Blue.png')
+const BELL_ICON_G = require('../../../assets/images/Bell/Grey.png')
 
 class DashboardActionBar extends React.Component {
 
@@ -62,13 +66,14 @@ class DashboardActionBar extends React.Component {
         )}
         <View style={styles.actionView}>
           {notifications &&
-            <TouchableOpacity style={styles.notificationView} onPress={() => Actions.NotificationScreen()}>
-              <Ionicons
-                name="md-notifications"
-                size={20}
-                color={COLORS.PURPLE}
-              />
-              <Text style={styles.notificationText}>{badgeCount}</Text>
+            <TouchableOpacity
+              style={[styles.notificationView, badgeCount === 0 && styles.notificationEmptyView]}
+              onPress={() => badgeCount > 0 ? Actions.NotificationScreen() : {}}
+            >
+              <Image source={badgeCount > 0 ? BELL_ICON_B : BELL_ICON_G} />
+              {badgeCount > 0 && (
+                <Text style={styles.notificationText}>{badgeCount}</Text>
+              )}
             </TouchableOpacity>
           }
 
