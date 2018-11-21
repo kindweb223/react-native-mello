@@ -67,6 +67,7 @@ class ProfileScreen extends React.Component {
 
   componentDidMount() {
     Analytics.setCurrentScreen('ProfileScren')
+    console.log('PPP: ', this.props.user.userInfo.imageUrl)
 
     this.setState({ userInfo: this.props.user.userInfo })
   }
@@ -76,21 +77,18 @@ class ProfileScreen extends React.Component {
 
     this.setState({ userInfo: user.userInfo })
 
-    if (Actions.currentScene === 'ProfileScreen') {
-      if (this.props.user.loading === 'USER_SIGNOUT_PENDING' && user.loading === 'USER_SIGNOUT_FULFILLED') {
-        Actions.LoginScreen()
-      }
-
+    if (Actions.currentScene === 'ProfileScreen' || Actions.currentScene === 'ProfileUpdateScreen') {
       if (this.props.user.loading === 'UPDATE_PROFILE_PENDING' && user.loading === 'UPDATE_PROFILE_FULFILLED') {
-        FastImage.preload([
-          {
-            uri: user.userInfo.imageUrl
-          }
-        ])
         this.setState({ isShowToaster: true, toasterText: 'Profile changed' })
         setTimeout(() => {
           this.setState({ isShowToaster: false })
         }, 2000)
+      }
+    }
+
+    if (Actions.currentScene === 'ProfileScreen') {
+      if (this.props.user.loading === 'USER_SIGNOUT_PENDING' && user.loading === 'USER_SIGNOUT_FULFILLED') {
+        Actions.LoginScreen()
       }
 
       if (this.props.user.loading === 'UPDATE_PASSWORD_PENDING' && user.loading === 'UPDATE_PASSWORD_FULFILLED') {
