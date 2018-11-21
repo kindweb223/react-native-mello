@@ -53,8 +53,6 @@ import ClipboardToasterComponent from '../../components/ClipboardToasterComponen
 import {
   getFeedDetail,
   setFeedDetailAction,
-  addDummyFeed,
-  removeDummyFeed,
   pinFeed,
   unpinFeed,
   duplicateFeed,
@@ -502,20 +500,18 @@ class FeedDetailScreen extends React.Component {
       toasterTitle: 'Feed pinned',
       feedId, pinText: 'Unpin',
     })
-    this.props.addDummyFeed({ feedId, flag: 'pin' })
+
+    this.pinFeed(feedId)
+
     setTimeout(() => {
-      this.setState({ isShowToaster: false })
-      this.pinFeed(feedId)
+      this.setState({ isShowToaster: false, currentActionType: ACTION_NONE })
     }, TOASTER_DURATION)
   }
 
   pinFeed = (feedId) => {
-    if (this.state.currentActionType === ACTION_FEEDO_PIN) {
-      Analytics.logEvent('feed_detail_pin_feed', {})
+    Analytics.logEvent('feed_detail_pin_feed', {})
 
-      this.props.pinFeed(feedId)
-      this.setState({ currentActionType: ACTION_NONE })
-    }
+    this.props.pinFeed(feedId)
   }
 
   handleUnpinFeed = (feedId) => {
@@ -526,21 +522,18 @@ class FeedDetailScreen extends React.Component {
       feedId,
       pinText: 'Pin',
     })
-    this.props.addDummyFeed({ feedId, flag: 'unpin' })
+
+    this.unpinFeed(feedId)
 
     setTimeout(() => {
-      this.setState({ isShowToaster: false })
-      this.unpinFeed(feedId)
+      this.setState({ isShowToaster: false, currentActionType: ACTION_NONE })
     }, TOASTER_DURATION)
   }
 
   unpinFeed = (feedId) => {
-    if (this.state.currentActionType === ACTION_FEEDO_UNPIN) {
-      Analytics.logEvent('feed_detail_unpin_feed', {})
+    Analytics.logEvent('feed_detail_unpin_feed', {})
 
-      this.props.unpinFeed(feedId)
-      this.setState({ currentActionType: ACTION_NONE })
-    }
+    this.props.unpinFeed(feedId)
   }
 
   handleDuplicateFeed = (feedId) => {
@@ -568,10 +561,10 @@ class FeedDetailScreen extends React.Component {
   undoAction = () => {
     if (this.state.currentActionType === ACTION_FEEDO_PIN) {
       this.setState({ pinText: 'Pin' })
-      this.props.removeDummyFeed({ feedId: this.state.feedId, flag: 'pin' })
+      this.unpinFeed(this.state.feedId)
     } else if (this.state.currentActionType === ACTION_FEEDO_UNPIN) {
       this.setState({ pinText: 'Unpin' })
-      this.props.removeDummyFeed({ feedId: this.state.feedId, flag: 'unpin' })
+      this.pinFeed(this.state.feedId)
     } else if (this.state.currentActionType === ACTION_FEEDO_DUPLICATE) {
       if (this.props.feedo.duplicatedId) {
         this.props.deleteDuplicatedFeed(this.props.feedo.duplicatedId)
@@ -1431,9 +1424,7 @@ const mapStateToProps = ({ feedo, card, user }) => ({
 
 const mapDispatchToProps = dispatch => ({
   getFeedDetail: data => dispatch(getFeedDetail(data)),
-  setFeedDetailAction: data => dispatch(setFeedDetailAction(data)),
-  addDummyFeed: (data) => dispatch(addDummyFeed(data)),
-  removeDummyFeed: (data) => dispatch(removeDummyFeed(data)),
+  setFeedDetailAction: data => dispatch(setFeedDetailAction(data)),  
   pinFeed: (data) => dispatch(pinFeed(data)),
   unpinFeed: (data) => dispatch(unpinFeed(data)),
   duplicateFeed: (data) => dispatch(duplicateFeed(data)),
@@ -1460,8 +1451,6 @@ FeedDetailScreen.propTypes = {
   feedo: PropTypes.objectOf(PropTypes.any),
   getFeedDetail: PropTypes.func,
   setFeedDetailAction: PropTypes.func,
-  addDummyFeed: PropTypes.func.isRequired,
-  removeDummyFeed: PropTypes.func.isRequired,
   pinFeed: PropTypes.func.isRequired,
   unpinFeed: PropTypes.func.isRequired,
   duplicateFeed: PropTypes.func.isRequired,

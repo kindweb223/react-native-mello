@@ -151,6 +151,7 @@ class HomeScreen extends React.Component {
       (feedo.loading === 'DUPLICATE_FEED_FULFILLED') || (feedo.loading === 'UPDATE_FEED_FULFILLED') || (feedo.loading === 'LEAVE_FEED_FULFILLED') ||
       (feedo.loading === 'UPDTE_FEED_INVITATION_FULFILLED') || (feedo.loading === 'INVITE_HUNT_FULFILLED') ||
       (feedo.loading === 'ADD_HUNT_TAG_FULFILLED') || (feedo.loading === 'REMOVE_HUNT_TAG_FULFILLED') ||
+      (feedo.loading === 'PIN_FEED_FULFILLED') || (feedo.loading === 'UNPIN_FEED_FULFILLED') ||
       (feedo.loading === 'RESTORE_ARCHIVE_FEED_FULFILLED') || (feedo.loading === 'ADD_DUMMY_FEED'))) ||
       (feedo.loading === 'DELETE_CARD_FULFILLED') || (feedo.loading === 'MOVE_CARD_FULFILLED') || (feedo.loading === 'UPDATE_CARD_FULFILLED'))
     {
@@ -642,41 +643,34 @@ class HomeScreen extends React.Component {
     this.setState({ isLongHoldMenuVisible: false })
     this.setState({ isPin: true, toasterTitle: 'Feed pinned', feedId })
 
-    this.props.addDummyFeed({ feedId, flag: 'pin' })
+    this.pinFeed(feedId)
 
     setTimeout(() => {
-      this.setState({ isShowActionToaster: false })
-      this.pinFeed(feedId)
+      this.setState({ isShowActionToaster: false, isPin: false })
     }, TOASTER_DURATION)
   }
 
   pinFeed = (feedId) => {
-    if (this.state.isPin) {
-      Analytics.logEvent('dashboard_pin_feed', {})
+    Analytics.logEvent('dashboard_pin_feed', {})
 
-      this.props.pinFeed(feedId)
-      this.setState({ isPin: false })
-    }
+    this.props.pinFeed(feedId)
   }
 
   handleUnpinFeed = (feedId) => {
     this.setState({ isLongHoldMenuVisible: false })
     this.setState({ isUnPin: true, toasterTitle: 'Feed un-pinned', feedId })
-    this.props.addDummyFeed({ feedId, flag: 'unpin' })
+
+    this.unpinFeed(feedId)
 
     setTimeout(() => {
-      this.setState({ isShowActionToaster: false })
-      this.unpinFeed(feedId)
+      this.setState({ isShowActionToaster: false, isUnPin: true })
     }, TOASTER_DURATION)
   }
 
   unpinFeed = (feedId) => {
-    if (this.state.isUnPin) {
-      Analytics.logEvent('dashboard_unpin_feed', {})
+    Analytics.logEvent('dashboard_unpin_feed', {})
 
-      this.props.unpinFeed(feedId)
-      this.setState({ isUnPin: false })
-    }
+    this.props.unpinFeed(feedId)
   }
 
   handleDuplicateFeed = (feedId) => {
@@ -720,9 +714,9 @@ class HomeScreen extends React.Component {
 
   undoAction = () => {
     if (this.state.isPin) {
-      this.props.removeDummyFeed({ feedId: this.state.feedId, flag: 'pin' })
+      this.unpinFeed(this.state.feedId)
     } else if (this.state.isUnPin) {
-      this.props.removeDummyFeed({ feedId: this.state.feedId, flag: 'unpin' })
+      this.pinFeed(this.state.feedId)
     } else if (this.state.isDelete) {
       this.props.removeDummyFeed({ feedId: this.state.feedId, flag: 'delete' })
     } else if (this.state.isArchive) {
