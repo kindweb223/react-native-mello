@@ -31,21 +31,15 @@ class CropImageScreen extends React.Component {
 
   componentDidMount() {
     Analytics.setCurrentScreen('CropImageScreen')
+
+    const { userInfo } = this.props.user
+    this.props.getImageUrl(userInfo.id)
   }
 
   UNSAFE_componentWillReceiveProps(nextProps) {
     const { user } = nextProps
 
     if (Actions.currentScene === 'CropImageScreen') {
-      if (this.props.user.loading !== 'GET_USER_IMAGE_URL_PENDING' && user.loading === 'GET_USER_IMAGE_URL_PENDING') {
-        this.setState({ loading: true })
-      }
-
-      if (this.props.user.loading !== 'GET_USER_IMAGE_URL_FULFILLED' && user.loading === 'GET_USER_IMAGE_URL_FULFILLED') {
-        const { userImageUrlData } = user
-        this.uploadImage(userImageUrlData)
-      }
-
       if (this.props.user.loading !== 'UPLOAD_FILE_FULFILLED' && user.loading === 'UPLOAD_FILE_FULFILLED') {
         const { userInfo, userImageUrlData } = user
         const param = {
@@ -60,7 +54,7 @@ class CropImageScreen extends React.Component {
         })
       }
 
-      if (user.loading === 'GET_USER_IMAGE_URL_REJECTED' || user.loading === 'UPLOAD_FILE_REJECTED' || user.loading === 'UPDATE_PROFILE_REJECTED') {
+      if (user.loading === 'UPLOAD_FILE_REJECTED' || user.loading === 'UPDATE_PROFILE_REJECTED') {
         this.setState({ loading: false }, () => {
           Alert.alert('Error', 'Server is failed')
         })
@@ -86,11 +80,14 @@ class CropImageScreen extends React.Component {
   }
 
   onSave = () => {
-    const { userInfo } = this.props.user
+    const { userImageUrlData } = this.props.user
 
     this.imageCrop.crop().then((uri) => {
       this.setState({ cropUrl: uri }, () => {
-        this.props.getImageUrl(userInfo.id)
+        if (userImageUrlData) {
+          this.setState({ loading: true })
+          this.uploadImage(userImageUrlData)
+        }
       })
     })
   }
