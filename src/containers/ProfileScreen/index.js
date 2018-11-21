@@ -177,7 +177,7 @@ class ProfileScreen extends React.Component {
       // delete profile photo
       const { user } = this.props
       if (user.userInfo.imageUrl) {
-        this.setState({ loading: true })
+        // this.setState({ loading: true })
         this.props.deleteProfilePhoto(user.userInfo.id)
       }
     }
