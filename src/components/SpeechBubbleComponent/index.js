@@ -50,6 +50,8 @@ class SpeechBubbleComponent extends React.Component {
       height = 130
     } else if (page === 'pinned') {
       height = 75
+    } else if (page === 'shared') {
+      height = 100
     }
 
     return (
@@ -65,7 +67,7 @@ class SpeechBubbleComponent extends React.Component {
               {page === 'pinned' 
                 ? <Text style={styles.title}>
                     <Text>{title}</Text>
-                    <Text style={{ fontWeight: 'bold'}}> PIN.</Text>
+                    <Text style={{ fontWeight: 'bold' }}> PIN.</Text>
                   </Text>
                 : <Text style={styles.title}>
                     {title}
