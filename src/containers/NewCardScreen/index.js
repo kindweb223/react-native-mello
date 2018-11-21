@@ -1001,7 +1001,7 @@ class NewCardScreen extends React.Component {
   onUpdateFeed() {
     if (this.draftFeedo) {
       if (this.draftFeedo.id === this.props.feedo.currentFeed.id) {
-        // Update Draft Feedo to Publish one
+        // Update Draft Mello to Publish one
         const {
           id, 
           headline,

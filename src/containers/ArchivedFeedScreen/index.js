@@ -126,14 +126,14 @@ class ArchivedFeedScreen extends React.Component {
         {archivedFeedList.length === 0 && !loading && (
           <View style={styles.emptyView}>
             <Image source={EMPTY_ICON} />
-            <Text style={styles.emptyText}>Feedo is more fun with feeds</Text>
+            <Text style={styles.emptyText}>Mello is more fun with feeds</Text>
           </View>
         )}
 
         {isShowToaster && (
           <ToasterComponent
             isVisible={isShowToaster}
-            title="Feedo restored."
+            title="Mello restored."
             onPressButton={this.undoAction}
           />
         )}
