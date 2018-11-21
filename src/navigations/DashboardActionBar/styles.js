@@ -52,19 +52,24 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   notificationView: {
-    width: 57,
+    paddingHorizontal: 7,
     height: 42,
-    borderRadius: 20,
+    borderRadius: 21,
     borderWidth: 1,
     borderColor: COLORS.LIGHT_GREY,
     flexDirection: 'row',
     justifyContent: 'center',
     alignItems: 'center'
   },
+  notificationEmptyView: {
+    paddingHorizontal: 0,
+    width: 42
+  },
   notificationText: {
     color: COLORS.PURPLE,
     fontSize: 14,
-    marginLeft: 5
+    marginRight: 6,
+    fontWeight: '500'
   }
 })
 
