@@ -72,11 +72,9 @@ class FeedMiniItemContentComponent extends React.Component {
               {pinFlag && (
                 <Image source={PIN_ICON_PURPLE} />
               )}
-              {!data.metadata.owner && (
-                <View style={styles.avatarView}>
-                  <AvatarPileComponent avatars={avatars} size={24} numFaces={2} showPlus={false} />
-                </View>
-              )}
+              <View style={styles.avatarView}>
+                <AvatarPileComponent avatars={avatars} size={24} numFaces={2} showPlus={false} />
+              </View>
             </View>
           </View>
 
