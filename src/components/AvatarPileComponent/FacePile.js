@@ -1,6 +1,7 @@
 import React, { PureComponent } from 'react'
 import PropTypes from 'prop-types'
 import { View, Text, StyleSheet, Animated } from 'react-native'
+import Feather from 'react-native-vector-icons/Feather'
 import UserAvatarComponent from '../UserAvatarComponent';
 
 
@@ -40,15 +41,15 @@ class Circle extends PureComponent {
 
   render () {
     const { circleSize, face, offset } = this.props
-    const marginRight = circleSize * offset - 15
+    const marginRight = (circleSize * offset) - circleSize / 1.6 - 3
 
     return (
       <Animated.View
-        style={{ marginRight: -marginRight }}
+        style={{ marginLeft: -marginRight }}
       >
         <UserAvatarComponent
           user={face}
-          size={35}
+          size={circleSize}
           color="#F5F5F5"
           textColor="#A2A5AE"
         />
@@ -93,6 +94,7 @@ export default class FacePile extends PureComponent {
     overflowLabelStyle: PropTypes.instanceOf(StyleSheet),
     render: PropTypes.func,
     numFaces: PropTypes.number,
+    showPlus: PropTypes.bool,
     offset: PropTypes.number,
     isOwner: PropTypes.bool
   }
@@ -102,7 +104,8 @@ export default class FacePile extends PureComponent {
     numFaces: 3,
     offset: 1,
     hideOverflow: false,
-    isOwner: true
+    isOwner: true,
+    showPlus: true
   }
 
   _renderOverflowCircle = overflow => {
@@ -115,7 +118,7 @@ export default class FacePile extends PureComponent {
     } = this.props
     
     const innerCircleSize = circleSize * 1.8
-    const marginLeft = (circleSize * offset) - circleSize / 1.6 - 8
+    const marginLeft = (circleSize * offset) - circleSize * 1.3
 
     return (
       <View
@@ -128,9 +131,9 @@ export default class FacePile extends PureComponent {
           style={[
             styles.overflow,
             {
-              width: innerCircleSize,
-              height: innerCircleSize,
-              borderRadius: circleSize,
+              width: circleSize,
+              height: circleSize,
+              borderRadius: circleSize / 2,
               marginLeft: marginLeft
             },
             overflowStyle
@@ -140,7 +143,7 @@ export default class FacePile extends PureComponent {
             style={[
               styles.overflowLabel,
               {
-                fontSize: circleSize * 0.7
+                fontSize: circleSize * 0.4
               },
               overflowLabelStyle
             ]}
@@ -160,8 +163,8 @@ export default class FacePile extends PureComponent {
       offset,
     } = this.props
     
-    const innerCircleSize = 35
-    const marginLeft = (circleSize * offset) - circleSize / 1.6 - 8
+    const innerCircleSize = this.props.circleSize
+    const marginLeft = (circleSize * offset) - circleSize * 1.3
 
     return (
       <View
@@ -179,22 +182,13 @@ export default class FacePile extends PureComponent {
               borderRadius: circleSize,
               marginLeft: marginLeft,
               backgroundColor: '#4A00CD',
-              paddingBottom: 3,
-              paddingLeft: 2
+              justifyContent: 'center',
+              alignItems: 'center'
             },
             overflowStyle
           ]}
         >
-          <Text
-            style={{
-              color: '#fff',
-              fontSize: 25,
-              fontWeight: 'normal',
-              color: '#fff'
-            }}
-          >
-            +
-          </Text>
+          <Feather size={innerCircleSize - 10} name="plus" color="#fff" />
         </View>
       </View>
     )
@@ -215,7 +209,7 @@ export default class FacePile extends PureComponent {
   }
 
   render () {
-    const { faces, numFaces, hideOverflow, containerStyle } = this.props
+    const { faces, numFaces, hideOverflow, containerStyle, showPlus } = this.props
 
     if (faces.length === 0) 
       return null
@@ -225,7 +219,7 @@ export default class FacePile extends PureComponent {
     return (
       <View style={[styles.container, containerStyle]}>
         {!hideOverflow && (
-          overflow > 0 ? this._renderOverflowCircle(overflow) : this._renderEmptyOverflowCircle()
+          overflow > 0 ? this._renderOverflowCircle(overflow) : (showPlus && this._renderEmptyOverflowCircle())
         )}
         {Array.isArray(facesToRender) && facesToRender.map(this._renderFace)}
       </View>

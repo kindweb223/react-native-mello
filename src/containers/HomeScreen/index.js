@@ -118,6 +118,7 @@ class HomeScreen extends React.Component {
       badgeCount: 0,
       isShowClipboardToaster: false,
       copiedUrl: '',
+      listType: 'list'
     };
 
     this.currentRef = null;
@@ -873,6 +874,12 @@ class HomeScreen extends React.Component {
   handleFilter = () => {
   }
 
+  handleList = () => {
+    console.log('aaaaaaa')
+    const { listType } = this.state
+    this.setState({ listType: listType === 'list' ? 'thumbnail' : 'list' })
+  }
+
   handleSetting = () => {
     Analytics.logEvent('dashboard_settings', {})
 
@@ -1121,6 +1128,7 @@ class HomeScreen extends React.Component {
                   feedoList={feedoList}
                   handleFeedMenu={this.handleLongHoldMenu}
                   page="home"
+                  listType={this.state.listType}
                   isRefreshing={this.state.isRefreshing}
                   onRefreshFeed={() => this.onRefreshFeed()}
                 />
@@ -1137,6 +1145,7 @@ class HomeScreen extends React.Component {
                       feedoList={feedoList}
                       handleFeedMenu={this.handleLongHoldMenu}
                       page="home"
+                      listType={this.state.listType}
                       isRefreshing={this.state.isRefreshing}
                       onRefreshFeed={() => this.onRefreshFeed()}
                     />
@@ -1164,6 +1173,7 @@ class HomeScreen extends React.Component {
                       feedoList={feedoList}
                       handleFeedMenu={this.handleLongHoldMenu}
                       page="home"
+                      listType={this.state.listType}
                       isRefreshing={this.state.isRefreshing}
                       onRefreshFeed={() => this.onRefreshFeed()}
                     />
@@ -1193,8 +1203,11 @@ class HomeScreen extends React.Component {
           <DashboardActionBar
             filtering={false}
             notifications={true}
+            showList={true}
+            listType={this.state.listType}
             onAddFeed={this.onOpenNewFeedModal.bind(this)}
             handleFilter={() => this.handleFilter()}
+            handleList={() => this.handleList()}
             badgeCount={badgeCount}
           />
         )}
@@ -1212,6 +1225,7 @@ class HomeScreen extends React.Component {
           onBackdropPress={() => this.setState({ isLongHoldMenuVisible: false })}
         >
           <FeedLongHoldMenuScreen
+            listType={this.state.listType}
             feedData={this.state.selectedFeedData}
             handleArchiveFeed={this.handleArchiveFeed}
             handleDeleteFeed={this.handleDeleteFeed}

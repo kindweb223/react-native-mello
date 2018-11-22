@@ -90,11 +90,11 @@ class FeedLongHoldMenuScreen extends React.Component {
   }
 
   render () {
-    const { feedData } = this.props
+    const { feedData, listType } = this.props
     const { currentFeed } = this.state
 
     return [
-      <FeedItemComponent key="1" item={feedData} pinFlag={this.state.pinFlag} clickEvent="long" />,
+      <FeedItemComponent key="1" item={feedData} listType={listType} pinFlag={this.state.pinFlag} clickEvent="long" />,
       <FeedActionBarComponent
         key="2"
         handlePin={this.handlePin}

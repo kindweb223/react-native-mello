@@ -2,9 +2,25 @@ import { StyleSheet } from 'react-native'
 import COLORS from '../../../service/colors'
 
 const styles = StyleSheet.create({
+  container: {
+    flexDirection: 'row',
+  },
+  leftContainer: {
+    width: 70,
+    height: '100%'
+  },
+  thumbnailImage: {
+    width: 56,
+    height: 56,
+    borderRadius: 10,
+    backgroundColor: COLORS.LIGHT_GREY_PLACEHOLDER
+  },
+  rightContainer: {
+    flex: 1
+  },
   titleView: {
     flexDirection: 'row',
-    justifyContent: 'space-between'
+    justifyContent: 'space-between',
   },
   title: {
     flex: 1,
@@ -14,7 +30,9 @@ const styles = StyleSheet.create({
   },
   statsView: {
     flexDirection: 'row',
-    marginTop: 2
+    justifyContent: 'space-between',
+    width: '100%',
+    marginTop: 6
   },
   statsItemView: {
     flexDirection: 'row',
