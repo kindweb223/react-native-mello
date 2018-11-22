@@ -34,6 +34,7 @@ import UserAvatarComponent from '../../components/UserAvatarComponent';
 import * as COMMON_FUNC from '../../service/commonFunc'
 
 import Analytics from '../../lib/firebase'
+import pubnub from '../../lib/pubnub'
 
 class CommentScreen extends React.Component {
   static renderLeftButton(props) {
@@ -78,33 +79,45 @@ class CommentScreen extends React.Component {
       });
       this.inputToolbarRef.focus();
     }
+
+    // Subscribe to comments channel for new comments and updates
+    console.log("Subscribe to: ", this.props.idea.id + '_comments')
+    pubnub.subscribe({
+      channels: [this.props.idea.id + '_comments'],
+    });
   }
 
   componentWillUnmount() {
     this.keyboardWillShowSubscription.remove();
     this.keyboardWillHideSubscription.remove();
+
+    // Unsubscribe to comments channel for new comments and updates
+    console.log("Unsubscribe from: ", this.props.idea.id + '_comments')
+    pubnub.unsubscribe({
+      channels: [this.props.idea.id + '_comments'],
+    });
   }
 
   UNSAFE_componentWillReceiveProps(nextProps) {
     let loading = false;
     if (this.props.card.loading !== types.GET_CARD_COMMENTS_PENDING && nextProps.card.loading === types.GET_CARD_COMMENTS_PENDING) {
       // getting comments of a card
-      loading = true;
+      loading = false;
     } else if (this.props.card.loading !== types.GET_CARD_COMMENTS_FULFILLED && nextProps.card.loading === types.GET_CARD_COMMENTS_FULFILLED) {
       // success in getting comments of a card
     } else if (this.props.card.loading !== types.ADD_CARD_COMMENT_PENDING && nextProps.card.loading === types.ADD_CARD_COMMENT_PENDING) {
       // adding a comment of a card
-      loading = true;
+      loading = false;
     } else if (this.props.card.loading !== types.ADD_CARD_COMMENT_FULFILLED && nextProps.card.loading === types.ADD_CARD_COMMENT_FULFILLED) {
       // success in adding a comment of a card
     } else if (this.props.card.loading !== types.EDIT_CARD_COMMENT_PENDING && nextProps.card.loading === types.EDIT_CARD_COMMENT_PENDING) {
-      // adding a comment of a card
-      loading = true;
+      // editing a comment of a card
+      loading = false;
     } else if (this.props.card.loading !== types.EDIT_CARD_COMMENT_FULFILLED && nextProps.card.loading === types.EDIT_CARD_COMMENT_FULFILLED) {
       // success in adding a comment of a card
     } else if (this.props.card.loading !== types.DELETE_CARD_COMMENT_PENDING && nextProps.card.loading === types.DELETE_CARD_COMMENT_PENDING) {
-      // adding a comment of a card
-      loading = true;
+      // delete a comment of a card
+      loading = false;
     } else if (this.props.card.loading !== types.DELETE_CARD_COMMENT_FULFILLED && nextProps.card.loading === types.DELETE_CARD_COMMENT_FULFILLED) {
       // success in adding a comment of a card
     } 

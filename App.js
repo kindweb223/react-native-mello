@@ -20,6 +20,7 @@ import axios from 'axios'
 import CONSTANTS from './src/service/constants'
 import COLORS from './src/service/colors'
 import { BASE_URL, BUGSNAG_KEY, APP_LOCALE, APP_NAME, APP_STORE_ID, PLAY_STORE_ID } from './src/service/api'
+import pubnub from './src/lib/pubnub'
 
 const config = new Configuration(BUGSNAG_KEY);
 config.appVersion = require('./package.json').version;
@@ -74,6 +75,10 @@ import ArchivedFeedScreen from './src/containers/ArchivedFeedScreen'
 import PrivacyPolicyScreen from './src/containers/PrivacyPolicyScreen'
 import NotificationScreen from './src/containers/NotificationScreen'
 
+import { 
+  getCardComments,
+} from './src/redux/card/actions'
+
 const store = createStore(reducers, applyMiddleware(thunk, promiseMiddleware))
 
 export default class Root extends React.Component {
@@ -88,6 +93,23 @@ export default class Root extends React.Component {
   }
 
   async UNSAFE_componentWillMount() {
+    pubnub.addListener({
+      status: function(statusEvent) {
+          if (statusEvent.category === "PNConnectedCategory") {
+          }
+      },
+      message: function(response) {
+
+        if (response.message.action === 'COMMENT_ADDED' || response.message.action === 'COMMENT_EDITED' || response.message.action === 'COMMENT_DELETED') {
+          console.log("refreshing comments")
+          store.dispatch(getCardComments(response.message.data.ideaId))
+        }
+      },
+      presence: function(presenceEvent) {
+
+      }
+    })
+
     Linking.getInitialURL()
     .then((url) => {
       if (url) {
