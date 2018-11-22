@@ -16,7 +16,8 @@ const initialState = {
   fileUploadUrl: {},
   userTags: [],
   archivedFeedList: [],
-  invitedFeedList: []
+  invitedFeedList: [],
+  activityFeedList: []
 };
 
 export default function feedo(state = initialState, action = {}) {
@@ -1201,7 +1202,72 @@ export default function feedo(state = initialState, action = {}) {
         error: data,
       }
     }
-
+    /**
+     * Get Activity Feed List
+     */
+    case types.GET_ACTIVITY_FEED_PENDING:
+      return {
+        ...state,
+        loading: types.GET_ACTIVITY_FEED_PENDING,
+      }
+    case types.GET_ACTIVITY_FEED_FULFILLED: {
+      const { data } = action.result
+      console.log('DATA: ', data)
+      return {
+        ...state,
+        loading: types.GET_ACTIVITY_FEED_FULFILLED,
+        activityFeedList: data
+      }
+    }
+    case types.GET_INVITED_FEEDO_LIST_REJECTED: {
+      return {
+        ...state,
+        loading: types.GET_ACTIVITY_FEED_REJECTED,
+        error: action.error.response,
+      }
+    }
+    /**
+     * Read all acitivty
+     */
+    case types.READ_ALL_ACTIVITY_FEED_PENDING:
+      return {
+        ...state,
+        loading: types.READ_ALL_ACTIVITY_FEED_PENDING,
+      }
+    case types.READ_ALL_ACTIVITY_FEED_FULFILLED: {
+      return {
+        ...state,
+        loading: types.READ_ALL_ACTIVITY_FEED_FULFILLED
+      }
+    }
+    case types.READ_ALL_ACTIVITY_FEED_REJECTED: {
+      return {
+        ...state,
+        loading: types.READ_ALL_ACTIVITY_FEED_REJECTED,
+        error: action.error.response,
+      }
+    }
+    /**
+     * Read acitivty
+     */
+    case types.READ_ACTIVITY_FEED_PENDING:
+      return {
+        ...state,
+        loading: types.READ_ACTIVITY_FEED_PENDING,
+      }
+    case types.READ_ACTIVITY_FEED_FULFILLED: {
+      return {
+        ...state,
+        loading: types.READ_ACTIVITY_FEED_FULFILLED
+      }
+    }
+    case types.READ_ACTIVITY_FEED_REJECTED: {
+      return {
+        ...state,
+        loading: types.READ_ACTIVITY_FEED_REJECTED,
+        error: action.error.response,
+      }
+    }
     default:
       return state;
   }

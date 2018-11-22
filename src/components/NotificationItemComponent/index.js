@@ -44,7 +44,7 @@ const NotificationItemComponent = ({ item, hideTumbnail, updateInvitation }) => 
     <View style={styles.container}>
       <View style={styles.leftContainer}>
         <View style={styles.avatarView}>
-          <UserAvatarComponent user={item.owner} size={35} />
+          <UserAvatarComponent user={item.owner} size={38} />
         </View>
       </View>
 
