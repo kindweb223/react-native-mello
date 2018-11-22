@@ -999,6 +999,14 @@ class NewCardScreen extends React.Component {
   }
 
   onUpdateFeed() {
+    const {
+      files,
+    } = this.props.card.currentCard;
+    const { idea } = this.state
+    if (idea.length === 0 && (!files || files.length === 0)) {
+      Alert.alert('Error', 'Enter some text or add an image')
+      return;
+    }
     if (this.draftFeedo) {
       if (this.draftFeedo.id === this.props.feedo.currentFeed.id) {
         // Update Draft Mello to Publish one
@@ -1016,7 +1024,6 @@ class NewCardScreen extends React.Component {
       this.props.deleteDraftFeed(this.draftFeedo.id)
     } else {
       Analytics.logEvent('new_card_update_card', {})
-
       this.onUpdateCard();
     }
   }
