@@ -85,16 +85,11 @@ const IMAGE_ICON = require('../../../assets/images/Image/Blue.png')
 class NewCardScreen extends React.Component {
   constructor(props) {
     super(props);
-    let coverImage = null;
-    if (props.cardMode === CONSTANTS.SHARE_EXTENTION_CARD && props.shareImageUrls.length) {
-      coverImage = props.shareImageUrls[0];
-    }
-
     this.state = {
       // cardName: '',
       idea: '',
       textByCursor: '',
-      coverImage,
+      coverImage: '',
 
       loading: false,
       // isFullScreenCard: false,
@@ -148,7 +143,7 @@ class NewCardScreen extends React.Component {
     this.currentShareImageIndex = 0;
 
     if (props.cardMode === CONSTANTS.SHARE_EXTENTION_CARD && props.shareUrl === '' && props.shareImageUrls.length) {
-      props.shareImageUrls.forEach( async(imageUri) => {
+      props.shareImageUrls.forEach( async(imageUri, index) => {
         const fileName = imageUri.substring(imageUri.lastIndexOf("/") + 1, imageUri.length);
         const {width, height} = await this.getImageSize(imageUri);
         this.shareImageUrls.push({
@@ -157,13 +152,17 @@ class NewCardScreen extends React.Component {
           width,
           height,
         });
+        if (index === 0 && this.state.coverImage === '') {
+          this.setState({
+            coverImage: imageUri,
+          });
+        }
       });
     }
   }
 
   UNSAFE_componentWillReceiveProps(nextProps) {
     // console.log('NewCardScreen UNSAFE_componentWillReceiveProps : ', nextProps.card);
-    console.log('Upload File - Step : ', nextProps.card.loading);
     let loading = false;
     if (this.props.card.loading !== types.CREATE_CARD_PENDING && nextProps.card.loading === types.CREATE_CARD_PENDING) {
       loading = true;
@@ -198,19 +197,18 @@ class NewCardScreen extends React.Component {
         loading = true;
       }
       // Image resizing...
-      //   console.log('Upload File : ', this.selectedFile);
-      //   const width = Math.round(this.selectedFile.width / CONSTANTS.IMAGE_COMPRESS_DIMENSION_RATIO);
-      //   const height = Math.round(this.selectedFile.height / CONSTANTS.IMAGE_COMPRESS_DIMENSION_RATIO)
-      //   ImageResizer.createResizedImage(this.selectedFile.uri, width, height, CONSTANTS.IMAGE_COMPRESS_FORMAT, CONSTANTS.IMAGE_COMPRESS_QUALITY, 0, null)
-      //     .then((response) => {
-      //       console.log('Image compress Success!');
-      //       this.props.uploadFileToS3(nextProps.card.fileUploadUrl.uploadUrl, response.uri, this.selectedFileName, this.selectedFileMimeType);
-      //     }).catch((error) => {
-      //       console.log('Image compress error : ', error);
-      //     });
-      //   return;
-      // }
-
+      if (this.selectedFileMimeType.indexOf('image/') !== -1) {
+        const width = Math.round(this.selectedFile.width / CONSTANTS.IMAGE_COMPRESS_DIMENSION_RATIO);
+        const height = Math.round(this.selectedFile.height / CONSTANTS.IMAGE_COMPRESS_DIMENSION_RATIO)
+        ImageResizer.createResizedImage(this.selectedFile.uri, width, height, CONSTANTS.IMAGE_COMPRESS_FORMAT, CONSTANTS.IMAGE_COMPRESS_QUALITY, 0, null)
+          .then((response) => {
+            console.log('Image compress Success!');
+            this.props.uploadFileToS3(nextProps.card.fileUploadUrl.uploadUrl, response.uri, this.selectedFileName, this.selectedFileMimeType);
+          }).catch((error) => {
+            console.log('Image compress error : ', error);
+          });
+        return;
+      }
       this.props.uploadFileToS3(nextProps.card.fileUploadUrl.uploadUrl, this.selectedFile.uri, this.selectedFileName, this.selectedFileMimeType);
     } else if (this.props.card.loading !== types.UPLOAD_FILE_PENDING && nextProps.card.loading === types.UPLOAD_FILE_PENDING) {
       // uploading a file
@@ -249,8 +247,6 @@ class NewCardScreen extends React.Component {
       }
       this.currentShareImageIndex ++;
       if (this.currentShareImageIndex < this.shareImageUrls.length) {
-        console.log('Upload File : ', this.currentShareImageIndex);
-        console.log('Upload File : ', this.shareImageUrls[this.currentShareImageIndex]);
         this.uploadFile(nextProps.card.currentCard, this.shareImageUrls[this.currentShareImageIndex], 'MEDIA');
       }
     } else if (this.props.card.loading !== types.ADD_LINK_PENDING && nextProps.card.loading === types.ADD_LINK_PENDING) {
