@@ -206,6 +206,7 @@ class NewCardScreen extends React.Component {
             this.props.uploadFileToS3(nextProps.card.fileUploadUrl.uploadUrl, response.uri, this.selectedFileName, this.selectedFileMimeType);
           }).catch((error) => {
             console.log('Image compress error : ', error);
+            this.props.uploadFileToS3(nextProps.card.fileUploadUrl.uploadUrl, this.selectedFile.uri, this.selectedFileName, this.selectedFileMimeType);
           });
         return;
       }
