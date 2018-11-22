@@ -63,7 +63,7 @@ class ImageSliderScreen extends React.Component {
       // fullfilled in deleting a file
     } else if (this.props.card.loading !== cardTypes.SET_COVER_IMAGE_PENDING && nextProps.card.loading === cardTypes.SET_COVER_IMAGE_PENDING) {
       // setting a file as cover image
-      loading = true;
+      // loading = true;
     } else if (this.props.card.loading !== cardTypes.SET_COVER_IMAGE_FULFILLED && nextProps.card.loading === cardTypes.SET_COVER_IMAGE_FULFILLED) {
       // success in setting a file as cover image
     } 

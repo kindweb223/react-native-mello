@@ -147,7 +147,7 @@ class NewCardScreen extends React.Component {
     // console.log('NewCardScreen UNSAFE_componentWillReceiveProps : ', nextProps.card);
     let loading = false;
     if (this.props.card.loading !== types.CREATE_CARD_PENDING && nextProps.card.loading === types.CREATE_CARD_PENDING) {
-      loading = true;
+      // loading = true;
     } else if (this.props.card.loading !== types.CREATE_CARD_FULFILLED && nextProps.card.loading === types.CREATE_CARD_FULFILLED) {
       if ((this.props.cardMode === CONSTANTS.SHARE_EXTENTION_CARD || this.props.viewMode === CONSTANTS.CARD_NEW) && this.props.shareUrl !== '') {
         this.setState({
@@ -260,7 +260,7 @@ class NewCardScreen extends React.Component {
       // success in setting a file as cover image
     } else if (this.props.card.loading !== types.UPDATE_CARD_PENDING && nextProps.card.loading === types.UPDATE_CARD_PENDING) {
       // updating a card
-      loading = true;
+      // loading = true;
     } else if (this.props.card.loading !== types.UPDATE_CARD_FULFILLED && nextProps.card.loading === types.UPDATE_CARD_FULFILLED) {
       // success in updating a card
       if (this.props.cardMode === CONSTANTS.MAIN_APP_CARD_FROM_DASHBOARD || this.props.cardMode === CONSTANTS.SHARE_EXTENTION_CARD) {
