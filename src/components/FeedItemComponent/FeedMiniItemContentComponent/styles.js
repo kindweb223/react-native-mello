@@ -54,8 +54,9 @@ const styles = StyleSheet.create({
     marginBottom: 0
   },
   feedText: {
-    fontSize: 12,
+    fontSize: 14,
     lineHeight: 21,
+    marginLeft: 3
   },
   active: {
     color: COLORS.PURPLE
