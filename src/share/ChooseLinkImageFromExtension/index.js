@@ -44,10 +44,13 @@ class ChooseLinkImageFromExtension extends React.Component {
         const urls = value.match(/((?:(http|https|Http|Https|rtsp|Rtsp):\/\/(?:(?:[a-zA-Z0-9\$\-\_\.\+\!\*\'\(\)\,\;\?\&\=]|(?:\%[a-fA-F0-9]{2})){1,64}(?:\:(?:[a-zA-Z0-9\$\-\_\.\+\!\*\'\(\)\,\;\?\&\=]|(?:\%[a-fA-F0-9]{2})){1,25})?\@)?)?((?:(?:[a-zA-Z0-9][a-zA-Z0-9\-]{0,64}\.)+((?:(?:[a-zA-Z0-9])(?:[a-zA-Z0-9]))|(?:(?:[a-zA-Z0-9])(?:[a-zA-Z0-9])(?:[a-zA-Z0-9]))))|(?:(?:25[0-5]|2[0-4][0-9]|[0-1][0-9]{2}|[1-9][0-9]|[1-9])\.(?:25[0-5]|2[0-4][0-9]|[0-1][0-9]{2}|[1-9][0-9]|[1-9]|0)\.(?:25[0-5]|2[0-4][0-9]|[0-1][0-9]{2}|[1-9][0-9]|[1-9]|0)\.(?:25[0-5]|2[0-4][0-9]|[0-1][0-9]{2}|[1-9][0-9]|[0-9])))(?:\:\d{1,5})?)(\/(?:(?:[a-zA-Z0-9\;\/\?\:\@\&\=\#\~\-\.\+\!\*\'\(\)\,\_])|(?:\%[a-fA-F0-9]{2}))*)?(?:\b|$)/gi);
         this.shareUrl = urls[0]
         this.props.getOpenGraph(urls[0], true)
-      } else {
-        Actions.ShareCardScreen({
-          imageUrl: value,
-        });
+      } else if (type === 'images') {
+        const images = value.split(" , ");
+        if (images.length > 0) {
+          Actions.ShareCardScreen({
+            imageUrls: images,
+          });
+        }
       }
     } catch(error) {
       console.log('error : ', error)
@@ -110,7 +113,7 @@ class ChooseLinkImageFromExtension extends React.Component {
       selectedIndex: index,
     });
     Actions.ShareCardScreen({
-      imageUrl,
+      imageUrls: [imageUrl],
       shareUrl: this.shareUrl,
     });
   }
