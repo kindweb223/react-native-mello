@@ -80,6 +80,9 @@ class FeedoListContainer extends React.Component {
   }
 
   renderItem({ item, index }) {
+    const marginTop = this.props.listType === 'list' ? 15 : 12
+    const marginBottom = this.props.listType === 'list' ? 14 : 12
+
     return (
       <Animated.View 
         style={
@@ -95,7 +98,7 @@ class FeedoListContainer extends React.Component {
         {item.metadata.myInviteStatus !== 'DECLINED' && (
           <ListRow index={index}>
             {this.props.feedoList.length > 0 && index === 0 && (
-              <View style={styles.separator} />
+              <View style={[styles.separator, { marginBottom }]} />
             )}
 
             {item.metadata.myInviteStatus === 'ACCEPTED'
@@ -109,13 +112,13 @@ class FeedoListContainer extends React.Component {
                     })
                   }}
                 >
-                  <FeedItemComponent item={item} pinFlag={item.pinned ? true : false} page={this.props.page} />
+                  <FeedItemComponent item={item} pinFlag={item.pinned ? true : false} page={this.props.page} listType={this.props.listType} />
                 </TouchableOpacity>
               : <NotificationItemComponent item={item} hideTumbnail={true} />
             }
 
             {this.props.feedoList.length > 0 && (
-              <View style={[styles.separator, { marginTop: 14 }]} />
+              <View style={[styles.separator, { marginTop, marginBottom }]} />
             )}
           </ListRow>
         )}
