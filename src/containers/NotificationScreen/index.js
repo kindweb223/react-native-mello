@@ -1,6 +1,7 @@
 /* global require */
 import React from 'react'
 import {
+  ScrollView,
   FlatList,
   View,
   Text,
@@ -11,8 +12,6 @@ import {
 import { connect } from 'react-redux'
 import { Actions } from 'react-native-router-flux'
 import PropTypes from 'prop-types'
-import ScrollableTabView from 'react-native-scrollable-tab-view'
-import TabBar from 'react-native-underline-tabbar'
 import Swipeout from 'react-native-swipeout'
 import _ from 'lodash'
 import Feather from 'react-native-vector-icons/Feather'
@@ -89,12 +88,6 @@ class NotificationScreen extends React.Component {
     }
   }
 
-  onChangeTab(value) {
-    this.setState({ 
-      tabIndex: value.i,
-    })
-  }
-
   renderInvitedFeedItem({ item }) {
     return (
       <View style={styles.itemView}>
@@ -147,58 +140,24 @@ class NotificationScreen extends React.Component {
   
   render () {
     const { activityFeedList, invitedFeedList } = this.state
+    let notificationList = [
+      
+    ]
 
     return (
       <View style={styles.container}>
-        <ScrollableTabView
-          content
-          locked
-          onChangeTab={this.onChangeTab.bind(this)}
-          prerenderingSiblingsNumber={0}
-          renderTabBar={() => <TabBar
-                                underlineHeight={0}
-                                underlineBottomPosition={0}
-                                underlineColor="transparent"
-                                tabBarStyle={styles.tabBarStyle}
-                                tabBarTextStyle={styles.tabBarTextStyle}
-                                activeTabTextStyle={styles.activeTabBarTextStyle}
-                                tabStyles={{ tab: styles.tabStyle }}
-                                tabMargin={1}
-                              />}
-        >
-          <View
-            style={styles.tabView}
-            ref={ref => this.scrollTabAll = ref} 
-            tabLabel={{ label: 'Activity' }}
-          >
-            <FlatList
-              style={styles.flatList}
-              contentContainerStyle={styles.contentFlatList}
-              data={activityFeedList}
-              keyExtractor={item => item.id}
-              automaticallyAdjustContentInsets={true}
-              renderItem={this.renderActivityFeedItem.bind(this)}
-              keyboardShouldPersistTaps="handled"
-            />
-          </View>
-
-          <View
-            style={styles.tabView}
-            ref={ref => this.scrollTabAll = ref} 
-            tabLabel={{ label: 'Invites' }}
-          >
-            <FlatList
-              style={styles.flatList}
-              contentContainerStyle={styles.contentFlatList}
-              data={invitedFeedList}
-              keyExtractor={item => item.id}
-              automaticallyAdjustContentInsets={true}
-              renderItem={this.renderInvitedFeedItem.bind(this)}
-              keyboardShouldPersistTaps="handled"
-            />
-          </View>
-        </ScrollableTabView>
-
+        <ScrollView>
+          <FlatList
+            scrollEnabled={false}
+            style={styles.flatList}
+            contentContainerStyle={styles.contentFlatList}
+            data={invitedFeedList}
+            keyExtractor={item => item.id}
+            automaticallyAdjustContentInsets={true}
+            renderItem={this.renderInvitedFeedItem.bind(this)}
+            keyboardShouldPersistTaps="handled"
+          />
+        </ScrollView>
       </View>
     )
   }

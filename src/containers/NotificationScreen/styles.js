@@ -21,29 +21,6 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#fff'
   },
-  tabBarStyle: {
-    width: '100%',
-    height: TAB_BAR_HEIGHT,
-    marginTop: 0,
-    borderTopWidth: 0,
-    borderBottomWidth: 0
-  },
-  tabStyle: {
-    width: CONSTANTS.SCREEN_WIDTH / 2,
-    height: TAB_BAR_HEIGHT,
-    alignItems: 'center',
-    justifyContent: 'center',
-    paddingBottom: 0
-  },
-  tabBarTextStyle: {
-    fontSize: 16
-  },
-  activeTabBarTextStyle: {
-    color: COLORS.PURPLE,
-    fontWeight: 'bold'
-  },
-  tabView: {
-  },
   contentFlatList: {
     paddingBottom: 16
   },
