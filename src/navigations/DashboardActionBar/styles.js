@@ -35,6 +35,7 @@ const styles = StyleSheet.create({
     color: COLORS.PURPLE,
     fontSize: 14,
     marginLeft: 5,
+    marginBottom: 2,
     fontWeight: '500'
   },
   rightContainer: {
