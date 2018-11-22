@@ -114,6 +114,7 @@ class FeedDetailScreen extends React.Component {
       selectedIdeaLayout: {},
       isInviteeModal: false,
       showFilterModal: false,
+      listType: 'list',
       filterShowType: 'all',
       filterSortType: 'date',
       selectedLongHoldIdea: {},
@@ -1267,10 +1268,13 @@ class FeedDetailScreen extends React.Component {
         <DashboardActionBar 
           onAddFeed={this.onOpenNewCardModal.bind(this)}
           handleFilter={this.handleFilter}
+          handleList={() => {}}
           filterType={this.state.filterShowType}
           sortType={this.state.filterSortType}
           notifications={false}
           feed={currentFeed}
+          showList={true}
+          listType={this.state.listType}
         />
 
         {this.renderNewCardModal}
