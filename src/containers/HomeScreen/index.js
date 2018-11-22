@@ -1256,6 +1256,7 @@ class HomeScreen extends React.Component {
             style={{width: '100%', height: '100%'}}
             onSwipeLeft={() => this.onSwipeToDismissClipboardToaster()}
             onSwipeRight={() => this.onSwipeToDismissClipboardToaster()}
+            onSwipeDown={() => this.onSwipeToDismissClipboardToaster()}
           >
             <ClipboardToasterComponent
               description={this.state.copiedUrl}
