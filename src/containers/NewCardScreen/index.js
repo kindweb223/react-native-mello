@@ -147,7 +147,7 @@ class NewCardScreen extends React.Component {
     // console.log('NewCardScreen UNSAFE_componentWillReceiveProps : ', nextProps.card);
     let loading = false;
     if (this.props.card.loading !== types.CREATE_CARD_PENDING && nextProps.card.loading === types.CREATE_CARD_PENDING) {
-      loading = true;
+      // loading = true;
     } else if (this.props.card.loading !== types.CREATE_CARD_FULFILLED && nextProps.card.loading === types.CREATE_CARD_FULFILLED) {
       if ((this.props.cardMode === CONSTANTS.SHARE_EXTENTION_CARD || this.props.viewMode === CONSTANTS.CARD_NEW) && this.props.shareUrl !== '') {
         this.setState({
@@ -260,7 +260,7 @@ class NewCardScreen extends React.Component {
       // success in setting a file as cover image
     } else if (this.props.card.loading !== types.UPDATE_CARD_PENDING && nextProps.card.loading === types.UPDATE_CARD_PENDING) {
       // updating a card
-      loading = true;
+      // loading = true;
     } else if (this.props.card.loading !== types.UPDATE_CARD_FULFILLED && nextProps.card.loading === types.UPDATE_CARD_FULFILLED) {
       // success in updating a card
       if (this.props.cardMode === CONSTANTS.MAIN_APP_CARD_FROM_DASHBOARD || this.props.cardMode === CONSTANTS.SHARE_EXTENTION_CARD) {
@@ -360,9 +360,9 @@ class NewCardScreen extends React.Component {
       // success in unliking a card
     } else if (this.props.card.loading !== types.MOVE_CARD_PENDING && nextProps.card.loading === types.MOVE_CARD_PENDING) {
       // moving card
-      loading = true;
+      // loading = true;
     } else if (this.props.feedo.loading !== feedoTypes.GET_FEEDO_LIST_PENDING && nextProps.feedo.loading === feedoTypes.GET_FEEDO_LIST_PENDING) {
-      loading = true;
+      // loading = true;
     } else if (this.props.feedo.loading !== feedoTypes.GET_FEEDO_LIST_FULFILLED && nextProps.feedo.loading === feedoTypes.GET_FEEDO_LIST_FULFILLED) {
       if (this.isGettingFeedoList) {
         loading = true;
@@ -375,11 +375,11 @@ class NewCardScreen extends React.Component {
     if (this.prevFeedo === null) {
       if (this.props.feedo.loading !== feedoTypes.CREATE_FEED_PENDING && nextProps.feedo.loading === feedoTypes.CREATE_FEED_PENDING) {
         // creating a feed
-        loading = true;
+        // loading = true;
       } else if (this.props.feedo.loading !== feedoTypes.CREATE_FEED_FULFILLED && nextProps.feedo.loading === feedoTypes.CREATE_FEED_FULFILLED) {
         // creating a feed
         if (this.props.viewMode === CONSTANTS.CARD_NEW) {
-          loading = true;
+          // loading = true;
           this.draftFeedo = nextProps.feedo.currentFeed;
           this.props.createCard(nextProps.feedo.currentFeed.id);
         }
@@ -391,7 +391,7 @@ class NewCardScreen extends React.Component {
         this.onUpdateCard();
       } else if (this.props.feedo.loading !== feedoTypes.DELETE_FEED_PENDING && nextProps.feedo.loading === feedoTypes.DELETE_FEED_PENDING) {
         // deleting a feed
-        loading = true;
+        // loading = true;
       } else if (this.props.feedo.loading !== feedoTypes.DELETE_FEED_FULFILLED && nextProps.feedo.loading === feedoTypes.DELETE_FEED_FULFILLED) {
         // success in deleting a feed
         if (this.isUpdateDraftCard) {
@@ -999,6 +999,14 @@ class NewCardScreen extends React.Component {
   }
 
   onUpdateFeed() {
+    const {
+      files,
+    } = this.props.card.currentCard;
+    const { idea } = this.state
+    if (idea.length === 0 && (!files || files.length === 0)) {
+      Alert.alert('Error', 'Enter some text or add an image')
+      return;
+    }
     if (this.draftFeedo) {
       if (this.draftFeedo.id === this.props.feedo.currentFeed.id) {
         // Update Draft Mello to Publish one
@@ -1016,7 +1024,6 @@ class NewCardScreen extends React.Component {
       this.props.deleteDraftFeed(this.draftFeedo.id)
     } else {
       Analytics.logEvent('new_card_update_card', {})
-
       this.onUpdateCard();
     }
   }

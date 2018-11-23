@@ -87,7 +87,7 @@ class NewFeedScreen extends React.Component {
     let loading = false;
     if (this.props.feedo.loading !== types.CREATE_FEED_PENDING && nextProps.feedo.loading === types.CREATE_FEED_PENDING) {
       // creating a feed
-      loading = true;
+      // loading = true;
     } else if (this.props.feedo.loading !== types.CREATE_FEED_FULFILLED && nextProps.feedo.loading === types.CREATE_FEED_FULFILLED) {
       if (this.props.feedoMode !== CONSTANTS.SHARE_EXTENTION_FEEDO) {
         const data = {
@@ -101,7 +101,7 @@ class NewFeedScreen extends React.Component {
       })
     } else if (this.props.feedo.loading !== types.DELETE_FEED_PENDING && nextProps.feedo.loading === types.DELETE_FEED_PENDING) {
       // deleting a feed
-      loading = true;
+      // loading = true;
     } else if (this.props.feedo.loading !== types.DELETE_FEED_FULFILLED && nextProps.feedo.loading === types.DELETE_FEED_FULFILLED) {
       // success in deleting a feed
       this.props.setCurrentFeed({});

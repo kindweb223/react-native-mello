@@ -41,6 +41,7 @@ class SelectHuntScreen extends React.Component {
       filterText: ''
     };
     this.animatedShow = new Animated.Value(0);
+    this.animatedMove = new Animated.Value(0);
     this.animatedKeyboardHeight = new Animated.Value(0);
   }
 
@@ -48,6 +49,10 @@ class SelectHuntScreen extends React.Component {
     Analytics.setCurrentScreen('SelectHuntScreen')
     this.props.getFeedoList(3, true);
     Animated.timing(this.animatedShow, {
+      toValue: 1,
+      duration: CONSTANTS.ANIMATEION_MILLI_SECONDS * 1.5,
+    }).start();
+    Animated.timing(this.animatedMove, {
       toValue: 1,
       duration: CONSTANTS.ANIMATEION_MILLI_SECONDS * 1.5,
     }).start();
@@ -80,9 +85,9 @@ class SelectHuntScreen extends React.Component {
     ).start();
   }
 
-  onClose() {
-    this.animatedShow.setValue(1);
-    Animated.timing(this.animatedShow, {
+  onClose(isAnimatedShow=true) {
+    this.animatedMove.setValue(1);
+    Animated.timing(this.animatedMove, {
       toValue: 0,
       duration: CONSTANTS.ANIMATEION_MILLI_SECONDS * 1.5,
     }).start(() => {
@@ -90,6 +95,15 @@ class SelectHuntScreen extends React.Component {
         this.props.onClosed();
       }
     });
+    if (isAnimatedShow) {
+      this.animatedShow.setValue(1);
+      Animated.timing(this.animatedShow, {
+        toValue: 0,
+        duration: CONSTANTS.ANIMATEION_MILLI_SECONDS * 1.5,
+      }).start();
+    } else {
+      this.animatedShow.setValue(0);
+    }
   }
 
   onBack() {
@@ -111,7 +125,7 @@ class SelectHuntScreen extends React.Component {
     this.setState({
       isVisibleNewFeedScreen: false,
     }, () => {
-      this.onClose();
+      this.onClose(false);
     });
   }
 
@@ -216,7 +230,7 @@ class SelectHuntScreen extends React.Component {
   }
 
   render () {
-    const animatedMove  = this.animatedShow.interpolate({
+    const animatedMove  = this.animatedMove.interpolate({
       inputRange: [0, 1],
       outputRange: [CONSTANTS.SCREEN_WIDTH, 0],
     });
