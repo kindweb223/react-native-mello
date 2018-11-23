@@ -6,7 +6,6 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     paddingHorizontal: CONSTANTS.PADDING,
-    paddingVertical: 15,
     flexDirection: 'row'
   },
   leftContainer: {
@@ -21,14 +20,18 @@ const styles = StyleSheet.create({
     fontWeight: '600'
   },
   durationView: {
-    marginTop: 10
+    marginTop: 10,
+    flexDirection: 'row'
   },
   text: {
     fontSize: 12,
-    color: COLORS.MEDIUM_GREY
+    color: COLORS.DARK_GREY
   },
   readText: {
     color: COLORS.PURPLE
+  },
+  dotIcon: {
+    marginLeft: 5
   }
 })
 

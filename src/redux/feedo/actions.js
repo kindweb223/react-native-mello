@@ -557,7 +557,7 @@ export const getActivityFeed = (userId) => {
  * Read all activity feed
  */
 export const readAllActivityFeed = (userId) => {
-  let url = `https://ec2-34-244-207-99.eu-west-1.compute.amazonaws.com:8091/hunt/api/v1/users/${userId}/activityFeed`
+  let url = `http://ec2-34-244-207-99.eu-west-1.compute.amazonaws.com:8091/hunt/api/v1/users/${userId}/activityFeed`
 
   return {
     types: [types.READ_ALL_ACTIVITY_FEED_PENDING, types.READ_ALL_ACTIVITY_FEED_FULFILLED, types.READ_ALL_ACTIVITY_FEED_REJECTED],
@@ -573,7 +573,7 @@ export const readAllActivityFeed = (userId) => {
  * Read activity feed
  */
 export const readActivityFeed = (userId, activityId) => {
-  let url = `https://ec2-34-244-207-99.eu-west-1.compute.amazonaws.com:8091/hunt/api/v1/users/${userId}/activityFeed/${activityId}`
+  let url = `http://ec2-34-244-207-99.eu-west-1.compute.amazonaws.com:8091/hunt/api/v1/users/${userId}/activityFeed/${activityId}`
 
   return {
     types: [types.READ_ACTIVITY_FEED_PENDING, types.READ_ACTIVITY_FEED_FULFILLED, types.READ_ACTIVITY_FEED_REJECTED],

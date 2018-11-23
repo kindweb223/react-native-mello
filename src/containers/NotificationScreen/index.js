@@ -14,7 +14,7 @@ import { Actions } from 'react-native-router-flux'
 import PropTypes from 'prop-types'
 import Swipeout from 'react-native-swipeout'
 import _ from 'lodash'
-import Feather from 'react-native-vector-icons/Feather'
+import FontAwesome from 'react-native-vector-icons/FontAwesome'
 
 import Analytics from '../../lib/firebase'
 import NotificationItemComponent from '../../components/NotificationItemComponent'
@@ -49,8 +49,107 @@ class NotificationScreen extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      activityFeedList: [],
       invitedFeedList: [],
+      activityFeedList: [
+        {
+          "id": "1743b262d-3b0f-4385-a0fb-0887622e37f7",
+          "activityTypeEnum": "USER_ACCESS_CHANGED",
+          "instigatorId": "0080d859-fb9c-495d-a05a-8ca3899c0601",
+          "instigatorName": "Kirk",
+          "instigatorPic": "/url/for/profilePic.jpg",
+          "activityTime": "2018-11-19T12:11:30.643Z",
+          "read": "true",
+          "metadata": {
+            "HUNT_ID": "0080d859-fb9c-495d-a05a-8ca3899c0603",
+            "HUNT_HEADLINE": "Your Favourites",
+            "INVITEE_USER_PROFILE_ID": "0080d859-fb9c-495d-a05a-8ca3899c0605",
+            "INVITEE_NAME": "Eamon Doyle",
+            "NEW_PERMISSIONS": "EDIT"
+          }
+        },
+        {
+          "id": "2743b262d-3b0f-4385-a0fb-0887622e37f7",
+          "activityTypeEnum": "USER_JOINED_HUNT",
+          "instigatorId": "0080d859-fb9c-495d-a05a-8ca3899c0601",
+          "instigatorName": "Kirk",
+          "instigatorPic": "/url/for/profilePic.jpg",
+          "activityTime": "2018-11-19T12:11:29.643Z",
+          "read": "true",
+          "metadata": {
+            "HUNT_ID": "0080d859-fb9c-495d-a05a-8ca3899c0603",
+            "HUNT_HEADLINE": "Your Favourites"
+          }
+        },
+        {
+          "id": "3743b262d-3b0f-4385-a0fb-0887622e37f7",
+          "activityTypeEnum": "NEW_IDEA_ADDED",
+          "instigatorId": "0080d859-fb9c-495d-a05a-8ca3899c0601",
+          "instigatorName": "Kirk",
+          "instigatorPic": "/url/for/profilePic.jpg",
+          "activityTime": "2018-11-19T12:11:27.643Z",
+          "read": "false",
+          "metadata": {
+            "HUNT_ID": "0080d859-fb9c-495d-a05a-8ca3899c0603",
+            "HUNT_HEADLINE": "Your Favourites",
+            "IDEA_ID": "36058fdc-666c-4fdc-be2b-c74e4f60a361",
+            "IDEA_PREVIEW": "This is my favourite..."
+          }
+        },
+        {
+          "id": "4743b262d-3b0f-4385-a0fb-0887622e37f7",
+          "activityTypeEnum": "USER_EDITED_HUNT",
+          "instigatorId": "0080d859-fb9c-495d-a05a-8ca3899c0601",
+          "instigatorName": "Kirk",
+          "instigatorPic": "/url/for/profilePic.jpg",
+          "activityTime": "2018-11-19T12:11:26.643Z",
+          "read": "false",
+          "metadata": {
+            "HUNT_ID": "0080d859-fb9c-495d-a05a-8ca3899c0603",
+            "HUNT_HEADLINE": "Your Favourites"
+          }
+        },
+        {
+          "id": "5743b262d-3b0f-4385-a0fb-0887622e37f7",
+          "activityTypeEnum": "USER_INVITED_TO_HUNT",
+          "instigatorId": "0080d859-fb9c-495d-a05a-8ca3899c0601",
+          "instigatorName": "Kirk",
+          "instigatorPic": "/url/for/profilePic.jpg",
+          "activityTime": "2018-11-19T12:11:25.643Z",
+          "read": "false",
+          "metadata": {
+            "HUNT_ID": "0080d859-fb9c-495d-a05a-8ca3899c0603",
+            "HUNT_HEADLINE": "Your Favourites",
+            "INVITEE_USER_PROFILE_ID": "0080d859-fb9c-495d-a05a-8ca3899c0609",
+            "INVITEE_NAME": "Eamon Doyle"
+          }
+        },
+        {
+          "id": "6743b262d-3b0f-4385-a0fb-0887622e37f7",
+          "activityTypeEnum": "HUNT_DELETED",
+          "instigatorId": "0080d859-fb9c-495d-a05a-8ca3899c0601",
+          "instigatorName": "Kirk",
+          "instigatorPic": "/url/for/profilePic.jpg",
+          "activityTime": "2018-11-19T12:11:24.643Z",
+          "read": "false",
+          "metadata": {
+            "HUNT_ID": "0080d859-fb9c-495d-a05a-8ca3899c0603",
+            "HUNT_HEADLINE": "Your Favourites"
+          }
+        },
+        {
+          "id": "7743b262d-3b0f-4385-a0fb-0887622e37f7",
+          "activityTypeEnum": "IDEA_DELETED",
+          "instigatorId": "0080d859-fb9c-495d-a05a-8ca3899c0601",
+          "instigatorName": "Kirk",
+          "instigatorPic": "/url/for/profilePic.jpg",
+          "activityTime": "2018-11-19T12:11:24.643Z",
+          "read": "false",
+          "metadata": {
+            "IDEA_ID": "0080d859-fb9c-495d-a05a-8ca3899c0603",
+            "IDEA_PREVIEW": "This is my favourite..."
+          }
+        }
+      ],
       tabIndex: 0
     };
   }
@@ -58,7 +157,7 @@ class NotificationScreen extends React.Component {
   componentDidMount() {
     Analytics.setCurrentScreen('NotificationScreen')
 
-    this.props.getActivityFeed(this.props.user.userInfo.id)
+    // this.props.getActivityFeed(this.props.user.userInfo.id)
 
     let { invitedFeedList } = this.props.feedo
     invitedFeedList = _.orderBy(
@@ -74,7 +173,7 @@ class NotificationScreen extends React.Component {
 
     if (this.props.feedo.loading === 'GET_ACTIVITY_FEED_PENDING' && feedo.loading === 'GET_ACTIVITY_FEED_FULFILLED') {
       let { activityFeedList } = feedo
-      this.setState({ activityFeedList })
+      this.setState({ activityFeedList: activityFeedList.content })
     }
 
     if (this.props.feedo.loading === 'UPDTE_FEED_INVITATION_PENDING' && feedo.loading === 'UPDTE_FEED_INVITATION_FULFILLED') {
@@ -88,24 +187,16 @@ class NotificationScreen extends React.Component {
     }
   }
 
-  renderInvitedFeedItem({ item }) {
+  renderInvitedFeedItem = (data) => {
     return (
       <View style={styles.itemView}>
-        <NotificationItemComponent item={item} />
+        <NotificationItemComponent data={data} />
 
         {this.state.invitedFeedList.length > 0 && (
           <View style={[styles.separator, { marginTop: 14 }]} />
         )}
       </View>
     )
-  }
-
-  get renderReadTickComponent() {
-    return (
-      <View style={styles.swipeItemContainer}>
-        <Feather name='check' size={25} color="#fff" />
-      </View>
-    );
   }
 
   onSelectActivity = () => {
@@ -116,48 +207,64 @@ class NotificationScreen extends React.Component {
     this.props.readActivityFeed(this.props.user.userInfo.id, data.id)
   }
 
-  renderActivityFeedItem({ item, index }) {
+  get renderDeleteComponent() {
+    return (
+      <View style={styles.swipeItemContainer}>
+        <FontAwesome name='trash' size={25} color='#fff' />
+      </View>
+    );
+  }
+
+  renderActivityFeedItem = (data) => {
     let swipeoutBtns = []
 
     swipeoutBtns = [
       {
-        component: this.renderReadTickComponent,
+        component: this.renderDeleteComponent,
         backgroundColor: COLORS.DARK_RED,
-        onPress: () => this.onReadActivity(item),
+        onPress: () => this.onReadActivity(data),
       }
     ];
 
     return (
-      <Swipeout
-        style={styles.itemContainer}
-        autoClose={true}
-        right={swipeoutBtns}
-      > 
-        <ActivityFeedComponent data={item} onSelectActivity={() => this.onSelectActivity()} />
-      </Swipeout>
+      <View style={styles.activityItem}>
+        <Swipeout
+          style={styles.itemContainer}
+          autoClose={true}
+          right={swipeoutBtns}
+        > 
+          <ActivityFeedComponent data={data} onSelectActivity={() => this.onSelectActivity()} />
+        </Swipeout>
+      </View>
     );
+  }
+
+  renderItem({ item, index }) {
+    if (item.hasOwnProperty('activityTypeEnum')) {
+      return this.renderActivityFeedItem(item)
+    } else {
+      return this.renderInvitedFeedItem(item)
+    }
   }
   
   render () {
     const { activityFeedList, invitedFeedList } = this.state
     let notificationList = [
-      
+      ...invitedFeedList,
+      ...activityFeedList
     ]
 
     return (
       <View style={styles.container}>
-        <ScrollView>
-          <FlatList
-            scrollEnabled={false}
-            style={styles.flatList}
-            contentContainerStyle={styles.contentFlatList}
-            data={invitedFeedList}
-            keyExtractor={item => item.id}
-            automaticallyAdjustContentInsets={true}
-            renderItem={this.renderInvitedFeedItem.bind(this)}
-            keyboardShouldPersistTaps="handled"
-          />
-        </ScrollView>
+        <FlatList
+          style={styles.flatList}
+          contentContainerStyle={styles.contentFlatList}
+          data={notificationList}
+          keyExtractor={item => item.id}
+          automaticallyAdjustContentInsets={true}
+          renderItem={this.renderItem.bind(this)}
+          keyboardShouldPersistTaps="handled"
+        />
       </View>
     )
   }

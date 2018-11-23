@@ -31,12 +31,15 @@ const styles = StyleSheet.create({
     borderBottomWidth: 1,
     borderBottomColor: COLORS.SEPARATOR_GREY
   },
+  activityItem: {
+    paddingVertical: 15
+  },
   itemContainer: {
     backgroundColor: 'transparent',
   },
   swipeItemContainer: {
     flex: 1,
-    backgroundColor: COLORS.PURPLE,
+    backgroundColor: COLORS.DARK_RED,
     alignItems: 'center',
     justifyContent: 'center',
   }
