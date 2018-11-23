@@ -43,7 +43,7 @@ class ActivityFeedComponent extends React.Component {
         link = ' to '
         target = data.metadata.HUNT_HEADLINE
         break;
-      case 'NEW_LINK_IDEA':
+      case 'NEW_LIKE_ON_IDEA':
         comment = ' liked the Card '
         source = data.metadata.IDEA_PREVIEW
         break;
@@ -56,7 +56,7 @@ class ActivityFeedComponent extends React.Component {
         source = data.metadata.IDEA_PREVIEW
         break;
       case 'IDEA_MOVED':
-        comment = ' mmoved the Card '
+        comment = ' moved the Card '
         source = data.metadata.IDEA_PREVIEW
         link = ' to '
         target = data.metadata.HUNT_HEADLINE
@@ -126,17 +126,22 @@ class ActivityFeedComponent extends React.Component {
 
   render() {
     const { data } = this.props;
+    const instigatorInfo = {
+      imageUrl: data.instigatorPic,
+      firstName: data.instigatorFirstName,
+      lastName: data.instigatorLastName
+    }
 
     return (
       <View style={styles.container}>
         <View style={styles.leftContainer}>
           <View style={styles.avatarView}>
-            {/* <UserAvatarComponent user={item.owner} size={38} /> */}
+            <UserAvatarComponent user={instigatorInfo} size={38} />
           </View>
         </View>
 
         <View style={styles.rightContainer}>
-          <TouchableOpacity onPress={() => this.props.onReadActivity }>
+          <TouchableOpacity onPress={() => this.props.onReadActivity() }>
             {this.renderItem}
           </TouchableOpacity>
         </View>

@@ -42,6 +42,17 @@ const styles = StyleSheet.create({
     backgroundColor: COLORS.DARK_RED,
     alignItems: 'center',
     justifyContent: 'center',
+  },
+  footerView: {
+    paddingVertical: 20
+  },
+  modalContainer: {
+    position: 'absolute',
+    left: 0,
+    right: 0,
+    top: 0,
+    bottom: 0,
+    backgroundColor: COLORS.LIGHT_GREY_MODAL_BACKGROUND,
   }
 })
 

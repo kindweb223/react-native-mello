@@ -540,7 +540,7 @@ export const leaveFeed = (feedId) => {
 /**
  * Get activity feed
  */
-export const getActivityFeed = (userId) => {
+export const getActivityFeed = (userId, data) => {
   let url = `http://ec2-34-244-207-99.eu-west-1.compute.amazonaws.com:8091/hunt/api/v1/users/${userId}/activityFeed`
 
   return {
@@ -548,7 +548,8 @@ export const getActivityFeed = (userId) => {
     promise:
       axios({
         method: 'get',
-        url: url
+        url: url,
+        data
       })
   };
 }
@@ -581,6 +582,24 @@ export const readActivityFeed = (userId, activityId) => {
       axios({
         method: 'put',
         url: url
-      })
+      }),
+    payload: activityId
+  };
+}
+
+/**
+ * Delete activity feed
+ */
+export const deleteActivityFeed = (userId, activityId) => {
+  let url = `http://ec2-34-244-207-99.eu-west-1.compute.amazonaws.com:8091/hunt/api/v1/users/${userId}/activityFeed/${activityId}`
+
+  return {
+    types: [types.DEL_ACTIVITY_FEED_PENDING, types.DEL_ACTIVITY_FEED_FULFILLED, types.DEL_ACTIVITY_FEED_REJECTED],
+    promise:
+      axios({
+        method: 'delete',
+        url: url
+      }),
+    payload: activityId
   };
 }

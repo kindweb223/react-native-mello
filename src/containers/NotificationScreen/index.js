@@ -1,12 +1,14 @@
 /* global require */
 import React from 'react'
 import {
-  ScrollView,
   FlatList,
   View,
   Text,
   TouchableOpacity,
-  Image
+  Image,
+  ActivityIndicator,
+  RefreshControl,
+  Animated
 } from 'react-native'
 
 import { connect } from 'react-redux'
@@ -19,14 +21,17 @@ import FontAwesome from 'react-native-vector-icons/FontAwesome'
 import Analytics from '../../lib/firebase'
 import NotificationItemComponent from '../../components/NotificationItemComponent'
 import ActivityFeedComponent from '../../components/ActivityFeedComponent'
+import NewCardScreen from '../NewCardScreen'
 
 import {
   getActivityFeed,
   readActivityFeed,
+  deleteActivityFeed,
   readAllActivityFeed
 } from '../../redux/feedo/actions'
 
 import COLORS from '../../service/colors'
+import CONSTANTS from '../../service/constants'
 import styles from './styles'
 
 const CLOSE_ICON = require('../../../assets/images/Close/Blue.png')
@@ -49,145 +54,60 @@ class NotificationScreen extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
+      refreshing: false,
+      loading: false,
       invitedFeedList: [],
-      activityFeedList: [
-        {
-          "id": "1743b262d-3b0f-4385-a0fb-0887622e37f7",
-          "activityTypeEnum": "USER_ACCESS_CHANGED",
-          "instigatorId": "0080d859-fb9c-495d-a05a-8ca3899c0601",
-          "instigatorName": "Kirk",
-          "instigatorPic": "/url/for/profilePic.jpg",
-          "activityTime": "2018-11-19T12:11:30.643Z",
-          "read": "true",
-          "metadata": {
-            "HUNT_ID": "0080d859-fb9c-495d-a05a-8ca3899c0603",
-            "HUNT_HEADLINE": "Your Favourites",
-            "INVITEE_USER_PROFILE_ID": "0080d859-fb9c-495d-a05a-8ca3899c0605",
-            "INVITEE_NAME": "Eamon Doyle",
-            "NEW_PERMISSIONS": "EDIT"
-          }
-        },
-        {
-          "id": "2743b262d-3b0f-4385-a0fb-0887622e37f7",
-          "activityTypeEnum": "USER_JOINED_HUNT",
-          "instigatorId": "0080d859-fb9c-495d-a05a-8ca3899c0601",
-          "instigatorName": "Kirk",
-          "instigatorPic": "/url/for/profilePic.jpg",
-          "activityTime": "2018-11-19T12:11:29.643Z",
-          "read": "true",
-          "metadata": {
-            "HUNT_ID": "0080d859-fb9c-495d-a05a-8ca3899c0603",
-            "HUNT_HEADLINE": "Your Favourites"
-          }
-        },
-        {
-          "id": "3743b262d-3b0f-4385-a0fb-0887622e37f7",
-          "activityTypeEnum": "NEW_IDEA_ADDED",
-          "instigatorId": "0080d859-fb9c-495d-a05a-8ca3899c0601",
-          "instigatorName": "Kirk",
-          "instigatorPic": "/url/for/profilePic.jpg",
-          "activityTime": "2018-11-19T12:11:27.643Z",
-          "read": "false",
-          "metadata": {
-            "HUNT_ID": "0080d859-fb9c-495d-a05a-8ca3899c0603",
-            "HUNT_HEADLINE": "Your Favourites",
-            "IDEA_ID": "36058fdc-666c-4fdc-be2b-c74e4f60a361",
-            "IDEA_PREVIEW": "This is my favourite..."
-          }
-        },
-        {
-          "id": "4743b262d-3b0f-4385-a0fb-0887622e37f7",
-          "activityTypeEnum": "USER_EDITED_HUNT",
-          "instigatorId": "0080d859-fb9c-495d-a05a-8ca3899c0601",
-          "instigatorName": "Kirk",
-          "instigatorPic": "/url/for/profilePic.jpg",
-          "activityTime": "2018-11-19T12:11:26.643Z",
-          "read": "false",
-          "metadata": {
-            "HUNT_ID": "0080d859-fb9c-495d-a05a-8ca3899c0603",
-            "HUNT_HEADLINE": "Your Favourites"
-          }
-        },
-        {
-          "id": "5743b262d-3b0f-4385-a0fb-0887622e37f7",
-          "activityTypeEnum": "USER_INVITED_TO_HUNT",
-          "instigatorId": "0080d859-fb9c-495d-a05a-8ca3899c0601",
-          "instigatorName": "Kirk",
-          "instigatorPic": "/url/for/profilePic.jpg",
-          "activityTime": "2018-11-19T12:11:25.643Z",
-          "read": "false",
-          "metadata": {
-            "HUNT_ID": "0080d859-fb9c-495d-a05a-8ca3899c0603",
-            "HUNT_HEADLINE": "Your Favourites",
-            "INVITEE_USER_PROFILE_ID": "0080d859-fb9c-495d-a05a-8ca3899c0609",
-            "INVITEE_NAME": "Eamon Doyle"
-          }
-        },
-        {
-          "id": "6743b262d-3b0f-4385-a0fb-0887622e37f7",
-          "activityTypeEnum": "HUNT_DELETED",
-          "instigatorId": "0080d859-fb9c-495d-a05a-8ca3899c0601",
-          "instigatorName": "Kirk",
-          "instigatorPic": "/url/for/profilePic.jpg",
-          "activityTime": "2018-11-19T12:11:24.643Z",
-          "read": "false",
-          "metadata": {
-            "HUNT_ID": "0080d859-fb9c-495d-a05a-8ca3899c0603",
-            "HUNT_HEADLINE": "Your Favourites"
-          }
-        },
-        {
-          "id": "7743b262d-3b0f-4385-a0fb-0887622e37f7",
-          "activityTypeEnum": "IDEA_DELETED",
-          "instigatorId": "0080d859-fb9c-495d-a05a-8ca3899c0601",
-          "instigatorName": "Kirk",
-          "instigatorPic": "/url/for/profilePic.jpg",
-          "activityTime": "2018-11-19T12:11:24.643Z",
-          "read": "false",
-          "metadata": {
-            "IDEA_ID": "0080d859-fb9c-495d-a05a-8ca3899c0603",
-            "IDEA_PREVIEW": "This is my favourite..."
-          }
-        }
-      ],
       notificationList: [],
-      tabIndex: 0
+      selectedActivity: {},
+      count: 10,
+      isVisibleCard: false,
+      cardViewMode: CONSTANTS.CARD_NONE
     };
+    this.animatedOpacity = new Animated.Value(0)
   }
 
   componentDidMount() {
     Analytics.setCurrentScreen('NotificationScreen')
 
-    // this.props.getActivityFeed(this.props.user.userInfo.id)
+    const { feedo } = this.props
 
-    let { invitedFeedList } = this.props.feedo
+    this.getActivityFeedList(0, this.state.count)
+
+    let { invitedFeedList } = feedo
     invitedFeedList = _.orderBy(
       invitedFeedList,
       ['publishedDate'],
       ['desc']
     )
-    this.setState({ invitedFeedList })
+    this.setState({ invitedFeedList, notificationList: invitedFeedList })
+  }
 
-    let notificationList = [
-      ...invitedFeedList,
-      ...this.state.activityFeedList
-    ]
-    this.setState({ notificationList })
+  getActivityFeedList = (page, size) => {
+    const param = { page, size }
+    this.props.getActivityFeed(this.props.user.userInfo.id, param)
   }
 
   UNSAFE_componentWillReceiveProps(nextProps) {
     const { feedo } = nextProps
-    const { invitedFeedList } = this.state
+    const { invitedFeedList, selectedActivity } = this.state
 
-    if (this.props.feedo.loading === 'GET_ACTIVITY_FEED_PENDING' && feedo.loading === 'GET_ACTIVITY_FEED_FULFILLED') {
+    if (this.props.feedo.loading !== 'READ_ACTIVITY_FEED_FULFILLED' && feedo.loading === 'READ_ACTIVITY_FEED_FULFILLED') {
+      if (selectedActivity.activityTypeEnum === 'NEW_IDEA_ADDED') {
+        // this.onSelectCard(selectedActivity)
+      }
+    }
+
+    if ((this.props.feedo.loading !== 'GET_ACTIVITY_FEED_FULFILLED' && feedo.loading === 'GET_ACTIVITY_FEED_FULFILLED') ||
+        (this.props.feedo.loading !== 'READ_ACTIVITY_FEED_FULFILLED' && feedo.loading === 'READ_ACTIVITY_FEED_FULFILLED') ||
+        (this.props.feedo.loading !== 'DEL_ACTIVITY_FEED_FULFILLED' && feedo.loading === 'DEL_ACTIVITY_FEED_FULFILLED')) {
       let { activityFeedList } = feedo
-      this.setState({ activityFeedList: activityFeedList.content })
+      activityFeedList = _.orderBy(activityFeedList, ['activityTime'], ['asc'])
 
       let notificationList = [
         ...invitedFeedList,
         ...activityFeedList
       ]
-      this.setState({ notificationList })
+      this.setState({ refreshing: false, loading: false, notificationList })
     }
 
     if (this.props.feedo.loading === 'UPDTE_FEED_INVITATION_PENDING' && feedo.loading === 'UPDTE_FEED_INVITATION_FULFILLED') {
@@ -213,11 +133,12 @@ class NotificationScreen extends React.Component {
     )
   }
 
-  onSelectActivity = () => {
-
+  onDeleteActivity = (data) => {
+    this.props.deleteActivityFeed(this.props.user.userInfo.id, data.id)
   }
 
   onReadActivity = (data) => {
+    this.setState({ selectedActivity: data })
     this.props.readActivityFeed(this.props.user.userInfo.id, data.id)
   }
 
@@ -236,7 +157,7 @@ class NotificationScreen extends React.Component {
       {
         component: this.renderDeleteComponent,
         backgroundColor: COLORS.DARK_RED,
-        onPress: () => this.onReadActivity(data),
+        onPress: () => this.onDeleteActivity(data),
       }
     ];
 
@@ -247,18 +168,47 @@ class NotificationScreen extends React.Component {
           autoClose={true}
           right={swipeoutBtns}
         > 
-          <ActivityFeedComponent data={data} onSelectActivity={() => this.onSelectActivity()} />
+          <ActivityFeedComponent data={data} onReadActivity={() => this.onReadActivity(data)} />
         </Swipeout>
       </View>
     );
   }
 
-  renderItem({ item, index }) {
+  handleRefresh = () => {
+    console.log('handleRefresh !!!!')
+    this.setState({ refreshing: true }, () => {
+      this.getActivityFeedList(0, this.state.count)
+    })
+  }
+
+  handleLoadMore = () => {
+    const { feedo } = this.props
+    if (!this.state.loading) {
+      console.log('handleLoadMore !!!!')
+      this.setState({ loading: true }, () => {
+        setTimeout(() => {
+          this.getActivityFeedList(feedo.activityData.page, this.state.count)
+        }, 1000)
+      })
+    }
+  }
+
+  renderItem({ item }) {
     if (item.hasOwnProperty('activityTypeEnum')) {
       return this.renderActivityFeedItem(item)
     } else {
       return this.renderInvitedFeedItem(item)
     }
+  }
+
+  renderFooter = () => {
+    if (!this.state.loading) return null
+
+    return (
+      <View style={styles.footerView}>
+        <ActivityIndicator animating size='large' color={COLORS.PURPLE} />
+      </View>
+    )
   }
   
   render () {
@@ -273,10 +223,73 @@ class NotificationScreen extends React.Component {
           keyExtractor={item => item.id}
           automaticallyAdjustContentInsets={true}
           renderItem={this.renderItem.bind(this)}
-          keyboardShouldPersistTaps="handled"
+          ListFooterComponent={this.renderFooter}
+          refreshControl={
+            <RefreshControl 
+              refreshing={this.state.refreshing}
+              onRefresh={this.handleRefresh}
+              tintColor={COLORS.PURPLE}
+              size="large"
+            />
+          }
+          onEndReached={this.handleLoadMore}
+          onEndReachedThreshold={0}
         />
+
+        {this.renderCardDetailModal}
       </View>
     )
+  }
+
+  onSelectCard(idea, index) {
+    let cardViewMode = CONSTANTS.CARD_EDIT
+
+    this.setState({
+      isVisibleCard: true,
+      cardViewMode
+    }, () => {
+      this.animatedOpacity.setValue(0);
+      Animated.timing(this.animatedOpacity, {
+        toValue: 1,
+        duration: CONSTANTS.ANIMATEION_MILLI_SECONDS
+      }).start();
+    })
+  }
+
+  onCloseCardModal() {
+    this.animatedOpacity.setValue(1);
+    Animated.timing(this.animatedOpacity, {
+      toValue: 0,
+      duration: CONSTANTS.ANIMATEION_MILLI_SECONDS,
+    }).start(() => {
+      this.setState({ 
+        isVisibleCard: false,
+        cardViewMode: CONSTANTS.CARD_NONE,
+      });
+    });
+  }
+
+  get renderCardDetailModal() {
+    if (!this.state.isVisibleCard) {
+      return;
+    }
+    return (
+      <Animated.View 
+        style={[
+          styles.modalContainer,
+          { opacity: this.animatedOpacity }
+        ]}
+      >
+        {
+          <NewCardScreen 
+            viewMode={this.state.cardViewMode}
+            shareUrl=""
+            onClose={() => this.onCloseCardModal()}
+            onOpenAction={(idea) => {}}
+          />
+        }
+      </Animated.View>
+    );
   }
 }
 
@@ -286,9 +299,10 @@ const mapStateToProps = ({ feedo, user }) => ({
 })
 
 const mapDispatchToProps = dispatch => ({
-  getActivityFeed: (userId) => dispatch(getActivityFeed(userId)),
+  getActivityFeed: (userId, param) => dispatch(getActivityFeed(userId, param)),
   readAllActivityFeed: (userId) => dispatch(readAllActivityFeed(userId)),
-  readActivityFeed: (userId, activityId) => dispatch(readActivityFeed(userId, activityId))
+  readActivityFeed: (userId, activityId) => dispatch(readActivityFeed(userId, activityId)),
+  deleteActivityFeed: (userId, activityId) => dispatch(deleteActivityFeed(userId, activityId))
 })
 
 NotificationScreen.propTypes = {

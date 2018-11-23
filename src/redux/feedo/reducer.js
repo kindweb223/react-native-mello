@@ -3,6 +3,7 @@ import * as types from './types'
 import * as cardTypes from '../card/types'
 import { filter, find, findIndex, isEmpty } from 'lodash'
 import resolveError from './../../service/resolveError'
+import { restoreArchiveFeed } from './actions';
 
 const initialState = {
   loading: null,
@@ -17,7 +18,8 @@ const initialState = {
   userTags: [],
   archivedFeedList: [],
   invitedFeedList: [],
-  activityFeedList: []
+  activityFeedList: [],
+  activityData: {}
 };
 
 export default function feedo(state = initialState, action = {}) {
@@ -1212,11 +1214,12 @@ export default function feedo(state = initialState, action = {}) {
       }
     case types.GET_ACTIVITY_FEED_FULFILLED: {
       const { data } = action.result
-      console.log('DATA: ', data)
+      // console.log('activityFeedList: ', data)
       return {
         ...state,
         loading: types.GET_ACTIVITY_FEED_FULFILLED,
-        activityFeedList: data
+        activityFeedList: data.content,
+        activityData: data
       }
     }
     case types.GET_INVITED_FEEDO_LIST_REJECTED: {
@@ -1256,15 +1259,55 @@ export default function feedo(state = initialState, action = {}) {
         loading: types.READ_ACTIVITY_FEED_PENDING,
       }
     case types.READ_ACTIVITY_FEED_FULFILLED: {
+      const activityId = action.payload
+      const { activityFeedList } = state
+
+      const currentActivityFeedList = filter(activityFeedList, feed => feed.id === activityId)
+      const restActivityFeedList = filter(activityFeedList, feed => feed.id !== activityId)
+
       return {
         ...state,
-        loading: types.READ_ACTIVITY_FEED_FULFILLED
+        loading: types.READ_ACTIVITY_FEED_FULFILLED,
+        activityFeedList: [
+          ...restActivityFeedList,
+          {
+            ...currentActivityFeedList[0],
+            read: 'true'
+          }
+        ]
       }
     }
     case types.READ_ACTIVITY_FEED_REJECTED: {
       return {
         ...state,
         loading: types.READ_ACTIVITY_FEED_REJECTED,
+        error: action.error.response,
+      }
+    }
+    /**
+     * Delete acitivty
+     */
+    case types.DEL_ACTIVITY_FEED_PENDING:
+      return {
+        ...state,
+        loading: types.DEL_ACTIVITY_FEED_PENDING,
+      }
+    case types.DEL_ACTIVITY_FEED_FULFILLED: {
+      const activityId = action.payload
+      const { activityFeedList } = state
+
+      const restActivityFeedList = filter(activityFeedList, feed => feed.id !== activityId)
+
+      return {
+        ...state,
+        loading: types.DEL_ACTIVITY_FEED_FULFILLED,
+        activityFeedList: restActivityFeedList
+      }
+    }
+    case types.DEL_ACTIVITY_FEED_REJECTED: {
+      return {
+        ...state,
+        loading: types.DEL_ACTIVITY_FEED_REJECTED,
         error: action.error.response,
       }
     }
