@@ -150,6 +150,7 @@ class NotificationScreen extends React.Component {
           }
         }
       ],
+      notificationList: [],
       tabIndex: 0
     };
   }
@@ -166,14 +167,27 @@ class NotificationScreen extends React.Component {
       ['desc']
     )
     this.setState({ invitedFeedList })
+
+    let notificationList = [
+      ...invitedFeedList,
+      ...this.state.activityFeedList
+    ]
+    this.setState({ notificationList })
   }
 
   UNSAFE_componentWillReceiveProps(nextProps) {
     const { feedo } = nextProps
+    const { invitedFeedList } = this.state
 
     if (this.props.feedo.loading === 'GET_ACTIVITY_FEED_PENDING' && feedo.loading === 'GET_ACTIVITY_FEED_FULFILLED') {
       let { activityFeedList } = feedo
       this.setState({ activityFeedList: activityFeedList.content })
+
+      let notificationList = [
+        ...invitedFeedList,
+        ...activityFeedList
+      ]
+      this.setState({ notificationList })
     }
 
     if (this.props.feedo.loading === 'UPDTE_FEED_INVITATION_PENDING' && feedo.loading === 'UPDTE_FEED_INVITATION_FULFILLED') {
@@ -248,11 +262,7 @@ class NotificationScreen extends React.Component {
   }
   
   render () {
-    const { activityFeedList, invitedFeedList } = this.state
-    let notificationList = [
-      ...invitedFeedList,
-      ...activityFeedList
-    ]
+    const { notificationList } = this.state
 
     return (
       <View style={styles.container}>

@@ -83,7 +83,7 @@ class ActivityFeedComponent extends React.Component {
         comment = ' updated '
         source = data.metadata.HUNT_HEADLINE
         break;
-      case 'USER_ACCESS_CHANGED_1':
+      case 'INVITEE_PERMISSIONS_CHANGED':
         comment = ' updated '
         source = data.metadata.NEW_PERMISSIONS
         link = ' permissions to '
