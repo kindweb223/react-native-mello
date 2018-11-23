@@ -354,8 +354,7 @@ class HomeScreen extends React.Component {
   }
 
   onHandleAppStateChange = async(nextAppState) => {
-    this.setState({appState: nextAppState});
-    if (nextAppState === 'active') {
+    if (this.state.appState.match(/inactive|background/) && nextAppState === 'active') {
       appOpened(this.props.user.userInfo.id);
       if (Actions.currentScene === 'HomeScreen') {
         this.props.getFeedoList(this.state.tabIndex);
@@ -378,7 +377,17 @@ class HomeScreen extends React.Component {
         }
       }
       this.props.getUserSession()
+    } else {
+      if (this.showClipboardTimeout) {
+        clearTimeout(this.showClipboardTimeout);
+        this.showClipboardTimeout = null;
+        this.setState({
+          isShowClipboardToaster: false,
+          copiedUrl: '',
+        });
+      }
     }
+    this.setState({appState: nextAppState});
   }
 
   parsePushNotification(notification) {
