@@ -25,6 +25,8 @@ import ViewMoreText from 'react-native-view-more-text';
 
 import ActionSheet from 'react-native-actionsheet'
 import ImagePicker from 'react-native-image-picker'
+import ImageResizer from 'react-native-image-resizer';
+
 import { DocumentPicker, DocumentPickerUtil } from 'react-native-document-picker'
 import Permissions from 'react-native-permissions'
 import * as mime from 'react-native-mime-types'
@@ -83,16 +85,11 @@ const IMAGE_ICON = require('../../../assets/images/Image/Blue.png')
 class NewCardScreen extends React.Component {
   constructor(props) {
     super(props);
-    let coverImage = null;
-    if (props.cardMode === CONSTANTS.SHARE_EXTENTION_CARD && props.shareImageUrl) {
-      coverImage = props.shareImageUrl;
-    }
-
     this.state = {
       // cardName: '',
       idea: '',
       textByCursor: '',
-      coverImage,
+      coverImage: '',
 
       loading: false,
       // isFullScreenCard: false,
@@ -135,12 +132,33 @@ class NewCardScreen extends React.Component {
     this.prevFeedo = null;
     this.isUpdateDraftCard = false;
 
-    this.isUploadShareImage = props.shareImageUrl !== '';
+    this.isUploadShareImage = props.shareImageUrls.length > 0;
     this.scrollViewHeight = 0;
     this.textInputPositionY = 0;
     this.textInputHeightByCursor = 0;
 
     this.isDisabledKeyboard = false;
+
+    this.shareImageUrls = [];
+    this.currentShareImageIndex = 0;
+
+    if (props.cardMode === CONSTANTS.SHARE_EXTENTION_CARD && props.shareUrl === '' && props.shareImageUrls.length) {
+      props.shareImageUrls.forEach( async(imageUri, index) => {
+        const fileName = imageUri.substring(imageUri.lastIndexOf("/") + 1, imageUri.length);
+        const {width, height} = await this.getImageSize(imageUri);
+        this.shareImageUrls.push({
+          uri: imageUri,
+          fileName,
+          width,
+          height,
+        });
+        if (index === 0 && this.state.coverImage === '') {
+          this.setState({
+            coverImage: imageUri,
+          });
+        }
+      });
+    }
   }
 
   UNSAFE_componentWillReceiveProps(nextProps) {
@@ -158,13 +176,7 @@ class NewCardScreen extends React.Component {
         });
       } else if (this.props.cardMode === CONSTANTS.SHARE_EXTENTION_CARD && this.isUploadShareImage) {
         this.isUploadShareImage = false;
-        const { shareImageUrl } = this.props;
-        const fileName = shareImageUrl.substring(shareImageUrl.lastIndexOf("/") + 1, shareImageUrl.length);
-        const response = {
-          uri: this.props.shareImageUrl,
-          fileName,
-        }
-        this.uploadFile(nextProps.card.currentCard, response, 'MEDIA');
+        this.uploadFile(nextProps.card.currentCard, this.shareImageUrls[this.currentShareImageIndex], 'MEDIA');
       } else {
         if (nextProps.user && nextProps.user.userInfo && nextProps.user.userInfo.id) {
           const data = {
@@ -176,17 +188,39 @@ class NewCardScreen extends React.Component {
       }
     } else if (this.props.card.loading !== types.GET_FILE_UPLOAD_URL_PENDING && nextProps.card.loading === types.GET_FILE_UPLOAD_URL_PENDING) {
       // getting a file upload url
-      loading = true;
+      if (this.props.cardMode !== CONSTANTS.SHARE_EXTENTION_CARD) {
+        loading = true;
+      }
     } else if (this.props.card.loading !== types.GET_FILE_UPLOAD_URL_FULFILLED && nextProps.card.loading === types.GET_FILE_UPLOAD_URL_FULFILLED) {
       // success in getting a file upload url
-      loading = true;
-      this.props.uploadFileToS3(nextProps.card.fileUploadUrl.uploadUrl, this.selectedFile, this.selectedFileName, this.selectedFileMimeType);
+      if (this.props.cardMode !== CONSTANTS.SHARE_EXTENTION_CARD) {
+        loading = true;
+      }
+      // Image resizing...
+      if (this.selectedFileMimeType.indexOf('image/') !== -1) {
+        const width = Math.round(this.selectedFile.width / CONSTANTS.IMAGE_COMPRESS_DIMENSION_RATIO);
+        const height = Math.round(this.selectedFile.height / CONSTANTS.IMAGE_COMPRESS_DIMENSION_RATIO)
+        ImageResizer.createResizedImage(this.selectedFile.uri, width, height, CONSTANTS.IMAGE_COMPRESS_FORMAT, CONSTANTS.IMAGE_COMPRESS_QUALITY, 0, null)
+          .then((response) => {
+            console.log('Image compress Success!');
+            this.props.uploadFileToS3(nextProps.card.fileUploadUrl.uploadUrl, response.uri, this.selectedFileName, this.selectedFileMimeType);
+          }).catch((error) => {
+            console.log('Image compress error : ', error);
+            this.props.uploadFileToS3(nextProps.card.fileUploadUrl.uploadUrl, this.selectedFile.uri, this.selectedFileName, this.selectedFileMimeType);
+          });
+        return;
+      }
+      this.props.uploadFileToS3(nextProps.card.fileUploadUrl.uploadUrl, this.selectedFile.uri, this.selectedFileName, this.selectedFileMimeType);
     } else if (this.props.card.loading !== types.UPLOAD_FILE_PENDING && nextProps.card.loading === types.UPLOAD_FILE_PENDING) {
       // uploading a file
-      loading = true;
+      if (this.props.cardMode !== CONSTANTS.SHARE_EXTENTION_CARD) {
+        loading = true;
+      }
     } else if (this.props.card.loading !== types.UPLOAD_FILE_FULFILLED && nextProps.card.loading === types.UPLOAD_FILE_FULFILLED) {
       // success in uploading a file
-      loading = true;
+      if (this.props.cardMode !== CONSTANTS.SHARE_EXTENTION_CARD) {
+        loading = true;
+      }
       const {
         id, 
       } = this.props.card.currentCard;
@@ -196,7 +230,9 @@ class NewCardScreen extends React.Component {
       this.props.addFile(id, this.selectedFileType, this.selectedFileMimeType, this.selectedFileName, objectKey);
     } else if (this.props.card.loading !== types.ADD_FILE_PENDING && nextProps.card.loading === types.ADD_FILE_PENDING) {
       // adding a file
-      loading = true;
+      if (this.props.cardMode !== CONSTANTS.SHARE_EXTENTION_CARD) {
+        loading = true;
+      }
     } else if (this.props.card.loading !== types.ADD_FILE_FULFILLED && nextProps.card.loading === types.ADD_FILE_FULFILLED) {
       // success in adding a file
       const {
@@ -204,12 +240,15 @@ class NewCardScreen extends React.Component {
       } = this.props.card.currentCard;
       const newImageFiles = _.filter(nextProps.card.currentCard.files, file => file.contentType.indexOf('image') !== -1);
       if (newImageFiles.length === 1 && !nextProps.card.currentCard.coverImage) {
-        loading = true;
         this.onSetCoverImage(newImageFiles[0].id);
       }
       this.currentSelectedLinkImageIndex ++;
       if (this.currentSelectedLinkImageIndex < this.selectedLinkImages.length) {
         this.addLinkImage(id, this.selectedLinkImages[this.currentSelectedLinkImageIndex]);
+      }
+      this.currentShareImageIndex ++;
+      if (this.currentShareImageIndex < this.shareImageUrls.length) {
+        this.uploadFile(nextProps.card.currentCard, this.shareImageUrls[this.currentShareImageIndex], 'MEDIA');
       }
     } else if (this.props.card.loading !== types.ADD_LINK_PENDING && nextProps.card.loading === types.ADD_LINK_PENDING) {
       // adding a link
@@ -221,7 +260,7 @@ class NewCardScreen extends React.Component {
       if (this.props.cardMode === CONSTANTS.SHARE_EXTENTION_CARD && this.isUploadShareImage) {
         this.isUploadShareImage = false;
         const { id } = this.props.card.currentCard;
-        this.addLinkImage(id, this.props.shareImageUrl);
+        this.addLinkImage(id, this.props.shareImageUrls[0]);
       } else if (this.indexForAddedLinks < this.openGraphLinksInfo.length) {
         const { id } = this.props.card.currentCard;
         const {
@@ -245,7 +284,9 @@ class NewCardScreen extends React.Component {
       // success in deleting a link
     } else if (this.props.card.loading !== types.SET_COVER_IMAGE_PENDING && nextProps.card.loading === types.SET_COVER_IMAGE_PENDING) {
       // setting a file as cover image
-      loading = true;
+      if (this.props.cardMode !== CONSTANTS.SHARE_EXTENTION_CARD) {
+        loading = true;
+      }
     } else if (this.props.card.loading !== types.SET_COVER_IMAGE_FULFILLED && nextProps.card.loading === types.SET_COVER_IMAGE_FULFILLED) {
       this.setState({
         coverImage: nextProps.card.currentCard.coverImage,
@@ -303,7 +344,7 @@ class NewCardScreen extends React.Component {
         const url = this.props.shareUrl || nextProps.card.currentOpneGraph.url;
         const title = nextProps.card.currentOpneGraph.title;
         const description = nextProps.card.currentOpneGraph.description;
-        const image =  nextProps.card.currentOpneGraph.image || this.props.shareImageUrl;
+        const image =  nextProps.card.currentOpneGraph.image || (this.props.shareImageUrls.length > 0 && this.props.shareImageUrls[0]);
         const favicon =  nextProps.card.currentOpneGraph.favicon;
         this.props.addLink(id, url, title, description, image, favicon);
       } else {        
@@ -777,8 +818,19 @@ class NewCardScreen extends React.Component {
     }
   }
 
-  uploadFile(currentCard, file, type) {
-    this.selectedFile = file.uri;
+  getImageSize(uri) {
+    return new Promise((resolve, reject) => {
+      Image.getSize(uri,
+        (width, height) => {
+          resolve({width, height});
+        }, (error) => {
+          reject(error);
+        });
+    });
+  }
+
+  async uploadFile(currentCard, file, type) {
+    this.selectedFile = file;
     this.selectedFileMimeType = mime.lookup(file.uri);
     this.selectedFileName = file.fileName;
     this.selectedFileType = type;
@@ -1400,10 +1452,10 @@ class NewCardScreen extends React.Component {
           <TouchableOpacity 
             style={styles.closeButtonShareWrapper}
             activeOpacity={0.7}
-            onPress={() => this.props.shareUrl !== '' && this.props.shareImageUrl !== '' ? Actions.pop() : this.props.onClose()}
+            onPress={() => this.props.shareUrl !== '' && this.props.shareImageUrls.length > 0 ? Actions.pop() : this.props.onClose()}
           >
             {
-              this.props.shareUrl !== '' && this.props.shareImageUrl !== '' ?
+              this.props.shareUrl !== '' && this.props.shareImageUrls.length > 0 ?
                 <Ionicons name="ios-arrow-back" size={28} color={COLORS.PURPLE} />
               :
                 <Text style={[styles.textButton, {color: COLORS.PURPLE}]}>Cancel</Text>
@@ -1623,7 +1675,7 @@ NewCardScreen.defaultProps = {
   viewMode: CONSTANTS.CARD_NEW,
   cardMode: CONSTANTS.MAIN_APP_CARD_FROM_DETAIL,
   shareUrl: '',
-  shareImageUrl: '',
+  shareImageUrls: [],
   onClose: () => {},
   onOpenAction: () => {},
 }
@@ -1636,7 +1688,7 @@ NewCardScreen.propTypes = {
   viewMode: PropTypes.number,
   cardMode: PropTypes.number,
   shareUrl: PropTypes.string,
-  shareImageUrl: PropTypes.string,
+  shareImageUrls: PropTypes.array,
   onClose: PropTypes.func,
   onOpenAction: PropTypes.func,
 }

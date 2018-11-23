@@ -73,10 +73,10 @@ RCT_REMAP_METHOD(data,
     @try {
         NSExtensionItem *item = [context.inputItems firstObject];
         NSArray *attachments = item.attachments;
-
         __block NSItemProvider *urlProvider = nil;
-        __block NSItemProvider *imageProvider = nil;
         __block NSItemProvider *textProvider = nil;
+//        __block NSItemProvider *imageProvider = nil;
+        NSMutableArray *imageProviders = [NSMutableArray array];
 
         [attachments enumerateObjectsUsingBlock:^(NSItemProvider *provider, NSUInteger idx, BOOL *stop) {
             if ([provider hasItemConformingToTypeIdentifier:URL_IDENTIFIER]) {
@@ -86,7 +86,8 @@ RCT_REMAP_METHOD(data,
                 textProvider = provider;
                 //*stop = YES;
             } else if ([provider hasItemConformingToTypeIdentifier:IMAGE_IDENTIFIER]){
-                imageProvider = provider;
+//                imageProvider = provider;
+                [imageProviders addObject:provider];
                 //*stop = YES;
             }
         }];
@@ -99,14 +100,21 @@ RCT_REMAP_METHOD(data,
                     callback([url absoluteString], @"text/plain", nil);
                 }
             }];
-        } else if (imageProvider) {
+        } else if (imageProviders.count > 0) {
+          NSMutableArray *imageUrls = [NSMutableArray array];
+          for (__block NSItemProvider *imageProvider in imageProviders) {
+            // do something with object
             [imageProvider loadItemForTypeIdentifier:IMAGE_IDENTIFIER options:nil completionHandler:^(id<NSSecureCoding> item, NSError *error) {
                 NSURL *url = (NSURL *)item;
-
-                if (callback) {
-                    callback([url absoluteString], [[[url absoluteString] pathExtension] lowercaseString], nil);
+                [imageUrls addObject:[url absoluteString]];
+                if (imageUrls.count >= imageProviders.count) {
+                    if (callback) {
+                        NSString * value = [imageUrls componentsJoinedByString:@" , "];
+                        callback(value, @"images", nil);
+                    }
                 }
             }];
+          }
         } else if (textProvider) {
             [textProvider loadItemForTypeIdentifier:TEXT_IDENTIFIER options:nil completionHandler:^(id<NSSecureCoding> item, NSError *error) {
                 NSString *text = (NSString *)item;

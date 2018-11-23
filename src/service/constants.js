@@ -22,7 +22,11 @@ export default {
   SCREEN_VERTICAL_MIN_MARGIN: Math.round(height * 0.145),
   TEXT_INPUT_LINE_HEIGHT: 23,
   CLIPBOARD_DATA_CONFIRM_DURATION: 6000,
+  IMAGE_COMPRESS_DIMENSION_RATIO: 4,
+  IMAGE_COMPRESS_QUALITY: 30,
+  IMAGE_COMPRESS_FORMAT: 'JPEG',
 
+  
   // Mello show type
   FEED_NONE: 0,
   FEED_NEW: 1,
@@ -76,4 +80,5 @@ export default {
   // share extension modal buttons
   MODAL_OK: 1,
   MODAL_CLOSE: 2,
+  
 }
