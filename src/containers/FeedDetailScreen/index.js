@@ -286,6 +286,15 @@ class FeedDetailScreen extends React.Component {
           }, CONSTANTS.CLIPBOARD_DATA_CONFIRM_DURATION + 500);
         }
       }
+    } else {
+      if (this.showClipboardTimeout) {
+        clearTimeout(this.showClipboardTimeout);
+        this.showClipboardTimeout = null;
+        this.setState({
+          isShowClipboardToaster: false,
+          copiedUrl: '',
+        });
+      }
     }
     this.setState({appState: nextAppState});
     return;
