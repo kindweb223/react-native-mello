@@ -43,7 +43,8 @@ class InviteeScreen extends React.Component {
       recentContacts: [],
       isInvalidEmail: false,
       invalidEmail: [],
-      loading: false
+      loading: false,
+      tagText: ''
     }
     this.isMount = false
   }
@@ -142,7 +143,7 @@ class InviteeScreen extends React.Component {
       }
     }
 
-    this.setState({ filteredContacts })
+    this.setState({ tagText: text, filteredContacts })
   }
 
   onSelectContact = (contact) => {
@@ -162,7 +163,8 @@ class InviteeScreen extends React.Component {
       isAddInvitee: true,
       inviteeEmails: inviteeEmails,
       filteredContacts: [],
-      recentContacts: contacts
+      recentContacts: contacts,
+      tagText: ''
     })
   }
 
@@ -256,6 +258,7 @@ class InviteeScreen extends React.Component {
             <View style={styles.inputFieldView}>
               <View style={styles.tagInputItem}>
                 <InviteeAutoComplete
+                  tagText={this.state.tagText}
                   inviteeEmails={inviteeEmails}
                   invalidEmail={invalidEmail}
                   handleInvitees={this.handleInvitees}
