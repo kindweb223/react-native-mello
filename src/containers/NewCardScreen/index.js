@@ -85,12 +85,22 @@ const IMAGE_ICON = require('../../../assets/images/Image/Blue.png')
 class NewCardScreen extends React.Component {
   constructor(props) {
     super(props);
+
+    let coverImage = '';
+    let idea = '';
+
+    if (props.cardMode === CONSTANTS.SHARE_EXTENTION_CARD && props.shareUrl !== '') {
+      const openGraph = props.card.currentOpneGraph;
+      coverImage = props.shareImageUrls.length > 0 ? props.shareImageUrls[0] : '',
+      idea = openGraph.title || openGraph.metatags.title || '';
+    }
+
     this.state = {
       // cardName: '',
-      idea: '',
+      idea,
+      coverImage,
       textByCursor: '',
-      coverImage: '',
-
+      
       loading: false,
       // isFullScreenCard: false,
       originalCardTopY: this.props.intialLayout.py,
@@ -168,12 +178,19 @@ class NewCardScreen extends React.Component {
       // loading = true;
     } else if (this.props.card.loading !== types.CREATE_CARD_FULFILLED && nextProps.card.loading === types.CREATE_CARD_FULFILLED) {
       if ((this.props.cardMode === CONSTANTS.SHARE_EXTENTION_CARD || this.props.viewMode === CONSTANTS.CARD_NEW) && this.props.shareUrl !== '') {
+        const openGraph = this.props.card.currentOpneGraph;
         this.setState({
           // cardName: this.props.shareUrl,
-          idea: this.props.shareUrl,
-        }, () => {
-          this.checkUrls();
+          // idea: this.props.shareUrl,
+          idea: openGraph.title || openGraph.metatags.title,
         });
+        const { id } = nextProps.card.currentCard;
+        const url = this.props.shareUrl || openGraph.url || openGraph.metatags['og:url'];
+        const title = openGraph.title || openGraph.metatags.title;
+        const description = openGraph.description || openGraph.metatags.metatags;
+        const image =  openGraph.image || openGraph.metatags['og:image'] || (this.props.shareImageUrls.length > 0 && this.props.shareImageUrls[0]);
+        const favicon =  openGraph.favicon;
+        this.props.addLink(id, url, title, description, image, favicon);
       } else if (this.props.cardMode === CONSTANTS.SHARE_EXTENTION_CARD && this.isUploadShareImage) {
         this.isUploadShareImage = false;
         this.uploadFile(nextProps.card.currentCard, this.shareImageUrls[this.currentShareImageIndex], 'MEDIA');
@@ -335,59 +352,45 @@ class NewCardScreen extends React.Component {
       if (this.props.card.currentCard.links === null || this.props.card.currentCard.links.length === 0) {
         loading = true;
       }
-      if (this.props.cardMode === CONSTANTS.SHARE_EXTENTION_CARD) {
+      if (this.allLinkImages.length === 0) {
+        if (nextProps.card.currentOpneGraph.images) {
+          this.allLinkImages = nextProps.card.currentOpneGraph.images;
+        } else if (nextProps.card.currentOpneGraph.image) {
+          this.allLinkImages.push(nextProps.card.currentOpneGraph.image);
+        }
+      }
+      let currentIdea = this.state.idea;
+      currentIdea = currentIdea.replace(' ', '');
+      currentIdea = currentIdea.replace(',', '');
+      currentIdea = currentIdea.replace('\n', '');
+      if (currentIdea.toLowerCase() === this.linksForOpenGraph[this.indexForOpenGraph].toLowerCase()) {
         this.setState({
-          // cardName: nextProps.card.currentOpneGraph.title,
           idea: nextProps.card.currentOpneGraph.title,
-        });  
-        const { id } = this.props.card.currentCard;
-        const url = this.props.shareUrl || nextProps.card.currentOpneGraph.url;
-        const title = nextProps.card.currentOpneGraph.title;
-        const description = nextProps.card.currentOpneGraph.description;
-        const image =  nextProps.card.currentOpneGraph.image || (this.props.shareImageUrls.length > 0 && this.props.shareImageUrls[0]);
-        const favicon =  nextProps.card.currentOpneGraph.favicon;
-        this.props.addLink(id, url, title, description, image, favicon);
-      } else {        
-        if (this.allLinkImages.length === 0) {
-          if (nextProps.card.currentOpneGraph.images) {
-            this.allLinkImages = nextProps.card.currentOpneGraph.images;
-          } else if (nextProps.card.currentOpneGraph.image) {
-            this.allLinkImages.push(nextProps.card.currentOpneGraph.image);
-          }
-        }
-        let currentIdea = this.state.idea;
-        currentIdea = currentIdea.replace(' ', '');
-        currentIdea = currentIdea.replace(',', '');
-        currentIdea = currentIdea.replace('\n', '');
-        if (currentIdea.toLowerCase() === this.linksForOpenGraph[this.indexForOpenGraph].toLowerCase()) {
-          this.setState({
-            idea: nextProps.card.currentOpneGraph.title,
-          });
-        }
-        this.openGraphLinksInfo.push({
-          url: nextProps.card.currentOpneGraph.url,
-          title: nextProps.card.currentOpneGraph.title,
-          description: nextProps.card.currentOpneGraph.description,
-          image: nextProps.card.currentOpneGraph.image,
-          favicon: nextProps.card.currentOpneGraph.favicon
         });
-        
-        this.indexForOpenGraph ++;
-        
-        if (this.indexForOpenGraph < this.linksForOpenGraph.length) {
-          this.props.getOpenGraph(this.linksForOpenGraph[this.indexForOpenGraph]);
-        } else {
-          this.indexForAddedLinks = 0;
-          const { id } = this.props.card.currentCard;
-          const {
-            url,
-            title,
-            description,
-            image,
-            favicon,
-          } = this.openGraphLinksInfo[this.indexForAddedLinks++];
-          this.props.addLink(id, url, title, description, image, favicon);
-        }
+      }
+      this.openGraphLinksInfo.push({
+        url: nextProps.card.currentOpneGraph.url,
+        title: nextProps.card.currentOpneGraph.title,
+        description: nextProps.card.currentOpneGraph.description,
+        image: nextProps.card.currentOpneGraph.image,
+        favicon: nextProps.card.currentOpneGraph.favicon
+      });
+      
+      this.indexForOpenGraph ++;
+      
+      if (this.indexForOpenGraph < this.linksForOpenGraph.length) {
+        this.props.getOpenGraph(this.linksForOpenGraph[this.indexForOpenGraph]);
+      } else {
+        this.indexForAddedLinks = 0;
+        const { id } = this.props.card.currentCard;
+        const {
+          url,
+          title,
+          description,
+          image,
+          favicon,
+        } = this.openGraphLinksInfo[this.indexForAddedLinks++];
+        this.props.addLink(id, url, title, description, image, favicon);
       }
     } else if (this.props.card.loading !== types.LIKE_CARD_PENDING && nextProps.card.loading === types.LIKE_CARD_PENDING) {
       // liking a card
@@ -406,7 +409,7 @@ class NewCardScreen extends React.Component {
       // loading = true;
     } else if (this.props.feedo.loading !== feedoTypes.GET_FEEDO_LIST_FULFILLED && nextProps.feedo.loading === feedoTypes.GET_FEEDO_LIST_FULFILLED) {
       if (this.isGettingFeedoList) {
-        loading = true;
+        // loading = true;
         this.isGettingFeedoList = false;
         this.createCard(nextProps);
       }
@@ -484,7 +487,7 @@ class NewCardScreen extends React.Component {
 
   componentDidMount() {
     // console.log('Current Card : ', this.props.card.currentCard);
-    const { viewMode } = this.props;
+    const { viewMode, cardMode } = this.props;
     if (viewMode === CONSTANTS.CARD_VIEW || viewMode === CONSTANTS.CARD_EDIT) {
       this.setState({
         // cardName: this.props.card.currentCard.title,
@@ -494,6 +497,7 @@ class NewCardScreen extends React.Component {
     } else if (viewMode === CONSTANTS.CARD_NEW) {
       this.textInputIdeaRef.focus();
     }
+
     if (this.props.card.currentCard.idea === '' && viewMode === CONSTANTS.CARD_EDIT) {
       this.setState({
         isEditableIdea: true,

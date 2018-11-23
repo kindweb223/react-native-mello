@@ -32,6 +32,7 @@ class ChooseLinkImageFromExtension extends React.Component {
       isVisibleAlert: false,
       errorMessage: '',
       initialized: false,
+      title: 'Searching for Images',
     };
     this.shareUrl = '';
   }
@@ -73,6 +74,7 @@ class ChooseLinkImageFromExtension extends React.Component {
       if (images && images.length > 0) {
         this.setState({
           images,
+          title: 'Choose an image'
         });
       } else {
         this.onSkip();
@@ -157,7 +159,7 @@ class ChooseLinkImageFromExtension extends React.Component {
   get renderHeader() {
     return (
       <View style={styles.topContainer}>
-        <Text style={styles.textTitle}>Choose an image</Text>
+        <Text style={styles.textTitle}>{this.state.title}</Text>
         <TouchableOpacity 
           style={styles.cancelButtonWrapper}
           activeOpacity={0.6}
