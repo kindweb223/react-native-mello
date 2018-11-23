@@ -118,12 +118,13 @@ class HomeScreen extends React.Component {
       badgeCount: 0,
       isShowClipboardToaster: false,
       copiedUrl: '',
-      listType: 'list'
+      listType: 'list',
     };
 
     this.currentRef = null;
     this.animatedOpacity = new Animated.Value(0);
     this.showClipboardTimeout = null;
+    this.isInitialized = false;
   }
 
   async componentDidMount() {
@@ -233,6 +234,12 @@ class HomeScreen extends React.Component {
   async componentDidUpdate(prevProps) {
     const { feedo, user } = this.props
     const { feedoList } = feedo
+    if (prevProps.feedo.loading !== 'GET_FEEDO_LIST_FULFILLED' && feedo.loading === 'GET_FEEDO_LIST_FULFILLED') {
+      if (!this.isInitialized) {
+        this.isInitialized = true;
+        this.showClipboardToast();
+      }
+    }
 
     if ((prevProps.feedo.loading !== 'GET_FEEDO_LIST_FULFILLED' && feedo.loading === 'GET_FEEDO_LIST_FULFILLED') ||
         (prevProps.feedo.loading !== 'UPDATE_FEED_FULFILLED' && feedo.loading === 'UPDATE_FEED_FULFILLED') ||
@@ -353,29 +360,33 @@ class HomeScreen extends React.Component {
     AsyncStorage.setItem('BubbleFeedInvitedNewUser', JSON.stringify(data));
   }
 
+  async showClipboardToast() {
+    if (Actions.currentScene !== 'FeedDetailScreen') {
+      const clipboardContent = await Clipboard.getString();
+      const lastClipboardData = await AsyncStorage.getItem(CONSTANTS.CLIPBOARD_DATA)
+      if (clipboardContent !== '' && clipboardContent !== lastClipboardData) {
+        AsyncStorage.setItem(CONSTANTS.CLIPBOARD_DATA, clipboardContent);
+        this.setState({
+          isShowClipboardToaster: true,
+          copiedUrl: clipboardContent,
+        })
+        this.showClipboardTimeout = setTimeout(() => {
+          this.setState({
+            isShowClipboardToaster: false,
+            copiedUrl: '',
+          });
+        }, CONSTANTS.CLIPBOARD_DATA_CONFIRM_DURATION + 500);
+      }
+    }
+  }
+
   onHandleAppStateChange = async(nextAppState) => {
     if (this.state.appState.match(/inactive|background/) && nextAppState === 'active') {
       appOpened(this.props.user.userInfo.id);
       if (Actions.currentScene === 'HomeScreen') {
         this.props.getFeedoList(this.state.tabIndex);
-      }
-      if (Actions.currentScene !== 'FeedDetailScreen') {
-        const clipboardContent = await Clipboard.getString();
-        const lastClipboardData = await AsyncStorage.getItem(CONSTANTS.CLIPBOARD_DATA)
-        if (clipboardContent !== '' && clipboardContent !== lastClipboardData) {
-          AsyncStorage.setItem(CONSTANTS.CLIPBOARD_DATA, clipboardContent);
-          this.setState({
-            isShowClipboardToaster: true,
-            copiedUrl: clipboardContent,
-          })
-          this.showClipboardTimeout = setTimeout(() => {
-            this.setState({
-              isShowClipboardToaster: false,
-              copiedUrl: '',
-            });
-          }, CONSTANTS.CLIPBOARD_DATA_CONFIRM_DURATION + 500);
-        }
-      }
+      }  
+      this.showClipboardToast();
       this.props.getUserSession()
     } else {
       if (this.showClipboardTimeout) {
