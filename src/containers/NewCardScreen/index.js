@@ -176,7 +176,9 @@ class NewCardScreen extends React.Component {
     let loading = false;
     if (this.props.card.loading !== types.CREATE_CARD_PENDING && nextProps.card.loading === types.CREATE_CARD_PENDING) {
       // loading = true;
-    } else if (this.props.card.loading !== types.CREATE_CARD_FULFILLED && nextProps.card.loading === types.CREATE_CARD_FULFILLED) {
+    } 
+    else if (this.props.card.loading !== types.CREATE_CARD_FULFILLED && nextProps.card.loading === types.CREATE_CARD_FULFILLED) {
+      // If share extension and a url has been passed
       if (this.props.cardMode === CONSTANTS.SHARE_EXTENTION_CARD && this.props.shareUrl !== '') {
         const openGraph = this.props.card.currentOpneGraph;
         this.setState({
@@ -191,17 +193,22 @@ class NewCardScreen extends React.Component {
         const image =  openGraph.image || openGraph.metatags['og:image'] || (this.props.shareImageUrls.length > 0 && this.props.shareImageUrls[0]);
         const favicon =  openGraph.favicon;
         this.props.addLink(id, url, title, description, image, favicon);
-      } else if (this.props.viewMode === CONSTANTS.CARD_NEW) {
+      } 
+      // If share extension and sharing an image
+      else if (this.props.cardMode === CONSTANTS.SHARE_EXTENTION_CARD && this.isUploadShareImage) {
+        this.isUploadShareImage = false;
+        this.uploadFile(nextProps.card.currentCard, this.shareImageUrls[this.currentShareImageIndex], 'MEDIA');
+      }
+      // If just creating a card
+      else if (this.props.viewMode === CONSTANTS.CARD_NEW) {
         this.setState({
           // cardName: this.props.shareUrl,
           idea: this.props.shareUrl,
         }, () => {
           this.checkUrls();
         });
-      } else if (this.props.cardMode === CONSTANTS.SHARE_EXTENTION_CARD && this.isUploadShareImage) {
-        this.isUploadShareImage = false;
-        this.uploadFile(nextProps.card.currentCard, this.shareImageUrls[this.currentShareImageIndex], 'MEDIA');
-      } else {
+      }
+      else {
         if (nextProps.user && nextProps.user.userInfo && nextProps.user.userInfo.id) {
           const data = {
             userId: nextProps.user.userInfo.id,
@@ -212,14 +219,10 @@ class NewCardScreen extends React.Component {
       }
     } else if (this.props.card.loading !== types.GET_FILE_UPLOAD_URL_PENDING && nextProps.card.loading === types.GET_FILE_UPLOAD_URL_PENDING) {
       // getting a file upload url
-      if (this.props.cardMode !== CONSTANTS.SHARE_EXTENTION_CARD) {
-        loading = true;
-      }
+      loading = true;
     } else if (this.props.card.loading !== types.GET_FILE_UPLOAD_URL_FULFILLED && nextProps.card.loading === types.GET_FILE_UPLOAD_URL_FULFILLED) {
       // success in getting a file upload url
-      if (this.props.cardMode !== CONSTANTS.SHARE_EXTENTION_CARD) {
-        loading = true;
-      }
+      loading = true;
       // Image resizing...
       if (this.selectedFileMimeType.indexOf('image/') !== -1) {
         const width = Math.round(this.selectedFile.width / CONSTANTS.IMAGE_COMPRESS_DIMENSION_RATIO);
@@ -237,14 +240,10 @@ class NewCardScreen extends React.Component {
       this.props.uploadFileToS3(nextProps.card.fileUploadUrl.uploadUrl, this.selectedFile.uri, this.selectedFileName, this.selectedFileMimeType);
     } else if (this.props.card.loading !== types.UPLOAD_FILE_PENDING && nextProps.card.loading === types.UPLOAD_FILE_PENDING) {
       // uploading a file
-      if (this.props.cardMode !== CONSTANTS.SHARE_EXTENTION_CARD) {
-        loading = true;
-      }
+      loading = true;
     } else if (this.props.card.loading !== types.UPLOAD_FILE_FULFILLED && nextProps.card.loading === types.UPLOAD_FILE_FULFILLED) {
       // success in uploading a file
-      if (this.props.cardMode !== CONSTANTS.SHARE_EXTENTION_CARD) {
-        loading = true;
-      }
+      loading = true;
       const {
         id, 
       } = this.props.card.currentCard;
@@ -254,9 +253,7 @@ class NewCardScreen extends React.Component {
       this.props.addFile(id, this.selectedFileType, this.selectedFileMimeType, this.selectedFileName, objectKey);
     } else if (this.props.card.loading !== types.ADD_FILE_PENDING && nextProps.card.loading === types.ADD_FILE_PENDING) {
       // adding a file
-      if (this.props.cardMode !== CONSTANTS.SHARE_EXTENTION_CARD) {
-        loading = true;
-      }
+      loading = true;
     } else if (this.props.card.loading !== types.ADD_FILE_FULFILLED && nextProps.card.loading === types.ADD_FILE_FULFILLED) {
       // success in adding a file
       const {
@@ -308,9 +305,7 @@ class NewCardScreen extends React.Component {
       // success in deleting a link
     } else if (this.props.card.loading !== types.SET_COVER_IMAGE_PENDING && nextProps.card.loading === types.SET_COVER_IMAGE_PENDING) {
       // setting a file as cover image
-      if (this.props.cardMode !== CONSTANTS.SHARE_EXTENTION_CARD) {
-        loading = true;
-      }
+      // loading = true;
     } else if (this.props.card.loading !== types.SET_COVER_IMAGE_FULFILLED && nextProps.card.loading === types.SET_COVER_IMAGE_FULFILLED) {
       this.setState({
         coverImage: nextProps.card.currentCard.coverImage,
