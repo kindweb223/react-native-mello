@@ -50,7 +50,8 @@ export default class CoverImagePreviewComponent extends React.Component {
       );
     }
     return (
-      <TouchableOpacity style={styles.container} onPress={() => this.onPressImage(position)}>
+      // Don't all
+      <TouchableOpacity style={styles.container}>
         <Image style={styles.imageCover} source={{ uri: coverImage }} resizeMode="cover" />
       </TouchableOpacity>
     );
