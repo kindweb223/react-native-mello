@@ -24,7 +24,6 @@ import { Actions } from 'react-native-router-flux'
 import * as R from 'ramda'
 import { find, filter, orderBy } from 'lodash'
 import DeviceInfo from 'react-native-device-info';
-import GestureRecognizer from 'react-native-swipe-gestures'
 
 import Analytics from '../../lib/firebase'
 
@@ -123,7 +122,6 @@ class HomeScreen extends React.Component {
 
     this.currentRef = null;
     this.animatedOpacity = new Animated.Value(0);
-    this.showClipboardTimeout = null;
     this.isInitialized = false;
   }
 
@@ -370,12 +368,6 @@ class HomeScreen extends React.Component {
           isShowClipboardToaster: true,
           copiedUrl: clipboardContent,
         })
-        this.showClipboardTimeout = setTimeout(() => {
-          this.setState({
-            isShowClipboardToaster: false,
-            copiedUrl: '',
-          });
-        }, CONSTANTS.CLIPBOARD_DATA_CONFIRM_DURATION + 500);
       }
     }
   }
@@ -388,15 +380,6 @@ class HomeScreen extends React.Component {
       }  
       this.showClipboardToast();
       this.props.getUserSession()
-    } else {
-      if (this.showClipboardTimeout) {
-        clearTimeout(this.showClipboardTimeout);
-        this.showClipboardTimeout = null;
-        this.setState({
-          isShowClipboardToaster: false,
-          copiedUrl: '',
-        });
-      }
     }
     this.setState({appState: nextAppState});
   }
@@ -756,11 +739,7 @@ class HomeScreen extends React.Component {
   }
 
   onAddClipboardLink = () => {
-    clearTimeout(this.showClipboardTimeout);
-    this.showClipboardTimeout = null;
-    this.setState({
-      isShowClipboardToaster: false,
-    });
+    this.onDismissClipboardToaster();
     this.animatedOpacity.setValue(0);
     Animated.timing(this.animatedOpacity, {
       toValue: 1,
@@ -769,9 +748,7 @@ class HomeScreen extends React.Component {
     this.onSelectNewFeedType('New Card');
   }
 
-  onSwipeToDismissClipboardToaster() {
-    clearTimeout(this.showClipboardTimeout);
-    this.showClipboardTimeout = null;
+  onDismissClipboardToaster() {
     this.setState({
       isShowClipboardToaster: false,
     });
@@ -1267,25 +1244,14 @@ class HomeScreen extends React.Component {
 
         {this.renderCardModal}
 
-        <Modal 
-          isVisible={this.state.isShowClipboardToaster}
-          style={styles.longHoldModalContainer}
-          backdropOpacity={0.3}
-        >
-          <GestureRecognizer
-            style={{width: '100%', height: '100%'}}
-            onSwipeLeft={() => this.onSwipeToDismissClipboardToaster()}
-            onSwipeRight={() => this.onSwipeToDismissClipboardToaster()}
-            onSwipeDown={() => this.onSwipeToDismissClipboardToaster()}
-          >
-            <ClipboardToasterComponent
-              description={this.state.copiedUrl}
-              onPress={() => this.onAddClipboardLink()}
-            />
-          </GestureRecognizer>
-        </Modal>
-
-
+        { 
+          this.state.isShowClipboardToaster && 
+          <ClipboardToasterComponent
+            description={this.state.copiedUrl}
+            onPress={() => this.onAddClipboardLink()}
+            onClose={() => this.onDismissClipboardToaster()}
+          />
+        }
       </SafeAreaView>
     )
   }
