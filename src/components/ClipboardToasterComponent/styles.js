@@ -3,28 +3,42 @@ import CONSTANTS from '../../service/constants'
 
 const styles = StyleSheet.create({
   container: {
+    // backgroundColor: '#696974',
+    // ...Platform.select({
+    //   ios: {
+    //     shadowColor: '#000',
+    //     shadowOffset: { height: 5 },
+    //     shadowOpacity: 0.3,
+    //     shadowRadius: 5
+    //   },
+    //   android: {
+    //     elevation: 20
+    //   }
+    // }),
+    // width: CONSTANTS.SCREEN_SUB_WIDTH,
+    // marginLeft: CONSTANTS.PADDING,
+    // borderRadius: 16,
+    // flexDirection: 'row',
+    // justifyContent: 'space-between',
+    // alignItems: 'center',
+    // position: 'absolute',
+    // bottom: CONSTANTS.ACTION_BAR_HEIGHT,
+    // zIndex: 1,
+    
+    position: 'absolute',
+    bottom: CONSTANTS.ACTION_BAR_HEIGHT,
+    zIndex: 1,
+  },
+  mainContainer: {
     backgroundColor: '#696974',
-    ...Platform.select({
-      ios: {
-        shadowColor: '#000',
-        shadowOffset: { height: 5 },
-        shadowOpacity: 0.3,
-        shadowRadius: 5
-      },
-      android: {
-        elevation: 20
-      }
-    }),
     width: CONSTANTS.SCREEN_SUB_WIDTH,
-    marginLeft: CONSTANTS.PADDING,
+    // marginLeft: CONSTANTS.PADDING,
     borderRadius: 16,
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    position: 'absolute',
-    bottom: CONSTANTS.ACTION_BAR_HEIGHT,
   },
-  mainContainer: {
+  buttonContainer: {
     flex: 1,
     flexDirection: 'row',
     paddingHorizontal: 20,
