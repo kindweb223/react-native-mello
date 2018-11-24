@@ -177,7 +177,7 @@ class NewCardScreen extends React.Component {
     if (this.props.card.loading !== types.CREATE_CARD_PENDING && nextProps.card.loading === types.CREATE_CARD_PENDING) {
       // loading = true;
     } else if (this.props.card.loading !== types.CREATE_CARD_FULFILLED && nextProps.card.loading === types.CREATE_CARD_FULFILLED) {
-      if ((this.props.cardMode === CONSTANTS.SHARE_EXTENTION_CARD || this.props.viewMode === CONSTANTS.CARD_NEW) && this.props.shareUrl !== '') {
+      if (this.props.cardMode === CONSTANTS.SHARE_EXTENTION_CARD && this.props.shareUrl !== '') {
         const openGraph = this.props.card.currentOpneGraph;
         this.setState({
           // cardName: this.props.shareUrl,
@@ -191,6 +191,13 @@ class NewCardScreen extends React.Component {
         const image =  openGraph.image || openGraph.metatags['og:image'] || (this.props.shareImageUrls.length > 0 && this.props.shareImageUrls[0]);
         const favicon =  openGraph.favicon;
         this.props.addLink(id, url, title, description, image, favicon);
+      } else if (this.props.viewMode === CONSTANTS.CARD_NEW) {
+        this.setState({
+          // cardName: this.props.shareUrl,
+          idea: this.props.shareUrl,
+        }, () => {
+          this.checkUrls();
+        });
       } else if (this.props.cardMode === CONSTANTS.SHARE_EXTENTION_CARD && this.isUploadShareImage) {
         this.isUploadShareImage = false;
         this.uploadFile(nextProps.card.currentCard, this.shareImageUrls[this.currentShareImageIndex], 'MEDIA');
