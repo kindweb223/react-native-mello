@@ -53,6 +53,12 @@ export default class CoverImagePreviewComponent extends React.Component {
       // Don't all
       <TouchableOpacity style={styles.container}>
         <Image style={styles.imageCover} source={{ uri: coverImage }} resizeMode="cover" />
+        {
+            files && files.length > 1 &&
+            <View style={styles.imageNumberContainer}>
+              <Text style={styles.textImageNumber}>+{files.length - 1}</Text>
+            </View>
+        }
       </TouchableOpacity>
     );
   }
