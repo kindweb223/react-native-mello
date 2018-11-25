@@ -25,7 +25,7 @@ class ClipboardToasterComponent extends React.Component {
     ).start(() => {
       this.showClipboardTimeout = setTimeout(() => {
         this.showClipboardTimeout = null;
-        this.onSwipeToDismissClipboardToaster();
+        this.closeView(false);
       }, CONSTANTS.CLIPBOARD_DATA_CONFIRM_DURATION);
     })
   }
