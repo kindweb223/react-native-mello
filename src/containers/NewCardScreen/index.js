@@ -225,9 +225,34 @@ class NewCardScreen extends React.Component {
       loading = true;
       // Image resizing...
       if (this.selectedFileMimeType.indexOf('image/') !== -1) {
-        const width = Math.round(this.selectedFile.width / CONSTANTS.IMAGE_COMPRESS_DIMENSION_RATIO);
-        const height = Math.round(this.selectedFile.height / CONSTANTS.IMAGE_COMPRESS_DIMENSION_RATIO)
-        ImageResizer.createResizedImage(this.selectedFile.uri, width, height, CONSTANTS.IMAGE_COMPRESS_FORMAT, CONSTANTS.IMAGE_COMPRESS_QUALITY, 0, null)
+        // https://www.built.io/blog/improving-image-compression-what-we-ve-learned-from-whatsapp
+        let actualHeight = this.selectedFile.height;
+        let actualWidth = this.selectedFile.width;
+        const maxHeight = 600.0;
+        const maxWidth = 800.0;
+        let imgRatio = actualWidth/actualHeight;
+        let maxRatio = maxWidth/maxHeight;
+
+        if (actualHeight > maxHeight || actualWidth > maxWidth) {
+          if(imgRatio < maxRatio){
+              //adjust width according to maxHeight
+              imgRatio = maxHeight / actualHeight;
+              actualWidth = imgRatio * actualWidth;
+              actualHeight = maxHeight;
+          }
+          else if(imgRatio > maxRatio){
+              //adjust height according to maxWidth
+              imgRatio = maxWidth / actualWidth;
+              actualHeight = imgRatio * actualHeight;
+              actualWidth = maxWidth;
+          }
+          else{
+              actualHeight = maxHeight;
+              actualWidth = maxWidth;
+          }
+        }
+
+        ImageResizer.createResizedImage(this.selectedFile.uri, actualWidth, actualHeight, CONSTANTS.IMAGE_COMPRESS_FORMAT, CONSTANTS.IMAGE_COMPRESS_QUALITY, 0, null)
           .then((response) => {
             console.log('Image compress Success!');
             this.props.uploadFileToS3(nextProps.card.fileUploadUrl.uploadUrl, response.uri, this.selectedFileName, this.selectedFileMimeType);
