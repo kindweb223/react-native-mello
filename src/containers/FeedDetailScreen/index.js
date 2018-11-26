@@ -486,7 +486,7 @@ class FeedDetailScreen extends React.Component {
     this.setState({ 
       isShowToaster: true,
       currentActionType: ACTION_FEEDO_PIN,
-      toasterTitle: 'Feed pinned',
+      toasterTitle: 'Flow pinned',
       feedId, pinText: 'Unpin',
     })
 
@@ -507,7 +507,7 @@ class FeedDetailScreen extends React.Component {
     this.setState({ 
       isShowToaster: true,
       currentActionType: ACTION_FEEDO_UNPIN,
-      toasterTitle: 'Feed un-pinned',
+      toasterTitle: 'Flow un-pinned',
       feedId,
       pinText: 'Pin',
     })
@@ -529,7 +529,7 @@ class FeedDetailScreen extends React.Component {
     this.setState({ 
       isShowToaster: true,
       currentActionType: ACTION_FEEDO_DUPLICATE,
-      toasterTitle: 'Feed duplicated',
+      toasterTitle: 'Flow duplicated',
       feedId,
     })
     this.props.duplicateFeed(feedId)
