@@ -24,7 +24,6 @@ import { Actions } from 'react-native-router-flux'
 import * as R from 'ramda'
 import { find, filter, orderBy } from 'lodash'
 import DeviceInfo from 'react-native-device-info';
-import GestureRecognizer from 'react-native-swipe-gestures'
 
 import Analytics from '../../lib/firebase'
 
@@ -118,12 +117,12 @@ class HomeScreen extends React.Component {
       badgeCount: 0,
       isShowClipboardToaster: false,
       copiedUrl: '',
-      listType: 'list'
+      listType: 'list',
     };
 
     this.currentRef = null;
     this.animatedOpacity = new Animated.Value(0);
-    this.showClipboardTimeout = null;
+    this.isInitialized = false;
   }
 
   async componentDidMount() {
@@ -233,6 +232,12 @@ class HomeScreen extends React.Component {
   async componentDidUpdate(prevProps) {
     const { feedo, user } = this.props
     const { feedoList } = feedo
+    if (prevProps.feedo.loading !== 'GET_FEEDO_LIST_FULFILLED' && feedo.loading === 'GET_FEEDO_LIST_FULFILLED') {
+      if (!this.isInitialized) {
+        this.isInitialized = true;
+        this.showClipboardToast();
+      }
+    }
 
     if ((prevProps.feedo.loading !== 'GET_FEEDO_LIST_FULFILLED' && feedo.loading === 'GET_FEEDO_LIST_FULFILLED') ||
         (prevProps.feedo.loading !== 'UPDATE_FEED_FULFILLED' && feedo.loading === 'UPDATE_FEED_FULFILLED') ||
@@ -353,32 +358,30 @@ class HomeScreen extends React.Component {
     AsyncStorage.setItem('BubbleFeedInvitedNewUser', JSON.stringify(data));
   }
 
+  async showClipboardToast() {
+    if (Actions.currentScene !== 'FeedDetailScreen') {
+      const clipboardContent = await Clipboard.getString();
+      const lastClipboardData = await AsyncStorage.getItem(CONSTANTS.CLIPBOARD_DATA)
+      if (clipboardContent !== '' && clipboardContent !== lastClipboardData) {
+        AsyncStorage.setItem(CONSTANTS.CLIPBOARD_DATA, clipboardContent);
+        this.setState({
+          isShowClipboardToaster: true,
+          copiedUrl: clipboardContent,
+        })
+      }
+    }
+  }
+
   onHandleAppStateChange = async(nextAppState) => {
-    this.setState({appState: nextAppState});
-    if (nextAppState === 'active') {
+    if (this.state.appState.match(/inactive|background/) && nextAppState === 'active') {
       appOpened(this.props.user.userInfo.id);
       if (Actions.currentScene === 'HomeScreen') {
         this.props.getFeedoList(this.state.tabIndex);
-      }
-      if (Actions.currentScene !== 'FeedDetailScreen') {
-        const clipboardContent = await Clipboard.getString();
-        const lastClipboardData = await AsyncStorage.getItem(CONSTANTS.CLIPBOARD_DATA)
-        if (clipboardContent !== '' && clipboardContent !== lastClipboardData) {
-          AsyncStorage.setItem(CONSTANTS.CLIPBOARD_DATA, clipboardContent);
-          this.setState({
-            isShowClipboardToaster: true,
-            copiedUrl: clipboardContent,
-          })
-          this.showClipboardTimeout = setTimeout(() => {
-            this.setState({
-              isShowClipboardToaster: false,
-              copiedUrl: '',
-            });
-          }, CONSTANTS.CLIPBOARD_DATA_CONFIRM_DURATION + 500);
-        }
-      }
+      }  
+      this.showClipboardToast();
       this.props.getUserSession()
     }
+    this.setState({appState: nextAppState});
   }
 
   parsePushNotification(notification) {
@@ -736,11 +739,7 @@ class HomeScreen extends React.Component {
   }
 
   onAddClipboardLink = () => {
-    clearTimeout(this.showClipboardTimeout);
-    this.showClipboardTimeout = null;
-    this.setState({
-      isShowClipboardToaster: false,
-    });
+    this.onDismissClipboardToaster();
     this.animatedOpacity.setValue(0);
     Animated.timing(this.animatedOpacity, {
       toValue: 1,
@@ -749,9 +748,7 @@ class HomeScreen extends React.Component {
     this.onSelectNewFeedType('New Card');
   }
 
-  onSwipeToDismissClipboardToaster() {
-    clearTimeout(this.showClipboardTimeout);
-    this.showClipboardTimeout = null;
+  onDismissClipboardToaster() {
     this.setState({
       isShowClipboardToaster: false,
     });
@@ -1247,25 +1244,14 @@ class HomeScreen extends React.Component {
 
         {this.renderCardModal}
 
-        <Modal 
-          isVisible={this.state.isShowClipboardToaster}
-          style={styles.longHoldModalContainer}
-          backdropOpacity={0.3}
-        >
-          <GestureRecognizer
-            style={{width: '100%', height: '100%'}}
-            onSwipeLeft={() => this.onSwipeToDismissClipboardToaster()}
-            onSwipeRight={() => this.onSwipeToDismissClipboardToaster()}
-            onSwipeDown={() => this.onSwipeToDismissClipboardToaster()}
-          >
-            <ClipboardToasterComponent
-              description={this.state.copiedUrl}
-              onPress={() => this.onAddClipboardLink()}
-            />
-          </GestureRecognizer>
-        </Modal>
-
-
+        { 
+          this.state.isShowClipboardToaster && 
+          <ClipboardToasterComponent
+            description={this.state.copiedUrl}
+            onPress={() => this.onAddClipboardLink()}
+            onClose={() => this.onDismissClipboardToaster()}
+          />
+        }
       </SafeAreaView>
     )
   }

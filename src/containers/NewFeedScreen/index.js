@@ -114,7 +114,21 @@ class NewFeedScreen extends React.Component {
       // success in getting a file upload url
       loading = true;
       if (this.selectedFile) {
-        this.props.uploadFileToS3(nextProps.feedo.fileUploadUrl.uploadUrl, this.selectedFile, this.selectedFileName, this.selectedFileMimeType);
+        // Image resizing...
+        if (this.selectedFileMimeType.indexOf('image/') !== -1) {
+          const width = Math.round(this.selectedFile.width / CONSTANTS.IMAGE_COMPRESS_DIMENSION_RATIO);
+          const height = Math.round(this.selectedFile.height / CONSTANTS.IMAGE_COMPRESS_DIMENSION_RATIO)
+          ImageResizer.createResizedImage(this.selectedFile.uri, width, height, CONSTANTS.IMAGE_COMPRESS_FORMAT, CONSTANTS.IMAGE_COMPRESS_QUALITY, 0, null)
+            .then((response) => {
+              console.log('Image compress Success!');
+              this.props.uploadFileToS3(nextProps.feedo.fileUploadUrl.uploadUrl, response.uri, this.selectedFileName, this.selectedFileMimeType);
+            }).catch((error) => {
+              console.log('Image compress error : ', error);
+              this.props.uploadFileToS3(nextProps.feedo.fileUploadUrl.uploadUrl, this.selectedFile.uri, this.selectedFileName, this.selectedFileMimeType);
+            });
+          return;
+        }
+        this.props.uploadFileToS3(nextProps.feedo.fileUploadUrl.uploadUrl, this.selectedFile.uri, this.selectedFileName, this.selectedFileMimeType);
       }
     } else if (this.props.feedo.loading !== types.UPLOAD_FILE_PENDING && nextProps.feedo.loading === types.UPLOAD_FILE_PENDING) {
       // uploading a file
@@ -199,6 +213,7 @@ class NewFeedScreen extends React.Component {
   }
 
   componentDidMount() {
+    console.log('Current Feedo : ', this.props.feedo.currentFeed);
     Animated.timing(this.animatedShow, {
       toValue: 1,
       duration: CONSTANTS.ANIMATEION_MILLI_SECONDS,
@@ -346,7 +361,7 @@ class NewFeedScreen extends React.Component {
   }
   
   uploadFile(file, type) {
-    this.selectedFile = file.uri;
+    this.selectedFile = file;
     this.selectedFileMimeType = mime.lookup(file.uri);
     this.selectedFileName = file.fileName;
     this.selectedFileType = type;
