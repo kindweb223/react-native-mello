@@ -92,8 +92,13 @@ class NotificationScreen extends React.Component {
     const { invitedFeedList, selectedActivity } = this.state
 
     if (this.props.feedo.loading !== 'READ_ACTIVITY_FEED_FULFILLED' && feedo.loading === 'READ_ACTIVITY_FEED_FULFILLED') {
-      if (selectedActivity.activityTypeEnum === 'NEW_IDEA_ADDED') {
-        // this.onSelectCard(selectedActivity)
+      if (!_.isEmpty(selectedActivity)) {
+        console.log('selectedActivity.activityTypeEnum: ', selectedActivity.activityTypeEnum)
+        if(selectedActivity.activityTypeEnum === 'NEW_IDEA_ADDED') {
+          // this.onSelectNewCard(selectedActivity)
+        } else if (selectedActivity.activityTypeEnum === 'NEW_COMMENT_ON_IDEA') {
+          this.onSelectNewComment(selectedActivity)
+        }
       }
     }
 
@@ -241,19 +246,27 @@ class NotificationScreen extends React.Component {
     )
   }
 
-  onSelectCard(idea, index) {
-    let cardViewMode = CONSTANTS.CARD_EDIT
+  // Move to comment screen
+  onSelectNewCommnet(data) {
+    // Actions.CommentScreen({
+    //   idea
+    // });
+  }
 
-    this.setState({
-      isVisibleCard: true,
-      cardViewMode
-    }, () => {
-      this.animatedOpacity.setValue(0);
-      Animated.timing(this.animatedOpacity, {
-        toValue: 1,
-        duration: CONSTANTS.ANIMATEION_MILLI_SECONDS
-      }).start();
-    })
+  // Move to idea detail screen
+  onSelectNewCard(data) {
+    // let cardViewMode = CONSTANTS.CARD_EDIT
+
+    // this.setState({
+    //   isVisibleCard: true,
+    //   cardViewMode
+    // }, () => {
+    //   this.animatedOpacity.setValue(0);
+    //   Animated.timing(this.animatedOpacity, {
+    //     toValue: 1,
+    //     duration: CONSTANTS.ANIMATEION_MILLI_SECONDS
+    //   }).start();
+    // })
   }
 
   onCloseCardModal() {

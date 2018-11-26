@@ -62,7 +62,7 @@ class ActivityFeedComponent extends React.Component {
         target = data.metadata.HUNT_HEADLINE
         break;
       case 'IDEA_DELETED':
-        comment = ' deleted the Card'
+        comment = ' deleted the Card '
         source = data.metadata.IDEA_PREVIEW
         break;
       case 'HUNT_DELETED':
