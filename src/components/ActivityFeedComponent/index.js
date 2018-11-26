@@ -105,7 +105,7 @@ class ActivityFeedComponent extends React.Component {
       <View>
         <View style={styles.titleView}>
           <Text>
-            <Text style={styles.title}>{data.instigatorName}</Text>
+            <Text style={styles.title}>{data.instigatorFirstName} {data.instigatorLastName}</Text>
             {comment}
             <Text style={styles.title}>{source}</Text>
             {link && link}
@@ -115,10 +115,10 @@ class ActivityFeedComponent extends React.Component {
           </Text>
         </View>
         <View style={styles.durationView}>
-          <Text style={[styles.text, data.read === 'true' && styles.readText]}>
+          <Text style={[styles.text, data.read === true && styles.readText]}>
             {getFullDurationFromNow(data.activityTime)}
           </Text>
-          <Entypo name="dot-single" size={15} color={data.read === 'true' ? COLORS.PURPLE : COLORS.DARK_GREY} style={styles.dotIcon} />
+          <Entypo name="dot-single" size={15} color={data.read === true ? COLORS.PURPLE : COLORS.DARK_GREY} style={styles.dotIcon} />
         </View>
       </View>
     )

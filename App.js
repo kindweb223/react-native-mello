@@ -257,7 +257,8 @@ export default class Root extends React.Component {
           </Stack>
           <Stack key="NotificationScreen" hideNavBar>
             <Stack key="NotificationScreen">
-              <Scene key="NotificationScreen" component={ NotificationScreen } navigationBarStyle={styles.defaultNavigationBar} />
+              <Scene key="NotificationScreen" component={ NotificationScreen } hideNavBar />
+              <Scene key="ActivityCommentScreen" component={ CommentScreen } navigationBarStyle={styles.defaultNavigationBar} />
             </Stack>
           </Stack>            
         </Modal>

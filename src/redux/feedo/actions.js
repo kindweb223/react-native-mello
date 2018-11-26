@@ -541,7 +541,7 @@ export const leaveFeed = (feedId) => {
  * Get activity feed
  */
 export const getActivityFeed = (userId, data) => {
-  let url = `http://ec2-34-244-207-99.eu-west-1.compute.amazonaws.com:8091/hunt/api/v1/users/${userId}/activityFeed`
+  let url = `users/${userId}/activityFeed?page=${data.page}&size=${data.size}`
 
   return {
     types: [types.GET_ACTIVITY_FEED_PENDING, types.GET_ACTIVITY_FEED_FULFILLED, types.GET_ACTIVITY_FEED_REJECTED],
@@ -558,7 +558,7 @@ export const getActivityFeed = (userId, data) => {
  * Read all activity feed
  */
 export const readAllActivityFeed = (userId) => {
-  let url = `http://ec2-34-244-207-99.eu-west-1.compute.amazonaws.com:8091/hunt/api/v1/users/${userId}/activityFeed`
+  let url = `users/${userId}/activityFeed`
 
   return {
     types: [types.READ_ALL_ACTIVITY_FEED_PENDING, types.READ_ALL_ACTIVITY_FEED_FULFILLED, types.READ_ALL_ACTIVITY_FEED_REJECTED],
@@ -574,14 +574,19 @@ export const readAllActivityFeed = (userId) => {
  * Read activity feed
  */
 export const readActivityFeed = (userId, activityId) => {
-  let url = `http://ec2-34-244-207-99.eu-west-1.compute.amazonaws.com:8091/hunt/api/v1/users/${userId}/activityFeed/${activityId}`
+  let url = `users/${userId}/activityFeed/${activityId}`
+
+  const data = {
+    read: true
+  }
 
   return {
     types: [types.READ_ACTIVITY_FEED_PENDING, types.READ_ACTIVITY_FEED_FULFILLED, types.READ_ACTIVITY_FEED_REJECTED],
     promise:
       axios({
         method: 'put',
-        url: url
+        url: url,
+        data
       }),
     payload: activityId
   };
@@ -591,7 +596,7 @@ export const readActivityFeed = (userId, activityId) => {
  * Delete activity feed
  */
 export const deleteActivityFeed = (userId, activityId) => {
-  let url = `http://ec2-34-244-207-99.eu-west-1.compute.amazonaws.com:8091/hunt/api/v1/users/${userId}/activityFeed/${activityId}`
+  let url = `users/${userId}/activityFeed/${activityId}`
 
   return {
     types: [types.DEL_ACTIVITY_FEED_PENDING, types.DEL_ACTIVITY_FEED_FULFILLED, types.DEL_ACTIVITY_FEED_REJECTED],

@@ -57,11 +57,19 @@ class LastCommentComponent extends React.Component {
   onAddComment() {
     Analytics.logEvent('edit_card_add_comment', {})
 
-    Actions.CommentScreen({
-      idea: this.props.card.currentCard,
-      guest: COMMON_FUNC.isFeedGuest(this.props.feedo.currentFeed),
-      isShowKeyboard: true,
-    });
+    if (this.props.prevPage === 'activity') {
+      Actions.ActivityCommentScreen({
+        idea: this.props.card.currentCard,
+        guest: COMMON_FUNC.isFeedGuest(this.props.feedo.currentFeed),
+        isShowKeyboard: true,
+      });
+    } else {
+      Actions.CommentScreen({
+        idea: this.props.card.currentCard,
+        guest: COMMON_FUNC.isFeedGuest(this.props.feedo.currentFeed),
+        isShowKeyboard: true,
+      });
+    }
   }
 
   onViewOldComments() {

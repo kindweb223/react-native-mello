@@ -1215,10 +1215,20 @@ export default function feedo(state = initialState, action = {}) {
     case types.GET_ACTIVITY_FEED_FULFILLED: {
       const { data } = action.result
       // console.log('activityFeedList: ', data)
+      let activityFeedList = []
+      if (data.first) {
+        activityFeedList = data.content
+      } else {
+        activityFeedList = [
+          ...state.activityFeedList,
+          ...data.content
+        ]
+      }
+
       return {
         ...state,
         loading: types.GET_ACTIVITY_FEED_FULFILLED,
-        activityFeedList: data.content,
+        activityFeedList,
         activityData: data
       }
     }
@@ -1272,7 +1282,7 @@ export default function feedo(state = initialState, action = {}) {
           ...restActivityFeedList,
           {
             ...currentActivityFeedList[0],
-            read: 'true'
+            read: true
           }
         ]
       }
