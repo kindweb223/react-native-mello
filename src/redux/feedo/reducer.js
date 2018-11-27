@@ -1062,6 +1062,7 @@ export default function feedo(state = initialState, action = {}) {
     case cardTypes.MOVE_CARD_FULFILLED: {
       const { currentFeed, feedoList } = state
       const { ideaId, huntId } = action.payload;
+
       const ideas = filter(currentFeed.ideas, idea => idea.id !== ideaId);
       const movedCard = find(currentFeed.ideas, idea => idea.id === ideaId);
 
@@ -1071,6 +1072,7 @@ export default function feedo(state = initialState, action = {}) {
       if (moveToFeedIndex !== -1) {
         restFeedoList[moveToFeedIndex].ideas.push(movedCard);
       }
+
       return {
         ...state,
         loading: 'MOVE_CARD_FULFILLED',

@@ -15,9 +15,10 @@ const styles = StyleSheet.create({
   },
   buttonWrapper: {
     flexDirection: 'row',
-    alignItems: 'center',
+    alignItems: 'flex-start',
     paddingHorizontal: 10,
     paddingVertical: 5,
+    width: 50
   },
   textTitle: {
     fontSize: 16,

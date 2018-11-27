@@ -9,7 +9,8 @@ import {
   Image,
   ActivityIndicator,
   RefreshControl,
-  Animated
+  Animated,
+  Alert
 } from 'react-native'
 
 import { connect } from 'react-redux'
@@ -18,22 +19,30 @@ import PropTypes from 'prop-types'
 import Swipeout from 'react-native-swipeout'
 import _ from 'lodash'
 import FontAwesome from 'react-native-vector-icons/FontAwesome'
-import LoadingScreen from '../LoadingScreen'
+import Modal from "react-native-modal"
+import ActionSheet from 'react-native-actionsheet'
 
+import LoadingScreen from '../LoadingScreen'
 import Analytics from '../../lib/firebase'
 import NotificationItemComponent from '../../components/NotificationItemComponent'
 import ActivityFeedComponent from '../../components/ActivityFeedComponent'
 import NewCardScreen from '../NewCardScreen'
+import CardControlMenuComponent from '../../components/CardControlMenuComponent'
+import SelectHuntScreen from '../SelectHuntScreen';
+import ToasterComponent from '../../components/ToasterComponent'
 
 import {
   getFeedDetail,
   getActivityFeed,
   readActivityFeed,
   deleteActivityFeed,
-  readAllActivityFeed
+  readAllActivityFeed,
+  setCurrentFeed
 } from '../../redux/feedo/actions'
 import {
-  getCard
+  getCard,
+  moveCard,
+  deleteCard
 } from '../../redux/card/actions'
 
 import COLORS from '../../service/colors'
@@ -42,7 +51,17 @@ import styles from './styles'
 
 const CLOSE_ICON = require('../../../assets/images/Close/Blue.png')
 
-const PAGE_COUNT = 5
+const PAGE_COUNT = 10
+
+const TOASTER_DURATION = 5000
+
+const ACTION_NONE = 0;
+const ACTION_FEEDO_PIN = 1;
+const ACTION_FEEDO_UNPIN = 2;
+const ACTION_FEEDO_DUPLICATE = 3;
+const ACTION_CARD_MOVE = 4;
+const ACTION_CARD_EDIT = 5;
+const ACTION_CARD_DELETE = 6;
 
 class NotificationScreen extends React.Component {
   get renderHeader() {
@@ -68,9 +87,17 @@ class NotificationScreen extends React.Component {
       notificationList: [],
       selectedActivity: {},
       isVisibleCard: false,
-      cardViewMode: CONSTANTS.CARD_NONE
+      cardViewMode: CONSTANTS.CARD_NONE,
+      isVisibleCardOpenMenu: false,
+      selectedLongHoldIdea: {},
+      isShowToaster: false,
+      isVisibleSelectFeedo: false,
+      apiLoading: false
     };
     this.animatedOpacity = new Animated.Value(0)
+    this.userActions = []
+    this.userActionTimer = null
+    this.prevFeedo = null
   }
 
   componentDidMount() {
@@ -106,7 +133,11 @@ class NotificationScreen extends React.Component {
     }
 
     if (this.props.feedo.loading !== 'GET_FEED_DETAIL_FULFILLED' && feedo.loading === 'GET_FEED_DETAIL_FULFILLED') {
-      this.props.getCard(selectedActivity.metadata.IDEA_ID)
+      this.prevFeedo = feedo.currentFeed;
+      const ideaIndex = _.findIndex(feedo.currentFeed.ideas, idea => idea.id === selectedActivity.metadata.IDEA_ID)
+      if (ideaIndex !== -1) {
+        this.props.getCard(selectedActivity.metadata.IDEA_ID)
+      }
     }
 
     if (this.props.card.loading !== 'GET_CARD_FULFILLED' && card.loading === 'GET_CARD_FULFILLED') {
@@ -120,9 +151,16 @@ class NotificationScreen extends React.Component {
       })
     }
 
+    if (this.props.card.loading !== 'GET_CARD_REJECTED' && card.loading === 'GET_CARD_REJECTED') {
+      if (card.error.code === 'error.idea.not.found') {
+        Alert.alert('Error', card.error.message)
+      }
+    }
+
     if ((this.props.feedo.loading !== 'GET_ACTIVITY_FEED_FULFILLED' && feedo.loading === 'GET_ACTIVITY_FEED_FULFILLED') ||
         (this.props.feedo.loading !== 'READ_ACTIVITY_FEED_FULFILLED' && feedo.loading === 'READ_ACTIVITY_FEED_FULFILLED') ||
-        (this.props.feedo.loading !== 'DEL_ACTIVITY_FEED_FULFILLED' && feedo.loading === 'DEL_ACTIVITY_FEED_FULFILLED')) {
+        (this.props.feedo.loading !== 'DEL_ACTIVITY_FEED_FULFILLED' && feedo.loading === 'DEL_ACTIVITY_FEED_FULFILLED'))
+    {
       if (this.state.initialLoading) {
         this.setState({ initialLoading: false })
       }
@@ -200,6 +238,36 @@ class NotificationScreen extends React.Component {
     );
   }
 
+  // Move to comment screen
+  onSelectNewComment(data) {
+    Actions.ActivityCommentScreen({
+      idea: { id: data.metadata.IDEA_ID },
+      prevPage: 'activity',
+      instigatorData: {
+        id: data.instigatorId,
+        firstName: data.instigatorFirstName,
+        lastName: data.instigatorLastName,
+        imageUrl: data.instigatorPic
+      }
+    });
+  }
+
+  // Move to idea detail screen
+  onSelectNewCard() {
+    let cardViewMode = CONSTANTS.CARD_EDIT
+
+    this.setState({
+      isVisibleCard: true,
+      cardViewMode
+    }, () => {
+      this.animatedOpacity.setValue(0);
+      Animated.timing(this.animatedOpacity, {
+        toValue: 1,
+        duration: CONSTANTS.ANIMATEION_MILLI_SECONDS
+      }).start();
+    })
+  }
+
   handleRefresh = () => {
     this.setState({ refreshing: true }, () => {
       this.getActivityFeedList(0, PAGE_COUNT)
@@ -265,46 +333,214 @@ class NotificationScreen extends React.Component {
                 size="large"
               />
             }
-            onEndReached={() => this.handleLoadMore()}
+            onEndReached={this.handleLoadMore}
             onEndReachedThreshold={0}
           />
 
           {initialLoading && <LoadingScreen />}
 
           {this.renderCardDetailModal}
+
+          {this.renderSelectHunt}
+
+          <Modal 
+            isVisible={this.state.isVisibleCardOpenMenu}
+            style={{ margin: 0 }}
+            backdropColor='#fff'
+            backdropOpacity={0}
+            animationIn="fadeIn"
+            animationOut="fadeOut"
+            animationInTiming={500}
+            onModalHide={this.onHiddenLongHoldMenu.bind(this)}
+            onBackdropPress={() => this.setState({ isVisibleCardOpenMenu: false })}
+          >
+            <Animated.View style={styles.settingMenuView}>
+              <CardControlMenuComponent 
+                onMove={() => this.onMoveCard(this.state.selectedActivity.metadata.IDEA_ID)}
+                onDelete={() => this.onConfirmDeleteCard()}
+              />
+            </Animated.View>
+          </Modal>
+
+          <ActionSheet
+            ref={ref => this.cardActionSheet = ref}
+            title={'This will permanentely delete your card'}
+            options={['Delete card', 'Cancel']}
+            cancelButtonIndex={1}
+            destructiveButtonIndex={0}
+            tintColor={COLORS.PURPLE}
+            onPress={(index) => this.onTapCardActionSheet(index)}
+          />
+
+          {this.state.isShowToaster && (
+            <ToasterComponent
+              isVisible={this.state.isShowToaster}
+              title={this.state.toasterTitle}
+              onPressButton={() => this.undoAction()}
+            />
+          )}
+
         </SafeAreaView>
       </View>
     )
   }
 
-  // Move to comment screen
-  onSelectNewComment(data) {
-    Actions.ActivityCommentScreen({
-      idea: { id: data.metadata.IDEA_ID },
-      prevPage: 'activity',
-      instigatorData: {
-        id: data.instigatorId,
-        firstName: data.instigatorFirstName,
-        lastName: data.instigatorLastName,
-        imageUrl: data.instigatorPic
+  processCardActions() {
+    if (this.userActionTimer) {
+      return;
+    }
+
+    if (this.userActions.length === 0) {
+      this.setState({
+        isShowToaster: false, 
+        currentActionType: ACTION_NONE,
+      });
+      return;
+    }
+
+    const currentCardInfo = this.userActions[0];
+    this.setState({ 
+      currentActionType: currentCardInfo.currentActionType,
+      isShowToaster: true,
+      toasterTitle: currentCardInfo.toasterTitle,
+    });
+
+    this.userActionTimer = setTimeout(() => {
+      // this.setState({ isShowToaster: false })
+      if (this.state.currentActionType === ACTION_CARD_DELETE) {
+        Analytics.logEvent('feed_detail_delete_card', {})
+        this.props.deleteCard(currentCardInfo.ideaId)
+      } else if (this.state.currentActionType === ACTION_CARD_MOVE) {
+        Analytics.logEvent('feed_detail_move_card', {})
+        this.props.moveCard(currentCardInfo.ideaId, currentCardInfo.feedoId);
       }
+      this.userActionTimer = null;
+      this.userActions.shift();
+      this.processCardActions();
+    }, TOASTER_DURATION + 5);
+  }
+
+  undoAction = () => {
+    if (this.state.currentActionType === ACTION_CARD_DELETE || this.state.currentActionType === ACTION_CARD_MOVE) {
+      clearTimeout(this.userActionTimer);
+      this.userActionTimer = null;
+      this.userActions.shift();
+
+      this.setState((state) => { 
+        let filterIdeas = this.props.feedo.currentFeed.ideas;
+        for(let i = 0; i < this.userActions.length; i ++) {
+          const cardInfo = this.userActions[i];
+          filterIdeas = _.filter(filterIdeas, idea => idea.id !== cardInfo.ideaId)
+        }
+        state.currentFeed.ideas = filterIdeas;
+        return state;
+      })
+  
+      this.processCardActions();
+      return;
+    }
+
+    this.setState({
+      isShowToaster: false, 
+      currentActionType: ACTION_NONE,
+    })
+  }
+
+  onTapCardActionSheet(index) {
+    if (index === 0) {
+      this.onDeleteCard(this.state.selectedActivity.metadata.IDEA_ID)
+    }
+  }
+
+  onConfirmDeleteCard() {
+    this.setState({
+      isVisibleCardOpenMenu: false,
+    })
+    setTimeout(() => {
+      this.cardActionSheet.show()
+    }, 500)
+  }
+
+  onDeleteCard(ideaId) {
+    this.onCloseCardModal();
+    this.setState({
+      isShowToaster: true
+    });
+
+    const cardInfo = {};
+    cardInfo.currentActionType = ACTION_CARD_DELETE;
+    cardInfo.toasterTitle = 'Card deleted';
+    cardInfo.ideaId = ideaId;
+    this.userActions.push(cardInfo);
+
+    this.processCardActions();
+  }
+
+  onMoveCard(ideaId) {
+    this.setState({ 
+      isVisibleCardOpenMenu: false,
+      currentActionType: ACTION_CARD_MOVE,
+    });
+    this.moveCardId = ideaId;
+  }
+
+  onSelectFeedoToMoveCard(feedoId) {
+    this.onCloseCardModal();
+
+    this.setState({
+      isVisibleSelectFeedo: false,
+      isShowToaster: true,
+    });
+
+    const cardInfo = {};
+    cardInfo.currentActionType = ACTION_CARD_MOVE;
+    cardInfo.toasterTitle = 'Card moved';
+    cardInfo.ideaId = this.moveCardId;
+    cardInfo.feedoId = feedoId;
+    this.userActions.push(cardInfo);
+
+    this.processCardActions();
+    this.moveCardId = null;
+  }
+
+  onCloseSelectFeedoModal() {
+    if (this.prevFeedo.id !== this.props.feedo.currentFeed.id) {
+      const moveToFeedo = this.props.feedo.currentFeed;
+      this.props.setCurrentFeed(this.prevFeedo);
+
+      if (moveToFeedo.id) {
+        this.onSelectFeedoToMoveCard(moveToFeedo.id);
+        return;
+      }
+    }
+    this.prevFeedo = null;
+    this.setState({
+      isVisibleSelectFeedo: false,
+      currentActionType: ACTION_NONE,
     });
   }
 
-  // Move to idea detail screen
-  onSelectNewCard() {
-    let cardViewMode = CONSTANTS.CARD_EDIT
+  get renderSelectHunt() {
+    if (this.state.isVisibleSelectFeedo) {
+      return (
+        <View style={[styles.modalContainer, {backgroundColor: 'transparent'}]}>
+          <SelectHuntScreen
+            selectMode={CONSTANTS.FEEDO_SELECT_FROM_MOVE_CARD}
+            hiddenFeedoId={this.prevFeedo.id}
+            direction='top'
+            onClosed={() => this.onCloseSelectFeedoModal()}
+          />
+        </View>
+      );
+    }
+  }
 
-    this.setState({
-      isVisibleCard: true,
-      cardViewMode
-    }, () => {
-      this.animatedOpacity.setValue(0);
-      Animated.timing(this.animatedOpacity, {
-        toValue: 1,
-        duration: CONSTANTS.ANIMATEION_MILLI_SECONDS
-      }).start();
-    })
+  onHiddenLongHoldMenu() {
+    if (this.state.currentActionType === ACTION_CARD_MOVE) {
+      this.setState({
+        isVisibleSelectFeedo: true,
+      });
+    }
   }
 
   onCloseCardModal() {
@@ -318,6 +554,13 @@ class NotificationScreen extends React.Component {
         cardViewMode: CONSTANTS.CARD_NONE,
       });
     });
+  }
+
+  onOpenCardAction(idea) {
+    this.setState({
+      isVisibleCardOpenMenu: true,
+      selectedLongHoldIdea: idea,
+    })
   }
 
   get renderCardDetailModal() {
@@ -339,7 +582,7 @@ class NotificationScreen extends React.Component {
             invitee={this.state.selectedIdeaInvitee}
             shareUrl=""
             onClose={() => this.onCloseCardModal()}
-            onOpenAction={(idea) => {}}
+            onOpenAction={(idea) => this.onOpenCardAction(idea)}
           />
         }
       </Animated.View>
@@ -359,7 +602,10 @@ const mapDispatchToProps = dispatch => ({
   readActivityFeed: (userId, activityId) => dispatch(readActivityFeed(userId, activityId)),
   deleteActivityFeed: (userId, activityId) => dispatch(deleteActivityFeed(userId, activityId)),
   getFeedDetail: (feedId) => dispatch(getFeedDetail(feedId)),
-  getCard: (ideaId) => dispatch(getCard(ideaId))
+  getCard: (ideaId) => dispatch(getCard(ideaId)),
+  moveCard: (ideaId, huntId) => dispatch(moveCard(ideaId, huntId)),
+  deleteCard: (ideaId) => dispatch(deleteCard(ideaId)),
+  setCurrentFeed: (data) => dispatch(setCurrentFeed(data))
 })
 
 NotificationScreen.propTypes = {
