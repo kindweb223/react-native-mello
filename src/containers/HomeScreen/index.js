@@ -583,7 +583,7 @@ class HomeScreen extends React.Component {
 
   handleArchiveFeed = (feedId) => {
     this.setState({ isLongHoldMenuVisible: false })
-    this.setState({ isArchive: true, toasterTitle: 'Mello archived', feedId })
+    this.setState({ isArchive: true, toasterTitle: 'Flow archived', feedId })
     this.props.addDummyFeed({ feedId, flag: 'archive' })
 
     setTimeout(() => {
@@ -603,7 +603,7 @@ class HomeScreen extends React.Component {
 
   handleDeleteFeed = (feedId) => {
     this.setState({ isLongHoldMenuVisible: false })
-    this.setState({ isDelete: true, toasterTitle: 'Mello deleted', feedId })
+    this.setState({ isDelete: true, toasterTitle: 'Flow deleted', feedId })
     this.props.addDummyFeed({ feedId, flag: 'delete' })
 
     setTimeout(() => {
@@ -645,7 +645,7 @@ class HomeScreen extends React.Component {
 
   handlePinFeed = (feedId) => {
     this.setState({ isLongHoldMenuVisible: false })
-    this.setState({ isPin: true, toasterTitle: 'Feed pinned', feedId })
+    this.setState({ isPin: true, toasterTitle: 'Flow pinned', feedId })
 
     this.pinFeed(feedId)
 
@@ -662,7 +662,7 @@ class HomeScreen extends React.Component {
 
   handleUnpinFeed = (feedId) => {
     this.setState({ isLongHoldMenuVisible: false })
-    this.setState({ isUnPin: true, toasterTitle: 'Feed un-pinned', feedId })
+    this.setState({ isUnPin: true, toasterTitle: 'Flow un-pinned', feedId })
 
     this.unpinFeed(feedId)
 
@@ -679,7 +679,7 @@ class HomeScreen extends React.Component {
 
   handleDuplicateFeed = (feedId) => {
     this.setState({ isLongHoldMenuVisible: false })
-    this.setState({ isDuplicate: true, toasterTitle: 'Feed duplicated', feedId })
+    this.setState({ isDuplicate: true, toasterTitle: 'Flow duplicated', feedId })
     this.props.duplicateFeed(feedId)
 
     setTimeout(() => {

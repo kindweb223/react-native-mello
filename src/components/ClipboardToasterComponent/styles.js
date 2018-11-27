@@ -27,12 +27,12 @@ const styles = StyleSheet.create({
     
     position: 'absolute',
     bottom: CONSTANTS.ACTION_BAR_HEIGHT,
+    padding: CONSTANTS.PADDING,
     zIndex: 1,
   },
   mainContainer: {
     backgroundColor: '#696974',
     width: CONSTANTS.SCREEN_SUB_WIDTH,
-    // marginLeft: CONSTANTS.PADDING,
     borderRadius: 16,
     flexDirection: 'row',
     justifyContent: 'space-between',

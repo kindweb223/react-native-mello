@@ -1,31 +1,70 @@
 import React from 'react'
-import { View, Text, TouchableOpacity, Animated, ScrollView } from 'react-native'
+import { View, Text, Animated, PanResponder } from 'react-native'
 import PropTypes from 'prop-types'
 import Ionicons from 'react-native-vector-icons/Ionicons'
-import GestureRecognizer, {swipeDirections} from 'react-native-swipe-gestures'
 
-import CONSTANTS from '../../service/constants';
 import styles from './styles'
+import CONSTANTS from '../../service/constants';
+const CloseVelocity = 4;
+const SelectDelta = 2;
 
 
 class ClipboardToasterComponent extends React.Component {
   constructor(props) {
     super(props);
     
-    this.fadeAnimate = new Animated.Value(0),
+    this.animatedFade = new Animated.Value(0),
+    this.animatedMoveX = new Animated.Value(0),
     this.showClipboardTimeout = null;
+    this.isClosed = false;
+
+    this._panResponder = PanResponder.create({
+      onStartShouldSetPanResponder: (evt, gestureState) => true,
+      onStartShouldSetPanResponderCapture: (evt, gestureState) => true,
+      onMoveShouldSetPanResponder: (evt, gestureState) => true,
+      onMoveShouldSetPanResponderCapture: (evt, gestureState) => true,
+      onPanResponderGrant: (evt, gestureState) => {
+        this.isClosed = false;
+      },
+      onPanResponderMove: (evt, gestureState) => {
+        if (Math.abs(gestureState.vx) > CloseVelocity) {
+          this.isClosed = true;
+          this.closeView(false);
+        } else {
+          this.animatedMoveX.setValue(gestureState.moveX - gestureState.x0);
+        }
+      },
+      onPanResponderTerminationRequest: (evt, gestureState) => true,
+      onPanResponderRelease: (evt, gestureState) => {
+        if (Math.abs(gestureState.dx) < SelectDelta) {
+          this.onSelect();
+        } else if (this.isClosed == false) {
+          Animated.timing(
+            this.animatedMoveX, {
+              toValue: 0,
+              duration: Math.abs(gestureState.moveX - gestureState.x0),
+            }
+          ).start();
+        }
+      },
+      onPanResponderTerminate: (evt, gestureState) => {
+      },
+      onShouldBlockNativeResponder: (evt, gestureState) => {
+        return true;
+      },
+    });
   }
 
   componentDidMount() {
     Animated.timing(
-      this.fadeAnimate, {
+      this.animatedFade, {
         toValue: 1,
         duration: 750
       }
     ).start(() => {
       this.showClipboardTimeout = setTimeout(() => {
         this.showClipboardTimeout = null;
-        this.onSwipeToDismissClipboardToaster();
+        this.closeView(false);
       }, CONSTANTS.CLIPBOARD_DATA_CONFIRM_DURATION);
     })
   }
@@ -41,17 +80,10 @@ class ClipboardToasterComponent extends React.Component {
     this.closeView(true);
   }
 
-  onSwipeToDismissClipboardToaster(direction, state) {
-    const {SWIPE_LEFT, SWIPE_RIGHT} = swipeDirections;
-    if (direction === SWIPE_LEFT || direction === SWIPE_RIGHT) {
-      this.closeView(false);
-    }
-  }
-
   closeView(isSelect=true) {
-    this.fadeAnimate.setValue(1);
+    this.animatedFade.setValue(1);
     Animated.timing(
-      this.fadeAnimate, {
+      this.animatedFade, {
         toValue: 0,
         duration: 750
       }
@@ -71,30 +103,23 @@ class ClipboardToasterComponent extends React.Component {
   render() {
     const { title, description } = this.props
     return (
-      <Animated.ScrollView
-        style={[styles.container, { opacity: this.fadeAnimate }]}
-        contentContainerStyle={{padding: CONSTANTS.PADDING}}
-        horizontal={true}
-      >
-        <Animated.View style={styles.mainContainer}>
-          <GestureRecognizer
-            style={{width: '100%', height: '100%'}}
-            onSwipe={(direction, state) => this.onSwipeToDismissClipboardToaster(direction, state)}
-          >
-            <TouchableOpacity
-              style={styles.buttonContainer}
-              activeOpacity={0.6}
-              onPress={() => this.onSelect()}
-            >
-              <Ionicons name="md-add" size={28} color={'#FFFFFF'} />
-              <View style={styles.textsContainer}>
-                <Text style={styles.textTitle} numberOfLines={1}>{title}</Text>
-                <Text style={styles.textDescription} numberOfLines={1}>{description}</Text>
-              </View>
-            </TouchableOpacity>
-          </GestureRecognizer>
+      <Animated.View style={[styles.container, { opacity: this.animatedFade }]}>
+        <Animated.View
+          style={[
+            styles.mainContainer,
+            { transform: [{ translateX: this.animatedMoveX }]}
+          ]}
+          {...this._panResponder.panHandlers}
+        >
+          <View style={styles.buttonContainer}>
+            <Ionicons name="md-add" size={28} color={'#FFFFFF'} />
+            <View style={styles.textsContainer}>
+              <Text style={styles.textTitle} numberOfLines={1}>{title}</Text>
+              <Text style={styles.textDescription} numberOfLines={1}>{description}</Text>
+            </View>
+          </View>
         </Animated.View>
-      </Animated.ScrollView>
+      </Animated.View>
     )
   }
 }
