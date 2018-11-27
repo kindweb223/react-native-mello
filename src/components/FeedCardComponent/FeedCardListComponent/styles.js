@@ -4,20 +4,27 @@ import CONSTANTS from '../../../service/constants'
 
 const styles = StyleSheet.create({
   container: {
+    width: '100%',
+    paddingHorizontal: 11
+  },
+  subContainer: {
+    width: '100%',
     flexDirection: 'row',
     justifyContent: 'center',
-    paddingTop: 16,
-    paddingBottom: 17,
-    paddingHorizontal: 11,
+    marginVertical: 8,
+    paddingVertical: 13,
+    paddingRight: 10,
     borderRadius: 18,
-    backgroundColor: COLORS.LIGHT_GREY_PLACEHOLDER
+    backgroundColor: COLORS.SOFT_GREY
   },
   leftContainer: {
-    flex: 1
+    flex: 1,
+    justifyContent: 'space-between'
   },
   title: {
-   fontSize: 16,
-   lineHeight: 22,
+   fontSize: 15,
+   lineHeight: 19,
+   fontWeight: '500'
   },
   greyTitle: {
     fontSize: 16,
@@ -27,7 +34,8 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'flex-start',
     alignItems: 'center',
-    marginLeft: 10
+    marginLeft: 12,
+    marginBottom: 5
   },
   avatar: {
     marginRight: 10,
@@ -35,7 +43,7 @@ const styles = StyleSheet.create({
   text: {
     fontSize: 14,
     color: COLORS.MEDIUM_GREY,
-    lineHeight: 21,
+    lineHeight: 19,
     marginRight: 5 
   },
   dotIcon: {
@@ -48,7 +56,8 @@ const styles = StyleSheet.create({
   thumbnailsView: {
     width: '100%',
     width: 78,
-    height: 78
+    height: 78,
+    marginLeft: 10
   },
   thumbnails: {
     width: '100%',

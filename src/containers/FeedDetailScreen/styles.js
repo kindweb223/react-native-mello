@@ -74,7 +74,7 @@ const styles = StyleSheet.create({
   },
   collapseView: {
     width: '100%',
-    marginBottom: 30,
+    marginBottom: 25,
     paddingTop: 0,
     backgroundColor: '#fff',
     zIndex: 11
@@ -83,7 +83,7 @@ const styles = StyleSheet.create({
     marginTop: 16
   },
   detailView: {
-    paddingTop: 10,
+    paddingTop: 15,
     paddingBottom: Platform.OS === 'ios' ? ifIphoneX(120, 10) : 10
   },
   modalContainer: {

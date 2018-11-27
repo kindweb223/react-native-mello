@@ -1199,14 +1199,10 @@ class FeedDetailScreen extends React.Component {
                           }
                         }
                       >
-                        {currentFeed.ideas.length > 0 && index === 0 && (
-                          <View style={styles.separator} />
-                        )}
-
                         <TouchableHighlight
                           ref={ref => this.cardItemRefs[index] = ref}
                           style={{ marginHorizontal: 5, borderRadius: 5 }}
-                          underlayColor={COLORS.LIGHT_GREY}
+                          underlayColor="#fff"
                           onPress={() => this.onSelectCard(item, index)}
                           onLongPress={() => this.onLongPressCard(index, item, currentFeed.invitees)}
                         >
@@ -1218,10 +1214,6 @@ class FeedDetailScreen extends React.Component {
                             onLinkLongPress={() => this.onLongPressCard(index, item, currentFeed.invitees)}
                           />
                         </TouchableHighlight>
-
-                        {currentFeed.ideas.length > 0 && (
-                          <View style={styles.separator} />
-                        )}
                       </Animated.View>
                     ))
                   : 
@@ -1363,6 +1355,7 @@ class FeedDetailScreen extends React.Component {
           onBackdropPress={() => this.setState({isVisibleLongHoldMenu: false})}
         >
           <CardLongHoldMenuScreen
+            listType={this.state.listType}
             idea={this.state.selectedLongHoldIdea}
             invitees={this.state.selectedLongHoldInvitees}
             onMove={this.onMoveCard.bind(this)}

@@ -54,12 +54,13 @@ class CardLongHoldMenuScreen extends React.Component {
   }
 
   render () {
-    const { idea, invitees } = this.props
+    const { idea, invitees, listType } = this.props
     return [
       <View key='0' style={styles.cardContainer}>
         <FeedCardComponent 
-          idea={idea} 
+          idea={idea}
           invitees={invitees}
+          listType={listType}
           onComment={this.onClose.bind(this)}
         />
       </View>,
