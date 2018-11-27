@@ -118,7 +118,8 @@ class HomeScreen extends React.Component {
       invitedFeedList: [],
       badgeCount: 0,
       isShowClipboardToaster: false,
-      copiedUrl: '',
+      tmpClipboardData: '',
+      clipboardData: '',
       listType: 'list',
     };
 
@@ -299,7 +300,8 @@ class HomeScreen extends React.Component {
         isVisibleCard: true,
         cardViewMode: CONSTANTS.CARD_VIEW,
         selectedIdeaInvitee: invitee,
-        copiedUrl: '',
+        tmpClipboardData: '',
+        clipboardData: '',
       });
       this.animatedOpacity.setValue(0);
       Animated.timing(this.animatedOpacity, {
@@ -371,7 +373,7 @@ class HomeScreen extends React.Component {
         AsyncStorage.setItem(CONSTANTS.CLIPBOARD_DATA, clipboardContent);
         this.setState({
           isShowClipboardToaster: true,
-          copiedUrl: clipboardContent,
+          tmpClipboardData: clipboardContent,
         })
       }
     }
@@ -744,7 +746,11 @@ class HomeScreen extends React.Component {
   }
 
   onAddClipboardLink = () => {
-    this.onDismissClipboardToaster();
+    this.setState({
+      clipboardData: this.state.tmpClipboardData,
+      isShowClipboardToaster: false,
+    });
+
     this.animatedOpacity.setValue(0);
     Animated.timing(this.animatedOpacity, {
       toValue: 1,
@@ -932,7 +938,8 @@ class HomeScreen extends React.Component {
     }).start(() => {
       this.setState({ 
         isVisibleCard: false,
-        copiedUrl: '',
+        tmpClipboardData: '',
+        clipboardData: '',
       });
     });
   }
@@ -956,7 +963,7 @@ class HomeScreen extends React.Component {
           viewMode={this.state.cardViewMode}
           cardMode={cardMode}
           invitee={this.state.selectedIdeaInvitee}
-          shareUrl={this.state.copiedUrl}
+          shareUrl={this.state.clipboardData}
           onClose={() => this.onCloseCardModal()}
 
           // cardMode={CONSTANTS.SHARE_EXTENTION_CARD}
@@ -1251,7 +1258,7 @@ class HomeScreen extends React.Component {
         { 
           this.state.isShowClipboardToaster && 
           <ClipboardToasterComponent
-            description={this.state.copiedUrl}
+            description={this.state.tmpClipboardData}
             onPress={() => this.onAddClipboardLink()}
             onClose={() => this.onDismissClipboardToaster()}
           />

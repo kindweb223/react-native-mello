@@ -133,7 +133,8 @@ class FeedDetailScreen extends React.Component {
       isRefreshing: false,
       avatars: [],
       isShowClipboardToaster: false,
-      copiedUrl: '',
+      tmpClipboardData: '',
+      clipboardData: '',
       appState: AppState.currentState
     };
     this.animatedOpacity = new Animated.Value(0)
@@ -276,7 +277,7 @@ class FeedDetailScreen extends React.Component {
           AsyncStorage.setItem(CONSTANTS.CLIPBOARD_DATA, clipboardContent);
           this.setState({
             isShowClipboardToaster: true,
-            copiedUrl: clipboardContent,
+            tmpClipboardData: clipboardContent,
           })
         }
       }
@@ -286,7 +287,11 @@ class FeedDetailScreen extends React.Component {
   }
 
   onAddClipboardLink = () => {
-    this.onDismissClipboardToaster();
+    this.setState({
+      clipboardData: this.state.tmpClipboardData,
+      isShowClipboardToaster: false,
+    });
+    
     this.onOpenNewCardModal();
   }
 
@@ -634,7 +639,8 @@ class FeedDetailScreen extends React.Component {
     }).start(() => {
       this.setState({ 
         isVisibleCard: false,
-        copiedUrl: '',
+        clipboardData: '',
+        tmpClipboardData: '',
         cardViewMode: CONSTANTS.CARD_NONE,
       });
     });
@@ -659,7 +665,8 @@ class FeedDetailScreen extends React.Component {
     this.cardItemRefs[index].measure((ox, oy, width, height, px, py) => {
       this.setState({
         isVisibleCard: true,
-        copiedUrl: '',
+        clipboardData: '',
+        tmpClipboardData: '',
         cardViewMode,
         selectedIdeaInvitee: invitee,
         selectedIdeaLayout: { ox, oy, width, height, px, py },
@@ -879,7 +886,7 @@ class FeedDetailScreen extends React.Component {
               viewMode={this.state.cardViewMode}
               invitee={this.state.selectedIdeaInvitee}
               intialLayout={this.state.selectedIdeaLayout}
-              shareUrl={this.state.copiedUrl}
+              shareUrl={this.state.clipboardData}
               onClose={() => this.onCloseCardModal()}
               onOpenAction={(idea) => this.onOpenCardAction(idea)}
 
@@ -1389,7 +1396,7 @@ class FeedDetailScreen extends React.Component {
         { 
           this.state.isShowClipboardToaster && 
           <ClipboardToasterComponent
-            description={this.state.copiedUrl}
+            description={this.state.tmpClipboardData}
             onPress={() => this.onAddClipboardLink()}
             onClose={() => this.onDismissClipboardToaster()}
           />
