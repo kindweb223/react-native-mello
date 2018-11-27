@@ -59,7 +59,8 @@ import {
   setFeedDetailAction,
   setCurrentFeed,
   deleteInvitee,
-  getInvitedFeedList
+  getInvitedFeedList,
+  getActivityFeed
 } from '../../redux/feedo/actions'
 
 import { 
@@ -83,6 +84,7 @@ const TAB_STYLES = {
 }
 
 const TOASTER_DURATION = 5000
+const PAGE_COUNT = 10
 
 class HomeScreen extends React.Component {
   constructor(props) {
@@ -135,6 +137,9 @@ class HomeScreen extends React.Component {
     this.registerPushNotification();
     this.props.getFeedoList(this.state.tabIndex)
     this.props.getInvitedFeedList()
+
+    this.props.getActivityFeed(this.props.user.userInfo.id, { page: 0, size: PAGE_COUNT })
+
     AppState.addEventListener('change', this.onHandleAppStateChange.bind(this));
     appOpened(this.props.user.userInfo.id);
   }
@@ -872,7 +877,6 @@ class HomeScreen extends React.Component {
   }
 
   handleList = () => {
-    console.log('aaaaaaa')
     const { listType } = this.state
     this.setState({ listType: listType === 'list' ? 'thumbnail' : 'list' })
   }
@@ -1281,7 +1285,8 @@ const mapDispatchToProps = dispatch => ({
   getCard: (ideaId) => dispatch(getCard(ideaId)),
   deleteInvitee: (feedId, inviteeId) => dispatch(deleteInvitee(feedId, inviteeId)),
   getInvitedFeedList: () => dispatch(getInvitedFeedList()),
-  getUserSession: () => dispatch(getUserSession())
+  getUserSession: () => dispatch(getUserSession()),
+  getActivityFeed: (userId, param) => dispatch(getActivityFeed(userId, param))
 })
 
 HomeScreen.propTypes = {

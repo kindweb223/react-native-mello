@@ -3,6 +3,7 @@ import * as types from './types'
 import * as cardTypes from '../card/types'
 import { filter, find, findIndex, isEmpty } from 'lodash'
 import resolveError from './../../service/resolveError'
+import { restoreArchiveFeed } from './actions';
 
 const initialState = {
   loading: null,
@@ -16,7 +17,9 @@ const initialState = {
   fileUploadUrl: {},
   userTags: [],
   archivedFeedList: [],
-  invitedFeedList: []
+  invitedFeedList: [],
+  activityFeedList: [],
+  activityData: {}
 };
 
 export default function feedo(state = initialState, action = {}) {
@@ -1059,6 +1062,7 @@ export default function feedo(state = initialState, action = {}) {
     case cardTypes.MOVE_CARD_FULFILLED: {
       const { currentFeed, feedoList } = state
       const { ideaId, huntId } = action.payload;
+
       const ideas = filter(currentFeed.ideas, idea => idea.id !== ideaId);
       const movedCard = find(currentFeed.ideas, idea => idea.id === ideaId);
 
@@ -1068,6 +1072,7 @@ export default function feedo(state = initialState, action = {}) {
       if (moveToFeedIndex !== -1) {
         restFeedoList[moveToFeedIndex].ideas.push(movedCard);
       }
+
       return {
         ...state,
         loading: 'MOVE_CARD_FULFILLED',
@@ -1201,7 +1206,123 @@ export default function feedo(state = initialState, action = {}) {
         error: data,
       }
     }
+    /**
+     * Get Activity Feed List
+     */
+    case types.GET_ACTIVITY_FEED_PENDING:
+      return {
+        ...state,
+        loading: types.GET_ACTIVITY_FEED_PENDING,
+      }
+    case types.GET_ACTIVITY_FEED_FULFILLED: {
+      const { data } = action.result
+      // console.log('activityFeedList: ', data)
+      let activityFeedList = []
+      if (data.first) {
+        activityFeedList = data.content
+      } else {
+        activityFeedList = [
+          ...state.activityFeedList,
+          ...data.content
+        ]
+      }
 
+      return {
+        ...state,
+        loading: types.GET_ACTIVITY_FEED_FULFILLED,
+        activityFeedList,
+        activityData: data
+      }
+    }
+    case types.GET_INVITED_FEEDO_LIST_REJECTED: {
+      return {
+        ...state,
+        loading: types.GET_ACTIVITY_FEED_REJECTED,
+        error: action.error.response,
+      }
+    }
+    /**
+     * Read all acitivty
+     */
+    case types.READ_ALL_ACTIVITY_FEED_PENDING:
+      return {
+        ...state,
+        loading: types.READ_ALL_ACTIVITY_FEED_PENDING,
+      }
+    case types.READ_ALL_ACTIVITY_FEED_FULFILLED: {
+      return {
+        ...state,
+        loading: types.READ_ALL_ACTIVITY_FEED_FULFILLED
+      }
+    }
+    case types.READ_ALL_ACTIVITY_FEED_REJECTED: {
+      return {
+        ...state,
+        loading: types.READ_ALL_ACTIVITY_FEED_REJECTED,
+        error: action.error.response,
+      }
+    }
+    /**
+     * Read acitivty
+     */
+    case types.READ_ACTIVITY_FEED_PENDING:
+      return {
+        ...state,
+        loading: types.READ_ACTIVITY_FEED_PENDING,
+      }
+    case types.READ_ACTIVITY_FEED_FULFILLED: {
+      const activityId = action.payload
+      const { activityFeedList } = state
+
+      const currentActivityFeedList = filter(activityFeedList, feed => feed.id === activityId)
+      const restActivityFeedList = filter(activityFeedList, feed => feed.id !== activityId)
+
+      return {
+        ...state,
+        loading: types.READ_ACTIVITY_FEED_FULFILLED,
+        activityFeedList: [
+          ...restActivityFeedList,
+          {
+            ...currentActivityFeedList[0],
+            read: true
+          }
+        ]
+      }
+    }
+    case types.READ_ACTIVITY_FEED_REJECTED: {
+      return {
+        ...state,
+        loading: types.READ_ACTIVITY_FEED_REJECTED,
+        error: action.error.response,
+      }
+    }
+    /**
+     * Delete acitivty
+     */
+    case types.DEL_ACTIVITY_FEED_PENDING:
+      return {
+        ...state,
+        loading: types.DEL_ACTIVITY_FEED_PENDING,
+      }
+    case types.DEL_ACTIVITY_FEED_FULFILLED: {
+      const activityId = action.payload
+      const { activityFeedList } = state
+
+      const restActivityFeedList = filter(activityFeedList, feed => feed.id !== activityId)
+
+      return {
+        ...state,
+        loading: types.DEL_ACTIVITY_FEED_FULFILLED,
+        activityFeedList: restActivityFeedList
+      }
+    }
+    case types.DEL_ACTIVITY_FEED_REJECTED: {
+      return {
+        ...state,
+        loading: types.DEL_ACTIVITY_FEED_REJECTED,
+        error: action.error.response,
+      }
+    }
     default:
       return state;
   }

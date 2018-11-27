@@ -1325,7 +1325,7 @@ class NewCardScreen extends React.Component {
       return (
         <View>
           <View style={styles.line} />
-          <LastCommentComponent />
+          <LastCommentComponent prevPage={this.props.prevPage} />
         </View>
       )
     }
@@ -1471,7 +1471,7 @@ class NewCardScreen extends React.Component {
     return (
       <View style={styles.rowContainer}>
         <LikeComponent idea={this.props.card.currentCard} />
-        <CommentComponent idea={this.props.card.currentCard} currentFeed={this.props.feedo.currentFeed} />
+        <CommentComponent idea={this.props.card.currentCard} currentFeed={this.props.feedo.currentFeed} prevPage={this.props.prevPage} />
       </View>
     );
   }
@@ -1701,6 +1701,7 @@ class NewCardScreen extends React.Component {
 
 
 NewCardScreen.defaultProps = {
+  prevPage: 'card',
   card: {},
   invitee: {},
   intialLayout: {},
@@ -1714,6 +1715,7 @@ NewCardScreen.defaultProps = {
 
 
 NewCardScreen.propTypes = {
+  prevPage: PropTypes.string,
   card: PropTypes.object,
   invitee: PropTypes.object,
   intialLayout: PropTypes.object,

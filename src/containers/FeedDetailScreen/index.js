@@ -711,7 +711,7 @@ class FeedDetailScreen extends React.Component {
   }
 
   onMoveCard(ideaId) {
-    this.onCloseCardModal();
+    // this.onCloseCardModal();
     this.setState({ 
       isVisibleCardOpenMenu: false,
       isVisibleLongHoldMenu: false,
@@ -808,6 +808,8 @@ class FeedDetailScreen extends React.Component {
 
   onSelectFeedoToMoveCard(feedoId) {
     this.prevFeedo = null;
+
+    this.onCloseCardModal();
 
     this.setState({
       isVisibleSelectFeedo: false,
