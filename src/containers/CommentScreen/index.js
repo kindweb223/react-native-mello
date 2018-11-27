@@ -256,7 +256,13 @@ class CommentScreen extends React.Component {
 
   renderItem({item, index}) {
     const { currentFeed } = this.props.feedo
-    const user = this.getCommentUser(item);
+    let user = {}
+    if (this.props.prevPage === 'idea') {
+      user = this.getCommentUser(item);
+    } else {
+      user = this.props.instigatorData
+    }
+
     let editable = false
     if (COMMON_FUNC.isFeedOwnerEditor(currentFeed) && user && user.id === this.props.user.userInfo.id) {
       editable = true
@@ -355,6 +361,8 @@ class CommentScreen extends React.Component {
 CommentScreen.defaultProps = {
   guest: false,
   isShowKeyboard: false,
+  prevPage: 'idea',
+  instigatorData: {}
 }
 
 
@@ -362,6 +370,8 @@ CommentScreen.propTypes = {
   idea: PropTypes.object,
   guest: PropTypes.bool,
   isShowKeyboard: PropTypes.bool,
+  prevPage: PropTypes.string,
+  instigatorData: PropTypes.object
 }
 
 

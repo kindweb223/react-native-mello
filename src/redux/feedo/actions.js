@@ -536,3 +536,75 @@ export const leaveFeed = (feedId) => {
     payload: feedId
   };
 }
+
+/**
+ * Get activity feed
+ */
+export const getActivityFeed = (userId, data) => {
+  let url = `users/${userId}/activityFeed?page=${data.page}&size=${data.size}`
+
+  return {
+    types: [types.GET_ACTIVITY_FEED_PENDING, types.GET_ACTIVITY_FEED_FULFILLED, types.GET_ACTIVITY_FEED_REJECTED],
+    promise:
+      axios({
+        method: 'get',
+        url: url,
+        data
+      })
+  };
+}
+
+/**
+ * Read all activity feed
+ */
+export const readAllActivityFeed = (userId) => {
+  let url = `users/${userId}/activityFeed`
+
+  return {
+    types: [types.READ_ALL_ACTIVITY_FEED_PENDING, types.READ_ALL_ACTIVITY_FEED_FULFILLED, types.READ_ALL_ACTIVITY_FEED_REJECTED],
+    promise:
+      axios({
+        method: 'put',
+        url: url
+      })
+  };
+}
+
+/**
+ * Read activity feed
+ */
+export const readActivityFeed = (userId, activityId) => {
+  let url = `users/${userId}/activityFeed/${activityId}`
+
+  const data = {
+    read: true
+  }
+
+  return {
+    types: [types.READ_ACTIVITY_FEED_PENDING, types.READ_ACTIVITY_FEED_FULFILLED, types.READ_ACTIVITY_FEED_REJECTED],
+    promise:
+      axios({
+        method: 'put',
+        url: url,
+        data
+      }),
+    payload: activityId
+  };
+}
+
+/**
+ * Delete activity feed
+ */
+export const deleteActivityFeed = (userId, activityId) => {
+  let url = `users/${userId}/activityFeed/${activityId}`
+
+  return {
+    types: [types.DEL_ACTIVITY_FEED_PENDING, types.DEL_ACTIVITY_FEED_FULFILLED, types.DEL_ACTIVITY_FEED_REJECTED],
+    promise:
+      axios({
+        method: 'delete',
+        url: url
+      }),
+    payload: activityId
+  };
+}

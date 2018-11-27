@@ -17,6 +17,7 @@ const styles = StyleSheet.create({
     marginBottom: 5
   },
   title: {
+    fontSize: 14,
     fontWeight: '600'
   },
   thumbnailsView: {
