@@ -43,7 +43,6 @@ const styles = StyleSheet.create({
     borderBottomColor: COLORS.SEPARATOR_GREY
   },
   activityItem: {
-    paddingVertical: 15
   },
   itemContainer: {
     backgroundColor: 'transparent',

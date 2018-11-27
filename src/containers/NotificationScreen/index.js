@@ -80,7 +80,6 @@ class NotificationScreen extends React.Component {
     super(props);
     this.state = {
       refreshing: false,
-      initialLoading: false,
       loading: false,
       invitedFeedList: [],
       activityFeedList: [],
@@ -104,17 +103,13 @@ class NotificationScreen extends React.Component {
     Analytics.setCurrentScreen('NotificationScreen')
 
     const { feedo } = this.props
+    let { invitedFeedList, activityFeedList } = feedo
 
-    this.setState({ initialLoading: true })
-    this.getActivityFeedList(0, PAGE_COUNT)
+    invitedFeedList = _.orderBy(invitedFeedList, ['publishedDate'], ['desc'])
+    activityFeedList = _.orderBy(activityFeedList, ['activityTime'], ['desc'])
 
-    let { invitedFeedList } = feedo
-    invitedFeedList = _.orderBy(
-      invitedFeedList,
-      ['publishedDate'],
-      ['desc']
-    )
-    this.setState({ invitedFeedList, notificationList: invitedFeedList })
+    this.setState({ invitedFeedList, activityFeedList })
+    this.setActivityFeeds(activityFeedList, invitedFeedList)
   }
 
   UNSAFE_componentWillReceiveProps(nextProps) {
@@ -123,13 +118,17 @@ class NotificationScreen extends React.Component {
 
     if (this.props.feedo.loading !== 'READ_ACTIVITY_FEED_FULFILLED' && feedo.loading === 'READ_ACTIVITY_FEED_FULFILLED') {
       if (!_.isEmpty(selectedActivity)) {
-        console.log('SELECTED_ACTIVITY: ', selectedActivity)
+        Analytics.logEvent('notification_read_activity', {})
         if (selectedActivity.activityTypeEnum === 'NEW_IDEA_ADDED' || selectedActivity.activityTypeEnum === 'USER_EDITED_IDEA') {
           this.props.getFeedDetail(selectedActivity.metadata.HUNT_ID)
         } else if (selectedActivity.activityTypeEnum === 'NEW_COMMENT_ON_IDEA') {
           this.onSelectNewComment(selectedActivity)
         }
       }
+    }
+
+    if (this.props.feedo.loading !== 'DEL_ACTIVITY_FEED_FULFILLED' && feedo.loading === 'DEL_ACTIVITY_FEED_FULFILLED') {
+      Analytics.logEvent('notification_delete_activity', {})
     }
 
     if (this.props.feedo.loading !== 'GET_FEED_DETAIL_FULFILLED' && feedo.loading === 'GET_FEED_DETAIL_FULFILLED') {
@@ -161,9 +160,6 @@ class NotificationScreen extends React.Component {
         (this.props.feedo.loading !== 'READ_ACTIVITY_FEED_FULFILLED' && feedo.loading === 'READ_ACTIVITY_FEED_FULFILLED') ||
         (this.props.feedo.loading !== 'DEL_ACTIVITY_FEED_FULFILLED' && feedo.loading === 'DEL_ACTIVITY_FEED_FULFILLED'))
     {
-      if (this.state.initialLoading) {
-        this.setState({ initialLoading: false })
-      }
       let activityFeedList = _.orderBy(feedo.activityFeedList, ['activityTime'], ['desc'])
       this.setState({ refreshing: false, loading: false, activityFeedList })
       this.setActivityFeeds(activityFeedList, this.state.invitedFeedList)
@@ -277,7 +273,7 @@ class NotificationScreen extends React.Component {
   handleLoadMore = () => {
     const { activityData } = this.props.feedo
 
-    if (activityData.last === false && (!this.state.loading && !this.state.initalLoading)) {
+    if (activityData.last === false && !this.state.loading) {
       this.setState({ loading: true }, () => {
         setTimeout(() => {
           this.getActivityFeedList(activityData.page + 1, PAGE_COUNT)
@@ -309,7 +305,7 @@ class NotificationScreen extends React.Component {
   )
   
   render () {
-    const { notificationList, initialLoading } = this.state
+    const { notificationList } = this.state
 
     return (
       <View style={styles.container}>
@@ -336,8 +332,6 @@ class NotificationScreen extends React.Component {
             onEndReached={this.handleLoadMore}
             onEndReachedThreshold={0}
           />
-
-          {initialLoading && <LoadingScreen />}
 
           {this.renderCardDetailModal}
 
@@ -408,10 +402,10 @@ class NotificationScreen extends React.Component {
     this.userActionTimer = setTimeout(() => {
       // this.setState({ isShowToaster: false })
       if (this.state.currentActionType === ACTION_CARD_DELETE) {
-        Analytics.logEvent('feed_detail_delete_card', {})
+        Analytics.logEvent('notification_delete_card', {})
         this.props.deleteCard(currentCardInfo.ideaId)
       } else if (this.state.currentActionType === ACTION_CARD_MOVE) {
-        Analytics.logEvent('feed_detail_move_card', {})
+        Analytics.logEvent('notification_move_card', {})
         this.props.moveCard(currentCardInfo.ideaId, currentCardInfo.feedoId);
       }
       this.userActionTimer = null;

@@ -6,7 +6,8 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     paddingHorizontal: CONSTANTS.PADDING,
-    flexDirection: 'row'
+    flexDirection: 'row',
+    paddingVertical: 15
   },
   leftContainer: {
     width: 50
