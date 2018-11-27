@@ -74,6 +74,7 @@ export default class WebMetaList extends React.Component {
             width="24"
             height="24"
             source={{uri: item.faviconUrl}}
+            style={styles.imageCover}
           />
         );
       }
@@ -81,7 +82,7 @@ export default class WebMetaList extends React.Component {
       if (mimeType !== false && mimeType.indexOf('svg') !== -1) {
         return (
           <SVGImage
-            style={{ width: 24, height: 24 }}
+            style={styles.imageCover}
             source={{uri: item.faviconUrl}}
           />
         );
