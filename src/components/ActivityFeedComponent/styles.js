@@ -26,10 +26,10 @@ const styles = StyleSheet.create({
   },
   text: {
     fontSize: 12,
-    color: COLORS.DARK_GREY
+    color: COLORS.PURPLE
   },
   readText: {
-    color: COLORS.PURPLE
+    color: COLORS.DARK_GREY
   },
   dotIcon: {
     marginLeft: 5
