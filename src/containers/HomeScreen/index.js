@@ -872,7 +872,6 @@ class HomeScreen extends React.Component {
   }
 
   handleList = () => {
-    console.log('aaaaaaa')
     const { listType } = this.state
     this.setState({ listType: listType === 'list' ? 'thumbnail' : 'list' })
   }

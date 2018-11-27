@@ -1081,6 +1081,11 @@ class FeedDetailScreen extends React.Component {
     this.props.getFeedDetail(this.props.data.id)
   }
 
+  handleList = () => {
+    const { listType } = this.state
+    this.setState({ listType: listType === 'list' ? 'thumbnail' : 'list' })
+  }
+
   get renderSelectHunt() {
     if (this.state.isVisibleSelectFeedo) {
       const { currentFeed } = this.state
@@ -1208,6 +1213,7 @@ class FeedDetailScreen extends React.Component {
                           <FeedCardComponent
                             idea={item}
                             invitees={currentFeed.invitees}
+                            listType={this.state.listType}
                             onLinkPress={() => this.onSelectCard(item, index)}
                             onLinkLongPress={() => this.onLongPressCard(index, item, currentFeed.invitees)}
                           />
@@ -1256,7 +1262,7 @@ class FeedDetailScreen extends React.Component {
         <DashboardActionBar 
           onAddFeed={this.onOpenNewCardModal.bind(this)}
           handleFilter={this.handleFilter}
-          handleList={() => {}}
+          handleList={() => this.handleList()}
           filterType={this.state.filterShowType}
           sortType={this.state.filterSortType}
           notifications={false}
