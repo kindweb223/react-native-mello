@@ -66,27 +66,27 @@ class ActivityFeedComponent extends React.Component {
         source = data.metadata.IDEA_PREVIEW
         break;
       case 'HUNT_DELETED':
-        comment = ' updated the Flow '
+        comment = ' deleted the Flow '
         source = data.metadata.HUNT_HEADLINE
         break;
       case 'USER_EDITED_HUNT':
-        comment = ' has been invited to Flow '
+        comment = ' updated the Flow '
         source = data.metadata.HUNT_HEADLINE
         break;
       case 'USER_INVITED_TO_HUNT':
-        comment = ' joined the Flow '
+        comment = ' has been invited to Flow '
         source = data.metadata.HUNT_HEADLINE
         link = ' by '
         target = data.metadata.INVIEE_NAME
         break;
       case 'USER_JOINED_HUNT':
-        comment = ' updated '
+        comment = ' joined the Flow '
         source = data.metadata.HUNT_HEADLINE
         break;
       case 'INVITEE_PERMISSIONS_CHANGED':
         comment = ' updated '
-        source = data.metadata.NEW_PERMISSIONS
-        link = ' permissions to '
+        source = data.metadata.INVITEE_NAME
+        link = "'s permissions to "
         target = data.metadata.NEW_PERMISSIONS
         link_last = ' on Flow '
         target_last = data.metadata.HUNT_HEADLINE
