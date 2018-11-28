@@ -4,41 +4,44 @@ import CONSTANTS from '../../../service/constants'
 
 const styles = StyleSheet.create({
   container: {
+    width: '100%',
+    marginBottom: 16
+  },
+  subContainer: {
+    width: '100%',
     justifyContent: 'center',
-    paddingTop: 16,
-    paddingBottom: 17,
-    paddingHorizontal: 11,
-    borderRadius: 18
+    borderRadius: 10,
+    backgroundColor: COLORS.LIGHT_SOFT_GREY,
+    overflow: 'hidden'
+  },
+  thumbnailsView: {
+    width: '100%'
+  },
+  thumbnails: {
+    width: '100%',
+    height: '100%'
+  },
+  contentContainer: {
+    width: '100%',
+    justifyContent: 'space-between',
+    paddingVertical: 10,
   },
   title: {
-   fontSize: 16,
-   lineHeight: 22,
+   fontSize: 15,
+   lineHeight: 19,
+   fontWeight: '500'
   },
   greyTitle: {
     fontSize: 16,
     color: COLORS.MEDIUM_GREY,
   },
-  thumbnailsView: {
-    width: '100%',
-    height: 144,
-    marginTop: 4,
-    marginBottom: 8
-  },
-  thumbnails: {
-    width: '100%',
-    height: '100%',
-    borderRadius: 6,
-  },
-  bottomContainer: {
-    marginTop: 3,
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-  },
   subView: {
     flexDirection: 'row',
     justifyContent: 'flex-start',
-    alignItems: 'center'
+    alignItems: 'center',
+    paddingHorizontal: 12,
+    marginTop: 2,
+    marginBottom: 5
   },
   avatar: {
     marginRight: 10,
@@ -46,7 +49,7 @@ const styles = StyleSheet.create({
   text: {
     fontSize: 14,
     color: COLORS.MEDIUM_GREY,
-    lineHeight: 21,
+    lineHeight: 19,
     marginRight: 5 
   },
   dotIcon: {
@@ -55,6 +58,11 @@ const styles = StyleSheet.create({
   },
   linkStyle: {
     color: '#000'
+  },
+  bottomView: {
+    flexDirection: 'row',
+    justifyContent: 'flex-start',
+    alignItems: 'center'
   }
 })
 

@@ -4,8 +4,7 @@ import CONSTANTS from '../../../service/constants'
 
 const styles = StyleSheet.create({
   container: {
-    width: '100%',
-    paddingHorizontal: 11
+    width: '100%'
   },
   subContainer: {
     width: '100%',
@@ -15,7 +14,7 @@ const styles = StyleSheet.create({
     paddingVertical: 13,
     paddingRight: 10,
     borderRadius: 18,
-    backgroundColor: COLORS.SOFT_GREY
+    backgroundColor: COLORS.LIGHT_SOFT_GREY
   },
   leftContainer: {
     flex: 1,
@@ -35,6 +34,7 @@ const styles = StyleSheet.create({
     justifyContent: 'flex-start',
     alignItems: 'center',
     marginLeft: 12,
+    marginTop: 2,
     marginBottom: 5
   },
   avatar: {

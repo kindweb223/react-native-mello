@@ -28,6 +28,7 @@ import { DocumentPicker, DocumentPickerUtil } from 'react-native-document-picker
 import Permissions from 'react-native-permissions'
 import * as mime from 'react-native-mime-types'
 import GestureRecognizer from 'react-native-swipe-gestures'
+import MasonryList from '@appandflow/masonry-list'
 
 import DashboardActionBar from '../../navigations/DashboardActionBar'
 import FeedCardComponent from '../../components/FeedCardComponent'
@@ -134,7 +135,11 @@ class FeedDetailScreen extends React.Component {
       avatars: [],
       isShowClipboardToaster: false,
       copiedUrl: '',
-      appState: AppState.currentState
+      appState: AppState.currentState,
+      MasonryData: [],
+      selectedMasonryItem: {
+        height: 220
+      }
     };
     this.animatedOpacity = new Animated.Value(0)
     this.menuOpacity = new Animated.Value(0)
@@ -381,6 +386,14 @@ class FeedDetailScreen extends React.Component {
         ideas: sortIdeas
       }
     })
+
+    const MasonryData = sortIdeas.map((data, i) => ({
+      id: `item_${i}`,
+      index: i,
+      height: Math.round(Math.random() * 100 + 220),
+      data
+    }))
+    this.setState({ MasonryData })
   }
 
   onFilterShow = (type) => {
@@ -677,9 +690,12 @@ class FeedDetailScreen extends React.Component {
     if (COMMON_FUNC.isFeedGuest(this.state.currentFeed)) {
       return
     }
+
     ReactNativeHaptic.generate('impactHeavy');
+
     this.setState({
       selectedLongHoldCardIndex: index,
+      selectedMasonryItem: this.state.MasonryData[index]
     }, () => {
       Animated.sequence([
         Animated.timing(this.animatedSelectCard, {
@@ -694,7 +710,7 @@ class FeedDetailScreen extends React.Component {
         this.setState({
           selectedLongHoldIdea: idea,
           selectedLongHoldInvitees: invitees,
-          isVisibleLongHoldMenu: true,
+          isVisibleLongHoldMenu: true
           // selectedLongHoldCardIndex: -1,
         });
       });
@@ -1109,7 +1125,8 @@ class FeedDetailScreen extends React.Component {
   }
 
   render () {
-    const { currentFeed, loading, pinText, avatars } = this.state
+    const { currentFeed, loading, pinText, avatars, listType, MasonryData } = this.state
+    console.log('MasonryData: ', MasonryData)
 
     return (
       <SafeAreaView style={styles.safeArea}>
@@ -1188,38 +1205,77 @@ class FeedDetailScreen extends React.Component {
                 )}
 
                 {
-                  !_.isEmpty(currentFeed) && currentFeed && currentFeed.ideas && currentFeed.ideas.length > 0 ?
-                    currentFeed.ideas.map((item, index) => (
-                      <Animated.View 
-                        key={index}
-                        style={
-                          this.state.selectedLongHoldCardIndex === index && 
-                          {
-                            transform: [
-                              { scale: this.animatedSelectCard },
-                            ],
-                          }
-                        }
-                      >
-                        <TouchableHighlight
-                          ref={ref => this.cardItemRefs[index] = ref}
-                          style={{ marginHorizontal: 5, borderRadius: 5 }}
-                          underlayColor="#fff"
-                          onPress={() => this.onSelectCard(item, index)}
-                          onLongPress={() => this.onLongPressCard(index, item, currentFeed.invitees)}
-                        >
-                          <FeedCardComponent
-                            idea={item}
-                            invitees={currentFeed.invitees}
-                            listType={this.state.listType}
-                            onLinkPress={() => this.onSelectCard(item, index)}
-                            onLinkLongPress={() => this.onLongPressCard(index, item, currentFeed.invitees)}
+                  (!_.isEmpty(currentFeed) && currentFeed && currentFeed.ideas && currentFeed.ideas.length > 0)
+                  ? this.state.listType === 'list'
+                      ? <View style={{ paddingHorizontal: 8 }}>
+                          {currentFeed.ideas.map((item, index) => (
+                          <Animated.View 
+                            key={index}
+                            style={
+                              this.state.selectedLongHoldCardIndex === index && 
+                              {
+                                transform: [
+                                  { scale: this.animatedSelectCard },
+                                ],
+                              }
+                            }
+                          >
+                            <TouchableHighlight
+                              ref={ref => this.cardItemRefs[index] = ref}
+                              style={{ paddingHorizontal: 8, borderRadius: 5 }}
+                              underlayColor="#fff"
+                              onPress={() => this.onSelectCard(item, index)}
+                              onLongPress={() => this.onLongPressCard(index, item, currentFeed.invitees)}
+                            >
+                              <FeedCardComponent
+                                idea={item}
+                                invitees={currentFeed.invitees}
+                                listType={this.state.listType}
+                                FeedCardComponent="view"
+                                onLinkPress={() => this.onSelectCard(item, index)}
+                                onLinkLongPress={() => this.onLongPressCard(index, item, currentFeed.invitees)}
+                              />
+                            </TouchableHighlight>
+                          </Animated.View>
+                          ))}
+                        </View>
+                      : <View style={{ paddingHorizontal: 8 }}>
+                          <MasonryList
+                            data={MasonryData}
+                            numColumns={2}
+                            keyExtractor={item => item.id}
+                            getHeightForItem={({ item }) => item.height}
+                            renderItem={({ item }) => 
+                              <Animated.View 
+                                style={
+                                  this.state.selectedLongHoldCardIndex === item.index && 
+                                  {
+                                    transform: [
+                                      { scale: this.animatedSelectCard },
+                                    ],
+                                  }
+                                }
+                              >
+                                <TouchableHighlight
+                                  ref={ref => this.cardItemRefs[item.index] = ref}
+                                  style={{ paddingHorizontal: 8, borderRadius: 5 }}
+                                  underlayColor="#fff"
+                                  onPress={() => this.onSelectCard(item.data, item.index)}
+                                  onLongPress={() => this.onLongPressCard(item.index, item.data, currentFeed.invitees)}
+                                >
+                                  <FeedCardComponent
+                                      idea={item.data}
+                                      height={item.height}
+                                      invitees={currentFeed.invitees}
+                                      listType={this.state.listType}
+                                      onLinkPress={() => this.onSelectCard(item, index)}
+                                      onLinkLongPress={() => this.onLongPressCard(index, item, currentFeed.invitees)}
+                                  />
+                                </TouchableHighlight>
+                              </Animated.View>}
                           />
-                        </TouchableHighlight>
-                      </Animated.View>
-                    ))
-                  : 
-                    <View style={styles.emptyView}>
+                        </View>
+                  : <View style={styles.emptyView}>
                       {loading
                         ? <View style={styles.loadingView}>
                             <FeedLoadingStateComponent />
@@ -1364,6 +1420,7 @@ class FeedDetailScreen extends React.Component {
             onEdit={this.onEditCard.bind(this)}
             onDelete={this.onDeleteCard.bind(this)}
             onClose={() => this.setState({isVisibleLongHoldMenu: false})}
+            height={this.state.selectedMasonryItem.height}
           />
         </Modal>
 

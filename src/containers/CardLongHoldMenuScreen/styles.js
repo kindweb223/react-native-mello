@@ -5,7 +5,7 @@ import COLORS from '../../service/colors'
 export default {
   cardContainer: {
     width: '100%',
-    backgroundColor: COLORS.SOFT_GREY,
+    backgroundColor: 'transparent',
     borderRadius: 10,
   }
 }

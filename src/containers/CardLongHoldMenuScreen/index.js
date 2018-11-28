@@ -11,7 +11,6 @@ import CardActionBarComponent from '../../components/CardActionBarComponent'
 import COLORS from '../../service/colors'
 import styles from './styles'
 
-
 class CardLongHoldMenuScreen extends React.Component {
   constructor(props) {
     super(props)
@@ -54,13 +53,17 @@ class CardLongHoldMenuScreen extends React.Component {
   }
 
   render () {
-    const { idea, invitees, listType } = this.props
+    const { idea, invitees, listType, height } = this.props
+    let increaseHeight = listType === 'list' ? height : height * 3 / 2
+
     return [
       <View key='0' style={styles.cardContainer}>
         <FeedCardComponent 
           idea={idea}
           invitees={invitees}
           listType={listType}
+          cardType="long"
+          height={increaseHeight}
           onComment={this.onClose.bind(this)}
         />
       </View>,
