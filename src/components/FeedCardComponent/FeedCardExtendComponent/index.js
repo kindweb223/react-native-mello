@@ -84,13 +84,9 @@ class FeedCardExtendComponent extends React.Component {
                           size={24}
                         />
                       </View>,
-                      <Text key="1" style={styles.text}>{invitee.userProfile.firstName} {invitee.userProfile.lastName}</Text>,
-                      <Entypo key="2" name="dot-single" style={styles.dotIcon} />
+                      <Text key="1" style={styles.text}>{invitee.userProfile.firstName} {invitee.userProfile.lastName}</Text>
                     ]
                   }
-                  <Text style={styles.text}>
-                    {getDurationFromNow(idea.publishedDate)}
-                  </Text>
                 </View>
               )}
 
@@ -110,7 +106,7 @@ class FeedCardExtendComponent extends React.Component {
               )}
             </View>
 
-            <View style={styles.bottomView}>
+            <View style={styles.commentView}>
               <LikeComponent idea={idea} isOnlyInvitee={isOnlyInvitee} />
               <CommentComponent 
                 idea={idea}

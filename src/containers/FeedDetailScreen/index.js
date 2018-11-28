@@ -1268,8 +1268,8 @@ class FeedDetailScreen extends React.Component {
                                       height={item.height}
                                       invitees={currentFeed.invitees}
                                       listType={this.state.listType}
-                                      onLinkPress={() => this.onSelectCard(item, index)}
-                                      onLinkLongPress={() => this.onLongPressCard(index, item, currentFeed.invitees)}
+                                      onLinkPress={() => this.onSelectCard(item, item.index)}
+                                      onLinkLongPress={() => this.onLongPressCard(item.index, item, currentFeed.invitees)}
                                   />
                                 </TouchableHighlight>
                               </Animated.View>}

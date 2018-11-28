@@ -27,8 +27,8 @@ const styles = StyleSheet.create({
     paddingVertical: 10,
   },
   title: {
-   fontSize: 15,
-   lineHeight: 19,
+   fontSize: 13,
+   lineHeight: 17,
    fontWeight: '500'
   },
   greyTitle: {
@@ -39,18 +39,16 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'flex-start',
     alignItems: 'center',
-    paddingHorizontal: 12,
-    marginTop: 2,
-    marginBottom: 5
+    paddingHorizontal: 10,
+    marginBottom: 4
   },
   avatar: {
-    marginRight: 10,
+    marginRight: 8,
   },
   text: {
-    fontSize: 14,
+    fontSize: 13,
     color: COLORS.MEDIUM_GREY,
-    lineHeight: 19,
-    marginRight: 5 
+    lineHeight: 17 
   },
   dotIcon: {
     marginRight: 5,
@@ -59,7 +57,8 @@ const styles = StyleSheet.create({
   linkStyle: {
     color: '#000'
   },
-  bottomView: {
+  commentView: {
+    marginTop: 6,
     flexDirection: 'row',
     justifyContent: 'flex-start',
     alignItems: 'center'

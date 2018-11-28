@@ -11,9 +11,9 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'center',
     marginVertical: 8,
-    paddingVertical: 13,
+    paddingVertical: 10,
     paddingRight: 10,
-    borderRadius: 18,
+    borderRadius: 10,
     backgroundColor: COLORS.LIGHT_SOFT_GREY
   },
   leftContainer: {
@@ -25,10 +25,6 @@ const styles = StyleSheet.create({
    lineHeight: 19,
    fontWeight: '500'
   },
-  greyTitle: {
-    fontSize: 16,
-    color: COLORS.MEDIUM_GREY,
-  },
   subView: {
     flexDirection: 'row',
     justifyContent: 'flex-start',
@@ -38,12 +34,12 @@ const styles = StyleSheet.create({
     marginBottom: 5
   },
   avatar: {
-    marginRight: 10,
+    marginRight: 8,
   },
   text: {
     fontSize: 14,
     color: COLORS.MEDIUM_GREY,
-    lineHeight: 19,
+    lineHeight: 18,
     marginRight: 5 
   },
   dotIcon: {
