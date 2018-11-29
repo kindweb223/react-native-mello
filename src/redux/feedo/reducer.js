@@ -1272,7 +1272,7 @@ export default function feedo(state = initialState, action = {}) {
       }
     case types.READ_ACTIVITY_FEED_FULFILLED: {
       const activityId = action.payload
-      const { activityFeedList } = state
+      const { activityFeedList, activityData } = state
 
       const currentActivityFeedList = filter(activityFeedList, feed => feed.id === activityId)
       const restActivityFeedList = filter(activityFeedList, feed => feed.id !== activityId)
@@ -1286,7 +1286,11 @@ export default function feedo(state = initialState, action = {}) {
             ...currentActivityFeedList[0],
             read: true
           }
-        ]
+        ],
+        activityData: {
+          ...activityData,
+          unreadCount: activityData.unreadCount > 0 ? activityData.unreadCount - 1 : 0
+        }
       }
     }
     case types.READ_ACTIVITY_FEED_REJECTED: {
@@ -1306,14 +1310,18 @@ export default function feedo(state = initialState, action = {}) {
       }
     case types.DEL_ACTIVITY_FEED_FULFILLED: {
       const activityId = action.payload
-      const { activityFeedList } = state
+      const { activityFeedList, activityData } = state
 
       const restActivityFeedList = filter(activityFeedList, feed => feed.id !== activityId)
 
       return {
         ...state,
         loading: types.DEL_ACTIVITY_FEED_FULFILLED,
-        activityFeedList: restActivityFeedList
+        activityFeedList: restActivityFeedList,
+        activityData: {
+          ...activityData,
+          unreadCount: activityData.unreadCount > 0 ? activityData.unreadCount - 1 : 0
+        }
       }
     }
     case types.DEL_ACTIVITY_FEED_REJECTED: {
