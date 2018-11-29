@@ -6,10 +6,8 @@ import {
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 
-import Entypo from 'react-native-vector-icons/Entypo'
 import { filter } from 'lodash'
 
-import { getDurationFromNow } from '../../../service/dateUtils'
 import styles from './styles'
 import LikeComponent from '../../LikeComponent';
 import CommentComponent from '../../CommentComponent';
@@ -36,8 +34,6 @@ class FeedCardExtendComponent extends React.Component {
     }
 
     let hasCoverImage = idea.coverImage && idea.coverImage.length > 0
-
-    console.log('HEIGHT: ', height)
 
     let containerHeight = height
     let thumbnailHeight = height / 2

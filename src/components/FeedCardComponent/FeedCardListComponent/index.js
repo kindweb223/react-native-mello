@@ -37,65 +37,63 @@ class FeedCardListComponent extends React.Component {
 
     return (
       <View style={styles.container}>
-        <View style={styles.subContainer}>
-          <View style={styles.leftContainer}>
-            <View>
-              {!isOnlyInvitee && (
-                <View style={styles.subView}>
-                  {
-                    [
-                      <View key="0" style={styles.avatar}>
-                        <UserAvatarComponent
-                          user={invitee.userProfile}
-                          size={24}
-                        />
-                      </View>,
-                      <Text key="1" style={styles.text}>{invitee.userProfile.firstName} {invitee.userProfile.lastName}</Text>,
-                      <Entypo key="2" name="dot-single" style={styles.dotIcon} />
-                    ]
-                  }
-                  <Text style={styles.text}>
-                    {getDurationFromNow(idea.publishedDate)}
-                  </Text>
-                </View>
-              )}
+        <View style={styles.leftContainer}>
+          <View>
+            {!isOnlyInvitee && (
+              <View style={styles.subView}>
+                {
+                  [
+                    <View key="0" style={styles.avatar}>
+                      <UserAvatarComponent
+                        user={invitee.userProfile}
+                        size={24}
+                      />
+                    </View>,
+                    <Text key="1" style={styles.text}>{invitee.userProfile.firstName} {invitee.userProfile.lastName}</Text>,
+                    <Entypo key="2" name="dot-single" style={styles.dotIcon} />
+                  ]
+                }
+                <Text style={styles.text}>
+                  {getDurationFromNow(idea.publishedDate)}
+                </Text>
+              </View>
+            )}
 
-              {idea.idea.length > 0 && (
-                <View style={styles.subView}>
-                  <Autolink
-                    style={styles.title}
-                    linkStyle={styles.linkStyle}
-                    text={idea.idea}
-                    numberOfLines={2}
-                    ellipsizeMode="tail"
-                    onPress={() => this.props.onLinkPress()}
-                    onLongPress={() => this.props.onLinkLongPress()}
-                    suppressHighlighting={true}
-                  />
-                </View>
-              )}
-            </View>
-
-            <View style={styles.bottomView}>
-              <LikeComponent idea={idea} isOnlyInvitee={isOnlyInvitee} />
-              <CommentComponent 
-                idea={idea}
-                isOnlyInvitee={isOnlyInvitee}
-                currentFeed={feedo.currentFeed}
-                onComment={this.props.onComment}
-              />
-            </View>
+            {idea.idea.length > 0 && (
+              <View style={styles.subView}>
+                <Autolink
+                  style={styles.title}
+                  linkStyle={styles.linkStyle}
+                  text={idea.idea}
+                  numberOfLines={2}
+                  ellipsizeMode="tail"
+                  onPress={() => this.props.onLinkPress()}
+                  onLongPress={() => this.props.onLinkLongPress()}
+                  suppressHighlighting={true}
+                />
+              </View>
+            )}
           </View>
 
-          {idea.coverImage && idea.coverImage.length && 
-            <View style={styles.thumbnailsView}>
-              <FastImage
-                style={styles.thumbnails}
-                source={{ uri: idea.coverImage }}
-              />
-            </View>
-          }
+          <View style={styles.commentView}>
+            <LikeComponent idea={idea} isOnlyInvitee={isOnlyInvitee} />
+            <CommentComponent 
+              idea={idea}
+              isOnlyInvitee={isOnlyInvitee}
+              currentFeed={feedo.currentFeed}
+              onComment={this.props.onComment}
+            />
+          </View>
         </View>
+
+        {idea.coverImage && idea.coverImage.length && 
+          <View style={styles.thumbnailsView}>
+            <FastImage
+              style={styles.thumbnails}
+              source={{ uri: idea.coverImage }}
+            />
+          </View>
+        }
       </View>
     )
   }

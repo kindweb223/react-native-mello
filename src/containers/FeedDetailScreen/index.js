@@ -391,7 +391,7 @@ class FeedDetailScreen extends React.Component {
       id: `item_${i}`,
       index: i,
       height: data.coverImage
-              ? (Math.round(Math.random() * 100 + 230))
+              ? (Math.round(Math.random() * 80 + 230))
               : 150,
       data
     }))
@@ -1127,8 +1127,7 @@ class FeedDetailScreen extends React.Component {
   }
 
   render () {
-    const { currentFeed, loading, pinText, avatars, listType, MasonryData } = this.state
-    console.log('MasonryData: ', MasonryData)
+    const { currentFeed, loading, pinText, avatars, MasonryData } = this.state
 
     return (
       <SafeAreaView style={styles.safeArea}>

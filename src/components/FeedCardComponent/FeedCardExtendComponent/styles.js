@@ -1,6 +1,5 @@
 import { StyleSheet } from 'react-native'
 import COLORS from '../../../service/colors'
-import CONSTANTS from '../../../service/constants'
 
 const styles = StyleSheet.create({
   container: {
@@ -58,7 +57,8 @@ const styles = StyleSheet.create({
     color: '#000'
   },
   commentView: {
-    marginTop: 6,
+    marginTop: 4,
+    marginLeft: -3,
     flexDirection: 'row',
     justifyContent: 'flex-start',
     alignItems: 'center'

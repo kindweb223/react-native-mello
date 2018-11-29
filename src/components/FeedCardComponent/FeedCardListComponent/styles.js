@@ -1,12 +1,8 @@
 import { StyleSheet } from 'react-native'
 import COLORS from '../../../service/colors'
-import CONSTANTS from '../../../service/constants'
 
 const styles = StyleSheet.create({
   container: {
-    width: '100%'
-  },
-  subContainer: {
     width: '100%',
     flexDirection: 'row',
     justifyContent: 'center',
@@ -60,7 +56,8 @@ const styles = StyleSheet.create({
     height: '100%',
     borderRadius: 6,
   },
-  bottomView: {
+  commentView: {
+    marginLeft: -3,
     flexDirection: 'row',
     justifyContent: 'flex-start',
     alignItems: 'center'
