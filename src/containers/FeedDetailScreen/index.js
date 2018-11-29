@@ -390,7 +390,9 @@ class FeedDetailScreen extends React.Component {
     const MasonryData = sortIdeas.map((data, i) => ({
       id: `item_${i}`,
       index: i,
-      height: Math.round(Math.random() * 100 + 220),
+      height: data.coverImage
+              ? (Math.round(Math.random() * 100 + 230))
+              : 150,
       data
     }))
     this.setState({ MasonryData })
@@ -1244,7 +1246,7 @@ class FeedDetailScreen extends React.Component {
                             data={MasonryData}
                             numColumns={2}
                             keyExtractor={item => item.id}
-                            getHeightForItem={({ item }) => item.height}
+                            getHeightForItem={({ item }) => 100}
                             renderItem={({ item }) => 
                               <Animated.View 
                                 style={

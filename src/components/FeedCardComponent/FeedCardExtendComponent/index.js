@@ -37,10 +37,7 @@ class FeedCardExtendComponent extends React.Component {
 
     let hasCoverImage = idea.coverImage && idea.coverImage.length > 0
 
-    let newHeight = height
-    if (cardType === 'long' && !hasCoverImage) {
-      newHeight = height * 2 / 3
-    }
+    console.log('HEIGHT: ', height)
 
     let containerHeight = height
     let thumbnailHeight = height / 2
@@ -96,7 +93,7 @@ class FeedCardExtendComponent extends React.Component {
                     style={styles.title}
                     linkStyle={styles.linkStyle}
                     text={idea.idea}
-                    numberOfLines={hasCoverImage ? 2 : 6}
+                    numberOfLines={hasCoverImage ? 2 : 4}
                     ellipsizeMode="tail"
                     onPress={() => this.props.onLinkPress()}
                     onLongPress={() => this.props.onLinkLongPress()}
