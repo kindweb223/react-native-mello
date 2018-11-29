@@ -5,7 +5,7 @@ import Ionicons from 'react-native-vector-icons/Ionicons'
 
 import styles from './styles'
 import CONSTANTS from '../../service/constants';
-const CloseVelocity = 4;
+const CloseVelocity = 1.25;
 const SelectDelta = 2;
 
 
