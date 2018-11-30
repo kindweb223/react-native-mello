@@ -1718,6 +1718,7 @@ class NewCardScreen extends React.Component {
         >
           <View style={styles.successView}>
             <Octicons name="check" style={styles.successIcon} />
+            <Text style={styles.successText}>Copied</Text>
           </View>
         </Modal>
       </View>

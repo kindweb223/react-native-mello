@@ -259,6 +259,10 @@ const styles = StyleSheet.create({
   successIcon: {
     fontSize: 80,
     color: COLORS.PURPLE
+  },
+  successText: {
+    fontSize: 15,
+    color: COLORS.PURPLE
   }
 })
 
