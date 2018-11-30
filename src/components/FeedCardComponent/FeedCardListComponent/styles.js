@@ -7,7 +7,8 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'center',
     marginVertical: 8,
-    paddingVertical: 10,
+    paddingTop: 10,
+    paddingBottom: 8,
     paddingRight: 10,
     borderRadius: 10,
     backgroundColor: COLORS.LIGHT_SOFT_GREY

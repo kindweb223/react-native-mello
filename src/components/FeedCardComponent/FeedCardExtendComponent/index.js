@@ -25,7 +25,7 @@ class FeedCardExtendComponent extends React.Component {
   }
 
   render() {
-    const { invitees, idea, feedo, height, cardType } = this.props;
+    const { invitees, idea, feedo, cardType } = this.props;
     const invitee = filter(invitees, item => item.id === idea.inviteeId)[0]
     let isOnlyInvitee = false
     
@@ -35,29 +35,11 @@ class FeedCardExtendComponent extends React.Component {
 
     let hasCoverImage = idea.coverImage && idea.coverImage.length > 0
 
-    let containerHeight = height
-    let thumbnailHeight = height / 2
-    let contentHeight = height / 2
-
-    if (cardType === 'long') {
-      if (!hasCoverImage) {
-        containerHeight = height * 2 / 3
-        contentHeight = containerHeight
-      } else {
-        thumbnailHeight = containerHeight * 2 / 3
-        contentHeight = containerHeight / 3
-      }
-    } else {
-      if (!hasCoverImage) {
-        contentHeight = containerHeight
-      }
-    }
-
     return (
-      <View style={[styles.container, { height: containerHeight }]}>
+      <View style={styles.container}>
         <View style={styles.subContainer}>
           {hasCoverImage &&
-            <View style={[styles.thumbnailsView, { height: thumbnailHeight }]}>
+            <View style={[styles.thumbnailsView, cardType === 'long' ? { height: 240} : { height: 120 }]}>
               <FastImage
                 style={styles.thumbnails}
                 source={{ uri: idea.coverImage }}
@@ -65,7 +47,7 @@ class FeedCardExtendComponent extends React.Component {
             </View>
           }
 
-          <View style={[styles.contentContainer, { height: contentHeight }]}>
+          <View style={styles.contentContainer}>
             <View style={styles.contentView}>
               {!isOnlyInvitee && (
                 <View style={styles.subView}>
@@ -89,7 +71,7 @@ class FeedCardExtendComponent extends React.Component {
                     style={styles.title}
                     linkStyle={styles.linkStyle}
                     text={idea.idea}
-                    numberOfLines={hasCoverImage ? 2 : 4}
+                    // numberOfLines={hasCoverImage ? 2 : 4}
                     ellipsizeMode="tail"
                     onPress={() => this.props.onLinkPress()}
                     onLongPress={() => this.props.onLinkLongPress()}

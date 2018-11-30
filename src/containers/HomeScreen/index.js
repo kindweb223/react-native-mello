@@ -68,7 +68,8 @@ import {
   addDeviceToken,
   updateDeviceToken,
   appOpened,
-  getUserSession
+  getUserSession,
+  setHomeListType
 } from '../../redux/user/actions'
 
 import { 
@@ -119,8 +120,7 @@ class HomeScreen extends React.Component {
       badgeCount: 0,
       isShowClipboardToaster: false,
       tmpClipboardData: '',
-      clipboardData: '',
-      listType: 'list',
+      clipboardData: ''
     };
 
     this.currentRef = null;
@@ -884,8 +884,9 @@ class HomeScreen extends React.Component {
   }
 
   handleList = () => {
-    const { listType } = this.state
-    this.setState({ listType: listType === 'list' ? 'thumbnail' : 'list' })
+    const { listHomeType } = this.props.user
+    const type = listHomeType === 'list' ? 'thumbnail' : 'list'
+    this.props.setHomeListType(type)
   }
 
   handleSetting = () => {
@@ -1137,7 +1138,7 @@ class HomeScreen extends React.Component {
                   feedoList={feedoList}
                   handleFeedMenu={this.handleLongHoldMenu}
                   page="home"
-                  listType={this.state.listType}
+                  listType={this.props.user.listHomeType}
                   isRefreshing={this.state.isRefreshing}
                   onRefreshFeed={() => this.onRefreshFeed()}
                 />
@@ -1154,7 +1155,7 @@ class HomeScreen extends React.Component {
                       feedoList={feedoList}
                       handleFeedMenu={this.handleLongHoldMenu}
                       page="home"
-                      listType={this.state.listType}
+                      listType={this.props.user.listHomeType}
                       isRefreshing={this.state.isRefreshing}
                       onRefreshFeed={() => this.onRefreshFeed()}
                     />
@@ -1182,7 +1183,7 @@ class HomeScreen extends React.Component {
                       feedoList={feedoList}
                       handleFeedMenu={this.handleLongHoldMenu}
                       page="home"
-                      listType={this.state.listType}
+                      listType={this.props.user.listHomeType}
                       isRefreshing={this.state.isRefreshing}
                       onRefreshFeed={() => this.onRefreshFeed()}
                     />
@@ -1213,11 +1214,12 @@ class HomeScreen extends React.Component {
             filtering={false}
             notifications={true}
             showList={true}
-            listType={this.state.listType}
+            listType={this.props.user.listHomeType}
             onAddFeed={this.onOpenNewFeedModal.bind(this)}
             handleFilter={() => this.handleFilter()}
             handleList={() => this.handleList()}
             badgeCount={badgeCount}
+            page="home"
           />
         )}
 
@@ -1234,7 +1236,7 @@ class HomeScreen extends React.Component {
           onBackdropPress={() => this.setState({ isLongHoldMenuVisible: false })}
         >
           <FeedLongHoldMenuScreen
-            listType={this.state.listType}
+            listType={this.props.user.listHomeType}
             feedData={this.state.selectedFeedData}
             handleArchiveFeed={this.handleArchiveFeed}
             handleDeleteFeed={this.handleDeleteFeed}
@@ -1294,7 +1296,8 @@ const mapDispatchToProps = dispatch => ({
   deleteInvitee: (feedId, inviteeId) => dispatch(deleteInvitee(feedId, inviteeId)),
   getInvitedFeedList: () => dispatch(getInvitedFeedList()),
   getUserSession: () => dispatch(getUserSession()),
-  getActivityFeed: (userId, param) => dispatch(getActivityFeed(userId, param))
+  getActivityFeed: (userId, param) => dispatch(getActivityFeed(userId, param)),
+  setHomeListType: (type) => dispatch(setHomeListType(type)),
 })
 
 HomeScreen.propTypes = {

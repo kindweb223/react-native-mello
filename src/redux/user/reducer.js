@@ -14,7 +14,9 @@ const initialState = {
   userImageUrlData: null,
   userLookup: null,
   userConfirmed: false,
-  cropUrl: null
+  cropUrl: null,
+  listHomeType: 'list',
+  listDetailType: 'list'
 };
 
 export default function user(state = initialState, action = {}) {
@@ -572,7 +574,24 @@ export default function user(state = initialState, action = {}) {
         error: action.error.response.data
       }
     }
-
+    /**
+     * set list type on Home actionbar (list, thumbnail)
+     */
+    case types.SET_HOME_LIST_TYPE: {
+      return {
+        ...state,
+        listHomeType: action.payload
+      }
+    }
+    /**
+     * set list type on Detail actionbar (list, masonry)
+     */
+    case types.SET_DETAIL_LIST_TYPE: {
+      return {
+        ...state,
+        listDetailType: action.payload
+      }
+    }
     default:
       return state;
   }

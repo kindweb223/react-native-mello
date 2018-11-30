@@ -23,7 +23,8 @@ const styles = StyleSheet.create({
   contentContainer: {
     width: '100%',
     justifyContent: 'space-between',
-    paddingVertical: 10,
+    paddingTop: 10,
+    paddingBottom: 8,
   },
   title: {
    fontSize: 13,
@@ -57,7 +58,6 @@ const styles = StyleSheet.create({
     color: '#000'
   },
   commentView: {
-    marginTop: 4,
     marginLeft: -3,
     flexDirection: 'row',
     justifyContent: 'flex-start',

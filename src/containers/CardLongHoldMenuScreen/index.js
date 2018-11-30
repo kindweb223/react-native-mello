@@ -53,8 +53,7 @@ class CardLongHoldMenuScreen extends React.Component {
   }
 
   render () {
-    const { idea, invitees, listType, height } = this.props
-    let increaseHeight = listType === 'list' ? height : height * 3 / 2
+    const { idea, invitees, listType } = this.props
 
     return [
       <View key='0' style={styles.cardContainer}>
@@ -63,7 +62,6 @@ class CardLongHoldMenuScreen extends React.Component {
           invitees={invitees}
           listType={listType}
           cardType="long"
-          height={increaseHeight}
           onComment={this.onClose.bind(this)}
         />
       </View>,
