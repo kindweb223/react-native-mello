@@ -51,21 +51,26 @@ class ShareSuccessScreen extends React.Component {
 
   render() {
     return (
-      <Animated.View style={[
-        styles.container,
-        {opacity: this.animatedShow}
-      ]}>
-        <View style={styles.checkContainer}>
-          <MaterialCommunityIcons name="check" size={90} color={COLORS.PURPLE} />
-        </View>
-        <TouchableOpacity
-          style={styles.openFeedoButtonContainer}
-          activeOpacity={0.7}
-          onPress={this.openFeedo.bind(this)}
-        >
-          <Text style={styles.textButton}>Open Mello</Text>
-        </TouchableOpacity>
-      </Animated.View>
+      <TouchableOpacity
+        activeOpacity={1}
+        onPress={this.onClose.bind(this)}
+      >
+        <Animated.View style={[
+          styles.container,
+          {opacity: this.animatedShow}
+        ]}>
+          <View style={styles.checkContainer}>
+            <MaterialCommunityIcons name="check" size={90} color={COLORS.PURPLE} />
+          </View>
+          <TouchableOpacity
+            style={styles.openFeedoButtonContainer}
+            activeOpacity={0.7}
+            onPress={this.openFeedo.bind(this)}
+          >
+            <Text style={styles.textButton}>Open Mello</Text>
+          </TouchableOpacity>
+        </Animated.View>
+      </TouchableOpacity>
     );
   }
 }
