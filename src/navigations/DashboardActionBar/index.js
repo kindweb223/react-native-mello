@@ -20,6 +20,7 @@ const FILTER_ICON_B = require('../../../assets/images/Filter/Blue.png')
 const FILTER_ICON_G = require('../../../assets/images/Filter/Grey.png')
 const LIST_ICON = require('../../../assets/images/List/List.png')
 const LIST_ICON_THUMBNAIL = require('../../../assets/images/List/Thumbnail.png')
+const MASONRY_ICON = require('../../../assets/images/List/Masonry.png')
 const PLUS_ICON = require('../../../assets/images/PlusButton/Blue.png')
 
 class DashboardActionBar extends React.Component {
@@ -49,14 +50,17 @@ class DashboardActionBar extends React.Component {
   }
 
   render () {
-    const { filtering, filterType, sortType, notifications, feed, badgeCount, showList, listType } = this.props
+    const { filtering, filterType, sortType, notifications, feed, badgeCount, showList, listType, page } = this.props
 
     return (
       <View style={styles.container}>
         <View style={styles.leftContainer}>
           {showList && (
             <TouchableOpacity style={styles.iconView} onPress={() => this.props.handleList()}>
-              <Image source={listType === 'list' ? LIST_ICON : LIST_ICON_THUMBNAIL} />
+              {page === 'detail'
+                ? <Image source={listType === 'list' ? MASONRY_ICON : LIST_ICON} />
+                : <Image source={listType === 'list' ? LIST_ICON : LIST_ICON_THUMBNAIL} />
+              }
             </TouchableOpacity>
           )}
           {filtering && (
@@ -99,6 +103,7 @@ class DashboardActionBar extends React.Component {
 }
 
 DashboardActionBar.defaultProps = {
+  page: 'home',
   showList: false,
   listType: 'list',
   filtering: true,  
@@ -112,6 +117,7 @@ DashboardActionBar.defaultProps = {
 }
 
 DashboardActionBar.propTypes = {
+  page: PropTypes.string,
   showList: PropTypes.bool,
   listType: PropTypes.string,
   filterType: PropTypes.string,

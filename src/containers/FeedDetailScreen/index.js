@@ -28,7 +28,7 @@ import { DocumentPicker, DocumentPickerUtil } from 'react-native-document-picker
 import Permissions from 'react-native-permissions'
 import * as mime from 'react-native-mime-types'
 import GestureRecognizer from 'react-native-swipe-gestures'
-import MasonryList from '@appandflow/masonry-list'
+import Masonry from '../../components/MasonryComponent'
 
 import DashboardActionBar from '../../navigations/DashboardActionBar'
 import FeedCardComponent from '../../components/FeedCardComponent'
@@ -70,6 +70,10 @@ import {
   deleteCard,
   moveCard,
 } from '../../redux/card/actions'
+import {
+  setDetailListType
+} from '../../redux/user/actions'
+
 import COLORS from '../../service/colors'
 import CONSTANTS from '../../service/constants'
 import * as COMMON_FUNC from '../../service/commonFunc'
@@ -115,7 +119,6 @@ class FeedDetailScreen extends React.Component {
       selectedIdeaLayout: {},
       isInviteeModal: false,
       showFilterModal: false,
-      listType: 'list',
       filterShowType: 'all',
       filterSortType: 'date',
       selectedLongHoldIdea: {},
@@ -136,12 +139,10 @@ class FeedDetailScreen extends React.Component {
       isShowClipboardToaster: false,
       copiedUrl: '',
       appState: AppState.currentState,
-      MasonryData: [],
-      selectedMasonryItem: {
-        height: 220
-      },
       tmpClipboardData: '',
-      clipboardData: ''
+      clipboardData: '',
+      isMasonryView: false,
+      MasonryData: []
     };
     this.animatedOpacity = new Animated.Value(0)
     this.menuOpacity = new Animated.Value(0)
@@ -393,15 +394,9 @@ class FeedDetailScreen extends React.Component {
       }
     })
 
-    const MasonryData = sortIdeas.map((data, i) => ({
-      id: `item_${i}`,
-      index: i,
-      height: data.coverImage
-              ? (Math.round(Math.random() * 80 + 230))
-              : 150,
-      data
-    }))
-    this.setState({ MasonryData })
+    if (this.props.user.listDetailType === 'thumbnail' && this.refs.masonry) {
+      this.setMasonryData(sortIdeas)
+    }
   }
 
   onFilterShow = (type) => {
@@ -418,6 +413,26 @@ class FeedDetailScreen extends React.Component {
     this.setState({ filterSortType: type }, () => {
       this.filterCards(currentFeed)
     })
+  }
+
+  setMasonryData = (ideas) => {
+    this.refs.masonry.clear()
+    this.setState({ isMasonryView: true }, () => {
+
+      const MasonryData = ideas.map((data, i) => ({
+        key: `item_${i}`,
+        index: i,
+        data
+      }))
+  
+      this.refs.masonry.addItems(MasonryData)
+    })
+  }
+
+  onLayoutMasonry = (event) => {
+    if (!this.state.isMasonryView) {
+      this.setMasonryData(this.state.currentFeed.ideas)
+    }
   }
 
   backToDashboard = () => {
@@ -704,8 +719,7 @@ class FeedDetailScreen extends React.Component {
     ReactNativeHaptic.generate('impactHeavy');
 
     this.setState({
-      selectedLongHoldCardIndex: index,
-      selectedMasonryItem: this.state.MasonryData[index]
+      selectedLongHoldCardIndex: index
     }, () => {
       Animated.sequence([
         Animated.timing(this.animatedSelectCard, {
@@ -1110,8 +1124,12 @@ class FeedDetailScreen extends React.Component {
   }
 
   handleList = () => {
-    const { listType } = this.state
-    this.setState({ listType: listType === 'list' ? 'thumbnail' : 'list' })
+    const { listDetailType } = this.props.user
+    const type = listDetailType === 'list' ? 'thumbnail' : 'list'
+    if (type === 'thumbnail') {
+      this.setState({ isMasonryView: false })
+    }
+    this.props.setDetailListType(type)
   }
 
   get renderSelectHunt() {
@@ -1135,7 +1153,7 @@ class FeedDetailScreen extends React.Component {
   }
 
   render () {
-    const { currentFeed, loading, pinText, avatars, MasonryData } = this.state
+    const { currentFeed, loading, pinText, avatars } = this.state
 
     return (
       <SafeAreaView style={styles.safeArea}>
@@ -1215,8 +1233,8 @@ class FeedDetailScreen extends React.Component {
 
                 {
                   (!_.isEmpty(currentFeed) && currentFeed && currentFeed.ideas && currentFeed.ideas.length > 0)
-                  ? this.state.listType === 'list'
-                      ? <View style={{ paddingHorizontal: 8 }}>
+                  ? this.props.user.listDetailType === 'list'
+                      ? <View style={{ paddingHorizontal: 8, visible: 'hide' }}>
                           {currentFeed.ideas.map((item, index) => (
                           <Animated.View 
                             key={index}
@@ -1239,7 +1257,7 @@ class FeedDetailScreen extends React.Component {
                               <FeedCardComponent
                                 idea={item}
                                 invitees={currentFeed.invitees}
-                                listType={this.state.listType}
+                                listType={this.props.user.listDetailType}
                                 FeedCardComponent="view"
                                 onLinkPress={() => this.onSelectCard(item, index)}
                                 onLinkLongPress={() => this.onLongPressCard(index, item, currentFeed.invitees)}
@@ -1248,13 +1266,15 @@ class FeedDetailScreen extends React.Component {
                           </Animated.View>
                           ))}
                         </View>
-                      : <View style={{ paddingHorizontal: 8 }}>
-                          <MasonryList
-                            data={MasonryData}
-                            numColumns={2}
-                            keyExtractor={item => item.id}
-                            getHeightForItem={({ item }) => 100}
-                            renderItem={({ item }) => 
+                      : this.props.user.listDetailType === 'thumbnail' && 
+                        <View style={{ paddingHorizontal: 8 }}>
+                          <Masonry
+                            onLayout={(event) => this.onLayoutMasonry(event)}
+                            ref="masonry"
+                            items={this.state.MasonryData}
+                            columns={2}
+                            keyExtractor={item => item.key}
+                            renderItem={(item) => 
                               <Animated.View 
                                 style={
                                   this.state.selectedLongHoldCardIndex === item.index && 
@@ -1274,9 +1294,8 @@ class FeedDetailScreen extends React.Component {
                                 >
                                   <FeedCardComponent
                                       idea={item.data}
-                                      height={item.height}
                                       invitees={currentFeed.invitees}
-                                      listType={this.state.listType}
+                                      listType={this.props.user.listDetailType}
                                       onLinkPress={() => this.onSelectCard(item, item.index)}
                                       onLinkLongPress={() => this.onLongPressCard(item.index, item, currentFeed.invitees)}
                                   />
@@ -1318,7 +1337,7 @@ class FeedDetailScreen extends React.Component {
 
         {TAGS_FEATURE && this.renderCreateTag}
 
-        <DashboardActionBar 
+        <DashboardActionBar
           onAddFeed={this.onOpenNewCardModal.bind(this)}
           handleFilter={this.handleFilter}
           handleList={() => this.handleList()}
@@ -1327,7 +1346,8 @@ class FeedDetailScreen extends React.Component {
           notifications={false}
           feed={currentFeed}
           showList={true}
-          listType={this.state.listType}
+          listType={this.props.user.listDetailType}
+          page="detail"
         />
 
         {this.renderNewCardModal}
@@ -1422,14 +1442,13 @@ class FeedDetailScreen extends React.Component {
           onBackdropPress={() => this.setState({isVisibleLongHoldMenu: false})}
         >
           <CardLongHoldMenuScreen
-            listType={this.state.listType}
+            listType={this.props.user.listDetailType}
             idea={this.state.selectedLongHoldIdea}
             invitees={this.state.selectedLongHoldInvitees}
             onMove={this.onMoveCard.bind(this)}
             onEdit={this.onEditCard.bind(this)}
             onDelete={this.onDeleteCard.bind(this)}
             onClose={() => this.setState({isVisibleLongHoldMenu: false})}
-            height={this.state.selectedMasonryItem.height}
           />
         </Modal>
 
@@ -1488,7 +1507,8 @@ const mapDispatchToProps = dispatch => ({
   addFile: (feedId, fileType, contentType, name, objectKey) => dispatch(addFile(feedId, fileType, contentType, name, objectKey)),
   deleteFile: (feedId, fileId) => dispatch(deleteFile(feedId, fileId)),
   setCurrentFeed: (data) => dispatch(setCurrentFeed(data)),
-  updateInvitation: (feedId, type) => dispatch(updateInvitation(feedId, type))
+  updateInvitation: (feedId, type) => dispatch(updateInvitation(feedId, type)),
+  setDetailListType: (type) => dispatch(setDetailListType(type))
 })
 
 FeedDetailScreen.defaultProps = {
