@@ -62,11 +62,11 @@ class FeedItemContentComponent extends React.Component {
         <View style={styles.statsView}>
           <View style={styles.statsItemView}>
             {
-              data.metadata.newIdeas > 0 ? 
-              <Image source={CARD_ICON_PURPLE} style={styles.cardIcon} /> :
-              <Image source={CARD_ICON_GREY} style={styles.cardIcon} />
+              data.metadata.newIdeas > 0
+                ? <Image source={CARD_ICON_PURPLE} style={styles.cardIcon} />
+                : <Image source={CARD_ICON_GREY} style={styles.cardIcon} />
             }
-            <Text style={[styles.feedText, data.metadata.newIdeas ? styles.active : styles.inActive]}>
+            <Text style={[styles.feedText, data.metadata.newIdeas.length > 0 ? styles.active : styles.inActive]}>
               {data.ideas.length}
             </Text>
           </View>
