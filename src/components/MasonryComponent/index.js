@@ -26,6 +26,7 @@ class Column extends React.Component {
 	}
 
 	getHeight() {
+		console.log('this.state.height: ', this.state.height)
 		return this.state.height;
 	}
 
@@ -40,9 +41,11 @@ class Column extends React.Component {
         item={item}
         onLayout={( event ) => {
           const { height } = event.nativeEvent.layout;
-          const newHeight = this.state.height + height;
-          this.setState( { height: newHeight } );
-          item.onLayout && item.onLayout();
+					const newHeight = this.state.height + height;
+					console.log('newHeight: ', newHeight)
+          this.setState({ height: newHeight }, () => {
+						item.onLayout && item.onLayout();
+					});
         }}
       />
     )

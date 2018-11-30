@@ -1258,7 +1258,7 @@ class FeedDetailScreen extends React.Component {
                                 idea={item}
                                 invitees={currentFeed.invitees}
                                 listType={this.props.user.listDetailType}
-                                FeedCardComponent="view"
+                                cardType="view"
                                 onLinkPress={() => this.onSelectCard(item, index)}
                                 onLinkLongPress={() => this.onLongPressCard(index, item, currentFeed.invitees)}
                               />
@@ -1293,11 +1293,12 @@ class FeedDetailScreen extends React.Component {
                                   onLongPress={() => this.onLongPressCard(item.index, item.data, currentFeed.invitees)}
                                 >
                                   <FeedCardComponent
-                                      idea={item.data}
-                                      invitees={currentFeed.invitees}
-                                      listType={this.props.user.listDetailType}
-                                      onLinkPress={() => this.onSelectCard(item, item.index)}
-                                      onLinkLongPress={() => this.onLongPressCard(item.index, item, currentFeed.invitees)}
+                                    idea={item.data}
+                                    invitees={currentFeed.invitees}
+                                    listType={this.props.user.listDetailType}
+                                    cardType="view"
+                                    onLinkPress={() => this.onSelectCard(item.data, item.index)}
+                                    onLinkLongPress={() => this.onLongPressCard(item.index, item.data, currentFeed.invitees)}
                                   />
                                 </TouchableHighlight>
                               </Animated.View>}
