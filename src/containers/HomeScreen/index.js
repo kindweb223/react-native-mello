@@ -385,6 +385,10 @@ class HomeScreen extends React.Component {
       appOpened(this.props.user.userInfo.id);
       if (Actions.currentScene === 'HomeScreen') {
         this.props.getFeedoList(this.state.tabIndex);
+
+        // TEMPORARY: REMOVE WITH PUBNUB INTEGRATION
+        this.props.getInvitedFeedList()
+        this.props.getActivityFeed(this.props.user.userInfo.id, { page: 0, size: PAGE_COUNT })            
       }  
       this.showClipboardToast();
       this.props.getUserSession()
