@@ -87,7 +87,7 @@ class FeedCardExtendComponent extends React.Component {
                     style={styles.title}
                     linkStyle={styles.linkStyle}
                     text={idea.idea}
-                    // numberOfLines={hasCoverImage ? 2 : 4}
+                    numberOfLines={hasCoverImage ? 4 : 10}
                     ellipsizeMode="tail"
                     onPress={() => this.props.onLinkPress()}
                     onLongPress={() => this.props.onLinkLongPress()}
