@@ -20,6 +20,7 @@ import { connect } from 'react-redux'
 import { Actions } from 'react-native-router-flux'
 import Entypo from 'react-native-vector-icons/Entypo'
 import Ionicons from 'react-native-vector-icons/Ionicons'
+import Octicons from 'react-native-vector-icons/Octicons'
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons'
 import ViewMoreText from 'react-native-view-more-text';
 
@@ -111,6 +112,7 @@ class NewCardScreen extends React.Component {
 
       isEditableIdea: false,
       isGettingFeedoList: false,
+      isSuccessCopyUrl: false
     };
 
     this.selectedFile = null;
@@ -1269,6 +1271,14 @@ class NewCardScreen extends React.Component {
     );
   }
 
+  onLongPressWbeMetaLink = (url) => {
+    Clipboard.setString(url)
+    this.setState({ isSuccessCopyUrl: true })
+    setTimeout(() => {
+      this.setState({ isSuccessCopyUrl: false })
+    }, 2000)
+  }
+
   get renderWebMeta() {
     const { viewMode, cardMode } = this.props;
     const { links } = this.props.card.currentCard;
@@ -1279,6 +1289,7 @@ class NewCardScreen extends React.Component {
           links={[firstLink]}
           isFastImage={cardMode !== CONSTANTS.SHARE_EXTENTION_CARD}
           editable={viewMode !== CONSTANTS.CARD_VIEW}
+          longPressLink={(url) => this.onLongPressWbeMetaLink(url)}
           // onRemove={(linkId) => this.onDeleteLink(linkId)}
         />
       )
@@ -1693,6 +1704,21 @@ class NewCardScreen extends React.Component {
             onClose={this.onCloseLinkImages.bind(this)}
             onSave={this.onSaveLinkImages.bind(this)}
           />
+        </Modal>
+
+        <Modal 
+          isVisible={this.state.isSuccessCopyUrl}
+          style={styles.successModal}
+          backdropColor='#e0e0e0'
+          backdropOpacity={0.9}
+          animationIn="fadeIn"
+          animationOut="fadeOut"
+          animationInTiming={500}
+          onBackdropPress={() => this.setState({ isSuccessCopyUrl: false })}
+        >
+          <View style={styles.successView}>
+            <Octicons name="check" style={styles.successIcon} />
+          </View>
         </Modal>
       </View>
     );
