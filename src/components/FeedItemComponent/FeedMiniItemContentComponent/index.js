@@ -64,7 +64,7 @@ class FeedMiniItemContentComponent extends React.Component {
                 <Image source={CARD_ICON_PURPLE} style={styles.cardIcon} /> :
                 <Image source={CARD_ICON_GREY} style={styles.cardIcon} />
               }
-              <Text style={[styles.feedText, data.metadata.newIdeas ? styles.active : styles.inActive]}>
+              <Text style={[styles.feedText, data.metadata.newIdeas > 0 ? styles.active : styles.inActive]}>
                 {data.ideas.length}
               </Text>
             </View>
