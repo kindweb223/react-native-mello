@@ -45,20 +45,20 @@ class FeedCardExtendComponent extends React.Component {
       <View style={styles.container}>
         <View style={styles.subContainer}>
           {hasCoverImage &&
-            <View style={[styles.thumbnailsView, { height: cardType === 'long' ? imageHeight * 2 : imageHeight }]}>
+            <View style={[styles.thumbnailsView, { height: imageHeight }]}>
               <FastImage
                 style={styles.thumbnails}
                 source={{ uri: idea.coverImage }}
-                // onLoad={ 
-                //   e => {
-                //     let { height, width } = e.nativeEvent
-                //     let maxImgWidth = cardType === 'long' ? CONSTANTS.SCREEN_WIDTH : (CONSTANTS.SCREEN_SUB_WIDTH - 16) / 2
-                //     let ratio = width / maxImgWidth
-                //     height = height / ratio 
+                onLoad={ 
+                  e => {
+                    let { height, width } = e.nativeEvent
+                    let maxImgWidth = cardType === 'long' ? CONSTANTS.SCREEN_WIDTH : (CONSTANTS.SCREEN_SUB_WIDTH - 16) / 2
+                    let ratio = width / maxImgWidth
+                    height = height / ratio 
 
-                //     this.setState({ imageHeight: height })
-                //   }
-                // }
+                    this.setState({ imageHeight: height })
+                  }
+                }
               />
             </View>
           }

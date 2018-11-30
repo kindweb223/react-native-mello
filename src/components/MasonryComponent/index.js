@@ -107,7 +107,7 @@ export default class Masonry extends React.Component {
 			if ( this.itemQueue.length > 0 ) {
 				this.itemQueue = this.itemQueue.concat( items );
 			} else {
-        this.itemQueue = this.itemQueue.concat( items );
+				this.itemQueue = this.itemQueue.concat( items );
 				this.addItems();
 			}
 		} else {
@@ -120,12 +120,15 @@ export default class Masonry extends React.Component {
 
 	sortColumns() {
 		return this.state.columns.sort( ( a, b ) => a.getHeight() - b.getHeight() );
+
 	}
 
 	addItem( item, callback ) {
-		const minCol = this.sortColumns()[ 0 ];
-		item.onLayout = callback;
-		minCol.addItems( [ item ] );
+		setTimeout(() => {
+			const minCol = this.sortColumns()[ 0 ];
+			item.onLayout = callback;
+			minCol.addItems( [ item ] );
+		}, 100)
 	}
 
 	render() {
