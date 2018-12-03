@@ -1037,11 +1037,10 @@ export default function feedo(state = initialState, action = {}) {
      * delete a card
      */
     case cardTypes.DELETE_CARD_FULFILLED: {
-      const { currentFeed, feedoList } = state
+      const { currentFeed } = state
       const ideaId = action.payload;
       const ideas = filter(currentFeed.ideas, idea => idea.id !== ideaId);
 
-      const restFeedoList = filter(feedoList, feed => feed.id !== currentFeed.id)
       const newCurrentFeed = {
         ...currentFeed,
         ideas,
@@ -1050,11 +1049,7 @@ export default function feedo(state = initialState, action = {}) {
       return {
         ...state,
         loading: 'DELETE_CARD_FULFILLED',
-        currentFeed: newCurrentFeed,
-        feedoList: [
-          ...restFeedoList,
-          newCurrentFeed
-        ]
+        currentFeed: newCurrentFeed
       }
     }
 
@@ -1062,18 +1057,10 @@ export default function feedo(state = initialState, action = {}) {
      * move a card
      */
     case cardTypes.MOVE_CARD_FULFILLED: {
-      const { currentFeed, feedoList } = state
-      const { ideaId, huntId } = action.payload;
+      const { currentFeed } = state
+      const { ideaId } = action.payload;
 
       const ideas = filter(currentFeed.ideas, idea => idea.id !== ideaId);
-      const movedCard = find(currentFeed.ideas, idea => idea.id === ideaId);
-
-      const restFeedoList = filter(feedoList, feed => feed.id !== currentFeed.id)
-      const moveToFeedIndex = findIndex(restFeedoList, feed => feed.id === huntId)
-
-      if (moveToFeedIndex !== -1) {
-        restFeedoList[moveToFeedIndex].ideas.push(movedCard);
-      }
 
       return {
         ...state,
@@ -1081,14 +1068,7 @@ export default function feedo(state = initialState, action = {}) {
         currentFeed: {
           ...currentFeed,
           ideas,
-        },
-        feedoList: [
-          ...restFeedoList,
-          {
-            ...currentFeed,
-            ideas,
-          }
-        ],
+        }
       }
     }
 
