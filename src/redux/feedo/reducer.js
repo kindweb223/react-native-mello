@@ -1331,6 +1331,16 @@ export default function feedo(state = initialState, action = {}) {
         error: action.error.response,
       }
     }
+    case types.PUBNUB_UPDATE_FEED: {
+      const feedData = action.payload
+      const { feedoList } = state
+      const restFeedoList = filter(feedoList, feed => feed.id !== feedData.id )
+      return {
+        ...state,
+        loading: types.PUBNUB_UPDATE_FEED,
+        feedoList: [...restFeedoList, feedData]
+      }
+    }
     default:
       return state;
   }

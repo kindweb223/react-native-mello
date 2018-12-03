@@ -78,6 +78,9 @@ import NotificationScreen from './src/containers/NotificationScreen'
 import { 
   getCardComments,
 } from './src/redux/card/actions'
+import {
+  pubnubUpdateFeed
+} from './src/redux/feedo/actions'
 
 const store = createStore(reducers, applyMiddleware(thunk, promiseMiddleware))
 
@@ -103,6 +106,9 @@ export default class Root extends React.Component {
         if (response.message.action === 'COMMENT_ADDED' || response.message.action === 'COMMENT_EDITED' || response.message.action === 'COMMENT_DELETED') {
           console.log("refreshing comments")
           store.dispatch(getCardComments(response.message.data.ideaId))
+        }
+        if (response.message.action === 'HUNT_UPDATED') {
+          store.dispatch(pubnubUpdateFeed(response.message.data.huntResponse))
         }
       },
       presence: function(presenceEvent) {

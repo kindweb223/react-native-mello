@@ -608,3 +608,13 @@ export const deleteActivityFeed = (userId, activityId) => {
     payload: activityId
   };
 }
+
+/**
+ * update feed data from Pubnub event
+ */
+export const pubnubUpdateFeed = (feedData) => {
+  return {
+    type: types.PUBNUB_UPDATE_FEED,
+    payload: feedData
+  };
+}

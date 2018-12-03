@@ -138,15 +138,9 @@ class HomeScreen extends React.Component {
     this.props.setUserInfo(JSON.parse(userInfo))
 
     // Subscribe to comments channel for new comments and updates
-    console.log("Subscribe to: ", this.props.user.userInfo.id + '_HUNT_UPDATE')
+    console.log("Subscribe to: ", this.props.user.userInfo.id)
     pubnub.subscribe({
-      channels: [
-        this.props.user.userInfo.id + '_HUNT_UPDATE',
-        this.props.user.userInfo.id + '_HUNT_DELETED',
-        this.props.user.userInfo.id + '_IDEA_ADDED',
-        this.props.user.userInfo.id + '_IDEA_UPDATED',
-        this.props.user.userInfo.id + '_IDEA_DELETED'
-      ]
+      channels: [this.props.user.userInfo.id]
     });
 
     this.registerPushNotification();
@@ -161,10 +155,6 @@ class HomeScreen extends React.Component {
 
   componentWillUnmount() {
     AppState.removeEventListener('change', this.onHandleAppStateChange);
-
-    // pubnub.unsubscribe({
-    //   channels: [this.props.user.userInfo.id + '_HUNT_UPDATE'],
-    // });
   }
 
   static getDerivedStateFromProps(nextProps, prevState) {
@@ -178,7 +168,8 @@ class HomeScreen extends React.Component {
       (feedo.loading === 'PIN_FEED_FULFILLED') || (feedo.loading === 'UNPIN_FEED_FULFILLED') ||
       (feedo.loading === 'RESTORE_ARCHIVE_FEED_FULFILLED') || (feedo.loading === 'ADD_DUMMY_FEED'))) ||
       (feedo.loading === 'DELETE_CARD_FULFILLED') || (feedo.loading === 'MOVE_CARD_FULFILLED') || (feedo.loading === 'UPDATE_CARD_FULFILLED') ||
-      (feedo.loading === 'READ_ACTIVITY_FEED_FULFILLED') || (feedo.loading === 'DEL_ACTIVITY_FEED_FULFILLED'))
+      (feedo.loading === 'READ_ACTIVITY_FEED_FULFILLED') || (feedo.loading === 'DEL_ACTIVITY_FEED_FULFILLED') ||
+      (feedo.loading === 'PUBNUB_UPDATE_FEED'))
     {
 
       let feedoList = []
