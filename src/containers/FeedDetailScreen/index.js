@@ -63,7 +63,9 @@ import {
   addFile,
   deleteFile,
   setCurrentFeed,
-  updateInvitation
+  updateInvitation,
+  deleteDummyCard,
+  moveDummyCard
 } from '../../redux/feedo/actions';
 import {
   setCurrentCard,
@@ -83,7 +85,7 @@ import {TAGS_FEATURE} from "../../service/api";
 import Analytics from '../../lib/firebase'
 
 const EMPTY_ICON = require('../../../assets/images/empty_state/asset-emptystate.png')
-const TOASTER_DURATION = 5000
+const TOASTER_DURATION = 50000
 
 const ACTION_NONE = 0;
 const ACTION_FEEDO_PIN = 1;
@@ -584,6 +586,7 @@ class FeedDetailScreen extends React.Component {
   }
 
   undoAction = () => {
+    console.log('this.state.currentActionType: ', this.state.currentActionType)
     if (this.state.currentActionType === ACTION_FEEDO_PIN) {
       this.setState({ pinText: 'Pin' })
       this.unpinFeed(this.state.feedId)
@@ -598,6 +601,10 @@ class FeedDetailScreen extends React.Component {
       clearTimeout(this.userActionTimer);
       this.userActionTimer = null;
       this.userActions.shift();
+
+      if (this.state.currentActionType === ACTION_CARD_DELETE) {
+        this.props.deleteDummyCard('null', 1)
+      }
 
       this.setState((state) => { 
         let filterIdeas = this.props.feedo.currentFeed.ideas;
@@ -843,6 +850,8 @@ class FeedDetailScreen extends React.Component {
       this.setBubbles(this.state.currentFeed)
     });
 
+    this.props.deleteDummyCard(cardInfo.ideaId, 0)
+
     this.processCardActions();
   }
 
@@ -874,6 +883,8 @@ class FeedDetailScreen extends React.Component {
     }, () => {
       this.setBubbles(this.state.currentFeed)
     });
+
+    this.props.moveDummyCard(cardInfo.ideaId, cardInfo.feedoId, 0)
 
     this.processCardActions();
     this.moveCardId = null;
@@ -1509,7 +1520,9 @@ const mapDispatchToProps = dispatch => ({
   deleteFile: (feedId, fileId) => dispatch(deleteFile(feedId, fileId)),
   setCurrentFeed: (data) => dispatch(setCurrentFeed(data)),
   updateInvitation: (feedId, type) => dispatch(updateInvitation(feedId, type)),
-  setDetailListType: (type) => dispatch(setDetailListType(type))
+  setDetailListType: (type) => dispatch(setDetailListType(type)),
+  deleteDummyCard: (ideaId, type) => dispatch(deleteDummyCard(ideaId, type)),
+  moveDummyCard: (ideaId, feedId, type) => dispatch(moveDummyCard(ideaId, feedId, type))
 })
 
 FeedDetailScreen.defaultProps = {
@@ -1527,7 +1540,8 @@ FeedDetailScreen.propTypes = {
   unpinFeed: PropTypes.func.isRequired,
   duplicateFeed: PropTypes.func.isRequired,
   deleteDuplicatedFeed: PropTypes.func.isRequired,
-  
+  deleteDummyCard: PropTypes.func,
+  moveDummyCard: PropTypes.func
 }
 
 export default connect(

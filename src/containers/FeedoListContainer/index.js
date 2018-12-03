@@ -128,7 +128,6 @@ class FeedoListContainer extends React.Component {
 
   render() {
     const { loading, refresh, feedoList, handleFeedMenu, tabLabel } = this.props;
-
     if (loading) return <FeedLoadingStateComponent animating />
 
     return (

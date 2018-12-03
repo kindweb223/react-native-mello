@@ -19,7 +19,9 @@ const initialState = {
   archivedFeedList: [],
   invitedFeedList: [],
   activityFeedList: [],
-  activityData: {}
+  activityData: {},
+  dummyDelCard: {},
+  dummyMoveCard: {}
 };
 
 export default function feedo(state = initialState, action = {}) {
@@ -1329,6 +1331,75 @@ export default function feedo(state = initialState, action = {}) {
         ...state,
         loading: types.DEL_ACTIVITY_FEED_REJECTED,
         error: action.error.response,
+      }
+    }
+    case types.DEL_DUMMY_CARD: {
+      const { currentFeed, feedoList } = state
+      const { ideaId , type } = action.payload;
+
+      let newCurrentFeed = {}
+      let dummyDelCard = {}
+      if (type === 0) { //delete
+        const ideas = filter(currentFeed.ideas, idea => idea.id !== ideaId);
+        dummyDelCard = filter(currentFeed.ideas, idea => idea.id === ideaId);
+        newCurrentFeed = {
+          ...currentFeed,
+          ideas,
+        }
+      } else {  //restore
+        currentFeed.ideas.push(state.dummyDelCard[0])
+        dummyDelCard = {}
+        newCurrentFeed = currentFeed
+      }
+
+      const restFeedoList = filter(feedoList, feed => feed.id !== currentFeed.id)
+
+      return {
+        ...state,
+        loading: types.DEL_DUMMY_CARD,
+        dummyDelCard,
+        currentFeed: newCurrentFeed,
+        feedoList: [
+          ...restFeedoList,
+          newCurrentFeed
+        ]
+      }
+    }
+    /**
+     * move dummy card
+     */
+    case types.MOVE_DUMMY_CARD: {
+      const { currentFeed, feedoList } = state
+      const { ideaId, huntId, type } = action.payload;
+
+      const ideas = filter(currentFeed.ideas, idea => idea.id !== ideaId);
+      const movedCard = find(currentFeed.ideas, idea => idea.id === ideaId);
+
+      const restFeedoList = filter(feedoList, feed => feed.id !== currentFeed.id)
+      const moveToFeedIndex = findIndex(restFeedoList, feed => feed.id === huntId)
+
+      if (moveToFeedIndex !== -1) {
+        restFeedoList[moveToFeedIndex].ideas.push(movedCard);
+      }
+
+      return {
+        ...state,
+        loading: 'MOVE_DUMMY_CARD',
+        currentFeed: {
+          ...currentFeed,
+          ideas,
+        },
+        dummyMoveCard: {
+          ideaId,
+          feedId: huntId,
+        },
+        feedoList: [
+          ...restFeedoList,
+          {
+            ...currentFeed,
+            ideas,
+          }
+        ],
       }
     }
     default:
