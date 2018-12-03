@@ -1372,39 +1372,63 @@ export default function feedo(state = initialState, action = {}) {
       const { currentFeed, feedoList } = state
       const { ideaId, huntId, type } = action.payload;
 
-      let ideas = []
-      let restFeedoList = []
       let dummyMoveCard = {}
+      let newFeedList = []
+      let newCurrentFeed = {}
+      let restFeedoList = []
 
       if (type === 0) {
-        ideas = filter(currentFeed.ideas, idea => idea.id !== ideaId);
-        const movedCard = find(currentFeed.ideas, idea => idea.id === ideaId);
+        restFeedoList = filter(feedoList, feed => feed.id !== currentFeed.id)
 
-        estFeedoList = filter(feedoList, feed => feed.id !== currentFeed.id)
+        const ideas = filter(currentFeed.ideas, idea => idea.id !== ideaId)
+        const movedCard = find(currentFeed.ideas, idea => idea.id === ideaId)
+        
         const moveToFeedIndex = findIndex(restFeedoList, feed => feed.id === huntId)
 
         if (moveToFeedIndex !== -1) {
           restFeedoList[moveToFeedIndex].ideas.push(movedCard);
         }
 
-        dummyMoveCard = { ideaId, feedId: huntId }
+        newCurrentFeed = {
+          ...currentFeed,
+          ideas
+        }
+
+        newFeedList = [
+          ...restFeedoList,
+          newCurrentFeed
+        ]       
+
+        dummyMoveCard = { ideaId, feedId: huntId, oldFeed: currentFeed, newFeed: restFeedoList[moveToFeedIndex], movedCard }
+      } else {
+        dummyMoveCard = state.dummyMoveCard
+        restFeedoList = filter(feedoList, feed => feed.id !== dummyMoveCard.feedId)
+
+        const ideas = filter(dummyMoveCard.newFeed.ideas, idea => idea.id !== dummyMoveCard.ideaId)
+        const movedFeed = {
+          ...dummyMoveCard.newFeed,
+          ideas
+        }
+        
+        const originalFeedIndex = findIndex(restFeedoList, feed => feed.id === currentFeed.id)
+
+        if (originalFeedIndex !== -1) {
+          restFeedoList[originalFeedIndex].ideas.push(dummyMoveCard.movedCard);
+        }
+
+        newFeedList = [
+          ...restFeedoList,
+          movedFeed
+        ]
+
+        dummyMoveCard = {}
       }
 
       return {
         ...state,
         loading: 'MOVE_DUMMY_CARD',
-        currentFeed: {
-          ...currentFeed,
-          ideas,
-        },
         dummyMoveCard,
-        feedoList: [
-          ...restFeedoList,
-          {
-            ...currentFeed,
-            ideas,
-          }
-        ],
+        feedoList: newFeedList
       }
     }
     default:
