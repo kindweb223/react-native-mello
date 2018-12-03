@@ -1224,7 +1224,7 @@ class FeedDetailScreen extends React.Component {
                 {!_.isEmpty(currentFeed) && currentFeed && currentFeed.ideas && currentFeed.ideas.length > 0 && this.state.showBubble && (
                   <SpeechBubbleComponent
                     page="detail"
-                    title="Feeds contain cards. Cards can have, images, text, attachments and likes. My granny enjoys liking."
+                    title="Flows contain cards. Cards can have, images, text, attachments and likes. My granny enjoys liking."
                     subTitle="Watch a 15 sec video about the cards "
                     onCloseBubble={() => this.closeBubble()}
                     showBubbleCloseButton={this.state.showBubbleCloseButton}

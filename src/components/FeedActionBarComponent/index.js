@@ -110,11 +110,11 @@ class FeedActionBarComponent extends React.Component {
     }
 
     if (COMMON_FUNC.isFeedEditor(data)) {
-      MENU_ITEMS = ['Duplicate', 'Edit', 'Leave Feed']
+      MENU_ITEMS = ['Duplicate', 'Edit', 'Leave Flow']
     }
 
     if (COMMON_FUNC.isFeedContributorGuest(data)) {
-      MENU_ITEMS = ['Leave Feed']
+      MENU_ITEMS = ['Leave Flow']
     }
 
     return (
@@ -140,7 +140,7 @@ class FeedActionBarComponent extends React.Component {
                     activeOpacity={0.5}
                   >
                     <View style={styles.settingItem}>
-                      <Text style={(item === 'Delete' || item === 'Leave Feed') ? styles.deleteButtonText : styles.settingButtonText}>
+                      <Text style={(item === 'Delete' || item === 'Leave Flow') ? styles.deleteButtonText : styles.settingButtonText}>
                         {item}
                       </Text>
                     </View>

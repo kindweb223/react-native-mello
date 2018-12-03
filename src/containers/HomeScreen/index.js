@@ -1023,7 +1023,7 @@ class HomeScreen extends React.Component {
             </View>
             <Animated.View style={[styles.minHeader, { opacity: miniHeaderOpacity }]}>
               <View style={styles.minTitleView}>
-                <Text style={styles.minTitle}>My feeds</Text>
+                <Text style={styles.minTitle}>My flows</Text>
               </View>
               <View style={styles.settingIconView}>
                 <TouchableOpacity onPress={() => this.handleSetting()}>
@@ -1124,7 +1124,7 @@ class HomeScreen extends React.Component {
                             : <EmptyStateComponent
                                 page="feed"
                                 title="First time here? No worries, you are in good hands..."
-                                subTitle="Watch a 15 sec video about creating feeds"
+                                subTitle="Watch a 15 sec video about creating flows"
                                 ctaTitle="Start your first feed"
                                 onCreateNewFeed={() => {
                                   this.animatedOpacity.setValue(1);
@@ -1168,7 +1168,7 @@ class HomeScreen extends React.Component {
                       : <View style={styles.emptyTabInnerSubView}>
                           <SpeechBubbleComponent
                             page="shared"
-                            title="Feeds can be shared with friends and colleagues for collaboration. Feeds you've been invited to will appear here."
+                            title="Flows can be shared with friends and colleagues for collaboration. Flows you've been invited to will appear here."
                             subTitle="All you need to know about sharing in 15 secs "
                           />
                         </View>

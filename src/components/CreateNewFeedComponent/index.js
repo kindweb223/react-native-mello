@@ -18,12 +18,12 @@ import CONSTANTS from '../../service/constants'
 const CreateItems = [
   {
     title: 'New Card',
-    description: 'Quickly add card to feed',
+    description: 'Quickly add a card to a flow',
     icon: require('../../../assets/images/Add/Blue.png')
   },
   {
-    title: 'New Feed',
-    description: 'Start new feed and collect ideas',
+    title: 'New Flow',
+    description: 'Start a new flow',
     icon: require('../../../assets/images/Feed/Blue.png')
   },
 ]

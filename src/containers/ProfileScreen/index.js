@@ -51,7 +51,7 @@ const SETTING_ITEMS = [
   },
   {
     icon: <Image source={TRASH_ICON} style={styles.leftIcon} />,
-    title: 'Archived feeds'
+    title: 'Archived flows'
   }
 ]
 

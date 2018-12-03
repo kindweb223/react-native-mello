@@ -41,7 +41,7 @@ class ArchivedFeedScreen extends React.Component {
 
   static renderTitle(props) {
     return (
-      <Text style={styles.textTitle}>Archived feeds</Text>
+      <Text style={styles.textTitle}>Archived flows</Text>
     );
   }
 
@@ -126,7 +126,7 @@ class ArchivedFeedScreen extends React.Component {
         {archivedFeedList.length === 0 && !loading && (
           <View style={styles.emptyView}>
             <Image source={EMPTY_ICON} />
-            <Text style={styles.emptyText}>Mello is more fun with feeds</Text>
+            <Text style={styles.emptyText}>Mello is more fun with flows</Text>
           </View>
         )}
 
