@@ -114,7 +114,7 @@ class FeedoListContainer extends React.Component {
                 >
                   <FeedItemComponent item={item} pinFlag={item.pinned ? true : false} page={this.props.page} listType={this.props.listType} />
                 </TouchableOpacity>
-              : <NotificationItemComponent item={item} hideTumbnail={true} />
+              : <NotificationItemComponent data={item} hideTumbnail={true} />
             }
 
             {this.props.feedoList.length > 0 && (
