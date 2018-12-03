@@ -25,6 +25,7 @@ import * as R from 'ramda'
 import { find, filter, orderBy } from 'lodash'
 import DeviceInfo from 'react-native-device-info';
 
+import pubnub from '../../lib/pubnub'
 import Analytics from '../../lib/firebase'
 
 import DashboardNavigationBar from '../../navigations/DashboardNavigationBar'
@@ -135,6 +136,19 @@ class HomeScreen extends React.Component {
 
     const userInfo = await AsyncStorage.getItem('userInfo')
     this.props.setUserInfo(JSON.parse(userInfo))
+
+    // Subscribe to comments channel for new comments and updates
+    console.log("Subscribe to: ", this.props.user.userInfo.id + '_HUNT_UPDATE')
+    pubnub.subscribe({
+      channels: [
+        this.props.user.userInfo.id + '_HUNT_UPDATE',
+        this.props.user.userInfo.id + '_HUNT_DELETED',
+        this.props.user.userInfo.id + '_IDEA_ADDED',
+        this.props.user.userInfo.id + '_IDEA_UPDATED',
+        this.props.user.userInfo.id + '_IDEA_DELETED'
+      ]
+    });
+
     this.registerPushNotification();
     this.props.getFeedoList(this.state.tabIndex)
     this.props.getInvitedFeedList()
@@ -147,6 +161,10 @@ class HomeScreen extends React.Component {
 
   componentWillUnmount() {
     AppState.removeEventListener('change', this.onHandleAppStateChange);
+
+    // pubnub.unsubscribe({
+    //   channels: [this.props.user.userInfo.id + '_HUNT_UPDATE'],
+    // });
   }
 
   static getDerivedStateFromProps(nextProps, prevState) {

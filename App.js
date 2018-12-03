@@ -99,7 +99,7 @@ export default class Root extends React.Component {
           }
       },
       message: function(response) {
-
+        console.log('PUBNUB_RESPONSE: ', response)
         if (response.message.action === 'COMMENT_ADDED' || response.message.action === 'COMMENT_EDITED' || response.message.action === 'COMMENT_DELETED') {
           console.log("refreshing comments")
           store.dispatch(getCardComments(response.message.data.ideaId))

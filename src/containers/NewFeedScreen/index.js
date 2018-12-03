@@ -46,6 +46,7 @@ import DocumentList from '../../components/DocumentListComponent'
 import TagCreateScreen from '../TagCreateScreen'
 import { TAGS_FEATURE } from '../../service/api'
 import Analytics from '../../lib/firebase'
+import pubnub from '../../lib/pubnub'
 
 // const ATTACHMENT_ICON = require('../../../assets/images/Attachment/Blue.png')
 // const IMAGE_ICON = require('../../../assets/images/Image/Blue.png')
@@ -80,7 +81,7 @@ class NewFeedScreen extends React.Component {
   }
 
   componentDidMount() {
-    Analytics.setCurrentScreen('NewFeedScreen')
+    Analytics.setCurrentScreen('NewFeedScreen')    
   }
 
   UNSAFE_componentWillReceiveProps(nextProps) {
