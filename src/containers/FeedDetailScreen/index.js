@@ -606,6 +606,10 @@ class FeedDetailScreen extends React.Component {
         this.props.deleteDummyCard('null', 1)
       }
 
+      if (this.state.currentActionType === ACTION_CARD_MOVE) {
+        this.props.moveDummyCard('null', 'null', 1)
+      }
+
       this.setState((state) => { 
         let filterIdeas = this.props.feedo.currentFeed.ideas;
         for(let i = 0; i < this.userActions.length; i ++) {

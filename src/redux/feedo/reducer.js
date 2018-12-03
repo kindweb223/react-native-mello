@@ -1372,14 +1372,22 @@ export default function feedo(state = initialState, action = {}) {
       const { currentFeed, feedoList } = state
       const { ideaId, huntId, type } = action.payload;
 
-      const ideas = filter(currentFeed.ideas, idea => idea.id !== ideaId);
-      const movedCard = find(currentFeed.ideas, idea => idea.id === ideaId);
+      let ideas = []
+      let restFeedoList = []
+      let dummyMoveCard = {}
 
-      const restFeedoList = filter(feedoList, feed => feed.id !== currentFeed.id)
-      const moveToFeedIndex = findIndex(restFeedoList, feed => feed.id === huntId)
+      if (type === 0) {
+        ideas = filter(currentFeed.ideas, idea => idea.id !== ideaId);
+        const movedCard = find(currentFeed.ideas, idea => idea.id === ideaId);
 
-      if (moveToFeedIndex !== -1) {
-        restFeedoList[moveToFeedIndex].ideas.push(movedCard);
+        estFeedoList = filter(feedoList, feed => feed.id !== currentFeed.id)
+        const moveToFeedIndex = findIndex(restFeedoList, feed => feed.id === huntId)
+
+        if (moveToFeedIndex !== -1) {
+          restFeedoList[moveToFeedIndex].ideas.push(movedCard);
+        }
+
+        dummyMoveCard = { ideaId, feedId: huntId }
       }
 
       return {
@@ -1389,10 +1397,7 @@ export default function feedo(state = initialState, action = {}) {
           ...currentFeed,
           ideas,
         },
-        dummyMoveCard: {
-          ideaId,
-          feedId: huntId,
-        },
+        dummyMoveCard,
         feedoList: [
           ...restFeedoList,
           {
