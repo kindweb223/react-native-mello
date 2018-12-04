@@ -171,7 +171,7 @@ class HomeScreen extends React.Component {
           const filteredIdeas = orderBy(
             filter(item.ideas, idea => idea.coverImage !== null && idea.coverImage !== ''),
             ['publishedDate'],
-            ['asc']
+            ['desc']
           )
 
           let coverImages = []
