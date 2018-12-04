@@ -194,7 +194,7 @@ class HomeScreen extends React.Component {
         feedoList = orderBy(
           filter(feedoList, item => item.status === 'PUBLISHED'),
           ['publishedDate'],
-          ['desc']
+          ['asc']
         )
         
         if (prevState.tabIndex === 1) {
