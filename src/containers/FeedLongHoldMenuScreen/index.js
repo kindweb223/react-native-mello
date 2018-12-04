@@ -59,7 +59,7 @@ class FeedLongHoldMenuScreen extends React.Component {
       case 'Edit':
         this.props.handleEditFeed(this.props.feedData.id)
         return;
-      case 'Leave Feed':
+      case 'Leave Flow':
         this.props.handleLeaveFeed(this.props.feedData.id)
         return;
     }

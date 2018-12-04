@@ -487,7 +487,7 @@ class FeedDetailScreen extends React.Component {
         this.setState({ feedoViewMode: CONSTANTS.FEEDO_FROM_MAIN })
         this.handleEdit(feedId);
         return
-      case 'Leave Feed':
+      case 'Leave Flow':
         Analytics.logEvent('feed_detail_leave_feed', {})
 
         this.props.setFeedDetailAction({
