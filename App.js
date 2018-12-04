@@ -77,9 +77,11 @@ import NotificationScreen from './src/containers/NotificationScreen'
 
 import { 
   getCardComments,
+  getCard
 } from './src/redux/card/actions'
 import {
-  getFeedDetail
+  getFeedDetail,
+  pubnubDeleteFeed
 } from './src/redux/feedo/actions'
 
 const store = createStore(reducers, applyMiddleware(thunk, promiseMiddleware))
@@ -109,6 +111,12 @@ export default class Root extends React.Component {
         }
         if (response.message.action === 'HUNT_UPDATED') {
           store.dispatch(getFeedDetail(response.message.data.huntId))
+        }
+        if (response.message.action === 'HUNT_DELETED') {
+          store.dispatch(pubnubDeleteFeed(response.message.data.huntId))
+        }
+        if (response.message.action === 'IDEA_UPDATED') {
+          store.dispatch(getCard(response.message.data.ideaId))
         }
       },
       presence: function(presenceEvent) {

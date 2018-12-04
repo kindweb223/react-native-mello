@@ -1348,14 +1348,28 @@ export default function feedo(state = initialState, action = {}) {
         error: action.error.response,
       }
     }
-    case types.PUBNUB_UPDATE_FEED: {
-      const feedData = action.payload
+    case types.PUBNUB_DELETE_FEED: {
+      const feedId = action.payload
       const { feedoList } = state
-      const restFeedoList = filter(feedoList, feed => feed.id !== feedData.id )
+      const restFeedoList = filter(feedoList, feed => feed.id !== feedId )
       return {
         ...state,
-        loading: types.PUBNUB_UPDATE_FEED,
-        feedoList: [...restFeedoList, feedData]
+        loading: types.PUBNUB_DELETE_FEED,
+        feedoList: restFeedoList
+      }
+    }
+    case cardTypes.GET_CARD_FULFILLED: {
+      const { data } = action.result
+      const { feedoList } = state
+
+      const currentFeed = find(feedoList, feed => feed.id !== data.huntId )
+      const restIdeas = filter(feedoList.ideas, idea => idea.id !== data.id )
+      const newCurrentFeed = {...currentFeed, ideas: [...restIdeas, data]}
+      const restFeedoList = filter(feedoList, feed => feed.id !== data.huntId )
+      return {
+        ...state,
+        loading: types.GET_CARD_FULFILLED,
+        feedoList: [...restFeedoList, newCurrentFeed]
       }
     }
     default:
