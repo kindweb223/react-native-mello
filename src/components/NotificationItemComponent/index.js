@@ -22,7 +22,7 @@ const NotificationItemComponent = ({ data, hideTumbnail, updateInvitation }) => 
   const filteredIdeas = _.orderBy(
     _.filter(data.ideas, idea => idea.coverImage !== null && idea.coverImage !== ''),
     ['publishedDate'],
-    ['asc']
+    ['desc']
   )
 
   let coverImages = []

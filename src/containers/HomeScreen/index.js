@@ -171,7 +171,7 @@ class HomeScreen extends React.Component {
           const filteredIdeas = orderBy(
             filter(item.ideas, idea => idea.coverImage !== null && idea.coverImage !== ''),
             ['publishedDate'],
-            ['asc']
+            ['desc']
           )
 
           let coverImages = []
@@ -194,7 +194,7 @@ class HomeScreen extends React.Component {
         feedoList = orderBy(
           filter(feedoList, item => item.status === 'PUBLISHED'),
           ['publishedDate'],
-          ['desc']
+          ['asc']
         )
         
         if (prevState.tabIndex === 1) {
