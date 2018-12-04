@@ -278,9 +278,24 @@ class SelectHuntScreen extends React.Component {
                 inputStyle={{
                   backgroundColor: 'rgba(142,142,147,0.12)',
                   padding: 0,
+                  marginRight: 10,
                   height: 36,
                   borderRadius: 10,
+                  fontSize: 16
                 }}
+                cancelButtonStyle={{
+                  alignItems: 'flex-start',
+                  justifyContent: 'center'
+                }}
+                cancelButtonWidth={80}
+                cancelButtonTextStyle={{
+                  color: COLORS.PURPLE,
+                  fontSize: 16,
+                  padding: 0
+                }}
+                searchIconCollapsedMargin={35}
+                searchIconExpandedMargin={20}
+                placeholderExpandedMargin={40}
                 backgroundColor='transparent'
                 titleCancelColor={COLORS.DARK_GREY}
                 onChangeText={(text) => this.setState({filterText: text})}
@@ -290,9 +305,9 @@ class SelectHuntScreen extends React.Component {
             </View>
             {this.renderCreateNewFeed}
             <FlatList
-              style={{marginTop: 11, marginBottom: 26}}
+              style={{marginTop: 11}}
               keyboardShouldPersistTaps='handled'
-              contentContainerStyle={{paddingHorizontal: 13}}
+              contentContainerStyle={{ paddingHorizontal: 13, paddingBottom: 26 }}
               data={feedoList}
               renderItem={this.renderItem.bind(this)}
               keyExtractor={(item, index) => index.toString()}
