@@ -608,3 +608,23 @@ export const deleteActivityFeed = (userId, activityId) => {
     payload: activityId
   };
 }
+
+/**
+ * Delete dummy card until toaster is hidden
+ */
+export const deleteDummyCard = (ideaId, type) => {
+  return {
+    type: types.DEL_DUMMY_CARD,
+    payload: { ideaId, type }
+  };
+}
+
+/**
+ * Move dummy card until toaster is hidden
+ */
+export const moveDummyCard = (ideaId, huntId, type) => {
+  return {
+    type: types.MOVE_DUMMY_CARD,
+    payload: { ideaId, huntId, type }
+  };
+}
