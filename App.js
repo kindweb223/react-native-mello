@@ -79,7 +79,7 @@ import {
   getCardComments,
 } from './src/redux/card/actions'
 import {
-  pubnubUpdateFeed
+  getFeedDetail
 } from './src/redux/feedo/actions'
 
 const store = createStore(reducers, applyMiddleware(thunk, promiseMiddleware))
@@ -108,7 +108,7 @@ export default class Root extends React.Component {
           store.dispatch(getCardComments(response.message.data.ideaId))
         }
         if (response.message.action === 'HUNT_UPDATED') {
-          store.dispatch(pubnubUpdateFeed(response.message.data.huntResponse))
+          store.dispatch(getFeedDetail(response.message.data.huntId))
         }
       },
       presence: function(presenceEvent) {

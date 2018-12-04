@@ -156,10 +156,27 @@ export default function feedo(state = initialState, action = {}) {
       }
     case types.GET_FEED_DETAIL_FULFILLED: {
       const { data } = action.result
+      const { feedoList, invitedFeedList, archivedFeedList } = state
+      const restFeedoList = filter(feedoList, feed => feed.id !== data.id)
+      const restInvitedFeedoList = filter(feedoList, feed => feed.id !== data.id)
+      const restArchivedFeedoList = filter(feedoList, feed => feed.id !== data.id)
+
       return {
         ...state,
         loading: types.GET_FEED_DETAIL_FULFILLED,
         currentFeed: data,
+        feedoList: [
+          ...restFeedoList,
+          data
+        ],
+        invitedFeedList: [
+          ...restInvitedFeedoList,
+          data
+        ],
+        archivedFeedList: [
+          ...restArchivedFeedoList,
+          data
+        ]
       }
     }
     case types.GET_FEED_DETAIL_REJECTED: {
