@@ -62,7 +62,7 @@ class FeedFilterScreen extends React.Component {
       const filteredIdeas = _.orderBy(
         _.filter(item.ideas, idea => idea.coverImage !== null && idea.coverImage !== ''),
         ['publishedDate'],
-        ['asc']
+        ['desc']
       )
 
       let coverImages = []

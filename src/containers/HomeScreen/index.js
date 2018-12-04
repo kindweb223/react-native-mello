@@ -170,9 +170,9 @@ class HomeScreen extends React.Component {
       (feedo.loading === 'RESTORE_ARCHIVE_FEED_FULFILLED') || (feedo.loading === 'ADD_DUMMY_FEED'))) ||
       (feedo.loading === 'DELETE_CARD_FULFILLED') || (feedo.loading === 'MOVE_CARD_FULFILLED') || (feedo.loading === 'UPDATE_CARD_FULFILLED') ||
       (feedo.loading === 'READ_ACTIVITY_FEED_FULFILLED') || (feedo.loading === 'DEL_ACTIVITY_FEED_FULFILLED') ||
-      (feedo.loading === 'PUBNUB_DELETE_FEED'))
+      (feedo.loading === 'PUBNUB_DELETE_FEED') || (feedo.loading === 'UPDATE_CARD_FULFILLED') ||
+      (feedo.loading === 'DEL_DUMMY_CARD') || (feedo.loading === 'MOVE_DUMMY_CARD'))
     {
-
       let feedoList = []
       let emptyState = prevState.emptyState
 
@@ -181,7 +181,7 @@ class HomeScreen extends React.Component {
           const filteredIdeas = orderBy(
             filter(item.ideas, idea => idea.coverImage !== null && idea.coverImage !== ''),
             ['publishedDate'],
-            ['asc']
+            ['desc']
           )
 
           let coverImages = []

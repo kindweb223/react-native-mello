@@ -19,7 +19,9 @@ const initialState = {
   archivedFeedList: [],
   invitedFeedList: [],
   activityFeedList: [],
-  activityData: {}
+  activityData: {},
+  dummyDelCard: {},
+  dummyMoveCard: {}
 };
 
 export default function feedo(state = initialState, action = {}) {
@@ -1052,11 +1054,10 @@ export default function feedo(state = initialState, action = {}) {
      * delete a card
      */
     case cardTypes.DELETE_CARD_FULFILLED: {
-      const { currentFeed, feedoList } = state
+      const { currentFeed } = state
       const ideaId = action.payload;
       const ideas = filter(currentFeed.ideas, idea => idea.id !== ideaId);
 
-      const restFeedoList = filter(feedoList, feed => feed.id !== currentFeed.id)
       const newCurrentFeed = {
         ...currentFeed,
         ideas,
@@ -1065,11 +1066,7 @@ export default function feedo(state = initialState, action = {}) {
       return {
         ...state,
         loading: 'DELETE_CARD_FULFILLED',
-        currentFeed: newCurrentFeed,
-        feedoList: [
-          ...restFeedoList,
-          newCurrentFeed
-        ]
+        currentFeed: newCurrentFeed
       }
     }
 
@@ -1077,18 +1074,10 @@ export default function feedo(state = initialState, action = {}) {
      * move a card
      */
     case cardTypes.MOVE_CARD_FULFILLED: {
-      const { currentFeed, feedoList } = state
-      const { ideaId, huntId } = action.payload;
+      const { currentFeed } = state
+      const { ideaId } = action.payload;
 
       const ideas = filter(currentFeed.ideas, idea => idea.id !== ideaId);
-      const movedCard = find(currentFeed.ideas, idea => idea.id === ideaId);
-
-      const restFeedoList = filter(feedoList, feed => feed.id !== currentFeed.id)
-      const moveToFeedIndex = findIndex(restFeedoList, feed => feed.id === huntId)
-
-      if (moveToFeedIndex !== -1) {
-        restFeedoList[moveToFeedIndex].ideas.push(movedCard);
-      }
 
       return {
         ...state,
@@ -1096,14 +1085,7 @@ export default function feedo(state = initialState, action = {}) {
         currentFeed: {
           ...currentFeed,
           ideas,
-        },
-        feedoList: [
-          ...restFeedoList,
-          {
-            ...currentFeed,
-            ideas,
-          }
-        ],
+        }
       }
     }
 
@@ -1346,6 +1328,104 @@ export default function feedo(state = initialState, action = {}) {
         ...state,
         loading: types.DEL_ACTIVITY_FEED_REJECTED,
         error: action.error.response,
+      }
+    }
+    case types.DEL_DUMMY_CARD: {
+      const { currentFeed, feedoList } = state
+      const { ideaId , type } = action.payload;
+
+      let newCurrentFeed = {}
+      let dummyDelCard = {}
+      if (type === 0) { //delete
+        const ideas = filter(currentFeed.ideas, idea => idea.id !== ideaId);
+        dummyDelCard = filter(currentFeed.ideas, idea => idea.id === ideaId);
+        newCurrentFeed = {
+          ...currentFeed,
+          ideas,
+        }
+      } else {  //restore
+        currentFeed.ideas.push(state.dummyDelCard[0])
+        dummyDelCard = {}
+        newCurrentFeed = currentFeed
+      }
+
+      const restFeedoList = filter(feedoList, feed => feed.id !== currentFeed.id)
+
+      return {
+        ...state,
+        loading: types.DEL_DUMMY_CARD,
+        dummyDelCard,
+        currentFeed: newCurrentFeed,
+        feedoList: [
+          ...restFeedoList,
+          newCurrentFeed
+        ]
+      }
+    }
+    /**
+     * move dummy card
+     */
+    case types.MOVE_DUMMY_CARD: {
+      const { currentFeed, feedoList } = state
+      const { ideaId, huntId, type } = action.payload;
+
+      let dummyMoveCard = {}
+      let newFeedList = []
+      let newCurrentFeed = {}
+      let restFeedoList = []
+
+      if (type === 0) {
+        restFeedoList = filter(feedoList, feed => feed.id !== currentFeed.id)
+
+        const ideas = filter(currentFeed.ideas, idea => idea.id !== ideaId)
+        const movedCard = find(currentFeed.ideas, idea => idea.id === ideaId)
+        
+        const moveToFeedIndex = findIndex(restFeedoList, feed => feed.id === huntId)
+
+        if (moveToFeedIndex !== -1) {
+          restFeedoList[moveToFeedIndex].ideas.push(movedCard);
+        }
+
+        newCurrentFeed = {
+          ...currentFeed,
+          ideas
+        }
+
+        newFeedList = [
+          ...restFeedoList,
+          newCurrentFeed
+        ]       
+
+        dummyMoveCard = { ideaId, feedId: huntId, oldFeed: currentFeed, newFeed: restFeedoList[moveToFeedIndex], movedCard }
+      } else {
+        dummyMoveCard = state.dummyMoveCard
+        restFeedoList = filter(feedoList, feed => feed.id !== dummyMoveCard.feedId)
+
+        const ideas = filter(dummyMoveCard.newFeed.ideas, idea => idea.id !== dummyMoveCard.ideaId)
+        const movedFeed = {
+          ...dummyMoveCard.newFeed,
+          ideas
+        }
+        
+        const originalFeedIndex = findIndex(restFeedoList, feed => feed.id === currentFeed.id)
+
+        if (originalFeedIndex !== -1) {
+          restFeedoList[originalFeedIndex].ideas.push(dummyMoveCard.movedCard);
+        }
+
+        newFeedList = [
+          ...restFeedoList,
+          movedFeed
+        ]
+
+        dummyMoveCard = {}
+      }
+
+      return {
+        ...state,
+        loading: 'MOVE_DUMMY_CARD',
+        dummyMoveCard,
+        feedoList: newFeedList
       }
     }
     case types.PUBNUB_DELETE_FEED: {
