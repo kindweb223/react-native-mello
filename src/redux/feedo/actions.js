@@ -638,3 +638,48 @@ export const moveDummyCard = (ideaId, huntId, type) => {
     payload: { ideaId, huntId, type }
   };
 }
+
+/**
+ * Get Feed detail from Pubnub
+ */
+export const pubnubGetFeedDetail = (feedId) => {
+  let url = `hunts/${feedId}`
+
+  return {
+    types: [types.PUBNUB_GET_FEED_DETAIL_PENDING, types.PUBNUB_GET_EED_DETAIL_FULFILLED, types.PUBNUB_GET_FEED_DETAIL_REJECTED],
+    promise: axios({
+      method: 'get',
+      url: url
+    }),
+  };
+}
+
+/**
+ * Like a card from Pubnub
+ */
+export const pubnubLikeCard = (ideaId) => {
+  let url = `ideas/${ideaId}/likes`
+  return {
+    types: [types.PUBNUB_LIKE_CARD_PENDING, types.PUBNUB_LIKE_CARD_FULFILLED, types.PUBNUB_LIKE_CARD_REJECTED],
+    promise: axios({
+      method: 'post',
+      url: url,
+    }),
+    payload: ideaId,
+  };
+}
+
+/**
+ * UnLike a card from Pubnub
+ */
+export const pubnubUnLikeCard = (ideaId) => {
+  let url = `ideas/${ideaId}/likes`
+  return {
+    types: [types.PUBNUB_UNLIKE_CARD_PENDING, types.PUBNUB_UNLIKE_CARD_FULFILLED, types.PUBNUB_UNLIKE_CARD_REJECTED],
+    promise: axios({
+      method: 'delete',
+      url: url,
+    }),
+    payload: ideaId,
+  };
+}

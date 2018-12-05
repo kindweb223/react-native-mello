@@ -161,7 +161,7 @@ export default function card(state = initialState, action = {}) {
     case types.LIKE_CARD_FULFILLED: {
       return {
         ...state,
-        loading: types.LIKE_CARD_FULFILLED,
+        loading: types.LIKE_CARD_FULFILLED
       }
     }
     case types.LIKE_CARD_REJECTED: {

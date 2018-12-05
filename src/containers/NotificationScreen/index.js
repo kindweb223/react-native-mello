@@ -133,9 +133,11 @@ class NotificationScreen extends React.Component {
 
     if (this.props.feedo.loading !== 'GET_FEED_DETAIL_FULFILLED' && feedo.loading === 'GET_FEED_DETAIL_FULFILLED') {
       this.prevFeedo = feedo.currentFeed;
-      const ideaIndex = _.findIndex(feedo.currentFeed.ideas, idea => idea.id === selectedActivity.metadata.IDEA_ID)
-      if (ideaIndex !== -1) {
-        this.props.getCard(selectedActivity.metadata.IDEA_ID)
+      if (!_.isEmpty(selectedActivity)) {
+        const ideaIndex = _.findIndex(feedo.currentFeed.ideas, idea => idea.id === selectedActivity.metadata.IDEA_ID)
+        if (ideaIndex !== -1) {
+          this.props.getCard(selectedActivity.metadata.IDEA_ID)
+        }
       }
     }
 

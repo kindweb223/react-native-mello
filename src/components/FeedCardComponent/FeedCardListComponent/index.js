@@ -7,7 +7,7 @@ import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 
 import Entypo from 'react-native-vector-icons/Entypo'
-import { filter } from 'lodash'
+import _ from 'lodash'
 
 import { getDurationFromNow } from '../../../service/dateUtils'
 import styles from './styles'
@@ -28,10 +28,10 @@ class FeedCardListComponent extends React.Component {
 
   render() {
     const { invitees, idea, feedo } = this.props;
-    const invitee = filter(invitees, item => item.id === idea.inviteeId)[0]
+    const invitee = _.find(invitees, item => item.id === idea.inviteeId)
     let isOnlyInvitee = false
     
-    if (invitees.length === 1 && invitees[0].userProfile.id === invitee.userProfile.id) {
+    if (invitees.length === 1 && invitee) {
       isOnlyInvitee = true
     }
 
@@ -39,7 +39,7 @@ class FeedCardListComponent extends React.Component {
       <View style={styles.container}>
         <View style={styles.leftContainer}>
           <View>
-            {!isOnlyInvitee && (
+            {!isOnlyInvitee && invitee && (
               <View style={styles.subView}>
                 {
                   [

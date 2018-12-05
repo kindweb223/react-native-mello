@@ -80,8 +80,10 @@ import {
   getCard
 } from './src/redux/card/actions'
 import {
-  getFeedDetail,
-  pubnubDeleteFeed
+  pubnubDeleteFeed,
+  pubnubGetFeedDetail,
+  pubnubLikeCard,
+  pubnubUnLikeCard
 } from './src/redux/feedo/actions'
 
 const store = createStore(reducers, applyMiddleware(thunk, promiseMiddleware))
@@ -110,13 +112,22 @@ export default class Root extends React.Component {
           store.dispatch(getCardComments(response.message.data.ideaId))
         }
         if (response.message.action === 'HUNT_UPDATED') {
-          store.dispatch(getFeedDetail(response.message.data.huntId))
+          store.dispatch(pubnubGetFeedDetail(response.message.data.huntId))
         }
         if (response.message.action === 'HUNT_DELETED') {
           store.dispatch(pubnubDeleteFeed(response.message.data.huntId))
         }
         if (response.message.action === 'IDEA_UPDATED') {
           store.dispatch(getCard(response.message.data.ideaId))
+        }
+        if (response.message.action === 'IDEA_DELETED') {
+          store.dispatch(pubnubGetFeedDetail(response.message.data.huntId))
+        }
+        if (response.message.action === 'LIKE_ON_IDEA') {
+          store.dispatch(pubnubLikeCard(response.message.data.ideaId))
+        }
+        if (response.message.action === 'UNLIKE_ON_IDEA') {
+          store.dispatch(pubnubUnLikeCard(response.message.data.ideaId))
         }
       },
       presence: function(presenceEvent) {
