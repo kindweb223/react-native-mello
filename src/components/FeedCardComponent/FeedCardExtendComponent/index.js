@@ -32,7 +32,7 @@ class FeedCardExtendComponent extends React.Component {
     const { invitees, idea, feedo, cardType } = this.props;
     const { imageHeight } = this.state
   
-    const invitee = _find(invitees, item => item.id === idea.inviteeId)
+    const invitee = _.find(invitees, item => item.id === idea.inviteeId)
     let isOnlyInvitee = false
     
     if (invitees.length === 1 && invitee) {
