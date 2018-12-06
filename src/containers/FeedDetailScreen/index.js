@@ -421,13 +421,14 @@ class FeedDetailScreen extends React.Component {
     this.refs.masonry.clear()
     this.setState({ isMasonryView: true }, () => {
 
-      const MasonryData = ideas.map((data, i) => ({
-        key: `item_${i}`,
-        index: i,
-        data
-      }))
-  
-      this.refs.masonry.addItems(MasonryData)
+      if (ideas.length > 0) {
+        const MasonryData = ideas.map((data, i) => ({
+          key: `item_${i}`,
+          index: i,
+          data
+        }))
+        this.refs.masonry.addItems(MasonryData)
+      }
     })
   }
 
@@ -1247,7 +1248,7 @@ class FeedDetailScreen extends React.Component {
                 )}
 
                 {
-                  (!_.isEmpty(currentFeed) && currentFeed && currentFeed.ideas && currentFeed.ideas.length > 0)
+                  (!_.isEmpty(currentFeed) && currentFeed && currentFeed.ideas)
                   ? this.props.user.listDetailType === 'list'
                       ? <View style={{ paddingHorizontal: 8, visible: 'hide' }}>
                           {currentFeed.ideas.map((item, index) => (
