@@ -658,13 +658,8 @@ export const pubnubGetFeedDetail = (feedId) => {
  * Like a card from Pubnub
  */
 export const pubnubLikeCard = (ideaId) => {
-  let url = `ideas/${ideaId}/likes`
   return {
-    types: [types.PUBNUB_LIKE_CARD_PENDING, types.PUBNUB_LIKE_CARD_FULFILLED, types.PUBNUB_LIKE_CARD_REJECTED],
-    promise: axios({
-      method: 'post',
-      url: url,
-    }),
+    type: types.PUBNUB_LIKE_CARD_FULFILLED,
     payload: ideaId,
   };
 }
@@ -673,13 +668,8 @@ export const pubnubLikeCard = (ideaId) => {
  * UnLike a card from Pubnub
  */
 export const pubnubUnLikeCard = (ideaId) => {
-  let url = `ideas/${ideaId}/likes`
   return {
-    types: [types.PUBNUB_UNLIKE_CARD_PENDING, types.PUBNUB_UNLIKE_CARD_FULFILLED, types.PUBNUB_UNLIKE_CARD_REJECTED],
-    promise: axios({
-      method: 'delete',
-      url: url,
-    }),
+    type: types.PUBNUB_UNLIKE_CARD_FULFILLED,
     payload: ideaId,
   };
 }

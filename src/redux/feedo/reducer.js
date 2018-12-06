@@ -1002,7 +1002,7 @@ export default function feedo(state = initialState, action = {}) {
       const ideaIndex = findIndex(currentFeed.ideas, idea => idea.id === ideaId);
       currentFeed.ideas[ideaIndex].metadata.likes --;
       currentFeed.ideas[ideaIndex].metadata.liked = false;
-      console.log('UNLIKE_CARD_FULFILLED : ', currentFeed);
+
       return {
         ...state,
         currentFeed: {
@@ -1506,12 +1506,6 @@ export default function feedo(state = initialState, action = {}) {
         archivedFeedList: archivedFeedList.length === restArchivedFeedoList.length ? archivedFeedList : [ ...restArchivedFeedoList, data ]
       }
     }
-    case types.PUBNUB_LIKE_CARD_PENDING: {
-      return {
-        ...state,
-        loading: types.PUBNUB_LIKE_CARD_PENDING,
-      }
-    }
     case types.PUBNUB_LIKE_CARD_FULFILLED: {
       const ideaId = action.payload
       const { currentFeed } = state
@@ -1541,19 +1535,6 @@ export default function feedo(state = initialState, action = {}) {
         currentFeed: newCurrentFeed
       }
     }
-    case types.PUBNUB_LIKE_CARD_REJECTED: {
-      return {
-        ...state,
-        loading: types.PUBNUB_LIKE_CARD_REJECTED,
-        error: action.error.response,
-      }
-    }
-    case types.PUBNUB_UNLIKE_CARD_PENDING: {
-      return {
-        ...state,
-        loading: types.PUBNUB_UNLIKE_CARD_PENDING,
-      }
-    }
     case types.PUBNUB_UNLIKE_CARD_FULFILLED: {
       const ideaId = action.payload
       const { currentFeed } = state
@@ -1581,13 +1562,6 @@ export default function feedo(state = initialState, action = {}) {
         ...state,
         loading: types.PUBNUB_UNLIKE_CARD_FULFILLED,
         currentFeed: newCurrentFeed
-      }
-    }
-    case types.PUBNUB_UNLIKE_CARD_REJECTED: {
-      return {
-        ...state,
-        loading: types.PUBNUB_UNLIKE_CARD_REJECTED,
-        error: action.error.response,
       }
     }
     default:

@@ -216,8 +216,7 @@ class FeedDetailScreen extends React.Component {
         (this.props.card.loading === 'MOVE_CARD_PENDING' && card.loading === 'MOVE_CARD_FULFILLED') ||
         (this.props.feedo.loading === 'UPDTE_FEED_INVITATION_PENDING' && feedo.loading === 'UPDTE_FEED_INVITATION_FULFILLED') ||
         (this.props.feedo.loading !== 'PUBNUB_GET_EED_DETAIL_FULFILLED' && feedo.loading === 'PUBNUB_GET_EED_DETAIL_FULFILLED') ||
-        (this.props.feedo.loading !== 'PUBNUB_LIKE_CARD_FULFILLED' && feedo.loading === 'PUBNUB_LIKE_CARD_FULFILLED') ||
-        (this.props.feedo.loading !== 'PUBNUB_UNLIKE_CARD_FULFILLED' && feedo.loading === 'PUBNUB_UNLIKE_CARD_FULFILLED') ||
+        (feedo.loading === 'PUBNUB_LIKE_CARD_FULFILLED') || (feedo.loading === 'PUBNUB_UNLIKE_CARD_FULFILLED') ||
         (feedo.loading === 'GET_CARD_FULFILLED') || (feedo.loading === 'GET_CARD_COMMENTS_FULFILLED')) {
 
       if (feedo.currentFeed.metadata.myInviteStatus === 'DECLINED') {
@@ -1173,7 +1172,7 @@ class FeedDetailScreen extends React.Component {
 
   render () {
     const { currentFeed, loading, pinText, avatars } = this.state
-    console.log('IDEAS: ', currentFeed.ideas)
+
     return (
       <SafeAreaView style={styles.safeArea}>
         <View style={styles.container}>
