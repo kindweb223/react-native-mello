@@ -1103,7 +1103,7 @@ class NewCardScreen extends React.Component {
           tags,
           files,
         } = this.props.feedo.currentFeed;  
-        this.props.updateFeed(id, headline || 'New feed', summary || '', tags, files);
+        this.props.updateFeed(id, headline || 'New flow', summary || '', tags, files);
         return;
       }
       this.isUpdateDraftCard = true;
@@ -1370,7 +1370,7 @@ class NewCardScreen extends React.Component {
           activeOpacity={0.6}
           onPress={this.onSelectFeedo.bind(this)}
         >
-          <Text style={styles.textFeedoName} numberOfLines={1}>{this.props.feedo.currentFeed.headline || 'New feed'}</Text>
+          <Text style={styles.textFeedoName} numberOfLines={1}>{this.props.feedo.currentFeed.headline || 'New flow'}</Text>
           <Entypo name="chevron-right" size={20} color={COLORS.PURPLE} />
         </TouchableOpacity>
       </View>
@@ -1560,7 +1560,7 @@ class NewCardScreen extends React.Component {
             activeOpacity={0.6}
             onPress={this.onSelectFeedo.bind(this)}
           >
-            <Text style={styles.textFeedoName} numberOfLines={1}>{this.props.feedo.currentFeed.headline || 'New feed'}</Text>
+            <Text style={styles.textFeedoName} numberOfLines={1}>{this.props.feedo.currentFeed.headline || 'New flow'}</Text>
             <Entypo name="chevron-right" size={20} color={COLORS.PURPLE} />
           </TouchableOpacity>
         </View>
