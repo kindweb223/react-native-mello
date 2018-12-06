@@ -194,7 +194,7 @@ class HomeScreen extends React.Component {
         feedoList = orderBy(
           filter(feedoList, item => item.status === 'PUBLISHED'),
           ['publishedDate'],
-          ['asc']
+          ['desc']
         )
         
         if (prevState.tabIndex === 1) {
@@ -635,7 +635,7 @@ class HomeScreen extends React.Component {
 
   handleLeaveFeed = (feedId) => {
     this.setState({ isLongHoldMenuVisible: false })
-    this.setState({ isLeave: true, toasterTitle: 'Left Mello', feedId })
+    this.setState({ isLeave: true, toasterTitle: 'Left Flow', feedId })
     this.props.addDummyFeed({ feedId, flag: 'leave' })
 
     setTimeout(() => {
@@ -800,7 +800,7 @@ class HomeScreen extends React.Component {
         cardViewMode: CONSTANTS.CARD_NEW,
         selectedIdeaInvitee: null,
       });
-    } else if (type === 'New Feed') {
+    } else if (type === 'New Flow') {
       Analytics.logEvent('dashboard_new_feed', {})
 
       this.props.setCurrentFeed({});
