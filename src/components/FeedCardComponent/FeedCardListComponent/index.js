@@ -75,15 +75,17 @@ class FeedCardListComponent extends React.Component {
             )}
           </View>
 
-          <View style={styles.commentView}>
-            <LikeComponent idea={idea} isOnlyInvitee={isOnlyInvitee} />
-            <CommentComponent 
-              idea={idea}
-              isOnlyInvitee={isOnlyInvitee}
-              currentFeed={feedo.currentFeed}
-              onComment={this.props.onComment}
-            />
-          </View>
+          {idea && (
+            <View style={styles.commentView}>
+              <LikeComponent idea={idea} isOnlyInvitee={isOnlyInvitee} />
+              <CommentComponent 
+                idea={idea}
+                isOnlyInvitee={isOnlyInvitee}
+                currentFeed={feedo.currentFeed}
+                onComment={this.props.onComment}
+              />
+            </View>
+          )}
         </View>
 
         {idea.coverImage && idea.coverImage.length && 

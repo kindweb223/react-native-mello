@@ -1480,12 +1480,16 @@ class NewCardScreen extends React.Component {
 
   get renderLikesComment() {
     const idea = _.find(this.props.feedo.currentFeed.ideas, idea => idea.id === this.props.card.currentCard.id)
-    return (
-      <View style={styles.rowContainer}>
-        <LikeComponent idea={idea} />
-        <CommentComponent idea={idea} currentFeed={this.props.feedo.currentFeed} prevPage={this.props.prevPage} />
-      </View>
-    );
+
+    if (idea) {
+      return (
+        <View style={styles.rowContainer}>
+          <LikeComponent idea={idea} />
+          <CommentComponent idea={idea} currentFeed={this.props.feedo.currentFeed} prevPage={this.props.prevPage} />
+        </View>
+      );
+    }
+    return null
   }
 
   get renderHeader() {
