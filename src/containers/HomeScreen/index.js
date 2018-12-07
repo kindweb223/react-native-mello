@@ -86,7 +86,7 @@ const TAB_STYLES = {
 }
 
 const TOASTER_DURATION = 5000
-const PAGE_COUNT = 10
+const PAGE_COUNT = 50
 
 class HomeScreen extends React.Component {
   constructor(props) {

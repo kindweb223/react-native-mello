@@ -51,7 +51,7 @@ import styles from './styles'
 
 const CLOSE_ICON = require('../../../assets/images/Close/Blue.png')
 
-const PAGE_COUNT = 10
+const PAGE_COUNT = 50
 
 const TOASTER_DURATION = 5000
 
