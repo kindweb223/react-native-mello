@@ -610,6 +610,16 @@ export const deleteActivityFeed = (userId, activityId) => {
 }
 
 /**
+ * update feed data from Pubnub event
+ */
+export const pubnubDeleteFeed = (feedId) => {
+  return {
+    type: types.PUBNUB_DELETE_FEED,
+    payload: feedId
+  };
+}
+
+/*
  * Delete dummy card until toaster is hidden
  */
 export const deleteDummyCard = (ideaId, type) => {
@@ -626,5 +636,40 @@ export const moveDummyCard = (ideaId, huntId, type) => {
   return {
     type: types.MOVE_DUMMY_CARD,
     payload: { ideaId, huntId, type }
+  };
+}
+
+/**
+ * Get Feed detail from Pubnub
+ */
+export const pubnubGetFeedDetail = (feedId) => {
+  let url = `hunts/${feedId}`
+
+  return {
+    types: [types.PUBNUB_GET_FEED_DETAIL_PENDING, types.PUBNUB_GET_FEED_DETAIL_FULFILLED, types.PUBNUB_GET_FEED_DETAIL_REJECTED],
+    promise: axios({
+      method: 'get',
+      url: url
+    }),
+  };
+}
+
+/**
+ * Like a card from Pubnub
+ */
+export const pubnubLikeCard = (ideaId) => {
+  return {
+    type: types.PUBNUB_LIKE_CARD_FULFILLED,
+    payload: ideaId,
+  };
+}
+
+/**
+ * UnLike a card from Pubnub
+ */
+export const pubnubUnLikeCard = (ideaId) => {
+  return {
+    type: types.PUBNUB_UNLIKE_CARD_FULFILLED,
+    payload: ideaId,
   };
 }

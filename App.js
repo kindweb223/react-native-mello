@@ -77,7 +77,15 @@ import NotificationScreen from './src/containers/NotificationScreen'
 
 import { 
   getCardComments,
+  getCard
 } from './src/redux/card/actions'
+import {
+  pubnubDeleteFeed,
+  pubnubGetFeedDetail,
+  pubnubLikeCard,
+  pubnubUnLikeCard,
+  getInvitedFeedList
+} from './src/redux/feedo/actions'
 
 const store = createStore(reducers, applyMiddleware(thunk, promiseMiddleware))
 
@@ -99,10 +107,31 @@ export default class Root extends React.Component {
           }
       },
       message: function(response) {
-console.log('STORE: ', store)
+        console.log('PUBNUB_RESPONSE: ', response)
         if (response.message.action === 'COMMENT_ADDED' || response.message.action === 'COMMENT_EDITED' || response.message.action === 'COMMENT_DELETED') {
           console.log("refreshing comments")
           store.dispatch(getCardComments(response.message.data.ideaId))
+        }
+        if (response.message.action === 'HUNT_UPDATED') {
+          store.dispatch(pubnubGetFeedDetail(response.message.data.huntId))
+        }
+        if (response.message.action === 'HUNT_DELETED') {
+          store.dispatch(pubnubDeleteFeed(response.message.data.huntId))
+        }
+        if (response.message.action === 'IDEA_UPDATED') {
+          store.dispatch(getCard(response.message.data.ideaId))
+        }
+        if (response.message.action === 'IDEA_DELETED') {
+          store.dispatch(pubnubGetFeedDetail(response.message.data.huntId))
+        }
+        if (response.message.action === 'LIKE_ON_IDEA') {
+          store.dispatch(pubnubLikeCard(response.message.data.ideaId))
+        }
+        if (response.message.action === 'UNLIKE_ON_IDEA') {
+          store.dispatch(pubnubUnLikeCard(response.message.data.ideaId))
+        }
+        if (response.message.action === 'USER_INVITED_TO_HUNT') {
+          store.dispatch(getInvitedFeedList())
         }
       },
       presence: function(presenceEvent) {

@@ -67,7 +67,6 @@ class ProfileScreen extends React.Component {
 
   componentDidMount() {
     Analytics.setCurrentScreen('ProfileScren')
-    console.log('PPP: ', this.props.user.userInfo.imageUrl)
 
     this.setState({ userInfo: this.props.user.userInfo })
   }

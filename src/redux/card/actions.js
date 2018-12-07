@@ -171,6 +171,7 @@ export const getCardComments = (id) => {
       method: 'get',
       url: url,
     }),
+    payload: id
   };
 }
 
@@ -383,5 +384,3 @@ export const getOpenGraph = (urlPath, isSharing = false) => {
     }),
   };
 }
-
-

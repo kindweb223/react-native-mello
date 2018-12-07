@@ -25,6 +25,7 @@ import * as R from 'ramda'
 import { find, filter, orderBy } from 'lodash'
 import DeviceInfo from 'react-native-device-info';
 
+import pubnub from '../../lib/pubnub'
 import Analytics from '../../lib/firebase'
 
 import DashboardNavigationBar from '../../navigations/DashboardNavigationBar'
@@ -135,6 +136,13 @@ class HomeScreen extends React.Component {
 
     const userInfo = await AsyncStorage.getItem('userInfo')
     this.props.setUserInfo(JSON.parse(userInfo))
+
+    // Subscribe to comments channel for new comments and updates
+    console.log("Subscribe to: ", this.props.user.userInfo.eventSubscriptionToken)
+    pubnub.subscribe({
+      channels: [this.props.user.userInfo.eventSubscriptionToken]
+    });
+
     this.registerPushNotification();
     this.props.getFeedoList(this.state.tabIndex)
     this.props.getInvitedFeedList()
@@ -159,9 +167,12 @@ class HomeScreen extends React.Component {
       (feedo.loading === 'ADD_HUNT_TAG_FULFILLED') || (feedo.loading === 'REMOVE_HUNT_TAG_FULFILLED') ||
       (feedo.loading === 'PIN_FEED_FULFILLED') || (feedo.loading === 'UNPIN_FEED_FULFILLED') ||
       (feedo.loading === 'RESTORE_ARCHIVE_FEED_FULFILLED') || (feedo.loading === 'ADD_DUMMY_FEED'))) ||
-      (feedo.loading === 'DEL_DUMMY_CARD') || (feedo.loading === 'MOVE_DUMMY_CARD') || 
-      (feedo.loading === 'UPDATE_CARD_FULFILLED') ||
-      (feedo.loading === 'READ_ACTIVITY_FEED_FULFILLED') || (feedo.loading === 'DEL_ACTIVITY_FEED_FULFILLED'))
+      (feedo.loading === 'PUBNUB_GET_FEED_DETAIL_FULFILLED') || (feedo.loading === 'DELETE_CARD_FULFILLED') || 
+      (feedo.loading === 'MOVE_CARD_FULFILLED') || (feedo.loading === 'UPDATE_CARD_FULFILLED') ||
+      (feedo.loading === 'READ_ACTIVITY_FEED_FULFILLED') || (feedo.loading === 'DEL_ACTIVITY_FEED_FULFILLED') ||
+      (feedo.loading === 'PUBNUB_DELETE_FEED') || 
+      (feedo.loading === 'UPDATE_CARD_FULFILLED') || (feedo.loading === 'GET_CARD_FULFILLED') ||
+      (feedo.loading === 'DEL_DUMMY_CARD') || (feedo.loading === 'MOVE_DUMMY_CARD'))
     {
       let feedoList = []
       let emptyState = prevState.emptyState
@@ -197,6 +208,10 @@ class HomeScreen extends React.Component {
           ['desc']
         )
         
+        if (prevState.tabIndex === 0) {
+          feedoList = filter(feedoList, item => item.metadata.owner)
+        }
+
         if (prevState.tabIndex === 1) {
           feedoList = filter(feedoList, item => item.metadata.myInviteStatus !== 'INVITED' && item.owner.id !== user.userInfo.id)
         }
@@ -227,7 +242,7 @@ class HomeScreen extends React.Component {
     if (feedo.loading === 'GET_INVITED_FEEDO_LIST_FULFILLED') {
       return {
         invitedFeedList: feedo.invitedFeedList,
-        badgeCount: feedo.invitedFeedList.length
+        badgeCount: feedo.activityData.unreadCount + feedo.invitedFeedList.length
       }
     }
 
