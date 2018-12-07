@@ -126,13 +126,15 @@ class NotificationScreen extends React.Component {
 
     if (this.props.feedo.loading !== 'READ_ACTIVITY_FEED_FULFILLED' && feedo.loading === 'READ_ACTIVITY_FEED_FULFILLED') {
       if (!_.isEmpty(selectedActivity)) {
-        console.log('selectedActivity.activityTypeEnum: ', selectedActivity.activityTypeEnum)
+        console.log('selectedActivity.activityTypeEnum: ', selectedActivity)
         Analytics.logEvent('notification_read_activity', {})
         if (selectedActivity.activityTypeEnum === 'NEW_IDEA_ADDED' || selectedActivity.activityTypeEnum === 'USER_EDITED_IDEA') {
           this.props.getFeedDetail(selectedActivity.metadata.HUNT_ID)
         } else if (selectedActivity.activityTypeEnum === 'NEW_COMMENT_ON_IDEA') {
           this.onSelectNewComment(selectedActivity)
         } else if (selectedActivity.activityTypeEnum === 'NEW_LIKE_ON_IDEA') {
+          this.props.getFeedDetail(selectedActivity.metadata.HUNT_ID)
+        } else if (selectedActivity.activityTypeEnum === 'USER_JOINED_HUNT') {
           this.props.getFeedDetail(selectedActivity.metadata.HUNT_ID)
         }
       }
@@ -241,7 +243,7 @@ class NotificationScreen extends React.Component {
           autoClose={true}
           right={swipeoutBtns}
         > 
-          <ActivityFeedComponent data={data} onReadActivity={() => this.onReadActivity(data)} />
+          <ActivityFeedComponent user={this.props.user} data={data} onReadActivity={() => this.onReadActivity(data)} />
         </Swipeout>
       </View>
     );
