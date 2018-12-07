@@ -47,6 +47,7 @@ export default class CommentComponent extends React.Component {
     const {
       comments,
     } = this.props.idea.metadata;
+
     return (
       <TouchableOpacity 
         style={styles.buttonWrapper}

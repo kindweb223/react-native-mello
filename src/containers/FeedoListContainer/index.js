@@ -27,20 +27,21 @@ class ListRow extends React.Component {
   }
 
   componentDidMount() {
-    Animated.timing(this.state.scaleValue, {
-      toValue: 1,
-      duration: 150,
-      delay: this.props.index * 100
-    }).start()
+    // Animated.timing(this.state.scaleValue, {
+    //   toValue: 1,
+    //   duration: 150,
+    //   delay: this.props.index * 100
+    // }).start()
   }
 
-  render() {
-    const { item } = this.props
-    
+  render() {    
     return (
-      <Animated.View style={{ opacity: this.state.scaleValue }}>
+      // <Animated.View style={{ opacity: this.state.scaleValue }}>
+      //   { this.props.children }
+      // </Animated.View>
+      <View>
         { this.props.children }
-      </Animated.View>
+      </View>
     )
   }
 }

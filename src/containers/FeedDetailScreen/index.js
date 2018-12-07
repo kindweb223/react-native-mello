@@ -214,14 +214,17 @@ class FeedDetailScreen extends React.Component {
         (this.props.card.loading === 'UPDATE_CARD_PENDING' && card.loading === 'UPDATE_CARD_FULFILLED') || 
         (this.props.card.loading === 'DELETE_CARD_PENDING' && card.loading === 'DELETE_CARD_FULFILLED') ||
         (this.props.card.loading === 'MOVE_CARD_PENDING' && card.loading === 'MOVE_CARD_FULFILLED') ||
-        (this.props.feedo.loading === 'UPDTE_FEED_INVITATION_PENDING' && feedo.loading === 'UPDTE_FEED_INVITATION_FULFILLED')) {
+        (this.props.feedo.loading === 'UPDTE_FEED_INVITATION_PENDING' && feedo.loading === 'UPDTE_FEED_INVITATION_FULFILLED') ||
+        (feedo.loading === 'PUBNUB_GET_FEED_DETAIL_FULFILLED') ||
+        (feedo.loading === 'PUBNUB_LIKE_CARD_FULFILLED') || (feedo.loading === 'PUBNUB_UNLIKE_CARD_FULFILLED') ||
+        (feedo.loading === 'GET_CARD_FULFILLED') || (feedo.loading === 'GET_CARD_COMMENTS_FULFILLED')) {
 
       if (feedo.currentFeed.metadata.myInviteStatus === 'DECLINED') {
         Actions.pop()
       }
 
       const currentFeed = feedo.currentFeed
-      let filterIdeas = currentFeed.ideas;
+      let filterIdeas = currentFeed.ideas
       for (let i = 0; i < this.userActions.length; i ++) {
         const cardInfo = this.userActions[i];
         filterIdeas = _.filter(filterIdeas, idea => idea.id !== cardInfo.ideaId)
@@ -367,7 +370,7 @@ class FeedDetailScreen extends React.Component {
     }
 
     if (filterSortType === 'date') {
-      sortIdeas = _.orderBy(filterIdeas, ['dateCreated'], ['desc'])
+      sortIdeas = _.orderBy(filterIdeas, ['publishedDate'], ['desc'])
     }
 
     if (filterSortType === 'like') {
@@ -1319,7 +1322,7 @@ class FeedDetailScreen extends React.Component {
                               </Animated.View>}
                           />
                         </View>
-                  : <View style={styles.emptyView}>
+                  :  <View style={styles.emptyView}>
                       {loading
                         ? <View style={styles.loadingView}>
                             <FeedLoadingStateComponent />

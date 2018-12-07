@@ -100,20 +100,28 @@ export default function feedo(state = initialState, action = {}) {
       const { invitedFeedList, feedoList, currentFeed } = state
 
       const restInvitedFeedList = filter(invitedFeedList, feed => feed.id !== feedId)
+      const invitedFeed = find(invitedFeedList, feed => feed.id === feedId)
 
       // Update feed list
       let updateFeed = null
       let restFeedoList = []
       if (feedoList.length > 0) {
         restFeedoList = filter(feedoList, feed => feed.id !== feedId)
-        let filterUpdateFeed = filter(feedoList, feed => feed.id === feedId)
-        updateFeed = filterUpdateFeed[0]
+        updateFeed = find(feedoList, feed => feed.id === feedId)
 
-        if (filterUpdateFeed.length > 0) {
+        if (updateFeed) {
           updateFeed = {
             ...updateFeed,
             metadata: {
               ...updateFeed.metadata,
+              myInviteStatus: 'ACCEPTED'
+            }
+          }
+        } else {
+          updateFeed = {
+            ...invitedFeed,
+            metadata: {
+              ...invitedFeed.metadata,
               myInviteStatus: 'ACCEPTED'
             }
           }
@@ -161,7 +169,7 @@ export default function feedo(state = initialState, action = {}) {
       return {
         ...state,
         loading: types.GET_FEED_DETAIL_FULFILLED,
-        currentFeed: data,
+        currentFeed: data
       }
     }
     case types.GET_FEED_DETAIL_REJECTED: {
@@ -886,25 +894,29 @@ export default function feedo(state = initialState, action = {}) {
       }
     case types.UPDATE_INVITEE_PERMISSION_FULFILLED: {
       const { data } = action.result
-      const { currentFeed } = state
+      const { currentFeed, feedoList } = state
       const { payload } = action
 
-      let invitees = currentFeed.invitees
-      for (let i = 0; i < invitees.length; i ++) {
-        if (invitees[i].id === payload.inviteeId) {
-          invitees[i].permissions = payload.type
+      let invitees = []
+      let updatedFeed = currentFeed
+      if (!isEmpty(currentFeed)) {
+        invitees = currentFeed.invitees
+        for (let i = 0; i < invitees.length; i ++) {
+          if (invitees[i].id === payload.inviteeId) {
+            invitees[i].permissions = payload.type
+          }
         }
-      }
-
-      let updaedFeed = {
-        ...currentFeed,
-        invitees
+  
+        updatedFeed = {
+          ...currentFeed,
+          invitees
+        }
       }
 
       return {
         ...state,
         loading: types.UPDATE_INVITEE_PERMISSION_FULFILLED,
-        currentFeed: updaedFeed
+        currentFeed: updatedFeed
       }
     }
     case types.UPDATE_INVITEE_PERMISSION_REJECTED: {
@@ -990,7 +1002,7 @@ export default function feedo(state = initialState, action = {}) {
       const ideaIndex = findIndex(currentFeed.ideas, idea => idea.id === ideaId);
       currentFeed.ideas[ideaIndex].metadata.likes --;
       currentFeed.ideas[ideaIndex].metadata.liked = false;
-      console.log('UNLIKE_CARD_FULFILLED : ', currentFeed);
+
       return {
         ...state,
         currentFeed: {
@@ -1409,6 +1421,149 @@ export default function feedo(state = initialState, action = {}) {
         loading: 'MOVE_DUMMY_CARD',
         dummyMoveCard,
         feedoList: newFeedList
+      }
+    }
+    case types.PUBNUB_DELETE_FEED: {
+      const feedId = action.payload
+      const { feedoList, invitedFeedList } = state
+      const restFeedoList = filter(feedoList, feed => feed.id !== feedId )
+      const restInviteeFeedoList = filter(invitedFeedList, feed => feed.id !== feedId )
+      return {
+        ...state,
+        loading: types.PUBNUB_DELETE_FEED,
+        feedoList: restFeedoList,
+        invitedFeedList: restInviteeFeedoList
+      }
+    }
+    case cardTypes.GET_CARD_FULFILLED: {
+      const { data } = action.result
+      const { feedoList, currentFeed } = state
+
+      const updateFeed = find(feedoList, feed => feed.id === data.huntId )
+
+      if (updateFeed) {
+        const restIdeas = filter(updateFeed.ideas, idea => idea.id !== data.id )
+        const newUpdateFeed = {...updateFeed, ideas: [...restIdeas, data]}
+        const restFeedoList = filter(feedoList, feed => feed.id !== data.huntId )
+
+        const newCurrentFeed = (!isEmpty(currentFeed) && currentFeed.id === data.huntId) ? newUpdateFeed : currentFeed
+
+        return {
+          ...state,
+          loading: 'GET_CARD_FULFILLED',
+          feedoList: [...restFeedoList, newUpdateFeed],
+          currentFeed: newCurrentFeed
+        }
+      } else {
+        return {
+          ...state,
+          loading: 'GET_CARD_FULFILLED'
+        }
+      }
+    }
+    case cardTypes.GET_CARD_COMMENTS_FULFILLED: {
+      const { data } = action.result
+      const ideaId = action.payload
+      const { currentFeed } = state
+
+      let newCurrentFeed = currentFeed
+      const restIdeas = filter(currentFeed.ideas, idea => idea.id !== ideaId)
+      const currenntIdea = find(currentFeed.ideas, idea => idea.id === ideaId )
+      if (!isEmpty(currentFeed) && currenntIdea) {
+        const newUpdateFeed = {
+          ...currentFeed,
+          ideas: [
+            ...restIdeas,
+            {
+              ...currenntIdea,
+              metadata: {
+                ...currenntIdea.metadata,
+                comments: data.length
+              }
+            }
+          ]
+        }
+        newCurrentFeed = newUpdateFeed
+      }
+      return {
+        ...state,
+        loading: 'GET_CARD_COMMENTS_FULFILLED',
+        currentFeed: newCurrentFeed
+      }
+    }
+    case types.PUBNUB_GET_FEED_DETAIL_FULFILLED: {
+      const { data } = action.result
+      const { feedoList, invitedFeedList, archivedFeedList, currentFeed } = state
+
+      const restFeedoList = filter(feedoList, feed => feed.id !== data.id)
+      const restInvitedFeedoList = filter(invitedFeedList, feed => feed.id !== data.id)
+      const restArchivedFeedoList = filter(archivedFeedList, feed => feed.id !== data.id)
+
+      return {
+        ...state,
+        loading: types.PUBNUB_GET_FEED_DETAIL_FULFILLED,
+        currentFeed: isEmpty(currentFeed) ? currentFeed : currentFeed.id === data.id ? data : currentFeed,
+        feedoList: feedoList.length === restFeedoList.length ? feedoList : [ ...restFeedoList, data ],
+        invitedFeedList: invitedFeedList.length === restInvitedFeedoList.length ? invitedFeedList : [ ...restInvitedFeedoList, data ],
+        archivedFeedList: archivedFeedList.length === restArchivedFeedoList.length ? archivedFeedList : [ ...restArchivedFeedoList, data ]
+      }
+    }
+    case types.PUBNUB_LIKE_CARD_FULFILLED: {
+      const ideaId = action.payload
+      const { currentFeed } = state
+
+      let newCurrentFeed = currentFeed
+      const restIdeas = filter(currentFeed.ideas, idea => idea.id !== ideaId)
+      const currenntIdea = find(currentFeed.ideas, idea => idea.id === ideaId )
+      if (!isEmpty(currentFeed) && currenntIdea) {
+        const newUpdateFeed = {
+          ...currentFeed,
+          ideas: [
+            ...restIdeas,
+            {
+              ...currenntIdea,
+              metadata: {
+                ...currenntIdea.metadata,
+                likes: currenntIdea.metadata.likes + 1
+              }
+            }
+          ]
+        }
+        newCurrentFeed = newUpdateFeed
+      }
+      return {
+        ...state,
+        loading: types.PUBNUB_LIKE_CARD_FULFILLED,
+        currentFeed: newCurrentFeed
+      }
+    }
+    case types.PUBNUB_UNLIKE_CARD_FULFILLED: {
+      const ideaId = action.payload
+      const { currentFeed } = state
+
+      let newCurrentFeed = currentFeed
+      const restIdeas = filter(currentFeed.ideas, idea => idea.id !== ideaId)
+      const currenntIdea = find(currentFeed.ideas, idea => idea.id === ideaId )
+      if (!isEmpty(currentFeed) && currenntIdea) {
+        const newUpdateFeed = {
+          ...currentFeed,
+          ideas: [
+            ...restIdeas,
+            {
+              ...currenntIdea,
+              metadata: {
+                ...currenntIdea.metadata,
+                likes: currenntIdea.metadata === 0 ? 0 : currenntIdea.metadata.likes - 1
+              }
+            }
+          ]
+        }
+        newCurrentFeed = newUpdateFeed
+      }
+      return {
+        ...state,
+        loading: types.PUBNUB_UNLIKE_CARD_FULFILLED,
+        currentFeed: newCurrentFeed
       }
     }
     default:

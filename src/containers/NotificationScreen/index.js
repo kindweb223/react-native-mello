@@ -51,7 +51,7 @@ import styles from './styles'
 
 const CLOSE_ICON = require('../../../assets/images/Close/Blue.png')
 
-const PAGE_COUNT = 10
+const PAGE_COUNT = 50
 
 const TOASTER_DURATION = 5000
 
@@ -116,6 +116,13 @@ class NotificationScreen extends React.Component {
     const { feedo, card } = nextProps
     const { selectedActivity } = this.state
 
+    if ((this.props.feedo.loading !== 'GET_INVITED_FEEDO_LIST_FULFILLED' && feedo.loading === 'GET_INVITED_FEEDO_LIST_FULFILLED') ||
+        (feedo.loading === 'PUBNUB_DELETE_FEED')) {
+      const invitedFeedList = _.orderBy(feedo.invitedFeedList, ['publishedDate'], ['desc'])
+      this.setState({ invitedFeedList })
+      this.setActivityFeeds(this.state.activityFeedList, invitedFeedList)
+    }
+
     if (this.props.feedo.loading !== 'READ_ACTIVITY_FEED_FULFILLED' && feedo.loading === 'READ_ACTIVITY_FEED_FULFILLED') {
       if (!_.isEmpty(selectedActivity)) {
         Analytics.logEvent('notification_read_activity', {})
@@ -133,9 +140,11 @@ class NotificationScreen extends React.Component {
 
     if (this.props.feedo.loading !== 'GET_FEED_DETAIL_FULFILLED' && feedo.loading === 'GET_FEED_DETAIL_FULFILLED') {
       this.prevFeedo = feedo.currentFeed;
-      const ideaIndex = _.findIndex(feedo.currentFeed.ideas, idea => idea.id === selectedActivity.metadata.IDEA_ID)
-      if (ideaIndex !== -1) {
-        this.props.getCard(selectedActivity.metadata.IDEA_ID)
+      if (!_.isEmpty(selectedActivity)) {
+        const ideaIndex = _.findIndex(feedo.currentFeed.ideas, idea => idea.id === selectedActivity.metadata.IDEA_ID)
+        if (ideaIndex !== -1) {
+          this.props.getCard(selectedActivity.metadata.IDEA_ID)
+        }
       }
     }
 

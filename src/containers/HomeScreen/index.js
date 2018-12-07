@@ -25,6 +25,7 @@ import * as R from 'ramda'
 import { find, filter, orderBy } from 'lodash'
 import DeviceInfo from 'react-native-device-info';
 
+import pubnub from '../../lib/pubnub'
 import Analytics from '../../lib/firebase'
 
 import DashboardNavigationBar from '../../navigations/DashboardNavigationBar'
@@ -85,7 +86,7 @@ const TAB_STYLES = {
 }
 
 const TOASTER_DURATION = 5000
-const PAGE_COUNT = 10
+const PAGE_COUNT = 50
 
 class HomeScreen extends React.Component {
   constructor(props) {
@@ -135,6 +136,13 @@ class HomeScreen extends React.Component {
 
     const userInfo = await AsyncStorage.getItem('userInfo')
     this.props.setUserInfo(JSON.parse(userInfo))
+
+    // Subscribe to comments channel for new comments and updates
+    console.log("Subscribe to: ", this.props.user.userInfo.eventSubscriptionToken)
+    pubnub.subscribe({
+      channels: [this.props.user.userInfo.eventSubscriptionToken]
+    });
+
     this.registerPushNotification();
     this.props.getFeedoList(this.state.tabIndex)
     this.props.getInvitedFeedList()
@@ -159,9 +167,12 @@ class HomeScreen extends React.Component {
       (feedo.loading === 'ADD_HUNT_TAG_FULFILLED') || (feedo.loading === 'REMOVE_HUNT_TAG_FULFILLED') ||
       (feedo.loading === 'PIN_FEED_FULFILLED') || (feedo.loading === 'UNPIN_FEED_FULFILLED') ||
       (feedo.loading === 'RESTORE_ARCHIVE_FEED_FULFILLED') || (feedo.loading === 'ADD_DUMMY_FEED'))) ||
-      (feedo.loading === 'DEL_DUMMY_CARD') || (feedo.loading === 'MOVE_DUMMY_CARD') || 
-      (feedo.loading === 'UPDATE_CARD_FULFILLED') ||
-      (feedo.loading === 'READ_ACTIVITY_FEED_FULFILLED') || (feedo.loading === 'DEL_ACTIVITY_FEED_FULFILLED'))
+      (feedo.loading === 'PUBNUB_GET_FEED_DETAIL_FULFILLED') || (feedo.loading === 'DELETE_CARD_FULFILLED') || 
+      (feedo.loading === 'MOVE_CARD_FULFILLED') || (feedo.loading === 'UPDATE_CARD_FULFILLED') ||
+      (feedo.loading === 'READ_ACTIVITY_FEED_FULFILLED') || (feedo.loading === 'DEL_ACTIVITY_FEED_FULFILLED') ||
+      (feedo.loading === 'PUBNUB_DELETE_FEED') || 
+      (feedo.loading === 'UPDATE_CARD_FULFILLED') || (feedo.loading === 'GET_CARD_FULFILLED') ||
+      (feedo.loading === 'DEL_DUMMY_CARD') || (feedo.loading === 'MOVE_DUMMY_CARD'))
     {
       let feedoList = []
       let emptyState = prevState.emptyState
@@ -197,8 +208,16 @@ class HomeScreen extends React.Component {
           ['desc']
         )
         
+        if (prevState.tabIndex === 0) {
+          feedoList = filter(feedoList, item => item.metadata.owner)
+        }
+
         if (prevState.tabIndex === 1) {
-          feedoList = filter(feedoList, item => item.metadata.myInviteStatus !== 'INVITED' && item.owner.id !== user.userInfo.id)
+          feedoList = orderBy(
+            filter(feedoList, item => item.metadata.myInviteStatus !== 'INVITED' && item.owner.id !== user.userInfo.id),
+            ['metadata.inviteAcceptedDate'],
+            ['desc']
+          )
         }
 
         if (prevState.tabIndex === 2) {
@@ -227,7 +246,7 @@ class HomeScreen extends React.Component {
     if (feedo.loading === 'GET_INVITED_FEEDO_LIST_FULFILLED') {
       return {
         invitedFeedList: feedo.invitedFeedList,
-        badgeCount: feedo.invitedFeedList.length
+        badgeCount: feedo.activityData.unreadCount + feedo.invitedFeedList.length
       }
     }
 
@@ -564,28 +583,61 @@ class HomeScreen extends React.Component {
   }
 
   onChangeTab(value) {
-    // if (value.ref.props.tabLabel.label === 'All') {
-    //   this.currentRef = this.scrollTabAll;
-    // } else if (value.ref.props.tabLabel.label === 'Pinned') {
-    //   this.currentRef = this.scrollTabPinned;
-    // } else if (value.ref.props.tabLabel.label === 'Shared with me') {
-    //   this.currentRef = this.scrollTabSharedWithMe;
-    // }
-    // if (this.currentRef) {
-    //   this.currentRef.measure((ox, oy, width, height, px, py) => {
-    //     console.log('onChangeTab : ', value.ref.props.tabLabel.label + " : " + height);
-    //     if (height != 0) {
-    //       this.setState({scrollableTabViewContainer: {height}});
-    //     }
-    //   });
-    // }
+    const { feedo, user } = this.props
 
     this.setState({ 
+      // loading: true,
       tabIndex: value.i,
-      loading: true,
       scrollableTabViewContainer: {},
     })
-    this.props.getFeedoList(value.i)
+    // this.props.getFeedoList(value.i)
+    if (feedo.feedoList && feedo.feedoList.length > 0) {        
+      feedoList = feedo.feedoList.map(item => {
+        const filteredIdeas = orderBy(
+          filter(item.ideas, idea => idea.coverImage !== null && idea.coverImage !== ''),
+          ['publishedDate'],
+          ['desc']
+        )
+
+        let coverImages = []
+        if (filteredIdeas.length > 4) {
+          coverImages = R.slice(0, 4, filteredIdeas)
+        } else {
+          coverImages = R.slice(0, filteredIdeas.length, filteredIdeas)
+          for (let i = 0; i < 4 - filteredIdeas.length; i ++) {
+            coverImages.push(null)
+          }
+        }
+
+        return Object.assign(
+          {},
+          item,
+          { coverImages }
+        )
+      })
+
+      feedoList = orderBy(
+        filter(feedoList, item => item.status === 'PUBLISHED'),
+        ['publishedDate'],
+        ['desc']
+      )
+      
+      if (value.i === 0) {
+        feedoList = filter(feedoList, item => item.metadata.owner)
+      }
+      if (value.i === 1) {
+        feedoList = orderBy(
+          filter(feedoList, item => item.metadata.myInviteStatus !== 'INVITED' && item.owner.id !== user.userInfo.id),
+          ['metadata.inviteAcceptedDate'],
+          ['desc']
+        )
+      }
+      if (value.i === 2) {
+        feedoList = filter(feedoList, item => item.pinned !== null)
+      }
+
+      this.setState({ feedoList })
+    }
   }
 
   handleLongHoldMenu = (selectedFeedData) => {

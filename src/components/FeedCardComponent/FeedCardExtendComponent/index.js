@@ -7,7 +7,7 @@ import {
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 
-import { filter } from 'lodash'
+import _ from 'lodash'
 
 import FastImage from "react-native-fast-image";
 import Autolink from 'react-native-autolink';
@@ -32,10 +32,10 @@ class FeedCardExtendComponent extends React.Component {
     const { invitees, idea, feedo, cardType } = this.props;
     const { imageHeight } = this.state
   
-    const invitee = filter(invitees, item => item.id === idea.inviteeId)[0]
+    const invitee = _.find(invitees, item => item.id === idea.inviteeId)
     let isOnlyInvitee = false
     
-    if (invitees.length === 1 && invitees[0].userProfile.id === invitee.userProfile.id) {
+    if (invitees.length === 1 && invitee) {
       isOnlyInvitee = true
     }
 
@@ -65,7 +65,7 @@ class FeedCardExtendComponent extends React.Component {
 
           <View style={styles.contentContainer}>
             <View style={styles.contentView}>
-              {!isOnlyInvitee && (
+              {!isOnlyInvitee && invitee && (
                 <View style={styles.subView}>
                   {
                     [
@@ -97,15 +97,17 @@ class FeedCardExtendComponent extends React.Component {
               )}
             </View>
 
-            <View style={styles.commentView}>
-              <LikeComponent idea={idea} isOnlyInvitee={isOnlyInvitee} />
-              <CommentComponent 
-                idea={idea}
-                isOnlyInvitee={isOnlyInvitee}
-                currentFeed={feedo.currentFeed}
-                onComment={this.props.onComment}
-              />
-            </View>
+            {idea && (
+              <View style={styles.commentView}>
+                <LikeComponent idea={idea} isOnlyInvitee={isOnlyInvitee} />
+                <CommentComponent 
+                  idea={idea}
+                  isOnlyInvitee={isOnlyInvitee}
+                  currentFeed={feedo.currentFeed}
+                  onComment={this.props.onComment}
+                />
+              </View>
+            )}
           </View>
         </View>
       </View>
