@@ -490,7 +490,7 @@ class FeedDetailScreen extends React.Component {
         this.setState({ feedoViewMode: CONSTANTS.FEEDO_FROM_MAIN })
         this.handleEdit(feedId);
         return
-      case 'Leave Feed':
+      case 'Leave Flow':
         Analytics.logEvent('feed_detail_leave_feed', {})
 
         this.props.setFeedDetailAction({
@@ -1374,8 +1374,8 @@ class FeedDetailScreen extends React.Component {
 
         <ActionSheet
           ref={ref => this.feedoActionSheet = ref}
-          title={'Are you sure you want to delete this feed, everything will be gone ...'}
-          options={['Delete feed', 'Cancel']}
+          title={'Are you sure you want to delete this flow, everything will be gone ...'}
+          options={['Delete flow', 'Cancel']}
           cancelButtonIndex={1}
           destructiveButtonIndex={0}
           tintColor={COLORS.PURPLE}

@@ -84,7 +84,7 @@ class ArchivedFeedoListContainer extends React.Component {
       <ActionSheet
         key="1"
         ref={ref => this.ActionSheet = ref}
-        title={'Are you sure you want to restore this feed?'}
+        title={'Are you sure you want to restore this flow?'}
         options={['Restore', 'Cancel']}
         cancelButtonIndex={1}
         tintColor={COLORS.PURPLE}
