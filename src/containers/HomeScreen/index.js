@@ -579,28 +579,57 @@ class HomeScreen extends React.Component {
   }
 
   onChangeTab(value) {
-    // if (value.ref.props.tabLabel.label === 'All') {
-    //   this.currentRef = this.scrollTabAll;
-    // } else if (value.ref.props.tabLabel.label === 'Pinned') {
-    //   this.currentRef = this.scrollTabPinned;
-    // } else if (value.ref.props.tabLabel.label === 'Shared with me') {
-    //   this.currentRef = this.scrollTabSharedWithMe;
-    // }
-    // if (this.currentRef) {
-    //   this.currentRef.measure((ox, oy, width, height, px, py) => {
-    //     console.log('onChangeTab : ', value.ref.props.tabLabel.label + " : " + height);
-    //     if (height != 0) {
-    //       this.setState({scrollableTabViewContainer: {height}});
-    //     }
-    //   });
-    // }
+    const { feedo, user } = this.props
 
     this.setState({ 
+      // loading: true,
       tabIndex: value.i,
-      loading: true,
       scrollableTabViewContainer: {},
     })
-    this.props.getFeedoList(value.i)
+    // this.props.getFeedoList(value.i)
+    if (feedo.feedoList && feedo.feedoList.length > 0) {        
+      feedoList = feedo.feedoList.map(item => {
+        const filteredIdeas = orderBy(
+          filter(item.ideas, idea => idea.coverImage !== null && idea.coverImage !== ''),
+          ['publishedDate'],
+          ['desc']
+        )
+
+        let coverImages = []
+        if (filteredIdeas.length > 4) {
+          coverImages = R.slice(0, 4, filteredIdeas)
+        } else {
+          coverImages = R.slice(0, filteredIdeas.length, filteredIdeas)
+          for (let i = 0; i < 4 - filteredIdeas.length; i ++) {
+            coverImages.push(null)
+          }
+        }
+
+        return Object.assign(
+          {},
+          item,
+          { coverImages }
+        )
+      })
+
+      feedoList = orderBy(
+        filter(feedoList, item => item.status === 'PUBLISHED'),
+        ['publishedDate'],
+        ['desc']
+      )
+      
+      if (value.i === 0) {
+        feedoList = filter(feedoList, item => item.metadata.owner)
+      }
+      if (value.i === 1) {
+        feedoList = filter(feedoList, item => item.metadata.myInviteStatus !== 'INVITED' && item.owner.id !== user.userInfo.id)
+      }
+      if (value.i === 2) {
+        feedoList = filter(feedoList, item => item.pinned !== null)
+      }
+
+      this.setState({ feedoList })
+    }
   }
 
   handleLongHoldMenu = (selectedFeedData) => {

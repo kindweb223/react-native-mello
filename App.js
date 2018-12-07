@@ -133,6 +133,9 @@ export default class Root extends React.Component {
         if (response.message.action === 'USER_INVITED_TO_HUNT') {
           store.dispatch(getInvitedFeedList())
         }
+        if (response.message.action === 'INVITE_TO_HUNT_REMOVED') {
+          store.dispatch(pubnubDeleteFeed(response.message.data.huntId))
+        }
       },
       presence: function(presenceEvent) {
 

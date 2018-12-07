@@ -7,15 +7,16 @@ import * as types from './types'
  * Get feedo list
  */
 export const getFeedoList = (index, isForCardMove=false) => {
-  let url = 'hunts?owner=true'
+  // let url = 'hunts?owner=true'
 
-  if (index === 1) {
-    url = 'hunts?owner=false'
-  } else if (index === 2) {
-    url = 'hunts?pinned=true'
-  } else if (index === 3) {
-    url = 'hunts'
-  }
+  // if (index === 1) {
+  //   url = 'hunts?owner=false'
+  // } else if (index === 2) {
+  //   url = 'hunts?pinned=true'
+  // } else if (index === 3) {
+  //   url = 'hunts'
+  // }
+  let url = 'hunts'
 
   return {
     types: [types.GET_FEEDO_LIST_PENDING, types.GET_FEEDO_LIST_FULFILLED, types.GET_FEEDO_LIST_REJECTED],
