@@ -171,7 +171,7 @@ class SelectHuntScreen extends React.Component {
   get renderHeaderFromExtension() {
     return (
       <View style={[styles.topContainer, styles.extensionTopContainer]}>
-        <Text style={styles.textTitle}>Choose feed</Text>
+        <Text style={styles.textTitle}>Choose flow</Text>
         <TouchableOpacity 
           style={styles.backButtonContainer}
           activeOpacity={0.6}
@@ -193,7 +193,7 @@ class SelectHuntScreen extends React.Component {
         <View style={styles.avatarContainer}>
           <Ionicons name="md-add" size={32} color={COLORS.PURPLE} />
         </View>
-        <Text style={[styles.textItemTitle, {color: COLORS.PURPLE}]}>Create new feed</Text>
+        <Text style={[styles.textItemTitle, {color: COLORS.PURPLE}]}>Create new flow</Text>
       </TouchableOpacity>
     )
   }

@@ -275,7 +275,7 @@ class NewFeedScreen extends React.Component {
     Analytics.logEvent('new_feed_create_new_feed', {})
 
     if (this.state.feedName === '') {
-      Alert.alert('', 'Please input your feed name.', [{ text: 'Close' }]);
+      Alert.alert('', 'Please give your name a flow.', [{ text: 'Close' }]);
       return;
     }
 
@@ -466,7 +466,7 @@ class NewFeedScreen extends React.Component {
             activeOpacity={0.6}
             onPress={this.onUpdate.bind(this)}
           >
-            <Text style={[styles.textButton, {color: COLORS.PURPLE}]}>Create feed</Text>
+            <Text style={[styles.textButton, {color: COLORS.PURPLE}]}>Create flow</Text>
           </TouchableOpacity>
         </View>
       );
@@ -489,7 +489,7 @@ class NewFeedScreen extends React.Component {
           <Text style={styles.textButton}>
             {this.props.selectedFeedId
               ? this.props.viewMode === CONSTANTS.FEEDO_FROM_MAIN ? 'Save' : 'Done'
-              : 'Create Feed'
+              : 'Create Flow'
             }
           </Text>
         </TouchableOpacity>
@@ -548,7 +548,7 @@ class NewFeedScreen extends React.Component {
         <TextInput 
           ref={ref => this.textInputFeedNameRef = ref}
           style={styles.textInputFeedName}
-          placeholder='Name your feed'
+          placeholder='Name your flow'
           underlineColorAndroid='transparent'
           value={this.state.feedName}
           multiline
