@@ -1115,20 +1115,20 @@ class HomeScreen extends React.Component {
                                 page="feed_exist"
                                 title="It's awesome to start fresh!"
                                 subTitle=""
-                                ctaTitle="Start a new feed"
+                                ctaTitle="Start a new flow"
                                 onCreateNewFeed={() => {
                                   this.animatedOpacity.setValue(1);
-                                  this.onSelectNewFeedType('New Feed')
+                                  this.onSelectNewFeedType('New Flow')
                                 }}
                               />
                             : <EmptyStateComponent
                                 page="feed"
                                 title="First time here? No worries, you are in good hands..."
                                 subTitle="Watch a 15 sec video about creating flows"
-                                ctaTitle="Start your first feed"
+                                ctaTitle="Start your first flow"
                                 onCreateNewFeed={() => {
                                   this.animatedOpacity.setValue(1);
-                                  this.onSelectNewFeedType('New Feed')
+                                  this.onSelectNewFeedType('New Flow')
                                 }}
                               />
                         )}

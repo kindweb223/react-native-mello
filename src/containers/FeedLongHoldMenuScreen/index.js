@@ -106,8 +106,8 @@ class FeedLongHoldMenuScreen extends React.Component {
       <ActionSheet
         key="3"
         ref={ref => this.ActionSheet = ref}
-        title={'Are you sure you want to delete this feed, everything will be gone ...'}
-        options={['Delete feed', 'Cancel']}
+        title={'Are you sure you want to delete this flow, everything will be gone ...'}
+        options={['Delete flow', 'Cancel']}
         cancelButtonIndex={1}
         destructiveButtonIndex={0}
         tintColor={COLORS.PURPLE}
