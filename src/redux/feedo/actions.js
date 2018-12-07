@@ -646,7 +646,7 @@ export const pubnubGetFeedDetail = (feedId) => {
   let url = `hunts/${feedId}`
 
   return {
-    types: [types.PUBNUB_GET_FEED_DETAIL_PENDING, types.PUBNUB_GET_EED_DETAIL_FULFILLED, types.PUBNUB_GET_FEED_DETAIL_REJECTED],
+    types: [types.PUBNUB_GET_FEED_DETAIL_PENDING, types.PUBNUB_GET_FEED_DETAIL_FULFILLED, types.PUBNUB_GET_FEED_DETAIL_REJECTED],
     promise: axios({
       method: 'get',
       url: url

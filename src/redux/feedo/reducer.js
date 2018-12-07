@@ -1489,7 +1489,7 @@ export default function feedo(state = initialState, action = {}) {
         currentFeed: newCurrentFeed
       }
     }
-    case types.PUBNUB_GET_EED_DETAIL_FULFILLED: {
+    case types.PUBNUB_GET_FEED_DETAIL_FULFILLED: {
       const { data } = action.result
       const { feedoList, invitedFeedList, archivedFeedList, currentFeed } = state
 
@@ -1499,7 +1499,7 @@ export default function feedo(state = initialState, action = {}) {
 
       return {
         ...state,
-        loading: types.PUBNUB_GET_EED_DETAIL_FULFILLED,
+        loading: types.PUBNUB_GET_FEED_DETAIL_FULFILLED,
         currentFeed: isEmpty(currentFeed) ? currentFeed : currentFeed.id === data.id ? data : currentFeed,
         feedoList: feedoList.length === restFeedoList.length ? feedoList : [ ...restFeedoList, data ],
         invitedFeedList: invitedFeedList.length === restInvitedFeedoList.length ? invitedFeedList : [ ...restInvitedFeedoList, data ],
