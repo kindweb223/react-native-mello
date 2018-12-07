@@ -227,11 +227,13 @@ export default class Root extends React.Component {
               const userInfo = AsyncStorage.getItem('userInfo')
 
               if (userInfo) {
-                if (Actions.currentScene === 'FeedDetailScreen') {
-                  Actions.FeedDetailScreen({type: 'replace', data});
+                if (Actions.currentScene === 'FeedDetailScreen') {                  
+                  Actions.FeedDetailScreen({ type: 'replace', data });
+                  store.dispatch(pubnubGetFeedDetail(data.id))
                 } 
                 else {
-                  Actions.FeedDetailScreen({data})
+                  Actions.FeedDetailScreen({ data })
+                  store.dispatch(pubnubGetFeedDetail(data.id))
                 }
               } 
               else {

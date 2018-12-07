@@ -86,7 +86,7 @@ const TAB_STYLES = {
 }
 
 const TOASTER_DURATION = 5000
-const PAGE_COUNT = 10
+const PAGE_COUNT = 50
 
 class HomeScreen extends React.Component {
   constructor(props) {
@@ -213,7 +213,11 @@ class HomeScreen extends React.Component {
         }
 
         if (prevState.tabIndex === 1) {
-          feedoList = filter(feedoList, item => item.metadata.myInviteStatus !== 'INVITED' && item.owner.id !== user.userInfo.id)
+          feedoList = orderBy(
+            filter(feedoList, item => item.metadata.myInviteStatus !== 'INVITED' && item.owner.id !== user.userInfo.id),
+            ['metadata.inviteAcceptedDate'],
+            ['desc']
+          )
         }
 
         if (prevState.tabIndex === 2) {
@@ -622,7 +626,11 @@ class HomeScreen extends React.Component {
         feedoList = filter(feedoList, item => item.metadata.owner)
       }
       if (value.i === 1) {
-        feedoList = filter(feedoList, item => item.metadata.myInviteStatus !== 'INVITED' && item.owner.id !== user.userInfo.id)
+        feedoList = orderBy(
+          filter(feedoList, item => item.metadata.myInviteStatus !== 'INVITED' && item.owner.id !== user.userInfo.id),
+          ['metadata.inviteAcceptedDate'],
+          ['desc']
+        )
       }
       if (value.i === 2) {
         feedoList = filter(feedoList, item => item.pinned !== null)
