@@ -37,7 +37,8 @@ import {
   readActivityFeed,
   deleteActivityFeed,
   readAllActivityFeed,
-  setCurrentFeed
+  setCurrentFeed,
+  getInvitedFeedList
 } from '../../redux/feedo/actions'
 import {
   getCard,
@@ -51,7 +52,7 @@ import styles from './styles'
 
 const CLOSE_ICON = require('../../../assets/images/Close/Blue.png')
 
-const PAGE_COUNT = 10
+const PAGE_COUNT = 50
 
 const TOASTER_DURATION = 5000
 
@@ -116,13 +117,27 @@ class NotificationScreen extends React.Component {
     const { feedo, card } = nextProps
     const { selectedActivity } = this.state
 
+    if ((this.props.feedo.loading !== 'GET_INVITED_FEEDO_LIST_FULFILLED' && feedo.loading === 'GET_INVITED_FEEDO_LIST_FULFILLED') ||
+        (feedo.loading === 'PUBNUB_DELETE_FEED')) {
+      const invitedFeedList = _.orderBy(feedo.invitedFeedList, ['publishedDate'], ['desc'])
+      this.setState({ invitedFeedList })
+      this.setActivityFeeds(this.state.activityFeedList, invitedFeedList)
+    }
+
     if (this.props.feedo.loading !== 'READ_ACTIVITY_FEED_FULFILLED' && feedo.loading === 'READ_ACTIVITY_FEED_FULFILLED') {
       if (!_.isEmpty(selectedActivity)) {
+        console.log('selectedActivity.activityTypeEnum: ', selectedActivity)
         Analytics.logEvent('notification_read_activity', {})
         if (selectedActivity.activityTypeEnum === 'NEW_IDEA_ADDED' || selectedActivity.activityTypeEnum === 'USER_EDITED_IDEA') {
           this.props.getFeedDetail(selectedActivity.metadata.HUNT_ID)
         } else if (selectedActivity.activityTypeEnum === 'NEW_COMMENT_ON_IDEA') {
           this.onSelectNewComment(selectedActivity)
+        } else if (selectedActivity.activityTypeEnum === 'NEW_LIKE_ON_IDEA') {
+          this.props.getFeedDetail(selectedActivity.metadata.HUNT_ID)
+        } else if (selectedActivity.activityTypeEnum === 'USER_JOINED_HUNT') {
+          Actions.FeedDetailScreen({ data: { id: selectedActivity.metadata.HUNT_ID } })
+        } else if (selectedActivity.activityTypeEnum === 'USER_EDITED_HUNT') {
+          Actions.FeedDetailScreen({ data: { id: selectedActivity.metadata.HUNT_ID } })
         }
       }
     }
@@ -133,9 +148,12 @@ class NotificationScreen extends React.Component {
 
     if (this.props.feedo.loading !== 'GET_FEED_DETAIL_FULFILLED' && feedo.loading === 'GET_FEED_DETAIL_FULFILLED') {
       this.prevFeedo = feedo.currentFeed;
-      const ideaIndex = _.findIndex(feedo.currentFeed.ideas, idea => idea.id === selectedActivity.metadata.IDEA_ID)
-      if (ideaIndex !== -1) {
-        this.props.getCard(selectedActivity.metadata.IDEA_ID)
+      if (!_.isEmpty(selectedActivity)) {
+        const ideaIndex = _.findIndex(feedo.currentFeed.ideas, idea => idea.id === selectedActivity.metadata.IDEA_ID)
+        console.log('ideaIndex: ', feedo.currentFeed.ideas)
+        if (ideaIndex !== -1) {
+          this.props.getCard(selectedActivity.metadata.IDEA_ID)
+        }
       }
     }
 
@@ -228,7 +246,7 @@ class NotificationScreen extends React.Component {
           autoClose={true}
           right={swipeoutBtns}
         > 
-          <ActivityFeedComponent data={data} onReadActivity={() => this.onReadActivity(data)} />
+          <ActivityFeedComponent user={this.props.user} data={data} onReadActivity={() => this.onReadActivity(data)} />
         </Swipeout>
       </View>
     );
@@ -266,6 +284,7 @@ class NotificationScreen extends React.Component {
 
   handleRefresh = () => {
     this.setState({ refreshing: true }, () => {
+      this.props.getInvitedFeedList()
       this.getActivityFeedList(0, PAGE_COUNT)
     })
   }
@@ -599,7 +618,8 @@ const mapDispatchToProps = dispatch => ({
   getCard: (ideaId) => dispatch(getCard(ideaId)),
   moveCard: (ideaId, huntId) => dispatch(moveCard(ideaId, huntId)),
   deleteCard: (ideaId) => dispatch(deleteCard(ideaId)),
-  setCurrentFeed: (data) => dispatch(setCurrentFeed(data))
+  setCurrentFeed: (data) => dispatch(setCurrentFeed(data)),
+  getInvitedFeedList: () => dispatch(getInvitedFeedList()),
 })
 
 NotificationScreen.propTypes = {

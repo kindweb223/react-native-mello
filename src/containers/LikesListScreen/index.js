@@ -58,21 +58,22 @@ class LikesListScreen extends React.Component {
   componentDidMount() {
     Analytics.setCurrentScreen('LikesListScreen')
     
+    this.setState({
+      loading: true,
+    });
     this.props.getCardLikes(this.props.idea.id);
   }
 
   UNSAFE_componentWillReceiveProps(nextProps) {
-    let loading = false;
-    if (this.props.card.loading !== types.GET_CARD_LIKES_PENDING && nextProps.card.loading === types.GET_CARD_LIKES_PENDING) {
-      // liking a card
-      loading = true;
-    } else if (this.props.card.loading !== types.GET_CARD_LIKES_FULFILLED && nextProps.card.loading === types.GET_CARD_LIKES_FULFILLED) {
+    if (this.props.card.loading !== types.GET_CARD_LIKES_FULFILLED && nextProps.card.loading === types.GET_CARD_LIKES_FULFILLED) {
       // success in liking a card
-      this.getLikeUsers(nextProps);
-    } 
-    this.setState({
-      loading,
-    });
+      this.setState({ loading: false }, () => {
+        this.getLikeUsers(nextProps);
+      })
+    } else if ((this.props.feedo.loading !== 'PUBNUB_LIKE_CARD_FULFILLED' && nextProps.feedo.loading === 'PUBNUB_LIKE_CARD_FULFILLED') ||
+              (this.props.feedo.loading !== 'PUBNUB_UNLIKE_CARD_FULFILLED' && nextProps.feedo.loading === 'PUBNUB_UNLIKE_CARD_FULFILLED')) {
+      this.props.getCardLikes(this.props.idea.id);
+    }
 
     // showing error alert
     let error = nextProps.feedo.error;
@@ -114,6 +115,10 @@ class LikesListScreen extends React.Component {
       this.setState({
         likesList: likes,
       });
+    } else {
+      this.setState({
+        likesList: [],
+      })
     }
   }
 

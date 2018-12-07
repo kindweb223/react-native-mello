@@ -5,6 +5,8 @@ import * as types from './types'
 import CONSTANTS from '../../../src/service/constants'
 import SharedGroupPreferences from 'react-native-shared-group-preferences'
 
+import pubnub from '../../lib/pubnub'
+
 const initialState = {
   loading: null,
   error: null,
@@ -183,6 +185,9 @@ export default function user(state = initialState, action = {}) {
       AsyncStorage.removeItem('userInfo')
       SharedGroupPreferences.setItem('xAuthToken', null, CONSTANTS.APP_GROUP_TOKEN_IDENTIFIER)
       SharedGroupPreferences.setItem('userInfo', null, CONSTANTS.APP_GROUP_USER_IDENTIFIER)
+
+      // Unsubscribe pubnub channels
+      pubnub.unsubscribeAll()
 
       return {
         ...state,

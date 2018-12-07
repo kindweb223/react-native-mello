@@ -27,7 +27,7 @@ class ActivityFeedComponent extends React.Component {
   }
 
   get renderItem() {
-    const { data } = this.props
+    const { data, user } = this.props
 
     let comment = ''
     let source = ''
@@ -85,8 +85,8 @@ class ActivityFeedComponent extends React.Component {
         break;
       case 'INVITEE_PERMISSIONS_CHANGED':
         comment = ' updated '
-        source = data.metadata.INVITEE_NAME
-        link = "'s permissions to "
+        source = data.metadata.INVITEE_USER_PROFILE_ID === user.userInfo.id ? 'your' : data.metadata.INVITEE_NAME + "'s"
+        link = " permissions to "
         target = data.metadata.NEW_PERMISSIONS
         link_last = ' on Flow '
         target_last = data.metadata.HUNT_HEADLINE
