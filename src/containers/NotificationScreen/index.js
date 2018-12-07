@@ -37,7 +37,8 @@ import {
   readActivityFeed,
   deleteActivityFeed,
   readAllActivityFeed,
-  setCurrentFeed
+  setCurrentFeed,
+  getInvitedFeedList
 } from '../../redux/feedo/actions'
 import {
   getCard,
@@ -51,7 +52,7 @@ import styles from './styles'
 
 const CLOSE_ICON = require('../../../assets/images/Close/Blue.png')
 
-const PAGE_COUNT = 10
+const PAGE_COUNT = 50
 
 const TOASTER_DURATION = 5000
 
@@ -118,11 +119,14 @@ class NotificationScreen extends React.Component {
 
     if (this.props.feedo.loading !== 'READ_ACTIVITY_FEED_FULFILLED' && feedo.loading === 'READ_ACTIVITY_FEED_FULFILLED') {
       if (!_.isEmpty(selectedActivity)) {
+        console.log('selectedActivity.activityTypeEnum: ', selectedActivity.activityTypeEnum)
         Analytics.logEvent('notification_read_activity', {})
         if (selectedActivity.activityTypeEnum === 'NEW_IDEA_ADDED' || selectedActivity.activityTypeEnum === 'USER_EDITED_IDEA') {
           this.props.getFeedDetail(selectedActivity.metadata.HUNT_ID)
         } else if (selectedActivity.activityTypeEnum === 'NEW_COMMENT_ON_IDEA') {
           this.onSelectNewComment(selectedActivity)
+        } else if (selectedActivity.activityTypeEnum === 'NEW_LIKE_ON_IDEA') {
+          this.props.getFeedDetail(selectedActivity.metadata.HUNT_ID)
         }
       }
     }
@@ -266,6 +270,7 @@ class NotificationScreen extends React.Component {
 
   handleRefresh = () => {
     this.setState({ refreshing: true }, () => {
+      this.props.getInvitedFeedList()
       this.getActivityFeedList(0, PAGE_COUNT)
     })
   }
@@ -599,7 +604,8 @@ const mapDispatchToProps = dispatch => ({
   getCard: (ideaId) => dispatch(getCard(ideaId)),
   moveCard: (ideaId, huntId) => dispatch(moveCard(ideaId, huntId)),
   deleteCard: (ideaId) => dispatch(deleteCard(ideaId)),
-  setCurrentFeed: (data) => dispatch(setCurrentFeed(data))
+  setCurrentFeed: (data) => dispatch(setCurrentFeed(data)),
+  getInvitedFeedList: () => dispatch(getInvitedFeedList()),
 })
 
 NotificationScreen.propTypes = {
