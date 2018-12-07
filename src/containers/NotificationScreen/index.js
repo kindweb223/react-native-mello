@@ -135,7 +135,9 @@ class NotificationScreen extends React.Component {
         } else if (selectedActivity.activityTypeEnum === 'NEW_LIKE_ON_IDEA') {
           this.props.getFeedDetail(selectedActivity.metadata.HUNT_ID)
         } else if (selectedActivity.activityTypeEnum === 'USER_JOINED_HUNT') {
-          this.props.getFeedDetail(selectedActivity.metadata.HUNT_ID)
+          Actions.FeedDetailScreen({ data: { id: selectedActivity.metadata.HUNT_ID } })
+        } else if (selectedActivity.activityTypeEnum === 'USER_EDITED_HUNT') {
+          Actions.FeedDetailScreen({ data: { id: selectedActivity.metadata.HUNT_ID } })
         }
       }
     }
@@ -148,6 +150,7 @@ class NotificationScreen extends React.Component {
       this.prevFeedo = feedo.currentFeed;
       if (!_.isEmpty(selectedActivity)) {
         const ideaIndex = _.findIndex(feedo.currentFeed.ideas, idea => idea.id === selectedActivity.metadata.IDEA_ID)
+        console.log('ideaIndex: ', feedo.currentFeed.ideas)
         if (ideaIndex !== -1) {
           this.props.getCard(selectedActivity.metadata.IDEA_ID)
         }
