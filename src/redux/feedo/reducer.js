@@ -1425,12 +1425,14 @@ export default function feedo(state = initialState, action = {}) {
     }
     case types.PUBNUB_DELETE_FEED: {
       const feedId = action.payload
-      const { feedoList } = state
+      const { feedoList, invitedFeedList } = state
       const restFeedoList = filter(feedoList, feed => feed.id !== feedId )
+      const restInviteeFeedoList = filter(invitedFeedList, feed => feed.id !== feedId )
       return {
         ...state,
         loading: types.PUBNUB_DELETE_FEED,
-        feedoList: restFeedoList
+        feedoList: restFeedoList,
+        invitedFeedList: restInviteeFeedoList
       }
     }
     case cardTypes.GET_CARD_FULFILLED: {

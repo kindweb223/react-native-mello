@@ -1239,7 +1239,7 @@ class FeedDetailScreen extends React.Component {
                   </View>
                 )}
 
-                {!_.isEmpty(currentFeed) && currentFeed && currentFeed.ideas && this.state.showBubble && (
+                {!_.isEmpty(currentFeed) && currentFeed && currentFeed.ideas && currentFeed.ideas.length > 0 && this.state.showBubble && (
                   <SpeechBubbleComponent
                     page="detail"
                     title="Flows contain cards. Cards can have, images, text, attachments and likes. My granny enjoys liking."
@@ -1250,7 +1250,7 @@ class FeedDetailScreen extends React.Component {
                 )}
 
                 {
-                  (!_.isEmpty(currentFeed) && currentFeed && currentFeed.ideas)
+                  (!_.isEmpty(currentFeed) && currentFeed && currentFeed.ideas && currentFeed.ideas.length > 0)
                   ? this.props.user.listDetailType === 'list'
                       ? <View style={{ paddingHorizontal: 8, visible: 'hide' }}>
                           {currentFeed.ideas.map((item, index) => (
@@ -1322,7 +1322,7 @@ class FeedDetailScreen extends React.Component {
                               </Animated.View>}
                           />
                         </View>
-                  : <View style={styles.emptyView}>
+                  :  <View style={styles.emptyView}>
                       {loading
                         ? <View style={styles.loadingView}>
                             <FeedLoadingStateComponent />
