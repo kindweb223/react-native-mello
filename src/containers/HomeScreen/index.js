@@ -241,7 +241,7 @@ class HomeScreen extends React.Component {
     if (feedo.loading === 'GET_INVITED_FEEDO_LIST_FULFILLED') {
       return {
         invitedFeedList: feedo.invitedFeedList,
-        badgeCount: feedo.invitedFeedList.length
+        badgeCount: feedo.activityData.unreadCount + feedo.invitedFeedList.length
       }
     }
 

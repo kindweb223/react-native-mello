@@ -116,6 +116,12 @@ class NotificationScreen extends React.Component {
     const { feedo, card } = nextProps
     const { selectedActivity } = this.state
 
+    if (this.props.feedo.loading !== 'GET_INVITED_FEEDO_LIST_FULFILLED' && feedo.loading === 'GET_INVITED_FEEDO_LIST_FULFILLED') {
+      const invitedFeedList = _.orderBy(feedo.invitedFeedList, ['publishedDate'], ['desc'])
+      this.setState({ invitedFeedList })
+      this.setActivityFeeds(this.state.activityFeedList, invitedFeedList)
+    }
+
     if (this.props.feedo.loading !== 'READ_ACTIVITY_FEED_FULFILLED' && feedo.loading === 'READ_ACTIVITY_FEED_FULFILLED') {
       if (!_.isEmpty(selectedActivity)) {
         Analytics.logEvent('notification_read_activity', {})

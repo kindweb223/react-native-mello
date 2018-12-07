@@ -83,7 +83,8 @@ import {
   pubnubDeleteFeed,
   pubnubGetFeedDetail,
   pubnubLikeCard,
-  pubnubUnLikeCard
+  pubnubUnLikeCard,
+  getInvitedFeedList
 } from './src/redux/feedo/actions'
 
 const store = createStore(reducers, applyMiddleware(thunk, promiseMiddleware))
@@ -128,6 +129,9 @@ export default class Root extends React.Component {
         }
         if (response.message.action === 'UNLIKE_ON_IDEA') {
           store.dispatch(pubnubUnLikeCard(response.message.data.ideaId))
+        }
+        if (response.message.action === 'USER_INVITED_TO_HUNT') {
+          store.dispatch(getInvitedFeedList())
         }
       },
       presence: function(presenceEvent) {
