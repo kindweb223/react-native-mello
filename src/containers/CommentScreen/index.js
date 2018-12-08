@@ -74,10 +74,12 @@ class CommentScreen extends React.Component {
     this.keyboardWillHideSubscription = Keyboard.addListener('keyboardWillHide', (e) => this.keyboardWillHide(e));
     this.props.getCardComments(this.props.idea.id);
     if (this.props.isShowKeyboard) {
-      this.setState({
-        isShowKeyboard: this.props.isShowKeyboard,
+      Animated.delay(400).start(() => {
+        this.setState({
+          isShowKeyboard: this.props.isShowKeyboard,
+        });
+        this.inputToolbarRef.focus();  
       });
-      this.inputToolbarRef.focus();
     }
 
     // Subscribe to comments channel for new comments and updates
