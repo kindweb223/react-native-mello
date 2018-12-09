@@ -6,6 +6,11 @@ const styles = StyleSheet.create({
     width: '100%',
     marginBottom: 16
   },
+  selected: {
+    borderWidth: 1,
+    borderColor: COLORS.PURPLE,
+    borderRadius: 10
+  },
   subContainer: {
     width: '100%',
     justifyContent: 'center',

@@ -5,35 +5,40 @@ import CONSTANTS from '../../service/constants'
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    height: CONSTANTS.ACTION_BAR_HEIGHT,
+    height: 54 + 28,
     width: '100%',
     alignItems: 'center',
     paddingVertical: 8,
     position: 'absolute',
     bottom: 0,
-    backgroundColor: 'transparent',
+    backgroundColor: 'transparent'
   },
   rowContainer: {
+    height: 54,
     flexDirection: 'row',
-    justifyContent: 'center',
+    justifyContent: 'space-between',
+    backgroundColor: COLORS.PURPLE,
+    borderRadius: 18,
+    paddingHorizontal: 10
   },
   plusButtonIcon: {
     color: '#fff',
     fontSize: 20,
   },
-  moveButtonContainer: {
-    width: 100,
-    height: 42,
-    borderRadius: 21,
-    backgroundColor: COLORS.PURPLE,
-    paddingHorizontal: 16,
+  buttonContainer: {
+    height: '100%',
     flexDirection: 'row',
-    justifyContent: 'space-around',
-    alignItems: 'center'
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginHorizontal: 13
+  },
+  arrowIcon: {
+    marginRight: 8
   },
   buttonText: {
     color: '#fff',
-    fontSize: 14
+    fontSize: 16,
+    fontWeight: '600'
   },
   settingMenu: {
     margin: 0,

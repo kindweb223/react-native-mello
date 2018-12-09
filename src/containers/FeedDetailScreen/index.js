@@ -1172,7 +1172,14 @@ class FeedDetailScreen extends React.Component {
   }
 
   render () {
-    const { currentFeed, loading, pinText, avatars } = this.state
+    const {
+      currentFeed,
+      loading,
+      pinText,
+      avatars,
+      selectedLongHoldCardIndex,
+      isVisibleLongHoldMenu
+    } = this.state
 
     return (
       <SafeAreaView style={styles.safeArea}>
@@ -1259,7 +1266,7 @@ class FeedDetailScreen extends React.Component {
                           <Animated.View 
                             key={index}
                             style={
-                              this.state.selectedLongHoldCardIndex === index && 
+                              selectedLongHoldCardIndex === index && 
                               {
                                 transform: [
                                   { scale: this.animatedSelectCard },
@@ -1279,6 +1286,7 @@ class FeedDetailScreen extends React.Component {
                                 invitees={currentFeed.invitees}
                                 listType={this.props.user.listDetailType}
                                 cardType="view"
+                                longSelected={isVisibleLongHoldMenu && selectedLongHoldCardIndex === index}
                                 onLinkPress={() => this.onSelectCard(item, index)}
                                 onLinkLongPress={() => this.onLongPressCard(index, item, currentFeed.invitees)}
                               />
@@ -1346,6 +1354,7 @@ class FeedDetailScreen extends React.Component {
                                   invitees={currentFeed.invitees}
                                   listType={this.props.user.listDetailType}
                                   cardType="view"
+                                  longSelected={isVisibleLongHoldMenu && selectedLongHoldCardIndex === item.index}
                                   onLinkPress={() => this.onSelectCard(item.data, item.index)}
                                   onLinkLongPress={() => this.onLongPressCard(item.index, item.data, currentFeed.invitees)}
                                 />
@@ -1481,15 +1490,15 @@ class FeedDetailScreen extends React.Component {
         </Modal>
 
         <Modal 
-          isVisible={this.state.isVisibleLongHoldMenu}
+          isVisible={isVisibleLongHoldMenu}
           style={styles.longHoldModalContainer}
           backdropColor='#e0e0e0'
-          backdropOpacity={0.9}
+          backdropOpacity={0.3}
           animationIn="fadeIn"
           animationOut="fadeOut"
           animationInTiming={1300}
           onModalHide={this.onHiddenLongHoldMenu.bind(this)}
-          onBackdropPress={() => this.setState({isVisibleLongHoldMenu: false})}
+          onBackdropPress={() => this.setState({ isVisibleLongHoldMenu: false })}
         >
           <CardLongHoldMenuScreen
             listType={this.props.user.listDetailType}

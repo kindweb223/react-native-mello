@@ -13,6 +13,10 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     backgroundColor: COLORS.LIGHT_SOFT_GREY
   },
+  selected: {
+    borderWidth: 1,
+    borderColor: COLORS.PURPLE
+  },
   leftContainer: {
     flex: 1,
     justifyContent: 'space-between'

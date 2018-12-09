@@ -2,22 +2,22 @@ import React from 'react'
 import {
   View,
   Text,
+  Image,
   TouchableOpacity,
-  FlatList,
   Animated,
 } from 'react-native'
 import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
-import Modal from 'react-native-modal'
-import Entypo from 'react-native-vector-icons/Entypo'
 import Ionicons from 'react-native-vector-icons/Ionicons'
 
 import * as COMMON_FUNC from '../../service/commonFunc'
 import styles from './styles'
 
-const SELECT_NONE = 0;
-const SELECT_MOVE = 1;
-const SELECT_MENU = 2;
+const TRASH_ICON = require('../../../assets/images/Trash/White.png')
+
+const SELECT_NONE = 0
+const SELECT_MOVE = 1
+const SELECT_DELETE = 2
 
 
 class CardActionBarComponent extends React.Component {
@@ -47,18 +47,17 @@ class CardActionBarComponent extends React.Component {
         if (this.props.onMove) {
           this.props.onMove()
         }
-        this.setState({ isVisibleMenu: false })
       });
     });
   }
 
-  onShowMenu() {
+  onDelete() {
     this.setState({
-      selectedButton: SELECT_MENU,
+      selectedButton: SELECT_DELETE,
     }, () => {
       Animated.sequence([
         Animated.timing(this.animatedSelect, {
-          toValue: 0.9,
+          toValue: 0.8,
           duration: 100,
         }),
         Animated.timing(this.animatedSelect, {
@@ -66,51 +65,23 @@ class CardActionBarComponent extends React.Component {
           duration: 100,
         }),
       ]).start(() => {
-        this.setState({ isVisibleMenu: !this.state.isVisibleMenu });
+        if (this.props.onHandleSettings) {
+          this.props.onHandleSettings('Delete')
+        }
       });
     });
-  }
-
-  onSettingMenuHide() {
-    if (this.props.onHandleSettings) {
-      this.props.onHandleSettings(this.state.selectedItem)
-    }
-  }
-
-  onPressSetting(item) {
-    this.setState({ isVisibleMenu: false, selectedItem: item })
-  }
-
-  renderItem({ item }) {
-    return (
-      <TouchableOpacity
-        style={styles.settingItem}
-        activeOpacity={0.7}
-        onPress={() => this.onPressSetting(item)}
-      >
-        <Text style={item === 'Delete' ? styles.deleteButtonText : styles.settingButtonText}>{item}</Text>
-      </TouchableOpacity>
-    );
   }
 
   render() {
     const { feedo, idea } = this.props
 
-    let MENU_ITEMS = []
+    let canDelete = true
     if (COMMON_FUNC.isFeedGuest(feedo.currentFeed)) {
-      MENU_ITEMS = []
+      canDelete = false
     }
 
-    if (COMMON_FUNC.isFeedOwner(feedo.currentFeed) || COMMON_FUNC.isFeedEditor(feedo.currentFeed)) {
-      MENU_ITEMS = ['Edit', 'Delete']
-    }
-
-    if (COMMON_FUNC.isFeedContributor(feedo.currentFeed)) {
-      if (COMMON_FUNC.isCardOwner(idea)) {
-        MENU_ITEMS = ['Edit', 'Delete']
-      } else {
-        MENU_ITEMS = []
-      }
+    if (COMMON_FUNC.isFeedContributor(feedo.currentFeed) && !COMMON_FUNC.isCardOwner(idea)) {
+      canDelete = false
     }
 
     let canMoveCard = false
@@ -128,59 +99,43 @@ class CardActionBarComponent extends React.Component {
                 {
                   transform: [
                     { scale: this.animatedSelect },
-                  ],
+                  ]
                 }
               }
             >
               <TouchableOpacity
-                style={styles.moveButtonContainer}
+                style={styles.buttonContainer}
                 activeOpacity={0.7}
                 onPress={this.onMove.bind(this)}
               >
-                <Ionicons name='md-arrow-forward' size={18} color='#fff' />
+                <Ionicons name='md-arrow-forward' size={22} color='#fff' style={styles.arrowIcon} />
                 <Text style={styles.buttonText}>Move</Text>
               </TouchableOpacity>
             </Animated.View>
           )}
 
-          {MENU_ITEMS.length > 0 && (
+          {canDelete && (
             <Animated.View
               style={
-                this.state.selectedButton === SELECT_MENU &&
+                this.state.selectedButton === SELECT_DELETE &&
                 {
                   transform: [
                     { scale: this.animatedSelect },
-                  ],
+                  ]
                 }
               }
             >
-              <TouchableOpacity 
-                style={styles.moreButtonContainer}
+              <TouchableOpacity
+                style={styles.buttonContainer}
                 activeOpacity={0.7}
-                onPress={() => this.onShowMenu()}
+                onPress={this.onDelete.bind(this)}
               >
-                <Entypo name='dots-three-horizontal' style={styles.plusButtonIcon} />
+                <Image source={TRASH_ICON} />
+                <Text style={styles.buttonText}>Delete</Text>
               </TouchableOpacity>
             </Animated.View>
           )}
         </View>
-        <Modal
-          style={styles.settingMenu}
-          isVisible={this.state.isVisibleMenu}
-          backdropOpacity={0}
-          animationIn='fadeIn'
-          animationOut='fadeOut'
-          animationInTiming={600}
-          onModalHide={this.onSettingMenuHide.bind(this)}
-          onBackdropPress={() => this.setState({ isVisibleMenu: false })}
-        >
-          <FlatList
-            style={styles.settingMenuContainer}
-            data={MENU_ITEMS}
-            keyExtractor={item => item}
-            renderItem={this.renderItem.bind(this)}
-          />
-        </Modal>
       </View>
     )
   }
