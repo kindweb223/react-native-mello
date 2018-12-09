@@ -168,11 +168,11 @@ class ImageSliderScreen extends React.Component {
           style={[styles.closeButtonWrapper, { opacity: this.buttonOpacity }]}
         >
           <TouchableOpacity
-            style={{padding: 10}}
+            style={styles.closeButtonView}
             activeOpacity={0.6}
             onPress={this.onClose.bind(this)}
           >
-            <MaterialCommunityIcons name="close" size={25} color={'#fff'} />
+            <MaterialCommunityIcons name="close" size={32} color={'#fff'} />
           </TouchableOpacity>
         </Animated.View>
         {

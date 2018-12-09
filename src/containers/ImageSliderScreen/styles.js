@@ -14,10 +14,14 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   closeButtonWrapper: {
-    top: 30,
-    left: 10,
+    top: CONSTANTS.STATUSBAR_HEIGHT, 
+    left: 4,
     alignSelf: 'flex-end',
-    position: 'absolute',
+    position: 'absolute'
+  },
+  closeButtonView: {
+    paddingHorizontal: 4,
+    paddingTop: 8
   },
   coverButton: {
     bottom: 36,
