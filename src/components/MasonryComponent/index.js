@@ -1,6 +1,8 @@
 import React from "react";
 import { FlatList, ScrollView, View, ViewPropTypes } from "react-native";
 import PropTypes from "prop-types";
+import EmptyStateComponent from '../EmptyStateComponent'
+import styles from './styles'
 
 const Item = ({ item, renderItem, onLayout }) => (
   <View style={{ flex: 1 }} onLayout={onLayout}>
@@ -130,6 +132,32 @@ export default class Masonry extends React.Component {
 	}
 
 	render() {
+		const { ideas, isExistingUser, showEmptyBubble } = this.props
+
+		if (ideas.length === 0) {
+			return (
+				<View style={styles.emptyView}>
+					{showEmptyBubble && (
+						isExistingUser
+						? <EmptyStateComponent
+								page="card_exist"
+								title="Ah, that sense of freshness! Let's start a new day."
+								subTitle="Need a few hints on all awesome ways to create a card?"
+								ctaTitle="Create a card"
+								onCreateNewCard={this.props.onOpenNewCardModal.bind(this)}
+							/>
+						: <EmptyStateComponent
+								page="card"
+								title="It's pretty boring here... Let's create some cards!"
+								subTitle="Watch a 15 sec video about creating cards"
+								ctaTitle="Create your first card"
+								onCreateNewCard={this.props.onOpenNewCardModal.bind(this)}
+							/>
+					)}
+				</View>
+			)
+		}
+
 		return (
       <ScrollView {...this.props}>
         <View style={[ { flexDirection: "row" }, this.props.containerStyle ]}>
