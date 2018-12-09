@@ -121,15 +121,20 @@ export default class Masonry extends React.Component {
 	}
 
 	sortColumns() {
-		return this.state.columns.sort( ( a, b ) => a.getHeight() - b.getHeight() );
-
+		if (this.state.columns.length > 0 && this.state.columns[0] !== null) {
+			return this.state.columns.sort( ( a, b ) => a.getHeight() - b.getHeight() );
+		} else {
+			return null
+		}
 	}
 
 	addItem( item, callback ) {
 		setTimeout(() => {
-			const minCol = this.sortColumns()[ 0 ];
-			item.onLayout = callback;
-			minCol.addItems( [ item ] );
+			if (this.sortColumns() !== null) {
+				const minCol = this.sortColumns()[ 0 ];
+				item.onLayout = callback;
+				minCol.addItems( [ item ] );
+			}
 		}, 100)
 	}
 
