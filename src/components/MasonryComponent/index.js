@@ -97,9 +97,11 @@ export default class Masonry extends React.Component {
   }
 
 	clear() {
-    this.state.columns.forEach( col => {
-      col.clear()
-    });
+		if (this.state.columns.length > 0 && this.state.columns[0] !== null) {
+			this.state.columns.forEach( col => {
+				col.clear()
+			});
+		}
 	}
 
 	addItems( items ) {
