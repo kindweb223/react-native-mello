@@ -1,6 +1,8 @@
 import React from "react";
 import { FlatList, ScrollView, View, ViewPropTypes } from "react-native";
 import PropTypes from "prop-types";
+import EmptyStateComponent from '../EmptyStateComponent'
+import styles from './styles'
 
 const Item = ({ item, renderItem, onLayout }) => (
   <View style={{ flex: 1 }} onLayout={onLayout}>
@@ -95,9 +97,11 @@ export default class Masonry extends React.Component {
   }
 
 	clear() {
-    this.state.columns.forEach( col => {
-      col.clear()
-    });
+		if (this.state.columns.length > 0 && this.state.columns[0] !== null) {
+			this.state.columns.forEach( col => {
+				col.clear()
+			});
+		}
 	}
 
 	addItems( items ) {
@@ -117,19 +121,50 @@ export default class Masonry extends React.Component {
 	}
 
 	sortColumns() {
-		return this.state.columns.sort( ( a, b ) => a.getHeight() - b.getHeight() );
-
+		if (this.state.columns.length > 0 && this.state.columns[0] !== null) {
+			return this.state.columns.sort( ( a, b ) => a.getHeight() - b.getHeight() );
+		} else {
+			return null
+		}
 	}
 
 	addItem( item, callback ) {
 		setTimeout(() => {
-			const minCol = this.sortColumns()[ 0 ];
-			item.onLayout = callback;
-			minCol.addItems( [ item ] );
+			if (this.sortColumns() !== null) {
+				const minCol = this.sortColumns()[ 0 ];
+				item.onLayout = callback;
+				minCol.addItems( [ item ] );
+			}
 		}, 100)
 	}
 
 	render() {
+		const { ideas, isExistingUser, showEmptyBubble } = this.props
+
+		if (ideas.length === 0) {
+			return (
+				<View style={styles.emptyView}>
+					{showEmptyBubble && (
+						isExistingUser
+						? <EmptyStateComponent
+								page="card_exist"
+								title="Ah, that sense of freshness! Let's start a new day."
+								subTitle="Need a few hints on all awesome ways to create a card?"
+								ctaTitle="Create a card"
+								onCreateNewCard={this.props.onOpenNewCardModal.bind(this)}
+							/>
+						: <EmptyStateComponent
+								page="card"
+								title="It's pretty boring here... Let's create some cards!"
+								subTitle="Watch a 15 sec video about creating cards"
+								ctaTitle="Create your first card"
+								onCreateNewCard={this.props.onOpenNewCardModal.bind(this)}
+							/>
+					)}
+				</View>
+			)
+		}
+
 		return (
       <ScrollView {...this.props}>
         <View style={[ { flexDirection: "row" }, this.props.containerStyle ]}>

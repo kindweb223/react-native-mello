@@ -424,13 +424,14 @@ class FeedDetailScreen extends React.Component {
     this.refs.masonry.clear()
     this.setState({ isMasonryView: true }, () => {
 
-      const MasonryData = ideas.map((data, i) => ({
-        key: `item_${i}`,
-        index: i,
-        data
-      }))
-  
-      this.refs.masonry.addItems(MasonryData)
+      if (ideas.length > 0) {
+        const MasonryData = ideas.map((data, i) => ({
+          key: `item_${i}`,
+          index: i,
+          data
+        }))
+        this.refs.masonry.addItems(MasonryData)
+      }
     })
   }
 
@@ -1250,9 +1251,10 @@ class FeedDetailScreen extends React.Component {
                 )}
 
                 {
-                  (!_.isEmpty(currentFeed) && currentFeed && currentFeed.ideas && currentFeed.ideas.length > 0)
+                (!_.isEmpty(currentFeed) && currentFeed && currentFeed.ideas)
                   ? this.props.user.listDetailType === 'list'
-                      ? <View style={{ paddingHorizontal: 8, visible: 'hide' }}>
+                    ? currentFeed.ideas.length > 0
+                      ? <View style={{ paddingHorizontal: 8 }}>
                           {currentFeed.ideas.map((item, index) => (
                           <Animated.View 
                             key={index}
@@ -1284,52 +1286,81 @@ class FeedDetailScreen extends React.Component {
                           </Animated.View>
                           ))}
                         </View>
-                      : this.props.user.listDetailType === 'thumbnail' && 
-                        <View style={{ paddingHorizontal: 8 }}>
-                          <Masonry
-                            onLayout={(event) => this.onLayoutMasonry(event)}
-                            ref="masonry"
-                            items={this.state.MasonryData}
-                            columns={2}
-                            keyExtractor={item => item.key}
-                            renderItem={(item) => 
-                              <Animated.View 
-                                style={
-                                  this.state.selectedLongHoldCardIndex === item.index && 
-                                  {
-                                    transform: [
-                                      { scale: this.animatedSelectCard },
-                                    ],
-                                  }
-                                }
-                              >
-                                <TouchableHighlight
-                                  ref={ref => this.cardItemRefs[item.index] = ref}
-                                  style={{ paddingHorizontal: 8, borderRadius: 5 }}
-                                  underlayColor="#fff"
-                                  onPress={() => this.onSelectCard(item.data, item.index)}
-                                  onLongPress={() => this.onLongPressCard(item.index, item.data, currentFeed.invitees)}
-                                >
-                                  <FeedCardComponent
-                                    idea={item.data}
-                                    invitees={currentFeed.invitees}
-                                    listType={this.props.user.listDetailType}
-                                    cardType="view"
-                                    onLinkPress={() => this.onSelectCard(item.data, item.index)}
-                                    onLinkLongPress={() => this.onLongPressCard(item.index, item.data, currentFeed.invitees)}
-                                  />
-                                </TouchableHighlight>
-                              </Animated.View>}
-                          />
+                      : <View style={styles.emptyView}>
+                          {loading
+                            ? <View style={styles.loadingView}>
+                                <FeedLoadingStateComponent />
+                              </View>
+                            : <View style={styles.emptyInnerView}>
+                                {this.state.showEmptyBubble && (
+                                  this.state.isExistingUser
+                                  ? <EmptyStateComponent
+                                      page="card_exist"
+                                      title="Ah, that sense of freshness! Let's start a new day."
+                                      subTitle="Need a few hints on all awesome ways to create a card?"
+                                      ctaTitle="Create a card"
+                                      onCreateNewCard={this.onOpenNewCardModal.bind(this)}
+                                    />
+                                  : <EmptyStateComponent
+                                      page="card"
+                                      title="It's pretty boring here... Let's create some cards!"
+                                      subTitle="Watch a 15 sec video about creating cards"
+                                      ctaTitle="Create your first card"
+                                      onCreateNewCard={this.onOpenNewCardModal.bind(this)}
+                                    />
+                                )}
+                              </View>
+                          }
                         </View>
-                  :  <View style={styles.emptyView}>
-                      {loading
-                        ? <View style={styles.loadingView}>
-                            <FeedLoadingStateComponent />
-                          </View>
-                        : <View style={styles.emptyInnerView}>
-                            {this.state.showEmptyBubble && (
-                              this.state.isExistingUser
+                    : <View style={{ paddingHorizontal: 8 }}>
+                        <Masonry
+                          onLayout={(event) => this.onLayoutMasonry(event)}
+                          ref="masonry"
+                          items={this.state.MasonryData}
+                          isExistingUser={this.state.isExistingUser}
+                          showEmptyBubble={this.state.showEmptyBubble}
+                          onOpenNewCardModal={this.onOpenNewCardModal.bind(this)}
+                          ideas={currentFeed.ideas}
+                          columns={2}
+                          keyExtractor={item => item.key}
+                          renderItem={(item) => 
+                            <Animated.View 
+                              style={
+                                this.state.selectedLongHoldCardIndex === item.index && 
+                                {
+                                  transform: [
+                                    { scale: this.animatedSelectCard },
+                                  ],
+                                }
+                              }
+                            >
+                              <TouchableHighlight
+                                ref={ref => this.cardItemRefs[item.index] = ref}
+                                style={{ paddingHorizontal: 8, borderRadius: 5 }}
+                                underlayColor="#fff"
+                                onPress={() => this.onSelectCard(item.data, item.index)}
+                                onLongPress={() => this.onLongPressCard(item.index, item.data, currentFeed.invitees)}
+                              >
+                                <FeedCardComponent
+                                  idea={item.data}
+                                  invitees={currentFeed.invitees}
+                                  listType={this.props.user.listDetailType}
+                                  cardType="view"
+                                  onLinkPress={() => this.onSelectCard(item.data, item.index)}
+                                  onLinkLongPress={() => this.onLongPressCard(item.index, item.data, currentFeed.invitees)}
+                                />
+                              </TouchableHighlight>
+                            </Animated.View>}
+                        />
+                      </View>
+                  : <View style={styles.emptyView}>
+                    {loading
+                      ? <View style={styles.loadingView}>
+                          <FeedLoadingStateComponent />
+                        </View>
+                      : <View style={styles.emptyInnerView}>
+                          {this.state.showEmptyBubble && (
+                            this.state.isExistingUser
                               ? <EmptyStateComponent
                                   page="card_exist"
                                   title="Ah, that sense of freshness! Let's start a new day."
@@ -1344,9 +1375,9 @@ class FeedDetailScreen extends React.Component {
                                   ctaTitle="Create your first card"
                                   onCreateNewCard={this.onOpenNewCardModal.bind(this)}
                                 />
-                            )}
-                          </View>
-                        }
+                          )}
+                        </View>
+                    }
                     </View>
                 }
               </View>
