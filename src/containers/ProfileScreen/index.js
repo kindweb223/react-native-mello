@@ -32,12 +32,10 @@ const LOCK_ICON = require('../../../assets/images/Lock/Blue.png')
 const EDIT_ICON = require('../../../assets/images/Edit/Blue.png')
 const PROFILE_ICON = require('../../../assets/images/Profile/Blue.png')
 
-const SUPPORT_ITEMS = [
+const ABOUT_ITEMS = [
+  'Support',
   'Privacy Policy',
-  'Terms & Conditions',
-  'FAQs',
-  'Open Issues',
-  'Contact Us'
+  'Terms & Conditions'
 ]
 
 const SETTING_ITEMS = [
@@ -205,19 +203,16 @@ class ProfileScreen extends React.Component {
     }
   }
 
-  handleSupportItem = (item, index) => {
+  handleAboutItem = (item, index) => {
     switch(index) {
       case 0:
-        Actions.ProfilePrivacyPolicyScreen()
+        Actions.ProfileSupportScreen()
         return
       case 1:
-        Actions.ProfileTermsAndConditionsScreen()
+        Actions.ProfilePrivacyPolicyScreen()
         return
       case 2:
-        return
-      case 3:
-        return
-      case 4:
+        Actions.ProfileTermsAndConditionsScreen()
         return
       default:
         return
@@ -304,15 +299,15 @@ class ProfileScreen extends React.Component {
               <View style={styles.settingView}>
                 <View style={styles.aboutTitleView}>
                   <Text style={styles.aboutTitle}>
-                    Support
+                    About
                   </Text>
                 </View>
                 <FlatList
-                  data={SUPPORT_ITEMS}
+                  data={ABOUT_ITEMS}
                   keyExtractor={item => item}
                   renderItem={({ item, index }) => (
                     <TouchableOpacity
-                      onPress={() => this.handleSupportItem(item, index)}
+                      onPress={() => this.handleAboutItem(item, index)}
                       activeOpacity={0.8}
                       style={styles.itemView}
                     >

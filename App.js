@@ -64,6 +64,7 @@ import DocumentSliderScreen from './src/containers/DocumentSliderScreen'
 import LikesListScreen from './src/containers/LikesListScreen'
 import CommentScreen from './src/containers/CommentScreen'
 import ProfileScreen from './src/containers/ProfileScreen'
+import ProfileSupportScreen from './src/containers/ProfileSupportScreen'
 import ProfileUpdateScreen from './src/containers/ProfileUpdateScreen'
 import SignUpSuccessScreen from './src/containers/SignUpSuccessScreen'
 import ResetPasswordConfirmScreen from './src/containers/ResetPasswordConfirmScreen'
@@ -281,7 +282,8 @@ export default class Root extends React.Component {
           </Scene>
           <Stack key="ProfileScreen" hideNavBar>
             <Stack key="ProfileScreen">
-              <Scene key="ProfileScreen" component={ ProfileScreen } hideNavBar navigationBarStyle={styles.defaultNavigationBar} />
+              <Scene key="ProfileScreen" component={ ProfileScreen } hideNavBar />
+              <Scene key="ProfileSupportScreen" component={ ProfileSupportScreen } navigationBarStyle={styles.defaultNavigationBar} />
               <Scene key="ProfileUpdateScreen" component={ ProfileUpdateScreen } navigationBarStyle={styles.defaultNavigationBar} />
               <Scene key="ProfileResetPasswordConfirmScreen" component={ ResetPasswordConfirmScreen } navigationBarStyle={styles.defaultNavigationBar} />
               <Scene key="ProfileTermsAndConditionsScreen" component={ TermsAndConditionsScreen } navigationBarStyle={styles.emptyBorderNavigationBar} />
