@@ -15,6 +15,7 @@ import { userSignOut, deleteProfilePhoto } from '../../redux/user/actions'
 import COLORS from '../../service/colors'
 import styles from './styles'
 import Analytics from '../../lib/firebase'
+import { TRELLO_URL } from '../../service/api'
 
 const SUPPORT_ITEMS = [
   'FAQs',
@@ -54,7 +55,7 @@ class ProfileSupportScreen extends React.Component {
       case 0:
         return
       case 1:
-        const url = 'https://trello.com/b/xqBylYZO/mello'
+        const url = TRELLO_URL
         SafariView.isAvailable()
           .then(SafariView.show({
             url: url,

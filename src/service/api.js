@@ -33,3 +33,5 @@ export const PUBNUB_SUBSCRIBER_KEY = 'sub-c-ec322a90-a60e-11e8-bb88-163ac01f2f4e
 
 // Feature toggle
 export const TAGS_FEATURE = false
+
+export const TRELLO_URL = 'https://trello.com/b/xqBylYZO/mello'
