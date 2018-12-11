@@ -34,10 +34,14 @@ const PROFILE_ICON = require('../../../assets/images/Profile/Blue.png')
 
 
 const ABOUT_ITEMS = [
-  'Knowledge Base',
-  'Contact Us',
   'Privacy Policy',
   'Terms & Conditions'
+]
+
+const SUPPORT_ITEMS = [
+  'FAQs',
+  'Open Issues',
+  'Contact Us'
 ]
 
 const SETTING_ITEMS = [
@@ -208,14 +212,24 @@ class ProfileScreen extends React.Component {
   handleAboutItem = (item, index) => {
     switch(index) {
       case 0:
+        Actions.ProfilePrivacyPolicyScreen()
+        return
+      case 1:
+        Actions.ProfileTermsAndConditionsScreen()
+        return
+      default:
+        return
+    }
+  }
+
+
+  handleSupportItem = (item, index) => {
+    switch(index) {
+      case 0:
         return
       case 1:
         return
       case 2:
-        Actions.ProfilePrivacyPolicyScreen()
-        return
-      case 3:
-        Actions.ProfileTermsAndConditionsScreen()
         return
       default:
         return
@@ -311,6 +325,32 @@ class ProfileScreen extends React.Component {
                   renderItem={({ item, index }) => (
                     <TouchableOpacity
                       onPress={() => this.handleAboutItem(item, index)}
+                      activeOpacity={0.8}
+                      style={styles.itemView}
+                    >
+                      <View style={styles.aboutItem}>
+                        <Text style={styles.title}>
+                          { item }
+                        </Text>
+                        <Ionicons name="ios-arrow-forward" color={COLORS.DARK_GREY} size={20} />
+                      </View>
+                    </TouchableOpacity>
+                  )}
+                />
+              </View>
+
+              <View style={styles.settingView}>
+                <View style={styles.aboutTitleView}>
+                  <Text style={styles.aboutTitle}>
+                    Support
+                  </Text>
+                </View>
+                <FlatList
+                  data={SUPPORT_ITEMS}
+                  keyExtractor={item => item}
+                  renderItem={({ item, index }) => (
+                    <TouchableOpacity
+                      onPress={() => this.handleSupportItem(item, index)}
                       activeOpacity={0.8}
                       style={styles.itemView}
                     >
