@@ -32,13 +32,9 @@ const LOCK_ICON = require('../../../assets/images/Lock/Blue.png')
 const EDIT_ICON = require('../../../assets/images/Edit/Blue.png')
 const PROFILE_ICON = require('../../../assets/images/Profile/Blue.png')
 
-
-const ABOUT_ITEMS = [
-  'Privacy Policy',
-  'Terms & Conditions'
-]
-
 const SUPPORT_ITEMS = [
+  'Privacy Policy',
+  'Terms & Conditions',
   'FAQs',
   'Open Issues',
   'Contact Us'
@@ -209,7 +205,7 @@ class ProfileScreen extends React.Component {
     }
   }
 
-  handleAboutItem = (item, index) => {
+  handleSupportItem = (item, index) => {
     switch(index) {
       case 0:
         Actions.ProfilePrivacyPolicyScreen()
@@ -217,19 +213,11 @@ class ProfileScreen extends React.Component {
       case 1:
         Actions.ProfileTermsAndConditionsScreen()
         return
-      default:
-        return
-    }
-  }
-
-
-  handleSupportItem = (item, index) => {
-    switch(index) {
-      case 0:
-        return
-      case 1:
-        return
       case 2:
+        return
+      case 3:
+        return
+      case 4:
         return
       default:
         return
@@ -311,32 +299,6 @@ class ProfileScreen extends React.Component {
                     </View>
                   ))
                 }
-              </View>
-
-              <View style={styles.settingView}>
-                <View style={styles.aboutTitleView}>
-                  <Text style={styles.aboutTitle}>
-                    About
-                  </Text>
-                </View>
-                <FlatList
-                  data={ABOUT_ITEMS}
-                  keyExtractor={item => item}
-                  renderItem={({ item, index }) => (
-                    <TouchableOpacity
-                      onPress={() => this.handleAboutItem(item, index)}
-                      activeOpacity={0.8}
-                      style={styles.itemView}
-                    >
-                      <View style={styles.aboutItem}>
-                        <Text style={styles.title}>
-                          { item }
-                        </Text>
-                        <Ionicons name="ios-arrow-forward" color={COLORS.DARK_GREY} size={20} />
-                      </View>
-                    </TouchableOpacity>
-                  )}
-                />
               </View>
 
               <View style={styles.settingView}>
