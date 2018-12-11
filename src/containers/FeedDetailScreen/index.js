@@ -692,7 +692,7 @@ class FeedDetailScreen extends React.Component {
     });
   }
 
-  onSelectCard(idea, index, invitees) {
+  onSelectCard(index, idea, invitees) {
     if (this.state.isVisibleLongHoldMenu) {
       this.setState({
         selectedLongHoldCardIndex: index,
@@ -802,8 +802,8 @@ class FeedDetailScreen extends React.Component {
 
     this.setState({ isVisibleLongHoldMenu: false })
     this.onSelectCard(
-      this.state.selectedLongHoldIdea,
       this.state.selectedLongHoldCardIndex,
+      this.state.selectedLongHoldIdea,
       this.state.selectedLongHoldInvitees
     )
   }
@@ -1308,7 +1308,7 @@ class FeedDetailScreen extends React.Component {
                               ref={ref => this.cardItemRefs[index] = ref}
                               style={{ paddingHorizontal: 8, borderRadius: 5 }}
                               underlayColor="#fff"
-                              onPress={() => this.onSelectCard(item, index, currentFeed.invitees)}
+                              onPress={() => this.onSelectCard(index, item, currentFeed.invitees)}
                               onLongPress={() => this.onLongPressCard(index, item, currentFeed.invitees)}
                             >
                               <FeedCardComponent
@@ -1317,7 +1317,7 @@ class FeedDetailScreen extends React.Component {
                                 listType={this.props.user.listDetailType}
                                 cardType="view"
                                 longSelected={isVisibleLongHoldMenu && selectedLongHoldCardIndex === index}
-                                onLinkPress={() => this.onSelectCard(item, index, currentFeed.invitees)}
+                                onLinkPress={() => this.onSelectCard(index, item, currentFeed.invitees)}
                                 onLinkLongPress={() => this.onLongPressCard(index, item, currentFeed.invitees)}
                               />
                             </TouchableHighlight>
@@ -1376,7 +1376,7 @@ class FeedDetailScreen extends React.Component {
                                 ref={ref => this.cardItemRefs[item.index] = ref}
                                 style={{ paddingHorizontal: 8, borderRadius: 5 }}
                                 underlayColor="#fff"
-                                onPress={() => this.onSelectCard(item, item.index, currentFeed.invitees)}
+                                onPress={() => this.onSelectCard(item.index, item.data, currentFeed.invitees)}
                                 onLongPress={() => this.onLongPressCard(item.index, item.data, currentFeed.invitees)}
                               >
                                 <FeedCardComponent
@@ -1385,7 +1385,7 @@ class FeedDetailScreen extends React.Component {
                                   listType={this.props.user.listDetailType}
                                   cardType="view"
                                   longSelected={isVisibleLongHoldMenu && selectedLongHoldCardIndex === item.index}
-                                  onLinkPress={() => this.onSelectCard(item.data, item.index, currentFeed.invitees)}
+                                  onLinkPress={() => this.onSelectCard(item.index, item.data, currentFeed.invitees)}
                                   onLinkLongPress={() => this.onLongPressCard(item.index, item.data, currentFeed.invitees)}
                                 />
                               </TouchableHighlight>
