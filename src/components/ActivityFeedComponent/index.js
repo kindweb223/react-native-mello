@@ -115,10 +115,10 @@ class ActivityFeedComponent extends React.Component {
           </Text>
         </View>
         <View style={styles.durationView}>
-          <Text style={[styles.text, data.read === true && styles.readText]}>
+          <Text style={styles.text}>
             {getFullDurationFromNow(data.activityTime)}
           </Text>
-          <Entypo name="dot-single" size={15} color={data.read === true ? COLORS.DARK_GREY :  COLORS.PURPLE} style={styles.dotIcon} />
+          {/* <Entypo name="dot-single" size={15} color={COLORS.DARK_GREY} style={styles.dotIcon} /> */}
         </View>
       </View>
     )

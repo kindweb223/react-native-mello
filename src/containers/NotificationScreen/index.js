@@ -240,7 +240,7 @@ class NotificationScreen extends React.Component {
     ];
 
     return (
-      <View style={styles.activityItem}>
+      <View style={[styles.activityItem, data.read === true && { backgroundColor: COLORS.LIGHT_PURPLE_BACKGROUND }]}>
         <Swipeout
           style={styles.itemContainer}
           autoClose={true}
@@ -338,7 +338,7 @@ class NotificationScreen extends React.Component {
             keyExtractor={item => item.id}
             automaticallyAdjustContentInsets={true}
             renderItem={this.renderItem.bind(this)}
-            ItemSeparatorComponent={this.renderSeparator}
+            // ItemSeparatorComponent={this.renderSeparator}
             ListFooterComponent={this.renderFooter}
             refreshControl={
               <RefreshControl 
