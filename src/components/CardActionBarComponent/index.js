@@ -89,6 +89,10 @@ class CardActionBarComponent extends React.Component {
       canMoveCard = true
     }
 
+    if (!canDelete && !canMoveCard) {
+      return null
+    }
+
     return (
       <View style={styles.container}>
         <View style={styles.rowContainer}>

@@ -11,7 +11,7 @@ const styles = StyleSheet.create({
     paddingVertical: 8,
     position: 'absolute',
     bottom: 0,
-    backgroundColor: 'transparent'
+    backgroundColor: '#fff'
   },
   rowContainer: {
     height: 54,

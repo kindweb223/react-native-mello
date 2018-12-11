@@ -692,38 +692,46 @@ class FeedDetailScreen extends React.Component {
     });
   }
 
-  onSelectCard(idea, index) {
-    this.props.setCurrentCard(idea);
-    const { currentFeed } = this.state;
-    const invitee = _.find(currentFeed.invitees, (o) => {
-      return (o.id == idea.inviteeId)
-    });
-    let cardViewMode = CONSTANTS.CARD_VIEW;
-    if (COMMON_FUNC.isFeedOwner(currentFeed) || COMMON_FUNC.isFeedEditor(currentFeed)) {
-      cardViewMode = CONSTANTS.CARD_EDIT;
-    }
-
-    // Contributor can just edit own cards
-    if (COMMON_FUNC.isFeedContributor(currentFeed) && COMMON_FUNC.isCardOwner(idea)) {
-      cardViewMode = CONSTANTS.CARD_EDIT;
-    }
-
-    this.cardItemRefs[index].measure((ox, oy, width, height, px, py) => {
+  onSelectCard(idea, index, invitees) {
+    if (this.state.isVisibleLongHoldMenu) {
       this.setState({
-        isVisibleCard: true,
-        clipboardData: '',
-        tmpClipboardData: '',
-        cardViewMode,
-        selectedIdeaInvitee: invitee,
-        selectedIdeaLayout: { ox, oy, width, height, px, py },
-      }, () => {
-        this.animatedOpacity.setValue(0);
-        Animated.timing(this.animatedOpacity, {
-          toValue: 1,
-          duration: CONSTANTS.ANIMATEION_MILLI_SECONDS,
-        }).start();
+        selectedLongHoldCardIndex: index,
+        selectedLongHoldIdea: idea,
+        selectedLongHoldInvitees: invitees
+      })
+    } else {
+      this.props.setCurrentCard(idea);
+      const { currentFeed } = this.state;
+      const invitee = _.find(currentFeed.invitees, (o) => {
+        return (o.id == idea.inviteeId)
       });
-    });
+      let cardViewMode = CONSTANTS.CARD_VIEW;
+      if (COMMON_FUNC.isFeedOwner(currentFeed) || COMMON_FUNC.isFeedEditor(currentFeed)) {
+        cardViewMode = CONSTANTS.CARD_EDIT;
+      }
+
+      // Contributor can just edit own cards
+      if (COMMON_FUNC.isFeedContributor(currentFeed) && COMMON_FUNC.isCardOwner(idea)) {
+        cardViewMode = CONSTANTS.CARD_EDIT;
+      }
+
+      this.cardItemRefs[index].measure((ox, oy, width, height, px, py) => {
+        this.setState({
+          isVisibleCard: true,
+          clipboardData: '',
+          tmpClipboardData: '',
+          cardViewMode,
+          selectedIdeaInvitee: invitee,
+          selectedIdeaLayout: { ox, oy, width, height, px, py },
+        }, () => {
+          this.animatedOpacity.setValue(0);
+          Animated.timing(this.animatedOpacity, {
+            toValue: 1,
+            duration: CONSTANTS.ANIMATEION_MILLI_SECONDS,
+          }).start();
+        });
+      });
+    }
   }
 
   onLongPressCard(index, idea, invitees) {
@@ -738,13 +746,9 @@ class FeedDetailScreen extends React.Component {
     }, () => {
       Animated.sequence([
         Animated.timing(this.animatedSelectCard, {
-          toValue: 0.95,
-          duration: 100,
-        }),
-        Animated.timing(this.animatedSelectCard, {
-          toValue: 1,
-          duration: 100,
-        }),
+          toValue: 0.85,
+          duration: 150,
+        })
       ]).start(() => {
         this.setState({
           selectedLongHoldIdea: idea,
@@ -754,6 +758,17 @@ class FeedDetailScreen extends React.Component {
         });
       });
     });
+  }
+
+  onCloseLongHold = () => {
+    Animated.sequence([
+      Animated.timing(this.animatedSelectCard, {
+        toValue: 1,
+        duration: 100,
+      })
+    ]).start(() => {
+      this.setState({ isVisibleLongHoldMenu: false })
+    })
   }
 
   onHiddenLongHoldMenu() {
@@ -766,20 +781,31 @@ class FeedDetailScreen extends React.Component {
   }
 
   onMoveCard(ideaId) {
-    // this.onCloseCardModal();
+    if (this.state.isVisibleLongHoldMenu) {
+      this.onCloseLongHold();
+    }
+
     this.setState({ 
       isVisibleCardOpenMenu: false,
-      isVisibleLongHoldMenu: false,
       currentActionType: ACTION_CARD_MOVE,
     });
     this.moveCardId = ideaId;
+
+    this.prevFeedo = this.props.feedo.currentFeed;
+    this.setState({
+      isVisibleSelectFeedo: true,
+    })
   }
   
   onEditCard() {
     Analytics.logEvent('feed_detail_edit_card', {})
 
     this.setState({ isVisibleLongHoldMenu: false })
-    this.onSelectCard(this.state.selectedLongHoldIdea, this.state.selectedLongHoldCardIndex)
+    this.onSelectCard(
+      this.state.selectedLongHoldIdea,
+      this.state.selectedLongHoldCardIndex,
+      this.state.selectedLongHoldInvitees
+    )
   }
 
   onTapCardActionSheet(index) {
@@ -834,9 +860,12 @@ class FeedDetailScreen extends React.Component {
   }
 
   onDeleteCard(ideaId) {
+    if (this.state.isVisibleLongHoldMenu) {
+      this.onCloseLongHold();
+    }
+
     this.onCloseCardModal();
     this.setState({
-      isVisibleLongHoldMenu: false,
       isShowToaster: true,
     });
 
@@ -1261,24 +1290,25 @@ class FeedDetailScreen extends React.Component {
                 (!_.isEmpty(currentFeed) && currentFeed && currentFeed.ideas)
                   ? this.props.user.listDetailType === 'list'
                     ? currentFeed.ideas.length > 0
-                      ? <View style={{ paddingHorizontal: 8 }}>
-                          {currentFeed.ideas.map((item, index) => (
-                          <Animated.View 
-                            key={index}
-                            style={
-                              selectedLongHoldCardIndex === index && 
-                              {
-                                transform: [
-                                  { scale: this.animatedSelectCard },
-                                ],
-                              }
+                      ? <Animated.View
+                          style={{ paddingHorizontal: 8 }}
+                          style={
+                            {
+                              transform: [
+                                { scale: this.animatedSelectCard },
+                              ],
                             }
+                          }
+                        >
+                          {currentFeed.ideas.map((item, index) => (
+                          <View 
+                            key={index}
                           >
                             <TouchableHighlight
                               ref={ref => this.cardItemRefs[index] = ref}
                               style={{ paddingHorizontal: 8, borderRadius: 5 }}
                               underlayColor="#fff"
-                              onPress={() => this.onSelectCard(item, index)}
+                              onPress={() => this.onSelectCard(item, index, currentFeed.invitees)}
                               onLongPress={() => this.onLongPressCard(index, item, currentFeed.invitees)}
                             >
                               <FeedCardComponent
@@ -1287,13 +1317,13 @@ class FeedDetailScreen extends React.Component {
                                 listType={this.props.user.listDetailType}
                                 cardType="view"
                                 longSelected={isVisibleLongHoldMenu && selectedLongHoldCardIndex === index}
-                                onLinkPress={() => this.onSelectCard(item, index)}
+                                onLinkPress={() => this.onSelectCard(item, index, currentFeed.invitees)}
                                 onLinkLongPress={() => this.onLongPressCard(index, item, currentFeed.invitees)}
                               />
                             </TouchableHighlight>
-                          </Animated.View>
+                          </View>
                           ))}
-                        </View>
+                        </Animated.View>
                       : <View style={styles.emptyView}>
                           {loading
                             ? <View style={styles.loadingView}>
@@ -1320,7 +1350,16 @@ class FeedDetailScreen extends React.Component {
                               </View>
                           }
                         </View>
-                    : <View style={{ paddingHorizontal: 8 }}>
+                    : <Animated.View
+                        style={{ paddingHorizontal: 8 }}
+                        style={
+                          {
+                            transform: [
+                              { scale: this.animatedSelectCard },
+                            ],
+                          }
+                        }
+                      >
                         <Masonry
                           onLayout={(event) => this.onLayoutMasonry(event)}
                           ref="masonry"
@@ -1332,21 +1371,12 @@ class FeedDetailScreen extends React.Component {
                           columns={2}
                           keyExtractor={item => item.key}
                           renderItem={(item) => 
-                            <Animated.View 
-                              style={
-                                this.state.selectedLongHoldCardIndex === item.index && 
-                                {
-                                  transform: [
-                                    { scale: this.animatedSelectCard },
-                                  ],
-                                }
-                              }
-                            >
+                            <View>
                               <TouchableHighlight
                                 ref={ref => this.cardItemRefs[item.index] = ref}
                                 style={{ paddingHorizontal: 8, borderRadius: 5 }}
                                 underlayColor="#fff"
-                                onPress={() => this.onSelectCard(item.data, item.index)}
+                                onPress={() => this.onSelectCard(item, item.index, currentFeed.invitees)}
                                 onLongPress={() => this.onLongPressCard(item.index, item.data, currentFeed.invitees)}
                               >
                                 <FeedCardComponent
@@ -1355,13 +1385,13 @@ class FeedDetailScreen extends React.Component {
                                   listType={this.props.user.listDetailType}
                                   cardType="view"
                                   longSelected={isVisibleLongHoldMenu && selectedLongHoldCardIndex === item.index}
-                                  onLinkPress={() => this.onSelectCard(item.data, item.index)}
+                                  onLinkPress={() => this.onSelectCard(item.data, item.index, currentFeed.invitees)}
                                   onLinkLongPress={() => this.onLongPressCard(item.index, item.data, currentFeed.invitees)}
                                 />
                               </TouchableHighlight>
-                            </Animated.View>}
+                            </View>}
                         />
-                      </View>
+                      </Animated.View>
                   : <View style={styles.emptyView}>
                     {loading
                       ? <View style={styles.loadingView}>
@@ -1489,7 +1519,7 @@ class FeedDetailScreen extends React.Component {
           </Animated.View>
         </Modal>
 
-        <Modal 
+        {/* <Modal 
           isVisible={isVisibleLongHoldMenu}
           style={styles.longHoldModalContainer}
           backdropColor='#e0e0e0'
@@ -1498,8 +1528,9 @@ class FeedDetailScreen extends React.Component {
           animationOut="fadeOut"
           animationInTiming={1300}
           onModalHide={this.onHiddenLongHoldMenu.bind(this)}
-          onBackdropPress={() => this.setState({ isVisibleLongHoldMenu: false })}
-        >
+          onBackdropPress={() => this.onCloseLongHold()}
+        > */}
+        {isVisibleLongHoldMenu && (
           <CardLongHoldMenuScreen
             listType={this.props.user.listDetailType}
             idea={this.state.selectedLongHoldIdea}
@@ -1507,9 +1538,20 @@ class FeedDetailScreen extends React.Component {
             onMove={this.onMoveCard.bind(this)}
             onEdit={this.onEditCard.bind(this)}
             onDelete={this.onDeleteCard.bind(this)}
-            onClose={() => this.setState({isVisibleLongHoldMenu: false})}
+            onClose={() => this.onCloseLongHold()}
           />
-        </Modal>
+        )}
+
+        {isVisibleLongHoldMenu && (
+          <View style={styles.topButtonView}>
+            <TouchableOpacity onPress={() => this.onCloseLongHold()}>
+              <View style={styles.btnDoneView}>
+                <Text style={styles.btnDoneText}>Done</Text>
+              </View>
+            </TouchableOpacity>
+          </View>
+        )}
+        
 
         <CardFilterComponent
           cardCount={currentFeed && currentFeed.ideas ? currentFeed.ideas.length : 0}
