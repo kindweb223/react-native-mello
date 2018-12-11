@@ -9,6 +9,7 @@ import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
 import { Actions } from 'react-native-router-flux'
 import Ionicons from 'react-native-vector-icons/Ionicons'
+import SafariView from "react-native-safari-view"
 import _ from 'lodash'
 import { userSignOut, deleteProfilePhoto } from '../../redux/user/actions'
 import COLORS from '../../service/colors'
@@ -48,11 +49,29 @@ class ProfileSupportScreen extends React.Component {
     Analytics.setCurrentScreen('ProfileSupportScren')
   }
 
-  handleSupportItem = (item, index) => {
+  handleSupportItem = (index) => {
     switch(index) {
       case 0:
         return
       case 1:
+        const url = 'https://trello.com/b/xqBylYZO/mello'
+        SafariView.isAvailable()
+          .then(SafariView.show({
+            url: url,
+            tintColor: COLORS.PURPLE
+          }))
+          .catch(error => {
+            // Fallback WebView code for iOS 8 and earlier
+            Linking.canOpenURL(url)
+              .then(supported => {
+                if (!supported) {
+                  console.log('Can\'t handle url: ' + url);
+                } else {
+                  return Linking.openURL(url);
+                }
+              })
+              .catch(error => console.error('An error occurred', error));
+          });
         return
       case 2:
         return
@@ -69,7 +88,7 @@ class ProfileSupportScreen extends React.Component {
           keyExtractor={item => item}
           renderItem={({ item, index }) => (
             <TouchableOpacity
-              onPress={() => this.handleSupportItem(item, index)}
+              onPress={() => this.handleSupportItem(index)}
               activeOpacity={0.8}
               style={styles.itemView}
             >
