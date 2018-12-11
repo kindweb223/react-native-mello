@@ -26,9 +26,6 @@ const styles = StyleSheet.create({
   },
   text: {
     fontSize: 12,
-    color: COLORS.PURPLE
-  },
-  readText: {
     color: COLORS.DARK_GREY
   },
   dotIcon: {
