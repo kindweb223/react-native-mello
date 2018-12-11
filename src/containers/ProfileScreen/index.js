@@ -32,10 +32,8 @@ const LOCK_ICON = require('../../../assets/images/Lock/Blue.png')
 const EDIT_ICON = require('../../../assets/images/Edit/Blue.png')
 const PROFILE_ICON = require('../../../assets/images/Profile/Blue.png')
 
-
 const ABOUT_ITEMS = [
-  'Knowledge Base',
-  'Contact Us',
+  'Support',
   'Privacy Policy',
   'Terms & Conditions'
 ]
@@ -208,13 +206,12 @@ class ProfileScreen extends React.Component {
   handleAboutItem = (item, index) => {
     switch(index) {
       case 0:
+        Actions.ProfileSupportScreen()
         return
       case 1:
-        return
-      case 2:
         Actions.ProfilePrivacyPolicyScreen()
         return
-      case 3:
+      case 2:
         Actions.ProfileTermsAndConditionsScreen()
         return
       default:
