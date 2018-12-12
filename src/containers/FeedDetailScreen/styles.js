@@ -166,6 +166,29 @@ const styles = StyleSheet.create({
   },
   ignoreButtonText: {
     color: '#fff'
+  },
+  topButtonView: {
+    width: '100%',
+    paddingHorizontal: CONSTANTS.PADDING,
+    position: 'absolute',
+    right: 0,
+    top: 0,
+    paddingTop: CONSTANTS.STATUSBAR_HEIGHT + 8,
+    alignItems: 'flex-end',
+    backgroundColor: '#fff'
+  },
+  btnDoneView: {
+    width: 69,
+    height: 34,
+    borderRadius: 17,
+    backgroundColor: COLORS.PURPLE,
+    justifyContent: 'center',
+    alignItems: 'center'
+  },
+  btnDoneText: {
+    color: '#fff',
+    fontSize: 15,
+    fontWeight: '500'
   }
 })
 

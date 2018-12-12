@@ -56,15 +56,15 @@ class CardLongHoldMenuScreen extends React.Component {
     const { idea, invitees, listType } = this.props
 
     return [
-      <View key='0' style={styles.cardContainer}>
-        <FeedCardComponent 
-          idea={idea}
-          invitees={invitees}
-          listType={listType}
-          cardType="long"
-          onComment={this.onClose.bind(this)}
-        />
-      </View>,
+      // <View key='0' style={styles.cardContainer}>
+      //   <FeedCardComponent 
+      //     idea={idea}
+      //     invitees={invitees}
+      //     listType={listType}
+      //     cardType="long"
+      //     onComment={this.onClose.bind(this)}
+      //   />
+      // </View>,
       <CardActionBarComponent
         key='1'
         onMove={this.onMoveCard.bind(this)}

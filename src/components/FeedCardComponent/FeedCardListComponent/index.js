@@ -27,7 +27,7 @@ class FeedCardListComponent extends React.Component {
   }
 
   render() {
-    const { invitees, idea, feedo } = this.props;
+    const { invitees, idea, feedo, longSelected } = this.props;
     const invitee = _.find(invitees, item => item.id === idea.inviteeId)
     let isOnlyInvitee = false
     
@@ -36,7 +36,7 @@ class FeedCardListComponent extends React.Component {
     }
 
     return (
-      <View style={styles.container}>
+      <View style={[styles.container, longSelected && styles.selected]}>
         <View style={styles.leftContainer}>
           <View>
             {!isOnlyInvitee && invitee && (

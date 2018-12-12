@@ -29,9 +29,9 @@ class FeedCardExtendComponent extends React.Component {
   }
 
   render() {
-    const { invitees, idea, feedo, cardType } = this.props;
+    const { invitees, idea, feedo, cardType, longSelected } = this.props;
     const { imageHeight } = this.state
-  
+
     const invitee = _.find(invitees, item => item.id === idea.inviteeId)
     let isOnlyInvitee = false
     
@@ -42,7 +42,7 @@ class FeedCardExtendComponent extends React.Component {
     let hasCoverImage = idea.coverImage && idea.coverImage.length > 0
 
     return (
-      <View style={styles.container}>
+      <View style={[styles.container, longSelected && styles.selected]}>
         <View style={styles.subContainer}>
           {hasCoverImage &&
             <View style={[styles.thumbnailsView, { height: imageHeight > CONSTANTS.SCREEN_HEIGHT / 2 ? CONSTANTS.SCREEN_HEIGHT / 2 : imageHeight }]}>

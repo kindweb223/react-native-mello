@@ -11,7 +11,13 @@ const styles = StyleSheet.create({
     paddingBottom: 8,
     paddingRight: 10,
     borderRadius: 10,
-    backgroundColor: COLORS.LIGHT_SOFT_GREY
+    backgroundColor: COLORS.LIGHT_SOFT_GREY,
+    borderWidth: 1,
+    borderColor: '#fff'
+  },
+  selected: {
+    borderWidth: 1,
+    borderColor: COLORS.PURPLE
   },
   leftContainer: {
     flex: 1,
