@@ -276,6 +276,10 @@ class FeedDetailScreen extends React.Component {
         apiLoading: false
       })
     }
+
+    if (this.props.feedo.loading !== 'GET_FEED_DETAIL_REJECTED' && feedo.loading === 'GET_FEED_DETAIL_REJECTED') {
+      Actions.pop()
+    }
   }
 
   onHandleAppStateChange = async(nextAppState) => {
@@ -996,9 +1000,7 @@ class FeedDetailScreen extends React.Component {
   }
 
   closeShareModal = () => {
-    setTimeout(() => {
-      this.setState({ isShowShare: false })
-    }, 200)
+    this.setState({ isShowShare: false })
   }
 
   onAddMedia = () => {
@@ -1477,7 +1479,8 @@ class FeedDetailScreen extends React.Component {
           backdropOpacity={0.9}
           animationIn="zoomInUp"
           animationOut="zoomOutDown"
-          animationInTiming={500}
+          animationInTiming={300}
+          animationOutTiming={100}
           onModalHide={() => {}}
           onBackdropPress={() => this.closeShareModal()}
         >

@@ -77,6 +77,7 @@ export const getFeedDetail = (feedId) => {
       method: 'get',
       url: url
     }),
+    payload: feedId
   };
 }
 
