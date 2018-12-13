@@ -1440,21 +1440,22 @@ class NewCardScreen extends React.Component {
   }
 
   get renderInvitee() {
-    const {
-      userProfile,
-    } = this.props.invitee;
-    const {
-      currentFeed,
-    } = this.props.feedo;
-    const {
-      userInfo,
-    } = this.props.user;
-    const name = `${userProfile.firstName} ${userProfile.lastName}`;
+    const { userProfile } = this.props.invitee;
+    const { currentFeed } = this.props.feedo;
+    const { userInfo } = this.props.user;
+
+    let name = ''
+    if (userProfile) {
+      name = `${userProfile.firstName} ${userProfile.lastName}`;
+    }
+
     const letterToWidthRatio = 0.5476; // Approximate this by taking the width of some representative text samples
     let fontSize = CONSTANTS.SCREEN_WIDTH * 0.42 / (name.length * letterToWidthRatio) - 4;
+
     if (fontSize > 14) {
       fontSize = 14;
     }
+
     if (COMMON_FUNC.isFeedOwner(currentFeed)) {
       const otherInvitees = _.filter(currentFeed.invitees, invitee => invitee.userProfile.id !== userInfo.id);
       if (!otherInvitees || otherInvitees.length === 0) {
