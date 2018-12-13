@@ -276,6 +276,10 @@ class FeedDetailScreen extends React.Component {
         apiLoading: false
       })
     }
+
+    if (this.props.feedo.loading !== 'GET_FEED_DETAIL_REJECTED' && feedo.loading === 'GET_FEED_DETAIL_REJECTED') {
+      Actions.pop()
+    }
   }
 
   onHandleAppStateChange = async(nextAppState) => {

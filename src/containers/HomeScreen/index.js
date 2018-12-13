@@ -170,7 +170,7 @@ class HomeScreen extends React.Component {
       (feedo.loading === 'PUBNUB_GET_FEED_DETAIL_FULFILLED') || (feedo.loading === 'DELETE_CARD_FULFILLED') || 
       (feedo.loading === 'MOVE_CARD_FULFILLED') || (feedo.loading === 'UPDATE_CARD_FULFILLED') ||
       (feedo.loading === 'READ_ACTIVITY_FEED_FULFILLED') || (feedo.loading === 'DEL_ACTIVITY_FEED_FULFILLED') ||
-      (feedo.loading === 'PUBNUB_DELETE_FEED') || 
+      (feedo.loading === 'PUBNUB_DELETE_FEED') || (feedo.loading === 'GET_FEED_DETAIL_REJECTED') ||
       (feedo.loading === 'UPDATE_CARD_FULFILLED') || (feedo.loading === 'GET_CARD_FULFILLED') ||
       (feedo.loading === 'DEL_DUMMY_CARD') || (feedo.loading === 'MOVE_DUMMY_CARD'))
     {

@@ -173,10 +173,19 @@ export default function feedo(state = initialState, action = {}) {
       }
     }
     case types.GET_FEED_DETAIL_REJECTED: {
+      const { data } = action.error.response
+      const feedId = action.payload
+      const { feedoList } = state
+      let restFeedoList = feedoList
+      if (data.code === 'error.hunt.not.found' || data.code === 'error.hunt.access.denied') {
+        restFeedoList = filter(feedoList, feed => feed.id !== feedId)
+      }
+
       return {
         ...state,
         loading: types.GET_FEED_DETAIL_REJECTED,
         error: action.error,
+        feedoList: restFeedoList
       }
     }
     /**
