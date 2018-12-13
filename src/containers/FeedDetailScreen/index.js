@@ -967,7 +967,7 @@ class FeedDetailScreen extends React.Component {
       >
         {
           this.state.isVisibleCard && 
-            <NewCardScreen 
+            <NewCardScreen
               viewMode={this.state.cardViewMode}
               invitee={this.state.selectedIdeaInvitee}
               intialLayout={this.state.selectedIdeaLayout}
