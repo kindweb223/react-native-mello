@@ -46,6 +46,7 @@ import {
   deleteCard
 } from '../../redux/card/actions'
 
+import * as COMMON_FUNC from '../../service/commonFunc'
 import COLORS from '../../service/colors'
 import CONSTANTS from '../../service/constants'
 import styles from './styles'
@@ -149,8 +150,7 @@ class NotificationScreen extends React.Component {
     if (this.props.feedo.loading !== 'GET_FEED_DETAIL_FULFILLED' && feedo.loading === 'GET_FEED_DETAIL_FULFILLED') {
       this.prevFeedo = feedo.currentFeed;
       if (!_.isEmpty(selectedActivity)) {
-        const ideaIndex = _.findIndex(feedo.currentFeed.ideas, idea => idea.id === selectedActivity.metadata.IDEA_ID)
-        console.log('ideaIndex: ', feedo.currentFeed.ideas)
+        const ideaIndex = _.findIndex(feedo.currentFeed.ideas, idea => idea.id === selectedActivity.metadata.IDEA_ID)        
         if (ideaIndex !== -1) {
           this.props.getCard(selectedActivity.metadata.IDEA_ID)
         }
@@ -159,6 +159,7 @@ class NotificationScreen extends React.Component {
 
     if (this.props.card.loading !== 'GET_CARD_FULFILLED' && card.loading === 'GET_CARD_FULFILLED') {
       const { currentFeed } = feedo
+
       const invitee = _.find(currentFeed.invitees, (o) => {
         return (o.userProfile.id === selectedActivity.instigatorId)
       })
@@ -268,7 +269,17 @@ class NotificationScreen extends React.Component {
 
   // Move to idea detail screen
   onSelectNewCard() {
-    let cardViewMode = CONSTANTS.CARD_EDIT
+    const { feedo } = this.props
+
+    let cardViewMode = CONSTANTS.CARD_VIEW;
+    if (COMMON_FUNC.isFeedOwner(feedo.currentFeed) || COMMON_FUNC.isFeedEditor(feedo.currentFeed)) {
+      cardViewMode = CONSTANTS.CARD_EDIT;
+    }
+
+    // Contributor can just edit own cards
+    if (COMMON_FUNC.isFeedContributor(feedo.currentFeed) && COMMON_FUNC.isCardOwner(idea)) {
+      cardViewMode = CONSTANTS.CARD_EDIT;
+    }
 
     this.setState({
       isVisibleCard: true,

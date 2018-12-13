@@ -174,7 +174,6 @@ class NewCardScreen extends React.Component {
   }
 
   UNSAFE_componentWillReceiveProps(nextProps) {
-    // console.log('NewCardScreen UNSAFE_componentWillReceiveProps : ', nextProps.card);
     let loading = false;
     if (this.props.card.loading !== types.CREATE_CARD_PENDING && nextProps.card.loading === types.CREATE_CARD_PENDING) {
       // loading = true;
