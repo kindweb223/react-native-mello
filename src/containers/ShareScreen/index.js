@@ -303,7 +303,8 @@ class ShareScreen extends React.Component {
             backdropOpacity={0.9}
             animationIn="fadeInUp"
             animationOut="fadeOutDown"
-            animationInTiming={500}
+            animationInTiming={300}
+            animationOutTiming={100}
             onModalHide={() => {}}
             onBackdropPress={() => this.setState({ isInviteeModal: false })}
           >

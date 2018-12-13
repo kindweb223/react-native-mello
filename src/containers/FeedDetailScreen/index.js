@@ -1475,7 +1475,8 @@ class FeedDetailScreen extends React.Component {
           backdropOpacity={0.9}
           animationIn="zoomInUp"
           animationOut="zoomOutDown"
-          animationInTiming={500}
+          animationInTiming={300}
+          animationOutTiming={100}
           onModalHide={() => {}}
           onBackdropPress={() => this.closeShareModal()}
         >
