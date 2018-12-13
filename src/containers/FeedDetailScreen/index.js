@@ -1003,6 +1003,14 @@ class FeedDetailScreen extends React.Component {
     this.setState({ isShowShare: false })
   }
 
+  moveHomeScreen = () => {
+    this.setState({ isShowShare: false }, () => {
+      setTimeout(() => {
+        Actions.HomeScreen()
+      }, 50)
+    })
+  }
+
   onAddMedia = () => {
     this.imagePickerActionSheetRef.show();
   }
@@ -1293,9 +1301,9 @@ class FeedDetailScreen extends React.Component {
                   ? this.props.user.listDetailType === 'list'
                     ? currentFeed.ideas.length > 0
                       ? <Animated.View
-                          style={{ paddingHorizontal: 8 }}
                           style={
                             {
+                              paddingHorizontal: 8,
                               transform: [
                                 { scale: this.animatedSelectCard },
                               ],
@@ -1353,9 +1361,9 @@ class FeedDetailScreen extends React.Component {
                           }
                         </View>
                     : <Animated.View
-                        style={{ paddingHorizontal: 8 }}
                         style={
                           {
+                            paddingHorizontal: 8,
                             transform: [
                               { scale: this.animatedSelectCard },
                             ],
@@ -1484,7 +1492,11 @@ class FeedDetailScreen extends React.Component {
           onModalHide={() => {}}
           onBackdropPress={() => this.closeShareModal()}
         >
-          <ShareScreen onClose={() => this.closeShareModal()} data={currentFeed} />
+          <ShareScreen
+            onClose={() => this.closeShareModal()}
+            moveHomeScreen={() => this.moveHomeScreen()}
+            data={currentFeed}
+          />
         </Modal>
 
         <Modal 

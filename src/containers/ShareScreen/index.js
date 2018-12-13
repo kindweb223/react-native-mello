@@ -62,7 +62,7 @@ class ShareScreen extends React.Component {
         COMMON_FUNC.isFeedContributor(feedo.currentFeed) ||
         COMMON_FUNC.isFeedGuest(feedo.currentFeed)) {
           if (user.userInfo.id === shareInviteeData.userProfile.id) {
-            Actions.HomeScreen()
+            this.props.moveHomeScreen()
           }
       }
     }
@@ -330,6 +330,7 @@ class ShareScreen extends React.Component {
 
 ShareScreen.defaultProps = {
   onClose: () => {},
+  moveHomeScreen: () => {},
   data: {},
   updateSharingPreferences: () => {},
   deleteInvitee: () => {},
@@ -338,6 +339,7 @@ ShareScreen.defaultProps = {
 
 ShareScreen.propTypes = {
   onClose: PropTypes.func,
+  moveHomeScreen: PropTypes.func,
   data: PropTypes.objectOf(PropTypes.any),
   updateSharingPreferences: PropTypes.func,
   deleteInvitee: PropTypes.func,
