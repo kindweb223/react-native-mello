@@ -996,9 +996,7 @@ class FeedDetailScreen extends React.Component {
   }
 
   closeShareModal = () => {
-    setTimeout(() => {
-      this.setState({ isShowShare: false })
-    }, 200)
+    this.setState({ isShowShare: false })
   }
 
   onAddMedia = () => {

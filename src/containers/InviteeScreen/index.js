@@ -12,13 +12,11 @@ import {
 import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
 import Entypo from 'react-native-vector-icons/Entypo'
-import Octicons from 'react-native-vector-icons/Octicons'
 import Modal from 'react-native-modal'
 import _ from 'lodash'
 import InviteeAutoComplete from '../../components/InviteeAutoComplete'
 import LinkShareModalComponent from '../../components/LinkShareModalComponent'
 import InviteeItemComponent from '../../components/LinkShareModalComponent/InviteeItemComponent'
-import ToasterComponent from '../../components/ToasterComponent'
 import { getContactList } from '../../redux/user/actions'
 import { inviteToHunt } from '../../redux/feedo/actions'
 import * as COMMON_FUNC from '../../service/commonFunc'
@@ -36,7 +34,6 @@ class InviteeScreen extends React.Component {
       message: '',
       isPermissionModal: false,
       inviteePermission: 'ADD',
-      isSuccess: false,
       isInput: false,
       contactList: [],
       inviteeEmails: [],
@@ -69,11 +66,7 @@ class InviteeScreen extends React.Component {
           feedo.error
         )
       } else {
-        if (this.isMount) {
-          this.setState({ isSuccess: true }, () => {
-            this.closeModal()
-          })
-        }
+        this.props.onClose()
       }
     }
 
@@ -90,16 +83,6 @@ class InviteeScreen extends React.Component {
 
   componentWillUnmount() {
     this.isMount = false
-  }
-
-  closeModal = () => {
-    setTimeout(() => {
-      this.setState({ isSuccess: false }, () => {
-        if (!this.state.isSuccess) {
-          this.props.handleModal()
-        }
-      })
-    }, 5000)
   }
 
   getRecentContactList = (feed, contactList) => {
@@ -226,130 +209,115 @@ class InviteeScreen extends React.Component {
   }
 
   render () {
-    const { data } = this.props
     const {
       isAddInvitee,
-      contactList,
       recentContacts,
       filteredContacts,
       inviteeEmails,
       inviteePermission,
       isPermissionModal,
-      isSuccess,
       isInvalidEmail,
       invalidEmail
      } = this.state
 
     return (
-      <View style={styles.container}>
-        <View style={styles.overlay}>
-          <ScrollView keyboardShouldPersistTaps="handled">
-            <View style={styles.header}>
-              <TouchableOpacity onPress={() => this.props.onClose()}>
-                <Image source={CLOSE_ICON} />
-              </TouchableOpacity>
+      <View style={styles.overlay}>
+        <ScrollView keyboardShouldPersistTaps="handled">
+          <View style={styles.header}>
+            <TouchableOpacity onPress={() => this.props.onClose()}>
+              <Image source={CLOSE_ICON} />
+            </TouchableOpacity>
 
-              <TouchableOpacity onPress={() => this.onSendInvitation()} activeOpacity={0.8}>
-                <View style={[styles.sendButtonView, (!isAddInvitee || isInvalidEmail) ? styles.sendDisableButtonView : styles.sendEnableButtonView]}>
-                  <Text style={[styles.sendButtonText, (!isAddInvitee || isInvalidEmail) ? styles.sendDisableButtonText : styles.sendEnableButtonText]}>Send</Text>
-                </View>
-              </TouchableOpacity>
-            </View>
+            <TouchableOpacity onPress={() => this.onSendInvitation()} activeOpacity={0.8}>
+              <View style={[styles.sendButtonView, (!isAddInvitee || isInvalidEmail) ? styles.sendDisableButtonView : styles.sendEnableButtonView]}>
+                <Text style={[styles.sendButtonText, (!isAddInvitee || isInvalidEmail) ? styles.sendDisableButtonText : styles.sendEnableButtonText]}>Send</Text>
+              </View>
+            </TouchableOpacity>
+          </View>
 
-            <View style={styles.body}>
-              <View style={styles.inputFieldView}>
-                <View style={styles.tagInputItem}>
-                  <InviteeAutoComplete
-                    tagText={this.state.tagText}
-                    inviteeEmails={inviteeEmails}
-                    invalidEmail={invalidEmail}
-                    handleInvitees={this.handleInvitees}
-                    handleChange={this.handleChange}
-                  />
-                  <TouchableOpacity onPress={() => this.updatePermission()}>
-                    <View style={styles.rightView}>
-                      <Text style={styles.viewText}>
-                        {inviteePermission}
-                      </Text>
-                      <Entypo name="cog" style={styles.cogIcon} />
-                    </View>
-                  </TouchableOpacity>
-                </View>
-
-                {this.state.isInput && (
-                  this.renderFilteredContacts(filteredContacts)
-                )}
-
-                {!this.state.isInput && (
-                  <View style={styles.messageInputItem}>
-                    <TextInput
-                      ref={ref => this.messageRef = ref}
-                      value={this.state.message}
-                      placeholder="Add message"
-                      multiline={true}
-                      style={[styles.textInput]}
-                      onChangeText={this.onChangeMessage}
-                      underlineColorAndroid='transparent'
-                      selectionColor={COLORS.PURPLE}
-                    />
+          <View style={styles.body}>
+            <View style={styles.inputFieldView}>
+              <View style={styles.tagInputItem}>
+                <InviteeAutoComplete
+                  tagText={this.state.tagText}
+                  inviteeEmails={inviteeEmails}
+                  invalidEmail={invalidEmail}
+                  handleInvitees={this.handleInvitees}
+                  handleChange={this.handleChange}
+                />
+                <TouchableOpacity onPress={() => this.updatePermission()}>
+                  <View style={styles.rightView}>
+                    <Text style={styles.viewText}>
+                      {inviteePermission}
+                    </Text>
+                    <Entypo name="cog" style={styles.cogIcon} />
                   </View>
-                )}
+                </TouchableOpacity>
               </View>
 
-              {this.state.loading
-                ? <View style={styles.loadingView}>
-                    <ActivityIndicator 
-                      animating
-                      color={COLORS.PURPLE}
-                    />
-                  </View>
-                : (!this.state.isInput && recentContacts && recentContacts.length > 0) && (
-                    <View style={styles.inviteeListView}>
-                      <View style={styles.titleView}>
-                        <Text style={styles.titleText}>Contacts</Text>
-                      </View>
-                      <ScrollView style={styles.inviteeList} keyboardShouldPersistTaps="handled">
-                        {recentContacts.map(item => (
-                          <TouchableOpacity key={item.id} onPress={() => this.onSelectContact(item)}>
-                            <View style={styles.inviteeItem}>
-                              <InviteeItemComponent invitee={item} hideLike />
-                            </View>
-                          </TouchableOpacity>
-                        ))}
-                      </ScrollView>
-                    </View>
-                )
-              }
+              {this.state.isInput && (
+                this.renderFilteredContacts(filteredContacts)
+              )}
+
+              {!this.state.isInput && (
+                <View style={styles.messageInputItem}>
+                  <TextInput
+                    ref={ref => this.messageRef = ref}
+                    value={this.state.message}
+                    placeholder="Add message"
+                    multiline={true}
+                    style={[styles.textInput]}
+                    onChangeText={this.onChangeMessage}
+                    underlineColorAndroid='transparent'
+                    selectionColor={COLORS.PURPLE}
+                  />
+                </View>
+              )}
             </View>
-          </ScrollView>
 
-          <Modal 
-            isVisible={isPermissionModal}
-            style={{ margin: 0 }}
-            backdropColor='#e0e0e0'
-            backdropOpacity={0.9}
-            animationIn="slideInUp"
-            animationOut="slideOutDown"
-            animationInTiming={500}
-            onBackdropPress={() => this.setState({ isPermissionModal: false })}
-          >
-            <LinkShareModalComponent
-              inviteePermission={true}
-              handleShareOption={this.handlePermissionOption}
-            />
-          </Modal>
-        </View>
+            {this.state.loading
+              ? <View style={styles.loadingView}>
+                  <ActivityIndicator 
+                    animating
+                    color={COLORS.PURPLE}
+                  />
+                </View>
+              : (!this.state.isInput && recentContacts && recentContacts.length > 0) && (
+                  <View style={styles.inviteeListView}>
+                    <View style={styles.titleView}>
+                      <Text style={styles.titleText}>Contacts</Text>
+                    </View>
+                    <ScrollView style={styles.inviteeList} keyboardShouldPersistTaps="handled">
+                      {recentContacts.map(item => (
+                        <TouchableOpacity key={item.id} onPress={() => this.onSelectContact(item)}>
+                          <View style={styles.inviteeItem}>
+                            <InviteeItemComponent invitee={item} hideLike />
+                          </View>
+                        </TouchableOpacity>
+                      ))}
+                    </ScrollView>
+                  </View>
+              )
+            }
+          </View>
+        </ScrollView>
 
-        <TouchableOpacity style={styles.backdrop} activeOpacity={0} onPress={() => this.props.onClose()} />
-
-        <ToasterComponent
-          isVisible={isSuccess}
-          title="Invitations sent"
-          buttonTitle="OK"
-          onPressButton={() => this.props.handleModal()}
-        />
-
-      </View>        
+        <Modal 
+          isVisible={isPermissionModal}
+          style={{ margin: 0 }}
+          backdropColor='#e0e0e0'
+          backdropOpacity={0.9}
+          animationIn="slideInUp"
+          animationOut="slideOutDown"
+          animationInTiming={500}
+          onBackdropPress={() => this.setState({ isPermissionModal: false })}
+        >
+          <LinkShareModalComponent
+            inviteePermission={true}
+            handleShareOption={this.handlePermissionOption}
+          />
+        </Modal>
+      </View>      
     )
   }
 }

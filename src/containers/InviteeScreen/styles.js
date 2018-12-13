@@ -3,16 +3,12 @@ import COLORS from '../../service/colors'
 import CONSTANTS from '../../service/constants'
 
 export default {
-  container: {
+  overlay: {
     position: 'absolute',
     top: 0,
     right: 0,
     left: 0,
-    bottom: 0,
-    marginTop: CONSTANTS.STATUSBAR_HEIGHT
-  },
-  overlay: {
-    width: '100%',
+    marginTop: CONSTANTS.STATUSBAR_HEIGHT,
     paddingBottom: 50,
     borderRadius: 18,
     backgroundColor: '#fff',
@@ -136,11 +132,6 @@ export default {
     fontSize: 10,
     color: COLORS.PURPLE,
   },
-  successModal: {
-    margin: 0,
-    justifyContent: 'center',
-    alignItems: 'center'
-  },
   contactList: {
     maxHeight: 300,
     marginBottom: 0
@@ -161,8 +152,5 @@ export default {
   invalidEmailText: {
     color: COLORS.MEDIUM_RED,
     fontWeight: '600'
-  },
-  backdrop: {
-    flex: 1
   }
 }
