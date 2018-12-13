@@ -240,7 +240,7 @@ class NotificationScreen extends React.Component {
     ];
 
     return (
-      <View style={[styles.activityItem, data.read === true && { backgroundColor: COLORS.LIGHT_PURPLE_BACKGROUND }]}>
+      <View style={[styles.activityItem, data.read === true && { backgroundColor: '#fff' }]}>
         <Swipeout
           style={styles.itemContainer}
           autoClose={true}
