@@ -12,6 +12,7 @@ import {
   AsyncStorage,
   AppState,
   Clipboard,
+  Alert
 } from 'react-native'
 
 import { connect } from 'react-redux'
@@ -159,6 +160,12 @@ class HomeScreen extends React.Component {
 
   static getDerivedStateFromProps(nextProps, prevState) {
     const { feedo, card, user } = nextProps
+
+    if (feedo.loading === 'GET_FEED_DETAIL_REJECTED') {
+      if (feedo.error.code === 'error.hunt.not.found' || feedo.error.code === 'error.hunt.access.denied') {
+        Alert.alert('Error', 'This flow is no longer available')
+      }
+    }
 
     if ((prevState.apiLoading !== feedo.loading && ((feedo.loading === 'GET_FEEDO_LIST_FULFILLED') || (feedo.loading === 'GET_FEEDO_LIST_REJECTED') ||
       (feedo.loading === 'FEED_FULFILLED') || (feedo.loading === 'DEL_FEED_FULFILLED') || (feedo.loading === 'ARCHIVE_FEED_FULFILLED') ||

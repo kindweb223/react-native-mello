@@ -184,7 +184,7 @@ export default function feedo(state = initialState, action = {}) {
       return {
         ...state,
         loading: types.GET_FEED_DETAIL_REJECTED,
-        error: action.error,
+        error: data,
         feedoList: restFeedoList
       }
     }
