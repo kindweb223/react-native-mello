@@ -169,11 +169,12 @@ const styles = StyleSheet.create({
   },
   topButtonView: {
     width: '100%',
+    height: NAV_BAR_HEIGHT,
     paddingHorizontal: CONSTANTS.PADDING,
     position: 'absolute',
     right: 0,
-    top: 0,
-    paddingTop: CONSTANTS.STATUSBAR_HEIGHT + 8,
+    top: CONSTANTS.STATUSBAR_HEIGHT,
+    paddingTop: 8,
     alignItems: 'flex-end',
     backgroundColor: '#fff'
   },
