@@ -426,17 +426,20 @@ class FeedDetailScreen extends React.Component {
 
   setMasonryData = (ideas) => {
     this.refs.masonry.clear()
-    this.setState({ isMasonryView: true }, () => {
 
-      if (ideas.length > 0) {
-        const MasonryData = ideas.map((data, i) => ({
-          key: `item_${i}`,
-          index: i,
-          data
-        }))
-        this.refs.masonry.addItems(MasonryData)
-      }
-    })
+    setTimeout(() => {
+      this.setState({ isMasonryView: true }, () => {
+
+        if (ideas.length > 0) {
+          const MasonryData = ideas.map((data, i) => ({
+            key: `item_${i}`,
+            index: i,
+            data
+          }))
+          this.refs.masonry.addItems(MasonryData)
+        }
+      })
+    }, 100)
   }
 
   onLayoutMasonry = (event) => {
@@ -625,6 +628,11 @@ class FeedDetailScreen extends React.Component {
           filterIdeas = _.filter(filterIdeas, idea => idea.id !== cardInfo.ideaId)
         }
         state.currentFeed.ideas = filterIdeas;
+
+        if (this.props.user.listDetailType === 'thumbnail' && this.refs.masonry) {
+          this.filterCards(state.currentFeed)
+        }
+
         return state;
       }, () => {
         this.setBubbles(this.state.currentFeed)
@@ -886,6 +894,11 @@ class FeedDetailScreen extends React.Component {
         filterIdeas = _.filter(filterIdeas, idea => idea.id !== cardInfo.ideaId)
       }
       state.currentFeed.ideas = filterIdeas;
+
+      if (this.props.user.listDetailType === 'thumbnail' && this.refs.masonry) {
+        this.setMasonryData(filterIdeas)
+      }
+
       return state;
     }, () => {
       this.setBubbles(this.state.currentFeed)
@@ -920,6 +933,11 @@ class FeedDetailScreen extends React.Component {
         filterIdeas = _.filter(filterIdeas, idea => idea.id !== cardInfo.ideaId)
       }
       state.currentFeed.ideas = filterIdeas;
+
+      if (this.props.user.listDetailType === 'thumbnail' && this.refs.masonry) {
+        this.setMasonryData(filterIdeas)
+      }
+
       return state;
     }, () => {
       this.setBubbles(this.state.currentFeed)
