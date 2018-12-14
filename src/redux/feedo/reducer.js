@@ -1237,7 +1237,7 @@ export default function feedo(state = initialState, action = {}) {
         activityData: data
       }
     }
-    case types.GET_INVITED_FEEDO_LIST_REJECTED: {
+    case types.GET_ACTIVITY_FEED_REJECTED: {
       return {
         ...state,
         loading: types.GET_ACTIVITY_FEED_REJECTED,
