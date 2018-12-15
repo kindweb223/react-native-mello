@@ -265,6 +265,22 @@ class HomeScreen extends React.Component {
   async componentDidUpdate(prevProps) {
     const { feedo, user } = this.props
     const { feedoList } = feedo
+
+    if (feedo.loading === 'PUBNUB_DELETE_FEED' ||
+        feedo.loading === 'PUBNUB_GET_FEED_DETAIL_FULFILLED' ||
+        feedo.loading === 'GET_CARD_FULFILLED' ||
+        feedo.loading === 'PUBNUB_LIKE_CARD_FULFILLED' ||
+        feedo.loading === 'PUBNUB_UNLIKE_CARD_FULFILLED' ||
+        feedo.loading === 'GET_INVITED_FEEDO_LIST_FULFILLED' ||
+        feedo.loading === 'GET_CARD_COMMENTS_FULFILLED'
+    ) {
+      this.props.getActivityFeed(user.userInfo.id, { page: 0, size: PAGE_COUNT })
+    }
+
+    if (prevProps.feedo.loading !== 'GET_ACTIVITY_FEED_FULFILLED' && feedo.loading === 'GET_ACTIVITY_FEED_FULFILLED') {
+      this.setState({ badgeCount: feedo.invitedFeedList.length + feedo.activityData.unreadCount })
+    }
+
     if (prevProps.feedo.loading !== 'GET_FEEDO_LIST_FULFILLED' && feedo.loading === 'GET_FEEDO_LIST_FULFILLED') {
       if (!this.isInitialized) {
         this.isInitialized = true;

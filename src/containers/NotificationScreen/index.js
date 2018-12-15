@@ -118,6 +118,17 @@ class NotificationScreen extends React.Component {
     const { feedo, card } = nextProps
     const { selectedActivity } = this.state
 
+    if (feedo.loading === 'PUBNUB_DELETE_FEED' ||
+        feedo.loading === 'PUBNUB_GET_FEED_DETAIL_FULFILLED' ||
+        feedo.loading === 'GET_CARD_FULFILLED' ||
+        feedo.loading === 'PUBNUB_LIKE_CARD_FULFILLED' ||
+        feedo.loading === 'PUBNUB_UNLIKE_CARD_FULFILLED' ||
+        feedo.loading === 'GET_INVITED_FEEDO_LIST_FULFILLED' ||
+        feedo.loading === 'GET_CARD_COMMENTS_FULFILLED'
+    ) {
+      this.getActivityFeedList(0, feedo.activityData.page * PAGE_COUNT + feedo.activityData.numberOfElements)
+    }
+
     if ((this.props.feedo.loading !== 'GET_INVITED_FEEDO_LIST_FULFILLED' && feedo.loading === 'GET_INVITED_FEEDO_LIST_FULFILLED') ||
         (feedo.loading === 'PUBNUB_DELETE_FEED')) {
       const invitedFeedList = _.orderBy(feedo.invitedFeedList, ['publishedDate'], ['desc'])
@@ -127,7 +138,6 @@ class NotificationScreen extends React.Component {
 
     if (this.props.feedo.loading !== 'READ_ACTIVITY_FEED_FULFILLED' && feedo.loading === 'READ_ACTIVITY_FEED_FULFILLED') {
       if (!_.isEmpty(selectedActivity)) {
-        console.log('selectedActivity.activityTypeEnum: ', selectedActivity)
         Analytics.logEvent('notification_read_activity', {})
         if (selectedActivity.activityTypeEnum === 'NEW_IDEA_ADDED' || selectedActivity.activityTypeEnum === 'USER_EDITED_IDEA') {
           this.props.getFeedDetail(selectedActivity.metadata.HUNT_ID)
