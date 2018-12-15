@@ -9,9 +9,9 @@ const styles = StyleSheet.create({
     width: '100%',
     alignItems: 'center',
     paddingVertical: 8,
+    marginBottom: 8,
     position: 'absolute',
     bottom: 0,
-    backgroundColor: '#fff'
   },
   rowContainer: {
     height: 54,

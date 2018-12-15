@@ -1453,19 +1453,21 @@ class FeedDetailScreen extends React.Component {
         </View>
 
         {TAGS_FEATURE && this.renderCreateTag}
-
-        <DashboardActionBar
-          onAddFeed={this.onOpenNewCardModal.bind(this)}
-          handleFilter={this.handleFilter}
-          handleList={() => this.handleList()}
-          filterType={this.state.filterShowType}
-          sortType={this.state.filterSortType}
-          notifications={false}
-          feed={currentFeed}
-          showList={true}
-          listType={this.props.user.listDetailType}
-          page="detail"
-        />
+        
+        {!isVisibleLongHoldMenu && 
+          <DashboardActionBar
+            onAddFeed={this.onOpenNewCardModal.bind(this)}
+            handleFilter={this.handleFilter}
+            handleList={() => this.handleList()}
+            filterType={this.state.filterShowType}
+            sortType={this.state.filterSortType}
+            notifications={false}
+            feed={currentFeed}
+            showList={true}
+            listType={this.props.user.listDetailType}
+            page="detail"
+          />
+        }
 
         {this.renderNewCardModal}
         {this.renderSelectHunt}
