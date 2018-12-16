@@ -230,11 +230,9 @@ export default class Root extends React.Component {
               if (userInfo) {
                 if (Actions.currentScene === 'FeedDetailScreen') {                  
                   Actions.FeedDetailScreen({ type: 'replace', data });
-                  store.dispatch(pubnubGetFeedDetail(data.id))
                 } 
                 else {
                   Actions.FeedDetailScreen({ data })
-                  store.dispatch(pubnubGetFeedDetail(data.id))
                 }
               } 
               else {
