@@ -11,7 +11,7 @@ const styles = StyleSheet.create({
   },
   container: {
     flex: 1,
-    paddingBottom: Platform.OS === 'ios' ? ifIphoneX(0, 56) : 56,
+    paddingBottom: Platform.OS === 'ios' ? ifIphoneX(0, 56) : 56
   },
   loadingView: {
     width: '100%',
@@ -82,7 +82,9 @@ const styles = StyleSheet.create({
   collpaseSeparator: {
     marginTop: 16
   },
-  detailView: {
+  scrollView: {
+  },
+  detailView: {    
     paddingTop: 15,
     paddingBottom: Platform.OS === 'ios' ? ifIphoneX(120, 10) : 10
   },

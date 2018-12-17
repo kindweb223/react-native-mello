@@ -1,15 +1,9 @@
 import React from 'react'
-import { 
-  View,
-  Text,
-} from 'react-native'
 import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
 import ActionSheet from 'react-native-actionsheet'
-import FeedCardComponent from '../../components/FeedCardComponent'
 import CardActionBarComponent from '../../components/CardActionBarComponent'
 import COLORS from '../../service/colors'
-import styles from './styles'
 
 class CardLongHoldMenuScreen extends React.Component {
   constructor(props) {
@@ -53,18 +47,9 @@ class CardLongHoldMenuScreen extends React.Component {
   }
 
   render () {
-    const { idea, invitees, listType } = this.props
+    const { idea } = this.props
 
     return [
-      // <View key='0' style={styles.cardContainer}>
-      //   <FeedCardComponent 
-      //     idea={idea}
-      //     invitees={invitees}
-      //     listType={listType}
-      //     cardType="long"
-      //     onComment={this.onClose.bind(this)}
-      //   />
-      // </View>,
       <CardActionBarComponent
         key='1'
         onMove={this.onMoveCard.bind(this)}
