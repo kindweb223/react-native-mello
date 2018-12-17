@@ -150,6 +150,7 @@ class FeedDetailScreen extends React.Component {
     this.menuOpacity = new Animated.Value(0)
     this.menuZIndex = new Animated.Value(0)
     this.animatedSelectCard = new Animated.Value(1);
+    this.animatedSelectCardPos = new Animated.Value(0);
 
     this.cardItemRefs = [];
     this.moveCardId = null;
@@ -164,6 +165,7 @@ class FeedDetailScreen extends React.Component {
 
     this.userActions = [];
     this.userActionTimer = null;
+    this.scrollviewHeight = 0
   }
 
   componentDidMount() {
@@ -746,6 +748,10 @@ class FeedDetailScreen extends React.Component {
     }
   }
 
+  onLayoutScroll = (event) => {
+    this.scrollviewHeight = event.nativeEvent.layout.height
+  }
+
   onLongPressCard(index, idea, invitees) {
     if (COMMON_FUNC.isFeedGuest(this.state.currentFeed)) {
       return
@@ -756,9 +762,13 @@ class FeedDetailScreen extends React.Component {
     this.setState({
       selectedLongHoldCardIndex: index
     }, () => {
-      Animated.sequence([
+      Animated.parallel([
         Animated.timing(this.animatedSelectCard, {
           toValue: 0.85,
+          duration: 150,
+        }),
+        Animated.timing(this.animatedSelectCardPos, {
+          toValue: -this.scrollviewHeight / 20,
           duration: 150,
         })
       ]).start(() => {
@@ -773,9 +783,13 @@ class FeedDetailScreen extends React.Component {
   }
 
   onCloseLongHold = () => {
-    Animated.sequence([
+    Animated.parallel([
       Animated.timing(this.animatedSelectCard, {
         toValue: 1,
+        duration: 100
+      }),
+      Animated.timing(this.animatedSelectCardPos, {
+        toValue: 0,
         duration: 100,
       })
     ]).start(() => {
@@ -1240,7 +1254,7 @@ class FeedDetailScreen extends React.Component {
 
     return (
       <SafeAreaView style={styles.safeArea}>
-        <View style={styles.container}>
+        <View style={[styles.container, isVisibleLongHoldMenu && { paddingBottom: 0 }]}>
           <View style={styles.navBar}>
             <TouchableOpacity style={styles.backView} onPress={this.backToDashboard}>
               <Ionicons name="ios-arrow-back" size={32} color={COLORS.PURPLE} />
@@ -1272,7 +1286,7 @@ class FeedDetailScreen extends React.Component {
               style={{ width: '100%', height: '100%' }}
               onSwipeRight={this.backToDashboard}
             >
-              <View style={styles.detailView}>
+              <View style={styles.detailView} onLayout={this.onLayoutScroll}>
                 {!_.isEmpty(currentFeed) && (
                   <View style={styles.collapseView}>
                     <FeedCollapseComponent
@@ -1323,13 +1337,14 @@ class FeedDetailScreen extends React.Component {
                             {
                               paddingHorizontal: 8,
                               transform: [
-                                { scale: this.animatedSelectCard },
+                                { scale: this.animatedSelectCard }
                               ],
+                              marginTop: this.animatedSelectCardPos
                             }
                           }
                         >
                           {currentFeed.ideas.map((item, index) => (
-                          <View 
+                          <View
                             key={index}
                           >
                             <TouchableHighlight
@@ -1383,8 +1398,9 @@ class FeedDetailScreen extends React.Component {
                           {
                             paddingHorizontal: 8,
                             transform: [
-                              { scale: this.animatedSelectCard },
+                              { scale: this.animatedSelectCard }
                             ],
+                            marginTop: this.animatedSelectCardPos
                           }
                         }
                       >
@@ -1554,17 +1570,6 @@ class FeedDetailScreen extends React.Component {
           </Animated.View>
         </Modal>
 
-        {/* <Modal 
-          isVisible={isVisibleLongHoldMenu}
-          style={styles.longHoldModalContainer}
-          backdropColor='#e0e0e0'
-          backdropOpacity={0.3}
-          animationIn="fadeIn"
-          animationOut="fadeOut"
-          animationInTiming={1300}
-          onModalHide={this.onHiddenLongHoldMenu.bind(this)}
-          onBackdropPress={() => this.onCloseLongHold()}
-        > */}
         {isVisibleLongHoldMenu && (
           <CardLongHoldMenuScreen
             listType={this.props.user.listDetailType}

@@ -12,6 +12,7 @@ const styles = StyleSheet.create({
     marginBottom: 8,
     position: 'absolute',
     bottom: 0,
+    backgroundColor: 'transparent'
   },
   rowContainer: {
     height: 54,
