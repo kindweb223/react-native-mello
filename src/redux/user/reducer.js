@@ -291,11 +291,13 @@ export default function user(state = initialState, action = {}) {
         SharedGroupPreferences.setItem('userInfo', JSON.stringify(data), CONSTANTS.APP_GROUP_USER_IDENTIFIER)
       }
 
-      FastImage.preload([
-        {
-          uri: data.imageUrl
-        }
-      ])
+      if (data.imageUrl) {
+        FastImage.preload([
+          {
+            uri: data.imageUrl
+          }
+        ])
+      }
 
       let updateUserInfo = data
       if (cropUrl) {
