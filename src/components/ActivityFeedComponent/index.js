@@ -46,14 +46,20 @@ class ActivityFeedComponent extends React.Component {
       case 'NEW_LIKE_ON_IDEA':
         comment = ' liked the Card '
         source = data.metadata.IDEA_PREVIEW
+        link = ' in '
+        target = data.metadata.HUNT_HEADLINE
         break;
       case 'NEW_COMMENT_ON_IDEA':
         comment = ' commented on the Card '
         source = data.metadata.IDEA_PREVIEW
+          link = ' in '
+          target = data.metadata.HUNT_HEADLINE
         break;
       case 'USER_EDITED_IDEA':
         comment = ' updated the Card '
         source = data.metadata.IDEA_PREVIEW
+        link = ' in '
+        target = data.metadata.HUNT_HEADLINE
         break;
       case 'IDEA_MOVED':
         comment = ' moved the Card '
@@ -64,6 +70,8 @@ class ActivityFeedComponent extends React.Component {
       case 'IDEA_DELETED':
         comment = ' deleted the Card '
         source = data.metadata.IDEA_PREVIEW
+        link = ' from '
+        target = data.metadata.HUNT_HEADLINE
         break;
       case 'HUNT_DELETED':
         comment = ' deleted the Flow '
