@@ -1031,6 +1031,7 @@ export default function feedo(state = initialState, action = {}) {
       currentFeed.ideas[ideaIndex].metadata.comments ++;
       return {
         ...state,
+        loading: 'ADD_CARD_COMMENT_FULFILLED',
         currentFeed: {
           ...currentFeed,
         }
@@ -1048,6 +1049,7 @@ export default function feedo(state = initialState, action = {}) {
       currentFeed.ideas[ideaIndex].metadata.comments --;
       return {
         ...state,
+        loading: 'DELETE_CARD_COMMENT_FULFILLED',
         currentFeed: {
           ...currentFeed,
         }

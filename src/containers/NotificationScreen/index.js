@@ -142,7 +142,7 @@ class NotificationScreen extends React.Component {
         if (selectedActivity.activityTypeEnum === 'NEW_IDEA_ADDED' || selectedActivity.activityTypeEnum === 'USER_EDITED_IDEA') {
           this.props.getFeedDetail(selectedActivity.metadata.HUNT_ID)
         } else if (selectedActivity.activityTypeEnum === 'NEW_COMMENT_ON_IDEA') {
-          this.onSelectNewComment(selectedActivity)
+          this.props.getFeedDetail(selectedActivity.metadata.HUNT_ID)
         } else if (selectedActivity.activityTypeEnum === 'NEW_LIKE_ON_IDEA') {
           this.props.getFeedDetail(selectedActivity.metadata.HUNT_ID)
         } else if (selectedActivity.activityTypeEnum === 'USER_JOINED_HUNT') {
@@ -168,15 +168,18 @@ class NotificationScreen extends React.Component {
     }
 
     if (this.props.card.loading !== 'GET_CARD_FULFILLED' && card.loading === 'GET_CARD_FULFILLED') {
-      const { currentFeed } = feedo
+      if (selectedActivity.activityTypeEnum === 'NEW_COMMENT_ON_IDEA') {
+        this.onSelectNewComment(selectedActivity)
+      } else {
+        const { currentFeed } = feedo
+        const invitee = _.find(currentFeed.invitees, (o) => {
+          return (o.id === card.currentCard.inviteeId)
+        })
 
-      const invitee = _.find(currentFeed.invitees, (o) => {
-        return (o.userProfile.id === selectedActivity.instigatorId)
-      })
-
-      this.setState({ selectedIdeaInvitee: invitee }, () => {
-        this.onSelectNewCard()
-      })
+        this.setState({ selectedIdeaInvitee: invitee }, () => {
+          this.onSelectNewCard()
+        })
+      }
     }
 
     if (this.props.card.loading !== 'GET_CARD_REJECTED' && card.loading === 'GET_CARD_REJECTED') {
@@ -267,13 +270,7 @@ class NotificationScreen extends React.Component {
   onSelectNewComment(data) {
     Actions.ActivityCommentScreen({
       idea: { id: data.metadata.IDEA_ID },
-      prevPage: 'activity',
-      instigatorData: {
-        id: data.instigatorId,
-        firstName: data.instigatorFirstName,
-        lastName: data.instigatorLastName,
-        imageUrl: data.instigatorPic
-      }
+      prevPage: 'activity'
     });
   }
 
