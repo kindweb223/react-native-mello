@@ -511,6 +511,13 @@ class NewCardScreen extends React.Component {
         return;
       }
     }
+    if (this.props.card.loading !== 'GET_CARD_FULFILLED' && nextProps.card.loading === 'GET_CARD_FULFILLED') {
+      this.setState({
+        // cardName: this.props.card.currentCard.title,
+        idea: nextProps.card.currentCard.idea,
+        coverImage: nextProps.card.currentCard.coverImage,
+      })
+    }
   }
 
   componentDidMount() {
