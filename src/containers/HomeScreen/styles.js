@@ -124,6 +124,12 @@ const styles = StyleSheet.create({
     width: '100%',
     height: CONSTANTS.SCREEN_HEIGHT - CONSTANTS.ACTION_BAR_HEIGHT - 100
   },
+  emptyInnerSubView: {
+    justifyContent: 'center',
+    alignItems: 'center',
+    width: '100%',
+    height: CONSTANTS.SCREEN_HEIGHT - CONSTANTS.ACTION_BAR_HEIGHT - 350
+  },
   emptyTabInnerView: {
     justifyContent: 'center',
     alignItems: 'center',

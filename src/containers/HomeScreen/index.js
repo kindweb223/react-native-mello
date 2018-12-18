@@ -292,7 +292,8 @@ class HomeScreen extends React.Component {
         (prevProps.feedo.loading !== 'UPDATE_FEED_FULFILLED' && feedo.loading === 'UPDATE_FEED_FULFILLED') ||
         (prevProps.feedo.loading !== 'FEED_FULFILLED' && feedo.loading === 'FEED_FULFILLED') ||
         (prevProps.feedo.loading !== 'DEL_FEED_FULFILLED' && feedo.loading === 'DEL_FEED_FULFILLED') ||
-        (prevProps.feedo.loading !== 'ARCHIVE_FEED_FULFILLED' && feedo.loading === 'ARCHIVE_FEED_FULFILLED')) {
+        (prevProps.feedo.loading !== 'ARCHIVE_FEED_FULFILLED' && feedo.loading === 'ARCHIVE_FEED_FULFILLED') ||
+        (feedo.loading === 'PUBNUB_DELETE_FEED')) {
       this.setState({ isRefreshing: false })
       await this.setBubbles(feedoList)
     }
@@ -366,19 +367,29 @@ class HomeScreen extends React.Component {
 
   async setBubbles(feedoList) {
     const { user } = this.props
+    const { tabIndex } = this.state
 
     let bubbleFirstFeedAsyncData = await AsyncStorage.getItem('BubbleFeedFirstTimeCreated')
     let bubbleFirstFeedData = JSON.parse(bubbleFirstFeedAsyncData)
 
+    let ownFeedoList = []
+    let invitedFeedList = []
+    if (feedoList) {
+      ownFeedoList = filter(feedoList, feed => feed.metadata && feed.metadata.owner)
+      invitedFeedList = orderBy(
+        filter(feedoList, item => item.metadata.myInviteStatus !== 'INVITED' && item.owner.id !== user.userInfo.id),
+        ['metadata.inviteAcceptedDate'],
+        ['desc']
+      )
+    }
+
     // New user, invited to existing feed
-    if (feedoList && feedoList.length > 0) {
+    if (feedoList && invitedFeedList.length > 0) {
       let bubbleAsyncData = await AsyncStorage.getItem('BubbleFeedInvitedNewUser')
       let bubbleData = JSON.parse(bubbleAsyncData)
 
       if(!bubbleData || (bubbleData.userId === user.userInfo.id && bubbleData.state !== 'false')) {
-        const ownFeeds = filter(feedoList, feed => feed.metadata && feed.metadata.owner === true)
-
-        if (this.state.tabIndex === 0 && ownFeeds.length === 0 && !(bubbleFirstFeedData && (bubbleFirstFeedData.userId === user.userInfo.id && bubbleFirstFeedData.state === 'true'))) {
+        if (tabIndex === 0 && ownFeedoList.length === 0 && !(bubbleFirstFeedData && (bubbleFirstFeedData.userId === user.userInfo.id && bubbleFirstFeedData.state === 'true'))) {
           this.setState({ showFeedInvitedNewUserBubble: true })
           setTimeout(() => {
             this.setState({ showBubbleCloseButton: true })
@@ -387,9 +398,9 @@ class HomeScreen extends React.Component {
           this.setState({ showFeedInvitedNewUserBubble: false })
         }
       }
-    }
+    }    
 
-    if (feedoList && feedoList.length === 0) {
+    if (feedoList && ownFeedoList.length === 0) {
       this.setState({ emptyState: true, showEmptyBubble: true })
       if (bubbleFirstFeedData && (bubbleFirstFeedData.userId === user.userInfo.id && bubbleFirstFeedData.state === 'true')) {
         this.setState({ isExistingUser: true })     // Existing user, no feeds
@@ -1061,7 +1072,15 @@ class HomeScreen extends React.Component {
   }
 
   render () {
-    const { loading, feedoList, emptyState, tabIndex, invitedFeedList, badgeCount } = this.state
+    const {
+      loading,
+      feedoList,
+      emptyState,
+      tabIndex,
+      invitedFeedList,
+      badgeCount,
+      showFeedInvitedNewUserBubble
+    } = this.state
     
     // const normalHeaderOpacity = this.state.scrollY.interpolate({
     //   inputRange: [0, 40],
@@ -1168,7 +1187,7 @@ class HomeScreen extends React.Component {
                 tabLabel={{ label: 'My flows', badge: badgeCount }}
                 onLayout={(event) => this.onScrollableTabViewLayout(event, 0)}
               >
-                {this.state.showFeedInvitedNewUserBubble && (
+                {showFeedInvitedNewUserBubble && (
                   <View style={{ height: 200 }}>
                     <SpeechBubbleComponent
                       page="feed"
@@ -1180,10 +1199,10 @@ class HomeScreen extends React.Component {
                   </View>
                 )}
 
-                {emptyState && (tabIndex === 0 && feedoList.length === 0) && (
+                {(tabIndex === 0 && feedoList.length === 0) && (
                   <View style={styles.emptyView}>
                     {!loading && (
-                      <View style={styles.emptyInnerView}>
+                      <View style={showFeedInvitedNewUserBubble ? styles.emptyInnerSubView : styles.emptyInnerView}>
                         {this.state.showEmptyBubble && (
                           this.state.isExistingUser
                             ? <EmptyStateComponent

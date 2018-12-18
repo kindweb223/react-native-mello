@@ -126,6 +126,14 @@ export default function feedo(state = initialState, action = {}) {
             }
           }
         }
+      } else if (type === true) {
+        updateFeed = {
+          ...invitedFeed,
+          metadata: {
+            ...invitedFeed.metadata,
+            myInviteStatus: 'ACCEPTED'
+          }
+        }
       }
 
       // Update current feed
