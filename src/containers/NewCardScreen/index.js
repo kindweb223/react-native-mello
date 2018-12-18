@@ -1484,7 +1484,7 @@ class NewCardScreen extends React.Component {
     if (idea) {
       return (
         <View style={styles.rowContainer}>
-          <LikeComponent idea={idea} />
+          <LikeComponent idea={idea} prevPage={this.props.prevPage} />
           <CommentComponent idea={idea} currentFeed={this.props.feedo.currentFeed} prevPage={this.props.prevPage} />
         </View>
       );
