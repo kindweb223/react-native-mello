@@ -276,6 +276,7 @@ export default function card(state = initialState, action = {}) {
       return {
         ...state,
         loading: types.GET_CARD_COMMENTS_FULFILLED,
+        currentCommentId: action.payload,
         currentComments: data,
       }
     }
@@ -297,13 +298,14 @@ export default function card(state = initialState, action = {}) {
       }
     case types.ADD_CARD_COMMENT_FULFILLED: {
       const { data } = action.result
+
       return {
         ...state,
         loading: types.ADD_CARD_COMMENT_FULFILLED,
         currentComments: [
           data,
           ...state.currentComments,
-        ],
+        ]
       }
     }
     case types.ADD_CARD_COMMENT_REJECTED: {

@@ -62,6 +62,7 @@ class CommentScreen extends React.Component {
       comment: '',
       loading: false,
       isShowKeyboard: false,
+      commentList: []
     };
     this.keyboardHeight = new Animated.Value(0);
     this.userInfo = {};
@@ -107,25 +108,37 @@ class CommentScreen extends React.Component {
       loading = false;
     } else if (this.props.card.loading !== types.GET_CARD_COMMENTS_FULFILLED && nextProps.card.loading === types.GET_CARD_COMMENTS_FULFILLED) {
       // success in getting comments of a card
+      if (nextProps.card.currentCommentId === nextProps.card.currentCard.id) {
+        this.setState({ commentList: nextProps.card.currentComments })
+      }
     } else if (this.props.card.loading !== types.ADD_CARD_COMMENT_PENDING && nextProps.card.loading === types.ADD_CARD_COMMENT_PENDING) {
       // adding a comment of a card
       loading = false;
     } else if (this.props.card.loading !== types.ADD_CARD_COMMENT_FULFILLED && nextProps.card.loading === types.ADD_CARD_COMMENT_FULFILLED) {
       // success in adding a comment of a card
+      if (nextProps.card.currentCommentId === nextProps.card.currentCard.id) {
+        this.setState({ commentList: nextProps.card.currentComments })
+      }
     } else if (this.props.card.loading !== types.EDIT_CARD_COMMENT_PENDING && nextProps.card.loading === types.EDIT_CARD_COMMENT_PENDING) {
       // editing a comment of a card
       loading = false;
     } else if (this.props.card.loading !== types.EDIT_CARD_COMMENT_FULFILLED && nextProps.card.loading === types.EDIT_CARD_COMMENT_FULFILLED) {
       // success in adding a comment of a card
+      if (nextProps.card.currentCommentId === nextProps.card.currentCard.id) {
+        this.setState({ commentList: nextProps.card.currentComments })
+      }
     } else if (this.props.card.loading !== types.DELETE_CARD_COMMENT_PENDING && nextProps.card.loading === types.DELETE_CARD_COMMENT_PENDING) {
       // delete a comment of a card
       loading = false;
     } else if (this.props.card.loading !== types.DELETE_CARD_COMMENT_FULFILLED && nextProps.card.loading === types.DELETE_CARD_COMMENT_FULFILLED) {
       // success in adding a comment of a card
+      if (nextProps.card.currentCommentId === nextProps.card.currentCard.id) {
+        this.setState({ commentList: nextProps.card.currentComments })
+      }
     } 
 
     this.setState({
-      loading,
+      loading
     });
 
     // showing error alert
@@ -183,6 +196,7 @@ class CommentScreen extends React.Component {
   getCommentUser(comment) {
     const { invitees } = this.props.feedo.currentFeed;
     const invitee = _.find(invitees, invitee => invitee.id === comment.huntInviteeId);
+
     if (invitee) {
       return invitee.userProfile;  
     }
@@ -258,12 +272,7 @@ class CommentScreen extends React.Component {
 
   renderItem({item, index}) {
     const { currentFeed } = this.props.feedo
-    let user = {}
-    if (this.props.prevPage === 'idea') {
-      user = this.getCommentUser(item);
-    } else {
-      user = this.props.instigatorData
-    }
+    user = this.getCommentUser(item);
 
     let editable = false
     if (COMMON_FUNC.isFeedOwnerEditor(currentFeed) && user && user.id === this.props.user.userInfo.id) {
@@ -333,11 +342,13 @@ class CommentScreen extends React.Component {
   }
 
   render () {
+    const { commentList } = this.state
+
     return (
       <View style={styles.container}>
         <FlatList
           contentContainerStyle={{ paddingVertical: 16 }}
-          data={this.props.card.currentComments}
+          data={commentList}
           renderItem={this.renderItem.bind(this)}
           keyExtractor={(item, index) => index.toString()}
           extraData={this.state}
@@ -363,8 +374,7 @@ class CommentScreen extends React.Component {
 CommentScreen.defaultProps = {
   guest: false,
   isShowKeyboard: false,
-  prevPage: 'idea',
-  instigatorData: {}
+  prevPage: 'idea'
 }
 
 
@@ -372,8 +382,7 @@ CommentScreen.propTypes = {
   idea: PropTypes.object,
   guest: PropTypes.bool,
   isShowKeyboard: PropTypes.bool,
-  prevPage: PropTypes.string,
-  instigatorData: PropTypes.object
+  prevPage: PropTypes.string
 }
 
 

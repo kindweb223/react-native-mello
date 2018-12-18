@@ -25,6 +25,7 @@ class LastCommentComponent extends React.Component {
     super(props);
     this.state = {
       loading: false,
+      currentComments: []
     };
   }
 
@@ -40,9 +41,12 @@ class LastCommentComponent extends React.Component {
       loading = true;
     } else if (this.props.card.loading !== types.GET_CARD_COMMENTS_FULFILLED && nextProps.card.loading === types.GET_CARD_COMMENTS_FULFILLED) {
       // success in getting comments of a card
-    } this.setState({
-      loading,
-    });
+      if (nextProps.card.currentCommentId === nextProps.card.currentCard.id) {
+        this.setState({ currentComments: nextProps.card.currentComments })
+      }
+    }
+    
+    this.setState({ loading })
   }
 
   getCommentUser(comment) {
@@ -118,14 +122,16 @@ class LastCommentComponent extends React.Component {
   }
 
   render () {
-    const { currentComments } = this.props.card;
+    const { currentComments } = this.state;
     const { feedo } = this.props;
+
     let lastComments = [];
     let oldCommentsLength = 0;
     if (currentComments) {
       lastComments = currentComments.slice(0, 2);
       oldCommentsLength = currentComments.length > 2 ? currentComments.length - 2 : 0;
     }
+
     return (
       <View style={styles.container}>
         <FlatList
