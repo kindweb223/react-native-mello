@@ -1479,16 +1479,16 @@ export default function feedo(state = initialState, action = {}) {
 
       let newCurrentFeed = currentFeed
       const restIdeas = filter(currentFeed.ideas, idea => idea.id !== ideaId)
-      const currenntIdea = find(currentFeed.ideas, idea => idea.id === ideaId )
-      if (!isEmpty(currentFeed) && currenntIdea) {
+      const currentIdea = find(currentFeed.ideas, idea => idea.id === ideaId )
+      if (!isEmpty(currentFeed) && currentIdea) {
         const newUpdateFeed = {
           ...currentFeed,
           ideas: [
             ...restIdeas,
             {
-              ...currenntIdea,
+              ...currentIdea,
               metadata: {
-                ...currenntIdea.metadata,
+                ...currentIdea.metadata,
                 comments: data.length
               }
             }
@@ -1496,6 +1496,7 @@ export default function feedo(state = initialState, action = {}) {
         }
         newCurrentFeed = newUpdateFeed
       }
+
       return {
         ...state,
         loading: 'GET_CARD_COMMENTS_FULFILLED',

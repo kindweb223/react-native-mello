@@ -65,7 +65,8 @@ import {
   setCurrentFeed,
   updateInvitation,
   deleteDummyCard,
-  moveDummyCard
+  moveDummyCard,
+  getActivityFeed
 } from '../../redux/feedo/actions';
 import {
   setCurrentCard,
@@ -97,6 +98,8 @@ const ACTION_CARD_DELETE = 6;
 
 const FeedDetailMode = 1;
 const TagCreateMode = 2;
+
+const PAGE_COUNT = 50
 
 class FeedDetailScreen extends React.Component {
   constructor(props) {
@@ -181,6 +184,7 @@ class FeedDetailScreen extends React.Component {
 
   async UNSAFE_componentWillReceiveProps(nextProps) {
     const { feedo, card } = nextProps
+
     if (this.state.isVisibleSelectFeedo) {
       if (this.props.feedo.loading !== 'GET_FEEDO_LIST_PENDING' && feedo.loading === 'GET_FEEDO_LIST_PENDING') {
         // success in getting feedo list
@@ -245,6 +249,10 @@ class FeedDetailScreen extends React.Component {
       this.setState({ currentBackFeed: currentFeed }, () => {
         this.filterCards(currentFeed)
       })
+
+      if (feedo.loading === 'GET_CARD_COMMENTS_FULFILLED') {
+        this.props.getActivityFeed(this.props.user.userInfo.id, { page: 0, size: PAGE_COUNT })
+      }
     }
 
     // if (feedo.loading === 'GET_FEED_DETAIL_PENDING') {
@@ -1652,7 +1660,8 @@ const mapDispatchToProps = dispatch => ({
   updateInvitation: (feedId, type) => dispatch(updateInvitation(feedId, type)),
   setDetailListType: (type) => dispatch(setDetailListType(type)),
   deleteDummyCard: (ideaId, type) => dispatch(deleteDummyCard(ideaId, type)),
-  moveDummyCard: (ideaId, feedId, type) => dispatch(moveDummyCard(ideaId, feedId, type))
+  moveDummyCard: (ideaId, feedId, type) => dispatch(moveDummyCard(ideaId, feedId, type)),
+  getActivityFeed: (userId, param) => dispatch(getActivityFeed(userId, param))
 })
 
 FeedDetailScreen.defaultProps = {

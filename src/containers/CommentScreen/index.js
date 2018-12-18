@@ -82,23 +82,11 @@ class CommentScreen extends React.Component {
         this.inputToolbarRef.focus();  
       });
     }
-
-    // Subscribe to comments channel for new comments and updates
-    console.log("Subscribe to: ", this.props.idea.id + '_comments')
-    pubnub.subscribe({
-      channels: [this.props.idea.id + '_comments'],
-    });
   }
 
   componentWillUnmount() {
     this.keyboardWillShowSubscription.remove();
     this.keyboardWillHideSubscription.remove();
-
-    // Unsubscribe to comments channel for new comments and updates
-    console.log("Unsubscribe from: ", this.props.idea.id + '_comments')
-    pubnub.unsubscribe({
-      channels: [this.props.idea.id + '_comments'],
-    });
   }
 
   UNSAFE_componentWillReceiveProps(nextProps) {
