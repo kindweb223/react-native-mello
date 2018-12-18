@@ -98,7 +98,12 @@ class LikeComponent extends React.Component {
     } = this.state;
     if (likes > 0) {
       Analytics.logEvent('feed_detail_show_like_list', {})
-      Actions.LikesListScreen({idea: this.props.idea});
+
+      if (this.props.prevPage === 'activity') {
+        Actions.ActivityLikesListScreen({ idea: this.props.idea });
+      } else {
+        Actions.LikesListScreen({ idea: this.props.idea });
+      }
     }
   }
 
