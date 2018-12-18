@@ -171,8 +171,8 @@ class NotificationScreen extends React.Component {
       if (selectedActivity.activityTypeEnum === 'NEW_COMMENT_ON_IDEA') {
         this.onSelectNewComment(selectedActivity)
       } else {
+        const { currentFeed } = feedo
         if (!this.state.isVisibleCard) {
-          const { currentFeed } = feedo
           const invitee = _.find(currentFeed.invitees, (o) => {
             return (o.id === card.currentCard.inviteeId)
           })
