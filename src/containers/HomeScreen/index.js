@@ -272,7 +272,7 @@ class HomeScreen extends React.Component {
         feedo.loading === 'PUBNUB_LIKE_CARD_FULFILLED' ||
         feedo.loading === 'PUBNUB_UNLIKE_CARD_FULFILLED' ||
         feedo.loading === 'GET_INVITED_FEEDO_LIST_FULFILLED' ||
-        feedo.loading === 'GET_CARD_COMMENTS_FULFILLED'
+        (feedo.loading === 'GET_CARD_COMMENTS_FULFILLED' && Actions.currentScene !== 'FeedDetailScreen')
     ) {
       this.props.getActivityFeed(user.userInfo.id, { page: 0, size: PAGE_COUNT })
     }
