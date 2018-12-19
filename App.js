@@ -136,6 +136,9 @@ export default class Root extends React.Component {
         if (response.message.action === 'IDEA_UNLIKED') {
           store.dispatch(pubnubUnLikeCard(response.message.data.ideaId))
         }
+        if (response.message.action === 'USER_ACCESS_CHANGED') {
+          store.dispatch(pubnubGetFeedDetail(response.message.data.huntId))
+        }
         if (response.message.action === 'USER_INVITED_TO_HUNT') {
           store.dispatch(getInvitedFeedList())
         }
@@ -308,7 +311,6 @@ export default class Root extends React.Component {
               <Scene key="NotificationScreen" component={ NotificationScreen } hideNavBar />
               <Scene key="ActivityCommentScreen" component={ CommentScreen } navigationBarStyle={styles.defaultNavigationBar} />
               <Scene key="ActivityLikesListScreen" component={ LikesListScreen } navigationBarStyle={styles.defaultNavigationBar} />
-              <Scene key="ActivityFeedDetailScreen" component={ FeedDetailScreen } clone hideNavBar panHandlers={null} />
             </Stack>
           </Stack>            
         </Modal>
