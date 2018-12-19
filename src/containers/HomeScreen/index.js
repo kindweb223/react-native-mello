@@ -148,8 +148,6 @@ class HomeScreen extends React.Component {
     this.props.getFeedoList(this.state.tabIndex)
     this.props.getInvitedFeedList()
 
-    this.props.getActivityFeed(this.props.user.userInfo.id, { page: 0, size: PAGE_COUNT })
-
     AppState.addEventListener('change', this.onHandleAppStateChange.bind(this));
     appOpened(this.props.user.userInfo.id);
   }
@@ -177,9 +175,13 @@ class HomeScreen extends React.Component {
       (feedo.loading === 'PUBNUB_GET_FEED_DETAIL_FULFILLED') || (feedo.loading === 'DELETE_CARD_FULFILLED') || 
       (feedo.loading === 'MOVE_CARD_FULFILLED') || (feedo.loading === 'UPDATE_CARD_FULFILLED') ||
       (feedo.loading === 'READ_ACTIVITY_FEED_FULFILLED') || (feedo.loading === 'DEL_ACTIVITY_FEED_FULFILLED') ||
-      (feedo.loading === 'PUBNUB_DELETE_FEED') || (feedo.loading === 'GET_FEED_DETAIL_REJECTED') ||
       (feedo.loading === 'UPDATE_CARD_FULFILLED') || (feedo.loading === 'GET_CARD_FULFILLED') ||
-      (feedo.loading === 'DEL_DUMMY_CARD') || (feedo.loading === 'MOVE_DUMMY_CARD'))
+      (feedo.loading === 'DEL_DUMMY_CARD') || (feedo.loading === 'MOVE_DUMMY_CARD') ||
+      (feedo.loading === 'PUBNUB_DELETE_INVITEE_FULFILLED') || (feedo.loading === 'GET_FEED_DETAIL_REJECTED') ||
+      (feedo.loading === 'PUBNUB_DELETE_FEED' &&
+                          Actions.currentScene !== 'FeedDetailScreen' && 
+                          Actions.currentScene !== 'CommentScreen' && Actions.currentScene !== 'ActivityCommentScreen' &&
+                          Actions.currentScene !== 'LikesListScreen' && Actions.currentScene !== 'ActivityLikesListScreen'))
     {
       let feedoList = []
       let emptyState = prevState.emptyState
@@ -266,13 +268,19 @@ class HomeScreen extends React.Component {
     const { feedo, user } = this.props
     const { feedoList } = feedo
 
-    if (feedo.loading === 'PUBNUB_DELETE_FEED' ||
-        feedo.loading === 'PUBNUB_GET_FEED_DETAIL_FULFILLED' ||
-        feedo.loading === 'GET_CARD_FULFILLED' ||
-        feedo.loading === 'PUBNUB_LIKE_CARD_FULFILLED' ||
-        feedo.loading === 'PUBNUB_UNLIKE_CARD_FULFILLED' ||
+    if (feedo.loading === 'PUBNUB_GET_FEED_DETAIL_FULFILLED' && Actions.currentScene !== 'FeedDetailScreen' ||
+        feedo.loading === 'GET_CARD_FULFILLED' && Actions.currentScene !== 'FeedDetailScreen' ||
+        feedo.loading === 'PUBNUB_LIKE_CARD_FULFILLED' && Actions.currentScene !== 'FeedDetailScreen' ||
+        feedo.loading === 'PUBNUB_UNLIKE_CARD_FULFILLED' && Actions.currentScene !== 'FeedDetailScreen' ||
         feedo.loading === 'GET_INVITED_FEEDO_LIST_FULFILLED' ||
-        (feedo.loading === 'GET_CARD_COMMENTS_FULFILLED' && Actions.currentScene !== 'FeedDetailScreen')
+        (feedo.loading === 'GET_CARD_COMMENTS_FULFILLED' &&
+                          Actions.currentScene !== 'FeedDetailScreen' && 
+                          Actions.currentScene !== 'CommentScreen' && Actions.currentScene !== 'ActivityCommentScreen' &&
+                          Actions.currentScene !== 'LikesListScreen' && Actions.currentScene !== 'ActivityLikesListScreen') ||
+        (feedo.loading === 'PUBNUB_DELETE_FEED' &&
+                          Actions.currentScene !== 'FeedDetailScreen' && 
+                          Actions.currentScene !== 'CommentScreen' && Actions.currentScene !== 'ActivityCommentScreen' &&
+                          Actions.currentScene !== 'LikesListScreen' && Actions.currentScene !== 'ActivityLikesListScreen')
     ) {
       this.props.getActivityFeed(user.userInfo.id, { page: 0, size: PAGE_COUNT })
     }
@@ -293,7 +301,10 @@ class HomeScreen extends React.Component {
         (prevProps.feedo.loading !== 'FEED_FULFILLED' && feedo.loading === 'FEED_FULFILLED') ||
         (prevProps.feedo.loading !== 'DEL_FEED_FULFILLED' && feedo.loading === 'DEL_FEED_FULFILLED') ||
         (prevProps.feedo.loading !== 'ARCHIVE_FEED_FULFILLED' && feedo.loading === 'ARCHIVE_FEED_FULFILLED') ||
-        (feedo.loading === 'PUBNUB_DELETE_FEED')) {
+        (feedo.loading === 'PUBNUB_DELETE_FEED' &&
+                          Actions.currentScene !== 'FeedDetailScreen' && 
+                          Actions.currentScene !== 'CommentScreen' && Actions.currentScene !== 'ActivityCommentScreen' &&
+                          Actions.currentScene !== 'LikesListScreen' && Actions.currentScene !== 'ActivityLikesListScreen')) {
       this.setState({ isRefreshing: false })
       await this.setBubbles(feedoList)
     }
@@ -328,7 +339,7 @@ class HomeScreen extends React.Component {
         currentPushNotificationType: CONSTANTS.UNKOWN_PUSH_NOTIFICATION,
         currentPushNotificationData: null,
       });
-    } else if (this.props.card.loading === 'GET_CARD_FULFILLED' && (this.state.currentPushNotificationType === CONSTANTS.NEW_COMMENT_ON_IDEA || this.state.currentPushNotificationType === CONSTANTS.USER_JOINED_HUNT) && this.state.currentPushNotificationData) {
+    } else if (this.props.card.loading === 'GET_CARD_FULFILLED' && (this.state.currentPushNotificationType === CONSTANTS.COMMENT_ADDED || this.state.currentPushNotificationType === CONSTANTS.USER_JOINED_HUNT) && this.state.currentPushNotificationData) {
       Actions.CommentScreen({
         idea: this.state.currentIdea,
       });
@@ -336,7 +347,7 @@ class HomeScreen extends React.Component {
         currentPushNotificationType: CONSTANTS.UNKOWN_PUSH_NOTIFICATION,
         currentPushNotificationData: null,
       });
-    } else if (this.props.card.loading === 'GET_CARD_FULFILLED' && this.state.currentPushNotificationType === CONSTANTS.NEW_IDEA_ADDED && this.state.currentPushNotificationData) {
+    } else if (this.props.card.loading === 'GET_CARD_FULFILLED' && this.state.currentPushNotificationType === CONSTANTS.IDEA_ADDED && this.state.currentPushNotificationData) {
       const invitee = find(this.state.currentPushNotificationData.invitees, (o) => {
         return (o.id == this.state.currentIdea.inviteeId)
       });
@@ -356,7 +367,7 @@ class HomeScreen extends React.Component {
         currentPushNotificationType: CONSTANTS.UNKOWN_PUSH_NOTIFICATION,
         currentPushNotificationData: null,
       });
-    } else if (this.props.card.loading === 'GET_CARD_FULFILLED' && this.state.currentPushNotificationType === CONSTANTS.NEW_LIKE_ON_IDEA && this.state.currentPushNotificationData) {
+    } else if (this.props.card.loading === 'GET_CARD_FULFILLED' && this.state.currentPushNotificationType === CONSTANTS.IDEA_LIKED && this.state.currentPushNotificationData) {
       Actions.LikesListScreen({idea: this.state.currentIdea});
       this.setState({
         currentPushNotificationType: CONSTANTS.UNKOWN_PUSH_NOTIFICATION,
@@ -440,8 +451,8 @@ class HomeScreen extends React.Component {
         this.props.getFeedoList(this.state.tabIndex);
 
         // TEMPORARY: REMOVE WITH PUBNUB INTEGRATION
-        this.props.getInvitedFeedList()
-        this.props.getActivityFeed(this.props.user.userInfo.id, { page: 0, size: PAGE_COUNT })            
+        // this.props.getInvitedFeedList()
+        // this.props.getActivityFeed(this.props.user.userInfo.id, { page: 0, size: PAGE_COUNT })            
       }  
       this.showClipboardToast();
       this.props.getUserSession()
@@ -488,7 +499,7 @@ class HomeScreen extends React.Component {
     }
 
     switch (type) {
-      case CONSTANTS.NEW_COMMENT_ON_IDEA: {
+      case CONSTANTS.COMMENT_ADDED: {
         const { ideaId, huntId, commentId } = notification.data;
         const { feedoList } = this.state
         const matchedHunt = find(feedoList, feedo => feedo.id === huntId);
@@ -502,24 +513,24 @@ class HomeScreen extends React.Component {
           }
         }
         this.setState({
-          currentPushNotificationType: CONSTANTS.NEW_COMMENT_ON_IDEA,
+          currentPushNotificationType: CONSTANTS.COMMENT_ADDED,
           currentPushNotificationData: commentId,
         });
         this.props.getCard(ideaId);
         break;
       }
-      case CONSTANTS.NEW_IDEA_ADDED: {
+      case CONSTANTS.IDEA_ADDED: {
         const { huntId, ideaId } = notification.data;
         const { feedoList } = this.state
         const matchedHunt = find(feedoList, feedo => feedo.id === huntId);
         this.setState({
-          currentPushNotificationType: CONSTANTS.NEW_IDEA_ADDED,
+          currentPushNotificationType: CONSTANTS.IDEA_ADDED,
           currentPushNotificationData: matchedHunt,
         });
         this.props.getCard(ideaId);
         break;
       }
-      case CONSTANTS.NEW_LIKE_ON_IDEA: {
+      case CONSTANTS.IDEA_LIKED: {
         const { huntId, ideaId } = notification.data;
         const { feedoList } = this.state
         const matchedHunt = find(feedoList, feedo => feedo.id === huntId);
@@ -531,7 +542,7 @@ class HomeScreen extends React.Component {
           }
         }
         this.setState({
-          currentPushNotificationType: CONSTANTS.NEW_LIKE_ON_IDEA,
+          currentPushNotificationType: CONSTANTS.IDEA_LIKED,
           currentPushNotificationData: ideaId,
         });
         this.props.getCard(ideaId);
@@ -555,7 +566,7 @@ class HomeScreen extends React.Component {
         }
         break;
       }
-      case CONSTANTS.USER_EDITED_HUNT: {
+      case CONSTANTS.HUNT_UPDATED: {
         const { huntId } = notification.data;
         const { feedoList } = this.state
         const matchedHunt = find(feedoList, feedo => feedo.id === huntId);
@@ -573,6 +584,9 @@ class HomeScreen extends React.Component {
           });
           this.props.getFeedoList(this.state.tabIndex);
         }
+        break;
+      }
+      case CONSTANTS.USER_MENTIONED: {
         break;
       }
     }

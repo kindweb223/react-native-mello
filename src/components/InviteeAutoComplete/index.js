@@ -47,7 +47,7 @@ class InviteeAutoComplete extends React.Component {
 
   render () {
     const { inviteeEmails, invalidEmail, tagText } = this.props
-    console.log('initialTag: ', tagText)
+
     return (
       <View style={styles.container}>
         <InviteeTag

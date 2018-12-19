@@ -118,19 +118,29 @@ class NotificationScreen extends React.Component {
     const { feedo, card } = nextProps
     const { selectedActivity } = this.state
 
-    if (feedo.loading === 'PUBNUB_DELETE_FEED' ||
-        feedo.loading === 'PUBNUB_GET_FEED_DETAIL_FULFILLED' ||
-        feedo.loading === 'GET_CARD_FULFILLED' ||
-        feedo.loading === 'PUBNUB_LIKE_CARD_FULFILLED' ||
-        feedo.loading === 'PUBNUB_UNLIKE_CARD_FULFILLED' ||
+    if (feedo.loading === 'PUBNUB_GET_FEED_DETAIL_FULFILLED' && Actions.currentScene !== 'FeedDetailScreen' ||
+        feedo.loading === 'GET_CARD_FULFILLED' && Actions.currentScene !== 'FeedDetailScreen' ||
+        feedo.loading === 'PUBNUB_LIKE_CARD_FULFILLED' && Actions.currentScene !== 'FeedDetailScreen' ||
+        feedo.loading === 'PUBNUB_UNLIKE_CARD_FULFILLED' && Actions.currentScene !== 'FeedDetailScreen' ||
         feedo.loading === 'GET_INVITED_FEEDO_LIST_FULFILLED' ||
-        (feedo.loading === 'GET_CARD_COMMENTS_FULFILLED' && Actions.currentScene !== 'FeedDetailScreen')
+        (feedo.loading === 'GET_CARD_COMMENTS_FULFILLED' &&
+                          Actions.currentScene !== 'FeedDetailScreen' && 
+                          Actions.currentScene !== 'CommentScreen' && Actions.currentScene !== 'ActivityCommentScreen' &&
+                          Actions.currentScene !== 'LikesListScreen' && Actions.currentScene !== 'ActivityLikesListScreen') ||
+        (feedo.loading === 'PUBNUB_DELETE_FEED' &&
+                          Actions.currentScene !== 'FeedDetailScreen' && 
+                          Actions.currentScene !== 'CommentScreen' && Actions.currentScene !== 'ActivityCommentScreen' &&
+                          Actions.currentScene !== 'LikesListScreen' && Actions.currentScene !== 'ActivityLikesListScreen')
     ) {
       this.getActivityFeedList(0, feedo.activityData.page * PAGE_COUNT + feedo.activityData.numberOfElements)
     }
 
     if ((this.props.feedo.loading !== 'GET_INVITED_FEEDO_LIST_FULFILLED' && feedo.loading === 'GET_INVITED_FEEDO_LIST_FULFILLED') ||
-        (feedo.loading === 'PUBNUB_DELETE_FEED')) {
+        (feedo.loading === 'PUBNUB_DELETE_FEED' &&
+        Actions.currentScene !== 'FeedDetailScreen' && 
+        Actions.currentScene !== 'CommentScreen' && Actions.currentScene !== 'ActivityCommentScreen' &&
+        Actions.currentScene !== 'LikesListScreen' && Actions.currentScene !== 'ActivityLikesListScreen')
+    ) {
       const invitedFeedList = _.orderBy(feedo.invitedFeedList, ['publishedDate'], ['desc'])
       this.setState({ invitedFeedList })
       this.setActivityFeeds(this.state.activityFeedList, invitedFeedList)
@@ -139,16 +149,18 @@ class NotificationScreen extends React.Component {
     if (this.props.feedo.loading !== 'READ_ACTIVITY_FEED_FULFILLED' && feedo.loading === 'READ_ACTIVITY_FEED_FULFILLED') {
       if (!_.isEmpty(selectedActivity)) {
         Analytics.logEvent('notification_read_activity', {})
-        if (selectedActivity.activityTypeEnum === 'NEW_IDEA_ADDED' || selectedActivity.activityTypeEnum === 'USER_EDITED_IDEA') {
+        if (selectedActivity.activityTypeEnum === 'IDEA_ADDED' || selectedActivity.activityTypeEnum === 'IDEA_UPDATED') {
           this.props.getFeedDetail(selectedActivity.metadata.HUNT_ID)
-        } else if (selectedActivity.activityTypeEnum === 'NEW_COMMENT_ON_IDEA') {
+        } else if (selectedActivity.activityTypeEnum === 'COMMENT_ADDED') {
           this.props.getFeedDetail(selectedActivity.metadata.HUNT_ID)
-        } else if (selectedActivity.activityTypeEnum === 'NEW_LIKE_ON_IDEA') {
+        } else if (selectedActivity.activityTypeEnum === 'IDEA_LIKED') {
           this.props.getFeedDetail(selectedActivity.metadata.HUNT_ID)
         } else if (selectedActivity.activityTypeEnum === 'USER_JOINED_HUNT') {
-          Actions.FeedDetailScreen({ data: { id: selectedActivity.metadata.HUNT_ID } })
-        } else if (selectedActivity.activityTypeEnum === 'USER_EDITED_HUNT') {
-          Actions.FeedDetailScreen({ data: { id: selectedActivity.metadata.HUNT_ID } })
+          Actions.FeedDetailScreen({ data: { id: selectedActivity.metadata.HUNT_ID }, prevPage: 'notification' })
+        } else if (selectedActivity.activityTypeEnum === 'USER_INVITED_TO_HUNT') {
+          Actions.FeedDetailScreen({ data: { id: selectedActivity.metadata.HUNT_ID }, prevPage: 'notification' })
+        } else if (selectedActivity.activityTypeEnum === 'HUNT_UPDATED') {
+          Actions.FeedDetailScreen({ data: { id: selectedActivity.metadata.HUNT_ID }, prevPage: 'notification' })
         }
       }
     }
@@ -168,7 +180,7 @@ class NotificationScreen extends React.Component {
     }
 
     if (this.props.card.loading !== 'GET_CARD_FULFILLED' && card.loading === 'GET_CARD_FULFILLED') {
-      if (selectedActivity.activityTypeEnum === 'NEW_COMMENT_ON_IDEA') {
+      if (selectedActivity.activityTypeEnum === 'COMMENT_ADDED') {
         this.onSelectNewComment(selectedActivity)
       } else {
         const { currentFeed } = feedo

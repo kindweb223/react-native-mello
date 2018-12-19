@@ -1,4 +1,5 @@
 import axios from 'axios';
+import React from 'react'
 
 import * as types from './types'
 
@@ -6,7 +7,7 @@ import * as types from './types'
 /**
  * Get feedo list
  */
-export const getFeedoList = (index, isForCardMove=false) => {
+export const getFeedoList = (index = 0, isForCardMove = false) => {
   // let url = 'hunts?owner=true'
 
   // if (index === 1) {
@@ -673,5 +674,28 @@ export const pubnubUnLikeCard = (ideaId) => {
   return {
     type: types.PUBNUB_UNLIKE_CARD_FULFILLED,
     payload: ideaId,
+  };
+}
+
+/**
+ * Delete invitee from other invitees' list
+ */
+export const pubnubDeleteInvitee = (huntId, huntInviteeId) => {
+  return {
+    type: types.PUBNUB_DELETE_INVITEE_FULFILLED,
+    payload: {
+      huntId,
+      huntInviteeId
+    }
+  };
+}
+
+export const pubnubDeleteOtherInvitee = (huntId, userId) => {
+  return {
+    type: types.PUBNUB_DELETE_OTHER_INVITEE_FULFILLED,
+    payload: {
+      huntId,
+      userId
+    }
   };
 }

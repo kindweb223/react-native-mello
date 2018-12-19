@@ -1,3 +1,4 @@
+import { AsyncStorage } from 'react-native'
 import PushNotification from 'react-native-push-notification'
 import * as types from './types'
 import * as cardTypes from '../card/types'
@@ -1229,7 +1230,7 @@ export default function feedo(state = initialState, action = {}) {
       }
     case types.GET_ACTIVITY_FEED_FULFILLED: {
       const { data } = action.result
-      // console.log('activityFeedList: ', data)
+
       let activityFeedList = []
       if (data.first) {
         activityFeedList = data.content
@@ -1251,7 +1252,7 @@ export default function feedo(state = initialState, action = {}) {
       return {
         ...state,
         loading: types.GET_ACTIVITY_FEED_REJECTED,
-        error: action.error.response,
+        error: action.error,
       }
     }
     /**
@@ -1445,8 +1446,10 @@ export default function feedo(state = initialState, action = {}) {
     case types.PUBNUB_DELETE_FEED: {
       const feedId = action.payload
       const { feedoList, invitedFeedList } = state
+
       const restFeedoList = filter(feedoList, feed => feed.id !== feedId )
       const restInviteeFeedoList = filter(invitedFeedList, feed => feed.id !== feedId )
+
       return {
         ...state,
         loading: types.PUBNUB_DELETE_FEED,
@@ -1518,11 +1521,14 @@ export default function feedo(state = initialState, action = {}) {
       const restFeedoList = filter(feedoList, feed => feed.id !== data.id)
       const restInvitedFeedoList = filter(invitedFeedList, feed => feed.id !== data.id)
       const restArchivedFeedoList = filter(archivedFeedList, feed => feed.id !== data.id)
+      console.log('CURRENT_FEED: ', currentFeed)
+      const newCurrentFeed = isEmpty(currentFeed) ? currentFeed : currentFeed.id === data.id ? data : currentFeed
+      console.log('CURRENT_FEED: ', newCurrentFeed)
 
       return {
         ...state,
         loading: types.PUBNUB_GET_FEED_DETAIL_FULFILLED,
-        currentFeed: isEmpty(currentFeed) ? currentFeed : currentFeed.id === data.id ? data : currentFeed,
+        currentFeed: newCurrentFeed,
         feedoList: feedoList.length === restFeedoList.length ? feedoList : [ ...restFeedoList, data ],
         invitedFeedList: invitedFeedList.length === restInvitedFeedoList.length ? invitedFeedList : [ ...restInvitedFeedoList, data ],
         archivedFeedList: archivedFeedList.length === restArchivedFeedoList.length ? archivedFeedList : [ ...restArchivedFeedoList, data ]
@@ -1584,6 +1590,58 @@ export default function feedo(state = initialState, action = {}) {
         ...state,
         loading: types.PUBNUB_UNLIKE_CARD_FULFILLED,
         currentFeed: newCurrentFeed
+      }
+    }
+    case types.PUBNUB_DELETE_INVITEE_FULFILLED: {
+      const { huntId, huntInviteeId } = action.payload
+      const { feedoList, currentFeed } = state
+
+      const selectFeed = find(feedoList, feedo => feedo.id === huntId)
+      const restFeedoList = filter(feedoList, feedo => feedo.id !== huntId)
+      const restInvitees = filter(selectFeed.invitees, invitee => invitee.id !== huntInviteeId)
+
+      const currentRestInvitees = filter(currentFeed.invitees, invitee => invitee.id !== huntInviteeId)
+
+      return {
+        ...state,
+        loading: types.PUBNUB_DELETE_INVITEE_FULFILLED,
+        feedoList: [
+          ...restFeedoList,
+          {
+            ...selectFeed,
+            invitees: restInvitees
+          }
+        ],
+        currentFeed: {
+          ...currentFeed,
+          invitees: currentRestInvitees
+        }
+      }
+    }
+    case types.PUBNUB_DELETE_OTHER_INVITEE_FULFILLED: {
+      const { huntId, userId } = action.payload
+      const { feedoList, currentFeed } = state
+
+      const selectFeed = find(feedoList, feedo => feedo.id === huntId)
+      const restFeedoList = filter(feedoList, feedo => feedo.id !== huntId)
+      const restInvitees = filter(selectFeed.invitees, invitee => invitee.userProfile.id !== userId)
+
+      const currentRestInvitees = filter(currentFeed.invitees, invitee => invitee.userProfile.id !== userId)
+
+      return {
+        ...state,
+        loading: types.PUBNUB_DELETE_INVITEE_FULFILLED,
+        feedoList: [
+          ...restFeedoList,
+          {
+            ...selectFeed,
+            invitees: restInvitees
+          }
+        ],
+        currentFeed: {
+          ...currentFeed,
+          invitees: currentRestInvitees
+        }
       }
     }
     default:

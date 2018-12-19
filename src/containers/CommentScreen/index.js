@@ -28,6 +28,11 @@ import {
   updateCardComment,
   deleteCardComment,
 } from '../../redux/card/actions'
+import {
+  getActivityFeed,
+  getFeedoList
+} from '../../redux/feedo/actions'
+
 import { getDurationFromNow } from '../../service/dateUtils'
 import InputToolbarComponent from '../../components/InputToolbarComponent';
 import UserAvatarComponent from '../../components/UserAvatarComponent';
@@ -35,6 +40,8 @@ import * as COMMON_FUNC from '../../service/commonFunc'
 
 import Analytics from '../../lib/firebase'
 import pubnub from '../../lib/pubnub'
+
+const PAGE_COUNT = 50
 
 class CommentScreen extends React.Component {
   static renderLeftButton(props) {
@@ -90,15 +97,23 @@ class CommentScreen extends React.Component {
   }
 
   UNSAFE_componentWillReceiveProps(nextProps) {
+    // if (nextProps.feedo.loading === 'PUBNUB_DELETE_FEED') {
+    //   console.log('CCCCC')
+    //   this.props.getFeedoList()
+    //   Actions.popTo('HomeScreen')
+    // }
+
     let loading = false;
     if (this.props.card.loading !== types.GET_CARD_COMMENTS_PENDING && nextProps.card.loading === types.GET_CARD_COMMENTS_PENDING) {
       // getting comments of a card
       loading = false;
     } else if (this.props.card.loading !== types.GET_CARD_COMMENTS_FULFILLED && nextProps.card.loading === types.GET_CARD_COMMENTS_FULFILLED) {
       // success in getting comments of a card
-      if (nextProps.card.currentCommentId === nextProps.card.currentCard.id) {
+      if (nextProps.card.currentCommentId === nextProps.card.currentCard.id ||
+          nextProps.card.currentCommentId === this.props.idea.id) {
         this.setState({ commentList: nextProps.card.currentComments })
       }
+      this.props.getActivityFeed(this.props.user.userInfo.id, { page: 0, size: PAGE_COUNT })
     } else if (this.props.card.loading !== types.ADD_CARD_COMMENT_PENDING && nextProps.card.loading === types.ADD_CARD_COMMENT_PENDING) {
       // adding a comment of a card
       loading = false;
@@ -386,6 +401,8 @@ const mapDispatchToProps = dispatch => ({
   addCardComment: (ideaId, content) => dispatch(addCardComment(ideaId, content)),
   updateCardComment: (ideaId, commentId, content) => dispatch(updateCardComment(ideaId, commentId, content)),
   deleteCardComment: (ideaId, commentId) => dispatch(deleteCardComment(ideaId, commentId)),
+  getActivityFeed: (userId, param) => dispatch(getActivityFeed(userId, param)),
+  getFeedoList: () => dispatch(getFeedoList())
 })
 
 
