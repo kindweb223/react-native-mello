@@ -85,7 +85,9 @@ import {
   pubnubGetFeedDetail,
   pubnubLikeCard,
   pubnubUnLikeCard,
-  getInvitedFeedList
+  getInvitedFeedList,
+  pubnubDeleteInvitee,
+  pubnubDeleteOtherInvitee
 } from './src/redux/feedo/actions'
 
 const store = createStore(reducers, applyMiddleware(thunk, promiseMiddleware))
@@ -108,7 +110,7 @@ export default class Root extends React.Component {
           }
       },
       message: function(response) {
-        console.log('PUBNUB_RESPONSE: ', response)
+        console.log('PUBNUB_RESPONSE: ', response.message)
         if (response.message.action === 'COMMENT_ADDED' || response.message.action === 'COMMENT_EDITED' || response.message.action === 'COMMENT_DELETED') {
           console.log("refreshing comments")
           store.dispatch(getCardComments(response.message.data.ideaId))
@@ -119,23 +121,35 @@ export default class Root extends React.Component {
         if (response.message.action === 'HUNT_DELETED') {
           store.dispatch(pubnubDeleteFeed(response.message.data.huntId))
         }
+        if (response.message.action === 'IDEA_ADDED') {
+          store.dispatch(pubnubGetFeedDetail(response.message.data.huntId))
+        }
         if (response.message.action === 'IDEA_UPDATED') {
           store.dispatch(getCard(response.message.data.ideaId))
         }
         if (response.message.action === 'IDEA_DELETED') {
           store.dispatch(pubnubGetFeedDetail(response.message.data.huntId))
         }
-        if (response.message.action === 'LIKE_ON_IDEA') {
+        if (response.message.action === 'IDEA_LIKED') {
           store.dispatch(pubnubLikeCard(response.message.data.ideaId))
         }
-        if (response.message.action === 'UNLIKE_ON_IDEA') {
+        if (response.message.action === 'IDEA_UNLIKED') {
           store.dispatch(pubnubUnLikeCard(response.message.data.ideaId))
         }
         if (response.message.action === 'USER_INVITED_TO_HUNT') {
           store.dispatch(getInvitedFeedList())
         }
-        if (response.message.action === 'INVITE_TO_HUNT_REMOVED') {
-          store.dispatch(pubnubDeleteFeed(response.message.data.huntId))
+        if (response.message.action === 'HUNT_INVITEE_REMOVED') {
+          const state = store.getState()
+
+          if (state.user.userInfo.id === response.message.data.userProfileId) {
+            store.dispatch(pubnubDeleteFeed(response.message.data.huntId))
+          } else {
+            store.dispatch(pubnubDeleteOtherInvitee(response.message.data.huntId, response.message.data.userProfileId))
+          }
+        }
+        if (response.message.action === 'HUNT_INVITEE_REMOVED_SELF') {
+          store.dispatch(pubnubDeleteInvitee(response.message.data.huntId, response.message.data.huntInviteeId))
         }
       },
       presence: function(presenceEvent) {
@@ -294,6 +308,7 @@ export default class Root extends React.Component {
               <Scene key="NotificationScreen" component={ NotificationScreen } hideNavBar />
               <Scene key="ActivityCommentScreen" component={ CommentScreen } navigationBarStyle={styles.defaultNavigationBar} />
               <Scene key="ActivityLikesListScreen" component={ LikesListScreen } navigationBarStyle={styles.defaultNavigationBar} />
+              <Scene key="ActivityFeedDetailScreen" component={ FeedDetailScreen } clone hideNavBar panHandlers={null} />
             </Stack>
           </Stack>            
         </Modal>

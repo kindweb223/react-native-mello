@@ -66,7 +66,8 @@ import {
   updateInvitation,
   deleteDummyCard,
   moveDummyCard,
-  getActivityFeed
+  getActivityFeed,
+  getFeedoList
 } from '../../redux/feedo/actions';
 import {
   setCurrentCard,
@@ -207,6 +208,11 @@ class FeedDetailScreen extends React.Component {
       })
     }
 
+    if (feedo.loading === 'PUBNUB_DELETE_FEED') {
+      this.props.getFeedoList()
+      Actions.popTo('HomeScreen')
+    }
+
     if ((this.props.feedo.loading !== 'GET_FEED_DETAIL_FULFILLED' && feedo.loading === 'GET_FEED_DETAIL_FULFILLED') ||
         (this.props.feedo.loading === 'DELETE_INVITEE_PENDING' && feedo.loading === 'DELETE_INVITEE_FULFILLED') ||
         (this.props.feedo.loading === 'UPDATE_SHARING_PREFERENCES_PENDING' && feedo.loading === 'UPDATE_SHARING_PREFERENCES_FULFILLED') ||
@@ -224,7 +230,8 @@ class FeedDetailScreen extends React.Component {
         (feedo.loading === 'ADD_CARD_COMMENT_FULFILLED') || (feedo.loading === 'DELETE_CARD_COMMENT_FULFILLED') ||
         (feedo.loading === 'PUBNUB_GET_FEED_DETAIL_FULFILLED') ||
         (feedo.loading === 'PUBNUB_LIKE_CARD_FULFILLED') || (feedo.loading === 'PUBNUB_UNLIKE_CARD_FULFILLED') ||
-        (feedo.loading === 'GET_CARD_FULFILLED') || (feedo.loading === 'GET_CARD_COMMENTS_FULFILLED')) {
+        (feedo.loading === 'GET_CARD_FULFILLED') || (feedo.loading === 'GET_CARD_COMMENTS_FULFILLED') ||
+        (feedo.loading === 'PUBNUB_DELETE_INVITEE_FULFILLED')) {
 
       if (feedo.currentFeed.metadata.myInviteStatus === 'DECLINED') {
         Actions.pop()
@@ -250,7 +257,10 @@ class FeedDetailScreen extends React.Component {
         this.filterCards(currentFeed)
       })
 
-      if (feedo.loading === 'GET_CARD_COMMENTS_FULFILLED') {
+      if (feedo.loading === 'PUBNUB_GET_FEED_DETAIL_FULFILLED' || feedo.loading === 'GET_CARD_FULFILLED' ||
+          feedo.loading === 'PUBNUB_LIKE_CARD_FULFILLED' || feedo.loading === 'PUBNUB_UNLIKE_CARD_FULFILLED' ||
+          (feedo.loading === 'GET_CARD_COMMENTS_FULFILLED' && (Actions.currentScene !== 'CommentScreen' && Actions.currentScene !== 'ActivityCommentScreen'))
+      ) {
         this.props.getActivityFeed(this.props.user.userInfo.id, { page: 0, size: PAGE_COUNT })
       }
     }
@@ -460,7 +470,11 @@ class FeedDetailScreen extends React.Component {
   }
 
   backToDashboard = () => {
-    Actions.popTo('HomeScreen');
+    if (this.props.prevPage === 'home') {
+      Actions.popTo('HomeScreen');
+    } else {
+      Actions.popTo('NotificationScreen');
+    }
   }
 
   handleSetting = () => {
@@ -1661,13 +1675,15 @@ const mapDispatchToProps = dispatch => ({
   setDetailListType: (type) => dispatch(setDetailListType(type)),
   deleteDummyCard: (ideaId, type) => dispatch(deleteDummyCard(ideaId, type)),
   moveDummyCard: (ideaId, feedId, type) => dispatch(moveDummyCard(ideaId, feedId, type)),
-  getActivityFeed: (userId, param) => dispatch(getActivityFeed(userId, param))
+  getActivityFeed: (userId, param) => dispatch(getActivityFeed(userId, param)),
+  getFeedoList: () => dispatch(getFeedoList()),
 })
 
 FeedDetailScreen.defaultProps = {
   data: [],
   getFeedDetail: () => {},
   setFeedDetailAction: () => {},
+  prevPage: 'home'
 }
 
 FeedDetailScreen.propTypes = {
@@ -1680,7 +1696,8 @@ FeedDetailScreen.propTypes = {
   duplicateFeed: PropTypes.func.isRequired,
   deleteDuplicatedFeed: PropTypes.func.isRequired,
   deleteDummyCard: PropTypes.func,
-  moveDummyCard: PropTypes.func
+  moveDummyCard: PropTypes.func,
+  prevPage: PropTypes.string
 }
 
 export default connect(
