@@ -93,6 +93,8 @@ class NotificationScreen extends React.Component {
       selectedLongHoldIdea: {},
       isShowToaster: false,
       isVisibleSelectFeedo: false,
+      isShowInviteToaster: false,
+      inviteToasterTitle: '',
       apiLoading: false
     };
     this.animatedOpacity = new Animated.Value(0)
@@ -213,8 +215,17 @@ class NotificationScreen extends React.Component {
 
     if (this.props.feedo.loading === 'UPDTE_FEED_INVITATION_PENDING' && feedo.loading === 'UPDTE_FEED_INVITATION_FULFILLED') {
         let invitedFeedList = _.orderBy(feedo.invitedFeedList, ['publishedDate'], ['desc'])
-        this.setState({ invitedFeedList })
+        this.setState({ invitedFeedList, isShowInviteToaster: true })
         this.setActivityFeeds(this.state.activityFeedList, invitedFeedList)
+        
+        if (feedo.inviteUpdateType) {
+          this.setState({ inviteToasterTitle: 'Invitation accepted' })
+        } else {
+          this.setState({ inviteToasterTitle: 'Invitation ignored' })
+        }
+        setTimeout(() => {
+          this.setState({ isShowInviteToaster: false })
+        }, TOASTER_DURATION)
     }
   }
 
@@ -422,6 +433,14 @@ class NotificationScreen extends React.Component {
               isVisible={this.state.isShowToaster}
               title={this.state.toasterTitle}
               onPressButton={() => this.undoAction()}
+            />
+          )}
+
+          {this.state.isShowInviteToaster && (
+            <ToasterComponent
+              isVisible={this.state.isShowInviteToaster}
+              title={this.state.inviteToasterTitle}
+              buttonTitle="OK"
             />
           )}
 

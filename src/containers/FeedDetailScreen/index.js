@@ -148,7 +148,9 @@ class FeedDetailScreen extends React.Component {
       tmpClipboardData: '',
       clipboardData: '',
       isMasonryView: false,
-      MasonryData: []
+      MasonryData: [],
+      isShowInviteToaster: false,
+      inviteToasterTitle: ''
     };
     this.animatedOpacity = new Animated.Value(0)
     this.menuOpacity = new Animated.Value(0)
@@ -235,6 +237,14 @@ class FeedDetailScreen extends React.Component {
 
       if (feedo.currentFeed.metadata.myInviteStatus === 'DECLINED') {
         Actions.pop()
+      }
+
+      if (this.props.feedo.loading === 'UPDTE_FEED_INVITATION_PENDING' && feedo.loading === 'UPDTE_FEED_INVITATION_FULFILLED' && feedo.currentFeed.metadata.myInviteStatus !== 'DECLINED') {
+        this.setState({ isShowInviteToaster: true, inviteToasterTitle: 'Invitation accepted' })
+
+        setTimeout(() => {
+          this.setState({ isShowInviteToaster: false })
+        }, TOASTER_DURATION)
       }
 
       const currentFeed = feedo.currentFeed
@@ -1536,6 +1546,14 @@ class FeedDetailScreen extends React.Component {
             isVisible={this.state.isShowToaster}
             title={this.state.toasterTitle}
             onPressButton={() => this.undoAction()}
+          />
+        )}
+
+        {this.state.isShowInviteToaster && (
+          <ToasterComponent
+            isVisible={this.state.isShowInviteToaster}
+            title={this.state.inviteToasterTitle}
+            buttonTitle="OK"
           />
         )}
 
