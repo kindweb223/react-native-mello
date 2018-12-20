@@ -658,6 +658,16 @@ export const pubnubGetFeedDetail = (feedId) => {
   };
 }
 
+export const pubnubMoveIdea = (feedId, ideaId) => {
+  return {
+    type: types.PUBNUB_MOVE_IDEA_FULFILLED,
+    payload: {
+      feedId,
+      ideaId
+    }
+  };
+}
+
 /**
  * Like a card from Pubnub
  */

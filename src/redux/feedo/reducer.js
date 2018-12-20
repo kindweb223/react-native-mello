@@ -1528,6 +1528,35 @@ export default function feedo(state = initialState, action = {}) {
         archivedFeedList: archivedFeedList.length === restArchivedFeedoList.length ? archivedFeedList : [ ...restArchivedFeedoList, data ]
       }
     }
+    case types.PUBNUB_MOVE_IDEA_FULFILLED: {
+      const { feedId, ideaId } = action.payload
+      const { feedoList, currentFeed } = state
+
+      const restFeedoList = filter(feedoList, feed => feed.id !== feedId)
+      const oldFeed = find(feedoList, feed => feed.id === feedId)
+      const restOldIdeas = filter(oldFeed.ideas, idea => idea.id !== ideaId)
+
+      let newCurrentFeed = currentFeed
+      if (currentFeed.id === feedId) {
+        newCurrentFeed = {
+          ...newCurrentFeed,
+          ideas: filter(newCurrentFeed.ideas, idea => idea.id !== ideaId)
+        }
+      }
+
+      return {
+        ...state,
+        loading: types.PUBNUB_MOVE_IDEA_FULFILLED,
+        feedoList: [
+          ...restFeedoList,
+          {
+            ...oldFeed,
+            ideas: restOldIdeas
+          }
+        ],
+        currentFeed: newCurrentFeed
+      }
+    }
     case types.PUBNUB_LIKE_CARD_FULFILLED: {
       const ideaId = action.payload
       const { currentFeed } = state

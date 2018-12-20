@@ -87,7 +87,8 @@ import {
   pubnubUnLikeCard,
   getInvitedFeedList,
   pubnubDeleteInvitee,
-  pubnubDeleteOtherInvitee
+  pubnubDeleteOtherInvitee,
+  pubnubMoveIdea
 } from './src/redux/feedo/actions'
 
 const store = createStore(reducers, applyMiddleware(thunk, promiseMiddleware))
@@ -121,6 +122,9 @@ export default class Root extends React.Component {
             response.message.action === 'USER_ACCESS_CHANGED'
         ) {
           store.dispatch(pubnubGetFeedDetail(response.message.data.huntId))
+        }
+        if (response.message.action === 'IDEA_MOVED') {
+          store.dispatch(pubnubMoveIdea(response.message.data.huntId, response.message.data.ideaId))
         }
         if (response.message.action === 'HUNT_DELETED') {
           store.dispatch(pubnubDeleteFeed(response.message.data.huntId))
