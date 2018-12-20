@@ -1554,6 +1554,7 @@ class FeedDetailScreen extends React.Component {
             isVisible={this.state.isShowInviteToaster}
             title={this.state.inviteToasterTitle}
             buttonTitle="OK"
+            onPressButton={() => this.setState({ isShowInviteToaster: false })}
           />
         )}
 
