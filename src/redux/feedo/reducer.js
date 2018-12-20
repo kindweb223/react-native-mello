@@ -154,7 +154,8 @@ export default function feedo(state = initialState, action = {}) {
         loading: types.UPDTE_FEED_INVITATION_FULFILLED,
         invitedFeedList: restInvitedFeedList,
         feedoList: type ? (updateFeed ? [...restFeedoList, updateFeed] : restFeedoList) : restFeedoList,
-        currentFeed: newCurrentFeed
+        currentFeed: newCurrentFeed,
+        inviteUpdateType: type
       }
     }
     case types.UPDTE_FEED_INVITATION_REJECTED: {
