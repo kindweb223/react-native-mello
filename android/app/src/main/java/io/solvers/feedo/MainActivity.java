@@ -1,4 +1,4 @@
-package com.mello;
+package io.solvers.feedo;
 
 import com.facebook.react.ReactActivity;
 

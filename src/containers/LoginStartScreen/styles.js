@@ -61,7 +61,7 @@ export default {
     letterSpacing: 1.2
   },
   lastTextView: {
-    flexDirection: 'row'
+    flexDirection: 'row',
   },
   sliderFirstImagView: {
     width: '100%',
