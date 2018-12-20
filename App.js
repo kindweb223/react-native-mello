@@ -135,6 +135,7 @@ export default class Root extends React.Component {
           store.dispatch(pubnubUnLikeCard(response.message.data.ideaId))
         }
         if (response.message.action === 'USER_INVITED_TO_HUNT') {
+          store.dispatch(getInvitedFeedList())
           store.dispatch(pubnubGetFeedDetail(response.message.data.huntId))
         }
         if (response.message.action === 'USER_JOINED_HUNT') {
