@@ -147,6 +147,7 @@ class HomeScreen extends React.Component {
     this.registerPushNotification();
     this.props.getFeedoList(this.state.tabIndex)
     this.props.getInvitedFeedList()
+    this.props.getActivityFeed(this.props.user.userInfo.id, { page: 0, size: PAGE_COUNT })
 
     AppState.addEventListener('change', this.onHandleAppStateChange.bind(this));
     appOpened(this.props.user.userInfo.id);
@@ -239,7 +240,7 @@ class HomeScreen extends React.Component {
       return {
         feedoList,
         invitedFeedList: feedo.invitedFeedList,
-        badgeCount: feedo.invitedFeedList.length + feedo.activityData.unreadCount,
+        badgeCount: feedo.badgeCount,
         loading: false,
         emptyState,
         apiLoading: feedo.loading
@@ -252,10 +253,10 @@ class HomeScreen extends React.Component {
       }
     }
 
-    if (feedo.loading === 'GET_INVITED_FEEDO_LIST_FULFILLED') {
+    if (feedo.loading === 'GET_ACTIVITY_FEED_FULFILLED') {
       return {
         invitedFeedList: feedo.invitedFeedList,
-        badgeCount: feedo.activityData.unreadCount + feedo.invitedFeedList.length
+        badgeCount: feedo.badgeCount
       }
     }
 
@@ -272,7 +273,6 @@ class HomeScreen extends React.Component {
         feedo.loading === 'GET_CARD_FULFILLED' && Actions.currentScene !== 'FeedDetailScreen' ||
         feedo.loading === 'PUBNUB_LIKE_CARD_FULFILLED' && Actions.currentScene !== 'FeedDetailScreen' ||
         feedo.loading === 'PUBNUB_UNLIKE_CARD_FULFILLED' && Actions.currentScene !== 'FeedDetailScreen' ||
-        feedo.loading === 'GET_INVITED_FEEDO_LIST_FULFILLED' ||
         (feedo.loading === 'GET_CARD_COMMENTS_FULFILLED' &&
                           Actions.currentScene !== 'FeedDetailScreen' && 
                           Actions.currentScene !== 'CommentScreen' && Actions.currentScene !== 'ActivityCommentScreen' &&
@@ -285,8 +285,8 @@ class HomeScreen extends React.Component {
       this.props.getActivityFeed(user.userInfo.id, { page: 0, size: PAGE_COUNT })
     }
 
-    if (prevProps.feedo.loading !== 'GET_ACTIVITY_FEED_FULFILLED' && feedo.loading === 'GET_ACTIVITY_FEED_FULFILLED') {
-      this.setState({ badgeCount: feedo.invitedFeedList.length + feedo.activityData.unreadCount })
+    if (prevProps.feedo.loading !== 'GET_ACTIVITY_FEED_VISITED_FULFILLED' && feedo.loading === 'GET_ACTIVITY_FEED_VISITED_FULFILLED') {
+      this.setState({ badgeCount: feedo.badgeCount })
     }
 
     if (prevProps.feedo.loading !== 'GET_FEEDO_LIST_FULFILLED' && feedo.loading === 'GET_FEEDO_LIST_FULFILLED') {
@@ -1089,9 +1089,7 @@ class HomeScreen extends React.Component {
     const {
       loading,
       feedoList,
-      emptyState,
       tabIndex,
-      invitedFeedList,
       badgeCount,
       showFeedInvitedNewUserBubble
     } = this.state

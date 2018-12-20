@@ -22,7 +22,8 @@ const initialState = {
   activityFeedList: [],
   activityData: {},
   dummyDelCard: {},
-  dummyMoveCard: {}
+  dummyMoveCard: {},
+  badgeCount: 0
 };
 
 export default function feedo(state = initialState, action = {}) {
@@ -155,7 +156,8 @@ export default function feedo(state = initialState, action = {}) {
         invitedFeedList: restInvitedFeedList,
         feedoList: type ? (updateFeed ? [...restFeedoList, updateFeed] : restFeedoList) : restFeedoList,
         currentFeed: newCurrentFeed,
-        inviteUpdateType: type
+        inviteUpdateType: type,
+        badgeCount: state.badgeCount > 0 ? state.badgeCount - 1 : 0
       }
     }
     case types.UPDTE_FEED_INVITATION_REJECTED: {
@@ -1246,7 +1248,8 @@ export default function feedo(state = initialState, action = {}) {
         ...state,
         loading: types.GET_ACTIVITY_FEED_FULFILLED,
         activityFeedList,
-        activityData: data
+        activityData: data,
+        badgeCount: data.badgeCount
       }
     }
     case types.GET_ACTIVITY_FEED_REJECTED: {
@@ -1301,11 +1304,7 @@ export default function feedo(state = initialState, action = {}) {
             ...currentActivityFeedList[0],
             read: true
           }
-        ],
-        activityData: {
-          ...activityData,
-          unreadCount: activityData.unreadCount > 0 ? activityData.unreadCount - 1 : 0
-        }
+        ]
       }
     }
     case types.READ_ACTIVITY_FEED_REJECTED: {
@@ -1332,11 +1331,7 @@ export default function feedo(state = initialState, action = {}) {
       return {
         ...state,
         loading: types.DEL_ACTIVITY_FEED_FULFILLED,
-        activityFeedList: restActivityFeedList,
-        activityData: {
-          ...activityData,
-          unreadCount: activityData.unreadCount > 0 ? activityData.unreadCount - 1 : 0
-        }
+        activityFeedList: restActivityFeedList
       }
     }
     case types.DEL_ACTIVITY_FEED_REJECTED: {
@@ -1522,9 +1517,7 @@ export default function feedo(state = initialState, action = {}) {
       const restFeedoList = filter(feedoList, feed => feed.id !== data.id)
       const restInvitedFeedoList = filter(invitedFeedList, feed => feed.id !== data.id)
       const restArchivedFeedoList = filter(archivedFeedList, feed => feed.id !== data.id)
-      console.log('CURRENT_FEED: ', currentFeed)
       const newCurrentFeed = isEmpty(currentFeed) ? currentFeed : currentFeed.id === data.id ? data : currentFeed
-      console.log('CURRENT_FEED: ', newCurrentFeed)
 
       return {
         ...state,
@@ -1643,6 +1636,36 @@ export default function feedo(state = initialState, action = {}) {
           ...currentFeed,
           invitees: currentRestInvitees
         }
+      }
+    }
+    /**
+     * Get activity feed visited
+     */
+    case types.GET_ACTIVITY_FEED_VISITED_PENDING:
+      return {
+        ...state,
+        loading: types.GET_ACTIVITY_FEED_VISITED_PENDING,
+      }
+    case types.GET_ACTIVITY_FEED_VISITED_FULFILLED: {
+      const { data } = action.result
+
+      PushNotification.getApplicationIconBadgeNumber((badgeCount) => {
+        if (badgeCount && badgeCount > 0) {
+          PushNotification.setApplicationIconBadgeNumber(data.count)
+        }
+      })
+
+      return {
+        ...state,
+        loading: types.GET_ACTIVITY_FEED_VISITED_FULFILLED,
+        badgeCount: data.count
+      }
+    }
+    case types.GET_ACTIVITY_FEED_VISITED_REJECTED: {
+      return {
+        ...state,
+        loading: types.GET_ACTIVITY_FEED_VISITED_REJECTED,
+        error: action.error.response,
       }
     }
     default:

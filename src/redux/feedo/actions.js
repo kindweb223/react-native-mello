@@ -544,7 +544,8 @@ export const leaveFeed = (feedId) => {
  * Get activity feed
  */
 export const getActivityFeed = (userId, data) => {
-  let url = `users/${userId}/activityFeed?page=${data.page}&size=${data.size}`
+  // let url = `users/${userId}/activityFeed?page=${data.page}&size=${data.size}`
+  let url = `users/${userId}/activityFeed`
 
   return {
     types: [types.GET_ACTIVITY_FEED_PENDING, types.GET_ACTIVITY_FEED_FULFILLED, types.GET_ACTIVITY_FEED_REJECTED],
@@ -698,4 +699,16 @@ export const pubnubDeleteOtherInvitee = (huntId, userId) => {
       userId
     }
   };
+}
+
+export const getActivityFeedVisited = (userId) => {
+  let url = `users/${userId}/activityFeedVisited`
+  return {
+    types: [types.GET_ACTIVITY_FEED_VISITED_PENDING, types.GET_ACTIVITY_FEED_VISITED_FULFILLED, types.GET_ACTIVITY_FEED_VISITED_REJECTED],
+    promise:
+      axios({
+        method: 'post',
+        url: url
+      })
+  }
 }
