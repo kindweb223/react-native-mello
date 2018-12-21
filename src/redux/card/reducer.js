@@ -277,7 +277,7 @@ export default function card(state = initialState, action = {}) {
       return {
         ...state,
         loading: types.GET_CARD_COMMENTS_FULFILLED,
-        currentCommentId: action.payload,
+        currentCardId: action.payload,
         currentComments: data,
       }
     }
