@@ -85,7 +85,7 @@ class FeedoListContainer extends React.Component {
   }
 
   render() {
-    const { loading, refresh, feedoList, feedClickEvent } = this.props;
+    const { loading, refresh, feedoList, feedClickEvent, animatedSelectFeed, animatedSelectFeedPos } = this.props;
     if (loading) return <FeedLoadingStateComponent animating />
 
     return (
@@ -98,34 +98,28 @@ class FeedoListContainer extends React.Component {
           />
         }
         style={[
+          styles.container,
           feedClickEvent === 'normal' ? { paddingBottom: CONSTANTS.ACTION_BAR_HEIGHT - 45 } : { paddingBottom: 0 },
           feedClickEvent === 'normal' ? { marginBottom: 30 } : { marginBottom: 0 }
         ]}
       >
-        <View style={{ flex: 1 }}>
+        
+        <Animated.View
+          style={
+            {
+              flex: 1,
+              transform: [
+                { scale: animatedSelectFeed }
+              ],
+              marginTop: animatedSelectFeedPos
+            }
+          }
+        >
           {feedoList.map((item, index) => (
             this.renderItem(item, index)
           ))}
-        </View>
+        </Animated.View>
       </ScrollView>
-      // <FlatList
-      //   refreshControl={
-      //     <RefreshControl
-      //       tintColor={COLORS.PURPLE}
-      //       refreshing={this.props.isRefreshing}
-      //       onRefresh={() => refresh ? this.props.onRefreshFeed() : {}}
-      //     />
-      //   }
-      //   style={[
-      //     feedClickEvent === 'normal' ? { paddingBottom: CONSTANTS.ACTION_BAR_HEIGHT - 45 } : { paddingBottom: 0 },
-      //     feedClickEvent === 'normal' ? { marginBottom: 30 } : { marginBottom: 0 }
-      //   ]}
-      //   data={feedoList}
-      //   keyExtractor={item => item.id}
-      //   automaticallyAdjustContentInsets={true}
-      //   renderItem={this.renderItem.bind(this)}
-      //   keyboardShouldPersistTaps="handled"
-      // />
     )
   }
 }

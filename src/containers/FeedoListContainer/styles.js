@@ -3,7 +3,9 @@ import CONSTANTS from '../../service/constants'
 import COLORS from '../../service/colors'
 
 const styles = StyleSheet.create({
-  flatList: {
+  container: {
+    width: '100%',
+    height: '100%'
   },
   separator: {
     borderBottomWidth: 1,

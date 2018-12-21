@@ -2,8 +2,6 @@ import { StyleSheet, Platform } from 'react-native'
 import COLORS from '../../service/colors'
 import CONSTANTS from '../../service/constants'
 
-const BAR_WIDTH = 250
-
 const styles = StyleSheet.create({
   container: {
     flex: 1,
@@ -17,21 +15,21 @@ const styles = StyleSheet.create({
     backgroundColor: 'transparent'
   },
   rowContainer: {
-    width: BAR_WIDTH,
     height: 54,
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
     backgroundColor: COLORS.PURPLE,
     borderRadius: 18,
-    paddingHorizontal: 10
+    paddingHorizontal: 20
   },
   buttonView: {
     height: '100%',
     flexDirection: 'row',
-    justifyContent: 'center',
+    justifyContent: 'flex-start',
     alignItems: 'center',
-    marginHorizontal: 13
+    // width: 80,
+    // backgroundColor: '#f00'
   },
   buttonText: {
     color: '#fff',
@@ -55,7 +53,6 @@ const styles = StyleSheet.create({
     paddingVertical: 10,
     position: 'absolute',
     bottom: 54 + 28 + 20,
-    right: (CONSTANTS.SCREEN_WIDTH - BAR_WIDTH) / 2,
     ...Platform.select({
       ios: {
         shadowColor: 'black',
