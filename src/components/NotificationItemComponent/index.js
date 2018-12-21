@@ -46,7 +46,7 @@ const NotificationItemComponent = ({ data, hideTumbnail, updateInvitation }) => 
       </View>
 
       <View style={styles.rightContainer}>
-        <TouchableOpacity onPress={() => hideTumbnail ? {} : Actions.FeedDetailScreen({ data })}>
+        <TouchableOpacity onPress={() => hideTumbnail ? {} : Actions.FeedDetailScreen({ data, prevPage: 'notification' })}>
           <View>
             <View style={styles.titleView}>
               <Text><Text style={styles.title}>{name}</Text> has invited you to this flow</Text>

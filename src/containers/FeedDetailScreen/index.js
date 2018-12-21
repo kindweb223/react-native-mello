@@ -148,7 +148,9 @@ class FeedDetailScreen extends React.Component {
       tmpClipboardData: '',
       clipboardData: '',
       isMasonryView: false,
-      MasonryData: []
+      MasonryData: [],
+      isShowInviteToaster: false,
+      inviteToasterTitle: ''
     };
     this.animatedOpacity = new Animated.Value(0)
     this.menuOpacity = new Animated.Value(0)
@@ -228,13 +230,21 @@ class FeedDetailScreen extends React.Component {
         (this.props.card.loading === 'MOVE_CARD_PENDING' && card.loading === 'MOVE_CARD_FULFILLED') ||
         (this.props.feedo.loading === 'UPDTE_FEED_INVITATION_PENDING' && feedo.loading === 'UPDTE_FEED_INVITATION_FULFILLED') ||
         (feedo.loading === 'ADD_CARD_COMMENT_FULFILLED') || (feedo.loading === 'DELETE_CARD_COMMENT_FULFILLED') ||
-        (feedo.loading === 'PUBNUB_GET_FEED_DETAIL_FULFILLED') ||
+        (feedo.loading === 'PUBNUB_GET_FEED_DETAIL_FULFILLED') || (feedo.loading === 'PUBNUB_MOVE_IDEA_FULFILLED') ||
         (feedo.loading === 'PUBNUB_LIKE_CARD_FULFILLED') || (feedo.loading === 'PUBNUB_UNLIKE_CARD_FULFILLED') ||
         (feedo.loading === 'GET_CARD_FULFILLED') || (feedo.loading === 'GET_CARD_COMMENTS_FULFILLED') ||
         (feedo.loading === 'PUBNUB_DELETE_INVITEE_FULFILLED')) {
 
       if (feedo.currentFeed.metadata.myInviteStatus === 'DECLINED') {
         Actions.pop()
+      }
+
+      if (this.props.feedo.loading === 'UPDTE_FEED_INVITATION_PENDING' && feedo.loading === 'UPDTE_FEED_INVITATION_FULFILLED' && feedo.currentFeed.metadata.myInviteStatus !== 'DECLINED') {
+        this.setState({ isShowInviteToaster: true, inviteToasterTitle: 'Invitation accepted' })
+
+        setTimeout(() => {
+          this.setState({ isShowInviteToaster: false })
+        }, TOASTER_DURATION)
       }
 
       const currentFeed = feedo.currentFeed
@@ -1536,6 +1546,15 @@ class FeedDetailScreen extends React.Component {
             isVisible={this.state.isShowToaster}
             title={this.state.toasterTitle}
             onPressButton={() => this.undoAction()}
+          />
+        )}
+
+        {this.state.isShowInviteToaster && (
+          <ToasterComponent
+            isVisible={this.state.isShowInviteToaster}
+            title={this.state.inviteToasterTitle}
+            buttonTitle="OK"
+            onPressButton={() => this.setState({ isShowInviteToaster: false })}
           />
         )}
 

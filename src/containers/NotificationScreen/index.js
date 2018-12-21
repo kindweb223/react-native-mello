@@ -38,7 +38,8 @@ import {
   deleteActivityFeed,
   readAllActivityFeed,
   setCurrentFeed,
-  getInvitedFeedList
+  getInvitedFeedList,
+  getActivityFeedVisited
 } from '../../redux/feedo/actions'
 import {
   getCard,
@@ -93,6 +94,8 @@ class NotificationScreen extends React.Component {
       selectedLongHoldIdea: {},
       isShowToaster: false,
       isVisibleSelectFeedo: false,
+      isShowInviteToaster: false,
+      inviteToasterTitle: '',
       apiLoading: false
     };
     this.animatedOpacity = new Animated.Value(0)
@@ -103,6 +106,8 @@ class NotificationScreen extends React.Component {
 
   componentDidMount() {
     Analytics.setCurrentScreen('NotificationScreen')
+
+    this.props.getActivityFeedVisited(this.props.user.userInfo.id)
 
     const { feedo } = this.props
     let { invitedFeedList, activityFeedList } = feedo
@@ -122,7 +127,6 @@ class NotificationScreen extends React.Component {
         feedo.loading === 'GET_CARD_FULFILLED' && Actions.currentScene !== 'FeedDetailScreen' ||
         feedo.loading === 'PUBNUB_LIKE_CARD_FULFILLED' && Actions.currentScene !== 'FeedDetailScreen' ||
         feedo.loading === 'PUBNUB_UNLIKE_CARD_FULFILLED' && Actions.currentScene !== 'FeedDetailScreen' ||
-        feedo.loading === 'GET_INVITED_FEEDO_LIST_FULFILLED' ||
         (feedo.loading === 'GET_CARD_COMMENTS_FULFILLED' &&
                           Actions.currentScene !== 'FeedDetailScreen' && 
                           Actions.currentScene !== 'CommentScreen' && Actions.currentScene !== 'ActivityCommentScreen' &&
@@ -213,8 +217,17 @@ class NotificationScreen extends React.Component {
 
     if (this.props.feedo.loading === 'UPDTE_FEED_INVITATION_PENDING' && feedo.loading === 'UPDTE_FEED_INVITATION_FULFILLED') {
         let invitedFeedList = _.orderBy(feedo.invitedFeedList, ['publishedDate'], ['desc'])
-        this.setState({ invitedFeedList })
+        this.setState({ invitedFeedList, isShowInviteToaster: true })
         this.setActivityFeeds(this.state.activityFeedList, invitedFeedList)
+        
+        if (feedo.inviteUpdateType) {
+          this.setState({ inviteToasterTitle: 'Invitation accepted' })
+        } else {
+          this.setState({ inviteToasterTitle: 'Invitation ignored' })
+        }
+        setTimeout(() => {
+          this.setState({ isShowInviteToaster: false })
+        }, TOASTER_DURATION)
     }
   }
 
@@ -422,6 +435,15 @@ class NotificationScreen extends React.Component {
               isVisible={this.state.isShowToaster}
               title={this.state.toasterTitle}
               onPressButton={() => this.undoAction()}
+            />
+          )}
+
+          {this.state.isShowInviteToaster && (
+            <ToasterComponent
+              isVisible={this.state.isShowInviteToaster}
+              title={this.state.inviteToasterTitle}
+              buttonTitle="OK"
+              onPressButton={() => this.setState({ isShowInviteToaster: false })}
             />
           )}
 
@@ -652,6 +674,7 @@ const mapDispatchToProps = dispatch => ({
   deleteCard: (ideaId) => dispatch(deleteCard(ideaId)),
   setCurrentFeed: (data) => dispatch(setCurrentFeed(data)),
   getInvitedFeedList: () => dispatch(getInvitedFeedList()),
+  getActivityFeedVisited: (userId) => dispatch(getActivityFeedVisited(userId)),
 })
 
 NotificationScreen.propTypes = {

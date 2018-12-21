@@ -45,6 +45,7 @@ axios.interceptors.response.use(
       SharedGroupPreferences.setItem('xAuthToken', null, CONSTANTS.APP_GROUP_TOKEN_IDENTIFIER)
 
       Actions.LoginScreen({ type: 'replace' })
+      return
     }
     throw error
   }
@@ -87,7 +88,8 @@ import {
   pubnubUnLikeCard,
   getInvitedFeedList,
   pubnubDeleteInvitee,
-  pubnubDeleteOtherInvitee
+  pubnubDeleteOtherInvitee,
+  pubnubMoveIdea
 } from './src/redux/feedo/actions'
 
 const store = createStore(reducers, applyMiddleware(thunk, promiseMiddleware))
@@ -115,20 +117,21 @@ export default class Root extends React.Component {
           console.log("refreshing comments")
           store.dispatch(getCardComments(response.message.data.ideaId))
         }
-        if (response.message.action === 'HUNT_UPDATED') {
+        if (response.message.action === 'HUNT_UPDATED' ||
+            response.message.action === 'IDEA_ADDED' ||
+            response.message.action === 'IDEA_DELETED' ||
+            response.message.action === 'USER_ACCESS_CHANGED'
+        ) {
           store.dispatch(pubnubGetFeedDetail(response.message.data.huntId))
+        }
+        if (response.message.action === 'IDEA_MOVED') {
+          store.dispatch(pubnubMoveIdea(response.message.data.huntId, response.message.data.ideaId))
         }
         if (response.message.action === 'HUNT_DELETED') {
           store.dispatch(pubnubDeleteFeed(response.message.data.huntId))
         }
-        if (response.message.action === 'IDEA_ADDED') {
-          store.dispatch(pubnubGetFeedDetail(response.message.data.huntId))
-        }
         if (response.message.action === 'IDEA_UPDATED') {
           store.dispatch(getCard(response.message.data.ideaId))
-        }
-        if (response.message.action === 'IDEA_DELETED') {
-          store.dispatch(pubnubGetFeedDetail(response.message.data.huntId))
         }
         if (response.message.action === 'IDEA_LIKED') {
           store.dispatch(pubnubLikeCard(response.message.data.ideaId))
@@ -136,11 +139,12 @@ export default class Root extends React.Component {
         if (response.message.action === 'IDEA_UNLIKED') {
           store.dispatch(pubnubUnLikeCard(response.message.data.ideaId))
         }
-        if (response.message.action === 'USER_ACCESS_CHANGED') {
-          store.dispatch(pubnubGetFeedDetail(response.message.data.huntId))
-        }
         if (response.message.action === 'USER_INVITED_TO_HUNT') {
           store.dispatch(getInvitedFeedList())
+          store.dispatch(pubnubGetFeedDetail(response.message.data.huntId))
+        }
+        if (response.message.action === 'USER_JOINED_HUNT') {
+          store.dispatch(pubnubGetFeedDetail(response.message.data.huntId))
         }
         if (response.message.action === 'HUNT_INVITEE_REMOVED') {
           const state = store.getState()
