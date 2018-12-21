@@ -119,98 +119,96 @@ class FeedActionBarComponent extends React.Component {
 
     return (
       <View style={styles.container}>
-        <View style={{ width: 280 }}>
-          <Modal
-            style={styles.settingMenu}
-            isVisible={this.state.isSettingMenu}
-            backdropOpacity={0}
-            animationIn="fadeIn"
-            animationOut="fadeOut"
-            animationInTiming={600}
-            onModalHide={this.onSettingMenuHide}
-            onBackdropPress={() => this.setState({ isSettingMenu: false })}
-          >
-            <View style={styles.settingMenuView}>
-              <FlatList
-                data={MENU_ITEMS}
-                keyExtractor={item => item}
-                renderItem={({ item }) => (
-                  <TouchableOpacity
-                    onPress={() => this.onPressSetting(item)}
-                    activeOpacity={0.5}
-                  >
-                    <View style={styles.settingItem}>
-                      <Text style={(item === 'Delete' || item === 'Leave Flow') ? styles.deleteButtonText : styles.settingButtonText}>
-                        {item}
-                      </Text>
-                    </View>
-                  </TouchableOpacity>
-                )}
-              />
-            </View>
-          </Modal>
-
-          <View style={styles.buttonContainer}>
-            <Animated.View
-              style={
-                this.state.selectedButton === SELECT_PIN_UNPIN &&
-                {
-                  transform: [
-                    { scale: this.animatedSelect },
-                  ],
-                }
-              }
-            >
-              <TouchableOpacity 
-                style={styles.buttonView}
-                activeOpacity={0.7}
-                onPress={this.onPressPin}
-              >
-                <Octicons name="pin" style={styles.pinIcon} />
-                <Text style={styles.buttonText}>{this.props.pinFlag ? 'Unpin' : 'Pin'}</Text>
-              </TouchableOpacity>
-            </Animated.View>
-            <Animated.View
-              style={
-                this.state.selectedButton === SELECT_SHARE &&
-                {
-                  transform: [
-                    { scale: this.animatedSelect },
-                  ],
-                }
-              }
-            >
-              <TouchableOpacity 
-                style={styles.buttonView}
-                activeOpacity={0.7}
-                onPress={this.onPressShare}
-              >
-                <Entypo name="share-alternative" style={styles.shareIcon} />
-                <Text style={styles.buttonText}>Share</Text>
-              </TouchableOpacity>
-            </Animated.View>
-
-            {MENU_ITEMS.length > 0 && (
-              <Animated.View
-                style={
-                  this.state.selectedButton === SELECT_MENU &&
-                  {
-                    transform: [
-                      { scale: this.animatedSelect },
-                    ],
-                  }
-                }
-              >
-                <TouchableOpacity 
-                  style={[styles.iconStyle, styles.plusButton]}
-                  activeOpacity={0.7}
-                  onPress={() => this.onPressMenu()}
+        <Modal
+          style={styles.settingMenu}
+          isVisible={this.state.isSettingMenu}
+          backdropOpacity={0}
+          animationIn="fadeIn"
+          animationOut="fadeOut"
+          animationInTiming={600}
+          onModalHide={this.onSettingMenuHide}
+          onBackdropPress={() => this.setState({ isSettingMenu: false })}
+        >
+          <View style={styles.settingMenuView}>
+            <FlatList
+              data={MENU_ITEMS}
+              keyExtractor={item => item}
+              renderItem={({ item }) => (
+                <TouchableOpacity
+                  onPress={() => this.onPressSetting(item)}
+                  activeOpacity={0.5}
                 >
-                  <Entypo name="dots-three-horizontal" style={styles.plusButtonIcon} />
+                  <View style={styles.settingItem}>
+                    <Text style={(item === 'Delete' || item === 'Leave Flow') ? styles.deleteButtonText : styles.settingButtonText}>
+                      {item}
+                    </Text>
+                  </View>
                 </TouchableOpacity>
-              </Animated.View>
-            )}
+              )}
+            />
           </View>
+        </Modal>
+
+        <View style={styles.rowContainer}>
+          <Animated.View
+            style={
+              this.state.selectedButton === SELECT_PIN_UNPIN &&
+              {
+                transform: [
+                  { scale: this.animatedSelect },
+                ],
+              }
+            }
+          >
+            <TouchableOpacity 
+              style={styles.buttonView}
+              activeOpacity={0.7}
+              onPress={this.onPressPin}
+            >
+              <Octicons name="pin" style={styles.pinIcon} size={22} color="#fff" />
+              <Text style={styles.buttonText}>{this.props.pinFlag ? 'Unpin' : 'Pin'}</Text>
+            </TouchableOpacity>
+          </Animated.View>
+          <Animated.View
+            style={
+              this.state.selectedButton === SELECT_SHARE &&
+              {
+                transform: [
+                  { scale: this.animatedSelect },
+                ],
+              }
+            }
+          >
+            <TouchableOpacity 
+              style={styles.buttonView}
+              activeOpacity={0.7}
+              onPress={this.onPressShare}
+            >
+              <Entypo name="share-alternative" style={styles.shareIcon} size={22} color="#fff" />
+              <Text style={styles.buttonText}>Share</Text>
+            </TouchableOpacity>
+          </Animated.View>
+
+          {MENU_ITEMS.length > 0 && (
+            <Animated.View
+              style={
+                this.state.selectedButton === SELECT_MENU &&
+                {
+                  transform: [
+                    { scale: this.animatedSelect },
+                  ],
+                }
+              }
+            >
+              <TouchableOpacity 
+                style={styles.buttonView}
+                activeOpacity={0.7}
+                onPress={() => this.onPressMenu()}
+              >
+                <Entypo name="dots-three-horizontal" size={22} color="#fff" />
+              </TouchableOpacity>
+            </Animated.View>
+          )}
         </View>
       </View>
     )

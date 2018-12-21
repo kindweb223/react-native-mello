@@ -108,7 +108,7 @@ class CardActionBarComponent extends React.Component {
               }
             >
               <TouchableOpacity
-                style={styles.buttonContainer}
+                style={styles.buttonView}
                 activeOpacity={0.7}
                 onPress={this.onMove.bind(this)}
               >
@@ -130,7 +130,7 @@ class CardActionBarComponent extends React.Component {
               }
             >
               <TouchableOpacity
-                style={styles.buttonContainer}
+                style={styles.buttonView}
                 activeOpacity={0.7}
                 onPress={this.onDelete.bind(this)}
               >

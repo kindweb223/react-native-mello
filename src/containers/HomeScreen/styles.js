@@ -4,6 +4,7 @@ import COLORS from '../../service/colors'
 import CONSTANTS from '../../service/constants'
 
 const SEARCHBAR_HEIGHT = 40
+const NAV_BAR_HEIGHT = 55
 
 const styles = StyleSheet.create({
   safeArea: {
@@ -71,8 +72,7 @@ const styles = StyleSheet.create({
     marginBottom: Platform.OS === 'ios' ? ifIphoneX(0, 56) : 56
   },
   feedListContainer: {
-    paddingTop: 8,
-    paddingBottom: 30
+    paddingTop: 8
   },
   tabBarStyle: {
     borderTopWidth: 0,
@@ -159,6 +159,30 @@ const styles = StyleSheet.create({
   badgeText: {
     color: '#fff',
     fontSize: 10
+  },
+  topButtonView: {
+    width: '100%',
+    height: NAV_BAR_HEIGHT,
+    paddingHorizontal: CONSTANTS.PADDING,
+    position: 'absolute',
+    right: 0,
+    top: CONSTANTS.STATUSBAR_HEIGHT,
+    paddingTop: 8,
+    alignItems: 'flex-end',
+    backgroundColor: '#fff'
+  },
+  btnDoneView: {
+    width: 69,
+    height: 34,
+    borderRadius: 17,
+    backgroundColor: COLORS.PURPLE,
+    justifyContent: 'center',
+    alignItems: 'center'
+  },
+  btnDoneText: {
+    color: '#fff',
+    fontSize: 15,
+    fontWeight: '500'
   }
 })
 

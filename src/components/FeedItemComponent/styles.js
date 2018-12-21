@@ -6,7 +6,8 @@ const styles = StyleSheet.create({
   container: {
     backgroundColor: '#fff',
     borderRadius: 18,
-    paddingHorizontal: CONSTANTS.PADDING
+    paddingHorizontal: CONSTANTS.PADDING,
+    paddingVertical: 0
   },
   thumbnailsView: {
     width: '100%',
