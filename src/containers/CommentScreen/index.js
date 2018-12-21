@@ -119,7 +119,8 @@ class CommentScreen extends React.Component {
       loading = false;
     } else if (this.props.card.loading !== types.ADD_CARD_COMMENT_FULFILLED && nextProps.card.loading === types.ADD_CARD_COMMENT_FULFILLED) {
       // success in adding a comment of a card
-      if (nextProps.card.currentCommentId === nextProps.card.currentCard.id) {
+      if (nextProps.card.currentCommentId === nextProps.card.currentCard.id ||
+        nextProps.card.currentCommentId === this.props.idea.id) {
         this.setState({ commentList: nextProps.card.currentComments })
       }
     } else if (this.props.card.loading !== types.EDIT_CARD_COMMENT_PENDING && nextProps.card.loading === types.EDIT_CARD_COMMENT_PENDING) {
@@ -127,7 +128,8 @@ class CommentScreen extends React.Component {
       loading = false;
     } else if (this.props.card.loading !== types.EDIT_CARD_COMMENT_FULFILLED && nextProps.card.loading === types.EDIT_CARD_COMMENT_FULFILLED) {
       // success in adding a comment of a card
-      if (nextProps.card.currentCommentId === nextProps.card.currentCard.id) {
+      if (nextProps.card.currentCommentId === nextProps.card.currentCard.id ||
+        nextProps.card.currentCommentId === this.props.idea.id) {
         this.setState({ commentList: nextProps.card.currentComments })
       }
     } else if (this.props.card.loading !== types.DELETE_CARD_COMMENT_PENDING && nextProps.card.loading === types.DELETE_CARD_COMMENT_PENDING) {
@@ -135,7 +137,8 @@ class CommentScreen extends React.Component {
       loading = false;
     } else if (this.props.card.loading !== types.DELETE_CARD_COMMENT_FULFILLED && nextProps.card.loading === types.DELETE_CARD_COMMENT_FULFILLED) {
       // success in adding a comment of a card
-      if (nextProps.card.currentCommentId === nextProps.card.currentCard.id) {
+      if (nextProps.card.currentCommentId === nextProps.card.currentCard.id ||
+        nextProps.card.currentCommentId === this.props.idea.id) {
         this.setState({ commentList: nextProps.card.currentComments })
       }
     } 
