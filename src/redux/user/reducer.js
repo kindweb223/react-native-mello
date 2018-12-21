@@ -129,7 +129,8 @@ export default function user(state = initialState, action = {}) {
       return {
         ...state,
         loading: types.GET_USER_SESSION_REJECTED,
-        userInfo: null
+        userInfo: null,
+        errorCode: action.error.response.data.code
       }
     }
     /**

@@ -45,6 +45,7 @@ axios.interceptors.response.use(
       SharedGroupPreferences.setItem('xAuthToken', null, CONSTANTS.APP_GROUP_TOKEN_IDENTIFIER)
 
       Actions.LoginScreen({ type: 'replace' })
+      return
     }
     throw error
   }
