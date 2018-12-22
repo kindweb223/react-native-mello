@@ -13,6 +13,7 @@ import {
   AsyncStorage,
   Linking,
   SafeAreaView,
+  Platform,
 } from 'react-native'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
@@ -36,6 +37,7 @@ import Modal from 'react-native-modal';
 import moment from 'moment'
 import Autolink from 'react-native-autolink';
 import SafariView from "react-native-safari-view";
+import InAppBrowser from 'react-native-inappbrowser-reborn'
 import SharedGroupPreferences from 'react-native-shared-group-preferences';
 
 import { 
@@ -552,15 +554,19 @@ class NewCardScreen extends React.Component {
 
     this.keyboardWillShowSubscription = Keyboard.addListener('keyboardWillShow', (e) => this.keyboardWillShow(e));
     this.keyboardWillHideSubscription = Keyboard.addListener('keyboardWillHide', (e) => this.keyboardWillHide(e));
-    this.safariViewShowSubscription = SafariView.addEventListener('onShow', () => this.safariViewShow());
-    this.safariViewDismissSubscription = SafariView.addEventListener('onDismiss', () => this.safariViewDismiss());
+    if (Platform.OS === 'ios') {
+      this.safariViewShowSubscription = SafariView.addEventListener('onShow', () => this.safariViewShow());
+      this.safariViewDismissSubscription = SafariView.addEventListener('onDismiss', () => this.safariViewDismiss());
+    }
   }
 
   componentWillUnmount() {
     this.keyboardWillShowSubscription.remove();
     this.keyboardWillHideSubscription.remove();
-    this.safariViewShowSubscription.remove();
-    this.safariViewDismissSubscription.remove();
+    if (Platform.OS === 'ios') {
+      this.safariViewShowSubscription.remove();
+      this.safariViewDismissSubscription.remove();
+    }
   }
 
   keyboardWillShow(e) {
@@ -1133,25 +1139,39 @@ class NewCardScreen extends React.Component {
     });
   }
 
-  onPressLink(url) {
-    SafariView.isAvailable()
-      .then(SafariView.show({
-        url: url,
-        tintColor: COLORS.PURPLE
-      }))
-      .catch(error => {
-        // Fallback WebView code for iOS 8 and earlier
-        Linking.canOpenURL(url)
-          .then(supported => {
+  async onPressLink(url) {
+    if (Platform.OS === 'ios') {
+      SafariView.isAvailable()
+        .then(SafariView.show({
+          url: url,
+          tintColor: COLORS.PURPLE
+        }))
+        .catch(error => {
+          // Fallback WebView code for iOS 8 and earlier
+          Linking.canOpenURL(url)
+            .then(supported => {
               if (!supported) {
-                  console.log('Can\'t handle url: ' + url);
+                console.log('Can\'t handle url: ' + url);
               }
               else {
-                  return Linking.openURL(url);
+                return Linking.openURL(url);
               }
-          })
-          .catch(error => console.error('An error occurred', error));
-      });
+            })
+            .catch(error => console.error('An error occurred', error));
+        });
+    } else {
+      // Android 
+      try {
+        await InAppBrowser.isAvailable()
+        InAppBrowser.open(url, {
+          toolbarColor: COLORS.PURPLE,
+        }).then((result) => {
+          console.log(result);
+        })
+      } catch (error) {
+        console.log(error);
+      }
+    }
   }
 
   addLinkImage(id, imageUrl) {
@@ -1628,7 +1648,7 @@ class NewCardScreen extends React.Component {
       contentContainerStyle = {
         paddingTop: 0,
         paddingBottom: this.animatedKeyboardHeight,
-        height: CONSTANTS.SCREEN_HEIGHT,
+        height: '100%',
         backgroundColor: '#fff',
       }
     }

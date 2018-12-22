@@ -9,7 +9,7 @@ import {
 
 import PropTypes from 'prop-types'
 import { Actions } from 'react-native-router-flux'
-import ReactNativeHaptic from 'react-native-haptic'
+import ReactNativeHapticFeedback from 'react-native-haptic-feedback';
 import _ from 'lodash'
 
 import FeedItemComponent from '../../components/FeedItemComponent'
@@ -56,7 +56,7 @@ class FeedoListContainer extends React.Component {
   }
 
   onLongPressFeedo(index, item) {
-    ReactNativeHaptic.generate('impactHeavy')
+    ReactNativeHapticFeedback.trigger('impactHeavy', true);
     this.setState({
       selectedLongHoldFeedoIndex: index,
     }, () => {

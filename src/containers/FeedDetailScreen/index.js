@@ -22,7 +22,7 @@ import { Actions } from 'react-native-router-flux'
 import Ionicons from 'react-native-vector-icons/Ionicons'
 import ActionSheet from 'react-native-actionsheet'
 import Modal from "react-native-modal"
-import ReactNativeHaptic from 'react-native-haptic'
+import ReactNativeHapticFeedback from 'react-native-haptic-feedback';
 import ImagePicker from 'react-native-image-picker'
 import { DocumentPicker, DocumentPickerUtil } from 'react-native-document-picker'
 import Permissions from 'react-native-permissions'
@@ -790,7 +790,7 @@ class FeedDetailScreen extends React.Component {
       return
     }
 
-    ReactNativeHaptic.generate('impactHeavy');
+    ReactNativeHapticFeedback.trigger('impactHeavy', true);
 
     this.setState({
       selectedLongHoldCardIndex: index
