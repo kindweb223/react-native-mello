@@ -131,8 +131,6 @@ class HomeScreen extends React.Component {
     this.isInitialized = false;
 
     this.animatedSelectFeed = new Animated.Value(1);
-    this.animatedSelectFeedPos = new Animated.Value(0);
-    this.feedListViewHeight = 0
   }
 
   async componentDidMount() {
@@ -705,18 +703,11 @@ class HomeScreen extends React.Component {
   }
 
   handleLongHoldMenu = (index, selectedFeedData) => {
-    console.log('PPP: ', this.feedListViewHeight)
     this.setState({ selectedLongHoldFeedoIndex: index, feedClickEvent: 'long' }, () => {
-      Animated.parallel([
-        Animated.timing(this.animatedSelectFeed, {
-          toValue: 0.85,
-          duration: 150,
-        }),
-        Animated.timing(this.animatedSelectFeedPos, {
-          toValue: -this.feedListViewHeight / 10,
-          duration: 150,
-        })
-      ]).start(() => {
+      Animated.timing(this.animatedSelectFeed, {
+        toValue: 0.85,
+        duration: 150,
+      }).start(() => {
         this.setState({
           selectedFeedData,
           isLongHoldMenuVisible: true
@@ -727,32 +718,20 @@ class HomeScreen extends React.Component {
 
   closeLongHoldMenu = () => {
     this.setState({ selectedLongHoldFeedoIndex: -1, feedClickEvent: 'normal' }, () => {
-      Animated.parallel([
-        Animated.timing(this.animatedSelectFeed, {
-          toValue: 1,
-          duration: 100
-        }),
-        Animated.timing(this.animatedSelectFeedPos, {
-          toValue: 0,
-          duration: 100,
-        })
-      ]).start(() => {
+      Animated.timing(this.animatedSelectFeed, {
+        toValue: 1,
+        duration: 100
+      }).start(() => {
         this.setState({ isLongHoldMenuVisible: false })
       })
     })
   }
 
   handleArchiveFeed = (feedId) => {
-    Animated.parallel([
-      Animated.timing(this.animatedSelectFeed, {
-        toValue: 1,
-        duration: 150,
-      }),
-      Animated.timing(this.animatedSelectFeedPos, {
-        toValue: 0,
-        duration: 100,
-      })
-    ]).start(() => {
+    Animated.timing(this.animatedSelectFeed, {
+      toValue: 1,
+      duration: 100
+    }).start(() => {
       this.setState({ isLongHoldMenuVisible: false, selectedLongHoldFeedoIndex: -1, feedClickEvent: 'normal' })
       this.setState({ isShowActionToaster: true, isArchive: true, toasterTitle: 'Flow archived', feedId })
       this.props.addDummyFeed({ feedId, flag: 'archive' })
@@ -774,16 +753,10 @@ class HomeScreen extends React.Component {
   }
 
   handleDeleteFeed = (feedId) => {
-    Animated.parallel([
-      Animated.timing(this.animatedSelectFeed, {
-        toValue: 1,
-        duration: 150,
-      }),
-      Animated.timing(this.animatedSelectFeedPos, {
-        toValue: 0,
-        duration: 100,
-      })
-    ]).start(() => {
+    Animated.timing(this.animatedSelectFeed, {
+      toValue: 1,
+      duration: 100
+    }).start(() => {
       this.setState({ isLongHoldMenuVisible: false, selectedLongHoldFeedoIndex: -1, feedClickEvent: 'normal' })
       this.setState({ isShowActionToaster: true, isDelete: true, toasterTitle: 'Flow deleted', feedId })
       this.props.addDummyFeed({ feedId, flag: 'delete' })
@@ -805,16 +778,10 @@ class HomeScreen extends React.Component {
   }
 
   handleLeaveFeed = (feedId) => {
-    Animated.parallel([
-      Animated.timing(this.animatedSelectFeed, {
-        toValue: 1,
-        duration: 150,
-      }),
-      Animated.timing(this.animatedSelectFeedPos, {
-        toValue: 0,
-        duration: 100,
-      })
-    ]).start(() => {
+    Animated.timing(this.animatedSelectFeed, {
+      toValue: 1,
+      duration: 100
+    }).start(() => {
       this.setState({ isLongHoldMenuVisible: false, selectedLongHoldFeedoIndex: -1, feedClickEvent: 'normal' })
       this.setState({ isShowActionToaster: true, isLeave: true, toasterTitle: 'Left Flow', feedId })
       this.props.addDummyFeed({ feedId, flag: 'leave' })
@@ -838,16 +805,10 @@ class HomeScreen extends React.Component {
   }
 
   handlePinFeed = (feedId) => {
-    Animated.parallel([
-      Animated.timing(this.animatedSelectFeed, {
-        toValue: 1,
-        duration: 150,
-      }),
-      Animated.timing(this.animatedSelectFeedPos, {
-        toValue: 0,
-        duration: 100,
-      })
-    ]).start(() => {
+    Animated.timing(this.animatedSelectFeed, {
+      toValue: 1,
+      duration: 100
+    }).start(() => {
       this.setState({ isLongHoldMenuVisible: false, selectedLongHoldFeedoIndex: -1, feedClickEvent: 'normal' })
       this.setState({ isShowActionToaster: true, isPin: true, toasterTitle: 'Flow pinned', feedId })
 
@@ -866,16 +827,10 @@ class HomeScreen extends React.Component {
   }
 
   handleUnpinFeed = (feedId) => {
-    Animated.parallel([
-      Animated.timing(this.animatedSelectFeed, {
-        toValue: 1,
-        duration: 150,
-      }),
-      Animated.timing(this.animatedSelectFeedPos, {
-        toValue: 0,
-        duration: 100,
-      })
-    ]).start(() => {
+    Animated.timing(this.animatedSelectFeed, {
+      toValue: 1,
+      duration: 100
+    }).start(() => {
       this.setState({ isLongHoldMenuVisible: false, selectedLongHoldFeedoIndex: -1, feedClickEvent: 'normal' })
       this.setState({ isShowActionToaster: true, isUnPin: true, toasterTitle: 'Flow un-pinned', feedId })
 
@@ -894,16 +849,10 @@ class HomeScreen extends React.Component {
   }
 
   handleDuplicateFeed = (feedId) => {
-    Animated.parallel([
-      Animated.timing(this.animatedSelectFeed, {
-        toValue: 1,
-        duration: 150,
-      }),
-      Animated.timing(this.animatedSelectFeedPos, {
-        toValue: 0,
-        duration: 100,
-      })
-    ]).start(() => {
+    Animated.timing(this.animatedSelectFeed, {
+      toValue: 1,
+      duration: 100
+    }).start(() => {
       this.setState({ isLongHoldMenuVisible: false, selectedLongHoldFeedoIndex: -1, feedClickEvent: 'normal' })
       this.setState({ isShowActionToaster: true, isDuplicate: true, toasterTitle: 'Flow duplicated', feedId })
       this.props.duplicateFeed(feedId)
@@ -924,16 +873,10 @@ class HomeScreen extends React.Component {
   }
 
   handleEditFeed = (feedId) => {
-    Animated.parallel([
-      Animated.timing(this.animatedSelectFeed, {
-        toValue: 1,
-        duration: 150,
-      }),
-      Animated.timing(this.animatedSelectFeedPos, {
-        toValue: 0,
-        duration: 100,
-      })
-    ]).start(() => {
+    Animated.timing(this.animatedSelectFeed, {
+      toValue: 1,
+      duration: 100
+    }).start(() => {
       this.setState({ isLongHoldMenuVisible: false, selectedLongHoldFeedoIndex: -1, feedClickEvent: 'normal' }, () => {
         setTimeout(() => {
           this.props.setCurrentFeed({});
@@ -1127,7 +1070,6 @@ class HomeScreen extends React.Component {
     const { loading } = this.state
 
     const tabContentHeight = CONSTANTS.SCREEN_HEIGHT - CONSTANTS.ACTION_BAR_HEIGHT - CONSTANTS.TAB_BAR_HEIGHT - 60 - 50
-    this.feedListViewHeight = tabContentHeight
 
     if (selectedIndex !== 0) {
       if (this.state.tabIndex === selectedIndex && !loading) {
@@ -1137,7 +1079,6 @@ class HomeScreen extends React.Component {
             height = tabContentHeight
           }
 
-          this.feedListViewHeight = height
           setTimeout(() => {
             this.setState({ scrollableTabViewContainer: { height: height + CONSTANTS.TAB_BAR_HEIGHT } });
           }, 0);
@@ -1147,7 +1088,6 @@ class HomeScreen extends React.Component {
       let height = event.nativeEvent.layout.height;
       if (height < tabContentHeight) {
         height = tabContentHeight
-        this.feedListViewHeight = height
         setTimeout(() => {
           this.setState({ scrollableTabViewContainer: { height: height + CONSTANTS.TAB_BAR_HEIGHT } });
         }, 0);
@@ -1378,7 +1318,6 @@ class HomeScreen extends React.Component {
                   selectedLongHoldFeedoIndex={selectedLongHoldFeedoIndex}
                   feedClickEvent={feedClickEvent}
                   animatedSelectFeed={this.animatedSelectFeed}
-                  animatedSelectFeedPos={this.animatedSelectFeedPos}
                   updateSelectIndex={(index, item) => this.setState({ selectedLongHoldFeedoIndex: index, selectedFeedData: item, showLongHoldActionBar: true })}
                   handleFeedMenu={this.handleLongHoldMenu}
                   page="home"
@@ -1400,7 +1339,6 @@ class HomeScreen extends React.Component {
                       selectedLongHoldFeedoIndex={selectedLongHoldFeedoIndex}
                       feedClickEvent={feedClickEvent}
                       animatedSelectFeed={this.animatedSelectFeed}
-                      animatedSelectFeedPos={this.animatedSelectFeedPos}
                       updateSelectIndex={(index, item) => this.setState({ selectedLongHoldFeedoIndex: index, selectedFeedData: item, showLongHoldActionBar: true })}
                       handleFeedMenu={this.handleLongHoldMenu}
                       page="home"
@@ -1433,7 +1371,6 @@ class HomeScreen extends React.Component {
                       selectedLongHoldFeedoIndex={selectedLongHoldFeedoIndex}
                       feedClickEvent={feedClickEvent}
                       animatedSelectFeed={this.animatedSelectFeed}
-                      animatedSelectFeedPos={this.animatedSelectFeedPos}
                       updateSelectIndex={(index, item) => this.setState({ selectedLongHoldFeedoIndex: index, selectedFeedData: item, showLongHoldActionBar: true })}
                       handleFeedMenu={this.handleLongHoldMenu}
                       page="home"

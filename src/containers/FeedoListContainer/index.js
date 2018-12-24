@@ -98,22 +98,23 @@ class FeedoListContainer extends React.Component {
           />
         }
         style={[
-          styles.container,
-          feedClickEvent === 'normal' ? { paddingBottom: CONSTANTS.ACTION_BAR_HEIGHT - 45 } : { paddingBottom: 0 },
-          feedClickEvent === 'normal' ? { marginBottom: 30 } : { marginBottom: 0 }
+          styles.container
         ]}
       >
         
         <Animated.View
-          style={
+          style={[
             {
               flex: 1,
               transform: [
                 { scale: animatedSelectFeed }
               ],
-              marginTop: animatedSelectFeedPos
-            }
-          }
+              // width: scale(30),
+              // height: verticalScale(50),
+              // padding: moderateScale(5)
+            },
+            feedClickEvent === 'normal' ? { marginBottom: CONSTANTS.ACTION_BAR_HEIGHT - 35 } : { paddingBottom: 0 },
+          ]}
         >
           {feedoList.map((item, index) => (
             this.renderItem(item, index)
