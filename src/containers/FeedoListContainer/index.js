@@ -84,6 +84,11 @@ class FeedoListContainer extends React.Component {
     )
   }
 
+  onLayout = event => {
+    console.log('EVENT: ', event.nativeEvent.layout.height)
+    this.props.onLayout(event.nativeEvent.layout.height)
+  }
+
   render() {
     const { loading, refresh, feedoList, feedClickEvent, animatedSelectFeed, animatedSelectFeedPos } = this.props;
     if (loading) return <FeedLoadingStateComponent animating />
@@ -103,17 +108,15 @@ class FeedoListContainer extends React.Component {
       >
         
         <Animated.View
+          onLayout={this.onLayout}
           style={[
             {
-              flex: 1,
               transform: [
                 { scale: animatedSelectFeed }
               ],
-              // width: scale(30),
-              // height: verticalScale(50),
-              // padding: moderateScale(5)
+              marginTop: animatedSelectFeedPos
             },
-            feedClickEvent === 'normal' ? { marginBottom: CONSTANTS.ACTION_BAR_HEIGHT - 35 } : { paddingBottom: 0 },
+            feedClickEvent === 'normal' ? { marginBottom: CONSTANTS.ACTION_BAR_HEIGHT - 35 } : { marginBottom: 0 },
           ]}
         >
           {feedoList.map((item, index) => (

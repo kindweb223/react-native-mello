@@ -801,7 +801,7 @@ class FeedDetailScreen extends React.Component {
           duration: 150,
         }),
         Animated.timing(this.animatedSelectCardPos, {
-          toValue: -this.scrollviewHeight / 20,
+          toValue: -(this.scrollviewHeight - CONSTANTS.SCREEN_SUB_WIDTH) * 0.15 / 2,
           duration: 150,
         })
       ]).start(() => {
