@@ -1376,7 +1376,9 @@ class HomeScreen extends React.Component {
                   feedClickEvent={feedClickEvent}
                   animatedSelectFeed={this.animatedSelectFeed}
                   animatedSelectFeedPos={this.animatedSelectFeedPos}
-                  updateSelectIndex={(index, item) => this.setState({ selectedLongHoldFeedoIndex: index, selectedFeedData: item, showLongHoldActionBar: true })}
+                  updateSelectIndex={(index, item) =>
+                    this.setState({ selectedLongHoldFeedoIndex: index, selectedFeedData: item, showLongHoldActionBar: true })
+                  }
                   handleFeedMenu={this.handleLongHoldMenu}
                   page="home"
                   listType={this.props.user.listHomeType}
@@ -1399,7 +1401,9 @@ class HomeScreen extends React.Component {
                       feedClickEvent={feedClickEvent}
                       animatedSelectFeed={this.animatedSelectFeed}
                       animatedSelectFeedPos={this.animatedSelectFeedPos}
-                      updateSelectIndex={(index, item) => this.setState({ selectedLongHoldFeedoIndex: index, selectedFeedData: item, showLongHoldActionBar: true })}
+                      updateSelectIndex={(index, item) =>
+                        this.setState({ selectedLongHoldFeedoIndex: index, selectedFeedData: item, showLongHoldActionBar: true })
+                      }
                       handleFeedMenu={this.handleLongHoldMenu}
                       page="home"
                       listType={this.props.user.listHomeType}
@@ -1433,7 +1437,9 @@ class HomeScreen extends React.Component {
                       feedClickEvent={feedClickEvent}
                       animatedSelectFeed={this.animatedSelectFeed}
                       animatedSelectFeedPos={this.animatedSelectFeedPos}
-                      updateSelectIndex={(index, item) => this.setState({ selectedLongHoldFeedoIndex: index, selectedFeedData: item, showLongHoldActionBar: true })}
+                      updateSelectIndex={(index, item) =>
+                        this.setState({ selectedLongHoldFeedoIndex: index, selectedFeedData: item, showLongHoldActionBar: true })
+                      }
                       handleFeedMenu={this.handleLongHoldMenu}
                       page="home"
                       listType={this.props.user.listHomeType}
