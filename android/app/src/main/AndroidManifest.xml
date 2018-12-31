@@ -28,8 +28,8 @@
         </intent-filter>
         <intent-filter>
           <action android:name="android.intent.action.VIEW" />
-          <action android:name="android.intent.category.DEFAULT" />
-          <action android:name="android.intent.category.BROWSABLE" />
+          <category android:name="android.intent.category.DEFAULT" />
+          <category android:name="android.intent.category.BROWSABLE" />
           <data android:scheme="https" android:host="demos.solvers.io" android:path="/solvers/mello-secure-site/get-started" />
         </intent-filter>
       </activity>

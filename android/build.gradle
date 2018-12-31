@@ -10,7 +10,7 @@ buildscript {
         google()
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:3.1.2'
+        classpath 'com.android.tools.build:gradle:3.2.1'
         classpath 'com.google.gms:google-services:4.0.1'
 
         // NOTE: Do not place your application dependencies here; they belong
@@ -34,9 +34,20 @@ allprojects {
 }
 
 ext {
-    buildToolsVersion = "27.0.3"
-    minSdkVersion = 16
-    compileSdkVersion = 27
+    buildToolsVersion = "28.0.3"
+    minSdkVersion = 19
+    compileSdkVersion = 28
     targetSdkVersion = 27
     supportLibVersion = "27.1.1"
+}
+
+subprojects {
+    afterEvaluate {project ->
+        if (project.hasProperty("android")) {
+            android {
+                compileSdkVersion 28 // <-- match this to your project's compileSdkVersion
+                buildToolsVersion '28.0.3' // <-- match this to your project's buildToolsVersion
+            }
+        }
+    }
 }
