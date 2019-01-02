@@ -706,9 +706,6 @@ class HomeScreen extends React.Component {
 
   handleLongHoldMenu = (index, selectedFeedData) => {
     const { tabIndex } = this.state
-    console.log('this.feedListHeight: ',  this.feedListHeight)
-    // console.log('FEED_LIST_HEIGHT: ', this.feedListHeight[tabIndex])
-    console.log('==============================')
 
     this.setState({ selectedLongHoldFeedoIndex: index, feedClickEvent: 'long' }, () => {
       Animated.parallel([
@@ -1186,7 +1183,7 @@ class HomeScreen extends React.Component {
 
   setFeedListHeight = (height, pageIndex) => {
     const { tabIndex } = this.state
-    console.log('TAB_INDEX: ', tabIndex, pageIndex)
+
     if (tabIndex === pageIndex) {
       this.feedListHeight[tabIndex] = height
     }
