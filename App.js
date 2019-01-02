@@ -31,6 +31,10 @@ axios.defaults.headers.get['Content-Type'] = 'application/json'
 axios.defaults.headers.get.Accept = 'application/json'
 axios.defaults.withCredentials = true
 axios.defaults.headers['x-mobile-api'] = true
+axios.defaults.timeout = 30000
+
+console.log('axios')
+console.log(axios)
 
 axios.interceptors.response.use(
   response => (
