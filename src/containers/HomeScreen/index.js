@@ -1306,7 +1306,7 @@ class HomeScreen extends React.Component {
                                   />}
             >
               <View
-                style={[styles.feedListContainer, feedClickEvent === 'normal' && { paddingBottom: 30 }]}
+                style={[!this.state.isLongHoldMenuVisible ? styles.feedListContainer : styles.feedListContainerLongHold, feedClickEvent === 'normal' && { paddingBottom: 30 }]}
                 ref={ref => this.scrollTabAll = ref} 
                 tabLabel={{ label: 'My flows', badge: badgeCount }}
               >
@@ -1374,7 +1374,7 @@ class HomeScreen extends React.Component {
                 />
               </View>
               <View
-                style={[styles.feedListContainer, feedClickEvent === 'normal' && { paddingBottom: 30 }]}
+                style={[!this.state.isLongHoldMenuVisible ? styles.feedListContainer : styles.feedListContainerLongHold, , feedClickEvent === 'normal' && { paddingBottom: 30 }]}
                 ref={ref => this.scrollTabSharedWithMe = ref}
                 tabLabel={{ label: 'Shared with me', badge: badgeCount }}
               >
@@ -1407,7 +1407,7 @@ class HomeScreen extends React.Component {
                 }
               </View>
               <View
-                style={[styles.feedListContainer, feedClickEvent === 'normal' && { paddingBottom: 30 }]}
+                style={[!this.state.isLongHoldMenuVisible ? styles.feedListContainer : styles.feedListContainerLongHold, , feedClickEvent === 'normal' && { paddingBottom: 30 }]}
                 ref={ref => this.scrollTabPinned = ref}
                 tabLabel={{ label: 'Pinned', badge: badgeCount }}
               >

@@ -101,19 +101,16 @@ class FeedoListContainer extends React.Component {
           />
         }
         style={[
-          styles.container
+          styles.container,
+          {
+            transform: [{ scale: animatedSelectFeed._value}],
+          },
         ]}
       >        
         <Animated.View
           onLayout={(event) => this.onLayout(event, feedClickEvent)}
           style={[
-            {
-              transform: [
-                { scale: animatedSelectFeed }
-              ],
-              marginTop: animatedSelectFeedPos
-            },
-            feedClickEvent === 'normal' ? { marginBottom: CONSTANTS.ACTION_BAR_HEIGHT - 35 } : { marginBottom: 0 },
+            { marginBottom: CONSTANTS.ACTION_BAR_HEIGHT - 28 }
           ]}
         >
           {feedoList.map((item, index) => (
