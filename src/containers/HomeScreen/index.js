@@ -710,11 +710,11 @@ class HomeScreen extends React.Component {
     this.setState({ selectedLongHoldFeedoIndex: index, feedClickEvent: 'long' }, () => {
       Animated.parallel([
         Animated.timing(this.animatedSelectFeed, {
-          toValue: 0.85,
+          toValue: 0.95,
           duration: 150
         }),
         Animated.timing(this.animatedSelectFeedPos, {
-          toValue: -(this.feedListHeight[tabIndex] - CONSTANTS.SCREEN_SUB_WIDTH) * 0.15 / 2,
+          toValue: -(this.feedListHeight[tabIndex] - CONSTANTS.SCREEN_SUB_WIDTH) * 0.05 / 2,
           duration: 150,
         })
       ]).start(() => {
