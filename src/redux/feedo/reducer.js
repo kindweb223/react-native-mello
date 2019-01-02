@@ -1234,6 +1234,10 @@ export default function feedo(state = initialState, action = {}) {
     case types.GET_ACTIVITY_FEED_FULFILLED: {
       const { data } = action.result
 
+      if(data.badgeCount) {
+        PushNotification.setApplicationIconBadgeNumber(data.badgeCount)
+      }
+
       let activityFeedList = []
       if (data.first) {
         activityFeedList = data.content
@@ -1678,11 +1682,9 @@ export default function feedo(state = initialState, action = {}) {
     case types.GET_ACTIVITY_FEED_VISITED_FULFILLED: {
       const { data } = action.result
 
-      PushNotification.getApplicationIconBadgeNumber((badgeCount) => {
-        if (badgeCount && badgeCount > 0) {
-          PushNotification.setApplicationIconBadgeNumber(data.count)
-        }
-      })
+      if(data.count) {
+        PushNotification.setApplicationIconBadgeNumber(data.count)
+      }
 
       return {
         ...state,

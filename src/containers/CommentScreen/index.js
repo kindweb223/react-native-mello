@@ -226,9 +226,10 @@ class CommentScreen extends React.Component {
   }
 
   onEdit(index) {
+    const { commentList } = this.state
     this.setState({
       selectedItemIndex: index,
-      comment: this.props.card.currentComments[index].content,
+      comment: commentList[index].content,
     });
     this.inputToolbarRef.focus();
   }
@@ -246,24 +247,28 @@ class CommentScreen extends React.Component {
   }
 
   onDelete(index) {
+    const { commentList } = this.state
+
     this.setState({ 
       comment: '',
       selectedItemIndex: -1,
     });
     this.props.deleteCardComment(
       this.props.idea.id, 
-      this.props.card.currentComments[index].id,
+      commentList[index].id,
     );
   }
 
   onSend() {
-    if (this.state.selectedItemIndex === -1) {
-      this.props.addCardComment(this.props.idea.id, this.state.comment);
+    const { commentList, selectedItemIndex, comment } = this.state
+
+    if (selectedItemIndex === -1) {
+      this.props.addCardComment(this.props.idea.id, comment);
     } else {
       this.props.updateCardComment(
         this.props.idea.id, 
-        this.props.card.currentComments[this.state.selectedItemIndex].id,
-        this.state.comment
+        commentList[selectedItemIndex].id,
+        comment
       );
     }
     this.setState({ 
