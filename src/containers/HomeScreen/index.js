@@ -102,7 +102,6 @@ class HomeScreen extends React.Component {
       selectedFeedData: {},
       tabIndex: 0,
       isShowActionToaster: false,
-      scrollableTabViewContainer: {},
       scrollY: new Animated.Value(0),
       currentPushNotificationType: CONSTANTS.UNKOWN_PUSH_NOTIFICATION,
       currentPushNotificationData: null,
@@ -126,6 +125,7 @@ class HomeScreen extends React.Component {
       showLongHoldActionBar: true
     };
 
+    this.feedListHeight = []
     this.currentRef = null;
     this.animatedOpacity = new Animated.Value(0);
     this.isInitialized = false;
@@ -155,6 +155,8 @@ class HomeScreen extends React.Component {
 
     AppState.addEventListener('change', this.onHandleAppStateChange.bind(this));
     appOpened(this.props.user.userInfo.id);
+
+    this.clearFeedListHeight()
   }
 
   componentWillUnmount() {
@@ -646,8 +648,7 @@ class HomeScreen extends React.Component {
 
     this.setState({ 
       // loading: true,
-      tabIndex: value.i,
-      scrollableTabViewContainer: {}
+      tabIndex: value.i
     })
     // this.props.getFeedoList(value.i)
     if (feedo.feedoList && feedo.feedoList.length > 0) {        
@@ -704,7 +705,9 @@ class HomeScreen extends React.Component {
   }
 
   handleLongHoldMenu = (index, selectedFeedData) => {
-    console.log('FEED_LIST_HEIGHT: ', this.feedListHeight, this.state.scrollableTabViewContainer)
+    const { tabIndex } = this.state
+    console.log('this.feedListHeight: ',  this.feedListHeight)
+    // console.log('FEED_LIST_HEIGHT: ', this.feedListHeight[tabIndex])
     console.log('==============================')
 
     this.setState({ selectedLongHoldFeedoIndex: index, feedClickEvent: 'long' }, () => {
@@ -714,7 +717,7 @@ class HomeScreen extends React.Component {
           duration: 150
         }),
         Animated.timing(this.animatedSelectFeedPos, {
-          toValue: -(this.feedListHeight - CONSTANTS.SCREEN_SUB_WIDTH) * 0.15 / 2,
+          toValue: -(this.feedListHeight[tabIndex] - CONSTANTS.SCREEN_SUB_WIDTH) * 0.15 / 2,
           duration: 150,
         })
       ]).start(() => {
@@ -1124,34 +1127,6 @@ class HomeScreen extends React.Component {
     Actions.ProfileScreen()
   }
 
-  onScrollableTabViewLayout(event, selectedIndex) {
-    const { loading } = this.state
-
-    const tabContentHeight = CONSTANTS.SCREEN_HEIGHT - CONSTANTS.ACTION_BAR_HEIGHT - CONSTANTS.TAB_BAR_HEIGHT - 60 - 50
-
-    if (selectedIndex !== 0) {
-      if (this.state.tabIndex === selectedIndex && !loading) {
-        if (!this.state.scrollableTabViewContainer.height || event.nativeEvent.layout.height > this.state.scrollableTabViewContainer.height) {
-          let height = event.nativeEvent.layout.height;
-          if (height < tabContentHeight) {
-            height = tabContentHeight
-          }
-          setTimeout(() => {
-            this.setState({ scrollableTabViewContainer: { height: height + CONSTANTS.TAB_BAR_HEIGHT } });
-          }, 0);
-        }
-      }
-    } else {
-      let height = event.nativeEvent.layout.height;
-      if (height < tabContentHeight) {
-        height = tabContentHeight
-        setTimeout(() => {
-          this.setState({ scrollableTabViewContainer: { height: height + CONSTANTS.TAB_BAR_HEIGHT } });
-        }, 0);
-      }
-    }
-  }
-
   onSearch = () => {
     Analytics.logEvent('dashboard_search', {})
 
@@ -1207,6 +1182,20 @@ class HomeScreen extends React.Component {
   onRefreshFeed = () => {
     this.setState({ isRefreshing: true })
     this.props.getFeedoList(this.state.tabIndex)
+  }
+
+  setFeedListHeight = (height, pageIndex) => {
+    const { tabIndex } = this.state
+    console.log('TAB_INDEX: ', tabIndex, pageIndex)
+    if (tabIndex === pageIndex) {
+      this.feedListHeight[tabIndex] = height
+    }
+  }
+
+  clearFeedListHeight = () => {
+    for (let i = 0; i < 3; i ++) {
+      this.feedListHeight[i] = 0
+    }
   }
 
   render () {
@@ -1288,10 +1277,10 @@ class HomeScreen extends React.Component {
             </Animated.View> */}
           <View style={{ flex: 1 }}>
             <ScrollableTabView
-              style={this.state.scrollableTabViewContainer}
               content
               onChangeTab={this.onChangeTab.bind(this)}
               prerenderingSiblingsNumber={0}
+              locked={feedClickEvent !== 'normal'}
               renderTabBar={() => <TabBar
                                     underlineHeight={0}
                                     underlineBottomPosition={0}
@@ -1323,7 +1312,6 @@ class HomeScreen extends React.Component {
                 style={[styles.feedListContainer, feedClickEvent === 'normal' && { paddingBottom: 30 }]}
                 ref={ref => this.scrollTabAll = ref} 
                 tabLabel={{ label: 'My flows', badge: badgeCount }}
-                onLayout={(event) => this.onScrollableTabViewLayout(event, 0)}
               >
                 {showFeedInvitedNewUserBubble && (
                   <View style={{ height: 200 }}>
@@ -1371,6 +1359,7 @@ class HomeScreen extends React.Component {
 
                 <FeedoListContainer
                   loading={loading}
+                  tabIndex={tabIndex}
                   feedoList={feedoList}
                   selectedLongHoldFeedoIndex={selectedLongHoldFeedoIndex}
                   feedClickEvent={feedClickEvent}
@@ -1384,18 +1373,18 @@ class HomeScreen extends React.Component {
                   listType={this.props.user.listHomeType}
                   isRefreshing={this.state.isRefreshing}
                   onRefreshFeed={() => this.onRefreshFeed()}
-                  onLayout={height => this.feedListHeight = height}
+                  onLayout={this.setFeedListHeight}
                 />
               </View>
               <View
                 style={[styles.feedListContainer, feedClickEvent === 'normal' && { paddingBottom: 30 }]}
                 ref={ref => this.scrollTabSharedWithMe = ref}
                 tabLabel={{ label: 'Shared with me', badge: badgeCount }}
-                onLayout={(event) => this.onScrollableTabViewLayout(event, 1)}
               >
                 {feedoList.length > 0
                   ? <FeedoListContainer
                       loading={loading}
+                      tabIndex={tabIndex}
                       feedoList={feedoList}
                       selectedLongHoldFeedoIndex={selectedLongHoldFeedoIndex}
                       feedClickEvent={feedClickEvent}
@@ -1409,29 +1398,26 @@ class HomeScreen extends React.Component {
                       listType={this.props.user.listHomeType}
                       isRefreshing={this.state.isRefreshing}
                       onRefreshFeed={() => this.onRefreshFeed()}
-                      onLayout={height => this.feedListHeight = height}
+                      onLayout={this.setFeedListHeight}
                     />
-                  : loading 
-                      ? <FeedLoadingStateComponent animating />
-                      : <View style={styles.emptyTabInnerSubView}>
-                          <SpeechBubbleComponent
-                            page="shared"
-                            title="Flows can be shared with friends and colleagues for collaboration. Flows you've been invited to will appear here."
-                            subTitle="All you need to know about sharing in 15 secs "
-                          />
-                        </View>
-                    
+                  : <View style={styles.emptyTabInnerSubView}>
+                      <SpeechBubbleComponent
+                        page="shared"
+                        title="Flows can be shared with friends and colleagues for collaboration. Flows you've been invited to will appear here."
+                        subTitle="All you need to know about sharing in 15 secs "
+                      />
+                    </View>
                 }
               </View>
               <View
                 style={[styles.feedListContainer, feedClickEvent === 'normal' && { paddingBottom: 30 }]}
                 ref={ref => this.scrollTabPinned = ref}
                 tabLabel={{ label: 'Pinned', badge: badgeCount }}
-                onLayout={(event) => this.onScrollableTabViewLayout(event, 2)}
               >
                 {feedoList.length > 0
                   ? <FeedoListContainer
                       loading={loading}
+                      tabIndex={tabIndex}
                       feedoList={feedoList}
                       selectedLongHoldFeedoIndex={selectedLongHoldFeedoIndex}
                       feedClickEvent={feedClickEvent}
@@ -1445,17 +1431,15 @@ class HomeScreen extends React.Component {
                       listType={this.props.user.listHomeType}
                       isRefreshing={this.state.isRefreshing}
                       onRefreshFeed={() => this.onRefreshFeed()}
-                      onLayout={height => this.feedListHeight = height}
+                      onLayout={this.setFeedListHeight}
                     />
-                  : loading
-                      ? <FeedLoadingStateComponent animating />
-                      : <View style={styles.emptyTabInnerSubView}>
-                          <SpeechBubbleComponent
-                            page="pinned"
-                            title="Your pinned items will appear here. To pin a feed tap and hold it to bring up quick actions and select"
-                            subTitle="Watch a 15 sec Quick Start video "
-                          />
-                        </View>
+                  : <View style={styles.emptyTabInnerSubView}>
+                      <SpeechBubbleComponent
+                        page="pinned"
+                        title="Your pinned items will appear here. To pin a feed tap and hold it to bring up quick actions and select"
+                        subTitle="Watch a 15 sec Quick Start video "
+                      />
+                    </View>
                 }
               </View>
             </ScrollableTabView>

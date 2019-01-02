@@ -23,9 +23,6 @@ import styles from './styles'
 class FeedoListContainer extends React.Component {
   constructor(props) {
     super(props)
-    this.state = {
-      clickEvent: 'normal'
-    }
   }
 
   onLongPressFeedo(index, item) {
@@ -84,9 +81,10 @@ class FeedoListContainer extends React.Component {
     )
   }
 
-  onLayout = event => {
-    console.log('EVENT: ', event.nativeEvent.layout.height)
-    this.props.onLayout(event.nativeEvent.layout.height)
+  onLayout = (event, feedClickEvent) => {
+    if (feedClickEvent === 'normal') {
+      this.props.onLayout(event.nativeEvent.layout.height, this.props.tabIndex)
+    }
   }
 
   render() {
@@ -105,10 +103,9 @@ class FeedoListContainer extends React.Component {
         style={[
           styles.container
         ]}
-      >
-        
+      >        
         <Animated.View
-          onLayout={this.onLayout}
+          onLayout={(event) => this.onLayout(event, feedClickEvent)}
           style={[
             {
               transform: [
