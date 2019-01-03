@@ -1,8 +1,6 @@
 import React from 'react'
 import {
-  FlatList,
   TouchableOpacity,
-  Animated,
   View,
   RefreshControl,
   ScrollView
@@ -48,28 +46,24 @@ class FeedoListContainer extends React.Component {
   renderItem(item, index) {
     const { feedoList, listType, feedClickEvent, selectedLongHoldFeedoIndex } = this.props
     const paddingVertical = listType === 'list' ? 15 : 12
-    const marginBottom = listType === 'list' ? 14 : 12
 
     return (
       <View key={index}>
         {item.metadata.myInviteStatus !== 'DECLINED' && (
           <View index={index}>
-            <View style={[selectedLongHoldFeedoIndex === index ? styles.feedoSelectItem : styles.feedoItem, { paddingVertical }]}>
-              {feedoList.length > 0 && index === 0 && feedClickEvent === 'normal' && (
-                <View style={[styles.separator, { marginBottom }]} />
-              )}
+            {feedoList.length > 0 && index === 0 && feedClickEvent === 'normal' && (
+              <View style={[styles.separator]} />
+            )}
 
-              {item.metadata.myInviteStatus === 'ACCEPTED'
-                ? <TouchableOpacity
-                    activeOpacity={0.8}
-                    delayLongPress={1000}
-                    onLongPress={() => this.onLongPressFeedo(index, item)}
-                    onPress={() => this.onPressFeedo(index, item)}
-                  >
-                    <FeedItemComponent item={item} pinFlag={item.pinned ? true : false} page={this.props.page} listType={this.props.listType} />
-                  </TouchableOpacity>
-                : <NotificationItemComponent data={item} hideTumbnail={true} />
-              }
+            <View style={[selectedLongHoldFeedoIndex === index ? styles.feedoSelectItem : styles.feedoItem, { paddingVertical }]}>
+              <TouchableOpacity
+                activeOpacity={0.8}
+                delayLongPress={1000}
+                onLongPress={() => this.onLongPressFeedo(index, item)}
+                onPress={() => this.onPressFeedo(index, item)}
+              >
+                <FeedItemComponent item={item} pinFlag={item.pinned ? true : false} page={this.props.page} listType={this.props.listType} />
+              </TouchableOpacity>
             </View>
 
             {this.props.feedoList.length > 0 && (
@@ -82,7 +76,7 @@ class FeedoListContainer extends React.Component {
   }
 
   render() {
-    const { loading, refresh, feedoList, feedClickEvent, animatedSelectFeed } = this.props;
+    const { loading, refresh, feedClickEvent, feedoList, invitedFeedList, animatedSelectFeed } = this.props;
     if (loading) return <FeedLoadingStateComponent animating />
 
     return (
@@ -107,6 +101,22 @@ class FeedoListContainer extends React.Component {
             { marginBottom: CONSTANTS.ACTION_BAR_HEIGHT - 28 }
           ]}
         >
+          {invitedFeedList.map((item, index) => (
+            <TouchableOpacity
+              key={index}
+              activeOpacity={0.8}
+              delayLongPress={1000}
+              onLongPress={() => this.onLongPressFeedo(index, item)}
+            >
+              {feedClickEvent === 'normal' &&
+                <View style={styles.separator} />
+              }
+              <View style={styles.itemView}>
+                <NotificationItemComponent data={item} hideTumbnail={true} />
+              </View>
+            </TouchableOpacity>
+          ))}
+
           {feedoList.map((item, index) => (
             this.renderItem(item, index)
           ))}
@@ -122,7 +132,8 @@ FeedoListContainer.defaultProps = {
   refresh: true,
   isRefresh: false,
   selectedLongHoldFeedoIndex: -1,
-  feedClickEvent: 'normal'
+  feedClickEvent: 'normal',
+  invitedFeedList: []
 }
 
 FeedoListContainer.propTypes = {
@@ -133,7 +144,8 @@ FeedoListContainer.propTypes = {
   handleLongHoldMenu: PropTypes.func,
   page: PropTypes.string,
   selectedLongHoldFeedoIndex: PropTypes.number,
-  feedClickEvent: PropTypes.string
+  feedClickEvent: PropTypes.string,
+  invitedFeedList: PropTypes.arrayOf(PropTypes.any)
 }
 
 export default FeedoListContainer

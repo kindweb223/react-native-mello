@@ -20,6 +20,10 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: COLORS.PURPLE,
     borderRadius: 18
+  },
+  itemView: {
+    paddingTop: 16,
+    paddingBottom: 14
   }
 })
 
