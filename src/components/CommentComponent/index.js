@@ -25,21 +25,24 @@ export default class CommentComponent extends React.Component {
   onComment() {
     Analytics.logEvent('edit_card_comment', {})
 
+    const { longHold } = this.props
     // Ignore Guest
-    if (this.props.onComment) {
-      this.props.onComment();
-    }
+    if (!longHold) {
+      if (this.props.onComment) {
+        this.props.onComment();
+      }
 
-    if (this.props.prevPage === 'activity') {
-      Actions.ActivityCommentScreen({
-        idea: this.props.idea,
-        guest: COMMON_FUNC.isFeedGuest(this.props.currentFeed)
-      });  
-    } else {
-      Actions.CommentScreen({
-        idea: this.props.idea,
-        guest: COMMON_FUNC.isFeedGuest(this.props.currentFeed)
-      });
+      if (this.props.prevPage === 'activity') {
+        Actions.ActivityCommentScreen({
+          idea: this.props.idea,
+          guest: COMMON_FUNC.isFeedGuest(this.props.currentFeed)
+        });  
+      } else {
+        Actions.CommentScreen({
+          idea: this.props.idea,
+          guest: COMMON_FUNC.isFeedGuest(this.props.currentFeed)
+        });
+      }
     }
   }
 
@@ -67,10 +70,12 @@ export default class CommentComponent extends React.Component {
 }
 
 CommentComponent.defaultProps = {
+  longHold: false,
   currentFeed: {}
 }
 
 CommentComponent.propTypes = {
+  longHold: PropTypes.bool,
   idea: PropTypes.objectOf(PropTypes.any).isRequired,
   currentFeed: PropTypes.objectOf(PropTypes.any),
   onComment: PropTypes.func,

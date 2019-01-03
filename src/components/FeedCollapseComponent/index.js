@@ -194,7 +194,7 @@ class FeedCollapseComponent extends React.Component {
   }
 
   handleCollapse = () => {
-    const { isCollapse, feedData } = this.state
+    const { isCollapse } = this.state
 
     if (isCollapse) {
       Animated.timing(
@@ -225,6 +225,7 @@ class FeedCollapseComponent extends React.Component {
 
   render() {
     const { feedData, isCollapse, isPreview, images } = this.state
+    const { longHold } = this.props
 
     const spin = this.state.spinValue.interpolate({
       inputRange: [0, 1],
@@ -233,7 +234,7 @@ class FeedCollapseComponent extends React.Component {
 
     return (
       <View style={styles.collapseView}>
-        <TouchableOpacity activeOpacity={0.9} onPress={this.handleCollapse}>
+        <TouchableOpacity activeOpacity={0.9} onPress={() => longHold ? {} : this.handleCollapse()}>
           <View style={styles.collpaseHeader}>
             {isCollapse
               ? <Text style={styles.headerTitle} numberOfLines={1} ellipsizeMode="tail">{feedData.headline}</Text>
@@ -245,7 +246,7 @@ class FeedCollapseComponent extends React.Component {
                 </TouchableOpacity>
             }
 
-            {isCollapse && (
+            {isCollapse && !longHold && (
               <Animated.View style={{ marginLeft: 10, transform: [{ rotate: spin }] }}>
                 {!this.state.hideArrow && (
                   <Feather name="chevron-down" size={25} color={COLORS.MEDIUM_GREY} />
@@ -281,7 +282,12 @@ class FeedCollapseComponent extends React.Component {
   }
 }
 
+FeedCollapseComponent.defaultProps = {
+  longHold: false
+}
+
 FeedCollapseComponent.propTypes = {
+  longHold: PropTypes.bool,
   feedData: PropTypes.objectOf(PropTypes.any).isRequired
 }
 
