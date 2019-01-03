@@ -1185,11 +1185,11 @@ class HomeScreen extends React.Component {
                                           <Text style={[styles.tabBarTextStyle, isTabActive && (styles.activeTabBarTextStyle)]}>
                                             {tab.label}
                                           </Text>
-                                          {/* {invitedFeedList.length > 0 && page === 1 && (
+                                          {tab.badge > 0 && page === 1 && (
                                             <View style={styles.badgeView}>
                                               <Text style={styles.badgeText}>{tab.badge}</Text>
                                             </View>
-                                          )} */}
+                                          )}
                                         </View>
                                       </TouchableOpacity>
                                     )}
