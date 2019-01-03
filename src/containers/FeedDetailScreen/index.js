@@ -150,13 +150,13 @@ class FeedDetailScreen extends React.Component {
       isMasonryView: false,
       MasonryData: [],
       isShowInviteToaster: false,
-      inviteToasterTitle: ''
+      inviteToasterTitle: '',
+      cardClickEvent: 'normal'
     };
     this.animatedOpacity = new Animated.Value(0)
     this.menuOpacity = new Animated.Value(0)
     this.menuZIndex = new Animated.Value(0)
     this.animatedSelectCard = new Animated.Value(1);
-    this.animatedSelectCardPos = new Animated.Value(0);
 
     this.cardItemRefs = [];
     this.moveCardId = null;
@@ -793,15 +793,12 @@ class FeedDetailScreen extends React.Component {
     ReactNativeHaptic.generate('impactHeavy');
 
     this.setState({
-      selectedLongHoldCardIndex: index
+      selectedLongHoldCardIndex: index,
+      cardClickEvent: 'long'
     }, () => {
       Animated.parallel([
         Animated.timing(this.animatedSelectCard, {
           toValue: 0.85,
-          duration: 150,
-        }),
-        Animated.timing(this.animatedSelectCardPos, {
-          toValue: -(this.scrollviewHeight - CONSTANTS.SCREEN_SUB_WIDTH) * 0.15 / 2,
           duration: 150,
         })
       ]).start(() => {
@@ -820,13 +817,12 @@ class FeedDetailScreen extends React.Component {
       Animated.timing(this.animatedSelectCard, {
         toValue: 1,
         duration: 100
-      }),
-      Animated.timing(this.animatedSelectCardPos, {
-        toValue: 0,
-        duration: 100,
       })
     ]).start(() => {
-      this.setState({ isVisibleLongHoldMenu: false })
+      this.setState({
+        isVisibleLongHoldMenu: false,
+        cardClickEvent: 'normal'
+      })
     })
   }
 
@@ -1282,7 +1278,8 @@ class FeedDetailScreen extends React.Component {
       pinText,
       avatars,
       selectedLongHoldCardIndex,
-      isVisibleLongHoldMenu
+      isVisibleLongHoldMenu,
+      cardClickEvent
     } = this.state
 
     return (
@@ -1305,6 +1302,7 @@ class FeedDetailScreen extends React.Component {
           </View>
 
           <ScrollView
+            showsVerticalScrollIndicator={cardClickEvent === 'normal'}
             refreshControl={
               <RefreshControl
                 tintColor={COLORS.PURPLE}
@@ -1313,10 +1311,15 @@ class FeedDetailScreen extends React.Component {
               />
             }
             scrollEventThrottle={16}
-            style={styles.scrollView}
+            style={[
+              styles.scrollView,
+              {
+                transform: [{ scale: this.animatedSelectCard._value}],
+              }
+            ]}
           >     
             <GestureRecognizer
-              style={{ width: '100%', height: '100%' }}
+              style={[{ width: '100%', height: '100%'}, cardClickEvent === 'long' && { marginBottom: 20 }]}
               onSwipeRight={this.backToDashboard}
             >
               <View style={styles.detailView} onLayout={this.onLayoutScroll}>
@@ -1365,16 +1368,8 @@ class FeedDetailScreen extends React.Component {
                 (!_.isEmpty(currentFeed) && currentFeed && currentFeed.ideas)
                   ? this.props.user.listDetailType === 'list'
                     ? currentFeed.ideas.length > 0
-                      ? <Animated.View
-                          style={
-                            {
-                              paddingHorizontal: 8,
-                              transform: [
-                                { scale: this.animatedSelectCard }
-                              ],
-                              marginTop: this.animatedSelectCardPos
-                            }
-                          }
+                      ? <View
+                          style={{ paddingHorizontal: 8 }}
                         >
                           {currentFeed.ideas.map((item, index) => (
                           <View
@@ -1399,7 +1394,7 @@ class FeedDetailScreen extends React.Component {
                             </TouchableHighlight>
                           </View>
                           ))}
-                        </Animated.View>
+                        </View>
                       : <View style={styles.emptyView}>
                           {loading
                             ? <View style={styles.loadingView}>
@@ -1426,16 +1421,8 @@ class FeedDetailScreen extends React.Component {
                               </View>
                           }
                         </View>
-                    : <Animated.View
-                        style={
-                          {
-                            paddingHorizontal: 8,
-                            transform: [
-                              { scale: this.animatedSelectCard }
-                            ],
-                            marginTop: this.animatedSelectCardPos
-                          }
-                        }
+                    : <View
+                        style={{ paddingHorizontal: 8 }}
                       >
                         <Masonry
                           onLayout={(event) => this.onLayoutMasonry(event)}
@@ -1468,7 +1455,7 @@ class FeedDetailScreen extends React.Component {
                               </TouchableHighlight>
                             </View>}
                         />
-                      </Animated.View>
+                      </View>
                   : <View style={styles.emptyView}>
                     {loading
                       ? <View style={styles.loadingView}>
