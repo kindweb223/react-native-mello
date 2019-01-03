@@ -194,7 +194,7 @@ class NotificationScreen extends React.Component {
           })
 
           this.setState({ selectedIdeaInvitee: invitee }, () => {
-            this.onSelectNewCard()
+            this.onSelectNewCard(card.currentCard)
           })
         }
       }
@@ -302,7 +302,7 @@ class NotificationScreen extends React.Component {
   }
 
   // Move to idea detail screen
-  onSelectNewCard() {
+  onSelectNewCard(idea) {
     const { feedo } = this.props
 
     let cardViewMode = CONSTANTS.CARD_VIEW;
