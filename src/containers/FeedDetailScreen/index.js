@@ -1386,6 +1386,7 @@ class FeedDetailScreen extends React.Component {
                                 invitees={currentFeed.invitees}
                                 listType={this.props.user.listDetailType}
                                 cardType="view"
+                                longHold={isVisibleLongHoldMenu}
                                 longSelected={isVisibleLongHoldMenu && selectedLongHoldCardIndex === index}
                                 onLinkPress={() => this.onSelectCard(index, item, currentFeed.invitees)}
                                 onLinkLongPress={() => this.onLongPressCard(index, item, currentFeed.invitees)}
