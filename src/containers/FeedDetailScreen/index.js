@@ -150,8 +150,7 @@ class FeedDetailScreen extends React.Component {
       isMasonryView: false,
       MasonryData: [],
       isShowInviteToaster: false,
-      inviteToasterTitle: '',
-      cardClickEvent: 'normal'
+      inviteToasterTitle: ''
     };
     this.animatedOpacity = new Animated.Value(0)
     this.menuOpacity = new Animated.Value(0)
@@ -793,8 +792,7 @@ class FeedDetailScreen extends React.Component {
     ReactNativeHaptic.generate('impactHeavy');
 
     this.setState({
-      selectedLongHoldCardIndex: index,
-      cardClickEvent: 'long'
+      selectedLongHoldCardIndex: index
     }, () => {
       Animated.parallel([
         Animated.timing(this.animatedSelectCard, {
@@ -820,8 +818,7 @@ class FeedDetailScreen extends React.Component {
       })
     ]).start(() => {
       this.setState({
-        isVisibleLongHoldMenu: false,
-        cardClickEvent: 'normal'
+        isVisibleLongHoldMenu: false
       })
     })
   }
@@ -1278,28 +1275,29 @@ class FeedDetailScreen extends React.Component {
       pinText,
       avatars,
       selectedLongHoldCardIndex,
-      isVisibleLongHoldMenu,
-      cardClickEvent
+      isVisibleLongHoldMenu
     } = this.state
 
     return (
       <SafeAreaView style={styles.safeArea}>
         <View style={[styles.container, isVisibleLongHoldMenu && { paddingBottom: 0 }]}>
-          <View style={styles.navBar}>
-            <TouchableOpacity style={styles.backView} onPress={this.backToDashboard}>
-              <Ionicons name="ios-arrow-back" size={32} color={COLORS.PURPLE} />
-            </TouchableOpacity>
-            <View style={styles.rightHeader}>
-              <View style={styles.avatarView}>
-                <TouchableOpacity onPress={() => this.handleShare()}>
-                  <AvatarPileComponent avatars={avatars} />
-                </TouchableOpacity>
-              </View>
-              <View style={styles.settingView}>
-                <FeedNavbarSettingComponent handleSetting={() => this.handleSetting()} />
+          {!isVisibleLongHoldMenu && (
+            <View style={styles.navBar}>
+              <TouchableOpacity style={styles.backView} onPress={this.backToDashboard}>
+                <Ionicons name="ios-arrow-back" size={32} color={COLORS.PURPLE} />
+              </TouchableOpacity>
+              <View style={styles.rightHeader}>
+                <View style={styles.avatarView}>
+                  <TouchableOpacity onPress={() => this.handleShare()}>
+                    <AvatarPileComponent avatars={avatars} />
+                  </TouchableOpacity>
+                </View>
+                <View style={styles.settingView}>
+                  <FeedNavbarSettingComponent handleSetting={() => this.handleSetting()} />
+                </View>
               </View>
             </View>
-          </View>
+          )}
 
           <ScrollView
             showsVerticalScrollIndicator={false}
@@ -1319,7 +1317,7 @@ class FeedDetailScreen extends React.Component {
             ]}
           >     
             <GestureRecognizer
-              style={[{ width: '100%', height: '100%'}, cardClickEvent === 'long' && { marginBottom: 20 }]}
+              style={{ width: '100%', height: '100%' }}
               onSwipeRight={this.backToDashboard}
             >
               <View style={styles.detailView} onLayout={this.onLayoutScroll}>
@@ -1327,6 +1325,7 @@ class FeedDetailScreen extends React.Component {
                   <View style={styles.collapseView}>
                     <FeedCollapseComponent
                       feedData={currentFeed}
+                      longHold={isVisibleLongHoldMenu}
                       onEditFeed={() => {
                         this.setState({ feedoViewMode: CONSTANTS.FEEDO_FROM_COLLAPSE })
                         this.handleEdit(currentFeed.id)
