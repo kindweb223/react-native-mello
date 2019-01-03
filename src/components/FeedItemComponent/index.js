@@ -27,12 +27,7 @@ const FeedItemComponent = ({ item, pinFlag, page, clickEvent, listType }) => {
 
   if (listType === 'list') {
     return (
-      <View style={
-        [
-          styles.container,
-          clickEvent === 'long' ? { paddingVertical: 11, paddingHorizontal: 11 } : { paddingVertical: 0 }
-        ]
-      }>
+      <View style={styles.container}>
         {item.coverImages && item.coverImages.length > 0 && (
           <View style={styles.thumbnailsView}>
             <FeedCoverImageComponent data={item.coverImages} />
@@ -49,12 +44,7 @@ const FeedItemComponent = ({ item, pinFlag, page, clickEvent, listType }) => {
     )
   }  else {
     return (
-      <View style={
-        [
-          styles.container,
-          clickEvent === 'long' ? { paddingVertical: 11, paddingHorizontal: 11 } : { paddingVertical: 0 }
-        ]
-      }>
+      <View style={styles.container}>
         <FeedMiniItemContentComponent
           data={item}
           avatars={avatars}

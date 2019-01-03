@@ -5,54 +5,43 @@ import CONSTANTS from '../../service/constants'
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    height: CONSTANTS.ACTION_BAR_HEIGHT,
+    height: 54 + 28,
     width: '100%',
-    backgroundColor: 'transparent',
     alignItems: 'center',
     paddingVertical: 8,
+    marginBottom: 8,
     position: 'absolute',
     bottom: 0,
+    backgroundColor: 'transparent'
   },
-  buttonContainer: {
+  rowContainer: {
+    height: 54,
     flexDirection: 'row',
-    justifyContent: 'space-between'
-  },
-  plusButton: {
-    borderRadius: 21,
+    alignItems: 'center',
+    justifyContent: 'space-between',
     backgroundColor: COLORS.PURPLE,
-    alignItems: 'center'
-  },
-  plusButtonIcon: {
-    color: '#fff',
-    fontSize: 20,
-  },
-  iconStyle: {
-    width: 42,
-    height: 42,
-    justifyContent: 'center',
+    borderRadius: 18,
+    paddingHorizontal: 20
   },
   buttonView: {
-    width: 100,
-    height: 42,
-    borderRadius: 21,
-    backgroundColor: COLORS.PURPLE,
-    paddingHorizontal: 16,
+    height: '100%',
     flexDirection: 'row',
-    justifyContent: 'space-around',
-    alignItems: 'center'
-  },
-  shareIcon: {
-    color: '#fff',
-    fontSize: 18,
-  },
-  pinIcon: {
-    color: '#fff',
-    fontSize: 18,
-    transform: [{ rotate: '-90deg' }]
+    justifyContent: 'flex-start',
+    alignItems: 'center',
+    // width: 80,
+    // backgroundColor: '#f00'
   },
   buttonText: {
     color: '#fff',
-    fontSize: 14
+    fontSize: 16,
+    fontWeight: '600'
+  },
+  shareIcon: {
+    marginRight: 5
+  },
+  pinIcon: {
+    marginRight: 5,
+    transform: [{ rotate: '-90deg' }]
   },
   settingMenu: {
     margin: 0,
@@ -63,8 +52,7 @@ const styles = StyleSheet.create({
     width: 135,
     paddingVertical: 10,
     position: 'absolute',
-    bottom: CONSTANTS.ACTION_BAR_HEIGHT + 20,
-    right: (CONSTANTS.SCREEN_WIDTH - 280) / 2,
+    bottom: 54 + 28 + 20,
     ...Platform.select({
       ios: {
         shadowColor: 'black',

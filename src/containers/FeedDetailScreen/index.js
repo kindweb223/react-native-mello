@@ -156,7 +156,6 @@ class FeedDetailScreen extends React.Component {
     this.menuOpacity = new Animated.Value(0)
     this.menuZIndex = new Animated.Value(0)
     this.animatedSelectCard = new Animated.Value(1);
-    this.animatedSelectCardPos = new Animated.Value(0);
 
     this.cardItemRefs = [];
     this.moveCardId = null;
@@ -799,10 +798,6 @@ class FeedDetailScreen extends React.Component {
         Animated.timing(this.animatedSelectCard, {
           toValue: 0.85,
           duration: 150,
-        }),
-        Animated.timing(this.animatedSelectCardPos, {
-          toValue: -this.scrollviewHeight / 20,
-          duration: 150,
         })
       ]).start(() => {
         this.setState({
@@ -820,13 +815,11 @@ class FeedDetailScreen extends React.Component {
       Animated.timing(this.animatedSelectCard, {
         toValue: 1,
         duration: 100
-      }),
-      Animated.timing(this.animatedSelectCardPos, {
-        toValue: 0,
-        duration: 100,
       })
     ]).start(() => {
-      this.setState({ isVisibleLongHoldMenu: false })
+      this.setState({
+        isVisibleLongHoldMenu: false
+      })
     })
   }
 
@@ -1288,23 +1281,26 @@ class FeedDetailScreen extends React.Component {
     return (
       <SafeAreaView style={styles.safeArea}>
         <View style={[styles.container, isVisibleLongHoldMenu && { paddingBottom: 0 }]}>
-          <View style={styles.navBar}>
-            <TouchableOpacity style={styles.backView} onPress={this.backToDashboard}>
-              <Ionicons name="ios-arrow-back" size={32} color={COLORS.PURPLE} />
-            </TouchableOpacity>
-            <View style={styles.rightHeader}>
-              <View style={styles.avatarView}>
-                <TouchableOpacity onPress={() => this.handleShare()}>
-                  <AvatarPileComponent avatars={avatars} />
-                </TouchableOpacity>
-              </View>
-              <View style={styles.settingView}>
-                <FeedNavbarSettingComponent handleSetting={() => this.handleSetting()} />
+          {!isVisibleLongHoldMenu && (
+            <View style={styles.navBar}>
+              <TouchableOpacity style={styles.backView} onPress={this.backToDashboard}>
+                <Ionicons name="ios-arrow-back" size={32} color={COLORS.PURPLE} />
+              </TouchableOpacity>
+              <View style={styles.rightHeader}>
+                <View style={styles.avatarView}>
+                  <TouchableOpacity onPress={() => this.handleShare()}>
+                    <AvatarPileComponent avatars={avatars} />
+                  </TouchableOpacity>
+                </View>
+                <View style={styles.settingView}>
+                  <FeedNavbarSettingComponent handleSetting={() => this.handleSetting()} />
+                </View>
               </View>
             </View>
-          </View>
+          )}
 
           <ScrollView
+            showsVerticalScrollIndicator={false}
             refreshControl={
               <RefreshControl
                 tintColor={COLORS.PURPLE}
@@ -1313,7 +1309,12 @@ class FeedDetailScreen extends React.Component {
               />
             }
             scrollEventThrottle={16}
-            style={styles.scrollView}
+            style={[
+              styles.scrollView,
+              {
+                transform: [{ scale: this.animatedSelectCard._value}],
+              }
+            ]}
           >     
             <GestureRecognizer
               style={{ width: '100%', height: '100%' }}
@@ -1324,6 +1325,7 @@ class FeedDetailScreen extends React.Component {
                   <View style={styles.collapseView}>
                     <FeedCollapseComponent
                       feedData={currentFeed}
+                      longHold={isVisibleLongHoldMenu}
                       onEditFeed={() => {
                         this.setState({ feedoViewMode: CONSTANTS.FEEDO_FROM_COLLAPSE })
                         this.handleEdit(currentFeed.id)
@@ -1365,16 +1367,8 @@ class FeedDetailScreen extends React.Component {
                 (!_.isEmpty(currentFeed) && currentFeed && currentFeed.ideas)
                   ? this.props.user.listDetailType === 'list'
                     ? currentFeed.ideas.length > 0
-                      ? <Animated.View
-                          style={
-                            {
-                              paddingHorizontal: 8,
-                              transform: [
-                                { scale: this.animatedSelectCard }
-                              ],
-                              marginTop: this.animatedSelectCardPos
-                            }
-                          }
+                      ? <View
+                          style={{ paddingHorizontal: 8 }}
                         >
                           {currentFeed.ideas.map((item, index) => (
                           <View
@@ -1392,6 +1386,7 @@ class FeedDetailScreen extends React.Component {
                                 invitees={currentFeed.invitees}
                                 listType={this.props.user.listDetailType}
                                 cardType="view"
+                                longHold={isVisibleLongHoldMenu}
                                 longSelected={isVisibleLongHoldMenu && selectedLongHoldCardIndex === index}
                                 onLinkPress={() => this.onSelectCard(index, item, currentFeed.invitees)}
                                 onLinkLongPress={() => this.onLongPressCard(index, item, currentFeed.invitees)}
@@ -1399,7 +1394,7 @@ class FeedDetailScreen extends React.Component {
                             </TouchableHighlight>
                           </View>
                           ))}
-                        </Animated.View>
+                        </View>
                       : <View style={styles.emptyView}>
                           {loading
                             ? <View style={styles.loadingView}>
@@ -1426,16 +1421,8 @@ class FeedDetailScreen extends React.Component {
                               </View>
                           }
                         </View>
-                    : <Animated.View
-                        style={
-                          {
-                            paddingHorizontal: 8,
-                            transform: [
-                              { scale: this.animatedSelectCard }
-                            ],
-                            marginTop: this.animatedSelectCardPos
-                          }
-                        }
+                    : <View
+                        style={{ paddingHorizontal: 8 }}
                       >
                         <Masonry
                           onLayout={(event) => this.onLayoutMasonry(event)}
@@ -1468,7 +1455,7 @@ class FeedDetailScreen extends React.Component {
                               </TouchableHighlight>
                             </View>}
                         />
-                      </Animated.View>
+                      </View>
                   : <View style={styles.emptyView}>
                     {loading
                       ? <View style={styles.loadingView}>
