@@ -87,7 +87,7 @@ class FeedoListContainer extends React.Component {
 
     return (
       <ScrollView
-        showsVerticalScrollIndicator={feedClickEvent === 'normal'}
+        showsVerticalScrollIndicator={false}
         refreshControl={
           <RefreshControl
             tintColor={COLORS.PURPLE}

@@ -1302,7 +1302,7 @@ class FeedDetailScreen extends React.Component {
           </View>
 
           <ScrollView
-            showsVerticalScrollIndicator={cardClickEvent === 'normal'}
+            showsVerticalScrollIndicator={false}
             refreshControl={
               <RefreshControl
                 tintColor={COLORS.PURPLE}
