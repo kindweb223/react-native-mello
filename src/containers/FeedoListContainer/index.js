@@ -28,8 +28,8 @@ class FeedoListContainer extends React.Component {
   onLongPressFeedo(index, item) {
     ReactNativeHaptic.generate('impactHeavy')
 
-    if (this.props.handleFeedMenu) {
-      this.props.handleFeedMenu(index, item)
+    if (this.props.handleLongHoldMenu) {
+      this.props.handleLongHoldMenu(index, item)
     }
   }
 
@@ -81,18 +81,13 @@ class FeedoListContainer extends React.Component {
     )
   }
 
-  onLayout = (event, feedClickEvent) => {
-    if (feedClickEvent === 'normal') {
-      this.props.onLayout(event.nativeEvent.layout.height, this.props.tabIndex)
-    }
-  }
-
   render() {
-    const { loading, refresh, feedoList, feedClickEvent, animatedSelectFeed, animatedSelectFeedPos } = this.props;
+    const { loading, refresh, feedoList, feedClickEvent, animatedSelectFeed } = this.props;
     if (loading) return <FeedLoadingStateComponent animating />
 
     return (
       <ScrollView
+        showsVerticalScrollIndicator={feedClickEvent === 'normal'}
         refreshControl={
           <RefreshControl
             tintColor={COLORS.PURPLE}
@@ -107,8 +102,7 @@ class FeedoListContainer extends React.Component {
           },
         ]}
       >        
-        <Animated.View
-          onLayout={(event) => this.onLayout(event, feedClickEvent)}
+        <View
           style={[
             { marginBottom: CONSTANTS.ACTION_BAR_HEIGHT - 28 }
           ]}
@@ -116,14 +110,14 @@ class FeedoListContainer extends React.Component {
           {feedoList.map((item, index) => (
             this.renderItem(item, index)
           ))}
-        </Animated.View>
+        </View>
       </ScrollView>
     )
   }
 }
 
 FeedoListContainer.defaultProps = {
-  handleFeedMenu: () => {},
+  handleLongHoldMenu: () => {},
   page: 'search',
   refresh: true,
   isRefresh: false,
@@ -136,7 +130,7 @@ FeedoListContainer.propTypes = {
   refresh: PropTypes.bool.isRequired,
   isRefresh: PropTypes.bool,
   feedoList: PropTypes.arrayOf(PropTypes.any).isRequired,
-  handleFeedMenu: PropTypes.func,
+  handleLongHoldMenu: PropTypes.func,
   page: PropTypes.string,
   selectedLongHoldFeedoIndex: PropTypes.number,
   feedClickEvent: PropTypes.string

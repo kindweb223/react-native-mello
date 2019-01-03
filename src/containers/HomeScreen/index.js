@@ -125,13 +125,11 @@ class HomeScreen extends React.Component {
       showLongHoldActionBar: true
     };
 
-    this.feedListHeight = []
     this.currentRef = null;
     this.animatedOpacity = new Animated.Value(0);
     this.isInitialized = false;
 
     this.animatedSelectFeed = new Animated.Value(1);
-    this.animatedSelectFeedPos = new Animated.Value(0)
   }
 
   async componentDidMount() {
@@ -155,8 +153,6 @@ class HomeScreen extends React.Component {
 
     AppState.addEventListener('change', this.onHandleAppStateChange.bind(this));
     appOpened(this.props.user.userInfo.id);
-
-    this.clearFeedListHeight()
   }
 
   componentWillUnmount() {
@@ -712,10 +708,6 @@ class HomeScreen extends React.Component {
         Animated.timing(this.animatedSelectFeed, {
           toValue: 0.85,
           duration: 150
-        }),
-        Animated.timing(this.animatedSelectFeedPos, {
-          toValue: -(this.feedListHeight[tabIndex] - CONSTANTS.SCREEN_SUB_WIDTH) * 0.15 / 2,
-          duration: 150,
         })
       ]).start(() => {
         this.setState({
@@ -732,10 +724,6 @@ class HomeScreen extends React.Component {
         Animated.timing(this.animatedSelectFeed, {
           toValue: 1,
           duration: 100
-        }),
-        Animated.timing(this.animatedSelectFeedPos, {
-          toValue: 0,
-          duration: 100,
         })
       ]).start(() => {
         this.setState({ isLongHoldMenuVisible: false })
@@ -748,10 +736,6 @@ class HomeScreen extends React.Component {
       Animated.timing(this.animatedSelectFeed, {
         toValue: 1,
         duration: 100
-      }),
-      Animated.timing(this.animatedSelectFeedPos, {
-        toValue: 0,
-        duration: 100,
       })
     ]).start(() => {
       this.setState({ isLongHoldMenuVisible: false, selectedLongHoldFeedoIndex: -1, feedClickEvent: 'normal' })
@@ -779,10 +763,6 @@ class HomeScreen extends React.Component {
       Animated.timing(this.animatedSelectFeed, {
         toValue: 1,
         duration: 100
-      }),
-      Animated.timing(this.animatedSelectFeedPos, {
-        toValue: 0,
-        duration: 100,
       })
     ]).start(() => {
       this.setState({ isLongHoldMenuVisible: false, selectedLongHoldFeedoIndex: -1, feedClickEvent: 'normal' })
@@ -810,10 +790,6 @@ class HomeScreen extends React.Component {
       Animated.timing(this.animatedSelectFeed, {
         toValue: 1,
         duration: 100
-      }),
-      Animated.timing(this.animatedSelectFeedPos, {
-        toValue: 0,
-        duration: 100,
       })
     ]).start(() => {
       this.setState({ isLongHoldMenuVisible: false, selectedLongHoldFeedoIndex: -1, feedClickEvent: 'normal' })
@@ -843,10 +819,6 @@ class HomeScreen extends React.Component {
       Animated.timing(this.animatedSelectFeed, {
         toValue: 1,
         duration: 100
-      }),
-      Animated.timing(this.animatedSelectFeedPos, {
-        toValue: 0,
-        duration: 100,
       })
     ]).start(() => {
       this.setState({ isLongHoldMenuVisible: false, selectedLongHoldFeedoIndex: -1, feedClickEvent: 'normal' })
@@ -871,10 +843,6 @@ class HomeScreen extends React.Component {
       Animated.timing(this.animatedSelectFeed, {
         toValue: 1,
         duration: 100
-      }),
-      Animated.timing(this.animatedSelectFeedPos, {
-        toValue: 0,
-        duration: 100,
       })
     ]).start(() => {
       this.setState({ isLongHoldMenuVisible: false, selectedLongHoldFeedoIndex: -1, feedClickEvent: 'normal' })
@@ -899,10 +867,6 @@ class HomeScreen extends React.Component {
       Animated.timing(this.animatedSelectFeed, {
         toValue: 1,
         duration: 100
-      }),
-      Animated.timing(this.animatedSelectFeedPos, {
-        toValue: 0,
-        duration: 100,
       })
     ]).start(() => {
       this.setState({ isLongHoldMenuVisible: false, selectedLongHoldFeedoIndex: -1, feedClickEvent: 'normal' })
@@ -929,10 +893,6 @@ class HomeScreen extends React.Component {
       Animated.timing(this.animatedSelectFeed, {
         toValue: 1,
         duration: 100
-      }),
-      Animated.timing(this.animatedSelectFeedPos, {
-        toValue: 0,
-        duration: 100,
       })
     ]).start(() => {
       this.setState({ isLongHoldMenuVisible: false, selectedLongHoldFeedoIndex: -1, feedClickEvent: 'normal' }, () => {
@@ -1181,20 +1141,6 @@ class HomeScreen extends React.Component {
     this.props.getFeedoList(this.state.tabIndex)
   }
 
-  setFeedListHeight = (height, pageIndex) => {
-    const { tabIndex } = this.state
-
-    if (tabIndex === pageIndex) {
-      this.feedListHeight[tabIndex] = height
-    }
-  }
-
-  clearFeedListHeight = () => {
-    for (let i = 0; i < 3; i ++) {
-      this.feedListHeight[i] = 0
-    }
-  }
-
   render () {
     const {
       loading,
@@ -1356,21 +1302,18 @@ class HomeScreen extends React.Component {
 
                 <FeedoListContainer
                   loading={loading}
-                  tabIndex={tabIndex}
                   feedoList={feedoList}
                   selectedLongHoldFeedoIndex={selectedLongHoldFeedoIndex}
                   feedClickEvent={feedClickEvent}
                   animatedSelectFeed={this.animatedSelectFeed}
-                  animatedSelectFeedPos={this.animatedSelectFeedPos}
                   updateSelectIndex={(index, item) =>
                     this.setState({ selectedLongHoldFeedoIndex: index, selectedFeedData: item, showLongHoldActionBar: true })
                   }
-                  handleFeedMenu={this.handleLongHoldMenu}
+                  handleLongHoldMenu={this.handleLongHoldMenu}
                   page="home"
                   listType={this.props.user.listHomeType}
                   isRefreshing={this.state.isRefreshing}
                   onRefreshFeed={() => this.onRefreshFeed()}
-                  onLayout={this.setFeedListHeight}
                 />
               </View>
               <View
@@ -1381,21 +1324,18 @@ class HomeScreen extends React.Component {
                 {feedoList.length > 0
                   ? <FeedoListContainer
                       loading={loading}
-                      tabIndex={tabIndex}
                       feedoList={feedoList}
                       selectedLongHoldFeedoIndex={selectedLongHoldFeedoIndex}
                       feedClickEvent={feedClickEvent}
                       animatedSelectFeed={this.animatedSelectFeed}
-                      animatedSelectFeedPos={this.animatedSelectFeedPos}
                       updateSelectIndex={(index, item) =>
                         this.setState({ selectedLongHoldFeedoIndex: index, selectedFeedData: item, showLongHoldActionBar: true })
                       }
-                      handleFeedMenu={this.handleLongHoldMenu}
+                      handleLongHoldMenu={this.handleLongHoldMenu}
                       page="home"
                       listType={this.props.user.listHomeType}
                       isRefreshing={this.state.isRefreshing}
                       onRefreshFeed={() => this.onRefreshFeed()}
-                      onLayout={this.setFeedListHeight}
                     />
                   : <View style={styles.emptyTabInnerSubView}>
                       <SpeechBubbleComponent
@@ -1414,21 +1354,18 @@ class HomeScreen extends React.Component {
                 {feedoList.length > 0
                   ? <FeedoListContainer
                       loading={loading}
-                      tabIndex={tabIndex}
                       feedoList={feedoList}
                       selectedLongHoldFeedoIndex={selectedLongHoldFeedoIndex}
                       feedClickEvent={feedClickEvent}
                       animatedSelectFeed={this.animatedSelectFeed}
-                      animatedSelectFeedPos={this.animatedSelectFeedPos}
                       updateSelectIndex={(index, item) =>
                         this.setState({ selectedLongHoldFeedoIndex: index, selectedFeedData: item, showLongHoldActionBar: true })
                       }
-                      handleFeedMenu={this.handleLongHoldMenu}
+                      handleLongHoldMenu={this.handleLongHoldMenu}
                       page="home"
                       listType={this.props.user.listHomeType}
                       isRefreshing={this.state.isRefreshing}
                       onRefreshFeed={() => this.onRefreshFeed()}
-                      onLayout={this.setFeedListHeight}
                     />
                   : <View style={styles.emptyTabInnerSubView}>
                       <SpeechBubbleComponent
