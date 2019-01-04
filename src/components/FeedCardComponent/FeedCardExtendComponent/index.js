@@ -29,7 +29,7 @@ class FeedCardExtendComponent extends React.Component {
   }
 
   render() {
-    const { invitees, idea, feedo, cardType, longSelected } = this.props;
+    const { invitees, idea, feedo, cardType, longSelected, longHold } = this.props;
     const { imageHeight } = this.state
 
     const invitee = _.find(invitees, item => item.id === idea.inviteeId)
