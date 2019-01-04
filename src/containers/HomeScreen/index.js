@@ -122,7 +122,9 @@ class HomeScreen extends React.Component {
       clipboardData: '',
       selectedLongHoldFeedoIndex: -1,
       feedClickEvent: 'normal',
-      showLongHoldActionBar: true
+      showLongHoldActionBar: true,
+      isShowInviteToaster: false,
+      inviteToasterTitle: ''
     };
 
     this.currentRef = null;
@@ -276,6 +278,22 @@ class HomeScreen extends React.Component {
   async componentDidUpdate(prevProps) {
     const { feedo, user } = this.props
     const { feedoList } = feedo
+
+    if (prevProps.feedo.loading !== 'UPDTE_FEED_INVITATION_FULFILLED' &&
+        feedo.loading === 'UPDTE_FEED_INVITATION_FULFILLED' &&
+        Actions.currentScene !== 'NotificationScreen' && Actions.currentScene !== 'FeedDetailScreen'
+    ) {
+      this.setState({ isShowInviteToaster: true })
+      
+      if (feedo.inviteUpdateType) {
+        this.setState({ inviteToasterTitle: 'Invitation accepted' })
+      } else {
+        this.setState({ inviteToasterTitle: 'Invitation ignored' })
+      }
+      setTimeout(() => {
+        this.setState({ isShowInviteToaster: false })
+      }, TOASTER_DURATION)
+    }
 
     if (feedo.loading === 'PUBNUB_GET_FEED_DETAIL_FULFILLED' && Actions.currentScene !== 'FeedDetailScreen' ||
         feedo.loading === 'PUBNUB_MOVE_IDEA_FULFILLED' && Actions.currentScene !== 'FeedDetailScreen' ||
@@ -1241,11 +1259,11 @@ class HomeScreen extends React.Component {
                                           <Text style={[styles.tabBarTextStyle, isTabActive && (styles.activeTabBarTextStyle)]}>
                                             {tab.label}
                                           </Text>
-                                          {/* {invitedFeedList.length > 0 && page === 1 && (
+                                          {tab.badge > 0 && page === 1 && (
                                             <View style={styles.badgeView}>
                                               <Text style={styles.badgeText}>{tab.badge}</Text>
                                             </View>
-                                          )} */}
+                                          )}
                                         </View>
                                       </TouchableOpacity>
                                     )}
@@ -1325,6 +1343,7 @@ class HomeScreen extends React.Component {
                   ? <FeedoListContainer
                       loading={loading}
                       feedoList={feedoList}
+                      invitedFeedList={this.state.invitedFeedList}
                       selectedLongHoldFeedoIndex={selectedLongHoldFeedoIndex}
                       feedClickEvent={feedClickEvent}
                       animatedSelectFeed={this.animatedSelectFeed}
@@ -1437,14 +1456,22 @@ class HomeScreen extends React.Component {
 
         {this.renderCardModal}
 
-        { 
-          this.state.isShowClipboardToaster && 
+        {this.state.isShowClipboardToaster && (
           <ClipboardToasterComponent
             description={this.state.tmpClipboardData}
             onPress={() => this.onAddClipboardLink()}
             onClose={() => this.onDismissClipboardToaster()}
           />
-        }
+        )}
+
+        {this.state.isShowInviteToaster && (
+          <ToasterComponent
+            isVisible={this.state.isShowInviteToaster}
+            title={this.state.inviteToasterTitle}
+            buttonTitle="OK"
+            onPressButton={() => this.setState({ isShowInviteToaster: false })}
+          />
+        )}
       </SafeAreaView>
     )
   }
