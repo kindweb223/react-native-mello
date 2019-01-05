@@ -160,11 +160,11 @@ class NotificationScreen extends React.Component {
         } else if (selectedActivity.activityTypeEnum === 'IDEA_LIKED') {
           this.props.getFeedDetail(selectedActivity.metadata.HUNT_ID)
         } else if (selectedActivity.activityTypeEnum === 'USER_JOINED_HUNT') {
-          Actions.FeedDetailScreen({ data: { id: selectedActivity.metadata.HUNT_ID }, prevPage: 'notification' })
+          Actions.FeedDetailScreen({ data: { id: selectedActivity.metadata.HUNT_ID }, prevPage: 'activity' })
         } else if (selectedActivity.activityTypeEnum === 'USER_INVITED_TO_HUNT') {
-          Actions.FeedDetailScreen({ data: { id: selectedActivity.metadata.HUNT_ID }, prevPage: 'notification' })
+          Actions.FeedDetailScreen({ data: { id: selectedActivity.metadata.HUNT_ID }, prevPage: 'activity' })
         } else if (selectedActivity.activityTypeEnum === 'HUNT_UPDATED') {
-          Actions.FeedDetailScreen({ data: { id: selectedActivity.metadata.HUNT_ID }, prevPage: 'notification' })
+          Actions.FeedDetailScreen({ data: { id: selectedActivity.metadata.HUNT_ID }, prevPage: 'activity' })
         }
       }
     }

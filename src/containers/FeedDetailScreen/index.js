@@ -1026,6 +1026,7 @@ class FeedDetailScreen extends React.Component {
         {
           this.state.isVisibleCard && 
             <NewCardScreen
+              prevPage={this.props.prevPage}
               viewMode={this.state.cardViewMode}
               invitee={this.state.selectedIdeaInvitee}
               intialLayout={this.state.selectedIdeaLayout}
@@ -1386,6 +1387,7 @@ class FeedDetailScreen extends React.Component {
                                 invitees={currentFeed.invitees}
                                 listType={this.props.user.listDetailType}
                                 cardType="view"
+                                prevPage={this.props.prevPage}
                                 longHold={isVisibleLongHoldMenu}
                                 longSelected={isVisibleLongHoldMenu && selectedLongHoldCardIndex === index}
                                 onLinkPress={() => this.onSelectCard(index, item, currentFeed.invitees)}
@@ -1448,6 +1450,7 @@ class FeedDetailScreen extends React.Component {
                                   invitees={currentFeed.invitees}
                                   listType={this.props.user.listDetailType}
                                   cardType="view"
+                                  prevPage={this.props.prevPage}
                                   longSelected={isVisibleLongHoldMenu && selectedLongHoldCardIndex === item.index}
                                   onLinkPress={() => this.onSelectCard(item.index, item.data, currentFeed.invitees)}
                                   onLinkLongPress={() => this.onLongPressCard(item.index, item.data, currentFeed.invitees)}
