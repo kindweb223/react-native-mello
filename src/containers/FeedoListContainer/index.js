@@ -107,6 +107,7 @@ class FeedoListContainer extends React.Component {
               activeOpacity={0.8}
               delayLongPress={1000}
               onLongPress={() => this.onLongPressFeedo(index, item)}
+              onPress={() => this.onPressFeedo(index, item)}
             >
               {feedClickEvent === 'normal' &&
                 <View style={styles.separator} />
