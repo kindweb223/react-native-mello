@@ -113,7 +113,7 @@ class FeedoListContainer extends React.Component {
                 <View style={styles.separator} />
               }
               <View style={styles.itemView}>
-                <NotificationItemComponent data={item} hideTumbnail={true} />
+                <NotificationItemComponent data={item} hideTumbnail={true} prevPage='home' />
               </View>
             </TouchableOpacity>
           ))}
