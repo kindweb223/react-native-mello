@@ -1271,7 +1271,7 @@ class HomeScreen extends React.Component {
               <View
                 style={[!this.state.isLongHoldMenuVisible ? styles.feedListContainer : styles.feedListContainerLongHold, feedClickEvent === 'normal' && { paddingBottom: 30 }]}
                 ref={ref => this.scrollTabAll = ref} 
-                tabLabel={{ label: 'My flows', badge: badgeCount }}
+                tabLabel={{ label: 'My flows', badge: 0 }}
               >
                 {showFeedInvitedNewUserBubble && (
                   <View style={{ height: 200 }}>
@@ -1336,9 +1336,9 @@ class HomeScreen extends React.Component {
               <View
                 style={[!this.state.isLongHoldMenuVisible ? styles.feedListContainer : styles.feedListContainerLongHold, , feedClickEvent === 'normal' && { paddingBottom: 30 }]}
                 ref={ref => this.scrollTabSharedWithMe = ref}
-                tabLabel={{ label: 'Shared with me', badge: badgeCount }}
+                tabLabel={{ label: 'Shared with me', badge: this.state.invitedFeedList.length }}
               >
-                {feedoList.length > 0
+                {(feedoList.length > 0 || this.state.invitedFeedList.length > 0)
                   ? <FeedoListContainer
                       loading={loading}
                       feedoList={feedoList}
@@ -1367,7 +1367,7 @@ class HomeScreen extends React.Component {
               <View
                 style={[!this.state.isLongHoldMenuVisible ? styles.feedListContainer : styles.feedListContainerLongHold, , feedClickEvent === 'normal' && { paddingBottom: 30 }]}
                 ref={ref => this.scrollTabPinned = ref}
-                tabLabel={{ label: 'Pinned', badge: badgeCount }}
+                tabLabel={{ label: 'Pinned', badge: 0 }}
               >
                 {feedoList.length > 0
                   ? <FeedoListContainer
