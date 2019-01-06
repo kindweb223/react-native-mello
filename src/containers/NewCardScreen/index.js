@@ -570,10 +570,11 @@ class NewCardScreen extends React.Component {
         duration: e.duration,
       }
     ).start(() => {
-      // When opening comment screen and in safari view controller this code seems to execute
-      if (this.textInputIdeaRef) {
-        this.textInputIdeaRef.focus();
+      if (this.isDisabledKeyboard === true || !this.textInputIdeaRef) {
+        return;
       }
+      
+      this.textInputIdeaRef.focus();
     });
   }
 

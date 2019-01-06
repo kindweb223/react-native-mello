@@ -169,9 +169,6 @@ class CommentScreen extends React.Component {
   }
 
   keyboardWillShow(e) {
-    if (Actions.currentScene !== 'CommentScreen') {
-      return;
-    }
     Animated.timing(
       this.keyboardHeight, {
         toValue:  e.endCoordinates.height,
@@ -184,9 +181,6 @@ class CommentScreen extends React.Component {
   }
 
   keyboardWillHide(e) {
-    if (Actions.currentScene !== 'CommentScreen') {
-      return;
-    }
     Animated.timing(
       this.keyboardHeight, {
         toValue:  0,
