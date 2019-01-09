@@ -208,6 +208,7 @@ class ShareScreen extends React.Component {
     const { linkShareModal, shareModalType, shareInviteeData, isInviteSuccess } = this.state
     let { invitees } = data
 
+    invitees = COMMON_FUNC.filterRemovedInvitees(invitees)
     invitees = _.sortBy(invitees, invitee => invitee.dateCreated)
 
     return (

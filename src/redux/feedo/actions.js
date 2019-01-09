@@ -691,22 +691,22 @@ export const pubnubUnLikeCard = (ideaId) => {
 /**
  * Delete invitee from other invitees' list
  */
-export const pubnubDeleteInvitee = (huntId, huntInviteeId) => {
+export const pubnubDeleteInvitee = (huntId, inviteeId) => {
   return {
     type: types.PUBNUB_DELETE_INVITEE_FULFILLED,
     payload: {
       huntId,
-      huntInviteeId
+      inviteeId
     }
   };
 }
 
-export const pubnubDeleteOtherInvitee = (huntId, userId) => {
+export const pubnubDeleteOtherInvitee = (huntId, inviteeId) => {
   return {
     type: types.PUBNUB_DELETE_OTHER_INVITEE_FULFILLED,
     payload: {
       huntId,
-      userId
+      inviteeId
     }
   };
 }
