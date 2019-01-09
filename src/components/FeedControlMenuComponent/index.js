@@ -13,18 +13,18 @@ import * as COMMON_FUNC from '../../service/commonFunc'
 
 class FeedControlMenuComponent extends React.Component {
   render() {
-    const { data, pinText } = this.props
+    const { feedo, pinText } = this.props
 
     let MENU_ITEMS = []
-    if (COMMON_FUNC.isFeedOwner(data)) {
+    if (COMMON_FUNC.isFeedOwner(feedo)) {
       MENU_ITEMS = ['Duplicate', 'Edit', 'Archive', 'Delete']
     }
 
-    if (COMMON_FUNC.isFeedEditor(data)) {
+    if (COMMON_FUNC.isFeedEditor(feedo)) {
       MENU_ITEMS = ['Duplicate', 'Edit', 'Leave Flow']
     }
 
-    if (COMMON_FUNC.isFeedContributor(data) || COMMON_FUNC.isFeedGuest(data)) {
+    if (COMMON_FUNC.isFeedContributor(feedo) || COMMON_FUNC.isFeedGuest(feedo)) {
       MENU_ITEMS = ['Leave Flow']
     }
 
@@ -70,7 +70,7 @@ class FeedControlMenuComponent extends React.Component {
 FeedControlMenuComponent.propTypes = {
   handleSettingItem: PropTypes.func.isRequired,
   pinText: PropTypes.string.isRequired,
-  data: PropTypes.objectOf(PropTypes.any).isRequired
+  feedo: PropTypes.objectOf(PropTypes.any).isRequired
 }
 
 export default FeedControlMenuComponent

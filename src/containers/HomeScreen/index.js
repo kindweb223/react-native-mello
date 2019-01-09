@@ -375,21 +375,33 @@ class HomeScreen extends React.Component {
         currentPushNotificationData: null,
       });
     } else if (card.loading === 'GET_CARD_FULFILLED' && this.state.currentPushNotificationType === CONSTANTS.IDEA_ADDED && this.state.currentPushNotificationData) {
-      const invitee = find(this.state.currentPushNotificationData.invitees, (o) => {
-        return (o.id == card.currentCard.inviteeId)
-      });
-      this.setState({
-        isVisibleCard: true,
-        cardViewMode: CONSTANTS.CARD_VIEW,
-        selectedIdeaInvitee: invitee,
-        tmpClipboardData: '',
-        clipboardData: '',
-      });
-      this.animatedOpacity.setValue(0);
-      Animated.timing(this.animatedOpacity, {
-        toValue: 1,
-        duration: CONSTANTS.ANIMATEION_MILLI_SECONDS,
-      }).start();
+      if (Actions.currentScene === 'FeedDetailScreen') {
+        Actions.FeedDetailScreen({
+          type: 'replace',
+          data: this.state.currentPushNotificationData
+        })  
+      } else {
+        Actions.FeedDetailScreen({
+          data: this.state.currentPushNotificationData
+        })
+      }
+
+      // const invitee = find(this.state.currentPushNotificationData.invitees, (o) => {
+      //   return (o.id == card.currentCard.inviteeId)
+      // });
+
+      // this.setState({
+      //   isVisibleCard: true,
+      //   cardViewMode: CONSTANTS.CARD_VIEW,
+      //   selectedIdeaInvitee: invitee,
+      //   tmpClipboardData: '',
+      //   clipboardData: '',
+      // });
+      // this.animatedOpacity.setValue(0);
+      // Animated.timing(this.animatedOpacity, {
+      //   toValue: 1,
+      //   duration: CONSTANTS.ANIMATEION_MILLI_SECONDS,
+      // }).start();
       this.setState({
         currentPushNotificationType: CONSTANTS.UNKOWN_PUSH_NOTIFICATION,
         currentPushNotificationData: null,
@@ -550,6 +562,8 @@ class HomeScreen extends React.Component {
       case CONSTANTS.IDEA_ADDED: {
         const { huntId, ideaId } = notification.data
         const matchedHunt = find(feedoList, feedo => feedo.id === huntId);
+
+        this.props.setCurrentFeed(matchedHunt)
 
         this.setState({
           currentPushNotificationType: CONSTANTS.IDEA_ADDED,
