@@ -25,6 +25,7 @@ class LastCommentComponent extends React.Component {
     super(props);
     this.state = {
       loading: false,
+      currentComments: []
     };
   }
 
@@ -40,9 +41,12 @@ class LastCommentComponent extends React.Component {
       loading = true;
     } else if (this.props.card.loading !== types.GET_CARD_COMMENTS_FULFILLED && nextProps.card.loading === types.GET_CARD_COMMENTS_FULFILLED) {
       // success in getting comments of a card
-    } this.setState({
-      loading,
-    });
+      if (nextProps.card.currentCardId === nextProps.card.currentCard.id) {
+        this.setState({ currentComments: nextProps.card.currentComments })
+      }
+    }
+    
+    this.setState({ loading })
   }
 
   getCommentUser(comment) {
@@ -57,20 +61,35 @@ class LastCommentComponent extends React.Component {
   onAddComment() {
     Analytics.logEvent('edit_card_add_comment', {})
 
-    Actions.CommentScreen({
-      idea: this.props.card.currentCard,
-      guest: COMMON_FUNC.isFeedGuest(this.props.feedo.currentFeed),
-      isShowKeyboard: true,
-    });
+    if (this.props.prevPage === 'activity') {
+      Actions.ActivityCommentScreen({
+        idea: this.props.card.currentCard,
+        guest: COMMON_FUNC.isFeedGuest(this.props.feedo.currentFeed),
+        isShowKeyboard: true,
+      });
+    } else {
+      Actions.CommentScreen({
+        idea: this.props.card.currentCard,
+        guest: COMMON_FUNC.isFeedGuest(this.props.feedo.currentFeed),
+        isShowKeyboard: true,
+      });
+    }
   }
 
   onViewOldComments() {
     Analytics.logEvent('edit_card_view_old_comments', {})
 
-    Actions.CommentScreen({
-      idea: this.props.card.currentCard,
-      guest: COMMON_FUNC.isFeedGuest(this.props.feedo.currentFeed)
-    });
+    if (this.props.prevPage === 'activity') {
+      Actions.ActivityCommentScreen({
+        idea: this.props.card.currentCard,
+        guest: COMMON_FUNC.isFeedGuest(this.props.feedo.currentFeed)
+      });
+    } else {
+      Actions.CommentScreen({
+        idea: this.props.card.currentCard,
+        guest: COMMON_FUNC.isFeedGuest(this.props.feedo.currentFeed)
+      });
+    }
   }
 
   get renderAddComment() {
@@ -103,14 +122,16 @@ class LastCommentComponent extends React.Component {
   }
 
   render () {
-    const { currentComments } = this.props.card;
+    const { currentComments } = this.state;
     const { feedo } = this.props;
+
     let lastComments = [];
     let oldCommentsLength = 0;
     if (currentComments) {
       lastComments = currentComments.slice(0, 2);
       oldCommentsLength = currentComments.length > 2 ? currentComments.length - 2 : 0;
     }
+
     return (
       <View style={styles.container}>
         <FlatList

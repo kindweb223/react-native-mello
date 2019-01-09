@@ -17,19 +17,19 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     borderRadius: 5,
-    paddingHorizontal: 10,
+    paddingHorizontal: 12,
     backgroundColor:  COLORS.SOFT_GREY,
   },
   imageCover: {
     width: 24,
     height: 24,
+    marginRight: 12,
   },
   textLink: {
     flex: 1,
     fontSize: 16,
     lineHeight: 24,
     color: COLORS.BLUE,
-    marginLeft: 12,
   },
 })
 

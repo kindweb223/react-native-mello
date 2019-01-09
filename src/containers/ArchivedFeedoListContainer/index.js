@@ -9,6 +9,7 @@ import {
 import PropTypes from 'prop-types'
 import { Actions } from 'react-native-router-flux'
 import ActionSheet from 'react-native-actionsheet'
+import _ from 'lodash'
 
 import FeedItemContentComponent from '../../components/FeedItemComponent/FeedItemContentComponent'
 import FeedLoadingStateComponent from '../../components/FeedLoadingStateComponent'
@@ -39,9 +40,23 @@ class ArchivedFeedoListContainer extends React.Component {
   }
 
   renderItem = ({ item, index }) => {
+    let avatars = []
+    invitees = item.invitees
+
+    if (item.metadata.owner) {
+      invitees = _.filter(invitees, invitee => invitee.userProfile.id !== item.owner.id)
+    }
+
+    invitees.forEach((data, key) => {
+      avatars = [
+        ...avatars,
+        data.userProfile
+      ]
+    })
+
     return (
       <View style={styles.listItem}>
-        <FeedItemContentComponent data={item} pinFlag={item.pinned ? true : false} page="archived" />
+        <FeedItemContentComponent data={item} avatars={avatars} pinFlag={item.pinned ? true : false} page="archived" />
         <TouchableOpacity activeOpacity={0.8} onPress={() => this.onShowModal(item)}>
           <View style={styles.btnView}>
             <Text style={styles.btnText}>Restore</Text>
@@ -69,7 +84,7 @@ class ArchivedFeedoListContainer extends React.Component {
       <ActionSheet
         key="1"
         ref={ref => this.ActionSheet = ref}
-        title={'Are you sure you want to restore this feed?'}
+        title={'Are you sure you want to restore this flow?'}
         options={['Restore', 'Cancel']}
         cancelButtonIndex={1}
         tintColor={COLORS.PURPLE}

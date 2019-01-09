@@ -66,6 +66,11 @@ export default class WebMetaList extends React.Component {
       });
   }
 
+  onLongPressLink(index) {
+    const url = this.props.links[index].originalUrl;
+    this.props.longPressLink(url)
+  }
+
   renderImage(item) {
     if (item.faviconUrl) {
       if (item.faviconUrl.indexOf('data:image/svg+xml;base64') !== -1) {
@@ -74,6 +79,7 @@ export default class WebMetaList extends React.Component {
             width="24"
             height="24"
             source={{uri: item.faviconUrl}}
+            style={styles.imageCover}
           />
         );
       }
@@ -81,7 +87,7 @@ export default class WebMetaList extends React.Component {
       if (mimeType !== false && mimeType.indexOf('svg') !== -1) {
         return (
           <SVGImage
-            style={{ width: 24, height: 24 }}
+            style={styles.imageCover}
             source={{uri: item.faviconUrl}}
           />
         );
@@ -100,6 +106,7 @@ export default class WebMetaList extends React.Component {
           style={[styles.buttonContainer, {backgroundColor: '#ECECEC'}]}
           activeOpacity={0.7}
           onPress={() => this.onPressLink(index)}
+          onLongPress={() => this.onLongPressLink(index)}
         >
           {this.renderImage(item)}
           <Text style={styles.textLink} numberOfLines={1}>{item.originalUrl}</Text>

@@ -11,7 +11,7 @@ const styles = StyleSheet.create({
   },
   container: {
     flex: 1,
-    paddingBottom: Platform.OS === 'ios' ? ifIphoneX(0, 56) : 56,
+    paddingBottom: Platform.OS === 'ios' ? ifIphoneX(0, 56) : 56
   },
   loadingView: {
     width: '100%',
@@ -74,7 +74,7 @@ const styles = StyleSheet.create({
   },
   collapseView: {
     width: '100%',
-    marginBottom: 30,
+    marginBottom: 25,
     paddingTop: 0,
     backgroundColor: '#fff',
     zIndex: 11
@@ -82,9 +82,11 @@ const styles = StyleSheet.create({
   collpaseSeparator: {
     marginTop: 16
   },
-  detailView: {
-    paddingTop: 10,
-    paddingBottom: Platform.OS === 'ios' ? ifIphoneX(120, 10) : 10
+  scrollView: {
+  },
+  detailView: {    
+    paddingTop: 15,
+    paddingBottom: Platform.OS === 'ios' ? ifIphoneX(48, 10) : 10
   },
   modalContainer: {
     position: 'absolute',
@@ -166,6 +168,30 @@ const styles = StyleSheet.create({
   },
   ignoreButtonText: {
     color: '#fff'
+  },
+  topButtonView: {
+    width: '100%',
+    height: NAV_BAR_HEIGHT,
+    paddingHorizontal: CONSTANTS.PADDING,
+    position: 'absolute',
+    right: 0,
+    top: CONSTANTS.STATUSBAR_HEIGHT,
+    paddingTop: 8,
+    alignItems: 'flex-end',
+    backgroundColor: '#fff'
+  },
+  btnDoneView: {
+    width: 69,
+    height: 34,
+    borderRadius: 17,
+    backgroundColor: COLORS.PURPLE,
+    justifyContent: 'center',
+    alignItems: 'center'
+  },
+  btnDoneText: {
+    color: '#fff',
+    fontSize: 15,
+    fontWeight: '500'
   }
 })
 

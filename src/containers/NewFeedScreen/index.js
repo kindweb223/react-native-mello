@@ -46,6 +46,7 @@ import DocumentList from '../../components/DocumentListComponent'
 import TagCreateScreen from '../TagCreateScreen'
 import { TAGS_FEATURE } from '../../service/api'
 import Analytics from '../../lib/firebase'
+import pubnub from '../../lib/pubnub'
 
 // const ATTACHMENT_ICON = require('../../../assets/images/Attachment/Blue.png')
 // const IMAGE_ICON = require('../../../assets/images/Image/Blue.png')
@@ -80,14 +81,14 @@ class NewFeedScreen extends React.Component {
   }
 
   componentDidMount() {
-    Analytics.setCurrentScreen('NewFeedScreen')
+    Analytics.setCurrentScreen('NewFeedScreen')    
   }
 
   UNSAFE_componentWillReceiveProps(nextProps) {
     let loading = false;
     if (this.props.feedo.loading !== types.CREATE_FEED_PENDING && nextProps.feedo.loading === types.CREATE_FEED_PENDING) {
       // creating a feed
-      loading = true;
+      // loading = true;
     } else if (this.props.feedo.loading !== types.CREATE_FEED_FULFILLED && nextProps.feedo.loading === types.CREATE_FEED_FULFILLED) {
       if (this.props.feedoMode !== CONSTANTS.SHARE_EXTENTION_FEEDO) {
         const data = {
@@ -101,7 +102,7 @@ class NewFeedScreen extends React.Component {
       })
     } else if (this.props.feedo.loading !== types.DELETE_FEED_PENDING && nextProps.feedo.loading === types.DELETE_FEED_PENDING) {
       // deleting a feed
-      loading = true;
+      // loading = true;
     } else if (this.props.feedo.loading !== types.DELETE_FEED_FULFILLED && nextProps.feedo.loading === types.DELETE_FEED_FULFILLED) {
       // success in deleting a feed
       this.props.setCurrentFeed({});
@@ -114,7 +115,21 @@ class NewFeedScreen extends React.Component {
       // success in getting a file upload url
       loading = true;
       if (this.selectedFile) {
-        this.props.uploadFileToS3(nextProps.feedo.fileUploadUrl.uploadUrl, this.selectedFile, this.selectedFileName, this.selectedFileMimeType);
+        // Image resizing...
+        if (this.selectedFileMimeType.indexOf('image/') !== -1) {
+          const width = Math.round(this.selectedFile.width / CONSTANTS.IMAGE_COMPRESS_DIMENSION_RATIO);
+          const height = Math.round(this.selectedFile.height / CONSTANTS.IMAGE_COMPRESS_DIMENSION_RATIO)
+          ImageResizer.createResizedImage(this.selectedFile.uri, width, height, CONSTANTS.IMAGE_COMPRESS_FORMAT, CONSTANTS.IMAGE_COMPRESS_QUALITY, 0, null)
+            .then((response) => {
+              console.log('Image compress Success!');
+              this.props.uploadFileToS3(nextProps.feedo.fileUploadUrl.uploadUrl, response.uri, this.selectedFileName, this.selectedFileMimeType);
+            }).catch((error) => {
+              console.log('Image compress error : ', error);
+              this.props.uploadFileToS3(nextProps.feedo.fileUploadUrl.uploadUrl, this.selectedFile.uri, this.selectedFileName, this.selectedFileMimeType);
+            });
+          return;
+        }
+        this.props.uploadFileToS3(nextProps.feedo.fileUploadUrl.uploadUrl, this.selectedFile.uri, this.selectedFileName, this.selectedFileMimeType);
       }
     } else if (this.props.feedo.loading !== types.UPLOAD_FILE_PENDING && nextProps.feedo.loading === types.UPLOAD_FILE_PENDING) {
       // uploading a file
@@ -199,6 +214,7 @@ class NewFeedScreen extends React.Component {
   }
 
   componentDidMount() {
+    console.log('Current Feedo : ', this.props.feedo.currentFeed);
     Animated.timing(this.animatedShow, {
       toValue: 1,
       duration: CONSTANTS.ANIMATEION_MILLI_SECONDS,
@@ -259,7 +275,7 @@ class NewFeedScreen extends React.Component {
     Analytics.logEvent('new_feed_create_new_feed', {})
 
     if (this.state.feedName === '') {
-      Alert.alert('', 'Please input your feed name.', [{ text: 'Close' }]);
+      Alert.alert('', 'Please give your name a flow.', [{ text: 'Close' }]);
       return;
     }
 
@@ -346,7 +362,7 @@ class NewFeedScreen extends React.Component {
   }
   
   uploadFile(file, type) {
-    this.selectedFile = file.uri;
+    this.selectedFile = file;
     this.selectedFileMimeType = mime.lookup(file.uri);
     this.selectedFileName = file.fileName;
     this.selectedFileType = type;
@@ -450,7 +466,7 @@ class NewFeedScreen extends React.Component {
             activeOpacity={0.6}
             onPress={this.onUpdate.bind(this)}
           >
-            <Text style={[styles.textButton, {color: COLORS.PURPLE}]}>Create feed</Text>
+            <Text style={[styles.textButton, {color: COLORS.PURPLE}]}>Create flow</Text>
           </TouchableOpacity>
         </View>
       );
@@ -473,7 +489,7 @@ class NewFeedScreen extends React.Component {
           <Text style={styles.textButton}>
             {this.props.selectedFeedId
               ? this.props.viewMode === CONSTANTS.FEEDO_FROM_MAIN ? 'Save' : 'Done'
-              : 'Create Feed'
+              : 'Create Flow'
             }
           </Text>
         </TouchableOpacity>
@@ -532,7 +548,7 @@ class NewFeedScreen extends React.Component {
         <TextInput 
           ref={ref => this.textInputFeedNameRef = ref}
           style={styles.textInputFeedName}
-          placeholder='Name your feed'
+          placeholder='Name your flow'
           underlineColorAndroid='transparent'
           value={this.state.feedName}
           multiline

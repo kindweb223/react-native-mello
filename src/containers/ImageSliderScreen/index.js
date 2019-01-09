@@ -63,7 +63,7 @@ class ImageSliderScreen extends React.Component {
       // fullfilled in deleting a file
     } else if (this.props.card.loading !== cardTypes.SET_COVER_IMAGE_PENDING && nextProps.card.loading === cardTypes.SET_COVER_IMAGE_PENDING) {
       // setting a file as cover image
-      loading = true;
+      // loading = true;
     } else if (this.props.card.loading !== cardTypes.SET_COVER_IMAGE_FULFILLED && nextProps.card.loading === cardTypes.SET_COVER_IMAGE_FULFILLED) {
       // success in setting a file as cover image
     } 
@@ -168,11 +168,11 @@ class ImageSliderScreen extends React.Component {
           style={[styles.closeButtonWrapper, { opacity: this.buttonOpacity }]}
         >
           <TouchableOpacity
-            style={{padding: 10}}
+            style={styles.closeButtonView}
             activeOpacity={0.6}
             onPress={this.onClose.bind(this)}
           >
-            <MaterialCommunityIcons name="close" size={25} color={'#fff'} />
+            <MaterialCommunityIcons name="close" size={32} color={'#fff'} />
           </TouchableOpacity>
         </Animated.View>
         {

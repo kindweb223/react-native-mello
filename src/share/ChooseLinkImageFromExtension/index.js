@@ -32,6 +32,7 @@ class ChooseLinkImageFromExtension extends React.Component {
       isVisibleAlert: false,
       errorMessage: '',
       initialized: false,
+      title: 'Searching for Images',
     };
     this.shareUrl = '';
   }
@@ -41,13 +42,16 @@ class ChooseLinkImageFromExtension extends React.Component {
       const { type, value } = await ShareExtension.data();
       if (type === 'text/plain') {
         this.setState({initialized: true});
-        const urls = value.match(/((?:(http|https|Http|Https|rtsp|Rtsp):\/\/(?:(?:[a-zA-Z0-9\$\-\_\.\+\!\*\'\(\)\,\;\?\&\=]|(?:\%[a-fA-F0-9]{2})){1,64}(?:\:(?:[a-zA-Z0-9\$\-\_\.\+\!\*\'\(\)\,\;\?\&\=]|(?:\%[a-fA-F0-9]{2})){1,25})?\@)?)?((?:(?:[a-zA-Z0-9][a-zA-Z0-9\-]{0,64}\.)+((?:(?:[a-zA-Z0-9])(?:[a-zA-Z0-9]))|(?:(?:[a-zA-Z0-9])(?:[a-zA-Z0-9])(?:[a-zA-Z0-9]))))|(?:(?:25[0-5]|2[0-4][0-9]|[0-1][0-9]{2}|[1-9][0-9]|[1-9])\.(?:25[0-5]|2[0-4][0-9]|[0-1][0-9]{2}|[1-9][0-9]|[1-9]|0)\.(?:25[0-5]|2[0-4][0-9]|[0-1][0-9]{2}|[1-9][0-9]|[1-9]|0)\.(?:25[0-5]|2[0-4][0-9]|[0-1][0-9]{2}|[1-9][0-9]|[0-9])))(?:\:\d{1,5})?)(\/(?:(?:[a-zA-Z0-9\;\/\?\:\@\&\=\#\~\-\.\+\!\*\'\(\)\,\_])|(?:\%[a-fA-F0-9]{2}))*)?(?:\b|$)/gi);
+        const urls = value.match(/(http(s)?:\/\/.)?(www\.)?[-a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,6}\b([-a-zA-Z0-9@:%_\+.~#?&//=]*)/gi);
         this.shareUrl = urls[0]
         this.props.getOpenGraph(urls[0], true)
-      } else {
-        Actions.ShareCardScreen({
-          imageUrl: value,
-        });
+      } else if (type === 'images') {
+        const images = value.split(" , ");
+        if (images.length > 0) {
+          Actions.ShareCardScreen({
+            imageUrls: images,
+          });
+        }
       }
     } catch(error) {
       console.log('error : ', error)
@@ -70,6 +74,7 @@ class ChooseLinkImageFromExtension extends React.Component {
       if (images && images.length > 0) {
         this.setState({
           images,
+          title: 'Choose an image'
         });
       } else {
         this.onSkip();
@@ -110,7 +115,7 @@ class ChooseLinkImageFromExtension extends React.Component {
       selectedIndex: index,
     });
     Actions.ShareCardScreen({
-      imageUrl,
+      imageUrls: [imageUrl],
       shareUrl: this.shareUrl,
     });
   }
@@ -154,7 +159,7 @@ class ChooseLinkImageFromExtension extends React.Component {
   get renderHeader() {
     return (
       <View style={styles.topContainer}>
-        <Text style={styles.textTitle}>Choose an image</Text>
+        <Text style={styles.textTitle}>{this.state.title}</Text>
         <TouchableOpacity 
           style={styles.cancelButtonWrapper}
           activeOpacity={0.6}

@@ -16,8 +16,8 @@ export const AXIOS_CONFIG = {
 export const xSecretToken = '-kTpbC0bhCQQY2ZKKW7DGAiuK86Ii-t72O-OrUAnBuD4FC2Aw6FI_8sp3suHkVbe9NVFNVC6KwJCyhndcWpodvA03ZN9qQ6dUsZ34iWHdWmYW-AVeRdTSnFhXG-Ch4_3kS-BX4T4NayqVVs9EDk04IbRuLp26pQGSOIMCc7QUjM'
 
 export const SCHEME = 'demos.solvers.io://'
-export const TNC_URL = 'https://d5qq4b94z26us.cloudfront.net/feedo/legal/TandC.md'
-export const PRIVACY_POLICY_URL = 'https://d5qq4b94z26us.cloudfront.net/feedo/legal/privacy-policy.md'
+export const TNC_URL = 'https://d5qq4b94z26us.cloudfront.net/mello/legal/TandC.md'
+export const PRIVACY_POLICY_URL = 'https://d5qq4b94z26us.cloudfront.net/mello/legal/privacy-policy.md'
 
 // Appstore, Google play store
 export const APP_LOCALE = 'us'
@@ -28,5 +28,10 @@ export const PLAY_STORE_ID = ''
 // BugSnag
 export const BUGSNAG_KEY = 'ff91b9f4357b0367f0fac2f9f70855c5'
 
+// PubNub
+export const PUBNUB_SUBSCRIBER_KEY = 'sub-c-ec322a90-a60e-11e8-bb88-163ac01f2f4e'
+
 // Feature toggle
 export const TAGS_FEATURE = false
+
+export const TRELLO_URL = 'https://trello.com/b/xqBylYZO/mello'

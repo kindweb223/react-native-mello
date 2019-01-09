@@ -94,7 +94,7 @@ export default class ShareModalScreen extends React.Component {
           <View style={styles.modalContainer}>
             <View style={styles.modalContentContainer}>
               <View style={styles.topContainer}>
-                <Text style={styles.textTitle}>Feedo</Text>
+                <Text style={styles.textTitle}>Mello</Text>
                 <Text style={styles.textDescription}>{this.props.message}</Text>
               </View>
               <View style={styles.bottomContainer}>
@@ -112,7 +112,7 @@ export default class ShareModalScreen extends React.Component {
 
 
 ShareModalScreen.defaultProps = {
-  message: 'Oops, you appear to be signed out of Feedo. Tap OK to log in again and try again',
+  message: 'Oops, you appear to be signed out of Mello. Sign In and try again',
   buttons: CONSTANTS.MODAL_OK | CONSTANTS.MODAL_CLOSE,
   okLabel: 'OK',
   onOk: () => {

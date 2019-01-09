@@ -1,8 +1,11 @@
 import { AsyncStorage, Alert } from 'react-native'
 import axios from 'axios'
+import FastImage from "react-native-fast-image"
 import * as types from './types'
 import CONSTANTS from '../../../src/service/constants'
 import SharedGroupPreferences from 'react-native-shared-group-preferences'
+
+import pubnub from '../../lib/pubnub'
 
 const initialState = {
   loading: null,
@@ -12,7 +15,10 @@ const initialState = {
   userSignUpData: null,
   userImageUrlData: null,
   userLookup: null,
-  userConfirmed: false
+  userConfirmed: false,
+  cropUrl: null,
+  listHomeType: 'list',
+  listDetailType: 'list'
 };
 
 export default function user(state = initialState, action = {}) {
@@ -123,7 +129,8 @@ export default function user(state = initialState, action = {}) {
       return {
         ...state,
         loading: types.GET_USER_SESSION_REJECTED,
-        userInfo: null
+        userInfo: null,
+        errorCode: action.error.response.data.code
       }
     }
     /**
@@ -179,6 +186,9 @@ export default function user(state = initialState, action = {}) {
       AsyncStorage.removeItem('userInfo')
       SharedGroupPreferences.setItem('xAuthToken', null, CONSTANTS.APP_GROUP_TOKEN_IDENTIFIER)
       SharedGroupPreferences.setItem('userInfo', null, CONSTANTS.APP_GROUP_USER_IDENTIFIER)
+
+      // Unsubscribe pubnub channels
+      pubnub.unsubscribeAll()
 
       return {
         ...state,
@@ -245,21 +255,19 @@ export default function user(state = initialState, action = {}) {
      * Upload image to S3
      */
     case types.UPLOAD_FILE_PENDING:
-      console.log('UPLOAD_FILE_PENDING:')
       return {
         ...state,
         loading: types.UPLOAD_FILE_PENDING,
         error: null,
       }
     case types.UPLOAD_FILE_FULFILLED: {
-      console.log('UPLOAD_FILE_FULFILLED:')
       return {
         ...state,
         loading: types.UPLOAD_FILE_FULFILLED,
+        cropUrl: action.payload
       }
     }
     case types.UPLOAD_FILE_REJECTED: {
-      console.log('UPLOAD_FILE_REJECTED:')
       return {
         ...state,
         loading: types.UPLOAD_FILE_REJECTED
@@ -275,7 +283,7 @@ export default function user(state = initialState, action = {}) {
       }
     case types.UPDATE_PROFILE_FULFILLED: {
       const { data } = action.result
-      const { userInfo } = state
+      const { userInfo, cropUrl } = state
 
       if (userInfo) {
         // update the user's info when it's not signup page
@@ -284,10 +292,26 @@ export default function user(state = initialState, action = {}) {
         SharedGroupPreferences.setItem('userInfo', JSON.stringify(data), CONSTANTS.APP_GROUP_USER_IDENTIFIER)
       }
 
+      if (data.imageUrl) {
+        FastImage.preload([
+          {
+            uri: data.imageUrl
+          }
+        ])
+      }
+
+      let updateUserInfo = data
+      if (cropUrl) {
+        updateUserInfo = {
+          ...userInfo,
+          imageUrl: cropUrl
+        }
+      }
+
       return {
         ...state,
         loading: types.UPDATE_PROFILE_FULFILLED,
-        userInfo: userInfo ? data : null
+        userInfo: userInfo ? updateUserInfo : null
       }
     }
     case types.UPDATE_PROFILE_REJECTED: {
@@ -558,7 +582,24 @@ export default function user(state = initialState, action = {}) {
         error: action.error.response.data
       }
     }
-
+    /**
+     * set list type on Home actionbar (list, thumbnail)
+     */
+    case types.SET_HOME_LIST_TYPE: {
+      return {
+        ...state,
+        listHomeType: action.payload
+      }
+    }
+    /**
+     * set list type on Detail actionbar (list, masonry)
+     */
+    case types.SET_DETAIL_LIST_TYPE: {
+      return {
+        ...state,
+        listDetailType: action.payload
+      }
+    }
     default:
       return state;
   }

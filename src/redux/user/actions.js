@@ -345,7 +345,8 @@ export const uploadFileToS3 = (signedUrl, file, fileName, mimeType) => {
           }
         };
         xhr.send(fileData);
-      })
+      }),
+      payload: file
   };
 }
 
@@ -360,3 +361,16 @@ export const appOpened = (userId) => {
   });
 }
 
+export const setHomeListType = (type) => {
+  return {
+    type: types.SET_HOME_LIST_TYPE,
+    payload: type
+  };
+}
+
+export const setDetailListType = (type) => {
+  return {
+    type: types.SET_DETAIL_LIST_TYPE,
+    payload: type
+  };
+}

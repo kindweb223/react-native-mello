@@ -1,4 +1,5 @@
 import axios from 'axios';
+import React from 'react'
 
 import * as types from './types'
 
@@ -6,16 +7,17 @@ import * as types from './types'
 /**
  * Get feedo list
  */
-export const getFeedoList = (index, isForCardMove=false) => {
-  let url = 'hunts?owner=true'
+export const getFeedoList = (index = 0, isForCardMove = false) => {
+  // let url = 'hunts?owner=true'
 
-  if (index === 1) {
-    url = 'hunts?owner=false'
-  } else if (index === 2) {
-    url = 'hunts?pinned=true'
-  } else if (index === 3) {
-    url = 'hunts'
-  }
+  // if (index === 1) {
+  //   url = 'hunts?owner=false'
+  // } else if (index === 2) {
+  //   url = 'hunts?pinned=true'
+  // } else if (index === 3) {
+  //   url = 'hunts'
+  // }
+  let url = 'hunts'
 
   return {
     types: [types.GET_FEEDO_LIST_PENDING, types.GET_FEEDO_LIST_FULFILLED, types.GET_FEEDO_LIST_REJECTED],
@@ -76,6 +78,7 @@ export const getFeedDetail = (feedId) => {
       method: 'get',
       url: url
     }),
+    payload: feedId
   };
 }
 
@@ -535,4 +538,187 @@ export const leaveFeed = (feedId) => {
     }),
     payload: feedId
   };
+}
+
+/**
+ * Get activity feed
+ */
+export const getActivityFeed = (userId, data) => {
+  // let url = `users/${userId}/activityFeed?page=${data.page}&size=${data.size}`
+  let url = `users/${userId}/activityFeed`
+
+  return {
+    types: [types.GET_ACTIVITY_FEED_PENDING, types.GET_ACTIVITY_FEED_FULFILLED, types.GET_ACTIVITY_FEED_REJECTED],
+    promise:
+      axios({
+        method: 'get',
+        url: url,
+        data
+      })
+  };
+}
+
+/**
+ * Read all activity feed
+ */
+export const readAllActivityFeed = (userId) => {
+  let url = `users/${userId}/activityFeed`
+
+  return {
+    types: [types.READ_ALL_ACTIVITY_FEED_PENDING, types.READ_ALL_ACTIVITY_FEED_FULFILLED, types.READ_ALL_ACTIVITY_FEED_REJECTED],
+    promise:
+      axios({
+        method: 'put',
+        url: url
+      })
+  };
+}
+
+/**
+ * Read activity feed
+ */
+export const readActivityFeed = (userId, activityId) => {
+  let url = `users/${userId}/activityFeed/${activityId}`
+
+  const data = {
+    read: true
+  }
+
+  return {
+    types: [types.READ_ACTIVITY_FEED_PENDING, types.READ_ACTIVITY_FEED_FULFILLED, types.READ_ACTIVITY_FEED_REJECTED],
+    promise:
+      axios({
+        method: 'put',
+        url: url,
+        data
+      }),
+    payload: activityId
+  };
+}
+
+/**
+ * Delete activity feed
+ */
+export const deleteActivityFeed = (userId, activityId) => {
+  let url = `users/${userId}/activityFeed/${activityId}`
+
+  return {
+    types: [types.DEL_ACTIVITY_FEED_PENDING, types.DEL_ACTIVITY_FEED_FULFILLED, types.DEL_ACTIVITY_FEED_REJECTED],
+    promise:
+      axios({
+        method: 'delete',
+        url: url
+      }),
+    payload: activityId
+  };
+}
+
+/**
+ * update feed data from Pubnub event
+ */
+export const pubnubDeleteFeed = (feedId) => {
+  return {
+    type: types.PUBNUB_DELETE_FEED,
+    payload: feedId
+  };
+}
+
+/*
+ * Delete dummy card until toaster is hidden
+ */
+export const deleteDummyCard = (ideaId, type) => {
+  return {
+    type: types.DEL_DUMMY_CARD,
+    payload: { ideaId, type }
+  };
+}
+
+/**
+ * Move dummy card until toaster is hidden
+ */
+export const moveDummyCard = (ideaId, huntId, type) => {
+  return {
+    type: types.MOVE_DUMMY_CARD,
+    payload: { ideaId, huntId, type }
+  };
+}
+
+/**
+ * Get Feed detail from Pubnub
+ */
+export const pubnubGetFeedDetail = (feedId) => {
+  let url = `hunts/${feedId}`
+
+  return {
+    types: [types.PUBNUB_GET_FEED_DETAIL_PENDING, types.PUBNUB_GET_FEED_DETAIL_FULFILLED, types.PUBNUB_GET_FEED_DETAIL_REJECTED],
+    promise: axios({
+      method: 'get',
+      url: url
+    }),
+  };
+}
+
+export const pubnubMoveIdea = (feedId, ideaId) => {
+  return {
+    type: types.PUBNUB_MOVE_IDEA_FULFILLED,
+    payload: {
+      feedId,
+      ideaId
+    }
+  };
+}
+
+/**
+ * Like a card from Pubnub
+ */
+export const pubnubLikeCard = (ideaId) => {
+  return {
+    type: types.PUBNUB_LIKE_CARD_FULFILLED,
+    payload: ideaId,
+  };
+}
+
+/**
+ * UnLike a card from Pubnub
+ */
+export const pubnubUnLikeCard = (ideaId) => {
+  return {
+    type: types.PUBNUB_UNLIKE_CARD_FULFILLED,
+    payload: ideaId,
+  };
+}
+
+/**
+ * Delete invitee from other invitees' list
+ */
+export const pubnubDeleteInvitee = (huntId, huntInviteeId) => {
+  return {
+    type: types.PUBNUB_DELETE_INVITEE_FULFILLED,
+    payload: {
+      huntId,
+      huntInviteeId
+    }
+  };
+}
+
+export const pubnubDeleteOtherInvitee = (huntId, userId) => {
+  return {
+    type: types.PUBNUB_DELETE_OTHER_INVITEE_FULFILLED,
+    payload: {
+      huntId,
+      userId
+    }
+  };
+}
+
+export const getActivityFeedVisited = (userId) => {
+  let url = `users/${userId}/activityFeedVisited`
+  return {
+    types: [types.GET_ACTIVITY_FEED_VISITED_PENDING, types.GET_ACTIVITY_FEED_VISITED_FULFILLED, types.GET_ACTIVITY_FEED_VISITED_REJECTED],
+    promise:
+      axios({
+        method: 'post',
+        url: url
+      })
+  }
 }

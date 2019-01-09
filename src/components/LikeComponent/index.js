@@ -98,7 +98,12 @@ class LikeComponent extends React.Component {
     } = this.state;
     if (likes > 0) {
       Analytics.logEvent('feed_detail_show_like_list', {})
-      Actions.LikesListScreen({idea: this.props.idea});
+
+      if (this.props.prevPage === 'activity') {
+        Actions.ActivityLikesListScreen({ idea: this.props.idea });
+      } else {
+        Actions.LikesListScreen({ idea: this.props.idea });
+      }
     }
   }
 
@@ -127,6 +132,9 @@ class LikeComponent extends React.Component {
       likes,
       prevLikes,
     } = this.state;
+    const {
+      longHold
+    } = this.props
 
     const animatedMove1 = this.animatedShow.interpolate({
       inputRange: [0, 1],
@@ -157,8 +165,8 @@ class LikeComponent extends React.Component {
       <TouchableOpacity
         style={[styles.container, this.props.isOnlyInvitee ? { width: 25 } : { width: 45 }]}
         activeOpacity={0.7}
-        onPress={() => this.onLike(liked)}
-        onLongPress={() => this.onShowLikes()}
+        onPress={() => longHold ? {} : this.onLike(liked)}
+        onLongPress={() => longHold ? {} : this.onShowLikes()}
       >
         <View style={styles.likeContainer}>
           <Animated.View 
@@ -197,7 +205,12 @@ class LikeComponent extends React.Component {
   }
 }
 
+LikeComponent.defaultProps = {
+  longHold: false
+}
+
 LikeComponent.propTypes = {
+  longHold: PropTypes.bool,
   idea: PropTypes.objectOf(PropTypes.any).isRequired,
 }
 

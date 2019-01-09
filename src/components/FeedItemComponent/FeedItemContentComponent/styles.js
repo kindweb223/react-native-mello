@@ -36,8 +36,9 @@ const styles = StyleSheet.create({
     marginBottom: 0
   },
   feedText: {
-    fontSize: 12,
+    fontSize: 14,
     lineHeight: 21,
+    marginLeft: 3
   },
   active: {
     color: COLORS.PURPLE
@@ -51,7 +52,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center'
   },
   avatarView: {
-    marginLeft: 10
+    marginLeft: 15
   },
   tagsView: {
     marginTop: 5,

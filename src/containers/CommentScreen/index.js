@@ -28,12 +28,20 @@ import {
   updateCardComment,
   deleteCardComment,
 } from '../../redux/card/actions'
+import {
+  getActivityFeed,
+  getFeedoList
+} from '../../redux/feedo/actions'
+
 import { getDurationFromNow } from '../../service/dateUtils'
 import InputToolbarComponent from '../../components/InputToolbarComponent';
 import UserAvatarComponent from '../../components/UserAvatarComponent';
 import * as COMMON_FUNC from '../../service/commonFunc'
 
 import Analytics from '../../lib/firebase'
+import pubnub from '../../lib/pubnub'
+
+const PAGE_COUNT = 50
 
 class CommentScreen extends React.Component {
   static renderLeftButton(props) {
@@ -61,6 +69,7 @@ class CommentScreen extends React.Component {
       comment: '',
       loading: false,
       isShowKeyboard: false,
+      commentList: []
     };
     this.keyboardHeight = new Animated.Value(0);
     this.userInfo = {};
@@ -73,10 +82,12 @@ class CommentScreen extends React.Component {
     this.keyboardWillHideSubscription = Keyboard.addListener('keyboardWillHide', (e) => this.keyboardWillHide(e));
     this.props.getCardComments(this.props.idea.id);
     if (this.props.isShowKeyboard) {
-      this.setState({
-        isShowKeyboard: this.props.isShowKeyboard,
+      Animated.delay(400).start(() => {
+        this.setState({
+          isShowKeyboard: this.props.isShowKeyboard,
+        });
+        this.inputToolbarRef.focus();  
       });
-      this.inputToolbarRef.focus();
     }
   }
 
@@ -86,31 +97,54 @@ class CommentScreen extends React.Component {
   }
 
   UNSAFE_componentWillReceiveProps(nextProps) {
+    // if (nextProps.feedo.loading === 'PUBNUB_DELETE_FEED') {
+    //   console.log('CCCCC')
+    //   this.props.getFeedoList()
+    //   Actions.popTo('HomeScreen')
+    // }
+
     let loading = false;
     if (this.props.card.loading !== types.GET_CARD_COMMENTS_PENDING && nextProps.card.loading === types.GET_CARD_COMMENTS_PENDING) {
       // getting comments of a card
-      loading = true;
+      loading = false;
     } else if (this.props.card.loading !== types.GET_CARD_COMMENTS_FULFILLED && nextProps.card.loading === types.GET_CARD_COMMENTS_FULFILLED) {
       // success in getting comments of a card
+      if (nextProps.card.currentCardId === nextProps.card.currentCard.id ||
+          nextProps.card.currentCardId === this.props.idea.id) {
+        this.setState({ commentList: nextProps.card.currentComments })
+      }
+      this.props.getActivityFeed(this.props.user.userInfo.id, { page: 0, size: PAGE_COUNT })
     } else if (this.props.card.loading !== types.ADD_CARD_COMMENT_PENDING && nextProps.card.loading === types.ADD_CARD_COMMENT_PENDING) {
       // adding a comment of a card
-      loading = true;
+      loading = false;
     } else if (this.props.card.loading !== types.ADD_CARD_COMMENT_FULFILLED && nextProps.card.loading === types.ADD_CARD_COMMENT_FULFILLED) {
       // success in adding a comment of a card
+      if (nextProps.card.currentCardId === nextProps.card.currentCard.id ||
+        nextProps.card.currentCardId === this.props.idea.id) {
+        this.setState({ commentList: nextProps.card.currentComments })
+      }
     } else if (this.props.card.loading !== types.EDIT_CARD_COMMENT_PENDING && nextProps.card.loading === types.EDIT_CARD_COMMENT_PENDING) {
-      // adding a comment of a card
-      loading = true;
+      // editing a comment of a card
+      loading = false;
     } else if (this.props.card.loading !== types.EDIT_CARD_COMMENT_FULFILLED && nextProps.card.loading === types.EDIT_CARD_COMMENT_FULFILLED) {
       // success in adding a comment of a card
+      if (nextProps.card.currentCardId === nextProps.card.currentCard.id ||
+        nextProps.card.currentCardId === this.props.idea.id) {
+        this.setState({ commentList: nextProps.card.currentComments })
+      }
     } else if (this.props.card.loading !== types.DELETE_CARD_COMMENT_PENDING && nextProps.card.loading === types.DELETE_CARD_COMMENT_PENDING) {
-      // adding a comment of a card
-      loading = true;
+      // delete a comment of a card
+      loading = false;
     } else if (this.props.card.loading !== types.DELETE_CARD_COMMENT_FULFILLED && nextProps.card.loading === types.DELETE_CARD_COMMENT_FULFILLED) {
       // success in adding a comment of a card
+      if (nextProps.card.currentCardId === nextProps.card.currentCard.id ||
+        nextProps.card.currentCardId === this.props.idea.id) {
+        this.setState({ commentList: nextProps.card.currentComments })
+      }
     } 
 
     this.setState({
-      loading,
+      loading
     });
 
     // showing error alert
@@ -168,6 +202,7 @@ class CommentScreen extends React.Component {
   getCommentUser(comment) {
     const { invitees } = this.props.feedo.currentFeed;
     const invitee = _.find(invitees, invitee => invitee.id === comment.huntInviteeId);
+
     if (invitee) {
       return invitee.userProfile;  
     }
@@ -191,9 +226,10 @@ class CommentScreen extends React.Component {
   }
 
   onEdit(index) {
+    const { commentList } = this.state
     this.setState({
       selectedItemIndex: index,
-      comment: this.props.card.currentComments[index].content,
+      comment: commentList[index].content,
     });
     this.inputToolbarRef.focus();
   }
@@ -211,24 +247,28 @@ class CommentScreen extends React.Component {
   }
 
   onDelete(index) {
+    const { commentList } = this.state
+
     this.setState({ 
       comment: '',
       selectedItemIndex: -1,
     });
     this.props.deleteCardComment(
       this.props.idea.id, 
-      this.props.card.currentComments[index].id,
+      commentList[index].id,
     );
   }
 
   onSend() {
-    if (this.state.selectedItemIndex === -1) {
-      this.props.addCardComment(this.props.idea.id, this.state.comment);
+    const { commentList, selectedItemIndex, comment } = this.state
+
+    if (selectedItemIndex === -1) {
+      this.props.addCardComment(this.props.idea.id, comment);
     } else {
       this.props.updateCardComment(
         this.props.idea.id, 
-        this.props.card.currentComments[this.state.selectedItemIndex].id,
-        this.state.comment
+        commentList[selectedItemIndex].id,
+        comment
       );
     }
     this.setState({ 
@@ -243,7 +283,8 @@ class CommentScreen extends React.Component {
 
   renderItem({item, index}) {
     const { currentFeed } = this.props.feedo
-    const user = this.getCommentUser(item);
+    user = this.getCommentUser(item);
+
     let editable = false
     if (COMMON_FUNC.isFeedOwnerEditor(currentFeed) && user && user.id === this.props.user.userInfo.id) {
       editable = true
@@ -312,11 +353,13 @@ class CommentScreen extends React.Component {
   }
 
   render () {
+    const { commentList } = this.state
+
     return (
       <View style={styles.container}>
         <FlatList
           contentContainerStyle={{ paddingVertical: 16 }}
-          data={this.props.card.currentComments}
+          data={commentList}
           renderItem={this.renderItem.bind(this)}
           keyExtractor={(item, index) => index.toString()}
           extraData={this.state}
@@ -342,6 +385,7 @@ class CommentScreen extends React.Component {
 CommentScreen.defaultProps = {
   guest: false,
   isShowKeyboard: false,
+  prevPage: 'idea'
 }
 
 
@@ -349,6 +393,7 @@ CommentScreen.propTypes = {
   idea: PropTypes.object,
   guest: PropTypes.bool,
   isShowKeyboard: PropTypes.bool,
+  prevPage: PropTypes.string
 }
 
 
@@ -364,6 +409,8 @@ const mapDispatchToProps = dispatch => ({
   addCardComment: (ideaId, content) => dispatch(addCardComment(ideaId, content)),
   updateCardComment: (ideaId, commentId, content) => dispatch(updateCardComment(ideaId, commentId, content)),
   deleteCardComment: (ideaId, commentId) => dispatch(deleteCardComment(ideaId, commentId)),
+  getActivityFeed: (userId, param) => dispatch(getActivityFeed(userId, param)),
+  getFeedoList: () => dispatch(getFeedoList())
 })
 
 

@@ -1,8 +1,10 @@
+import { AsyncStorage } from 'react-native'
 import PushNotification from 'react-native-push-notification'
 import * as types from './types'
 import * as cardTypes from '../card/types'
 import { filter, find, findIndex, isEmpty } from 'lodash'
 import resolveError from './../../service/resolveError'
+import { restoreArchiveFeed } from './actions';
 
 const initialState = {
   loading: null,
@@ -16,7 +18,12 @@ const initialState = {
   fileUploadUrl: {},
   userTags: [],
   archivedFeedList: [],
-  invitedFeedList: []
+  invitedFeedList: [],
+  activityFeedList: [],
+  activityData: {},
+  dummyDelCard: {},
+  dummyMoveCard: {},
+  badgeCount: 0
 };
 
 export default function feedo(state = initialState, action = {}) {
@@ -95,22 +102,38 @@ export default function feedo(state = initialState, action = {}) {
       const { invitedFeedList, feedoList, currentFeed } = state
 
       const restInvitedFeedList = filter(invitedFeedList, feed => feed.id !== feedId)
+      const invitedFeed = find(invitedFeedList, feed => feed.id === feedId)
 
       // Update feed list
       let updateFeed = null
       let restFeedoList = []
       if (feedoList.length > 0) {
         restFeedoList = filter(feedoList, feed => feed.id !== feedId)
-        let filterUpdateFeed = filter(feedoList, feed => feed.id === feedId)
-        updateFeed = filterUpdateFeed[0]
+        updateFeed = find(feedoList, feed => feed.id === feedId)
 
-        if (filterUpdateFeed.length > 0) {
+        if (updateFeed) {
           updateFeed = {
             ...updateFeed,
             metadata: {
               ...updateFeed.metadata,
               myInviteStatus: 'ACCEPTED'
             }
+          }
+        } else {
+          updateFeed = {
+            ...invitedFeed,
+            metadata: {
+              ...invitedFeed.metadata,
+              myInviteStatus: 'ACCEPTED'
+            }
+          }
+        }
+      } else if (type === true) {
+        updateFeed = {
+          ...invitedFeed,
+          metadata: {
+            ...invitedFeed.metadata,
+            myInviteStatus: 'ACCEPTED'
           }
         }
       }
@@ -132,7 +155,9 @@ export default function feedo(state = initialState, action = {}) {
         loading: types.UPDTE_FEED_INVITATION_FULFILLED,
         invitedFeedList: restInvitedFeedList,
         feedoList: type ? (updateFeed ? [...restFeedoList, updateFeed] : restFeedoList) : restFeedoList,
-        currentFeed: newCurrentFeed
+        currentFeed: newCurrentFeed,
+        inviteUpdateType: type,
+        badgeCount: state.badgeCount > 0 ? state.badgeCount - 1 : 0
       }
     }
     case types.UPDTE_FEED_INVITATION_REJECTED: {
@@ -156,14 +181,23 @@ export default function feedo(state = initialState, action = {}) {
       return {
         ...state,
         loading: types.GET_FEED_DETAIL_FULFILLED,
-        currentFeed: data,
+        currentFeed: data
       }
     }
     case types.GET_FEED_DETAIL_REJECTED: {
+      const { data } = action.error.response
+      const feedId = action.payload
+      const { feedoList } = state
+      let restFeedoList = feedoList
+      if (data.code === 'error.hunt.not.found' || data.code === 'error.hunt.access.denied') {
+        restFeedoList = filter(feedoList, feed => feed.id !== feedId)
+      }
+
       return {
         ...state,
         loading: types.GET_FEED_DETAIL_REJECTED,
-        error: action.error,
+        error: data,
+        feedoList: restFeedoList
       }
     }
     /**
@@ -176,9 +210,19 @@ export default function feedo(state = initialState, action = {}) {
       }
     }
     case types.PIN_FEED_FULFILLED: {
+      const feedId = action.payload
+      const { feedoList } = state
+
+      const currentFeed = filter(feedoList, feed => feed.id === feedId)
+      const restFeedoList = filter(feedoList, feed => feed.id !== feedId)
+
       return {
         ...state,
         loading: types.PIN_FEED_FULFILLED,
+        feedoList: [
+          Object.assign({}, currentFeed[0], { pinned: { pinned: true } }),
+          ...restFeedoList
+        ]
       }
     }
     case types.PIN_FEED_REJECTED: {
@@ -198,9 +242,19 @@ export default function feedo(state = initialState, action = {}) {
       }
     }
     case types.UNPIN_FEED_FULFILLED: {
+      const feedId = action.payload
+      const { feedoList } = state
+
+      const currentFeed = filter(feedoList, feed => feed.id === feedId)
+      const restFeedoList = filter(feedoList, feed => feed.id !== feedId)
+
       return {
         ...state,
         loading: types.UNPIN_FEED_FULFILLED,
+        feedoList: [
+          Object.assign({}, currentFeed[0], { pinned: null }),
+          ...restFeedoList
+        ]
       }
     }
     case types.UNPIN_FEED_REJECTED: {
@@ -331,26 +385,7 @@ export default function feedo(state = initialState, action = {}) {
       const currentFeed = filter(feedoList, feed => feed.id === feedId)
       const restFeedoList = filter(feedoList, feed => feed.id !== feedId)
 
-      if (flag === 'pin') {
-        return {
-          ...state,
-          loading: 'ADD_DUMMY_FEED',
-          feedoList: [
-            Object.assign({}, currentFeed[0], { pinned: { pinned: true } }),
-            ...restFeedoList
-          ]
-        }
-      } else if (flag === 'unpin') {
-        return {
-          ...state,
-          loading: 'ADD_DUMMY_FEED',
-          pinnedDate: currentFeed[0].pinned.pinnedDate,
-          feedoList: [
-            Object.assign({}, currentFeed[0], { pinned: null }),
-            ...restFeedoList
-          ]
-        }
-      } else if (flag === 'delete') {
+      if (flag === 'delete') {
         return {
           ...state,
           loading: types.DEL_FEED_FULFILLED,
@@ -880,25 +915,29 @@ export default function feedo(state = initialState, action = {}) {
       }
     case types.UPDATE_INVITEE_PERMISSION_FULFILLED: {
       const { data } = action.result
-      const { currentFeed } = state
+      const { currentFeed, feedoList } = state
       const { payload } = action
 
-      let invitees = currentFeed.invitees
-      for (let i = 0; i < invitees.length; i ++) {
-        if (invitees[i].id === payload.inviteeId) {
-          invitees[i].permissions = payload.type
+      let invitees = []
+      let updatedFeed = currentFeed
+      if (!isEmpty(currentFeed)) {
+        invitees = currentFeed.invitees
+        for (let i = 0; i < invitees.length; i ++) {
+          if (invitees[i].id === payload.inviteeId) {
+            invitees[i].permissions = payload.type
+          }
         }
-      }
-
-      let updaedFeed = {
-        ...currentFeed,
-        invitees
+  
+        updatedFeed = {
+          ...currentFeed,
+          invitees
+        }
       }
 
       return {
         ...state,
         loading: types.UPDATE_INVITEE_PERMISSION_FULFILLED,
-        currentFeed: updaedFeed
+        currentFeed: updatedFeed
       }
     }
     case types.UPDATE_INVITEE_PERMISSION_REJECTED: {
@@ -984,7 +1023,7 @@ export default function feedo(state = initialState, action = {}) {
       const ideaIndex = findIndex(currentFeed.ideas, idea => idea.id === ideaId);
       currentFeed.ideas[ideaIndex].metadata.likes --;
       currentFeed.ideas[ideaIndex].metadata.liked = false;
-      console.log('UNLIKE_CARD_FULFILLED : ', currentFeed);
+
       return {
         ...state,
         currentFeed: {
@@ -1004,6 +1043,7 @@ export default function feedo(state = initialState, action = {}) {
       currentFeed.ideas[ideaIndex].metadata.comments ++;
       return {
         ...state,
+        loading: 'ADD_CARD_COMMENT_FULFILLED',
         currentFeed: {
           ...currentFeed,
         }
@@ -1021,6 +1061,7 @@ export default function feedo(state = initialState, action = {}) {
       currentFeed.ideas[ideaIndex].metadata.comments --;
       return {
         ...state,
+        loading: 'DELETE_CARD_COMMENT_FULFILLED',
         currentFeed: {
           ...currentFeed,
         }
@@ -1031,11 +1072,10 @@ export default function feedo(state = initialState, action = {}) {
      * delete a card
      */
     case cardTypes.DELETE_CARD_FULFILLED: {
-      const { currentFeed, feedoList } = state
+      const { currentFeed } = state
       const ideaId = action.payload;
       const ideas = filter(currentFeed.ideas, idea => idea.id !== ideaId);
 
-      const restFeedoList = filter(feedoList, feed => feed.id !== currentFeed.id)
       const newCurrentFeed = {
         ...currentFeed,
         ideas,
@@ -1044,11 +1084,7 @@ export default function feedo(state = initialState, action = {}) {
       return {
         ...state,
         loading: 'DELETE_CARD_FULFILLED',
-        currentFeed: newCurrentFeed,
-        feedoList: [
-          ...restFeedoList,
-          newCurrentFeed
-        ]
+        currentFeed: newCurrentFeed
       }
     }
 
@@ -1056,31 +1092,18 @@ export default function feedo(state = initialState, action = {}) {
      * move a card
      */
     case cardTypes.MOVE_CARD_FULFILLED: {
-      const { currentFeed, feedoList } = state
-      const { ideaId, huntId } = action.payload;
+      const { currentFeed } = state
+      const { ideaId } = action.payload;
+
       const ideas = filter(currentFeed.ideas, idea => idea.id !== ideaId);
-      const movedCard = find(currentFeed.ideas, idea => idea.id === ideaId);
 
-      const restFeedoList = filter(feedoList, feed => feed.id !== currentFeed.id)
-      const moveToFeedIndex = findIndex(restFeedoList, feed => feed.id === huntId)
-
-      if (moveToFeedIndex !== -1) {
-        restFeedoList[moveToFeedIndex].ideas.push(movedCard);
-      }
       return {
         ...state,
         loading: 'MOVE_CARD_FULFILLED',
         currentFeed: {
           ...currentFeed,
           ideas,
-        },
-        feedoList: [
-          ...restFeedoList,
-          {
-            ...currentFeed,
-            ideas,
-          }
-        ],
+        }
       }
     }
 
@@ -1200,7 +1223,482 @@ export default function feedo(state = initialState, action = {}) {
         error: data,
       }
     }
+    /**
+     * Get Activity Feed List
+     */
+    case types.GET_ACTIVITY_FEED_PENDING:
+      return {
+        ...state,
+        loading: types.GET_ACTIVITY_FEED_PENDING,
+      }
+    case types.GET_ACTIVITY_FEED_FULFILLED: {
+      const { data } = action.result
 
+      if(data.badgeCount) {
+        PushNotification.setApplicationIconBadgeNumber(data.badgeCount)
+      }
+
+      let activityFeedList = []
+      if (data.first) {
+        activityFeedList = data.content
+      } else {
+        activityFeedList = [
+          ...state.activityFeedList,
+          ...data.content
+        ]
+      }
+
+      return {
+        ...state,
+        loading: types.GET_ACTIVITY_FEED_FULFILLED,
+        activityFeedList,
+        activityData: data,
+        badgeCount: data.badgeCount
+      }
+    }
+    case types.GET_ACTIVITY_FEED_REJECTED: {
+      return {
+        ...state,
+        loading: types.GET_ACTIVITY_FEED_REJECTED,
+        error: action.error,
+      }
+    }
+    /**
+     * Read all acitivty
+     */
+    case types.READ_ALL_ACTIVITY_FEED_PENDING:
+      return {
+        ...state,
+        loading: types.READ_ALL_ACTIVITY_FEED_PENDING,
+      }
+    case types.READ_ALL_ACTIVITY_FEED_FULFILLED: {
+      return {
+        ...state,
+        loading: types.READ_ALL_ACTIVITY_FEED_FULFILLED
+      }
+    }
+    case types.READ_ALL_ACTIVITY_FEED_REJECTED: {
+      return {
+        ...state,
+        loading: types.READ_ALL_ACTIVITY_FEED_REJECTED,
+        error: action.error.response,
+      }
+    }
+    /**
+     * Read acitivty
+     */
+    case types.READ_ACTIVITY_FEED_PENDING:
+      return {
+        ...state,
+        loading: types.READ_ACTIVITY_FEED_PENDING,
+      }
+    case types.READ_ACTIVITY_FEED_FULFILLED: {
+      const activityId = action.payload
+      const { activityFeedList, activityData } = state
+
+      const currentActivityFeedList = filter(activityFeedList, feed => feed.id === activityId)
+      const restActivityFeedList = filter(activityFeedList, feed => feed.id !== activityId)
+
+      return {
+        ...state,
+        loading: types.READ_ACTIVITY_FEED_FULFILLED,
+        activityFeedList: [
+          ...restActivityFeedList,
+          {
+            ...currentActivityFeedList[0],
+            read: true
+          }
+        ]
+      }
+    }
+    case types.READ_ACTIVITY_FEED_REJECTED: {
+      return {
+        ...state,
+        loading: types.READ_ACTIVITY_FEED_REJECTED,
+        error: action.error.response,
+      }
+    }
+    /**
+     * Delete acitivty
+     */
+    case types.DEL_ACTIVITY_FEED_PENDING:
+      return {
+        ...state,
+        loading: types.DEL_ACTIVITY_FEED_PENDING,
+      }
+    case types.DEL_ACTIVITY_FEED_FULFILLED: {
+      const activityId = action.payload
+      const { activityFeedList, activityData } = state
+
+      const restActivityFeedList = filter(activityFeedList, feed => feed.id !== activityId)
+
+      return {
+        ...state,
+        loading: types.DEL_ACTIVITY_FEED_FULFILLED,
+        activityFeedList: restActivityFeedList
+      }
+    }
+    case types.DEL_ACTIVITY_FEED_REJECTED: {
+      return {
+        ...state,
+        loading: types.DEL_ACTIVITY_FEED_REJECTED,
+        error: action.error.response,
+      }
+    }
+    case types.DEL_DUMMY_CARD: {
+      const { currentFeed, feedoList } = state
+      const { ideaId , type } = action.payload;
+
+      let newCurrentFeed = {}
+      let dummyDelCard = {}
+      if (type === 0) { //delete
+        const ideas = filter(currentFeed.ideas, idea => idea.id !== ideaId);
+        dummyDelCard = filter(currentFeed.ideas, idea => idea.id === ideaId);
+        newCurrentFeed = {
+          ...currentFeed,
+          ideas,
+        }
+      } else {  //restore
+        currentFeed.ideas.push(state.dummyDelCard[0])
+        dummyDelCard = {}
+        newCurrentFeed = currentFeed
+      }
+
+      const restFeedoList = filter(feedoList, feed => feed.id !== currentFeed.id)
+
+      return {
+        ...state,
+        loading: types.DEL_DUMMY_CARD,
+        dummyDelCard,
+        currentFeed: newCurrentFeed,
+        feedoList: [
+          ...restFeedoList,
+          newCurrentFeed
+        ]
+      }
+    }
+    /**
+     * move dummy card
+     */
+    case types.MOVE_DUMMY_CARD: {
+      const { currentFeed, feedoList } = state
+      const { ideaId, huntId, type } = action.payload;
+
+      let dummyMoveCard = {}
+      let newFeedList = []
+      let newCurrentFeed = {}
+      let restFeedoList = []
+
+      if (type === 0) {
+        restFeedoList = filter(feedoList, feed => feed.id !== currentFeed.id)
+
+        const ideas = filter(currentFeed.ideas, idea => idea.id !== ideaId)
+        const movedCard = find(currentFeed.ideas, idea => idea.id === ideaId)
+        
+        const moveToFeedIndex = findIndex(restFeedoList, feed => feed.id === huntId)
+
+        if (moveToFeedIndex !== -1) {
+          restFeedoList[moveToFeedIndex].ideas.push(movedCard);
+        }
+
+        newCurrentFeed = {
+          ...currentFeed,
+          ideas
+        }
+
+        newFeedList = [
+          ...restFeedoList,
+          newCurrentFeed
+        ]       
+
+        dummyMoveCard = { ideaId, feedId: huntId, oldFeed: currentFeed, newFeed: restFeedoList[moveToFeedIndex], movedCard }
+      } else {
+        dummyMoveCard = state.dummyMoveCard
+        restFeedoList = filter(feedoList, feed => feed.id !== dummyMoveCard.feedId)
+
+        const ideas = filter(dummyMoveCard.newFeed.ideas, idea => idea.id !== dummyMoveCard.ideaId)
+        const movedFeed = {
+          ...dummyMoveCard.newFeed,
+          ideas
+        }
+        
+        const originalFeedIndex = findIndex(restFeedoList, feed => feed.id === currentFeed.id)
+
+        if (originalFeedIndex !== -1) {
+          restFeedoList[originalFeedIndex].ideas.push(dummyMoveCard.movedCard);
+        }
+
+        newFeedList = [
+          ...restFeedoList,
+          movedFeed
+        ]
+
+        dummyMoveCard = {}
+      }
+
+      return {
+        ...state,
+        loading: 'MOVE_DUMMY_CARD',
+        dummyMoveCard,
+        feedoList: newFeedList
+      }
+    }
+    case types.PUBNUB_DELETE_FEED: {
+      const feedId = action.payload
+      const { feedoList, invitedFeedList } = state
+
+      const restFeedoList = filter(feedoList, feed => feed.id !== feedId )
+      const restInviteeFeedoList = filter(invitedFeedList, feed => feed.id !== feedId )
+
+      return {
+        ...state,
+        loading: types.PUBNUB_DELETE_FEED,
+        feedoList: restFeedoList,
+        invitedFeedList: restInviteeFeedoList
+      }
+    }
+    case cardTypes.GET_CARD_FULFILLED: {
+      const { data } = action.result
+      const { feedoList, currentFeed } = state
+
+      const updateFeed = find(feedoList, feed => feed.id === data.huntId )
+
+      if (updateFeed) {
+        const restIdeas = filter(updateFeed.ideas, idea => idea.id !== data.id )
+        const newUpdateFeed = {...updateFeed, ideas: [...restIdeas, data]}
+        const restFeedoList = filter(feedoList, feed => feed.id !== data.huntId )
+
+        const newCurrentFeed = (!isEmpty(currentFeed) && currentFeed.id === data.huntId) ? newUpdateFeed : currentFeed
+
+        return {
+          ...state,
+          loading: 'GET_CARD_FULFILLED',
+          feedoList: [...restFeedoList, newUpdateFeed],
+          currentFeed: newCurrentFeed
+        }
+      } else {
+        return {
+          ...state,
+          loading: 'GET_CARD_FULFILLED'
+        }
+      }
+    }
+    case cardTypes.GET_CARD_COMMENTS_FULFILLED: {
+      const { data } = action.result
+      const ideaId = action.payload
+      const { currentFeed } = state
+
+      let newCurrentFeed = currentFeed
+      const restIdeas = filter(currentFeed.ideas, idea => idea.id !== ideaId)
+      const currentIdea = find(currentFeed.ideas, idea => idea.id === ideaId )
+      if (!isEmpty(currentFeed) && currentIdea) {
+        const newUpdateFeed = {
+          ...currentFeed,
+          ideas: [
+            ...restIdeas,
+            {
+              ...currentIdea,
+              metadata: {
+                ...currentIdea.metadata,
+                comments: data.length
+              }
+            }
+          ]
+        }
+        newCurrentFeed = newUpdateFeed
+      }
+
+      return {
+        ...state,
+        loading: 'GET_CARD_COMMENTS_FULFILLED',
+        currentFeed: newCurrentFeed
+      }
+    }
+    case types.PUBNUB_GET_FEED_DETAIL_FULFILLED: {
+      const { data } = action.result
+      const { feedoList, invitedFeedList, archivedFeedList, currentFeed } = state
+
+      const restFeedoList = filter(feedoList, feed => feed.id !== data.id)
+      const restInvitedFeedoList = filter(invitedFeedList, feed => feed.id !== data.id)
+      const restArchivedFeedoList = filter(archivedFeedList, feed => feed.id !== data.id)
+      const newCurrentFeed = isEmpty(currentFeed) ? currentFeed : currentFeed.id === data.id ? data : currentFeed
+
+      return {
+        ...state,
+        loading: types.PUBNUB_GET_FEED_DETAIL_FULFILLED,
+        currentFeed: newCurrentFeed,
+        feedoList: feedoList.length === restFeedoList.length ? feedoList : [ ...restFeedoList, data ],
+        invitedFeedList: invitedFeedList.length === restInvitedFeedoList.length ? invitedFeedList : [ ...restInvitedFeedoList, data ],
+        archivedFeedList: archivedFeedList.length === restArchivedFeedoList.length ? archivedFeedList : [ ...restArchivedFeedoList, data ]
+      }
+    }
+    case types.PUBNUB_MOVE_IDEA_FULFILLED: {
+      const { feedId, ideaId } = action.payload
+      const { feedoList, currentFeed } = state
+
+      const restFeedoList = filter(feedoList, feed => feed.id !== feedId)
+      const oldFeed = find(feedoList, feed => feed.id === feedId)
+      const restOldIdeas = filter(oldFeed.ideas, idea => idea.id !== ideaId)
+
+      let newCurrentFeed = currentFeed
+      if (currentFeed.id === feedId) {
+        newCurrentFeed = {
+          ...newCurrentFeed,
+          ideas: filter(newCurrentFeed.ideas, idea => idea.id !== ideaId)
+        }
+      }
+
+      return {
+        ...state,
+        loading: types.PUBNUB_MOVE_IDEA_FULFILLED,
+        feedoList: [
+          ...restFeedoList,
+          {
+            ...oldFeed,
+            ideas: restOldIdeas
+          }
+        ],
+        currentFeed: newCurrentFeed
+      }
+    }
+    case types.PUBNUB_LIKE_CARD_FULFILLED: {
+      const ideaId = action.payload
+      const { currentFeed } = state
+
+      let newCurrentFeed = currentFeed
+      const restIdeas = filter(currentFeed.ideas, idea => idea.id !== ideaId)
+      const currenntIdea = find(currentFeed.ideas, idea => idea.id === ideaId )
+      if (!isEmpty(currentFeed) && currenntIdea) {
+        const newUpdateFeed = {
+          ...currentFeed,
+          ideas: [
+            ...restIdeas,
+            {
+              ...currenntIdea,
+              metadata: {
+                ...currenntIdea.metadata,
+                likes: currenntIdea.metadata.likes + 1
+              }
+            }
+          ]
+        }
+        newCurrentFeed = newUpdateFeed
+      }
+      return {
+        ...state,
+        loading: types.PUBNUB_LIKE_CARD_FULFILLED,
+        currentFeed: newCurrentFeed
+      }
+    }
+    case types.PUBNUB_UNLIKE_CARD_FULFILLED: {
+      const ideaId = action.payload
+      const { currentFeed } = state
+
+      let newCurrentFeed = currentFeed
+      const restIdeas = filter(currentFeed.ideas, idea => idea.id !== ideaId)
+      const currenntIdea = find(currentFeed.ideas, idea => idea.id === ideaId )
+      if (!isEmpty(currentFeed) && currenntIdea) {
+        const newUpdateFeed = {
+          ...currentFeed,
+          ideas: [
+            ...restIdeas,
+            {
+              ...currenntIdea,
+              metadata: {
+                ...currenntIdea.metadata,
+                likes: currenntIdea.metadata === 0 ? 0 : currenntIdea.metadata.likes - 1
+              }
+            }
+          ]
+        }
+        newCurrentFeed = newUpdateFeed
+      }
+      return {
+        ...state,
+        loading: types.PUBNUB_UNLIKE_CARD_FULFILLED,
+        currentFeed: newCurrentFeed
+      }
+    }
+    case types.PUBNUB_DELETE_INVITEE_FULFILLED: {
+      const { huntId, huntInviteeId } = action.payload
+      const { feedoList, currentFeed } = state
+
+      const selectFeed = find(feedoList, feedo => feedo.id === huntId)
+      const restFeedoList = filter(feedoList, feedo => feedo.id !== huntId)
+      const restInvitees = filter(selectFeed.invitees, invitee => invitee.id !== huntInviteeId)
+
+      const currentRestInvitees = filter(currentFeed.invitees, invitee => invitee.id !== huntInviteeId)
+
+      return {
+        ...state,
+        loading: types.PUBNUB_DELETE_INVITEE_FULFILLED,
+        feedoList: [
+          ...restFeedoList,
+          {
+            ...selectFeed,
+            invitees: restInvitees
+          }
+        ],
+        currentFeed: {
+          ...currentFeed,
+          invitees: currentRestInvitees
+        }
+      }
+    }
+    case types.PUBNUB_DELETE_OTHER_INVITEE_FULFILLED: {
+      const { huntId, userId } = action.payload
+      const { feedoList, currentFeed } = state
+
+      const selectFeed = find(feedoList, feedo => feedo.id === huntId)
+      const restFeedoList = filter(feedoList, feedo => feedo.id !== huntId)
+      const restInvitees = filter(selectFeed.invitees, invitee => invitee.userProfile.id !== userId)
+
+      const currentRestInvitees = filter(currentFeed.invitees, invitee => invitee.userProfile.id !== userId)
+
+      return {
+        ...state,
+        loading: types.PUBNUB_DELETE_INVITEE_FULFILLED,
+        feedoList: [
+          ...restFeedoList,
+          {
+            ...selectFeed,
+            invitees: restInvitees
+          }
+        ],
+        currentFeed: {
+          ...currentFeed,
+          invitees: currentRestInvitees
+        }
+      }
+    }
+    /**
+     * Get activity feed visited
+     */
+    case types.GET_ACTIVITY_FEED_VISITED_PENDING:
+      return {
+        ...state,
+        loading: types.GET_ACTIVITY_FEED_VISITED_PENDING,
+      }
+    case types.GET_ACTIVITY_FEED_VISITED_FULFILLED: {
+      const { data } = action.result
+
+      if(data.count) {
+        PushNotification.setApplicationIconBadgeNumber(data.count)
+      }
+
+      return {
+        ...state,
+        loading: types.GET_ACTIVITY_FEED_VISITED_FULFILLED,
+        badgeCount: data.count
+      }
+    }
+    case types.GET_ACTIVITY_FEED_VISITED_REJECTED: {
+      return {
+        ...state,
+        loading: types.GET_ACTIVITY_FEED_VISITED_REJECTED,
+        error: action.error.response,
+      }
+    }
     default:
       return state;
   }

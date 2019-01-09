@@ -17,7 +17,6 @@ class FeedLongHoldMenuScreen extends React.Component {
   constructor(props) {
     super(props)
     this.state = {
-      pinFlag: props.feedData.pinned ? true : false,
       isShowShare: false,
       currentFeed: {}
     }
@@ -59,7 +58,7 @@ class FeedLongHoldMenuScreen extends React.Component {
       case 'Edit':
         this.props.handleEditFeed(this.props.feedData.id)
         return;
-      case 'Leave Feed':
+      case 'Leave Flow':
         this.props.handleLeaveFeed(this.props.feedData.id)
         return;
     }
@@ -90,24 +89,29 @@ class FeedLongHoldMenuScreen extends React.Component {
   }
 
   render () {
-    const { feedData } = this.props
+    const { feedData, showLongHoldActionBar } = this.props
     const { currentFeed } = this.state
 
+    const pinFlag = feedData.pinned ? true : false
+
+    if (!showLongHoldActionBar) {
+      return null
+    }
+
     return [
-      <FeedItemComponent key="1" item={feedData} pinFlag={this.state.pinFlag} clickEvent="long" />,
       <FeedActionBarComponent
         key="2"
         handlePin={this.handlePin}
         handleShare={this.openShareModal}
         handleSetting={this.handleSetting}
         data={feedData}
-        pinFlag={this.state.pinFlag}
+        pinFlag={pinFlag}
       />,
       <ActionSheet
         key="3"
         ref={ref => this.ActionSheet = ref}
-        title={'Are you sure you want to delete this feed, everything will be gone ...'}
-        options={['Delete feed', 'Cancel']}
+        title={'Are you sure you want to delete this flow, everything will be gone ...'}
+        options={['Delete flow', 'Cancel']}
         cancelButtonIndex={1}
         destructiveButtonIndex={0}
         tintColor={COLORS.PURPLE}

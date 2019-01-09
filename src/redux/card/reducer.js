@@ -1,5 +1,6 @@
 import _ from 'lodash'
 import * as types from './types'
+import * as feedTypes from '../feedo/types'
 
 const initialState = {
   loading: null,
@@ -161,7 +162,7 @@ export default function card(state = initialState, action = {}) {
     case types.LIKE_CARD_FULFILLED: {
       return {
         ...state,
-        loading: types.LIKE_CARD_FULFILLED,
+        loading: types.LIKE_CARD_FULFILLED
       }
     }
     case types.LIKE_CARD_REJECTED: {
@@ -170,6 +171,50 @@ export default function card(state = initialState, action = {}) {
         ...state,
         loading: types.LIKE_CARD_REJECTED,
         error: data,
+      }
+    }
+    case feedTypes.PUBNUB_LIKE_CARD_FULFILLED: {
+      const ideaId = action.payload
+      const { currentCard } = state
+
+      if (currentCard.id === ideaId) {
+        return {
+          ...state,
+          loading: feedTypes.PUBNUB_LIKE_CARD_FULFILLED,
+          currentCard: {
+            ...currentCard,
+            metadata: {
+              ...currentCard.metadata,
+              likes: currentCard.metadata.likes + 1
+            }
+          }
+        }
+      } else {
+        return {
+          ...state
+        }
+      }
+    }
+    case feedTypes.PUBNUB_UNLIKE_CARD_FULFILLED: {
+      const ideaId = action.payload
+      const { currentCard } = state
+
+      if (currentCard.id === ideaId) {
+        return {
+          ...state,
+          loading: feedTypes.PUBNUB_UNLIKE_CARD_FULFILLED,
+          currentCard: {
+            ...currentCard,
+            metadata: {
+              ...currentCard.metadata,
+              likes: currentCard.metadata.likes === 0 ? 0 : currentCard.metadata.likes - 1
+            }
+          }
+        }
+      } else {
+        return {
+          ...state
+        }
       }
     }
   
@@ -228,9 +273,11 @@ export default function card(state = initialState, action = {}) {
       }
     case types.GET_CARD_COMMENTS_FULFILLED: {
       const { data } = action.result
+
       return {
         ...state,
         loading: types.GET_CARD_COMMENTS_FULFILLED,
+        currentCardId: action.payload,
         currentComments: data,
       }
     }
@@ -252,13 +299,14 @@ export default function card(state = initialState, action = {}) {
       }
     case types.ADD_CARD_COMMENT_FULFILLED: {
       const { data } = action.result
+
       return {
         ...state,
         loading: types.ADD_CARD_COMMENT_FULFILLED,
         currentComments: [
           data,
           ...state.currentComments,
-        ],
+        ]
       }
     }
     case types.ADD_CARD_COMMENT_REJECTED: {

@@ -12,6 +12,7 @@ import {
   AsyncStorage,
   AppState,
   Clipboard,
+  Alert
 } from 'react-native'
 
 import { connect } from 'react-redux'
@@ -24,8 +25,8 @@ import { Actions } from 'react-native-router-flux'
 import * as R from 'ramda'
 import { find, filter, orderBy } from 'lodash'
 import DeviceInfo from 'react-native-device-info';
-import GestureRecognizer from 'react-native-swipe-gestures'
 
+import pubnub from '../../lib/pubnub'
 import Analytics from '../../lib/firebase'
 
 import DashboardNavigationBar from '../../navigations/DashboardNavigationBar'
@@ -60,7 +61,8 @@ import {
   setFeedDetailAction,
   setCurrentFeed,
   deleteInvitee,
-  getInvitedFeedList
+  getInvitedFeedList,
+  getActivityFeed
 } from '../../redux/feedo/actions'
 
 import { 
@@ -68,13 +70,13 @@ import {
   addDeviceToken,
   updateDeviceToken,
   appOpened,
-  getUserSession
+  getUserSession,
+  setHomeListType
 } from '../../redux/user/actions'
 
 import { 
   getCard,
 } from '../../redux/card/actions'
-import constants from '../../service/constants';
 
 const TAB_STYLES = {
   height: '100%',
@@ -84,6 +86,7 @@ const TAB_STYLES = {
 }
 
 const TOASTER_DURATION = 5000
+const PAGE_COUNT = 50
 
 class HomeScreen extends React.Component {
   constructor(props) {
@@ -98,9 +101,7 @@ class HomeScreen extends React.Component {
       isLongHoldMenuVisible: false,
       selectedFeedData: {},
       tabIndex: 0,
-      emptyState: true,
       isShowActionToaster: false,
-      scrollableTabViewContainer: {},
       scrollY: new Animated.Value(0),
       currentPushNotificationType: CONSTANTS.UNKOWN_PUSH_NOTIFICATION,
       currentPushNotificationData: null,
@@ -117,12 +118,20 @@ class HomeScreen extends React.Component {
       invitedFeedList: [],
       badgeCount: 0,
       isShowClipboardToaster: false,
-      copiedUrl: '',
+      tmpClipboardData: '',
+      clipboardData: '',
+      selectedLongHoldFeedoIndex: -1,
+      feedClickEvent: 'normal',
+      showLongHoldActionBar: true,
+      isShowInviteToaster: false,
+      inviteToasterTitle: ''
     };
 
     this.currentRef = null;
     this.animatedOpacity = new Animated.Value(0);
-    this.showClipboardTimeout = null;
+    this.isInitialized = false;
+
+    this.animatedSelectFeed = new Animated.Value(1);
   }
 
   async componentDidMount() {
@@ -132,9 +141,18 @@ class HomeScreen extends React.Component {
 
     const userInfo = await AsyncStorage.getItem('userInfo')
     this.props.setUserInfo(JSON.parse(userInfo))
+
+    // Subscribe to comments channel for new comments and updates
+    console.log("Subscribe to: ", this.props.user.userInfo.eventSubscriptionToken)
+    pubnub.subscribe({
+      channels: [this.props.user.userInfo.eventSubscriptionToken]
+    });
+
     this.registerPushNotification();
     this.props.getFeedoList(this.state.tabIndex)
     this.props.getInvitedFeedList()
+    this.props.getActivityFeed(this.props.user.userInfo.id, { page: 0, size: PAGE_COUNT })
+
     AppState.addEventListener('change', this.onHandleAppStateChange.bind(this));
     appOpened(this.props.user.userInfo.id);
   }
@@ -144,26 +162,41 @@ class HomeScreen extends React.Component {
   }
 
   static getDerivedStateFromProps(nextProps, prevState) {
-    const { feedo, card } = nextProps
+    const { feedo, card, user } = nextProps
+
+    if (feedo.loading === 'GET_FEED_DETAIL_REJECTED') {
+      if (feedo.error.code === 'error.hunt.not.found' || feedo.error.code === 'error.hunt.access.denied') {
+        Alert.alert('Error', 'This flow is no longer available')
+      }
+    }
 
     if ((prevState.apiLoading !== feedo.loading && ((feedo.loading === 'GET_FEEDO_LIST_FULFILLED') || (feedo.loading === 'GET_FEEDO_LIST_REJECTED') ||
       (feedo.loading === 'FEED_FULFILLED') || (feedo.loading === 'DEL_FEED_FULFILLED') || (feedo.loading === 'ARCHIVE_FEED_FULFILLED') ||
       (feedo.loading === 'DUPLICATE_FEED_FULFILLED') || (feedo.loading === 'UPDATE_FEED_FULFILLED') || (feedo.loading === 'LEAVE_FEED_FULFILLED') ||
       (feedo.loading === 'UPDTE_FEED_INVITATION_FULFILLED') || (feedo.loading === 'INVITE_HUNT_FULFILLED') ||
       (feedo.loading === 'ADD_HUNT_TAG_FULFILLED') || (feedo.loading === 'REMOVE_HUNT_TAG_FULFILLED') ||
+      (feedo.loading === 'PIN_FEED_FULFILLED') || (feedo.loading === 'UNPIN_FEED_FULFILLED') ||
       (feedo.loading === 'RESTORE_ARCHIVE_FEED_FULFILLED') || (feedo.loading === 'ADD_DUMMY_FEED'))) ||
-      (feedo.loading === 'DELETE_CARD_FULFILLED') || (feedo.loading === 'MOVE_CARD_FULFILLED') || (feedo.loading === 'UPDATE_CARD_FULFILLED'))
+      (feedo.loading === 'PUBNUB_GET_FEED_DETAIL_FULFILLED') || (feedo.loading === 'DELETE_CARD_FULFILLED') || 
+      (feedo.loading === 'PUBNUB_MOVE_IDEA_FULFILLED') ||
+      (feedo.loading === 'MOVE_CARD_FULFILLED') || (feedo.loading === 'UPDATE_CARD_FULFILLED') ||
+      (feedo.loading === 'READ_ACTIVITY_FEED_FULFILLED') || (feedo.loading === 'DEL_ACTIVITY_FEED_FULFILLED') ||
+      (feedo.loading === 'UPDATE_CARD_FULFILLED') || (feedo.loading === 'GET_CARD_FULFILLED') ||
+      (feedo.loading === 'DEL_DUMMY_CARD') || (feedo.loading === 'MOVE_DUMMY_CARD') ||
+      (feedo.loading === 'PUBNUB_DELETE_INVITEE_FULFILLED') || (feedo.loading === 'GET_FEED_DETAIL_REJECTED') ||
+      (feedo.loading === 'PUBNUB_DELETE_FEED' &&
+                          Actions.currentScene !== 'FeedDetailScreen' && 
+                          Actions.currentScene !== 'CommentScreen' && Actions.currentScene !== 'ActivityCommentScreen' &&
+                          Actions.currentScene !== 'LikesListScreen' && Actions.currentScene !== 'ActivityLikesListScreen'))
     {
-
       let feedoList = []
-      let emptyState = prevState.emptyState
 
       if (feedo.feedoList && feedo.feedoList.length > 0) {        
         feedoList = feedo.feedoList.map(item => {
           const filteredIdeas = orderBy(
             filter(item.ideas, idea => idea.coverImage !== null && idea.coverImage !== ''),
             ['publishedDate'],
-            ['asc']
+            ['desc']
           )
 
           let coverImages = []
@@ -189,23 +222,37 @@ class HomeScreen extends React.Component {
           ['desc']
         )
         
+        if (prevState.tabIndex === 0) {
+          feedoList = filter(feedoList, item => item.metadata.owner)
+        }
+
         if (prevState.tabIndex === 1) {
-          feedoList = filter(feedoList, item => item.metadata.myInviteStatus !== 'INVITED')
+          feedoList = orderBy(
+            filter(feedoList, item => item.metadata.myInviteStatus !== 'INVITED' && item.owner.id !== user.userInfo.id),
+            ['metadata.inviteAcceptedDate'],
+            ['desc']
+          )
         }
 
         if (prevState.tabIndex === 2) {
           feedoList = filter(feedoList, item => item.pinned !== null)
         }
+      }
 
-        emptyState = false
+      if (prevState.feedClickEvent === 'long' && feedoList.length === 0) {
+        return {
+          isLongHoldMenuVisible: false,
+          feedClickEvent: 'normal',
+          selectedLongHoldFeedoIndex: -1,
+          selectedFeedData: {}
+        }
       }
 
       return {
         feedoList,
         invitedFeedList: feedo.invitedFeedList,
-        badgeCount: feedo.invitedFeedList.length,
+        badgeCount: feedo.badgeCount,
         loading: false,
-        emptyState,
         apiLoading: feedo.loading
       }
     } else if (prevState.apiLoading !== card.loading && (card.loading === 'GET_CARD_FULFILLED')) {
@@ -216,10 +263,10 @@ class HomeScreen extends React.Component {
       }
     }
 
-    if (feedo.loading === 'GET_INVITED_FEEDO_LIST_FULFILLED') {
+    if (feedo.loading === 'GET_ACTIVITY_FEED_FULFILLED') {
       return {
         invitedFeedList: feedo.invitedFeedList,
-        badgeCount: feedo.invitedFeedList.length
+        badgeCount: feedo.badgeCount
       }
     }
 
@@ -229,39 +276,87 @@ class HomeScreen extends React.Component {
   }
 
   async componentDidUpdate(prevProps) {
-    const { feedo, user } = this.props
+    const { feedo, user, card } = this.props
     const { feedoList } = feedo
+
+    if (prevProps.feedo.loading !== 'UPDTE_FEED_INVITATION_FULFILLED' &&
+        feedo.loading === 'UPDTE_FEED_INVITATION_FULFILLED' &&
+        Actions.currentScene !== 'NotificationScreen' && Actions.currentScene !== 'FeedDetailScreen'
+    ) {
+      this.setState({ isShowInviteToaster: true })
+      
+      if (feedo.inviteUpdateType) {
+        this.setState({ inviteToasterTitle: 'Invitation accepted' })
+      } else {
+        this.setState({ inviteToasterTitle: 'Invitation ignored' })
+      }
+      setTimeout(() => {
+        this.setState({ isShowInviteToaster: false })
+      }, TOASTER_DURATION)
+    }
+
+    if (feedo.loading === 'PUBNUB_GET_FEED_DETAIL_FULFILLED' && Actions.currentScene !== 'FeedDetailScreen' ||
+        feedo.loading === 'PUBNUB_MOVE_IDEA_FULFILLED' && Actions.currentScene !== 'FeedDetailScreen' ||
+        feedo.loading === 'GET_CARD_FULFILLED' && Actions.currentScene !== 'FeedDetailScreen' ||
+        feedo.loading === 'PUBNUB_LIKE_CARD_FULFILLED' && Actions.currentScene !== 'FeedDetailScreen' ||
+        feedo.loading === 'PUBNUB_UNLIKE_CARD_FULFILLED' && Actions.currentScene !== 'FeedDetailScreen' ||
+        (feedo.loading === 'GET_CARD_COMMENTS_FULFILLED' &&
+                          Actions.currentScene !== 'FeedDetailScreen' && 
+                          Actions.currentScene !== 'CommentScreen' && Actions.currentScene !== 'ActivityCommentScreen' &&
+                          Actions.currentScene !== 'LikesListScreen' && Actions.currentScene !== 'ActivityLikesListScreen') ||
+        (feedo.loading === 'PUBNUB_DELETE_FEED' &&
+                          Actions.currentScene !== 'FeedDetailScreen' && 
+                          Actions.currentScene !== 'CommentScreen' && Actions.currentScene !== 'ActivityCommentScreen' &&
+                          Actions.currentScene !== 'LikesListScreen' && Actions.currentScene !== 'ActivityLikesListScreen')
+    ) {
+      this.props.getActivityFeed(user.userInfo.id, { page: 0, size: PAGE_COUNT })
+    }
+
+    if (prevProps.feedo.loading !== 'GET_ACTIVITY_FEED_VISITED_FULFILLED' && feedo.loading === 'GET_ACTIVITY_FEED_VISITED_FULFILLED') {
+      this.setState({ badgeCount: feedo.badgeCount })
+    }
+
+    if (prevProps.feedo.loading !== 'GET_FEEDO_LIST_FULFILLED' && feedo.loading === 'GET_FEEDO_LIST_FULFILLED') {
+      if (!this.isInitialized) {
+        this.isInitialized = true;
+        this.showClipboardToast();
+      }
+    }
 
     if ((prevProps.feedo.loading !== 'GET_FEEDO_LIST_FULFILLED' && feedo.loading === 'GET_FEEDO_LIST_FULFILLED') ||
         (prevProps.feedo.loading !== 'UPDATE_FEED_FULFILLED' && feedo.loading === 'UPDATE_FEED_FULFILLED') ||
         (prevProps.feedo.loading !== 'FEED_FULFILLED' && feedo.loading === 'FEED_FULFILLED') ||
         (prevProps.feedo.loading !== 'DEL_FEED_FULFILLED' && feedo.loading === 'DEL_FEED_FULFILLED') ||
-        (prevProps.feedo.loading !== 'ARCHIVE_FEED_FULFILLED' && feedo.loading === 'ARCHIVE_FEED_FULFILLED')) {
+        (prevProps.feedo.loading !== 'ARCHIVE_FEED_FULFILLED' && feedo.loading === 'ARCHIVE_FEED_FULFILLED') ||
+        (feedo.loading === 'PUBNUB_DELETE_FEED' &&
+                          Actions.currentScene !== 'FeedDetailScreen' && 
+                          Actions.currentScene !== 'CommentScreen' && Actions.currentScene !== 'ActivityCommentScreen' &&
+                          Actions.currentScene !== 'LikesListScreen' && Actions.currentScene !== 'ActivityLikesListScreen')) {
       this.setState({ isRefreshing: false })
       await this.setBubbles(feedoList)
     }
 
-    if (this.props.feedo.loading === 'SET_FEED_DETAIL_ACTION' && prevProps.feedo.feedDetailAction !== this.props.feedo.feedDetailAction) {
-      if (this.props.feedo.feedDetailAction.action === 'Delete') {
+    if (feedo.loading === 'SET_FEED_DETAIL_ACTION' && prevProps.feedo.feedDetailAction !== feedo.feedDetailAction) {
+      if (feedo.feedDetailAction.action === 'Delete') {
         this.setState({ isShowActionToaster: true })
-        this.handleDeleteFeed(this.props.feedo.feedDetailAction.feedId)
+        this.handleDeleteFeed(feedo.feedDetailAction.feedId)
       }
 
-      if (this.props.feedo.feedDetailAction.action === 'Archive') {
+      if (feedo.feedDetailAction.action === 'Archive') {
         this.setState({ isShowActionToaster: true })
-        this.handleArchiveFeed(this.props.feedo.feedDetailAction.feedId)
+        this.handleArchiveFeed(feedo.feedDetailAction.feedId)
       }
 
-      if (this.props.feedo.feedDetailAction.action === 'Leave') {
+      if (feedo.feedDetailAction.action === 'Leave') {
         this.setState({ isShowActionToaster: true })
-        this.handleLeaveFeed(this.props.feedo.feedDetailAction.feedId)
+        this.handleLeaveFeed(feedo.feedDetailAction.feedId)
       }
-    } else if (prevProps.user.loading === 'USER_SIGNOUT_PENDING' && this.props.user.loading === 'USER_SIGNOUT_FULFILLED') {
+    } else if (prevProps.user.loading === 'USER_SIGNOUT_PENDING' && user.loading === 'USER_SIGNOUT_FULFILLED') {
       Actions.LoginScreen()
-    } else if (this.props.feedo.loading === 'GET_FEEDO_LIST_FULFILLED' && this.state.currentPushNotificationType === CONSTANTS.USER_INVITED_TO_HUNT && this.state.currentPushNotificationData) {
-      const { feedoList, currentPushNotificationData } = this.state
+    } else if (feedo.loading === 'GET_FEEDO_LIST_FULFILLED' && this.state.currentPushNotificationType === CONSTANTS.USER_INVITED_TO_HUNT && this.state.currentPushNotificationData) {
+      const { currentPushNotificationData } = this.state
 
-      const matchedHunt = find(feedoList, feedo => feedo.id === currentPushNotificationData);
+      const matchedHunt = find(feedoList, feed => feed.id === currentPushNotificationData);
       if (matchedHunt) {
         Actions.FeedDetailScreen({
           data: matchedHunt
@@ -271,23 +366,24 @@ class HomeScreen extends React.Component {
         currentPushNotificationType: CONSTANTS.UNKOWN_PUSH_NOTIFICATION,
         currentPushNotificationData: null,
       });
-    } else if (this.props.card.loading === 'GET_CARD_FULFILLED' && (this.state.currentPushNotificationType === CONSTANTS.NEW_COMMENT_ON_IDEA || this.state.currentPushNotificationType === CONSTANTS.USER_JOINED_HUNT) && this.state.currentPushNotificationData) {
+    } else if (card.loading === 'GET_CARD_FULFILLED' && (this.state.currentPushNotificationType === CONSTANTS.COMMENT_ADDED || this.state.currentPushNotificationType === CONSTANTS.USER_JOINED_HUNT) && this.state.currentPushNotificationData) {
       Actions.CommentScreen({
-        idea: this.state.currentIdea,
+        idea: card.currentCard,
       });
       this.setState({
         currentPushNotificationType: CONSTANTS.UNKOWN_PUSH_NOTIFICATION,
         currentPushNotificationData: null,
       });
-    } else if (this.props.card.loading === 'GET_CARD_FULFILLED' && this.state.currentPushNotificationType === CONSTANTS.NEW_IDEA_ADDED && this.state.currentPushNotificationData) {
+    } else if (card.loading === 'GET_CARD_FULFILLED' && this.state.currentPushNotificationType === CONSTANTS.IDEA_ADDED && this.state.currentPushNotificationData) {
       const invitee = find(this.state.currentPushNotificationData.invitees, (o) => {
-        return (o.id == this.state.currentIdea.inviteeId)
+        return (o.id == card.currentCard.inviteeId)
       });
       this.setState({
         isVisibleCard: true,
         cardViewMode: CONSTANTS.CARD_VIEW,
         selectedIdeaInvitee: invitee,
-        copiedUrl: '',
+        tmpClipboardData: '',
+        clipboardData: '',
       });
       this.animatedOpacity.setValue(0);
       Animated.timing(this.animatedOpacity, {
@@ -298,8 +394,8 @@ class HomeScreen extends React.Component {
         currentPushNotificationType: CONSTANTS.UNKOWN_PUSH_NOTIFICATION,
         currentPushNotificationData: null,
       });
-    } else if (this.props.card.loading === 'GET_CARD_FULFILLED' && this.state.currentPushNotificationType === CONSTANTS.NEW_LIKE_ON_IDEA && this.state.currentPushNotificationData) {
-      Actions.LikesListScreen({idea: this.state.currentIdea});
+    } else if (card.loading === 'GET_CARD_FULFILLED' && this.state.currentPushNotificationType === CONSTANTS.IDEA_LIKED && this.state.currentPushNotificationData) {
+      Actions.LikesListScreen({ idea: card.currentCard });
       this.setState({
         currentPushNotificationType: CONSTANTS.UNKOWN_PUSH_NOTIFICATION,
         currentPushNotificationData: null,
@@ -309,19 +405,29 @@ class HomeScreen extends React.Component {
 
   async setBubbles(feedoList) {
     const { user } = this.props
+    const { tabIndex } = this.state
 
     let bubbleFirstFeedAsyncData = await AsyncStorage.getItem('BubbleFeedFirstTimeCreated')
     let bubbleFirstFeedData = JSON.parse(bubbleFirstFeedAsyncData)
 
+    let ownFeedoList = []
+    let invitedFeedList = []
+    if (feedoList) {
+      ownFeedoList = filter(feedoList, feed => feed.metadata && feed.metadata.owner)
+      invitedFeedList = orderBy(
+        filter(feedoList, item => item.metadata.myInviteStatus !== 'INVITED' && item.owner.id !== user.userInfo.id),
+        ['metadata.inviteAcceptedDate'],
+        ['desc']
+      )
+    }
+
     // New user, invited to existing feed
-    if (feedoList && feedoList.length > 0) {
+    if (feedoList && invitedFeedList.length > 0) {
       let bubbleAsyncData = await AsyncStorage.getItem('BubbleFeedInvitedNewUser')
       let bubbleData = JSON.parse(bubbleAsyncData)
 
       if(!bubbleData || (bubbleData.userId === user.userInfo.id && bubbleData.state !== 'false')) {
-        const ownFeeds = filter(feedoList, feed => feed.metadata && feed.metadata.owner === true)
-
-        if (this.state.tabIndex === 0 && ownFeeds.length === 0 && !(bubbleFirstFeedData && (bubbleFirstFeedData.userId === user.userInfo.id && bubbleFirstFeedData.state === 'true'))) {
+        if (tabIndex === 0 && ownFeedoList.length === 0 && !(bubbleFirstFeedData && (bubbleFirstFeedData.userId === user.userInfo.id && bubbleFirstFeedData.state === 'true'))) {
           this.setState({ showFeedInvitedNewUserBubble: true })
           setTimeout(() => {
             this.setState({ showBubbleCloseButton: true })
@@ -330,10 +436,10 @@ class HomeScreen extends React.Component {
           this.setState({ showFeedInvitedNewUserBubble: false })
         }
       }
-    }
+    }    
 
-    if (feedoList && feedoList.length === 0) {
-      this.setState({ emptyState: true, showEmptyBubble: true })
+    if (feedoList && ownFeedoList.length === 0) {
+      this.setState({ showEmptyBubble: true })
       if (bubbleFirstFeedData && (bubbleFirstFeedData.userId === user.userInfo.id && bubbleFirstFeedData.state === 'true')) {
         this.setState({ isExistingUser: true })     // Existing user, no feeds
       } else {
@@ -351,36 +457,39 @@ class HomeScreen extends React.Component {
     AsyncStorage.setItem('BubbleFeedInvitedNewUser', JSON.stringify(data));
   }
 
+  async showClipboardToast() {
+    if (Actions.currentScene !== 'FeedDetailScreen') {
+      const clipboardContent = await Clipboard.getString();
+      const lastClipboardData = await AsyncStorage.getItem(CONSTANTS.CLIPBOARD_DATA)
+      if (clipboardContent !== '' && clipboardContent !== lastClipboardData) {
+        AsyncStorage.setItem(CONSTANTS.CLIPBOARD_DATA, clipboardContent);
+        this.setState({
+          isShowClipboardToaster: true,
+          tmpClipboardData: clipboardContent,
+        })
+      }
+    }
+  }
+
   onHandleAppStateChange = async(nextAppState) => {
-    this.setState({appState: nextAppState});
-    if (nextAppState === 'active') {
+    if (this.state.appState.match(/inactive|background/) && nextAppState === 'active') {
       appOpened(this.props.user.userInfo.id);
       if (Actions.currentScene === 'HomeScreen') {
         this.props.getFeedoList(this.state.tabIndex);
-      }
-      if (Actions.currentScene !== 'FeedDetailScreen') {
-        const clipboardContent = await Clipboard.getString();
-        const lastClipboardData = await AsyncStorage.getItem(CONSTANTS.CLIPBOARD_DATA)
-        if (clipboardContent !== '' && clipboardContent !== lastClipboardData) {
-          AsyncStorage.setItem(CONSTANTS.CLIPBOARD_DATA, clipboardContent);
-          this.setState({
-            isShowClipboardToaster: true,
-            copiedUrl: clipboardContent,
-          })
-          this.showClipboardTimeout = setTimeout(() => {
-            this.setState({
-              isShowClipboardToaster: false,
-              copiedUrl: '',
-            });
-          }, CONSTANTS.CLIPBOARD_DATA_CONFIRM_DURATION + 500);
-        }
-      }
+
+        // TEMPORARY: REMOVE WITH PUBNUB INTEGRATION
+        // this.props.getInvitedFeedList()
+        // this.props.getActivityFeed(this.props.user.userInfo.id, { page: 0, size: PAGE_COUNT })            
+      }  
+      this.showClipboardToast();
       this.props.getUserSession()
     }
+    this.setState({appState: nextAppState});
   }
 
   parsePushNotification(notification) {
     console.log('NOTIFICATION : ', notification);
+    const { feedoList } = this.props.feedo
 
     const type = notification.data.type;
     if (notification.badge) {
@@ -390,11 +499,10 @@ class HomeScreen extends React.Component {
     // Handle background and foreground notifications
     switch (type) {
       case CONSTANTS.USER_INVITED_TO_HUNT: {
-        const { huntId, inviteeId } = notification.data;
-        const { feedoList } = this.state
+        const { huntId } = notification.data;
         const matchedHunt = find(feedoList, feedo => feedo.id === huntId);
+
         if (matchedHunt) {
-          const currentFeedo = this.props.feedo.currentFeed;
           if (Actions.currentScene === 'FeedDetailScreen') {
             Actions.FeedDetailScreen({type: 'replace', data: matchedHunt});
           } else {
@@ -418,11 +526,12 @@ class HomeScreen extends React.Component {
     }
 
     switch (type) {
-      case CONSTANTS.NEW_COMMENT_ON_IDEA: {
+      case CONSTANTS.COMMENT_ADDED: {
         const { ideaId, huntId, commentId } = notification.data;
-        const { feedoList } = this.state
         const matchedHunt = find(feedoList, feedo => feedo.id === huntId);
+
         if (matchedHunt) {
+          this.props.setCurrentFeed(matchedHunt)
           const matchedIdea = find(matchedHunt.ideas, idea => idea.id === ideaId);
           if (matchedIdea) {
             Actions.CommentScreen({
@@ -432,36 +541,37 @@ class HomeScreen extends React.Component {
           }
         }
         this.setState({
-          currentPushNotificationType: CONSTANTS.NEW_COMMENT_ON_IDEA,
+          currentPushNotificationType: CONSTANTS.COMMENT_ADDED,
           currentPushNotificationData: commentId,
         });
         this.props.getCard(ideaId);
         break;
       }
-      case CONSTANTS.NEW_IDEA_ADDED: {
-        const { huntId, ideaId } = notification.data;
-        const { feedoList } = this.state
+      case CONSTANTS.IDEA_ADDED: {
+        const { huntId, ideaId } = notification.data
         const matchedHunt = find(feedoList, feedo => feedo.id === huntId);
+
         this.setState({
-          currentPushNotificationType: CONSTANTS.NEW_IDEA_ADDED,
+          currentPushNotificationType: CONSTANTS.IDEA_ADDED,
           currentPushNotificationData: matchedHunt,
         });
         this.props.getCard(ideaId);
         break;
       }
-      case CONSTANTS.NEW_LIKE_ON_IDEA: {
+      case CONSTANTS.IDEA_LIKED: {
         const { huntId, ideaId } = notification.data;
-        const { feedoList } = this.state
         const matchedHunt = find(feedoList, feedo => feedo.id === huntId);
+
         if (matchedHunt) {
+          this.props.setCurrentFeed(matchedHunt)
           const matchedIdea = find(matchedHunt.ideas, idea => idea.id === ideaId);
           if (matchedIdea) {
-            Actions.LikesListScreen({idea: matchedIdea});
+            Actions.LikesListScreen({ idea: matchedIdea });
             return;
           }
         }
         this.setState({
-          currentPushNotificationType: CONSTANTS.NEW_LIKE_ON_IDEA,
+          currentPushNotificationType: CONSTANTS.IDEA_LIKED,
           currentPushNotificationData: ideaId,
         });
         this.props.getCard(ideaId);
@@ -470,8 +580,8 @@ class HomeScreen extends React.Component {
       }
       case CONSTANTS.USER_JOINED_HUNT: {
         const { huntId } = notification.data;
-        const { feedoList } = this.state
         const matchedHunt = find(feedoList, feedo => feedo.id === huntId);
+
         if (matchedHunt) {
           Actions.FeedDetailScreen({
             data: matchedHunt
@@ -485,16 +595,15 @@ class HomeScreen extends React.Component {
         }
         break;
       }
-      case CONSTANTS.USER_EDITED_HUNT: {
+      case CONSTANTS.HUNT_UPDATED: {
         const { huntId } = notification.data;
-        const { feedoList } = this.state
         const matchedHunt = find(feedoList, feedo => feedo.id === huntId);
+
         if (matchedHunt) {
-          const currentFeedo = this.props.feedo.currentFeed;
           if (Actions.currentScene === 'FeedDetailScreen') {
-            Actions.FeedDetailScreen({type: 'replace', data: matchedHunt});
+            Actions.FeedDetailScreen({ type: 'replace', data: matchedHunt });
           } else {
-            Actions.FeedDetailScreen({data: matchedHunt})
+            Actions.FeedDetailScreen({ data: matchedHunt })
           }
         } else {
           this.setState({
@@ -503,6 +612,9 @@ class HomeScreen extends React.Component {
           });
           this.props.getFeedoList(this.state.tabIndex);
         }
+        break;
+      }
+      case CONSTANTS.USER_MENTIONED: {
         break;
       }
     }
@@ -547,44 +659,111 @@ class HomeScreen extends React.Component {
   }
 
   onChangeTab(value) {
-    // if (value.ref.props.tabLabel.label === 'All') {
-    //   this.currentRef = this.scrollTabAll;
-    // } else if (value.ref.props.tabLabel.label === 'Pinned') {
-    //   this.currentRef = this.scrollTabPinned;
-    // } else if (value.ref.props.tabLabel.label === 'Shared with me') {
-    //   this.currentRef = this.scrollTabSharedWithMe;
-    // }
-    // if (this.currentRef) {
-    //   this.currentRef.measure((ox, oy, width, height, px, py) => {
-    //     console.log('onChangeTab : ', value.ref.props.tabLabel.label + " : " + height);
-    //     if (height != 0) {
-    //       this.setState({scrollableTabViewContainer: {height}});
-    //     }
-    //   });
-    // }
+    const { feedo, user } = this.props
 
     this.setState({ 
-      tabIndex: value.i,
-      loading: true,
-      scrollableTabViewContainer: {},
+      // loading: true,
+      tabIndex: value.i
     })
-    this.props.getFeedoList(value.i)
+    // this.props.getFeedoList(value.i)
+    if (feedo.feedoList && feedo.feedoList.length > 0) {        
+      feedoList = feedo.feedoList.map(item => {
+        const filteredIdeas = orderBy(
+          filter(item.ideas, idea => idea.coverImage !== null && idea.coverImage !== ''),
+          ['publishedDate'],
+          ['desc']
+        )
+
+        let coverImages = []
+        if (filteredIdeas.length > 4) {
+          coverImages = R.slice(0, 4, filteredIdeas)
+        } else {
+          coverImages = R.slice(0, filteredIdeas.length, filteredIdeas)
+          for (let i = 0; i < 4 - filteredIdeas.length; i ++) {
+            coverImages.push(null)
+          }
+        }
+
+        return Object.assign(
+          {},
+          item,
+          { coverImages }
+        )
+      })
+
+      feedoList = orderBy(
+        filter(feedoList, item => item.status === 'PUBLISHED'),
+        ['publishedDate'],
+        ['desc']
+      )
+      
+      if (value.i === 0) {
+        feedoList = filter(feedoList, item => item.metadata.owner)
+      }
+      if (value.i === 1) {
+        feedoList = orderBy(
+          filter(feedoList, item => item.metadata.myInviteStatus !== 'INVITED' && item.owner.id !== user.userInfo.id),
+          ['metadata.inviteAcceptedDate'],
+          ['desc']
+        )
+      }
+      if (value.i === 2) {
+        feedoList = filter(feedoList, item => item.pinned !== null)
+      }
+
+      this.setState({ feedoList })
+
+      if (this.state.feedClickEvent !== 'normal') {
+        this.setState({ selectedLongHoldFeedoIndex: -1, showLongHoldActionBar: false })
+      }
+    }
   }
 
-  handleLongHoldMenu = (selectedFeedData) => {
-    this.setState({ selectedFeedData })
-    this.setState({ isLongHoldMenuVisible: true })
+  handleLongHoldMenu = (index, selectedFeedData) => {
+    this.setState({ selectedLongHoldFeedoIndex: index, feedClickEvent: 'long' }, () => {
+      Animated.parallel([
+        Animated.timing(this.animatedSelectFeed, {
+          toValue: 0.85,
+          duration: 150
+        })
+      ]).start(() => {
+        this.setState({
+          selectedFeedData,
+          isLongHoldMenuVisible: true
+        });
+      });
+    })
+  }
+
+  closeLongHoldMenu = () => {
+    this.setState({ selectedLongHoldFeedoIndex: -1, feedClickEvent: 'normal' }, () => {
+      Animated.parallel([
+        Animated.timing(this.animatedSelectFeed, {
+          toValue: 1,
+          duration: 100
+        })
+      ]).start(() => {
+        this.setState({ isLongHoldMenuVisible: false })
+      })
+    })
   }
 
   handleArchiveFeed = (feedId) => {
-    this.setState({ isLongHoldMenuVisible: false })
-    this.setState({ isArchive: true, toasterTitle: 'Feedo archived', feedId })
-    this.props.addDummyFeed({ feedId, flag: 'archive' })
+    Animated.parallel([
+      Animated.timing(this.animatedSelectFeed, {
+        toValue: 1,
+        duration: 100
+      })
+    ]).start(() => {
+      this.setState({ isLongHoldMenuVisible: false, selectedLongHoldFeedoIndex: -1, feedClickEvent: 'normal' })
+      this.setState({ isShowActionToaster: true, isArchive: true, toasterTitle: 'Flow archived', feedId })
+      this.props.addDummyFeed({ feedId, flag: 'archive' })
 
-    setTimeout(() => {
-      this.setState({ isShowActionToaster: false })
-      this.archiveFeed(feedId)
-    }, TOASTER_DURATION)
+      setTimeout(() => {
+        this.setState({ isShowActionToaster: false })
+        this.archiveFeed(feedId)
+      }, TOASTER_DURATION)
+    })
   }
 
   archiveFeed = (feedId) => {
@@ -597,14 +776,21 @@ class HomeScreen extends React.Component {
   }
 
   handleDeleteFeed = (feedId) => {
-    this.setState({ isLongHoldMenuVisible: false })
-    this.setState({ isDelete: true, toasterTitle: 'Feedo deleted', feedId })
-    this.props.addDummyFeed({ feedId, flag: 'delete' })
-
-    setTimeout(() => {
-      this.setState({ isShowActionToaster: false })
-      this.deleteFeed(feedId)
-    }, TOASTER_DURATION)
+    Animated.parallel([
+      Animated.timing(this.animatedSelectFeed, {
+        toValue: 1,
+        duration: 100
+      })
+    ]).start(() => {
+      this.setState({ isLongHoldMenuVisible: false, selectedLongHoldFeedoIndex: -1, feedClickEvent: 'normal' })
+      this.setState({ isShowActionToaster: true, isDelete: true, toasterTitle: 'Flow deleted', feedId })
+      this.props.addDummyFeed({ feedId, flag: 'delete' })
+  
+      setTimeout(() => {
+        this.setState({ isShowActionToaster: false })
+        this.deleteFeed(feedId)
+      }, TOASTER_DURATION)      
+    })
   }
 
   deleteFeed = (feedId) => {
@@ -617,14 +803,21 @@ class HomeScreen extends React.Component {
   }
 
   handleLeaveFeed = (feedId) => {
-    this.setState({ isLongHoldMenuVisible: false })
-    this.setState({ isLeave: true, toasterTitle: 'Left Feedo', feedId })
-    this.props.addDummyFeed({ feedId, flag: 'leave' })
-
-    setTimeout(() => {
-      this.setState({ isShowActionToaster: false })
-      this.leaveFeed(feedId)
-    }, TOASTER_DURATION)
+    Animated.parallel([
+      Animated.timing(this.animatedSelectFeed, {
+        toValue: 1,
+        duration: 100
+      })
+    ]).start(() => {
+      this.setState({ isLongHoldMenuVisible: false, selectedLongHoldFeedoIndex: -1, feedClickEvent: 'normal' })
+      this.setState({ isShowActionToaster: true, isLeave: true, toasterTitle: 'Left Flow', feedId })
+      this.props.addDummyFeed({ feedId, flag: 'leave' })
+  
+      setTimeout(() => {
+        this.setState({ isShowActionToaster: false })
+        this.leaveFeed(feedId)
+      }, TOASTER_DURATION)      
+    })
   }
 
   leaveFeed = (feedId) => {
@@ -639,55 +832,69 @@ class HomeScreen extends React.Component {
   }
 
   handlePinFeed = (feedId) => {
-    this.setState({ isLongHoldMenuVisible: false })
-    this.setState({ isPin: true, toasterTitle: 'Feed pinned', feedId })
+    Animated.parallel([
+      Animated.timing(this.animatedSelectFeed, {
+        toValue: 1,
+        duration: 100
+      })
+    ]).start(() => {
+      this.setState({ isLongHoldMenuVisible: false, selectedLongHoldFeedoIndex: -1, feedClickEvent: 'normal' })
+      this.setState({ isShowActionToaster: true, isPin: true, toasterTitle: 'Flow pinned', feedId })
 
-    this.props.addDummyFeed({ feedId, flag: 'pin' })
-
-    setTimeout(() => {
-      this.setState({ isShowActionToaster: false })
       this.pinFeed(feedId)
-    }, TOASTER_DURATION)
+
+      setTimeout(() => {
+        this.setState({ isShowActionToaster: false, isPin: false })
+      }, TOASTER_DURATION)
+    })
   }
 
   pinFeed = (feedId) => {
-    if (this.state.isPin) {
-      Analytics.logEvent('dashboard_pin_feed', {})
+    Analytics.logEvent('dashboard_pin_feed', {})
 
-      this.props.pinFeed(feedId)
-      this.setState({ isPin: false })
-    }
+    this.props.pinFeed(feedId)
   }
 
   handleUnpinFeed = (feedId) => {
-    this.setState({ isLongHoldMenuVisible: false })
-    this.setState({ isUnPin: true, toasterTitle: 'Feed un-pinned', feedId })
-    this.props.addDummyFeed({ feedId, flag: 'unpin' })
+    Animated.parallel([
+      Animated.timing(this.animatedSelectFeed, {
+        toValue: 1,
+        duration: 100
+      })
+    ]).start(() => {
+      this.setState({ isLongHoldMenuVisible: false, selectedLongHoldFeedoIndex: -1, feedClickEvent: 'normal' })
+      this.setState({ isShowActionToaster: true, isUnPin: true, toasterTitle: 'Flow un-pinned', feedId })
 
-    setTimeout(() => {
-      this.setState({ isShowActionToaster: false })
       this.unpinFeed(feedId)
-    }, TOASTER_DURATION)
+
+      setTimeout(() => {
+        this.setState({ isShowActionToaster: false, isUnPin: true })
+      }, TOASTER_DURATION)
+    })
   }
 
   unpinFeed = (feedId) => {
-    if (this.state.isUnPin) {
-      Analytics.logEvent('dashboard_unpin_feed', {})
+    Analytics.logEvent('dashboard_unpin_feed', {})
 
-      this.props.unpinFeed(feedId)
-      this.setState({ isUnPin: false })
-    }
+    this.props.unpinFeed(feedId)
   }
 
   handleDuplicateFeed = (feedId) => {
-    this.setState({ isLongHoldMenuVisible: false })
-    this.setState({ isDuplicate: true, toasterTitle: 'Feed duplicated', feedId })
-    this.props.duplicateFeed(feedId)
-
-    setTimeout(() => {
-      this.setState({ isShowActionToaster: false })
-      this.duplicateFeed()
-    }, TOASTER_DURATION + 5)
+    Animated.parallel([
+      Animated.timing(this.animatedSelectFeed, {
+        toValue: 1,
+        duration: 100
+      })
+    ]).start(() => {
+      this.setState({ isLongHoldMenuVisible: false, selectedLongHoldFeedoIndex: -1, feedClickEvent: 'normal' })
+      this.setState({ isShowActionToaster: true, isDuplicate: true, toasterTitle: 'Flow duplicated', feedId })
+      this.props.duplicateFeed(feedId)
+  
+      setTimeout(() => {
+        this.setState({ isShowActionToaster: false })
+        this.duplicateFeed()
+      }, TOASTER_DURATION + 5)      
+    })
   }
   
   duplicateFeed = () => {
@@ -699,30 +906,35 @@ class HomeScreen extends React.Component {
   }
 
   handleEditFeed = (feedId) => {
-    this.setState({ 
-      isLongHoldMenuVisible: false,
-    }, () => {
-      setTimeout(() => {
-        this.props.setCurrentFeed({});
-        this.setState({
-          isVisibleNewFeed: true,
-          isEditFeed: true,
-        }, () => {
-          this.animatedOpacity.setValue(0);
-          Animated.timing(this.animatedOpacity, {
-            toValue: 1,
-            duration: CONSTANTS.ANIMATEION_MILLI_SECONDS,
-          }).start();
-        });  
-      }, 300);
-    });
+    Animated.parallel([
+      Animated.timing(this.animatedSelectFeed, {
+        toValue: 1,
+        duration: 100
+      })
+    ]).start(() => {
+      this.setState({ isLongHoldMenuVisible: false, selectedLongHoldFeedoIndex: -1, feedClickEvent: 'normal' }, () => {
+        setTimeout(() => {
+          this.props.setCurrentFeed({});
+          this.setState({
+            isVisibleNewFeed: true,
+            isEditFeed: true,
+          }, () => {
+            this.animatedOpacity.setValue(0);
+            Animated.timing(this.animatedOpacity, {
+              toValue: 1,
+              duration: CONSTANTS.ANIMATEION_MILLI_SECONDS,
+            }).start()
+          })
+        }, 300)
+      })
+    })
   }
 
   undoAction = () => {
     if (this.state.isPin) {
-      this.props.removeDummyFeed({ feedId: this.state.feedId, flag: 'pin' })
+      this.unpinFeed(this.state.feedId)
     } else if (this.state.isUnPin) {
-      this.props.removeDummyFeed({ feedId: this.state.feedId, flag: 'unpin' })
+      this.pinFeed(this.state.feedId)
     } else if (this.state.isDelete) {
       this.props.removeDummyFeed({ feedId: this.state.feedId, flag: 'delete' })
     } else if (this.state.isArchive) {
@@ -741,11 +953,11 @@ class HomeScreen extends React.Component {
   }
 
   onAddClipboardLink = () => {
-    clearTimeout(this.showClipboardTimeout);
-    this.showClipboardTimeout = null;
     this.setState({
+      clipboardData: this.state.tmpClipboardData,
       isShowClipboardToaster: false,
     });
+
     this.animatedOpacity.setValue(0);
     Animated.timing(this.animatedOpacity, {
       toValue: 1,
@@ -754,9 +966,7 @@ class HomeScreen extends React.Component {
     this.onSelectNewFeedType('New Card');
   }
 
-  onSwipeToDismissClipboardToaster() {
-    clearTimeout(this.showClipboardTimeout);
-    this.showClipboardTimeout = null;
+  onDismissClipboardToaster() {
     this.setState({
       isShowClipboardToaster: false,
     });
@@ -792,7 +1002,7 @@ class HomeScreen extends React.Component {
         cardViewMode: CONSTANTS.CARD_NEW,
         selectedIdeaInvitee: null,
       });
-    } else if (type === 'New Feed') {
+    } else if (type === 'New Flow') {
       Analytics.logEvent('dashboard_new_feed', {})
 
       this.props.setCurrentFeed({});
@@ -879,39 +1089,16 @@ class HomeScreen extends React.Component {
   handleFilter = () => {
   }
 
+  handleList = () => {
+    const { listHomeType } = this.props.user
+    const type = listHomeType === 'list' ? 'thumbnail' : 'list'
+    this.props.setHomeListType(type)
+  }
+
   handleSetting = () => {
     Analytics.logEvent('dashboard_settings', {})
 
     Actions.ProfileScreen()
-  }
-
-  onScrollableTabViewLayout(event, selectedIndex) {
-    const { loading } = this.state
-
-    const tabContentHeight = CONSTANTS.SCREEN_HEIGHT - CONSTANTS.ACTION_BAR_HEIGHT - CONSTANTS.TAB_BAR_HEIGHT - 60 - 50
-
-    if (selectedIndex !== 0) {
-      if (this.state.tabIndex === selectedIndex && !loading) {
-        if (!this.state.scrollableTabViewContainer.height || event.nativeEvent.layout.height > this.state.scrollableTabViewContainer.height) {
-          let height = event.nativeEvent.layout.height;
-          if (height < tabContentHeight) {
-            height = tabContentHeight
-          }
-
-          setTimeout(() => {
-            this.setState({ scrollableTabViewContainer: { height: height + CONSTANTS.TAB_BAR_HEIGHT } });
-          }, 0);
-        }
-      }
-    } else {
-      let height = event.nativeEvent.layout.height;
-      if (height < tabContentHeight) {
-        height = tabContentHeight
-        setTimeout(() => {
-          this.setState({ scrollableTabViewContainer: { height: height + CONSTANTS.TAB_BAR_HEIGHT } });
-        }, 0);
-      }
-    }
   }
 
   onSearch = () => {
@@ -930,7 +1117,8 @@ class HomeScreen extends React.Component {
     }).start(() => {
       this.setState({ 
         isVisibleCard: false,
-        copiedUrl: '',
+        tmpClipboardData: '',
+        clipboardData: '',
       });
     });
   }
@@ -954,7 +1142,7 @@ class HomeScreen extends React.Component {
           viewMode={this.state.cardViewMode}
           cardMode={cardMode}
           invitee={this.state.selectedIdeaInvitee}
-          shareUrl={this.state.copiedUrl}
+          shareUrl={this.state.clipboardData}
           onClose={() => this.onCloseCardModal()}
 
           // cardMode={CONSTANTS.SHARE_EXTENTION_CARD}
@@ -971,7 +1159,15 @@ class HomeScreen extends React.Component {
   }
 
   render () {
-    const { loading, feedoList, emptyState, tabIndex, invitedFeedList, badgeCount } = this.state
+    const {
+      loading,
+      feedoList,
+      tabIndex,
+      badgeCount,
+      showFeedInvitedNewUserBubble,
+      feedClickEvent,
+      selectedLongHoldFeedoIndex
+    } = this.state
     
     // const normalHeaderOpacity = this.state.scrollY.interpolate({
     //   inputRange: [0, 40],
@@ -1008,7 +1204,7 @@ class HomeScreen extends React.Component {
             </View>
             <Animated.View style={[styles.minHeader, { opacity: miniHeaderOpacity }]}>
               <View style={styles.minTitleView}>
-                <Text style={styles.minTitle}>My feeds</Text>
+                <Text style={styles.minTitle}>My flows</Text>
               </View>
               <View style={styles.settingIconView}>
                 <TouchableOpacity onPress={() => this.handleSetting()}>
@@ -1041,10 +1237,10 @@ class HomeScreen extends React.Component {
             </Animated.View> */}
           <View style={{ flex: 1 }}>
             <ScrollableTabView
-              style={this.state.scrollableTabViewContainer}
               content
               onChangeTab={this.onChangeTab.bind(this)}
               prerenderingSiblingsNumber={0}
+              locked={feedClickEvent !== 'normal'}
               renderTabBar={() => <TabBar
                                     underlineHeight={0}
                                     underlineBottomPosition={0}
@@ -1062,23 +1258,22 @@ class HomeScreen extends React.Component {
                                           <Text style={[styles.tabBarTextStyle, isTabActive && (styles.activeTabBarTextStyle)]}>
                                             {tab.label}
                                           </Text>
-                                          {/* {invitedFeedList.length > 0 && page === 1 && (
+                                          {tab.badge > 0 && page === 1 && (
                                             <View style={styles.badgeView}>
                                               <Text style={styles.badgeText}>{tab.badge}</Text>
                                             </View>
-                                          )} */}
+                                          )}
                                         </View>
                                       </TouchableOpacity>
                                     )}
                                   />}
             >
               <View
-                style={styles.feedListContainer}
+                style={[!this.state.isLongHoldMenuVisible ? styles.feedListContainer : styles.feedListContainerLongHold, feedClickEvent === 'normal' && { paddingBottom: 30 }]}
                 ref={ref => this.scrollTabAll = ref} 
-                tabLabel={{ label: 'My flows', badge: badgeCount }}
-                onLayout={(event) => this.onScrollableTabViewLayout(event, 0)}
+                tabLabel={{ label: 'My flows', badge: 0 }}
               >
-                {this.state.showFeedInvitedNewUserBubble && (
+                {showFeedInvitedNewUserBubble && (
                   <View style={{ height: 200 }}>
                     <SpeechBubbleComponent
                       page="feed"
@@ -1090,30 +1285,30 @@ class HomeScreen extends React.Component {
                   </View>
                 )}
 
-                {emptyState && (tabIndex === 0 && feedoList.length === 0) && (
+                {(tabIndex === 0 && feedoList.length === 0) && (
                   <View style={styles.emptyView}>
                     {!loading && (
-                      <View style={styles.emptyInnerView}>
+                      <View style={showFeedInvitedNewUserBubble ? styles.emptyInnerSubView : styles.emptyInnerView}>
                         {this.state.showEmptyBubble && (
                           this.state.isExistingUser
                             ? <EmptyStateComponent
                                 page="feed_exist"
                                 title="It's awesome to start fresh!"
                                 subTitle=""
-                                ctaTitle="Start a new feed"
+                                ctaTitle="Start a new flow"
                                 onCreateNewFeed={() => {
                                   this.animatedOpacity.setValue(1);
-                                  this.onSelectNewFeedType('New Feed')
+                                  this.onSelectNewFeedType('New Flow')
                                 }}
                               />
                             : <EmptyStateComponent
                                 page="feed"
                                 title="First time here? No worries, you are in good hands..."
-                                subTitle="Watch a 15 sec video about creating feeds"
-                                ctaTitle="Start your first feed"
+                                subTitle="Watch a 15 sec video about creating flows"
+                                ctaTitle="Start your first flow"
                                 onCreateNewFeed={() => {
                                   this.animatedOpacity.setValue(1);
-                                  this.onSelectNewFeedType('New Feed')
+                                  this.onSelectNewFeedType('New Flow')
                                 }}
                               />
                         )}
@@ -1125,63 +1320,78 @@ class HomeScreen extends React.Component {
                 <FeedoListContainer
                   loading={loading}
                   feedoList={feedoList}
-                  handleFeedMenu={this.handleLongHoldMenu}
+                  selectedLongHoldFeedoIndex={selectedLongHoldFeedoIndex}
+                  feedClickEvent={feedClickEvent}
+                  animatedSelectFeed={this.animatedSelectFeed}
+                  updateSelectIndex={(index, item) =>
+                    this.setState({ selectedLongHoldFeedoIndex: index, selectedFeedData: item, showLongHoldActionBar: true })
+                  }
+                  handleLongHoldMenu={this.handleLongHoldMenu}
                   page="home"
+                  listType={this.props.user.listHomeType}
                   isRefreshing={this.state.isRefreshing}
                   onRefreshFeed={() => this.onRefreshFeed()}
                 />
               </View>
               <View
-                style={styles.feedListContainer}
+                style={[!this.state.isLongHoldMenuVisible ? styles.feedListContainer : styles.feedListContainerLongHold, , feedClickEvent === 'normal' && { paddingBottom: 30 }]}
                 ref={ref => this.scrollTabSharedWithMe = ref}
-                tabLabel={{ label: 'Shared with me', badge: badgeCount }}
-                onLayout={(event) => this.onScrollableTabViewLayout(event, 2)}
+                tabLabel={{ label: 'Shared with me', badge: this.state.invitedFeedList.length }}
               >
-                {feedoList.length > 0
+                {(feedoList.length > 0 || this.state.invitedFeedList.length > 0)
                   ? <FeedoListContainer
                       loading={loading}
                       feedoList={feedoList}
-                      handleFeedMenu={this.handleLongHoldMenu}
+                      invitedFeedList={this.state.invitedFeedList}
+                      selectedLongHoldFeedoIndex={selectedLongHoldFeedoIndex}
+                      feedClickEvent={feedClickEvent}
+                      animatedSelectFeed={this.animatedSelectFeed}
+                      updateSelectIndex={(index, item) =>
+                        this.setState({ selectedLongHoldFeedoIndex: index, selectedFeedData: item, showLongHoldActionBar: true })
+                      }
+                      handleLongHoldMenu={this.handleLongHoldMenu}
                       page="home"
+                      listType={this.props.user.listHomeType}
                       isRefreshing={this.state.isRefreshing}
                       onRefreshFeed={() => this.onRefreshFeed()}
                     />
-                  : loading 
-                      ? <FeedLoadingStateComponent animating />
-                      : <View style={styles.emptyTabInnerSubView}>
-                          <SpeechBubbleComponent
-                            page="shared"
-                            title="Feeds can be shared with friends and colleagues for collaboration. Feeds you've been invited to will appear here."
-                            subTitle="All you need to know about sharing in 15 secs "
-                          />
-                        </View>
-                    
+                  : <View style={styles.emptyTabInnerSubView}>
+                      <SpeechBubbleComponent
+                        page="shared"
+                        title="Flows can be shared with friends and colleagues for collaboration. Flows you've been invited to will appear here."
+                        subTitle="All you need to know about sharing in 15 secs "
+                      />
+                    </View>
                 }
               </View>
               <View
-                style={styles.feedListContainer}
+                style={[!this.state.isLongHoldMenuVisible ? styles.feedListContainer : styles.feedListContainerLongHold, , feedClickEvent === 'normal' && { paddingBottom: 30 }]}
                 ref={ref => this.scrollTabPinned = ref}
-                tabLabel={{ label: 'Pinned', badge: badgeCount }}
-                onLayout={(event) => this.onScrollableTabViewLayout(event, 1)}
+                tabLabel={{ label: 'Pinned', badge: 0 }}
               >
                 {feedoList.length > 0
                   ? <FeedoListContainer
                       loading={loading}
                       feedoList={feedoList}
-                      handleFeedMenu={this.handleLongHoldMenu}
+                      selectedLongHoldFeedoIndex={selectedLongHoldFeedoIndex}
+                      feedClickEvent={feedClickEvent}
+                      animatedSelectFeed={this.animatedSelectFeed}
+                      updateSelectIndex={(index, item) =>
+                        this.setState({ selectedLongHoldFeedoIndex: index, selectedFeedData: item, showLongHoldActionBar: true })
+                      }
+                      handleLongHoldMenu={this.handleLongHoldMenu}
                       page="home"
+                      listType={this.props.user.listHomeType}
                       isRefreshing={this.state.isRefreshing}
                       onRefreshFeed={() => this.onRefreshFeed()}
                     />
-                  : loading
-                      ? <FeedLoadingStateComponent animating />
-                      : <View style={styles.emptyTabInnerSubView}>
-                          <SpeechBubbleComponent
-                            page="pinned"
-                            title="Your pinned items will appear here. To pin a feed tap and hold it to bring up quick actions and select"
-                            subTitle="Watch a 15 sec Quick Start video "
-                          />
-                        </View>
+                  : <View style={styles.emptyTabInnerSubView}>
+                      <SpeechBubbleComponent
+                        page="pinned"
+                        title="Your pinned items will appear here. To pin a feed tap and hold it to bring up quick actions and select"
+                        subTitle="Watch a 15 sec Quick Start video "
+                      />
+                    </View>
                 }
               </View>
             </ScrollableTabView>
@@ -1199,26 +1409,22 @@ class HomeScreen extends React.Component {
           <DashboardActionBar
             filtering={false}
             notifications={true}
+            showList={true}
+            listType={this.props.user.listHomeType}
             onAddFeed={this.onOpenNewFeedModal.bind(this)}
             handleFilter={() => this.handleFilter()}
+            handleList={() => this.handleList()}
             badgeCount={badgeCount}
+            page="home"
           />
         )}
 
         {this.renderNewFeedModals}
-        <Modal 
-          isVisible={this.state.isLongHoldMenuVisible}
-          style={styles.longHoldModalContainer}
-          backdropColor='#e0e0e0'
-          backdropOpacity={0.9}
-          animationIn="fadeIn"
-          animationOut="fadeOut"
-          animationInTiming={1300}
-          onModalHide={this.onLongHoldMenuHide}
-          onBackdropPress={() => this.setState({ isLongHoldMenuVisible: false })}
-        >
+
+        {this.state.isLongHoldMenuVisible && (
           <FeedLongHoldMenuScreen
             feedData={this.state.selectedFeedData}
+            showLongHoldActionBar={this.state.showLongHoldActionBar}
             handleArchiveFeed={this.handleArchiveFeed}
             handleDeleteFeed={this.handleDeleteFeed}
             handlePinFeed={this.handlePinFeed}
@@ -1227,7 +1433,17 @@ class HomeScreen extends React.Component {
             handleEditFeed={this.handleEditFeed}
             handleLeaveFeed={this.handleLeaveFeed}
           />
-        </Modal>
+        )}
+
+        {this.state.isLongHoldMenuVisible && (
+          <View style={styles.topButtonView}>
+            <TouchableOpacity onPress={() => this.closeLongHoldMenu()}>
+              <View style={styles.btnDoneView}>
+                <Text style={styles.btnDoneText}>Done</Text>
+              </View>
+            </TouchableOpacity>
+          </View>
+        )}
 
         {this.state.isShowActionToaster && (
           <ToasterComponent
@@ -1239,24 +1455,22 @@ class HomeScreen extends React.Component {
 
         {this.renderCardModal}
 
-        <Modal 
-          isVisible={this.state.isShowClipboardToaster}
-          style={styles.longHoldModalContainer}
-          backdropOpacity={0.3}
-        >
-          <GestureRecognizer
-            style={{width: '100%', height: '100%'}}
-            onSwipeLeft={() => this.onSwipeToDismissClipboardToaster()}
-            onSwipeRight={() => this.onSwipeToDismissClipboardToaster()}
-          >
-            <ClipboardToasterComponent
-              description={this.state.copiedUrl}
-              onPress={() => this.onAddClipboardLink()}
-            />
-          </GestureRecognizer>
-        </Modal>
+        {this.state.isShowClipboardToaster && (
+          <ClipboardToasterComponent
+            description={this.state.tmpClipboardData}
+            onPress={() => this.onAddClipboardLink()}
+            onClose={() => this.onDismissClipboardToaster()}
+          />
+        )}
 
-
+        {this.state.isShowInviteToaster && (
+          <ToasterComponent
+            isVisible={this.state.isShowInviteToaster}
+            title={this.state.inviteToasterTitle}
+            buttonTitle="OK"
+            onPressButton={() => this.setState({ isShowInviteToaster: false })}
+          />
+        )}
       </SafeAreaView>
     )
   }
@@ -1286,7 +1500,9 @@ const mapDispatchToProps = dispatch => ({
   getCard: (ideaId) => dispatch(getCard(ideaId)),
   deleteInvitee: (feedId, inviteeId) => dispatch(deleteInvitee(feedId, inviteeId)),
   getInvitedFeedList: () => dispatch(getInvitedFeedList()),
-  getUserSession: () => dispatch(getUserSession())
+  getUserSession: () => dispatch(getUserSession()),
+  getActivityFeed: (userId, param) => dispatch(getActivityFeed(userId, param)),
+  setHomeListType: (type) => dispatch(setHomeListType(type)),
 })
 
 HomeScreen.propTypes = {

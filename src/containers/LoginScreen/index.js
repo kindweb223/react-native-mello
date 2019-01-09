@@ -104,14 +104,14 @@ class LoginScreen extends React.Component {
           if (user.userInfo.emailConfirmed) {
             Actions.HomeScreen()
           } else {
-            Actions.SignUpConfirmScreen({ userEmail })
+              Actions.SignUpConfirmScreen({ userEmail })
           }
         })
       }
 
       if (this.props.user.loading === 'GET_USER_SESSION_PENDING' && user.loading === 'GET_USER_SESSION_REJECTED') {
         this.setState({ loading: false }, () => {
-          Actions.SignUpConfirmScreen({ userEmail })
+            Actions.SignUpConfirmScreen({ userEmail })
         })
       }
 

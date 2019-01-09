@@ -12,7 +12,6 @@ import {
 import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
 import Entypo from 'react-native-vector-icons/Entypo'
-import Octicons from 'react-native-vector-icons/Octicons'
 import Modal from 'react-native-modal'
 import _ from 'lodash'
 import InviteeAutoComplete from '../../components/InviteeAutoComplete'
@@ -35,7 +34,6 @@ class InviteeScreen extends React.Component {
       message: '',
       isPermissionModal: false,
       inviteePermission: 'ADD',
-      isSuccess: false,
       isInput: false,
       contactList: [],
       inviteeEmails: [],
@@ -43,7 +41,8 @@ class InviteeScreen extends React.Component {
       recentContacts: [],
       isInvalidEmail: false,
       invalidEmail: [],
-      loading: false
+      loading: false,
+      tagText: ''
     }
     this.isMount = false
   }
@@ -67,11 +66,7 @@ class InviteeScreen extends React.Component {
           feedo.error
         )
       } else {
-        if (this.isMount) {
-          this.setState({ isSuccess: true }, () => {
-            this.closeModal()
-          })
-        }
+        this.props.onClose()
       }
     }
 
@@ -88,16 +83,6 @@ class InviteeScreen extends React.Component {
 
   componentWillUnmount() {
     this.isMount = false
-  }
-
-  closeModal = () => {
-    setTimeout(() => {
-      this.setState({ isSuccess: false }, () => {
-        if (!this.state.isSuccess) {
-          this.props.handleModal()
-        }
-      })
-    }, 2000)
   }
 
   getRecentContactList = (feed, contactList) => {
@@ -142,7 +127,7 @@ class InviteeScreen extends React.Component {
       }
     }
 
-    this.setState({ filteredContacts })
+    this.setState({ tagText: text, filteredContacts })
   }
 
   onSelectContact = (contact) => {
@@ -162,7 +147,8 @@ class InviteeScreen extends React.Component {
       isAddInvitee: true,
       inviteeEmails: inviteeEmails,
       filteredContacts: [],
-      recentContacts: contacts
+      recentContacts: contacts,
+      tagText: ''
     })
   }
 
@@ -223,16 +209,13 @@ class InviteeScreen extends React.Component {
   }
 
   render () {
-    const { data } = this.props
     const {
       isAddInvitee,
-      contactList,
       recentContacts,
       filteredContacts,
       inviteeEmails,
       inviteePermission,
       isPermissionModal,
-      isSuccess,
       isInvalidEmail,
       invalidEmail
      } = this.state
@@ -256,6 +239,7 @@ class InviteeScreen extends React.Component {
             <View style={styles.inputFieldView}>
               <View style={styles.tagInputItem}>
                 <InviteeAutoComplete
+                  tagText={this.state.tagText}
                   inviteeEmails={inviteeEmails}
                   invalidEmail={invalidEmail}
                   handleInvitees={this.handleInvitees}
@@ -333,23 +317,7 @@ class InviteeScreen extends React.Component {
             handleShareOption={this.handlePermissionOption}
           />
         </Modal>
-
-        <Modal 
-          isVisible={isSuccess}
-          style={styles.successModal}
-          backdropColor='#e0e0e0'
-          backdropOpacity={0.9}
-          animationIn="fadeIn"
-          animationOut="fadeOut"
-          animationInTiming={500}
-          onBackdropPress={() => this.setState({ isSuccess: false })}
-        >
-          <View style={styles.successView}>
-            <Octicons name="check" style={styles.successIcon} />
-          </View>
-        </Modal>
-
-      </View>
+      </View>      
     )
   }
 }

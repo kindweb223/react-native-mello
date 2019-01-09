@@ -8,7 +8,8 @@ import {
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 import { Actions } from 'react-native-router-flux'
-import UserAvatarComponent from '../../UserAvatarComponent'
+import _ from 'lodash'
+import AvatarPileComponent from '../../AvatarPileComponent'
 import Tags from "../../../components/FeedTags"
 import styles from './styles'
 import COLORS from '../../../service/colors'
@@ -40,7 +41,7 @@ class FeedItemContentComponent extends React.Component {
   }
 
   render() {
-    const { data, pinFlag, page, clickEvent } = this.props
+    const { data, avatars, pinFlag, page, clickEvent } = this.props
 
     return (
       <View style={styles.container}>
@@ -50,9 +51,9 @@ class FeedItemContentComponent extends React.Component {
             {pinFlag && (
               <Image source={PIN_ICON_PURPLE} />
             )}
-            {!data.metadata.owner && (
+            {avatars.length > 0 && (
               <View style={styles.avatarView}>
-                <UserAvatarComponent user={data.owner} size={22} />
+                <AvatarPileComponent avatars={avatars} size={24} numFaces={2} showPlus={false} />
               </View>
             )}
           </View>
@@ -60,22 +61,8 @@ class FeedItemContentComponent extends React.Component {
 
         <View style={styles.statsView}>
           <View style={styles.statsItemView}>
-            {
-              data.metadata.newInvitees > 0 ?
-              <Image source={PROFILE_ICON_PURPLE} style={styles.profileIcon} /> :
-              <Image source={PROFILE_ICON_GREY} style={styles.profileIcon} />
-            }
-            <Text style={[styles.feedText, data && data.metadata.newInvitees ? styles.active : styles.inActive]}>
-              {data.invitees.length}
-            </Text>
-          </View>
-          <View style={styles.statsItemView}>
-            {
-              data.metadata.newIdeas > 0 ? 
-              <Image source={CARD_ICON_PURPLE} style={styles.cardIcon} /> :
-              <Image source={CARD_ICON_GREY} style={styles.cardIcon} />
-            }
-            <Text style={[styles.feedText, data.metadata.newIdeas ? styles.active : styles.inActive]}>
+            <Image source={CARD_ICON_GREY} style={styles.cardIcon} />
+            <Text style={[styles.feedText, styles.inActive]}>
               {data.ideas.length}
             </Text>
           </View>

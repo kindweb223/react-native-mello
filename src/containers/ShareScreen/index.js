@@ -16,6 +16,7 @@ import { Actions } from 'react-native-router-flux'
 import LinkShareModalComponent from '../../components/LinkShareModalComponent'
 import LinkShareItem from '../../components/LinkShareModalComponent/LinkShareItem'
 import InviteeItemComponent from '../../components/LinkShareModalComponent/InviteeItemComponent'
+import ToasterComponent from '../../components/ToasterComponent'
 import InviteeScreen from '../InviteeScreen'
 import { SHARE_LINK_URL } from '../../service/api'
 import { updateSharingPreferences, deleteInvitee, updateInviteePermission } from '../../redux/feedo/actions'
@@ -43,7 +44,8 @@ class ShareScreen extends React.Component {
       linkShareModal: false,
       shareModalType: 'share',
       shareInviteeData: {},
-      isInviteeModal: false
+      isInviteeModal: false,
+      isInviteSuccess: false
     }
   }
 
@@ -60,7 +62,7 @@ class ShareScreen extends React.Component {
         COMMON_FUNC.isFeedContributor(feedo.currentFeed) ||
         COMMON_FUNC.isFeedGuest(feedo.currentFeed)) {
           if (user.userInfo.id === shareInviteeData.userProfile.id) {
-            Actions.HomeScreen()
+            this.props.moveHomeScreen()
           }
       }
     }
@@ -71,6 +73,12 @@ class ShareScreen extends React.Component {
           this.props.onClose()
           Actions.HomeScreen()
         }
+      }
+    }
+
+    if (this.props.feedo.loading === 'INVITE_HUNT_PENDING' && feedo.loading === 'INVITE_HUNT_FULFILLED') {
+      if (!this.props.feedo.error) {
+        this.showInviteSuccessToaster()
       }
     }
   }
@@ -183,126 +191,138 @@ class ShareScreen extends React.Component {
     }
   }
 
-  handleModal = () => {
-    setTimeout(() => {
-      this.setState({ isInviteeModal: false }, () => {
-        if (!this.state.isInviteeModal) {
-          this.props.onClose()
-        }
-      })
-    }, 200)
+  showInviteSuccessToaster = () => {
+    this.setState({ isInviteSuccess: true }, () => {
+      setTimeout(() => {
+        this.setState({ isInviteSuccess: false })
+      }, 3000)
+    })
+  }
+
+  closeInviteSuccessToaster = () => {
+    this.setState({ isInviteSuccess: false })
   }
 
   render () {
     const { data } = this.props
-    const { linkShareModal, shareModalType, shareInviteeData } = this.state
+    const { linkShareModal, shareModalType, shareInviteeData, isInviteSuccess } = this.state
     let { invitees } = data
 
     invitees = _.sortBy(invitees, invitee => invitee.dateCreated)
 
     return (
-      <View style={styles.overlay}>
-        <View style={styles.header}>
-          <TouchableOpacity onPress={() => this.props.onClose()} style={styles.closeButton}>
-            <Image source={CLOSE_ICON} />
-          </TouchableOpacity>
-          
-          {data.sharingPreferences.level === 'INVITEES_ONLY'
-            ? <TouchableOpacity onPress={() => this.onLinkShare(data)}>
-                <View style={styles.shareButtonView}>
-                  <Entypo name="share-alternative" size={16} color={COLORS.LIGHT_GREY} />
-                  <Text style={[styles.shareButtonText, { color: COLORS.LIGHT_GREY }]}>Share link</Text>
-                </View>
-              </TouchableOpacity>
-            : <TouchableOpacity onPress={() => this.showShareModal()}>
-                <View style={styles.shareButtonView}>
-                  <Entypo name="share-alternative" size={16} color={COLORS.PURPLE} />
-                  <Text style={[styles.shareButtonText, { color: COLORS.PURPLE }]}>Share link</Text>
-                </View>
+      <View style={styles.container}>
+        <View style={styles.overlay}>
+          <View style={styles.header}>
+            <TouchableOpacity onPress={() => this.props.onClose()} style={styles.closeButton}>
+              <Image source={CLOSE_ICON} />
             </TouchableOpacity>
-          }
-        </View>
-        
-        <View style={styles.body}>
-          {COMMON_FUNC.isFeedOwnerEditor(data) && (
-            <View style={styles.listItemView}>
-              <TouchableOpacity onPress={() => this.onShowInviteeModal(data)}>
-                <View style={styles.listItem}>
-                  <InvitePeopleItemComponent />
-                </View>
+            
+            {data.sharingPreferences.level === 'INVITEES_ONLY'
+              ? <TouchableOpacity onPress={() => this.onLinkShare(data)}>
+                  <View style={styles.shareButtonView}>
+                    <Entypo name="share-alternative" size={16} color={COLORS.LIGHT_GREY} />
+                    <Text style={[styles.shareButtonText, { color: COLORS.LIGHT_GREY }]}>Share link</Text>
+                  </View>
+                </TouchableOpacity>
+              : <TouchableOpacity onPress={() => this.showShareModal()}>
+                  <View style={styles.shareButtonView}>
+                    <Entypo name="share-alternative" size={16} color={COLORS.PURPLE} />
+                    <Text style={[styles.shareButtonText, { color: COLORS.PURPLE }]}>Share link</Text>
+                  </View>
               </TouchableOpacity>
-              
-              <TouchableOpacity onPress={() => this.onLinkShare(data)}>
-                <View style={styles.listItem}>
-                  <LinkShareItem isViewOnly={false} feed={data} />
-                </View>
-              </TouchableOpacity>
-            </View>
-          )}
-
-          {invitees && invitees.length > 0 && (
-            <View style={styles.inviteeListView}>
-              <View style={styles.titleContainer}>
-                <View style={styles.titleView}>
-                  <Text style={styles.titleText}>Members</Text>
-                </View>
+            }
+          </View>
+          
+          <View style={styles.body}>
+            {COMMON_FUNC.isFeedOwnerEditor(data) && (
+              <View style={styles.listItemView}>
+                <TouchableOpacity onPress={() => this.onShowInviteeModal(data)}>
+                  <View style={styles.listItem}>
+                    <InvitePeopleItemComponent />
+                  </View>
+                </TouchableOpacity>
+                
+                <TouchableOpacity onPress={() => this.onLinkShare(data)}>
+                  <View style={styles.listItem}>
+                    <LinkShareItem isViewOnly={false} feed={data} />
+                  </View>
+                </TouchableOpacity>
               </View>
-              <ScrollView style={styles.inviteeList}>
-                {invitees.map(invitee => (
-                  <TouchableOpacity onPress={() => this.onPressInvitee(data, invitee)} key={invitee.id}>
-                    <View style={styles.inviteeItemView}>
-                      <View style={styles.inviteeItem}>
-                        <InviteeItemComponent
-                          invitee={invitee}
-                          isViewOnly={false}
-                          hideLike={true}
-                          isOwnerInvitee={COMMON_FUNC.isInviteeOwner(data, invitee)}
-                        />
+            )}
+
+            {invitees && invitees.length > 0 && (
+              <View style={styles.inviteeListView}>
+                <View style={styles.titleContainer}>
+                  <View style={styles.titleView}>
+                    <Text style={styles.titleText}>Members</Text>
+                  </View>
+                </View>
+                <ScrollView style={styles.inviteeList}>
+                  {invitees.map(invitee => (
+                    <TouchableOpacity onPress={() => this.onPressInvitee(data, invitee)} key={invitee.id}>
+                      <View style={styles.inviteeItemView}>
+                        <View style={styles.inviteeItem}>
+                          <InviteeItemComponent
+                            invitee={invitee}
+                            isViewOnly={false}
+                            hideLike={true}
+                            isOwnerInvitee={COMMON_FUNC.isInviteeOwner(data, invitee)}
+                          />
+                        </View>
                       </View>
-                    </View>
-                  </TouchableOpacity>
-                ))}
-              </ScrollView>
-            </View>
-          )}
+                    </TouchableOpacity>
+                  ))}
+                </ScrollView>
+              </View>
+            )}
+          </View>
+
+          <Modal 
+            isVisible={linkShareModal}
+            style={{ margin: 0 }}
+            backdropColor='#e0e0e0'
+            backdropOpacity={0.9}
+            animationIn="slideInUp"
+            animationOut="slideOutDown"
+            animationInTiming={500}
+            onBackdropPress={() => this.setState({ linkShareModal: false })}
+          >
+            <LinkShareModalComponent
+              shareModalType={shareModalType}
+              shareInviteeData={shareInviteeData}
+              feed={data}
+              handleShareOption={this.handleShareOption}
+            />
+          </Modal>
+
+          <Modal
+            isVisible={this.state.isInviteeModal}
+            style={{ margin: 0 }}
+            backdropColor='#f5f5f5'
+            backdropOpacity={0.9}
+            animationIn="fadeInUp"
+            animationOut="fadeOutDown"
+            animationInTiming={300}
+            animationOutTiming={100}
+            onModalHide={() => {}}
+            onBackdropPress={() => this.setState({ isInviteeModal: false })}
+          >
+            <InviteeScreen
+              data={data}
+              onClose={() => this.setState({ isInviteeModal: false })}
+            />
+          </Modal>
         </View>
 
-        <Modal 
-          isVisible={linkShareModal}
-          style={{ margin: 0 }}
-          backdropColor='#e0e0e0'
-          backdropOpacity={0.9}
-          animationIn="slideInUp"
-          animationOut="slideOutDown"
-          animationInTiming={500}
-          onBackdropPress={() => this.setState({ linkShareModal: false })}
-        >
-          <LinkShareModalComponent
-            shareModalType={shareModalType}
-            shareInviteeData={shareInviteeData}
-            feed={data}
-            handleShareOption={this.handleShareOption}
-          />
-        </Modal>
+        <TouchableOpacity style={styles.backdrop} activeOpacity={0} onPress={() => this.props.onClose()} />
 
-        <Modal
-          isVisible={this.state.isInviteeModal}
-          style={{ margin: 0 }}
-          backdropColor='#f5f5f5'
-          backdropOpacity={0.9}
-          animationIn="fadeInUp"
-          animationOut="fadeOutDown"
-          animationInTiming={500}
-          onModalHide={() => {}}
-          onBackdropPress={() => this.setState({ isInviteeModal: false })}
-        >
-          <InviteeScreen
-            data={data}
-            onClose={() => this.setState({ isInviteeModal: false })}
-            handleModal={() => this.handleModal()}
-          />
-        </Modal>
-
+        <ToasterComponent
+          isVisible={isInviteSuccess}
+          title="Invitations sent"
+          buttonTitle="OK"
+          onPressButton={() => this.closeInviteSuccessToaster()}
+        />
       </View>
     )
   }
@@ -310,6 +330,7 @@ class ShareScreen extends React.Component {
 
 ShareScreen.defaultProps = {
   onClose: () => {},
+  moveHomeScreen: () => {},
   data: {},
   updateSharingPreferences: () => {},
   deleteInvitee: () => {},
@@ -318,6 +339,7 @@ ShareScreen.defaultProps = {
 
 ShareScreen.propTypes = {
   onClose: PropTypes.func,
+  moveHomeScreen: PropTypes.func,
   data: PropTypes.objectOf(PropTypes.any),
   updateSharingPreferences: PropTypes.func,
   deleteInvitee: PropTypes.func,

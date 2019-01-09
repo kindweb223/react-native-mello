@@ -46,11 +46,12 @@ class InviteeAutoComplete extends React.Component {
   }
 
   render () {
-    const { inviteeEmails, invalidEmail } = this.props
+    const { inviteeEmails, invalidEmail, tagText } = this.props
 
     return (
       <View style={styles.container}>
         <InviteeTag
+          tagText={this.props.tagText}
           invalidEmail={invalidEmail}
           tags={inviteeEmails}
           placeHolder="Email or name"

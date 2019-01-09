@@ -32,6 +32,14 @@ class InviteeTag extends React.Component {
     }
   }
 
+  UNSAFE_componentWillReceiveProps(nextProps) {
+    if (nextProps.tagText !== this.state.tagText) {
+      this.setState({
+        text: nextProps.tagText,
+      });
+    }
+  }
+
   componentDidUpdate(prevProps) {
     if (prevProps.tags !== this.props.tags) {
       this.setState({ text: '' })
@@ -43,18 +51,6 @@ class InviteeTag extends React.Component {
       text.length > 1 &&
       (text.slice(-1) === ' ' || text.slice(-1) === ',')
     ) {
-      // this.setState({
-      //   tags: [
-      //     ...this.state.tags, 
-      //     {
-      //       text: text.slice(0, -1).trim(),
-      //       id: '',
-      //     },
-      //   ],
-      //   text: ''
-      // }, () => {
-      //   this.props.onChangeTags && this.props.onChangeTags(this.state.tags)
-      // });
       this.onCreateTag();
     } else {
       this.setState({ text });
@@ -65,6 +61,11 @@ class InviteeTag extends React.Component {
   }
 
   onKeyPress(event) {
+    if (this.state.text) {
+      this.prevKey = event.nativeEvent.key;
+      return;
+    }
+
     if ((this.prevKey === '' || this.prevKey === 'Backspace' || this.prevKey === ' ' || this.prevKey === ',') && event.nativeEvent.key === 'Backspace') {
       let index = this.props.tags.length - 1;
       if (this.state.selectedTagIndex !== -1) {

@@ -32,10 +32,8 @@ const LOCK_ICON = require('../../../assets/images/Lock/Blue.png')
 const EDIT_ICON = require('../../../assets/images/Edit/Blue.png')
 const PROFILE_ICON = require('../../../assets/images/Profile/Blue.png')
 
-
 const ABOUT_ITEMS = [
-  'Knowledge Base',
-  'Contact Us',
+  'Support',
   'Privacy Policy',
   'Terms & Conditions'
 ]
@@ -51,7 +49,7 @@ const SETTING_ITEMS = [
   },
   {
     icon: <Image source={TRASH_ICON} style={styles.leftIcon} />,
-    title: 'Archived feeds'
+    title: 'Archived flows'
   }
 ]
 
@@ -76,21 +74,18 @@ class ProfileScreen extends React.Component {
 
     this.setState({ userInfo: user.userInfo })
 
-    if (Actions.currentScene === 'ProfileScreen') {
-      if (this.props.user.loading === 'USER_SIGNOUT_PENDING' && user.loading === 'USER_SIGNOUT_FULFILLED') {
-        Actions.LoginScreen()
-      }
-
+    if (Actions.currentScene === 'ProfileScreen' || Actions.currentScene === 'ProfileUpdateScreen') {
       if (this.props.user.loading === 'UPDATE_PROFILE_PENDING' && user.loading === 'UPDATE_PROFILE_FULFILLED') {
-        FastImage.preload([
-          {
-            uri: user.userInfo.imageUrl
-          }
-        ])
         this.setState({ isShowToaster: true, toasterText: 'Profile changed' })
         setTimeout(() => {
           this.setState({ isShowToaster: false })
         }, 2000)
+      }
+    }
+
+    if (Actions.currentScene === 'ProfileScreen') {
+      if (this.props.user.loading === 'USER_SIGNOUT_PENDING' && user.loading === 'USER_SIGNOUT_FULFILLED') {
+        Actions.LoginScreen()
       }
 
       if (this.props.user.loading === 'UPDATE_PASSWORD_PENDING' && user.loading === 'UPDATE_PASSWORD_FULFILLED') {
@@ -179,7 +174,7 @@ class ProfileScreen extends React.Component {
       // delete profile photo
       const { user } = this.props
       if (user.userInfo.imageUrl) {
-        this.setState({ loading: true })
+        // this.setState({ loading: true })
         this.props.deleteProfilePhoto(user.userInfo.id)
       }
     }
@@ -211,13 +206,12 @@ class ProfileScreen extends React.Component {
   handleAboutItem = (item, index) => {
     switch(index) {
       case 0:
+        Actions.ProfileSupportScreen()
         return
       case 1:
-        return
-      case 2:
         Actions.ProfilePrivacyPolicyScreen()
         return
-      case 3:
+      case 2:
         Actions.ProfileTermsAndConditionsScreen()
         return
       default:

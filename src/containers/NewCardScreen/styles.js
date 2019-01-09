@@ -243,6 +243,27 @@ const styles = StyleSheet.create({
   url: {
     color: COLORS.BLUE,
   },
+  successModal: {
+    margin: 0,
+    justifyContent: 'center',
+    alignItems: 'center'
+  },
+  successView: {
+    width: 146,
+    height: 146,
+    borderRadius: 24,
+    backgroundColor: '#fff',
+    justifyContent: 'center',
+    alignItems: 'center'
+  },
+  successIcon: {
+    fontSize: 80,
+    color: COLORS.PURPLE
+  },
+  successText: {
+    fontSize: 15,
+    color: COLORS.PURPLE
+  }
 })
 
 

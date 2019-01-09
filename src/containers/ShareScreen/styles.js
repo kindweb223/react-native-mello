@@ -3,12 +3,15 @@ import COLORS from '../../service/colors'
 import CONSTANTS from '../../service/constants'
 
 export default {
-  overlay: {
+  container: {
     position: 'absolute',
     top: 0,
     right: 0,
     left: 0,
-    marginTop: CONSTANTS.STATUSBAR_HEIGHT,
+    bottom: 0,
+    marginTop: CONSTANTS.STATUSBAR_HEIGHT
+  },
+  overlay: {    
     paddingBottom: 21,
     borderRadius: 18,
     backgroundColor: '#fff',
@@ -106,5 +109,8 @@ export default {
     paddingVertical: 7,
     borderBottomWidth: 1,
     borderColor: COLORS.LIGHT_GREY_LINE
+  },
+  backdrop: {
+    flex: 1
   }
 }

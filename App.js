@@ -20,6 +20,7 @@ import axios from 'axios'
 import CONSTANTS from './src/service/constants'
 import COLORS from './src/service/colors'
 import { BASE_URL, BUGSNAG_KEY, APP_LOCALE, APP_NAME, APP_STORE_ID, PLAY_STORE_ID } from './src/service/api'
+import pubnub from './src/lib/pubnub'
 
 const config = new Configuration(BUGSNAG_KEY);
 config.appVersion = require('./package.json').version;
@@ -30,6 +31,7 @@ axios.defaults.headers.get['Content-Type'] = 'application/json'
 axios.defaults.headers.get.Accept = 'application/json'
 axios.defaults.withCredentials = true
 axios.defaults.headers['x-mobile-api'] = true
+axios.defaults.timeout = 30000
 
 axios.interceptors.response.use(
   response => (
@@ -44,6 +46,7 @@ axios.interceptors.response.use(
       SharedGroupPreferences.setItem('xAuthToken', null, CONSTANTS.APP_GROUP_TOKEN_IDENTIFIER)
 
       Actions.LoginScreen({ type: 'replace' })
+      return
     }
     throw error
   }
@@ -63,6 +66,7 @@ import DocumentSliderScreen from './src/containers/DocumentSliderScreen'
 import LikesListScreen from './src/containers/LikesListScreen'
 import CommentScreen from './src/containers/CommentScreen'
 import ProfileScreen from './src/containers/ProfileScreen'
+import ProfileSupportScreen from './src/containers/ProfileSupportScreen'
 import ProfileUpdateScreen from './src/containers/ProfileUpdateScreen'
 import SignUpSuccessScreen from './src/containers/SignUpSuccessScreen'
 import ResetPasswordConfirmScreen from './src/containers/ResetPasswordConfirmScreen'
@@ -73,6 +77,21 @@ import FeedFilterScreen from './src/containers/FeedFilterScreen'
 import ArchivedFeedScreen from './src/containers/ArchivedFeedScreen'
 import PrivacyPolicyScreen from './src/containers/PrivacyPolicyScreen'
 import NotificationScreen from './src/containers/NotificationScreen'
+
+import { 
+  getCardComments,
+  getCard
+} from './src/redux/card/actions'
+import {
+  pubnubDeleteFeed,
+  pubnubGetFeedDetail,
+  pubnubLikeCard,
+  pubnubUnLikeCard,
+  getInvitedFeedList,
+  pubnubDeleteInvitee,
+  pubnubDeleteOtherInvitee,
+  pubnubMoveIdea
+} from './src/redux/feedo/actions'
 
 const store = createStore(reducers, applyMiddleware(thunk, promiseMiddleware))
 
@@ -88,6 +107,64 @@ export default class Root extends React.Component {
   }
 
   async UNSAFE_componentWillMount() {
+    pubnub.addListener({
+      status: function(statusEvent) {
+          if (statusEvent.category === "PNConnectedCategory") {
+          }
+      },
+      message: function(response) {
+        console.log('PUBNUB_RESPONSE: ', response.message)
+        if (response.message.action === 'COMMENT_ADDED' || response.message.action === 'COMMENT_EDITED' || response.message.action === 'COMMENT_DELETED') {
+          console.log("refreshing comments")
+          store.dispatch(getCardComments(response.message.data.ideaId))
+        }
+        if (response.message.action === 'HUNT_UPDATED' ||
+            response.message.action === 'IDEA_ADDED' ||
+            response.message.action === 'IDEA_DELETED' ||
+            response.message.action === 'USER_ACCESS_CHANGED'
+        ) {
+          store.dispatch(pubnubGetFeedDetail(response.message.data.huntId))
+        }
+        if (response.message.action === 'IDEA_MOVED') {
+          store.dispatch(pubnubMoveIdea(response.message.data.huntId, response.message.data.ideaId))
+        }
+        if (response.message.action === 'HUNT_DELETED') {
+          store.dispatch(pubnubDeleteFeed(response.message.data.huntId))
+        }
+        if (response.message.action === 'IDEA_UPDATED') {
+          store.dispatch(getCard(response.message.data.ideaId))
+        }
+        if (response.message.action === 'IDEA_LIKED') {
+          store.dispatch(pubnubLikeCard(response.message.data.ideaId))
+        }
+        if (response.message.action === 'IDEA_UNLIKED') {
+          store.dispatch(pubnubUnLikeCard(response.message.data.ideaId))
+        }
+        if (response.message.action === 'USER_INVITED_TO_HUNT') {
+          store.dispatch(getInvitedFeedList())
+          store.dispatch(pubnubGetFeedDetail(response.message.data.huntId))
+        }
+        if (response.message.action === 'USER_JOINED_HUNT') {
+          store.dispatch(pubnubGetFeedDetail(response.message.data.huntId))
+        }
+        if (response.message.action === 'HUNT_INVITEE_REMOVED') {
+          const state = store.getState()
+
+          if (state.user.userInfo.id === response.message.data.userProfileId) {
+            store.dispatch(pubnubDeleteFeed(response.message.data.huntId))
+          } else {
+            store.dispatch(pubnubDeleteOtherInvitee(response.message.data.huntId, response.message.data.userProfileId))
+          }
+        }
+        if (response.message.action === 'HUNT_INVITEE_REMOVED_SELF') {
+          store.dispatch(pubnubDeleteInvitee(response.message.data.huntId, response.message.data.huntInviteeId))
+        }
+      },
+      presence: function(presenceEvent) {
+
+      }
+    })
+
     Linking.getInitialURL()
     .then((url) => {
       if (url) {
@@ -173,11 +250,11 @@ export default class Root extends React.Component {
               const userInfo = AsyncStorage.getItem('userInfo')
 
               if (userInfo) {
-                if (Actions.currentScene === 'FeedDetailScreen') {
-                  Actions.FeedDetailScreen({type: 'replace', data});
+                if (Actions.currentScene === 'FeedDetailScreen') {                  
+                  Actions.FeedDetailScreen({ type: 'replace', data });
                 } 
                 else {
-                  Actions.FeedDetailScreen({data})
+                  Actions.FeedDetailScreen({ data })
                 }
               } 
               else {
@@ -225,7 +302,8 @@ export default class Root extends React.Component {
           </Scene>
           <Stack key="ProfileScreen" hideNavBar>
             <Stack key="ProfileScreen">
-              <Scene key="ProfileScreen" component={ ProfileScreen } hideNavBar navigationBarStyle={styles.defaultNavigationBar} />
+              <Scene key="ProfileScreen" component={ ProfileScreen } hideNavBar />
+              <Scene key="ProfileSupportScreen" component={ ProfileSupportScreen } navigationBarStyle={styles.defaultNavigationBar} />
               <Scene key="ProfileUpdateScreen" component={ ProfileUpdateScreen } navigationBarStyle={styles.defaultNavigationBar} />
               <Scene key="ProfileResetPasswordConfirmScreen" component={ ResetPasswordConfirmScreen } navigationBarStyle={styles.defaultNavigationBar} />
               <Scene key="ProfileTermsAndConditionsScreen" component={ TermsAndConditionsScreen } navigationBarStyle={styles.emptyBorderNavigationBar} />
@@ -235,7 +313,9 @@ export default class Root extends React.Component {
           </Stack>
           <Stack key="NotificationScreen" hideNavBar>
             <Stack key="NotificationScreen">
-              <Scene key="NotificationScreen" component={ NotificationScreen } navigationBarStyle={styles.defaultNavigationBar} />
+              <Scene key="NotificationScreen" component={ NotificationScreen } hideNavBar />
+              <Scene key="ActivityCommentScreen" component={ CommentScreen } navigationBarStyle={styles.defaultNavigationBar} />
+              <Scene key="ActivityLikesListScreen" component={ LikesListScreen } navigationBarStyle={styles.defaultNavigationBar} />
             </Stack>
           </Stack>            
         </Modal>
