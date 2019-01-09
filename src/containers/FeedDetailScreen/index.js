@@ -803,16 +803,10 @@ class FeedDetailScreen extends React.Component {
       selectedLongHoldInvitees: invitees,
       isVisibleLongHoldMenu: true
     }, () => {
-      Animated.timing(this.animatedSelectCard, {
+      Animated.spring(this.animatedSelectCard, {
         toValue: 0.85,
-        duration: 400,
+        useNativeDriver: true
       }).start();
-      // Animated.parallel([
-      //   Animated.timing(this.animatedSelectCard, {
-      //     toValue: 0.85,
-      //     duration: 500,
-      //   })
-      // ]).start();
     });
   }
 
@@ -820,16 +814,10 @@ class FeedDetailScreen extends React.Component {
     this.setState({
       isVisibleLongHoldMenu: false
     }, () => {
-      Animated.timing(this.animatedSelectCard, {
+      Animated.spring(this.animatedSelectCard, {
         toValue: 1,
-        duration: 400,
+        useNativeDriver: true
       }).start();
-      // Animated.parallel([
-      //   Animated.timing(this.animatedSelectCard, {
-      //     toValue: 1,
-      //     duration: 500,
-      //   })
-      // ]).start();
     });
   }
 
@@ -1333,7 +1321,7 @@ class FeedDetailScreen extends React.Component {
               onSwipeRight={this.backToDashboard}
             >
               <View style={styles.detailView} onLayout={this.onLayoutScroll}>
-                {!_.isEmpty(currentFeed) && (
+                {!_.isEmpty(currentFeed) && !isVisibleLongHoldMenu && (
                   <View style={styles.collapseView}>
                     <FeedCollapseComponent
                       feedData={currentFeed}
