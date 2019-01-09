@@ -798,35 +798,39 @@ class FeedDetailScreen extends React.Component {
     ReactNativeHaptic.generate('impactHeavy');
 
     this.setState({
-      selectedLongHoldCardIndex: index
+      selectedLongHoldCardIndex: index,
+      selectedLongHoldIdea: idea,
+      selectedLongHoldInvitees: invitees,
+      isVisibleLongHoldMenu: true
     }, () => {
-      Animated.parallel([
-        Animated.timing(this.animatedSelectCard, {
-          toValue: 0.85,
-          duration: 150,
-        })
-      ]).start(() => {
-        this.setState({
-          selectedLongHoldIdea: idea,
-          selectedLongHoldInvitees: invitees,
-          isVisibleLongHoldMenu: true
-          // selectedLongHoldCardIndex: -1,
-        });
-      });
+      Animated.timing(this.animatedSelectCard, {
+        toValue: 0.85,
+        duration: 400,
+      }).start();
+      // Animated.parallel([
+      //   Animated.timing(this.animatedSelectCard, {
+      //     toValue: 0.85,
+      //     duration: 500,
+      //   })
+      // ]).start();
     });
   }
 
   onCloseLongHold = () => {
-    Animated.parallel([
+    this.setState({
+      isVisibleLongHoldMenu: false
+    }, () => {
       Animated.timing(this.animatedSelectCard, {
         toValue: 1,
-        duration: 100
-      })
-    ]).start(() => {
-      this.setState({
-        isVisibleLongHoldMenu: false
-      })
-    })
+        duration: 400,
+      }).start();
+      // Animated.parallel([
+      //   Animated.timing(this.animatedSelectCard, {
+      //     toValue: 1,
+      //     duration: 500,
+      //   })
+      // ]).start();
+    });
   }
 
   onHiddenLongHoldMenu() {
@@ -1307,7 +1311,7 @@ class FeedDetailScreen extends React.Component {
             </View>
           )}
 
-          <ScrollView
+          <Animated.ScrollView
             showsVerticalScrollIndicator={false}
             refreshControl={
               <RefreshControl
@@ -1320,7 +1324,7 @@ class FeedDetailScreen extends React.Component {
             style={[
               styles.scrollView,
               {
-                transform: [{ scale: this.animatedSelectCard._value}],
+                transform: [{ scale: this.animatedSelectCard}],
               }
             ]}
           >     
@@ -1495,7 +1499,7 @@ class FeedDetailScreen extends React.Component {
                 }
               </View>
             </GestureRecognizer>
-          </ScrollView>
+          </Animated.ScrollView>
         </View>
 
         {TAGS_FEATURE && this.renderCreateTag}
