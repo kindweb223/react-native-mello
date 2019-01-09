@@ -58,24 +58,6 @@ class LastCommentComponent extends React.Component {
     return null;
   }
 
-  onAddComment() {
-    Analytics.logEvent('edit_card_add_comment', {})
-
-    if (this.props.prevPage === 'activity') {
-      Actions.ActivityCommentScreen({
-        idea: this.props.card.currentCard,
-        guest: COMMON_FUNC.isFeedGuest(this.props.feedo.currentFeed),
-        isShowKeyboard: true,
-      });
-    } else {
-      Actions.CommentScreen({
-        idea: this.props.card.currentCard,
-        guest: COMMON_FUNC.isFeedGuest(this.props.feedo.currentFeed),
-        isShowKeyboard: true,
-      });
-    }
-  }
-
   onViewOldComments() {
     Analytics.logEvent('edit_card_view_old_comments', {})
 
@@ -92,30 +74,18 @@ class LastCommentComponent extends React.Component {
     }
   }
 
-  get renderAddComment() {
-    const { userInfo } = this.props.user;
-    return (
-      <TouchableOpacity 
-        style={styles.rowContainer}
-        activeOpacity={0.6}
-        onPress={this.onAddComment.bind(this)}
-      >
-        <UserAvatarComponent
-          user={userInfo}
-        />
-        <Text style={styles.textAddComment}>Add comment...</Text>
-      </TouchableOpacity>
-    )
-  }
-
   renderItem({item, index}) {
     const user = this.getCommentUser(item);
     const name = user ? user.firstName || user.lastName : '';
     return (
       <View style={styles.itemContainer}>
-        <Text>
-          <Text style={styles.textItemName}>{name}</Text>
-          <Text style={styles.textItemComment}>  {item.content}</Text>
+        <UserAvatarComponent
+          user={user}
+        />
+        <Text style={styles.commentTextView}>
+          <Text style={styles.commenterName}>{name}</Text>
+          <Text> </Text>
+          <Text style={styles.commentText}>{item.content}</Text>
         </Text>
       </View>
     );
@@ -123,7 +93,6 @@ class LastCommentComponent extends React.Component {
 
   render () {
     const { currentComments } = this.state;
-    const { feedo } = this.props;
 
     let lastComments = [];
     let oldCommentsLength = 0;
@@ -143,27 +112,18 @@ class LastCommentComponent extends React.Component {
         { 
           oldCommentsLength > 0 && 
           <TouchableOpacity 
-            style={styles.itemContainer}
+            style={styles.viewAllContainer}
             activeOpacity={0.6}
             onPress={this.onViewOldComments.bind(this)}
           >
-            <Text style={[styles.textItemComment, {color: COLORS.DARK_GREY}]}>View {oldCommentsLength} older comments</Text>
+            {/* <Text style={[styles.textItemComment, {color: COLORS.DARK_GREY}]}>View {oldCommentsLength} older comments</Text> */}
+            <Text style={[styles.commentText]}>View all comments</Text>
           </TouchableOpacity>
         }
-        {!COMMON_FUNC.isFeedGuest(feedo.currentFeed) && this.renderAddComment}
       </View>
     );
   }
 }
-
-
-LastCommentComponent.defaultProps = {
-}
-
-
-LastCommentComponent.propTypes = {
-}
-
 
 const mapStateToProps = ({ feedo, card, user }) => ({
   feedo,

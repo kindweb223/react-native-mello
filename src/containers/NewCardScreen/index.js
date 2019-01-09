@@ -1337,19 +1337,9 @@ class NewCardScreen extends React.Component {
     );
   }
 
-  get renderComments() {
-    const { viewMode } = this.props;
-    if (viewMode !== CONSTANTS.CARD_NEW) {
-      return (
-        <View>
-          <View style={styles.line} />
-          <LastCommentComponent prevPage={this.props.prevPage} />
-        </View>
-      )
-    }
-  }
-
   get renderMainContent() {
+    const { viewMode } = this.props
+
     return (
       <ScrollView
         ref={ref => this.scrollViewRef = ref}
@@ -1359,7 +1349,12 @@ class NewCardScreen extends React.Component {
         {this.renderWebMeta}
         {this.renderText}
         {this.renderDocuments}
-        {this.renderComments}
+
+        {viewMode !== CONSTANTS.CARD_NEW && (
+          this.renderInvitee
+        )}
+
+        {this.renderCommentList}
       </ScrollView>
     );
   }
@@ -1449,7 +1444,10 @@ class NewCardScreen extends React.Component {
   get renderInvitee() {
     const { userProfile } = this.props.invitee;
     const { currentFeed } = this.props.feedo;
+    const { currentCard } = this.props.card;
     const { userInfo } = this.props.user;
+
+    const idea = _.find(currentFeed.ideas, idea => idea.id === currentCard.id)
 
     let name = ''
     if (userProfile) {
@@ -1467,32 +1465,34 @@ class NewCardScreen extends React.Component {
       const otherInvitees = _.filter(currentFeed.invitees, invitee => invitee.userProfile.id !== userInfo.id);
       if (!otherInvitees || otherInvitees.length === 0) {
         return (
-          <View style={[styles.rowContainer, {flex: 1}]}>
-            <Text style={styles.textInvitee}>{getDurationFromNow(this.props.card.currentCard.publishedDate)}</Text>
+          <View style={styles.inviteeContainer}>
+            <Text style={styles.textInvitee}>{getDurationFromNow(currentCard.publishedDate)}</Text>
           </View>
         );
       }
     }
 
     return (
-      <View style={[styles.rowContainer, {flex: 1}]}>
-        <UserAvatarComponent
-          user={userProfile}
-        />
-        <Text style={[styles.textInvitee, { marginLeft: 9, fontSize,}]} numberOfLines={1}>{name}</Text>
-        <Entypo name="dot-single" style={styles.iconDot} />
-        <Text style={styles.textInvitee}>{getDurationFromNow(this.props.card.currentCard.publishedDate)}</Text>
+      <View style={styles.inviteeContainer}>
+        <View style={styles.inviteeView}>
+          <UserAvatarComponent
+            user={userProfile}
+          />
+          <Text style={[styles.textInvitee, { marginLeft: 9, fontSize }]} numberOfLines={1}>{name}</Text>
+          <Entypo name="dot-single" style={styles.iconDot} />
+          <Text style={styles.textInvitee}>{getDurationFromNow(currentCard.publishedDate)}</Text>
+        </View>
+        <LikeComponent idea={idea} prevPage={this.props.prevPage} type="text" />
       </View>
     );
   }
 
-  get renderLikesComment() {
+  get renderComment() {
     const idea = _.find(this.props.feedo.currentFeed.ideas, idea => idea.id === this.props.card.currentCard.id)
 
     if (idea) {
       return (
         <View style={styles.rowContainer}>
-          <LikeComponent idea={idea} prevPage={this.props.prevPage} />
           <CommentComponent idea={idea} currentFeed={this.props.feedo.currentFeed} prevPage={this.props.prevPage} />
         </View>
       );
@@ -1567,9 +1567,9 @@ class NewCardScreen extends React.Component {
     if (cardMode === CONSTANTS.SHARE_EXTENTION_CARD) {
       return (
         <View style={styles.extensionSelectFeedoContainer}>
-          <Text style={[styles.textCreateCardIn, {color: COLORS.PRIMARY_BLACK}]}>Create card in:</Text>
+          <Text style={[styles.textCreateCardIn, { color: COLORS.PRIMARY_BLACK }]}>Create card in:</Text>
           <TouchableOpacity
-            style={[styles.selectFeedoButtonContainer, {paddingRight: 3}]}
+            style={[styles.selectFeedoButtonContainer, { paddingRight: 3 }]}
             activeOpacity={0.6}
             onPress={this.onSelectFeedo.bind(this)}
           >
@@ -1582,11 +1582,58 @@ class NewCardScreen extends React.Component {
     if (viewMode !== CONSTANTS.CARD_NEW) {
       return (
         <View style={[styles.rowContainer, {justifyContent: 'space-between', marginHorizontal: 16, marginVertical: 8}]}>
-          {this.renderInvitee}
-          {this.renderLikesComment}
+          {this.renderComment}
         </View>
       );
     }
+  }
+
+  get renderCommentList() {
+    return (
+      <LastCommentComponent prevPage={this.props.prevPage} />
+    )
+  }
+
+  onAddComment = () => {
+    Analytics.logEvent('edit_card_add_comment', {})
+
+    if (this.props.prevPage === 'activity') {
+      Actions.ActivityCommentScreen({
+        idea: this.props.card.currentCard,
+        guest: COMMON_FUNC.isFeedGuest(this.props.feedo.currentFeed),
+        isShowKeyboard: true,
+      });
+    } else {
+      Actions.CommentScreen({
+        idea: this.props.card.currentCard,
+        guest: COMMON_FUNC.isFeedGuest(this.props.feedo.currentFeed),
+        isShowKeyboard: true,
+      });
+    }
+  }
+
+  get renderAddComment() {
+    return (
+      <TouchableOpacity 
+        style={styles.rowContainer}
+        activeOpacity={0.6}
+        onPress={this.onAddComment}
+      >
+        <Text style={styles.textAddComment}>Add comment</Text>
+      </TouchableOpacity>
+    )
+  }
+
+  get renderFooter() {
+    const { feedo } = this.props;
+    const idea = _.find(this.props.feedo.currentFeed.ideas, idea => idea.id === this.props.card.currentCard.id)
+
+    return (
+      <View style={styles.footerContainer}>
+        {!COMMON_FUNC.isFeedGuest(feedo.currentFeed) && this.renderAddComment}
+        <LikeComponent idea={idea} prevPage={this.props.prevPage} type="icon" />
+      </View>
+    )
   }
 
   get renderCard() {
@@ -1646,8 +1693,9 @@ class NewCardScreen extends React.Component {
           <SafeAreaView style={{flex: 1}}>
             {this.renderHeader}
             {this.renderMainContent}
-            {this.renderBottomAttachmentButtons}
-            {this.renderBottomContent}
+            {this.renderFooter}
+            {/* {this.renderBottomContent} */}
+            {/* {this.renderBottomAttachmentButtons} */}
             {
               // If show keyboard button, and not quick add card from dashboard as interferes with change Feed https://cl.ly/ba004cb3a34b
               viewMode === CONSTANTS.CARD_NEW && this.state.isShowKeyboardButton && cardMode !== CONSTANTS.MAIN_APP_CARD_FROM_DASHBOARD && cardMode !== CONSTANTS.SHARE_EXTENTION_CARD &&
