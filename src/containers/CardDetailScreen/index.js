@@ -384,7 +384,7 @@ class CardDetailScreen extends React.Component {
           if (nextProps.card.loading === types.GET_OPEN_GRAPH_REJECTED) {
             if (this.props.card.currentCard.links === null || this.props.card.currentCard.links.length === 0) {
               if (this.parseErrorUrls(error)) {
-                error = 'Sorry, this link cannot be read';
+                error = 'Oops, we can\'t get the details from this link';
               } else {
                 // return;
               }
@@ -597,7 +597,6 @@ class CardDetailScreen extends React.Component {
   }
 
   parseErrorUrls(message) {
-    alert('parseErrorUrls: ' + message)
     const allUrls = message.match(/(http(s)?:\/\/.)?(www\.)?[-a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,6}\b([-a-zA-Z0-9@:%_\+.~#?&//=]*)/gi);
     if (allUrls) {
       let newUrls = [];

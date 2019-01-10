@@ -96,7 +96,7 @@ class ChooseLinkImageFromExtension extends React.Component {
         }
         if (error) {
           if (nextProps.card.loading === types.GET_OPEN_GRAPH_REJECTED) {
-            error = 'Sorry, this link cannot be read';
+            error = 'Oops, we can\'t get the details from this link';
           }
           if (!this.state.isVisibleAlert) {
             this.setState({

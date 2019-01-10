@@ -587,11 +587,21 @@ export default function card(state = initialState, action = {}) {
         }
       }
     case types.GET_OPEN_GRAPH_REJECTED: {
+      console.log('GET_OPEN_GRAPH_REJECTED: ', action)
+
       const { data } = action.error.response
       return {
         ...state,
         loading: types.GET_OPEN_GRAPH_REJECTED,
         error: data,
+        currentOpneGraph: {
+          url: action.originalUrl,
+          title: action.originalUrl,
+          description: null,
+          image: null,
+          favicon: null,
+          images: []
+        }
       }
     }
 
