@@ -8,13 +8,20 @@ import {
 import PropTypes from 'prop-types'
 import styles from './styles'
 
-const MENU_ITEMS = ['Move', 'Delete']
+const MENU_ITEMS = ['Add image', 'Add file', 'Move', 'Delete']
 
 
 class CardControlMenuComponent extends React.Component {
-
   onHandleAction(item) {
-    if (item == 'Move') {
+    if (item == 'Add image') {
+      if (this.props.onAddImage) {
+        this.props.onAddImage();
+      }
+    } else if (item == 'Add file') {
+      if (this.props.onAddFile) {
+        this.props.onAddFile();
+      }
+    } else if (item == 'Move') {
       if (this.props.onMove) {
         this.props.onMove();
       }
@@ -22,8 +29,7 @@ class CardControlMenuComponent extends React.Component {
       if (this.props.onDelete) {
         this.props.onDelete();
       }
-    }
-    
+    }    
   }
 
   renderItem({item, index}) {
@@ -56,6 +62,8 @@ class CardControlMenuComponent extends React.Component {
 }
 
 CardControlMenuComponent.propTypes = {
+  onAddImage: PropTypes.func.isRequired,
+  onAddFile: PropTypes.func.isRequired,
   onMove: PropTypes.func.isRequired,
   onDelete: PropTypes.func.isRequired,
 }

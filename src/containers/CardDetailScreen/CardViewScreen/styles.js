@@ -1,6 +1,6 @@
-import { StyleSheet, Platform } from 'react-native'
-import COLORS from '../../service/colors'
-import CONSTANTS from '../../service/constants'
+import { StyleSheet } from 'react-native'
+import COLORS from '../../../service/colors'
+import CONSTANTS from '../../../service/constants'
 
 const FOOTER_HEIGHT = 50
 
@@ -38,21 +38,21 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   headerContainer: {
-    position: 'absolute',
-    top: CONSTANTS.STATUSBAR_HEIGHT,
-    right: 8
+    marginTop: CONSTANTS.STATUSBAR_HEIGHT + 6,
+    paddingRight: 16
   },
   closeButtonView: {
-    justifyContent: 'center',
-    alignItems: 'center',
-    width: '100%',
-    height: '100%',
-    backgroundColor: COLORS.MEDIUM_GREY,
-    width: 34,
+    width: 110,
     height: 34,
-    borderRadius: 17,
-    paddingTop: 2,
-    paddingLeft: 2,
+    borderRadius: 20,
+    justifyContent: 'center',
+    backgroundColor: COLORS.PURPLE
+  },
+  closeButtonText: {
+    color: '#fff',
+    fontSize: 16,
+    fontWeight: '500',
+    textAlign: 'center',
   },
   coverImageContainer: {
   },

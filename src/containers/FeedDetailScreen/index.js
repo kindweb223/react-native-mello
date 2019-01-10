@@ -43,9 +43,10 @@ import ShareScreen from '../ShareScreen'
 import NewFeedScreen from '../NewFeedScreen'
 import CardFilterComponent from '../../components/CardFilterComponent'
 import CardLongHoldMenuScreen from '../CardLongHoldMenuScreen'
-import SelectHuntScreen from '../SelectHuntScreen';
+import SelectHuntScreen from '../SelectHuntScreen'
 import TagCreateScreen from '..//TagCreateScreen'
 import CardDetailScreen from '../CardDetailScreen'
+import CardNewScreen from '../CardNewScreen'
 import LoadingScreen from '../LoadingScreen'
 import EmptyStateComponent from '../../components/EmptyStateComponent'
 import SpeechBubbleComponent from '../../components/SpeechBubbleComponent'
@@ -1031,19 +1032,23 @@ class FeedDetailScreen extends React.Component {
       >
         {
           this.state.isVisibleCard && 
-            <CardDetailScreen
-              prevPage={this.props.prevPage}
-              viewMode={this.state.cardViewMode}
-              invitee={this.state.selectedIdeaInvitee}
-              intialLayout={this.state.selectedIdeaLayout}
-              shareUrl={this.state.clipboardData}
-              onClose={() => this.onCloseCardModal()}
-              onOpenAction={(idea) => this.onOpenCardAction(idea)}
-
-              // cardMode={CONSTANTS.SHARE_EXTENTION_CARD}
-              // shareUrl='https://trello.com'
-              // shareImageUrl='https://d2k1ftgv7pobq7.cloudfront.net/meta/p/res/images/fb4de993e22034b76539da073ea8d35c/home-hero.png'
-            />
+            this.state.cardViewMode === CONSTANTS.CARD_NEW
+            ? <CardNewScreen 
+                viewMode={this.state.cardViewMode}
+                cardMode={CONSTANTS.MAIN_APP_CARD_FROM_DASHBOARD}
+                invitee={this.state.selectedIdeaInvitee}
+                shareUrl={this.state.clipboardData}
+                onClose={() => this.onCloseCardModal()}
+              />
+            : <CardDetailScreen
+                prevPage={this.props.prevPage}
+                viewMode={this.state.cardViewMode}
+                invitee={this.state.selectedIdeaInvitee}
+                intialLayout={this.state.selectedIdeaLayout}
+                shareUrl={this.state.clipboardData}
+                onClose={() => this.onCloseCardModal()}
+                onOpenAction={(idea) => this.onOpenCardAction(idea)}
+              />
         }
         {  
           this.state.isVisibleEditFeed && 
@@ -1601,8 +1606,10 @@ class FeedDetailScreen extends React.Component {
           onModalHide={this.onHiddenLongHoldMenu.bind(this)}
           onBackdropPress={() => this.setState({ isVisibleCardOpenMenu: false })}
         >
-          <Animated.View style={[styles.settingMenuView, { top: CONSTANTS.STATUSBAR_HEIGHT + 60 }]}>
-            <CardControlMenuComponent 
+          <Animated.View style={styles.settingCardMenuView}>
+            <CardControlMenuComponent
+              onAddImage={() => this.onAddImage(this.state.selectedLongHoldIdea.id)}
+              onAddFile={() => this.onAddFile(this.state.selectedLongHoldIdea.id)}
               onMove={() => this.onMoveCard(this.state.selectedLongHoldIdea.id)}
               onDelete={() => this.onConfirmDeleteCard()}
             />
