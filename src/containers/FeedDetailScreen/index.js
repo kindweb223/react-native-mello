@@ -45,7 +45,7 @@ import CardFilterComponent from '../../components/CardFilterComponent'
 import CardLongHoldMenuScreen from '../CardLongHoldMenuScreen'
 import SelectHuntScreen from '../SelectHuntScreen';
 import TagCreateScreen from '..//TagCreateScreen'
-import NewCardScreen from '../NewCardScreen'
+import CardDetailScreen from '../CardDetailScreen'
 import LoadingScreen from '../LoadingScreen'
 import EmptyStateComponent from '../../components/EmptyStateComponent'
 import SpeechBubbleComponent from '../../components/SpeechBubbleComponent'
@@ -1031,7 +1031,7 @@ class FeedDetailScreen extends React.Component {
       >
         {
           this.state.isVisibleCard && 
-            <NewCardScreen
+            <CardDetailScreen
               prevPage={this.props.prevPage}
               viewMode={this.state.cardViewMode}
               invitee={this.state.selectedIdeaInvitee}

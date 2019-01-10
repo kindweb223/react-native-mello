@@ -33,7 +33,7 @@ import DashboardNavigationBar from '../../navigations/DashboardNavigationBar'
 import DashboardActionBar from '../../navigations/DashboardActionBar'
 import FeedoListContainer from '../FeedoListContainer'
 import NewFeedScreen from '../NewFeedScreen'
-import NewCardScreen from '../NewCardScreen'
+import CardNewScreen from '../CardNewScreen'
 import CreateNewFeedComponent from '../../components/CreateNewFeedComponent'
 import FeedLongHoldMenuScreen from '../FeedLongHoldMenuScreen'
 import ToasterComponent from '../../components/ToasterComponent'
@@ -1152,7 +1152,7 @@ class HomeScreen extends React.Component {
           {opacity: this.animatedOpacity}
         ]}
       >
-        <NewCardScreen 
+        <CardNewScreen 
           viewMode={this.state.cardViewMode}
           cardMode={cardMode}
           invitee={this.state.selectedIdeaInvitee}

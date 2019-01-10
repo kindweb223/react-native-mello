@@ -39,7 +39,7 @@ export default class CoverImagePreviewComponent extends React.Component {
     if (isFastImage) {
       return (
         <TouchableOpacity style={styles.container} onPress={() => this.onPressImage(position)}>
-          <FastImage style={styles.imageCover} source={{ uri: coverImage }} resizeMode="cover" />
+          <FastImage style={styles.imageCover} source={{ uri: coverImage }} resizeMode="contain" />
           {
             files.length > 1 && 
             <View style={styles.imageNumberContainer}>
@@ -52,7 +52,7 @@ export default class CoverImagePreviewComponent extends React.Component {
     return (
       // Don't all
       <TouchableOpacity style={styles.container}>
-        <Image style={styles.imageCover} source={{ uri: coverImage }} resizeMode="cover" />
+        <Image style={styles.imageCover} source={{ uri: coverImage }} resizeMode="contain" />
         {
             files && files.length > 1 &&
             <View style={styles.imageNumberContainer}>

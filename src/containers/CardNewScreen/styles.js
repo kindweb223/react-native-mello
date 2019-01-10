@@ -81,6 +81,15 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
   },
+  textInvitee: {
+    fontSize: 14,
+    lineHeight: 21,
+    color: COLORS.DARK_GREY,
+  },
+  iconDot: {
+    marginHorizontal: 7,
+    color: COLORS.DARK_GREY,
+  },
   cellContainer: {
     marginLeft: 15,
   },
@@ -254,43 +263,7 @@ const styles = StyleSheet.create({
   successText: {
     fontSize: 15,
     color: COLORS.PURPLE
-  },
-  footerContainer: {
-    paddingTop: 10,
-    paddingBottom: 20,
-    backgroundColor: '#0ff',
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center'
-  },
-  textAddComment: {
-    paddingHorizontal: 20
-  },
-  inviteeContainer: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    paddingHorizontal: CONSTANTS.PADDING,
-    width: '100%',
-    paddingVertical: 16,
-    borderColor: COLORS.LIGHT_SOFT_GREY,
-    borderTopWidth: 1,
-    borderBottomWidth: 1
-  },
-  inviteeView: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center'
-  },
-  textInvitee: {
-    fontSize: 14,
-    lineHeight: 21,
-    color: COLORS.DARK_GREY,
-  },
-  iconDot: {
-    marginHorizontal: 7,
-    color: COLORS.DARK_GREY,
-  },
+  }
 })
 
 

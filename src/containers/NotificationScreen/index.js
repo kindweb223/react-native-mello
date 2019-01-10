@@ -26,7 +26,7 @@ import LoadingScreen from '../LoadingScreen'
 import Analytics from '../../lib/firebase'
 import NotificationItemComponent from '../../components/NotificationItemComponent'
 import ActivityFeedComponent from '../../components/ActivityFeedComponent'
-import NewCardScreen from '../NewCardScreen'
+import CardDetailScreen from '../CardDetailScreen'
 import CardControlMenuComponent from '../../components/CardControlMenuComponent'
 import SelectHuntScreen from '../SelectHuntScreen';
 import ToasterComponent from '../../components/ToasterComponent'
@@ -643,7 +643,7 @@ class NotificationScreen extends React.Component {
         ]}
       >
         {
-          <NewCardScreen
+          <CardDetailScreen
             prevPage="activity"
             viewMode={this.state.cardViewMode}
             invitee={this.state.selectedIdeaInvitee}

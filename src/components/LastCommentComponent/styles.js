@@ -3,14 +3,14 @@ import COLORS from '../../service/colors'
 
 const styles = StyleSheet.create({
   container: {
-    padding: 16,
-    backgroundColor: '#fff',
+    paddingHorizontal: 16
   },
   itemContainer: {
     flexDirection: 'row',
     marginBottom: 13,
   },
   commentTextView: {
+    flex: 1,
     marginLeft: 9
   },
   commenterName: {
@@ -21,7 +21,7 @@ const styles = StyleSheet.create({
   commentText: {
     color: COLORS.DARK_GREY,
     fontSize: 14,
-    lineHeight: 21,
+    lineHeight: 21
   },
   viewAllContainer: {
     marginLeft: 33,

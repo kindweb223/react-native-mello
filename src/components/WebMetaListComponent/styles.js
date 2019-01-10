@@ -4,11 +4,9 @@ import COLORS from '../../service/colors'
 
 const styles = StyleSheet.create({
   container: {
-    marginHorizontal: 16,
+    marginHorizontal: 16
   },
   itemContainer: {
-    flex: 1,
-    height: 40,
     marginTop: 12,
     marginBottom: 0,
   },
@@ -16,9 +14,6 @@ const styles = StyleSheet.create({
     flex: 1,
     flexDirection: 'row',
     alignItems: 'center',
-    borderRadius: 5,
-    paddingHorizontal: 12,
-    backgroundColor:  COLORS.SOFT_GREY,
   },
   imageCover: {
     width: 24,

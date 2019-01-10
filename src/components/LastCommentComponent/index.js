@@ -37,14 +37,31 @@ class LastCommentComponent extends React.Component {
   UNSAFE_componentWillReceiveProps(nextProps) {
     let loading = false;
     if (this.props.card.loading !== types.GET_CARD_COMMENTS_PENDING && nextProps.card.loading === types.GET_CARD_COMMENTS_PENDING) {
-      // getting comments of a card
       loading = true;
     } else if (this.props.card.loading !== types.GET_CARD_COMMENTS_FULFILLED && nextProps.card.loading === types.GET_CARD_COMMENTS_FULFILLED) {
-      // success in getting comments of a card
       if (nextProps.card.currentCardId === nextProps.card.currentCard.id) {
         this.setState({ currentComments: nextProps.card.currentComments })
       }
-    }
+    } if (this.props.card.loading !== types.ADD_CARD_COMMENT_FULFILLED && nextProps.card.loading === types.ADD_CARD_COMMENT_FULFILLED) {
+      if (nextProps.card.currentCardId === nextProps.card.currentCard.id || nextProps.card.currentCardId === this.props.idea.id) {
+        this.setState({ currentComments: nextProps.card.currentComments })
+      }
+    } else if (this.props.card.loading !== types.EDIT_CARD_COMMENT_FULFILLED && nextProps.card.loading === types.EDIT_CARD_COMMENT_FULFILLED) {
+      // success in adding a comment of a card
+      if (nextProps.card.currentCardId === nextProps.card.currentCard.id || nextProps.card.currentCardId === this.props.idea.id) {
+        this.setState({ currentComments: nextProps.card.currentComments })
+      }
+    } else if (this.props.card.loading !== types.DELETE_CARD_COMMENT_FULFILLED && nextProps.card.loading === types.DELETE_CARD_COMMENT_FULFILLED) {
+      // success in adding a comment of a card
+      if (nextProps.card.currentCardId === nextProps.card.currentCard.id || nextProps.card.currentCardId === this.props.idea.id) {
+        this.setState({ currentComments: nextProps.card.currentComments })
+      }
+    } else if (this.props.card.loading !== types.DELETE_CARD_COMMENT_FULFILLED && nextProps.card.loading === types.DELETE_CARD_COMMENT_FULFILLED) {
+      // success in adding a comment of a card
+      if (nextProps.card.currentCardId === nextProps.card.currentCard.id || nextProps.card.currentCardId === this.props.idea.id) {
+        this.setState({ currentComments: nextProps.card.currentComments })
+      }
+    } 
     
     this.setState({ loading })
   }
@@ -102,7 +119,7 @@ class LastCommentComponent extends React.Component {
     }
 
     return (
-      <View style={styles.container}>
+      <View style={[styles.container, currentComments.length > 0 && { paddingVertical: 16 }]}>
         <FlatList
           data={lastComments}
           renderItem={this.renderItem.bind(this)}
