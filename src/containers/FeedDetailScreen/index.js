@@ -227,9 +227,9 @@ class FeedDetailScreen extends React.Component {
         (this.props.feedo.loading === 'ADD_FILE_PENDING' && feedo.loading === 'ADD_FILE_FULFILLED') ||
         (this.props.feedo.loading === 'ADD_HUNT_TAG_PENDING' && feedo.loading === 'ADD_HUNT_TAG_FULFILLED') ||
         (this.props.feedo.loading === 'REMOVE_HUNT_TAG_PENDING' && feedo.loading === 'REMOVE_HUNT_TAG_FULFILLED') ||
-        (this.props.card.loading === 'UPDATE_CARD_PENDING' && card.loading === 'UPDATE_CARD_FULFILLED') || 
-        (this.props.card.loading === 'DELETE_CARD_PENDING' && card.loading === 'DELETE_CARD_FULFILLED') ||
-        (this.props.card.loading === 'MOVE_CARD_PENDING' && card.loading === 'MOVE_CARD_FULFILLED') ||
+        (this.props.card.loading !== 'UPDATE_CARD_FULFILLED' && card.loading === 'UPDATE_CARD_FULFILLED') || 
+        (this.props.card.loading !== 'DELETE_CARD_FULFILLED' && card.loading === 'DELETE_CARD_FULFILLED') ||
+        (this.props.card.loading !== 'MOVE_CARD_FULFILLED' && card.loading === 'MOVE_CARD_FULFILLED') ||
         (this.props.feedo.loading === 'UPDTE_FEED_INVITATION_PENDING' && feedo.loading === 'UPDTE_FEED_INVITATION_FULFILLED') ||
         (feedo.loading === 'ADD_CARD_COMMENT_FULFILLED') || (feedo.loading === 'DELETE_CARD_COMMENT_FULFILLED') ||
         (feedo.loading === 'PUBNUB_GET_FEED_DETAIL_FULFILLED') || (feedo.loading === 'PUBNUB_MOVE_IDEA_FULFILLED') ||
@@ -839,6 +839,14 @@ class FeedDetailScreen extends React.Component {
     }
   }
 
+  onAddImage() {
+    this.refs.cardDetailRef.onAddFile()
+  }
+
+  onAddFile() {
+    this.refs.cardDetailRef.onAddDocument()
+  }
+
   onMoveCard(ideaId) {
     if (this.state.isVisibleLongHoldMenu) {
       this.onCloseLongHold();
@@ -1041,6 +1049,7 @@ class FeedDetailScreen extends React.Component {
                 onClose={() => this.onCloseCardModal()}
               />
             : <CardDetailScreen
+                ref="cardDetailRef"
                 prevPage={this.props.prevPage}
                 viewMode={this.state.cardViewMode}
                 invitee={this.state.selectedIdeaInvitee}
@@ -1608,8 +1617,8 @@ class FeedDetailScreen extends React.Component {
         >
           <Animated.View style={styles.settingCardMenuView}>
             <CardControlMenuComponent
-              onAddImage={() => this.onAddImage(this.state.selectedLongHoldIdea.id)}
-              onAddFile={() => this.onAddFile(this.state.selectedLongHoldIdea.id)}
+              onAddImage={() => this.onAddImage()}
+              onAddFile={() => this.onAddFile()}
               onMove={() => this.onMoveCard(this.state.selectedLongHoldIdea.id)}
               onDelete={() => this.onConfirmDeleteCard()}
             />

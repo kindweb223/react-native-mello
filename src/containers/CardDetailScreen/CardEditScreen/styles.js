@@ -10,17 +10,11 @@ const styles = StyleSheet.create({
     height: CONSTANTS.SCREEN_HEIGHT,
     backgroundColor: 'transparent',
     justifyContent: 'center',
-  },
-  backdropContainer: {
-    flex: 1,
+    backgroundColor: '#fff'
   },
   cardContainer: {
-    position: 'absolute',
-    left: 0,
-    right: 0,
-    bottom: 0,
-    justifyContent: 'center',
-    backgroundColor: 'transparent',
+    flex: 1,
+    backgroundColor: '#fff'
   },
   textInputIdea: {
     fontSize: 16,
@@ -38,95 +32,37 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   headerContainer: {
-    position: 'absolute',
-    top: CONSTANTS.STATUSBAR_HEIGHT + 6,
-    right: 16
+    marginTop: 6,
+    paddingRight: 16,
+    backgroundColor: '#fff',
+    alignItems: 'flex-end'
   },
   closeButtonView: {
-    justifyContent: 'center',
-    alignItems: 'center',
-    width: '100%',
-    height: '100%',
-    backgroundColor: COLORS.MEDIUM_GREY,
-    width: 34,
+    width: 110,
     height: 34,
-    borderRadius: 17,
-    paddingTop: 2,
-    paddingLeft: 2,
-  },
-  coverImageContainer: {
-  },
-  successModal: {
-    margin: 0,
+    borderRadius: 20,
     justifyContent: 'center',
-    alignItems: 'center'
+    backgroundColor: COLORS.PURPLE
   },
-  successView: {
-    width: 146,
-    height: 146,
-    borderRadius: 24,
-    backgroundColor: '#fff',
-    justifyContent: 'center',
-    alignItems: 'center'
+  closeButtonText: {
+    color: '#fff',
+    fontSize: 16,
+    fontWeight: '500',
+    textAlign: 'center',
   },
-  successIcon: {
-    fontSize: 80,
-    color: COLORS.PURPLE
+  keyboardContainer: {
+    position: 'absolute',
+    right: 16,
+    bottom: 16,
   },
-  successText: {
-    fontSize: 15,
-    color: COLORS.PURPLE
-  },
-  ideaContentView: {
-  },
-  inviteeContainer: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
+  keyboardButtonView: {
+    width: 32,
+    height: 32,
+    backgroundColor: COLORS.PURPLE,
+    borderRadius: 8,
     alignItems: 'center',
-    paddingHorizontal: CONSTANTS.PADDING,
-    width: '100%',
-    height: 50,
-    borderColor: COLORS.LIGHT_SOFT_GREY,
-    borderTopWidth: 1,
-    borderBottomWidth: 1
-  },
-  inviteeView: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center'
-  },
-  textInvitee: {
-    fontSize: 14,
-    lineHeight: 21,
-    color: COLORS.DARK_GREY,
-  },
-  iconDot: {
-    marginHorizontal: 7,
-    color: COLORS.DARK_GREY,
-  },
-  footerContainer: {
-    paddingTop: 5,
-    height: FOOTER_HEIGHT
-  },
-  footerView: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center'
-  },
-  textAddComment: {
-    paddingHorizontal: 20
-  },
-  likeView: {
-    flexDirection: 'row',
     justifyContent: 'center',
-    alignItems: 'center'
-  },
-  threeDotButtonWrapper: {
-    width: 35,
-    height: 35,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
+  }
 })
 
 
