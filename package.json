@@ -17,7 +17,7 @@
     "pubnub-react": "^1.2.0",
     "ramda": "^0.25.0",
     "react": "16.4.1",
-    "react-native": "0.56.0",
+    "react-native": "0.57.0",
     "react-native-actionsheet": "^2.4.2",
     "react-native-autolink": "^1.4.0",
     "react-native-awesome-alerts": "^1.0.8",

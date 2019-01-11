@@ -734,50 +734,42 @@ class HomeScreen extends React.Component {
   }
 
   handleLongHoldMenu = (index, selectedFeedData) => {
-    this.setState({ selectedLongHoldFeedoIndex: index, feedClickEvent: 'long' }, () => {
-      Animated.parallel([
-        Animated.timing(this.animatedSelectFeed, {
-          toValue: 0.85,
-          duration: 150
-        })
-      ]).start(() => {
-        this.setState({
-          selectedFeedData,
-          isLongHoldMenuVisible: true
-        });
-      });
-    })
+    this.setState({ 
+      selectedLongHoldFeedoIndex: index, 
+      feedClickEvent: 'long',
+      selectedFeedData,
+      isLongHoldMenuVisible: true
+    }, () => {
+      Animated.spring(this.animatedSelectFeed, {
+        toValue: 0.85,
+        useNativeDriver: true
+      }).start();
+    });
   }
 
   closeLongHoldMenu = () => {
-    this.setState({ selectedLongHoldFeedoIndex: -1, feedClickEvent: 'normal' }, () => {
-      Animated.parallel([
-        Animated.timing(this.animatedSelectFeed, {
-          toValue: 1,
-          duration: 100
-        })
-      ]).start(() => {
-        this.setState({ isLongHoldMenuVisible: false })
-      })
+    this.setState({
+      selectedLongHoldFeedoIndex: -1, 
+      feedClickEvent: 'normal',
+      isLongHoldMenuVisible: false
+    }, () => {
+      Animated.spring(this.animatedSelectFeed, {
+        toValue: 1,
+        useNativeDriver: true
+      }).start();
     })
   }
 
   handleArchiveFeed = (feedId) => {
-    Animated.parallel([
-      Animated.timing(this.animatedSelectFeed, {
-        toValue: 1,
-        duration: 100
-      })
-    ]).start(() => {
-      this.setState({ isLongHoldMenuVisible: false, selectedLongHoldFeedoIndex: -1, feedClickEvent: 'normal' })
-      this.setState({ isShowActionToaster: true, isArchive: true, toasterTitle: 'Flow archived', feedId })
-      this.props.addDummyFeed({ feedId, flag: 'archive' })
+    this.closeLongHoldMenu()
+    
+    this.setState({ isShowActionToaster: true, isArchive: true, toasterTitle: 'Flow archived', feedId })
+    this.props.addDummyFeed({ feedId, flag: 'archive' })
 
-      setTimeout(() => {
-        this.setState({ isShowActionToaster: false })
-        this.archiveFeed(feedId)
-      }, TOASTER_DURATION)
-    })
+    setTimeout(() => {
+      this.setState({ isShowActionToaster: false })
+      this.archiveFeed(feedId)
+    }, TOASTER_DURATION)
   }
 
   archiveFeed = (feedId) => {
@@ -790,22 +782,16 @@ class HomeScreen extends React.Component {
   }
 
   handleDeleteFeed = (feedId) => {
-    Animated.parallel([
-      Animated.timing(this.animatedSelectFeed, {
-        toValue: 1,
-        duration: 100
-      })
-    ]).start(() => {
-      this.setState({ isLongHoldMenuVisible: false, selectedLongHoldFeedoIndex: -1, feedClickEvent: 'normal' })
-      this.setState({ isShowActionToaster: true, isDelete: true, toasterTitle: 'Flow deleted', feedId })
-      this.props.addDummyFeed({ feedId, flag: 'delete' })
-  
-      setTimeout(() => {
-        this.setState({ isShowActionToaster: false })
-        this.deleteFeed(feedId)
-      }, TOASTER_DURATION)      
-    })
-  }
+    this.closeLongHoldMenu()
+
+    this.setState({ isShowActionToaster: true, isDelete: true, toasterTitle: 'Flow deleted', feedId })
+    this.props.addDummyFeed({ feedId, flag: 'delete' })
+
+    setTimeout(() => {
+      this.setState({ isShowActionToaster: false })
+      this.deleteFeed(feedId)
+    }, TOASTER_DURATION)      
+}
 
   deleteFeed = (feedId) => {
     if (this.state.isDelete) {
@@ -817,21 +803,15 @@ class HomeScreen extends React.Component {
   }
 
   handleLeaveFeed = (feedId) => {
-    Animated.parallel([
-      Animated.timing(this.animatedSelectFeed, {
-        toValue: 1,
-        duration: 100
-      })
-    ]).start(() => {
-      this.setState({ isLongHoldMenuVisible: false, selectedLongHoldFeedoIndex: -1, feedClickEvent: 'normal' })
-      this.setState({ isShowActionToaster: true, isLeave: true, toasterTitle: 'Left Flow', feedId })
-      this.props.addDummyFeed({ feedId, flag: 'leave' })
-  
-      setTimeout(() => {
-        this.setState({ isShowActionToaster: false })
-        this.leaveFeed(feedId)
-      }, TOASTER_DURATION)      
-    })
+    this.closeLongHoldMenu()
+
+    this.setState({ isShowActionToaster: true, isLeave: true, toasterTitle: 'Left Flow', feedId })
+    this.props.addDummyFeed({ feedId, flag: 'leave' })
+
+    setTimeout(() => {
+      this.setState({ isShowActionToaster: false })
+      this.leaveFeed(feedId)
+    }, TOASTER_DURATION)
   }
 
   leaveFeed = (feedId) => {
@@ -846,21 +826,15 @@ class HomeScreen extends React.Component {
   }
 
   handlePinFeed = (feedId) => {
-    Animated.parallel([
-      Animated.timing(this.animatedSelectFeed, {
-        toValue: 1,
-        duration: 100
-      })
-    ]).start(() => {
-      this.setState({ isLongHoldMenuVisible: false, selectedLongHoldFeedoIndex: -1, feedClickEvent: 'normal' })
-      this.setState({ isShowActionToaster: true, isPin: true, toasterTitle: 'Flow pinned', feedId })
+    this.closeLongHoldMenu()
 
-      this.pinFeed(feedId)
+    this.setState({ isShowActionToaster: true, isPin: true, toasterTitle: 'Flow pinned', feedId })
 
-      setTimeout(() => {
-        this.setState({ isShowActionToaster: false, isPin: false })
-      }, TOASTER_DURATION)
-    })
+    this.pinFeed(feedId)
+
+    setTimeout(() => {
+      this.setState({ isShowActionToaster: false, isPin: false })
+    }, TOASTER_DURATION)
   }
 
   pinFeed = (feedId) => {
@@ -870,21 +844,15 @@ class HomeScreen extends React.Component {
   }
 
   handleUnpinFeed = (feedId) => {
-    Animated.parallel([
-      Animated.timing(this.animatedSelectFeed, {
-        toValue: 1,
-        duration: 100
-      })
-    ]).start(() => {
-      this.setState({ isLongHoldMenuVisible: false, selectedLongHoldFeedoIndex: -1, feedClickEvent: 'normal' })
-      this.setState({ isShowActionToaster: true, isUnPin: true, toasterTitle: 'Flow un-pinned', feedId })
+    this.closeLongHoldMenu()
 
-      this.unpinFeed(feedId)
+    this.setState({ isShowActionToaster: true, isUnPin: true, toasterTitle: 'Flow un-pinned', feedId })
 
-      setTimeout(() => {
-        this.setState({ isShowActionToaster: false, isUnPin: true })
-      }, TOASTER_DURATION)
-    })
+    this.unpinFeed(feedId)
+
+    setTimeout(() => {
+      this.setState({ isShowActionToaster: false, isUnPin: true })
+    }, TOASTER_DURATION)
   }
 
   unpinFeed = (feedId) => {
@@ -894,21 +862,15 @@ class HomeScreen extends React.Component {
   }
 
   handleDuplicateFeed = (feedId) => {
-    Animated.parallel([
-      Animated.timing(this.animatedSelectFeed, {
-        toValue: 1,
-        duration: 100
-      })
-    ]).start(() => {
-      this.setState({ isLongHoldMenuVisible: false, selectedLongHoldFeedoIndex: -1, feedClickEvent: 'normal' })
-      this.setState({ isShowActionToaster: true, isDuplicate: true, toasterTitle: 'Flow duplicated', feedId })
-      this.props.duplicateFeed(feedId)
-  
-      setTimeout(() => {
-        this.setState({ isShowActionToaster: false })
-        this.duplicateFeed()
-      }, TOASTER_DURATION + 5)      
-    })
+    this.closeLongHoldMenu()
+
+    this.setState({ isShowActionToaster: true, isDuplicate: true, toasterTitle: 'Flow duplicated', feedId })
+    this.props.duplicateFeed(feedId)
+
+    setTimeout(() => {
+      this.setState({ isShowActionToaster: false })
+      this.duplicateFeed()
+    }, TOASTER_DURATION + 5)      
   }
   
   duplicateFeed = () => {
@@ -920,29 +882,22 @@ class HomeScreen extends React.Component {
   }
 
   handleEditFeed = (feedId) => {
-    Animated.parallel([
-      Animated.timing(this.animatedSelectFeed, {
-        toValue: 1,
-        duration: 100
+    this.closeLongHoldMenu()
+
+    setTimeout(() => {
+      this.props.setCurrentFeed({});
+      this.setState({
+        isVisibleNewFeed: true,
+        isEditFeed: true,
+      }, () => {
+        this.animatedOpacity.setValue(0);
+        Animated.timing(this.animatedOpacity, {
+          toValue: 1,
+          duration: CONSTANTS.ANIMATEION_MILLI_SECONDS,
+        }).start()
       })
-    ]).start(() => {
-      this.setState({ isLongHoldMenuVisible: false, selectedLongHoldFeedoIndex: -1, feedClickEvent: 'normal' }, () => {
-        setTimeout(() => {
-          this.props.setCurrentFeed({});
-          this.setState({
-            isVisibleNewFeed: true,
-            isEditFeed: true,
-          }, () => {
-            this.animatedOpacity.setValue(0);
-            Animated.timing(this.animatedOpacity, {
-              toValue: 1,
-              duration: CONSTANTS.ANIMATEION_MILLI_SECONDS,
-            }).start()
-          })
-        }, 300)
-      })
-    })
-  }
+    }, 400)
+}
 
   undoAction = () => {
     if (this.state.isPin) {
