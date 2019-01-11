@@ -69,6 +69,7 @@ import LastCommentComponent from '../../components/LastCommentComponent';
 import Analytics from '../../lib/firebase'
 import LoadingScreen from '../LoadingScreen';
 import CardEditScreen from './CardEditScreen'
+import CardControlMenuComponent from '../../components/CardControlMenuComponent'
 
 import * as COMMON_FUNC from '../../service/commonFunc'
 import COLORS from '../../service/colors';
@@ -103,7 +104,9 @@ class CardDetailScreen extends React.Component {
       isEditableIdea: false,
       isGettingFeedoList: false,
       isSuccessCopyUrl: false,
-      showEditScreen: false
+      showEditScreen: false,
+      isVisibleCardOpenMenu: false,
+      cardOption: 0
     };
 
     this.selectedFile = null;
@@ -441,11 +444,13 @@ class CardDetailScreen extends React.Component {
 
     this.safariViewShowSubscription = SafariView.addEventListener('onShow', () => this.safariViewShow());
     this.safariViewDismissSubscription = SafariView.addEventListener('onDismiss', () => this.safariViewDismiss());
+    this.props.onRef(this)
   }
 
   componentWillUnmount() {
     this.safariViewShowSubscription.remove();
     this.safariViewDismissSubscription.remove();
+    this.props.onRef(undefined)
   }
 
   getImageSize(uri) {
@@ -619,9 +624,35 @@ class CardDetailScreen extends React.Component {
     }
   }
 
+  onTapActionSheet(index) {
+    if (index === 0) {
+      this.props.onDelete(this.props.card.currentCard.id)
+    }
+  }
+
+  handleControlMenu = type => {
+    this.setState({ cardOption: type, isVisibleCardOpenMenu: false })
+  }
+
+  handleControlMenHide = () => {
+    const { cardOption } = this.state
+
+    if (cardOption === 1) {
+      this.onAddFile()
+    } else if (cardOption === 1) {
+      this.onAddDocument()
+    } else if (cardOption === 3) {
+      this.props.onMoveCard(this.props.card.currentCard.id)
+    } else if (cardOption === 4) {
+      setTimeout(() => {
+        this.deleteActionSheet.show()
+      }, 200)
+    }
+    this.setState({ cardOption: 0 })
+  }
+
   onAddFile() {
-    alert("A")
-    // this.imagePickerActionSheetRef.show();
+    this.imagePickerActionSheetRef.show();
   }
 
   onAddDocument() {
@@ -665,9 +696,7 @@ class CardDetailScreen extends React.Component {
   }
 
   onPressMoreActions() {
-    if (this.props.onOpenAction) {
-      this.props.onOpenAction(this.props.card.currentCard);
-    }
+    this.setState({ isVisibleCardOpenMenu: true })
   }
 
   async uploadFile(currentCard, file, type) {
@@ -882,7 +911,9 @@ class CardDetailScreen extends React.Component {
   }
 
   onPressIdea() {
-    this.setState({ showEditScreen: true })
+    if (this.props.viewMode === CONSTANTS.CARD_EDIT) {
+      this.setState({ showEditScreen: true })
+    }
   }
 
   onPressLink(url) {
@@ -1033,7 +1064,11 @@ class CardDetailScreen extends React.Component {
 
   get renderMainContent() {
     const { currentCard } = this.props.card;
-    const comments = currentCard.metadata.comments
+
+    let comments = 0
+    if (currentCard) {
+       comments = currentCard.metadata.comments
+    }
 
     return (
       <ScrollView
@@ -1177,8 +1212,38 @@ class CardDetailScreen extends React.Component {
           tintColor={COLORS.PURPLE}
           onPress={(index) => this.onTapLeaveActionSheet(index)}
         />
+        <ActionSheet
+          ref={ref => this.deleteActionSheet = ref}
+          title={'This will permanentely delete your card'}
+          options={['Delete card', 'Cancel']}
+          cancelButtonIndex={1}
+          destructiveButtonIndex={0}
+          tintColor={COLORS.PURPLE}
+          onPress={(index) => this.onTapActionSheet(index)}
+        />
 
         {this.state.loading && <LoadingScreen />}
+
+        <Modal 
+          isVisible={this.state.isVisibleCardOpenMenu}
+          style={styles.shareScreenContainer}
+          backdropColor='#fff'
+          backdropOpacity={0}
+          animationIn="fadeIn"
+          animationOut="fadeOut"
+          animationInTiming={500}
+          onModalHide={this.handleControlMenHide}
+          onBackdropPress={() => this.setState({ isVisibleCardOpenMenu: false })}
+        >
+          <Animated.View style={styles.settingCardMenuView}>
+            <CardControlMenuComponent
+              onAddImage={() => this.handleControlMenu(1)}
+              onAddFile={() => this.handleControlMenu(2)}
+              onMove={() => this.handleControlMenu(3)}
+              onDelete={() => this.handleControlMenu(4)}
+            />
+          </Animated.View>
+        </Modal>
 
         <Modal 
           style={{margin: 0}}

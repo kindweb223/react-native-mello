@@ -1,4 +1,4 @@
-import { StyleSheet } from 'react-native'
+import { StyleSheet, Platform } from 'react-native'
 import COLORS from '../../service/colors'
 import CONSTANTS from '../../service/constants'
 
@@ -127,6 +127,30 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
   },
+  settingCardMenuView: {
+    borderRadius: 20,
+    backgroundColor: '#fff',
+    width: 122,
+    paddingVertical: 10,
+    position: 'absolute',
+    right: 55,
+    bottom: CONSTANTS.STATUS_BOTTOM_BAR_HEIGHT + 20,
+    zIndex: 0,
+    ...Platform.select({
+      ios: {
+        shadowColor: 'black',
+        shadowOffset: { height: 5 },
+        shadowOpacity: 0.3,
+        shadowRadius: 5
+      },
+      android: {
+        elevation: 20
+      }
+    })
+  },
+  shareScreenContainer: {
+    margin: 0,
+  }
 })
 
 
