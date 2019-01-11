@@ -1010,7 +1010,6 @@ class FeedDetailScreen extends React.Component {
                 onClose={() => this.onCloseCardModal()}
               />
             : <CardDetailScreen
-                onRef={ref => this.cardDetailRef = ref}
                 prevPage={this.props.prevPage}
                 viewMode={this.state.cardViewMode}
                 invitee={this.state.selectedIdeaInvitee}
@@ -1018,8 +1017,8 @@ class FeedDetailScreen extends React.Component {
                 shareUrl={this.state.clipboardData}
                 onClose={() => this.onCloseCardModal()}
                 onOpenAction={(idea) => this.onOpenCardAction(idea)}
-                onMove={this.onMoveCard}
-                onDelete={this.onDeleteCard}
+                onMoveCard={this.onMoveCard}
+                onDeleteCard={this.onDeleteCard}
               />
         }
         {  

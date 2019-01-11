@@ -16,7 +16,7 @@ export default {
   MINI_NAVIGATION_BAR_HEIGTH: 60,
   FILTER_HEIGHT: 62,
   ACTION_BAR_HEIGHT: Platform.OS === 'ios' ? ifIphoneX(82, 64) : 56,
-  STATUS_BOTTOM_BAR_HEIGHT: Platform.OS === 'ios' ? ifIphoneX(16, 0) : 0,
+  STATUS_BOTTOM_BAR_HEIGHT: Platform.OS === 'ios' ? ifIphoneX(45, 0) : 0,
   TAB_BAR_HEIGHT: 45,
   ANIMATEION_MILLI_SECONDS: 200,
   SCREEN_VERTICAL_MIN_MARGIN: Math.round(height * 0.145),

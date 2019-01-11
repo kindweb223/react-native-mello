@@ -25,7 +25,7 @@ const styles = StyleSheet.create({
   textInputIdea: {
     fontSize: 16,
     lineHeight: CONSTANTS.TEXT_INPUT_LINE_HEIGHT,
-    marginTop: 16,
+    marginTop: 20,
     marginBottom: 16,
     marginHorizontal: 16,
     paddingLeft: 0,
@@ -39,15 +39,20 @@ const styles = StyleSheet.create({
   },
   headerContainer: {
     position: 'absolute',
-    top: CONSTANTS.STATUSBAR_HEIGHT + 6,
-    right: 16
+    top: CONSTANTS.STATUSBAR_HEIGHT + 8,
+    right: 8,
+    width: 50,
+    height: 50,
+    backgroundColor: 'transparent',
+    justifyContent: 'center',
+    alignItems: 'center'
   },
   closeButtonView: {
     justifyContent: 'center',
     alignItems: 'center',
     width: '100%',
     height: '100%',
-    backgroundColor: COLORS.MEDIUM_GREY,
+    backgroundColor: COLORS.ACTION_SHEET_TITLE,
     width: 34,
     height: 34,
     borderRadius: 17,
@@ -106,7 +111,8 @@ const styles = StyleSheet.create({
   },
   footerContainer: {
     paddingTop: 5,
-    height: FOOTER_HEIGHT
+    height: FOOTER_HEIGHT,
+    backgroundColor: '#fff',
   },
   footerView: {
     flexDirection: 'row',
@@ -114,7 +120,7 @@ const styles = StyleSheet.create({
     alignItems: 'center'
   },
   textAddComment: {
-    paddingHorizontal: 20
+    paddingHorizontal: CONSTANTS.PADDING
   },
   likeView: {
     flexDirection: 'row',
@@ -134,7 +140,7 @@ const styles = StyleSheet.create({
     paddingVertical: 10,
     position: 'absolute',
     right: 55,
-    bottom: CONSTANTS.STATUS_BOTTOM_BAR_HEIGHT + 20,
+    bottom: CONSTANTS.STATUS_BOTTOM_BAR_HEIGHT + 10,
     zIndex: 0,
     ...Platform.select({
       ios: {

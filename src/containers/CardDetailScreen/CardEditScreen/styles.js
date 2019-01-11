@@ -2,8 +2,6 @@ import { StyleSheet } from 'react-native'
 import COLORS from '../../../service/colors'
 import CONSTANTS from '../../../service/constants'
 
-const FOOTER_HEIGHT = 50
-
 const styles = StyleSheet.create({
   container: {
     width: CONSTANTS.SCREEN_WIDTH,
@@ -32,7 +30,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   headerContainer: {
-    marginTop: 6,
+    marginTop: CONSTANTS.STATUSBAR_HEIGHT,
     paddingRight: 16,
     backgroundColor: '#fff',
     alignItems: 'flex-end'

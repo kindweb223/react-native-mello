@@ -45,8 +45,6 @@ import {
   getOpenGraph,
   setCoverImage,
   addLink,
-  deleteLink,
-  moveCard,
   resetCardError,
 } from '../../redux/card/actions'
 import { 
@@ -174,14 +172,12 @@ class CardDetailScreen extends React.Component {
               imgRatio = maxHeight / actualHeight;
               actualWidth = imgRatio * actualWidth;
               actualHeight = maxHeight;
-          }
-          else if(imgRatio > maxRatio){
+          } else if(imgRatio > maxRatio){
               //adjust height according to maxWidth
               imgRatio = maxWidth / actualWidth;
               actualHeight = imgRatio * actualHeight;
               actualWidth = maxWidth;
-          }
-          else{
+          } else{
               actualHeight = maxHeight;
               actualWidth = maxWidth;
           }
@@ -204,21 +200,15 @@ class CardDetailScreen extends React.Component {
     } else if (this.props.card.loading !== types.UPLOAD_FILE_FULFILLED && nextProps.card.loading === types.UPLOAD_FILE_FULFILLED) {
       // success in uploading a file
       loading = true;
-      const {
-        id, 
-      } = this.props.card.currentCard;
-      const {
-        objectKey,
-      } = this.props.card.fileUploadUrl;
+      const { id } = this.props.card.currentCard;
+      const { objectKey } = this.props.card.fileUploadUrl;
+
       this.props.addFile(id, this.selectedFileType, this.selectedFileMimeType, this.selectedFileName, objectKey);
     } else if (this.props.card.loading !== types.ADD_FILE_PENDING && nextProps.card.loading === types.ADD_FILE_PENDING) {
-      // adding a file
       loading = true;
     } else if (this.props.card.loading !== types.ADD_FILE_FULFILLED && nextProps.card.loading === types.ADD_FILE_FULFILLED) {
       // success in adding a file
-      const {
-        id, 
-      } = this.props.card.currentCard;
+      const { id } = this.props.card.currentCard;
       const newImageFiles = _.filter(nextProps.card.currentCard.files, file => file.contentType.indexOf('image') !== -1);
       if (newImageFiles.length === 1 && !nextProps.card.currentCard.coverImage) {
         this.onSetCoverImage(newImageFiles[0].id);
@@ -347,23 +337,23 @@ class CardDetailScreen extends React.Component {
     }
 
 
-    if (this.prevFeedo === null) {
-      if (this.props.feedo.loading !== feedoTypes.UPDATE_FEED_PENDING && nextProps.feedo.loading === feedoTypes.UPDATE_FEED_PENDING) {
-        // updating a feed
-        loading = true;
-      } else if (this.props.feedo.loading !== feedoTypes.UPDATE_FEED_FULFILLED && nextProps.feedo.loading === feedoTypes.UPDATE_FEED_FULFILLED) {
-        // success in updating a feed
-        this.onUpdateCard();
-      } else if (this.props.feedo.loading !== feedoTypes.DELETE_FEED_FULFILLED && nextProps.feedo.loading === feedoTypes.DELETE_FEED_FULFILLED) {
-        // success in deleting a feed
-        if (this.isUpdateDraftCard) {
-          this.onUpdateCard();
-        } else {
-          this.onClose();
-        }
-        return;
-      }
-    }
+    // if (this.prevFeedo === null) {
+    //   if (this.props.feedo.loading !== feedoTypes.UPDATE_FEED_PENDING && nextProps.feedo.loading === feedoTypes.UPDATE_FEED_PENDING) {
+    //     // updating a feed
+    //     loading = true;
+    //   } else if (this.props.feedo.loading !== feedoTypes.UPDATE_FEED_FULFILLED && nextProps.feedo.loading === feedoTypes.UPDATE_FEED_FULFILLED) {
+    //     // success in updating a feed
+    //     this.onUpdateCard();
+    //   } else if (this.props.feedo.loading !== feedoTypes.DELETE_FEED_FULFILLED && nextProps.feedo.loading === feedoTypes.DELETE_FEED_FULFILLED) {
+    //     // success in deleting a feed
+    //     if (this.isUpdateDraftCard) {
+    //       this.onUpdateCard();
+    //     } else {
+    //       this.onClose();
+    //     }
+    //     return;
+    //   }
+    // }
 
     this.setState({
       loading,
@@ -430,6 +420,7 @@ class CardDetailScreen extends React.Component {
         isEditableIdea: true,
       });
     }
+
     Animated.timing(this.animatedShow, {
       toValue: 1,
       duration: CONSTANTS.ANIMATEION_MILLI_SECONDS,
@@ -444,13 +435,11 @@ class CardDetailScreen extends React.Component {
 
     this.safariViewShowSubscription = SafariView.addEventListener('onShow', () => this.safariViewShow());
     this.safariViewDismissSubscription = SafariView.addEventListener('onDismiss', () => this.safariViewDismiss());
-    this.props.onRef(this)
   }
 
   componentWillUnmount() {
     this.safariViewShowSubscription.remove();
     this.safariViewDismissSubscription.remove();
-    this.props.onRef(undefined)
   }
 
   getImageSize(uri) {
@@ -474,6 +463,17 @@ class CardDetailScreen extends React.Component {
 
   safariViewDismiss() {
     this.isDisabledKeyboard = false;
+  }
+
+  onUpdateFeed() {
+    const {
+      id, 
+      headline,
+      summary,
+      tags,
+      files,
+    } = this.props.feedo.currentFeed;  
+    this.props.updateFeed(id, headline || 'New flow', summary || '', tags, files);
   }
 
   async createCard(currentProps) {
@@ -594,6 +594,8 @@ class CardDetailScreen extends React.Component {
   }
 
   onClose() {
+    this.onUpdateFeed()
+
     this.setState({
       originalCardTopY: this.props.intialLayout.py,
       originalCardBottomY: this.props.intialLayout.py + this.props.intialLayout.height,
@@ -626,7 +628,7 @@ class CardDetailScreen extends React.Component {
 
   onTapActionSheet(index) {
     if (index === 0) {
-      this.props.onDelete(this.props.card.currentCard.id)
+      this.props.onDeleteCard(this.props.card.currentCard.id)
     }
   }
 
@@ -652,7 +654,10 @@ class CardDetailScreen extends React.Component {
   }
 
   onAddFile() {
-    this.imagePickerActionSheetRef.show();
+    setTimeout(() => {
+      this.imagePickerActionSheetRef.show()
+    }, 200)
+    return
   }
 
   onAddDocument() {
@@ -684,17 +689,6 @@ class CardDetailScreen extends React.Component {
     return;
   }
 
-  onTapLeaveActionSheet(index) {
-    if (index === 1) {
-      this.isUpdateDraftCard = false;
-      if (this.draftFeedo) {
-        this.props.deleteDraftFeed(this.draftFeedo.id)
-      } else {
-        this.onClose();
-      }
-    }
-  }
-
   onPressMoreActions() {
     this.setState({ isVisibleCardOpenMenu: true })
   }
@@ -704,6 +698,7 @@ class CardDetailScreen extends React.Component {
     this.selectedFileMimeType = mime.lookup(file.uri);
     this.selectedFileName = file.fileName;
     this.selectedFileType = type;
+
     if (currentCard.id) {
       this.props.getFileUploadUrl(this.props.feedo.currentFeed.id, currentCard.id);
     }
@@ -783,13 +778,6 @@ class CardDetailScreen extends React.Component {
       id,
     } = this.props.card.currentCard;
     this.props.deleteFile(id, fileId);
-  }
-
-  onDeleteLink(linkId) {
-    const {
-      id,
-    } = this.props.card.currentCard;
-    this.props.deleteLink(id, linkId);
   }
 
   onSetCoverImage(fileId) {
@@ -958,7 +946,7 @@ class CardDetailScreen extends React.Component {
   }
 
   get renderWebMeta() {
-    const { viewMode, cardMode } = this.props;
+    const { viewMode } = this.props;
     const { links } = this.props.card.currentCard;
 
     if (links && links.length > 0) {
@@ -969,7 +957,6 @@ class CardDetailScreen extends React.Component {
           isFastImage={true}
           editable={viewMode !== CONSTANTS.CARD_VIEW}
           longPressLink={(url) => this.onLongPressWbeMetaLink(url)}
-          // onRemove={(linkId) => this.onDeleteLink(linkId)}
         />
       )
     }
@@ -977,10 +964,8 @@ class CardDetailScreen extends React.Component {
 
   get renderDocuments() {
     const { viewMode } = this.props;
+    const { files } = this.props.card.currentCard;
 
-    const {
-      files
-    } = this.props.card.currentCard;
     const documentFiles = _.filter(files, file => file.fileType === 'FILE');
     if (documentFiles.length > 0) {
       return (
@@ -1016,7 +1001,6 @@ class CardDetailScreen extends React.Component {
     const { userInfo } = this.props.user;
 
     const idea = _.find(currentFeed.ideas, idea => idea.id === currentCard.id)
-    console.log('currentCard: ', currentCard)
 
     let name = ''
     if (userProfile) {
@@ -1063,19 +1047,15 @@ class CardDetailScreen extends React.Component {
   }
 
   get renderMainContent() {
-    const { currentCard } = this.props.card;
-
-    let comments = 0
-    if (currentCard) {
-       comments = currentCard.metadata.comments
-    }
+    const { currentComments } = this.props.card;
+    const minHeight = currentComments.length === 0 ? IDEA_CONTENT_HEIGHT + FIXED_COMMENT_HEIGHT - 55 : IDEA_CONTENT_HEIGHT
 
     return (
       <ScrollView
         ref={ref => this.scrollViewRef = ref}
         onLayout={this.onLayoutScrollView.bind(this)}
       >
-        <View style={[styles.ideaContentView, { minHeight: comments === 0 ? IDEA_CONTENT_HEIGHT + FIXED_COMMENT_HEIGHT - 55 : IDEA_CONTENT_HEIGHT }]}>
+        <View style={[styles.ideaContentView, { minHeight }]}>
           {this.renderCoverImage}
           {this.renderWebMeta}
           {this.renderText}
@@ -1136,7 +1116,9 @@ class CardDetailScreen extends React.Component {
               <Entypo name="dots-three-horizontal" size={20} color={COLORS.MEDIUM_GREY} />
             </TouchableOpacity>
 
-            <LikeComponent idea={idea} prevPage={this.props.prevPage} type="icon" />
+            {idea && (
+              <LikeComponent idea={idea} prevPage={this.props.prevPage} type="icon" />
+            )}
           </View>
         </View>
       </View>
@@ -1180,7 +1162,7 @@ class CardDetailScreen extends React.Component {
   }
 
   render () {
-    const { showEditScreen, idea } = this.state
+    const { showEditScreen, idea, loading } = this.state
 
     return (
       <View style={styles.container}>
@@ -1204,15 +1186,6 @@ class CardDetailScreen extends React.Component {
           onPress={(index) => this.onTapMediaPickerActionSheet(index)}
         />
         <ActionSheet
-          ref={ref => this.leaveActionSheetRef = ref}
-          title='Are you sure that you wish to leave?'
-          options={['Continue editing', 'Leave and discard', 'Cancel']}
-          cancelButtonIndex={2}
-          destructiveButtonIndex={1}
-          tintColor={COLORS.PURPLE}
-          onPress={(index) => this.onTapLeaveActionSheet(index)}
-        />
-        <ActionSheet
           ref={ref => this.deleteActionSheet = ref}
           title={'This will permanentely delete your card'}
           options={['Delete card', 'Cancel']}
@@ -1222,7 +1195,7 @@ class CardDetailScreen extends React.Component {
           onPress={(index) => this.onTapActionSheet(index)}
         />
 
-        {this.state.loading && <LoadingScreen />}
+        {loading && <LoadingScreen />}
 
         <Modal 
           isVisible={this.state.isVisibleCardOpenMenu}
@@ -1246,7 +1219,7 @@ class CardDetailScreen extends React.Component {
         </Modal>
 
         <Modal 
-          style={{margin: 0}}
+          style={styles.shareScreenContainer}
           isVisible={this.state.isVisibleChooseLinkImagesModal}
         >
           <ChooseLinkImages
@@ -1328,8 +1301,6 @@ const mapDispatchToProps = dispatch => ({
   setCoverImage: (ideaId, fileId) => dispatch(setCoverImage(ideaId, fileId)),
   getOpenGraph: (url) => dispatch(getOpenGraph(url)),
   addLink: (ideaId, originalUrl, title, description, imageUrl, faviconUrl) => dispatch(addLink(ideaId, originalUrl, title, description, imageUrl, faviconUrl)),
-  deleteLink: (ideaId, linkId) => dispatch(deleteLink(ideaId, linkId)),
-  moveCard: (ideaId, huntId) => dispatch(moveCard(ideaId, huntId)),
   resetCardError: () => dispatch(resetCardError()),
 })
 

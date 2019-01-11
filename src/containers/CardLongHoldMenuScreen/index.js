@@ -82,7 +82,6 @@ CardLongHoldMenuScreen.propTypes = {
   invitees: PropTypes.array.isRequired,
   onClose: PropTypes.func.isRequired,
   onMove: PropTypes.func.isRequired,
-  onEdit: PropTypes.func.isRequired,
   onDelete: PropTypes.func.isRequired,
 }
 

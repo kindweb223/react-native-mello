@@ -61,6 +61,12 @@ class CardEditScreen extends React.Component {
   }
 
   onClose() {
+    const { idea } = this.props
+    if (idea.length === 0) {
+      Alert.alert('Error', 'Enter some text or add an image')
+      return;
+    }
+
     if (this.props.onUpdateCard) {
       this.props.onUpdateCard();
     }
