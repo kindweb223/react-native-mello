@@ -576,9 +576,10 @@ class NewCardScreen extends React.Component {
         duration: e.duration,
       }
     ).start(() => {
-      if (Actions.currentScene === 'CommentScreen' || this.isDisabledKeyboard === true) {
+      if (this.isDisabledKeyboard === true || !this.textInputIdeaRef) {
         return;
       }
+      
       this.textInputIdeaRef.focus();
     });
   }

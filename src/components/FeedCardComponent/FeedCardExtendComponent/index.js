@@ -29,7 +29,7 @@ class FeedCardExtendComponent extends React.Component {
   }
 
   render() {
-    const { invitees, idea, feedo, cardType, longSelected } = this.props;
+    const { invitees, idea, feedo, cardType, longSelected, longHold } = this.props;
     const { imageHeight } = this.state
 
     const invitee = _.find(invitees, item => item.id === idea.inviteeId)
@@ -89,8 +89,8 @@ class FeedCardExtendComponent extends React.Component {
                     text={idea.idea}
                     numberOfLines={hasCoverImage ? 4 : 10}
                     ellipsizeMode="tail"
-                    onPress={() => this.props.onLinkPress()}
-                    onLongPress={() => this.props.onLinkLongPress()}
+                    onPress={() => longHold ? {} : this.props.onLinkPress()}
+                    onLongPress={() => longHold ? {} : this.props.onLinkLongPress()}
                     suppressHighlighting={true}
                   />
                 </View>
@@ -99,12 +99,19 @@ class FeedCardExtendComponent extends React.Component {
 
             {idea && (
               <View style={styles.commentView}>
-                <LikeComponent idea={idea} isOnlyInvitee={isOnlyInvitee} />
+                <LikeComponent
+                  idea={idea}
+                  longHold={longHold}
+                  isOnlyInvitee={isOnlyInvitee}
+                  prevPage={this.props.prevPage}
+                />
                 <CommentComponent 
                   idea={idea}
+                  longHold={longHold}
                   isOnlyInvitee={isOnlyInvitee}
                   currentFeed={feedo.currentFeed}
                   onComment={this.props.onComment}
+                  prevPage={this.props.prevPage}
                 />
               </View>
             )}
@@ -116,11 +123,13 @@ class FeedCardExtendComponent extends React.Component {
 }
 
 FeedCardExtendComponent.defaultProps = {
+  longHold: false,
   onLinkPress: () => {},
   onLinkLongPress: () => {}
 }
 
 FeedCardExtendComponent.propTypes = {
+  longHold: PropTypes.bool,
   idea: PropTypes.objectOf(PropTypes.any).isRequired,
   invitees: PropTypes.arrayOf(PropTypes.any).isRequired,
   onComment: PropTypes.func,

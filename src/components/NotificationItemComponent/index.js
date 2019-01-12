@@ -18,7 +18,7 @@ import {
 } from '../../redux/feedo/actions'
 import styles from './styles'
 
-const NotificationItemComponent = ({ data, hideTumbnail, updateInvitation }) => {
+const NotificationItemComponent = ({ data, hideTumbnail, updateInvitation, prevPage }) => {
   const filteredIdeas = _.orderBy(
     _.filter(data.ideas, idea => idea.coverImage !== null && idea.coverImage !== ''),
     ['publishedDate'],
@@ -46,7 +46,7 @@ const NotificationItemComponent = ({ data, hideTumbnail, updateInvitation }) => 
       </View>
 
       <View style={styles.rightContainer}>
-        <TouchableOpacity onPress={() => hideTumbnail ? {} : Actions.FeedDetailScreen({ data, prevPage: 'notification' })}>
+        <TouchableOpacity onPress={() => Actions.FeedDetailScreen({ data, prevPage })}>
           <View>
             <View style={styles.titleView}>
               <Text><Text style={styles.title}>{name}</Text> has invited you to this flow</Text>
@@ -80,12 +80,14 @@ const NotificationItemComponent = ({ data, hideTumbnail, updateInvitation }) => 
 }
 
 NotificationItemComponent.defaultProps = {
-  hideTumbnail: false
+  hideTumbnail: false,
+  prevPage: 'activity'
 }
 
 NotificationItemComponent.propTypes = {
   data: PropTypes.objectOf(PropTypes.any),
-  hideTumbnail: PropTypes.bool
+  hideTumbnail: PropTypes.bool,
+  prevPage: PropTypes.string
 }
 
 const mapDispatchToProps = dispatch => ({

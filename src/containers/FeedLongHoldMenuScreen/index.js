@@ -17,7 +17,6 @@ class FeedLongHoldMenuScreen extends React.Component {
   constructor(props) {
     super(props)
     this.state = {
-      pinFlag: props.feedData.pinned ? true : false,
       isShowShare: false,
       currentFeed: {}
     }
@@ -90,18 +89,23 @@ class FeedLongHoldMenuScreen extends React.Component {
   }
 
   render () {
-    const { feedData, listType } = this.props
+    const { feedData, showLongHoldActionBar } = this.props
     const { currentFeed } = this.state
 
+    const pinFlag = feedData.pinned ? true : false
+
+    if (!showLongHoldActionBar) {
+      return null
+    }
+
     return [
-      <FeedItemComponent key="1" item={feedData} listType={listType} pinFlag={this.state.pinFlag} clickEvent="long" />,
       <FeedActionBarComponent
         key="2"
         handlePin={this.handlePin}
         handleShare={this.openShareModal}
         handleSetting={this.handleSetting}
         data={feedData}
-        pinFlag={this.state.pinFlag}
+        pinFlag={pinFlag}
       />,
       <ActionSheet
         key="3"

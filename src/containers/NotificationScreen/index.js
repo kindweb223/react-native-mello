@@ -160,11 +160,11 @@ class NotificationScreen extends React.Component {
         } else if (selectedActivity.activityTypeEnum === 'IDEA_LIKED') {
           this.props.getFeedDetail(selectedActivity.metadata.HUNT_ID)
         } else if (selectedActivity.activityTypeEnum === 'USER_JOINED_HUNT') {
-          Actions.FeedDetailScreen({ data: { id: selectedActivity.metadata.HUNT_ID }, prevPage: 'notification' })
+          Actions.FeedDetailScreen({ data: { id: selectedActivity.metadata.HUNT_ID }, prevPage: 'activity' })
         } else if (selectedActivity.activityTypeEnum === 'USER_INVITED_TO_HUNT') {
-          Actions.FeedDetailScreen({ data: { id: selectedActivity.metadata.HUNT_ID }, prevPage: 'notification' })
+          Actions.FeedDetailScreen({ data: { id: selectedActivity.metadata.HUNT_ID }, prevPage: 'activity' })
         } else if (selectedActivity.activityTypeEnum === 'HUNT_UPDATED') {
-          Actions.FeedDetailScreen({ data: { id: selectedActivity.metadata.HUNT_ID }, prevPage: 'notification' })
+          Actions.FeedDetailScreen({ data: { id: selectedActivity.metadata.HUNT_ID }, prevPage: 'activity' })
         }
       }
     }
@@ -194,7 +194,7 @@ class NotificationScreen extends React.Component {
           })
 
           this.setState({ selectedIdeaInvitee: invitee }, () => {
-            this.onSelectNewCard()
+            this.onSelectNewCard(card.currentCard)
           })
         }
       }
@@ -215,7 +215,7 @@ class NotificationScreen extends React.Component {
       this.setActivityFeeds(activityFeedList, this.state.invitedFeedList)
     }
 
-    if (this.props.feedo.loading === 'UPDTE_FEED_INVITATION_PENDING' && feedo.loading === 'UPDTE_FEED_INVITATION_FULFILLED') {
+    if (this.props.feedo.loading !== 'UPDTE_FEED_INVITATION_FULFILLED' && feedo.loading === 'UPDTE_FEED_INVITATION_FULFILLED') {
         let invitedFeedList = _.orderBy(feedo.invitedFeedList, ['publishedDate'], ['desc'])
         this.setState({ invitedFeedList, isShowInviteToaster: true })
         this.setActivityFeeds(this.state.activityFeedList, invitedFeedList)
@@ -302,7 +302,7 @@ class NotificationScreen extends React.Component {
   }
 
   // Move to idea detail screen
-  onSelectNewCard() {
+  onSelectNewCard(idea) {
     const { feedo } = this.props
 
     let cardViewMode = CONSTANTS.CARD_VIEW;

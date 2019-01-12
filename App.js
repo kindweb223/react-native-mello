@@ -31,6 +31,7 @@ axios.defaults.headers.get['Content-Type'] = 'application/json'
 axios.defaults.headers.get.Accept = 'application/json'
 axios.defaults.withCredentials = true
 axios.defaults.headers['x-mobile-api'] = true
+axios.defaults.timeout = 30000
 
 axios.interceptors.response.use(
   response => (
@@ -152,7 +153,7 @@ export default class Root extends React.Component {
           if (state.user.userInfo.id === response.message.data.userProfileId) {
             store.dispatch(pubnubDeleteFeed(response.message.data.huntId))
           } else {
-            store.dispatch(pubnubDeleteOtherInvitee(response.message.data.huntId, response.message.data.userProfileId))
+            store.dispatch(pubnubDeleteOtherInvitee(response.message.data.huntId, response.message.data.huntInviteeId))
           }
         }
         if (response.message.action === 'HUNT_INVITEE_REMOVED_SELF') {

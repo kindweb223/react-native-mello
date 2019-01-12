@@ -5,6 +5,7 @@ import * as cardTypes from '../card/types'
 import { filter, find, findIndex, isEmpty } from 'lodash'
 import resolveError from './../../service/resolveError'
 import { restoreArchiveFeed } from './actions';
+import { setRemovedInvitees } from './operations'
 
 const initialState = {
   loading: null,
@@ -884,7 +885,7 @@ export default function feedo(state = initialState, action = {}) {
       const { data } = action.result
       const { currentFeed } = state
       const inviteeId = action.payload
-      const restInviteeList = filter(currentFeed.invitees, invitee => invitee.id !== inviteeId)
+      const restInviteeList = currentFeed.invitees.map(invitee => setRemovedInvitees(invitee, inviteeId))
 
       return {
         ...state,
@@ -1233,6 +1234,10 @@ export default function feedo(state = initialState, action = {}) {
       }
     case types.GET_ACTIVITY_FEED_FULFILLED: {
       const { data } = action.result
+
+      if(data.badgeCount) {
+        PushNotification.setApplicationIconBadgeNumber(data.badgeCount)
+      }
 
       let activityFeedList = []
       if (data.first) {
@@ -1615,52 +1620,23 @@ export default function feedo(state = initialState, action = {}) {
         currentFeed: newCurrentFeed
       }
     }
-    case types.PUBNUB_DELETE_INVITEE_FULFILLED: {
-      const { huntId, huntInviteeId } = action.payload
-      const { feedoList, currentFeed } = state
-
-      const selectFeed = find(feedoList, feedo => feedo.id === huntId)
-      const restFeedoList = filter(feedoList, feedo => feedo.id !== huntId)
-      const restInvitees = filter(selectFeed.invitees, invitee => invitee.id !== huntInviteeId)
-
-      const currentRestInvitees = filter(currentFeed.invitees, invitee => invitee.id !== huntInviteeId)
-
-      return {
-        ...state,
-        loading: types.PUBNUB_DELETE_INVITEE_FULFILLED,
-        feedoList: [
-          ...restFeedoList,
-          {
-            ...selectFeed,
-            invitees: restInvitees
-          }
-        ],
-        currentFeed: {
-          ...currentFeed,
-          invitees: currentRestInvitees
-        }
-      }
-    }
+    case types.PUBNUB_DELETE_INVITEE_FULFILLED:
     case types.PUBNUB_DELETE_OTHER_INVITEE_FULFILLED: {
-      const { huntId, userId } = action.payload
+      const { huntId, inviteeId } = action.payload
       const { feedoList, currentFeed } = state
 
       const selectFeed = find(feedoList, feedo => feedo.id === huntId)
       const restFeedoList = filter(feedoList, feedo => feedo.id !== huntId)
-      const restInvitees = filter(selectFeed.invitees, invitee => invitee.userProfile.id !== userId)
+      
+      const restInvitees = selectFeed ? selectFeed.invitees.map(invitee => setRemovedInvitees(invitee, inviteeId)) : null
+      const currentRestInvitees = currentFeed.invitees.map(invitee => setRemovedInvitees(invitee, inviteeId))
 
-      const currentRestInvitees = filter(currentFeed.invitees, invitee => invitee.userProfile.id !== userId)
+      const newFeedoList = selectFeed ? [ ...restFeedoList, { ...selectFeed, invitees: restInvitees } ] : [ ...restFeedoList ]
 
       return {
         ...state,
         loading: types.PUBNUB_DELETE_INVITEE_FULFILLED,
-        feedoList: [
-          ...restFeedoList,
-          {
-            ...selectFeed,
-            invitees: restInvitees
-          }
-        ],
+        feedoList: newFeedoList,
         currentFeed: {
           ...currentFeed,
           invitees: currentRestInvitees
@@ -1678,11 +1654,9 @@ export default function feedo(state = initialState, action = {}) {
     case types.GET_ACTIVITY_FEED_VISITED_FULFILLED: {
       const { data } = action.result
 
-      PushNotification.getApplicationIconBadgeNumber((badgeCount) => {
-        if (badgeCount && badgeCount > 0) {
-          PushNotification.setApplicationIconBadgeNumber(data.count)
-        }
-      })
+      if(data.count) {
+        PushNotification.setApplicationIconBadgeNumber(data.count)
+      }
 
       return {
         ...state,

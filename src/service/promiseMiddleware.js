@@ -25,7 +25,7 @@ export default function promiseMiddleware(){
                         report.metadata = {
                             "REJECTED_ERROR": {
                                 "status": types[2],
-                                "error": error.response.data
+                                "error": error.response ? error.response.data : error
                             }
                         }
                     })

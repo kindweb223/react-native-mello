@@ -41,7 +41,7 @@ class LastCommentComponent extends React.Component {
       loading = true;
     } else if (this.props.card.loading !== types.GET_CARD_COMMENTS_FULFILLED && nextProps.card.loading === types.GET_CARD_COMMENTS_FULFILLED) {
       // success in getting comments of a card
-      if (nextProps.card.currentCommentId === nextProps.card.currentCard.id) {
+      if (nextProps.card.currentCardId === nextProps.card.currentCard.id) {
         this.setState({ currentComments: nextProps.card.currentComments })
       }
     }

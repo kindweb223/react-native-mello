@@ -86,7 +86,7 @@ class InviteeScreen extends React.Component {
   }
 
   getRecentContactList = (feed, contactList) => {
-    const { invitees } = feed
+    const invitees = COMMON_FUNC.filterRemovedInvitees(feed.invitees)
     const filteredList = _.filter(contactList, item =>
                           _.findIndex(invitees, invitee => invitee.userProfile.id === item.userProfile.id) === -1)
     return filteredList

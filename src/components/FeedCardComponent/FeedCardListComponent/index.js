@@ -27,7 +27,7 @@ class FeedCardListComponent extends React.Component {
   }
 
   render() {
-    const { invitees, idea, feedo, longSelected } = this.props;
+    const { invitees, idea, feedo, longSelected, longHold } = this.props;
     const invitee = _.find(invitees, item => item.id === idea.inviteeId)
     let isOnlyInvitee = false
     
@@ -67,8 +67,8 @@ class FeedCardListComponent extends React.Component {
                   text={idea.idea}
                   numberOfLines={2}
                   ellipsizeMode="tail"
-                  onPress={() => this.props.onLinkPress()}
-                  onLongPress={() => this.props.onLinkLongPress()}
+                  onPress={() => longHold ? {} : this.props.onLinkPress()}
+                  onLongPress={() => longHold ? {} : this.props.onLinkLongPress()}
                   suppressHighlighting={true}
                 />
               </View>
@@ -77,12 +77,19 @@ class FeedCardListComponent extends React.Component {
 
           {idea && (
             <View style={styles.commentView}>
-              <LikeComponent idea={idea} isOnlyInvitee={isOnlyInvitee} />
+              <LikeComponent
+                idea={idea}
+                longHold={longHold}
+                isOnlyInvitee={isOnlyInvitee}
+                prevPage={this.props.prevPage}
+              />
               <CommentComponent 
                 idea={idea}
+                longHold={longHold}
                 isOnlyInvitee={isOnlyInvitee}
                 currentFeed={feedo.currentFeed}
                 onComment={this.props.onComment}
+                prevPage={this.props.prevPage}
               />
             </View>
           )}
@@ -102,11 +109,13 @@ class FeedCardListComponent extends React.Component {
 }
 
 FeedCardListComponent.defaultProps = {
+  longHold: false,
   onLinkPress: () => {},
   onLinkLongPress: () => {}
 }
 
 FeedCardListComponent.propTypes = {
+  longHold: PropTypes.bool,
   idea: PropTypes.objectOf(PropTypes.any).isRequired,
   invitees: PropTypes.arrayOf(PropTypes.any).isRequired,
   onComment: PropTypes.func,

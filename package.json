@@ -1,9 +1,11 @@
 {
   "name": "Mello",
-  "version": "1.0.44",
+  "version": "1.0.47",
   "private": true,
   "scripts": {
-    "start": "node node_modules/react-native/local-cli/cli.js start"
+    "start": "node node_modules/react-native/local-cli/cli.js start",
+    "generate-ios-bundle": "react-native bundle --platform ios --dev false --entry-file index.js --bundle-output ios-release.bundle --sourcemap-output ios-release.bundle.map",
+    "generate-android-bundle": "react-native bundle --platform android --dev false --entry-file index.js --bundle-output android-release.bundle --sourcemap-output android-release.bundle.map"
   },
   "dependencies": {
     "axios": "^0.18.0",
@@ -15,7 +17,7 @@
     "pubnub-react": "^1.2.0",
     "ramda": "^0.25.0",
     "react": "16.4.1",
-    "react-native": "0.56.0",
+    "react-native": "0.57.0",
     "react-native-actionsheet": "^2.4.2",
     "react-native-autolink": "^1.4.0",
     "react-native-awesome-alerts": "^1.0.8",

@@ -109,8 +109,8 @@ class CommentScreen extends React.Component {
       loading = false;
     } else if (this.props.card.loading !== types.GET_CARD_COMMENTS_FULFILLED && nextProps.card.loading === types.GET_CARD_COMMENTS_FULFILLED) {
       // success in getting comments of a card
-      if (nextProps.card.currentCommentId === nextProps.card.currentCard.id ||
-          nextProps.card.currentCommentId === this.props.idea.id) {
+      if (nextProps.card.currentCardId === nextProps.card.currentCard.id ||
+          nextProps.card.currentCardId === this.props.idea.id) {
         this.setState({ commentList: nextProps.card.currentComments })
       }
       this.props.getActivityFeed(this.props.user.userInfo.id, { page: 0, size: PAGE_COUNT })
@@ -119,7 +119,8 @@ class CommentScreen extends React.Component {
       loading = false;
     } else if (this.props.card.loading !== types.ADD_CARD_COMMENT_FULFILLED && nextProps.card.loading === types.ADD_CARD_COMMENT_FULFILLED) {
       // success in adding a comment of a card
-      if (nextProps.card.currentCommentId === nextProps.card.currentCard.id) {
+      if (nextProps.card.currentCardId === nextProps.card.currentCard.id ||
+        nextProps.card.currentCardId === this.props.idea.id) {
         this.setState({ commentList: nextProps.card.currentComments })
       }
     } else if (this.props.card.loading !== types.EDIT_CARD_COMMENT_PENDING && nextProps.card.loading === types.EDIT_CARD_COMMENT_PENDING) {
@@ -127,7 +128,8 @@ class CommentScreen extends React.Component {
       loading = false;
     } else if (this.props.card.loading !== types.EDIT_CARD_COMMENT_FULFILLED && nextProps.card.loading === types.EDIT_CARD_COMMENT_FULFILLED) {
       // success in adding a comment of a card
-      if (nextProps.card.currentCommentId === nextProps.card.currentCard.id) {
+      if (nextProps.card.currentCardId === nextProps.card.currentCard.id ||
+        nextProps.card.currentCardId === this.props.idea.id) {
         this.setState({ commentList: nextProps.card.currentComments })
       }
     } else if (this.props.card.loading !== types.DELETE_CARD_COMMENT_PENDING && nextProps.card.loading === types.DELETE_CARD_COMMENT_PENDING) {
@@ -135,7 +137,8 @@ class CommentScreen extends React.Component {
       loading = false;
     } else if (this.props.card.loading !== types.DELETE_CARD_COMMENT_FULFILLED && nextProps.card.loading === types.DELETE_CARD_COMMENT_FULFILLED) {
       // success in adding a comment of a card
-      if (nextProps.card.currentCommentId === nextProps.card.currentCard.id) {
+      if (nextProps.card.currentCardId === nextProps.card.currentCard.id ||
+        nextProps.card.currentCardId === this.props.idea.id) {
         this.setState({ commentList: nextProps.card.currentComments })
       }
     } 
@@ -166,9 +169,6 @@ class CommentScreen extends React.Component {
   }
 
   keyboardWillShow(e) {
-    if (Actions.currentScene !== 'CommentScreen') {
-      return;
-    }
     Animated.timing(
       this.keyboardHeight, {
         toValue:  e.endCoordinates.height,
@@ -181,9 +181,6 @@ class CommentScreen extends React.Component {
   }
 
   keyboardWillHide(e) {
-    if (Actions.currentScene !== 'CommentScreen') {
-      return;
-    }
     Animated.timing(
       this.keyboardHeight, {
         toValue:  0,
@@ -223,9 +220,10 @@ class CommentScreen extends React.Component {
   }
 
   onEdit(index) {
+    const { commentList } = this.state
     this.setState({
       selectedItemIndex: index,
-      comment: this.props.card.currentComments[index].content,
+      comment: commentList[index].content,
     });
     this.inputToolbarRef.focus();
   }
@@ -243,24 +241,28 @@ class CommentScreen extends React.Component {
   }
 
   onDelete(index) {
+    const { commentList } = this.state
+
     this.setState({ 
       comment: '',
       selectedItemIndex: -1,
     });
     this.props.deleteCardComment(
       this.props.idea.id, 
-      this.props.card.currentComments[index].id,
+      commentList[index].id,
     );
   }
 
   onSend() {
-    if (this.state.selectedItemIndex === -1) {
-      this.props.addCardComment(this.props.idea.id, this.state.comment);
+    const { commentList, selectedItemIndex, comment } = this.state
+
+    if (selectedItemIndex === -1) {
+      this.props.addCardComment(this.props.idea.id, comment);
     } else {
       this.props.updateCardComment(
         this.props.idea.id, 
-        this.props.card.currentComments[this.state.selectedItemIndex].id,
-        this.state.comment
+        commentList[selectedItemIndex].id,
+        comment
       );
     }
     this.setState({ 

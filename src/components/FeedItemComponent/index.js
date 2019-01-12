@@ -9,6 +9,7 @@ import styles from './styles'
 import FeedCoverImageComponent from './FeedCoverImageComponent'
 import FeedItemContentComponent from './FeedItemContentComponent'
 import FeedMiniItemContentComponent from './FeedMiniItemContentComponent'
+import * as COMMON_FUNC from '../../service/commonFunc'
 
 const FeedItemComponent = ({ item, pinFlag, page, clickEvent, listType }) => {
   let avatars = []
@@ -17,6 +18,8 @@ const FeedItemComponent = ({ item, pinFlag, page, clickEvent, listType }) => {
   if (item.metadata.owner) {
     invitees = _.filter(invitees, invitee => invitee.userProfile.id !== item.owner.id)
   }
+  
+  invitees = COMMON_FUNC.filterRemovedInvitees(invitees)
 
   invitees.forEach((data, key) => {
     avatars = [
@@ -27,12 +30,7 @@ const FeedItemComponent = ({ item, pinFlag, page, clickEvent, listType }) => {
 
   if (listType === 'list') {
     return (
-      <View style={
-        [
-          styles.container,
-          clickEvent === 'long' ? { paddingVertical: 11, paddingHorizontal: 11 } : { paddingVertical: 0 }
-        ]
-      }>
+      <View style={styles.container}>
         {item.coverImages && item.coverImages.length > 0 && (
           <View style={styles.thumbnailsView}>
             <FeedCoverImageComponent data={item.coverImages} />
@@ -49,12 +47,7 @@ const FeedItemComponent = ({ item, pinFlag, page, clickEvent, listType }) => {
     )
   }  else {
     return (
-      <View style={
-        [
-          styles.container,
-          clickEvent === 'long' ? { paddingVertical: 11, paddingHorizontal: 11 } : { paddingVertical: 0 }
-        ]
-      }>
+      <View style={styles.container}>
         <FeedMiniItemContentComponent
           data={item}
           avatars={avatars}

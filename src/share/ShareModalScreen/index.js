@@ -112,7 +112,7 @@ export default class ShareModalScreen extends React.Component {
 
 
 ShareModalScreen.defaultProps = {
-  message: 'Oops, you appear to be signed out of Mello. Tap OK to log in again and try again',
+  message: 'Oops, you appear to be signed out of Mello. Sign In and try again',
   buttons: CONSTANTS.MODAL_OK | CONSTANTS.MODAL_CLOSE,
   okLabel: 'OK',
   onOk: () => {

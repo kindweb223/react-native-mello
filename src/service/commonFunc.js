@@ -72,6 +72,12 @@ const isCardOwner = (card) => {
   return card.metadata.owner
 }
 
+/**
+ * Filter invitees based on status (REMOVED)
+ */
+const filterRemovedInvitees = (invitees) => {
+  return _.filter(invitees, invitee => invitee.inviteStatus !== 'REMOVED')
+}
 
 const validateEmail = (email) => {
   let re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
@@ -93,5 +99,6 @@ export {
   isFeedGuest,
   isCardOwner,
   validateEmail,
-  isUserInvitee
+  isUserInvitee,
+  filterRemovedInvitees
 }
