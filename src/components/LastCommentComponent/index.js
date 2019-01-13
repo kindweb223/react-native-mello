@@ -9,9 +9,9 @@ import { connect } from 'react-redux'
 
 import { Actions } from 'react-native-router-flux'
 import _ from 'lodash';
+import LinearGradient from 'react-native-linear-gradient'
 
 import styles from './styles'
-import COLORS from '../../service/colors'
 import * as types from '../../redux/card/types'
 import { 
   getCardComments,
@@ -19,6 +19,17 @@ import {
 import UserAvatarComponent from '../../components/UserAvatarComponent';
 import * as COMMON_FUNC from '../../service/commonFunc'
 import Analytics from '../../lib/firebase'
+
+const Gradient = () => {
+  return(
+    <LinearGradient
+      colors={['rgba(255, 255, 255, 0.5)', 'rgba(255, 255, 255, 0.9)']}
+      style={{
+        flex: 1
+      }}
+    />
+  )
+}
 
 class LastCommentComponent extends React.Component {
   constructor(props) {
@@ -114,6 +125,7 @@ class LastCommentComponent extends React.Component {
 
   render () {
     const { currentComments } = this.state;
+    const { initLoad } = this.props
 
     let lastComments = [];
     // let oldCommentsLength = 0;
@@ -124,12 +136,19 @@ class LastCommentComponent extends React.Component {
 
     return (
       <View style={[styles.container, currentComments.length > 0 && { paddingVertical: 16 }]}>
-        <FlatList
-          data={lastComments}
-          renderItem={this.renderItem.bind(this)}
-          keyExtractor={(item, index) => index.toString()}
-          extraData={this.props}
-        />
+        <View style={styles.commentList}>
+          <FlatList
+            data={lastComments}
+            renderItem={this.renderItem.bind(this)}
+            keyExtractor={(item, index) => index.toString()}
+            extraData={this.props}
+          />
+          {initLoad && (
+            <View style={styles.gradientView}>
+              <Gradient />
+            </View>
+          )}
+        </View>
         { 
           currentComments.length > 0 && 
           <TouchableOpacity 

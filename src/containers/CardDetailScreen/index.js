@@ -105,7 +105,8 @@ class CardDetailScreen extends React.Component {
       isSuccessCopyUrl: false,
       showEditScreen: false,
       isVisibleCardOpenMenu: false,
-      cardOption: 0
+      cardOption: 0,
+      initLoad: true
     };
 
     this.selectedFile = null;
@@ -1044,8 +1045,14 @@ class CardDetailScreen extends React.Component {
 
   get renderCommentList() {
     return (
-      <LastCommentComponent prevPage={this.props.prevPage} />
+      <LastCommentComponent prevPage={this.props.prevPage} initLoad={this.state.initLoad} />
     )
+  }
+
+  onScrollContent() {
+    if (this.state.initLoad) {
+      this.setState({ initLoad: false })
+    }
   }
 
   get renderMainContent() {
@@ -1056,6 +1063,7 @@ class CardDetailScreen extends React.Component {
       <ScrollView
         ref={ref => this.scrollViewRef = ref}
         onLayout={this.onLayoutScrollView.bind(this)}
+        onScroll={() => this.onScrollContent()}
       >
         <View style={[styles.ideaContentView, { minHeight }]}>
           {this.renderCoverImage}

@@ -1,5 +1,6 @@
 import { StyleSheet } from 'react-native'
 import COLORS from '../../service/colors'
+import CONSTANTS from '../../service/constants'
 
 const styles = StyleSheet.create({
   container: {
@@ -27,6 +28,17 @@ const styles = StyleSheet.create({
     marginLeft: 33,
     marginBottom: 64
   },
+  commentList: {
+    flex: 1,
+    overflow: 'hidden'
+  },
+  gradientView: {
+    width: '100%',
+    height: '100%',
+    position: 'absolute',
+    top: 60,
+    left: 30
+  }
 })
 
 export default styles
