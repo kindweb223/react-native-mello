@@ -25,20 +25,16 @@ const styles = StyleSheet.create({
     paddingTop: 0,
     paddingBottom: 0,
   },
-  rowContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-  },
   headerContainer: {
-    marginTop: CONSTANTS.STATUSBAR_HEIGHT,
+    marginTop: 5,
     paddingRight: 16,
     backgroundColor: '#fff',
     alignItems: 'flex-end'
   },
   closeButtonView: {
-    width: 110,
+    width: 69,
     height: 34,
-    borderRadius: 20,
+    borderRadius: 17,
     justifyContent: 'center',
     backgroundColor: COLORS.PURPLE
   },

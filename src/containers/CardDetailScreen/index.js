@@ -15,6 +15,7 @@ import {
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 
+import { ifIphoneX } from 'react-native-iphone-x-helper'
 import { Actions } from 'react-native-router-flux'
 import Entypo from 'react-native-vector-icons/Entypo'
 import Ionicons from 'react-native-vector-icons/Ionicons'
@@ -74,9 +75,9 @@ import COLORS from '../../service/colors';
 import CONSTANTS from '../../service/constants';
 import styles from './styles';
 
-const FOOTER_HEIGHT = 50
+const FOOTER_HEIGHT = 55
 const FIXED_COMMENT_HEIGHT = 150
-const IDEA_CONTENT_HEIGHT = CONSTANTS.SCREEN_HEIGHT - CONSTANTS.STATUSBAR_HEIGHT - FIXED_COMMENT_HEIGHT - FOOTER_HEIGHT - CONSTANTS.STATUS_BOTTOM_BAR_HEIGHT + 5
+const IDEA_CONTENT_HEIGHT = CONSTANTS.SCREEN_HEIGHT - CONSTANTS.STATUSBAR_HEIGHT - FIXED_COMMENT_HEIGHT - FOOTER_HEIGHT - CONSTANTS.STATUS_BOTTOM_BAR_HEIGHT + ifIphoneX(0, 5)
 
 class CardDetailScreen extends React.Component {
   constructor(props) {
@@ -403,7 +404,6 @@ class CardDetailScreen extends React.Component {
   }
 
   async componentDidMount() {
-    // console.log('Current Card : ', this.props.card.currentCard);
     const { viewMode, feedo, card } = this.props;
     if (viewMode === CONSTANTS.CARD_VIEW || viewMode === CONSTANTS.CARD_EDIT) {
       const { width, height } = await this.getImageSize(card.currentCard.coverImage);
@@ -463,17 +463,6 @@ class CardDetailScreen extends React.Component {
 
   safariViewDismiss() {
     this.isDisabledKeyboard = false;
-  }
-
-  onUpdateFeed() {
-    const {
-      id, 
-      headline,
-      summary,
-      tags,
-      files,
-    } = this.props.feedo.currentFeed;  
-    this.props.updateFeed(id, headline || 'New flow', summary || '', tags, files);
   }
 
   async createCard(currentProps) {
@@ -594,7 +583,9 @@ class CardDetailScreen extends React.Component {
   }
 
   onClose() {
-    this.onUpdateFeed()
+    if (this.props.viewMode === CONSTANTS.CARD_EDIT) {
+      this.onUpdateCard()
+    }
 
     this.setState({
       originalCardTopY: this.props.intialLayout.py,
@@ -611,19 +602,11 @@ class CardDetailScreen extends React.Component {
     });
   }
 
-  onUpdate() {
-    const {
-      id, 
-      files,
-    } = this.props.card.currentCard;
-    const { idea } = this.state
+  onUpdateCard() {
+    const { id, huntId, files } = this.props.card.currentCard
+    const { idea, coverImage } = this.state
 
-    if (idea.length > 0 || (files && files.length > 0)) {
-      const cardName = '';
-      this.props.updateCard(this.props.feedo.currentFeed.id, id, cardName, this.state.idea, this.state.coverImage, files);
-    } else {
-      Alert.alert('Error', 'Enter some text or add an image')
-    }
+    this.props.updateCard(huntId, id, '', idea, coverImage, files);
   }
 
   onTapActionSheet(index) {
@@ -682,15 +665,14 @@ class CardDetailScreen extends React.Component {
     return;
   }
 
-  onUpdateCard() {
-    this.setState({ showEditScreen: false }, () => {
-      this.onUpdate()
-    })
-    return;
+  onCloseEditCard() {
+    this.setState({ showEditScreen: false })
   }
 
   onPressMoreActions() {
-    this.setState({ isVisibleCardOpenMenu: true })
+    if (this.props.viewMode === CONSTANTS.CARD_EDIT) {
+      this.setState({ isVisibleCardOpenMenu: true })
+    }
   }
 
   async uploadFile(currentCard, file, type) {
@@ -926,10 +908,21 @@ class CardDetailScreen extends React.Component {
   }
 
   get renderText() {
+    const { links } = this.props.card.currentCard;
+    const { coverImage } = this.state
+  
+    let marginTop = 24
+    marginTop = coverImage ? 24 : 65
+    if (links && links.length > 0) {
+      marginTop = 6
+    } else {
+      marginTop = coverImage ? 24 : 65
+    }
+
     return (
       <TouchableOpacity activeOpacity={1} onPress={() => this.onPressIdea()}>
         <Autolink
-          style={styles.textInputIdea}
+          style={[styles.textInputIdea, { marginTop }]}
           text={this.state.idea}
           onPress={(url, match) => this.onPressLink(url)}
         />
@@ -952,7 +945,7 @@ class CardDetailScreen extends React.Component {
     if (links && links.length > 0) {
       const firstLink = links[0];
       return (
-        <WebMetaList 
+        <WebMetaList
           links={[firstLink]}
           isFastImage={true}
           editable={viewMode !== CONSTANTS.CARD_VIEW}
@@ -1014,14 +1007,21 @@ class CardDetailScreen extends React.Component {
       fontSize = 14;
     }
 
+    // if (COMMON_FUNC.isFeedOwner(currentFeed)) {
+    //   const otherInvitees = _.filter(currentFeed.invitees, invitee => invitee.userProfile.id !== userInfo.id);
+    //   if (!otherInvitees || otherInvitees.length === 0) {
+    //     return (
+    //       <View style={styles.inviteeContainer}>
+    //         <Text style={styles.textInvitee}>{getDurationFromNow(currentCard.publishedDate)}</Text>
+    //       </View>
+    //     );
+    //   }
+    // }
+    let showLikes = true
     if (COMMON_FUNC.isFeedOwner(currentFeed)) {
       const otherInvitees = _.filter(currentFeed.invitees, invitee => invitee.userProfile.id !== userInfo.id);
       if (!otherInvitees || otherInvitees.length === 0) {
-        return (
-          <View style={styles.inviteeContainer}>
-            <Text style={styles.textInvitee}>{getDurationFromNow(currentCard.publishedDate)}</Text>
-          </View>
-        );
+        showLikes = false
       }
     }
 
@@ -1033,9 +1033,11 @@ class CardDetailScreen extends React.Component {
           />
           <Text style={[styles.textInvitee, { marginLeft: 9, fontSize }]} numberOfLines={1}>{name}</Text>
           <Entypo name="dot-single" style={styles.iconDot} />
-          <Text style={styles.textInvitee}>{getDurationFromNow(currentCard.publishedDate)}</Text>
+          <Text style={styles.textInvitee}>{getDurationFromNow(currentCard.publishedDate)} ago</Text>
         </View>
-        <LikeComponent idea={idea} prevPage={this.props.prevPage} type="text" />
+        {showLikes && (
+          <LikeComponent idea={idea} prevPage={this.props.prevPage} type="text" />
+        )}
       </View>
     );
   }
@@ -1048,7 +1050,7 @@ class CardDetailScreen extends React.Component {
 
   get renderMainContent() {
     const { currentComments } = this.props.card;
-    const minHeight = currentComments.length === 0 ? IDEA_CONTENT_HEIGHT + FIXED_COMMENT_HEIGHT - 55 : IDEA_CONTENT_HEIGHT
+    const minHeight = currentComments.length === 0 ? IDEA_CONTENT_HEIGHT + FIXED_COMMENT_HEIGHT - FOOTER_HEIGHT : IDEA_CONTENT_HEIGHT
 
     return (
       <ScrollView
@@ -1105,7 +1107,11 @@ class CardDetailScreen extends React.Component {
     return (
       <View style={styles.footerContainer}>
         <View style={styles.footerView}>
-          {!COMMON_FUNC.isFeedGuest(feedo.currentFeed) && this.renderAddComment}
+          {!COMMON_FUNC.isFeedGuest(feedo.currentFeed) && 
+            <View style={styles.addCommentView}>
+              {this.renderAddComment}
+            </View>
+          }
 
           <View style={styles.likeView}>
             <TouchableOpacity 
@@ -1171,7 +1177,7 @@ class CardDetailScreen extends React.Component {
               {...this.props}
               idea={idea}
               checkUrls={() => this.checkUrls()}
-              onUpdateCard={() => this.onUpdateCard()}
+              onClose={() => this.onCloseEditCard()}
               onChangeIdea={(value) => this.onChangeIdea(value)}
             />
           : this.renderCard

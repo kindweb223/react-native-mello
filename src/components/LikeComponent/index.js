@@ -166,7 +166,7 @@ class LikeComponent extends React.Component {
       <TouchableOpacity
         style={[styles.container, this.props.isOnlyInvitee ? { width: 25 } : { width: 45 }]}
         activeOpacity={0.7}
-        onPress={() => longHold ? {} : this.onLike(liked)}
+        onPress={() => longHold ? {} : ( type === 'text' ? this.onShowLikes() : this.onLike(liked))}
         onLongPress={() => longHold ? {} : this.onShowLikes()}
       >
         {(type === 'icon' || type === 'all') && (

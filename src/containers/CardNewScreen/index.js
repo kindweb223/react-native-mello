@@ -1564,6 +1564,7 @@ class NewCardScreen extends React.Component {
 
   get renderBottomContent() {
     const { viewMode, cardMode } = this.props;
+    console.log('CARDMODE: ', cardMode)
     if (cardMode === CONSTANTS.SHARE_EXTENTION_CARD) {
       return (
         <View style={styles.extensionSelectFeedoContainer}>

@@ -556,6 +556,7 @@ class FeedDetailScreen extends React.Component {
     Analytics.logEvent('feed_detail_edit_feed', {})
 
     this.setState({
+      isVisibleCard: false,
       isVisibleEditFeed: true,
     }, () => {
       this.animatedOpacity.setValue(0);
@@ -637,7 +638,6 @@ class FeedDetailScreen extends React.Component {
   }
 
   undoAction = () => {
-    console.log('this.state.currentActionType: ', this.state.currentActionType)
     if (this.state.currentActionType === ACTION_FEEDO_PIN) {
       this.setState({ pinText: 'Pin' })
       this.unpinFeed(this.state.feedId)
@@ -873,11 +873,9 @@ class FeedDetailScreen extends React.Component {
     this.userActionTimer = setTimeout(() => {
       // this.setState({ isShowToaster: false })
       if (this.state.currentActionType === ACTION_CARD_DELETE) {
-        console.log('feed_detail_delete_card')
         Analytics.logEvent('feed_detail_delete_card', {})
         this.props.deleteCard(currentCardInfo.ideaId)
       } else if (this.state.currentActionType === ACTION_CARD_MOVE) {
-        console.log('feed_detail_move_card')
         Analytics.logEvent('feed_detail_move_card', {})
         this.props.moveCard(currentCardInfo.ideaId, currentCardInfo.feedoId);
       }
@@ -989,9 +987,11 @@ class FeedDetailScreen extends React.Component {
   }
 
   get renderNewCardModal() {
-    if (!this.state.isVisibleCard && !this.state.isVisibleEditFeed) {
+    const { isVisibleCard, cardViewMode, isVisibleEditFeed } = this.state
+    if (!isVisibleCard && !isVisibleEditFeed) {
       return;
     }
+
     return (
       <Animated.View 
         style={[
@@ -1000,11 +1000,11 @@ class FeedDetailScreen extends React.Component {
         ]}
       >
         {
-          this.state.isVisibleCard && 
-            this.state.cardViewMode === CONSTANTS.CARD_NEW
+          isVisibleCard && (
+            cardViewMode === CONSTANTS.CARD_NEW
             ? <CardNewScreen 
                 viewMode={this.state.cardViewMode}
-                cardMode={CONSTANTS.MAIN_APP_CARD_FROM_DASHBOARD}
+                cardMode={CONSTANTS.MAIN_APP_CARD_FROM_DETAIL}
                 invitee={this.state.selectedIdeaInvitee}
                 shareUrl={this.state.clipboardData}
                 onClose={() => this.onCloseCardModal()}
@@ -1020,9 +1020,9 @@ class FeedDetailScreen extends React.Component {
                 onMoveCard={this.onMoveCard}
                 onDeleteCard={this.onDeleteCard}
               />
-        }
+        )}
         {  
-          this.state.isVisibleEditFeed && 
+          isVisibleEditFeed && 
             <NewFeedScreen 
               feedData={this.state.currentFeed}
               onClose={() => this.onCloseEditFeedModal()}
@@ -1560,6 +1560,7 @@ class FeedDetailScreen extends React.Component {
           <CardLongHoldMenuScreen
             listType={this.props.user.listDetailType}
             idea={this.state.selectedLongHoldIdea}
+            currentFeed={currentFeed}
             invitees={this.state.selectedLongHoldInvitees}
             onMove={this.onMoveCard}
             onDelete={this.onDeleteCard}

@@ -95,7 +95,11 @@ class LastCommentComponent extends React.Component {
     const user = this.getCommentUser(item);
     const name = user ? user.firstName || user.lastName : '';
     return (
-      <View style={styles.itemContainer}>
+      <TouchableOpacity
+        style={styles.itemContainer}
+        activeOpacity={0.6}
+        onPress={this.onViewOldComments.bind(this)}
+      >
         <UserAvatarComponent
           user={user}
         />
@@ -104,7 +108,7 @@ class LastCommentComponent extends React.Component {
           <Text> </Text>
           <Text style={styles.commentText}>{item.content}</Text>
         </Text>
-      </View>
+      </TouchableOpacity>
     );
   }
 
@@ -112,10 +116,10 @@ class LastCommentComponent extends React.Component {
     const { currentComments } = this.state;
 
     let lastComments = [];
-    let oldCommentsLength = 0;
+    // let oldCommentsLength = 0;
     if (currentComments) {
       lastComments = currentComments.slice(0, 2);
-      oldCommentsLength = currentComments.length > 2 ? currentComments.length - 2 : 0;
+      // oldCommentsLength = currentComments.length > 2 ? currentComments.length - 2 : 0;
     }
 
     return (
@@ -127,7 +131,7 @@ class LastCommentComponent extends React.Component {
           extraData={this.props}
         />
         { 
-          oldCommentsLength > 0 && 
+          currentComments.length > 0 && 
           <TouchableOpacity 
             style={styles.viewAllContainer}
             activeOpacity={0.6}

@@ -67,8 +67,8 @@ class CardEditScreen extends React.Component {
       return;
     }
 
-    if (this.props.onUpdateCard) {
-      this.props.onUpdateCard();
+    if (this.props.onClose) {
+      this.props.onClose();
     }
   }
 

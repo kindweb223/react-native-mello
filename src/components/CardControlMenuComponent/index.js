@@ -10,7 +10,6 @@ import styles from './styles'
 
 const MENU_ITEMS = ['Add image', 'Add file', 'Move', 'Delete']
 
-
 class CardControlMenuComponent extends React.Component {
   onHandleAction(item) {
     if (item == 'Add image') {
