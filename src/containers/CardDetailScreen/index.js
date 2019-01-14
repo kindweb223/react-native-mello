@@ -1237,7 +1237,6 @@ class CardDetailScreen extends React.Component {
         />
         <ActionSheet
           ref={ref => this.webLinkActionSheet = ref}
-          title='Copy / Delete link'
           options={['Copy', 'Delete', 'Cancel']}
           cancelButtonIndex={2}
           destructiveButtonIndex={1}
