@@ -1,7 +1,6 @@
 import _ from 'lodash'
 import * as types from './types'
 import * as feedTypes from '../feedo/types'
-import { orderCommentByAsc } from '../../service/commonFunc'
 
 const initialState = {
   loading: null,
@@ -280,7 +279,7 @@ export default function card(state = initialState, action = {}) {
         ...state,
         loading: types.GET_CARD_COMMENTS_FULFILLED,
         currentCardId: action.payload,
-        currentComments: orderCommentByAsc(data),
+        currentComments: data,
       }
     }
     case types.GET_CARD_COMMENTS_REJECTED: {
@@ -305,7 +304,7 @@ export default function card(state = initialState, action = {}) {
       return {
         ...state,
         loading: types.ADD_CARD_COMMENT_FULFILLED,
-        currentComments: orderCommentByAsc([data, ...state.currentComments ])
+        currentComments: [data, ...state.currentComments ]
       }
     }
     case types.ADD_CARD_COMMENT_REJECTED: {
@@ -332,7 +331,7 @@ export default function card(state = initialState, action = {}) {
       return {
         ...state,
         loading: types.EDIT_CARD_COMMENT_FULFILLED,
-        currentComments: orderCommentByAsc([...currentComments]),
+        currentComments: [...currentComments],
       }
     }
     case types.EDIT_CARD_COMMENT_REJECTED: {
@@ -357,7 +356,7 @@ export default function card(state = initialState, action = {}) {
       return {
         ...state,
         loading: types.DELETE_CARD_COMMENT_FULFILLED,
-        currentComments: orderCommentByAsc([...currentComments]),
+        currentComments: [...currentComments],
       }
     }
     case types.DELETE_CARD_COMMENT_REJECTED: {
