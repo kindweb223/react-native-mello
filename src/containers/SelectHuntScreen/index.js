@@ -244,6 +244,7 @@ class SelectHuntScreen extends React.Component {
       feedoList = _.filter(feedoList, feedo => feedo.headline && feedo.headline.toLowerCase().indexOf(this.state.filterText.toLowerCase()) !== -1);
     }
     feedoList = _.filter(feedoList, feedo => feedo.status === 'PUBLISHED' && feedo.metadata.myInviteStatus === 'ACCEPTED');
+    feedoList = _.orderBy(feedoList, ['headline'], 'asc')
 
     const { selectMode } = this.props;
     let bottomMargin = CONSTANTS.SCREEN_VERTICAL_MIN_MARGIN;
@@ -278,6 +279,7 @@ class SelectHuntScreen extends React.Component {
                 inputStyle={{
                   backgroundColor: 'rgba(142,142,147,0.12)',
                   padding: 0,
+                  paddingRight: 30,
                   marginRight: 10,
                   height: 36,
                   borderRadius: 10,
@@ -293,6 +295,7 @@ class SelectHuntScreen extends React.Component {
                   fontSize: 16,
                   padding: 0
                 }}
+                positionRightDelete={90}
                 searchIconCollapsedMargin={35}
                 searchIconExpandedMargin={20}
                 placeholderExpandedMargin={40}
