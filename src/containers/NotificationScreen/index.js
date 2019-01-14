@@ -19,15 +19,11 @@ import PropTypes from 'prop-types'
 import Swipeout from 'react-native-swipeout'
 import _ from 'lodash'
 import FontAwesome from 'react-native-vector-icons/FontAwesome'
-import Modal from "react-native-modal"
-import ActionSheet from 'react-native-actionsheet'
 
-import LoadingScreen from '../LoadingScreen'
 import Analytics from '../../lib/firebase'
 import NotificationItemComponent from '../../components/NotificationItemComponent'
 import ActivityFeedComponent from '../../components/ActivityFeedComponent'
-import NewCardScreen from '../NewCardScreen'
-import CardControlMenuComponent from '../../components/CardControlMenuComponent'
+import CardDetailScreen from '../CardDetailScreen'
 import SelectHuntScreen from '../SelectHuntScreen';
 import ToasterComponent from '../../components/ToasterComponent'
 
@@ -90,7 +86,6 @@ class NotificationScreen extends React.Component {
       selectedActivity: {},
       isVisibleCard: false,
       cardViewMode: CONSTANTS.CARD_NONE,
-      isVisibleCardOpenMenu: false,
       selectedLongHoldIdea: {},
       isShowToaster: false,
       isVisibleSelectFeedo: false,
@@ -401,35 +396,6 @@ class NotificationScreen extends React.Component {
 
           {this.renderSelectHunt}
 
-          <Modal 
-            isVisible={this.state.isVisibleCardOpenMenu}
-            style={{ margin: 0 }}
-            backdropColor='#fff'
-            backdropOpacity={0}
-            animationIn="fadeIn"
-            animationOut="fadeOut"
-            animationInTiming={500}
-            onModalHide={this.onHiddenLongHoldMenu.bind(this)}
-            onBackdropPress={() => this.setState({ isVisibleCardOpenMenu: false })}
-          >
-            <Animated.View style={styles.settingMenuView}>
-              <CardControlMenuComponent 
-                onMove={() => this.onMoveCard(this.state.selectedActivity.metadata.IDEA_ID)}
-                onDelete={() => this.onConfirmDeleteCard()}
-              />
-            </Animated.View>
-          </Modal>
-
-          <ActionSheet
-            ref={ref => this.cardActionSheet = ref}
-            title={'This will permanentely delete your card'}
-            options={['Delete card', 'Cancel']}
-            cancelButtonIndex={1}
-            destructiveButtonIndex={0}
-            tintColor={COLORS.PURPLE}
-            onPress={(index) => this.onTapCardActionSheet(index)}
-          />
-
           {this.state.isShowToaster && (
             <ToasterComponent
               isVisible={this.state.isShowToaster}
@@ -492,16 +458,6 @@ class NotificationScreen extends React.Component {
       clearTimeout(this.userActionTimer);
       this.userActionTimer = null;
       this.userActions.shift();
-
-      this.setState((state) => { 
-        let filterIdeas = this.props.feedo.currentFeed.ideas;
-        for(let i = 0; i < this.userActions.length; i ++) {
-          const cardInfo = this.userActions[i];
-          filterIdeas = _.filter(filterIdeas, idea => idea.id !== cardInfo.ideaId)
-        }
-        state.currentFeed.ideas = filterIdeas;
-        return state;
-      })
   
       this.processCardActions();
       return;
@@ -513,22 +469,7 @@ class NotificationScreen extends React.Component {
     })
   }
 
-  onTapCardActionSheet(index) {
-    if (index === 0) {
-      this.onDeleteCard(this.state.selectedActivity.metadata.IDEA_ID)
-    }
-  }
-
-  onConfirmDeleteCard() {
-    this.setState({
-      isVisibleCardOpenMenu: false,
-    })
-    setTimeout(() => {
-      this.cardActionSheet.show()
-    }, 500)
-  }
-
-  onDeleteCard(ideaId) {
+  onDeleteCard = (ideaId) => {
     this.onCloseCardModal();
     this.setState({
       isShowToaster: true
@@ -543,9 +484,8 @@ class NotificationScreen extends React.Component {
     this.processCardActions();
   }
 
-  onMoveCard(ideaId) {
+  onMoveCard = (ideaId) => {
     this.setState({ 
-      isVisibleCardOpenMenu: false,
       currentActionType: ACTION_CARD_MOVE,
     });
     this.moveCardId = ideaId;
@@ -623,13 +563,6 @@ class NotificationScreen extends React.Component {
     });
   }
 
-  onOpenCardAction(idea) {
-    this.setState({
-      isVisibleCardOpenMenu: true,
-      selectedLongHoldIdea: idea,
-    })
-  }
-
   get renderCardDetailModal() {
     if (!this.state.isVisibleCard) {
       return;
@@ -643,13 +576,14 @@ class NotificationScreen extends React.Component {
         ]}
       >
         {
-          <NewCardScreen
+          <CardDetailScreen
             prevPage="activity"
             viewMode={this.state.cardViewMode}
             invitee={this.state.selectedIdeaInvitee}
             shareUrl=""
             onClose={() => this.onCloseCardModal()}
-            onOpenAction={(idea) => this.onOpenCardAction(idea)}
+            onMoveCard={this.onMoveCard}
+            onDeleteCard={this.onDeleteCard}
           />
         }
       </Animated.View>

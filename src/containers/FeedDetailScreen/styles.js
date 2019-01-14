@@ -116,7 +116,7 @@ const styles = StyleSheet.create({
         elevation: 20
       }
     })
-  },  
+  },
   shareScreenContainer: {
     margin: 0,
   },

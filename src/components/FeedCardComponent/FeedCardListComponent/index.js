@@ -82,6 +82,7 @@ class FeedCardListComponent extends React.Component {
                 longHold={longHold}
                 isOnlyInvitee={isOnlyInvitee}
                 prevPage={this.props.prevPage}
+                type="all"
               />
               <CommentComponent 
                 idea={idea}
