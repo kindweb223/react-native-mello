@@ -46,12 +46,11 @@ import {
   getOpenGraph,
   setCoverImage,
   addLink,
+  deleteLink,
   resetCardError,
 } from '../../redux/card/actions'
 import { 
   createFeed,
-  updateFeed,
-  deleteDraftFeed,
   setCurrentFeed,
   getFeedoList,
 } from '../../redux/feedo/actions'
@@ -69,6 +68,7 @@ import Analytics from '../../lib/firebase'
 import LoadingScreen from '../LoadingScreen';
 import CardEditScreen from './CardEditScreen'
 import CardControlMenuComponent from '../../components/CardControlMenuComponent'
+import ToasterComponent from '../../components/ToasterComponent'
 
 import * as COMMON_FUNC from '../../service/commonFunc'
 import COLORS from '../../service/colors';
@@ -102,7 +102,9 @@ class CardDetailScreen extends React.Component {
 
       isEditableIdea: false,
       isGettingFeedoList: false,
-      isSuccessCopyUrl: false,
+      isCopyLink: false,
+      isDeleteLink: false,
+      copiedLink: null,
       showEditScreen: false,
       isVisibleCardOpenMenu: false,
       cardOption: 0,
@@ -249,6 +251,11 @@ class CardDetailScreen extends React.Component {
     } else if (this.props.card.loading !== types.DELETE_LINK_PENDING && nextProps.card.loading === types.DELETE_LINK_PENDING) {
       // deleting a link
       loading = true;
+    } else if (this.props.card.loading !== types.DELETE_LINK_FULFILLED && nextProps.card.loading === types.DELETE_LINK_FULFILLED) {
+      this.setState({ isDeleteLink: true })
+      setTimeout(() => {
+        this.setState({ isDeleteLink: false })
+      }, 3000)
     } else if (this.props.card.loading !== types.SET_COVER_IMAGE_FULFILLED && nextProps.card.loading === types.SET_COVER_IMAGE_FULFILLED) {
       const { width, height } = await this.getImageSize(nextProps.card.currentCard.coverImage);
       this.coverImageWidth = width
@@ -931,27 +938,44 @@ class CardDetailScreen extends React.Component {
     );
   }
 
-  onLongPressWbeMetaLink = (url) => {
-    Clipboard.setString(url)
-    this.setState({ isSuccessCopyUrl: true })
+  onTapWebLinkActionSheet = (index) => {
+    switch(index) {
+      case 0:
+        Clipboard.setString(this.state.copiedLink.originalUrl)
+        this.setState({ isCopyLink: true })
+        setTimeout(() => {
+          this.setState({ isCopyLink: false })
+        }, 2000)
+        break;
+      case 1:
+        this.props.deleteLink(this.props.card.currentCard.id, this.state.copiedLink.id)
+        break;
+      default:
+        break;
+    }
+  }
+
+  onLongPressWbeMetaLink = (link) => {
+    this.setState({ copiedLink: link })
     setTimeout(() => {
-      this.setState({ isSuccessCopyUrl: false })
-    }, 2000)
+      this.webLinkActionSheet.show()
+    }, 200)
   }
 
   get renderWebMeta() {
     const { viewMode } = this.props;
-    const { links } = this.props.card.currentCard;
+    const { links } = this.props.card.currentCard;    
 
     if (links && links.length > 0) {
       const firstLink = links[0];
       return (
         <WebMetaList
+          viewMode="edit"
           links={[firstLink]}
           isFastImage={true}
           coverImage={this.state.coverImage}
           editable={viewMode !== CONSTANTS.CARD_VIEW}
-          longPressLink={(url) => this.onLongPressWbeMetaLink(url)}
+          longPressLink={(link) => this.onLongPressWbeMetaLink(link)}
         />
       )
     }
@@ -1211,6 +1235,15 @@ class CardDetailScreen extends React.Component {
           tintColor={COLORS.PURPLE}
           onPress={(index) => this.onTapActionSheet(index)}
         />
+        <ActionSheet
+          ref={ref => this.webLinkActionSheet = ref}
+          title='Copy / Delete link'
+          options={['Copy', 'Delete', 'Cancel']}
+          cancelButtonIndex={2}
+          destructiveButtonIndex={1}
+          tintColor={COLORS.PURPLE}
+          onPress={(index) => this.onTapWebLinkActionSheet(index)}
+        />
 
         {loading && <LoadingScreen />}
 
@@ -1247,20 +1280,30 @@ class CardDetailScreen extends React.Component {
         </Modal>
 
         <Modal 
-          isVisible={this.state.isSuccessCopyUrl}
+          isVisible={this.state.isCopyLink}
           style={styles.successModal}
           backdropColor='#e0e0e0'
           backdropOpacity={0.9}
           animationIn="fadeIn"
           animationOut="fadeOut"
           animationInTiming={500}
-          onBackdropPress={() => this.setState({ isSuccessCopyUrl: false })}
+          onBackdropPress={() => this.setState({ isCopyLink: false })}
         >
           <View style={styles.successView}>
-            <Octicons name="check" style={styles.successIcon} />
-            <Text style={styles.successText}>Copied</Text>
+            {/* <Octicons name="check" style={styles.successIcon} /> */}
+            {this.state.copiedLink &&
+              <Text style={styles.successText}>{this.state.copiedLink.originalUrl}</Text>
+            }
           </View>
         </Modal>
+        {this.state.isDeleteLink && (
+          <ToasterComponent
+            isVisible={this.state.isDeleteLink}
+            title="Link deleted"
+            buttonTitle="OK"
+            onPressButton={() => this.setState({ isDeleteLink: false })}
+          />
+        )}
       </View>
     )
   }
@@ -1303,8 +1346,6 @@ const mapStateToProps = ({ card, feedo, user, }) => ({
 
 const mapDispatchToProps = dispatch => ({
   createFeed: () => dispatch(createFeed()),
-  updateFeed: (id, name, comments, tags, files) => dispatch(updateFeed(id, name, comments, tags, files)),
-  deleteDraftFeed: (id) => dispatch(deleteDraftFeed(id)),
   setCurrentFeed: (data) => dispatch(setCurrentFeed(data)),
   getFeedoList: (index) => dispatch(getFeedoList(index)),
 
@@ -1317,7 +1358,8 @@ const mapDispatchToProps = dispatch => ({
   deleteFile: (ideaId, fileId) => dispatch(deleteFile(ideaId, fileId)),
   setCoverImage: (ideaId, fileId) => dispatch(setCoverImage(ideaId, fileId)),
   getOpenGraph: (url) => dispatch(getOpenGraph(url)),
-  addLink: (ideaId, originalUrl, title, description, imageUrl, faviconUrl) => dispatch(addLink(ideaId, originalUrl, title, description, imageUrl, faviconUrl)),
+  addLink: (ideaId, orignalUrl, title, description, imageUrl, faviconUrl) => dispatch(addLink(ideaId, originalUrl, title, description, imageUrl, faviconUrl)),
+  deleteLink: (ideaId, linkId) => dispatch(deleteLink(ideaId, linkId)),
   resetCardError: () => dispatch(resetCardError()),
 })
 

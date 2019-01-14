@@ -77,6 +77,7 @@ import CoverImagePreviewComponent from '../../components/CoverImagePreviewCompon
 import SelectHuntScreen from '../SelectHuntScreen';
 import LastCommentComponent from '../../components/LastCommentComponent';
 import Analytics from '../../lib/firebase'
+import ToasterComponent from '../../components/ToasterComponent'
 
 import * as COMMON_FUNC from '../../service/commonFunc'
 const ATTACHMENT_ICON = require('../../../assets/images/Attachment/Blue.png')
@@ -112,7 +113,9 @@ class NewCardScreen extends React.Component {
 
       isEditableIdea: false,
       isGettingFeedoList: false,
-      isSuccessCopyUrl: false
+      isCopyLink: false,
+      isDeleteLink: false,
+      copiedLink: null,
     };
 
     this.selectedFile = null;
@@ -331,7 +334,10 @@ class NewCardScreen extends React.Component {
       // deleting a link
       loading = true;
     } else if (this.props.card.loading !== types.DELETE_LINK_FULFILLED && nextProps.card.loading === types.DELETE_LINK_FULFILLED) {
-      // success in deleting a link
+      this.setState({ isDeleteLink: true })
+      setTimeout(() => {
+        this.setState({ isDeleteLink: false })
+      }, 3000)
     } else if (this.props.card.loading !== types.SET_COVER_IMAGE_PENDING && nextProps.card.loading === types.SET_COVER_IMAGE_PENDING) {
       // setting a file as cover image
       // loading = true;
@@ -1305,12 +1311,28 @@ class NewCardScreen extends React.Component {
     );
   }
 
-  onLongPressWbeMetaLink = (url) => {
-    Clipboard.setString(url)
-    this.setState({ isSuccessCopyUrl: true })
+  onTapWebLinkActionSheet = (index) => {
+    switch(index) {
+      case 0:
+        Clipboard.setString(this.state.copiedLink.originalUrl)
+        this.setState({ isCopyLink: true })
+        setTimeout(() => {
+          this.setState({ isCopyLink: false })
+        }, 2000)
+        break;
+      case 1:
+        this.props.deleteLink(this.props.card.currentCard.id, this.state.copiedLink.id)
+        break;
+      default:
+        break;
+    }
+  }
+
+  onLongPressWbeMetaLink = (link) => {
+    this.setState({ copiedLink: link })
     setTimeout(() => {
-      this.setState({ isSuccessCopyUrl: false })
-    }, 2000)
+      this.webLinkActionSheet.show()
+    }, 200)
   }
 
   get renderWebMeta() {
@@ -1319,11 +1341,12 @@ class NewCardScreen extends React.Component {
     if (links && links.length > 0) {
       const firstLink = links[0];
       return (
-        <WebMetaList 
+        <WebMetaList
+          viewMode="new"
           links={[firstLink]}
           isFastImage={cardMode !== CONSTANTS.SHARE_EXTENTION_CARD}
           editable={viewMode !== CONSTANTS.CARD_VIEW}
-          longPressLink={(url) => this.onLongPressWbeMetaLink(url)}
+          longPressLink={(link) => this.onLongPressWbeMetaLink(link)}
           // onRemove={(linkId) => this.onDeleteLink(linkId)}
         />
       )
@@ -1735,6 +1758,16 @@ class NewCardScreen extends React.Component {
           tintColor={COLORS.PURPLE}
           onPress={(index) => this.onTapLeaveActionSheet(index)}
         />
+        <ActionSheet
+          ref={ref => this.webLinkActionSheet = ref}
+          title='Copy / Delete link'
+          options={['Copy', 'Delete', 'Cancel']}
+          cancelButtonIndex={2}
+          destructiveButtonIndex={1}
+          tintColor={COLORS.PURPLE}
+          onPress={(index) => this.onTapWebLinkActionSheet(index)}
+        />
+
         {this.state.loading && <LoadingScreen />}
         <Modal 
           style={{margin: 0}}
@@ -1748,20 +1781,29 @@ class NewCardScreen extends React.Component {
         </Modal>
 
         <Modal 
-          isVisible={this.state.isSuccessCopyUrl}
+          isVisible={this.state.isCopyLink}
           style={styles.successModal}
           backdropColor='#e0e0e0'
           backdropOpacity={0.9}
           animationIn="fadeIn"
           animationOut="fadeOut"
           animationInTiming={500}
-          onBackdropPress={() => this.setState({ isSuccessCopyUrl: false })}
+          onBackdropPress={() => this.setState({ isCopyLink: false })}
         >
           <View style={styles.successView}>
-            <Octicons name="check" style={styles.successIcon} />
-            <Text style={styles.successText}>Copied</Text>
+            {this.state.copiedLink &&
+              <Text style={styles.successText}>{this.state.copiedLink.originalUrl}</Text>
+            }
           </View>
         </Modal>
+        {this.state.isDeleteLink && (
+          <ToasterComponent
+            isVisible={this.state.isDeleteLink}
+            title="Link deleted"
+            buttonTitle="OK"
+            onPressButton={() => this.setState({ isDeleteLink: false })}
+          />
+        )}
       </View>
     );
   }
