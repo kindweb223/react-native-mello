@@ -949,6 +949,7 @@ class CardDetailScreen extends React.Component {
         <WebMetaList
           links={[firstLink]}
           isFastImage={true}
+          coverImage={this.state.coverImage}
           editable={viewMode !== CONSTANTS.CARD_VIEW}
           longPressLink={(url) => this.onLongPressWbeMetaLink(url)}
         />
@@ -1109,7 +1110,7 @@ class CardDetailScreen extends React.Component {
   }
 
   get renderFooter() {
-    const { feedo } = this.props;
+    const { feedo, viewMode } = this.props;
     const idea = _.find(this.props.feedo.currentFeed.ideas, idea => idea.id === this.props.card.currentCard.id)
 
     return (
@@ -1122,13 +1123,15 @@ class CardDetailScreen extends React.Component {
           }
 
           <View style={styles.likeView}>
-            <TouchableOpacity 
-              style={styles.threeDotButtonWrapper}
-              activeOpacity={0.6}
-              onPress={() => this.onPressMoreActions()}
-            >
+            {viewMode === CONSTANTS.CARD_EDIT && (
+              <TouchableOpacity 
+                style={styles.threeDotButtonWrapper}
+                activeOpacity={0.6}
+                onPress={() => this.onPressMoreActions()}
+              >
               <Entypo name="dots-three-horizontal" size={20} color={COLORS.MEDIUM_GREY} />
-            </TouchableOpacity>
+              </TouchableOpacity>
+            )}
 
             {idea && (
               <LikeComponent idea={idea} prevPage={this.props.prevPage} type="icon" />
@@ -1211,7 +1214,7 @@ class CardDetailScreen extends React.Component {
 
         {loading && <LoadingScreen />}
 
-        <Modal 
+        <Modal
           isVisible={this.state.isVisibleCardOpenMenu}
           style={styles.shareScreenContainer}
           backdropColor='#fff'

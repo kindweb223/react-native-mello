@@ -31,6 +31,7 @@ class CardEditScreen extends React.Component {
   }
 
   async componentDidMount() {
+    this.textInputIdeaRef.focus()
     this.keyboardWillShowSubscription = Keyboard.addListener('keyboardWillShow', (e) => this.keyboardWillShow(e));
     this.keyboardWillHideSubscription = Keyboard.addListener('keyboardWillHide', (e) => this.keyboardWillHide(e));
   }

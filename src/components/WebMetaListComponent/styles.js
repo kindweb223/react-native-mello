@@ -11,8 +11,7 @@ const styles = StyleSheet.create({
     height: 40,
     marginBottom: 12,
     backgroundColor: COLORS.LIGHT_SOFT_GREY,
-    borderRadius: 5,
-    marginRight: 50 
+    borderRadius: 5
   },
   buttonContainer: {
     flex: 1,

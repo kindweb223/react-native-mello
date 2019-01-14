@@ -154,6 +154,9 @@ class NewCardScreen extends React.Component {
     this.shareImageUrls = [];
     this.currentShareImageIndex = 0;
 
+    this.coverImageWidth = 0
+    this.coverImageHeight = 0
+
     if (props.cardMode === CONSTANTS.SHARE_EXTENTION_CARD && props.shareUrl === '' && props.shareImageUrls.length) {
       props.shareImageUrls.forEach( async(imageUri, index) => {
         const fileName = imageUri.substring(imageUri.lastIndexOf("/") + 1, imageUri.length);
@@ -173,7 +176,7 @@ class NewCardScreen extends React.Component {
     }
   }
 
-  UNSAFE_componentWillReceiveProps(nextProps) {
+  async UNSAFE_componentWillReceiveProps(nextProps) {
     let loading = false;
     if (this.props.card.loading !== types.CREATE_CARD_PENDING && nextProps.card.loading === types.CREATE_CARD_PENDING) {
       // loading = true;
@@ -333,6 +336,10 @@ class NewCardScreen extends React.Component {
       // setting a file as cover image
       // loading = true;
     } else if (this.props.card.loading !== types.SET_COVER_IMAGE_FULFILLED && nextProps.card.loading === types.SET_COVER_IMAGE_FULFILLED) {
+      const { width, height } = await this.getImageSize(nextProps.card.currentCard.coverImage);
+      this.coverImageWidth = width
+      this.coverImageHeight = height
+
       this.setState({
         coverImage: nextProps.card.currentCard.coverImage,
       }, () => {
@@ -366,6 +373,10 @@ class NewCardScreen extends React.Component {
       if (imageFiles.length > 0 && !nextProps.card.currentCard.coverImage) {
         this.onSetCoverImage(nextProps.card.currentCard.files[0].id);
       } else {
+        const { width, height } = await this.getImageSize(nextProps.card.currentCard.coverImage);
+        this.coverImageWidth = width
+        this.coverImageHeight = height
+
         this.setState({
           coverImage: nextProps.card.currentCard.coverImage,
         });
@@ -512,6 +523,10 @@ class NewCardScreen extends React.Component {
       }
     }
     if (this.props.card.loading !== 'GET_CARD_FULFILLED' && nextProps.card.loading === 'GET_CARD_FULFILLED') {
+      const { width, height } = await this.getImageSize(nextProps.card.currentCard.coverImage);
+      this.coverImageWidth = width
+      this.coverImageHeight = height
+
       this.setState({
         // cardName: this.props.card.currentCard.title,
         idea: nextProps.card.currentCard.idea,
@@ -520,10 +535,14 @@ class NewCardScreen extends React.Component {
     }
   }
 
-  componentDidMount() {
+  async componentDidMount() {
     // console.log('Current Card : ', this.props.card.currentCard);
     const { viewMode, cardMode } = this.props;
     if (viewMode === CONSTANTS.CARD_VIEW || viewMode === CONSTANTS.CARD_EDIT) {
+      const { width, height } = await this.getImageSize(nextProps.card.currentCard.coverImage);
+      this.coverImageWidth = width
+      this.coverImageHeight = height
+
       this.setState({
         // cardName: this.props.card.currentCard.title,
         idea: this.props.card.currentCard.idea,
@@ -1164,9 +1183,17 @@ class NewCardScreen extends React.Component {
   get renderCoverImage() {
     const { viewMode, cardMode } = this.props;
     let imageFiles = _.filter(this.props.card.currentCard.files, file => file.fileType === 'MEDIA');
+
+    const ratio = CONSTANTS.SCREEN_WIDTH / this.coverImageWidth
     if (this.state.coverImage) {
       return (
-        <View style={cardMode === CONSTANTS.SHARE_EXTENTION_CARD ? styles.extensionCoverImageContainer : styles.coverImageContainer}>
+        <View
+          style={
+            cardMode === CONSTANTS.SHARE_EXTENTION_CARD
+              ? styles.extensionCoverImageContainer
+              : [styles.coverImageContainer, { width: CONSTANTS.SCREEN_WIDTH, height: this.coverImageHeight * ratio }]
+          }
+        >
           <CoverImagePreviewComponent
             coverImage={this.state.coverImage}
             files={imageFiles}
@@ -1564,7 +1591,7 @@ class NewCardScreen extends React.Component {
 
   get renderBottomContent() {
     const { viewMode, cardMode } = this.props;
-    console.log('CARDMODE: ', cardMode)
+
     if (cardMode === CONSTANTS.SHARE_EXTENTION_CARD) {
       return (
         <View style={styles.extensionSelectFeedoContainer}>
