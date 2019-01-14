@@ -142,6 +142,12 @@ class HomeScreen extends React.Component {
     const userInfo = await AsyncStorage.getItem('userInfo')
     this.props.setUserInfo(JSON.parse(userInfo))
 
+    // Set the inital list view mode
+    const viewMode = JSON.parse(await AsyncStorage.getItem('DashboardViewMode'))
+    if (viewMode && viewMode.userId === JSON.parse(userInfo).id) {
+      this.props.setHomeListType(viewMode.type)
+    }
+
     // Subscribe to comments channel for new comments and updates
     console.log("Subscribe to: ", this.props.user.userInfo.eventSubscriptionToken)
     pubnub.subscribe({
@@ -1061,6 +1067,7 @@ class HomeScreen extends React.Component {
   handleList = () => {
     const { listHomeType } = this.props.user
     const type = listHomeType === 'list' ? 'thumbnail' : 'list'
+    AsyncStorage.setItem('DashboardViewMode', JSON.stringify({ userId: this.props.user.userInfo.id, type }));
     this.props.setHomeListType(type)
   }
 
