@@ -88,7 +88,7 @@ class LoginStartScreen extends React.Component {
         <View style={styles.titleView}>
           <Text style={styles.titleText}>{title}</Text>
         </View>
-        <View style={styles.lottieView}>
+        <View style={styles.imageView}>
           <Image style={styles.navLogo} source={imageUrl} />
         </View>
       </View>
