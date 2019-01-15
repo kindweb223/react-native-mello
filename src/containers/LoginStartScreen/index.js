@@ -41,11 +41,11 @@ class LoginStartScreen extends React.Component {
   }
 
   onLogin = () => {
-    Actions.LoginScreen({ refresh: true })
+    Actions.LoginScreen()
   }
 
   onSignUp = () => {
-    Actions.SignUpScreen({ refresh: true })
+    Actions.SignUpScreen()
   }
 
   onMomentumScrollEnd = (e, state, context) => {
