@@ -13,6 +13,7 @@ import {
   RefreshControl,
   AppState,
   Clipboard,
+  Share
 } from 'react-native'
 
 import { connect } from 'react-redux'
@@ -67,7 +68,8 @@ import {
   deleteDummyCard,
   moveDummyCard,
   getActivityFeed,
-  getFeedoList
+  getFeedoList,
+  updateSharingPreferences,
 } from '../../redux/feedo/actions';
 import {
   setCurrentCard,
@@ -82,7 +84,7 @@ import COLORS from '../../service/colors'
 import CONSTANTS from '../../service/constants'
 import * as COMMON_FUNC from '../../service/commonFunc'
 import styles from './styles'
-import { TAGS_FEATURE } from "../../service/api"
+import { TAGS_FEATURE, SHARE_LINK_URL } from "../../service/api"
 
 import Analytics from '../../lib/firebase'
 
@@ -508,14 +510,16 @@ class FeedDetailScreen extends React.Component {
     const { settingItem } = this.state
 
     switch(settingItem) {
+      case 'AddPeople':
+        this.handleAddPeople()
+        return
       case 'Pin':
         this.handlePinFeed(feedId)
         return
       case 'Unpin':
         this.handleUnpinFeed(feedId)
         return
-      case 'Share':
-        this.setState({ isShowShare: true })
+      case 'ShareLink':
         return
       case 'Duplicate':
         this.handleDuplicateFeed(feedId)
@@ -569,7 +573,16 @@ class FeedDetailScreen extends React.Component {
   }
 
   handleSettingItem = (item) => {
-    this.setState({ settingItem: item, openMenu: false })
+    if (item === 'ShareLink') { // Don't close menu
+      this.setState({ settingItem: item })
+      this.showShareModal()
+    } else {
+      this.setState({ settingItem: item, openMenu: false })
+    }
+  }
+
+  handleAddPeople = () => {
+    this.setState({ isShowShare: true })
   }
 
   handlePinFeed = (feedId) => {
@@ -1243,6 +1256,40 @@ class FeedDetailScreen extends React.Component {
     this.props.updateInvitation(feedId, type)
   }
 
+  handleLinkSharing = (value, data) => {
+    const { updateSharingPreferences } = this.props
+    if (value) {
+      updateSharingPreferences(
+        data.id,
+        {
+          level: 'REGISTERED_ONLY',
+          permissions: 'ADD'
+        }
+      )
+    } else {
+      updateSharingPreferences(
+        data.id,
+        {
+          level: 'INVITEES_ONLY'
+        }
+      )
+    }
+  }
+
+  showShareModal = () => {
+    const { data } = this.props
+
+    Share.share({
+      message: data.summary || '',
+      url: `${SHARE_LINK_URL}${data.id}`,
+      title: data.headline
+    },{
+      dialogTitle: data.headline,
+      tintColor: COLORS.PURPLE,
+      subject: data.headline
+    })
+  }
+
   render () {
     const {
       currentFeed,
@@ -1544,7 +1591,12 @@ class FeedDetailScreen extends React.Component {
           onBackdropPress={() => this.setState({ openMenu: false })}
         >
           <Animated.View style={styles.settingMenuView}>
-            <FeedControlMenuComponent handleSettingItem={item => this.handleSettingItem(item)} feedo={currentFeed} pinText={pinText} />
+            <FeedControlMenuComponent
+              handleSettingItem={item => this.handleSettingItem(item)}
+              feedo={currentFeed}
+              pinText={pinText}
+              handleLinkSharing={value => this.handleLinkSharing(value, currentFeed)}
+            />
           </Animated.View>
         </Modal>
 
@@ -1632,6 +1684,7 @@ const mapDispatchToProps = dispatch => ({
   moveDummyCard: (ideaId, feedId, type) => dispatch(moveDummyCard(ideaId, feedId, type)),
   getActivityFeed: (userId, param) => dispatch(getActivityFeed(userId, param)),
   getFeedoList: () => dispatch(getFeedoList()),
+  updateSharingPreferences: (feedId, data) => dispatch(updateSharingPreferences(feedId, data)),
 })
 
 FeedDetailScreen.defaultProps = {
