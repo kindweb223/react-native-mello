@@ -25,6 +25,7 @@ class FeedControlMenuComponent extends React.Component {
   render() {
     const { feedo, pinText } = this.props
     let isEnableShare = feedo.sharingPreferences.level === 'INVITEES_ONLY' ? false : true
+    let isEnableShareAllowed = COMMON_FUNC.isFeedOwner(feedo) || COMMON_FUNC.isFeedEditor(feedo)
     let pinImg = pinText === 'Pin' ? images.pinGrey : images.pinActive
 
     let MENU_ITEMS = []
@@ -50,18 +51,21 @@ class FeedControlMenuComponent extends React.Component {
           <Text style={styles.settingButtonText}>Add people</Text>
         </TouchableOpacity>
 
-        <TouchableOpacity
-          style={styles.settingItem}
-        >
-          <SVGImage source={images.shareLink} style={styles.menuIcon} />
-          <Text style={styles.settingButtonText}>Link sharing</Text>
-          <Switch
-            style={{ marginLeft: 20 }}
-            trackColor={{true: colors.PURPLE, false: null}}
-            value={isEnableShare}
-            onValueChange={value => this.handleSwitchValue(value)}
-          />
-        </TouchableOpacity>
+        {
+          isEnableShareAllowed &&
+          <TouchableOpacity
+            style={styles.settingItem}
+          >
+            <SVGImage source={images.shareLink} style={styles.menuIcon} />
+            <Text style={styles.settingButtonText}>Link sharing</Text>
+            <Switch
+              style={{ marginLeft: 20 }}
+              trackColor={{true: colors.PURPLE, false: null}}
+              value={isEnableShare}
+              onValueChange={value => this.handleSwitchValue(value)}
+            />
+          </TouchableOpacity>
+        }
 
         {
           isEnableShare &&
