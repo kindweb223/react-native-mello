@@ -18,15 +18,12 @@ const styles = StyleSheet.create({
     position: 'absolute',
     justifyContent: 'center',
     alignItems: 'center',
-    // width: 16,
-    // height: 16,
   },
   iconText: {
     position: 'absolute',
     top: 6,
-    left: 30,
     fontSize: 14,
-    color: COLORS.MEDIUM_GREY,
+    color: COLORS.MEDIUM_GREY
   },
 })
 

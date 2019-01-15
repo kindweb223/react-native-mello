@@ -145,9 +145,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   coverImageContainer: {
-    height: Math.round(CONSTANTS.SCREEN_WIDTH * 0.75),
     marginTop: 16,
-    overflow: 'hidden',
   },
   extensionCoverImageContainer: {
     height: Math.round(CONSTANTS.SCREEN_WIDTH * 0.468),

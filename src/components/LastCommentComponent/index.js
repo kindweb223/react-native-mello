@@ -9,9 +9,9 @@ import { connect } from 'react-redux'
 
 import { Actions } from 'react-native-router-flux'
 import _ from 'lodash';
+import LinearGradient from 'react-native-linear-gradient'
 
 import styles from './styles'
-import COLORS from '../../service/colors'
 import * as types from '../../redux/card/types'
 import { 
   getCardComments,
@@ -19,6 +19,17 @@ import {
 import UserAvatarComponent from '../../components/UserAvatarComponent';
 import * as COMMON_FUNC from '../../service/commonFunc'
 import Analytics from '../../lib/firebase'
+
+const Gradient = () => {
+  return(
+    <LinearGradient
+      colors={['rgba(255, 255, 255, 0.5)', 'rgba(255, 255, 255, 0.9)']}
+      style={{
+        flex: 1
+      }}
+    />
+  )
+}
 
 class LastCommentComponent extends React.Component {
   constructor(props) {
@@ -37,14 +48,31 @@ class LastCommentComponent extends React.Component {
   UNSAFE_componentWillReceiveProps(nextProps) {
     let loading = false;
     if (this.props.card.loading !== types.GET_CARD_COMMENTS_PENDING && nextProps.card.loading === types.GET_CARD_COMMENTS_PENDING) {
-      // getting comments of a card
       loading = true;
     } else if (this.props.card.loading !== types.GET_CARD_COMMENTS_FULFILLED && nextProps.card.loading === types.GET_CARD_COMMENTS_FULFILLED) {
-      // success in getting comments of a card
       if (nextProps.card.currentCardId === nextProps.card.currentCard.id) {
         this.setState({ currentComments: nextProps.card.currentComments })
       }
-    }
+    } if (this.props.card.loading !== types.ADD_CARD_COMMENT_FULFILLED && nextProps.card.loading === types.ADD_CARD_COMMENT_FULFILLED) {
+      if (nextProps.card.currentCardId === nextProps.card.currentCard.id || nextProps.card.currentCardId === this.props.idea.id) {
+        this.setState({ currentComments: nextProps.card.currentComments })
+      }
+    } else if (this.props.card.loading !== types.EDIT_CARD_COMMENT_FULFILLED && nextProps.card.loading === types.EDIT_CARD_COMMENT_FULFILLED) {
+      // success in adding a comment of a card
+      if (nextProps.card.currentCardId === nextProps.card.currentCard.id || nextProps.card.currentCardId === this.props.idea.id) {
+        this.setState({ currentComments: nextProps.card.currentComments })
+      }
+    } else if (this.props.card.loading !== types.DELETE_CARD_COMMENT_FULFILLED && nextProps.card.loading === types.DELETE_CARD_COMMENT_FULFILLED) {
+      // success in adding a comment of a card
+      if (nextProps.card.currentCardId === nextProps.card.currentCard.id || nextProps.card.currentCardId === this.props.idea.id) {
+        this.setState({ currentComments: nextProps.card.currentComments })
+      }
+    } else if (this.props.card.loading !== types.DELETE_CARD_COMMENT_FULFILLED && nextProps.card.loading === types.DELETE_CARD_COMMENT_FULFILLED) {
+      // success in adding a comment of a card
+      if (nextProps.card.currentCardId === nextProps.card.currentCard.id || nextProps.card.currentCardId === this.props.idea.id) {
+        this.setState({ currentComments: nextProps.card.currentComments })
+      }
+    } 
     
     this.setState({ loading })
   }
@@ -56,24 +84,6 @@ class LastCommentComponent extends React.Component {
       return invitee.userProfile;  
     }
     return null;
-  }
-
-  onAddComment() {
-    Analytics.logEvent('edit_card_add_comment', {})
-
-    if (this.props.prevPage === 'activity') {
-      Actions.ActivityCommentScreen({
-        idea: this.props.card.currentCard,
-        guest: COMMON_FUNC.isFeedGuest(this.props.feedo.currentFeed),
-        isShowKeyboard: true,
-      });
-    } else {
-      Actions.CommentScreen({
-        idea: this.props.card.currentCard,
-        guest: COMMON_FUNC.isFeedGuest(this.props.feedo.currentFeed),
-        isShowKeyboard: true,
-      });
-    }
   }
 
   onViewOldComments() {
@@ -92,78 +102,68 @@ class LastCommentComponent extends React.Component {
     }
   }
 
-  get renderAddComment() {
-    const { userInfo } = this.props.user;
-    return (
-      <TouchableOpacity 
-        style={styles.rowContainer}
-        activeOpacity={0.6}
-        onPress={this.onAddComment.bind(this)}
-      >
-        <UserAvatarComponent
-          user={userInfo}
-        />
-        <Text style={styles.textAddComment}>Add comment...</Text>
-      </TouchableOpacity>
-    )
-  }
-
   renderItem({item, index}) {
     const user = this.getCommentUser(item);
     const name = user ? user.firstName || user.lastName : '';
     return (
-      <View style={styles.itemContainer}>
-        <Text>
-          <Text style={styles.textItemName}>{name}</Text>
-          <Text style={styles.textItemComment}>  {item.content}</Text>
+      <TouchableOpacity
+        style={styles.itemContainer}
+        activeOpacity={0.6}
+        onPress={this.onViewOldComments.bind(this)}
+      >
+        <UserAvatarComponent
+          user={user}
+        />
+        <Text style={styles.commentTextView}>
+          <Text style={styles.commenterName}>{name}</Text>
+          <Text> </Text>
+          <Text style={styles.commentText}>{item.content}</Text>
         </Text>
-      </View>
+      </TouchableOpacity>
     );
   }
 
   render () {
     const { currentComments } = this.state;
-    const { feedo } = this.props;
+    const { initLoad } = this.props
 
     let lastComments = [];
-    let oldCommentsLength = 0;
+    // let oldCommentsLength = 0;
     if (currentComments) {
       lastComments = currentComments.slice(0, 2);
-      oldCommentsLength = currentComments.length > 2 ? currentComments.length - 2 : 0;
+      // oldCommentsLength = currentComments.length > 2 ? currentComments.length - 2 : 0;
     }
 
     return (
-      <View style={styles.container}>
-        <FlatList
-          data={lastComments}
-          renderItem={this.renderItem.bind(this)}
-          keyExtractor={(item, index) => index.toString()}
-          extraData={this.props}
-        />
+      <View style={[styles.container, currentComments.length > 0 && { paddingVertical: 16 }]}>
+        <View style={styles.commentList}>
+          <FlatList
+            data={lastComments}
+            renderItem={this.renderItem.bind(this)}
+            keyExtractor={(item, index) => index.toString()}
+            extraData={this.props}
+          />
+          {initLoad && (
+            <View style={styles.gradientView}>
+              <Gradient />
+            </View>
+          )}
+        </View>
         { 
-          oldCommentsLength > 0 && 
+          currentComments.length > 0 && 
           <TouchableOpacity 
-            style={styles.itemContainer}
+            style={styles.viewAllContainer}
             activeOpacity={0.6}
             onPress={this.onViewOldComments.bind(this)}
           >
-            <Text style={[styles.textItemComment, {color: COLORS.DARK_GREY}]}>View {oldCommentsLength} older comments</Text>
+            {/* <Text style={[styles.textItemComment, {color: COLORS.DARK_GREY}]}>View {oldCommentsLength} older comments</Text> */}
+            <Text style={[styles.commentText]}>View all comments</Text>
           </TouchableOpacity>
         }
-        {!COMMON_FUNC.isFeedGuest(feedo.currentFeed) && this.renderAddComment}
       </View>
     );
   }
 }
-
-
-LastCommentComponent.defaultProps = {
-}
-
-
-LastCommentComponent.propTypes = {
-}
-
 
 const mapStateToProps = ({ feedo, card, user }) => ({
   feedo,

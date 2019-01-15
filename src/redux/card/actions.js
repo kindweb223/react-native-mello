@@ -1,6 +1,7 @@
 import axios from 'axios';
 
 import * as types from './types'
+import { LAMBDA_BASE_URL } from '../../../src/service/api'
 
 /**
  * Create a draft card
@@ -367,7 +368,7 @@ export const deleteLink = (ideaId, linkId) => {
  * Get a Open Graph
  */
 export const getOpenGraph = (urlPath, isSharing = false) => {
-  const url = 'extract';
+  const url = 'url/parse';
   const data = {
     url: urlPath,
     isSharing,
@@ -378,7 +379,7 @@ export const getOpenGraph = (urlPath, isSharing = false) => {
     types: [types.GET_OPEN_GRAPH_PENDING, types.GET_OPEN_GRAPH_FULFILLED, types.GET_OPEN_GRAPH_REJECTED],
     promise: axios({
       method: 'post',
-      baseURL: 'https://cwnlt0ox3g.execute-api.us-east-1.amazonaws.com/dev/',
+      baseURL: LAMBDA_BASE_URL,
       url,
       data,
     }),

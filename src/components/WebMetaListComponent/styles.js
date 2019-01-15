@@ -5,20 +5,18 @@ import COLORS from '../../service/colors'
 const styles = StyleSheet.create({
   container: {
     marginHorizontal: 16,
+    marginTop: 15
   },
   itemContainer: {
-    flex: 1,
     height: 40,
-    marginTop: 12,
-    marginBottom: 0,
+    marginBottom: 12,
+    backgroundColor: COLORS.LIGHT_SOFT_GREY,
+    borderRadius: 5
   },
   buttonContainer: {
     flex: 1,
     flexDirection: 'row',
     alignItems: 'center',
-    borderRadius: 5,
-    paddingHorizontal: 12,
-    backgroundColor:  COLORS.SOFT_GREY,
   },
   imageCover: {
     width: 24,
@@ -29,7 +27,7 @@ const styles = StyleSheet.create({
     flex: 1,
     fontSize: 16,
     lineHeight: 24,
-    color: COLORS.BLUE,
+    color: '#000',
   },
 })
 

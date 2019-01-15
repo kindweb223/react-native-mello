@@ -3,7 +3,8 @@ import {
   TouchableOpacity,
   View,
   RefreshControl,
-  ScrollView
+  ScrollView,
+  Animated
 } from 'react-native'
 
 import PropTypes from 'prop-types'
@@ -80,7 +81,7 @@ class FeedoListContainer extends React.Component {
     if (loading) return <FeedLoadingStateComponent animating />
 
     return (
-      <ScrollView
+      <Animated.ScrollView
         showsVerticalScrollIndicator={false}
         refreshControl={
           <RefreshControl
@@ -92,7 +93,7 @@ class FeedoListContainer extends React.Component {
         style={[
           styles.container,
           {
-            transform: [{ scale: animatedSelectFeed._value}],
+            transform: [{ scale: animatedSelectFeed}],
           },
         ]}
       >        
@@ -122,7 +123,7 @@ class FeedoListContainer extends React.Component {
             this.renderItem(item, index)
           ))}
         </View>
-      </ScrollView>
+      </Animated.ScrollView>
     )
   }
 }

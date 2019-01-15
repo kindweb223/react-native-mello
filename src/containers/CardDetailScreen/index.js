@@ -1,28 +1,25 @@
 import React from 'react'
 import {
-  TextInput,
   View,
   Image,
+  TextInput,
   TouchableOpacity,
   Alert,
   Animated,
-  Keyboard,
   Text,
   Clipboard,
   ScrollView,
-  AsyncStorage,
   Linking,
   SafeAreaView,
 } from 'react-native'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 
+import { ifIphoneX } from 'react-native-iphone-x-helper'
 import { Actions } from 'react-native-router-flux'
 import Entypo from 'react-native-vector-icons/Entypo'
 import Ionicons from 'react-native-vector-icons/Ionicons'
 import Octicons from 'react-native-vector-icons/Octicons'
-import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons'
-import ViewMoreText from 'react-native-view-more-text';
 
 import ActionSheet from 'react-native-actionsheet'
 import ImagePicker from 'react-native-image-picker'
@@ -49,8 +46,6 @@ import {
   getOpenGraph,
   setCoverImage,
   addLink,
-  deleteLink,
-  moveCard,
   resetCardError,
 } from '../../redux/card/actions'
 import { 
@@ -63,38 +58,33 @@ import {
 import * as types from '../../redux/card/types'
 import * as feedoTypes from '../../redux/feedo/types'
 import { getDurationFromNow } from '../../service/dateUtils'
-import COLORS from '../../service/colors';
-import CONSTANTS from '../../service/constants';
-import styles from './styles';
-import LoadingScreen from '../LoadingScreen';
 import DocumentList from '../../components/DocumentListComponent';
 import WebMetaList from '../../components/WebMetaListComponent';
 import LikeComponent from '../../components/LikeComponent';
-import CommentComponent from '../../components/CommentComponent';
 import ChooseLinkImages from '../../components/chooseLinkImagesComponent';
 import UserAvatarComponent from '../../components/UserAvatarComponent';
 import CoverImagePreviewComponent from '../../components/CoverImagePreviewComponent';
-import SelectHuntScreen from '../SelectHuntScreen';
 import LastCommentComponent from '../../components/LastCommentComponent';
 import Analytics from '../../lib/firebase'
+import LoadingScreen from '../LoadingScreen';
+import CardEditScreen from './CardEditScreen'
+import CardControlMenuComponent from '../../components/CardControlMenuComponent'
 
 import * as COMMON_FUNC from '../../service/commonFunc'
-const ATTACHMENT_ICON = require('../../../assets/images/Attachment/Blue.png')
-const IMAGE_ICON = require('../../../assets/images/Image/Blue.png')
+import COLORS from '../../service/colors';
+import CONSTANTS from '../../service/constants';
+import styles from './styles';
 
+const FOOTER_HEIGHT = 55
+const FIXED_COMMENT_HEIGHT = 150
+const IDEA_CONTENT_HEIGHT = CONSTANTS.SCREEN_HEIGHT - CONSTANTS.STATUSBAR_HEIGHT - FIXED_COMMENT_HEIGHT - FOOTER_HEIGHT - CONSTANTS.STATUS_BOTTOM_BAR_HEIGHT + ifIphoneX(0, 5)
 
-class NewCardScreen extends React.Component {
+class CardDetailScreen extends React.Component {
   constructor(props) {
     super(props);
 
     let coverImage = '';
     let idea = '';
-
-    if (props.cardMode === CONSTANTS.SHARE_EXTENTION_CARD && props.shareUrl !== '') {
-      const openGraph = props.card.currentOpneGraph;
-      coverImage = props.shareImageUrls.length > 0 ? props.shareImageUrls[0] : '',
-      idea = openGraph.title || openGraph.metatags.title || '';
-    }
 
     this.state = {
       // cardName: '',
@@ -112,7 +102,11 @@ class NewCardScreen extends React.Component {
 
       isEditableIdea: false,
       isGettingFeedoList: false,
-      isSuccessCopyUrl: false
+      isSuccessCopyUrl: false,
+      showEditScreen: false,
+      isVisibleCardOpenMenu: false,
+      cardOption: 0,
+      initLoad: true
     };
 
     this.selectedFile = null;
@@ -134,7 +128,6 @@ class NewCardScreen extends React.Component {
     this.openGraphLinksInfo = [];
 
     this.animatedShow = new Animated.Value(0);
-    this.animatedKeyboardHeight = new Animated.Value(0);
     this.scrollViewLayoutHeight = 0;
     this.isVisibleErrorDialog = false;
 
@@ -153,72 +146,13 @@ class NewCardScreen extends React.Component {
 
     this.shareImageUrls = [];
     this.currentShareImageIndex = 0;
-
-    if (props.cardMode === CONSTANTS.SHARE_EXTENTION_CARD && props.shareUrl === '' && props.shareImageUrls.length) {
-      props.shareImageUrls.forEach( async(imageUri, index) => {
-        const fileName = imageUri.substring(imageUri.lastIndexOf("/") + 1, imageUri.length);
-        const {width, height} = await this.getImageSize(imageUri);
-        this.shareImageUrls.push({
-          uri: imageUri,
-          fileName,
-          width,
-          height,
-        });
-        if (index === 0 && this.state.coverImage === '') {
-          this.setState({
-            coverImage: imageUri,
-          });
-        }
-      });
-    }
+    this.coverImageWidth = 0
+    this.coverImageHeight = 0
   }
 
-  UNSAFE_componentWillReceiveProps(nextProps) {
+  async UNSAFE_componentWillReceiveProps(nextProps) {
     let loading = false;
-    if (this.props.card.loading !== types.CREATE_CARD_PENDING && nextProps.card.loading === types.CREATE_CARD_PENDING) {
-      // loading = true;
-    } 
-    else if (this.props.card.loading !== types.CREATE_CARD_FULFILLED && nextProps.card.loading === types.CREATE_CARD_FULFILLED) {
-      // If share extension and a url has been passed
-      if (this.props.cardMode === CONSTANTS.SHARE_EXTENTION_CARD && this.props.shareUrl !== '') {
-        const openGraph = this.props.card.currentOpneGraph;
-        this.setState({
-          // cardName: this.props.shareUrl,
-          // idea: this.props.shareUrl,
-          idea: openGraph.title || openGraph.metatags.title,
-        });
-        const { id } = nextProps.card.currentCard;
-        const url = this.props.shareUrl || openGraph.url || openGraph.metatags['og:url'];
-        const title = openGraph.title || openGraph.metatags.title;
-        const description = openGraph.description || openGraph.metatags.metatags;
-        const image =  openGraph.image || openGraph.metatags['og:image'] || (this.props.shareImageUrls.length > 0 && this.props.shareImageUrls[0]);
-        const favicon =  openGraph.favicon;
-        this.props.addLink(id, url, title, description, image, favicon);
-      } 
-      // If share extension and sharing an image
-      else if (this.props.cardMode === CONSTANTS.SHARE_EXTENTION_CARD && this.isUploadShareImage) {
-        this.isUploadShareImage = false;
-        this.uploadFile(nextProps.card.currentCard, this.shareImageUrls[this.currentShareImageIndex], 'MEDIA');
-      }
-      // If just creating a card
-      else if (this.props.viewMode === CONSTANTS.CARD_NEW) {
-        this.setState({
-          // cardName: this.props.shareUrl,
-          idea: this.props.shareUrl,
-        }, () => {
-          this.checkUrls();
-        });
-      }
-      else {
-        if (nextProps.user && nextProps.user.userInfo && nextProps.user.userInfo.id) {
-          const data = {
-            userId: nextProps.user.userInfo.id,
-            state: 'true'
-          }
-          AsyncStorage.setItem('BubbleFirstCardTimeCreated', JSON.stringify(data));
-        }
-      }
-    } else if (this.props.card.loading !== types.GET_FILE_UPLOAD_URL_PENDING && nextProps.card.loading === types.GET_FILE_UPLOAD_URL_PENDING) {
+    if (this.props.card.loading !== types.GET_FILE_UPLOAD_URL_PENDING && nextProps.card.loading === types.GET_FILE_UPLOAD_URL_PENDING) {
       // getting a file upload url
       loading = true;
     } else if (this.props.card.loading !== types.GET_FILE_UPLOAD_URL_FULFILLED && nextProps.card.loading === types.GET_FILE_UPLOAD_URL_FULFILLED) {
@@ -240,14 +174,12 @@ class NewCardScreen extends React.Component {
               imgRatio = maxHeight / actualHeight;
               actualWidth = imgRatio * actualWidth;
               actualHeight = maxHeight;
-          }
-          else if(imgRatio > maxRatio){
+          } else if(imgRatio > maxRatio){
               //adjust height according to maxWidth
               imgRatio = maxWidth / actualWidth;
               actualHeight = imgRatio * actualHeight;
               actualWidth = maxWidth;
-          }
-          else{
+          } else{
               actualHeight = maxHeight;
               actualWidth = maxWidth;
           }
@@ -270,21 +202,15 @@ class NewCardScreen extends React.Component {
     } else if (this.props.card.loading !== types.UPLOAD_FILE_FULFILLED && nextProps.card.loading === types.UPLOAD_FILE_FULFILLED) {
       // success in uploading a file
       loading = true;
-      const {
-        id, 
-      } = this.props.card.currentCard;
-      const {
-        objectKey,
-      } = this.props.card.fileUploadUrl;
+      const { id } = this.props.card.currentCard;
+      const { objectKey } = this.props.card.fileUploadUrl;
+
       this.props.addFile(id, this.selectedFileType, this.selectedFileMimeType, this.selectedFileName, objectKey);
     } else if (this.props.card.loading !== types.ADD_FILE_PENDING && nextProps.card.loading === types.ADD_FILE_PENDING) {
-      // adding a file
       loading = true;
     } else if (this.props.card.loading !== types.ADD_FILE_FULFILLED && nextProps.card.loading === types.ADD_FILE_FULFILLED) {
       // success in adding a file
-      const {
-        id, 
-      } = this.props.card.currentCard;
+      const { id } = this.props.card.currentCard;
       const newImageFiles = _.filter(nextProps.card.currentCard.files, file => file.contentType.indexOf('image') !== -1);
       if (newImageFiles.length === 1 && !nextProps.card.currentCard.coverImage) {
         this.onSetCoverImage(newImageFiles[0].id);
@@ -304,11 +230,7 @@ class NewCardScreen extends React.Component {
       }
     } else if (this.props.card.loading !== types.ADD_LINK_FULFILLED && nextProps.card.loading === types.ADD_LINK_FULFILLED) {
       // success in adding a link
-      if (this.props.cardMode === CONSTANTS.SHARE_EXTENTION_CARD && this.isUploadShareImage) {
-        this.isUploadShareImage = false;
-        const { id } = this.props.card.currentCard;
-        this.addLinkImage(id, this.props.shareImageUrls[0]);
-      } else if (this.indexForAddedLinks < this.openGraphLinksInfo.length) {
+      if (this.indexForAddedLinks < this.openGraphLinksInfo.length) {
         const { id } = this.props.card.currentCard;
         const {
           url,
@@ -316,9 +238,9 @@ class NewCardScreen extends React.Component {
           description,
           image,
           favicon,
-        } = this.openGraphLinksInfo[this.indexForAddedLinks++];
+        } = this.openGraphLinksInfo[this.indexForAddedLinks ++];
         this.props.addLink(id, url, title, description, image, favicon);
-      } else if (this.props.cardMode !== CONSTANTS.SHARE_EXTENTION_CARD && this.allLinkImages.length > 0 
+      } else if (this.allLinkImages.length > 0 
         && (this.props.card.currentCard.links === null || this.props.card.currentCard.links.length === 0)) {
         this.setState({
           isVisibleChooseLinkImagesModal: true,
@@ -327,36 +249,20 @@ class NewCardScreen extends React.Component {
     } else if (this.props.card.loading !== types.DELETE_LINK_PENDING && nextProps.card.loading === types.DELETE_LINK_PENDING) {
       // deleting a link
       loading = true;
-    } else if (this.props.card.loading !== types.DELETE_LINK_FULFILLED && nextProps.card.loading === types.DELETE_LINK_FULFILLED) {
-      // success in deleting a link
-    } else if (this.props.card.loading !== types.SET_COVER_IMAGE_PENDING && nextProps.card.loading === types.SET_COVER_IMAGE_PENDING) {
-      // setting a file as cover image
-      // loading = true;
     } else if (this.props.card.loading !== types.SET_COVER_IMAGE_FULFILLED && nextProps.card.loading === types.SET_COVER_IMAGE_FULFILLED) {
+      const { width, height } = await this.getImageSize(nextProps.card.currentCard.coverImage);
+      this.coverImageWidth = width
+      this.coverImageHeight = height
       this.setState({
         coverImage: nextProps.card.currentCard.coverImage,
-      }, () => {
-        if (this.props.cardMode === CONSTANTS.SHARE_EXTENTION_CARD) {
-          setTimeout(() => {
-            this.scrollViewRef.scrollToEnd();
-          }, 0);
-        }
       });
       this.checkUrls();
       // success in setting a file as cover image
-    } else if (this.props.card.loading !== types.UPDATE_CARD_PENDING && nextProps.card.loading === types.UPDATE_CARD_PENDING) {
-      // updating a card
-      // loading = true;
     } else if (this.props.card.loading !== types.UPDATE_CARD_FULFILLED && nextProps.card.loading === types.UPDATE_CARD_FULFILLED) {
       // success in updating a card
-      if (this.props.cardMode === CONSTANTS.MAIN_APP_CARD_FROM_DASHBOARD || this.props.cardMode === CONSTANTS.SHARE_EXTENTION_CARD) {
+      if (this.props.cardMode === CONSTANTS.MAIN_APP_CARD_FROM_DASHBOARD) {
         this.saveFeedId();
       }
-      if (this.props.cardMode === CONSTANTS.SHARE_EXTENTION_CARD) {
-        Actions.ShareSuccessScreen();
-        return;
-      }
-      this.onClose();
     } else if (this.props.card.loading !== types.DELETE_FILE_PENDING && nextProps.card.loading === types.DELETE_FILE_PENDING) {
       // deleting a file
       loading = true;
@@ -366,6 +272,10 @@ class NewCardScreen extends React.Component {
       if (imageFiles.length > 0 && !nextProps.card.currentCard.coverImage) {
         this.onSetCoverImage(nextProps.card.currentCard.files[0].id);
       } else {
+        const { width, height } = await this.getImageSize(nextProps.card.currentCard.coverImage);
+        this.coverImageWidth = width
+        this.coverImageHeight = height
+
         this.setState({
           coverImage: nextProps.card.currentCard.coverImage,
         });
@@ -420,21 +330,6 @@ class NewCardScreen extends React.Component {
         } = this.openGraphLinksInfo[this.indexForAddedLinks++];
         this.props.addLink(id, url, title, description, image, favicon);
       }
-    } else if (this.props.card.loading !== types.LIKE_CARD_PENDING && nextProps.card.loading === types.LIKE_CARD_PENDING) {
-      // liking a card
-      // loading = true;  // disable loading
-    } else if (this.props.card.loading !== types.LIKE_CARD_FULFILLED && nextProps.card.loading === types.LIKE_CARD_FULFILLED) {
-      // success in liking a card
-    } else if (this.props.card.loading !== types.UNLIKE_CARD_PENDING && nextProps.card.loading === types.UNLIKE_CARD_PENDING) {
-      // unliking a card
-      // loading = true;  // disable loading
-    } else if (this.props.card.loading !== types.UNLIKE_CARD_FULFILLED && nextProps.card.loading === types.UNLIKE_CARD_FULFILLED) {
-      // success in unliking a card
-    } else if (this.props.card.loading !== types.MOVE_CARD_PENDING && nextProps.card.loading === types.MOVE_CARD_PENDING) {
-      // moving card
-      // loading = true;
-    } else if (this.props.feedo.loading !== feedoTypes.GET_FEEDO_LIST_PENDING && nextProps.feedo.loading === feedoTypes.GET_FEEDO_LIST_PENDING) {
-      // loading = true;
     } else if (this.props.feedo.loading !== feedoTypes.GET_FEEDO_LIST_FULFILLED && nextProps.feedo.loading === feedoTypes.GET_FEEDO_LIST_FULFILLED) {
       if (this.isGettingFeedoList) {
         // loading = true;
@@ -444,36 +339,23 @@ class NewCardScreen extends React.Component {
     }
 
 
-    if (this.prevFeedo === null) {
-      if (this.props.feedo.loading !== feedoTypes.CREATE_FEED_PENDING && nextProps.feedo.loading === feedoTypes.CREATE_FEED_PENDING) {
-        // creating a feed
-        // loading = true;
-      } else if (this.props.feedo.loading !== feedoTypes.CREATE_FEED_FULFILLED && nextProps.feedo.loading === feedoTypes.CREATE_FEED_FULFILLED) {
-        // creating a feed
-        if (this.props.viewMode === CONSTANTS.CARD_NEW) {
-          // loading = true;
-          this.draftFeedo = nextProps.feedo.currentFeed;
-          this.props.createCard(nextProps.feedo.currentFeed.id);
-        }
-      } else if (this.props.feedo.loading !== feedoTypes.UPDATE_FEED_PENDING && nextProps.feedo.loading === feedoTypes.UPDATE_FEED_PENDING) {
-        // updating a feed
-        loading = true;
-      } else if (this.props.feedo.loading !== feedoTypes.UPDATE_FEED_FULFILLED && nextProps.feedo.loading === feedoTypes.UPDATE_FEED_FULFILLED) {
-        // success in updating a feed
-        this.onUpdateCard();
-      } else if (this.props.feedo.loading !== feedoTypes.DELETE_FEED_PENDING && nextProps.feedo.loading === feedoTypes.DELETE_FEED_PENDING) {
-        // deleting a feed
-        // loading = true;
-      } else if (this.props.feedo.loading !== feedoTypes.DELETE_FEED_FULFILLED && nextProps.feedo.loading === feedoTypes.DELETE_FEED_FULFILLED) {
-        // success in deleting a feed
-        if (this.isUpdateDraftCard) {
-          this.onUpdateCard();
-        } else {
-          this.onClose();
-        }
-        return;
-      }
-    }
+    // if (this.prevFeedo === null) {
+    //   if (this.props.feedo.loading !== feedoTypes.UPDATE_FEED_PENDING && nextProps.feedo.loading === feedoTypes.UPDATE_FEED_PENDING) {
+    //     // updating a feed
+    //     loading = true;
+    //   } else if (this.props.feedo.loading !== feedoTypes.UPDATE_FEED_FULFILLED && nextProps.feedo.loading === feedoTypes.UPDATE_FEED_FULFILLED) {
+    //     // success in updating a feed
+    //     this.onUpdateCard();
+    //   } else if (this.props.feedo.loading !== feedoTypes.DELETE_FEED_FULFILLED && nextProps.feedo.loading === feedoTypes.DELETE_FEED_FULFILLED) {
+    //     // success in deleting a feed
+    //     if (this.isUpdateDraftCard) {
+    //       this.onUpdateCard();
+    //     } else {
+    //       this.onClose();
+    //     }
+    //     return;
+    //   }
+    // }
 
     this.setState({
       loading,
@@ -512,37 +394,39 @@ class NewCardScreen extends React.Component {
       }
     }
     if (this.props.card.loading !== 'GET_CARD_FULFILLED' && nextProps.card.loading === 'GET_CARD_FULFILLED') {
+      const { width, height } = await this.getImageSize(nextProps.card.currentCard.coverImage);
+      this.coverImageWidth = width
+      this.coverImageHeight = height
       this.setState({
-        // cardName: this.props.card.currentCard.title,
         idea: nextProps.card.currentCard.idea,
         coverImage: nextProps.card.currentCard.coverImage,
       })
     }
   }
 
-  componentDidMount() {
-    // console.log('Current Card : ', this.props.card.currentCard);
-    const { viewMode, cardMode } = this.props;
+  async componentDidMount() {
+    const { viewMode, feedo, card } = this.props;
     if (viewMode === CONSTANTS.CARD_VIEW || viewMode === CONSTANTS.CARD_EDIT) {
+      const { width, height } = await this.getImageSize(card.currentCard.coverImage);
+      this.coverImageWidth = width
+      this.coverImageHeight = height
       this.setState({
-        // cardName: this.props.card.currentCard.title,
-        idea: this.props.card.currentCard.idea,
-        coverImage: this.props.card.currentCard.coverImage,
+        idea: card.currentCard.idea,
+        coverImage: card.currentCard.coverImage,
       });
-    } else if (viewMode === CONSTANTS.CARD_NEW) {
-      this.textInputIdeaRef.focus();
     }
 
-    if (this.props.card.currentCard.idea === '' && viewMode === CONSTANTS.CARD_EDIT) {
+    if (card.currentCard.idea === '' && viewMode === CONSTANTS.CARD_EDIT) {
       this.setState({
         isEditableIdea: true,
       });
     }
+
     Animated.timing(this.animatedShow, {
       toValue: 1,
       duration: CONSTANTS.ANIMATEION_MILLI_SECONDS,
     }).start(() => {
-      if (this.props.feedo.feedoList.length == 0) {
+      if (feedo.feedoList.length == 0) {
         this.isGettingFeedoList = true;
         this.props.getFeedoList(0);
       } else {
@@ -550,41 +434,28 @@ class NewCardScreen extends React.Component {
       }
     });
 
-    this.keyboardWillShowSubscription = Keyboard.addListener('keyboardWillShow', (e) => this.keyboardWillShow(e));
-    this.keyboardWillHideSubscription = Keyboard.addListener('keyboardWillHide', (e) => this.keyboardWillHide(e));
     this.safariViewShowSubscription = SafariView.addEventListener('onShow', () => this.safariViewShow());
     this.safariViewDismissSubscription = SafariView.addEventListener('onDismiss', () => this.safariViewDismiss());
   }
 
   componentWillUnmount() {
-    this.keyboardWillShowSubscription.remove();
-    this.keyboardWillHideSubscription.remove();
     this.safariViewShowSubscription.remove();
     this.safariViewDismissSubscription.remove();
   }
 
-  keyboardWillShow(e) {
-    Animated.timing(
-      this.animatedKeyboardHeight, {
-        toValue: e.endCoordinates.height,
-        duration: e.duration,
-      }
-    ).start(() => {
-      if (this.isDisabledKeyboard === true || !this.textInputIdeaRef) {
-        return;
-      }
-      
-      this.textInputIdeaRef.focus();
-    });
-  }
-
-  keyboardWillHide(e) {
-    Animated.timing(
-      this.animatedKeyboardHeight, {
-        toValue: 0,
-        duration: e.duration,
-      }
-    ).start();
+  getImageSize(uri) {
+    if (uri) {
+      return new Promise((resolve, reject) => {
+        Image.getSize(uri,
+          (width, height) => {
+            resolve({width, height});
+          }, (error) => {
+            reject(error);
+          });
+      });
+    } else {
+      return { width: 0, height: 0 }
+    }
   }
 
   safariViewShow() {
@@ -599,7 +470,7 @@ class NewCardScreen extends React.Component {
     Analytics.logEvent('new_card_new_card', {})
 
     const { cardMode, viewMode } = this.props;
-    if ((cardMode === CONSTANTS.MAIN_APP_CARD_FROM_DASHBOARD) || (cardMode === CONSTANTS.SHARE_EXTENTION_CARD)) {
+    if (cardMode === CONSTANTS.MAIN_APP_CARD_FROM_DASHBOARD) {
       try {
         const strFeedoInfo = await SharedGroupPreferences.getItem(CONSTANTS.CARD_SAVED_LAST_FEEDO_INFO, CONSTANTS.APP_GROUP_LAST_USED_FEEDO);
         if (strFeedoInfo) {
@@ -618,8 +489,6 @@ class NewCardScreen extends React.Component {
         console.log('error code : ', error);
       }
       this.props.createFeed();
-    } else if (viewMode === CONSTANTS.CARD_NEW) {
-      this.props.createCard(this.props.feedo.currentFeed.id);
     }
   }
 
@@ -631,26 +500,6 @@ class NewCardScreen extends React.Component {
     SharedGroupPreferences.setItem(CONSTANTS.CARD_SAVED_LAST_FEEDO_INFO, JSON.stringify(feedoInfo), CONSTANTS.APP_GROUP_LAST_USED_FEEDO)
   }
 
-  // checkUrl(content) {
-  //   const { viewMode } = this.props;
-  //   if (viewMode === CONSTANTS.CARD_NEW || viewMode === CONSTANTS.CARD_EDIT) {
-  //     if (content) {
-  //       const texts = content.split(/[, ]/);
-  //       const allUrls = texts[0].match(/(http(s)?:\/\/.)?(www\.)?[-a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,6}\b([-a-zA-Z0-9@:%_\+.~#?&//=]*)/gi);
-  //       // if (texts.length === 1 && validUrl.isUri(texts[0])) {
-  //       if (texts.length === 1 && allUrls && allUrls.length > 0) {
-  //         if (this.parsingErrorLinks.length > 0 && this.parsingErrorLinks.indexOf(texts[0] !== -1)) {
-  //           return true;
-  //         }
-  //         this.isOpenGraphForNewCard = true;
-  //         this.urlForNewCard = texts[0];
-  //         this.props.getOpenGraph(texts[0]);
-  //         return true;
-  //       }
-  //     }
-  //   }
-  //   return false;
-  // }
   compareUrls(linkUrl, currentUrl) {
     const linkUrls = linkUrl.match(/(((?:(?:[a-zA-Z0-9\$\-\_\.\+\!\*\'\(\)\,\;\?\&\=]|(?:\%[a-fA-F0-9]{2})){1,64}(?:\:(?:[a-zA-Z0-9\$\-\_\.\+\!\*\'\(\)\,\;\?\&\=]|(?:\%[a-fA-F0-9]{2})){1,25})?\@)?)?((?:(?:[a-zA-Z0-9][a-zA-Z0-9\-]{0,64}\.)+((?:(?:[a-zA-Z0-9])(?:[a-zA-Z0-9]))|(?:(?:[a-zA-Z0-9])(?:[a-zA-Z0-9])(?:[a-zA-Z0-9]))))|(?:(?:25[0-5]|2[0-4][0-9]|[0-1][0-9]{2}|[1-9][0-9]|[1-9])\.(?:25[0-5]|2[0-4][0-9]|[0-1][0-9]{2}|[1-9][0-9]|[1-9]|0)\.(?:25[0-5]|2[0-4][0-9]|[0-1][0-9]{2}|[1-9][0-9]|[1-9]|0)\.(?:25[0-5]|2[0-4][0-9]|[0-1][0-9]{2}|[1-9][0-9]|[0-9])))(?:\:\d{1,5})?)(\/(?:(?:[a-zA-Z0-9\;\/\?\:\@\&\=\#\~\-\.\+\!\*\'\(\)\,\_])|(?:\%[a-fA-F0-9]{2}))*)?(?:\b|$)/gi);
     let filterdLinkUrl = linkUrls[0].toLowerCase();
@@ -724,16 +573,6 @@ class NewCardScreen extends React.Component {
           url = url.replace('[', '');
           url = url.replace(']', '');
           newUrls.push(url);
-          // if (this.state.cardName.includes(url)) {
-          //   this.setState({
-          //     cardName: '',
-          //   });
-          //   if (!this.state.idea.includes(url)) {
-          //     this.setState({
-          //       idea: this.state.idea + this.state.idea ? ' ' : '' + url,
-          //     })
-          //   }
-          // }
         }
       });
       if (newUrls.length > 0) {
@@ -745,6 +584,10 @@ class NewCardScreen extends React.Component {
   }
 
   onClose() {
+    if (this.props.viewMode === CONSTANTS.CARD_EDIT) {
+      this.onUpdateCard()
+    }
+
     this.setState({
       originalCardTopY: this.props.intialLayout.py,
       originalCardBottomY: this.props.intialLayout.py + this.props.intialLayout.height,
@@ -760,41 +603,45 @@ class NewCardScreen extends React.Component {
     });
   }
 
-  onUpdate() {
-    const {
-      id, 
-      files,
-    } = this.props.card.currentCard;
-    const { idea } = this.state
+  onUpdateCard() {
+    const { id, huntId, files } = this.props.card.currentCard
+    const { idea, coverImage } = this.state
 
-    // let cardName = this.state.cardName;
-    // if (cardName === '') {
-    //   cardName = '';
-    // }
+    this.props.updateCard(huntId, id, '', idea, coverImage, files);
+  }
 
-    if (idea.length > 0 || (files && files.length > 0)) {
-      const cardName = '';
-      this.props.updateCard(this.props.feedo.currentFeed.id, id, cardName, this.state.idea, this.state.coverImage, files);
-    } else {
-      Alert.alert('Error', 'Enter some text or add an image')
+  onTapActionSheet(index) {
+    if (index === 0) {
+      this.props.onDeleteCard(this.props.card.currentCard.id)
     }
   }
 
-  onCreateCard() {
-    const {
-      id, 
-      files,
-    } = this.props.card.currentCard;
-    // let cardName = this.state.cardName;
-    // if (cardName === '') {
-    //   cardName = '';
-    // }
-    const cardName = '';
-    this.props.updateCard(this.props.feedo.currentFeed.id, id, cardName, this.state.idea, this.state.coverImage, files);
+  handleControlMenu = type => {
+    this.setState({ cardOption: type, isVisibleCardOpenMenu: false })
   }
 
-  onAddMedia() {
-    this.imagePickerActionSheetRef.show();
+  handleControlMenHide = () => {
+    const { cardOption } = this.state
+
+    if (cardOption === 1) {
+      this.onAddFile()
+    } else if (cardOption === 1) {
+      this.onAddDocument()
+    } else if (cardOption === 3) {
+      this.props.onMoveCard(this.props.card.currentCard.id)
+    } else if (cardOption === 4) {
+      setTimeout(() => {
+        this.deleteActionSheet.show()
+      }, 200)
+    }
+    this.setState({ cardOption: 0 })
+  }
+
+  onAddFile() {
+    setTimeout(() => {
+      this.imagePickerActionSheetRef.show()
+    }, 200)
+    return
   }
 
   onAddDocument() {
@@ -818,56 +665,15 @@ class NewCardScreen extends React.Component {
     });
     return;
   }
-  
-  onHideKeyboard() {
-    const { cardMode } = this.props;
-    if (cardMode === CONSTANTS.SHARE_EXTENTION_CARD) {
-      return;
-    }
-    Keyboard.dismiss();
-  }
 
-  onUpdateCard() {
-    const { viewMode } = this.props;
-    // if (viewMode === CONSTANTS.CARD_NEW) {
-    //   if (this.checkUrl(this.state.cardName) || this.checkUrls()) {
-    //     return;
-    //   }
-    // }
-    if (viewMode === CONSTANTS.CARD_NEW || viewMode === CONSTANTS.CARD_EDIT) {
-      this.onUpdate();
-      return;
-    }
-    this.onClose();
-    return;
-  }
-
-  onTapLeaveActionSheet(index) {
-    if (index === 1) {
-      this.isUpdateDraftCard = false;
-      if (this.draftFeedo) {
-        this.props.deleteDraftFeed(this.draftFeedo.id)
-      } else {
-        this.onClose();
-      }
-    }
+  onCloseEditCard() {
+    this.setState({ showEditScreen: false })
   }
 
   onPressMoreActions() {
-    if (this.props.onOpenAction) {
-      this.props.onOpenAction(this.props.card.currentCard);
+    if (this.props.viewMode === CONSTANTS.CARD_EDIT) {
+      this.setState({ isVisibleCardOpenMenu: true })
     }
-  }
-
-  getImageSize(uri) {
-    return new Promise((resolve, reject) => {
-      Image.getSize(uri,
-        (width, height) => {
-          resolve({width, height});
-        }, (error) => {
-          reject(error);
-        });
-    });
   }
 
   async uploadFile(currentCard, file, type) {
@@ -875,6 +681,7 @@ class NewCardScreen extends React.Component {
     this.selectedFileMimeType = mime.lookup(file.uri);
     this.selectedFileName = file.fileName;
     this.selectedFileType = type;
+
     if (currentCard.id) {
       this.props.getFileUploadUrl(this.props.feedo.currentFeed.id, currentCard.id);
     }
@@ -956,58 +763,14 @@ class NewCardScreen extends React.Component {
     this.props.deleteFile(id, fileId);
   }
 
-  onDeleteLink(linkId) {
-    const {
-      id,
-    } = this.props.card.currentCard;
-    this.props.deleteLink(id, linkId);
-  }
-
   onSetCoverImage(fileId) {
     this.props.setCoverImage(this.props.card.currentCard.id, fileId);
   }
 
-  // async onChangeTitle(text) {
-  //   const { viewMode } = this.props;
-  //   if (this.parsingErrorLinks.length > 0 && this.parsingErrorLinks.includes(text)) {
-  //     this.setState({cardName: ' '});
-  //     setTimeout(() => {
-  //       this.setState({cardName: ''});
-  //     }, 0)
-  //     return;
-  //   }
-  //   this.setState({cardName: text});    
-  //   if (viewMode === CONSTANTS.CARD_NEW || viewMode === CONSTANTS.CARD_EDIT){
-  //     const clipboardContent = await Clipboard.getString();
-  //     if (clipboardContent === text) {
-  //       if (this.checkUrl(text)) {
-  //         return;
-  //       }
-  //     }
-  //   }
-  // }
-  
-  // onKeyPressTitle(event) {
-  //   if (event.nativeEvent.key === ' ' || event.nativeEvent.key === ',' || event.nativeEvent.key === 'Enter') {
-  //     this.checkUrl(this.state.cardName);
-  //   }
-  // }
-  
   onChangeIdea(text) {
-    // console.log('TextInput - onChangeIdea : ', text);
     this.setState({
-      idea: text,
-    }, async () => {
-      const { viewMode } = this.props;
-      if (viewMode === CONSTANTS.CARD_NEW) {
-        const clipboardContent = await Clipboard.getString();
-        if (clipboardContent === text) {
-          if (this.checkUrls()) {
-            return;
-          }
-        }
-      }
-    });
+      idea: text
+    })
   }
 
   onKeyPressIdea(event) {
@@ -1018,31 +781,18 @@ class NewCardScreen extends React.Component {
 
   onFocus() {
     const { viewMode } = this.props;
-    if (viewMode === CONSTANTS.CARD_NEW || viewMode === CONSTANTS.CARD_EDIT) {
+    if (viewMode === CONSTANTS.CARD_EDIT) {
       this.setState({
         isShowKeyboardButton: true,
       });
     }
   }
 
-  // onBlurTitle() {
-  //   this.setState({
-  //     isShowKeyboardButton: false,
-  //   });
-  //   this.checkUrl(this.state.cardName);
-  // }
-
   onBlurIdea() {
     this.setState({
       isShowKeyboardButton: false,
       isEditableIdea: false,
     });
-  }
-
-  onShowLikes(likes) {
-    if (likes > 0) {
-      Actions.LikesListScreen({idea: this.props.card.currentCard});
-    }
   }
 
   onCloseLinkImages() {
@@ -1064,95 +814,8 @@ class NewCardScreen extends React.Component {
     }
   }
 
-  onSelectCoverImage() {
-  }
-
   onBack() {
-    this.onUpdateCard();
-  }
-
-  onSelectFeedo() {
-    this.prevFeedo = this.props.feedo.currentFeed;
-    this.isDisabledKeyboard = true;
-    this.setState({
-      isVisibleSelectFeedoModal: true,
-    });
-  }
-
-  onCloseSelectHunt() {
-    this.isDisabledKeyboard = false;
-    this.setState({isVisibleSelectFeedoModal: false})
-    if (!this.props.feedo.currentFeed.id) {
-      this.props.setCurrentFeed(this.prevFeedo);
-    }
-    if (this.prevFeedo.id !== this.props.feedo.currentFeed.id) {
-      this.props.moveCard(this.props.card.currentCard.id, this.props.feedo.currentFeed.id);
-    }
-    this.prevFeedo = null;
-  }
-
-  onUpdateFeed() {
-    const {
-      files,
-    } = this.props.card.currentCard;
-    const { idea } = this.state
-    if (idea.length === 0 && (!files || files.length === 0)) {
-      Alert.alert('Error', 'Enter some text or add an image')
-      return;
-    }
-    if (this.draftFeedo) {
-      if (this.draftFeedo.id === this.props.feedo.currentFeed.id) {
-        // Update Draft Mello to Publish one
-        const {
-          id, 
-          headline,
-          summary,
-          tags,
-          files,
-        } = this.props.feedo.currentFeed;  
-        this.props.updateFeed(id, headline || 'New flow', summary || '', tags, files);
-        return;
-      }
-      this.isUpdateDraftCard = true;
-      this.props.deleteDraftFeed(this.draftFeedo.id)
-    } else {
-      Analytics.logEvent('new_card_update_card', {})
-      this.onUpdateCard();
-    }
-  }
-
-  onPressIdea() {
-    const { viewMode } = this.props;
-    this.textInputHeightByCursor = 0;
-    this.setState({
-      isEditableIdea: true,
-      textByCursor: '',
-    }, () => {
-      if (viewMode === CONSTANTS.CARD_NEW || viewMode === CONSTANTS.CARD_EDIT) {
-        this.textInputIdeaRef.focus();
-      }
-    });
-  }
-
-  onPressLink(url) {
-    SafariView.isAvailable()
-      .then(SafariView.show({
-        url: url,
-        tintColor: COLORS.PURPLE
-      }))
-      .catch(error => {
-        // Fallback WebView code for iOS 8 and earlier
-        Linking.canOpenURL(url)
-          .then(supported => {
-              if (!supported) {
-                  console.log('Can\'t handle url: ' + url);
-              }
-              else {
-                  return Linking.openURL(url);
-              }
-          })
-          .catch(error => console.error('An error occurred', error));
-      });
+    this.onClose();
   }
 
   addLinkImage(id, imageUrl) {
@@ -1162,16 +825,18 @@ class NewCardScreen extends React.Component {
   }
 
   get renderCoverImage() {
-    const { viewMode, cardMode } = this.props;
-    let imageFiles = _.filter(this.props.card.currentCard.files, file => file.fileType === 'MEDIA');
+    const { viewMode, card } = this.props;
+    let imageFiles = _.filter(card.currentCard.files, file => file.fileType === 'MEDIA');
+
+    const ratio = CONSTANTS.SCREEN_WIDTH / this.coverImageWidth
     if (this.state.coverImage) {
       return (
-        <View style={cardMode === CONSTANTS.SHARE_EXTENTION_CARD ? styles.extensionCoverImageContainer : styles.coverImageContainer}>
+        <View style={[styles.coverImageContainer, { width: CONSTANTS.SCREEN_WIDTH, height: this.coverImageHeight * ratio }]}>
           <CoverImagePreviewComponent
             coverImage={this.state.coverImage}
             files={imageFiles}
             editable={viewMode !== CONSTANTS.CARD_VIEW}
-            isFastImage={cardMode !== CONSTANTS.SHARE_EXTENTION_CARD}
+            isFastImage={true}
             isSetCoverImage={true}
             onRemove={(fileId) => this.onRemoveFile(fileId)}
             onSetCoverImage={(fileId) => this.onSetCoverImage(fileId)}
@@ -1216,64 +881,52 @@ class NewCardScreen extends React.Component {
     this.scrollContent();
   }
 
+  onPressIdea() {
+    if (this.props.viewMode === CONSTANTS.CARD_EDIT) {
+      this.setState({ showEditScreen: true })
+    }
+  }
+
+  onPressLink(url) {
+    SafariView.isAvailable()
+      .then(SafariView.show({
+        url: url,
+        tintColor: COLORS.PURPLE
+      }))
+      .catch(error => {
+        // Fallback WebView code for iOS 8 and earlier
+        Linking.canOpenURL(url)
+          .then(supported => {
+              if (!supported) {
+                  console.log('Can\'t handle url: ' + url);
+              }
+              else {
+                  return Linking.openURL(url);
+              }
+          })
+          .catch(error => console.error('An error occurred', error));
+      });
+  }
+
   get renderText() {
-    const { viewMode } = this.props;
-    let isShowTextInput = false;
-    if ((viewMode === CONSTANTS.CARD_NEW) || ((this.state.idea == '' || this.state.isEditableIdea) && (viewMode === CONSTANTS.CARD_EDIT))) {
-      isShowTextInput = true;
+    const { links } = this.props.card.currentCard;
+    const { coverImage } = this.state
+  
+    let marginTop = 24
+    marginTop = coverImage ? 24 : 65
+    if (links && links.length > 0) {
+      marginTop = 6
+    } else {
+      marginTop = coverImage ? 24 : 65
     }
-    if (isShowTextInput) {
-      return (
-        <View 
-          style={{flex: 1}}
-          onLayout={this.onLayoutTextInput.bind(this)}
-        >
-          <TextInput
-            style={[styles.textInputIdea, {
-              position: 'absolute',
-              left: 0,
-              right: 0,
-              top: 0,
-              opacity: 0,
-            }]}
-            autoCorrect={false}
-            multiline={true}
-            underlineColorAndroid='transparent'
-            value={this.state.textByCursor}
-            onContentSizeChange={this.onContentSizeChange.bind(this)}
-          />
-          <TextInput
-            ref={ref => this.textInputIdeaRef = ref}
-            style={styles.textInputIdea}
-            autoCorrect={true}
-            placeholder='Type text or paste a link'
-            multiline={true}
-            underlineColorAndroid='transparent'
-            value={this.state.idea}
-            onChangeText={(value) => this.onChangeIdea(value)}
-            onKeyPress={this.onKeyPressIdea.bind(this)}
-            onFocus={() => this.onFocus()}
-            onBlur={() => this.onBlurIdea()}
-            onSelectionChange={this.onSelectionChange.bind(this)}
-            selectionColor={COLORS.PURPLE}
-          />
-        </View>
-      );
-    }
+
     return (
       <TouchableOpacity activeOpacity={1} onPress={() => this.onPressIdea()}>
-        <ViewMoreText
-          textStyle={styles.textInputIdea}
-          numberOfLines={3}
-          renderViewMore={this.renderSeeMore.bind(this)}
-          renderViewLess={this.renderSeeLess.bind(this)}
-        >
-          <Autolink
-            style={styles.textInputIdea}
-            text={this.state.idea}
-            onPress={(url, match) => this.onPressLink(url)}
-          />
-        </ViewMoreText>
+        <Autolink
+          style={[styles.textInputIdea, { marginTop }]}
+          text={this.state.idea}
+          onPress={(url, match) => this.onPressLink(url)}
+        />
       </TouchableOpacity>
     );
   }
@@ -1287,30 +940,27 @@ class NewCardScreen extends React.Component {
   }
 
   get renderWebMeta() {
-    const { viewMode, cardMode } = this.props;
+    const { viewMode } = this.props;
     const { links } = this.props.card.currentCard;
+
     if (links && links.length > 0) {
       const firstLink = links[0];
       return (
-        <WebMetaList 
+        <WebMetaList
           links={[firstLink]}
-          isFastImage={cardMode !== CONSTANTS.SHARE_EXTENTION_CARD}
+          isFastImage={true}
+          coverImage={this.state.coverImage}
           editable={viewMode !== CONSTANTS.CARD_VIEW}
           longPressLink={(url) => this.onLongPressWbeMetaLink(url)}
-          // onRemove={(linkId) => this.onDeleteLink(linkId)}
         />
       )
     }
   }
 
   get renderDocuments() {
-    const { viewMode, cardMode } = this.props;
-    if (cardMode === CONSTANTS.SHARE_EXTENTION_CARD) {
-      return;
-    }
-    const {
-      files
-    } = this.props.card.currentCard;
+    const { viewMode } = this.props;
+    const { files } = this.props.card.currentCard;
+
     const documentFiles = _.filter(files, file => file.fileType === 'FILE');
     if (documentFiles.length > 0) {
       return (
@@ -1325,131 +975,27 @@ class NewCardScreen extends React.Component {
     }
   }
 
-  renderSeeMore(onPress){
-    return(
-      <Text style={styles.textSeeMoreLessIdea} onPress={onPress}>See more</Text>
-    );
-  }
-
-  renderSeeLess(onPress){
-    return(
-      <Text style={styles.textSeeMoreLessIdea} onPress={onPress}>See less</Text>
-    );
-  }
-
-  get renderComments() {
-    const { viewMode } = this.props;
-    if (viewMode !== CONSTANTS.CARD_NEW) {
-      return (
-        <View>
-          <View style={styles.line} />
-          <LastCommentComponent prevPage={this.props.prevPage} />
-        </View>
-      )
-    }
-  }
-
-  get renderMainContent() {
+  get renderHeader() {
     return (
-      <ScrollView
-        ref={ref => this.scrollViewRef = ref}
-        onLayout={this.onLayoutScrollView.bind(this)}
+      <TouchableOpacity 
+        style={styles.headerContainer}
+        activeOpacity={0.7}
+        onPress={() => this.onBack()}
       >
-        {this.renderCoverImage}
-        {this.renderWebMeta}
-        {this.renderText}
-        {this.renderDocuments}
-        {this.renderComments}
-      </ScrollView>
-    );
-  }
-
-  get renderSelectFeedo() {
-    const { cardMode } = this.props;
-    if (cardMode !== CONSTANTS.MAIN_APP_CARD_FROM_DASHBOARD) {
-      return;
-    }
-    return (
-      <View style={styles.selectFeedoContainer}>
-        <Text style={styles.textCreateCardIn}>Create card in:</Text>
-        <TouchableOpacity
-          style={styles.selectFeedoButtonContainer}
-          activeOpacity={0.6}
-          onPress={this.onSelectFeedo.bind(this)}
-        >
-          <Text style={styles.textFeedoName} numberOfLines={1}>{this.props.feedo.currentFeed.headline || 'New flow'}</Text>
-          <Entypo name="chevron-right" size={20} color={COLORS.PURPLE} />
-        </TouchableOpacity>
-      </View>
+        <View style={styles.closeButtonView}>
+          <Ionicons name="md-close" size={25} color="#fff" />
+        </View>
+      </TouchableOpacity>
     )
   }
 
-  get renderTopAttachmentButtons() {
-    const { viewMode, cardMode } = this.props;
-    if (cardMode === CONSTANTS.SHARE_EXTENTION_CARD) {
-      return;
-    } else if (viewMode !== CONSTANTS.CARD_EDIT) {
-      return;
-    }
-    return (
-      <View style={styles.attachmentButtonsContainer}>
-        <TouchableOpacity 
-          style={styles.iconView}
-          activeOpacity={0.6}
-          onPress={this.onAddMedia.bind(this)}
-        >
-          <Image source={IMAGE_ICON} />
-        </TouchableOpacity>
-        <TouchableOpacity 
-          style={styles.iconView}
-          activeOpacity={0.6}
-          onPress={this.onAddDocument.bind(this)}
-        >
-          <Image source={ATTACHMENT_ICON} />
-        </TouchableOpacity>
-        <TouchableOpacity 
-          style={styles.threeDotButtonWrapper}
-          activeOpacity={0.6}
-          onPress={() => this.onPressMoreActions()}
-        >
-          <Entypo name="dots-three-horizontal" size={20} color={COLORS.PURPLE} />
-        </TouchableOpacity>
-      </View>
-    );
-  }
-
-  get renderBottomAttachmentButtons() {
-    const { viewMode, cardMode } = this.props;
-    if (cardMode === CONSTANTS.SHARE_EXTENTION_CARD) {
-      return;
-    } else if (viewMode !== CONSTANTS.CARD_NEW) {
-      return;
-    }
-    return (
-      <View style={[styles.attachmentButtonsContainer, { paddingHorizontal: 16, marginVertical: 16 }]}>
-        <TouchableOpacity 
-          style={styles.iconView}
-          activeOpacity={0.6}
-          onPress={this.onAddMedia.bind(this)}
-        >
-          <Image source={IMAGE_ICON} />
-        </TouchableOpacity>
-        <TouchableOpacity 
-          style={styles.iconView}
-          activeOpacity={0.6}
-          onPress={this.onAddDocument.bind(this)}
-        >
-          <Image source={ATTACHMENT_ICON} />
-        </TouchableOpacity>
-        {this.renderSelectFeedo}
-      </View>
-    );
-  }
-
-  get renderInvitee() {
+  get renderOwnerAndTime() {
     const { userProfile } = this.props.invitee;
     const { currentFeed } = this.props.feedo;
+    const { currentCard } = this.props.card;
     const { userInfo } = this.props.user;
+
+    const idea = _.find(currentFeed.ideas, idea => idea.id === currentCard.id)
 
     let name = ''
     if (userProfile) {
@@ -1463,233 +1009,191 @@ class NewCardScreen extends React.Component {
       fontSize = 14;
     }
 
+    // if (COMMON_FUNC.isFeedOwner(currentFeed)) {
+    //   const otherInvitees = _.filter(currentFeed.invitees, invitee => invitee.userProfile.id !== userInfo.id);
+    //   if (!otherInvitees || otherInvitees.length === 0) {
+    //     return (
+    //       <View style={styles.inviteeContainer}>
+    //         <Text style={styles.textInvitee}>{getDurationFromNow(currentCard.publishedDate)}</Text>
+    //       </View>
+    //     );
+    //   }
+    // }
+    let showLikes = true
     if (COMMON_FUNC.isFeedOwner(currentFeed)) {
       const otherInvitees = _.filter(currentFeed.invitees, invitee => invitee.userProfile.id !== userInfo.id);
       if (!otherInvitees || otherInvitees.length === 0) {
-        return (
-          <View style={[styles.rowContainer, {flex: 1}]}>
-            <Text style={styles.textInvitee}>{getDurationFromNow(this.props.card.currentCard.publishedDate)}</Text>
-          </View>
-        );
+        showLikes = false
       }
     }
 
     return (
-      <View style={[styles.rowContainer, {flex: 1}]}>
-        <UserAvatarComponent
-          user={userProfile}
-        />
-        <Text style={[styles.textInvitee, { marginLeft: 9, fontSize,}]} numberOfLines={1}>{name}</Text>
-        <Entypo name="dot-single" style={styles.iconDot} />
-        <Text style={styles.textInvitee}>{getDurationFromNow(this.props.card.currentCard.publishedDate)}</Text>
+      <View style={styles.inviteeContainer}>
+        <View style={styles.inviteeView}>
+          <UserAvatarComponent
+            user={userProfile}
+          />
+          <Text style={[styles.textInvitee, { marginLeft: 9, fontSize }]} numberOfLines={1}>{name}</Text>
+          <Entypo name="dot-single" style={styles.iconDot} />
+          <Text style={styles.textInvitee}>{getDurationFromNow(currentCard.publishedDate)} ago</Text>
+        </View>
+        {showLikes && (
+          <LikeComponent idea={idea} prevPage={this.props.prevPage} type="text" />
+        )}
       </View>
     );
   }
 
-  get renderLikesComment() {
-    const idea = _.find(this.props.feedo.currentFeed.ideas, idea => idea.id === this.props.card.currentCard.id)
-
-    if (idea) {
-      return (
-        <View style={styles.rowContainer}>
-          <LikeComponent idea={idea} prevPage={this.props.prevPage} />
-          <CommentComponent idea={idea} currentFeed={this.props.feedo.currentFeed} prevPage={this.props.prevPage} />
-        </View>
-      );
-    }
-    return null
+  get renderCommentList() {
+    return (
+      <LastCommentComponent prevPage={this.props.prevPage} initLoad={this.state.initLoad} />
+    )
   }
 
-  get renderHeader() {
-    const { cardMode, viewMode } = this.props;
-    if (cardMode === CONSTANTS.SHARE_EXTENTION_CARD) {
-      return (
-        <View style={[styles.headerContainer, styles.extensionHeaderContainer]}>
-          <TouchableOpacity 
-            style={styles.closeButtonShareWrapper}
-            activeOpacity={0.7}
-            onPress={() => this.props.shareUrl !== '' && this.props.shareImageUrls.length > 0 ? Actions.pop() : this.props.onClose()}
-          >
-            {
-              this.props.shareUrl !== '' && this.props.shareImageUrls.length > 0 ?
-                <Ionicons name="ios-arrow-back" size={28} color={COLORS.PURPLE} />
-              :
-                <Text style={[styles.textButton, {color: COLORS.PURPLE}]}>Cancel</Text>
-            }
-          </TouchableOpacity>
-          <TouchableOpacity 
-            style={styles.closeButtonShareWrapper}
-            activeOpacity={0.6}
-            onPress={this.onUpdateFeed.bind(this)}
-          >
-            <Text style={[styles.textButton, {color: COLORS.PURPLE}]}>Create card</Text>
-          </TouchableOpacity>
-        </View>
-      );
+  onScrollContent() {
+    if (this.state.initLoad) {
+      this.setState({ initLoad: false })
     }
+  }
 
-    if (viewMode === CONSTANTS.CARD_NEW) {
-      return (
-        <View style={styles.headerContainer}>
-          <TouchableOpacity 
-            style={styles.closeButtonWrapper}
-            activeOpacity={0.7}
-            onPress={() => this.leaveActionSheetRef.show()}
-          >
-            <MaterialCommunityIcons name="close" size={32} color={COLORS.PURPLE} />
-          </TouchableOpacity>
-          <TouchableOpacity 
-            style={[styles.addCardButtonWapper, {backgroundColor: COLORS.PURPLE}]}
-            activeOpacity={0.6}
-            onPress={this.onUpdateFeed.bind(this)}
-          >
-            <Text style={styles.textButton}>Done</Text>
-          </TouchableOpacity>
-        </View>
-      )
-    }
+  get renderMainContent() {
+    const { currentComments } = this.props.card;
+    const minHeight = currentComments.length === 0 ? IDEA_CONTENT_HEIGHT + FIXED_COMMENT_HEIGHT - FOOTER_HEIGHT : IDEA_CONTENT_HEIGHT
+
     return (
-      <View style={styles.headerContainer}>
-        <TouchableOpacity 
-          style={styles.backButtonWrapper}
-          activeOpacity={0.7}
-          onPress={() => this.onBack()}
-        >
-          <MaterialCommunityIcons name="close" size={32} color={COLORS.PURPLE} />
-        </TouchableOpacity>
-        {this.renderTopAttachmentButtons}
+      <ScrollView
+        ref={ref => this.scrollViewRef = ref}
+        onLayout={this.onLayoutScrollView.bind(this)}
+        onScroll={() => this.onScrollContent()}
+      >
+        <View style={[styles.ideaContentView, { minHeight }]}>
+          {this.renderCoverImage}
+          {this.renderWebMeta}
+          {this.renderText}
+          {this.renderDocuments}
+        </View>
+
+        {this.renderOwnerAndTime}
+        {this.renderCommentList}
+      </ScrollView>
+    );
+  }
+
+  onAddComment = () => {
+    Analytics.logEvent('edit_card_add_comment', {})
+
+    if (this.props.prevPage === 'activity') {
+      Actions.ActivityCommentScreen({
+        idea: this.props.card.currentCard,
+        guest: COMMON_FUNC.isFeedGuest(this.props.feedo.currentFeed),
+        isShowKeyboard: true,
+      });
+    } else {
+      Actions.CommentScreen({
+        idea: this.props.card.currentCard,
+        guest: COMMON_FUNC.isFeedGuest(this.props.feedo.currentFeed),
+        isShowKeyboard: true,
+      });
+    }
+  }
+
+  get renderAddComment() {
+    return (
+      <TouchableOpacity 
+        style={styles.rowContainer}
+        activeOpacity={0.6}
+        onPress={this.onAddComment}
+      >
+        <Text style={styles.textAddComment}>Add comment</Text>
+      </TouchableOpacity>
+    )
+  }
+
+  get renderFooter() {
+    const { feedo, viewMode } = this.props;
+    const idea = _.find(this.props.feedo.currentFeed.ideas, idea => idea.id === this.props.card.currentCard.id)
+
+    return (
+      <View style={styles.footerContainer}>
+        <View style={styles.footerView}>
+          {!COMMON_FUNC.isFeedGuest(feedo.currentFeed) && 
+            <View style={styles.addCommentView}>
+              {this.renderAddComment}
+            </View>
+          }
+
+          <View style={styles.likeView}>
+            {viewMode === CONSTANTS.CARD_EDIT && (
+              <TouchableOpacity 
+                style={styles.threeDotButtonWrapper}
+                activeOpacity={0.6}
+                onPress={() => this.onPressMoreActions()}
+              >
+              <Entypo name="dots-three-horizontal" size={20} color={COLORS.MEDIUM_GREY} />
+              </TouchableOpacity>
+            )}
+
+            {idea && (
+              <LikeComponent idea={idea} prevPage={this.props.prevPage} type="icon" />
+            )}
+          </View>
+        </View>
       </View>
     )
   }
 
-  get renderBottomContent() {
-    const { viewMode, cardMode } = this.props;
-    if (cardMode === CONSTANTS.SHARE_EXTENTION_CARD) {
-      return (
-        <View style={styles.extensionSelectFeedoContainer}>
-          <Text style={[styles.textCreateCardIn, {color: COLORS.PRIMARY_BLACK}]}>Create card in:</Text>
-          <TouchableOpacity
-            style={[styles.selectFeedoButtonContainer, {paddingRight: 3}]}
-            activeOpacity={0.6}
-            onPress={this.onSelectFeedo.bind(this)}
-          >
-            <Text style={styles.textFeedoName} numberOfLines={1}>{this.props.feedo.currentFeed.headline || 'New flow'}</Text>
-            <Entypo name="chevron-right" size={20} color={COLORS.PURPLE} />
-          </TouchableOpacity>
-        </View>
-      )
-    }
-    if (viewMode !== CONSTANTS.CARD_NEW) {
-      return (
-        <View style={[styles.rowContainer, {justifyContent: 'space-between', marginHorizontal: 16, marginVertical: 8}]}>
-          {this.renderInvitee}
-          {this.renderLikesComment}
-        </View>
-      );
-    }
-  }
-
   get renderCard() {
-    const { viewMode, cardMode } = this.props;
     let cardStyle = {};
-    if (viewMode === CONSTANTS.CARD_NEW) {
-      const animatedMove  = this.animatedShow.interpolate({
-        inputRange: [0, 1],
-        outputRange: [CONSTANTS.SCREEN_HEIGHT, 0],
-      });  
-      cardStyle = {
-        top: animatedMove,
-        opacity: this.animatedShow,
-      };
-    } else {
-      const animatedTopMove = this.animatedShow.interpolate({
-        inputRange: [0, 1],
-        outputRange: [this.state.originalCardTopY, 0],
-      });
-      cardStyle = {
-        top: animatedTopMove,
-        opacity: this.animatedShow,
-      };
-    }
-    let contentContainerStyle = {};
-    if (cardMode === CONSTANTS.SHARE_EXTENTION_CARD) {
-      let bottomMargin = CONSTANTS.SCREEN_VERTICAL_MIN_MARGIN;
-      if (this.state.isShowKeyboardButton) {
-        bottomMargin = 20;
-      }
-      contentContainerStyle = {
-        height: Animated.subtract(CONSTANTS.SCREEN_HEIGHT - CONSTANTS.SCREEN_VERTICAL_MIN_MARGIN - bottomMargin, this.animatedKeyboardHeight),
-        marginTop: CONSTANTS.SCREEN_VERTICAL_MIN_MARGIN,
-        marginBottom: Animated.add(bottomMargin, this.animatedKeyboardHeight),
-        borderRadius: 18,
-        backgroundColor: '#fff',
-        marginHorizontal: 16,
-      }
-    } else {
-      contentContainerStyle = {
-        paddingTop: 0,
-        paddingBottom: this.animatedKeyboardHeight,
-        height: CONSTANTS.SCREEN_HEIGHT,
-        backgroundColor: '#fff',
-      }
+
+    const animatedTopMove = this.animatedShow.interpolate({
+      inputRange: [0, 1],
+      outputRange: [this.state.originalCardTopY, 0],
+    });
+    cardStyle = {
+      top: animatedTopMove,
+      opacity: this.animatedShow,
+    };
+
+    let contentContainerStyle = {
+      paddingTop: 0,
+      height: CONSTANTS.SCREEN_HEIGHT,
+      backgroundColor: '#fff',
     }
 
     return (
       <Animated.View 
         style={[
           styles.cardContainer,
-          cardStyle,
-          cardMode === CONSTANTS.SHARE_EXTENTION_CARD && {backgroundColor: COLORS.MODAL_BACKGROUND}
+          cardStyle
         ]}
       >
         <Animated.View style={contentContainerStyle}>
-          <SafeAreaView style={{flex: 1}}>
-            {this.renderHeader}
+          <SafeAreaView style={{ flex: 1 }}>
             {this.renderMainContent}
-            {this.renderBottomAttachmentButtons}
-            {this.renderBottomContent}
-            {
-              // If show keyboard button, and not quick add card from dashboard as interferes with change Feed https://cl.ly/ba004cb3a34b
-              viewMode === CONSTANTS.CARD_NEW && this.state.isShowKeyboardButton && cardMode !== CONSTANTS.MAIN_APP_CARD_FROM_DASHBOARD && cardMode !== CONSTANTS.SHARE_EXTENTION_CARD &&
-              <Animated.View style={styles.hideKeyboardContainer}>
-                <TouchableOpacity
-                  style={[
-                    styles.buttonItemContainer,
-                    {
-                      backgroundColor: COLORS.PURPLE,
-                      borderRadius: 8,
-                    },
-                  ]}
-                  activeOpacity={0.6}
-                  onPress={this.onHideKeyboard.bind(this)}
-                >
-                  <MaterialCommunityIcons name="keyboard-close" size={20} color={'#fff'} />
-                </TouchableOpacity>
-              </Animated.View>
-            }
+            {this.renderHeader}
+            {this.renderFooter}
           </SafeAreaView>
         </Animated.View>
       </Animated.View>
     );
   }
 
-  get renderSelectHunt() {
-    const { cardMode } = this.props;
-    if (this.state.isVisibleSelectFeedoModal) {
-      return (
-        <SelectHuntScreen
-          selectMode={cardMode !== CONSTANTS.SHARE_EXTENTION_CARD ? CONSTANTS.FEEDO_SELECT_FROM_MAIN : CONSTANTS.FEEDO_SELECT_FROM_SHARE_EXTENSION}
-          onClosed={() => this.onCloseSelectHunt()}
-        />
-      );
-    }
-  }
-
   render () {
+    const { showEditScreen, idea, loading } = this.state
+
     return (
       <View style={styles.container}>
-        {this.renderCard}
-        {this.renderSelectHunt}
+        {showEditScreen
+          ? <CardEditScreen
+              {...this.props}
+              idea={idea}
+              checkUrls={() => this.checkUrls()}
+              onClose={() => this.onCloseEditCard()}
+              onChangeIdea={(value) => this.onChangeIdea(value)}
+            />
+          : this.renderCard
+        }
+
         <ActionSheet
           ref={ref => this.imagePickerActionSheetRef = ref}
           title='Select a Photo / Video'
@@ -1699,17 +1203,40 @@ class NewCardScreen extends React.Component {
           onPress={(index) => this.onTapMediaPickerActionSheet(index)}
         />
         <ActionSheet
-          ref={ref => this.leaveActionSheetRef = ref}
-          title='Are you sure that you wish to leave?'
-          options={['Continue editing', 'Leave and discard', 'Cancel']}
-          cancelButtonIndex={2}
-          destructiveButtonIndex={1}
+          ref={ref => this.deleteActionSheet = ref}
+          title={'This will permanentely delete your card'}
+          options={['Delete card', 'Cancel']}
+          cancelButtonIndex={1}
+          destructiveButtonIndex={0}
           tintColor={COLORS.PURPLE}
-          onPress={(index) => this.onTapLeaveActionSheet(index)}
+          onPress={(index) => this.onTapActionSheet(index)}
         />
-        {this.state.loading && <LoadingScreen />}
+
+        {loading && <LoadingScreen />}
+
+        <Modal
+          isVisible={this.state.isVisibleCardOpenMenu}
+          style={styles.shareScreenContainer}
+          backdropColor='#fff'
+          backdropOpacity={0}
+          animationIn="fadeIn"
+          animationOut="fadeOut"
+          animationInTiming={500}
+          onModalHide={this.handleControlMenHide}
+          onBackdropPress={() => this.setState({ isVisibleCardOpenMenu: false })}
+        >
+          <Animated.View style={styles.settingCardMenuView}>
+            <CardControlMenuComponent
+              onAddImage={() => this.handleControlMenu(1)}
+              onAddFile={() => this.handleControlMenu(2)}
+              onMove={() => this.handleControlMenu(3)}
+              onDelete={() => this.handleControlMenu(4)}
+            />
+          </Animated.View>
+        </Modal>
+
         <Modal 
-          style={{margin: 0}}
+          style={styles.shareScreenContainer}
           isVisible={this.state.isVisibleChooseLinkImagesModal}
         >
           <ChooseLinkImages
@@ -1735,17 +1262,16 @@ class NewCardScreen extends React.Component {
           </View>
         </Modal>
       </View>
-    );
+    )
   }
 }
 
-
-NewCardScreen.defaultProps = {
+CardDetailScreen.defaultProps = {
   prevPage: 'card',
   card: {},
   invitee: {},
   intialLayout: {},
-  viewMode: CONSTANTS.CARD_NEW,
+  viewMode: CONSTANTS.CARD_EDIT,
   cardMode: CONSTANTS.MAIN_APP_CARD_FROM_DETAIL,
   shareUrl: '',
   shareImageUrls: [],
@@ -1754,7 +1280,7 @@ NewCardScreen.defaultProps = {
 }
 
 
-NewCardScreen.propTypes = {
+CardDetailScreen.propTypes = {
   prevPage: PropTypes.string,
   card: PropTypes.object,
   invitee: PropTypes.object,
@@ -1792,10 +1318,8 @@ const mapDispatchToProps = dispatch => ({
   setCoverImage: (ideaId, fileId) => dispatch(setCoverImage(ideaId, fileId)),
   getOpenGraph: (url) => dispatch(getOpenGraph(url)),
   addLink: (ideaId, originalUrl, title, description, imageUrl, faviconUrl) => dispatch(addLink(ideaId, originalUrl, title, description, imageUrl, faviconUrl)),
-  deleteLink: (ideaId, linkId) => dispatch(deleteLink(ideaId, linkId)),
-  moveCard: (ideaId, huntId) => dispatch(moveCard(ideaId, huntId)),
   resetCardError: () => dispatch(resetCardError()),
 })
 
 
-export default connect(mapStateToProps, mapDispatchToProps)(NewCardScreen)
+export default connect(mapStateToProps, mapDispatchToProps)(CardDetailScreen)

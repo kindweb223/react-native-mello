@@ -1,35 +1,44 @@
 import { StyleSheet } from 'react-native'
 import COLORS from '../../service/colors'
+import CONSTANTS from '../../service/constants'
 
 const styles = StyleSheet.create({
   container: {
-    paddingHorizontal: 16,
-    backgroundColor: '#fff',
+    paddingHorizontal: 16
   },
   itemContainer: {
-    marginBottom: 13,
-  },
-  textItemName: {
-    fontSize: 14,
-    lineHeight: 21,
-    fontWeight: 'bold',
-  },
-  textItemComment: {
-    fontSize: 14,
-    lineHeight: 21,
-  },
-  rowContainer: {
     flexDirection: 'row',
-    alignItems: 'center',
     marginBottom: 13,
   },
-  textAddComment: {
+  commentTextView: {
+    flex: 1,
+    marginLeft: 9
+  },
+  commenterName: {
     fontSize: 14,
     lineHeight: 21,
-    color: COLORS.PURPLE,
-    marginLeft: 11,
+    fontWeight: 'bold'
   },
+  commentText: {
+    color: COLORS.DARK_GREY,
+    fontSize: 14,
+    lineHeight: 21
+  },
+  viewAllContainer: {
+    marginLeft: 33,
+    marginBottom: 64
+  },
+  commentList: {
+    flex: 1,
+    overflow: 'hidden'
+  },
+  gradientView: {
+    width: '100%',
+    height: '100%',
+    position: 'absolute',
+    top: 60,
+    left: 30
+  }
 })
-
 
 export default styles
