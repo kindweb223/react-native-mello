@@ -18,78 +18,72 @@ export default {
     width: 8,
     height: 8,
     borderWidth: 1,
-    borderColor: COLORS.MEDIUM_GREY
+    borderColor: COLORS.DARK_GREY
+  },
+  navbarView: {
+    marginTop: 30,
+    marginBottom: 46,
+    height: 34,
+    paddingHorizontal: CONSTANTS.PADDING * 2
   },
   swipeContainer: {
     justifyContent: 'center',
     paddingHorizontal: CONSTANTS.PADDING * 2
   },
+  logoViewContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    paddingHorizontal: CONSTANTS.PADDING * 2
+  },
   logoView: {
-    width: '100%',
-    flexDirection: 'row',
-    alignItems: 'flex-end',
-    justifyContent: 'flex-start',
-    marginTop: 50,
-    marginBottom: 35
+    marginBottom: 35,
+    marginTop: 100
   },
-  logoText: {
-    fontSize: 50,
-    lineHeight: 50,
-    fontWeight: 'bold',
-    letterSpacing: 1.2
-  },
-  logo: {
-    width: 60,
-    height: 60
-  },
-  logoSubText: {
+  subText: {
     fontSize: 26,
     lineHeight: 32,
     letterSpacing: 1.2
   },
   titleView: {
     height: 116,
-    marginBottom: 14
   },
   titleText: {
     fontSize: 22,
     lineHeight: 28
   },
-  navbarView: {
-    marginTop: 30,
-    marginBottom: 46,
-    height: 34,
-    paddingHorizontal: CONSTANTS.PADDING * 2 - 5
-  },
-  navLogo: {
-    width: 34,
-    height: '100%'
-  },
   lottieView: {
     width: '100%',
-    height : 375
+    height : 375,
+    marginTop: 14
   },
   imageView: {
     width: '100%',
     height : 375,
-    justifyContent: 'center',
-    alignItems: 'flex-start'
+    justifyContent: 'flex-start',
+    alignItems: 'center',
+    marginTop: 50
   },
   skipButtonView: {
     position: 'absolute',
     right: 0,
-    bottom: 20
+    bottom: ifIphoneX(43, 10)
   },
   skipButton: {
     paddingHorizontal: CONSTANTS.PADDING * 2
   },
   skipButtonText: {
-    color: COLORS.DARK_GREY,
+    color: '#000',
     fontSize: 16,
     lineHeight: 22
   },
-  lastTextView: {
-    flexDirection: 'row'
+  signupFormView: {
+    marginTop: 140
+  },
+  signupTextView: {
+    height: 56,
+    alignItems: 'flex-start',
+    justifyContent: 'flex-start',
+    marginBottom: 17
   },
   bottomContainer: {
     width: '100%',
@@ -99,25 +93,28 @@ export default {
   buttonView: {
     borderRadius: 14,
     width: '100%',
-    height: 60,
-    alignItems: 'center',
-    justifyContent: 'center',
-    backgroundColor: COLORS.PURPLE,
+    height: 61,
+    flexDirection: 'row',
+    alignItems: 'center',      
+    backgroundColor: COLORS.LIGHT_SOFT_GREY,
+    paddingHorizontal: 22,
+    marginBottom: 24
   },
   buttonText: {
-    color: '#fff',
-    fontSize: 18,
-    fontWeight: '600'
+    fontSize: 16,
+    lineHeight: 22,
+    fontWeight: '600',
+    marginLeft: 48
   },
   signinView: {
     width: '100%',
     alignItems: 'center',
-    justifyContent: 'center'
+    justifyContent: 'center',
+    marginTop: 28
   },
   signinText: {
-    color: COLORS.PURPLE,
+    color: COLORS.ACTION_SHEET_TITLE,
     fontSize: 16,
-    marginTop: 21,
-    marginBottom: 30
+    lineHeight: 22
   }
 }
