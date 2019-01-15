@@ -13,6 +13,7 @@ import {
   RefreshControl,
   AppState,
   Clipboard,
+  Share
 } from 'react-native'
 
 import { connect } from 'react-redux'
@@ -83,7 +84,7 @@ import COLORS from '../../service/colors'
 import CONSTANTS from '../../service/constants'
 import * as COMMON_FUNC from '../../service/commonFunc'
 import styles from './styles'
-import { TAGS_FEATURE } from "../../service/api"
+import { TAGS_FEATURE, SHARE_LINK_URL } from "../../service/api"
 
 import Analytics from '../../lib/firebase'
 
@@ -519,7 +520,6 @@ class FeedDetailScreen extends React.Component {
         this.handleUnpinFeed(feedId)
         return
       case 'ShareLink':
-        //TODO share link feature
         return
       case 'Duplicate':
         this.handleDuplicateFeed(feedId)
@@ -573,7 +573,12 @@ class FeedDetailScreen extends React.Component {
   }
 
   handleSettingItem = (item) => {
-    this.setState({ settingItem: item, openMenu: false })
+    if (item === 'ShareLink') { // Don't close menu
+      this.setState({ settingItem: item })
+      this.showShareModal()
+    } else {
+      this.setState({ settingItem: item, openMenu: false })
+    }
   }
 
   handleAddPeople = () => {
@@ -1253,7 +1258,6 @@ class FeedDetailScreen extends React.Component {
 
   handleLinkSharing = (value, data) => {
     const { updateSharingPreferences } = this.props
-    console.log('aaaaaaa', value)
     if (value) {
       updateSharingPreferences(
         data.id,
@@ -1270,6 +1274,20 @@ class FeedDetailScreen extends React.Component {
         }
       )
     }
+  }
+
+  showShareModal = () => {
+    const { data } = this.props
+
+    Share.share({
+      message: data.summary || '',
+      url: `${SHARE_LINK_URL}${data.id}`,
+      title: data.headline
+    },{
+      dialogTitle: data.headline,
+      tintColor: COLORS.PURPLE,
+      subject: data.headline
+    })
   }
 
   render () {
