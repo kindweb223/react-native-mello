@@ -54,7 +54,7 @@ class InviteeAutoComplete extends React.Component {
           tagText={this.props.tagText}
           invalidEmail={invalidEmail}
           tags={inviteeEmails}
-          placeHolder="Email or name"
+          placeHolder="Invite by email or name"
           onCreateTag={(text) => this.onCreateInvitee(text)}
           onChangeText={(text) => this.onChangeText(text)}
           onRemoveTag={(invitee) => this.onRemoveInvitee(invitee)}

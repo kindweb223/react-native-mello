@@ -40,6 +40,7 @@ import FeedControlMenuComponent from '../../components/FeedControlMenuComponent'
 import ToasterComponent from '../../components/ToasterComponent'
 import FeedLoadingStateComponent from '../../components/FeedLoadingStateComponent'
 import ShareScreen from '../ShareScreen'
+import InviteeScreen from '../InviteeScreen';
 import NewFeedScreen from '../NewFeedScreen'
 import CardFilterComponent from '../../components/CardFilterComponent'
 import CardLongHoldMenuScreen from '../CardLongHoldMenuScreen'
@@ -1572,9 +1573,8 @@ class FeedDetailScreen extends React.Component {
           onModalHide={() => {}}
           onBackdropPress={() => this.closeShareModal()}
         >
-          <ShareScreen
+          <InviteeScreen
             onClose={() => this.closeShareModal()}
-            moveHomeScreen={() => this.moveHomeScreen()}
             data={currentFeed}
           />
         </Modal>

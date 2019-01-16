@@ -201,7 +201,7 @@ InviteeTag.defaultProps = {
   initialText: '',
   readonly: false,
   activeTagName: '',
-  placeHolder: 'Email or name'
+  placeHolder: 'Invite by email or name'
 };
 
 InviteeTag.propTypes = {

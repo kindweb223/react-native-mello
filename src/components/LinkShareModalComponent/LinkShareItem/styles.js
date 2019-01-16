@@ -26,7 +26,7 @@ const styles = StyleSheet.create({
     backgroundColor: COLORS.LIGHT_GREY,
   },
   linkEnableButton: {
-    backgroundColor: COLORS.LIGHT_YELLOW,
+    backgroundColor: COLORS.PURPLE,
   },
   tileView: {
     justifyContent: 'center',
