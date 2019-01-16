@@ -18,7 +18,9 @@ const initialState = {
   userConfirmed: false,
   cropUrl: null,
   listHomeType: 'list',
-  listDetailType: 'list'
+  listDetailType: 'list',
+  showClipboardToaster: false,
+  clipboardToasterContent: ''
 };
 
 export default function user(state = initialState, action = {}) {
@@ -598,6 +600,26 @@ export default function user(state = initialState, action = {}) {
       return {
         ...state,
         listDetailType: action.payload
+      }
+    }
+
+    /**
+     * show clipboard toaster
+     */
+    case types.SHOW_CLIPBOARD_TOASTER: {
+      return {
+        ...state,
+        showClipboardToaster: true,
+        clipboardToasterContent: action.payload
+      }
+    }
+    /**
+     * close clipboard toaster
+     */
+    case types.CLOSE_CLIPBOARD_TOASTER: {
+      return {
+        ...state,
+        showClipboardToaster: false
       }
     }
     default:

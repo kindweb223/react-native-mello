@@ -374,3 +374,16 @@ export const setDetailListType = (type) => {
     payload: type
   };
 }
+
+export const showClipboardToaster = (data) => {
+  return {
+    type: types.SHOW_CLIPBOARD_TOASTER,
+    payload: data
+  };
+}
+
+export const closeClipboardToaster = () => {
+  return {
+    type: types.CLOSE_CLIPBOARD_TOASTER
+  };
+}

@@ -50,7 +50,6 @@ import CardNewScreen from '../CardNewScreen'
 import LoadingScreen from '../LoadingScreen'
 import EmptyStateComponent from '../../components/EmptyStateComponent'
 import SpeechBubbleComponent from '../../components/SpeechBubbleComponent'
-import ClipboardToasterComponent from '../../components/ClipboardToasterComponent'
 
 import {
   getFeedDetail,
@@ -77,7 +76,9 @@ import {
   moveCard,
 } from '../../redux/card/actions'
 import {
-  setDetailListType
+  setDetailListType,
+  showClipboardToaster,
+  closeClipboardToaster
 } from '../../redux/user/actions'
 
 import COLORS from '../../service/colors'
@@ -114,6 +115,7 @@ class FeedDetailScreen extends React.Component {
       
       isVisibleCard: false,
       cardViewMode: CONSTANTS.CARD_NONE,
+      cardMode: CONSTANTS.MAIN_APP_CARD_FROM_DETAIL,
 
       isVisibleEditFeed: false,
       isVisibleLongHoldMenu: false,
@@ -145,11 +147,8 @@ class FeedDetailScreen extends React.Component {
       avatars: [],
       invitees: [],
       filteredInvitees: [],
-      isShowClipboardToaster: false,
       copiedUrl: '',
       appState: AppState.currentState,
-      tmpClipboardData: '',
-      clipboardData: '',
       isMasonryView: false,
       MasonryData: [],
       isShowInviteToaster: false,
@@ -317,38 +316,24 @@ class FeedDetailScreen extends React.Component {
   }
 
   onHandleAppStateChange = async(nextAppState) => {
-    if (this.state.appState.match(/inactive|background/) && nextAppState === 'active' && Actions.currentScene === 'FeedDetailScreen') {
+    if (this.state.appState.match(/inactive|background/) && nextAppState === 'active' && Actions.currentScene === 'FeedDetailScreen' && !this.state.isVisibleCard) {
       if (this.state.loading === false) {
         this.setState({ loading: true })
         this.props.getFeedDetail(this.props.data.id);
-        const clipboardContent = await Clipboard.getString();
-        const lastClipboardData = await AsyncStorage.getItem(CONSTANTS.CLIPBOARD_DATA);
-        if (clipboardContent !== '' && clipboardContent !== lastClipboardData) {
-          AsyncStorage.setItem(CONSTANTS.CLIPBOARD_DATA, clipboardContent);
-          this.setState({
-            isShowClipboardToaster: true,
-            tmpClipboardData: clipboardContent,
-          })
-        }
+        this.showClipboardToast()
       }
     }
-    this.setState({appState: nextAppState});
+    this.setState({ appState: nextAppState });
     return;
   }
 
-  onAddClipboardLink = () => {
-    this.setState({
-      clipboardData: this.state.tmpClipboardData,
-      isShowClipboardToaster: false,
-    });
-    
-    this.onOpenNewCardModal();
-  }
-
-  onDismissClipboardToaster() {
-    this.setState({
-      isShowClipboardToaster: false,
-    });
+  async showClipboardToast() {
+    const clipboardContent = await Clipboard.getString();
+    const lastClipboardData = await AsyncStorage.getItem(CONSTANTS.CLIPBOARD_DATA);
+    if (clipboardContent !== '' && clipboardContent !== lastClipboardData) {
+      AsyncStorage.setItem(CONSTANTS.CLIPBOARD_DATA, clipboardContent);
+      this.props.showClipboardToaster(clipboardContent)
+    }
   }
 
   async setBubbles(currentFeed) {
@@ -726,6 +711,7 @@ class FeedDetailScreen extends React.Component {
 
   onOpenNewCardModal() {
     if (!COMMON_FUNC.isFeedGuest(this.state.currentFeed)) {
+      this.props.closeClipboardToaster()
       this.props.setCurrentCard({});
       this.setState({
         isVisibleCard: true,
@@ -750,9 +736,7 @@ class FeedDetailScreen extends React.Component {
     }).start(() => {
       this.setState({ 
         isVisibleCard: false,
-        clipboardData: '',
-        tmpClipboardData: '',
-        cardViewMode: CONSTANTS.CARD_NONE,
+        cardViewMode: CONSTANTS.CARD_NONE
       });
     });
   }
@@ -781,10 +765,10 @@ class FeedDetailScreen extends React.Component {
       }
 
       this.cardItemRefs[index].measure((ox, oy, width, height, px, py) => {
+        this.props.closeClipboardToaster()
+
         this.setState({
           isVisibleCard: true,
-          clipboardData: '',
-          tmpClipboardData: '',
           cardViewMode,
           selectedIdeaInvitee: invitee,
           selectedIdeaLayout: { ox, oy, width, height, px, py },
@@ -992,7 +976,7 @@ class FeedDetailScreen extends React.Component {
   }
 
   get renderNewCardModal() {
-    const { isVisibleCard, cardViewMode, isVisibleEditFeed } = this.state
+    const { isVisibleCard, cardViewMode, cardMode, isVisibleEditFeed } = this.state
     if (!isVisibleCard && !isVisibleEditFeed) {
       return;
     }
@@ -1001,7 +985,7 @@ class FeedDetailScreen extends React.Component {
       <Animated.View 
         style={[
           styles.modalContainer,
-          {opacity: this.animatedOpacity}
+          { opacity: this.animatedOpacity }
         ]}
       >
         {
@@ -1009,9 +993,9 @@ class FeedDetailScreen extends React.Component {
             cardViewMode === CONSTANTS.CARD_NEW
             ? <CardNewScreen 
                 viewMode={this.state.cardViewMode}
-                cardMode={CONSTANTS.MAIN_APP_CARD_FROM_DETAIL}
+                cardMode={cardMode}
                 invitee={this.state.selectedIdeaInvitee}
-                shareUrl={this.state.clipboardData}
+                shareUrl=''
                 onClose={() => this.onCloseCardModal()}
               />
             : <CardDetailScreen
@@ -1019,7 +1003,7 @@ class FeedDetailScreen extends React.Component {
                 viewMode={this.state.cardViewMode}
                 invitee={this.state.selectedIdeaInvitee}
                 intialLayout={this.state.selectedIdeaLayout}
-                shareUrl={this.state.clipboardData}
+                shareUrl=''
                 onClose={() => this.onCloseCardModal()}
                 onOpenAction={(idea) => this.onOpenCardAction(idea)}
                 onMoveCard={this.onMoveCard}
@@ -1641,15 +1625,6 @@ class FeedDetailScreen extends React.Component {
           onPress={(index) => this.onTapMediaPickerActionSheet(index)}
         />
 
-        { 
-          this.state.isShowClipboardToaster && 
-          <ClipboardToasterComponent
-            description={this.state.tmpClipboardData}
-            onPress={() => this.onAddClipboardLink()}
-            onClose={() => this.onDismissClipboardToaster()}
-          />
-        }
-
         {this.state.apiLoading && <LoadingScreen />}
 
       </SafeAreaView>
@@ -1685,6 +1660,8 @@ const mapDispatchToProps = dispatch => ({
   getActivityFeed: (userId, param) => dispatch(getActivityFeed(userId, param)),
   getFeedoList: () => dispatch(getFeedoList()),
   updateSharingPreferences: (feedId, data) => dispatch(updateSharingPreferences(feedId, data)),
+  showClipboardToaster: (data) => dispatch(showClipboardToaster(data)),
+  closeClipboardToaster: () => dispatch(closeClipboardToaster())
 })
 
 FeedDetailScreen.defaultProps = {
