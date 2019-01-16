@@ -84,7 +84,7 @@ const ATTACHMENT_ICON = require('../../../assets/images/Attachment/Blue.png')
 const IMAGE_ICON = require('../../../assets/images/Image/Blue.png')
 
 
-class NewCardScreen extends React.Component {
+class CardNewScreen extends React.Component {
   constructor(props) {
     super(props);
 
@@ -1517,7 +1517,7 @@ class NewCardScreen extends React.Component {
       const otherInvitees = _.filter(currentFeed.invitees, invitee => invitee.userProfile.id !== userInfo.id);
       if (!otherInvitees || otherInvitees.length === 0) {
         return (
-          <View style={[styles.rowContainer, {flex: 1}]}>
+          <View style={[styles.rowContainer, { flex: 1 }]}>
             <Text style={styles.textInvitee}>{getDurationFromNow(this.props.card.currentCard.publishedDate)}</Text>
           </View>
         );
@@ -1809,7 +1809,7 @@ class NewCardScreen extends React.Component {
 }
 
 
-NewCardScreen.defaultProps = {
+CardNewScreen.defaultProps = {
   prevPage: 'card',
   card: {},
   invitee: {},
@@ -1823,7 +1823,7 @@ NewCardScreen.defaultProps = {
 }
 
 
-NewCardScreen.propTypes = {
+CardNewScreen.propTypes = {
   prevPage: PropTypes.string,
   card: PropTypes.object,
   invitee: PropTypes.object,
@@ -1867,4 +1867,4 @@ const mapDispatchToProps = dispatch => ({
 })
 
 
-export default connect(mapStateToProps, mapDispatchToProps)(NewCardScreen)
+export default connect(mapStateToProps, mapDispatchToProps)(CardNewScreen)
