@@ -458,11 +458,10 @@ class HomeScreen extends React.Component {
     if (Actions.currentScene !== 'FeedDetailScreen') {
       const clipboardContent = await Clipboard.getString();
       const lastClipboardData = await AsyncStorage.getItem(CONSTANTS.CLIPBOARD_DATA)
-      // if (clipboardContent !== '' && clipboardContent !== lastClipboardData) {
-      //   AsyncStorage.setItem(CONSTANTS.CLIPBOARD_DATA, clipboardContent);
-      //   this.props.showClipboardToaster(clipboardContent)
-      // }
-      this.props.showClipboardToaster('TEST !!!')
+      if (clipboardContent !== '' && clipboardContent !== lastClipboardData) {
+        AsyncStorage.setItem(CONSTANTS.CLIPBOARD_DATA, clipboardContent);
+        this.props.showClipboardToaster(clipboardContent)
+      }
     }
   }
 
