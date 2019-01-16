@@ -304,7 +304,7 @@ export default function card(state = initialState, action = {}) {
       return {
         ...state,
         loading: types.ADD_CARD_COMMENT_FULFILLED,
-        currentComments: [data, ...state.currentComments ]
+        currentComments: [...state.currentComments, data]
       }
     }
     case types.ADD_CARD_COMMENT_REJECTED: {
