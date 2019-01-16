@@ -53,7 +53,7 @@ export default {
     fontWeight: '600'
   },
   sendEnableButtonText: {
-    color: '#fff'
+    color: COLORS.PURPLE
   },
   sendDisableButtonText: {
     color: COLORS.MEDIUM_GREY
@@ -80,6 +80,17 @@ export default {
     color: '#000',
     fontSize: 16,
     fontWeight: '600'
+  },
+  cancelText: {
+    color: COLORS.PURPLE
+  },
+  listItem: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    paddingVertical: 10,
+    borderBottomWidth: 1,
+    borderColor: COLORS.LIGHT_GREY_LINE,
   },
   inviteeItem: {
     paddingVertical: 7,

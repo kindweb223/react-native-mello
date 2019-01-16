@@ -17,8 +17,9 @@ import _ from 'lodash'
 import InviteeAutoComplete from '../../components/InviteeAutoComplete'
 import LinkShareModalComponent from '../../components/LinkShareModalComponent'
 import InviteeItemComponent from '../../components/LinkShareModalComponent/InviteeItemComponent'
+import LinkShareItem from '../../components/LinkShareModalComponent/LinkShareItem'
 import { getContactList } from '../../redux/user/actions'
-import { inviteToHunt } from '../../redux/feedo/actions'
+import { inviteToHunt, updateSharingPreferences } from '../../redux/feedo/actions'
 import * as COMMON_FUNC from '../../service/commonFunc'
 import COLORS from '../../service/colors'
 import styles from './styles'
@@ -130,6 +131,26 @@ class InviteeScreen extends React.Component {
     this.setState({ tagText: text, filteredContacts })
   }
 
+  handleLinkSharing = (value, data) => {
+    const { updateSharingPreferences } = this.props
+    if (value) {
+      updateSharingPreferences(
+        data.id,
+        {
+          level: 'REGISTERED_ONLY',
+          permissions: 'ADD'
+        }
+      )
+    } else {
+      updateSharingPreferences(
+        data.id,
+        {
+          level: 'INVITEES_ONLY'
+        }
+      )
+    }
+  }
+
   onSelectContact = (contact) => {
     let { inviteeEmails, recentContacts } = this.state
     const name = `${contact.userProfile.firstName} ${contact.userProfile.lastName}`
@@ -219,19 +240,18 @@ class InviteeScreen extends React.Component {
       isInvalidEmail,
       invalidEmail
      } = this.state
+     const { data } = this.props
 
     return (
       <View style={styles.overlay}>
         <ScrollView keyboardShouldPersistTaps="handled">
           <View style={styles.header}>
             <TouchableOpacity onPress={() => this.props.onClose()}>
-              <Image source={CLOSE_ICON} />
+              <Text style={styles.cancelText}>Cancel</Text>
             </TouchableOpacity>
 
             <TouchableOpacity onPress={() => this.onSendInvitation()} activeOpacity={0.8}>
-              <View style={[styles.sendButtonView, (!isAddInvitee || isInvalidEmail) ? styles.sendDisableButtonView : styles.sendEnableButtonView]}>
-                <Text style={[styles.sendButtonText, (!isAddInvitee || isInvalidEmail) ? styles.sendDisableButtonText : styles.sendEnableButtonText]}>Send</Text>
-              </View>
+              <Text style={[styles.sendButtonText, (!isAddInvitee || isInvalidEmail) ? styles.sendDisableButtonText : styles.sendEnableButtonText]}>Send</Text>
             </TouchableOpacity>
           </View>
 
@@ -245,14 +265,14 @@ class InviteeScreen extends React.Component {
                   handleInvitees={this.handleInvitees}
                   handleChange={this.handleChange}
                 />
-                <TouchableOpacity onPress={() => this.updatePermission()}>
+                {/* <TouchableOpacity onPress={() => this.updatePermission()}>
                   <View style={styles.rightView}>
                     <Text style={styles.viewText}>
                       {inviteePermission}
                     </Text>
                     <Entypo name="cog" style={styles.cogIcon} />
                   </View>
-                </TouchableOpacity>
+                </TouchableOpacity> */}
               </View>
 
               {this.state.isInput && (
@@ -273,6 +293,14 @@ class InviteeScreen extends React.Component {
                   />
                 </View>
               )}
+
+              <View style={styles.listItem}>
+                <LinkShareItem
+                  isViewOnly={false}
+                  feed={data}
+                  handleLinkSharing={value => this.handleLinkSharing(value, data)}
+                />
+              </View>
             </View>
 
             {this.state.loading
@@ -342,7 +370,8 @@ const mapStateToProps = ({ feedo, user }) => ({
 
 const mapDispatchToProps = dispatch => ({
   getContactList: (userId) => dispatch(getContactList(userId)),
-  inviteToHunt: (feedId, data) => dispatch(inviteToHunt(feedId, data))
+  inviteToHunt: (feedId, data) => dispatch(inviteToHunt(feedId, data)),
+  updateSharingPreferences: (feedId, data) => dispatch(updateSharingPreferences(feedId, data)),
 })
 
 export default connect(
