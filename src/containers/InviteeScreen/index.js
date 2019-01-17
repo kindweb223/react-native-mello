@@ -7,7 +7,8 @@ import {
   TextInput,
   ScrollView,
   ActivityIndicator,
-  Alert
+  Alert,
+  Share
 } from 'react-native'
 import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
@@ -18,10 +19,12 @@ import InviteeAutoComplete from '../../components/InviteeAutoComplete'
 import LinkShareModalComponent from '../../components/LinkShareModalComponent'
 import InviteeItemComponent from '../../components/LinkShareModalComponent/InviteeItemComponent'
 import LinkShareItem from '../../components/LinkShareModalComponent/LinkShareItem'
+import NewUserTap from '../../components/NewUserTapComponent'
 import { getContactList } from '../../redux/user/actions'
 import { inviteToHunt, updateSharingPreferences } from '../../redux/feedo/actions'
 import * as COMMON_FUNC from '../../service/commonFunc'
 import COLORS from '../../service/colors'
+import { SHARE_LINK_URL } from '../../service/api'
 import styles from './styles'
 import Analytics from '../../lib/firebase'
 
@@ -36,6 +39,7 @@ class InviteeScreen extends React.Component {
       isPermissionModal: false,
       inviteePermission: 'ADD',
       isInput: false,
+      inputText: '',
       contactList: [],
       inviteeEmails: [],
       filteredContacts: [],
@@ -112,7 +116,10 @@ class InviteeScreen extends React.Component {
 
   handleChange = (text) => {
     const { recentContacts, inviteeEmails } = this.state
-    this.setState({ isInput: text.length > 0 ? true : false })
+    this.setState({
+      inputText: text,
+      isInput: text.length > 0 ? true : false
+    })
 
     let filteredContacts = []
 
@@ -212,21 +219,45 @@ class InviteeScreen extends React.Component {
   }
 
   renderFilteredContacts = (filteredContacts) => {
-    return (
-      <ScrollView style={[ styles.contactList ]} keyboardShouldPersistTaps="handled">
-        {filteredContacts.map(item => (
-          <TouchableOpacity onPress={() => this.onSelectContact(item)} key={item.id}>
-            <View style={styles.contactItem}>
-              <InviteeItemComponent invitee={item} isOnlyTitle={true} />
-            </View>
-          </TouchableOpacity>
-        ))}
-      </ScrollView>
-    );
+    if (filteredContacts && filteredContacts.length > 0) {
+      return (
+        <ScrollView style={[ styles.contactList ]} keyboardShouldPersistTaps="handled">
+          {filteredContacts.map(item => (
+            <TouchableOpacity onPress={() => this.onSelectContact(item)} key={item.id}>
+              <View style={styles.contactItem}>
+                <InviteeItemComponent invitee={item} isOnlyTitle={true} />
+              </View>
+            </TouchableOpacity>
+          ))}
+        </ScrollView>
+      );
+    } else {
+      return (
+        <NewUserTap
+          inputEmail={this.state.inputText}
+          onHandleNewUserTap={item => this.onSelectContact(item)}
+        />
+      )
+    }
   }
 
   onChangeMessage = (text) => {
     this.setState({ message: text })
+  }
+
+  showShareModal = (data) => {
+    let isEnableShare = data.sharingPreferences.level === 'INVITEES_ONLY' ? false : true
+    if (isEnableShare) {
+      Share.share({
+        message: data.summary || '',
+        url: `${SHARE_LINK_URL}${data.id}`,
+        title: data.headline
+      },{
+        dialogTitle: data.headline,
+        tintColor: COLORS.PURPLE,
+        subject: data.headline
+      })
+    }
   }
 
   render () {
@@ -238,7 +269,8 @@ class InviteeScreen extends React.Component {
       inviteePermission,
       isPermissionModal,
       isInvalidEmail,
-      invalidEmail
+      invalidEmail,
+      isInput
      } = this.state
      const { data } = this.props
 
@@ -275,11 +307,11 @@ class InviteeScreen extends React.Component {
                 </TouchableOpacity> */}
               </View>
 
-              {this.state.isInput && (
+              {isInput && (
                 this.renderFilteredContacts(filteredContacts)
               )}
 
-              {!this.state.isInput && (
+              {!isInput && (
                 <View style={styles.messageInputItem}>
                   <TextInput
                     ref={ref => this.messageRef = ref}
@@ -294,13 +326,16 @@ class InviteeScreen extends React.Component {
                 </View>
               )}
 
-              <View style={styles.listItem}>
-                <LinkShareItem
-                  isViewOnly={false}
-                  feed={data}
-                  handleLinkSharing={value => this.handleLinkSharing(value, data)}
-                />
-              </View>
+              {!isInput &&
+                <View style={styles.listItem}>
+                  <LinkShareItem
+                    isViewOnly={false}
+                    feed={data}
+                    onPress={() => this.showShareModal(data)}
+                    handleLinkSharing={value => this.handleLinkSharing(value, data)}
+                  />
+                </View>
+              }
             </View>
 
             {this.state.loading
@@ -310,10 +345,10 @@ class InviteeScreen extends React.Component {
                     color={COLORS.PURPLE}
                   />
                 </View>
-              : (!this.state.isInput && recentContacts && recentContacts.length > 0) && (
+              : (!isInput && recentContacts && recentContacts.length > 0) && (
                   <View style={styles.inviteeListView}>
                     <View style={styles.titleView}>
-                      <Text style={styles.titleText}>Contacts</Text>
+                      <Text style={styles.titleText}>Current members</Text>
                     </View>
                     <ScrollView style={styles.inviteeList} keyboardShouldPersistTaps="handled">
                       {recentContacts.map(item => (
