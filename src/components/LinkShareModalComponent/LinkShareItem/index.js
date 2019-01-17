@@ -12,13 +12,17 @@ const changeToCapital = str => {
   return str[0].toUpperCase() + str.substr(1).toLowerCase()
 }
 
-const LinkShareItem = ({ isViewOnly, feed, handleLinkSharing }) => {
+const LinkShareItem = ({ isViewOnly, feed, handleLinkSharing, onPress }) => {
   let isEnableShare = feed.sharingPreferences.level === 'INVITEES_ONLY' ? false : true
   let isEnableShareAllowed = COMMON_FUNC.isFeedOwner(feed) || COMMON_FUNC.isFeedEditor(feed)
 
   return (
     <View style={styles.container}>
-      <View style={styles.innerView}>
+      <TouchableOpacity
+        style={styles.innerView}
+        activeOpacity={0.8}
+        onPress={onPress}
+      >
         <View style={[styles.linkButton, feed.sharingPreferences.level === 'INVITEES_ONLY' ? styles.linkDisableButton : styles.linkEnableButton]}>
           <Image source={LINK_ICON} />
         </View>
@@ -34,9 +38,9 @@ const LinkShareItem = ({ isViewOnly, feed, handleLinkSharing }) => {
             }
           </Text>
         </View>
-      </View>
+      </TouchableOpacity>
 
-      {!isViewOnly && (
+      {!isViewOnly && isEnableShareAllowed && (
         <View style={styles.rightView}>
           <Switch
             trackColor={{true: COLORS.PURPLE, false: null}}

@@ -1566,8 +1566,8 @@ class FeedDetailScreen extends React.Component {
           style={styles.shareScreenContainer}
           backdropColor='#f5f5f5'
           backdropOpacity={0.9}
-          animationIn="zoomInUp"
-          animationOut="zoomOutDown"
+          animationIn="slideInDown"
+          animationOut="slideOutUp"
           animationInTiming={300}
           animationOutTiming={100}
           onModalHide={() => {}}

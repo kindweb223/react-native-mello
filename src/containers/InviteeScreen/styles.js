@@ -8,21 +8,9 @@ export default {
     top: 0,
     right: 0,
     left: 0,
-    marginTop: CONSTANTS.STATUSBAR_HEIGHT,
-    paddingBottom: 50,
-    borderRadius: 18,
+    bottom: 0,
+    paddingTop: CONSTANTS.STATUSBAR_HEIGHT,
     backgroundColor: '#fff',
-    ...Platform.select({
-      ios: {
-        shadowColor: 'black',
-        shadowOffset: { height: 5 },
-        shadowOpacity: 0.2,
-        shadowRadius: 8
-      },
-      android: {
-        elevation: 20
-      }
-    })
   },
   header: {
     width: '100%',
@@ -144,8 +132,6 @@ export default {
     color: COLORS.PURPLE,
   },
   contactList: {
-    maxHeight: 300,
-    marginBottom: 0
   },
   contactItem: {
     paddingVertical: 5,
