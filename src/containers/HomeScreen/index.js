@@ -143,6 +143,9 @@ class HomeScreen extends React.Component {
     if (viewMode && viewMode.userId === JSON.parse(userInfo).id) {
       this.props.setHomeListType(viewMode.type)
     }
+    else {
+      this.props.setHomeListType('thumbnail')
+    }
 
     // Subscribe to comments channel for new comments and updates
     console.log("Subscribe to: ", this.props.user.userInfo.eventSubscriptionToken)
