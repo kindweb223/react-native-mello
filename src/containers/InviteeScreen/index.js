@@ -20,6 +20,7 @@ import LinkShareModalComponent from '../../components/LinkShareModalComponent'
 import InviteeItemComponent from '../../components/LinkShareModalComponent/InviteeItemComponent'
 import LinkShareItem from '../../components/LinkShareModalComponent/LinkShareItem'
 import NewUserTap from '../../components/NewUserTapComponent'
+import ContactRemove from '../../components/ContactRemoveComponent'
 import { getContactList } from '../../redux/user/actions'
 import { inviteToHunt, updateSharingPreferences } from '../../redux/feedo/actions'
 import * as COMMON_FUNC from '../../service/commonFunc'
@@ -27,6 +28,7 @@ import COLORS from '../../service/colors'
 import { SHARE_LINK_URL } from '../../service/api'
 import styles from './styles'
 import Analytics from '../../lib/firebase'
+import CardFilterComponent from '../../components/CardFilterComponent';
 
 const CLOSE_ICON = require('../../../assets/images/Close/Blue.png')
 
@@ -37,6 +39,7 @@ class InviteeScreen extends React.Component {
       isAddInvitee: false,
       message: '',
       isPermissionModal: false,
+      isRemoveModal: false,
       inviteePermission: 'ADD',
       isInput: false,
       inputText: '',
@@ -44,6 +47,7 @@ class InviteeScreen extends React.Component {
       inviteeEmails: [],
       filteredContacts: [],
       recentContacts: [],
+      selectedContact: null,
       isInvalidEmail: false,
       invalidEmail: [],
       loading: false,
@@ -158,6 +162,13 @@ class InviteeScreen extends React.Component {
     }
   }
 
+  onSelectMember = (item) => {
+    this.setState({
+      selectedContact: item,
+      isRemoveModal: true
+    })
+  }
+
   onSelectContact = (contact) => {
     let { inviteeEmails, recentContacts } = this.state
     const name = `${contact.userProfile.firstName} ${contact.userProfile.lastName}`
@@ -268,6 +279,8 @@ class InviteeScreen extends React.Component {
       inviteeEmails,
       inviteePermission,
       isPermissionModal,
+      isRemoveModal,
+      selectedContact,
       isInvalidEmail,
       invalidEmail,
       isInput
@@ -352,7 +365,7 @@ class InviteeScreen extends React.Component {
                     </View>
                     <ScrollView style={styles.inviteeList} keyboardShouldPersistTaps="handled">
                       {recentContacts.map(item => (
-                        <TouchableOpacity key={item.id} onPress={() => this.onSelectContact(item)}>
+                        <TouchableOpacity key={item.id} onPress={() => this.onSelectMember(item)}>
                           <View style={styles.inviteeItem}>
                             <InviteeItemComponent invitee={item} hideLike />
                           </View>
@@ -365,7 +378,13 @@ class InviteeScreen extends React.Component {
           </View>
         </ScrollView>
 
-        <Modal 
+        {/* <ContactRemove
+          isRemoveModal={isRemoveModal}
+          selectedContact={selectedContact}
+          onRemove={() => this.setState({ isRemoveModal: false }) }
+        /> */}
+
+        <Modal
           isVisible={isPermissionModal}
           style={{ margin: 0 }}
           backdropColor='#e0e0e0'
@@ -380,7 +399,7 @@ class InviteeScreen extends React.Component {
             handleShareOption={this.handlePermissionOption}
           />
         </Modal>
-      </View>      
+      </View>
     )
   }
 }
