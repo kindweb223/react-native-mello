@@ -332,7 +332,7 @@ class FeedDetailScreen extends React.Component {
     const lastClipboardData = await AsyncStorage.getItem(CONSTANTS.CLIPBOARD_DATA);
     if (clipboardContent !== '' && clipboardContent !== lastClipboardData) {
       AsyncStorage.setItem(CONSTANTS.CLIPBOARD_DATA, clipboardContent);
-      this.props.showClipboardToaster(clipboardContent)
+      this.props.showClipboardToaster(clipboardContent, 'card')
     }
   }
 
@@ -1660,7 +1660,7 @@ const mapDispatchToProps = dispatch => ({
   getActivityFeed: (userId, param) => dispatch(getActivityFeed(userId, param)),
   getFeedoList: () => dispatch(getFeedoList()),
   updateSharingPreferences: (feedId, data) => dispatch(updateSharingPreferences(feedId, data)),
-  showClipboardToaster: (data) => dispatch(showClipboardToaster(data)),
+  showClipboardToaster: (data, prevPage) => dispatch(showClipboardToaster(data, prevPage)),
   closeClipboardToaster: () => dispatch(closeClipboardToaster())
 })
 

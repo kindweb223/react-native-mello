@@ -20,7 +20,8 @@ const initialState = {
   listHomeType: 'list',
   listDetailType: 'list',
   showClipboardToaster: false,
-  clipboardToasterContent: ''
+  clipboardToasterContent: '',
+  clipboardToasterPrevpage: 'card'
 };
 
 export default function user(state = initialState, action = {}) {
@@ -610,7 +611,8 @@ export default function user(state = initialState, action = {}) {
       return {
         ...state,
         showClipboardToaster: true,
-        clipboardToasterContent: action.payload
+        clipboardToasterPrevpage: action.payload.prevPage,
+        clipboardToasterContent: action.payload.data
       }
     }
     /**

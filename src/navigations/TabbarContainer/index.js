@@ -47,7 +47,7 @@ class TabbarContainer extends React.Component {
   }
 
   render () {
-    const { showClipboardToaster, clipboardToasterContent } = this.props.user
+    const { showClipboardToaster, clipboardToasterPrevpage, clipboardToasterContent } = this.props.user
 
     return (
       <View style={styles.container}>
@@ -70,6 +70,7 @@ class TabbarContainer extends React.Component {
               viewMode={CONSTANTS.CARD_NEW}
               cardMode={CONSTANTS.MAIN_APP_CARD_FROM_DASHBOARD}
               invitee={null}
+              prevPage={clipboardToasterPrevpage}
               shareUrl={clipboardToasterContent}
               onClose={() => this.onCloseCardModal()}
             />
