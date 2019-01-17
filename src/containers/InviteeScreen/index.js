@@ -20,7 +20,7 @@ import LinkShareModalComponent from '../../components/LinkShareModalComponent'
 import InviteeItemComponent from '../../components/LinkShareModalComponent/InviteeItemComponent'
 import LinkShareItem from '../../components/LinkShareModalComponent/LinkShareItem'
 import NewUserTap from '../../components/NewUserTapComponent'
-import ContactRemove from '../../components/ContactRemoveComponent'
+import ContactRemoveComponent from '../../components/ContactRemoveComponent'
 import { getContactList } from '../../redux/user/actions'
 import { inviteToHunt, updateSharingPreferences } from '../../redux/feedo/actions'
 import * as COMMON_FUNC from '../../service/commonFunc'
@@ -294,9 +294,9 @@ class InviteeScreen extends React.Component {
             <TouchableOpacity onPress={() => this.props.onClose()}>
               <Text style={styles.cancelText}>Cancel</Text>
             </TouchableOpacity>
-
+            <Text style={[styles.h3, { color: COLORS.PRIMARY_BLACK }]}>Add people</Text>
             <TouchableOpacity onPress={() => this.onSendInvitation()} activeOpacity={0.8}>
-              <Text style={[styles.sendButtonText, (!isAddInvitee || isInvalidEmail) ? styles.sendDisableButtonText : styles.sendEnableButtonText]}>Send</Text>
+              <Text style={[styles.h3, (!isAddInvitee || isInvalidEmail) ? styles.sendDisableButtonText : styles.sendEnableButtonText]}>Send</Text>
             </TouchableOpacity>
           </View>
 
@@ -361,13 +361,13 @@ class InviteeScreen extends React.Component {
               : (!isInput && recentContacts && recentContacts.length > 0) && (
                   <View style={styles.inviteeListView}>
                     <View style={styles.titleView}>
-                      <Text style={styles.titleText}>Current members</Text>
+                      <Text style={styles.h3}>Current members</Text>
                     </View>
                     <ScrollView style={styles.inviteeList} keyboardShouldPersistTaps="handled">
                       {recentContacts.map(item => (
                         <TouchableOpacity key={item.id} onPress={() => this.onSelectMember(item)}>
                           <View style={styles.inviteeItem}>
-                            <InviteeItemComponent invitee={item} hideLike />
+                            <InviteeItemComponent invitee={item} />
                           </View>
                         </TouchableOpacity>
                       ))}
@@ -378,11 +378,18 @@ class InviteeScreen extends React.Component {
           </View>
         </ScrollView>
 
-        {/* <ContactRemove
-          isRemoveModal={isRemoveModal}
+        {/* <ContactRemoveComponent
+          isRemoveModal={this.state.isRemoveModal}
           selectedContact={selectedContact}
           onRemove={() => this.setState({ isRemoveModal: false }) }
         /> */}
+
+        <CardFilterComponent
+          cardCount={3}
+          totalCardCount={3}
+          show={this.state.isRemoveModal}
+          onClose={() => this.setState({ isRemoveModal: false }) }
+        />
 
         <Modal
           isVisible={isPermissionModal}
