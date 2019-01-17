@@ -69,7 +69,8 @@ import {
   appOpened,
   getUserSession,
   setHomeListType,
-  showClipboardToaster
+  showClipboardToaster,
+  closeClipboardToaster
 } from '../../redux/user/actions'
 
 import { 
@@ -460,7 +461,7 @@ class HomeScreen extends React.Component {
       const lastClipboardData = await AsyncStorage.getItem(CONSTANTS.CLIPBOARD_DATA)
       if (clipboardContent !== '' && clipboardContent !== lastClipboardData) {
         AsyncStorage.setItem(CONSTANTS.CLIPBOARD_DATA, clipboardContent);
-        this.props.showClipboardToaster(clipboardContent)
+        this.props.showClipboardToaster(clipboardContent, 'home')
       }
     }
   }
@@ -1076,7 +1077,8 @@ class HomeScreen extends React.Component {
           viewMode={this.state.cardViewMode}
           cardMode={cardMode}
           invitee={this.state.selectedIdeaInvitee}
-          shareUrl=''
+          shareUrl=""
+          prevPage="home"
           onClose={() => this.onCloseCardModal()}
 
           // cardMode={CONSTANTS.SHARE_EXTENTION_CARD}
@@ -1429,7 +1431,7 @@ const mapDispatchToProps = dispatch => ({
   getUserSession: () => dispatch(getUserSession()),
   getActivityFeed: (userId, param) => dispatch(getActivityFeed(userId, param)),
   setHomeListType: (type) => dispatch(setHomeListType(type)),
-  showClipboardToaster: (data) => dispatch(showClipboardToaster(data)),
+  showClipboardToaster: (data, prevPage) => dispatch(showClipboardToaster(data, prevPage)),
   closeClipboardToaster: () => dispatch(closeClipboardToaster()),
 })
 

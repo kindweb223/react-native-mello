@@ -375,10 +375,10 @@ export const setDetailListType = (type) => {
   };
 }
 
-export const showClipboardToaster = (data) => {
+export const showClipboardToaster = (data, prevPage) => {
   return {
     type: types.SHOW_CLIPBOARD_TOASTER,
-    payload: data
+    payload: { data, prevPage }
   };
 }
 

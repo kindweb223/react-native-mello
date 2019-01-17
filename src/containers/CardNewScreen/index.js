@@ -183,8 +183,7 @@ class CardNewScreen extends React.Component {
     let loading = false;
     if (this.props.card.loading !== types.CREATE_CARD_PENDING && nextProps.card.loading === types.CREATE_CARD_PENDING) {
       // loading = true;
-    } 
-    else if (this.props.card.loading !== types.CREATE_CARD_FULFILLED && nextProps.card.loading === types.CREATE_CARD_FULFILLED) {
+    } else if (this.props.card.loading !== types.CREATE_CARD_FULFILLED && nextProps.card.loading === types.CREATE_CARD_FULFILLED) {
       // If share extension and a url has been passed
       if (this.props.cardMode === CONSTANTS.SHARE_EXTENTION_CARD && this.props.shareUrl !== '') {
         const openGraph = this.props.card.currentOpneGraph;
@@ -264,7 +263,7 @@ class CardNewScreen extends React.Component {
             console.log('Image compress Success!');
             this.props.uploadFileToS3(nextProps.card.fileUploadUrl.uploadUrl, response.uri, this.selectedFileName, this.selectedFileMimeType);
           }).catch((error) => {
-            console.log('Image compress error : ', error);
+            console.log('Image compress error: ', error);
             this.props.uploadFileToS3(nextProps.card.fileUploadUrl.uploadUrl, this.selectedFile.uri, this.selectedFileName, this.selectedFileMimeType);
           });
         return;
@@ -623,8 +622,8 @@ class CardNewScreen extends React.Component {
   async createCard(currentProps) {
     Analytics.logEvent('new_card_new_card', {})
 
-    const { cardMode, viewMode } = this.props;
-    if ((cardMode === CONSTANTS.MAIN_APP_CARD_FROM_DASHBOARD) || (cardMode === CONSTANTS.SHARE_EXTENTION_CARD)) {
+    const { cardMode, viewMode, prevPage } = this.props;
+    if (prevPage !== 'card' && (cardMode === CONSTANTS.MAIN_APP_CARD_FROM_DASHBOARD) || (cardMode === CONSTANTS.SHARE_EXTENTION_CARD)) {
       try {
         const strFeedoInfo = await SharedGroupPreferences.getItem(CONSTANTS.CARD_SAVED_LAST_FEEDO_INFO, CONSTANTS.APP_GROUP_LAST_USED_FEEDO);
         if (strFeedoInfo) {
@@ -642,7 +641,11 @@ class CardNewScreen extends React.Component {
       } catch (error) {
         console.log('error code : ', error);
       }
-      this.props.createFeed();
+      if (this.props.prevPage !== 'card') {
+        this.props.createFeed();
+      } else {
+        this.props.createCard(this.props.feedo.currentFeed.id)
+      }
     } else if (viewMode === CONSTANTS.CARD_NEW) {
       this.props.createCard(this.props.feedo.currentFeed.id);
     }
@@ -1790,9 +1793,8 @@ class CardNewScreen extends React.Component {
           onBackdropPress={() => this.setState({ isCopyLink: false })}
         >
           <View style={styles.successView}>
-            {this.state.copiedLink &&
-              <Text style={styles.successText}>{this.state.copiedLink.originalUrl}</Text>
-            }
+            <Octicons name="check" style={styles.successIcon} />
+            <Text style={styles.successText}>Copied</Text>
           </View>
         </Modal>
         {this.state.isDeleteLink && (

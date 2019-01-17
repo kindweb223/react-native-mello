@@ -67,7 +67,8 @@ const styles = StyleSheet.create({
     alignItems: 'center'
   },
   successView: {
-    padding: CONSTANTS.PADDING,
+    width: 146,
+    height: 146,
     borderRadius: 24,
     backgroundColor: '#fff',
     justifyContent: 'center',
