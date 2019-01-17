@@ -1,6 +1,7 @@
 import { StyleSheet, Platform } from 'react-native'
 import COLORS from '../../service/colors'
 import CONSTANTS from '../../service/constants'
+import { fonts } from '../../themes'
 
 export default {
   overlay: {
@@ -19,8 +20,7 @@ export default {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    paddingLeft: CONSTANTS.PADDING / 2,
-    paddingRight: CONSTANTS.PADDING
+    paddingHorizontal: CONSTANTS.PADDING
   },
   sendButtonView: {
     flexDirection: 'row',
@@ -36,20 +36,14 @@ export default {
   sendDisableButtonView: {
     backgroundColor: COLORS.LIGHT_GREY
   },
-  sendButtonText: {
-    fontSize: 14,
-    fontWeight: '600'
+  h3: {
+    ...fonts.style.h3
   },
   sendEnableButtonText: {
     color: COLORS.PURPLE
   },
   sendDisableButtonText: {
     color: COLORS.MEDIUM_GREY
-  },
-  title: {
-    fontSize: 16,
-    fontWeight: '600',
-    color: '#000'
   },
   loadingView: {
     marginTop: 24,
@@ -64,13 +58,12 @@ export default {
     paddingBottom: 5,
     paddingHorizontal: CONSTANTS.PADDING
   },
-  titleText: {
-    color: '#000',
-    fontSize: 16,
-    fontWeight: '600'
-  },
   cancelText: {
+    ...fonts.style.h3,
     color: COLORS.PURPLE
+  },
+  inviteeList: {
+    marginTop: 15
   },
   listItem: {
     flexDirection: 'row',
