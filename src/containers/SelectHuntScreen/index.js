@@ -244,7 +244,7 @@ class SelectHuntScreen extends React.Component {
       feedoList = _.filter(feedoList, feedo => feedo.headline && feedo.headline.toLowerCase().indexOf(this.state.filterText.toLowerCase()) !== -1);
     }
     feedoList = _.filter(feedoList, feedo => feedo.status === 'PUBLISHED' && feedo.metadata.myInviteStatus === 'ACCEPTED');
-    feedoList = _.orderBy(feedoList, ['headline'], 'asc')
+    feedoList = _.orderBy(feedoList, [feedo => feedo.headline.toLowerCase()], 'asc')
 
     const { selectMode } = this.props;
     let bottomMargin = CONSTANTS.SCREEN_VERTICAL_MIN_MARGIN;
