@@ -3,10 +3,9 @@ import {
   TouchableOpacity,
   View,
   RefreshControl,
-  ScrollView,
   Animated
 } from 'react-native'
-
+import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
 import { Actions } from 'react-native-router-flux'
 import ReactNativeHaptic from 'react-native-haptic'
@@ -45,8 +44,9 @@ class FeedoListContainer extends React.Component {
   }
 
   renderItem(item, index) {
-    const { feedoList, listType, feedClickEvent, selectedLongHoldFeedoIndex } = this.props
-    const paddingVertical = listType === 'list' ? 15 : 12
+    const { feedoList, feedClickEvent, selectedLongHoldFeedoIndex } = this.props
+    const { listHomeType } = this.props
+    const paddingVertical = listHomeType === 'list' ? 15 : 12
 
     return (
       <View key={index}>
@@ -63,7 +63,7 @@ class FeedoListContainer extends React.Component {
                 onLongPress={() => this.onLongPressFeedo(index, item)}
                 onPress={() => this.onPressFeedo(index, item)}
               >
-                <FeedItemComponent item={item} pinFlag={item.pinned ? true : false} page={this.props.page} listType={this.props.listType} />
+                <FeedItemComponent item={item} pinFlag={item.pinned ? true : false} page={this.props.page} listType={listHomeType} />
               </TouchableOpacity>
             </View>
 
@@ -150,4 +150,11 @@ FeedoListContainer.propTypes = {
   invitedFeedList: PropTypes.arrayOf(PropTypes.any)
 }
 
-export default FeedoListContainer
+const mapStateToProps = ({ user }) => ({
+  listHomeType: user.listHomeType
+})
+
+export default connect(
+  mapStateToProps,
+  null
+)(FeedoListContainer)

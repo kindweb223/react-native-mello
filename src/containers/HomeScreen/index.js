@@ -1267,7 +1267,6 @@ class HomeScreen extends React.Component {
                   }
                   handleLongHoldMenu={this.handleLongHoldMenu}
                   page="home"
-                  listType={this.props.user.listHomeType}
                   isRefreshing={this.state.isRefreshing}
                   onRefreshFeed={() => this.onRefreshFeed()}
                 />
@@ -1290,7 +1289,6 @@ class HomeScreen extends React.Component {
                       }
                       handleLongHoldMenu={this.handleLongHoldMenu}
                       page="home"
-                      listType={this.props.user.listHomeType}
                       isRefreshing={this.state.isRefreshing}
                       onRefreshFeed={() => this.onRefreshFeed()}
                     />
@@ -1320,7 +1318,6 @@ class HomeScreen extends React.Component {
                       }
                       handleLongHoldMenu={this.handleLongHoldMenu}
                       page="home"
-                      listType={this.props.user.listHomeType}
                       isRefreshing={this.state.isRefreshing}
                       onRefreshFeed={() => this.onRefreshFeed()}
                     />
