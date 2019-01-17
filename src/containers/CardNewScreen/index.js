@@ -84,7 +84,7 @@ const ATTACHMENT_ICON = require('../../../assets/images/Attachment/Blue.png')
 const IMAGE_ICON = require('../../../assets/images/Image/Blue.png')
 
 
-class NewCardScreen extends React.Component {
+class CardNewScreen extends React.Component {
   constructor(props) {
     super(props);
 
@@ -183,8 +183,7 @@ class NewCardScreen extends React.Component {
     let loading = false;
     if (this.props.card.loading !== types.CREATE_CARD_PENDING && nextProps.card.loading === types.CREATE_CARD_PENDING) {
       // loading = true;
-    } 
-    else if (this.props.card.loading !== types.CREATE_CARD_FULFILLED && nextProps.card.loading === types.CREATE_CARD_FULFILLED) {
+    } else if (this.props.card.loading !== types.CREATE_CARD_FULFILLED && nextProps.card.loading === types.CREATE_CARD_FULFILLED) {
       // If share extension and a url has been passed
       if (this.props.cardMode === CONSTANTS.SHARE_EXTENTION_CARD && this.props.shareUrl !== '') {
         const openGraph = this.props.card.currentOpneGraph;
@@ -264,7 +263,7 @@ class NewCardScreen extends React.Component {
             console.log('Image compress Success!');
             this.props.uploadFileToS3(nextProps.card.fileUploadUrl.uploadUrl, response.uri, this.selectedFileName, this.selectedFileMimeType);
           }).catch((error) => {
-            console.log('Image compress error : ', error);
+            console.log('Image compress error: ', error);
             this.props.uploadFileToS3(nextProps.card.fileUploadUrl.uploadUrl, this.selectedFile.uri, this.selectedFileName, this.selectedFileMimeType);
           });
         return;
@@ -623,8 +622,8 @@ class NewCardScreen extends React.Component {
   async createCard(currentProps) {
     Analytics.logEvent('new_card_new_card', {})
 
-    const { cardMode, viewMode } = this.props;
-    if ((cardMode === CONSTANTS.MAIN_APP_CARD_FROM_DASHBOARD) || (cardMode === CONSTANTS.SHARE_EXTENTION_CARD)) {
+    const { cardMode, viewMode, prevPage } = this.props;
+    if (prevPage !== 'card' && (cardMode === CONSTANTS.MAIN_APP_CARD_FROM_DASHBOARD) || (cardMode === CONSTANTS.SHARE_EXTENTION_CARD)) {
       try {
         const strFeedoInfo = await SharedGroupPreferences.getItem(CONSTANTS.CARD_SAVED_LAST_FEEDO_INFO, CONSTANTS.APP_GROUP_LAST_USED_FEEDO);
         if (strFeedoInfo) {
@@ -642,7 +641,11 @@ class NewCardScreen extends React.Component {
       } catch (error) {
         console.log('error code : ', error);
       }
-      this.props.createFeed();
+      if (this.props.prevPage !== 'card') {
+        this.props.createFeed();
+      } else {
+        this.props.createCard(this.props.feedo.currentFeed.id)
+      }
     } else if (viewMode === CONSTANTS.CARD_NEW) {
       this.props.createCard(this.props.feedo.currentFeed.id);
     }
@@ -1517,7 +1520,7 @@ class NewCardScreen extends React.Component {
       const otherInvitees = _.filter(currentFeed.invitees, invitee => invitee.userProfile.id !== userInfo.id);
       if (!otherInvitees || otherInvitees.length === 0) {
         return (
-          <View style={[styles.rowContainer, {flex: 1}]}>
+          <View style={[styles.rowContainer, { flex: 1 }]}>
             <Text style={styles.textInvitee}>{getDurationFromNow(this.props.card.currentCard.publishedDate)}</Text>
           </View>
         );
@@ -1790,9 +1793,8 @@ class NewCardScreen extends React.Component {
           onBackdropPress={() => this.setState({ isCopyLink: false })}
         >
           <View style={styles.successView}>
-            {this.state.copiedLink &&
-              <Text style={styles.successText}>{this.state.copiedLink.originalUrl}</Text>
-            }
+            <Octicons name="check" style={styles.successIcon} />
+            <Text style={styles.successText}>Copied</Text>
           </View>
         </Modal>
         {this.state.isDeleteLink && (
@@ -1809,7 +1811,7 @@ class NewCardScreen extends React.Component {
 }
 
 
-NewCardScreen.defaultProps = {
+CardNewScreen.defaultProps = {
   prevPage: 'card',
   card: {},
   invitee: {},
@@ -1823,7 +1825,7 @@ NewCardScreen.defaultProps = {
 }
 
 
-NewCardScreen.propTypes = {
+CardNewScreen.propTypes = {
   prevPage: PropTypes.string,
   card: PropTypes.object,
   invitee: PropTypes.object,
@@ -1867,4 +1869,4 @@ const mapDispatchToProps = dispatch => ({
 })
 
 
-export default connect(mapStateToProps, mapDispatchToProps)(NewCardScreen)
+export default connect(mapStateToProps, mapDispatchToProps)(CardNewScreen)

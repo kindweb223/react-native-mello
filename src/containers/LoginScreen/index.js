@@ -34,11 +34,7 @@ class LoginScreen extends React.Component {
         style={styles.btnBack}
         activeOpacity={0.6}
         onPress={() => {
-          if (props.page === 'Signup') {
-            Actions.pop()
-          } else {
-            Actions.LoginStartScreen({type:'replace'})
-          }
+          Actions.pop()
         }}
       >
         <Ionicons name="ios-arrow-back" size={32} color={COLORS.PURPLE} />

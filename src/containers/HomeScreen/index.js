@@ -29,7 +29,6 @@ import DeviceInfo from 'react-native-device-info';
 import pubnub from '../../lib/pubnub'
 import Analytics from '../../lib/firebase'
 
-import DashboardNavigationBar from '../../navigations/DashboardNavigationBar'
 import DashboardActionBar from '../../navigations/DashboardActionBar'
 import FeedoListContainer from '../FeedoListContainer'
 import NewFeedScreen from '../NewFeedScreen'
@@ -40,8 +39,6 @@ import ToasterComponent from '../../components/ToasterComponent'
 import FeedLoadingStateComponent from '../../components/FeedLoadingStateComponent'
 import EmptyStateComponent from '../../components/EmptyStateComponent'
 import SpeechBubbleComponent from '../../components/SpeechBubbleComponent'
-import ClipboardToasterComponent from '../../components/ClipboardToasterComponent'
-import COLORS from '../../service/colors'
 import styles from './styles'
 import CONSTANTS from '../../service/constants';
 
@@ -71,7 +68,9 @@ import {
   updateDeviceToken,
   appOpened,
   getUserSession,
-  setHomeListType
+  setHomeListType,
+  showClipboardToaster,
+  closeClipboardToaster
 } from '../../redux/user/actions'
 
 import { 
@@ -117,9 +116,6 @@ class HomeScreen extends React.Component {
       isRefreshing: false,
       invitedFeedList: [],
       badgeCount: 0,
-      isShowClipboardToaster: false,
-      tmpClipboardData: '',
-      clipboardData: '',
       selectedLongHoldFeedoIndex: -1,
       feedClickEvent: 'normal',
       showLongHoldActionBar: true,
@@ -395,22 +391,6 @@ class HomeScreen extends React.Component {
         })
       }
 
-      // const invitee = find(this.state.currentPushNotificationData.invitees, (o) => {
-      //   return (o.id == card.currentCard.inviteeId)
-      // });
-
-      // this.setState({
-      //   isVisibleCard: true,
-      //   cardViewMode: CONSTANTS.CARD_VIEW,
-      //   selectedIdeaInvitee: invitee,
-      //   tmpClipboardData: '',
-      //   clipboardData: '',
-      // });
-      // this.animatedOpacity.setValue(0);
-      // Animated.timing(this.animatedOpacity, {
-      //   toValue: 1,
-      //   duration: CONSTANTS.ANIMATEION_MILLI_SECONDS,
-      // }).start();
       this.setState({
         currentPushNotificationType: CONSTANTS.UNKOWN_PUSH_NOTIFICATION,
         currentPushNotificationData: null,
@@ -484,10 +464,7 @@ class HomeScreen extends React.Component {
       const lastClipboardData = await AsyncStorage.getItem(CONSTANTS.CLIPBOARD_DATA)
       if (clipboardContent !== '' && clipboardContent !== lastClipboardData) {
         AsyncStorage.setItem(CONSTANTS.CLIPBOARD_DATA, clipboardContent);
-        this.setState({
-          isShowClipboardToaster: true,
-          tmpClipboardData: clipboardContent,
-        })
+        this.props.showClipboardToaster(clipboardContent, 'home')
       }
     }
   }
@@ -894,7 +871,9 @@ class HomeScreen extends React.Component {
     this.closeLongHoldMenu()
 
     setTimeout(() => {
-      this.props.setCurrentFeed({});
+      this.props.closeClipboardToaster()
+      this.props.setCurrentFeed({})
+
       this.setState({
         isVisibleNewFeed: true,
         isEditFeed: true,
@@ -930,26 +909,6 @@ class HomeScreen extends React.Component {
     })
   }
 
-  onAddClipboardLink = () => {
-    this.setState({
-      clipboardData: this.state.tmpClipboardData,
-      isShowClipboardToaster: false,
-    });
-
-    this.animatedOpacity.setValue(0);
-    Animated.timing(this.animatedOpacity, {
-      toValue: 1,
-      duration: CONSTANTS.ANIMATEION_MILLI_SECONDS,
-    }).start();
-    this.onSelectNewFeedType('New Card');
-  }
-
-  onDismissClipboardToaster() {
-    this.setState({
-      isShowClipboardToaster: false,
-    });
-  }
-
   onLongHoldMenuHide = () => {
     const { isArchive, isDelete, isPin, isUnPin, isDuplicate, isLeave } = this.state
 
@@ -971,6 +930,8 @@ class HomeScreen extends React.Component {
   }
 
   onSelectNewFeedType(type) {
+    this.props.closeClipboardToaster()
+
     if (type === 'New Card') {
       Analytics.logEvent('dashboard_new_card', {})
 
@@ -1095,9 +1056,7 @@ class HomeScreen extends React.Component {
       duration: CONSTANTS.ANIMATEION_MILLI_SECONDS,
     }).start(() => {
       this.setState({ 
-        isVisibleCard: false,
-        tmpClipboardData: '',
-        clipboardData: '',
+        isVisibleCard: false
       });
     });
   }
@@ -1121,7 +1080,8 @@ class HomeScreen extends React.Component {
           viewMode={this.state.cardViewMode}
           cardMode={cardMode}
           invitee={this.state.selectedIdeaInvitee}
-          shareUrl={this.state.clipboardData}
+          shareUrl=""
+          prevPage="home"
           onClose={() => this.onCloseCardModal()}
 
           // cardMode={CONSTANTS.SHARE_EXTENTION_CARD}
@@ -1434,14 +1394,6 @@ class HomeScreen extends React.Component {
 
         {this.renderCardModal}
 
-        {this.state.isShowClipboardToaster && (
-          <ClipboardToasterComponent
-            description={this.state.tmpClipboardData}
-            onPress={() => this.onAddClipboardLink()}
-            onClose={() => this.onDismissClipboardToaster()}
-          />
-        )}
-
         {this.state.isShowInviteToaster && (
           <ToasterComponent
             isVisible={this.state.isShowInviteToaster}
@@ -1482,6 +1434,8 @@ const mapDispatchToProps = dispatch => ({
   getUserSession: () => dispatch(getUserSession()),
   getActivityFeed: (userId, param) => dispatch(getActivityFeed(userId, param)),
   setHomeListType: (type) => dispatch(setHomeListType(type)),
+  showClipboardToaster: (data, prevPage) => dispatch(showClipboardToaster(data, prevPage)),
+  closeClipboardToaster: () => dispatch(closeClipboardToaster()),
 })
 
 HomeScreen.propTypes = {
