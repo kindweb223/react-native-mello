@@ -1289,10 +1289,8 @@ class CardDetailScreen extends React.Component {
           onBackdropPress={() => this.setState({ isCopyLink: false })}
         >
           <View style={styles.successView}>
-            {/* <Octicons name="check" style={styles.successIcon} /> */}
-            {this.state.copiedLink &&
-              <Text style={styles.successText}>{this.state.copiedLink.originalUrl}</Text>
-            }
+            <Octicons name="check" style={styles.successIcon} />
+            <Text style={styles.successText}>Copied</Text>
           </View>
         </Modal>
         {this.state.isDeleteLink && (

@@ -33,7 +33,7 @@ export default class UserAvatarComponent extends React.Component {
       textColor,
       isFastImage,
     } = this.props;
-    if (user.imageUrl || user.firstName || user.lastName) {
+    if (user && (user.imageUrl || user.firstName || user.lastName)) {
       const name = `${this.capitalizeFirstLetter(user.firstName)} ${this.capitalizeFirstLetter(user.lastName)}`;
       return (
         <UserAvatar
@@ -57,7 +57,7 @@ export default class UserAvatarComponent extends React.Component {
           justifyContent: 'center',
         }}
       >
-        <EvilIcons name="envelope" size={size / 5 * 4} color={textColor} style={{marginTop: size / 10 }}/>
+        <EvilIcons name="envelope" size={size / 5 * 4} color={textColor} style={{ marginTop: size / 10 }}/>
       </View>
     );
   }
