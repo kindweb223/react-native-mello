@@ -38,6 +38,9 @@ class LoginStartScreen extends React.Component {
 
   componentDidMount() {
     Analytics.setCurrentScreen('TutorialScreen')
+    if (this.props.prevPage === 'login') {
+      this.onSkip()
+    }
   }
 
   onLogin = () => {
@@ -184,8 +187,13 @@ class LoginStartScreen extends React.Component {
   }
 }
 
+LoginStartScreen.defaultProps = {
+  prevPage: 'start'
+}
+
 LoginStartScreen.propTypes = {
-  userLookup: PropTypes.func.isRequired
+  userLookup: PropTypes.func.isRequired,
+  prevPage: PropTypes.string
 }
 
 const mapStateToProps = ({ user }) => ({

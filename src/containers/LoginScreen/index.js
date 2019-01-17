@@ -34,7 +34,11 @@ class LoginScreen extends React.Component {
         style={styles.btnBack}
         activeOpacity={0.6}
         onPress={() => {
-          Actions.pop()
+          if (props.prevPage === 'signup') {
+            Actions.pop()
+          } else {
+            Actions.LoginStartScreen({ prevPage: 'login' })
+          }
         }}
       >
         <Ionicons name="ios-arrow-back" size={32} color={COLORS.PURPLE} />
@@ -286,11 +290,11 @@ class LoginScreen extends React.Component {
 }
 
 LoginScreen.defaultProps = {
-  page: 'Other'
+  prevPage: 'login'
 }
 
 LoginScreen.propTypes = {
-  page: PropTypes.string
+  prevPage: PropTypes.string
 }
 
 const mapStateToProps = ({ user }) => ({
