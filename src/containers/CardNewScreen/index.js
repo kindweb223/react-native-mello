@@ -11,7 +11,6 @@ import {
   Clipboard,
   ScrollView,
   AsyncStorage,
-  Linking,
   SafeAreaView,
 } from 'react-native'
 import PropTypes from 'prop-types'
@@ -34,7 +33,6 @@ import * as mime from 'react-native-mime-types'
 import _ from 'lodash';
 import Modal from 'react-native-modal';
 import moment from 'moment'
-import Autolink from 'react-native-autolink';
 import SafariView from "react-native-safari-view";
 import SharedGroupPreferences from 'react-native-shared-group-preferences';
 
@@ -69,13 +67,10 @@ import styles from './styles';
 import LoadingScreen from '../LoadingScreen';
 import DocumentList from '../../components/DocumentListComponent';
 import WebMetaList from '../../components/WebMetaListComponent';
-import LikeComponent from '../../components/LikeComponent';
-import CommentComponent from '../../components/CommentComponent';
 import ChooseLinkImages from '../../components/chooseLinkImagesComponent';
 import UserAvatarComponent from '../../components/UserAvatarComponent';
 import CoverImagePreviewComponent from '../../components/CoverImagePreviewComponent';
 import SelectHuntScreen from '../SelectHuntScreen';
-import LastCommentComponent from '../../components/LastCommentComponent';
 import Analytics from '../../lib/firebase'
 import ToasterComponent from '../../components/ToasterComponent'
 
@@ -111,7 +106,6 @@ class CardNewScreen extends React.Component {
       isVisibleChooseLinkImagesModal: false,
       isVisibleSelectFeedoModal: false,
 
-      isEditableIdea: false,
       isGettingFeedoList: false,
       isCopyLink: false,
       isDeleteLink: false,
@@ -541,27 +535,8 @@ class CardNewScreen extends React.Component {
   }
 
   async componentDidMount() {
-    // console.log('Current Card : ', this.props.card.currentCard);
-    const { viewMode, cardMode } = this.props;
-    if (viewMode === CONSTANTS.CARD_VIEW || viewMode === CONSTANTS.CARD_EDIT) {
-      const { width, height } = await this.getImageSize(nextProps.card.currentCard.coverImage);
-      this.coverImageWidth = width
-      this.coverImageHeight = height
+    this.textInputIdeaRef.focus();
 
-      this.setState({
-        // cardName: this.props.card.currentCard.title,
-        idea: this.props.card.currentCard.idea,
-        coverImage: this.props.card.currentCard.coverImage,
-      });
-    } else if (viewMode === CONSTANTS.CARD_NEW) {
-      this.textInputIdeaRef.focus();
-    }
-
-    if (this.props.card.currentCard.idea === '' && viewMode === CONSTANTS.CARD_EDIT) {
-      this.setState({
-        isEditableIdea: true,
-      });
-    }
     Animated.timing(this.animatedShow, {
       toValue: 1,
       duration: CONSTANTS.ANIMATEION_MILLI_SECONDS,
@@ -857,12 +832,8 @@ class CardNewScreen extends React.Component {
 
   onUpdateCard() {
     const { viewMode } = this.props;
-    // if (viewMode === CONSTANTS.CARD_NEW) {
-    //   if (this.checkUrl(this.state.cardName) || this.checkUrls()) {
-    //     return;
-    //   }
-    // }
-    if (viewMode === CONSTANTS.CARD_NEW || viewMode === CONSTANTS.CARD_EDIT) {
+
+    if (viewMode === CONSTANTS.CARD_NEW) {
       this.onUpdate();
       return;
     }
@@ -878,12 +849,6 @@ class CardNewScreen extends React.Component {
       } else {
         this.onClose();
       }
-    }
-  }
-
-  onPressMoreActions() {
-    if (this.props.onOpenAction) {
-      this.props.onOpenAction(this.props.card.currentCard);
     }
   }
 
@@ -1062,8 +1027,7 @@ class CardNewScreen extends React.Component {
 
   onBlurIdea() {
     this.setState({
-      isShowKeyboardButton: false,
-      isEditableIdea: false,
+      isShowKeyboardButton: false
     });
   }
 
@@ -1149,40 +1113,6 @@ class CardNewScreen extends React.Component {
     }
   }
 
-  onPressIdea() {
-    const { viewMode } = this.props;
-    this.textInputHeightByCursor = 0;
-    this.setState({
-      isEditableIdea: true,
-      textByCursor: '',
-    }, () => {
-      if (viewMode === CONSTANTS.CARD_NEW || viewMode === CONSTANTS.CARD_EDIT) {
-        this.textInputIdeaRef.focus();
-      }
-    });
-  }
-
-  onPressLink(url) {
-    SafariView.isAvailable()
-      .then(SafariView.show({
-        url: url,
-        tintColor: COLORS.PURPLE
-      }))
-      .catch(error => {
-        // Fallback WebView code for iOS 8 and earlier
-        Linking.canOpenURL(url)
-          .then(supported => {
-              if (!supported) {
-                  console.log('Can\'t handle url: ' + url);
-              }
-              else {
-                  return Linking.openURL(url);
-              }
-          })
-          .catch(error => console.error('An error occurred', error));
-      });
-  }
-
   addLinkImage(id, imageUrl) {
     const mimeType = mime.lookup(imageUrl) || 'image/jpeg';
     const filename = imageUrl.replace(/^.*[\\\/]/, '')
@@ -1253,65 +1183,42 @@ class CardNewScreen extends React.Component {
   }
 
   get renderText() {
-    const { viewMode } = this.props;
-    let isShowTextInput = false;
-    if ((viewMode === CONSTANTS.CARD_NEW) || ((this.state.idea == '' || this.state.isEditableIdea) && (viewMode === CONSTANTS.CARD_EDIT))) {
-      isShowTextInput = true;
-    }
-    if (isShowTextInput) {
-      return (
-        <View 
-          style={{flex: 1}}
-          onLayout={this.onLayoutTextInput.bind(this)}
-        >
-          <TextInput
-            style={[styles.textInputIdea, {
-              position: 'absolute',
-              left: 0,
-              right: 0,
-              top: 0,
-              opacity: 0,
-            }]}
-            autoCorrect={false}
-            multiline={true}
-            underlineColorAndroid='transparent'
-            value={this.state.textByCursor}
-            onContentSizeChange={this.onContentSizeChange.bind(this)}
-          />
-          <TextInput
-            ref={ref => this.textInputIdeaRef = ref}
-            style={styles.textInputIdea}
-            autoCorrect={true}
-            placeholder='Type text or paste a link'
-            multiline={true}
-            underlineColorAndroid='transparent'
-            value={this.state.idea}
-            onChangeText={(value) => this.onChangeIdea(value)}
-            onKeyPress={this.onKeyPressIdea.bind(this)}
-            onFocus={() => this.onFocus()}
-            onBlur={() => this.onBlurIdea()}
-            onSelectionChange={this.onSelectionChange.bind(this)}
-            selectionColor={COLORS.PURPLE}
-          />
-        </View>
-      );
-    }
     return (
-      <TouchableOpacity activeOpacity={1} onPress={() => this.onPressIdea()}>
-        <ViewMoreText
-          textStyle={styles.textInputIdea}
-          numberOfLines={3}
-          renderViewMore={this.renderSeeMore.bind(this)}
-          renderViewLess={this.renderSeeLess.bind(this)}
-        >
-          <Autolink
-            style={styles.textInputIdea}
-            text={this.state.idea}
-            onPress={(url, match) => this.onPressLink(url)}
-          />
-        </ViewMoreText>
-      </TouchableOpacity>
-    );
+      <View 
+        style={{ flex: 1 }}
+        onLayout={this.onLayoutTextInput.bind(this)}
+      >
+        <TextInput
+          style={[styles.textInputIdea, {
+            position: 'absolute',
+            left: 0,
+            right: 0,
+            top: 0,
+            opacity: 0,
+          }]}
+          autoCorrect={false}
+          multiline={true}
+          underlineColorAndroid='transparent'
+          value={this.state.textByCursor}
+          onContentSizeChange={this.onContentSizeChange.bind(this)}
+        />
+        <TextInput
+          ref={ref => this.textInputIdeaRef = ref}
+          style={styles.textInputIdea}
+          autoCorrect={true}
+          placeholder='Type text or paste a link'
+          multiline={true}
+          underlineColorAndroid='transparent'
+          value={this.state.idea}
+          onChangeText={(value) => this.onChangeIdea(value)}
+          onKeyPress={this.onKeyPressIdea.bind(this)}
+          onFocus={() => this.onFocus()}
+          onBlur={() => this.onBlurIdea()}
+          onSelectionChange={this.onSelectionChange.bind(this)}
+          selectionColor={COLORS.PURPLE}
+        />
+      </View>
+    )
   }
 
   onTapWebLinkActionSheet = (index) => {
@@ -1378,30 +1285,6 @@ class CardNewScreen extends React.Component {
     }
   }
 
-  renderSeeMore(onPress){
-    return(
-      <Text style={styles.textSeeMoreLessIdea} onPress={onPress}>See more</Text>
-    );
-  }
-
-  renderSeeLess(onPress){
-    return(
-      <Text style={styles.textSeeMoreLessIdea} onPress={onPress}>See less</Text>
-    );
-  }
-
-  get renderComments() {
-    const { viewMode } = this.props;
-    if (viewMode !== CONSTANTS.CARD_NEW) {
-      return (
-        <View>
-          <View style={styles.line} />
-          <LastCommentComponent prevPage={this.props.prevPage} />
-        </View>
-      )
-    }
-  }
-
   get renderMainContent() {
     return (
       <ScrollView
@@ -1412,7 +1295,6 @@ class CardNewScreen extends React.Component {
         {this.renderWebMeta}
         {this.renderText}
         {this.renderDocuments}
-        {this.renderComments}
       </ScrollView>
     );
   }
@@ -1435,40 +1317,6 @@ class CardNewScreen extends React.Component {
         </TouchableOpacity>
       </View>
     )
-  }
-
-  get renderTopAttachmentButtons() {
-    const { viewMode, cardMode } = this.props;
-    if (cardMode === CONSTANTS.SHARE_EXTENTION_CARD) {
-      return;
-    } else if (viewMode !== CONSTANTS.CARD_EDIT) {
-      return;
-    }
-    return (
-      <View style={styles.attachmentButtonsContainer}>
-        <TouchableOpacity 
-          style={styles.iconView}
-          activeOpacity={0.6}
-          onPress={this.onAddMedia.bind(this)}
-        >
-          <Image source={IMAGE_ICON} />
-        </TouchableOpacity>
-        <TouchableOpacity 
-          style={styles.iconView}
-          activeOpacity={0.6}
-          onPress={this.onAddDocument.bind(this)}
-        >
-          <Image source={ATTACHMENT_ICON} />
-        </TouchableOpacity>
-        <TouchableOpacity 
-          style={styles.threeDotButtonWrapper}
-          activeOpacity={0.6}
-          onPress={() => this.onPressMoreActions()}
-        >
-          <Entypo name="dots-three-horizontal" size={20} color={COLORS.PURPLE} />
-        </TouchableOpacity>
-      </View>
-    );
   }
 
   get renderBottomAttachmentButtons() {
@@ -1539,20 +1387,6 @@ class CardNewScreen extends React.Component {
     );
   }
 
-  get renderLikesComment() {
-    const idea = _.find(this.props.feedo.currentFeed.ideas, idea => idea.id === this.props.card.currentCard.id)
-
-    if (idea) {
-      return (
-        <View style={styles.rowContainer}>
-          <LikeComponent idea={idea} prevPage={this.props.prevPage} />
-          <CommentComponent idea={idea} currentFeed={this.props.feedo.currentFeed} prevPage={this.props.prevPage} />
-        </View>
-      );
-    }
-    return null
-  }
-
   get renderHeader() {
     const { cardMode, viewMode } = this.props;
     if (cardMode === CONSTANTS.SHARE_EXTENTION_CARD) {
@@ -1583,40 +1417,29 @@ class CardNewScreen extends React.Component {
 
     if (viewMode === CONSTANTS.CARD_NEW) {
       return (
-        <View style={styles.headerContainer}>
+        <View style={styles.mainHeaderContainer}>
           <TouchableOpacity 
-            style={styles.closeButtonWrapper}
+            style={styles.btnClose}
             activeOpacity={0.7}
             onPress={() => this.leaveActionSheetRef.show()}
           >
-            <MaterialCommunityIcons name="close" size={32} color={COLORS.PURPLE} />
+            <Text style={[styles.textButton, { color: COLORS.PURPLE }]}>Cancel</Text>
           </TouchableOpacity>
+          <Text style={styles.textButton}>New card</Text>
           <TouchableOpacity 
-            style={[styles.addCardButtonWapper, {backgroundColor: COLORS.PURPLE}]}
+            style={[styles.btnClose, { alignItems: 'flex-end' }]}
             activeOpacity={0.6}
             onPress={this.onUpdateFeed.bind(this)}
           >
-            <Text style={styles.textButton}>Done</Text>
+            <Text style={[styles.textButton, { color: COLORS.MEDIUM_GREY }]}>  Done</Text>
           </TouchableOpacity>
         </View>
       )
     }
-    return (
-      <View style={styles.headerContainer}>
-        <TouchableOpacity 
-          style={styles.backButtonWrapper}
-          activeOpacity={0.7}
-          onPress={() => this.onBack()}
-        >
-          <MaterialCommunityIcons name="close" size={32} color={COLORS.PURPLE} />
-        </TouchableOpacity>
-        {this.renderTopAttachmentButtons}
-      </View>
-    )
   }
 
   get renderBottomContent() {
-    const { viewMode, cardMode } = this.props;
+    const { cardMode } = this.props;
 
     if (cardMode === CONSTANTS.SHARE_EXTENTION_CARD) {
       return (
@@ -1633,19 +1456,12 @@ class CardNewScreen extends React.Component {
         </View>
       )
     }
-    if (viewMode !== CONSTANTS.CARD_NEW) {
-      return (
-        <View style={[styles.rowContainer, {justifyContent: 'space-between', marginHorizontal: 16, marginVertical: 8}]}>
-          {this.renderInvitee}
-          {this.renderLikesComment}
-        </View>
-      );
-    }
   }
 
   get renderCard() {
     const { viewMode, cardMode } = this.props;
     let cardStyle = {};
+
     if (viewMode === CONSTANTS.CARD_NEW) {
       const animatedMove  = this.animatedShow.interpolate({
         inputRange: [0, 1],
@@ -1665,6 +1481,7 @@ class CardNewScreen extends React.Component {
         opacity: this.animatedShow,
       };
     }
+
     let contentContainerStyle = {};
     if (cardMode === CONSTANTS.SHARE_EXTENTION_CARD) {
       let bottomMargin = CONSTANTS.SCREEN_VERTICAL_MIN_MARGIN;
@@ -1697,7 +1514,7 @@ class CardNewScreen extends React.Component {
         ]}
       >
         <Animated.View style={contentContainerStyle}>
-          <SafeAreaView style={{flex: 1}}>
+          <SafeAreaView style={{ flex: 1 }}>
             {this.renderHeader}
             {this.renderMainContent}
             {this.renderBottomAttachmentButtons}
@@ -1821,7 +1638,6 @@ CardNewScreen.defaultProps = {
   shareUrl: '',
   shareImageUrls: [],
   onClose: () => {},
-  onOpenAction: () => {},
 }
 
 
@@ -1835,7 +1651,6 @@ CardNewScreen.propTypes = {
   shareUrl: PropTypes.string,
   shareImageUrls: PropTypes.array,
   onClose: PropTypes.func,
-  onOpenAction: PropTypes.func,
 }
 
 
