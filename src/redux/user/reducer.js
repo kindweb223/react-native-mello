@@ -18,7 +18,6 @@ const initialState = {
   userConfirmed: false,
   cropUrl: null,
   listHomeType: 'list',
-  listDetailType: 'list',
   showClipboardToaster: false,
   clipboardToasterContent: '',
   clipboardToasterPrevpage: 'card'
@@ -592,15 +591,6 @@ export default function user(state = initialState, action = {}) {
       return {
         ...state,
         listHomeType: action.payload
-      }
-    }
-    /**
-     * set list type on Detail actionbar (list, masonry)
-     */
-    case types.SET_DETAIL_LIST_TYPE: {
-      return {
-        ...state,
-        listDetailType: action.payload
       }
     }
 

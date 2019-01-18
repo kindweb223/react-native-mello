@@ -722,3 +722,17 @@ export const getActivityFeedVisited = (userId) => {
       })
   }
 }
+
+export const saveFlowViewPreference = (feedId, inviteeId, preference) => {
+  const url = `hunts/${feedId}/invitees/${inviteeId}/viewPreference`;
+  return {
+    types: [types.SAVE_FLOW_PREFERENCE_PENDING, types.SAVE_FLOW_PREFERENCE_FULFILLED, types.SAVE_FLOW_PREFERENCE_REJECTED],
+    promise:
+      axios({
+        method: 'put',
+        url,
+        data: { preference }
+      }),
+    payload: { feedId, preference }
+  }
+}
