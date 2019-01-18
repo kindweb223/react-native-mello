@@ -1227,7 +1227,6 @@ class FeedDetailScreen extends React.Component {
     const { userInfo } = this.props.user
 
     const invitee = _.find(currentFeed.invitees, data => data.userProfile.id === userInfo.id)
-    console.log('INVITEE: ', invitee)
 
     const preference = viewPreference === 'MASONRY' ? 'LIST' : 'MASONRY'
     if (preference === 'MASONRY') {
@@ -1447,7 +1446,7 @@ class FeedDetailScreen extends React.Component {
                           }
                         </View>
                     : <View
-                        style={{ paddingHorizontal: 8 }}
+                        style={{ paddingHorizontal: currentFeed.ideas.length > 0 ? 8 : 0 }}
                       >
                         <Masonry
                           onLayout={(event) => this.onLayoutMasonry(event)}
