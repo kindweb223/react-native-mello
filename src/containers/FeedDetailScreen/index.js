@@ -40,7 +40,7 @@ import FeedControlMenuComponent from '../../components/FeedControlMenuComponent'
 import ToasterComponent from '../../components/ToasterComponent'
 import FeedLoadingStateComponent from '../../components/FeedLoadingStateComponent'
 import ShareScreen from '../ShareScreen'
-import InviteeScreen from '../InviteeScreen';
+import InviteeScreen from '../InviteeScreen'
 import NewFeedScreen from '../NewFeedScreen'
 import CardFilterComponent from '../../components/CardFilterComponent'
 import CardLongHoldMenuScreen from '../CardLongHoldMenuScreen'
@@ -52,6 +52,7 @@ import LoadingScreen from '../LoadingScreen'
 import EmptyStateComponent from '../../components/EmptyStateComponent'
 import SpeechBubbleComponent from '../../components/SpeechBubbleComponent'
 import ClipboardToasterComponent from '../../components/ClipboardToasterComponent'
+import FollowMemberScreen from '../FollowMembersScreen'
 
 import {
   getFeedDetail,
@@ -71,6 +72,7 @@ import {
   getActivityFeed,
   getFeedoList,
   updateSharingPreferences,
+  deleteInvitee
 } from '../../redux/feedo/actions';
 import {
   setCurrentCard,
@@ -1291,6 +1293,23 @@ class FeedDetailScreen extends React.Component {
     })
   }
 
+  leaveFeed = (selectedContact, feedId) => {
+      Analytics.logEvent('feeddetail_leave_feed', {})
+      const { feedo, user, deleteInvitee } = this.props
+
+      if (selectedContact !== null) {
+        const invitee = _.filter(feedo.currentFeed.invitees, invitee => invitee.userProfile.id === selectedContact.userProfile.id)
+        deleteInvitee(feedId, invitee[0].id)
+        if (user.userInfo.id === selectedContact.userProfile.id) {
+          this.setState({ isShowShare: false })
+        }
+      } else {
+        const invitee = _.filter(feedo.currentFeed.invitees, invitee => invitee.userProfile.id === user.userInfo.id)
+        deleteInvitee(feedId, invitee[0].id)
+        this.setState({ isShowShare: false })
+      }
+  }
+
   render () {
     const {
       currentFeed,
@@ -1573,10 +1592,19 @@ class FeedDetailScreen extends React.Component {
           onModalHide={() => {}}
           onBackdropPress={() => this.closeShareModal()}
         >
-          <InviteeScreen
-            onClose={() => this.closeShareModal()}
-            data={currentFeed}
-          />
+          {
+            COMMON_FUNC.isFeedOwnerEditor(currentFeed)
+            ? <InviteeScreen
+                onClose={() => this.closeShareModal()}
+                deleteInvitee={(selectedContact) => this.leaveFeed(selectedContact, currentFeed.id)}
+                data={currentFeed}
+              />
+            : <FollowMemberScreen
+                onClose={() => this.closeShareModal()}
+                deleteInvitee={() => this.leaveFeed(null, currentFeed.id)}
+                data={currentFeed}
+              />
+          }
         </Modal>
 
         <Modal 
@@ -1685,6 +1713,7 @@ const mapDispatchToProps = dispatch => ({
   getActivityFeed: (userId, param) => dispatch(getActivityFeed(userId, param)),
   getFeedoList: () => dispatch(getFeedoList()),
   updateSharingPreferences: (feedId, data) => dispatch(updateSharingPreferences(feedId, data)),
+  deleteInvitee: (feedId, inviteeId) => dispatch(deleteInvitee(feedId, inviteeId)),
 })
 
 FeedDetailScreen.defaultProps = {

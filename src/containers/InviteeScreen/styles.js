@@ -52,7 +52,6 @@ export default {
   },
   inviteeListView: {
     marginTop: 24,
-    maxHeight: 240
   },
   titleView: {
     paddingBottom: 5,
@@ -142,5 +141,27 @@ export default {
   invalidEmailText: {
     color: COLORS.MEDIUM_RED,
     fontWeight: '600'
+  },
+  removeModal: {
+    position: 'absolute',
+    width: '100%',
+    bottom: 0,
+    left: 0,
+    paddingHorizontal: 21,
+    paddingTop: 21,
+    paddingBottom: 40,
+    borderRadius: 18,
+    backgroundColor: '#fff',
+    ...Platform.select({
+      ios: {
+        shadowColor: 'black',
+        shadowOffset: { height: 5 },
+        shadowOpacity: 0.2,
+        shadowRadius: 8
+      },
+      android: {
+        elevation: 20
+      }
+    })
   }
 }

@@ -76,7 +76,7 @@ Button.propTypes = {
 Button.defaultProps = {
     type: 'fill',
     style: null,
-    height: 64,
+    height: 60,
     color: '#f00',
     labelColor: null,
     borderRadius: 5,
@@ -96,6 +96,8 @@ const styles = {
     label: {
         color: '#00f',
         textAlign: 'center',
+        fontSize: 16,
+        fontWeight: '600',
         paddingLeft: 5,
         paddingRight: 5,
         paddingBottom: 2,

@@ -1,6 +1,4 @@
 import { StyleSheet, Platform } from 'react-native'
-import COLORS from '../../service/colors'
-import CONSTANTS from '../../service/constants'
 
 export default {
   overlay: {
@@ -8,7 +6,8 @@ export default {
     width: '100%',
     bottom: 0,
     left: 0,
-    padding: 25,
+    paddingHorizontal: 21,
+    paddingVertical: 21,
     borderRadius: 18,
     backgroundColor: '#fff',
     ...Platform.select({
@@ -24,7 +23,6 @@ export default {
     })
   },
   button: {
-    borderRadius: 10,
     marginTop: 20
   }
 }

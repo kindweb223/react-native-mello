@@ -40,6 +40,7 @@ class ContactRemove extends React.Component {
             color='rgba(255, 0, 0, 0.1)'
             labelColor={COLORS.RED}
             label="Remove"
+            borderRadius={14}
           />
         </View>
       </Modal>
