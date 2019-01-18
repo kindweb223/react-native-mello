@@ -79,21 +79,19 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
+    marginBottom: 10
   },
-  headerContainer: {
+  extensionHeaderContainer: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
     paddingLeft: 4,
-    paddingRight: 16,
-  },
-  extensionHeaderContainer: {
+    paddingRight: 6,
     borderTopLeftRadius: 18,
     borderTopRightRadius: 18,
     borderBottomWidth: 1,
     borderBottomColor: COLORS.LIGHT_GREY_LINE,
     height: 44,
-    paddingRight: 6,
   },
   closeButtonShareWrapper: {
     paddingHorizontal: 10,

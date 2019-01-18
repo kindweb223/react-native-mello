@@ -21,7 +21,6 @@ import Entypo from 'react-native-vector-icons/Entypo'
 import Ionicons from 'react-native-vector-icons/Ionicons'
 import Octicons from 'react-native-vector-icons/Octicons'
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons'
-import ViewMoreText from 'react-native-view-more-text';
 
 import ActionSheet from 'react-native-actionsheet'
 import ImagePicker from 'react-native-image-picker'
@@ -949,13 +948,6 @@ class CardNewScreen extends React.Component {
     this.props.deleteFile(id, fileId);
   }
 
-  onDeleteLink(linkId) {
-    const {
-      id,
-    } = this.props.card.currentCard;
-    this.props.deleteLink(id, linkId);
-  }
-
   onSetCoverImage(fileId) {
     this.props.setCoverImage(this.props.card.currentCard.id, fileId);
   }
@@ -1257,7 +1249,6 @@ class CardNewScreen extends React.Component {
           isFastImage={cardMode !== CONSTANTS.SHARE_EXTENTION_CARD}
           editable={viewMode !== CONSTANTS.CARD_VIEW}
           longPressLink={(link) => this.onLongPressWbeMetaLink(link)}
-          // onRemove={(linkId) => this.onDeleteLink(linkId)}
         />
       )
     }
@@ -1391,7 +1382,7 @@ class CardNewScreen extends React.Component {
     const { cardMode, viewMode } = this.props;
     if (cardMode === CONSTANTS.SHARE_EXTENTION_CARD) {
       return (
-        <View style={[styles.headerContainer, styles.extensionHeaderContainer]}>
+        <View style={styles.extensionHeaderContainer}>
           <TouchableOpacity 
             style={styles.closeButtonShareWrapper}
             activeOpacity={0.7}
@@ -1431,7 +1422,7 @@ class CardNewScreen extends React.Component {
             activeOpacity={0.6}
             onPress={this.onUpdateFeed.bind(this)}
           >
-            <Text style={[styles.textButton, { color: COLORS.MEDIUM_GREY }]}>  Done</Text>
+            <Text style={[styles.textButton, { color: COLORS.MEDIUM_GREY }]}>Done</Text>
           </TouchableOpacity>
         </View>
       )
@@ -1589,8 +1580,9 @@ class CardNewScreen extends React.Component {
 
         {this.state.loading && <LoadingScreen />}
         <Modal 
-          style={{margin: 0}}
+          style={{ margin: 0 }}
           isVisible={this.state.isVisibleChooseLinkImagesModal}
+          animationInTiming={500}
         >
           <ChooseLinkImages
             images={this.allLinkImages}

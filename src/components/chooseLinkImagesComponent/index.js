@@ -1,5 +1,6 @@
 import React from 'react'
 import {
+  SafeAreaView,
   Text,
   View,
   TouchableOpacity,
@@ -71,7 +72,7 @@ export default class ChooseLinkImages extends React.Component {
         activeOpacity={0.6}
         onPress={() => this.onSelectItem(item.item)}
       >
-        <FastImage style={styles.imageItem} source={{uri: item.item}} resizeMode={FastImage.resizeMode.cover}/>
+        <FastImage style={styles.imageItem} source={{ uri: item.item }} resizeMode={FastImage.resizeMode.cover}/>
         {this.renderIcon(select)}
       </TouchableOpacity>
     );
@@ -81,19 +82,19 @@ export default class ChooseLinkImages extends React.Component {
     return (
       <View style={styles.topContainer}>
         <TouchableOpacity 
-          style={styles.backButtonWrapper}
+          style={styles.btnClose}
           activeOpacity={0.6}
           onPress={this.onBack.bind(this)}
         >
-          <Ionicons name="ios-arrow-back" size={32} color={COLORS.PURPLE} />
+          <Text style={[styles.textButton, { color: COLORS.PURPLE }]}>Cancel</Text>
         </TouchableOpacity>
-
+        <Text style={styles.textButton}>Select images</Text>
         <TouchableOpacity 
-          style={styles.saveButtonWapper}
+          style={[styles.btnClose, { alignItems: 'flex-end' }]}
           activeOpacity={0.6}
           onPress={this.onSave.bind(this)}
         >
-          <Text style={styles.textSave}>Save</Text>
+          <Text style={[styles.textButton, { color: COLORS.MEDIUM_GREY }]}>Done</Text>
         </TouchableOpacity>
       </View>
     )
@@ -105,16 +106,17 @@ export default class ChooseLinkImages extends React.Component {
     } = this.props;
     return (
       <View style={styles.container}>
-        {this.renderHeader}
-        <Text style={styles.textTitle}>Choose images you want to add</Text>
-        <FlatList
-          style={styles.mainContainer}
-          data={images}
-          renderItem={this.renderImage.bind(this)}
-          keyExtractor={(item, index) => index}
-          extraData={this.state}
-          numColumns={3}
-        />
+        <SafeAreaView style={{ flex: 1 }}>
+          {this.renderHeader}
+          <FlatList
+            contentContainerStyle={styles.mainInnerContainer}
+            data={images}
+            renderItem={this.renderImage.bind(this)}
+            keyExtractor={(item, index) => index}
+            extraData={this.state}
+            numColumns={2}
+          />
+        </SafeAreaView>
       </View>
     );
   }
