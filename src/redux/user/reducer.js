@@ -18,7 +18,9 @@ const initialState = {
   userConfirmed: false,
   cropUrl: null,
   listHomeType: 'list',
-  listDetailType: 'list'
+  showClipboardToaster: false,
+  clipboardToasterContent: '',
+  clipboardToasterPrevpage: 'card'
 };
 
 export default function user(state = initialState, action = {}) {
@@ -591,13 +593,25 @@ export default function user(state = initialState, action = {}) {
         listHomeType: action.payload
       }
     }
+
     /**
-     * set list type on Detail actionbar (list, masonry)
+     * show clipboard toaster
      */
-    case types.SET_DETAIL_LIST_TYPE: {
+    case types.SHOW_CLIPBOARD_TOASTER: {
       return {
         ...state,
-        listDetailType: action.payload
+        showClipboardToaster: true,
+        clipboardToasterPrevpage: action.payload.prevPage,
+        clipboardToasterContent: action.payload.data
+      }
+    }
+    /**
+     * close clipboard toaster
+     */
+    case types.CLOSE_CLIPBOARD_TOASTER: {
+      return {
+        ...state,
+        showClipboardToaster: false
       }
     }
     default:

@@ -1671,6 +1671,65 @@ export default function feedo(state = initialState, action = {}) {
         error: action.error.response,
       }
     }
+    /**
+     * Save flow preference (LIST, MASONRY)
+     */
+    case types.SAVE_FLOW_PREFERENCE_PENDING:
+      return {
+        ...state,
+        loading: types.SAVE_FLOW_PREFERENCE_PENDING,
+      }
+    case types.SAVE_FLOW_PREFERENCE_FULFILLED: {
+      const { feedId, preference } = action.payload
+      const { feedoList, invitedFeedList } = state
+
+      let restFeedoList = filter(feedoList, feed => feed.id !== feedId)
+      let updateFeed = find(feedoList, feed => feed.id === feedId)
+      if (updateFeed) {
+        updateFeed = {
+          ...updateFeed,
+          metadata: {
+            ...updateFeed.metadata,
+            myViewPreference: preference
+          }
+        }
+        restFeedoList = [
+          ...restFeedoList,
+          updateFeed
+        ]
+      }
+
+      let restInvitedFeedList = filter(invitedFeedList, feed => feed.id !== feedId)
+      let invitedFeed = find(invitedFeedList, feed => feed.id === feedId)
+      if (invitedFeed) {
+        invitedFeed = {
+          ...invitedFeed,
+          metadata: {
+            ...invitedFeed.metadata,
+            myViewPreference: preference
+          }
+        }
+        restInvitedFeedList = [
+          ...restInvitedFeedList,
+          invitedFeed
+        ]
+      }
+
+      return {
+        ...state,
+        loading: types.SAVE_FLOW_PREFERENCE_FULFILLED,
+        feedoList: restFeedoList,
+        invitedFeedList: restInvitedFeedList
+      }
+    }
+    case types.SAVE_FLOW_PREFERENCE_REJECTED: {
+      console.log('MMMMM')
+      return {
+        ...state,
+        loading: types.SAVE_FLOW_PREFERENCE_REJECTED,
+        error: action.error.response,
+      }
+    }
     default:
       return state;
   }

@@ -40,7 +40,7 @@ class ChooseLinkImageFromExtension extends React.Component {
   async componentDidMount() {
     try {
       const { type, value } = await ShareExtension.data();
-      if (type === 'text/plain') {
+      if (type === 'url') {
         this.setState({initialized: true});
         const urls = value.match(/(http(s)?:\/\/.)?(www\.)?[-a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,6}\b([-a-zA-Z0-9@:%_\+.~#?&//=]*)/gi);
         this.shareUrl = urls[0]
@@ -52,7 +52,15 @@ class ChooseLinkImageFromExtension extends React.Component {
             imageUrls: images,
           });
         }
+
+      } else if (type === 'text/plain') {
+        const text = value;
+        if (text !== '') {
+          Actions.ShareCardScreen({
+            notesText: text,
+          });
       }
+    }
     } catch(error) {
       console.log('error : ', error)
     }

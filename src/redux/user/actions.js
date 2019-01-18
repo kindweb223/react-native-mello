@@ -368,9 +368,15 @@ export const setHomeListType = (type) => {
   };
 }
 
-export const setDetailListType = (type) => {
+export const showClipboardToaster = (data, prevPage) => {
   return {
-    type: types.SET_DETAIL_LIST_TYPE,
-    payload: type
+    type: types.SHOW_CLIPBOARD_TOASTER,
+    payload: { data, prevPage }
+  };
+}
+
+export const closeClipboardToaster = () => {
+  return {
+    type: types.CLOSE_CLIPBOARD_TOASTER
   };
 }

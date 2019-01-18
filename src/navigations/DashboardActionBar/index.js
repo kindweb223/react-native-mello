@@ -58,8 +58,8 @@ class DashboardActionBar extends React.Component {
           {showList && (
             <TouchableOpacity style={styles.iconView} onPress={() => this.props.handleList()}>
               {page === 'detail'
-                ? <Image source={listType === 'list' ? MASONRY_ICON : LIST_ICON} />
-                : <Image source={listType === 'list' ? LIST_ICON : LIST_ICON_THUMBNAIL} />
+                ? <Image source={listType === 'LIST' ? MASONRY_ICON : LIST_ICON} />
+                : <Image source={listType === 'LIST' ? LIST_ICON : LIST_ICON_THUMBNAIL} />
               }
             </TouchableOpacity>
           )}
@@ -72,7 +72,6 @@ class DashboardActionBar extends React.Component {
             <TouchableOpacity
               style={styles.notificationView}
               onPress={() => Actions.NotificationScreen()}
-              // onPress={() => badgeCount > 0 ? Actions.NotificationScreen() : {}}
             >
               <Image source={badgeCount > 0 ? BELL_ICON_B : BELL_ICON_G} />
               {badgeCount > 0 && (
@@ -105,7 +104,7 @@ class DashboardActionBar extends React.Component {
 DashboardActionBar.defaultProps = {
   page: 'home',
   showList: false,
-  listType: 'list',
+  listType: 'LIST',
   filtering: true,  
   filterType: 'all',
   sortType: 'date',

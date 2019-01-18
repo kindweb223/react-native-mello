@@ -244,7 +244,7 @@ class SelectHuntScreen extends React.Component {
       feedoList = _.filter(feedoList, feedo => feedo.headline && feedo.headline.toLowerCase().indexOf(this.state.filterText.toLowerCase()) !== -1);
     }
     feedoList = _.filter(feedoList, feedo => feedo.status === 'PUBLISHED' && feedo.metadata.myInviteStatus === 'ACCEPTED');
-    feedoList = _.orderBy(feedoList, ['headline'], 'asc')
+    feedoList = _.orderBy(feedoList, [feedo => feedo.headline.toLowerCase()], 'asc')
 
     const { selectMode } = this.props;
     let bottomMargin = CONSTANTS.SCREEN_VERTICAL_MIN_MARGIN;
@@ -323,6 +323,7 @@ class SelectHuntScreen extends React.Component {
           this.state.isVisibleNewFeedScreen && 
             <View style={styles.newFeedContainer}>
               <NewFeedScreen
+                initFeedName={this.state.filterText}
                 viewMode={CONSTANTS.FEEDO_FROM_CARD}
                 feedoMode={selectMode !== CONSTANTS.FEEDO_SELECT_FROM_SHARE_EXTENSION ? CONSTANTS.MAIN_APP_FEEDO : CONSTANTS.SHARE_EXTENTION_FEEDO}
                 onClose={() => this.onCloseNewFeed()}
