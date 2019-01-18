@@ -316,11 +316,6 @@ class CardNewScreen extends React.Component {
           favicon,
         } = this.openGraphLinksInfo[this.indexForAddedLinks++];
         this.props.addLink(id, url, title, description, image, favicon);
-      } else if (this.props.cardMode !== CONSTANTS.SHARE_EXTENTION_CARD && this.allLinkImages.length > 0 
-        && (this.props.card.currentCard.links === null || this.props.card.currentCard.links.length === 0)) {
-        this.setState({
-          isVisibleChooseLinkImagesModal: true,
-        });
       }
     } else if (this.props.card.loading !== types.DELETE_LINK_PENDING && nextProps.card.loading === types.DELETE_LINK_PENDING) {
       // deleting a link
@@ -396,6 +391,14 @@ class CardNewScreen extends React.Component {
           this.allLinkImages.push(nextProps.card.currentOpneGraph.image);
         }
       }
+
+      if (this.props.cardMode !== CONSTANTS.SHARE_EXTENTION_CARD && this.allLinkImages.length > 0 
+        && (this.props.card.currentCard.links === null || this.props.card.currentCard.links.length === 0)) {
+        this.setState({
+          isVisibleChooseLinkImagesModal: true,
+        });
+      }
+      
       let currentIdea = this.state.idea;
       currentIdea = currentIdea.replace(' ', '');
       currentIdea = currentIdea.replace(',', '');
@@ -1582,7 +1585,7 @@ class CardNewScreen extends React.Component {
         <Modal 
           style={{ margin: 0 }}
           isVisible={this.state.isVisibleChooseLinkImagesModal}
-          animationInTiming={500}
+          animationInTiming={100}
         >
           <ChooseLinkImages
             images={this.allLinkImages}

@@ -524,23 +524,6 @@ export const getArchivedFeedList = () => {
 }
 
 /**
- * Leave Feed
- */
-export const leaveFeed = (feedId) => {
-  let url = `hunts/${feedId}`
-
-  return {
-    types: [types.LEAVE_FEED_PENDING, types.LEAVE_FEED_FULFILLED, types.LEAVE_FEED_REJECTED],
-    promise: axios({
-      method: 'put',
-      url: url,
-      data: { status: 'ARCHIVED' }
-    }),
-    payload: feedId
-  };
-}
-
-/**
  * Get activity feed
  */
 export const getActivityFeed = (userId, data) => {

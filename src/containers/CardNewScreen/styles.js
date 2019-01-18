@@ -105,7 +105,7 @@ const styles = StyleSheet.create({
     color: COLORS.PURPLE,
   },
   coverImageContainer: {
-    marginTop: 16,
+    // marginTop: 16,
   },
   extensionCoverImageContainer: {
     height: Math.round(CONSTANTS.SCREEN_WIDTH * 0.468),
