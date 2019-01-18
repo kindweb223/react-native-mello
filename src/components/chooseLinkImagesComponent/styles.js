@@ -36,8 +36,8 @@ const styles = StyleSheet.create({
     paddingHorizontal: 8
   },
   imageContainer: {
-    width: Math.round((CONSTANTS.SCREEN_WIDTH - 48) / 2),
-    height: Math.round((CONSTANTS.SCREEN_WIDTH - 48) / 2),
+    width: Math.round((CONSTANTS.SCREEN_WIDTH - 64) / 3),
+    height: Math.round((CONSTANTS.SCREEN_WIDTH - 64) / 3),
     margin: 8,
     borderRadius: 10,
     overflow: 'hidden'
