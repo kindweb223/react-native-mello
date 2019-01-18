@@ -69,6 +69,7 @@ import {
   getActivityFeed,
   getFeedoList,
   updateSharingPreferences,
+  saveFlowViewPreference,
 } from '../../redux/feedo/actions';
 import {
   setCurrentCard,
@@ -76,7 +77,6 @@ import {
   moveCard,
 } from '../../redux/card/actions'
 import {
-  setDetailListType,
   showClipboardToaster,
   closeClipboardToaster
 } from '../../redux/user/actions'
@@ -153,7 +153,7 @@ class FeedDetailScreen extends React.Component {
       MasonryData: [],
       isShowInviteToaster: false,
       inviteToasterTitle: '',
-      
+      viewPreference: 'LIST'
     };
     this.animatedOpacity = new Animated.Value(0)
     this.menuOpacity = new Animated.Value(0)
@@ -176,10 +176,17 @@ class FeedDetailScreen extends React.Component {
     this.scrollviewHeight = 0
   }
 
+  UNSAFE_componentWillMount() {
+    const { data } = this.props
+    this.setState({ viewPreference: data.metadata.myViewPreference ? data.metadata.myViewPreference : 'LIST' })
+  }
+
   componentDidMount() {
+    const { data } = this.props
     Analytics.setCurrentScreen('FeedDetailScreen')
+
     this.setState({ loading: true })
-    this.props.getFeedDetail(this.props.data.id);
+    this.props.getFeedDetail(data.id);
     AppState.addEventListener('change', this.onHandleAppStateChange);
   }
 
@@ -215,6 +222,10 @@ class FeedDetailScreen extends React.Component {
     if (feedo.loading === 'PUBNUB_DELETE_FEED') {
       this.props.getFeedoList()
       Actions.popTo('HomeScreen')
+    }
+
+    if (this.props.feedo.loading !== 'GET_FEED_DETAIL_FULFILLED' && feedo.loading === 'GET_FEED_DETAIL_FULFILLED') {
+      this.setState({ viewPreference: feedo.currentFeed.metadata.myViewPreference ? feedo.currentFeed.metadata.myViewPreference : 'LIST' })
     }
 
     if ((this.props.feedo.loading !== 'GET_FEED_DETAIL_FULFILLED' && feedo.loading === 'GET_FEED_DETAIL_FULFILLED') ||
@@ -426,7 +437,7 @@ class FeedDetailScreen extends React.Component {
       }
     })
 
-    if (this.props.user.listDetailType === 'thumbnail' && this.refs.masonry) {
+    if (this.state.viewPreference === 'MASONRY' && this.refs.masonry) {
       this.setMasonryData(sortIdeas)
     }
   }
@@ -667,7 +678,7 @@ class FeedDetailScreen extends React.Component {
         }
         state.currentFeed.ideas = filterIdeas;
 
-        if (this.props.user.listDetailType === 'thumbnail' && this.refs.masonry) {
+        if (this.state.viewPreference === 'MASONRY' && this.refs.masonry) {
           this.filterCards(state.currentFeed)
         }
 
@@ -898,7 +909,7 @@ class FeedDetailScreen extends React.Component {
       }
       state.currentFeed.ideas = filterIdeas;
 
-      if (this.props.user.listDetailType === 'thumbnail' && this.refs.masonry) {
+      if (this.state.viewPreference === 'MASONRY' && this.refs.masonry) {
         this.setMasonryData(filterIdeas)
       }
 
@@ -937,7 +948,7 @@ class FeedDetailScreen extends React.Component {
       }
       state.currentFeed.ideas = filterIdeas;
 
-      if (this.props.user.listDetailType === 'thumbnail' && this.refs.masonry) {
+      if (this.state.viewPreference === 'MASONRY' && this.refs.masonry) {
         this.setMasonryData(filterIdeas)
       }
 
@@ -1212,12 +1223,18 @@ class FeedDetailScreen extends React.Component {
   }
 
   handleList = () => {
-    const { listDetailType } = this.props.user
-    const type = listDetailType === 'list' ? 'thumbnail' : 'list'
-    if (type === 'thumbnail') {
+    const { currentFeed, viewPreference } = this.state
+    const { userInfo } = this.props.user
+
+    const invitee = _.find(currentFeed.invitees, data => data.userProfile.id === userInfo.id)
+    console.log('INVITEE: ', invitee)
+
+    const preference = viewPreference === 'MASONRY' ? 'LIST' : 'MASONRY'
+    if (preference === 'MASONRY') {
       this.setState({ isMasonryView: false })
     }
-    this.props.setDetailListType(type)
+    this.setState({ viewPreference: preference })
+    this.props.saveFlowViewPreference(currentFeed.id, invitee.id, preference)
   }
 
   get renderSelectHunt() {
@@ -1372,7 +1389,7 @@ class FeedDetailScreen extends React.Component {
 
                 {
                 (!_.isEmpty(currentFeed) && currentFeed && currentFeed.ideas)
-                  ? this.props.user.listDetailType === 'list'
+                  ? this.state.viewPreference === 'LIST'
                     ? currentFeed.ideas.length > 0
                       ? <View
                           style={{ paddingHorizontal: 8 }}
@@ -1391,7 +1408,7 @@ class FeedDetailScreen extends React.Component {
                               <FeedCardComponent
                                 idea={item}
                                 invitees={invitees}
-                                listType={this.props.user.listDetailType}
+                                listType={this.state.viewPreference}
                                 cardType="view"
                                 prevPage={this.props.prevPage}
                                 longHold={isVisibleLongHoldMenu}
@@ -1454,7 +1471,7 @@ class FeedDetailScreen extends React.Component {
                                 <FeedCardComponent
                                   idea={item.data}
                                   invitees={invitees}
-                                  listType={this.props.user.listDetailType}
+                                  listType={this.state.viewPreference}
                                   cardType="view"
                                   prevPage={this.props.prevPage}
                                   longSelected={isVisibleLongHoldMenu && selectedLongHoldCardIndex === item.index}
@@ -1509,7 +1526,7 @@ class FeedDetailScreen extends React.Component {
             notifications={false}
             feed={currentFeed}
             showList={true}
-            listType={this.props.user.listDetailType}
+            listType={this.state.viewPreference}
             page="detail"
           />
         }
@@ -1586,7 +1603,6 @@ class FeedDetailScreen extends React.Component {
 
         {isVisibleLongHoldMenu && (
           <CardLongHoldMenuScreen
-            listType={this.props.user.listDetailType}
             idea={this.state.selectedLongHoldIdea}
             currentFeed={currentFeed}
             invitees={this.state.selectedLongHoldInvitees}
@@ -1654,14 +1670,14 @@ const mapDispatchToProps = dispatch => ({
   deleteFile: (feedId, fileId) => dispatch(deleteFile(feedId, fileId)),
   setCurrentFeed: (data) => dispatch(setCurrentFeed(data)),
   updateInvitation: (feedId, type) => dispatch(updateInvitation(feedId, type)),
-  setDetailListType: (type) => dispatch(setDetailListType(type)),
   deleteDummyCard: (ideaId, type) => dispatch(deleteDummyCard(ideaId, type)),
   moveDummyCard: (ideaId, feedId, type) => dispatch(moveDummyCard(ideaId, feedId, type)),
   getActivityFeed: (userId, param) => dispatch(getActivityFeed(userId, param)),
   getFeedoList: () => dispatch(getFeedoList()),
   updateSharingPreferences: (feedId, data) => dispatch(updateSharingPreferences(feedId, data)),
   showClipboardToaster: (data, prevPage) => dispatch(showClipboardToaster(data, prevPage)),
-  closeClipboardToaster: () => dispatch(closeClipboardToaster())
+  closeClipboardToaster: () => dispatch(closeClipboardToaster()),
+  saveFlowViewPreference: (feedId, inviteeId, preference) => dispatch(saveFlowViewPreference(feedId, inviteeId, preference))
 })
 
 FeedDetailScreen.defaultProps = {
