@@ -1671,6 +1671,44 @@ export default function feedo(state = initialState, action = {}) {
         error: action.error.response,
       }
     }
+    /**
+     * Save flow preference (LIST, MASONRY)
+     */
+    case types.SAVE_FLOW_PREFERENCE_PENDING:
+      return {
+        ...state,
+        loading: types.SAVE_FLOW_PREFERENCE_PENDING,
+      }
+    case types.SAVE_FLOW_PREFERENCE_FULFILLED: {
+      const { feedId, preference } = action.payload
+      const { feedoList } = state
+
+      let restFeedoList = filter(feedoList, feed => feed.id !== feedId)
+      let updateFeed = find(feedoList, feed => feed.id === feedId)
+      updateFeed = {
+        ...updateFeed,
+        metadata: {
+          ...updateFeed.metadata,
+          myViewPreference: preference
+        }
+      }
+
+      return {
+        ...state,
+        loading: types.SAVE_FLOW_PREFERENCE_FULFILLED,
+        feedoList: [
+          ...restFeedoList,
+          updateFeed
+        ]
+      }
+    }
+    case types.SAVE_FLOW_PREFERENCE_REJECTED: {
+      return {
+        ...state,
+        loading: types.SAVE_FLOW_PREFERENCE_REJECTED,
+        error: action.error.response,
+      }
+    }
     default:
       return state;
   }
