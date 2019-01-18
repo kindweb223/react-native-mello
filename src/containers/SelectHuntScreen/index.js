@@ -323,6 +323,7 @@ class SelectHuntScreen extends React.Component {
           this.state.isVisibleNewFeedScreen && 
             <View style={styles.newFeedContainer}>
               <NewFeedScreen
+                initFeedName={this.state.filterText}
                 viewMode={CONSTANTS.FEEDO_FROM_CARD}
                 feedoMode={selectMode !== CONSTANTS.FEEDO_SELECT_FROM_SHARE_EXTENSION ? CONSTANTS.MAIN_APP_FEEDO : CONSTANTS.SHARE_EXTENTION_FEEDO}
                 onClose={() => this.onCloseNewFeed()}

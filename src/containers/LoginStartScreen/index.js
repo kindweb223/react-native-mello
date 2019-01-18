@@ -52,6 +52,17 @@ class LoginStartScreen extends React.Component {
   }
 
   onMomentumScrollEnd = (e, state, context) => {
+    this.lottieFirst.reset()
+    this.lottieSecond.reset()
+    this.lottieThird.reset()
+    if (context.state.index === 1) {
+      this.lottieFirst.play()
+    } else if (context.state.index === 2) {
+      this.lottieSecond.play()
+    } else if (context.state.index === 3) {
+      this.lottieThird.play()
+    }
+
     this.setState({ position: context.state.index })
   }
 
@@ -66,19 +77,37 @@ class LoginStartScreen extends React.Component {
     )
   }
 
-  renderLottieView(title, lottieUrl) {
+  renderLottieView(title, lottieUrl, index) {
     return (
       <View style={styles.swipeContainer}>
         <View style={styles.titleView}>
           <Text style={styles.titleText}>{title}</Text>
         </View>
         <View style={styles.lottieView}>
-          <LottieView
-            source={lottieUrl}
-            autoPlay
-            loop
-            style={{ }}
-          />
+          {index === 1 && (
+            <LottieView
+              ref={animation => this.lottieFirst = animation}
+              source={lottieUrl}
+              loop
+              style={{ }}
+            />
+          )}
+          {index === 2 && (
+            <LottieView
+              ref={animation => this.lottieSecond = animation}
+              source={lottieUrl}
+              loop
+              style={{ }}
+            />
+          )}
+          {index === 3 && (
+            <LottieView
+              ref={animation => this.lottieThird = animation}
+              source={lottieUrl}
+              loop
+              style={{ }}
+            />
+          )}          
         </View>
       </View>
     )
@@ -160,9 +189,9 @@ class LoginStartScreen extends React.Component {
             onIndexChanged={this.onIndexChanged}
           >           
             {this.renderLogoView()}
-            {this.renderLottieView('Save important content from the web.', LOTTIE_COLLECT)}
-            {this.renderLottieView('... or from your camera.', LOTTIE_REVIEW)}
-            {this.renderLottieView('... or just straight out of you brain.', LOTTIE_SHARE)}
+            {this.renderLottieView('Save important content from the web.', LOTTIE_COLLECT, 1)}
+            {this.renderLottieView('... or from your camera.', LOTTIE_REVIEW, 2)}
+            {this.renderLottieView('... or just straight out of you brain.', LOTTIE_SHARE, 3)}
             {this.renderImageView('... from instagram, Photos, Dropbox, YouTube, Pinterest, Slack... You get the idea.', TEMP_IMG)}
             {this.renderImageView('Collaborate with your teammates and close friends.', TEMP_IMG)}
             {this.renderSignupView()}
