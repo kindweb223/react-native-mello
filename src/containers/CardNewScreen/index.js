@@ -95,6 +95,9 @@ class NewCardScreen extends React.Component {
       coverImage = props.shareImageUrls.length > 0 ? props.shareImageUrls[0] : '',
       idea = openGraph.title || openGraph.metatags.title || '';
     }
+    if (props.cardMode === CONSTANTS.SHARE_EXTENTION_CARD && props.shareText !== '') {
+      idea = props.shareText;
+    }
 
     this.state = {
       // cardName: '',
@@ -202,6 +205,11 @@ class NewCardScreen extends React.Component {
       else if (this.props.cardMode === CONSTANTS.SHARE_EXTENTION_CARD && this.isUploadShareImage) {
         this.isUploadShareImage = false;
         this.uploadFile(nextProps.card.currentCard, this.shareImageUrls[this.currentShareImageIndex], 'MEDIA');
+      }
+      else if (this.props.cardMode === CONSTANTS.SHARE_EXTENTION_CARD && this.props.shareText !== '') {
+        this.setState({
+          idea: this.props.shareText
+        });
       }
       // If just creating a card
       else if (this.props.viewMode === CONSTANTS.CARD_NEW) {
@@ -1777,6 +1785,7 @@ NewCardScreen.defaultProps = {
   cardMode: CONSTANTS.MAIN_APP_CARD_FROM_DETAIL,
   shareUrl: '',
   shareImageUrls: [],
+  shareText: '',
   onClose: () => {},
   onOpenAction: () => {},
 }
@@ -1791,6 +1800,7 @@ NewCardScreen.propTypes = {
   cardMode: PropTypes.number,
   shareUrl: PropTypes.string,
   shareImageUrls: PropTypes.array,
+  shareText: PropTypes.string,
   onClose: PropTypes.func,
   onOpenAction: PropTypes.func,
 }
