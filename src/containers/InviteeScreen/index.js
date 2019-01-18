@@ -22,13 +22,18 @@ import LinkShareItem from '../../components/LinkShareModalComponent/LinkShareIte
 import NewUserTap from '../../components/NewUserTapComponent'
 import ContactRemoveComponent from '../../components/ContactRemoveComponent'
 import { getContactList } from '../../redux/user/actions'
-import { inviteToHunt, updateSharingPreferences } from '../../redux/feedo/actions'
+import {
+  inviteToHunt,
+  updateSharingPreferences,
+  deleteInvitee
+} from '../../redux/feedo/actions'
 import * as COMMON_FUNC from '../../service/commonFunc'
 import COLORS from '../../service/colors'
 import { SHARE_LINK_URL } from '../../service/api'
 import styles from './styles'
 import Analytics from '../../lib/firebase'
 import CardFilterComponent from '../../components/CardFilterComponent';
+import Button from '../../components/Button'
 
 const CLOSE_ICON = require('../../../assets/images/Close/Blue.png')
 
@@ -63,6 +68,7 @@ class InviteeScreen extends React.Component {
     this.isMount = true
     this.setState({ loading: true })
     this.props.getContactList(userInfo.id)
+    this.setState({ currentMembers: COMMON_FUNC.filterRemovedInvitees(this.props.data.invitees) })
   }
 
   UNSAFE_componentWillReceiveProps(nextProps) {
@@ -275,6 +281,7 @@ class InviteeScreen extends React.Component {
     const {
       isAddInvitee,
       recentContacts,
+      currentMembers,
       filteredContacts,
       inviteeEmails,
       inviteePermission,
@@ -330,6 +337,7 @@ class InviteeScreen extends React.Component {
                     ref={ref => this.messageRef = ref}
                     value={this.state.message}
                     placeholder="Add message"
+                    placeholderTextColor={COLORS.DARK_GREY}
                     multiline={true}
                     style={[styles.textInput]}
                     onChangeText={this.onChangeMessage}
@@ -358,13 +366,13 @@ class InviteeScreen extends React.Component {
                     color={COLORS.PURPLE}
                   />
                 </View>
-              : (!isInput && recentContacts && recentContacts.length > 0) && (
+              : (!isInput && currentMembers && currentMembers.length > 0) && (
                   <View style={styles.inviteeListView}>
                     <View style={styles.titleView}>
                       <Text style={styles.h3}>Current members</Text>
                     </View>
                     <ScrollView style={styles.inviteeList} keyboardShouldPersistTaps="handled">
-                      {recentContacts.map(item => (
+                      {currentMembers.map(item => (
                         <TouchableOpacity key={item.id} onPress={() => this.onSelectMember(item)}>
                           <View style={styles.inviteeItem}>
                             <InviteeItemComponent invitee={item} />
@@ -378,18 +386,36 @@ class InviteeScreen extends React.Component {
           </View>
         </ScrollView>
 
-        {/* <ContactRemoveComponent
-          isRemoveModal={this.state.isRemoveModal}
-          selectedContact={selectedContact}
-          onRemove={() => this.setState({ isRemoveModal: false }) }
-        /> */}
-
-        <CardFilterComponent
-          cardCount={3}
-          totalCardCount={3}
-          show={this.state.isRemoveModal}
-          onClose={() => this.setState({ isRemoveModal: false }) }
-        />
+        <Modal
+          isVisible={isRemoveModal}
+          style={{ margin: 0 }}
+          backdropColor='#e0e0e0'
+          backdropOpacity={0.9}
+          animationIn="slideInUp"
+          animationOut="slideOutDown"
+          animationInTiming={500}
+          onBackdropPress={() => this.setState({ isRemoveModal: false })}
+        >
+          <View style={styles.removeModal}>
+            {
+              selectedContact && 
+              <InviteeItemComponent
+                invitee={selectedContact}
+              />
+            }
+            <Button
+              style={{ marginTop: 28 }}
+              color='rgba(255, 0, 0, 0.1)'
+              labelColor={COLORS.RED}
+              label="Remove"
+              borderRadius={14}
+              onPress={() => {
+                this.setState({ isRemoveModal: false })
+                setTimeout(() => this.props.deleteInvitee(selectedContact), 350)
+              }}
+            />
+          </View>
+        </Modal>
 
         <Modal
           isVisible={isPermissionModal}
@@ -433,6 +459,7 @@ const mapDispatchToProps = dispatch => ({
   getContactList: (userId) => dispatch(getContactList(userId)),
   inviteToHunt: (feedId, data) => dispatch(inviteToHunt(feedId, data)),
   updateSharingPreferences: (feedId, data) => dispatch(updateSharingPreferences(feedId, data)),
+  // deleteInvitee: (feedId, inviteeId) => dispatch(deleteInvitee(feedId, inviteeId)),
 })
 
 export default connect(

@@ -112,6 +112,7 @@ class InviteeTag extends React.Component {
             ref={ref => this.tagInputRef = ref}
             value={this.state.text}
             placeholder={this.props.placeHolder}
+            placeholderTextColor={COLORS.DARK_GREY}
             style={[styles.textInput, this.props.inputStyle]}
             onChangeText={this.onChangeText.bind(this)}
             onKeyPress={this.onKeyPress.bind(this)}

@@ -29,7 +29,7 @@ const style = {
         // fontFamily: type.base,
         fontWeight: '600',
         fontSize: 16,
-        color: colors.MEDIUM_GREY
+        color: colors.DARK_GREY
     }
 }
 
