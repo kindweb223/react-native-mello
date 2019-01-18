@@ -114,7 +114,7 @@ export default class ChooseLinkImages extends React.Component {
             renderItem={this.renderImage.bind(this)}
             keyExtractor={(item, index) => index}
             extraData={this.state}
-            numColumns={2}
+            numColumns={3}
           />
         </SafeAreaView>
       </View>
