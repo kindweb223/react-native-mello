@@ -1137,6 +1137,7 @@ class CardNewScreen extends React.Component {
           }
         >
           <CoverImagePreviewComponent
+            isShareExtension={cardMode === CONSTANTS.SHARE_EXTENTION_CARD}
             coverImage={this.state.coverImage}
             files={imageFiles}
             editable={viewMode !== CONSTANTS.CARD_VIEW}
