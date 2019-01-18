@@ -37,7 +37,7 @@ export default class ChooseLinkImages extends React.Component {
   }
 
   onSave() {
-    if (this.props.onSave) {
+    if (this.props.onSave && this.state.selectedImages.length > 0) {
       this.props.onSave(this.state.selectedImages);
     }
   }
@@ -79,6 +79,7 @@ export default class ChooseLinkImages extends React.Component {
   }
 
   get renderHeader() {
+    const { selectedImages } = this.state
     return (
       <View style={styles.topContainer}>
         <TouchableOpacity 
@@ -94,7 +95,7 @@ export default class ChooseLinkImages extends React.Component {
           activeOpacity={0.6}
           onPress={this.onSave.bind(this)}
         >
-          <Text style={[styles.textButton, { color: COLORS.MEDIUM_GREY }]}>Done</Text>
+          <Text style={[styles.textButton, selectedImages.length > 0 ? { color: COLORS.PURPLE } : { color: COLORS.MEDIUM_GREY }]}>Done</Text>
         </TouchableOpacity>
       </View>
     )
