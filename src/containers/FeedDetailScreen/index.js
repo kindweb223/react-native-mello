@@ -71,7 +71,7 @@ import {
   getActivityFeed,
   getFeedoList,
   updateSharingPreferences,
-  deleteInvitee
+  deleteInvitee,
   saveFlowViewPreference,
 } from '../../redux/feedo/actions';
 import {
