@@ -1606,7 +1606,7 @@ class CardNewScreen extends React.Component {
         <Modal 
           style={{ margin: 0 }}
           isVisible={this.state.isVisibleChooseLinkImagesModal}
-          animationInTiming={100}
+          animationInTiming={300}
         >
           <ChooseLinkImages
             images={this.allLinkImages}
