@@ -38,7 +38,9 @@ class LoginStartScreen extends React.Component {
 
   componentDidMount() {
     Analytics.setCurrentScreen('TutorialScreen')
-    if (this.props.prevPage === 'login') {
+  }
+  componentWillReceiveProps(nextProps) {
+    if (nextProps.prevPage === 'login') {
       this.onSkip()
     }
   }

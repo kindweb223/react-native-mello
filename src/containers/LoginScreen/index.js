@@ -37,7 +37,7 @@ class LoginScreen extends React.Component {
           if (props.prevPage === 'signup') {
             Actions.pop()
           } else {
-            Actions.LoginStartScreen({ prevPage: 'login' })
+            Actions.pop({ refresh: { prevPage: 'login' } } )
           }
         }}
       >
