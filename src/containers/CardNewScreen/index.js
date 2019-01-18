@@ -784,12 +784,22 @@ class CardNewScreen extends React.Component {
     //   cardName = '';
     // }
 
-    if (idea.length > 0 || (files && files.length > 0)) {
+    if (this.isCardValid(idea, files)) {
       const cardName = '';
       this.props.updateCard(this.props.feedo.currentFeed.id, id, cardName, this.state.idea, this.state.coverImage, files);
     } else {
       Alert.alert('Error', 'Enter some text or add an image')
     }
+  }
+
+  /**
+   * If card has text or files
+   *  
+   * @param {*} idea 
+   * @param {*} files 
+   */
+  isCardValid(idea, files) {
+    return idea.length > 0 || (files && files.length > 0) ? true : false
   }
 
   onCreateCard() {
@@ -1090,7 +1100,7 @@ class CardNewScreen extends React.Component {
       files,
     } = this.props.card.currentCard;
     const { idea } = this.state
-    if (idea.length === 0 && (!files || files.length === 0)) {
+    if (!this.isCardValid(idea, files)) {
       Alert.alert('Error', 'Enter some text or add an image')
       return;
     }
@@ -1391,6 +1401,9 @@ class CardNewScreen extends React.Component {
 
   get renderHeader() {
     const { cardMode, viewMode } = this.props;
+    const { files } = this.props.card.currentCard;
+    const { idea } = this.state
+
     if (cardMode === CONSTANTS.SHARE_EXTENTION_CARD) {
       return (
         <View style={styles.extensionHeaderContainer}>
@@ -1433,7 +1446,7 @@ class CardNewScreen extends React.Component {
             activeOpacity={0.6}
             onPress={this.onUpdateFeed.bind(this)}
           >
-            <Text style={[styles.textButton, { color: COLORS.MEDIUM_GREY }]}>Done</Text>
+            <Text style={[styles.textButton, { color: this.isCardValid(idea, files) ? COLORS.PURPLE : COLORS.MEDIUM_GREY }]}>Done</Text>
           </TouchableOpacity>
         </View>
       )
