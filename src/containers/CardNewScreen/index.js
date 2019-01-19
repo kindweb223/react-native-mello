@@ -626,9 +626,15 @@ class CardNewScreen extends React.Component {
       } catch (error) {
         console.log('error code : ', error);
       }
-      if (this.props.prevPage !== 'card') {
+      
+      // If prev page not 'card' or if we don't have a current feed
+      // Create feed will be called for a new feed
+      // Card will be added on successful response to create feed
+      if (this.props.prevPage !== 'card' || !this.props.feedo.currentFeed.id) {
         this.props.createFeed();
-      } else {
+      }
+      // Otherwise add the card straight to the current feed we have
+      else {
         this.props.createCard(this.props.feedo.currentFeed.id)
       }
     } else if (viewMode === CONSTANTS.CARD_NEW) {
