@@ -21,12 +21,13 @@ export default {
     borderColor: COLORS.DARK_GREY
   },
   navbarView: {
-    marginTop: 30,
-    marginBottom: 46,
-    height: 34,
-    paddingHorizontal: CONSTANTS.PADDING * 2
+    height: 110,
+    paddingHorizontal: CONSTANTS.PADDING * 2,
+    paddingTop: 30,
+    paddingBottom: 46
   },
   swipeContainer: {
+    flex: 1,
     justifyContent: 'center',
     paddingHorizontal: CONSTANTS.PADDING * 2
   },
@@ -45,16 +46,21 @@ export default {
     letterSpacing: 1.2
   },
   titleView: {
-    height: 116,
+    height: 70
   },
   titleText: {
     fontSize: 22,
     lineHeight: 28
   },
+  subContainer: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center'
+  },
   lottieView: {
     width: '100%',
     height : 375,
-    marginTop: 14
+    marginBottom: 50
   },
   imageView: {
     width: '100%',
@@ -66,7 +72,7 @@ export default {
   skipButtonView: {
     position: 'absolute',
     right: 0,
-    bottom: ifIphoneX(43, 10)
+    bottom: ifIphoneX(43, 20)
   },
   skipButton: {
     paddingHorizontal: CONSTANTS.PADDING * 2

@@ -10,8 +10,8 @@ import { connect } from 'react-redux'
 import { Actions } from 'react-native-router-flux'
 import PropTypes from 'prop-types'
 import Swiper from 'react-native-swiper'
-import Video from 'react-native-video'
 import LottieView from 'lottie-react-native'
+import { ifIphoneX } from 'react-native-iphone-x-helper'
 
 import LoadingScreen from '../LoadingScreen'
 import COLORS from '../../service/colors'
@@ -28,7 +28,7 @@ import LOTTIE_COLLECT from '../../../assets/lottie/showcase-collect.json'
 import LOTTIE_REVIEW from '../../../assets/lottie/showcase-review.json'
 import LOTTIE_SHARE from '../../../assets/lottie/showcase-share.json'
 
-class LoginStartScreen extends React.Component {
+class TutorialScreen extends React.Component {
   constructor(props) {
     super(props)
     this.state = {
@@ -41,7 +41,7 @@ class LoginStartScreen extends React.Component {
   }
   componentWillReceiveProps(nextProps) {
     if (nextProps.prevPage === 'login') {
-      this.onSkip()
+      this.onSkip(false)
     }
   }
 
@@ -51,21 +51,6 @@ class LoginStartScreen extends React.Component {
 
   onSignUp = () => {
     Actions.SignUpScreen()
-  }
-
-  onMomentumScrollEnd = (e, state, context) => {
-    this.lottieFirst.reset()
-    this.lottieSecond.reset()
-    this.lottieThird.reset()
-    if (context.state.index === 1) {
-      this.lottieFirst.play()
-    } else if (context.state.index === 2) {
-      this.lottieSecond.play()
-    } else if (context.state.index === 3) {
-      this.lottieThird.play()
-    }
-
-    this.setState({ position: context.state.index })
   }
 
   renderLogoView() {
@@ -85,31 +70,33 @@ class LoginStartScreen extends React.Component {
         <View style={styles.titleView}>
           <Text style={styles.titleText}>{title}</Text>
         </View>
-        <View style={styles.lottieView}>
-          {index === 1 && (
-            <LottieView
-              ref={animation => this.lottieFirst = animation}
-              source={lottieUrl}
-              loop
-              style={{ }}
-            />
-          )}
-          {index === 2 && (
-            <LottieView
-              ref={animation => this.lottieSecond = animation}
-              source={lottieUrl}
-              loop
-              style={{ }}
-            />
-          )}
-          {index === 3 && (
-            <LottieView
-              ref={animation => this.lottieThird = animation}
-              source={lottieUrl}
-              loop
-              style={{ }}
-            />
-          )}          
+        <View style={styles.subContainer}>
+          <View style={styles.lottieView}>
+            {index === 1 && (
+              <LottieView
+                ref={animation => this.lottieFirst = animation}
+                source={lottieUrl}
+                loop
+                style={{ }}
+              />
+            )}
+            {index === 2 && (
+              <LottieView
+                ref={animation => this.lottieSecond = animation}
+                source={lottieUrl}
+                loop
+                style={{ }}
+              />
+            )}
+            {index === 3 && (
+              <LottieView
+                ref={animation => this.lottieThird = animation}
+                source={lottieUrl}
+                loop
+                style={{ }}
+              />
+            )}          
+          </View>
         </View>
       </View>
     )
@@ -121,8 +108,10 @@ class LoginStartScreen extends React.Component {
         <View style={styles.titleView}>
           <Text style={styles.titleText}>{title}</Text>
         </View>
-        <View style={styles.imageView}>
-          <Image style={styles.navLogo} source={imageUrl} />
+        <View style={styles.subContainer}>
+          <View style={styles.imageView}>
+            <Image style={styles.navLogo} source={imageUrl} />
+          </View>
         </View>
       </View>
     )
@@ -162,8 +151,25 @@ class LoginStartScreen extends React.Component {
     )
   }
 
-  onSkip() {
-    this.setState({ position: 6 })
+  onMomentumScrollEnd = (e, state, context) => {
+    this.lottieFirst.reset()
+    this.lottieSecond.reset()
+    this.lottieThird.reset()
+
+    if (context.state.index === 1) {
+      this.lottieFirst.play()
+    } else if (context.state.index === 2) {
+      this.lottieSecond.play()
+    } else if (context.state.index === 3) {
+      this.lottieThird.play()
+    }
+
+    this.setState({ position: context.state.index })
+  }
+
+  onSkip(animated) {
+    // this.setState({ position: 6 })
+    this.swiperRef.scrollBy(6 - this.state.position, animated)
   }
 
   render () {
@@ -179,17 +185,16 @@ class LoginStartScreen extends React.Component {
           </View>
 
           <Swiper
+            ref={c => this.swiperRef = c}
             loop={false}
             index={position}
-            paginationStyle={{ bottom: 10 }}
+            paginationStyle={{ bottom: ifIphoneX(10, 20) }}
             dotStyle={styles.dotStyle}
             activeDotStyle={styles.dotStyle}
             activeDotColor={COLORS.DARK_GREY}
             dotColor="#fff"
             onMomentumScrollEnd={this.onMomentumScrollEnd}
-            onScrollBeginDrag={this.onScrollBeginDrag}
-            onIndexChanged={this.onIndexChanged}
-          >           
+          >
             {this.renderLogoView()}
             {this.renderLottieView('Save important content from the web.', LOTTIE_COLLECT, 1)}
             {this.renderLottieView('... or from your camera.', LOTTIE_REVIEW, 2)}
@@ -201,7 +206,7 @@ class LoginStartScreen extends React.Component {
 
           {(position !== 0 && position !== 6) && (
             <View style={styles.skipButtonView}>
-              <TouchableOpacity onPress={() => this.onSkip()} activeOpacity={0.8}>
+              <TouchableOpacity onPress={() => this.onSkip(true)} activeOpacity={0.8}>
                 <View style={styles.skipButton}>
                   <Text style={styles.skipButtonText}>Skip</Text>
                 </View>
@@ -218,11 +223,11 @@ class LoginStartScreen extends React.Component {
   }
 }
 
-LoginStartScreen.defaultProps = {
+TutorialScreen.defaultProps = {
   prevPage: 'start'
 }
 
-LoginStartScreen.propTypes = {
+TutorialScreen.propTypes = {
   userLookup: PropTypes.func.isRequired,
   prevPage: PropTypes.string
 }
@@ -238,4 +243,4 @@ const mapDispatchToProps = dispatch => ({
 export default connect(
   mapStateToProps,
   mapDispatchToProps
-)(LoginStartScreen)
+)(TutorialScreen)
