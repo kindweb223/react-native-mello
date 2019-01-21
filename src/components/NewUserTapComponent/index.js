@@ -15,7 +15,8 @@ const NewUserTap = ({ inputEmail, onHandleNewUserTap }) => {
         firstName: inputEmail.match(/^([^@]*)@/)[1],
         lastName: '',
         email: inputEmail,
-        id: COMMON_FUNC.generateRandomString()
+        id: COMMON_FUNC.generateRandomString(),
+        newUser: true
       }
     }
   }

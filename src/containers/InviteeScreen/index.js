@@ -94,6 +94,10 @@ class InviteeScreen extends React.Component {
         })
       }
     }
+
+    if (this.props.feedo.loading === 'DELETE_INVITEE_PENDING' && feedo.loading === 'DELETE_INVITEE_FULFILLED') {
+      this.setState({ currentMembers: COMMON_FUNC.filterRemovedInvitees(feedo.currentFeed.invitees) })
+    }
   }
 
   componentWillUnmount() {
@@ -169,10 +173,13 @@ class InviteeScreen extends React.Component {
   }
 
   onSelectMember = (item) => {
-    this.setState({
-      selectedContact: item,
-      isRemoveModal: true
-    })
+    const { user } = this.props
+    if (user.userInfo.id !== item.userProfile.id) {
+      this.setState({
+        selectedContact: item,
+        isRemoveModal: true
+      })
+    }
   }
 
   onSelectContact = (contact) => {
@@ -291,100 +298,98 @@ class InviteeScreen extends React.Component {
       isInvalidEmail,
       invalidEmail,
       isInput
-     } = this.state
-     const { data } = this.props
+    } = this.state
+    const { data } = this.props
 
     return (
       <View style={styles.overlay}>
-        <ScrollView keyboardShouldPersistTaps="handled">
-          <View style={styles.header}>
-            <TouchableOpacity onPress={() => this.props.onClose()}>
-              <Text style={styles.cancelText}>Cancel</Text>
-            </TouchableOpacity>
-            <Text style={[styles.h3, { color: COLORS.PRIMARY_BLACK }]}>Add people</Text>
-            <TouchableOpacity onPress={() => this.onSendInvitation()} activeOpacity={0.8}>
-              <Text style={[styles.h3, (!isAddInvitee || isInvalidEmail) ? styles.sendDisableButtonText : styles.sendEnableButtonText]}>Send</Text>
-            </TouchableOpacity>
-          </View>
+        <View style={styles.header}>
+          <TouchableOpacity onPress={() => this.props.onClose()}>
+            <Text style={styles.cancelText}>Cancel</Text>
+          </TouchableOpacity>
+          <Text style={[styles.h3, { color: COLORS.PRIMARY_BLACK }]}>Add people</Text>
+          <TouchableOpacity onPress={() => this.onSendInvitation()} activeOpacity={0.8}>
+            <Text style={[styles.h3, (!isAddInvitee || isInvalidEmail) ? styles.sendDisableButtonText : styles.sendEnableButtonText]}>Send</Text>
+          </TouchableOpacity>
+        </View>
 
-          <View style={styles.body}>
-            <View style={styles.inputFieldView}>
-              <View style={styles.tagInputItem}>
-                <InviteeAutoComplete
-                  tagText={this.state.tagText}
-                  inviteeEmails={inviteeEmails}
-                  invalidEmail={invalidEmail}
-                  handleInvitees={this.handleInvitees}
-                  handleChange={this.handleChange}
-                />
-                {/* <TouchableOpacity onPress={() => this.updatePermission()}>
-                  <View style={styles.rightView}>
-                    <Text style={styles.viewText}>
-                      {inviteePermission}
-                    </Text>
-                    <Entypo name="cog" style={styles.cogIcon} />
-                  </View>
-                </TouchableOpacity> */}
-              </View>
-
-              {isInput && (
-                this.renderFilteredContacts(filteredContacts)
-              )}
-
-              {!isInput && (
-                <View style={styles.messageInputItem}>
-                  <TextInput
-                    ref={ref => this.messageRef = ref}
-                    value={this.state.message}
-                    placeholder="Add message"
-                    placeholderTextColor={COLORS.DARK_GREY}
-                    multiline={true}
-                    style={[styles.textInput]}
-                    onChangeText={this.onChangeMessage}
-                    underlineColorAndroid='transparent'
-                    selectionColor={COLORS.PURPLE}
-                  />
+        <View style={styles.body}>
+          <View style={styles.inputFieldView}>
+            <View style={styles.tagInputItem}>
+              <InviteeAutoComplete
+                tagText={this.state.tagText}
+                inviteeEmails={inviteeEmails}
+                invalidEmail={invalidEmail}
+                handleInvitees={this.handleInvitees}
+                handleChange={this.handleChange}
+              />
+              {/* <TouchableOpacity onPress={() => this.updatePermission()}>
+                <View style={styles.rightView}>
+                  <Text style={styles.viewText}>
+                    {inviteePermission}
+                  </Text>
+                  <Entypo name="cog" style={styles.cogIcon} />
                 </View>
-              )}
-
-              {!isInput &&
-                <View style={styles.listItem}>
-                  <LinkShareItem
-                    isViewOnly={false}
-                    feed={data}
-                    onPress={() => this.showShareModal(data)}
-                    handleLinkSharing={value => this.handleLinkSharing(value, data)}
-                  />
-                </View>
-              }
+              </TouchableOpacity> */}
             </View>
 
-            {this.state.loading
-              ? <View style={styles.loadingView}>
-                  <ActivityIndicator 
-                    animating
-                    color={COLORS.PURPLE}
-                  />
-                </View>
-              : (!isInput && currentMembers && currentMembers.length > 0) && (
-                  <View style={styles.inviteeListView}>
-                    <View style={styles.titleView}>
-                      <Text style={styles.h3}>Current members</Text>
-                    </View>
-                    <ScrollView style={styles.inviteeList} keyboardShouldPersistTaps="handled">
-                      {currentMembers.map(item => (
-                        <TouchableOpacity key={item.id} onPress={() => this.onSelectMember(item)}>
-                          <View style={styles.inviteeItem}>
-                            <InviteeItemComponent invitee={item} />
-                          </View>
-                        </TouchableOpacity>
-                      ))}
-                    </ScrollView>
-                  </View>
-              )
+            {isInput && (
+              this.renderFilteredContacts(filteredContacts)
+            )}
+
+            {!isInput && (
+              <View style={styles.messageInputItem}>
+                <TextInput
+                  ref={ref => this.messageRef = ref}
+                  value={this.state.message}
+                  placeholder="Add message"
+                  placeholderTextColor={COLORS.DARK_GREY}
+                  multiline={true}
+                  style={[styles.textInput]}
+                  onChangeText={this.onChangeMessage}
+                  underlineColorAndroid='transparent'
+                  selectionColor={COLORS.PURPLE}
+                />
+              </View>
+            )}
+
+            {!isInput &&
+              <View style={styles.listItem}>
+                <LinkShareItem
+                  isViewOnly={false}
+                  feed={data}
+                  onPress={() => this.showShareModal(data)}
+                  handleLinkSharing={value => this.handleLinkSharing(value, data)}
+                />
+              </View>
             }
           </View>
-        </ScrollView>
+
+          {this.state.loading
+            ? <View style={styles.loadingView}>
+                <ActivityIndicator 
+                  animating
+                  color={COLORS.PURPLE}
+                />
+              </View>
+            : (!isInput && currentMembers && currentMembers.length > 0) && (
+                <View style={styles.inviteeListView}>
+                  <View style={styles.titleView}>
+                    <Text style={styles.h3}>Current members</Text>
+                  </View>
+                  <ScrollView style={styles.inviteeList} keyboardShouldPersistTaps="handled">
+                    {currentMembers.map(item => (
+                      <TouchableOpacity key={item.id} onPress={() => this.onSelectMember(item)}>
+                        <View style={styles.inviteeItem}>
+                          <InviteeItemComponent invitee={item} />
+                        </View>
+                      </TouchableOpacity>
+                    ))}
+                  </ScrollView>
+                </View>
+            )
+          }
+        </View>
 
         <Modal
           isVisible={isRemoveModal}

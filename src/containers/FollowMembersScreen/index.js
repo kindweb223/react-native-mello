@@ -26,6 +26,7 @@ class FollowMemberScreen extends React.Component {
       loading: false,
       contactList: [],
       recentContacts: [],
+      currentMembers: []
     }
     this.isMount = false
   }
@@ -37,6 +38,7 @@ class FollowMemberScreen extends React.Component {
     this.isMount = true
     this.setState({ loading: true })
     this.props.getContactList(userInfo.id)
+    this.setState({ currentMembers: COMMON_FUNC.filterRemovedInvitees(this.props.data.invitees) })
   }
 
   UNSAFE_componentWillReceiveProps(nextProps) {
@@ -77,7 +79,7 @@ class FollowMemberScreen extends React.Component {
 
   render() {
     const {
-      recentContacts,
+      currentMembers
     } = this.state
 
     return (
@@ -97,15 +99,13 @@ class FollowMemberScreen extends React.Component {
                 color={COLORS.PURPLE}
               />
             </View>
-          : (recentContacts && recentContacts.length > 0) && (
+          : (currentMembers && currentMembers.length > 0) && (
               <View style={styles.inviteeListView}>
                 <ScrollView style={styles.inviteeList} keyboardShouldPersistTaps="handled">
-                  {recentContacts.map(item => (
-                    <TouchableOpacity key={item.id}>
-                      <View style={styles.inviteeItem}>
-                        <InviteeItemComponent invitee={item} />
-                      </View>
-                    </TouchableOpacity>
+                  {currentMembers.map(item => (
+                    <View key={item.id} style={styles.inviteeItem}>
+                      <InviteeItemComponent invitee={item} />
+                    </View>
                   ))}
                 </ScrollView>
               </View>
