@@ -374,10 +374,11 @@ class CardNewScreen extends React.Component {
       if (imageFiles.length > 0 && !nextProps.card.currentCard.coverImage) {
         this.onSetCoverImage(nextProps.card.currentCard.files[0].id);
       } else {
-        const { width, height } = await this.getImageSize(nextProps.card.currentCard.coverImage);
-        this.coverImageWidth = width
-        this.coverImageHeight = height
-
+        if (nextProps.card.currentCard.coverImage) {
+          const { width, height } = await this.getImageSize(nextProps.card.currentCard.coverImage);
+          this.coverImageWidth = width
+          this.coverImageHeight = height
+        }
         this.setState({
           coverImage: nextProps.card.currentCard.coverImage,
         });
