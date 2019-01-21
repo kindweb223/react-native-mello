@@ -4,7 +4,7 @@ import FeedCardExtendComponent from './FeedCardExtendComponent'
 
 class FeedCardComponent extends React.Component {
   render() {
-    if (this.props.listType === 'list') {
+    if (this.props.listType === 'LIST') {
       return (
         <FeedCardListComponent {...this.props} />
       )

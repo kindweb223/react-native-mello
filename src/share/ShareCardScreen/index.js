@@ -26,13 +26,14 @@ export default class ShareCardScreen extends React.Component {
   }
 
   render() {
-    const { imageUrls, shareUrl } = this.props;
+    const { imageUrls, shareUrl, notesText } = this.props;
     return (
       <View style={styles.container}>
         <CardNewScreen
           cardMode={CONSTANTS.SHARE_EXTENTION_CARD}
           shareUrl={shareUrl}
           shareImageUrls={imageUrls}
+          shareText={notesText}
           onClose={() => this.onClosed()}
         />
       </View>
@@ -44,10 +45,12 @@ export default class ShareCardScreen extends React.Component {
 ShareCardScreen.defaultProps = {
   imageUrls: [],
   shareUrl: '',
+  notesText: '',
 }
 
 
 ShareCardScreen.propTypes = {
   imageUrls: PropTypes.array,
   shareUrl: PropTypes.string,
+  notesText: PropTypes.string,
 }

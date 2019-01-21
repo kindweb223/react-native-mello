@@ -11,103 +11,37 @@ import { Actions } from 'react-native-router-flux'
 import PropTypes from 'prop-types'
 import Swiper from 'react-native-swiper'
 import Video from 'react-native-video'
+import LottieView from 'lottie-react-native'
 
 import LoadingScreen from '../LoadingScreen'
-import TextRollingComponent from '../../components/TextRollingComponent'
-import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons'
 import COLORS from '../../service/colors'
 import styles from './styles'
 import Analytics from '../../lib/firebase'
 
-const FIRST_IMAGE= require('../../../assets/images/LoginSlider/first.png')
-const SECOND_IMAGE= require('../../../assets/images/LoginSlider/second.png')
+const LOGO = require('../../../assets/images/Login/logoMelloIcon-Tutorial.png')
+const LOGO_TEXT = require('../../../assets/images/Login/logoMello-Tutorial.png')
+const TEMP_IMG = require('../../../assets/images/Login/tutorialTempImg.png')
+const GOOGLE_ICON = require('../../../assets/images/Login/iconMediumGoogle.png')
+const MAIL_ICON = require('../../../assets/images/Login/iconMediumEmailGrey.png')
 
-const BACK_COLORS = [
-  'rgb(247, 224, 226)',
-  'rgb(234, 247, 253)',
-  'rgb(247, 224, 226)',
-  'rgb(234, 247, 253)',
-  'rgb(247, 224, 226)'
-]
-
-class SwipeFirstScreen extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      videoPaused: true,
-      offset: 0
-    }
-  }
-
-  componentDidMount() {
-    Analytics.setCurrentScreen('LoginStartScreen')
-  }
-
-  onShowVideo = () => {
-    this.player.presentFullscreenPlayer();
-    this.player.seek(0);
-    this.setState({ videoPaused: false })
-  }
-
-  render() {
-    return (
-      <View style={styles.swipeContainer}>
-        <View style={styles.titleView}>
-          <Text style={styles.titleText}>Welcome to Mello -</Text>
-          <Text style={styles.titleText}>your favourite little app</Text>
-          <View style={styles.lastTextView}>
-            <Text style={styles.titleText}>to collect </Text>
-            <TextRollingComponent />
-          </View>
-        </View>
-        <View style={styles.sliderFirstImagView}>
-          <Image source={FIRST_IMAGE} />
-        </View>
-        <TouchableOpacity onPress={() => this.onShowVideo()}>
-          <View style={styles.videoLInkView}>
-            <Text style={styles.linkText}>
-              All about Mello in 90 seconds 
-            </Text>
-            <MaterialCommunityIcons name='play' size={20} color={COLORS.PURPLE} />
-          </View>
-        </TouchableOpacity>
-
-        <Video
-          ref={(ref) => { this.player = ref }}
-          source={{ uri: 'https://d5qq4b94z26us.cloudfront.net/solvers/videos/SOLVERS_FINAL.mp4' }}
-          style={styles.video}
-          resizeMode='cover'
-          autoplay={false}
-          paused={this.state.videoPaused}
-          onFullscreenPlayerWillDismiss={() => {
-            this.setState({ videoPaused: true })
-          }}
-        />
-      </View>
-    )
-  }
-}
-
-class SwipeSecondScreen extends React.Component {
-  render() {
-    return (
-      <View style={styles.swipeContainer}>
-        <View style={styles.titleView}>
-          <Text style={styles.titleText}>Create smart and beautiful collections</Text>
-        </View>
-        <View style={styles.sliderSecondImagView}>
-          <Image source={SECOND_IMAGE} />
-        </View>
-      </View>
-    )
-  }
-}
+import LOTTIE_COLLECT from '../../../assets/lottie/showcase-collect.json'
+import LOTTIE_REVIEW from '../../../assets/lottie/showcase-review.json'
+import LOTTIE_SHARE from '../../../assets/lottie/showcase-share.json'
 
 class LoginStartScreen extends React.Component {
   constructor(props) {
     super(props)
     this.state = {
       position: 0
+    }
+  }
+
+  componentDidMount() {
+    Analytics.setCurrentScreen('TutorialScreen')
+  }
+  componentWillReceiveProps(nextProps) {
+    if (nextProps.prevPage === 'login') {
+      this.onSkip()
     }
   }
 
@@ -120,48 +54,160 @@ class LoginStartScreen extends React.Component {
   }
 
   onMomentumScrollEnd = (e, state, context) => {
+    this.lottieFirst.reset()
+    this.lottieSecond.reset()
+    this.lottieThird.reset()
+    if (context.state.index === 1) {
+      this.lottieFirst.play()
+    } else if (context.state.index === 2) {
+      this.lottieSecond.play()
+    } else if (context.state.index === 3) {
+      this.lottieThird.play()
+    }
+
     this.setState({ position: context.state.index })
+  }
+
+  renderLogoView() {
+    return (
+      <View style={styles.logoViewContainer}>
+        <View style={styles.logoView}>
+          <Image style={styles.logo} source={LOGO_TEXT} />
+        </View>
+        <Text style={styles.subText}>A place to put things that matter to you.</Text>
+      </View>
+    )
+  }
+
+  renderLottieView(title, lottieUrl, index) {
+    return (
+      <View style={styles.swipeContainer}>
+        <View style={styles.titleView}>
+          <Text style={styles.titleText}>{title}</Text>
+        </View>
+        <View style={styles.lottieView}>
+          {index === 1 && (
+            <LottieView
+              ref={animation => this.lottieFirst = animation}
+              source={lottieUrl}
+              loop
+              style={{ }}
+            />
+          )}
+          {index === 2 && (
+            <LottieView
+              ref={animation => this.lottieSecond = animation}
+              source={lottieUrl}
+              loop
+              style={{ }}
+            />
+          )}
+          {index === 3 && (
+            <LottieView
+              ref={animation => this.lottieThird = animation}
+              source={lottieUrl}
+              loop
+              style={{ }}
+            />
+          )}          
+        </View>
+      </View>
+    )
+  }
+
+  renderImageView(title, imageUrl) {
+    return (
+      <View style={styles.swipeContainer}>
+        <View style={styles.titleView}>
+          <Text style={styles.titleText}>{title}</Text>
+        </View>
+        <View style={styles.imageView}>
+          <Image style={styles.navLogo} source={imageUrl} />
+        </View>
+      </View>
+    )
+  }
+
+  renderSignupView() {
+    return (
+      <View style={styles.logoViewContainer}>
+        <View style={styles.signupFormView}>
+          <View style={styles.signupTextView}>
+            <Text style={styles.subText}>Sign up</Text>
+          </View>
+          <TouchableOpacity onPress={() => this.onSignUp()} activeOpacity={0.8}>
+            <View style={styles.buttonView}>
+              <Image source={GOOGLE_ICON} />
+              <Text style={styles.buttonText}>Sign up with Google</Text>
+            </View>
+          </TouchableOpacity>
+          <TouchableOpacity onPress={() => this.onSignUp()} activeOpacity={0.8}>
+            <View style={styles.buttonView}>
+              <Image source={MAIL_ICON} />
+              <Text style={styles.buttonText}>Sign up with e-mail</Text>
+            </View>
+          </TouchableOpacity>
+
+          <View style={styles.signinView}>
+            <Text
+              onPress={() => this.onLogin()}
+              suppressHighlighting={true}
+              style={styles.signinText}
+            >
+              Already have an account? <Text style={{ color: COLORS.PURPLE }}> Sign in.</Text>
+            </Text>
+          </View>
+        </View>
+      </View>
+    )
+  }
+
+  onSkip() {
+    this.setState({ position: 6 })
   }
 
   render () {
     const { position } = this.state
 
     return (
-      <View style={[styles.container, { backgroundColor: BACK_COLORS[position] }]}>
+      <View style={styles.container}>
         <SafeAreaView style={styles.safeView}>
+          <View style={styles.navbarView}>
+            {position > 0 && (
+              <Image source={LOGO} />
+            )}
+          </View>
+
           <Swiper
             loop={false}
             index={position}
-            paginationStyle={{ bottom: 0 }}
+            paginationStyle={{ bottom: 10 }}
             dotStyle={styles.dotStyle}
             activeDotStyle={styles.dotStyle}
-            activeDotColor={COLORS.PURPLE}
-            dotColor={COLORS.MEDIUM_GREY}
+            activeDotColor={COLORS.DARK_GREY}
+            dotColor="#fff"
             onMomentumScrollEnd={this.onMomentumScrollEnd}
+            onScrollBeginDrag={this.onScrollBeginDrag}
+            onIndexChanged={this.onIndexChanged}
           >           
-            <SwipeFirstScreen />
-            <SwipeSecondScreen />
-            <SwipeFirstScreen />
-            <SwipeSecondScreen />
-            <SwipeFirstScreen />
+            {this.renderLogoView()}
+            {this.renderLottieView('Save important content from the web.', LOTTIE_COLLECT, 1)}
+            {this.renderLottieView('... or from your camera.', LOTTIE_REVIEW, 2)}
+            {this.renderLottieView('... or just straight out of you brain.', LOTTIE_SHARE, 3)}
+            {this.renderImageView('... from instagram, Photos, Dropbox, YouTube, Pinterest, Slack... You get the idea.', TEMP_IMG)}
+            {this.renderImageView('Collaborate with your teammates and close friends.', TEMP_IMG)}
+            {this.renderSignupView()}
           </Swiper>
 
-          <View style={styles.bottomContainer}>
-            <TouchableOpacity onPress={() => this.onSignUp()} activeOpacity={0.8}>
-              <View style={styles.buttonView}>
-                <Text style={styles.buttonText}>Sign up</Text>
-              </View>
-            </TouchableOpacity>
-            <View style={styles.signinView}>
-              <Text
-                onPress={() => this.onLogin()}
-                suppressHighlighting={true}
-                style={styles.signinText}
-              >
-                Already have an account? Sign in.
-              </Text>
+          {(position !== 0 && position !== 6) && (
+            <View style={styles.skipButtonView}>
+              <TouchableOpacity onPress={() => this.onSkip()} activeOpacity={0.8}>
+                <View style={styles.skipButton}>
+                  <Text style={styles.skipButtonText}>Skip</Text>
+                </View>
+              </TouchableOpacity>
             </View>
-          </View>
+          )}
         </SafeAreaView>
 
         {this.state.loading && (
@@ -172,8 +218,13 @@ class LoginStartScreen extends React.Component {
   }
 }
 
+LoginStartScreen.defaultProps = {
+  prevPage: 'start'
+}
+
 LoginStartScreen.propTypes = {
-  userLookup: PropTypes.func.isRequired
+  userLookup: PropTypes.func.isRequired,
+  prevPage: PropTypes.string
 }
 
 const mapStateToProps = ({ user }) => ({

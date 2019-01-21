@@ -350,7 +350,7 @@ export const addLink = (ideaId, originalUrl, title, description, imageUrl, favic
 }
 
 /**
- * Delete a file
+ * Delete a link
  */
 export const deleteLink = (ideaId, linkId) => {
   let url = `ideas/${ideaId}/links/${linkId}`
