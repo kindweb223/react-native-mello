@@ -119,7 +119,7 @@ class TutorialScreen extends React.Component {
 
   renderSignupView() {
     return (
-      <View style={styles.logoViewContainer}>
+      <View style={styles.signupViewContainer}>
         <View style={styles.signupFormView}>
           <View style={styles.signupTextView}>
             <Text style={styles.subText}>Sign up</Text>
