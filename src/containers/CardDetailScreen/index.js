@@ -570,7 +570,6 @@ class CardDetailScreen extends React.Component {
   }
 
   parseErrorUrls(message) {
-    alert('parseErrorUrls: ' + message)
     const allUrls = message.match(/(http(s)?:\/\/.)?(www\.)?[-a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,6}\b([-a-zA-Z0-9@:%_\+.~#?&//=]*)/gi);
     if (allUrls) {
       let newUrls = [];
@@ -619,6 +618,9 @@ class CardDetailScreen extends React.Component {
 
   onTapActionSheet(index) {
     if (index === 0) {
+      console.log("****DELETE****")
+      console.log("this.props.card: ", this.props.card)
+      console.log("this.props.card.currentCard.id: ", this.props.card.currentCard.id)
       this.props.onDeleteCard(this.props.card.currentCard.id)
     }
   }
@@ -1061,7 +1063,7 @@ class CardDetailScreen extends React.Component {
           <Entypo name="dot-single" style={styles.iconDot} />
           <Text style={styles.textInvitee}>{getDurationFromNow(currentCard.publishedDate)} ago</Text>
         </View>
-        {showLikes && (
+        {showLikes && idea && (
           <LikeComponent idea={idea} prevPage={this.props.prevPage} type="text" />
         )}
       </View>

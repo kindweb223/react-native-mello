@@ -2579,7 +2579,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = io.solvers.feedo;
 				PRODUCT_NAME = Mello;
 				PROVISIONING_PROFILE = "ee85223c-26f6-476e-9dcd-2659d75c232d";
-				PROVISIONING_PROFILE_SPECIFIER = "Feedo Dev";
+				PROVISIONING_PROFILE_SPECIFIER = "Feedo Dist";
 				VERSIONING_SYSTEM = "apple-generic";
 			};
 			name = Release;
