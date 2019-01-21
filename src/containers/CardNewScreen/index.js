@@ -626,9 +626,15 @@ class CardNewScreen extends React.Component {
       } catch (error) {
         console.log('error code : ', error);
       }
-      if (this.props.prevPage !== 'card') {
+      
+      // If prev page not 'card' or if we don't have a current feed
+      // Create feed will be called for a new feed
+      // Card will be added on successful response to create feed
+      if (this.props.prevPage !== 'card' || !this.props.feedo.currentFeed.id) {
         this.props.createFeed();
-      } else {
+      }
+      // Otherwise add the card straight to the current feed we have
+      else {
         this.props.createCard(this.props.feedo.currentFeed.id)
       }
     } else if (viewMode === CONSTANTS.CARD_NEW) {
@@ -727,7 +733,6 @@ class CardNewScreen extends React.Component {
   }
 
   parseErrorUrls(message) {
-    alert('parseErrorUrls: ' + message)
     const allUrls = message.match(/(http(s)?:\/\/.)?(www\.)?[-a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,6}\b([-a-zA-Z0-9@:%_\+.~#?&//=]*)/gi);
     if (allUrls) {
       let newUrls = [];
@@ -785,12 +790,22 @@ class CardNewScreen extends React.Component {
     //   cardName = '';
     // }
 
-    if (idea.length > 0 || (files && files.length > 0)) {
+    if (this.isCardValid(idea, files)) {
       const cardName = '';
       this.props.updateCard(this.props.feedo.currentFeed.id, id, cardName, this.state.idea, this.state.coverImage, files);
     } else {
       Alert.alert('Error', 'Enter some text or add an image')
     }
+  }
+
+  /**
+   * If card has text or files
+   *  
+   * @param {*} idea 
+   * @param {*} files 
+   */
+  isCardValid(idea, files) {
+    return idea.length > 0 || (files && files.length > 0) ? true : false
   }
 
   onCreateCard() {
@@ -1091,7 +1106,7 @@ class CardNewScreen extends React.Component {
       files,
     } = this.props.card.currentCard;
     const { idea } = this.state
-    if (idea.length === 0 && (!files || files.length === 0)) {
+    if (!this.isCardValid(idea, files)) {
       Alert.alert('Error', 'Enter some text or add an image')
       return;
     }
@@ -1392,6 +1407,9 @@ class CardNewScreen extends React.Component {
 
   get renderHeader() {
     const { cardMode, viewMode } = this.props;
+    const { files } = this.props.card.currentCard;
+    const { idea } = this.state
+
     if (cardMode === CONSTANTS.SHARE_EXTENTION_CARD) {
       return (
         <View style={styles.extensionHeaderContainer}>
@@ -1434,7 +1452,7 @@ class CardNewScreen extends React.Component {
             activeOpacity={0.6}
             onPress={this.onUpdateFeed.bind(this)}
           >
-            <Text style={[styles.textButton, { color: COLORS.MEDIUM_GREY }]}>Done</Text>
+            <Text style={[styles.textButton, { color: this.isCardValid(idea, files) ? COLORS.PURPLE : COLORS.MEDIUM_GREY }]}>Done</Text>
           </TouchableOpacity>
         </View>
       )
@@ -1594,7 +1612,7 @@ class CardNewScreen extends React.Component {
         <Modal 
           style={{ margin: 0 }}
           isVisible={this.state.isVisibleChooseLinkImagesModal}
-          animationInTiming={100}
+          animationInTiming={300}
         >
           <ChooseLinkImages
             images={this.allLinkImages}

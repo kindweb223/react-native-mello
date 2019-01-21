@@ -178,7 +178,9 @@ class FeedDetailScreen extends React.Component {
 
   UNSAFE_componentWillMount() {
     const { data } = this.props
-    this.setState({ viewPreference: data.metadata.myViewPreference ? data.metadata.myViewPreference : 'LIST' })
+    if (data.metadata) {
+      this.setState({ viewPreference: data.metadata.myViewPreference ? data.metadata.myViewPreference : 'LIST' })
+    }
   }
 
   componentDidMount() {
