@@ -45,8 +45,6 @@ export default {
   },
   inviteeItem: {
     paddingVertical: 7,
-    borderBottomWidth: 1,
-    borderColor: COLORS.LIGHT_GREY_LINE,
   },
   button: {
     marginTop: 50

@@ -173,13 +173,12 @@ class InviteeScreen extends React.Component {
   }
 
   onSelectMember = (item) => {
-    const { user } = this.props
-    if (user.userInfo.id !== item.userProfile.id) {
-      this.setState({
-        selectedContact: item,
-        isRemoveModal: true
-      })
-    }
+    const { user, data } = this.props
+    if (data.owner && data.owner.email === item.userProfile.email) return // if selected contact is feed owner
+    this.setState({
+      selectedContact: item,
+      isRemoveModal: true
+    })
   }
 
   onSelectContact = (contact) => {
@@ -406,6 +405,7 @@ class InviteeScreen extends React.Component {
               selectedContact && 
               <InviteeItemComponent
                 invitee={selectedContact}
+                isShowSeparator={false}
               />
             }
             <Button

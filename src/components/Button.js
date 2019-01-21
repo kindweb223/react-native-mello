@@ -96,7 +96,7 @@ const styles = {
     label: {
         color: '#00f',
         textAlign: 'center',
-        fontSize: 16,
+        fontSize: 18,
         fontWeight: '600',
         paddingLeft: 5,
         paddingRight: 5,
