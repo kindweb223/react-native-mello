@@ -248,7 +248,7 @@ class InviteeScreen extends React.Component {
           {filteredContacts.map(item => (
             <TouchableOpacity onPress={() => this.onSelectContact(item)} key={item.id}>
               <View style={styles.contactItem}>
-                <InviteeItemComponent invitee={item} isOnlyTitle={true} />
+                <InviteeItemComponent invitee={item} isOnlyTitle={true} isShowSeparator={false} />
               </View>
             </TouchableOpacity>
           ))}

@@ -36,7 +36,8 @@ export default {
   },
   cancelText: {
     ...fonts.style.h3,
-    color: COLORS.PURPLE
+    color: COLORS.PURPLE,
+    fontWeight: 'normal'
   },
   inviteeListView: {
   },
