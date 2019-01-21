@@ -255,6 +255,14 @@ class FeedDetailScreen extends React.Component {
         Actions.pop()
       }
 
+      if (this.props.feedo.loading === 'INVITE_HUNT_PENDING' && feedo.loading === 'INVITE_HUNT_FULFILLED') {
+        this.setState({ isShowInviteToaster: true, inviteToasterTitle: 'Invitation sent' })
+
+        setTimeout(() => {
+          this.setState({ isShowInviteToaster: false })
+        }, TOASTER_DURATION)
+      }
+
       if (this.props.feedo.loading === 'UPDTE_FEED_INVITATION_PENDING' && feedo.loading === 'UPDTE_FEED_INVITATION_FULFILLED' && feedo.currentFeed.metadata.myInviteStatus !== 'DECLINED') {
         this.setState({ isShowInviteToaster: true, inviteToasterTitle: 'Invitation accepted' })
 
@@ -1300,9 +1308,6 @@ class FeedDetailScreen extends React.Component {
       if (selectedContact !== null) {
         const invitee = _.filter(feedo.currentFeed.invitees, invitee => invitee.userProfile.id === selectedContact.userProfile.id)
         deleteInvitee(feedId, invitee[0].id)
-        if (user.userInfo.id === selectedContact.userProfile.id) {
-          this.setState({ isShowShare: false })
-        }
       } else {
         const invitee = _.filter(feedo.currentFeed.invitees, invitee => invitee.userProfile.id === user.userInfo.id)
         deleteInvitee(feedId, invitee[0].id)

@@ -12,7 +12,7 @@ import UserAvatarComponent from '../../UserAvatarComponent';
 
 const InviteeItemComponent = ({ invitee, isViewOnly, isOwnerInvitee, isOnlyTitle, hideLike }) => {
   const { userProfile } = invitee
-  const userName = `${userProfile.firstName} ${userProfile.lastName}`
+  const userName = userProfile.newUser ? userProfile.email : `${userProfile.firstName} ${userProfile.lastName}`
 
   return (
     <View style={styles.container}>

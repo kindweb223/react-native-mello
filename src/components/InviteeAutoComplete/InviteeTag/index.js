@@ -26,11 +26,11 @@ class InviteeTag extends React.Component {
     this.prevKey = '';
   }
 
-  componentDidMount() {
-    if (!this.props.readonly) {
-      this.tagInputRef.focus();
-    }
-  }
+  // componentDidMount() {
+  //   if (!this.props.readonly) {
+  //     this.tagInputRef.focus();
+  //   }
+  // }
 
   UNSAFE_componentWillReceiveProps(nextProps) {
     if (nextProps.tagText !== this.state.tagText) {
