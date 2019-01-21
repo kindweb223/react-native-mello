@@ -72,7 +72,7 @@ export default {
   skipButtonView: {
     position: 'absolute',
     right: 0,
-    bottom: ifIphoneX(43, 20)
+    bottom: ifIphoneX(36, 27)
   },
   skipButton: {
     paddingHorizontal: CONSTANTS.PADDING * 2
@@ -88,7 +88,7 @@ export default {
     paddingHorizontal: CONSTANTS.PADDING * 2
   },
   signupFormView: {
-    marginBottom: ifIphoneX(43, 20) + 50
+    marginBottom: ifIphoneX(38, 20) + 50
   },
   signupTextView: {
     height: 56,
