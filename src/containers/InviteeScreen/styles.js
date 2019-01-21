@@ -126,8 +126,6 @@ export default {
   },
   contactItem: {
     paddingVertical: 5,
-    borderBottomWidth: 1,
-    borderColor: COLORS.LIGHT_GREY_LINE,
   },
   invalidEmail: {
     width: '100%',

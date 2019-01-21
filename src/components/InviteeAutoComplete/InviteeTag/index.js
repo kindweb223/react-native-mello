@@ -143,7 +143,7 @@ class InviteeTag extends React.Component {
   onPressTag (index, tag) {
     if (!this.props.readonly) {
       let activeTagName = '';
-      this.tagInputRef.blur()
+      this.tagInputRef.focus()
       if (this.state.activeTagName !== tag.text) {
         activeTagName = tag.text;
       }
