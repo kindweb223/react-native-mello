@@ -82,8 +82,13 @@ export default {
     fontSize: 16,
     lineHeight: 22
   },
+  signupViewContainer: {
+    flex: 1,
+    justifyContent: 'flex-end',
+    paddingHorizontal: CONSTANTS.PADDING * 2
+  },
   signupFormView: {
-    marginTop: 140
+    marginBottom: ifIphoneX(43, 20) + 50
   },
   signupTextView: {
     height: 56,
