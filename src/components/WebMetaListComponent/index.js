@@ -67,8 +67,7 @@ export default class WebMetaList extends React.Component {
   }
 
   onLongPressLink(index) {
-    const url = this.props.links[index].originalUrl;
-    this.props.longPressLink(url)
+    this.props.longPressLink(this.props.links[index])
   }
 
   renderImage(item) {
@@ -100,9 +99,9 @@ export default class WebMetaList extends React.Component {
   }
 
   renderItem(item, index) {
-    const { coverImage } = this.props
+    const { coverImage, viewMode } = this.props
     return (
-      <View style={[styles.itemContainer, coverImage ? { marginRight: 0 } : { marginRight: 50 }]} key={index}>
+      <View style={[styles.itemContainer, (coverImage || viewMode === 'new') ? { marginRight: 0 } : { marginRight: 50 }]} key={index}>
         <TouchableOpacity 
           style={styles.buttonContainer}
           activeOpacity={0.7}

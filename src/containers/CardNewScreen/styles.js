@@ -20,12 +20,6 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     backgroundColor: 'transparent',
   },
-  textInputCardTitle: {
-    fontSize: 18,
-    lineHeight: 25,
-    fontWeight: '600',
-    marginHorizontal: 16,
-  },
   textInputIdea: {
     fontSize: 16,
     lineHeight: CONSTANTS.TEXT_INPUT_LINE_HEIGHT,
@@ -36,13 +30,6 @@ const styles = StyleSheet.create({
     paddingRight: 0,
     paddingTop: 0,
     paddingBottom: 0,
-  },
-  textSeeMoreLessIdea: {
-    fontSize: 16,
-    lineHeight: 23,
-    marginTop: 4,
-    marginHorizontal: 16,
-    color: COLORS.PURPLE,
   },
   attachmentButtonsContainer: {
     flexDirection: 'row',
@@ -72,11 +59,6 @@ const styles = StyleSheet.create({
       {rotateY: '180deg'},
     ],
   },
-  line: {
-    height: 1,
-    backgroundColor: COLORS.LIGHT_GREY_LINE,
-    marginVertical: 15,
-  },
   rowContainer: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -97,37 +79,23 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    paddingHorizontal: 6,
-    height: 50
+    marginBottom: 10
   },
-  headerContainer: {
+  extensionHeaderContainer: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
     paddingLeft: 4,
-    paddingRight: 16,
-  },
-  extensionHeaderContainer: {
+    paddingRight: 6,
     borderTopLeftRadius: 18,
     borderTopRightRadius: 18,
     borderBottomWidth: 1,
     borderBottomColor: COLORS.LIGHT_GREY_LINE,
     height: 44,
-    paddingRight: 6,
-  },
-  closeButtonWrapper: {
-    paddingHorizontal: 3,
-    paddingVertical: 5,
   },
   closeButtonShareWrapper: {
     paddingHorizontal: 10,
     paddingVertical: 5,
-  },
-  backButtonWrapper: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    paddingHorizontal: 4,
-    paddingTop: 8,
   },
   textBack: {
     fontSize: 16,
@@ -136,16 +104,8 @@ const styles = StyleSheet.create({
     marginLeft: 5,
     color: COLORS.PURPLE,
   },
-  threeDotButtonWrapper: {
-    width: 35,
-    height: 35,
-    // backgroundColor: COLORS.PURPLE,
-    // borderRadius: 20,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
   coverImageContainer: {
-    marginTop: 16,
+    // marginTop: 16,
   },
   extensionCoverImageContainer: {
     height: Math.round(CONSTANTS.SCREEN_WIDTH * 0.468),
@@ -172,30 +132,17 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     backgroundColor: COLORS.PURPLE,
   },
-  textSelectButton: {
-    fontSize: 15,
-    fontWeight: '500',
-    color: '#fff',
-  },
-  outSideMoreActionContainer: {
-    position: 'absolute',
-    right: 0,
-    top: Platform.OS === 'ios' ? 20 : 0,
-    height: 60,
-    alignItems: 'flex-end',
-    justifyContent: 'center',
-    paddingHorizontal: CONSTANTS.PADDING,
-    paddingVertical: CONSTANTS.PADDING / 2,
-  },
-  addCardButtonWapper: {    
-    width: 110,
+  btnClose: {
+    width: 90,
     height: 34,
-    borderRadius: 20,
+    paddingHorizontal: CONSTANTS.PADDING,
     justifyContent: 'center',
+    alignItems: 'flex-start'
   },
   textButton: {
-    color: '#fff',
+    color: '#000',
     fontSize: 16,
+    lineHeight: 22,
     fontWeight: '500',
     textAlign: 'center',
   },

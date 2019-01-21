@@ -81,10 +81,15 @@ class NewFeedScreen extends React.Component {
   }
 
   componentDidMount() {
-    Analytics.setCurrentScreen('NewFeedScreen')    
+    Analytics.setCurrentScreen('NewFeedScreen')
+    this.setState({ feedName: this.props.initFeedName })
   }
 
   UNSAFE_componentWillReceiveProps(nextProps) {
+    if (this.state.feedName !== nextProps.initFeedName) {
+      this.setState({ feedName: nextProps.initFeedName })
+    }
+
     let loading = false;
     if (this.props.feedo.loading !== types.CREATE_FEED_PENDING && nextProps.feedo.loading === types.CREATE_FEED_PENDING) {
       // creating a feed
@@ -775,6 +780,7 @@ NewFeedScreen.defaultProps = {
   viewMode: CONSTANTS.FEEDO_FROM_MAIN,
   feedoMode: CONSTANTS.MAIN_APP_FEEDO,
   onClose: () => {},
+  initFeedName: ''
 }
 
 
@@ -785,6 +791,7 @@ NewFeedScreen.propTypes = {
   onClose: PropTypes.func,
   viewMode: PropTypes.number,
   feedoMode: PropTypes.number,
+  initFeedName: PropTypes.string
 }
 
 

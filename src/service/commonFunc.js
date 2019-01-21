@@ -88,10 +88,6 @@ const isUserInvitee = (user, invitee) => {
   return user.userInfo.id === invitee.userProfile.id
 }
 
-const orderCommentByAsc = (data) => {
-  return _.orderBy(data, ['created'], ['asc'])
-}
-
 export {
   checkUserIsInvitee,
   isFeedOwner,
@@ -104,6 +100,5 @@ export {
   isCardOwner,
   validateEmail,
   isUserInvitee,
-  filterRemovedInvitees,
-  orderCommentByAsc
+  filterRemovedInvitees
 }

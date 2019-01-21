@@ -524,23 +524,6 @@ export const getArchivedFeedList = () => {
 }
 
 /**
- * Leave Feed
- */
-export const leaveFeed = (feedId) => {
-  let url = `hunts/${feedId}`
-
-  return {
-    types: [types.LEAVE_FEED_PENDING, types.LEAVE_FEED_FULFILLED, types.LEAVE_FEED_REJECTED],
-    promise: axios({
-      method: 'put',
-      url: url,
-      data: { status: 'ARCHIVED' }
-    }),
-    payload: feedId
-  };
-}
-
-/**
  * Get activity feed
  */
 export const getActivityFeed = (userId, data) => {
@@ -720,5 +703,19 @@ export const getActivityFeedVisited = (userId) => {
         method: 'post',
         url: url
       })
+  }
+}
+
+export const saveFlowViewPreference = (feedId, inviteeId, preference) => {
+  const url = `hunts/${feedId}/invitees/${inviteeId}/viewPreference`;
+  return {
+    types: [types.SAVE_FLOW_PREFERENCE_PENDING, types.SAVE_FLOW_PREFERENCE_FULFILLED, types.SAVE_FLOW_PREFERENCE_REJECTED],
+    promise:
+      axios({
+        method: 'put',
+        url,
+        data: { preference }
+      }),
+    payload: { feedId, preference }
   }
 }
