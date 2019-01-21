@@ -6,7 +6,8 @@ const images = {
     edit: require('../../assets/svgs/EditGrey.svg'),
     pinGrey: require('../../assets/svgs/PinGrey.svg'),
     pinActive: require('../../assets/svgs/PinActive.svg'),
-    shareLink: require('../../assets/svgs/ShareLinkGrey.svg')
+    shareLink: require('../../assets/svgs/ShareLinkGrey.svg'),
+    shareLinkPurple: require('../../assets/svgs/ShareLinkBlue.svg'),
 }
 
 export default images

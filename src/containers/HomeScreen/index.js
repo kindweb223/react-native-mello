@@ -12,7 +12,8 @@ import {
   AsyncStorage,
   AppState,
   Clipboard,
-  Alert
+  Alert,
+  Share
 } from 'react-native'
 
 import { connect } from 'react-redux'
@@ -25,6 +26,7 @@ import { Actions } from 'react-native-router-flux'
 import * as R from 'ramda'
 import { find, filter, orderBy } from 'lodash'
 import DeviceInfo from 'react-native-device-info';
+import Permissions from 'react-native-permissions'
 
 import pubnub from '../../lib/pubnub'
 import Analytics from '../../lib/firebase'
@@ -39,6 +41,7 @@ import ToasterComponent from '../../components/ToasterComponent'
 import FeedLoadingStateComponent from '../../components/FeedLoadingStateComponent'
 import EmptyStateComponent from '../../components/EmptyStateComponent'
 import SpeechBubbleComponent from '../../components/SpeechBubbleComponent'
+import ShareWidgetPermissionModal from '../../components/ShareWidgetPermissionModal'
 import styles from './styles'
 import CONSTANTS from '../../service/constants';
 
@@ -120,7 +123,9 @@ class HomeScreen extends React.Component {
       feedClickEvent: 'normal',
       showLongHoldActionBar: true,
       isShowInviteToaster: false,
-      inviteToasterTitle: ''
+      inviteToasterTitle: '',
+      showSharePermissionModal: false,
+      enableShareWidget: false
     };
 
     this.currentRef = null;
@@ -128,15 +133,65 @@ class HomeScreen extends React.Component {
     this.isInitialized = false;
 
     this.animatedSelectFeed = new Animated.Value(1);
+    this.enableShareWidget = false
+  }
+
+  showSharePermissionModal(permissionAsyncInfo, userInfo) {
+    console.log('permissionAsyncInfo: ', permissionAsyncInfo)
+    this.setState({ showSharePermissionModal: true })
+    if (permissionAsyncInfo) {
+      permissionInfo = JSON.parse(permissionAsyncInfo)
+      if (permissionInfo.userId !== userInfo.id) {
+        AsyncStorage.setItem('permissionInfo', JSON.stringify({ userId: userInfo.id, enabled: true }))
+        this.setState({ showSharePermissionModal: true })
+      }
+    } else {
+      AsyncStorage.setItem('permissionInfo', JSON.stringify({ userId: userInfo.id, enabled: true }))
+      this.setState({ showSharePermissionModal: true })          
+    }
+  }
+
+  onCloseSharePermissionModal = () => {
+    if (this.enableShareWidget) {
+      Share.share({
+        message: 'Mello',
+        title: ''
+      },{
+        dialogTitle: 'Mello',
+        subject: 'Mello'
+      })
+    }
+  }
+
+  onEnableShareWidget = () => {
+    this.enableShareWidget = true
+    this.setState({ showSharePermissionModal: false })
   }
 
   async componentDidMount() {
     Analytics.setCurrentScreen('DashboardScreen')
 
-    this.setState({ loading: true })
-
     const userInfo = await AsyncStorage.getItem('userInfo')
     this.props.setUserInfo(JSON.parse(userInfo))
+
+    // Detect the notificatin permission
+    const permissionAsyncInfo = await AsyncStorage.getItem('permissionInfo')
+    Permissions.check('notification').then(response => {
+      if (response === 'authorized') {
+        this.showSharePermissionModal(permissionAsyncInfo, userInfo)
+      } else if (response === 'undetermined') {
+        Permissions.request('notification').then(response => {
+          if (response === 'authorized') {
+            this.showSharePermissionModal(permissionAsyncInfo, userInfo)
+          }
+        });
+      } else {
+        console.log('rejected')
+        Permissions.openSettings();
+      }
+    });
+
+    this.setState({ loading: true })
 
     // Set the inital list view mode
     const viewMode = JSON.parse(await AsyncStorage.getItem('DashboardViewMode'))
@@ -1400,6 +1455,20 @@ class HomeScreen extends React.Component {
             onPressButton={() => this.setState({ isShowInviteToaster: false })}
           />
         )}
+
+        <Modal 
+          isVisible={this.state.showSharePermissionModal}
+          style={{ margin: 8 }}
+          backdropOpacity={0.6}
+          animationInTiming={500}
+          onBackdropPress={() => this.setState({ showSharePermissionModal: false })}
+          onModalHide={() => this.onCloseSharePermissionModal()}
+        >
+          <ShareWidgetPermissionModal
+            onClose={() => this.setState({ showSharePermissionModal: false })}
+            onEnableShareWidget={() => this.onEnableShareWidget()}
+          />
+        </Modal>
       </SafeAreaView>
     )
   }
@@ -1458,4 +1527,3 @@ export default connect(
   mapStateToProps,
   mapDispatchToProps
 )(HomeScreen)
-
