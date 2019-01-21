@@ -114,7 +114,7 @@ class FollowMemberScreen extends React.Component {
 
         <Button
           style={styles.button}
-          color='rgba(0, 0, 0, 0.1)'
+          color='#F4F4F4'
           labelColor={COLORS.PURPLE}
           borderRadius={14}
           label="Leave flow"

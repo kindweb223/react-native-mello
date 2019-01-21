@@ -10,7 +10,7 @@ import styles from './styles'
 import UserAvatarComponent from '../../UserAvatarComponent';
 
 
-const InviteeItemComponent = ({ invitee, isViewOnly, isOwnerInvitee, isOnlyTitle, hideLike }) => {
+const InviteeItemComponent = ({ invitee, isViewOnly, isOwnerInvitee, isOnlyTitle, hideLike, isShowSeparator }) => {
   const { userProfile } = invitee
   const userName = userProfile.newUser ? userProfile.email : `${userProfile.firstName} ${userProfile.lastName}`
 
@@ -52,9 +52,11 @@ const InviteeItemComponent = ({ invitee, isViewOnly, isOwnerInvitee, isOnlyTitle
                 // </View>
               ]
           )}
-          <View style={[styles.separator, {
-            marginTop: userProfile.firstName !== null && userProfile.lastName !== null ? 5 : 21
-          }]} />
+          {isShowSeparator &&
+            <View style={[styles.separator, {
+              marginTop: userProfile.firstName !== null && userProfile.lastName !== null ? 5 : 21
+            }]} />
+          }
         </View>
       </View>
 
@@ -80,7 +82,8 @@ InviteeItemComponent.defaultProps = {
   isViewOnly: true,
   isOnlyTitle: false,
   isOwnerInvitee: false,
-  hideLike: false
+  hideLike: false,
+  isShowSeparator: true
 }
 
 InviteeItemComponent.propTypes = {
@@ -88,7 +91,8 @@ InviteeItemComponent.propTypes = {
   isViewOnly: PropTypes.bool,
   isOnlyTitle: PropTypes.bool,
   isOwnerInvitee: PropTypes.bool,
-  hideLike: PropTypes.bool
+  hideLike: PropTypes.bool,
+  isShowSeparator: PropTypes.bool
 }
 
 export default InviteeItemComponent
