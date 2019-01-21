@@ -307,9 +307,16 @@ class InviteeScreen extends React.Component {
             <Text style={styles.cancelText}>Cancel</Text>
           </TouchableOpacity>
           <Text style={[styles.h3, { color: COLORS.PRIMARY_BLACK }]}>Add people</Text>
-          <TouchableOpacity onPress={() => this.onSendInvitation()} activeOpacity={0.8}>
-            <Text style={[styles.h3, (!isAddInvitee || isInvalidEmail) ? styles.sendDisableButtonText : styles.sendEnableButtonText]}>Send</Text>
-          </TouchableOpacity>
+          <Button
+            style={{ width: 60 }}
+            labelStyle={{ fontSize: 16 }}
+            height={40}
+            label='Send'
+            color='white'
+            labelColor={(!isAddInvitee || isInvalidEmail) ? COLORS.MEDIUM_GREY : COLORS.PURPLE}
+            isLoading={this.props.feedo.loading === 'INVITE_HUNT_PENDING'}
+            onPress={() => this.onSendInvitation()}
+          />
         </View>
 
         <View style={styles.body}>
@@ -416,7 +423,7 @@ class InviteeScreen extends React.Component {
               borderRadius={14}
               onPress={() => {
                 this.setState({ isRemoveModal: false })
-                setTimeout(() => this.props.deleteInvitee(selectedContact), 350)
+                this.props.deleteInvitee(selectedContact)
               }}
             />
           </View>
