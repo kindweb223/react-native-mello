@@ -52,6 +52,9 @@ const InviteeItemComponent = ({ invitee, isViewOnly, isOwnerInvitee, isOnlyTitle
                 // </View>
               ]
           )}
+          <View style={[styles.separator, {
+            marginTop: userProfile.firstName !== null && userProfile.lastName !== null ? 5 : 21
+          }]} />
         </View>
       </View>
 

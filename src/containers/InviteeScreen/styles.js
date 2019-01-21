@@ -5,11 +5,7 @@ import { fonts } from '../../themes'
 
 export default {
   overlay: {
-    position: 'absolute',
-    top: 0,
-    right: 0,
-    left: 0,
-    bottom: 0,
+    flex: 1,
     paddingTop: CONSTANTS.STATUSBAR_HEIGHT,
     backgroundColor: '#fff',
   },
@@ -21,6 +17,9 @@ export default {
     justifyContent: 'space-between',
     alignItems: 'center',
     paddingHorizontal: CONSTANTS.PADDING
+  },
+  body: {
+    flex: 1,
   },
   sendButtonView: {
     flexDirection: 'row',
@@ -51,7 +50,9 @@ export default {
     alignItems: 'center'
   },
   inviteeListView: {
+    flex: 1,
     marginTop: 24,
+    marginBottom: 5
   },
   titleView: {
     paddingBottom: 5,
@@ -69,13 +70,10 @@ export default {
     alignItems: 'center',
     justifyContent: 'space-between',
     paddingVertical: 10,
-    borderBottomWidth: 1,
-    borderColor: COLORS.LIGHT_GREY_LINE,
+    marginTop: 10,
   },
   inviteeItem: {
     paddingVertical: 7,
-    borderBottomWidth: 1,
-    borderColor: COLORS.LIGHT_GREY_LINE,
     paddingHorizontal: CONSTANTS.PADDING
   },
   inputFieldView: {
