@@ -9,7 +9,7 @@ import {
 } from 'react-native'
 
 const Button = ({
-    style, type, height,
+    style, labelStyle, type, height,
     color, labelColor, borderRadius, label,
     disabled, isLoading,
     activeOpacity, onPress,
@@ -17,7 +17,7 @@ const Button = ({
 
     const renderLabel = () => (
         <View style={{ flex: 1 }}>
-            <Text style={[styles.label, { color: (type === 'fill') ? labelColor || 'white' : color }]}>
+            <Text style={[styles.label, labelStyle, { color: (type === 'fill') ? labelColor || 'white' : color }]}>
                 {label}
             </Text>
         </View>
