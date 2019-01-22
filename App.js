@@ -4,6 +4,7 @@ import {
   AsyncStorage,
   ActivityIndicator,
   View,
+  Text,
   YellowBox,
   Linking,
   Platform
@@ -13,7 +14,7 @@ import { Provider } from 'react-redux'
 import thunk from 'redux-thunk'
 import _ from 'lodash'
 import promiseMiddleware from './src/service/promiseMiddleware'
-import { Actions, Scene, Router, Modal, Lightbox, Stack } from 'react-native-router-flux'
+import { Actions, Scene, Router, Modal, Lightbox, Stack, Tabs } from 'react-native-router-flux'
 import SharedGroupPreferences from 'react-native-shared-group-preferences'
 import { Client, Configuration  } from 'bugsnag-react-native'
 import axios from 'axios'
@@ -53,7 +54,7 @@ axios.interceptors.response.use(
 )
 
 import reducers from './src/redux/reducers'
-import LoginStartScreen from './src/containers/LoginStartScreen'
+import TutorialScreen from './src/containers/TutorialScreen'
 import LoginScreen from './src/containers/LoginScreen'
 import SignUpScreen from './src/containers/SignUpScreen'
 import SignUpConfirmScreen from './src/containers/SignUpConfirmScreen'
@@ -77,6 +78,7 @@ import FeedFilterScreen from './src/containers/FeedFilterScreen'
 import ArchivedFeedScreen from './src/containers/ArchivedFeedScreen'
 import PrivacyPolicyScreen from './src/containers/PrivacyPolicyScreen'
 import NotificationScreen from './src/containers/NotificationScreen'
+import TabbarContainer from './src/navigations/TabbarContainer'
 
 import { 
   getCardComments,
@@ -284,23 +286,25 @@ export default class Root extends React.Component {
     const scenes = Actions.create(
       <Lightbox>
         <Modal hideNavBar>
-          <Scene key="root">
-            <Scene key="LoginStartScreen" component={ LoginStartScreen } hideNavBar panHandlers={null} />
-            <Scene key="LoginScreen" component={ LoginScreen } navigationBarStyle={styles.emptyBorderNavigationBar} />
-            <Scene key="SignUpScreen" component={ SignUpScreen } navigationBarStyle={styles.emptyBorderNavigationBar} />
-            <Scene key="SignUpConfirmScreen" component={ SignUpConfirmScreen } panHandlers={null} navigationBarStyle={styles.emptyBorderNavigationBar} />
-            <Scene key="TermsAndConditionsScreen" component={ TermsAndConditionsScreen } navigationBarStyle={styles.emptyBorderNavigationBar} />
-            <Scene key="HomeScreen" component={ HomeScreen } hideNavBar panHandlers={null} />
-            <Scene key="FeedDetailScreen" component={ FeedDetailScreen } clone hideNavBar panHandlers={null} />
-            <Scene key="DocumentSliderScreen" component={ DocumentSliderScreen } hideNavBar />
-            <Scene key="LikesListScreen" component={ LikesListScreen } navigationBarStyle={styles.defaultNavigationBar} />
-            <Scene key="CommentScreen" component={ CommentScreen } navigationBarStyle={styles.defaultNavigationBar} />
-            <Scene key="SignUpSuccessScreen" component={ SignUpSuccessScreen } hideNavBar panHandlers={null} />
-            <Scene key="ResetPasswordConfirmScreen" component={ ResetPasswordConfirmScreen } navigationBarStyle={styles.emptyBorderNavigationBar} />
-            <Scene key="ResetPasswordScreen" component={ ResetPasswordScreen } panHandlers={null} navigationBarStyle={styles.emptyBorderNavigationBar} />
-            <Scene key="ResetPasswordSuccessScreen" component={ ResetPasswordSuccessScreen } hideNavBar panHandlers={null} />
-            <Scene key="FeedFilterScreen" component={ FeedFilterScreen } hideNavBar />
-          </Scene>
+          <Tabs key="tabs" tabBarComponent={TabbarContainer}>
+            <Scene key="root">
+              <Scene key="TutorialScreen" component={ TutorialScreen } hideNavBar panHandlers={null} />
+              <Scene key="LoginScreen" component={ LoginScreen } navigationBarStyle={styles.emptyBorderNavigationBar} />
+              <Scene key="SignUpScreen" component={ SignUpScreen } navigationBarStyle={styles.emptyBorderNavigationBar} />
+              <Scene key="SignUpConfirmScreen" component={ SignUpConfirmScreen } panHandlers={null} navigationBarStyle={styles.emptyBorderNavigationBar} />
+              <Scene key="TermsAndConditionsScreen" component={ TermsAndConditionsScreen } navigationBarStyle={styles.emptyBorderNavigationBar} />
+              <Scene key="HomeScreen" component={ HomeScreen } hideNavBar panHandlers={null} />
+              <Scene key="FeedDetailScreen" component={ FeedDetailScreen } clone hideNavBar panHandlers={null} />
+              <Scene key="DocumentSliderScreen" component={ DocumentSliderScreen } hideNavBar />
+              <Scene key="LikesListScreen" component={ LikesListScreen } navigationBarStyle={styles.defaultNavigationBar} />
+              <Scene key="CommentScreen" component={ CommentScreen } navigationBarStyle={styles.defaultNavigationBar} />
+              <Scene key="SignUpSuccessScreen" component={ SignUpSuccessScreen } hideNavBar panHandlers={null} />
+              <Scene key="ResetPasswordConfirmScreen" component={ ResetPasswordConfirmScreen } navigationBarStyle={styles.emptyBorderNavigationBar} />
+              <Scene key="ResetPasswordScreen" component={ ResetPasswordScreen } panHandlers={null} navigationBarStyle={styles.emptyBorderNavigationBar} />
+              <Scene key="ResetPasswordSuccessScreen" component={ ResetPasswordSuccessScreen } hideNavBar panHandlers={null} />
+              <Scene key="FeedFilterScreen" component={ FeedFilterScreen } hideNavBar />
+            </Scene>
+          </Tabs>
           <Stack key="ProfileScreen" hideNavBar>
             <Stack key="ProfileScreen">
               <Scene key="ProfileScreen" component={ ProfileScreen } hideNavBar />
@@ -318,7 +322,7 @@ export default class Root extends React.Component {
               <Scene key="ActivityCommentScreen" component={ CommentScreen } navigationBarStyle={styles.defaultNavigationBar} />
               <Scene key="ActivityLikesListScreen" component={ LikesListScreen } navigationBarStyle={styles.defaultNavigationBar} />
             </Stack>
-          </Stack>            
+          </Stack>
         </Modal>
         <Scene key="LoadingScreen" component={ LoadingScreen } hideNavBar />
         <Scene key="ImageSliderScreen" component={ ImageSliderScreen } hideNavBar />

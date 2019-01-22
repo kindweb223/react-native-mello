@@ -26,11 +26,10 @@ const styles = StyleSheet.create({
     backgroundColor: COLORS.LIGHT_GREY,
   },
   linkEnableButton: {
-    backgroundColor: COLORS.LIGHT_YELLOW,
+    backgroundColor: COLORS.PURPLE,
   },
   tileView: {
-    justifyContent: 'center',
-    alignItems: 'flex-start'
+    flex: 1,
   },
   title: {
     fontSize: 16,
@@ -42,7 +41,9 @@ const styles = StyleSheet.create({
     color: COLORS.MEDIUM_GREY
   },
   rightView: {
-    flexDirection: 'row',
+    position: 'absolute',
+    top: 8,
+    right: 0,
     alignItems: 'center',
     justifyContent: 'center'
   },
@@ -68,6 +69,11 @@ const styles = StyleSheet.create({
   cogEnableIcon: {
     color: COLORS.PURPLE,
   },
+  separator: {
+    height: 1,
+    backgroundColor: COLORS.LIGHT_GREY_LINE,
+    marginTop: 10
+  }
 })
 
 export default styles

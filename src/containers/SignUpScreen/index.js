@@ -322,7 +322,7 @@ class SignUpScreen extends React.Component {
   }
 
   onSignIn = () => {
-    Actions.LoginScreen({ page: 'Signup' })
+    Actions.LoginScreen({ prevPage: 'signup' })
   }
 
   render () {
