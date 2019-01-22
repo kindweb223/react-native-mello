@@ -87,6 +87,7 @@ RCT_REMAP_METHOD(data,
                 //*stop = YES;
             } else if ([provider hasItemConformingToTypeIdentifier:IMAGE_IDENTIFIER]){
 //                imageProvider = provider;
+              if (imageProviders.count == 0)
                 [imageProviders addObject:provider];
                 //*stop = YES;
             }
@@ -97,14 +98,30 @@ RCT_REMAP_METHOD(data,
                 NSURL *url = (NSURL *)item;
 
                 if (callback) {
-                    callback([url absoluteString], @"text/plain", nil);
+                    callback([url absoluteString], @"url", nil);
                 }
             }];
         } else if (imageProviders.count > 0) {
           NSMutableArray *imageUrls = [NSMutableArray array];
           for (__block NSItemProvider *imageProvider in imageProviders) {
-            // do something with object
-            [imageProvider loadItemForTypeIdentifier:IMAGE_IDENTIFIER options:nil completionHandler:^(id<NSSecureCoding> item, NSError *error) {
+            
+            [imageProvider loadItemForTypeIdentifier:IMAGE_IDENTIFIER options:nil completionHandler:^(id<NSSecureCoding> item, NSError *error){
+              
+              if ([(NSObject *)item isKindOfClass:[UIImage class]]){
+                // for screenshot
+                // Cast the item to a UIImage and save into a temporary directory so pass a URL back to React Native
+                UIImage *sharedImage = (UIImage *)item;
+                NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
+                NSString *filePath = [[paths objectAtIndex:0] stringByAppendingPathComponent:@"MELLO_TEMP_IMG.png"];
+                [UIImagePNGRepresentation(sharedImage) writeToFile: filePath atomically: YES];
+                
+                if(callback){
+                  callback(filePath, @"images", nil);
+                }
+
+              }
+              else
+              {
                 NSURL *url = (NSURL *)item;
                 [imageUrls addObject:[url absoluteString]];
                 if (imageUrls.count >= imageProviders.count) {
@@ -113,6 +130,7 @@ RCT_REMAP_METHOD(data,
                         callback(value, @"images", nil);
                     }
                 }
+              }
             }];
           }
         } else if (textProvider) {
@@ -120,7 +138,7 @@ RCT_REMAP_METHOD(data,
                 NSString *text = (NSString *)item;
 
                 if (callback) {
-                    callback(text, @"text/plain", nil);
+                    callback(text, @"url", nil);
                 }
             }];
         } else {

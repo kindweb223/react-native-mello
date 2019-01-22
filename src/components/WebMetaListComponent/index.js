@@ -84,8 +84,7 @@ export default class WebMetaList extends React.Component {
   }
 
   onLongPressLink(index) {
-    const url = this.props.links[index].originalUrl;
-    this.props.longPressLink(url)
+    this.props.longPressLink(this.props.links[index])
   }
 
   renderImage(item) {
@@ -111,16 +110,17 @@ export default class WebMetaList extends React.Component {
       }
       const ImageView = this.props.isFastImage ? FastImage : Image;
       return (
-        <ImageView style={styles.imageCover} source={{uri: item.faviconUrl}} resizeMode='cover' />
+        <ImageView style={styles.imageCover} source={{ uri: item.faviconUrl }} resizeMode='cover' />
       );
     }
   }
 
-  renderItem({item, index}) {
+  renderItem(item, index) {
+    const { coverImage, viewMode } = this.props
     return (
-      <View style={styles.itemContainer}>
+      <View style={[styles.itemContainer, (coverImage || viewMode === 'new') ? { marginRight: 0 } : { marginRight: 50 }]} key={index}>
         <TouchableOpacity 
-          style={[styles.buttonContainer, {backgroundColor: '#ECECEC'}]}
+          style={styles.buttonContainer}
           activeOpacity={0.7}
           onPress={() => this.onPressLink(index)}
           onLongPress={() => this.onLongPressLink(index)}
@@ -133,16 +133,14 @@ export default class WebMetaList extends React.Component {
   }
 
   render () {
+    const { links } = this.state
+
     return (
-      <FlatList
-        style={styles.container}
-        showsHorizontalScrollIndicator={false}
-        data={this.state.links}
-        renderItem={this.renderItem.bind(this)}
-        keyExtractor={(item, index) => index.toString()}
-        extraData={this.state}
-        bounces={false}
-      />
+      <View style={[styles.container]}>
+        {links.map((item, index) => (
+          this.renderItem(item, index)
+        ))}
+      </View>
     );
   }
 }

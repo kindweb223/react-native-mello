@@ -9,10 +9,8 @@ import {
 import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
 import Ionicons from 'react-native-vector-icons/Ionicons'
-
-import * as COMMON_FUNC from '../../service/commonFunc'
 import styles from './styles'
-
+import CONSTANTS from '../../service/constants'
 const TRASH_ICON = require('../../../assets/images/Trash/White.png')
 
 const SELECT_NONE = 0
@@ -73,30 +71,16 @@ class CardActionBarComponent extends React.Component {
   }
 
   render() {
-    const { feedo, idea } = this.props
+    const { viewMode } = this.props
 
-    let canDelete = true
-    if (COMMON_FUNC.isFeedGuest(feedo.currentFeed)) {
-      canDelete = false
-    }
-
-    if (COMMON_FUNC.isFeedContributor(feedo.currentFeed) && !COMMON_FUNC.isCardOwner(idea)) {
-      canDelete = false
-    }
-
-    let canMoveCard = false
-    if (COMMON_FUNC.isFeedOwnerEditor(feedo.currentFeed) || (COMMON_FUNC.isFeedContributor(feedo.currentFeed) && COMMON_FUNC.isCardOwner(idea))) {
-      canMoveCard = true
-    }
-
-    if (!canDelete && !canMoveCard) {
+    if (viewMode !== CONSTANTS.CARD_EDIT) {
       return null
     }
 
     return (
       <View style={styles.container}>
         <View style={styles.rowContainer}>
-          {canMoveCard && (
+          {viewMode === CONSTANTS.CARD_EDIT && (
             <Animated.View
               style={
                 this.state.selectedButton === SELECT_MOVE &&
@@ -118,7 +102,7 @@ class CardActionBarComponent extends React.Component {
             </Animated.View>
           )}
 
-          {canDelete && (
+          {viewMode === CONSTANTS.CARD_EDIT && (
             <Animated.View
               style={
                 this.state.selectedButton === SELECT_DELETE &&
@@ -145,17 +129,9 @@ class CardActionBarComponent extends React.Component {
   }
 }
 
-const mapStateToProps = ({ feedo }) => ({
-  feedo
-})
-
 CardActionBarComponent.propTypes = {
   onMove: PropTypes.func.isRequired,
   onHandleSettings: PropTypes.func.isRequired,
-  idea: PropTypes.object,
 }
 
-export default connect(
-  mapStateToProps,
-  null
-)(CardActionBarComponent)
+export default CardActionBarComponent

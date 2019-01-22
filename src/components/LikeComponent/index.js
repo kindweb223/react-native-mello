@@ -130,10 +130,11 @@ class LikeComponent extends React.Component {
     const {
       liked,
       likes,
-      prevLikes,
+      prevLikes
     } = this.state;
     const {
-      longHold
+      longHold,
+      type
     } = this.props
 
     const animatedMove1 = this.animatedShow.interpolate({
@@ -163,42 +164,54 @@ class LikeComponent extends React.Component {
 
     return (
       <TouchableOpacity
-        style={[styles.container, this.props.isOnlyInvitee ? { width: 25 } : { width: 45 }]}
+        style={[styles.container, this.props.isOnlyInvitee ? { width: 25 } : { width: 45 }, type === 'text' && { justifyContent: 'flex-end' }]}
         activeOpacity={0.7}
-        onPress={() => longHold ? {} : this.onLike(liked)}
+        onPress={() => longHold ? {} : ( type === 'text' ? this.onShowLikes() : this.onLike(liked))}
         onLongPress={() => longHold ? {} : this.onShowLikes()}
       >
-        <View style={styles.likeContainer}>
-          <Animated.View 
-            style={[
-              styles.heartContainer, {
-                transform: [
-                  { scale: animatedScale1 },
-                ],
-                opacity: animatedOpacity2,
-              }
-            ]}
-          >
-            <Image source={FAV_ICON_R} />
-          </Animated.View>
-          <Animated.View 
-            style={[
-              styles.heartContainer, {
-                transform: [
-                  { scale: animatedScale2 },
-                ],
-                opacity: animatedOpacity1,
-              }
-            ]}
-          >
-            <Image source={FAV_ICON_G} />
-          </Animated.View>
-        </View>
-        {!this.props.isOnlyInvitee && (
-          <Animated.Text style={[styles.iconText, {top: animatedMove1, opacity: animatedOpacity1, }]}>{prevLikes}</Animated.Text>
+        {(type === 'icon' || type === 'all') && (
+          <View style={styles.likeContainer}>
+            <Animated.View 
+              style={[
+                styles.heartContainer, {
+                  transform: [
+                    { scale: animatedScale1 },
+                  ],
+                  opacity: animatedOpacity2,
+                }
+              ]}
+            >
+              <Image source={FAV_ICON_R} />
+            </Animated.View>
+            <Animated.View 
+              style={[
+                styles.heartContainer, {
+                  transform: [
+                    { scale: animatedScale2 },
+                  ],
+                  opacity: animatedOpacity1,
+                }
+              ]}
+            >
+              <Image source={FAV_ICON_G} />
+            </Animated.View>
+          </View>
         )}
-        {!this.props.isOnlyInvitee && (
-          <Animated.Text style={[styles.iconText, {top: animatedMove2, opacity: animatedOpacity2, }]}>{likes}</Animated.Text>
+
+        {(type === 'text' || type === 'all') && (
+          !this.props.isOnlyInvitee && (
+            <Animated.Text style={[styles.iconText, { top: animatedMove1, opacity: animatedOpacity1 }, type === 'all' && { left: 30 }]}>
+              {prevLikes} {type !== 'all' && ((prevLikes === 1 || prevLikes === 0) ? 'like' : 'likes')}
+            </Animated.Text>
+          )
+        )}
+
+        {(type === 'text' || type === 'all') && (
+          !this.props.isOnlyInvitee && (
+            <Animated.Text style={[styles.iconText, { top: animatedMove2, opacity: animatedOpacity2 }, type === 'all' && { left: 30 }]}>
+              {likes} {type !== 'all' && ((likes === 1 || likes === 0) ? 'like' : 'likes')}
+            </Animated.Text>
+          )
         )}
       </TouchableOpacity>
     );
@@ -206,12 +219,14 @@ class LikeComponent extends React.Component {
 }
 
 LikeComponent.defaultProps = {
-  longHold: false
+  longHold: false,
+  type: 'icon'
 }
 
 LikeComponent.propTypes = {
   longHold: PropTypes.bool,
   idea: PropTypes.objectOf(PropTypes.any).isRequired,
+  type: PropTypes.string
 }
 
 const mapStateToProps = ({ card, feedo }) => ({

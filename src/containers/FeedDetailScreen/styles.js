@@ -99,7 +99,7 @@ const styles = StyleSheet.create({
   settingMenuView: {
     borderRadius: 20,
     backgroundColor: '#fff',
-    width: 122,
+    width: 220,
     paddingVertical: 10,
     position: 'absolute',
     right: CONSTANTS.PADDING,
@@ -116,7 +116,7 @@ const styles = StyleSheet.create({
         elevation: 20
       }
     })
-  },  
+  },
   shareScreenContainer: {
     margin: 0,
   },

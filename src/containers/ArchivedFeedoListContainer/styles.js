@@ -7,7 +7,7 @@ const styles = StyleSheet.create({
     paddingTop: 20
   },
   listContentView: {
-    paddingBottom: CONSTANTS.STATUS_BOTTOM_BAR_HEIGHT + 20
+    paddingBottom: CONSTANTS.STATUS_BOTTOM_BAR_HEIGHT + 10
   },
   listItem: {
     paddingHorizontal: CONSTANTS.PADDING,
