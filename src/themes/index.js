@@ -1,4 +1,4 @@
 import images from './images'
-//TODO define additional theme here
+import fonts from './fonts'
 
-export { images }
+export { images, fonts }

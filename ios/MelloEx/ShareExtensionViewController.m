@@ -138,7 +138,7 @@ RCT_REMAP_METHOD(data,
                 NSString *text = (NSString *)item;
 
                 if (callback) {
-                    callback(text, @"text/plain", nil);
+                    callback(text, @"url", nil);
                 }
             }];
         } else {
