@@ -54,7 +54,7 @@ axios.interceptors.response.use(
 )
 
 import reducers from './src/redux/reducers'
-import LoginStartScreen from './src/containers/LoginStartScreen'
+import TutorialScreen from './src/containers/TutorialScreen'
 import LoginScreen from './src/containers/LoginScreen'
 import SignUpScreen from './src/containers/SignUpScreen'
 import SignUpConfirmScreen from './src/containers/SignUpConfirmScreen'
@@ -287,7 +287,7 @@ export default class Root extends React.Component {
         <Modal hideNavBar>
           <Tabs key="tabs" tabBarComponent={TabbarContainer}>
             <Scene key="root">
-              <Scene key="LoginStartScreen" component={ LoginStartScreen } hideNavBar panHandlers={null} />
+              <Scene key="TutorialScreen" component={ TutorialScreen } hideNavBar panHandlers={null} />
               <Scene key="LoginScreen" component={ LoginScreen } navigationBarStyle={styles.emptyBorderNavigationBar} />
               <Scene key="SignUpScreen" component={ SignUpScreen } navigationBarStyle={styles.emptyBorderNavigationBar} />
               <Scene key="SignUpConfirmScreen" component={ SignUpConfirmScreen } panHandlers={null} navigationBarStyle={styles.emptyBorderNavigationBar} />
