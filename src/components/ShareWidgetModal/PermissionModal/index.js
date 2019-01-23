@@ -1,11 +1,9 @@
 import React from 'react'
 import { View, Text, TouchableOpacity, Image } from 'react-native'
 import PropTypes from 'prop-types'
-import SVGImage from 'react-native-remote-svg'
 import styles from './styles'
-import { images } from '../../themes'
-const CLOSE_ICON = require('../../../assets/images/Close/Grey.png')
-// const SHARE_ICON = require('../../../assets/images/Share/Purple.png')
+const CLOSE_ICON = require('../../../../assets/images/Close/Grey.png')
+const SHARE_ICON = require('../../../../assets/images/Share/Blue.png')
 
 class ShareWidgetPermissionModal extends React.Component {
   componentDidMount() {
@@ -36,7 +34,7 @@ class ShareWidgetPermissionModal extends React.Component {
 
         <View style={styles.mainView}>
           <View style={styles.iconView}>
-            <SVGImage source={images.shareLinkPurple} style={styles.shareIcon} />
+            <Image source={SHARE_ICON} style={styles.shareIcon} />
           </View>
           <Text style={styles.title}>Did you know you can save to Mello from anywhere?</Text>
           <Text style={styles.subTitle}>Just tab Share button in your favorite app and send to Mello.</Text>
