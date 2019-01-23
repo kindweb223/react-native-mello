@@ -24,7 +24,7 @@ class FeedoListContainer extends React.Component {
   }
 
   onLongPressFeedo(index, item) {
-    ReactNativeHaptic.generate('impactHeavy')
+    ReactNativeHapticFeedback.trigger('impactHeavy', true);
 
     if (this.props.handleLongHoldMenu) {
       this.props.handleLongHoldMenu(index, item)
