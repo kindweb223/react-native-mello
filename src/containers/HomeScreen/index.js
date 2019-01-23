@@ -13,9 +13,9 @@ import {
   AppState,
   Clipboard,
   Alert,
-  Share
+  Share,
+  NativeModules
 } from 'react-native'
-
 import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
 import PushNotification from 'react-native-push-notification';
@@ -41,10 +41,12 @@ import ToasterComponent from '../../components/ToasterComponent'
 import FeedLoadingStateComponent from '../../components/FeedLoadingStateComponent'
 import EmptyStateComponent from '../../components/EmptyStateComponent'
 import SpeechBubbleComponent from '../../components/SpeechBubbleComponent'
-import ShareWidgetPermissionModal from '../../components/ShareWidgetPermissionModal'
+import ShareWidgetPermissionModal from '../../components/ShareWidgetModal/PermissionModal'
+import ShareWidgetTipsModal from '../../components/ShareWidgetModal/TipsModal'
+import ShareWidgetConfirmModal from '../../components/ShareWidgetModal/ConfirmModal'
 import styles from './styles'
 import CONSTANTS from '../../service/constants';
-
+import { SHARE_LINK_URL } from '../../service/api'
 const SEARCH_ICON = require('../../../assets/images/Search/Grey.png')
 const SETTING_ICON = require('../../../assets/images/Settings/Grey.png')
 
@@ -125,7 +127,9 @@ class HomeScreen extends React.Component {
       isShowInviteToaster: false,
       inviteToasterTitle: '',
       showSharePermissionModal: false,
-      enableShareWidget: false
+      enableShareWidget: false,
+      showShareTipsModal: false,
+      showShareConfirmModal: false
     };
 
     this.currentRef = null;
@@ -133,39 +137,53 @@ class HomeScreen extends React.Component {
     this.isInitialized = false;
 
     this.animatedSelectFeed = new Animated.Value(1);
-    this.enableShareWidget = false
   }
 
   showSharePermissionModal(permissionAsyncInfo, userInfo) {
     console.log('permissionAsyncInfo: ', permissionAsyncInfo)
     this.setState({ showSharePermissionModal: true })
-    if (permissionAsyncInfo) {
-      permissionInfo = JSON.parse(permissionAsyncInfo)
-      if (permissionInfo.userId !== userInfo.id) {
-        AsyncStorage.setItem('permissionInfo', JSON.stringify({ userId: userInfo.id, enabled: true }))
-        this.setState({ showSharePermissionModal: true })
-      }
-    } else {
-      AsyncStorage.setItem('permissionInfo', JSON.stringify({ userId: userInfo.id, enabled: true }))
-      this.setState({ showSharePermissionModal: true })          
-    }
+    // if (permissionAsyncInfo) {
+    //   permissionInfo = JSON.parse(permissionAsyncInfo)
+    //   if (permissionInfo.userId !== userInfo.id) {
+    //     AsyncStorage.setItem('permissionInfo', JSON.stringify({ userId: userInfo.id, enabled: true }))
+    //     this.setState({ showSharePermissionModal: true })
+    //   }
+    // } else {
+    //   AsyncStorage.setItem('permissionInfo', JSON.stringify({ userId: userInfo.id, enabled: true }))    
+    // }
   }
 
   onCloseSharePermissionModal = () => {
-    if (this.enableShareWidget) {
-      Share.share({
-        message: 'Mello',
-        title: ''
-      },{
-        dialogTitle: 'Mello',
-        subject: 'Mello'
-      })
+    if (this.state.enableShareWidget) {
+      setTimeout(() => {
+        this.setState({ showShareTipsModal: true })
+      }, 100)
+
+      setTimeout(() => {
+        Share.share({
+          message: 'Mello',
+          title: 'Mello',
+          url: SHARE_LINK_URL
+        },{
+          dialogTitle: 'Mello',
+          subject: 'Mello'
+        }).then(result => {
+          console.log('RESULT: ', result)
+          if (result.action === Share.dismissedAction) {
+            this.setState({ showShareTipsModal: false })
+            setTimeout(() => {
+              this.setState({ showShareConfirmModal: true })
+            }, 100)
+          }
+        }).catch(error => {
+          console.log('ERROR: ', error)
+        })
+      }, 300)
     }
   }
 
   onEnableShareWidget = () => {
-    this.enableShareWidget = true
-    this.setState({ showSharePermissionModal: false })
+    this.setState({ showSharePermissionModal: false, enableShareWidget: true })
   }
 
   async componentDidMount() {
@@ -1469,6 +1487,31 @@ class HomeScreen extends React.Component {
             onEnableShareWidget={() => this.onEnableShareWidget()}
           />
         </Modal>
+
+        <Modal
+          animationIn="fadeIn"
+          animationOut="fadeOut"
+          backdropOpacity={0}
+          isVisible={this.state.showShareTipsModal}
+          style={{ margin: 8 }}
+        >
+          <ShareWidgetTipsModal />
+        </Modal>
+
+        <Modal 
+          isVisible={this.state.showShareConfirmModal}
+          animationIn="fadeIn"
+          animationOut="fadeOut"
+          style={{ margin: 8 }}
+          backdropOpacity={0.6}
+          animationInTiming={500}
+          onBackdropPress={() => this.setState({ showShareConfirmModal: false })}
+        >
+          <ShareWidgetConfirmModal
+            onClose={() => this.setState({ showShareConfirmModal: false })}
+          />
+        </Modal>
+
       </SafeAreaView>
     )
   }
