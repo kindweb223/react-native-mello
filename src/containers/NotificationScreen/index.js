@@ -386,7 +386,6 @@ class NotificationScreen extends React.Component {
                 refreshing={this.state.refreshing}
                 onRefresh={this.handleRefresh}
                 tintColor={COLORS.PURPLE}
-                size="large"
               />
             }
             onEndReached={this.handleLoadMore}
