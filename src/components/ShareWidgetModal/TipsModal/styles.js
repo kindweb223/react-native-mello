@@ -7,7 +7,7 @@ const styles = StyleSheet.create({
     width: '100%',
     height: 138,
     borderRadius: 14,
-    backgroundColor: '#000',
+    backgroundColor: COLORS.LIGHT_SOFT_GREY,
     overflow: 'hidden',
     position: 'absolute',
     bottom: 480,
@@ -42,7 +42,7 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
   },
   text: {
-    color: '#fff',
+    color: '#444',
     fontSize: 14,
     lineHeight: 21,
     fontWeight: '600'
