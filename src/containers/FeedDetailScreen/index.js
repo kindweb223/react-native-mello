@@ -130,6 +130,7 @@ class FeedDetailScreen extends React.Component {
       selectedIdeaInvitee: null,
       selectedIdeaLayout: {},
       activeImageLayout: {},
+      activeTextLayout: {},
       isInviteeModal: false,
       showFilterModal: false,
       filterShowType: 'all',
@@ -790,14 +791,21 @@ class FeedDetailScreen extends React.Component {
       }
 
       this.cardItemRefs[index].measure((ox, oy, width, height, px, py) => {
-        let pointX //card image x point in list view
-        let size //card image size in list view
+        let pointX //card image x point
+        let size //card image size
+        let textPointX = px //card text x point
+        let textPointY = py //card text y point
+        let textWidth, textHeight //card text size
         if (this.state.viewPreference === 'LIST') {
           pointX = 300
           size = 78
+          textWidth = CONSTANTS.SCREEN_WIDTH - 50
+          textHeight = 70
         } else {
           pointX = px
           size = (CONSTANTS.SCREEN_WIDTH - 50) / 2
+          textWidth = (CONSTANTS.SCREEN_WIDTH - 50) / 2
+          textHeight = 70
         }
         this.props.closeClipboardToaster()
 
@@ -806,7 +814,8 @@ class FeedDetailScreen extends React.Component {
           cardViewMode,
           selectedIdeaInvitee: invitee,
           selectedIdeaLayout: { ox, oy, width, height, px, py },
-          activeImageLayout: { pointX, py, size }
+          activeImageLayout: { px: pointX, py, size },
+          activeTextLayout: { textPointX, textPointY, textWidth, textHeight }
         }, () => {
           this.animatedOpacity.setValue(0);
           Animated.timing(this.animatedOpacity, {
@@ -1011,7 +1020,7 @@ class FeedDetailScreen extends React.Component {
   }
 
   get renderNewCardModal() {
-    const { isVisibleCard, cardViewMode, cardMode, isVisibleEditFeed, activeImageLayout } = this.state
+    const { isVisibleCard, cardViewMode, cardMode, isVisibleEditFeed, activeImageLayout, activeTextLayout } = this.state
     if (!isVisibleCard && !isVisibleEditFeed) {
       return;
     }
@@ -1039,6 +1048,7 @@ class FeedDetailScreen extends React.Component {
                 invitee={this.state.selectedIdeaInvitee}
                 intialLayout={this.state.selectedIdeaLayout}
                 cardImageLayout={activeImageLayout}
+                cardTextLayout={activeTextLayout}
                 shareUrl=''
                 onClose={() => this.onCloseCardModal()}
                 onOpenAction={(idea) => this.onOpenCardAction(idea)}

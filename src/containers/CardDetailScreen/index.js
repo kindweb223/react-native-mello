@@ -414,8 +414,9 @@ class CardDetailScreen extends React.Component {
   }
 
   async componentDidMount() {
-    const { viewMode, feedo, card, cardImageLayout } = this.props;
-    const { pointX, py, size } = cardImageLayout
+    const { viewMode, feedo, card, cardImageLayout, cardTextLayout } = this.props;
+    const { px, py, size } = cardImageLayout
+    const { textPointX, textPointY, textWidth, textHeight } = cardTextLayout
     let imageHeight = 400
     if (viewMode === CONSTANTS.CARD_VIEW || viewMode === CONSTANTS.CARD_EDIT) {
       const { width, height } = await this.getImageSize(card.currentCard.coverImage);
@@ -436,33 +437,62 @@ class CardDetailScreen extends React.Component {
       });
     }
 
-    this._width = size
-    this._height = size
-    this._x = pointX
-    this._y = py
+    if (card.currentCard.coverImage) {
+      //origin values
+      this._width = size
+      this._height = size
+      this._x = px
+      this._y = py
 
-    this.state.position.setValue({
-      x: pointX,
-      y: py,
-    });
+      //target values
+      this._tWidth = CONSTANTS.SCREEN_WIDTH
+      this._tHeight = imageHeight
+      this._tX = 0
+      this._tY = 0
 
-    this.state.size.setValue({
-      x: size,
-      y: size,
-    });
+      this.state.position.setValue({
+        x: px,
+        y: py,
+      })
+
+      this.state.size.setValue({
+        x: size,
+        y: size,
+      })
+    } else {
+      this._width = textWidth
+      this._height = textHeight
+      this._x = textPointX
+      this._y = textPointY
+
+      this._tWidth = CONSTANTS.SCREEN_WIDTH
+      this._tHeight = 200
+      this._tX = 0
+      this._tY = 0
+
+      this.state.position.setValue({
+        x: textPointX,
+        y: textPointY,
+      })
+
+      this.state.size.setValue({
+        x: textWidth,
+        y: textHeight,
+      })
+    }
 
     Animated.parallel([
       Animated.spring(this.state.position.x, {
-        toValue: 0,
+        toValue: this._tX,
       }),
       Animated.spring(this.state.position.y, {
-        toValue: 0,
+        toValue: this._tY,
       }),
       Animated.spring(this.state.size.x, {
-        toValue: CONSTANTS.SCREEN_WIDTH,
+        toValue: this._tWidth,
       }),
       Animated.spring(this.state.size.y, {
-        toValue: imageHeight,
+        toValue: this._tHeight,
       }),
       Animated.timing(this.animatedShow, {
         toValue: 1,
@@ -985,14 +1015,23 @@ class CardDetailScreen extends React.Component {
       marginTop = coverImage ? 24 : 65
     }
 
+    const activeTextStyle = {
+      width: this.state.size.x,
+      height: this.state.size.y,
+      top: this.state.position.y,
+      left: this.state.position.x,
+    };
+
     return (
-      <TouchableOpacity activeOpacity={1} onPress={() => this.onPressIdea()}>
-        <Autolink
-          style={[styles.textInputIdea, { marginTop }]}
-          text={this.state.idea}
-          onPress={(url, match) => this.onPressLink(url)}
-        />
-      </TouchableOpacity>
+      <Animated.View style={coverImage ? null : activeTextStyle}>
+        <TouchableOpacity activeOpacity={1} onPress={() => this.onPressIdea()}>
+          <Autolink
+            style={[styles.textInputIdea, { marginTop }]}
+            text={this.state.idea}
+            onPress={(url, match) => this.onPressLink(url)}
+          />
+        </TouchableOpacity>
+      </Animated.View>
     );
   }
 
