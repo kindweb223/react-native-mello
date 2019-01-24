@@ -245,9 +245,11 @@ class ProfileScreen extends React.Component {
                       color="#fff"
                       textColor={COLORS.PURPLE}
                     />
-                    <View style={styles.editView}>
-                        <Image source={EDIT_ICON} style={styles.editIcon} />
-                    </View>
+                  </TouchableOpacity>
+                  <TouchableOpacity 
+                    style={styles.editView}
+                    onPress={() => this.updatePhoto()}>
+                    <Image source={EDIT_ICON} style={styles.editIcon} />
                   </TouchableOpacity>
                 </View>
                 <Text style={styles.name}>
