@@ -14,7 +14,7 @@ class ShareWidgetTipsModal extends React.Component {
             <Text style={[styles.text, styles.numberText]}>1</Text>
           </View>
           <View style={styles.textView}>
-            <Text style={styles.text}>Swipe the top row and tab More</Text>
+            <Text style={styles.text}>Swipe the top row and tap More</Text>
             <View style={styles.iconView}>
               <Entypo name="dots-three-horizontal" size={18} color={COLORS.MEDIUM_GREY} style={styles.dotIcon} />
             </View>
