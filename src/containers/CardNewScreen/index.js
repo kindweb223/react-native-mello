@@ -233,7 +233,10 @@ class CardNewScreen extends React.Component {
       // success in getting a file upload url
       loading = true;
       // Image resizing...
-      if (this.selectedFileMimeType.indexOf('image/') !== -1) {
+      console.log('this.selectedFileMimeType: ', this.selectedFileMimeType);
+      const fileType = (Platform.OS === 'ios') ? this.selectedFileMimeType : this.selectedFile.type;
+      if (fileType.indexOf('image/') !== -1)
+      {
         // https://www.built.io/blog/improving-image-compression-what-we-ve-learned-from-whatsapp
         let actualHeight = this.selectedFile.height;
         let actualWidth = this.selectedFile.width;
