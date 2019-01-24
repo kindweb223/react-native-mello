@@ -1,6 +1,7 @@
 import { StyleSheet, Platform } from 'react-native'
 import CONSTANTS from '../../../service/constants'
 import COLORS from '../../../service/colors'
+import { ifIphoneX } from 'react-native-iphone-x-helper'
 
 const styles = StyleSheet.create({
   container: {
@@ -10,7 +11,7 @@ const styles = StyleSheet.create({
     backgroundColor: COLORS.LIGHT_SOFT_GREY,
     overflow: 'hidden',
     position: 'absolute',
-    bottom: 480,
+    bottom: ifIphoneX(360, 334),
     left: 0,
     zIndex: 100,
     padding: 15,
