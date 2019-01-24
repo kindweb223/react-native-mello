@@ -108,7 +108,9 @@ class CardDetailScreen extends React.Component {
       showEditScreen: false,
       isVisibleCardOpenMenu: false,
       cardOption: 0,
-      initLoad: true
+      initLoad: true,
+      position: new Animated.ValueXY(),
+      size: new Animated.ValueXY(),
     };
 
     this.selectedFile = null;
@@ -412,11 +414,16 @@ class CardDetailScreen extends React.Component {
   }
 
   async componentDidMount() {
-    const { viewMode, feedo, card } = this.props;
+    const { viewMode, feedo, card, cardImageLayout } = this.props;
+    const { pointX, py, size } = cardImageLayout
+    let imageHeight = 400
     if (viewMode === CONSTANTS.CARD_VIEW || viewMode === CONSTANTS.CARD_EDIT) {
       const { width, height } = await this.getImageSize(card.currentCard.coverImage);
       this.coverImageWidth = width
       this.coverImageHeight = height
+      const ratio = CONSTANTS.SCREEN_WIDTH / width
+      imageHeight = height * ratio
+
       this.setState({
         idea: card.currentCard.idea,
         coverImage: card.currentCard.coverImage,
@@ -428,6 +435,31 @@ class CardDetailScreen extends React.Component {
         isEditableIdea: true,
       });
     }
+
+    this.state.position.setValue({
+      x: pointX,
+      y: py,
+    });
+
+    this.state.size.setValue({
+      x: size,
+      y: size,
+    });
+
+    Animated.parallel([
+      Animated.spring(this.state.position.x, {
+        toValue: 0,
+      }),
+      Animated.spring(this.state.position.y, {
+        toValue: 0,
+      }),
+      Animated.spring(this.state.size.x, {
+        toValue: CONSTANTS.SCREEN_WIDTH,
+      }),
+      Animated.spring(this.state.size.y, {
+        toValue: imageHeight,
+      }),
+    ]).start();
 
     Animated.timing(this.animatedShow, {
       toValue: 1,
@@ -835,12 +867,17 @@ class CardDetailScreen extends React.Component {
 
   get renderCoverImage() {
     const { viewMode, card } = this.props;
+    const activeImageStyle = {
+      width: this.state.size.x,
+      height: this.state.size.y,
+      top: this.state.position.y,
+      left: this.state.position.x,
+    };
     let imageFiles = _.filter(card.currentCard.files, file => file.fileType === 'MEDIA');
 
-    const ratio = CONSTANTS.SCREEN_WIDTH / this.coverImageWidth
     if (this.state.coverImage) {
       return (
-        <View style={[styles.coverImageContainer, { width: CONSTANTS.SCREEN_WIDTH, height: this.coverImageHeight * ratio }]}>
+        <Animated.View style={[styles.coverImageContainer, activeImageStyle]}>
           <CoverImagePreviewComponent
             coverImage={this.state.coverImage}
             files={imageFiles}
@@ -850,7 +887,7 @@ class CardDetailScreen extends React.Component {
             onRemove={(fileId) => this.onRemoveFile(fileId)}
             onSetCoverImage={(fileId) => this.onSetCoverImage(fileId)}
           />
-        </View>
+        </Animated.View>
       );
     }
   }

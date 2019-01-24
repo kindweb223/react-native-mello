@@ -129,6 +129,7 @@ class FeedDetailScreen extends React.Component {
       pinText: 'Pin',
       selectedIdeaInvitee: null,
       selectedIdeaLayout: {},
+      activeImageLayout: {},
       isInviteeModal: false,
       showFilterModal: false,
       filterShowType: 'all',
@@ -789,6 +790,15 @@ class FeedDetailScreen extends React.Component {
       }
 
       this.cardItemRefs[index].measure((ox, oy, width, height, px, py) => {
+        let pointX //card image x point in list view
+        let size //card image size in list view
+        if (this.state.viewPreference === 'LIST') {
+          pointX = 300
+          size = 78
+        } else {
+          pointX = px
+          size = (CONSTANTS.SCREEN_WIDTH - 50) / 2
+        }
         this.props.closeClipboardToaster()
 
         this.setState({
@@ -796,6 +806,7 @@ class FeedDetailScreen extends React.Component {
           cardViewMode,
           selectedIdeaInvitee: invitee,
           selectedIdeaLayout: { ox, oy, width, height, px, py },
+          activeImageLayout: { pointX, py, size }
         }, () => {
           this.animatedOpacity.setValue(0);
           Animated.timing(this.animatedOpacity, {
@@ -1000,7 +1011,7 @@ class FeedDetailScreen extends React.Component {
   }
 
   get renderNewCardModal() {
-    const { isVisibleCard, cardViewMode, cardMode, isVisibleEditFeed } = this.state
+    const { isVisibleCard, cardViewMode, cardMode, isVisibleEditFeed, activeImageLayout } = this.state
     if (!isVisibleCard && !isVisibleEditFeed) {
       return;
     }
@@ -1027,6 +1038,7 @@ class FeedDetailScreen extends React.Component {
                 viewMode={this.state.cardViewMode}
                 invitee={this.state.selectedIdeaInvitee}
                 intialLayout={this.state.selectedIdeaLayout}
+                cardImageLayout={activeImageLayout}
                 shareUrl=''
                 onClose={() => this.onCloseCardModal()}
                 onOpenAction={(idea) => this.onOpenCardAction(idea)}
