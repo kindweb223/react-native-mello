@@ -11,6 +11,7 @@ import {
   ScrollView,
   Linking,
   SafeAreaView,
+  Platform
 } from 'react-native'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
@@ -647,10 +648,33 @@ class CardDetailScreen extends React.Component {
   }
 
   onAddFile() {
-    setTimeout(() => {
-      this.imagePickerActionSheetRef.show()
-    }, 200)
-    return
+    Permissions.checkMultiple(['camera', 'photo']).then(response => {
+      if (response.camera === 'authorized' && response.photo === 'authorized') {
+        setTimeout(() => {
+          this.imagePickerActionSheetRef.show()
+        }, 200)
+    
+      }
+      else {
+        Permissions.request('camera').then(response => {
+          if (response === 'authorized') {
+            Permissions.request('photo').then(response => {
+              if (response === 'authorized') {
+                setTimeout(() => {
+                  this.imagePickerActionSheetRef.show()
+                }, 200)
+              }
+              else if (Platform.OS === 'ios') {
+                Permissions.openSettings();
+              }    
+            });
+          }
+          else if (Platform.OS === 'ios') {
+            Permissions.openSettings();
+          }
+        });
+      }
+    });
   }
 
   onAddDocument() {
@@ -734,34 +758,10 @@ class CardDetailScreen extends React.Component {
         
     if (index === 0) {
       // from camera
-      Permissions.check('camera').then(response => {
-        if (response === 'authorized') {
-          this.pickMediaFromCamera(options);
-        } else if (response === 'undetermined') {
-          Permissions.request('camera').then(response => {
-            if (response === 'authorized') {
-              this.pickMediaFromCamera(options);
-            }
-          });
-        } else {
-          Permissions.openSettings();
-        }
-      });
+      this.pickMediaFromCamera(options);
     } else if (index === 1) {
       // from library
-      Permissions.check('photo').then(response => {
-        if (response === 'authorized') {
-          this.pickMediaFromLibrary(options);
-        } else if (response === 'undetermined') {
-          Permissions.request('photo').then(response => {
-            if (response === 'authorized') {
-              this.pickMediaFromLibrary(options);
-            }
-          });
-        } else {
-          Permissions.openSettings();
-        }
-      });
+      this.pickMediaFromLibrary(options);
     }
   }
 
