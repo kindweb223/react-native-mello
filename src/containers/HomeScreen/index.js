@@ -166,7 +166,8 @@ class HomeScreen extends React.Component {
           url: SHARE_LINK_URL
         },{
           dialogTitle: 'Mello',
-          subject: 'Mello'
+          subject: 'Mello',
+          excludedActivityTypes: ["com.apple.UIKit.activity.AirDrop"]
         }).then(result => {
           console.log('RESULT: ', result)
           if (result.action === Share.dismissedAction) {
