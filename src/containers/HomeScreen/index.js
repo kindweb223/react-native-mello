@@ -140,17 +140,15 @@ class HomeScreen extends React.Component {
   }
 
   showSharePermissionModal(permissionAsyncInfo, userInfo) {
-    console.log('permissionAsyncInfo: ', permissionAsyncInfo)
-    this.setState({ showSharePermissionModal: true })
-    // if (permissionAsyncInfo) {
-    //   permissionInfo = JSON.parse(permissionAsyncInfo)
-    //   if (permissionInfo.userId !== userInfo.id) {
-    //     AsyncStorage.setItem('permissionInfo', JSON.stringify({ userId: userInfo.id, enabled: true }))
-    //     this.setState({ showSharePermissionModal: true })
-    //   }
-    // } else {
-    //   AsyncStorage.setItem('permissionInfo', JSON.stringify({ userId: userInfo.id, enabled: true }))    
-    // }
+    if (permissionAsyncInfo) {
+      permissionInfo = JSON.parse(permissionAsyncInfo)
+      console.log('AAA', permissionInfo.userId, userInfo.id)
+      if (permissionInfo.userId !== userInfo.id) {
+        this.setState({ showSharePermissionModal: true })
+      }
+    } else {
+      this.setState({ showSharePermissionModal: true })
+    }
   }
 
   onCloseSharePermissionModal = () => {
@@ -169,12 +167,11 @@ class HomeScreen extends React.Component {
           subject: 'Mello',
           excludedActivityTypes: ["com.apple.UIKit.activity.AirDrop"]
         }).then(result => {
-          console.log('RESULT: ', result)
           if (result.action === Share.dismissedAction) {
             this.setState({ showShareTipsModal: false })
             setTimeout(() => {
               this.setState({ showShareConfirmModal: true })
-            }, 100)
+            }, 300)
           }
         }).catch(error => {
           console.log('ERROR: ', error)
@@ -184,6 +181,7 @@ class HomeScreen extends React.Component {
   }
 
   onEnableShareWidget = () => {
+    AsyncStorage.setItem('permissionInfo', JSON.stringify({ userId: this.props.user.userInfo.id, enabled: true }))
     this.setState({ showSharePermissionModal: false, enableShareWidget: true })
   }
 
@@ -197,16 +195,15 @@ class HomeScreen extends React.Component {
     const permissionAsyncInfo = await AsyncStorage.getItem('permissionInfo')
     Permissions.check('notification').then(response => {
       if (response === 'authorized') {
-        this.showSharePermissionModal(permissionAsyncInfo, userInfo)
+        this.showSharePermissionModal(permissionAsyncInfo, JSON.parse(userInfo))
       } else if (response === 'undetermined') {
         Permissions.request('notification').then(response => {
           if (response === 'authorized') {
-            this.showSharePermissionModal(permissionAsyncInfo, userInfo)
+            this.showSharePermissionModal(permissionAsyncInfo, JSON.parse(userInfo))
           }
         });
       } else {
-        console.log('rejected')
-        Permissions.openSettings();
+        this.setState({ showSharePermissionModal: true })
       }
     });
 
