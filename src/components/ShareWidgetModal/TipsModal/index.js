@@ -41,7 +41,7 @@ class ShareWidgetTipsModal extends React.Component {
           </View>
           <View style={styles.textView}>
             {/* <Text style={styles.text}>Tab Mello in the share panel</Text> */}
-            <Text style={styles.text}>Tab cancel when you are done</Text>
+            <Text style={styles.text}>Tap cancel when you are done</Text>
             <View style={styles.iconView}>
               <Image source={LOGO_ICON} style={styles.icon} />
             </View>
