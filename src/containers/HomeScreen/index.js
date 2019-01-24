@@ -1491,7 +1491,7 @@ class HomeScreen extends React.Component {
         <Modal
           animationIn="fadeIn"
           animationOut="fadeOut"
-          backdropOpacity={0}
+          backdropOpacity={0.5}
           isVisible={this.state.showShareTipsModal}
           style={{ margin: 8 }}
         >
