@@ -436,6 +436,11 @@ class CardDetailScreen extends React.Component {
       });
     }
 
+    this._width = size
+    this._height = size
+    this._x = pointX
+    this._y = py
+
     this.state.position.setValue({
       x: pointX,
       y: py,
@@ -459,12 +464,11 @@ class CardDetailScreen extends React.Component {
       Animated.spring(this.state.size.y, {
         toValue: imageHeight,
       }),
-    ]).start();
-
-    Animated.timing(this.animatedShow, {
-      toValue: 1,
-      duration: CONSTANTS.ANIMATEION_MILLI_SECONDS,
-    }).start(() => {
+      Animated.timing(this.animatedShow, {
+        toValue: 1,
+        duration: CONSTANTS.ANIMATEION_MILLI_SECONDS,
+      })
+    ]).start(() => {
       if (feedo.feedoList.length == 0) {
         this.isGettingFeedoList = true;
         this.props.getFeedoList(0);
@@ -631,10 +635,25 @@ class CardDetailScreen extends React.Component {
       originalCardBottomY: this.props.intialLayout.py + this.props.intialLayout.height,
     }, () => {
       this.animatedShow.setValue(1);
-      Animated.timing(this.animatedShow, {
-        toValue: 0,
-        duration: CONSTANTS.ANIMATEION_MILLI_SECONDS + 200,
-      }).start();
+      Animated.parallel([
+        Animated.timing(this.animatedShow, {
+          toValue: 0,
+          duration: CONSTANTS.ANIMATEION_MILLI_SECONDS + 200,
+        }),
+        Animated.spring(this.state.position.x, {
+          toValue: this._x,
+        }),
+        Animated.spring(this.state.position.y, {
+          toValue: this._y,
+        }),
+        Animated.spring(this.state.size.x, {
+          toValue: this._width,
+        }),
+        Animated.spring(this.state.size.y, {
+          toValue: this._height,
+        }),
+      ]).start();
+
       if (this.props.onClose) {
         this.props.onClose();
       }
@@ -1350,6 +1369,7 @@ CardDetailScreen.defaultProps = {
   card: {},
   invitee: {},
   intialLayout: {},
+  cardImageLayout: {},
   viewMode: CONSTANTS.CARD_EDIT,
   cardMode: CONSTANTS.MAIN_APP_CARD_FROM_DETAIL,
   shareUrl: '',
@@ -1364,6 +1384,7 @@ CardDetailScreen.propTypes = {
   card: PropTypes.object,
   invitee: PropTypes.object,
   intialLayout: PropTypes.object,
+  cardImageLayout: PropTypes.object,
   viewMode: PropTypes.number,
   cardMode: PropTypes.number,
   shareUrl: PropTypes.string,
