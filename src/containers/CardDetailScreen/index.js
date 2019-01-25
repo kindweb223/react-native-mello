@@ -419,7 +419,9 @@ class CardDetailScreen extends React.Component {
     const { textPointX, textPointY, textWidth, textHeight } = cardTextLayout
     let imageHeight = 400
     if (viewMode === CONSTANTS.CARD_VIEW || viewMode === CONSTANTS.CARD_EDIT) {
-      const { width, height } = await this.getImageSize(card.currentCard.coverImage);
+      // const { width, height } = await this.getImageSize(card.currentCard.coverImage); //TODO get width/heigt from card object
+      const width = CONSTANTS.SCREEN_WIDTH
+      const height = CONSTANTS.SCREEN_WIDTH
       this.coverImageWidth = width
       this.coverImageHeight = height
       const ratio = CONSTANTS.SCREEN_WIDTH / width
@@ -465,9 +467,9 @@ class CardDetailScreen extends React.Component {
       this._x = textPointX
       this._y = textPointY
 
-      this._tWidth = CONSTANTS.SCREEN_WIDTH
+      this._tWidth = CONSTANTS.SCREEN_WIDTH + 5
       this._tHeight = 200
-      this._tX = 0
+      this._tX = -5
       this._tY = 0
 
       this.state.position.setValue({
@@ -481,18 +483,23 @@ class CardDetailScreen extends React.Component {
       })
     }
 
+    const friction = 8
     Animated.parallel([
       Animated.spring(this.state.position.x, {
         toValue: this._tX,
+        friction
       }),
       Animated.spring(this.state.position.y, {
         toValue: this._tY,
+        friction
       }),
       Animated.spring(this.state.size.x, {
         toValue: this._tWidth,
+        friction
       }),
       Animated.spring(this.state.size.y, {
         toValue: this._tHeight,
+        friction
       }),
       Animated.timing(this.animatedShow, {
         toValue: 1,
@@ -684,9 +691,7 @@ class CardDetailScreen extends React.Component {
         }),
       ]).start();
 
-      if (this.props.onClose) {
-        this.props.onClose();
-      }
+      this.props.onClose();
     });
   }
 
@@ -1271,7 +1276,7 @@ class CardDetailScreen extends React.Component {
       outputRange: [this.state.originalCardTopY, 0],
     });
     cardStyle = {
-      top: animatedTopMove,
+      // top: animatedTopMove,
       opacity: this.animatedShow,
     };
 
