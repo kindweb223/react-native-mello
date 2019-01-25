@@ -415,13 +415,13 @@ class CardDetailScreen extends React.Component {
 
   async componentDidMount() {
     const { viewMode, feedo, card, cardImageLayout, cardTextLayout } = this.props;
-    const { px, py, size } = cardImageLayout
+    const { px, py, imgWidth, imgHeight } = cardImageLayout
     const { textPointX, textPointY, textWidth, textHeight } = cardTextLayout
     let imageHeight = 400
     if (viewMode === CONSTANTS.CARD_VIEW || viewMode === CONSTANTS.CARD_EDIT) {
-      // const { width, height } = await this.getImageSize(card.currentCard.coverImage); //TODO get width/heigt from card object
-      const width = CONSTANTS.SCREEN_WIDTH
-      const height = CONSTANTS.SCREEN_WIDTH
+      const { width, height } = await this.getImageSize(card.currentCard.coverImage); //TODO get width/heigt from card object
+      // const width = CONSTANTS.SCREEN_WIDTH
+      // const height = CONSTANTS.SCREEN_WIDTH
       this.coverImageWidth = width
       this.coverImageHeight = height
       const ratio = CONSTANTS.SCREEN_WIDTH / width
@@ -441,8 +441,8 @@ class CardDetailScreen extends React.Component {
 
     if (card.currentCard.coverImage) {
       //origin values
-      this._width = size
-      this._height = size
+      this._width = imgWidth
+      this._height = imgHeight
       this._x = px
       this._y = py
 
@@ -458,8 +458,8 @@ class CardDetailScreen extends React.Component {
       })
 
       this.state.size.setValue({
-        x: size,
-        y: size,
+        x: imgWidth,
+        y: imgHeight,
       })
     } else {
       this._width = textWidth

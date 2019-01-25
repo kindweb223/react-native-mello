@@ -793,21 +793,29 @@ class FeedDetailScreen extends React.Component {
       }
 
       this.cardItemRefs[index].measure((ox, oy, width, height, px, py) => {
-        let pointX //card image x point
-        let size //card image size
+        let pointX, pointY //card image x,y point
+        let imgWidth, imgHeight //card image size
         let textPointX = px //card text x point
         let textPointY = py //card text y point
         let textWidth, textHeight //card text size
         if (this.state.viewPreference === 'LIST') {
           pointX = 270
-          size = 78
-          textWidth = CONSTANTS.SCREEN_WIDTH - 50
-          textHeight = 70
+          pointY = py + 19
+          imgWidth = 78
+          imgHeight = 78
+          textPointX = px - 21
+          textPointY = py + 52
+          textWidth = width - 42
+          textHeight = height - 103
         } else {
-          pointX = px
-          size = (CONSTANTS.SCREEN_WIDTH - 50) / 2
-          textWidth = (CONSTANTS.SCREEN_WIDTH - 50) / 2
-          textHeight = 70
+          pointX = px + 9
+          pointY = py
+          imgWidth = width - 18
+          imgHeight = height - 115
+          textPointX = px - 21
+          textPointY = py + 39
+          textWidth = width - 38
+          textHeight = height - 97
         }
         this.props.closeClipboardToaster()
 
@@ -816,7 +824,7 @@ class FeedDetailScreen extends React.Component {
           cardViewMode,
           selectedIdeaInvitee: invitee,
           selectedIdeaLayout: { ox, oy, width, height, px, py },
-          activeImageLayout: { px: pointX, py, size },
+          activeImageLayout: { px: pointX, py: pointY, imgWidth, imgHeight },
           activeTextLayout: { textPointX, textPointY, textWidth, textHeight }
         }, () => {
           this.animatedOpacity.setValue(0);
