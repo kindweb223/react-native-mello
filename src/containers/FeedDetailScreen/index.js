@@ -1292,10 +1292,12 @@ class FeedDetailScreen extends React.Component {
 
   showShareModal = () => {
     const { data } = this.props
-
+    
+    const body = data.summary + ':\n' + SHARE_LINK_URL + data.id
+    
     Share.share({
-      message: data.summary || '',
-      url: `${SHARE_LINK_URL}${data.id}`,
+      message: body, // message: data.summary || '',
+      // url: `${SHARE_LINK_URL}${data.id}`,
       title: data.headline
     },{
       dialogTitle: data.headline,
@@ -1419,7 +1421,7 @@ class FeedDetailScreen extends React.Component {
                   ? this.state.viewPreference === 'LIST'
                     ? currentFeed.ideas.length > 0
                       ? <View
-                          style={{ paddingHorizontal: 8 }}
+                          style={{ paddingHorizontal: 8, marginTop: Platform.OS === 'android' ? 10 : 0}}
                         >
                           {currentFeed.ideas.map((item, index) => (
                           <View
