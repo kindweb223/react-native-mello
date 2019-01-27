@@ -169,9 +169,9 @@ class HomeScreen extends React.Component {
         }).then(result => {
           if (result.action === Share.dismissedAction) {
             this.setState({ showShareTipsModal: false })
-            setTimeout(() => {
-              this.setState({ showShareConfirmModal: true })
-            }, 300)
+            // setTimeout(() => {
+            //   this.setState({ showShareConfirmModal: true })
+            // }, 300)
           }
         }).catch(error => {
           console.log('ERROR: ', error)
