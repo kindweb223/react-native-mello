@@ -80,16 +80,6 @@ class CardNewShareScreen extends React.Component {
     this.selectedFileType = null;
     this.selectedFileName = null;
 
-    this.allLinkImages = [];
-    this.selectedLinkImages = [];
-    this.currentSelectedLinkImageIndex = 0;
-
-    this.indexForOpenGraph = 0;
-    this.linksForOpenGraph = [];
-
-    this.indexForAddedLinks = 0;
-    this.openGraphLinksInfo = [];
-
     this.animatedShow = new Animated.Value(0);
     this.animatedKeyboardHeight = new Animated.Value(0);
 
@@ -98,7 +88,6 @@ class CardNewShareScreen extends React.Component {
     this.parsingErrorLinks = [];
 
     this.draftFeedo = null;
-    this.prevFeedo = null;
 
     this.scrollViewHeight = 0;
     this.textInputPositionY = 0;
@@ -210,33 +199,12 @@ class CardNewShareScreen extends React.Component {
 
     this.setState({ loading: true })
     this.onUpdateFeed()
-    this.props.addSharExtensionCard(huntId, idea, links, files, 'PUBLISHED')
+    console.log('HUNTID: ', huntId)
+    this.props.addSharExtensionCard(huntId, idea, links, files, 'TEMP')
   }
 
   async UNSAFE_componentWillReceiveProps(nextProps) {
-    // if (nextProps.user && nextProps.user.userInfo && nextProps.user.userInfo.id) {
-    //   const data = {
-    //     userId: nextProps.user.userInfo.id,
-    //     state: 'true'
-    //   }
-    //   AsyncStorage.setItem('BubbleFirstCardTimeCreated', JSON.stringify(data));
-    // }
-
-    
-    // const { width, height } = await this.getImageSize(nextProps.card.currentCard.coverImage);
-    // this.coverImageWidth = width
-    // this.coverImageHeight = height
-
-    // this.setState({
-    //   coverImage: nextProps.card.currentCard.coverImage,
-    // }, () => {
-    //   setTimeout(() => {
-    //     this.scrollViewRef.scrollToEnd();
-    //   }, 0);
-    // });
-    // this.checkUrls();
-
-    if (this.prevFeedo === null) {
+    if (this.draftFeedo === null) {
       if (this.props.feedo.loading !== feedoTypes.CREATE_FEED_FULFILLED && nextProps.feedo.loading === feedoTypes.CREATE_FEED_FULFILLED) {
         this.draftFeedo = nextProps.feedo.currentFeed;
       }
@@ -304,6 +272,7 @@ class CardNewShareScreen extends React.Component {
           const currentFeed = _.find(currentProps.feedo.feedoList, feed => feed.id === feedoInfo.feedoId)
           if (currentFeed) {
             this.props.setCurrentFeed(currentFeed);
+            this.draftFeedo = currentFeed
             return;
           }
         }
@@ -387,12 +356,12 @@ class CardNewShareScreen extends React.Component {
   }
 
   checkUrls() {
+    return;
+
     const allUrls = this.state.idea && this.state.idea.match(/(http(s)?:\/\/.)?(www\.)?[-a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,6}\b([-a-zA-Z0-9@:%_\+.~#?&//=]*)/gi);
     if (allUrls) {
       let newUrls = [];
-      const {
-        links
-      } = this.props.card.currentCard;
+      const links = this.getLinks()
       if (links) {
         allUrls.forEach(url => {
           const index = _.findIndex(links, link => this.compareUrls(link.originalUrl, url));
@@ -418,11 +387,7 @@ class CardNewShareScreen extends React.Component {
       if (filteredUrls.length > 0) {
         Analytics.logEvent('new_card_typed_link', {})
 
-        // this.isOpenGraphForNewCard = false;
-        this.indexForOpenGraph = 0;
-        this.openGraphLinksInfo = [];
-        this.linksForOpenGraph = filteredUrls;
-        this.props.getOpenGraph(this.linksForOpenGraph[0]);
+        this.props.getOpenGraph(filteredUrls[0]);
       }
     }
     return false;
@@ -489,7 +454,7 @@ class CardNewShareScreen extends React.Component {
   }
 
   onSelectFeedo() {
-    this.prevFeedo = this.props.feedo.currentFeed;
+    this.draftFeedo = this.props.feedo.currentFeed;
     this.isDisabledKeyboard = true;
     this.setState({
       isVisibleSelectFeedoModal: true,
@@ -500,12 +465,8 @@ class CardNewShareScreen extends React.Component {
     this.isDisabledKeyboard = false;
     this.setState({isVisibleSelectFeedoModal: false})
     if (!this.props.feedo.currentFeed.id) {
-      this.props.setCurrentFeed(this.prevFeedo);
+      this.props.setCurrentFeed(this.draftFeedo);
     }
-    if (this.prevFeedo.id !== this.props.feedo.currentFeed.id) {
-      this.props.moveCard(this.props.card.currentCard.id, this.props.feedo.currentFeed.id);
-    }
-    this.prevFeedo = null;
   }
 
   onUpdateFeed() {
@@ -517,7 +478,7 @@ class CardNewShareScreen extends React.Component {
           summary,
           tags,
           files,
-        } = this.props.feedo.currentFeed;  
+        } = this.props.feedo.currentFeed;
         this.props.updateFeed(id, headline || 'New flow', summary || '', tags, files);
         return;
       }
