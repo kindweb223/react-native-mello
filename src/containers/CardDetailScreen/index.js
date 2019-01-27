@@ -671,27 +671,31 @@ class CardDetailScreen extends React.Component {
       originalCardTopY: this.props.intialLayout.py,
       originalCardBottomY: this.props.intialLayout.py + this.props.intialLayout.height,
     }, () => {
-      this.animatedShow.setValue(1);
       Animated.parallel([
+        Animated.timing(this.state.position.x, {
+          toValue: this._x,
+          duration: CONSTANTS.ANIMATEION_MILLI_SECONDS,
+        }),
+        Animated.timing(this.state.position.y, {
+          toValue: this._y,
+          duration: CONSTANTS.ANIMATEION_MILLI_SECONDS,
+        }),
+        Animated.timing(this.state.size.x, {
+          toValue: this._width,
+          duration: CONSTANTS.ANIMATEION_MILLI_SECONDS,
+        }),
+        Animated.timing(this.state.size.y, {
+          toValue: this._height,
+          duration: CONSTANTS.ANIMATEION_MILLI_SECONDS,
+        }),
+      ]).start(() => {
+        this.props.onClose()
+        this.animatedShow.setValue(1);
         Animated.timing(this.animatedShow, {
           toValue: 0,
-          duration: CONSTANTS.ANIMATEION_MILLI_SECONDS + 200,
-        }),
-        Animated.spring(this.state.position.x, {
-          toValue: this._x,
-        }),
-        Animated.spring(this.state.position.y, {
-          toValue: this._y,
-        }),
-        Animated.spring(this.state.size.x, {
-          toValue: this._width,
-        }),
-        Animated.spring(this.state.size.y, {
-          toValue: this._height,
-        }),
-      ]).start();
-
-      this.props.onClose();
+          duration: CONSTANTS.ANIMATEION_MILLI_SECONDS,
+        }).start()
+      });
     });
   }
 
