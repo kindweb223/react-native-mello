@@ -755,18 +755,16 @@ class FeedDetailScreen extends React.Component {
   }
 
   onCloseCardModal() {
-    setTimeout(() => {
-      this.animatedOpacity.setValue(1);
-      Animated.timing(this.animatedOpacity, {
-        toValue: 0,
-        duration: CONSTANTS.ANIMATEION_MILLI_SECONDS,
-      }).start(() => {
-        this.setState({ 
-          isVisibleCard: false,
-          cardViewMode: CONSTANTS.CARD_NONE
-        });
+    this.animatedOpacity.setValue(1);
+    Animated.timing(this.animatedOpacity, {
+      toValue: 0,
+      duration: CONSTANTS.ANIMATEION_MILLI_SECONDS + 600,
+    }).start(() => {
+      this.setState({ 
+        isVisibleCard: false,
+        cardViewMode: CONSTANTS.CARD_NONE
       });
-    }, 400)
+    });
   }
 
   onSelectCard(index, idea, invitees) {
@@ -800,7 +798,7 @@ class FeedDetailScreen extends React.Component {
         let textWidth, textHeight //card text size
         if (this.state.viewPreference === 'LIST') {
           pointX = 270
-          pointY = py + 19
+          pointY = py - 1
           imgWidth = 78
           imgHeight = 78
           textPointX = px - 21
@@ -809,9 +807,9 @@ class FeedDetailScreen extends React.Component {
           textHeight = height - 103
         } else {
           pointX = px + 9
-          pointY = py
+          pointY = py - 21
           imgWidth = width - 18
-          imgHeight = height - 115
+          imgHeight = height - 111
           textPointX = px - 21
           textPointY = py + 39
           textWidth = width - 38
