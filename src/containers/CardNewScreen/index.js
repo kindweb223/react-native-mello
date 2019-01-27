@@ -233,8 +233,8 @@ class CardNewScreen extends React.Component {
       // success in getting a file upload url
       loading = true;
       // Image resizing...
-      console.log('this.selectedFileMimeType: ', this.selectedFileMimeType);
       const fileType = (Platform.OS === 'ios') ? this.selectedFileMimeType : this.selectedFile.type;
+      console.log('selectedFile: ', this.selectedFile);
       if (fileType.indexOf('image/') !== -1)
       {
         // https://www.built.io/blog/improving-image-compression-what-we-ve-learned-from-whatsapp
@@ -245,36 +245,40 @@ class CardNewScreen extends React.Component {
         let imgRatio = actualWidth/actualHeight;
         let maxRatio = maxWidth/maxHeight;
 
-        if (actualHeight > maxHeight || actualWidth > maxWidth) {
-          if(imgRatio < maxRatio){
-              //adjust width according to maxHeight
-              imgRatio = maxHeight / actualHeight;
-              actualWidth = imgRatio * actualWidth;
-              actualHeight = maxHeight;
+        console.log(this.selectedFile, actualHeight, actualWidth);
+        if (actualHeight !== undefined && actualWidth !== undefined)
+        {
+          if (actualHeight > maxHeight || actualWidth > maxWidth) {
+            if(imgRatio < maxRatio){
+                //adjust width according to maxHeight
+                imgRatio = maxHeight / actualHeight;
+                actualWidth = imgRatio * actualWidth;
+                actualHeight = maxHeight;
+            }
+            else if(imgRatio > maxRatio){
+                //adjust height according to maxWidth
+                imgRatio = maxWidth / actualWidth;
+                actualHeight = imgRatio * actualHeight;
+                actualWidth = maxWidth;
+            }
+            else{
+                actualHeight = maxHeight;
+                actualWidth = maxWidth;
+            }
           }
-          else if(imgRatio > maxRatio){
-              //adjust height according to maxWidth
-              imgRatio = maxWidth / actualWidth;
-              actualHeight = imgRatio * actualHeight;
-              actualWidth = maxWidth;
-          }
-          else{
-              actualHeight = maxHeight;
-              actualWidth = maxWidth;
-          }
-        }
 
-        ImageResizer.createResizedImage(this.selectedFile.uri, actualWidth, actualHeight, CONSTANTS.IMAGE_COMPRESS_FORMAT, CONSTANTS.IMAGE_COMPRESS_QUALITY, 0, null)
-          .then((response) => {
-            console.log('Image compress Success!');
-            this.props.uploadFileToS3(nextProps.card.fileUploadUrl.uploadUrl, response.uri, this.selectedFileName, this.selectedFileMimeType);
-          }).catch((error) => {
-            console.log('Image compress error: ', error);
-            this.props.uploadFileToS3(nextProps.card.fileUploadUrl.uploadUrl, this.selectedFile.uri, this.selectedFileName, this.selectedFileMimeType);
-          });
-        return;
+          ImageResizer.createResizedImage(this.selectedFile.uri, actualWidth, actualHeight, CONSTANTS.IMAGE_COMPRESS_FORMAT, CONSTANTS.IMAGE_COMPRESS_QUALITY, 0, null)
+            .then((response) => {
+              console.log('Image compress Success!');
+              this.props.uploadFileToS3(nextProps.card.fileUploadUrl.uploadUrl, response.uri, this.selectedFileName, fileType);
+            }).catch((error) => {
+              console.log('Image compress error: ', error);
+              this.props.uploadFileToS3(nextProps.card.fileUploadUrl.uploadUrl, this.selectedFile.uri, this.selectedFileName, fileType);
+            });
+          return;
+        }
       }
-      this.props.uploadFileToS3(nextProps.card.fileUploadUrl.uploadUrl, this.selectedFile.uri, this.selectedFileName, this.selectedFileMimeType);
+      this.props.uploadFileToS3(nextProps.card.fileUploadUrl.uploadUrl, this.selectedFile.uri, this.selectedFileName, fileType);
     } else if (this.props.card.loading !== types.UPLOAD_FILE_PENDING && nextProps.card.loading === types.UPLOAD_FILE_PENDING) {
       // uploading a file
       loading = true;
@@ -287,7 +291,8 @@ class CardNewScreen extends React.Component {
       const {
         objectKey,
       } = this.props.card.fileUploadUrl;
-      this.props.addFile(id, this.selectedFileType, this.selectedFileMimeType, this.selectedFileName, objectKey);
+      const fileType = (Platform.OS === 'ios') ? this.selectedFileMimeType : this.selectedFile.type;
+      this.props.addFile(id, this.selectedFileType, fileType, this.selectedFileName, objectKey);
     } else if (this.props.card.loading !== types.ADD_FILE_PENDING && nextProps.card.loading === types.ADD_FILE_PENDING) {
       // adding a file
       loading = true;
