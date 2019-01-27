@@ -385,3 +385,26 @@ export const getOpenGraph = (urlPath, isSharing = false) => {
     }),
   };
 }
+
+/**
+ * Add a card in share extesnsion
+ */
+export const addSharExtensionCard = (huntId, idea, links, files, status) => {
+  let url = 'ideas/shareExtension'
+  const data = {
+    huntId,
+    idea,
+    links,
+    files,
+    status
+  }
+
+  return {
+    types: [types.ADD_SHARE_EXTENSION_CARD_PENDING, types.ADD_SHARE_EXTENSION_CARD_FULFILLED, types.ADD_SHARE_EXTENSION_CARD_REJECTED],
+    promise: axios({
+      method: 'post',
+      url: url,
+      data,
+    }),
+  };
+}
