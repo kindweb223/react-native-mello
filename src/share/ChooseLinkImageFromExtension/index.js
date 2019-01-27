@@ -39,7 +39,6 @@ class ChooseLinkImageFromExtension extends React.Component {
 
   async componentDidMount() {
     try {
-      
       const { type, value } = await ShareExtension.data();
       
       if (type === 'url') {
@@ -54,13 +53,10 @@ class ChooseLinkImageFromExtension extends React.Component {
               notesText: text,
             });
           }
-        }
-        else 
-        {
+        } else {
           this.shareUrl = urls[0]
           this.props.getOpenGraph(urls[0], true)
         }
-        
       } else if (type === 'images') {
         const images = value.split(" , ");
         if (images.length > 0) {
@@ -68,7 +64,6 @@ class ChooseLinkImageFromExtension extends React.Component {
             imageUrls: images,
           });
         }
-
       } 
     } catch(error) {
       console.log('error : ', error)
@@ -76,7 +71,6 @@ class ChooseLinkImageFromExtension extends React.Component {
   }
 
   UNSAFE_componentWillReceiveProps(nextProps) {
-    // console.log('UNSAFE_componentWillReceiveProps : ', nextProps.card)
     if (Actions.currentScene !== 'ChooseLinkImageFromExtension') {
       return;
     }
