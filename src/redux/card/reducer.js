@@ -598,10 +598,11 @@ export default function card(state = initialState, action = {}) {
       }
     }
     case types.ADD_SHARE_EXTENSION_CARD_FULFILLED: {
-      console.log('ADD_SHARE_EXTENSION_CARD_FULFILLED')
+      console.log('ADD_SHARE_EXTENSION_CARD_FULFILLED', action.result)
       return {
         ...state,
         loading: types.ADD_SHARE_EXTENSION_CARD_FULFILLED,
+        currentCard: action.result.data
       }
     }
     case types.ADD_SHARE_EXTENSION_CARD_REJECTED: {
