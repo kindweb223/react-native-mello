@@ -139,16 +139,11 @@ class HomeScreen extends React.Component {
     this.animatedSelectFeed = new Animated.Value(1);
   }
 
-  showSharePermissionModal(permissionAsyncInfo, userInfo) {
-    if (permissionAsyncInfo) {
-      permissionInfo = JSON.parse(permissionAsyncInfo)
-      console.log('AAA', permissionInfo.userId, userInfo.id)
-      if (permissionInfo.userId !== userInfo.id) {
+  showSharePermissionModal(permissionInfo, userInfo) {
+    // If we haven't asked to enable share widget before
+    if (!permissionInfo || permissionInfo.userId !== userInfo.id) {
         this.setState({ showSharePermissionModal: true })
-      }
-    } else {
-      this.setState({ showSharePermissionModal: true })
-    }
+    } 
   }
 
   onCloseSharePermissionModal = () => {
@@ -188,30 +183,31 @@ class HomeScreen extends React.Component {
   async componentDidMount() {
     Analytics.setCurrentScreen('DashboardScreen')
 
-    const userInfo = await AsyncStorage.getItem('userInfo')
-    this.props.setUserInfo(JSON.parse(userInfo))
+    this.props.setUserInfo(JSON.parse(await AsyncStorage.getItem('userInfo')))
 
-    // Detect the notificatin permission
-    const permissionAsyncInfo = await AsyncStorage.getItem('permissionInfo')
-    Permissions.check('notification').then(response => {
-      if (response === 'authorized') {
-        this.showSharePermissionModal(permissionAsyncInfo, JSON.parse(userInfo))
-      } else if (response === 'undetermined') {
-        Permissions.request('notification').then(response => {
-          if (response === 'authorized') {
-            this.showSharePermissionModal(permissionAsyncInfo, JSON.parse(userInfo))
-          }
-        });
-      } else {
-        this.setState({ showSharePermissionModal: true })
-      }
+    let permissionInfo = JSON.parse(await AsyncStorage.getItem('permissionInfo'))
+
+    // Check push notification
+    Permissions.check('notification')
+      .then(response => {
+        // Ask for notifications permission first
+        if (response === 'undetermined') {
+          Permissions.request('notification').then(response => {
+            // Then show share widget tip
+            this.showSharePermissionModal(permissionInfo, this.props.user.userInfo)
+          });
+        } 
+        // If notification permissions already asked, show share widget tip
+        else {
+          this.showSharePermissionModal(permissionInfo, this.props.user.userInfo)
+        }
     });
 
     this.setState({ loading: true })
 
     // Set the inital list view mode
     const viewMode = JSON.parse(await AsyncStorage.getItem('DashboardViewMode'))
-    if (viewMode && viewMode.userId === JSON.parse(userInfo).id) {
+    if (viewMode && viewMode.userId === this.props.user.userInfo.id) {
       this.props.setHomeListType(viewMode.type)
     }
     else {
