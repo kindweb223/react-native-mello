@@ -23,7 +23,7 @@ const styles = StyleSheet.create({
     position: 'absolute',
     top: 6,
     fontSize: 14,
-    color: COLORS.MEDIUM_GREY,
+    color: COLORS.MEDIUM_GREY
   },
 })
 

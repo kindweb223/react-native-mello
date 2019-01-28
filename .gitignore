@@ -18,6 +18,8 @@ build/
 DerivedData
 *.hmap
 *.ipa
+xcuserdata
+*.xcuserstate
 ios/Pods
 ios/Podfile.lock
 

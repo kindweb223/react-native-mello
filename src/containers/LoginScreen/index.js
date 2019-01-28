@@ -34,10 +34,10 @@ class LoginScreen extends React.Component {
         style={styles.btnBack}
         activeOpacity={0.6}
         onPress={() => {
-          if (props.page === 'Signup') {
+          if (props.prevPage === 'signup') {
             Actions.pop()
           } else {
-            Actions.LoginStartScreen({type:'replace'})
+            Actions.pop({ refresh: { prevPage: 'login' } } )
           }
         }}
       >
@@ -290,11 +290,11 @@ class LoginScreen extends React.Component {
 }
 
 LoginScreen.defaultProps = {
-  page: 'Other'
+  prevPage: 'login'
 }
 
 LoginScreen.propTypes = {
-  page: PropTypes.string
+  prevPage: PropTypes.string
 }
 
 const mapStateToProps = ({ user }) => ({

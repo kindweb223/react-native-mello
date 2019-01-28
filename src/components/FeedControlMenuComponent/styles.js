@@ -4,18 +4,16 @@ import CONSTANTS from '../../service/constants'
 
 const styles = StyleSheet.create({
   menuContainer: {
-    width: '100%',
-    height: '100%',
-    alignItems: 'center'
   },
   settingItem: {
-    width: '100%',
+    flexDirection: 'row',
+    alignItems: 'center',
     paddingHorizontal: 10,
     marginTop: 10,
     marginBottom: 5
   },
   settingButtonText: {
-    color: COLORS.PURPLE,
+    color: COLORS.PRIMARY_BLACK,
     fontSize: 14,
   },
   deleteButtonText: {
@@ -36,6 +34,12 @@ const styles = StyleSheet.create({
   buttonShareView: {
     marginBottom: 5
   },
+  menuIcon: {
+    width: 24,
+    height: 24,
+    marginRight: 15,
+    marginLeft: 5
+  },
   shareIcon: {
     color: '#fff',
     fontSize: 14,
@@ -48,6 +52,11 @@ const styles = StyleSheet.create({
   buttonText: {
     color: '#fff',
     fontSize: 14
+  },
+  separator: {
+    height: 1,
+    backgroundColor: '#EFEFEF',
+    marginVertical: 10
   }
 })
 

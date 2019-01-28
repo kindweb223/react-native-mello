@@ -12,6 +12,7 @@ const initialState = {
   currentComments: [],
 };
 
+
 export default function card(state = initialState, action = {}) {
   switch (action.type) {
 
@@ -303,10 +304,7 @@ export default function card(state = initialState, action = {}) {
       return {
         ...state,
         loading: types.ADD_CARD_COMMENT_FULFILLED,
-        currentComments: [
-          data,
-          ...state.currentComments,
-        ]
+        currentComments: [...state.currentComments, data]
       }
     }
     case types.ADD_CARD_COMMENT_REJECTED: {
@@ -333,9 +331,7 @@ export default function card(state = initialState, action = {}) {
       return {
         ...state,
         loading: types.EDIT_CARD_COMMENT_FULFILLED,
-        currentComments: [
-          ...currentComments,
-        ],
+        currentComments: [...currentComments],
       }
     }
     case types.EDIT_CARD_COMMENT_REJECTED: {
@@ -360,9 +356,7 @@ export default function card(state = initialState, action = {}) {
       return {
         ...state,
         loading: types.DELETE_CARD_COMMENT_FULFILLED,
-        currentComments: [
-          ...currentComments,
-        ],
+        currentComments: [...currentComments],
       }
     }
     case types.DELETE_CARD_COMMENT_REJECTED: {
@@ -579,7 +573,6 @@ export default function card(state = initialState, action = {}) {
       }
     case types.GET_OPEN_GRAPH_FULFILLED: {
       const data = action.result.data;
-      console.log('GET_OPEN_GRAPH_FULFILLED : ', data);
       return {
           ...state,
           loading: types.GET_OPEN_GRAPH_FULFILLED,

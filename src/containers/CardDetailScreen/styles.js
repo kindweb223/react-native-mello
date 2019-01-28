@@ -1,8 +1,9 @@
 import { StyleSheet, Platform } from 'react-native'
+import { ifIphoneX } from 'react-native-iphone-x-helper'
 import COLORS from '../../service/colors'
 import CONSTANTS from '../../service/constants'
 
-const FOOTER_HEIGHT = 50
+const FOOTER_HEIGHT = 55
 
 const styles = StyleSheet.create({
   container: {
@@ -25,7 +26,6 @@ const styles = StyleSheet.create({
   textInputIdea: {
     fontSize: 16,
     lineHeight: CONSTANTS.TEXT_INPUT_LINE_HEIGHT,
-    marginTop: 16,
     marginBottom: 16,
     marginHorizontal: 16,
     paddingLeft: 0,
@@ -39,15 +39,20 @@ const styles = StyleSheet.create({
   },
   headerContainer: {
     position: 'absolute',
-    top: CONSTANTS.STATUSBAR_HEIGHT,
-    right: 8
+    top: Platform.OS === 'ios' ? ifIphoneX(53, 30) : 30,
+    right: 8,
+    width: 50,
+    height: 50,
+    backgroundColor: 'transparent',
+    justifyContent: 'center',
+    alignItems: 'center'
   },
   closeButtonView: {
     justifyContent: 'center',
     alignItems: 'center',
     width: '100%',
     height: '100%',
-    backgroundColor: COLORS.MEDIUM_GREY,
+    backgroundColor: COLORS.ACTION_SHEET_TITLE,
     width: 34,
     height: 34,
     borderRadius: 17,
@@ -78,6 +83,7 @@ const styles = StyleSheet.create({
     color: COLORS.PURPLE
   },
   ideaContentView: {
+    paddingBottom: 50
   },
   inviteeContainer: {
     flexDirection: 'row',
@@ -86,7 +92,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: CONSTANTS.PADDING,
     width: '100%',
     height: 50,
-    borderColor: COLORS.LIGHT_SOFT_GREY,
+    borderColor: COLORS.LIGHT_GREY_LINE,
     borderTopWidth: 1,
     borderBottomWidth: 1
   },
@@ -105,16 +111,29 @@ const styles = StyleSheet.create({
     color: COLORS.DARK_GREY,
   },
   footerContainer: {
-    paddingTop: 5,
-    height: FOOTER_HEIGHT
+    paddingVertical: 5,
+    height: FOOTER_HEIGHT,
+    backgroundColor: '#fff',
+    alignItems: 'flex-start'
   },
   footerView: {
+    // flex: 1,
+    height: 40,
     flexDirection: 'row',
     justifyContent: 'space-between',
-    alignItems: 'center'
+    alignItems: 'center',
+  },
+  addCommentView: {
+    justifyContent: 'center',
+    backgroundColor: COLORS.LIGHT_SOFT_GREY,
+    marginHorizontal: CONSTANTS.PADDING,
+    paddingHorizontal: CONSTANTS.PADDING,    
+    flex: 1,
+    height: '100%',
+    borderRadius: 5
   },
   textAddComment: {
-    paddingHorizontal: 20
+    fontSize: 16
   },
   likeView: {
     flexDirection: 'row',
@@ -127,6 +146,30 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
   },
+  settingCardMenuView: {
+    borderRadius: 20,
+    backgroundColor: '#fff',
+    width: 122,
+    paddingVertical: 10,
+    position: 'absolute',
+    right: 55,
+    bottom: CONSTANTS.STATUS_BOTTOM_BAR_HEIGHT + 10,
+    zIndex: 0,
+    ...Platform.select({
+      ios: {
+        shadowColor: 'black',
+        shadowOffset: { height: 5 },
+        shadowOpacity: 0.3,
+        shadowRadius: 5
+      },
+      android: {
+        elevation: 20
+      }
+    })
+  },
+  shareScreenContainer: {
+    margin: 0,
+  }
 })
 
 

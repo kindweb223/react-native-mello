@@ -9,9 +9,9 @@ import { connect } from 'react-redux'
 
 import { Actions } from 'react-native-router-flux'
 import _ from 'lodash';
+import LinearGradient from 'react-native-linear-gradient'
 
 import styles from './styles'
-import COLORS from '../../service/colors'
 import * as types from '../../redux/card/types'
 import { 
   getCardComments,
@@ -19,6 +19,17 @@ import {
 import UserAvatarComponent from '../../components/UserAvatarComponent';
 import * as COMMON_FUNC from '../../service/commonFunc'
 import Analytics from '../../lib/firebase'
+
+const Gradient = () => {
+  return(
+    <LinearGradient
+      colors={['rgba(255, 255, 255, 0.5)', 'rgba(255, 255, 255, 0.9)']}
+      style={{
+        flex: 1
+      }}
+    />
+  )
+}
 
 class LastCommentComponent extends React.Component {
   constructor(props) {
@@ -95,7 +106,11 @@ class LastCommentComponent extends React.Component {
     const user = this.getCommentUser(item);
     const name = user ? user.firstName || user.lastName : '';
     return (
-      <View style={styles.itemContainer}>
+      <TouchableOpacity
+        style={styles.itemContainer}
+        activeOpacity={0.6}
+        onPress={this.onViewOldComments.bind(this)}
+      >
         <UserAvatarComponent
           user={user}
         />
@@ -104,30 +119,38 @@ class LastCommentComponent extends React.Component {
           <Text> </Text>
           <Text style={styles.commentText}>{item.content}</Text>
         </Text>
-      </View>
+      </TouchableOpacity>
     );
   }
 
   render () {
     const { currentComments } = this.state;
+    const { initLoad } = this.props
 
     let lastComments = [];
-    let oldCommentsLength = 0;
+    // let oldCommentsLength = 0;
     if (currentComments) {
       lastComments = currentComments.slice(0, 2);
-      oldCommentsLength = currentComments.length > 2 ? currentComments.length - 2 : 0;
+      // oldCommentsLength = currentComments.length > 2 ? currentComments.length - 2 : 0;
     }
 
     return (
       <View style={[styles.container, currentComments.length > 0 && { paddingVertical: 16 }]}>
-        <FlatList
-          data={lastComments}
-          renderItem={this.renderItem.bind(this)}
-          keyExtractor={(item, index) => index.toString()}
-          extraData={this.props}
-        />
+        <View style={styles.commentList}>
+          <FlatList
+            data={lastComments}
+            renderItem={this.renderItem.bind(this)}
+            keyExtractor={(item, index) => index.toString()}
+            extraData={this.props}
+          />
+          {initLoad && (
+            <View style={styles.gradientView}>
+              <Gradient />
+            </View>
+          )}
+        </View>
         { 
-          oldCommentsLength > 0 && 
+          currentComments.length > 0 && 
           <TouchableOpacity 
             style={styles.viewAllContainer}
             activeOpacity={0.6}

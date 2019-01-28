@@ -30,7 +30,9 @@ const styles = StyleSheet.create({
     flexDirection: 'row'
   },
   rightView: {
-    flexDirection: 'row',
+    position: 'absolute',
+    top: 8,
+    right: 0,
     justifyContent: 'center',
     alignItems: 'center'
   },
@@ -54,8 +56,12 @@ const styles = StyleSheet.create({
     color: COLORS.PURPLE,
   },
   infoView: {
-    height: 38,
-    justifyContent: 'center',
+    flex: 1,
+  },
+  separator: {
+    height: 1,
+    backgroundColor: COLORS.LIGHT_GREY_LINE,
+    marginTop: 5
   }
 })
 

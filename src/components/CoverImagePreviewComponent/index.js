@@ -35,11 +35,11 @@ export default class CoverImagePreviewComponent extends React.Component {
   }
 
   renderCoverImage(files, coverImage, position) {
-    const { isFastImage } = this.props;
+    const { isFastImage, isShareExtension } = this.props;
     if (isFastImage) {
       return (
-        <TouchableOpacity style={styles.container} onPress={() => this.onPressImage(position)}>
-          <FastImage style={styles.imageCover} source={{ uri: coverImage }} resizeMode="contain" />
+        <TouchableOpacity style={styles.container} activeOpacity={0.8} onPress={() => this.onPressImage(position)}>
+          <FastImage style={styles.imageCover} source={{ uri: coverImage }} resizeMode={isShareExtension ? 'cover' : 'contain'} />
           {
             files.length > 1 && 
             <View style={styles.imageNumberContainer}>
@@ -51,8 +51,8 @@ export default class CoverImagePreviewComponent extends React.Component {
     }
     return (
       // Don't all
-      <TouchableOpacity style={styles.container}>
-        <Image style={styles.imageCover} source={{ uri: coverImage }} resizeMode="contain" />
+      <TouchableOpacity style={styles.container} activeOpacity={0.8}>
+        <Image style={styles.imageCover} source={{ uri: coverImage }} resizeMode={isShareExtension ? 'cover' : 'contain'} />
         {
             files && files.length > 1 &&
             <View style={styles.imageNumberContainer}>
@@ -106,6 +106,7 @@ CoverImagePreviewComponent.defaultProps = {
   editable: true,
   isSetCoverImage: false,
   isFastImage: true,
+  isShareExtension: false,
   onRemove: () => {},
   onSetCoverImage: () => {},
 }
@@ -117,6 +118,7 @@ CoverImagePreviewComponent.propTypes = {
   editable: PropTypes.bool,
   isSetCoverImage: PropTypes.bool,
   isFastImage: PropTypes.bool,
+  isShareExtension: PropTypes.bool,
   onRemove: PropTypes.func,
-  onSetCoverImage: PropTypes.func,
+  onSetCoverImage: PropTypes.func
 }

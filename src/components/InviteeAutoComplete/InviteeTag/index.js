@@ -26,11 +26,11 @@ class InviteeTag extends React.Component {
     this.prevKey = '';
   }
 
-  componentDidMount() {
-    if (!this.props.readonly) {
-      this.tagInputRef.focus();
-    }
-  }
+  // componentDidMount() {
+  //   if (!this.props.readonly) {
+  //     this.tagInputRef.focus();
+  //   }
+  // }
 
   UNSAFE_componentWillReceiveProps(nextProps) {
     if (nextProps.tagText !== this.state.tagText) {
@@ -112,6 +112,7 @@ class InviteeTag extends React.Component {
             ref={ref => this.tagInputRef = ref}
             value={this.state.text}
             placeholder={this.props.placeHolder}
+            placeholderTextColor={COLORS.DARK_GREY}
             style={[styles.textInput, this.props.inputStyle]}
             onChangeText={this.onChangeText.bind(this)}
             onKeyPress={this.onKeyPress.bind(this)}
@@ -142,7 +143,7 @@ class InviteeTag extends React.Component {
   onPressTag (index, tag) {
     if (!this.props.readonly) {
       let activeTagName = '';
-      this.tagInputRef.blur()
+      this.tagInputRef.focus()
       if (this.state.activeTagName !== tag.text) {
         activeTagName = tag.text;
       }
@@ -201,7 +202,7 @@ InviteeTag.defaultProps = {
   initialText: '',
   readonly: false,
   activeTagName: '',
-  placeHolder: 'Email or name'
+  placeHolder: 'Invite by email or name'
 };
 
 InviteeTag.propTypes = {
