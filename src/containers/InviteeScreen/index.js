@@ -7,7 +7,8 @@ import {
   TextInput,
   ScrollView,
   ActivityIndicator,
-  Alert
+  Alert,
+  Share
 } from 'react-native'
 import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
@@ -17,12 +18,22 @@ import _ from 'lodash'
 import InviteeAutoComplete from '../../components/InviteeAutoComplete'
 import LinkShareModalComponent from '../../components/LinkShareModalComponent'
 import InviteeItemComponent from '../../components/LinkShareModalComponent/InviteeItemComponent'
+import LinkShareItem from '../../components/LinkShareModalComponent/LinkShareItem'
+import NewUserTap from '../../components/NewUserTapComponent'
+import ContactRemoveComponent from '../../components/ContactRemoveComponent'
 import { getContactList } from '../../redux/user/actions'
-import { inviteToHunt } from '../../redux/feedo/actions'
+import {
+  inviteToHunt,
+  updateSharingPreferences,
+  deleteInvitee
+} from '../../redux/feedo/actions'
 import * as COMMON_FUNC from '../../service/commonFunc'
 import COLORS from '../../service/colors'
+import { SHARE_LINK_URL } from '../../service/api'
 import styles from './styles'
 import Analytics from '../../lib/firebase'
+import CardFilterComponent from '../../components/CardFilterComponent';
+import Button from '../../components/Button'
 
 const CLOSE_ICON = require('../../../assets/images/Close/Blue.png')
 
@@ -33,12 +44,15 @@ class InviteeScreen extends React.Component {
       isAddInvitee: false,
       message: '',
       isPermissionModal: false,
+      isRemoveModal: false,
       inviteePermission: 'ADD',
       isInput: false,
+      inputText: '',
       contactList: [],
       inviteeEmails: [],
       filteredContacts: [],
       recentContacts: [],
+      selectedContact: null,
       isInvalidEmail: false,
       invalidEmail: [],
       loading: false,
@@ -54,6 +68,7 @@ class InviteeScreen extends React.Component {
     this.isMount = true
     this.setState({ loading: true })
     this.props.getContactList(userInfo.id)
+    this.setState({ currentMembers: COMMON_FUNC.filterRemovedInvitees(this.props.data.invitees) })
   }
 
   UNSAFE_componentWillReceiveProps(nextProps) {
@@ -78,6 +93,10 @@ class InviteeScreen extends React.Component {
           recentContacts: this.getRecentContactList(data, user.contactList)
         })
       }
+    }
+
+    if (this.props.feedo.loading === 'DELETE_INVITEE_PENDING' && feedo.loading === 'DELETE_INVITEE_FULFILLED') {
+      this.setState({ currentMembers: COMMON_FUNC.filterRemovedInvitees(feedo.currentFeed.invitees) })
     }
   }
 
@@ -111,7 +130,10 @@ class InviteeScreen extends React.Component {
 
   handleChange = (text) => {
     const { recentContacts, inviteeEmails } = this.state
-    this.setState({ isInput: text.length > 0 ? true : false })
+    this.setState({
+      inputText: text,
+      isInput: text.length > 0 ? true : false
+    })
 
     let filteredContacts = []
 
@@ -128,6 +150,35 @@ class InviteeScreen extends React.Component {
     }
 
     this.setState({ tagText: text, filteredContacts })
+  }
+
+  handleLinkSharing = (value, data) => {
+    const { updateSharingPreferences } = this.props
+    if (value) {
+      updateSharingPreferences(
+        data.id,
+        {
+          level: 'REGISTERED_ONLY',
+          permissions: 'ADD'
+        }
+      )
+    } else {
+      updateSharingPreferences(
+        data.id,
+        {
+          level: 'INVITEES_ONLY'
+        }
+      )
+    }
+  }
+
+  onSelectMember = (item) => {
+    const { user, data } = this.props
+    if (data.owner && data.owner.email === item.userProfile.email) return // if selected contact is feed owner
+    this.setState({
+      selectedContact: item,
+      isRemoveModal: true
+    })
   }
 
   onSelectContact = (contact) => {
@@ -191,118 +242,194 @@ class InviteeScreen extends React.Component {
   }
 
   renderFilteredContacts = (filteredContacts) => {
-    return (
-      <ScrollView style={[ styles.contactList ]} keyboardShouldPersistTaps="handled">
-        {filteredContacts.map(item => (
-          <TouchableOpacity onPress={() => this.onSelectContact(item)} key={item.id}>
-            <View style={styles.contactItem}>
-              <InviteeItemComponent invitee={item} isOnlyTitle={true} />
-            </View>
-          </TouchableOpacity>
-        ))}
-      </ScrollView>
-    );
+    if (filteredContacts && filteredContacts.length > 0) {
+      return (
+        <ScrollView style={[ styles.contactList ]} keyboardShouldPersistTaps="handled">
+          {filteredContacts.map(item => (
+            <TouchableOpacity onPress={() => this.onSelectContact(item)} key={item.id}>
+              <View style={styles.contactItem}>
+                <InviteeItemComponent invitee={item} isOnlyTitle={true} isShowSeparator={false} />
+              </View>
+            </TouchableOpacity>
+          ))}
+        </ScrollView>
+      );
+    } else {
+      return (
+        <NewUserTap
+          inputEmail={this.state.inputText}
+          onHandleNewUserTap={item => this.onSelectContact(item)}
+        />
+      )
+    }
   }
 
   onChangeMessage = (text) => {
     this.setState({ message: text })
   }
 
+  showShareModal = (data) => {
+    let isEnableShare = data.sharingPreferences.level === 'INVITEES_ONLY' ? false : true
+    if (isEnableShare) {
+      Share.share({
+        message: data.summary || '',
+        url: `${SHARE_LINK_URL}${data.id}`,
+        title: data.headline
+      },{
+        dialogTitle: data.headline,
+        tintColor: COLORS.PURPLE,
+        subject: data.headline
+      })
+    }
+  }
+
   render () {
     const {
       isAddInvitee,
       recentContacts,
+      currentMembers,
       filteredContacts,
       inviteeEmails,
       inviteePermission,
       isPermissionModal,
+      isRemoveModal,
+      selectedContact,
       isInvalidEmail,
-      invalidEmail
-     } = this.state
+      invalidEmail,
+      isInput
+    } = this.state
+    const { data } = this.props
 
     return (
       <View style={styles.overlay}>
-        <ScrollView keyboardShouldPersistTaps="handled">
-          <View style={styles.header}>
-            <TouchableOpacity onPress={() => this.props.onClose()}>
-              <Image source={CLOSE_ICON} />
-            </TouchableOpacity>
+        <View style={styles.header}>
+          <TouchableOpacity onPress={() => this.props.onClose()}>
+            <Text style={styles.cancelText}>Cancel</Text>
+          </TouchableOpacity>
+          <Text style={[styles.h3, { color: COLORS.PRIMARY_BLACK }]}>Add people</Text>
+          <Button
+            style={{ width: 60 }}
+            labelStyle={{ fontSize: 16 }}
+            height={40}
+            label='Send'
+            color='white'
+            labelColor={(!isAddInvitee || isInvalidEmail) ? COLORS.MEDIUM_GREY : COLORS.PURPLE}
+            isLoading={this.props.feedo.loading === 'INVITE_HUNT_PENDING'}
+            onPress={() => this.onSendInvitation()}
+          />
+        </View>
 
-            <TouchableOpacity onPress={() => this.onSendInvitation()} activeOpacity={0.8}>
-              <View style={[styles.sendButtonView, (!isAddInvitee || isInvalidEmail) ? styles.sendDisableButtonView : styles.sendEnableButtonView]}>
-                <Text style={[styles.sendButtonText, (!isAddInvitee || isInvalidEmail) ? styles.sendDisableButtonText : styles.sendEnableButtonText]}>Send</Text>
-              </View>
-            </TouchableOpacity>
-          </View>
-
-          <View style={styles.body}>
-            <View style={styles.inputFieldView}>
-              <View style={styles.tagInputItem}>
-                <InviteeAutoComplete
-                  tagText={this.state.tagText}
-                  inviteeEmails={inviteeEmails}
-                  invalidEmail={invalidEmail}
-                  handleInvitees={this.handleInvitees}
-                  handleChange={this.handleChange}
-                />
-                <TouchableOpacity onPress={() => this.updatePermission()}>
-                  <View style={styles.rightView}>
-                    <Text style={styles.viewText}>
-                      {inviteePermission}
-                    </Text>
-                    <Entypo name="cog" style={styles.cogIcon} />
-                  </View>
-                </TouchableOpacity>
-              </View>
-
-              {this.state.isInput && (
-                this.renderFilteredContacts(filteredContacts)
-              )}
-
-              {!this.state.isInput && (
-                <View style={styles.messageInputItem}>
-                  <TextInput
-                    ref={ref => this.messageRef = ref}
-                    value={this.state.message}
-                    placeholder="Add message"
-                    multiline={true}
-                    style={[styles.textInput]}
-                    onChangeText={this.onChangeMessage}
-                    underlineColorAndroid='transparent'
-                    selectionColor={COLORS.PURPLE}
-                  />
+        <View style={styles.body}>
+          <View style={styles.inputFieldView}>
+            <View style={styles.tagInputItem}>
+              <InviteeAutoComplete
+                tagText={this.state.tagText}
+                inviteeEmails={inviteeEmails}
+                invalidEmail={invalidEmail}
+                handleInvitees={this.handleInvitees}
+                handleChange={this.handleChange}
+              />
+              {/* <TouchableOpacity onPress={() => this.updatePermission()}>
+                <View style={styles.rightView}>
+                  <Text style={styles.viewText}>
+                    {inviteePermission}
+                  </Text>
+                  <Entypo name="cog" style={styles.cogIcon} />
                 </View>
-              )}
+              </TouchableOpacity> */}
             </View>
 
-            {this.state.loading
-              ? <View style={styles.loadingView}>
-                  <ActivityIndicator 
-                    animating
-                    color={COLORS.PURPLE}
-                  />
-                </View>
-              : (!this.state.isInput && recentContacts && recentContacts.length > 0) && (
-                  <View style={styles.inviteeListView}>
-                    <View style={styles.titleView}>
-                      <Text style={styles.titleText}>Contacts</Text>
-                    </View>
-                    <ScrollView style={styles.inviteeList} keyboardShouldPersistTaps="handled">
-                      {recentContacts.map(item => (
-                        <TouchableOpacity key={item.id} onPress={() => this.onSelectContact(item)}>
-                          <View style={styles.inviteeItem}>
-                            <InviteeItemComponent invitee={item} hideLike />
-                          </View>
-                        </TouchableOpacity>
-                      ))}
-                    </ScrollView>
-                  </View>
-              )
+            {isInput && (
+              this.renderFilteredContacts(filteredContacts)
+            )}
+
+            {!isInput && (
+              <View style={styles.messageInputItem}>
+                <TextInput
+                  ref={ref => this.messageRef = ref}
+                  value={this.state.message}
+                  placeholder="Add message"
+                  placeholderTextColor={COLORS.DARK_GREY}
+                  multiline={true}
+                  style={[styles.textInput]}
+                  onChangeText={this.onChangeMessage}
+                  underlineColorAndroid='transparent'
+                  selectionColor={COLORS.PURPLE}
+                />
+              </View>
+            )}
+
+            {!isInput &&
+              <View style={styles.listItem}>
+                <LinkShareItem
+                  isViewOnly={false}
+                  feed={data}
+                  onPress={() => this.showShareModal(data)}
+                  handleLinkSharing={value => this.handleLinkSharing(value, data)}
+                />
+              </View>
             }
           </View>
-        </ScrollView>
 
-        <Modal 
+          {this.state.loading
+            ? <View style={styles.loadingView}>
+                <ActivityIndicator 
+                  animating
+                  color={COLORS.PURPLE}
+                />
+              </View>
+            : (!isInput && currentMembers && currentMembers.length > 0) && (
+                <View style={styles.inviteeListView}>
+                  <View style={styles.titleView}>
+                    <Text style={styles.h3}>Current members</Text>
+                  </View>
+                  <ScrollView style={styles.inviteeList} keyboardShouldPersistTaps="handled">
+                    {currentMembers.map(item => (
+                      <TouchableOpacity key={item.id} onPress={() => this.onSelectMember(item)}>
+                        <View style={styles.inviteeItem}>
+                          <InviteeItemComponent invitee={item} />
+                        </View>
+                      </TouchableOpacity>
+                    ))}
+                  </ScrollView>
+                </View>
+            )
+          }
+        </View>
+
+        <Modal
+          isVisible={isRemoveModal}
+          style={{ margin: 0 }}
+          backdropColor='#e0e0e0'
+          backdropOpacity={0.9}
+          animationIn="slideInUp"
+          animationOut="slideOutDown"
+          animationInTiming={500}
+          onBackdropPress={() => this.setState({ isRemoveModal: false })}
+        >
+          <View style={styles.removeModal}>
+            {
+              selectedContact && 
+              <InviteeItemComponent
+                invitee={selectedContact}
+                isShowSeparator={false}
+              />
+            }
+            <Button
+              style={{ marginTop: 28 }}
+              color='rgba(255, 0, 0, 0.1)'
+              labelColor={COLORS.RED}
+              label="Remove"
+              borderRadius={14}
+              onPress={() => {
+                this.setState({ isRemoveModal: false })
+                this.props.deleteInvitee(selectedContact)
+              }}
+            />
+          </View>
+        </Modal>
+
+        <Modal
           isVisible={isPermissionModal}
           style={{ margin: 0 }}
           backdropColor='#e0e0e0'
@@ -317,7 +444,7 @@ class InviteeScreen extends React.Component {
             handleShareOption={this.handlePermissionOption}
           />
         </Modal>
-      </View>      
+      </View>
     )
   }
 }
@@ -342,7 +469,9 @@ const mapStateToProps = ({ feedo, user }) => ({
 
 const mapDispatchToProps = dispatch => ({
   getContactList: (userId) => dispatch(getContactList(userId)),
-  inviteToHunt: (feedId, data) => dispatch(inviteToHunt(feedId, data))
+  inviteToHunt: (feedId, data) => dispatch(inviteToHunt(feedId, data)),
+  updateSharingPreferences: (feedId, data) => dispatch(updateSharingPreferences(feedId, data)),
+  // deleteInvitee: (feedId, inviteeId) => dispatch(deleteInvitee(feedId, inviteeId)),
 })
 
 export default connect(

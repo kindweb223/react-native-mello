@@ -119,7 +119,7 @@ class TutorialScreen extends React.Component {
 
   renderSignupView() {
     return (
-      <View style={styles.logoViewContainer}>
+      <View style={styles.signupViewContainer}>
         <View style={styles.signupFormView}>
           <View style={styles.signupTextView}>
             <Text style={styles.subText}>Sign up</Text>
@@ -188,7 +188,7 @@ class TutorialScreen extends React.Component {
             ref={c => this.swiperRef = c}
             loop={false}
             index={position}
-            paginationStyle={{ bottom: ifIphoneX(10, 20) }}
+            paginationStyle={{ bottom: ifIphoneX(5, 30) }}
             dotStyle={styles.dotStyle}
             activeDotStyle={styles.dotStyle}
             activeDotColor={COLORS.DARK_GREY}
