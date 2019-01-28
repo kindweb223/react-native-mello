@@ -40,7 +40,7 @@ class ChooseLinkImageFromExtension extends React.Component {
   async componentDidMount() {
     try {
       const { type, value } = await ShareExtension.data();
-      
+      console.log('SHARE_DATA: ', type, value)
       if (type === 'url') {
         this.setState({initialized: true});
         console.log('componentDidMount1')

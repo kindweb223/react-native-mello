@@ -195,6 +195,7 @@ class CardNewShareScreen extends React.Component {
         }
       ]
     }
+    console.log('DATA: ', huntId, idea, links, files)
 
     this.setState({ loading: true })
     this.props.addSharExtensionCard(huntId, idea, links, files, 'PUBLISHED')
