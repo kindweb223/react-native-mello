@@ -20,6 +20,7 @@ export default function promiseMiddleware(){
                 return next({ ...rest, result, type: FULFILLED })})
             
             .catch((error) => {
+                console.log('ERROR: ', error)
                 if (types[2] !== 'GET_USER_SESSION_REJECTED') {
                     bugsnag.notify(error, function(report) {
                         report.metadata = {

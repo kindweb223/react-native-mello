@@ -5,58 +5,47 @@ import colors from '../../service/colors';
 
 const styles = StyleSheet.create({
   container: {
-    borderRadius: 18,
     backgroundColor: '#fff',
-    maxHeight: CONSTANTS.SCREEN_HEIGHT - 200,
+    height: CONSTANTS.SCREEN_HEIGHT
   },
   topContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    paddingVertical: 16,
-  },
-  backButtonWrapper: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    paddingVertical: 5,
-    paddingHorizontal: 16,
-  },
-  saveButtonWapper: {
-    width: 80,
+    width: '100%',
     height: 34,
-    borderRadius: 17,
-    backgroundColor: COLORS.PURPLE,
-    justifyContent: 'center',
+    flexDirection: 'row',
+    justifyContent: 'space-between',
     alignItems: 'center',
-    marginHorizontal: 16,
+    marginBottom: 10
   },
-  textSave: {
-    color: '#fff',
-    fontSize: 15,
+  btnClose: {
+    width: 90,
+    height: '100%',
+    paddingHorizontal: CONSTANTS.PADDING,
+    justifyContent: 'center',
+    alignItems: 'flex-start'
+  },
+  textButton: {
+    color: '#000',
+    fontSize: 16,
+    lineHeight: 22,
     fontWeight: '500',
     textAlign: 'center',
   },
-  textTitle: {
-    fontSize: 16,
-    lineHeight: 23,
-    textAlign: 'center',
-  },
-  mainContainer: {
-    marginVertical: 28,
-    paddingHorizontal: 11,
+  mainInnerContainer: {
+    paddingTop: 10,
+    paddingBottom: 20,
+    paddingHorizontal: 8
   },
   imageContainer: {
-    width: Math.round((CONSTANTS.SCREEN_WIDTH - 22 - 30) / 3),
-    height: Math.round((CONSTANTS.SCREEN_WIDTH - 22 - 30) / 3),
-    margin: 5,
+    width: Math.round((CONSTANTS.SCREEN_WIDTH - 64) / 3),
+    height: Math.round((CONSTANTS.SCREEN_WIDTH - 64) / 3),
+    margin: 8,
+    borderRadius: 10,
+    overflow: 'hidden'
   },
   imageItem: {
-    width: Math.round((CONSTANTS.SCREEN_WIDTH - 22 - 30) / 3) - 5,
-    height: Math.round((CONSTANTS.SCREEN_WIDTH - 22 - 30) / 3) - 5,
-    backgroundColor: 'rgba(0, 0, 0, 0.05);',
-    marginRight: 5,
-    marginTop: 5,
-    borderRadius: 5,
+    width: '100%',
+    height: '100%',
+    backgroundColor: 'rgba(0, 0, 0, 0.05);'    
   },
   selectedIcon: {
     position: 'absolute',
@@ -66,8 +55,8 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     width: 18,
     height: 18,
-    borderRadius: 45,
-    backgroundColor: '#FFFFFF',
+    borderRadius: 9,
+    backgroundColor: '#fff',
   },
   icon: {
     position: 'absolute',
@@ -77,8 +66,8 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     width: 18,
     height: 18,
-    borderRadius: 45,
-    backgroundColor: '#FFFFFF',
+    borderRadius: 9,
+    backgroundColor: '#fff',
     borderWidth: 1,
     borderColor: COLORS.MEDIUM_GREY
   },
