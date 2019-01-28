@@ -36,7 +36,6 @@ class FeedCardExtendComponent extends React.Component {
     if (invitees.length === 1 && invitee) {
       isOnlyInvitee = true
     }
-
     let hasCoverImage = idea.coverImage && idea.coverImage.length > 0
     const cardWidth = (CONSTANTS.SCREEN_SUB_WIDTH - 16) / 2
     let coverImageData = null
@@ -47,7 +46,7 @@ class FeedCardExtendComponent extends React.Component {
         const ratio = coverImageData.metadata.width / cardWidth
         cardHeight = coverImageData.metadata.height / ratio
       } else {
-        cardHeight = 120
+        cardHeight = 160
       }
     }
 
