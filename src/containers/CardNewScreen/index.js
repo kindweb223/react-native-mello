@@ -512,7 +512,7 @@ class CardNewScreen extends React.Component {
 
         if (error) {
           if (nextProps.card.loading === types.GET_OPEN_GRAPH_REJECTED) {
-                  // success in getting open graph
+            // success in getting open graph
             if (this.props.card.currentCard.links === null || this.props.card.currentCard.links.length === 0) {
               loading = true;
             }
@@ -523,6 +523,7 @@ class CardNewScreen extends React.Component {
                 this.allLinkImages.push(nextProps.card.currentOpneGraph.image);
               }
             }
+
             let currentIdea = this.state.idea;
             currentIdea = currentIdea.replace(' ', '');
             currentIdea = currentIdea.replace(',', '');

@@ -379,6 +379,52 @@ class CardDetailScreen extends React.Component {
         }
         if (error) {
           if (nextProps.card.loading === types.GET_OPEN_GRAPH_REJECTED) {
+            // success in getting open graph
+            if (this.props.card.currentCard.links === null || this.props.card.currentCard.links.length === 0) {
+              loading = true;
+            }
+            if (this.allLinkImages.length === 0) {
+              if (nextProps.card.currentOpneGraph.images) {
+                this.allLinkImages = nextProps.card.currentOpneGraph.images;
+              } else if (nextProps.card.currentOpneGraph.image) {
+                this.allLinkImages.push(nextProps.card.currentOpneGraph.image);
+              }
+            }
+
+            let currentIdea = this.state.idea;
+            currentIdea = currentIdea.replace(' ', '');
+            currentIdea = currentIdea.replace(',', '');
+            currentIdea = currentIdea.replace('\n', '');
+            if (currentIdea.toLowerCase() === this.linksForOpenGraph[this.indexForOpenGraph].toLowerCase()) {
+              this.setState({
+                idea: nextProps.card.currentOpneGraph.title,
+              });
+            }
+            this.openGraphLinksInfo.push({
+              url: nextProps.card.currentOpneGraph.url,
+              title: nextProps.card.currentOpneGraph.title,
+              description: nextProps.card.currentOpneGraph.description,
+              image: nextProps.card.currentOpneGraph.image,
+              favicon: nextProps.card.currentOpneGraph.favicon
+            });
+            
+            this.indexForOpenGraph ++;
+            
+            if (this.indexForOpenGraph < this.linksForOpenGraph.length) {
+              this.props.getOpenGraph(this.linksForOpenGraph[this.indexForOpenGraph]);
+            } else {
+              this.indexForAddedLinks = 0;
+              const { id } = this.props.card.currentCard;
+              const {
+                url,
+                title,
+                description,
+                image,
+                favicon,
+              } = this.openGraphLinksInfo[this.indexForAddedLinks++];
+              this.props.addLink(id, url, title, description, image, favicon);
+            }
+
             if (this.props.card.currentCard.links === null || this.props.card.currentCard.links.length === 0) {
               if (this.parseErrorUrls(error)) {
                 error = 'Oops, we can\'t get the details from this link';
@@ -413,6 +459,7 @@ class CardDetailScreen extends React.Component {
 
   async componentDidMount() {
     const { viewMode, feedo, card } = this.props;
+
     if (viewMode === CONSTANTS.CARD_VIEW || viewMode === CONSTANTS.CARD_EDIT) {
       const { width, height } = await this.getImageSize(card.currentCard.coverImage);
       this.coverImageWidth = width
@@ -1357,7 +1404,7 @@ const mapDispatchToProps = dispatch => ({
   deleteFile: (ideaId, fileId) => dispatch(deleteFile(ideaId, fileId)),
   setCoverImage: (ideaId, fileId) => dispatch(setCoverImage(ideaId, fileId)),
   getOpenGraph: (url) => dispatch(getOpenGraph(url)),
-  addLink: (ideaId, orignalUrl, title, description, imageUrl, faviconUrl) => dispatch(addLink(ideaId, originalUrl, title, description, imageUrl, faviconUrl)),
+  addLink: (ideaId, originalUrl, title, description, imageUrl, faviconUrl) => dispatch(addLink(ideaId, originalUrl, title, description, imageUrl, faviconUrl)),
   deleteLink: (ideaId, linkId) => dispatch(deleteLink(ideaId, linkId)),
   resetCardError: () => dispatch(resetCardError()),
 })
