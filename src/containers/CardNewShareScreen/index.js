@@ -155,29 +155,6 @@ class CardNewShareScreen extends React.Component {
       this.selectedFileType = 'MEDIA';
 
       const { width, height } = await this.getImageSize(file);
-      let actualHeight = height
-      let actualWidth = width
-      const maxHeight = 600.0;
-      const maxWidth = 800.0;
-      let imgRatio = actualWidth/actualHeight;
-      let maxRatio = maxWidth/maxHeight;
-
-      if (actualHeight > maxHeight || actualWidth > maxWidth) {
-        if(imgRatio < maxRatio){
-            //adjust width according to maxHeight
-            imgRatio = maxHeight / actualHeight;
-            actualWidth = imgRatio * actualWidth;
-            actualHeight = maxHeight;
-        } else if(imgRatio > maxRatio){
-            //adjust height according to maxWidth
-            imgRatio = maxWidth / actualWidth;
-            actualHeight = imgRatio * actualHeight;
-            actualWidth = maxWidth;
-        } else{
-            actualHeight = maxHeight;
-            actualWidth = maxWidth;
-        }
-      }
 
       files = [
         {
@@ -189,13 +166,12 @@ class CardNewShareScreen extends React.Component {
           thumbnailUrl: null,
           fileType: this.selectedFileType,
           metadata: {
-            height: actualHeight,
-            width: actualWidth
+            width,
+            height
           }
         }
       ]
     }
-    console.log('DATA: ', huntId, idea, links, files)
 
     this.setState({ loading: true })
     this.props.addSharExtensionCard(huntId, idea, links, files, 'PUBLISHED')
@@ -225,25 +201,6 @@ class CardNewShareScreen extends React.Component {
           error = (nextProps.card.error && nextProps.card.error.error) || (nextProps.feedo.error && nextProps.feedo.error.error);
         } else {
           error = (nextProps.card.error && nextProps.card.error.message) || (nextProps.feedo.error && nextProps.feedo.error.message);
-        }
-        if (error) {
-          if (nextProps.card.loading === types.GET_OPEN_GRAPH_REJECTED) {
-            if (this.props.card.currentCard.links === null || this.props.card.currentCard.links.length === 0) {
-              if (this.parseErrorUrls(error)) {
-                error = 'Sorry, this link cannot be read';
-              } else {
-                // return;
-              }
-            } else {
-              this.isVisibleErrorDialog = true;
-            }
-          }
-          if (!this.isVisibleErrorDialog) {
-            this.isVisibleErrorDialog = true;
-            Alert.alert('Error', error, [
-              {text: 'Close', onPress: () => this.isVisibleErrorDialog = false},
-            ]);
-          }
         }
         this.props.resetCardError();
         return;
@@ -359,70 +316,6 @@ class CardNewShareScreen extends React.Component {
 
   checkUrls() {
     return;
-
-    const allUrls = this.state.idea && this.state.idea.match(/(http(s)?:\/\/.)?(www\.)?[-a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,6}\b([-a-zA-Z0-9@:%_\+.~#?&//=]*)/gi);
-    if (allUrls) {
-      let newUrls = [];
-      const links = this.getLinks()
-      if (links) {
-        allUrls.forEach(url => {
-          const index = _.findIndex(links, link => this.compareUrls(link.originalUrl, url));
-          if (index === -1) {
-            newUrls.push(url);
-          }
-        });
-      } else {
-        newUrls = allUrls;
-      }
-
-      let filteredUrls = newUrls;
-      if (this.parsingErrorLinks.length) {
-        filteredUrls = [];
-        newUrls.forEach(url => {
-          const index = _.findIndex(this.parsingErrorLinks, errorLink => this.compareUrls(errorLink, url));
-          if (index === -1) {
-            filteredUrls.push(url);
-          }
-        });
-      }
-
-      if (filteredUrls.length > 0) {
-        Analytics.logEvent('new_card_typed_link', {})
-
-        this.props.getOpenGraph(filteredUrls[0]);
-      }
-    }
-    return false;
-  }
-
-  parseErrorUrls(message) {
-    const allUrls = message.match(/(http(s)?:\/\/.)?(www\.)?[-a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,6}\b([-a-zA-Z0-9@:%_\+.~#?&//=]*)/gi);
-    if (allUrls) {
-      let newUrls = [];
-      allUrls.forEach(url => {
-        const index = _.findIndex(this.parsingErrorLinks, errorLink => errorLink === url);
-        if (index === -1) {
-          url = url.replace('[', '');
-          url = url.replace(']', '');
-          newUrls.push(url);
-        }
-      });
-      if (newUrls.length > 0) {
-        this.parsingErrorLinks = this.parsingErrorLinks.concat(newUrls);
-      }
-      return true;
-    }
-    return false;
-  }
-
-  /**
-   * If card has text or files
-   *  
-   * @param {*} idea 
-   * @param {*} files 
-   */
-  isCardValid(idea, files) {
-    return idea.length > 0 || (files && files.length > 0) ? true : false
   }
 
   getImageSize(uri) {
