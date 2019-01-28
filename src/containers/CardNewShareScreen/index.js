@@ -33,7 +33,6 @@ import {
 } from '../../redux/card/actions'
 import {  
   updateFeed,
-  deleteDraftFeed,
   setCurrentFeed,
   getFeedoList,
   createFeed
@@ -198,9 +197,7 @@ class CardNewShareScreen extends React.Component {
     }
 
     this.setState({ loading: true })
-    this.onUpdateFeed()
-    console.log('HUNTID: ', huntId)
-    this.props.addSharExtensionCard(huntId, idea, links, files, 'TEMP')
+    this.props.addSharExtensionCard(huntId, idea, links, files, 'PUBLISHED')
   }
 
   async UNSAFE_componentWillReceiveProps(nextProps) {
@@ -211,6 +208,10 @@ class CardNewShareScreen extends React.Component {
     }
 
     if (this.props.card.loading !== types.ADD_SHARE_EXTENSION_CARD_FULFILLED && nextProps.card.loading === types.ADD_SHARE_EXTENSION_CARD_FULFILLED) {
+      this.onUpdateFeed()
+    }
+
+    if (this.props.feedo.loading !== feedoTypes.UPDATE_FEED_FULFILLED && nextProps.feedo.loading === feedoTypes.UPDATE_FEED_FULFILLED) {
       this.setState({ loading: false })
       Actions.ShareSuccessScreen();
     }
@@ -471,18 +472,14 @@ class CardNewShareScreen extends React.Component {
 
   onUpdateFeed() {
     if (this.draftFeedo) {
-      if (this.draftFeedo.id === this.props.feedo.currentFeed.id) {
-        const {
-          id, 
-          headline,
-          summary,
-          tags,
-          files,
-        } = this.props.feedo.currentFeed;
-        this.props.updateFeed(id, headline || 'New flow', summary || '', tags, files);
-        return;
-      }
-      this.props.deleteDraftFeed(this.draftFeedo.id)
+      const {
+        id, 
+        headline,
+        summary,
+        tags,
+        files,
+      } = this.props.feedo.currentFeed;
+      this.props.updateFeed(id, headline || 'New flow', summary || '', tags, files);
     }
   }
 
@@ -752,7 +749,6 @@ const mapDispatchToProps = dispatch => ({
   addSharExtensionCard: (huntId, idea, links, files, status) => dispatch(addSharExtensionCard(huntId, idea, links, files, status)),
   createFeed: () => dispatch(createFeed()),
   updateFeed: (id, name, comments, tags, files) => dispatch(updateFeed(id, name, comments, tags, files)),
-  deleteDraftFeed: (id) => dispatch(deleteDraftFeed(id)),
   setCurrentFeed: (data) => dispatch(setCurrentFeed(data)),
   getFeedoList: (index) => dispatch(getFeedoList(index)),
 
