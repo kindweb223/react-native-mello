@@ -46,7 +46,7 @@ import ShareWidgetTipsModal from '../../components/ShareWidgetModal/TipsModal'
 import ShareWidgetConfirmModal from '../../components/ShareWidgetModal/ConfirmModal'
 import styles from './styles'
 import CONSTANTS from '../../service/constants';
-import { SHARE_LINK_URL } from '../../service/api'
+import { TIP_SHARE_LINK_URL } from '../../service/api'
 const SEARCH_ICON = require('../../../assets/images/Search/Grey.png')
 const SETTING_ICON = require('../../../assets/images/Settings/Grey.png')
 
@@ -161,7 +161,7 @@ class HomeScreen extends React.Component {
         Share.share({
           message: 'Mello',
           title: 'Mello',
-          url: SHARE_LINK_URL
+          url: TIP_SHARE_LINK_URL
         },{
           dialogTitle: 'Mello',
           subject: 'Mello',
