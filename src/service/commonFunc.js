@@ -88,6 +88,10 @@ const isUserInvitee = (user, invitee) => {
   return user.userInfo.id === invitee.userProfile.id
 }
 
+const generateRandomString = () => {
+  return Math.random().toString(36).substring(2, 15)
+}
+
 export {
   checkUserIsInvitee,
   isFeedOwner,
@@ -100,5 +104,6 @@ export {
   isCardOwner,
   validateEmail,
   isUserInvitee,
-  filterRemovedInvitees
+  filterRemovedInvitees,
+  generateRandomString
 }
