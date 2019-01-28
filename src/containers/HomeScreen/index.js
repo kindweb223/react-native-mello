@@ -1477,7 +1477,7 @@ class HomeScreen extends React.Component {
           onModalHide={() => this.onCloseSharePermissionModal()}
         >
           <ShareWidgetPermissionModal
-            onClose={() => this.setState({ showSharePermissionModal: false })}
+            onClose={() => this.onEnableShareWidget()}
             onEnableShareWidget={() => this.onEnableShareWidget()}
           />
         </Modal>
