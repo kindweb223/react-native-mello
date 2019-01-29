@@ -464,12 +464,12 @@ class CardDetailScreen extends React.Component {
     } else {
       this._width = textWidth
       this._height = textHeight
-      this._x = textPointX
-      this._y = textPointY
+      this._x = textPointX - 16 // due to marginHorizontal of autolink text
+      this._y = textPointY - this._textMarginTop // due to marginTop of autolink text
 
-      this._tWidth = CONSTANTS.SCREEN_WIDTH + 5
+      this._tWidth = CONSTANTS.SCREEN_WIDTH
       this._tHeight = 200
-      this._tX = -5
+      this._tX = 0
       this._tY = 0
 
       this.state.position.setValue({
@@ -1023,6 +1023,7 @@ class CardDetailScreen extends React.Component {
     } else {
       marginTop = coverImage ? 24 : 65
     }
+    this._textMarginTop = marginTop
 
     const activeTextStyle = {
       width: this.state.size.x,
@@ -1032,15 +1033,15 @@ class CardDetailScreen extends React.Component {
     };
 
     return (
-      <Animated.View style={coverImage ? null : activeTextStyle}>
-        <TouchableOpacity activeOpacity={1} onPress={() => this.onPressIdea()}>
+      <TouchableOpacity style={{ marginTop, marginBottom: 16 }} activeOpacity={1} onPress={() => this.onPressIdea()}>
+        <Animated.View style={coverImage ? null : activeTextStyle}>
           <Autolink
-            style={[styles.textInputIdea, { marginTop }]}
+            style={styles.textInputIdea}
             text={this.state.idea}
             onPress={(url, match) => this.onPressLink(url)}
           />
-        </TouchableOpacity>
-      </Animated.View>
+        </Animated.View>
+      </TouchableOpacity>
     );
   }
 
