@@ -462,7 +462,7 @@ class CardDetailScreen extends React.Component {
         y: imgHeight,
       })
     } else {
-      this._width = textWidth
+      this._width = textWidth + 16 * 2
       this._height = textHeight
       this._x = textPointX - 16 // due to marginHorizontal of autolink text
       this._y = textPointY - this._textMarginTop // due to marginTop of autolink text
@@ -1026,6 +1026,7 @@ class CardDetailScreen extends React.Component {
     this._textMarginTop = marginTop
 
     const activeTextStyle = {
+      backdropColor: 'green',
       width: this.state.size.x,
       height: this.state.size.y,
       top: this.state.position.y,
