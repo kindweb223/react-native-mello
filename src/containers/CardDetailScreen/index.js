@@ -467,9 +467,13 @@ class CardDetailScreen extends React.Component {
     const { viewMode, feedo, card } = this.props;
 
     if (viewMode === CONSTANTS.CARD_VIEW || viewMode === CONSTANTS.CARD_EDIT) {
-      const { width, height } = await this.getImageSize(card.currentCard.coverImage);
-      this.coverImageWidth = width
-      this.coverImageHeight = height
+      this.coverImageWidth = 0
+      this.coverImageHeight = 0
+      const coverData = _.find(card.currentCard.files, file => file.accessUrl === card.currentCard.coverImage)
+      if (coverData && coverData.metadata) {
+        this.coverImageWidth = coverData.metadata.width
+        this.coverImageHeight = coverData.metadata.height
+      }
       this.setState({
         idea: card.currentCard.idea,
         coverImage: card.currentCard.coverImage,
@@ -663,10 +667,13 @@ class CardDetailScreen extends React.Component {
   }
 
   onUpdateCard() {
-    const { id, huntId, files } = this.props.card.currentCard
+    const { currentCard } = this.props.card
+    const { id, huntId, files } = currentCard
     const { idea, coverImage } = this.state
 
-    this.props.updateCard(huntId, id, '', idea, coverImage, files);
+    if (currentCard.idea !== idea || currentCard.coverImage !== coverImage) {
+      this.props.updateCard(huntId, id, '', idea, coverImage, files);
+    }
   }
 
   onTapActionSheet(index) {
