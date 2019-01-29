@@ -423,7 +423,7 @@ class CardDetailScreen extends React.Component {
       this.coverImageWidth = 0
       this.coverImageHeight = 0
       const coverData = _.find(card.currentCard.files, file => file.accessUrl === card.currentCard.coverImage)
-      if (coverData.metadata) {
+      if (coverData && coverData.metadata) {
         this.coverImageWidth = coverData.metadata.width
         this.coverImageHeight = coverData.metadata.height
       }
