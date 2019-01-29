@@ -289,9 +289,7 @@ class FeedDetailScreen extends React.Component {
       })
 
       this.setState({ currentBackFeed: currentFeed }, () => {
-        if (feedo.loading !== 'UPDATE_CARD_FULFILLED') {
-          this.filterCards(currentFeed)
-        }
+        this.filterCards(currentFeed)
       })
 
       if (feedo.loading === 'PUBNUB_GET_FEED_DETAIL_FULFILLED' || feedo.loading === 'GET_CARD_FULFILLED' ||
