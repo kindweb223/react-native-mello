@@ -289,7 +289,9 @@ class FeedDetailScreen extends React.Component {
       })
 
       this.setState({ currentBackFeed: currentFeed }, () => {
-        this.filterCards(currentFeed)
+        if (feedo.loading !== 'UPDATE_CARD_FULFILLED') {
+          this.filterCards(currentFeed)
+        }
       })
 
       if (feedo.loading === 'PUBNUB_GET_FEED_DETAIL_FULFILLED' || feedo.loading === 'GET_CARD_FULFILLED' ||
@@ -450,6 +452,7 @@ class FeedDetailScreen extends React.Component {
     })
 
     if (this.state.viewPreference === 'MASONRY' && this.refs.masonry) {
+      console.log('DDDDD !!!!!')
       this.setMasonryData(sortIdeas)
     }
   }
@@ -489,6 +492,7 @@ class FeedDetailScreen extends React.Component {
 
   onLayoutMasonry = (event) => {
     if (!this.state.isMasonryView) {
+      console.log('AAAAA !!!!!')
       this.setMasonryData(this.state.currentFeed.ideas)
     }
   }
@@ -921,6 +925,7 @@ class FeedDetailScreen extends React.Component {
       state.currentFeed.ideas = filterIdeas;
 
       if (this.state.viewPreference === 'MASONRY' && this.refs.masonry) {
+        console.log('BBBBBB !!!!!')
         this.setMasonryData(filterIdeas)
       }
 
@@ -960,6 +965,7 @@ class FeedDetailScreen extends React.Component {
       state.currentFeed.ideas = filterIdeas;
 
       if (this.state.viewPreference === 'MASONRY' && this.refs.masonry) {
+        console.log('CCCCCCC !!!!!')
         this.setMasonryData(filterIdeas)
       }
 
