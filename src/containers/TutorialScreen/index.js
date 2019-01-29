@@ -12,11 +12,14 @@ import PropTypes from 'prop-types'
 import Swiper from 'react-native-swiper'
 import LottieView from 'lottie-react-native'
 import { ifIphoneX } from 'react-native-iphone-x-helper'
+import { GoogleSignin, statusCodes } from 'react-native-google-signin'
 
 import LoadingScreen from '../LoadingScreen'
 import COLORS from '../../service/colors'
 import styles from './styles'
 import Analytics from '../../lib/firebase'
+
+import { userGoogleSigin } from '../../redux/user/actions'
 
 const LOGO = require('../../../assets/images/Login/logoMelloIcon-Tutorial.png')
 const LOGO_TEXT = require('../../../assets/images/Login/logoMello-Tutorial.png')
@@ -38,7 +41,13 @@ class TutorialScreen extends React.Component {
 
   componentDidMount() {
     Analytics.setCurrentScreen('TutorialScreen')
+
+    GoogleSignin.configure({
+      webClientId: '887924189900-cp9g9c2c4144b3o8uf5nr33dgf0mehod.apps.googleusercontent.com', // client ID of type WEB for your server (needed to verify user ID and offline access)
+      offlineAccess: false, // if you want to access Google API on behalf of the user FROM YOUR SERVER
+    })
   }
+
   componentWillReceiveProps(nextProps) {
     if (nextProps.prevPage === 'login') {
       this.onSkip(false)
@@ -51,6 +60,33 @@ class TutorialScreen extends React.Component {
 
   onSignUp = () => {
     Actions.SignUpScreen()
+  }
+
+  onGoogleSignUp = async () => {
+    try {
+      await GoogleSignin.hasPlayServices({ showPlayServicesUpdateDialog: true });
+      // google services are available
+
+      try {
+        const userInfo = await GoogleSignin.signIn()
+        console.log('USERINFO ', userInfo)
+        const { idToken } = userInfo
+        this.props.userGoogleSigin(idToken)
+      } catch(error) {
+        console.log('ERRROR: ', error)
+        if (error.code === statusCodes.SIGN_IN_CANCELLED) {
+          // user cancelled the login flow
+        } else if (error.code === statusCodes.IN_PROGRESS) {
+          // operation (f.e. sign in) is in progress already
+        } else if (error.code === statusCodes.PLAY_SERVICES_NOT_AVAILABLE) {
+          // play services not available or outdated
+        } else {
+          // some other error happened
+        }
+      }
+    } catch (err) {
+      console.error('play services are not available');
+    }
   }
 
   renderLogoView() {
@@ -124,7 +160,7 @@ class TutorialScreen extends React.Component {
           <View style={styles.signupTextView}>
             <Text style={styles.subText}>Sign up</Text>
           </View>
-          <TouchableOpacity onPress={() => this.onSignUp()} activeOpacity={0.8}>
+          <TouchableOpacity onPress={() => this.onGoogleSignUp()} activeOpacity={0.8}>
             <View style={styles.buttonView}>
               <Image source={GOOGLE_ICON} />
               <Text style={styles.buttonText}>Sign up with Google</Text>
@@ -224,11 +260,12 @@ class TutorialScreen extends React.Component {
 }
 
 TutorialScreen.defaultProps = {
-  prevPage: 'start'
+  prevPage: 'start',
+  googleLogin: () => {}
 }
 
 TutorialScreen.propTypes = {
-  userLookup: PropTypes.func.isRequired,
+  userGoogleSigin: PropTypes.func,
   prevPage: PropTypes.string
 }
 
@@ -237,7 +274,7 @@ const mapStateToProps = ({ user }) => ({
 })
 
 const mapDispatchToProps = dispatch => ({
-  userLookup: (data) => dispatch(userLookup(data)),
+  userGoogleSigin: (token) => dispatch(userGoogleSigin(token)),
 })
 
 export default connect(

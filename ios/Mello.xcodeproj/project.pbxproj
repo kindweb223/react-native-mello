@@ -48,6 +48,7 @@
 		45A806F94F774736BDFCF564 /* libBugsnagReactNative.a in Frameworks */ = {isa = PBXBuildFile; fileRef = D9E1BD18BB5B4D62B4263950 /* libBugsnagReactNative.a */; };
 		47CA4A9854C645189A59042C /* libRNDocumentPicker.a in Frameworks */ = {isa = PBXBuildFile; fileRef = CEF9CE0D4C3B419DAD8284A6 /* libRNDocumentPicker.a */; };
 		4C030DDBB9734D8CB1045CEB /* libBVLinearGradient.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 1AE0342E1F8E4EB593320F3B /* libBVLinearGradient.a */; };
+		4C2B224B2200DB1500BF4DC5 /* libRNGoogleSignin.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 4C2B22422200DAF800BF4DC5 /* libRNGoogleSignin.a */; };
 		4C3145432191BCE8009A40C5 /* libRNDeviceInfo.a in Frameworks */ = {isa = PBXBuildFile; fileRef = A46A87CD2190EE9D009D3FB3 /* libRNDeviceInfo.a */; };
 		4C3C63F62199E8BC00B68196 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 4C3C63F52199E8BC00B68196 /* GoogleService-Info.plist */; };
 		4CC861B921933F8F00481DED /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 4CC8617A21933F8A00481DED /* GoogleService-Info.plist */; };
@@ -372,6 +373,13 @@
 			remoteGlobalIDString = 3D3CD9181DE5FBD800167DC4;
 			remoteInfo = "jschelpers-tvOS";
 		};
+		4C2B22412200DAF800BF4DC5 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 4C2B22042200DAF700BF4DC5 /* RNGoogleSignin.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 9FD355121D3E4A2900D06170;
+			remoteInfo = RNGoogleSignin;
+		};
 		4CC8621C2193408300481DED /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 2866BBFC826843B8A6FFB69C /* RNFirebase.xcodeproj */;
@@ -682,6 +690,7 @@
 		47BA3513B6514BE58476D7B4 /* libRNImagePicker.a */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = archive.ar; path = libRNImagePicker.a; sourceTree = "<group>"; };
 		49E66C7627DA4206B745FC76 /* Entypo.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = Entypo.ttf; path = "../node_modules/react-native-vector-icons/Fonts/Entypo.ttf"; sourceTree = "<group>"; };
 		4A542F7F6D91BEC591EF445A /* libPods-MelloEx.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-MelloEx.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+		4C2B22042200DAF700BF4DC5 /* RNGoogleSignin.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RNGoogleSignin.xcodeproj; path = "../node_modules/react-native-google-signin/ios/RNGoogleSignin.xcodeproj"; sourceTree = "<group>"; };
 		4C3C63F52199E8BC00B68196 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		4CC8617A21933F8A00481DED /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		4CF0DB4C219983A6000ED175 /* libFirebaseCore.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; path = libFirebaseCore.a; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -771,6 +780,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				4C2B224B2200DB1500BF4DC5 /* libRNGoogleSignin.a in Frameworks */,
 				A4BF285821234CFE0054D7A9 /* CloudKit.framework in Frameworks */,
 				A46C2E1421497101007E54FA /* libRCTPushNotification.a in Frameworks */,
 				ADBDB9381DFEBF1600ED6528 /* libRCTBlob.a in Frameworks */,
@@ -1041,6 +1051,14 @@
 			name = Resources;
 			sourceTree = "<group>";
 		};
+		4C2B22052200DAF700BF4DC5 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				4C2B22422200DAF800BF4DC5 /* libRNGoogleSignin.a */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
 		4CC862192193408300481DED /* Products */ = {
 			isa = PBXGroup;
 			children = (
@@ -1089,6 +1107,7 @@
 		832341AE1AAA6A7D00B99B32 /* Libraries */ = {
 			isa = PBXGroup;
 			children = (
+				4C2B22042200DAF700BF4DC5 /* RNGoogleSignin.xcodeproj */,
 				A46C2DDB214970D5007E54FA /* RCTPushNotification.xcodeproj */,
 				5E91572D1DD0AC6500FF2AA8 /* RCTAnimation.xcodeproj */,
 				146833FF1AC3E56700842450 /* React.xcodeproj */,
@@ -1393,6 +1412,7 @@
 				00DD1BFF1BD5951E006B06BC /* Bundle React Native code and images */,
 				A43563DD2138358C00A6D4EA /* Embed App Extensions */,
 				B509BBF721778AA6006ED535 /* Embed Frameworks */,
+				D9E3B5AFB58FA5C11CA7CC88 /* [CP] Copy Pods Resources */,
 			);
 			buildRules = (
 			);
@@ -1632,6 +1652,10 @@
 				{
 					ProductGroup = 4CC862192193408300481DED /* Products */;
 					ProjectRef = 2866BBFC826843B8A6FFB69C /* RNFirebase.xcodeproj */;
+				},
+				{
+					ProductGroup = 4C2B22052200DAF700BF4DC5 /* Products */;
+					ProjectRef = 4C2B22042200DAF700BF4DC5 /* RNGoogleSignin.xcodeproj */;
 				},
 				{
 					ProductGroup = A48B0096210F6C68001C33B5 /* Products */;
@@ -1899,6 +1923,13 @@
 			fileType = archive.ar;
 			path = libjschelpers.a;
 			remoteRef = 3DAD3EAE1DF850E9000B6D8A /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		4C2B22422200DAF800BF4DC5 /* libRNGoogleSignin.a */ = {
+			isa = PBXReferenceProxy;
+			fileType = archive.ar;
+			path = libRNGoogleSignin.a;
+			remoteRef = 4C2B22412200DAF800BF4DC5 /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
 		4CC8621D2193408300481DED /* libRNFirebase.a */ = {
@@ -2270,6 +2301,28 @@
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
 			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
+			showEnvVarsInLog = 0;
+		};
+		D9E3B5AFB58FA5C11CA7CC88 /* [CP] Copy Pods Resources */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+				"${SRCROOT}/Pods/Target Support Files/Pods-Mello/Pods-Mello-resources.sh",
+				"${PODS_ROOT}/GoogleSignIn/Resources/GoogleSignIn.bundle",
+			);
+			name = "[CP] Copy Pods Resources";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/GoogleSignIn.bundle",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-Mello/Pods-Mello-resources.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
 		F8482088474C5A2FFC624808 /* [CP] Check Pods Manifest.lock */ = {
