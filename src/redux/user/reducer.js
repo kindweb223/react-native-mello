@@ -97,6 +97,30 @@ export default function user(state = initialState, action = {}) {
       }
     }
     /**
+     * User signIn with google
+     */
+    case types.USER_GOOGLE_SIGNIN_PENDING:
+      console.log('USER_GOOGLE_SIGNIN_PENDING')
+      return {
+        ...state,
+        loading: types.USER_GOOGLE_SIGNIN_PENDING,
+      }
+    case types.USER_GOOGLE_SIGNIN_FULFILLED: {
+      console.log('USER_GOOGLE_SIGNIN_FULFILLED')
+      console.log('GOOGLE_RESULT: ', action.result)
+      return {
+        ...state,
+        loading: types.USER_GOOGLE_SIGNIN_FULFILLED
+      }
+    }
+    case types.USER_GOOGLE_SIGNIN_REJECTED: {
+      console.log('USER_GOOGLE_SIGNIN_REJECTED')
+      return {
+        ...state,
+        loading: types.USER_GOOGLE_SIGNIN_REJECTED,
+      }
+    }
+    /**
      * Get user's session
      */
     case types.GET_USER_SESSION_PENDING:
