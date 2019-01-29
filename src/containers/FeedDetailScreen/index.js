@@ -801,17 +801,17 @@ class FeedDetailScreen extends React.Component {
           pointY = py - 1
           imgWidth = 78
           imgHeight = 78
-          textPointX = px - 21
-          textPointY = py + 52
-          textWidth = width - 42
+          textPointX = px + 21
+          textPointY = py + 32
+          textWidth = width - 39
           textHeight = height - 103
         } else {
           pointX = px + 9
           pointY = py - 21
           imgWidth = width - 18
           imgHeight = height - 111
-          textPointX = px - 21
-          textPointY = py + 39
+          textPointX = px + 21
+          textPointY = py + 19
           textWidth = width - 38
           textHeight = height - 97
         }
