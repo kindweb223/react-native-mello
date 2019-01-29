@@ -797,13 +797,13 @@ class FeedDetailScreen extends React.Component {
         let textPointY = py //card text y point
         let textWidth, textHeight //card text size
         if (this.state.viewPreference === 'LIST') {
-          pointX = 270
+          pointX = CONSTANTS.SCREEN_WIDTH - 78 - 32 //32: margin from screen right
           pointY = py - 1
           imgWidth = 78
           imgHeight = 78
           textPointX = px + 21
           textPointY = py + 32
-          textWidth = width - 39
+          textWidth = CONSTANTS.SCREEN_WIDTH - 29 * 2 //29: margin from screen left
           textHeight = height - 103
         } else {
           pointX = px + 9
