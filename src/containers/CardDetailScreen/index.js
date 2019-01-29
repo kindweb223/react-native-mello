@@ -620,10 +620,13 @@ class CardDetailScreen extends React.Component {
   }
 
   onUpdateCard() {
-    const { id, huntId, files } = this.props.card.currentCard
+    const { currentCard } = this.props.card
+    const { id, huntId, files } = currentCard
     const { idea, coverImage } = this.state
 
-    this.props.updateCard(huntId, id, '', idea, coverImage, files);
+    if (currentCard.idea !== idea || currentCard.coverImage !== coverImage) {
+      this.props.updateCard(huntId, id, '', idea, coverImage, files);
+    }
   }
 
   onTapActionSheet(index) {
