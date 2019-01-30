@@ -31,7 +31,8 @@ class ImageSliderScreen extends React.Component {
       loading: false,
       maxImageHeight: 0,
       isTouch: false,
-      imageIndex: this.props.position
+      imageIndex: this.props.position,
+      setCoveredIndex: this.props.position
     };
     this.buttonOpacity = new Animated.Value(1)
   }
@@ -112,7 +113,9 @@ class ImageSliderScreen extends React.Component {
     const {
       mediaFiles,
     } = this.props;
+    
     if (this.props.onSetCoverImage) {
+      this.setState({setCoveredIndex: this.state.imageIndex})
       this.props.onSetCoverImage(mediaFiles[this.state.imageIndex].id);
     }
   }
@@ -151,6 +154,9 @@ class ImageSliderScreen extends React.Component {
         isImage = mediaFile && mediaFile.contentType.toLowerCase().indexOf('image') !== -1;
       }
     }
+
+    const isCoveredImage = this.state.setCoveredIndex===this.state.imageIndex
+
     return (
       <View style={styles.container}>
         <Slideshow 
@@ -162,6 +168,7 @@ class ImageSliderScreen extends React.Component {
           handleImage={() => this.handleImage()}
           onSwipeDown={this.onSwipeDown}
           setPosition={value => this.setState({ imageIndex: value.pos })}
+          currentImageIndex={this.state.imageIndex}
         />
 
         <Animated.View 
@@ -176,15 +183,17 @@ class ImageSliderScreen extends React.Component {
           </TouchableOpacity>
         </Animated.View>
         {
+          
           this.props.removal && this.props.isSetCoverImage && isImage &&
           <Animated.View 
             style={[styles.coverButton, { opacity: this.buttonOpacity }]}
           >
             <TouchableOpacity 
               activeOpacity={0.6}
+              disabled={isCoveredImage ? true: false}
               onPress={() => this.onSetCoverImage()}
             >
-              <Text style={styles.coverText}>Set Cover Image</Text>
+              <Text style={{color: isCoveredImage ? '#888' : '#fff'}}>Set Cover Image</Text>
             </TouchableOpacity>
           </Animated.View>
         }
