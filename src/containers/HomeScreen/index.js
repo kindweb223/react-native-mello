@@ -12,9 +12,10 @@ import {
   AsyncStorage,
   AppState,
   Clipboard,
-  Alert
+  Alert,
+  Share,
+  NativeModules
 } from 'react-native'
-
 import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
 import PushNotification from 'react-native-push-notification';
@@ -25,6 +26,7 @@ import { Actions } from 'react-native-router-flux'
 import * as R from 'ramda'
 import { find, filter, orderBy } from 'lodash'
 import DeviceInfo from 'react-native-device-info';
+import Permissions from 'react-native-permissions'
 
 import pubnub from '../../lib/pubnub'
 import Analytics from '../../lib/firebase'
@@ -39,9 +41,12 @@ import ToasterComponent from '../../components/ToasterComponent'
 import FeedLoadingStateComponent from '../../components/FeedLoadingStateComponent'
 import EmptyStateComponent from '../../components/EmptyStateComponent'
 import SpeechBubbleComponent from '../../components/SpeechBubbleComponent'
+import ShareWidgetPermissionModal from '../../components/ShareWidgetModal/PermissionModal'
+import ShareWidgetTipsModal from '../../components/ShareWidgetModal/TipsModal'
+import ShareWidgetConfirmModal from '../../components/ShareWidgetModal/ConfirmModal'
 import styles from './styles'
 import CONSTANTS from '../../service/constants';
-
+import { TIP_SHARE_LINK_URL } from '../../service/api'
 const SEARCH_ICON = require('../../../assets/images/Search/Grey.png')
 const SETTING_ICON = require('../../../assets/images/Settings/Grey.png')
 
@@ -120,7 +125,11 @@ class HomeScreen extends React.Component {
       feedClickEvent: 'normal',
       showLongHoldActionBar: true,
       isShowInviteToaster: false,
-      inviteToasterTitle: ''
+      inviteToasterTitle: '',
+      showSharePermissionModal: false,
+      enableShareWidget: false,
+      showShareTipsModal: false,
+      showShareConfirmModal: false
     };
 
     this.currentRef = null;
@@ -130,17 +139,75 @@ class HomeScreen extends React.Component {
     this.animatedSelectFeed = new Animated.Value(1);
   }
 
+  showSharePermissionModal(permissionInfo, userInfo) {
+    // If we haven't asked to enable share widget before
+    if (!permissionInfo || permissionInfo.userId !== userInfo.id) {
+        this.setState({ showSharePermissionModal: true })
+    } 
+  }
+
+  onCloseSharePermissionModal = () => {
+    if (this.state.enableShareWidget) {
+      setTimeout(() => {
+        this.setState({ showShareTipsModal: true })
+      }, 100)
+
+      setTimeout(() => {
+        Share.share({
+          message: 'Mello',
+          title: 'Mello',
+          url: TIP_SHARE_LINK_URL
+        },{
+          dialogTitle: 'Mello',
+          subject: 'Mello',
+          excludedActivityTypes: ["com.apple.UIKit.activity.AirDrop"]
+        }).then(result => {
+          if (result.action === Share.dismissedAction) {
+            this.setState({ showShareTipsModal: false })
+            // setTimeout(() => {
+            //   this.setState({ showShareConfirmModal: true })
+            // }, 300)
+          }
+        }).catch(error => {
+          console.log('ERROR: ', error)
+        })
+      }, 300)
+    }
+  }
+
+  onEnableShareWidget = () => {
+    AsyncStorage.setItem('permissionInfo', JSON.stringify({ userId: this.props.user.userInfo.id, enabled: true }))
+    this.setState({ showSharePermissionModal: false, enableShareWidget: true })
+  }
+
   async componentDidMount() {
     Analytics.setCurrentScreen('DashboardScreen')
 
-    this.setState({ loading: true })
+    this.props.setUserInfo(JSON.parse(await AsyncStorage.getItem('userInfo')))
 
-    const userInfo = await AsyncStorage.getItem('userInfo')
-    this.props.setUserInfo(JSON.parse(userInfo))
+    let permissionInfo = JSON.parse(await AsyncStorage.getItem('permissionInfo'))
+
+    // Check push notification
+    Permissions.check('notification')
+      .then(response => {
+        // Ask for notifications permission first
+        if (response === 'undetermined') {
+          Permissions.request('notification').then(response => {
+            // Then show share widget tip
+            this.showSharePermissionModal(permissionInfo, this.props.user.userInfo)
+          });
+        } 
+        // If notification permissions already asked, show share widget tip
+        else {
+          this.showSharePermissionModal(permissionInfo, this.props.user.userInfo)
+        }
+    });
+
+    this.setState({ loading: true })
 
     // Set the inital list view mode
     const viewMode = JSON.parse(await AsyncStorage.getItem('DashboardViewMode'))
-    if (viewMode && viewMode.userId === JSON.parse(userInfo).id) {
+    if (viewMode && viewMode.userId === this.props.user.userInfo.id) {
       this.props.setHomeListType(viewMode.type)
     }
     else {
@@ -1400,6 +1467,45 @@ class HomeScreen extends React.Component {
             onPressButton={() => this.setState({ isShowInviteToaster: false })}
           />
         )}
+
+        <Modal 
+          isVisible={this.state.showSharePermissionModal}
+          style={{ margin: 8 }}
+          backdropOpacity={0.6}
+          animationInTiming={500}
+          onBackdropPress={() => this.setState({ showSharePermissionModal: false })}
+          onModalHide={() => this.onCloseSharePermissionModal()}
+        >
+          <ShareWidgetPermissionModal
+            onClose={() => this.onEnableShareWidget()}
+            onEnableShareWidget={() => this.onEnableShareWidget()}
+          />
+        </Modal>
+
+        <Modal
+          animationIn="fadeIn"
+          animationOut="fadeOut"
+          backdropOpacity={0.5}
+          isVisible={this.state.showShareTipsModal}
+          style={{ margin: 8 }}
+        >
+          <ShareWidgetTipsModal />
+        </Modal>
+
+        <Modal 
+          isVisible={this.state.showShareConfirmModal}
+          animationIn="fadeIn"
+          animationOut="fadeOut"
+          style={{ margin: 8 }}
+          backdropOpacity={0.6}
+          animationInTiming={500}
+          onBackdropPress={() => this.setState({ showShareConfirmModal: false })}
+        >
+          <ShareWidgetConfirmModal
+            onClose={() => this.setState({ showShareConfirmModal: false })}
+          />
+        </Modal>
+
       </SafeAreaView>
     )
   }
@@ -1458,4 +1564,3 @@ export default connect(
   mapStateToProps,
   mapDispatchToProps
 )(HomeScreen)
-

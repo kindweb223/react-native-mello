@@ -385,5 +385,6 @@ export const getOpenGraph = (urlPath, isSharing = false) => {
       url,
       data,
     }),
+    originalUrl: urlPath
   };
 }

@@ -61,6 +61,7 @@ export default {
   APP_GROUP_USER_IDENTIFIER: 'group.hunt.mobile.user.info',
   APP_GROUP_TOKEN_IDENTIFIER: 'group.hunt.mobile.token',
   APP_GROUP_LAST_USED_FEEDO: 'group.hunt.mobile.last.feedo',
+  APP_GROUP_SHARE_STATE: 'group.hunt.mobile.share.state',
 
   // Push Notification
   UNKOWN_PUSH_NOTIFICATION: 'UNKOWN_PUSH_NOTIFICATION',
