@@ -580,14 +580,51 @@ export default function card(state = initialState, action = {}) {
         }
       }
     case types.GET_OPEN_GRAPH_REJECTED: {
+      console.log('GET_OPEN_GRAPH_REJECTED: ', action)
+
       const { data } = action.error.response
       return {
         ...state,
         loading: types.GET_OPEN_GRAPH_REJECTED,
         error: data,
+        currentOpneGraph: {
+          url: action.originalUrl,
+          title: action.originalUrl,
+          description: null,
+          image: null,
+          favicon: null,
+          images: []
+        }
       }
     }
 
+    // Create card on share extension
+    case types.ADD_SHARE_EXTENSION_CARD_PENDING: {
+    console.log('ADD_SHARE_EXTENSION_CARD_PENDING')
+      return {
+        ...state,
+        loading: types.ADD_SHARE_EXTENSION_CARD_PENDING,
+        error: null,
+      }
+    }
+    case types.ADD_SHARE_EXTENSION_CARD_FULFILLED: {
+      console.log('ADD_SHARE_EXTENSION_CARD_FULFILLED', action.result)
+      return {
+        ...state,
+        loading: types.ADD_SHARE_EXTENSION_CARD_FULFILLED,
+        currentCard: action.result.data
+      }
+    }
+    case types.ADD_SHARE_EXTENSION_CARD_REJECTED: {
+      console.log('ADD_SHARE_EXTENSION_CARD_REJECTED')
+      const { data } = action.error.response      
+      return {
+        ...state,
+        loading: types.ADD_SHARE_EXTENSION_CARD_REJECTED,
+        error: data,
+      }
+    }
+  
     default:
       return state;
   }
