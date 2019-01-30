@@ -17,6 +17,7 @@ import Permissions from 'react-native-permissions'
 import ImagePicker from 'react-native-image-picker'
 import ActionSheet from 'react-native-actionsheet'
 import VersionNumber from 'react-native-version-number'
+import { GoogleSignin } from 'react-native-google-signin';
 import _ from 'lodash'
 import ToasterComponent from '../../components/ToasterComponent'
 import UserAvatarComponent from '../../components/UserAvatarComponent'
@@ -102,10 +103,19 @@ class ProfileScreen extends React.Component {
     }
   }
 
-  onTapActionSheet = (index) => {
+  onTapActionSheet = async (index) => {
     if (index === 0) {
       Analytics.logEvent('profile_signout', {})
+      isSignedIn = await GoogleSignin.isSignedIn()
 
+      if (isSignedIn) {
+        try {
+          await GoogleSignin.revokeAccess()
+          await GoogleSignin.signOut()
+        } catch (error ) {
+          console.error(error)
+        }
+      }
       this.props.userSignOut()
     }
   }
