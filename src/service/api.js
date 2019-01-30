@@ -8,6 +8,9 @@ export const SHARE_LINK_URL = 'https://demos.solvers.io/solvers/feedo-secure-sit
 // export const SHARE_LINK_URL = 'https://app.tryfeedo.com/solvers/feedo-secure-site/feed/'
 // export const LAMBDA_BASE_URL = 'https://lambda.trymello.com/'
 
+// Global
+export const TIP_SHARE_LINK_URL = 'https://trymello.com'
+
 export const AXIOS_CONFIG = {
   headers: {
     'Accept': 'application/json',
