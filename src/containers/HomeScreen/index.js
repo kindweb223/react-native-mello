@@ -481,7 +481,10 @@ class HomeScreen extends React.Component {
         // this.props.getActivityFeed(this.props.user.userInfo.id, { page: 0, size: PAGE_COUNT })            
       }  
       this.showClipboardToast();
-      this.props.getUserSession()
+      
+      if (Actions.currentScene !== 'TutorialScreen') {
+        this.props.getUserSession()
+      }
     }
     this.setState({appState: nextAppState});
   }

@@ -4,7 +4,8 @@ import {
   View,
   Text,
   TouchableOpacity,
-  Image
+  Image,
+  Alert
 } from 'react-native'
 import { connect } from 'react-redux'
 import { Actions } from 'react-native-router-flux'
@@ -16,10 +17,12 @@ import { GoogleSignin, statusCodes } from 'react-native-google-signin'
 
 import LoadingScreen from '../LoadingScreen'
 import COLORS from '../../service/colors'
+import { GOOGLE_WEB_CLIENT_ID } from '../../service/api'
 import styles from './styles'
 import Analytics from '../../lib/firebase'
+import resolveError from '../../service/resolveError'
 
-import { userGoogleSigin } from '../../redux/user/actions'
+import { userGoogleSigin, getUserSession } from '../../redux/user/actions'
 
 const LOGO = require('../../../assets/images/Login/logoMelloIcon-Tutorial.png')
 const LOGO_TEXT = require('../../../assets/images/Login/logoMello-Tutorial.png')
@@ -35,7 +38,8 @@ class TutorialScreen extends React.Component {
   constructor(props) {
     super(props)
     this.state = {
-      position: 0
+      position: 0,
+      loading: false
     }
   }
 
@@ -43,14 +47,45 @@ class TutorialScreen extends React.Component {
     Analytics.setCurrentScreen('TutorialScreen')
 
     GoogleSignin.configure({
-      webClientId: '887924189900-cp9g9c2c4144b3o8uf5nr33dgf0mehod.apps.googleusercontent.com', // client ID of type WEB for your server (needed to verify user ID and offline access)
-      offlineAccess: false, // if you want to access Google API on behalf of the user FROM YOUR SERVER
+      webClientId: GOOGLE_WEB_CLIENT_ID,
+      offlineAccess: false
     })
   }
 
   componentWillReceiveProps(nextProps) {
+    const { user } = nextProps
+
     if (nextProps.prevPage === 'login') {
       this.onSkip(false)
+    }
+
+    if (this.props.user.loading === 'USER_GOOGLE_SIGNIN_PENDING' && user.loading === 'USER_GOOGLE_SIGNIN_FULFILLED') {
+      this.props.getUserSession()
+    }
+
+    if (this.props.user.loading === 'USER_GOOGLE_SIGNIN_PENDING' && user.loading === 'USER_GOOGLE_SIGNIN_REJECTED') {
+      this.setState({ loading: false }, () => {
+        if (user.error) {
+          Alert.alert(
+            'Warning',
+            resolveError(user.error.code, user.error.message)
+          )
+        }
+      })
+    }
+
+    if (this.props.user.loading === 'GET_USER_SESSION_PENDING' && user.loading === 'GET_USER_SESSION_FULFILLED') {
+      this.setState({ loading: false }, () => {
+        if (user.userInfo.tandcAccepted) {
+          Actions.HomeScreen()
+        } else {
+          Actions.TermsAndConditionsConfirmScreen()
+        }
+      })
+    }
+
+    if (this.props.user.loading === 'GET_USER_SESSION_PENDING' && user.loading === 'GET_USER_SESSION_REJECTED') {
+      this.setState({ loading: false })
     }
   }
 
@@ -68,12 +103,11 @@ class TutorialScreen extends React.Component {
       // google services are available
 
       try {
+        this.setState({ loading: true })
         const userInfo = await GoogleSignin.signIn()
-        console.log('USERINFO ', userInfo)
-        const { idToken } = userInfo
-        this.props.userGoogleSigin(idToken)
+        this.props.userGoogleSigin(userInfo.idToken)
       } catch(error) {
-        console.log('ERRROR: ', error)
+        this.setState({ loading: false })
         if (error.code === statusCodes.SIGN_IN_CANCELLED) {
           // user cancelled the login flow
         } else if (error.code === statusCodes.IN_PROGRESS) {
@@ -85,7 +119,7 @@ class TutorialScreen extends React.Component {
         }
       }
     } catch (err) {
-      console.error('play services are not available');
+      Alert.alert('Warning', 'play services are not available')
     }
   }
 
@@ -204,7 +238,6 @@ class TutorialScreen extends React.Component {
   }
 
   onSkip(animated) {
-    // this.setState({ position: 6 })
     this.swiperRef.scrollBy(6 - this.state.position, animated)
   }
 
@@ -275,6 +308,7 @@ const mapStateToProps = ({ user }) => ({
 
 const mapDispatchToProps = dispatch => ({
   userGoogleSigin: (token) => dispatch(userGoogleSigin(token)),
+  getUserSession: () => dispatch(getUserSession()),
 })
 
 export default connect(
