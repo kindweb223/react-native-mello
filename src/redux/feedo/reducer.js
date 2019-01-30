@@ -1723,7 +1723,6 @@ export default function feedo(state = initialState, action = {}) {
       }
     }
     case types.SAVE_FLOW_PREFERENCE_REJECTED: {
-      console.log('MMMMM')
       return {
         ...state,
         loading: types.SAVE_FLOW_PREFERENCE_REJECTED,

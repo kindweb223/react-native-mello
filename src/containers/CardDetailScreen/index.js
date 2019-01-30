@@ -209,8 +209,13 @@ class CardDetailScreen extends React.Component {
       const { id } = this.props.card.currentCard;
       const { objectKey } = this.props.card.fileUploadUrl;
       const fileType = (Platform.OS === 'ios') ? this.selectedFileMimeType : this.selectedFile.type;
+      const { width, height } = await this.getImageSize(this.selectedFile.uri);
+      const metadata = {
+        width,
+        height
+      }
+      this.props.addFile(id, this.selectedFileType, fileType, this.selectedFileName, objectKey, metadata);
 
-      this.props.addFile(id, this.selectedFileType, fileType, this.selectedFileName, objectKey);
     } else if (this.props.card.loading !== types.ADD_FILE_PENDING && nextProps.card.loading === types.ADD_FILE_PENDING) {
       loading = true;
     } else if (this.props.card.loading !== types.ADD_FILE_FULFILLED && nextProps.card.loading === types.ADD_FILE_FULFILLED) {
@@ -382,9 +387,55 @@ class CardDetailScreen extends React.Component {
         }
         if (error) {
           if (nextProps.card.loading === types.GET_OPEN_GRAPH_REJECTED) {
+            // success in getting open graph
+            if (this.props.card.currentCard.links === null || this.props.card.currentCard.links.length === 0) {
+              loading = true;
+            }
+            if (this.allLinkImages.length === 0) {
+              if (nextProps.card.currentOpneGraph.images) {
+                this.allLinkImages = nextProps.card.currentOpneGraph.images;
+              } else if (nextProps.card.currentOpneGraph.image) {
+                this.allLinkImages.push(nextProps.card.currentOpneGraph.image);
+              }
+            }
+
+            let currentIdea = this.state.idea;
+            currentIdea = currentIdea.replace(' ', '');
+            currentIdea = currentIdea.replace(',', '');
+            currentIdea = currentIdea.replace('\n', '');
+            if (currentIdea.toLowerCase() === this.linksForOpenGraph[this.indexForOpenGraph].toLowerCase()) {
+              this.setState({
+                idea: nextProps.card.currentOpneGraph.title,
+              });
+            }
+            this.openGraphLinksInfo.push({
+              url: nextProps.card.currentOpneGraph.url,
+              title: nextProps.card.currentOpneGraph.title,
+              description: nextProps.card.currentOpneGraph.description,
+              image: nextProps.card.currentOpneGraph.image,
+              favicon: nextProps.card.currentOpneGraph.favicon
+            });
+            
+            this.indexForOpenGraph ++;
+            
+            if (this.indexForOpenGraph < this.linksForOpenGraph.length) {
+              this.props.getOpenGraph(this.linksForOpenGraph[this.indexForOpenGraph]);
+            } else {
+              this.indexForAddedLinks = 0;
+              const { id } = this.props.card.currentCard;
+              const {
+                url,
+                title,
+                description,
+                image,
+                favicon,
+              } = this.openGraphLinksInfo[this.indexForAddedLinks++];
+              this.props.addLink(id, url, title, description, image, favicon);
+            }
+
             if (this.props.card.currentCard.links === null || this.props.card.currentCard.links.length === 0) {
               if (this.parseErrorUrls(error)) {
-                error = 'Sorry, this link cannot be read';
+                error = 'Oops, we can\'t get the details from this link';
               } else {
                 // return;
               }
@@ -416,10 +467,15 @@ class CardDetailScreen extends React.Component {
 
   async componentDidMount() {
     const { viewMode, feedo, card } = this.props;
+
     if (viewMode === CONSTANTS.CARD_VIEW || viewMode === CONSTANTS.CARD_EDIT) {
-      const { width, height } = await this.getImageSize(card.currentCard.coverImage);
-      this.coverImageWidth = width
-      this.coverImageHeight = height
+      this.coverImageWidth = 0
+      this.coverImageHeight = 0
+      const coverData = _.find(card.currentCard.files, file => file.accessUrl === card.currentCard.coverImage)
+      if (coverData && coverData.metadata) {
+        this.coverImageWidth = coverData.metadata.width
+        this.coverImageHeight = coverData.metadata.height
+      }
       this.setState({
         idea: card.currentCard.idea,
         coverImage: card.currentCard.coverImage,
@@ -616,10 +672,13 @@ class CardDetailScreen extends React.Component {
   }
 
   onUpdateCard() {
-    const { id, huntId, files } = this.props.card.currentCard
+    const { currentCard } = this.props.card
+    const { id, huntId, files } = currentCard
     const { idea, coverImage } = this.state
 
-    this.props.updateCard(huntId, id, '', idea, coverImage, files);
+    if (currentCard.idea !== idea || currentCard.coverImage !== coverImage) {
+      this.props.updateCard(huntId, id, '', idea, coverImage, files);
+    }
   }
 
   onTapActionSheet(index) {
@@ -832,10 +891,17 @@ class CardDetailScreen extends React.Component {
     this.onClose();
   }
 
-  addLinkImage(id, imageUrl) {
+  async addLinkImage(id, imageUrl) {
     const mimeType = mime.lookup(imageUrl) || 'image/jpeg';
     const filename = imageUrl.replace(/^.*[\\\/]/, '')
-    this.props.addFile(id, 'MEDIA', mimeType, filename, imageUrl);
+
+    const { width, height } = await this.getImageSize(imageUrl);
+    const metadata = {
+      width,
+      height
+    }
+
+    this.props.addFile(id, 'MEDIA', mimeType, filename, imageUrl, metadata);
   }
 
   get renderCoverImage() {
@@ -1358,11 +1424,11 @@ const mapDispatchToProps = dispatch => ({
   updateCard: (huntId, ideaId, title, idea, coverImage, files) => dispatch(updateCard(huntId, ideaId, title, idea, coverImage, files)),
   getFileUploadUrl: (huntId, ideaId) => dispatch(getFileUploadUrl(huntId, ideaId)),
   uploadFileToS3: (signedUrl, file, fileName, mimeType) => dispatch(uploadFileToS3(signedUrl, file, fileName, mimeType)),
-  addFile: (ideaId, fileType, contentType, name, objectKey) => dispatch(addFile(ideaId, fileType, contentType, name, objectKey)),
+  addFile: (ideaId, fileType, contentType, name, objectKey, metadata) => dispatch(addFile(ideaId, fileType, contentType, name, objectKey, metadata)),
   deleteFile: (ideaId, fileId) => dispatch(deleteFile(ideaId, fileId)),
   setCoverImage: (ideaId, fileId) => dispatch(setCoverImage(ideaId, fileId)),
   getOpenGraph: (url) => dispatch(getOpenGraph(url)),
-  addLink: (ideaId, orignalUrl, title, description, imageUrl, faviconUrl) => dispatch(addLink(ideaId, originalUrl, title, description, imageUrl, faviconUrl)),
+  addLink: (ideaId, originalUrl, title, description, imageUrl, faviconUrl) => dispatch(addLink(ideaId, originalUrl, title, description, imageUrl, faviconUrl)),
   deleteLink: (ideaId, linkId) => dispatch(deleteLink(ideaId, linkId)),
   resetCardError: () => dispatch(resetCardError()),
 })

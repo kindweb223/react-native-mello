@@ -39,9 +39,8 @@ class ChooseLinkImageFromExtension extends React.Component {
 
   async componentDidMount() {
     try {
-      
       const { type, value } = await ShareExtension.data();
-      
+      console.log('SHARE_DATA: ', type, value)
       if (type === 'url') {
         this.setState({initialized: true});
         console.log('componentDidMount1')
@@ -54,13 +53,10 @@ class ChooseLinkImageFromExtension extends React.Component {
               notesText: text,
             });
           }
-        }
-        else 
-        {
+        } else {
           this.shareUrl = urls[0]
           this.props.getOpenGraph(urls[0], true)
         }
-        
       } else if (type === 'images') {
         const images = value.split(" , ");
         if (images.length > 0) {
@@ -68,7 +64,6 @@ class ChooseLinkImageFromExtension extends React.Component {
             imageUrls: images,
           });
         }
-
       } 
     } catch(error) {
       console.log('error : ', error)
@@ -76,7 +71,6 @@ class ChooseLinkImageFromExtension extends React.Component {
   }
 
   UNSAFE_componentWillReceiveProps(nextProps) {
-    // console.log('UNSAFE_componentWillReceiveProps : ', nextProps.card)
     if (Actions.currentScene !== 'ChooseLinkImageFromExtension') {
       return;
     }
@@ -113,7 +107,7 @@ class ChooseLinkImageFromExtension extends React.Component {
         }
         if (error) {
           if (nextProps.card.loading === types.GET_OPEN_GRAPH_REJECTED) {
-            error = 'Sorry, this link cannot be read';
+            error = 'Oops, we can\'t get the details from this link';
           }
           if (!this.state.isVisibleAlert) {
             this.setState({
