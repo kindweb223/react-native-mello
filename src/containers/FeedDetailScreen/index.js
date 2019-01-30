@@ -154,7 +154,6 @@ class FeedDetailScreen extends React.Component {
       copiedUrl: '',
       appState: AppState.currentState,
       isMasonryView: false,
-      MasonryData: [],
       isShowInviteToaster: false,
       inviteToasterTitle: '',
       viewPreference: 'LIST'
@@ -473,21 +472,20 @@ class FeedDetailScreen extends React.Component {
   }
 
   setMasonryData = (ideas) => {
-    this.refs.masonry.clear()
+    this.setState({ isMasonryView: true }, () => {
 
-    setTimeout(() => {
-      this.setState({ isMasonryView: true }, () => {
-
-        if (ideas.length > 0) {
-          const MasonryData = ideas.map((data, i) => ({
-            key: `item_${i}`,
-            index: i,
-            data
-          }))
+      if (ideas.length > 0) {
+        const MasonryData = ideas.map((data, i) => ({
+          key: `item_${i}`,
+          index: i,
+          data
+        }))
+        this.refs.masonry.clear()
+        setTimeout(() => {
           this.refs.masonry.addItems(MasonryData)
-        }
-      })
-    }, 100)
+        }, 150)
+      }
+    })
   }
 
   onLayoutMasonry = (event) => {
@@ -1481,7 +1479,6 @@ class FeedDetailScreen extends React.Component {
                         <Masonry
                           onLayout={(event) => this.onLayoutMasonry(event)}
                           ref="masonry"
-                          items={this.state.MasonryData}
                           isExistingUser={this.state.isExistingUser}
                           showEmptyBubble={this.state.showEmptyBubble}
                           onOpenNewCardModal={this.onOpenNewCardModal.bind(this)}

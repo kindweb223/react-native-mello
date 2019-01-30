@@ -8,8 +8,8 @@ import ShareExtension from '../shareExtension'
 
 import styles from './styles'
 import CONSTANTS from '../../service/constants'
+import CardNewShareScreen from '../../containers/CardNewShareScreen'
 import CardNewScreen from '../../containers/CardNewScreen'
-
 
 export default class ShareCardScreen extends React.Component {
   constructor(props) {
@@ -27,15 +27,26 @@ export default class ShareCardScreen extends React.Component {
 
   render() {
     const { imageUrls, shareUrl, notesText } = this.props;
+    console.log('imageUrls: ', imageUrls)
+    console.log('shareUrl: ', shareUrl)
     return (
       <View style={styles.container}>
-        <CardNewScreen
-          cardMode={CONSTANTS.SHARE_EXTENTION_CARD}
-          shareUrl={shareUrl}
-          shareImageUrls={imageUrls}
-          shareText={notesText}
-          onClose={() => this.onClosed()}
-        />
+        {shareUrl !== ''
+        ? <CardNewShareScreen
+            cardMode={CONSTANTS.SHARE_EXTENTION_CARD}
+            shareUrl={shareUrl}
+            shareImageUrls={imageUrls}
+            shareText={notesText}
+            onClose={() => this.onClosed()}
+          />
+        : <CardNewScreen
+            cardMode={CONSTANTS.SHARE_EXTENTION_CARD}
+            shareUrl={shareUrl}
+            shareImageUrls={imageUrls}
+            shareText={notesText}
+            onClose={() => this.onClosed()}
+          />
+        }
       </View>
     );
   }
