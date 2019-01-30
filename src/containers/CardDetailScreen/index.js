@@ -207,7 +207,13 @@ class CardDetailScreen extends React.Component {
       const { id } = this.props.card.currentCard;
       const { objectKey } = this.props.card.fileUploadUrl;
 
-      this.props.addFile(id, this.selectedFileType, this.selectedFileMimeType, this.selectedFileName, objectKey);
+      const { width, height } = await this.getImageSize(this.selectedFile.uri);
+      const metadata = {
+        width,
+        height
+      }
+
+      this.props.addFile(id, this.selectedFileType, this.selectedFileMimeType, this.selectedFileName, objectKey, metadata);
     } else if (this.props.card.loading !== types.ADD_FILE_PENDING && nextProps.card.loading === types.ADD_FILE_PENDING) {
       loading = true;
     } else if (this.props.card.loading !== types.ADD_FILE_FULFILLED && nextProps.card.loading === types.ADD_FILE_FULFILLED) {
@@ -461,9 +467,13 @@ class CardDetailScreen extends React.Component {
     const { viewMode, feedo, card } = this.props;
 
     if (viewMode === CONSTANTS.CARD_VIEW || viewMode === CONSTANTS.CARD_EDIT) {
-      const { width, height } = await this.getImageSize(card.currentCard.coverImage);
-      this.coverImageWidth = width
-      this.coverImageHeight = height
+      this.coverImageWidth = 0
+      this.coverImageHeight = 0
+      const coverData = _.find(card.currentCard.files, file => file.accessUrl === card.currentCard.coverImage)
+      if (coverData && coverData.metadata) {
+        this.coverImageWidth = coverData.metadata.width
+        this.coverImageHeight = coverData.metadata.height
+      }
       this.setState({
         idea: card.currentCard.idea,
         coverImage: card.currentCard.coverImage,
@@ -657,10 +667,13 @@ class CardDetailScreen extends React.Component {
   }
 
   onUpdateCard() {
-    const { id, huntId, files } = this.props.card.currentCard
+    const { currentCard } = this.props.card
+    const { id, huntId, files } = currentCard
     const { idea, coverImage } = this.state
 
-    this.props.updateCard(huntId, id, '', idea, coverImage, files);
+    if (currentCard.idea !== idea || currentCard.coverImage !== coverImage) {
+      this.props.updateCard(huntId, id, '', idea, coverImage, files);
+    }
   }
 
   onTapActionSheet(index) {
@@ -874,10 +887,17 @@ class CardDetailScreen extends React.Component {
     this.onClose();
   }
 
-  addLinkImage(id, imageUrl) {
+  async addLinkImage(id, imageUrl) {
     const mimeType = mime.lookup(imageUrl) || 'image/jpeg';
     const filename = imageUrl.replace(/^.*[\\\/]/, '')
-    this.props.addFile(id, 'MEDIA', mimeType, filename, imageUrl);
+
+    const { width, height } = await this.getImageSize(imageUrl);
+    const metadata = {
+      width,
+      height
+    }
+
+    this.props.addFile(id, 'MEDIA', mimeType, filename, imageUrl, metadata);
   }
 
   get renderCoverImage() {
@@ -1400,7 +1420,7 @@ const mapDispatchToProps = dispatch => ({
   updateCard: (huntId, ideaId, title, idea, coverImage, files) => dispatch(updateCard(huntId, ideaId, title, idea, coverImage, files)),
   getFileUploadUrl: (huntId, ideaId) => dispatch(getFileUploadUrl(huntId, ideaId)),
   uploadFileToS3: (signedUrl, file, fileName, mimeType) => dispatch(uploadFileToS3(signedUrl, file, fileName, mimeType)),
-  addFile: (ideaId, fileType, contentType, name, objectKey) => dispatch(addFile(ideaId, fileType, contentType, name, objectKey)),
+  addFile: (ideaId, fileType, contentType, name, objectKey, metadata) => dispatch(addFile(ideaId, fileType, contentType, name, objectKey, metadata)),
   deleteFile: (ideaId, fileId) => dispatch(deleteFile(ideaId, fileId)),
   setCoverImage: (ideaId, fileId) => dispatch(setCoverImage(ideaId, fileId)),
   getOpenGraph: (url) => dispatch(getOpenGraph(url)),
