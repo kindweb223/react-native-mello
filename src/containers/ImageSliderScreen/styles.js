@@ -30,9 +30,6 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     position: 'absolute'
   },
-  coverText: {
-    color: '#fff'
-  },
   deleteButton: {
     bottom: Platform.OS === 'ios' ? 30 : 20,
     right: 20,
