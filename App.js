@@ -95,7 +95,8 @@ import {
   getInvitedFeedList,
   pubnubDeleteInvitee,
   pubnubDeleteOtherInvitee,
-  pubnubMoveIdea
+  pubnubMoveIdea,
+  getFeedoList
 } from './src/redux/feedo/actions'
 
 const store = createStore(reducers, applyMiddleware(thunk, promiseMiddleware))
@@ -253,6 +254,7 @@ export default class Root extends React.Component {
 
             try {
               const userInfo = AsyncStorage.getItem('userInfo')
+              store.dispatch(getFeedoList())
 
               if (userInfo) {
                 if (Actions.currentScene === 'FeedDetailScreen') {                  
