@@ -35,6 +35,7 @@ class ShareSuccessScreen extends React.Component {
   }
 
   openFeedo() {
+    console.log('FEED_ID: ', this.props.feedo.currentFeed.id)
     ShareExtension.goToMainApp(`demos.solvers.io://feed/${this.props.feedo.currentFeed.id}`);
     ShareExtension.close();
   }

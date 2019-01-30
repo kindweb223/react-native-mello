@@ -50,6 +50,8 @@
 		4C030DDBB9734D8CB1045CEB /* libBVLinearGradient.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 1AE0342E1F8E4EB593320F3B /* libBVLinearGradient.a */; };
 		4C3145432191BCE8009A40C5 /* libRNDeviceInfo.a in Frameworks */ = {isa = PBXBuildFile; fileRef = A46A87CD2190EE9D009D3FB3 /* libRNDeviceInfo.a */; };
 		4C3C63F62199E8BC00B68196 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 4C3C63F52199E8BC00B68196 /* GoogleService-Info.plist */; };
+		4C6D85F821FE088100455C94 /* libRNSVG.a in Frameworks */ = {isa = PBXBuildFile; fileRef = A49C3621219230EA00AA0AFD /* libRNSVG.a */; };
+		4C6D85F921FE08AB00455C94 /* libRNSVG.a in Frameworks */ = {isa = PBXBuildFile; fileRef = A49C3621219230EA00AA0AFD /* libRNSVG.a */; };
 		4CC861B921933F8F00481DED /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 4CC8617A21933F8A00481DED /* GoogleService-Info.plist */; };
 		4CD904DC21F8A7C200258740 /* libRNSVG.a in Frameworks */ = {isa = PBXBuildFile; fileRef = A49C3621219230EA00AA0AFD /* libRNSVG.a */; };
 		4CF0DB4F2199BBA6000ED175 /* libRNFirebase.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 4CC8621D2193408300481DED /* libRNFirebase.a */; };
@@ -110,7 +112,6 @@
 		A4EB9D05213F114300C598B8 /* Zocial.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 6ABC6722E2BF4E8E89696E69 /* Zocial.ttf */; };
 		A4EB9D09213F42DA00C598B8 /* ShareExtensionViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = A4EB9D08213F42DA00C598B8 /* ShareExtensionViewController.m */; };
 		ADBDB9381DFEBF1600ED6528 /* libRCTBlob.a in Frameworks */ = {isa = PBXBuildFile; fileRef = ADBDB9271DFEBF0700ED6528 /* libRCTBlob.a */; };
-		AFEEEFE4828B4646B48CC6F0 /* libRNSVG.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 9F983F5C323D41389ED0DD7F /* libRNSVG.a */; };
 		B509BBF321778AA6006ED535 /* Lottie.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B509BBE9217788E0006ED535 /* Lottie.framework */; };
 		B509BBF421778AA6006ED535 /* Lottie.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = B509BBE9217788E0006ED535 /* Lottie.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		B5C9088721735F2200C3CD9A /* libRCTVideo.a in Frameworks */ = {isa = PBXBuildFile; fileRef = B5C9088421735EE900C3CD9A /* libRCTVideo.a */; };
@@ -787,6 +788,7 @@
 				832341BD1AAA6AB300B99B32 /* libRCTText.a in Frameworks */,
 				00C302EA1ABCBA2D00DB3ED1 /* libRCTVibration.a in Frameworks */,
 				139FDEF61B0652A700C62182 /* libRCTWebSocket.a in Frameworks */,
+				4C6D85F821FE088100455C94 /* libRNSVG.a in Frameworks */,
 				F813916842244B2EBA820B46 /* libRNVectorIcons.a in Frameworks */,
 				422DE7522DC141888C856AFB /* libReactNativeHaptic.a in Frameworks */,
 				707DC7BF4F8B460B91F782CD /* libRNImagePicker.a in Frameworks */,
@@ -809,7 +811,6 @@
 				6EBDD815484C4CB6A8095806 /* libRNDeviceInfo.a in Frameworks */,
 				EDE5891B255E490C98FF3E06 /* libRNFirebase.a in Frameworks */,
 				9CD6677E73B85E6F01711321 /* libPods-Mello.a in Frameworks */,
-				AFEEEFE4828B4646B48CC6F0 /* libRNSVG.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -866,6 +867,7 @@
 				A4D2256A21408E8300539042 /* libRNReactNativeSharedGroupPreferences.a in Frameworks */,
 				A480B7432154DD4700634D8B /* libSafariViewManager.a in Frameworks */,
 				A480B7442154DD9B00634D8B /* libRCTPushNotification.a in Frameworks */,
+				4C6D85F921FE08AB00455C94 /* libRNSVG.a in Frameworks */,
 				BE54F4BFC1F6E6C82EFDB59C /* libPods-MelloEx.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
