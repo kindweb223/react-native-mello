@@ -204,6 +204,7 @@ export default class Root extends React.Component {
   componentDidMount() {
     YellowBox.ignoreWarnings(['Module RNDocumentPicker'])
     YellowBox.ignoreWarnings(['Module ReactNativeShareExtension'])
+    YellowBox.ignoreWarnings(['Setting a timer']);
   }
 
   componentWillUnmount() {

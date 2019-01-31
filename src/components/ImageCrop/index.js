@@ -236,18 +236,18 @@ class ImageCrop extends Component {
 				this.props.source.uri,
 				cropData,
 				(croppedUrl) => {
-					ImageStore.hasImageForTag(croppedUrl, () => {
+					// ImageStore.hasImageForTag(croppedUrl, () => {
 						this.resize(
 							croppedUrl,
 							cropData
 						).then((resizedUrl) => {
-							ImageStore.removeImageForTag(croppedUrl)
+							// ImageStore.removeImageForTag(croppedUrl)
 							return resolve(resizedUrl)
 						}).catch((error) => {
-							ImageStore.removeImageForTag(croppedUrl)
+							// ImageStore.removeImageForTag(croppedUrl)
 							reject(error)
 						})
-					})
+					// })
 				},
 				(failure) => {
 					reject(failure)

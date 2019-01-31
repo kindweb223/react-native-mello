@@ -8,7 +8,7 @@ import {
 import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
 import { Actions } from 'react-native-router-flux'
-import ReactNativeHaptic from 'react-native-haptic'
+import ReactNativeHapticFeedback from 'react-native-haptic-feedback';
 import _ from 'lodash'
 
 import FeedItemComponent from '../../components/FeedItemComponent'
@@ -24,7 +24,7 @@ class FeedoListContainer extends React.Component {
   }
 
   onLongPressFeedo(index, item) {
-    ReactNativeHaptic.generate('impactHeavy')
+    ReactNativeHapticFeedback.trigger('impactHeavy', true);
 
     if (this.props.handleLongHoldMenu) {
       this.props.handleLongHoldMenu(index, item)
@@ -96,7 +96,7 @@ class FeedoListContainer extends React.Component {
             transform: [{ scale: animatedSelectFeed}],
           },
         ]}
-      >        
+      >
         <View
           style={[
             { marginBottom: CONSTANTS.ACTION_BAR_HEIGHT - 28 }
