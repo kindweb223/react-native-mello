@@ -1,10 +1,13 @@
-package com.mello;
+package io.solvers.feedo;
 
 import android.app.Application;
 
 import com.facebook.react.ReactApplication;
 import co.apptailor.googlesignin.RNGoogleSigninPackage;
+import com.mkuczera.RNReactNativeHapticFeedbackPackage;
+import com.proyecto26.inappbrowser.RNInAppBrowserPackage;
 import io.invertase.firebase.RNFirebasePackage;
+import io.invertase.firebase.analytics.RNFirebaseAnalyticsPackage;
 import com.horcrux.svg.SvgPackage;
 import com.learnium.RNDeviceInfo.RNDeviceInfo;
 import com.bugsnag.BugsnagReactNative;
@@ -40,8 +43,14 @@ public class MainApplication extends Application implements ReactApplication {
     protected List<ReactPackage> getPackages() {
       return Arrays.<ReactPackage>asList(
           new MainReactPackage(),
+<<<<<<< HEAD:android/app/src/main/java/com/mello/MainApplication.java
             new RNGoogleSigninPackage(),
+=======
+            new RNReactNativeHapticFeedbackPackage(),
+            new RNInAppBrowserPackage(),
+>>>>>>> develop:android/app/src/main/java/io/solvers/feedo/MainApplication.java
             new RNFirebasePackage(),
+            new RNFirebaseAnalyticsPackage(),
             new SvgPackage(),
             new RNDeviceInfo(),
             BugsnagReactNative.getPackage(),
