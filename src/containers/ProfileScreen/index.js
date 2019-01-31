@@ -110,7 +110,6 @@ class ProfileScreen extends React.Component {
 
       if (isSignedIn) {
         try {
-          await GoogleSignin.revokeAccess()
           await GoogleSignin.signOut()
         } catch (error ) {
           console.error(error)
