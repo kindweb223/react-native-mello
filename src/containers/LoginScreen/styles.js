@@ -33,6 +33,22 @@ export default {
     fontSize: 18,
     fontWeight: '600'
   },
+  googleButtonView: {
+    borderRadius: 14,
+    width: '100%',
+    height: 60,
+    flexDirection: 'row',
+    alignItems: 'center',      
+    backgroundColor: COLORS.LIGHT_SOFT_GREY,
+    paddingHorizontal: 22,
+    marginTop: 20
+  },
+  googelButtonText: {
+    fontSize: 16,
+    lineHeight: 22,
+    fontWeight: '600',
+    marginLeft: 48
+  },
   passwordScoreText: {
     fontSize: 12,
     color: COLORS.DARK_GREY
