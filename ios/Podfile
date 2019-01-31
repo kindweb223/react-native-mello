@@ -8,9 +8,9 @@ target 'Mello' do
   # Pods for Mello
   pod 'Firebase/Core'
 
-  pod 'GoogleSignIn'
-
   pod 'RNGoogleSignin', :path => '../node_modules/react-native-google-signin'
+
+  pod 'GoogleSignIn'
 
 end
 

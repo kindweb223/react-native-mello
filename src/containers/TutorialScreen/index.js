@@ -99,7 +99,7 @@ class TutorialScreen extends React.Component {
 
   onGoogleSignUp = async () => {
     try {
-      await GoogleSignin.hasPlayServices({ showPlayServicesUpdateDialog: true });
+      await GoogleSignin.hasPlayServices()
       // google services are available
 
       try {
