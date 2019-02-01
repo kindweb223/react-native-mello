@@ -111,6 +111,7 @@ class CardDetailScreen extends React.Component {
       initLoad: true,
       position: new Animated.ValueXY(),
       size: new Animated.ValueXY(),
+      cardClosed: false
     };
 
     this.selectedFile = null;
@@ -131,6 +132,7 @@ class CardDetailScreen extends React.Component {
     this.indexForAddedLinks = 0;
     this.openGraphLinksInfo = [];
 
+    this.animatedClose = new Animated.Value(1);
     this.animatedShow = new Animated.Value(0);
     this.scrollViewLayoutHeight = 0;
     this.isVisibleErrorDialog = false;
@@ -742,6 +744,10 @@ class CardDetailScreen extends React.Component {
           toValue: this._height,
           duration: CONSTANTS.ANIMATEION_MILLI_SECONDS,
         }),
+        Animated.timing(this.animatedClose, {
+          toValue: 0,
+          duration: CONSTANTS.ANIMATEION_MILLI_SECONDS,
+        })
       ]).start(() => {
         this.props.onClose()
         this.animatedShow.setValue(1);
@@ -1090,7 +1096,6 @@ class CardDetailScreen extends React.Component {
     this._textMarginTop = marginTop
 
     const activeTextStyle = {
-      backdropColor: 'green',
       width: this.state.size.x,
       height: this.state.size.y,
       top: this.state.position.y,
@@ -1099,7 +1104,7 @@ class CardDetailScreen extends React.Component {
 
     return (
       <TouchableOpacity style={{ marginTop, marginBottom: 16 }} activeOpacity={1} onPress={() => this.onPressIdea()}>
-        <Animated.View style={coverImage ? null : activeTextStyle}>
+        <Animated.View style={coverImage ? { opacity: this.animatedClose } : activeTextStyle}>
           <Autolink
             style={styles.textInputIdea}
             text={this.state.idea}
@@ -1178,9 +1183,9 @@ class CardDetailScreen extends React.Component {
         activeOpacity={0.7}
         onPress={() => this.onBack()}
       >
-        <View style={styles.closeButtonView}>
+        <Animated.View style={[styles.closeButtonView, { opacity: this.animatedClose }]}>
           <Ionicons name="md-close" size={25} color="#fff" />
-        </View>
+        </Animated.View>
       </TouchableOpacity>
     )
   }
@@ -1246,7 +1251,12 @@ class CardDetailScreen extends React.Component {
     )
   }
 
-  onScrollContent() {
+  onScrollContent(event) {
+    const scrollY = event.nativeEvent.contentOffset.y
+    if (scrollY < -100 && !this.state.cardClosed ) {
+      this.setState({ cardClosed: true })
+      this.onClose()
+    }
     if (this.state.initLoad) {
       this.setState({ initLoad: false })
     }
@@ -1260,7 +1270,8 @@ class CardDetailScreen extends React.Component {
       <ScrollView
         ref={ref => this.scrollViewRef = ref}
         onLayout={this.onLayoutScrollView.bind(this)}
-        onScroll={() => this.onScrollContent()}
+        onScroll={this.onScrollContent.bind(this)}
+        scrollEventThrottle={100}
       >
         <View style={[styles.ideaContentView, { minHeight }]}>
           {this.renderCoverImage}
@@ -1269,6 +1280,7 @@ class CardDetailScreen extends React.Component {
           {this.renderDocuments}
         </View>
 
+        {this.renderHeader}
         {this.renderOwnerAndTime}
         {this.renderCommentList}
       </ScrollView>
@@ -1366,7 +1378,7 @@ class CardDetailScreen extends React.Component {
         <Animated.View style={contentContainerStyle}>
           <SafeAreaView style={{ flex: 1 }}>
             {this.renderMainContent}
-            {this.renderHeader}
+            {/* {this.renderHeader} */}
             {this.renderFooter}
           </SafeAreaView>
         </Animated.View>
