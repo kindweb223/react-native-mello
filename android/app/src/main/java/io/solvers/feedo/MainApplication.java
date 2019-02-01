@@ -43,12 +43,9 @@ public class MainApplication extends Application implements ReactApplication {
     protected List<ReactPackage> getPackages() {
       return Arrays.<ReactPackage>asList(
           new MainReactPackage(),
-<<<<<<< HEAD:android/app/src/main/java/com/mello/MainApplication.java
             new RNGoogleSigninPackage(),
-=======
             new RNReactNativeHapticFeedbackPackage(),
             new RNInAppBrowserPackage(),
->>>>>>> develop:android/app/src/main/java/io/solvers/feedo/MainApplication.java
             new RNFirebasePackage(),
             new RNFirebaseAnalyticsPackage(),
             new SvgPackage(),
