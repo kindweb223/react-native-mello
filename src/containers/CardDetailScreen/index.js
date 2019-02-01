@@ -111,7 +111,8 @@ class CardDetailScreen extends React.Component {
       initLoad: true,
       position: new Animated.ValueXY(),
       size: new Animated.ValueXY(),
-      cardClosed: false
+      cardClosed: false,
+      cardPadding: 0
     };
 
     this.selectedFile = null;
@@ -723,6 +724,14 @@ class CardDetailScreen extends React.Component {
       this.onUpdateCard()
     }
 
+    let { cardPadding } = this.state
+    if (cardPadding !== 0 && Math.abs(cardPadding - 20) > 3) cardPadding = 20
+
+    this._width = this._width + 2 * cardPadding
+    this._height = this._height + 2 * cardPadding
+    this._x = this._x - cardPadding
+    this._y = this._y - 5.5 * cardPadding
+
     this.setState({
       originalCardTopY: this.props.intialLayout.py,
       originalCardBottomY: this.props.intialLayout.py + this.props.intialLayout.height,
@@ -1000,6 +1009,7 @@ class CardDetailScreen extends React.Component {
       height: this.state.size.y,
       top: this.state.position.y,
       left: this.state.position.x,
+      padding: this.state.cardPadding,
     };
     let imageFiles = _.filter(card.currentCard.files, file => file.fileType === 'MEDIA');
 
@@ -1253,7 +1263,12 @@ class CardDetailScreen extends React.Component {
 
   onScrollContent(event) {
     const scrollY = event.nativeEvent.contentOffset.y
-    if (scrollY < -100 && !this.state.cardClosed ) {
+
+    if (scrollY <= 0) {
+      this.setState({ cardPadding: Math.abs(scrollY / 4)})
+    }
+
+    if (scrollY < -80 && !this.state.cardClosed ) {
       this.setState({ cardClosed: true })
       this.onClose()
     }
@@ -1364,6 +1379,8 @@ class CardDetailScreen extends React.Component {
 
     let contentContainerStyle = {
       paddingTop: 0,
+      // paddingLeft: this.state.cardPadding,
+      // paddingRight: this.state.cardPadding,
       height: CONSTANTS.SCREEN_HEIGHT,
       backgroundColor: '#fff',
     }
