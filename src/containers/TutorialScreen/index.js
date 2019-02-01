@@ -4,7 +4,8 @@ import {
   View,
   Text,
   TouchableOpacity,
-  Image
+  Image,
+  BackHandler
 } from 'react-native'
 import { connect } from 'react-redux'
 import { Actions } from 'react-native-router-flux'
@@ -38,7 +39,19 @@ class TutorialScreen extends React.Component {
 
   componentDidMount() {
     Analytics.setCurrentScreen('TutorialScreen')
+
+    BackHandler.addEventListener('hardwareBackPress', this.handleBackButton);
   }
+
+  componentWillUnmount() {
+    BackHandler.removeEventListener('hardwareBackPress', this.handleBackButton);
+  }
+
+  handleBackButton = () => {
+    //nothing happens
+    return true;
+  }
+
   componentWillReceiveProps(nextProps) {
     if (nextProps.prevPage === 'login') {
       this.onSkip(false)
