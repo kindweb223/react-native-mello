@@ -12,6 +12,7 @@ import {
   ScrollView,
   AsyncStorage,
   SafeAreaView,
+  Platform,
 } from 'react-native'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
@@ -33,6 +34,7 @@ import _ from 'lodash';
 import Modal from 'react-native-modal';
 import moment from 'moment'
 import SafariView from "react-native-safari-view";
+import InAppBrowser from 'react-native-inappbrowser-reborn'
 import SharedGroupPreferences from 'react-native-shared-group-preferences';
 
 import { 
@@ -231,7 +233,10 @@ class CardNewScreen extends React.Component {
       // success in getting a file upload url
       loading = true;
       // Image resizing...
-      if (this.selectedFileMimeType.indexOf('image/') !== -1) {
+      const fileType = (Platform.OS === 'ios') ? this.selectedFileMimeType : this.selectedFile.type;
+      console.log('selectedFile: ', this.selectedFile);
+      if (fileType.indexOf('image/') !== -1)
+      {
         // https://www.built.io/blog/improving-image-compression-what-we-ve-learned-from-whatsapp
         let actualHeight = this.selectedFile.height;
         let actualWidth = this.selectedFile.width;
@@ -240,36 +245,40 @@ class CardNewScreen extends React.Component {
         let imgRatio = actualWidth/actualHeight;
         let maxRatio = maxWidth/maxHeight;
 
-        if (actualHeight > maxHeight || actualWidth > maxWidth) {
-          if(imgRatio < maxRatio){
-              //adjust width according to maxHeight
-              imgRatio = maxHeight / actualHeight;
-              actualWidth = imgRatio * actualWidth;
-              actualHeight = maxHeight;
+        console.log(this.selectedFile, actualHeight, actualWidth);
+        if (actualHeight !== undefined && actualWidth !== undefined)
+        {
+          if (actualHeight > maxHeight || actualWidth > maxWidth) {
+            if(imgRatio < maxRatio){
+                //adjust width according to maxHeight
+                imgRatio = maxHeight / actualHeight;
+                actualWidth = imgRatio * actualWidth;
+                actualHeight = maxHeight;
+            }
+            else if(imgRatio > maxRatio){
+                //adjust height according to maxWidth
+                imgRatio = maxWidth / actualWidth;
+                actualHeight = imgRatio * actualHeight;
+                actualWidth = maxWidth;
+            }
+            else{
+                actualHeight = maxHeight;
+                actualWidth = maxWidth;
+            }
           }
-          else if(imgRatio > maxRatio){
-              //adjust height according to maxWidth
-              imgRatio = maxWidth / actualWidth;
-              actualHeight = imgRatio * actualHeight;
-              actualWidth = maxWidth;
-          }
-          else{
-              actualHeight = maxHeight;
-              actualWidth = maxWidth;
-          }
-        }
 
-        ImageResizer.createResizedImage(this.selectedFile.uri, actualWidth, actualHeight, CONSTANTS.IMAGE_COMPRESS_FORMAT, CONSTANTS.IMAGE_COMPRESS_QUALITY, 0, null)
-          .then((response) => {
-            console.log('Image compress Success!');
-            this.props.uploadFileToS3(nextProps.card.fileUploadUrl.uploadUrl, response.uri, this.selectedFileName, this.selectedFileMimeType);
-          }).catch((error) => {
-            console.log('Image compress error: ', error);
-            this.props.uploadFileToS3(nextProps.card.fileUploadUrl.uploadUrl, this.selectedFile.uri, this.selectedFileName, this.selectedFileMimeType);
-          });
-        return;
+          ImageResizer.createResizedImage(this.selectedFile.uri, actualWidth, actualHeight, CONSTANTS.IMAGE_COMPRESS_FORMAT, CONSTANTS.IMAGE_COMPRESS_QUALITY, 0, null)
+            .then((response) => {
+              console.log('Image compress Success!');
+              this.props.uploadFileToS3(nextProps.card.fileUploadUrl.uploadUrl, response.uri, this.selectedFileName, fileType);
+            }).catch((error) => {
+              console.log('Image compress error: ', error);
+              this.props.uploadFileToS3(nextProps.card.fileUploadUrl.uploadUrl, this.selectedFile.uri, this.selectedFileName, fileType);
+            });
+          return;
+        }
       }
-      this.props.uploadFileToS3(nextProps.card.fileUploadUrl.uploadUrl, this.selectedFile.uri, this.selectedFileName, this.selectedFileMimeType);
+      this.props.uploadFileToS3(nextProps.card.fileUploadUrl.uploadUrl, this.selectedFile.uri, this.selectedFileName, fileType);
     } else if (this.props.card.loading !== types.UPLOAD_FILE_PENDING && nextProps.card.loading === types.UPLOAD_FILE_PENDING) {
       // uploading a file
       loading = true;
@@ -282,12 +291,13 @@ class CardNewScreen extends React.Component {
       const {
         objectKey,
       } = this.props.card.fileUploadUrl;
+      const fileType = (Platform.OS === 'ios') ? this.selectedFileMimeType : this.selectedFile.type;
       const { width, height } = await this.getImageSize(this.selectedFile.uri);
       const metadata = {
         width,
         height
       }
-      this.props.addFile(id, this.selectedFileType, this.selectedFileMimeType, this.selectedFileName, objectKey, metadata);
+      this.props.addFile(id, this.selectedFileType, fileType, this.selectedFileName, objectKey, metadata);
     } else if (this.props.card.loading !== types.ADD_FILE_PENDING && nextProps.card.loading === types.ADD_FILE_PENDING) {
       // adding a file
       loading = true;
@@ -614,15 +624,19 @@ class CardNewScreen extends React.Component {
 
     this.keyboardWillShowSubscription = Keyboard.addListener('keyboardWillShow', (e) => this.keyboardWillShow(e));
     this.keyboardWillHideSubscription = Keyboard.addListener('keyboardWillHide', (e) => this.keyboardWillHide(e));
-    this.safariViewShowSubscription = SafariView.addEventListener('onShow', () => this.safariViewShow());
-    this.safariViewDismissSubscription = SafariView.addEventListener('onDismiss', () => this.safariViewDismiss());
+    if (Platform.OS === 'ios') {
+      this.safariViewShowSubscription = SafariView.addEventListener('onShow', () => this.safariViewShow());
+      this.safariViewDismissSubscription = SafariView.addEventListener('onDismiss', () => this.safariViewDismiss());
+    }
   }
 
   componentWillUnmount() {
     this.keyboardWillShowSubscription.remove();
     this.keyboardWillHideSubscription.remove();
-    this.safariViewShowSubscription.remove();
-    this.safariViewDismissSubscription.remove();
+    if (Platform.OS === 'ios') {
+      this.safariViewShowSubscription.remove();
+      this.safariViewDismissSubscription.remove();
+    }
   }
 
   keyboardWillShow(e) {
@@ -875,7 +889,31 @@ class CardNewScreen extends React.Component {
   }
 
   onAddMedia() {
-    this.imagePickerActionSheetRef.show();
+    Permissions.checkMultiple(['camera', 'photo']).then(response => {
+      if (response.camera === 'authorized' && response.photo === 'authorized') {
+        //permission already allowed
+        this.imagePickerActionSheetRef.show();
+      }
+      else {
+        Permissions.request('camera').then(response => {
+          if (response === 'authorized') {
+            //camera permission was authorized
+            Permissions.request('photo').then(response => {
+              if (response === 'authorized') {
+                //photo permission was authorized
+                this.imagePickerActionSheetRef.show();
+              }
+              else if (Platform.OS === 'ios') {
+                Permissions.openSettings();
+              }    
+            });
+          }
+          else if (Platform.OS === 'ios') {
+            Permissions.openSettings();
+          }
+        });
+      }
+    });
   }
 
   onAddDocument() {
@@ -989,34 +1027,10 @@ class CardNewScreen extends React.Component {
         
     if (index === 0) {
       // from camera
-      Permissions.check('camera').then(response => {
-        if (response === 'authorized') {
-          this.pickMediaFromCamera(options);
-        } else if (response === 'undetermined') {
-          Permissions.request('camera').then(response => {
-            if (response === 'authorized') {
-              this.pickMediaFromCamera(options);
-            }
-          });
-        } else {
-          Permissions.openSettings();
-        }
-      });
+      this.pickMediaFromCamera(options);
     } else if (index === 1) {
       // from library
-      Permissions.check('photo').then(response => {
-        if (response === 'authorized') {
-          this.pickMediaFromLibrary(options);
-        } else if (response === 'undetermined') {
-          Permissions.request('photo').then(response => {
-            if (response === 'authorized') {
-              this.pickMediaFromLibrary(options);
-            }
-          });
-        } else {
-          Permissions.openSettings();
-        }
-      });
+      this.pickMediaFromLibrary(options);
     }
   }
 
@@ -1581,7 +1595,7 @@ class CardNewScreen extends React.Component {
       contentContainerStyle = {
         paddingTop: 0,
         paddingBottom: this.animatedKeyboardHeight,
-        height: CONSTANTS.SCREEN_HEIGHT,
+        height: '100%',
         backgroundColor: '#fff',
       }
     }

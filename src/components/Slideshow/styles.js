@@ -12,8 +12,6 @@ const styles = StyleSheet.create({
     marginBottom: -30
   },
   bubbleView: {
-    position: 'absolute',
-    bottom: 0,
     flexDirection: 'row',
     width: '100%',
     alignItems: 'center',
