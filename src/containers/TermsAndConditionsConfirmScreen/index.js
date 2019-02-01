@@ -29,7 +29,7 @@ class TermsAndConditionsConfirmScreen extends React.Component {
     const { userInfo } = this.props.user
 
     const data = {
-      tandcAccepted: false
+      tandcAccepted: true
     }
     this.props.updateProfile(userInfo.id, data)
 
