@@ -11,7 +11,8 @@ import {
   Image,
   SafeAreaView,
   AsyncStorage,
-  Platform
+  Platform,
+  BackHandler
 } from 'react-native'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
@@ -79,11 +80,6 @@ class NewFeedScreen extends React.Component {
     this.animatedShow = new Animated.Value(0);
     this.animatedKeyboardHeight = new Animated.Value(0);
     this.animatedTagTransition = new Animated.Value(1);
-  }
-
-  componentDidMount() {
-    Analytics.setCurrentScreen('NewFeedScreen')
-    this.setState({ feedName: this.props.initFeedName })
   }
 
   UNSAFE_componentWillReceiveProps(nextProps) {
@@ -222,7 +218,8 @@ class NewFeedScreen extends React.Component {
   }
 
   componentDidMount() {
-    console.log('Current Feedo : ', this.props.feedo.currentFeed);
+    Analytics.setCurrentScreen('NewFeedScreen')
+
     Animated.timing(this.animatedShow, {
       toValue: 1,
       duration: CONSTANTS.ANIMATEION_MILLI_SECONDS,
@@ -241,11 +238,20 @@ class NewFeedScreen extends React.Component {
     this.keyboardWillShowSubscription = Keyboard.addListener('keyboardWillShow', (e) => this.keyboardWillShow(e));
     this.keyboardWillHideSubscription = Keyboard.addListener('keyboardWillHide', (e) => this.keyboardWillHide(e));
     this.textInputFeedNameRef.focus();
+
+    BackHandler.addEventListener('hardwareBackPress', this.handleBackButton);
   }
 
   componentWillUnmount() {
     this.keyboardWillShowSubscription.remove();
     this.keyboardWillHideSubscription.remove();
+    BackHandler.removeEventListener('hardwareBackPress', this.handleBackButton);
+  }
+
+  handleBackButton = () => {
+    console.log('handleBackButton')
+    this.onOpenActionSheet()
+    return true;
   }
 
   keyboardWillShow(e) {

@@ -10,7 +10,8 @@ import {
   ActivityIndicator,
   RefreshControl,
   Animated,
-  Alert
+  Alert,
+  BackHandler
 } from 'react-native'
 
 import { connect } from 'react-redux'
@@ -112,6 +113,17 @@ class NotificationScreen extends React.Component {
 
     this.setState({ invitedFeedList, activityFeedList })
     this.setActivityFeeds(activityFeedList, invitedFeedList)
+
+    BackHandler.addEventListener('hardwareBackPress', this.handleBackButton);
+  }
+
+  componentWillUnmount() {
+    BackHandler.removeEventListener('hardwareBackPress', this.handleBackButton);
+  }
+
+  handleBackButton = () => {
+    Actions.pop()
+    return true;
   }
 
   UNSAFE_componentWillReceiveProps(nextProps) {

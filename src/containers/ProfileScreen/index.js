@@ -6,7 +6,8 @@ import {
   Image,
   ScrollView,
   FlatList,
-  Platform
+  Platform,
+  BackHandler
 } from 'react-native'
 import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
@@ -68,8 +69,20 @@ class ProfileScreen extends React.Component {
     Analytics.setCurrentScreen('ProfileScren')
 
     this.setState({ userInfo: this.props.user.userInfo })
+
+    BackHandler.addEventListener('hardwareBackPress', this.handleBackButton);
   }
 
+  componentWillUnmount() {
+    BackHandler.removeEventListener('hardwareBackPress', this.handleBackButton);
+  }
+
+  handleBackButton = () => {
+    Actions.pop()
+    return true;
+  }
+
+  
   UNSAFE_componentWillReceiveProps(nextProps) {
     const { user } = nextProps
 

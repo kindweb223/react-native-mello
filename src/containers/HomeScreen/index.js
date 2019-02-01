@@ -14,7 +14,7 @@ import {
   Clipboard,
   Alert,
   Share,
-  NativeModules
+  BackHandler
 } from 'react-native'
 import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
@@ -227,10 +227,18 @@ class HomeScreen extends React.Component {
 
     AppState.addEventListener('change', this.onHandleAppStateChange.bind(this));
     appOpened(this.props.user.userInfo.id);
+
+    BackHandler.addEventListener('hardwareBackPress', this.handleBackButton);
   }
 
   componentWillUnmount() {
     AppState.removeEventListener('change', this.onHandleAppStateChange);
+    BackHandler.removeEventListener('hardwareBackPress', this.handleBackButton);
+  }
+
+  handleBackButton = () => {
+    //nothing happens
+    return true;
   }
 
   static getDerivedStateFromProps(nextProps, prevState) {

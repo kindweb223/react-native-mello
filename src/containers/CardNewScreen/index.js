@@ -13,6 +13,7 @@ import {
   AsyncStorage,
   SafeAreaView,
   Platform,
+  BackHandler
 } from 'react-native'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
@@ -628,6 +629,8 @@ class CardNewScreen extends React.Component {
       this.safariViewShowSubscription = SafariView.addEventListener('onShow', () => this.safariViewShow());
       this.safariViewDismissSubscription = SafariView.addEventListener('onDismiss', () => this.safariViewDismiss());
     }
+
+    BackHandler.addEventListener('hardwareBackPress', this.handleBackButton);
   }
 
   componentWillUnmount() {
@@ -637,6 +640,13 @@ class CardNewScreen extends React.Component {
       this.safariViewShowSubscription.remove();
       this.safariViewDismissSubscription.remove();
     }
+
+    BackHandler.removeEventListener('hardwareBackPress', this.handleBackButton);
+  }
+  
+  handleBackButton = () => {
+    this.props.shareUrl !== '' && this.props.shareImageUrls.length > 0 ? Actions.pop() : this.props.onClose()
+    return true;
   }
 
   keyboardWillShow(e) {

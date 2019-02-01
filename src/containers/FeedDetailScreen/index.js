@@ -14,7 +14,8 @@ import {
   AppState,
   Clipboard,
   Share,
-  Platform
+  Platform,
+  BackHandler
 } from 'react-native'
 
 import { connect } from 'react-redux'
@@ -193,12 +194,20 @@ class FeedDetailScreen extends React.Component {
     this.setState({ loading: true })
     this.props.getFeedDetail(data.id);
     AppState.addEventListener('change', this.onHandleAppStateChange);
+
+    BackHandler.addEventListener('hardwareBackPress', this.handleBackButton);
   }
 
   componentWillUnmount() {
     AppState.removeEventListener('change', this.onHandleAppStateChange);
+    BackHandler.removeEventListener('hardwareBackPress', this.handleBackButton);
   }
 
+  handleBackButton = () => {
+    this.backToDashboard();
+    return true;
+  }
+  
   async UNSAFE_componentWillReceiveProps(nextProps) {
     const { feedo, card } = nextProps
 
