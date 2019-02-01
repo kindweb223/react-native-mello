@@ -8,6 +8,10 @@ target 'Mello' do
   # Pods for Mello
   pod 'Firebase/Core'
 
+  pod 'RNInAppBrowser', :path => '../node_modules/react-native-inappbrowser-reborn'
+
+  pod 'react-native-haptic-feedback', :path => '../node_modules/react-native-haptic-feedback'
+
 end
 
 target 'MelloEx' do

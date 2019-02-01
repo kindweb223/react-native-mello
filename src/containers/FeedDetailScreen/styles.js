@@ -35,7 +35,6 @@ const styles = StyleSheet.create({
     width: '100%',
     height: NAV_BAR_HEIGHT,
     paddingRight: CONSTANTS.PADDING,
-    backgroundColor: '#fff',
     zIndex: 11,
     flexDirection: 'row',
     justifyContent: 'space-between',
@@ -94,6 +93,7 @@ const styles = StyleSheet.create({
     right: 0,
     top: 0,
     bottom: 0,
+    zIndex: 15,
     backgroundColor: 'transparent',
   },
   settingMenuView: {
