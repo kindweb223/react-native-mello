@@ -175,6 +175,11 @@ class HomeScreen extends React.Component {
     }
   }
 
+  onSkipShareWidget = () => {
+    AsyncStorage.setItem('permissionInfo', JSON.stringify('true'))
+    this.setState({ showSharePermissionModal: false, enableShareWidget: false })
+  }
+
   onEnableShareWidget = () => {
     AsyncStorage.setItem('permissionInfo', JSON.stringify('true'))
     this.setState({ showSharePermissionModal: false, enableShareWidget: true })
@@ -1479,7 +1484,7 @@ class HomeScreen extends React.Component {
           onModalHide={() => this.onCloseSharePermissionModal()}
         >
           <ShareWidgetPermissionModal
-            onClose={() => this.onEnableShareWidget()}
+            onClose={() => this.onSkipShareWidget()}
             onEnableShareWidget={() => this.onEnableShareWidget()}
           />
         </Modal>
