@@ -8,11 +8,15 @@ import {
 import PropTypes from 'prop-types'
 import styles from './styles'
 
-const MENU_ITEMS = ['Add image', 'Add file', 'Move', 'Delete']
+const MENU_ITEMS = ['Edit note', 'Add image', 'Add file', 'Move', 'Delete']
 
 class CardControlMenuComponent extends React.Component {
   onHandleAction(item) {
-    if (item == 'Add image') {
+    if (item == 'Edit note') {
+      if (this.props.onEditIdea) {
+        this.props.onEditIdea();
+      }
+    } else if (item == 'Add image') {
       if (this.props.onAddImage) {
         this.props.onAddImage();
       }
@@ -61,6 +65,7 @@ class CardControlMenuComponent extends React.Component {
 }
 
 CardControlMenuComponent.propTypes = {
+  onEditIdea: PropTypes.func.isRequired,
   onAddImage: PropTypes.func.isRequired,
   onAddFile: PropTypes.func.isRequired,
   onMove: PropTypes.func.isRequired,

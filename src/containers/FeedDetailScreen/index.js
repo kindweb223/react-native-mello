@@ -299,7 +299,16 @@ class FeedDetailScreen extends React.Component {
       })
 
       this.setState({ currentBackFeed: currentFeed }, () => {
-        this.filterCards(currentFeed)
+        let redrawMasonry = false
+
+        if (feedo.loading === 'UPDATE_CARD_FULFILLED' ||
+          feedo.loading === 'ADD_CARD_COMMENT_FULFILLED' ||
+          feedo.loading === 'DELETE_CARD_COMMENT_FULFILLED') 
+        {
+          redrawMasonry = true
+        }
+        
+        this.filterCards(currentFeed, redrawMasonry)
       })
 
       if (feedo.loading === 'PUBNUB_GET_FEED_DETAIL_FULFILLED' || feedo.loading === 'GET_CARD_FULFILLED' ||
@@ -412,7 +421,7 @@ class FeedDetailScreen extends React.Component {
     AsyncStorage.setItem('CardBubbleState', JSON.stringify(data));
   }
 
-  filterCards = (currentFeed) => {
+  filterCards = (currentFeed, redrawMasonry = true) => {
     const { currentBackFeed, filterShowType, filterSortType } = this.state
     const { ideas } = currentFeed
     let filterIdeas = {}, sortIdeas = {}
@@ -459,7 +468,7 @@ class FeedDetailScreen extends React.Component {
       }
     })
 
-    if (this.state.viewPreference === 'MASONRY' && this.refs.masonry) {
+    if (this.state.viewPreference === 'MASONRY' && this.refs.masonry && redrawMasonry) {
       this.setMasonryData(sortIdeas)
     }
   }
