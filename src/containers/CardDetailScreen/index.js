@@ -708,12 +708,14 @@ class CardDetailScreen extends React.Component {
     const { cardOption } = this.state
 
     if (cardOption === 1) {
+      this.onPressIdea()
+    } else if (cardOption === 2) {
       this.onAddFile()
-    } else if (cardOption === 1) {
-      this.onAddDocument()
     } else if (cardOption === 3) {
-      this.props.onMoveCard(this.props.card.currentCard.id)
+      this.onAddDocument()
     } else if (cardOption === 4) {
+      this.props.onMoveCard(this.props.card.currentCard.id)
+    } else if (cardOption === 5) {
       setTimeout(() => {
         this.deleteActionSheet.show()
       }, 200)
@@ -1342,10 +1344,11 @@ class CardDetailScreen extends React.Component {
         >
           <Animated.View style={styles.settingCardMenuView}>
             <CardControlMenuComponent
-              onAddImage={() => this.handleControlMenu(1)}
-              onAddFile={() => this.handleControlMenu(2)}
-              onMove={() => this.handleControlMenu(3)}
-              onDelete={() => this.handleControlMenu(4)}
+              onEditIdea={() => this.handleControlMenu(1)}
+              onAddImage={() => this.handleControlMenu(2)}
+              onAddFile={() => this.handleControlMenu(3)}
+              onMove={() => this.handleControlMenu(4)}
+              onDelete={() => this.handleControlMenu(5)}
             />
           </Animated.View>
         </Modal>
