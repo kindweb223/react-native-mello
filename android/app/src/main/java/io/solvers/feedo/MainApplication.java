@@ -3,6 +3,7 @@ package io.solvers.feedo;
 import android.app.Application;
 
 import com.facebook.react.ReactApplication;
+import com.rnfs.RNFSPackage;
 import com.mkuczera.RNReactNativeHapticFeedbackPackage;
 import com.proyecto26.inappbrowser.RNInAppBrowserPackage;
 import io.invertase.firebase.RNFirebasePackage;
@@ -42,6 +43,7 @@ public class MainApplication extends Application implements ReactApplication {
     protected List<ReactPackage> getPackages() {
       return Arrays.<ReactPackage>asList(
           new MainReactPackage(),
+            new RNFSPackage(),
             new RNReactNativeHapticFeedbackPackage(),
             new RNInAppBrowserPackage(),
             new RNFirebasePackage(),

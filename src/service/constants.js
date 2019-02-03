@@ -83,4 +83,7 @@ export default {
   MODAL_OK: 1,
   MODAL_CLOSE: 2,
   
+  // file path in DocumentDirectoryPath 
+  PRIVACY_POLICE: '/MELLO_PRIVACY_POLICY.txt',
+  TERMS_CONDITIONS: '/MELLO_TERMS_CONDITIONS.txt',
 }
