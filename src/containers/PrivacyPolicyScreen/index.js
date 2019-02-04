@@ -9,7 +9,6 @@ import { Actions } from 'react-native-router-flux'
 import Ionicons from 'react-native-vector-icons/Ionicons'
 import { MarkdownView } from 'react-native-markdown-view'
 import RNFetchBlob from 'rn-fetch-blob'
-import RNFS from 'react-native-fs'
 import LoadingScreen from '../LoadingScreen'
 import COLORS from '../../service/colors'
 import styles from './styles'
@@ -18,7 +17,6 @@ import { PRIVACY_POLICY_URL } from '../../service/api'
 import Analytics from '../../lib/firebase'
 import CONSTANTS from '../../service/constants'
 
-const filePath = RNFS.DocumentDirectoryPath + CONSTANTS.PRIVACY_POLICE;
 
 class PrivacyPolicyScreen extends React.Component {
   static renderLeftButton(props) {
@@ -46,45 +44,25 @@ class PrivacyPolicyScreen extends React.Component {
       markdownText: '',
     }
   }
-
+  
   async componentWillMount() {
     Analytics.setCurrentScreen('PrivacyPolicyScreen')
 
     this.setState({ loading: true })
 
-    await RNFS.readFile(filePath, 'utf8')
-    .then((contents) => {
-      // read the file contents
-      console.log('read success');
-      this.setState({ markdownText: contents })
+    await RNFetchBlob.fetch('GET', PRIVACY_POLICY_URL)
+    .then((res) => {
       this.setState({ loading: false })
+      let status = res.info().status
+      if (status === 200) {
+        let text = res.text()
+        this.setState({ markdownText: text })
+      }
     })
-    .catch((err) => {
-
-      RNFetchBlob.fetch('GET', PRIVACY_POLICY_URL)
-      .then((res) => {
-        let status = res.info().status
-        if (status === 200) {
-          let text = res.text()
-          this.setState({ markdownText: text })
-
-          // write the file
-          RNFS.writeFile(filePath, text, 'utf8')
-          .then((success) => {
-            console.log('FILE WRITTEN!');
-          })
-          .catch((err) => {
-            console.log(err.message);
-          });
-          this.setState({ loading: false })
-        }
-      })
-      .catch((errorMessage, statusCode) => {
-        this.setState({ loading: false })
-        console.log('errorMessage: ', errorMessage)
-      })
-  
-    });
+    .catch((errorMessage, statusCode) => {
+      this.setState({ loading: false })
+      console.log('errorMessage: ', errorMessage)
+    })
   }
 
 
