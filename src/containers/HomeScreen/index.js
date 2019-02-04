@@ -293,11 +293,13 @@ class HomeScreen extends React.Component {
           )
         })
 
-        feedoList = orderBy(
-          filter(feedoList, item => item.status === 'PUBLISHED'),
-          ['publishedDate'],
-          ['desc']
-        )
+        if (feedo.loading !== 'UPDATE_CARD_FULFILLED') {
+          feedoList = orderBy(
+            filter(feedoList, item => item.status === 'PUBLISHED'),
+            ['publishedDate'],
+            ['desc']
+          )
+        }
         
         if (prevState.tabIndex === 0) {
           feedoList = filter(feedoList, item => item.metadata.owner)
