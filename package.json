@@ -26,7 +26,7 @@
     "react-native-document-picker": "^2.1.0",
     "react-native-fast-image": "^4.0.14",
     "react-native-firebase": "^5.1.0",
-    "react-native-google-signin": "^1.0.2",
+    "react-native-google-signin": "^1.0.4",
     "react-native-haptic-feedback": "^1.4.2",
     "react-native-image-picker": "^0.26.10",
     "react-native-image-progress": "^1.1.1",
