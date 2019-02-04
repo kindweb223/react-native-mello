@@ -990,8 +990,8 @@ export default function feedo(state = initialState, action = {}) {
           ...currentFeed,
         },
         feedoList: [
-          ...restFeedoList,
-          { ...currentFeed }
+          { ...currentFeed },
+          ...restFeedoList
         ]
       }
     }
