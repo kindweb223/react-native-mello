@@ -645,7 +645,13 @@ class CardNewScreen extends React.Component {
   }
   
   handleBackButton = () => {
-    this.props.shareUrl !== '' && this.props.shareImageUrls.length > 0 ? Actions.pop() : this.props.onClose()
+    const { cardMode, viewMode } = this.props;
+    if (cardMode === CONSTANTS.SHARE_EXTENTION_CARD) {
+      this.props.shareUrl !== '' && this.props.shareImageUrls.length > 0 ? Actions.pop() : this.props.onClose()
+    }
+    if (viewMode === CONSTANTS.CARD_NEW) {
+      this.leaveActionSheetRef.show()
+    }
     return true;
   }
 
@@ -1714,6 +1720,7 @@ class CardNewScreen extends React.Component {
           animationOut="fadeOut"
           animationInTiming={500}
           onBackdropPress={() => this.setState({ isCopyLink: false })}
+          onBackButtonPress={() => this.setState({ isCopyLink: false })}
         >
           <View style={styles.successView}>
             <Octicons name="check" style={styles.successIcon} />

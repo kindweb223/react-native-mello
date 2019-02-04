@@ -1341,6 +1341,7 @@ class CardDetailScreen extends React.Component {
           animationInTiming={500}
           onModalHide={this.handleControlMenHide}
           onBackdropPress={() => this.setState({ isVisibleCardOpenMenu: false })}
+          onBackButtonPress={() => this.setState({ isVisibleCardOpenMenu: false })}
         >
           <Animated.View style={styles.settingCardMenuView}>
             <CardControlMenuComponent
@@ -1373,6 +1374,7 @@ class CardDetailScreen extends React.Component {
           animationOut="fadeOut"
           animationInTiming={500}
           onBackdropPress={() => this.setState({ isCopyLink: false })}
+          onBackButtonPress={() => this.setState({ isCopyLink: false })}
         >
           <View style={styles.successView}>
             <Octicons name="check" style={styles.successIcon} />
