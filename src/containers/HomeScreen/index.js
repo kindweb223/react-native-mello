@@ -553,7 +553,7 @@ class HomeScreen extends React.Component {
       }  
       this.showClipboardToast();
       
-      if (Actions.currentScene !== 'TutorialScreen') {
+      if (Actions.currentScene !== 'TutorialScreen' && Actions.currentScene !== 'LoginScreen') {
         this.props.getUserSession()
       }
     }
