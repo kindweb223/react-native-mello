@@ -5,11 +5,8 @@ import {
   Text,
   TouchableOpacity,
   Image,
-<<<<<<< HEAD
-  BackHandler
-=======
-  Alert
->>>>>>> develop
+  BackHandler,
+  Alert,
 } from 'react-native'
 import { connect } from 'react-redux'
 import { Actions } from 'react-native-router-flux'
