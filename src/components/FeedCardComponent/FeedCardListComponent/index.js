@@ -35,6 +35,13 @@ class FeedCardListComponent extends React.Component {
       isOnlyInvitee = true
     }
 
+    let thumbmailImg
+    if(idea.coverImage && idea.coverImage.length) {
+      thumbmailImg = idea.coverImage
+    } else if (idea.files && idea.files.length > 0) {
+      thumbmailImg = idea.files[0].thumbnailUrl
+    }
+
     return (
       <View style={[styles.container, longSelected && styles.selected]}>
         <View style={styles.leftContainer}>
@@ -96,11 +103,11 @@ class FeedCardListComponent extends React.Component {
           )}
         </View>
 
-        {idea.coverImage && idea.coverImage.length && 
+        {thumbmailImg && 
           <View style={styles.thumbnailsView}>
             <FastImage
               style={styles.thumbnails}
-              source={{ uri: idea.coverImage }}
+              source={{ uri: thumbmailImg }}
             />
           </View>
         }

@@ -3,6 +3,8 @@ package io.solvers.feedo;
 import android.app.Application;
 
 import com.facebook.react.ReactApplication;
+import fr.snapp.imagebase64.RNImgToBase64Package;
+import me.hauvo.thumbnail.RNThumbnailPackage;
 import co.apptailor.googlesignin.RNGoogleSigninPackage;
 import com.mkuczera.RNReactNativeHapticFeedbackPackage;
 import com.proyecto26.inappbrowser.RNInAppBrowserPackage;
@@ -43,6 +45,8 @@ public class MainApplication extends Application implements ReactApplication {
     protected List<ReactPackage> getPackages() {
       return Arrays.<ReactPackage>asList(
           new MainReactPackage(),
+            new RNImgToBase64Package(),
+            new RNThumbnailPackage(),
             new RNGoogleSigninPackage(),
             new RNReactNativeHapticFeedbackPackage(),
             new RNInAppBrowserPackage(),

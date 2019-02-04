@@ -280,15 +280,22 @@ export const uploadFileToS3 = (signedUrl, file, fileName, mimeType) => {
 /**
  * Add a file
  */
-export const addFile = (ideaId, fileType, contentType, name, objectKey, metadata) => {
+export const addFile = (ideaId, fileType, contentType, name, objectKey, metadata, base64String = '') => {
   console.log('METADAT: ', metadata)
   let url = `ideas/${ideaId}/files`
-  const data = {
+  let data = {
     fileType,
     contentType,
     name,
     objectKey,
     metadata
+  }
+
+  if (base64String) {
+    data = {
+      ...data,
+      thumbnailUrl: base64String
+    }
   }
   return {
     types: [types.ADD_FILE_PENDING, types.ADD_FILE_FULFILLED, types.ADD_FILE_REJECTED],

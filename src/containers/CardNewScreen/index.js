@@ -26,6 +26,8 @@ import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityI
 import ActionSheet from 'react-native-actionsheet'
 import ImagePicker from 'react-native-image-picker'
 import ImageResizer from 'react-native-image-resizer';
+import RNThumbnail from 'react-native-thumbnail';
+import ImgToBase64 from 'react-native-image-base64';
 
 import { DocumentPicker, DocumentPickerUtil } from 'react-native-document-picker'
 import Permissions from 'react-native-permissions'
@@ -155,8 +157,8 @@ class CardNewScreen extends React.Component {
     this.shareImageUrls = [];
     this.currentShareImageIndex = 0;
 
-    this.coverImageWidth = 0
-    this.coverImageHeight = 0
+    this.coverImageWidth = CONSTANTS.SCREEN_WIDTH
+    this.coverImageHeight = CONSTANTS.SCREEN_HEIGHT
 
     if (props.cardMode === CONSTANTS.SHARE_EXTENTION_CARD && props.shareUrl === '' && props.shareImageUrls.length) {
       props.shareImageUrls.forEach( async(imageUri, index) => {
@@ -297,7 +299,7 @@ class CardNewScreen extends React.Component {
         width,
         height
       }
-      this.props.addFile(id, this.selectedFileType, fileType, this.selectedFileName, objectKey, metadata);
+      this.props.addFile(id, this.selectedFileType, fileType, this.selectedFileName, objectKey, metadata, this.base64String);
     } else if (this.props.card.loading !== types.ADD_FILE_PENDING && nextProps.card.loading === types.ADD_FILE_PENDING) {
       // adding a file
       loading = true;
@@ -306,6 +308,12 @@ class CardNewScreen extends React.Component {
       const {
         id, 
       } = this.props.card.currentCard;
+
+      const currentCard = nextProps.card.currentCard;
+      if (currentCard.files && currentCard.files.length > 0) {
+        this.setState({ coverImage: currentCard.files[0].thumbnailUrl })
+      }
+
       const newImageFiles = _.filter(nextProps.card.currentCard.files, file => file.contentType.indexOf('image') !== -1);
       if (newImageFiles.length === 1 && !nextProps.card.currentCard.coverImage) {
         this.onSetCoverImage(newImageFiles[0].id);
@@ -932,6 +940,19 @@ class CardNewScreen extends React.Component {
             }
           }
           this.uploadFile(this.props.card.currentCard, response, type);
+
+          if (mimeType.indexOf('video') !== -1) {
+            RNThumbnail.get(response.uri).then((result) => {
+              ImageResizer.createResizedImage(result.path, result.width / 3, result.height / 3, CONSTANTS.IMAGE_COMPRESS_FORMAT, 50, 0, null)
+              .then((response) => {
+                ImgToBase64.getBase64String(response.uri)
+                  .then(base64String => this.base64String = 'data:image/png;base64,' + base64String)
+                  .catch(err => console.log(err));
+              }).catch((error) => {
+                console.log('Image compress error: ', error);
+              });
+            })
+          }
         }
       }      
     });
@@ -1771,7 +1792,7 @@ const mapDispatchToProps = dispatch => ({
   updateCard: (huntId, ideaId, title, idea, coverImage, files) => dispatch(updateCard(huntId, ideaId, title, idea, coverImage, files)),
   getFileUploadUrl: (huntId, ideaId) => dispatch(getFileUploadUrl(huntId, ideaId)),
   uploadFileToS3: (signedUrl, file, fileName, mimeType) => dispatch(uploadFileToS3(signedUrl, file, fileName, mimeType)),
-  addFile: (ideaId, fileType, contentType, name, objectKey, metadata) => dispatch(addFile(ideaId, fileType, contentType, name, objectKey, metadata)),
+  addFile: (ideaId, fileType, contentType, name, objectKey, metadata, base64String) => dispatch(addFile(ideaId, fileType, contentType, name, objectKey, metadata, base64String)),
   deleteFile: (ideaId, fileId) => dispatch(deleteFile(ideaId, fileId)),
   setCoverImage: (ideaId, fileId) => dispatch(setCoverImage(ideaId, fileId)),
   getOpenGraph: (url) => dispatch(getOpenGraph(url)),
