@@ -253,16 +253,22 @@ class LoginScreen extends React.Component {
         this.setState({ loading: false })
         if (error.code === statusCodes.SIGN_IN_CANCELLED) {
           // user cancelled the login flow
-        } else if (error.code === statusCodes.IN_PROGRESS) {
+        } 
+        else if (error.code === statusCodes.IN_PROGRESS) {
           // operation (f.e. sign in) is in progress already
-        } else if (error.code === statusCodes.PLAY_SERVICES_NOT_AVAILABLE) {
+          Alert.alert('Error', 'Sign in is in progress already')
+        } 
+        else if (error.code === statusCodes.PLAY_SERVICES_NOT_AVAILABLE) {
           // play services not available or outdated
-        } else {
+          Alert.alert('Error', 'You must enable Play Services to Sign in with Google')
+        } 
+        else {
           // some other error happened
+          Alert.alert('Error', 'Sign in with Google failed')
         }
       }
     } catch (err) {
-      Alert.alert('Warning', 'play services are not available')
+      Alert.alert('Error', 'You must enable Play Services to Sign in with Google')
     }
   }
 
