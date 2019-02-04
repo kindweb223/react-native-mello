@@ -1294,7 +1294,6 @@
 			isa = PBXGroup;
 			children = (
 				A4ED2C5426FB4A1DAD19663F /* libRNVectorIcons.a */,
-				63B0B597FA904A7BBE354801 /* libReactNativeHaptic.a */,
 				47BA3513B6514BE58476D7B4 /* libRNImagePicker.a */,
 				CEF9CE0D4C3B419DAD8284A6 /* libRNDocumentPicker.a */,
 				697061CC3ED34A79AE97EFA1 /* libReactNativePermissions.a */,
@@ -1377,6 +1376,7 @@
 				00DD1BFF1BD5951E006B06BC /* Bundle React Native code and images */,
 				A43563DD2138358C00A6D4EA /* Embed App Extensions */,
 				B509BBF721778AA6006ED535 /* Embed Frameworks */,
+				C946D844359990B9B2B11901 /* [CP] Copy Pods Resources */,
 			);
 			buildRules = (
 			);
@@ -2228,15 +2228,11 @@
 			buildActionMask = 2147483647;
 			files = (
 			);
-			inputFileListPaths = (
-			);
 			inputPaths = (
 				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
 				"${PODS_ROOT}/Manifest.lock",
 			);
 			name = "[CP] Check Pods Manifest.lock";
-			outputFileListPaths = (
-			);
 			outputPaths = (
 				"$(DERIVED_FILE_DIR)/Pods-Mello-checkManifestLockResult.txt",
 			);
@@ -2245,20 +2241,34 @@
 			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
 			showEnvVarsInLog = 0;
 		};
-		F8482088474C5A2FFC624808 /* [CP] Check Pods Manifest.lock */ = {
+		C946D844359990B9B2B11901 /* [CP] Copy Pods Resources */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
 			);
-			inputFileListPaths = (
+			inputPaths = (
+				"${SRCROOT}/Pods/Target Support Files/Pods-Mello/Pods-Mello-resources.sh",
+				"${PODS_ROOT}/GoogleSignIn/Resources/GoogleSignIn.bundle",
+			);
+			name = "[CP] Copy Pods Resources";
+			outputPaths = (
+				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/GoogleSignIn.bundle",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-Mello/Pods-Mello-resources.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		F8482088474C5A2FFC624808 /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
 			);
 			inputPaths = (
 				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
 				"${PODS_ROOT}/Manifest.lock",
 			);
 			name = "[CP] Check Pods Manifest.lock";
-			outputFileListPaths = (
-			);
 			outputPaths = (
 				"$(DERIVED_FILE_DIR)/Pods-MelloEx-checkManifestLockResult.txt",
 			);
