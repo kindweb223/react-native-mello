@@ -1481,6 +1481,7 @@ class HomeScreen extends React.Component {
           backdropOpacity={0.6}
           animationInTiming={500}
           onBackdropPress={() => this.setState({ showSharePermissionModal: false })}
+          onBackButtonPress={() => this.setState({ showSharePermissionModal: false })}
           onModalHide={() => this.onCloseSharePermissionModal()}
         >
           <ShareWidgetPermissionModal
@@ -1507,6 +1508,7 @@ class HomeScreen extends React.Component {
           backdropOpacity={0.6}
           animationInTiming={500}
           onBackdropPress={() => this.setState({ showShareConfirmModal: false })}
+          onBackButtonPress={() => this.setState({ showShareConfirmModal: false })}
         >
           <ShareWidgetConfirmModal
             onClose={() => this.setState({ showShareConfirmModal: false })}

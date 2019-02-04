@@ -48,7 +48,12 @@ class TutorialScreen extends React.Component {
   }
 
   handleBackButton = () => {
-    //nothing happens
+    
+    const {position} = this.state;
+    if (position > 0)
+    {
+      this.swiperRef.scrollBy(-1, true)
+    }
     return true;
   }
 
@@ -187,7 +192,6 @@ class TutorialScreen extends React.Component {
 
   render () {
     const { position } = this.state
-
     return (
       <View style={styles.container}>
         <SafeAreaView style={styles.safeView}>

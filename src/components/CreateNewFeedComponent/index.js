@@ -7,6 +7,7 @@ import {
   TouchableOpacity,
   TouchableWithoutFeedback,
   Animated,
+  BackHandler,
 } from 'react-native'
 import PropTypes from 'prop-types'
 
@@ -44,6 +45,17 @@ export default class CreateNewFeedComponent extends React.Component {
     Animated.spring(this.animatedShow, {
       toValue: 1,
     }).start();
+
+    BackHandler.addEventListener('hardwareBackPress', this.handleBackButton);
+  }
+
+  componentWillUnmount() {
+    BackHandler.removeEventListener('hardwareBackPress', this.handleBackButton);
+  }
+
+  handleBackButton = () => {
+    this.onPressBackdrop();
+    return true;
   }
 
   onPressBackdrop() {

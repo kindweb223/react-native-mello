@@ -1616,6 +1616,7 @@ class FeedDetailScreen extends React.Component {
           animationOutTiming={100}
           onModalHide={() => {}}
           onBackdropPress={() => this.closeShareModal()}
+          onBackButtonPress={() => this.closeShareModal()}
         >
           {
             COMMON_FUNC.isFeedOwnerEditor(currentFeed)
@@ -1642,6 +1643,7 @@ class FeedDetailScreen extends React.Component {
           animationInTiming={500}
           onModalHide={() => this.hideSettingMenu()}
           onBackdropPress={() => this.setState({ openMenu: false })}
+          onBackButtonPress={() => this.setState({ openMenu: false })}
         >
           <Animated.View style={styles.settingMenuView}>
             <FeedControlMenuComponent

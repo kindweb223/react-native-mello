@@ -138,6 +138,7 @@ class FeedActionBarComponent extends React.Component {
           animationInTiming={600}
           onModalHide={this.onSettingMenuHide}
           onBackdropPress={() => this.setState({ isSettingMenu: false })}
+          onBackButtonPress={() => this.setState({ isSettingMenu: false })}
         >
           <View style={[styles.settingMenuView, { right: settingMenuMargin }]}>
             <FlatList
