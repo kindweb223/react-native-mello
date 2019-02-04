@@ -380,3 +380,21 @@ export const closeClipboardToaster = () => {
     type: types.CLOSE_CLIPBOARD_TOASTER
   };
 }
+
+/**
+ * User signin with Google
+ */
+export const userGoogleSigin = (token) => {
+  console.log('TOKEN: ', token)
+  const url = 'auth/googleLogin'
+
+  return {
+    types: [types.USER_GOOGLE_SIGNIN_PENDING, types.USER_GOOGLE_SIGNIN_FULFILLED, types.USER_GOOGLE_SIGNIN_REJECTED],
+    promise:
+      axios({
+        method: 'post',
+        url,
+        data: { token }
+      })  
+  };
+}

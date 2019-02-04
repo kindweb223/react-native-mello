@@ -15,17 +15,20 @@ import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
 import { Actions } from 'react-native-router-flux'
 import Ionicons from 'react-native-vector-icons/Ionicons'
+import { GoogleSignin, statusCodes } from 'react-native-google-signin'
 import _ from 'lodash'
+
 import LoadingScreen from '../LoadingScreen'
 import TextInputComponent from '../../components/TextInputComponent'
 import Analytics from '../../lib/firebase'
-import { userSignIn, getUserSession, sendResetPasswordEmail } from '../../redux/user/actions'
+import { userSignIn, getUserSession, sendResetPasswordEmail, userGoogleSigin } from '../../redux/user/actions'
 import COLORS from '../../service/colors'
 import resolveError from '../../service/resolveError'
 import * as COMMON_FUNC from '../../service/commonFunc'
 import styles from './styles'
 
 const LOGO = require('../../../assets/images/Login/icon_40pt.png')
+const GOOGLE_ICON = require('../../../assets/images/Login/iconMediumGoogle.png')
 
 class LoginScreen extends React.Component {
   static renderLeftButton(props) {
@@ -89,6 +92,21 @@ class LoginScreen extends React.Component {
       }
 
       if (this.props.user.loading === 'USER_SIGNIN_PENDING' && user.loading === 'USER_SIGNIN_REJECTED') {
+        this.setState({ loading: false }, () => {
+          if (user.error) {
+            Alert.alert(
+              'Warning',
+              resolveError(user.error.code, user.error.message)
+            )
+          }
+        })
+      }
+
+      if (this.props.user.loading === 'USER_GOOGLE_SIGNIN_PENDING' && user.loading === 'USER_GOOGLE_SIGNIN_FULFILLED') {
+        this.props.getUserSession()
+      }
+  
+      if (this.props.user.loading === 'USER_GOOGLE_SIGNIN_PENDING' && user.loading === 'USER_GOOGLE_SIGNIN_REJECTED') {
         this.setState({ loading: false }, () => {
           if (user.error) {
             Alert.alert(
@@ -222,6 +240,32 @@ class LoginScreen extends React.Component {
     Actions.SignUpScreen()
   }
 
+  onGoogleSignIn = async () => {
+    try {
+      await GoogleSignin.hasPlayServices()
+      // google services are available
+
+      try {
+        this.setState({ loading: true })
+        const userInfo = await GoogleSignin.signIn()
+        this.props.userGoogleSigin(userInfo.idToken)
+      } catch(error) {
+        this.setState({ loading: false })
+        if (error.code === statusCodes.SIGN_IN_CANCELLED) {
+          // user cancelled the login flow
+        } else if (error.code === statusCodes.IN_PROGRESS) {
+          // operation (f.e. sign in) is in progress already
+        } else if (error.code === statusCodes.PLAY_SERVICES_NOT_AVAILABLE) {
+          // play services not available or outdated
+        } else {
+          // some other error happened
+        }
+      }
+    } catch (err) {
+      Alert.alert('Warning', 'play services are not available')
+    }
+  }
+
   render () {
     const {
       fieldErrors,
@@ -272,6 +316,13 @@ class LoginScreen extends React.Component {
               </View>
             </TouchableOpacity>
 
+            <TouchableOpacity onPress={() => this.onGoogleSignIn()} activeOpacity={0.8}>
+              <View style={styles.googleButtonView}>
+                <Image source={GOOGLE_ICON} />
+                <Text style={styles.googelButtonText}>Sign in with Google</Text>
+              </View>
+            </TouchableOpacity>
+
             <View style={styles.signupButtonView}>
               <Text style={[styles.btnSend, { color: COLORS.MEDIUM_GREY }]}>Don't have an account? </Text>
               <TouchableOpacity onPress={() => this.onSignUp()}>
@@ -305,6 +356,7 @@ const mapDispatchToProps = dispatch => ({
   userSignIn: (data) => dispatch(userSignIn(data)),
   getUserSession: () => dispatch(getUserSession()),
   sendResetPasswordEmail: (data) => dispatch(sendResetPasswordEmail(data)),
+  userGoogleSigin: (token) => dispatch(userGoogleSigin(token)),
 })
 
 export default connect(
