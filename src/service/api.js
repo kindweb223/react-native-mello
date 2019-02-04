@@ -40,3 +40,6 @@ export const PUBNUB_SUBSCRIBER_KEY = 'sub-c-ec322a90-a60e-11e8-bb88-163ac01f2f4e
 export const TAGS_FEATURE = false
 
 export const TRELLO_URL = 'https://trello.com/b/xqBylYZO/mello'
+
+// client ID of type WEB for your server (needed to verify user ID and offline access)
+export const GOOGLE_WEB_CLIENT_ID = '887924189900-cp9g9c2c4144b3o8uf5nr33dgf0mehod.apps.googleusercontent.com'

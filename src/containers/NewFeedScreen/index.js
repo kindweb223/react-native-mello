@@ -283,7 +283,7 @@ class NewFeedScreen extends React.Component {
     Analytics.logEvent('new_feed_create_new_feed', {})
 
     if (this.state.feedName === '') {
-      Alert.alert('', 'Please give your name a flow.', [{ text: 'Close' }]);
+      Alert.alert('', 'Please give your flow a name.', [{ text: 'Close' }]);
       return;
     }
 
