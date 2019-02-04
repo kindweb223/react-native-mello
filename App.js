@@ -46,7 +46,9 @@ axios.interceptors.response.use(
       AsyncStorage.removeItem('xAuthToken')
       SharedGroupPreferences.setItem('xAuthToken', null, CONSTANTS.APP_GROUP_TOKEN_IDENTIFIER)
 
-      Actions.LoginScreen({ type: 'replace' })
+      if (Actions.currentScene !== 'TutorialScreen') {
+        Actions.LoginScreen({ type: 'replace' })
+      }
       return
     }
     throw error
@@ -79,6 +81,7 @@ import ArchivedFeedScreen from './src/containers/ArchivedFeedScreen'
 import PrivacyPolicyScreen from './src/containers/PrivacyPolicyScreen'
 import NotificationScreen from './src/containers/NotificationScreen'
 import TabbarContainer from './src/navigations/TabbarContainer'
+import TermsAndConditionsConfirmScreen from './src/containers/TermsAndConditionsConfirmScreen'
 
 import { 
   getCardComments,
@@ -291,6 +294,7 @@ export default class Root extends React.Component {
           <Tabs key="tabs" tabBarComponent={TabbarContainer}>
             <Scene key="root">
               <Scene key="TutorialScreen" component={ TutorialScreen } hideNavBar panHandlers={null} />
+              <Scene key="TermsAndConditionsConfirmScreen" component={ TermsAndConditionsConfirmScreen } hideNavBar panHandlers={null} />
               <Scene key="LoginScreen" component={ LoginScreen } navigationBarStyle={styles.emptyBorderNavigationBar} />
               <Scene key="SignUpScreen" component={ SignUpScreen } navigationBarStyle={styles.emptyBorderNavigationBar} />
               <Scene key="SignUpConfirmScreen" component={ SignUpConfirmScreen } panHandlers={null} navigationBarStyle={styles.emptyBorderNavigationBar} />
