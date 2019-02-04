@@ -36,6 +36,14 @@
 				<string>demos.solvers.io</string>
 			</array>
 		</dict>
+		<dict>
+			<key>CFBundleTypeRole</key>
+			<string>Editor</string>
+			<key>CFBundleURLSchemes</key>
+			<array>
+				<string>com.googleusercontent.apps.887924189900-cp9g9c2c4144b3o8uf5nr33dgf0mehod</string>
+			</array>
+		</dict>
 	</array>
 	<key>CFBundleVersion</key>
 	<string>52</string>

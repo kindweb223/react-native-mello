@@ -139,9 +139,9 @@ class HomeScreen extends React.Component {
     this.animatedSelectFeed = new Animated.Value(1);
   }
 
-  showSharePermissionModal(permissionInfo, userInfo) {
+  showSharePermissionModal(permissionInfo) {
     // If we haven't asked to enable share widget before
-    if (!permissionInfo || permissionInfo.userId !== userInfo.id) {
+    if (!permissionInfo) {
         this.setState({ showSharePermissionModal: true })
     } 
   }
@@ -175,8 +175,13 @@ class HomeScreen extends React.Component {
     }
   }
 
+  onSkipShareWidget = () => {
+    AsyncStorage.setItem('permissionInfo', JSON.stringify('true'))
+    this.setState({ showSharePermissionModal: false, enableShareWidget: false })
+  }
+
   onEnableShareWidget = () => {
-    AsyncStorage.setItem('permissionInfo', JSON.stringify({ userId: this.props.user.userInfo.id, enabled: true }))
+    AsyncStorage.setItem('permissionInfo', JSON.stringify('true'))
     this.setState({ showSharePermissionModal: false, enableShareWidget: true })
   }
 
@@ -194,12 +199,12 @@ class HomeScreen extends React.Component {
         if (response === 'undetermined') {
           Permissions.request('notification').then(response => {
             // Then show share widget tip
-            this.showSharePermissionModal(permissionInfo, this.props.user.userInfo)
+            this.showSharePermissionModal(permissionInfo)
           });
         } 
         // If notification permissions already asked, show share widget tip
         else {
-          this.showSharePermissionModal(permissionInfo, this.props.user.userInfo)
+          this.showSharePermissionModal(permissionInfo)
         }
     });
 
@@ -555,7 +560,10 @@ class HomeScreen extends React.Component {
         // this.props.getActivityFeed(this.props.user.userInfo.id, { page: 0, size: PAGE_COUNT })            
       }  
       this.showClipboardToast();
-      this.props.getUserSession()
+      
+      if (Actions.currentScene !== 'TutorialScreen' && Actions.currentScene !== 'LoginScreen') {
+        this.props.getUserSession()
+      }
     }
     this.setState({appState: nextAppState});
   }
@@ -1485,7 +1493,7 @@ class HomeScreen extends React.Component {
           onModalHide={() => this.onCloseSharePermissionModal()}
         >
           <ShareWidgetPermissionModal
-            onClose={() => this.onEnableShareWidget()}
+            onClose={() => this.onSkipShareWidget()}
             onEnableShareWidget={() => this.onEnableShareWidget()}
           />
         </Modal>
