@@ -21,7 +21,8 @@ const styles = StyleSheet.create({
   imageCover: {
     width: 24,
     height: 24,
-    marginRight: 12,
+    marginRight: 10,
+    marginLeft: 10,
   },
   textLink: {
     flex: 1,
