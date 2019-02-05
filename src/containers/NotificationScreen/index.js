@@ -243,7 +243,7 @@ class NotificationScreen extends React.Component {
   renderInvitedFeedItem = (data) => {
     return (
       <View style={styles.itemView}>
-        <NotificationItemComponent data={data} />
+        <NotificationItemComponent data={data} avatarSize={58} />
       </View>
     )
   }
