@@ -744,6 +744,7 @@ class CardDetailScreen extends React.Component {
   }
 
   onAddDocument() {
+    setTimeout(() => {
     DocumentPicker.show({
       filetype: [DocumentPickerUtil.allFiles()],
     },(error, response) => {
@@ -763,6 +764,7 @@ class CardDetailScreen extends React.Component {
       }      
     });
     return;
+    }, 200)
   }
 
   onCloseEditCard() {

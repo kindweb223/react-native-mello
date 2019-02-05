@@ -46,7 +46,7 @@ class FeedCardExtendComponent extends React.Component {
         const ratio = coverImageData.metadata.width / cardWidth
         cardHeight = coverImageData.metadata.height / ratio
       } else {
-        cardHeight = 160
+        cardHeight = cardWidth / 2
       }
     }
 
