@@ -25,7 +25,7 @@ export const createCard = (huntId) => {
 /**
  * Update a card
  */
-export const updateCard = (huntId, ideaId, title, idea, coverImage, files) => {
+export const updateCard = (huntId, ideaId, title, idea, coverImage, files, isCreateCard) => {
   let url = `ideas/${ideaId}`
   const data = {
     status: 'PUBLISHED',
@@ -42,6 +42,7 @@ export const updateCard = (huntId, ideaId, title, idea, coverImage, files) => {
       url: url,
       data,
     }),
+    payload: isCreateCard
   };
 }
 

@@ -24,7 +24,8 @@ const initialState = {
   activityData: {},
   dummyDelCard: {},
   dummyMoveCard: {},
-  badgeCount: 0
+  badgeCount: 0,
+  isCreateCard: false
 };
 
 export default function feedo(state = initialState, action = {}) {
@@ -958,6 +959,7 @@ export default function feedo(state = initialState, action = {}) {
 
     case cardTypes.UPDATE_CARD_FULFILLED: {
       const { data } = action.result
+      const isCreateCard = action.payload
       const { currentFeed, feedoList } = state
       const ideaIndex = findIndex(currentFeed.ideas, idea => idea.id === data.id);
       if (ideaIndex === -1) {
@@ -986,6 +988,7 @@ export default function feedo(state = initialState, action = {}) {
       return {
         ...state,
         loading: 'UPDATE_CARD_FULFILLED',
+        isCreateCard,
         currentFeed: {
           ...currentFeed,
         },
