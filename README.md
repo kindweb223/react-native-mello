@@ -1,3 +1,8 @@
+# Setup
+npm install
+react-native link
+cd ios
+pod install
 
 # If build issues encountered with Google Signin
 watchman watch-del-all
