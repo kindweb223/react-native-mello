@@ -293,7 +293,7 @@ class HomeScreen extends React.Component {
           )
         })
 
-        if (feedo.loading !== 'UPDATE_CARD_FULFILLED') {
+        if (feedo.loading !== 'UPDATE_CARD_FULFILLED' || !feedo.isCreateCard) {
           feedoList = orderBy(
             filter(feedoList, item => item.status === 'PUBLISHED'),
             ['publishedDate'],
