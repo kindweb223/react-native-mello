@@ -193,20 +193,22 @@ class HomeScreen extends React.Component {
     let permissionInfo = JSON.parse(await AsyncStorage.getItem('permissionInfo'))
 
     // Check push notification
-    Permissions.check('notification')
-      .then(response => {
-        // Ask for notifications permission first
-        if (response === 'undetermined') {
-          Permissions.request('notification').then(response => {
-            // Then show share widget tip
+    if (Platform.OS === 'ios') {
+      Permissions.check('notification')
+        .then(response => {
+          // Ask for notifications permission first
+          if (response === 'undetermined') {
+            Permissions.request('notification').then(response => {
+              // Then show share widget tip
+              this.showSharePermissionModal(permissionInfo)
+            });
+          } 
+          // If notification permissions already asked, show share widget tip
+          else {
             this.showSharePermissionModal(permissionInfo)
-          });
-        } 
-        // If notification permissions already asked, show share widget tip
-        else {
-          this.showSharePermissionModal(permissionInfo)
-        }
-    });
+          }
+      });
+    }
 
     this.setState({ loading: true })
 

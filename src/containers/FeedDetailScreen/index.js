@@ -1110,7 +1110,29 @@ class FeedDetailScreen extends React.Component {
     });
   }
 
-  onAddDocument = () => {
+  onAddDocument() {
+    if (Platform.OS === 'ios') {
+      this.PickerDocumentShow();
+    }
+    else {
+      Permissions.check('storage').then(response => { //'storage' permission doesn't support on iOS
+        if (response === 'authorized') {
+          //permission already allowed
+          this.PickerDocumentShow();
+        }
+        else {
+          Permissions.request('storage').then(response => {
+            if (response === 'authorized') {
+              //storage permission was authorized
+              this.PickerDocumentShow();
+            }
+          });
+        }
+      });
+    }
+  }
+
+  PickerDocumentShow = () => {
     DocumentPicker.show({
       filetype: [DocumentPickerUtil.allFiles()],
     },(error, response) => {
