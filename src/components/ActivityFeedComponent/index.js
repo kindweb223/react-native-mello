@@ -110,7 +110,7 @@ class ActivityFeedComponent extends React.Component {
     }
 
     return (
-      <View>
+      <View style={styles.itemView}>
         <View style={styles.titleView}>
           <Text>
             <Text style={styles.title}>
@@ -149,7 +149,7 @@ class ActivityFeedComponent extends React.Component {
       <View style={styles.container}>
         <View style={styles.leftContainer}>
           <View style={styles.avatarView}>
-            <UserAvatarComponent user={instigatorInfo} size={38} />
+            <UserAvatarComponent user={instigatorInfo} size={58} />
           </View>
         </View>
 

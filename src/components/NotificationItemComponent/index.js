@@ -18,7 +18,7 @@ import {
 } from '../../redux/feedo/actions'
 import styles from './styles'
 
-const NotificationItemComponent = ({ data, hideTumbnail, updateInvitation, prevPage }) => {
+const NotificationItemComponent = ({ data, hideTumbnail, updateInvitation, prevPage, avatarSize }) => {
   const filteredIdeas = _.orderBy(
     _.filter(data.ideas, idea => idea.coverImage !== null && idea.coverImage !== ''),
     ['publishedDate'],
@@ -36,12 +36,12 @@ const NotificationItemComponent = ({ data, hideTumbnail, updateInvitation, prevP
   }
 
   const name = `${data.owner.firstName} ${data.owner.lastName}`
-
+  console.log('DATA: ', data)
   return (
     <View style={styles.container}>
-      <View style={styles.leftContainer}>
+      <View style={{ width: avatarSize + 12 }}>
         <View style={styles.avatarView}>
-          <UserAvatarComponent user={data.owner} size={38} />
+          <UserAvatarComponent user={data.owner} size={avatarSize} />
         </View>
       </View>
 
@@ -81,13 +81,15 @@ const NotificationItemComponent = ({ data, hideTumbnail, updateInvitation, prevP
 
 NotificationItemComponent.defaultProps = {
   hideTumbnail: false,
-  prevPage: 'activity'
+  prevPage: 'activity',
+  avatarSize: 38
 }
 
 NotificationItemComponent.propTypes = {
   data: PropTypes.objectOf(PropTypes.any),
   hideTumbnail: PropTypes.bool,
-  prevPage: PropTypes.string
+  prevPage: PropTypes.string,
+  avatarSize: PropTypes.number
 }
 
 const mapDispatchToProps = dispatch => ({
