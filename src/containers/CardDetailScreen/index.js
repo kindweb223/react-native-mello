@@ -210,12 +210,16 @@ class CardDetailScreen extends React.Component {
       const { id } = this.props.card.currentCard;
       const { objectKey } = this.props.card.fileUploadUrl;
       const fileType = (Platform.OS === 'ios') ? this.selectedFileMimeType : this.selectedFile.type;
-      const { width, height } = await this.getImageSize(this.selectedFile.uri);
-      const metadata = {
-        width,
-        height
+      if (fileType.indexOf('image/') !== -1) {
+        const { width, height } = await this.getImageSize(this.selectedFile.uri);
+        const metadata = {
+          width,
+          height
+        }
+        this.props.addFile(id, this.selectedFileType, fileType, this.selectedFileName, objectKey, metadata);
       }
-      this.props.addFile(id, this.selectedFileType, fileType, this.selectedFileName, objectKey, metadata);
+      else 
+        this.props.addFile(id, this.selectedFileType, fileType, this.selectedFileName, objectKey, null);
 
     } else if (this.props.card.loading !== types.ADD_FILE_PENDING && nextProps.card.loading === types.ADD_FILE_PENDING) {
       loading = true;
@@ -754,27 +758,49 @@ class CardDetailScreen extends React.Component {
   }
 
   onAddDocument() {
-    setTimeout(() => {
-    DocumentPicker.show({
-      filetype: [DocumentPickerUtil.allFiles()],
-    },(error, response) => {
-      if (error === null) {
-        if (response.fileSize > 1024 * 1024 * 10) {
-          Alert.alert('Warning', 'File size must be less than 10MB')
-        } else {
-          let type = 'FILE';
-          const mimeType = mime.lookup(response.uri);
-          if (mimeType !== false) {
-            if (mimeType.indexOf('image') !== -1 || mimeType.indexOf('video') !== -1) {
-              type = 'MEDIA';
-            }
-          }
-          this.uploadFile(this.props.card.currentCard, response, type);
+    if (Platform.OS === 'ios') {
+      this.PickerDocumentShow();
+    }
+    else {
+      Permissions.check('storage').then(response => { //'storage' permission doesn't support on iOS
+        if (response === 'authorized') {
+          //permission already allowed
+          this.PickerDocumentShow();
         }
-      }      
-    });
-    return;
-    }, 200)
+        else {
+          Permissions.request('storage').then(response => {
+            if (response === 'authorized') {
+              //storage permission was authorized
+              this.PickerDocumentShow();
+            }
+          });
+        }
+      });
+    }
+  }
+
+  PickerDocumentShow () {
+    setTimeout(() => {
+      DocumentPicker.show({
+        filetype: [DocumentPickerUtil.allFiles()],
+      },(error, response) => {
+        if (error === null) {
+          if (response.fileSize > 1024 * 1024 * 10) {
+            Alert.alert('Warning', 'File size must be less than 10MB')
+          } else {
+            let type = 'FILE';
+            const mimeType = mime.lookup(response.uri);
+            if (mimeType !== false) {
+              if (mimeType.indexOf('image') !== -1 || mimeType.indexOf('video') !== -1) {
+                type = 'MEDIA';
+              }
+            }
+            this.uploadFile(this.props.card.currentCard, response, type);
+          }
+        }      
+      });
+      return;
+      }, 200)
   }
 
   onCloseEditCard() {

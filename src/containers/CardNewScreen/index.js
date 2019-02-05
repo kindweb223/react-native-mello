@@ -293,12 +293,17 @@ class CardNewScreen extends React.Component {
         objectKey,
       } = this.props.card.fileUploadUrl;
       const fileType = (Platform.OS === 'ios') ? this.selectedFileMimeType : this.selectedFile.type;
-      const { width, height } = await this.getImageSize(this.selectedFile.uri);
-      const metadata = {
-        width,
-        height
+      if (fileType.indexOf('image/') !== -1) {
+        const { width, height } = await this.getImageSize(this.selectedFile.uri);
+        const metadata = {
+          width,
+          height
+        }
+        this.props.addFile(id, this.selectedFileType, fileType, this.selectedFileName, objectKey, metadata);
       }
-      this.props.addFile(id, this.selectedFileType, fileType, this.selectedFileName, objectKey, metadata);
+      else
+        this.props.addFile(id, this.selectedFileType, fileType, this.selectedFileName, objectKey, null);
+
     } else if (this.props.card.loading !== types.ADD_FILE_PENDING && nextProps.card.loading === types.ADD_FILE_PENDING) {
       // adding a file
       loading = true;
@@ -933,6 +938,28 @@ class CardNewScreen extends React.Component {
   }
 
   onAddDocument() {
+    if (Platform.OS === 'ios') {
+      this.PickerDocumentShow();
+    }
+    else {
+      Permissions.check('storage').then(response => { //'storage' permission doesn't support on iOS
+        if (response === 'authorized') {
+          //permission already allowed
+          this.PickerDocumentShow();
+        }
+        else {
+          Permissions.request('storage').then(response => {
+            if (response === 'authorized') {
+              //storage permission was authorized
+              this.PickerDocumentShow();
+            }
+          });
+        }
+      });
+    }
+  }
+  
+  PickerDocumentShow () {
     DocumentPicker.show({
       filetype: [DocumentPickerUtil.allFiles()],
     },(error, response) => {
@@ -953,7 +980,7 @@ class CardNewScreen extends React.Component {
     });
     return;
   }
-  
+
   onHideKeyboard() {
     const { cardMode } = this.props;
     if (cardMode === CONSTANTS.SHARE_EXTENTION_CARD) {
