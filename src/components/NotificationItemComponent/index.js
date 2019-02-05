@@ -36,7 +36,7 @@ const NotificationItemComponent = ({ data, hideTumbnail, updateInvitation, prevP
   }
 
   const name = `${data.owner.firstName} ${data.owner.lastName}`
-  console.log('DATA: ', data)
+
   return (
     <View style={styles.container}>
       <View style={{ width: avatarSize + 12 }}>

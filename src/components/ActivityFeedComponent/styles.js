@@ -12,6 +12,21 @@ const styles = StyleSheet.create({
   leftContainer: {
     width: 70
   },
+  iconView: {
+    width: 27,
+    height: 27,
+    borderRadius: 15,
+    position: 'absolute',
+    bottom: 0,
+    left: 0,
+    backgroundColor: '#fff',
+    justifyContent: 'center',
+    alignItems: 'center'
+  },
+  icon: {
+    width: 11,
+    height: 11
+  },
   rightContainer: {
     flex: 1
   },
