@@ -314,7 +314,7 @@ class CardNewScreen extends React.Component {
         this.setState({ coverImage: currentCard.files[0].thumbnailUrl })
       }
 
-      const newImageFiles = _.filter(nextProps.card.currentCard.files, file => file.contentType.indexOf('image') !== -1);
+      const newImageFiles = _.filter(nextProps.card.currentCard.files, file => file.contentType.indexOf('image') !== -1 || file.contentType.indexOf('video') !== -1);
       if (newImageFiles.length === 1 && !nextProps.card.currentCard.coverImage) {
         this.onSetCoverImage(newImageFiles[0].id);
       }
@@ -938,23 +938,13 @@ class CardNewScreen extends React.Component {
             if (mimeType.indexOf('image') !== -1 || mimeType.indexOf('video') !== -1) {
               type = 'MEDIA';
             }
-          }
-          this.uploadFile(this.props.card.currentCard, response, type);
 
-          if (mimeType.indexOf('video') !== -1) {
-            RNThumbnail.get(response.uri).then((result) => {
-              ImageResizer.createResizedImage(result.path, result.width / 3, result.height / 3, CONSTANTS.IMAGE_COMPRESS_FORMAT, 50, 0, null)
-              .then((response) => {
-                ImgToBase64.getBase64String(response.uri)
-                  .then(base64String => this.base64String = 'data:image/png;base64,' + base64String)
-                  .catch(err => console.log(err));
-              }).catch((error) => {
-                console.log('Image compress error: ', error);
-              });
-            })
+            this.generateThumbnail(response)  // Generate thumbnail if video
+          }
+
+          this.uploadFile(this.props.card.currentCard, response, type);
           }
         }
-      }      
     });
     return;
   }
@@ -1019,6 +1009,9 @@ class CardNewScreen extends React.Component {
           if (!response.fileName) {
             response.fileName = response.uri.replace(/^.*[\\\/]/, '')
           }
+
+          this.generateThumbnail(response)  // Generate thumbnail if video
+
           this.uploadFile(this.props.card.currentCard, response, 'MEDIA');
         }
       }
@@ -1031,6 +1024,8 @@ class CardNewScreen extends React.Component {
         if (response.fileSize > 1024 * 1024 * 10) {
           Alert.alert('Warning', 'File size must be less than 10MB')
         } else {
+          this.generateThumbnail(response)  // Generate thumbnail if video
+
           this.uploadFile(this.props.card.currentCard, response, 'MEDIA');
         }
       }
@@ -1052,6 +1047,23 @@ class CardNewScreen extends React.Component {
     } else if (index === 1) {
       // from library
       this.pickMediaFromLibrary(options);
+    }
+  }
+
+  generateThumbnail(file) {
+    const mimeType = mime.lookup(file.uri);
+
+    if (mimeType.indexOf('video') !== -1) {
+      RNThumbnail.get(file.uri).then((result) => {
+        ImageResizer.createResizedImage(result.path, result.width, result.height, CONSTANTS.IMAGE_COMPRESS_FORMAT, 50, 0, null)
+        .then((response) => {
+          ImgToBase64.getBase64String(response.uri)
+            .then(base64String => this.base64String = 'data:image/png;base64,' + base64String)
+            .catch(err => console.log(err));                
+        }).catch((error) => {
+          console.log('Image compress error: ', error);
+        });
+      })
     }
   }
 
