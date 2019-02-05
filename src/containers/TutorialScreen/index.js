@@ -30,9 +30,11 @@ const TEMP_IMG = require('../../../assets/images/Login/tutorialTempImg.png')
 const GOOGLE_ICON = require('../../../assets/images/Login/iconMediumGoogle.png')
 const MAIL_ICON = require('../../../assets/images/Login/iconMediumEmailGrey.png')
 
-import LOTTIE_COLLECT from '../../../assets/lottie/showcase-collect.json'
-import LOTTIE_REVIEW from '../../../assets/lottie/showcase-review.json'
-import LOTTIE_SHARE from '../../../assets/lottie/showcase-share.json'
+import LOTTIE_COLLECT from '../../../assets/lottie/1-Orbit.json'
+import LOTTIE_REVIEW from '../../../assets/lottie/2-Phone.json'
+import LOTTIE_SHARE from '../../../assets/lottie/3-Head.json'
+import LOTTIE_SERVICE from '../../../assets/lottie/4-Srevices.json'
+import LOTTIE_PEOPLE from '../../../assets/lottie/5-People.json'
 
 class TutorialScreen extends React.Component {
   constructor(props) {
@@ -171,22 +173,23 @@ class TutorialScreen extends React.Component {
                 loop
                 style={{ }}
               />
-            )}          
-          </View>
-        </View>
-      </View>
-    )
-  }
-
-  renderImageView(title, imageUrl) {
-    return (
-      <View style={styles.swipeContainer}>
-        <View style={styles.titleView}>
-          <Text style={styles.titleText}>{title}</Text>
-        </View>
-        <View style={styles.subContainer}>
-          <View style={styles.imageView}>
-            <Image style={styles.navLogo} source={imageUrl} />
+            )}
+            {index === 4 && (
+              <LottieView
+                ref={animation => this.lottieFourth = animation}
+                source={lottieUrl}
+                loop
+                style={{ }}
+              />
+            )}
+            {index === 5 && (
+              <LottieView
+                ref={animation => this.lottieFifth = animation}
+                source={lottieUrl}
+                loop
+                style={{ }}
+              />
+            )}     
           </View>
         </View>
       </View>
@@ -231,6 +234,8 @@ class TutorialScreen extends React.Component {
     this.lottieFirst.reset()
     this.lottieSecond.reset()
     this.lottieThird.reset()
+    this.lottieFourth.reset()
+    this.lottieFifth.reset()
 
     if (context.state.index === 1) {
       this.lottieFirst.play()
@@ -238,6 +243,10 @@ class TutorialScreen extends React.Component {
       this.lottieSecond.play()
     } else if (context.state.index === 3) {
       this.lottieThird.play()
+    } else if (context.state.index === 4) {
+      this.lottieFourth.play()
+    } else if (context.state.index === 5) {
+      this.lottieFifth.play()
     }
 
     this.setState({ position: context.state.index })
@@ -274,8 +283,8 @@ class TutorialScreen extends React.Component {
             {this.renderLottieView('Save important content from the web.', LOTTIE_COLLECT, 1)}
             {this.renderLottieView('... or from your camera.', LOTTIE_REVIEW, 2)}
             {this.renderLottieView('... or just straight out of you brain.', LOTTIE_SHARE, 3)}
-            {this.renderImageView('... from instagram, Photos, Dropbox, YouTube, Pinterest, Slack... You get the idea.', TEMP_IMG)}
-            {this.renderImageView('Collaborate with your teammates and close friends.', TEMP_IMG)}
+            {this.renderLottieView('... from instagram, Photos, Dropbox, YouTube, Pinterest, Slack... You get the idea.', LOTTIE_SERVICE, 4)}
+            {this.renderLottieView('Collaborate with your teammates and close friends.', LOTTIE_PEOPLE, 5)}
             {this.renderSignupView()}
           </Swiper>
 
