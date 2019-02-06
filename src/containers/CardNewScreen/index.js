@@ -693,7 +693,7 @@ class CardNewScreen extends React.Component {
   }
 
   async createCard(currentProps) {
-    Analytics.logEvent('new_card_new_card', {})
+    Analytics.logEvent('CardNewScreen', {})
 
     const { cardMode, viewMode, prevPage } = this.props;
     if (prevPage !== 'card' && (cardMode === CONSTANTS.MAIN_APP_CARD_FROM_DASHBOARD) || (cardMode === CONSTANTS.SHARE_EXTENTION_CARD)) {
