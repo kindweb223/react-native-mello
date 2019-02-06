@@ -472,8 +472,8 @@ class CardDetailScreen extends React.Component {
   }
 
   async componentDidMount() {
-    const { viewMode, feedo, card, cardImageLayout, cardTextLayout } = this.props;
-    const { px, py, imgWidth, imgHeight } = cardImageLayout
+    const { viewMode, feedo, card, cardImageLayout, cardTextLayout, isMasonryView } = this.props;
+    let { px, py, imgWidth, imgHeight } = cardImageLayout
     const { textPointX, textPointY, textWidth, textHeight } = cardTextLayout
     let imageHeight = 400
     if (viewMode === CONSTANTS.CARD_VIEW || viewMode === CONSTANTS.CARD_EDIT) {
@@ -485,6 +485,12 @@ class CardDetailScreen extends React.Component {
         this.coverImageHeight = coverData.metadata.height
         const ratio = CONSTANTS.SCREEN_WIDTH / coverData.metadata.width
         imageHeight = coverData.metadata.height * ratio
+
+        if (isMasonryView) {
+          const masonryCardWidth = (CONSTANTS.SCREEN_SUB_WIDTH - 16) / 2 + 2
+          const masonryRatio = coverData.metadata.width / masonryCardWidth
+          imgHeight = coverData.metadata.height / masonryRatio
+        }
       }
 
       this.setState({
@@ -504,7 +510,7 @@ class CardDetailScreen extends React.Component {
       this._width = imgWidth
       this._height = imgHeight
       this._x = px
-      this._y = py
+      this._y = py - ifIphoneX(22, 0)
 
       //target values
       this._tWidth = CONSTANTS.SCREEN_WIDTH
@@ -525,7 +531,7 @@ class CardDetailScreen extends React.Component {
       this._width = textWidth + 16 * 2
       this._height = textHeight
       this._x = textPointX - 16 // due to marginHorizontal of autolink text
-      this._y = textPointY - this._textMarginTop // due to marginTop of autolink text
+      this._y = textPointY - this._textMarginTop - ifIphoneX(22, 0) // due to marginTop of autolink text
 
       this._tWidth = CONSTANTS.SCREEN_WIDTH
       this._tHeight = 200
@@ -543,7 +549,7 @@ class CardDetailScreen extends React.Component {
       })
     }
 
-    const friction = 8
+    const friction = 10
     Animated.parallel([
       Animated.spring(this.state.position.x, {
         toValue: this._tX,
@@ -1528,6 +1534,7 @@ CardDetailScreen.defaultProps = {
   cardMode: CONSTANTS.MAIN_APP_CARD_FROM_DETAIL,
   shareUrl: '',
   shareImageUrls: [],
+  isMasonryView: false,
   onClose: () => {},
   onOpenAction: () => {},
 }
@@ -1543,6 +1550,7 @@ CardDetailScreen.propTypes = {
   cardMode: PropTypes.number,
   shareUrl: PropTypes.string,
   shareImageUrls: PropTypes.array,
+  isMasonryView: PropTypes.bool,
   onClose: PropTypes.func,
   onOpenAction: PropTypes.func,
 }
