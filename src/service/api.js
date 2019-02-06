@@ -42,4 +42,4 @@ export const TAGS_FEATURE = false
 export const TRELLO_URL = 'https://trello.com/b/xqBylYZO/mello'
 
 // client ID of type WEB for your server (needed to verify user ID and offline access)
-export const GOOGLE_WEB_CLIENT_ID = '887924189900-cp9g9c2c4144b3o8uf5nr33dgf0mehod.apps.googleusercontent.com'
+export const GOOGLE_WEB_CLIENT_ID = '887924189900-rar93hbeqrsr8bd4a1bhrf7gkdosfqqm.apps.googleusercontent.com'
