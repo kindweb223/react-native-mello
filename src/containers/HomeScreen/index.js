@@ -105,7 +105,7 @@ class HomeScreen extends React.Component {
       isLongHoldMenuVisible: false,
       selectedFeedData: {},
       tabIndex: 0,
-      isShowActionToaster: false,
+      isShowActionToaster: true,
       scrollY: new Animated.Value(0),
       currentPushNotificationType: CONSTANTS.UNKOWN_PUSH_NOTIFICATION,
       currentPushNotificationData: null,
