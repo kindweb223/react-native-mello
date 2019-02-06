@@ -30,7 +30,7 @@ class ShareSuccessScreen extends React.Component {
     }).start(() => {
       setTimeout(() => {
         this.onClose();
-      }, 3000);
+      }, 300000);
     });
   }
 
