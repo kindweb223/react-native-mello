@@ -35,6 +35,7 @@ import moment from 'moment'
 import Autolink from 'react-native-autolink';
 import SafariView from "react-native-safari-view";
 import SharedGroupPreferences from 'react-native-shared-group-preferences';
+import * as Animatable from 'react-native-animatable';
 
 import { 
   createCard,
@@ -1135,11 +1136,16 @@ class CardDetailScreen extends React.Component {
     return (
       <TouchableOpacity style={{ marginTop, marginBottom: 16 }} activeOpacity={1} onPress={() => this.onPressIdea()}>
         <Animated.View style={coverImage ? { opacity: this.animatedClose } : activeTextStyle}>
-          <Autolink
-            style={styles.textInputIdea}
-            text={this.state.idea}
-            onPress={(url, match) => this.onPressLink(url)}
-          />
+          <Animatable.View
+            duration={1000}
+            animation="zoomInUp"
+          >
+            <Autolink
+              style={styles.textInputIdea}
+              text={this.state.idea}
+              onPress={(url, match) => this.onPressLink(url)}
+            />
+          </Animatable.View>
         </Animated.View>
       </TouchableOpacity>
     );
@@ -1176,14 +1182,18 @@ class CardDetailScreen extends React.Component {
     if (links && links.length > 0) {
       const firstLink = links[0];
       return this.state.showOtherComponents && (
-        <WebMetaList
-          viewMode="edit"
-          links={[firstLink]}
-          isFastImage={true}
-          coverImage={this.state.coverImage}
-          editable={viewMode !== CONSTANTS.CARD_VIEW}
-          longPressLink={(link) => this.onLongPressWbeMetaLink(link)}
-        />
+        <Animatable.View
+          animation="zoomInUp"
+        >
+          <WebMetaList
+            viewMode="edit"
+            links={[firstLink]}
+            isFastImage={true}
+            coverImage={this.state.coverImage}
+            editable={viewMode !== CONSTANTS.CARD_VIEW}
+            longPressLink={(link) => this.onLongPressWbeMetaLink(link)}
+          />
+        </Animatable.View>
       )
     }
   }
@@ -1195,13 +1205,17 @@ class CardDetailScreen extends React.Component {
     const documentFiles = _.filter(files, file => file.fileType === 'FILE');
     if (documentFiles.length > 0) {
       return this.state.showOtherComponents && (
-        <View style={{ paddingHorizontal: 6 }}>
-          <DocumentList
-            files={documentFiles}
-            editable={viewMode !== CONSTANTS.CARD_VIEW}
-            onRemove={(fileId) => this.onRemoveFile(fileId)}
-          />
-        </View>
+        <Animatable.View
+          animation="zoomInUp"
+        >
+          <View style={{ paddingHorizontal: 6 }}>
+            <DocumentList
+              files={documentFiles}
+              editable={viewMode !== CONSTANTS.CARD_VIEW}
+              onRemove={(fileId) => this.onRemoveFile(fileId)}
+            />
+          </View>
+        </Animatable.View>
       )
     }
   }
@@ -1259,25 +1273,33 @@ class CardDetailScreen extends React.Component {
     }
 
     return this.state.showOtherComponents && (
-      <View style={styles.inviteeContainer}>
-        <View style={styles.inviteeView}>
-          <UserAvatarComponent
-            user={userProfile}
-          />
-          <Text style={[styles.textInvitee, { marginLeft: 9, fontSize }]} numberOfLines={1}>{name}</Text>
-          <Entypo name="dot-single" style={styles.iconDot} />
-          <Text style={styles.textInvitee}>{getDurationFromNow(currentCard.publishedDate)} ago</Text>
+      <Animatable.View
+        animation="zoomInUp"
+      >
+        <View style={styles.inviteeContainer}>
+          <View style={styles.inviteeView}>
+            <UserAvatarComponent
+              user={userProfile}
+            />
+            <Text style={[styles.textInvitee, { marginLeft: 9, fontSize }]} numberOfLines={1}>{name}</Text>
+            <Entypo name="dot-single" style={styles.iconDot} />
+            <Text style={styles.textInvitee}>{getDurationFromNow(currentCard.publishedDate)} ago</Text>
+          </View>
+          {showLikes && idea && (
+            <LikeComponent idea={idea} prevPage={this.props.prevPage} type="text" />
+          )}
         </View>
-        {showLikes && idea && (
-          <LikeComponent idea={idea} prevPage={this.props.prevPage} type="text" />
-        )}
-      </View>
+      </Animatable.View>
     );
   }
 
   get renderCommentList() {
     return this.state.showOtherComponents && (
-      <LastCommentComponent prevPage={this.props.prevPage} initLoad={this.state.initLoad} />
+      <Animatable.View
+        animation="zoomInDown"
+      >
+        <LastCommentComponent prevPage={this.props.prevPage} initLoad={this.state.initLoad} />
+      </Animatable.View>
     )
   }
 
@@ -1357,29 +1379,33 @@ class CardDetailScreen extends React.Component {
     const idea = _.find(this.props.feedo.currentFeed.ideas, idea => idea.id === this.props.card.currentCard.id)
 
     return (
-      <View style={[styles.footerContainer, { opacity: this.state.showOtherComponents }]}>
-        {!COMMON_FUNC.isFeedGuest(feedo.currentFeed) && 
-          <View style={styles.addCommentView}>
-            {this.renderAddComment}
+      <Animatable.View
+        animation="zoomInDown"
+      >
+        <View style={[styles.footerContainer, { opacity: this.state.showOtherComponents }]}>
+          {!COMMON_FUNC.isFeedGuest(feedo.currentFeed) && 
+            <View style={styles.addCommentView}>
+              {this.renderAddComment}
+            </View>
+          }
+
+          <View style={styles.likeView}>
+            {viewMode === CONSTANTS.CARD_EDIT && (
+              <TouchableOpacity 
+                style={styles.threeDotButtonWrapper}
+                activeOpacity={0.6}
+                onPress={() => this.onPressMoreActions()}
+              >
+              <Entypo name="dots-three-horizontal" size={20} color={COLORS.MEDIUM_GREY} />
+              </TouchableOpacity>
+            )}
+
+            {idea && (
+              <LikeComponent idea={idea} prevPage={this.props.prevPage} type="icon" />
+            )}
           </View>
-        }
-
-        <View style={styles.likeView}>
-          {viewMode === CONSTANTS.CARD_EDIT && (
-            <TouchableOpacity 
-              style={styles.threeDotButtonWrapper}
-              activeOpacity={0.6}
-              onPress={() => this.onPressMoreActions()}
-            >
-            <Entypo name="dots-three-horizontal" size={20} color={COLORS.MEDIUM_GREY} />
-            </TouchableOpacity>
-          )}
-
-          {idea && (
-            <LikeComponent idea={idea} prevPage={this.props.prevPage} type="icon" />
-          )}
         </View>
-      </View>
+      </Animatable.View>
     )
   }
 
