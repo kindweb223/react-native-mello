@@ -3,6 +3,7 @@ export default {
   LIGHT_PURPLE: 'rgba(74, 00, 205, .2)',
   BLUE: '#006DFF',
   PRIMARY_BLACK: '#000',
+  TOASTER_GREY: '#46474F',
   DARK_GREY: '#656974',
   ACTION_SHEET_TITLE: '#8F8F8F',
   MEDIUM_GREY: '#A2A5AE',
