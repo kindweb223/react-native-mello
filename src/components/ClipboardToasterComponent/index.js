@@ -112,7 +112,7 @@ class ClipboardToasterComponent extends React.Component {
           {...this._panResponder.panHandlers}
         >
           <View style={styles.buttonContainer}>
-            <Ionicons name="md-add" size={28} color={'#FFFFFF'} />
+            <Ionicons name="md-add" size={32} color={'#FFFFFF'} />
             <View style={styles.textsContainer}>
               <Text style={styles.textTitle} numberOfLines={1}>{title}</Text>
               <Text style={styles.textDescription} numberOfLines={1}>{description}</Text>

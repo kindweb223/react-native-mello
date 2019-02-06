@@ -82,9 +82,8 @@ export default {
   },
   aboutTitleView: {
     width: '100%',
-    paddingHorizontal: CONSTANTS.PADDING,
     borderBottomWidth: 1,
-    borderColor: COLORS.LIGHT_GREY_LINE,
+    borderColor: COLORS.LIGHT_GREY_BORDER_LINE,
     paddingVertical: 15,
   },
   aboutTitle: {
@@ -92,6 +91,7 @@ export default {
     fontSize: 16
   },
   settingView: {
+    paddingLeft: CONSTANTS.PADDING,
     backgroundColor: '#fff',
     paddingBottom: 30,
     width: '100%',
@@ -105,22 +105,23 @@ export default {
     marginRight: 20
   },
   itemView: {
-    paddingHorizontal: CONSTANTS.PADDING,
-    width: '100%',
+    width: '100%'
   },
   aboutItem: {
-    paddingVertical: 15,
+    paddingRight: CONSTANTS.PADDING,
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
     borderBottomWidth: 1,
-    borderColor: COLORS.LIGHT_GREY_LINE,
-    width: '100%'
+    borderColor: COLORS.LIGHT_GREY_BORDER_LINE,
+    width: '100%',
+    height: 55
   },
   title: {
     fontSize: 16
   },
   signoOutView: {
+    paddingLeft: CONSTANTS.PADDING,
     backgroundColor: '#fff',
     paddingVertical: 30,
     width: '100%',
@@ -131,7 +132,7 @@ export default {
     alignItems: 'flex-start',
     borderBottomWidth: 1,
     borderTopWidth: 1,
-    borderColor: COLORS.LIGHT_GREY_LINE,
+    borderColor: COLORS.LIGHT_GREY_BORDER_LINE,
     width: '100%'
   },
   bottomView: {

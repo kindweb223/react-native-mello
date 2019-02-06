@@ -113,7 +113,7 @@ class ArchivedFeedScreen extends React.Component {
   render () {
     let { archivedFeedList, loading, isShowToaster } = this.state
 
-    archivedFeedList = _.orderBy(archivedFeedList, ['publishedDate'], ['desc'])
+    archivedFeedList = _.orderBy(archivedFeedList, ['metadata.myLastActivityDate'], ['desc'])
 
     return (
       <View style={styles.container}>
