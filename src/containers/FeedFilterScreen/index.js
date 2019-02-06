@@ -84,7 +84,7 @@ class FeedFilterScreen extends React.Component {
 
     feedoList = _.orderBy(
       _.filter(feedoList, item => item.status === 'PUBLISHED'),
-      ['publishedDate'],
+      ['metadata.myLastActivityDate'],
       ['desc']
     )
     
