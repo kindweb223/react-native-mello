@@ -382,7 +382,7 @@ export default function feedo(state = initialState, action = {}) {
      */
     case types.ADD_DUMMY_FEED: {
       const { payload: { feedId, flag } } = action
-      const { feedoList } = state
+      let { feedoList } = state
 
       const currentFeed = filter(feedoList, feed => feed.id === feedId)
       const restFeedoList = filter(feedoList, feed => feed.id !== feedId)
@@ -395,14 +395,13 @@ export default function feedo(state = initialState, action = {}) {
           feedoList: restFeedoList
         }
       } else if (flag === 'archive') {
+        currentFeedIndex = findIndex(feedoList, feed => feed.id === currentFeed.id);
+        feedoList[currentFeedIndex] = Object.assign({}, currentFeed[0], { status: 'ARCHIVED' })
         return {
           ...state,
           loading: types.ARCHIVE_FEED_FULFILLED,
           archiveFeed: currentFeed,
-          feedoList: [
-            ...restFeedoList,
-            Object.assign({}, currentFeed[0], { status: 'ARCHIVED' })
-          ]
+          feedoList
         }
       } else if (flag === 'leave') {
         return {
@@ -960,7 +959,7 @@ export default function feedo(state = initialState, action = {}) {
     case cardTypes.UPDATE_CARD_FULFILLED: {
       const { data } = action.result
       const isCreateCard = action.payload
-      const { currentFeed, feedoList } = state
+      let { currentFeed, feedoList } = state
       const ideaIndex = findIndex(currentFeed.ideas, idea => idea.id === data.id);
       if (ideaIndex === -1) {
         currentFeed.ideas.unshift(data)  
@@ -984,6 +983,8 @@ export default function feedo(state = initialState, action = {}) {
       }
 
       const restFeedoList = filter(feedoList, feed => feed.id !== currentFeed.id)
+      const currentFeedIndex = findIndex(feedoList, feed => feed.id === currentFeed.id)
+      feedoList[currentFeedIndex] = currentFeed
 
       return {
         ...state,
@@ -992,10 +993,7 @@ export default function feedo(state = initialState, action = {}) {
         currentFeed: {
           ...currentFeed,
         },
-        feedoList: [
-          { ...currentFeed },
-          ...restFeedoList
-        ]
+        feedoList: isCreateCard ? [{ ...currentFeed }, ...restFeedoList] : feedoList
       }
     }
 
