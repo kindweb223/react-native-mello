@@ -691,7 +691,7 @@ class CardDetailScreen extends React.Component {
     const { idea, coverImage } = this.state
 
     if (currentCard.idea !== idea || currentCard.coverImage !== coverImage) {
-      this.props.updateCard(huntId, id, '', idea, coverImage, files);
+      this.props.updateCard(huntId, id, '', idea, coverImage, files, false);
     }
   }
 
@@ -1464,7 +1464,7 @@ const mapDispatchToProps = dispatch => ({
 
   createCard: (huntId) => dispatch(createCard(huntId)),
   getCard: (ideaId) => dispatch(getCard(ideaId)),
-  updateCard: (huntId, ideaId, title, idea, coverImage, files) => dispatch(updateCard(huntId, ideaId, title, idea, coverImage, files)),
+  updateCard: (huntId, ideaId, title, idea, coverImage, files, isCreateCard) => dispatch(updateCard(huntId, ideaId, title, idea, coverImage, files, isCreateCard)),
   getFileUploadUrl: (huntId, ideaId) => dispatch(getFileUploadUrl(huntId, ideaId)),
   uploadFileToS3: (signedUrl, file, fileName, mimeType) => dispatch(uploadFileToS3(signedUrl, file, fileName, mimeType)),
   addFile: (ideaId, fileType, contentType, name, objectKey, metadata) => dispatch(addFile(ideaId, fileType, contentType, name, objectKey, metadata)),
