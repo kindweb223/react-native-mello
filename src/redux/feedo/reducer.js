@@ -156,7 +156,7 @@ export default function feedo(state = initialState, action = {}) {
         ...state,
         loading: types.UPDTE_FEED_INVITATION_FULFILLED,
         invitedFeedList: restInvitedFeedList,
-        feedoList: type ? (updateFeed ? [...restFeedoList, updateFeed] : restFeedoList) : restFeedoList,
+        feedoList: type ? (updateFeed ? [updateFeed, ...restFeedoList] : restFeedoList) : restFeedoList,
         currentFeed: newCurrentFeed,
         inviteUpdateType: type,
         badgeCount: state.badgeCount > 0 ? state.badgeCount - 1 : 0
@@ -1143,8 +1143,8 @@ export default function feedo(state = initialState, action = {}) {
         ...state,
         loading: types.INVITE_HUNT_FULFILLED,
         feedoList: [
-          ...restFeedoList,
-          newFeed
+          newFeed,
+          ...restFeedoList
         ],
         currentFeed: newFeed,
         error
