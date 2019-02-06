@@ -11,7 +11,7 @@
     "axios": "^0.18.0",
     "bugsnag-react-native": "^2.12.1",
     "lodash": "^4.17.10",
-    "lottie-react-native": "^2.5.9",
+    "lottie-react-native": "^2.5.11",
     "moment": "^2.22.2",
     "prop-types": "^15.6.2",
     "pubnub-react": "^1.2.0",

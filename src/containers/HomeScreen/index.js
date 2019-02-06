@@ -303,22 +303,22 @@ class HomeScreen extends React.Component {
           )
         })
 
-        feedoList = orderBy(
-          filter(feedoList, item => item.status === 'PUBLISHED'),
-          ['publishedDate'],
-          ['desc']
-        )
+        if ((feedo.loading !== 'UPDATE_CARD_FULFILLED' || !feedo.isCreateCard) && feedo.loading !== 'UPDTE_FEED_INVITATION_FULFILLED') {
+          feedoList = orderBy(
+            filter(feedoList, item => item.status === 'PUBLISHED'),
+            ['metadata.myLastActivityDate'],
+            ['desc']
+          )
+        } else {
+          nextProps.getFeedoList()
+        }
         
         if (prevState.tabIndex === 0) {
           feedoList = filter(feedoList, item => item.metadata.owner)
         }
 
         if (prevState.tabIndex === 1) {
-          feedoList = orderBy(
-            filter(feedoList, item => item.metadata.myInviteStatus !== 'INVITED' && item.owner.id !== user.userInfo.id),
-            ['metadata.inviteAcceptedDate'],
-            ['desc']
-          )
+          feedoList = filter(feedoList, item => item.metadata.myInviteStatus !== 'INVITED' && item.owner.id !== user.userInfo.id)
         }
 
         if (prevState.tabIndex === 2) {
@@ -776,21 +776,13 @@ class HomeScreen extends React.Component {
         )
       })
 
-      feedoList = orderBy(
-        filter(feedoList, item => item.status === 'PUBLISHED'),
-        ['publishedDate'],
-        ['desc']
-      )
+      feedoList = filter(feedoList, item => item.status === 'PUBLISHED')
       
       if (value.i === 0) {
         feedoList = filter(feedoList, item => item.metadata.owner)
       }
       if (value.i === 1) {
-        feedoList = orderBy(
-          filter(feedoList, item => item.metadata.myInviteStatus !== 'INVITED' && item.owner.id !== user.userInfo.id),
-          ['metadata.inviteAcceptedDate'],
-          ['desc']
-        )
+        feedoList = filter(feedoList, item => item.metadata.myInviteStatus !== 'INVITED' && item.owner.id !== user.userInfo.id)
       }
       if (value.i === 2) {
         feedoList = filter(feedoList, item => item.pinned !== null)
