@@ -293,7 +293,7 @@ class HomeScreen extends React.Component {
           )
         })
 
-        if (feedo.loading !== 'UPDATE_CARD_FULFILLED' || !feedo.isCreateCard) {
+        if ((feedo.loading !== 'UPDATE_CARD_FULFILLED' || !feedo.isCreateCard) && feedo.loading !== 'UPDTE_FEED_INVITATION_FULFILLED') {
           feedoList = orderBy(
             filter(feedoList, item => item.status === 'PUBLISHED'),
             ['metadata.myLastActivityDate'],
