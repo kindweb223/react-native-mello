@@ -107,7 +107,7 @@ class NotificationScreen extends React.Component {
     const { feedo } = this.props
     let { invitedFeedList, activityFeedList } = feedo
 
-    invitedFeedList = _.orderBy(invitedFeedList, ['publishedDate'], ['desc'])
+    invitedFeedList = _.orderBy(invitedFeedList, ['metadata.myLastActivityDate'], ['desc'])
     activityFeedList = _.orderBy(activityFeedList, ['activityTime'], ['desc'])
 
     this.setState({ invitedFeedList, activityFeedList })
@@ -141,7 +141,7 @@ class NotificationScreen extends React.Component {
         Actions.currentScene !== 'CommentScreen' && Actions.currentScene !== 'ActivityCommentScreen' &&
         Actions.currentScene !== 'LikesListScreen' && Actions.currentScene !== 'ActivityLikesListScreen')
     ) {
-      const invitedFeedList = _.orderBy(feedo.invitedFeedList, ['publishedDate'], ['desc'])
+      const invitedFeedList = _.orderBy(feedo.invitedFeedList, ['metadata.myLastActivityDate'], ['desc'])
       this.setState({ invitedFeedList })
       this.setActivityFeeds(this.state.activityFeedList, invitedFeedList)
     }
@@ -212,7 +212,7 @@ class NotificationScreen extends React.Component {
     }
 
     if (this.props.feedo.loading !== 'UPDTE_FEED_INVITATION_FULFILLED' && feedo.loading === 'UPDTE_FEED_INVITATION_FULFILLED') {
-        let invitedFeedList = _.orderBy(feedo.invitedFeedList, ['publishedDate'], ['desc'])
+        let invitedFeedList = _.orderBy(feedo.invitedFeedList, ['metadata.myLastActivityDate'], ['desc'])
         this.setState({ invitedFeedList, isShowInviteToaster: true })
         this.setActivityFeeds(this.state.activityFeedList, invitedFeedList)
         

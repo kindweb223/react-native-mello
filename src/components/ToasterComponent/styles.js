@@ -1,9 +1,10 @@
 import { StyleSheet, Platform } from 'react-native'
 import CONSTANTS from '../../service/constants'
+import COLORS from '../../service/colors'
 
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: '#fff',
+    backgroundColor: COLORS.TOASTER_GREY,
     ...Platform.select({
       ios: {
         shadowColor: '#000',
@@ -31,8 +32,9 @@ const styles = StyleSheet.create({
   },
   title: {
     fontSize: 14,
+    lineHeight: 20,
     flex: 1,
-    color: '#000'
+    color: '#fff'
   },
   buttonView: {
     marginLeft: 20,
@@ -41,9 +43,10 @@ const styles = StyleSheet.create({
     justifyContent: 'center'
   },
   button: {
-    color: '#4A00CD',
+    color: '#fff',
     fontSize: 14,
-    fontWeight: 'bold'
+    lineHeight: 21,
+    fontWeight: '600'
   }
 })
 
