@@ -534,8 +534,8 @@ export default function feedo(state = initialState, action = {}) {
       let feedoList = [];
       if (index === -1) {
         feedoList = [
-          ...state.feedoList,
-          data
+          data,
+          ...state.feedoList
         ];
       } else {
         feedoList = state.feedoList;
@@ -840,10 +840,9 @@ export default function feedo(state = initialState, action = {}) {
       }
     }
     case types.UPDATE_SHARING_PREFERENCES_FULFILLED: {
-      const { feedoList, currentFeed } = state
+      let { feedoList, currentFeed } = state
       const { feedId, data } = action.payload
 
-      const restFeedoList = filter(feedoList, feed => feed.id !== feedId)
       let newFeed = Object.assign(
         {},
         currentFeed,
@@ -855,13 +854,13 @@ export default function feedo(state = initialState, action = {}) {
         }
       )
 
+      const currentFeedIndex = findIndex(feedoList, feed => feed.id === currentFeed.id)
+      feedoList[currentFeedIndex] = newFeed
+
       return {
         ...state,
         loading: types.UPDATE_SHARING_PREFERENCES_FULFILLED,
-        feedoList: [
-          ...restFeedoList,
-          newFeed
-        ],
+        feedoList,
         currentFeed: newFeed,
       }
     }
