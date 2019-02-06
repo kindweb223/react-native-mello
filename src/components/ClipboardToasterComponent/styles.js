@@ -1,5 +1,6 @@
 import { StyleSheet, Platform } from 'react-native'
 import CONSTANTS from '../../service/constants'
+import COLORS from '../../service/colors'
 
 const styles = StyleSheet.create({
   container: {
@@ -31,9 +32,10 @@ const styles = StyleSheet.create({
     zIndex: 1,
   },
   mainContainer: {
-    backgroundColor: '#696974',
+    backgroundColor: COLORS.TOASTER_GREY,
     width: CONSTANTS.SCREEN_SUB_WIDTH,
-    borderRadius: 16,
+    height: 83,
+    borderRadius: 8,
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
@@ -41,14 +43,15 @@ const styles = StyleSheet.create({
   buttonContainer: {
     flex: 1,
     flexDirection: 'row',
+    alignItems: 'center',
     paddingHorizontal: 20,
     paddingVertical: 18,
   },
   textTitle: {
-    fontSize: 14,
-    lineHeight: 18,
-    fontWeight: 'bold',
-    color: '#FFFFFF'
+    fontSize: 16,
+    lineHeight: 22,
+    fontWeight: '600',
+    color: '#FFF'
   },
   textsContainer: {
     flex: 1,
@@ -56,9 +59,9 @@ const styles = StyleSheet.create({
     justifyContent: 'center'
   },
   textDescription: {
-    fontSize: 12,
-    lineHeight: 14,
-    color: '#FFFFFF',
+    fontSize: 14,
+    lineHeight: 21,
+    color: '#FFF',
   }
 })
 
