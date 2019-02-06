@@ -113,7 +113,8 @@ class CardDetailScreen extends React.Component {
       position: new Animated.ValueXY(),
       size: new Animated.ValueXY(),
       cardClosed: false,
-      cardPadding: 0
+      cardPadding: 0,
+      showOtherComponents: true
     };
 
     this.selectedFile = null;
@@ -740,6 +741,7 @@ class CardDetailScreen extends React.Component {
     this.setState({
       originalCardTopY: this.props.intialLayout.py,
       originalCardBottomY: this.props.intialLayout.py + this.props.intialLayout.height,
+      showOtherComponents: false
     }, () => {
       Animated.parallel([
         Animated.timing(this.state.position.x, {
@@ -1100,7 +1102,7 @@ class CardDetailScreen extends React.Component {
 
   get renderText() {
     const { links } = this.props.card.currentCard;
-    const { coverImage } = this.state
+    const { coverImage, showOtherComponents } = this.state
   
     let marginTop = 24
     marginTop = coverImage ? 24 : 65
@@ -1117,6 +1119,10 @@ class CardDetailScreen extends React.Component {
       top: this.state.position.y,
       left: this.state.position.x,
     };
+
+    if (coverImage && !showOtherComponents) {
+      return null
+    }
 
     return (
       <TouchableOpacity style={{ marginTop, marginBottom: 16 }} activeOpacity={1} onPress={() => this.onPressIdea()}>
@@ -1161,7 +1167,7 @@ class CardDetailScreen extends React.Component {
 
     if (links && links.length > 0) {
       const firstLink = links[0];
-      return (
+      return this.state.showOtherComponents && (
         <WebMetaList
           viewMode="edit"
           links={[firstLink]}
@@ -1180,7 +1186,7 @@ class CardDetailScreen extends React.Component {
 
     const documentFiles = _.filter(files, file => file.fileType === 'FILE');
     if (documentFiles.length > 0) {
-      return (
+      return this.state.showOtherComponents && (
         <View style={{ paddingHorizontal: 6 }}>
           <DocumentList
             files={documentFiles}
@@ -1193,7 +1199,7 @@ class CardDetailScreen extends React.Component {
   }
 
   get renderHeader() {
-    return (
+    return this.state.showOtherComponents && (
       <TouchableOpacity 
         style={styles.headerContainer}
         activeOpacity={0.7}
@@ -1244,7 +1250,7 @@ class CardDetailScreen extends React.Component {
       }
     }
 
-    return (
+    return this.state.showOtherComponents && (
       <View style={styles.inviteeContainer}>
         <View style={styles.inviteeView}>
           <UserAvatarComponent
@@ -1262,7 +1268,7 @@ class CardDetailScreen extends React.Component {
   }
 
   get renderCommentList() {
-    return (
+    return this.state.showOtherComponents && (
       <LastCommentComponent prevPage={this.props.prevPage} initLoad={this.state.initLoad} />
     )
   }
@@ -1301,7 +1307,7 @@ class CardDetailScreen extends React.Component {
           {this.renderDocuments}
         </View>
 
-        {this.renderHeader}
+        {/* {this.renderHeader} */}
         {this.renderOwnerAndTime}
         {this.renderCommentList}
       </ScrollView>
@@ -1342,30 +1348,28 @@ class CardDetailScreen extends React.Component {
     const { feedo, viewMode } = this.props;
     const idea = _.find(this.props.feedo.currentFeed.ideas, idea => idea.id === this.props.card.currentCard.id)
 
-    return (
+    return this.state.showOtherComponents && (
       <View style={styles.footerContainer}>
-        <View style={styles.footerView}>
-          {!COMMON_FUNC.isFeedGuest(feedo.currentFeed) && 
-            <View style={styles.addCommentView}>
-              {this.renderAddComment}
-            </View>
-          }
-
-          <View style={styles.likeView}>
-            {viewMode === CONSTANTS.CARD_EDIT && (
-              <TouchableOpacity 
-                style={styles.threeDotButtonWrapper}
-                activeOpacity={0.6}
-                onPress={() => this.onPressMoreActions()}
-              >
-              <Entypo name="dots-three-horizontal" size={20} color={COLORS.MEDIUM_GREY} />
-              </TouchableOpacity>
-            )}
-
-            {idea && (
-              <LikeComponent idea={idea} prevPage={this.props.prevPage} type="icon" />
-            )}
+        {!COMMON_FUNC.isFeedGuest(feedo.currentFeed) && 
+          <View style={styles.addCommentView}>
+            {this.renderAddComment}
           </View>
+        }
+
+        <View style={styles.likeView}>
+          {viewMode === CONSTANTS.CARD_EDIT && (
+            <TouchableOpacity 
+              style={styles.threeDotButtonWrapper}
+              activeOpacity={0.6}
+              onPress={() => this.onPressMoreActions()}
+            >
+            <Entypo name="dots-three-horizontal" size={20} color={COLORS.MEDIUM_GREY} />
+            </TouchableOpacity>
+          )}
+
+          {idea && (
+            <LikeComponent idea={idea} prevPage={this.props.prevPage} type="icon" />
+          )}
         </View>
       </View>
     )
@@ -1399,7 +1403,7 @@ class CardDetailScreen extends React.Component {
         <Animated.View style={contentContainerStyle}>
           <SafeAreaView style={{ flex: 1 }}>
             {this.renderMainContent}
-            {/* {this.renderHeader} */}
+            {this.renderHeader}
             {this.renderFooter}
           </SafeAreaView>
         </Animated.View>
