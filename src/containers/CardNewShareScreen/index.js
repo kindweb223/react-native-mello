@@ -246,15 +246,19 @@ class CardNewShareScreen extends React.Component {
 
     this.keyboardWillShowSubscription = Keyboard.addListener('keyboardWillShow', (e) => this.keyboardWillShow(e));
     this.keyboardWillHideSubscription = Keyboard.addListener('keyboardWillHide', (e) => this.keyboardWillHide(e));
-    this.safariViewShowSubscription = SafariView.addEventListener('onShow', () => this.safariViewShow());
-    this.safariViewDismissSubscription = SafariView.addEventListener('onDismiss', () => this.safariViewDismiss());
+    if (Platform.OS === 'ios') {
+      this.safariViewShowSubscription = SafariView.addEventListener('onShow', () => this.safariViewShow());
+      this.safariViewDismissSubscription = SafariView.addEventListener('onDismiss', () => this.safariViewDismiss());
+    }
   }
 
   componentWillUnmount() {
     this.keyboardWillShowSubscription.remove();
     this.keyboardWillHideSubscription.remove();
-    this.safariViewShowSubscription.remove();
-    this.safariViewDismissSubscription.remove();
+    if (Platform.OS === 'ios') {
+      this.safariViewShowSubscription.remove();
+      this.safariViewDismissSubscription.remove();
+    }
   }
 
   keyboardWillShow(e) {

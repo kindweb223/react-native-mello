@@ -550,7 +550,7 @@ class CardDetailScreen extends React.Component {
   }
 
   async createCard(currentProps) {
-    Analytics.logEvent('new_card_new_card', {})
+    Analytics.logEvent('CardDetailScreen', {})
 
     const { cardMode, viewMode } = this.props;
     if (cardMode === CONSTANTS.MAIN_APP_CARD_FROM_DASHBOARD) {
