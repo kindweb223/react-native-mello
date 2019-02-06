@@ -1348,8 +1348,8 @@ class CardDetailScreen extends React.Component {
     const { feedo, viewMode } = this.props;
     const idea = _.find(this.props.feedo.currentFeed.ideas, idea => idea.id === this.props.card.currentCard.id)
 
-    return this.state.showOtherComponents && (
-      <View style={styles.footerContainer}>
+    return (
+      <View style={[styles.footerContainer, { opacity: this.state.showOtherComponents }]}>
         {!COMMON_FUNC.isFeedGuest(feedo.currentFeed) && 
           <View style={styles.addCommentView}>
             {this.renderAddComment}
