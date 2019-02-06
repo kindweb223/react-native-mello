@@ -105,17 +105,17 @@ export default {
     marginRight: 20
   },
   itemView: {
-    width: '100%',
+    width: '100%'
   },
   aboutItem: {
     paddingRight: CONSTANTS.PADDING,
-    paddingVertical: 15,
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
     borderBottomWidth: 1,
     borderColor: COLORS.LIGHT_GREY_BORDER_LINE,
-    width: '100%'
+    width: '100%',
+    height: 55
   },
   title: {
     fontSize: 16
