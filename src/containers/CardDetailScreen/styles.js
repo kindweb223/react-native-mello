@@ -40,7 +40,7 @@ const styles = StyleSheet.create({
   },
   headerContainer: {
     position: 'absolute',
-    top: Platform.OS === 'ios' ? ifIphoneX(33, 10) : 10,
+    top: Platform.OS === 'ios' ? ifIphoneX(53, 30) : 30,
     right: 8,
     width: 50,
     height: 50,
@@ -115,7 +115,9 @@ const styles = StyleSheet.create({
     paddingVertical: 5,
     height: FOOTER_HEIGHT,
     backgroundColor: '#fff',
-    alignItems: 'flex-start'
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    flexDirection: 'row',
   },
   footerView: {
     // flex: 1,

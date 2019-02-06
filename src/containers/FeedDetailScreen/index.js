@@ -766,7 +766,7 @@ class FeedDetailScreen extends React.Component {
     this.animatedOpacity.setValue(1);
     Animated.timing(this.animatedOpacity, {
       toValue: 0,
-      duration: CONSTANTS.ANIMATEION_MILLI_SECONDS + 600,
+      duration: CONSTANTS.ANIMATEION_MILLI_SECONDS,
     }).start(() => {
       this.setState({ 
         isVisibleCard: false,

@@ -56,6 +56,7 @@ const styles = StyleSheet.create({
     width: '100%',
     width: 78,
     height: 78,
+    marginLeft: 10,
     marginRight: 5
   },
   thumbnails: {
