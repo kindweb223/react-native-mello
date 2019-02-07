@@ -33,17 +33,32 @@ const styles = StyleSheet.create({
   textTitle: {
     fontSize: 16,
     lineHeight: 22,
-    fontWeight: '600',
     color: '#FFF'
+  },
+  feedTitle: {
+    fontSize: 16,
+    marginLeft: 5,
+    lineHeight: 22,
+    fontWeight: '600',
+    color: '#fff'
   },
   textsContainer: {
     flex: 1,
-    marginLeft: 18,
-    justifyContent: 'center'
+    flexDirection: 'row',
+    justifyContent: 'flex-start',
+    alignItems: 'center'
+  },
+  textsContainerNoImage: {
+    flex: 1,
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center'
   },
   imageCover: {
-    width: 24,
-    height: 24
+    width: 45,
+    height: 45,
+    borderRadius: 5,
+    marginRight: 18
   },
 })
 

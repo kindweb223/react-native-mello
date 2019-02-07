@@ -107,28 +107,28 @@ class ShareSuccessScreen extends React.Component {
   }
 
   renderImage(item) {
-    if (item.favicon) {
-      if (item.favicon.indexOf('data:image/svg+xml;base64') !== -1) {
+    if (item.coverImage) {
+      if (item.coverImage.indexOf('data:image/svg+xml;base64') !== -1) {
         return (
           <SvgUri
-            width="24"
-            height="24"
-            source={{ uri: item.favicon }}
+            width="30"
+            height="30"
+            source={{ uri: item.coverImage }}
             style={styles.imageCover}
           />
         );
       }
-      const mimeType = mime.lookup(item.favicon);
+      const mimeType = mime.lookup(item.coverImage);
       if (mimeType !== false && mimeType.indexOf('svg') !== -1) {
         return (
           <SVGImage
             style={styles.imageCover}
-            source={{ uri: item.favicon }}
+            source={{ uri: item.coverImage }}
           />
         );
       }
       return (
-        <Image style={styles.imageCover} source={{ uri: item.favicon }} resizeMode='cover' />
+        <Image style={styles.imageCover} source={{ uri: item.coverImage }} resizeMode='cover' />
       );
     }
   }
@@ -147,9 +147,12 @@ class ShareSuccessScreen extends React.Component {
             {...this._panResponder.panHandlers}
           >
             <View style={styles.buttonContainer}>
-              {this.renderImage(card.currentOpneGraph)}
-              <View style={styles.textsContainer}>
-                <Text style={styles.textTitle} numberOfLines={1}>Saved to {feedo.currentFeed.headline}</Text>
+              {card.currentCard && card.currentCard.coverImage && (
+                this.renderImage(card.currentCard)
+              )}
+              <View style={(card.currentCard && card.currentCard.coverImage) ? styles.textsContainer : styles.textsContainerNoImage}>
+                <Text style={styles.textTitle}>Saved to</Text>
+                <Text style={styles.feedTitle} numberOfLines={1} ellipsizeMode="tail">{feedo.currentFeed.headline}</Text>
               </View>
             </View>
           </Animated.View>
