@@ -6,7 +6,7 @@ import { fonts } from '../../themes'
 export default {
   overlay: {
     flex: 1,
-    paddingTop: CONSTANTS.STATUSBAR_HEIGHT,
+    paddingTop: Platform.OS === 'ios' ? CONSTANTS.STATUSBAR_HEIGHT : CONSTANTS.STATUSBAR_HEIGHT - 15,
     backgroundColor: '#fff',
   },
   header: {
