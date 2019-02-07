@@ -58,8 +58,8 @@ export default {
     justifyContent: 'center'
   },
   lottieView: {
-    width: '100%',
-    height : 375,
+    width: '75%',
+    height : '60%',
     marginBottom: 50
   },
   imageView: {
@@ -127,5 +127,12 @@ export default {
     color: COLORS.ACTION_SHEET_TITLE,
     fontSize: 16,
     lineHeight: 22
-  }
+  },
+  backgroundVideo: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    bottom: 0,
+    right: 0,
+  },
 }
