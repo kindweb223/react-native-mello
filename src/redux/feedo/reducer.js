@@ -24,7 +24,8 @@ const initialState = {
   activityData: {},
   dummyDelCard: {},
   dummyMoveCard: {},
-  badgeCount: 0
+  badgeCount: 0,
+  isCreateCard: false
 };
 
 export default function feedo(state = initialState, action = {}) {
@@ -155,7 +156,7 @@ export default function feedo(state = initialState, action = {}) {
         ...state,
         loading: types.UPDTE_FEED_INVITATION_FULFILLED,
         invitedFeedList: restInvitedFeedList,
-        feedoList: type ? (updateFeed ? [...restFeedoList, updateFeed] : restFeedoList) : restFeedoList,
+        feedoList: type ? (updateFeed ? [updateFeed, ...restFeedoList] : restFeedoList) : restFeedoList,
         currentFeed: newCurrentFeed,
         inviteUpdateType: type,
         badgeCount: state.badgeCount > 0 ? state.badgeCount - 1 : 0
@@ -381,7 +382,7 @@ export default function feedo(state = initialState, action = {}) {
      */
     case types.ADD_DUMMY_FEED: {
       const { payload: { feedId, flag } } = action
-      const { feedoList } = state
+      let { feedoList } = state
 
       const currentFeed = filter(feedoList, feed => feed.id === feedId)
       const restFeedoList = filter(feedoList, feed => feed.id !== feedId)
@@ -394,14 +395,13 @@ export default function feedo(state = initialState, action = {}) {
           feedoList: restFeedoList
         }
       } else if (flag === 'archive') {
+        currentFeedIndex = findIndex(feedoList, feed => feed.id === currentFeed.id);
+        feedoList[currentFeedIndex] = Object.assign({}, currentFeed[0], { status: 'ARCHIVED' })
         return {
           ...state,
           loading: types.ARCHIVE_FEED_FULFILLED,
           archiveFeed: currentFeed,
-          feedoList: [
-            ...restFeedoList,
-            Object.assign({}, currentFeed[0], { status: 'ARCHIVED' })
-          ]
+          feedoList
         }
       } else if (flag === 'leave') {
         return {
@@ -534,8 +534,8 @@ export default function feedo(state = initialState, action = {}) {
       let feedoList = [];
       if (index === -1) {
         feedoList = [
-          ...state.feedoList,
-          data
+          data,
+          ...state.feedoList
         ];
       } else {
         feedoList = state.feedoList;
@@ -840,10 +840,9 @@ export default function feedo(state = initialState, action = {}) {
       }
     }
     case types.UPDATE_SHARING_PREFERENCES_FULFILLED: {
-      const { feedoList, currentFeed } = state
+      let { feedoList, currentFeed } = state
       const { feedId, data } = action.payload
 
-      const restFeedoList = filter(feedoList, feed => feed.id !== feedId)
       let newFeed = Object.assign(
         {},
         currentFeed,
@@ -855,13 +854,13 @@ export default function feedo(state = initialState, action = {}) {
         }
       )
 
+      const currentFeedIndex = findIndex(feedoList, feed => feed.id === currentFeed.id)
+      feedoList[currentFeedIndex] = newFeed
+
       return {
         ...state,
         loading: types.UPDATE_SHARING_PREFERENCES_FULFILLED,
-        feedoList: [
-          ...restFeedoList,
-          newFeed
-        ],
+        feedoList,
         currentFeed: newFeed,
       }
     }
@@ -958,7 +957,8 @@ export default function feedo(state = initialState, action = {}) {
 
     case cardTypes.UPDATE_CARD_FULFILLED: {
       const { data } = action.result
-      const { currentFeed, feedoList } = state
+      const isCreateCard = action.payload
+      let { currentFeed, feedoList } = state
       const ideaIndex = findIndex(currentFeed.ideas, idea => idea.id === data.id);
       if (ideaIndex === -1) {
         currentFeed.ideas.unshift(data)  
@@ -982,17 +982,17 @@ export default function feedo(state = initialState, action = {}) {
       }
 
       const restFeedoList = filter(feedoList, feed => feed.id !== currentFeed.id)
+      const currentFeedIndex = findIndex(feedoList, feed => feed.id === currentFeed.id)
+      feedoList[currentFeedIndex] = currentFeed
 
       return {
         ...state,
         loading: 'UPDATE_CARD_FULFILLED',
+        isCreateCard,
         currentFeed: {
           ...currentFeed,
         },
-        feedoList: [
-          ...restFeedoList,
-          { ...currentFeed }
-        ]
+        feedoList: isCreateCard ? [{ ...currentFeed }, ...restFeedoList] : feedoList
       }
     }
 
@@ -1142,8 +1142,8 @@ export default function feedo(state = initialState, action = {}) {
         ...state,
         loading: types.INVITE_HUNT_FULFILLED,
         feedoList: [
-          ...restFeedoList,
-          newFeed
+          newFeed,
+          ...restFeedoList
         ],
         currentFeed: newFeed,
         error

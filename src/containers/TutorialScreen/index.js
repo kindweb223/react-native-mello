@@ -76,13 +76,15 @@ class TutorialScreen extends React.Component {
     }
 
     if (this.props.user.loading === 'GET_USER_SESSION_PENDING' && user.loading === 'GET_USER_SESSION_FULFILLED') {
-      this.setState({ loading: false }, () => {
-        if (user.userInfo.tandcAccepted) {
-          Actions.HomeScreen()
-        } else {
-          Actions.TermsAndConditionsConfirmScreen()
-        }
-      })
+      if (Actions.currentScene === 'TutorialScreen') {
+        this.setState({ loading: false }, () => {
+          if (user.userInfo.tandcAccepted) {
+            Actions.HomeScreen()
+          } else {
+            Actions.TermsAndConditionsConfirmScreen()
+          }
+        })
+      }
     }
 
     if (this.props.user.loading === 'GET_USER_SESSION_PENDING' && user.loading === 'GET_USER_SESSION_REJECTED') {
@@ -281,7 +283,7 @@ class TutorialScreen extends React.Component {
             {this.renderLogoView()}
             {this.renderLottieView('Save important content from the web.', LOTTIE_COLLECT, 1)}
             {this.renderLottieView('... or from your camera.', LOTTIE_REVIEW, 2)}
-            {this.renderLottieView('... or just straight out of you brain.', LOTTIE_SHARE, 3)}
+            {this.renderLottieView('... or just straight out of your brain.', LOTTIE_SHARE, 3)}
             {this.renderLottieView('... from instagram, Photos, Dropbox, YouTube, Pinterest, Slack... You get the idea.', LOTTIE_SERVICE, 4)}
             {this.renderLottieView('Collaborate with your teammates and close friends.', LOTTIE_PEOPLE, 5)}
             {this.renderSignupView()}
