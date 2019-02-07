@@ -446,9 +446,9 @@ class SignUpScreen extends React.Component {
 
             <View style={styles.loginButtonView}>
               <Text style={[styles.btnSend, { color: COLORS.MEDIUM_GREY }]}>Already have an account? </Text>
-              <TouchableOpacity onPress={() => this.onSignIn()}>
-                <Text style={[styles.btnSend, { color: COLORS.PURPLE }]}>Sign in.</Text>
-              </TouchableOpacity>
+              {/* <TouchableOpacity onPress={() => this.onSignIn()}> */}
+                <Text onPress={() => this.onSignIn()} style={[styles.btnSend, { color: COLORS.PURPLE }]}>Sign in.</Text>
+              {/* </TouchableOpacity> */}
             </View>
           </View>
         </KeyboardAwareScrollView>

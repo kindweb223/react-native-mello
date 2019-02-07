@@ -1,4 +1,4 @@
-import { StyleSheet } from 'react-native'
+import { StyleSheet, Platform } from 'react-native'
 import COLORS from '../../service/colors'
 import CONSTANTS from '../../service/constants'
 
@@ -66,13 +66,14 @@ const styles = StyleSheet.create({
     fontWeight: '500',
     lineHeight: 26,
     marginHorizontal: 16,
-    marginVertical: 8,
+    marginTop: 8,
+    marginBottom: Platform.OS === 'ios' ? 8 : 0
   },
   textInputNote: {
     fontSize: 16,
     lineHeight: 23,
     marginHorizontal: 16,
-    marginTop: 8,
+    marginTop: Platform.OS === 'ios' ? 8 : 0
   },
   bottomContainer: {
     flexDirection: 'row',

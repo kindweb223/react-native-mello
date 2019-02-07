@@ -7,6 +7,7 @@ import {
   Image,
   BackHandler,
   Alert,
+  Platform,
 } from 'react-native'
 import { connect } from 'react-redux'
 import { Actions } from 'react-native-router-flux'
@@ -289,7 +290,7 @@ class TutorialScreen extends React.Component {
             ref={c => this.swiperRef = c}
             loop={false}
             index={position}
-            paginationStyle={{ bottom: ifIphoneX(5, 30) }}
+            paginationStyle={{ bottom: Platform.OS === 'ios' ? ifIphoneX(5, 30) : 50 }}
             dotStyle={styles.dotStyle}
             activeDotStyle={styles.dotStyle}
             activeDotColor={COLORS.DARK_GREY}
