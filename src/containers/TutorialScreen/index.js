@@ -36,11 +36,11 @@ import LOTTIE_SHARE from '../../../assets/lottie/3-Head.json'
 import LOTTIE_SERVICE from '../../../assets/lottie/4-Srevices.json'
 import LOTTIE_PEOPLE from '../../../assets/lottie/5-People.json'
 
-import VIDEO_COLLECT from '../../../assets/videos/Head1.m4v'
-import VIDEO_REVIEW from '../../../assets/videos/Head1.m4v'
-import VIDEO_SHARE from '../../../assets/videos/Head1.m4v'
-import VIDEO_SERVICE from '../../../assets/videos/Head1.m4v'
-import VIDEO_PEOPLE from '../../../assets/videos/Head1.m4v'
+import VIDEO_COLLECT from '../../../assets/videos/Orbit.m4v'
+import VIDEO_REVIEW from '../../../assets/videos/Phone.m4v'
+import VIDEO_SHARE from '../../../assets/videos/Head.m4v'
+import VIDEO_SERVICE from '../../../assets/videos/Services.m4v'
+import VIDEO_PEOPLE from '../../../assets/videos/People.m4v'
 
 
 class TutorialScreen extends React.Component {
@@ -159,10 +159,7 @@ class TutorialScreen extends React.Component {
   renderLottieView(title, lottieUrl, index) {
     return (
       <View style={styles.swipeContainer}>
-        <View style={styles.titleView}>
-          <Text style={styles.titleText}>{title}</Text>
-        </View>
-        <View style={styles.subContainer}>
+        <View style={styles.lottieContainer}>
           <View style={styles.lottieView}>
             {index === 1 && (
               <Video 
@@ -215,6 +212,9 @@ class TutorialScreen extends React.Component {
                 repeat={true} />
             )}     
           </View>
+        </View>
+        <View style={styles.titleView}>
+          <Text style={styles.titleText}>{title}</Text>
         </View>
       </View>
     )
