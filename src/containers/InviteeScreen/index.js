@@ -272,20 +272,7 @@ class InviteeScreen extends React.Component {
   showShareModal = (data) => {
     let isEnableShare = data.sharingPreferences.level === 'INVITEES_ONLY' ? false : true
     if (isEnableShare) {
-      let message = data.headline
-    
-      if (Platform.OS === 'android') {
-        message += ' ' + `${SHARE_LINK_URL}${data.id}`
-      }
-  
-      Share.share({
-        message: message,
-        url: `${SHARE_LINK_URL}${data.id}`,
-        title: data.headline
-      },{
-        tintColor: COLORS.PURPLE,
-        subject: 'Join my flow on Mello: ' + data.headline
-      })
+      COMMON_FUNC.handleShareFeed(data)
     }
   }
 
