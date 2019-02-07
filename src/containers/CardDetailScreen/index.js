@@ -1379,8 +1379,8 @@ class CardDetailScreen extends React.Component {
 
     return (
       <Animatable.View
-        duration={CONSTANTS.ANIMATABLE_DURATION}
-        animation="fadeInUp"
+        duration={CONSTANTS.ANIMATABLE_DURATION + 200}
+        animation="slideInUp"
       >
         <View style={[styles.footerContainer, { opacity: this.state.showOtherComponents }]}>
           {!COMMON_FUNC.isFeedGuest(feedo.currentFeed) && 
