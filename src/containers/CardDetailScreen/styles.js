@@ -61,6 +61,7 @@ const styles = StyleSheet.create({
     paddingLeft: 2,
   },
   coverImageContainer: {
+    zIndex: 2
   },
   successModal: {
     margin: 0,

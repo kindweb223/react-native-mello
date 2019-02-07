@@ -1137,8 +1137,8 @@ class CardDetailScreen extends React.Component {
       <TouchableOpacity style={{ marginTop, marginBottom: 16 }} activeOpacity={1} onPress={() => this.onPressIdea()}>
         <Animated.View style={coverImage ? { opacity: this.animatedClose } : activeTextStyle}>
           <Animatable.View
-            duration={1000}
-            animation="zoomInUp"
+            duration={CONSTANTS.ANIMATABLE_DURATION}
+            animation="fadeInUp"
           >
             <Autolink
               style={styles.textInputIdea}
@@ -1182,18 +1182,14 @@ class CardDetailScreen extends React.Component {
     if (links && links.length > 0) {
       const firstLink = links[0];
       return this.state.showOtherComponents && (
-        <Animatable.View
-          animation="zoomInUp"
-        >
-          <WebMetaList
-            viewMode="edit"
-            links={[firstLink]}
-            isFastImage={true}
-            coverImage={this.state.coverImage}
-            editable={viewMode !== CONSTANTS.CARD_VIEW}
-            longPressLink={(link) => this.onLongPressWbeMetaLink(link)}
-          />
-        </Animatable.View>
+        <WebMetaList
+          viewMode="edit"
+          links={[firstLink]}
+          isFastImage={true}
+          coverImage={this.state.coverImage}
+          editable={viewMode !== CONSTANTS.CARD_VIEW}
+          longPressLink={(link) => this.onLongPressWbeMetaLink(link)}
+        />
       )
     }
   }
@@ -1206,7 +1202,8 @@ class CardDetailScreen extends React.Component {
     if (documentFiles.length > 0) {
       return this.state.showOtherComponents && (
         <Animatable.View
-          animation="zoomInUp"
+          duration={CONSTANTS.ANIMATABLE_DURATION}
+          animation="fadeInUp"
         >
           <View style={{ paddingHorizontal: 6 }}>
             <DocumentList
@@ -1274,7 +1271,8 @@ class CardDetailScreen extends React.Component {
 
     return this.state.showOtherComponents && (
       <Animatable.View
-        animation="zoomInUp"
+        duration={CONSTANTS.ANIMATABLE_DURATION}
+        animation="fadeInUp"
       >
         <View style={styles.inviteeContainer}>
           <View style={styles.inviteeView}>
@@ -1296,7 +1294,8 @@ class CardDetailScreen extends React.Component {
   get renderCommentList() {
     return this.state.showOtherComponents && (
       <Animatable.View
-        animation="zoomInDown"
+        duration={CONSTANTS.ANIMATABLE_DURATION}
+        animation="fadeInUp"
       >
         <LastCommentComponent prevPage={this.props.prevPage} initLoad={this.state.initLoad} />
       </Animatable.View>
@@ -1380,7 +1379,8 @@ class CardDetailScreen extends React.Component {
 
     return (
       <Animatable.View
-        animation="zoomInDown"
+        duration={CONSTANTS.ANIMATABLE_DURATION}
+        animation="fadeInUp"
       >
         <View style={[styles.footerContainer, { opacity: this.state.showOtherComponents }]}>
           {!COMMON_FUNC.isFeedGuest(feedo.currentFeed) && 
