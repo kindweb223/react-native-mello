@@ -45,29 +45,23 @@ export default {
     lineHeight: 32,
     letterSpacing: 1.2
   },
-  titleView: {
-    height: 70
-  },
-  titleText: {
-    fontSize: 22,
-    lineHeight: 28
-  },
-  subContainer: {
+  lottieContainer: {
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center'
   },
   lottieView: {
-    width: '75%',
-    height : '60%',
-    marginBottom: 50
-  },
-  imageView: {
     width: '100%',
-    height : 375,
-    justifyContent: 'flex-start',
-    alignItems: 'center',
+    height : '100%'
+  },
+  titleView: {
+    height: 150,
+    marginBottom: 50,
     marginTop: 50
+  },
+  titleText: {
+    fontSize: 22,
+    lineHeight: 28
   },
   skipButtonView: {
     position: 'absolute',
