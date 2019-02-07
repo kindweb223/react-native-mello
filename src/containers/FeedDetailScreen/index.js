@@ -293,6 +293,7 @@ class FeedDetailScreen extends React.Component {
         let redrawMasonry = false
 
         if (feedo.loading === 'UPDATE_CARD_FULFILLED' ||
+          card.loading === 'UPDATE_CARD_FULFILLED' ||
           feedo.loading === 'ADD_CARD_COMMENT_FULFILLED' ||
           feedo.loading === 'DELETE_CARD_COMMENT_FULFILLED') 
         {
