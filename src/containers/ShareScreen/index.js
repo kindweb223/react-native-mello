@@ -5,7 +5,8 @@ import {
   TouchableOpacity,
   Image,
   Share,
-  ScrollView
+  ScrollView,
+  Platform
 } from 'react-native'
 import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
@@ -111,14 +112,19 @@ class ShareScreen extends React.Component {
   showShareModal = () => {
     const { data } = this.props
 
+    let message = data.headline
+    
+    if (Platform.OS === 'android') {
+      message += ' ' + `${SHARE_LINK_URL}${data.id}`
+    }
+
     Share.share({
-      message: data.summary || '',
+      message: message,
       url: `${SHARE_LINK_URL}${data.id}`,
       title: data.headline
     },{
-      dialogTitle: data.headline,
       tintColor: COLORS.PURPLE,
-      subject: data.headline
+      subject: 'Join my flow on Mello: ' + data.headline
     })
   }
 
