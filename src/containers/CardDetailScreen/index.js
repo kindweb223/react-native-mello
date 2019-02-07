@@ -1284,7 +1284,7 @@ class CardDetailScreen extends React.Component {
 
     const animatedTopMove = this.animatedShow.interpolate({
       inputRange: [0, 1],
-      outputRange: [CONSTANTS.SCREEN_HEIGHT, 0],
+      outputRange: [this.state.originalCardTopY, 0],
     });
     cardStyle = {
       top: animatedTopMove,
@@ -1292,8 +1292,8 @@ class CardDetailScreen extends React.Component {
     };
 
     let contentContainerStyle = {
-      paddingTop: 0,
-      height: '100%',
+      paddingBottom: Platform.OS==='android'? 20: 0,
+      height: CONSTANTS.SCREEN_HEIGHT,
       backgroundColor: '#fff',
     }
 
