@@ -58,7 +58,6 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     backgroundColor: '#fff',
-    paddingBottom: 10
   },
   avatarView: {
     height: '100%',
@@ -69,7 +68,7 @@ const styles = StyleSheet.create({
     height: '100%',
     justifyContent: 'center',
     alignItems: 'center',
-    marginLeft: 13
+    marginLeft: 8
   },
   collapseView: {
     width: '100%',
