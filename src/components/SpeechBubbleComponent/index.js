@@ -49,11 +49,10 @@ class SpeechBubbleComponent extends React.Component {
     } else if (page === 'card') {
       height = 130
     } else if (page === 'pinned') {
-      height = 75
+      height = 90
     } else if (page === 'shared') {
       height = 100
     }
-
     return (
       <View style={styles.container}>
         <View style={styles.bubbleImageView}>
