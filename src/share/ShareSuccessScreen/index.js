@@ -68,8 +68,7 @@ class ShareSuccessScreen extends React.Component {
       this.showClipboardTimeout = setTimeout(() => {
         this.showClipboardTimeout = null;
         this.closeView(false);
-      // }, CONSTANTS.CLIPBOARD_DATA_CONFIRM_DURATION);
-      }, 999999);
+      }, CONSTANTS.CLIPBOARD_DATA_CONFIRM_DURATION);
     })
   }
 
