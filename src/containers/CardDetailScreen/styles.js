@@ -8,7 +8,7 @@ const FOOTER_HEIGHT = 55
 const styles = StyleSheet.create({
   container: {
     width: CONSTANTS.SCREEN_WIDTH,
-    height:'100%', 
+    height: CONSTANTS.SCREEN_HEIGHT,
     backgroundColor: 'transparent',
     justifyContent: 'center',
   },
