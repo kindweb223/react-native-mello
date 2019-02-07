@@ -190,17 +190,24 @@ class CardNewShareScreen extends React.Component {
 
     if (this.props.feedo.loading !== feedoTypes.UPDATE_FEED_FULFILLED && nextProps.feedo.loading === feedoTypes.UPDATE_FEED_FULFILLED) {
       this.setState({ loading: false })
-      Actions.ShareSuccessScreen();
+      if (!this.state.isVisibleSelectFeedoModal) {
+        Actions.ShareSuccessScreen();
+      }
     }
 
     // showing error alert
     if (this.props.card.loading !== nextProps.card.loading || this.props.feedo.loading !== nextProps.feedo.loading) {
       if (nextProps.card.error || nextProps.feedo.error) {
+        this.setState({ loading: false })
         let error = null;
         if ((nextProps.card.error && nextProps.card.error.error) || (nextProps.feedo.error && nextProps.feedo.error.error)) {
           error = (nextProps.card.error && nextProps.card.error.error) || (nextProps.feedo.error && nextProps.feedo.error.error);
         } else {
           error = (nextProps.card.error && nextProps.card.error.message) || (nextProps.feedo.error && nextProps.feedo.error.message);
+        }
+        if (error) {
+          console.log('ERROR: ', error)
+          Alert.alert('Error', error)
         }
         this.props.resetCardError();
         return;
@@ -373,7 +380,14 @@ class CardNewShareScreen extends React.Component {
         tags,
         files,
       } = this.props.feedo.currentFeed;
-      this.props.updateFeed(id, headline || 'New flow', summary || '', tags, files);
+      const feedIndex = _.findIndex(this.props.feedo.feedoList, feed => feed.id === id);
+
+      if (feedIndex === -1) {
+        this.props.updateFeed(id, headline || 'New flow', summary || '', tags, files);
+      } else {
+        this.setState({ loading: false })
+        Actions.ShareSuccessScreen()
+      }
     }
   }
 
