@@ -168,7 +168,7 @@ class TutorialScreen extends React.Component {
                 allowsExternalPlayback={false}
                 paused={this.state.video1Paused}
                 style={styles.backgroundVideo}
-                resizeMode="cover" 
+                resizeMode="contain" 
                 repeat={true} />            
             )}
             {index === 2 && (
@@ -178,7 +178,7 @@ class TutorialScreen extends React.Component {
                 allowsExternalPlayback={false}
                 paused={this.state.video2Paused}
                 style={styles.backgroundVideo}
-                resizeMode="cover" 
+                resizeMode="contain" 
                 repeat={true} />
             )}
             {index === 3 && (
@@ -188,7 +188,7 @@ class TutorialScreen extends React.Component {
                 allowsExternalPlayback={false}
                 paused={this.state.video3Paused}
                 style={styles.backgroundVideo}
-                resizeMode="cover" 
+                resizeMode="contain" 
                 repeat={true} />
             )}
             {index === 4 && (
@@ -198,7 +198,7 @@ class TutorialScreen extends React.Component {
                 allowsExternalPlayback={false}
                 paused={this.state.video4Paused}
                 style={styles.backgroundVideo}
-                resizeMode="cover" 
+                resizeMode="contain" 
                 repeat={true} />
             )}
             {index === 5 && (
@@ -208,7 +208,7 @@ class TutorialScreen extends React.Component {
                 allowsExternalPlayback={false}
                 paused={this.state.video5Paused}
                 style={styles.backgroundVideo}
-                resizeMode="cover" 
+                resizeMode="contain" 
                 repeat={true} />
             )}     
           </View>
