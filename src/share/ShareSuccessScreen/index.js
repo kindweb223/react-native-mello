@@ -68,7 +68,7 @@ class ShareSuccessScreen extends React.Component {
       this.showClipboardTimeout = setTimeout(() => {
         this.showClipboardTimeout = null;
         this.closeView(false);
-      }, CONSTANTS.CLIPBOARD_DATA_CONFIRM_DURATION);
+      }, 3000);
     })
   }
 
@@ -110,8 +110,8 @@ class ShareSuccessScreen extends React.Component {
       if (item.coverImage.indexOf('data:image/svg+xml;base64') !== -1) {
         return (
           <SvgUri
-            width="30"
-            height="30"
+            width="55"
+            height="55"
             source={{ uri: item.coverImage }}
             style={styles.imageCover}
           />

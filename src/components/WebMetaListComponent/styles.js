@@ -17,12 +17,13 @@ const styles = StyleSheet.create({
     flex: 1,
     flexDirection: 'row',
     alignItems: 'center',
+    marginLeft: 10,
+    marginRight: 8
   },
   imageCover: {
     width: 24,
     height: 24,
-    marginRight: 10,
-    marginLeft: 10,
+    marginRight: 10
   },
   textLink: {
     flex: 1,

@@ -61,11 +61,17 @@ class CardEditScreen extends React.Component {
     ).start();
   }
 
-  onClose() {
+  onDoneEditCard() {
     const { idea } = this.props
 
-    if (this.props.onClose) {
-      this.props.onClose();
+    if (this.props.onDoneEditCard) {
+      this.props.onDoneEditCard();
+    }
+  }
+
+  onCancelEditCard() {
+    if (this.props.onCancelEditCard) {
+      this.props.onCancelEditCard();
     }
   }
 
@@ -169,7 +175,7 @@ class CardEditScreen extends React.Component {
         <TouchableOpacity 
           style={styles.closeButtonView}
           activeOpacity={0.7}
-          onPress={() => this.onClose()}
+          onPress={() => this.onDoneEditCard()}
         >
           <Text style={styles.closeButtonText}>Done</Text>
         </TouchableOpacity>
@@ -227,7 +233,7 @@ class CardEditScreen extends React.Component {
   }
 }
 
-
+// TODO define props
 CardEditScreen.defaultProps = {
 }
 
