@@ -28,13 +28,15 @@ const styles = StyleSheet.create({
     
     position: 'absolute',
     bottom: CONSTANTS.ACTION_BAR_HEIGHT,
-    padding: CONSTANTS.PADDING,
+    width: CONSTANTS.SCREEN_WIDTH,
     zIndex: 1,
   },
   mainContainer: {
     backgroundColor: COLORS.TOASTER_GREY,
-    width: CONSTANTS.SCREEN_SUB_WIDTH,
-    height: 83,
+    marginLeft: 8,
+    marginRight: 8,
+    width: CONSTANTS.SCREEN_WIDTH - CONSTANTS.PADDING,
+    height: 80,
     borderRadius: 8,
     flexDirection: 'row',
     justifyContent: 'space-between',
@@ -45,7 +47,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     paddingHorizontal: 20,
-    paddingVertical: 18,
+    paddingVertical: 12,
   },
   textTitle: {
     fontSize: 16,
