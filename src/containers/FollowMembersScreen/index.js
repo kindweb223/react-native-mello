@@ -118,6 +118,7 @@ class FollowMemberScreen extends React.Component {
           labelColor={COLORS.PURPLE}
           borderRadius={14}
           label="Leave flow"
+          isLoading={this.props.feedo.loading === 'DELETE_INVITEE_PENDING'}
           onPress={() => this.props.deleteInvitee()}
         />
       </View>
