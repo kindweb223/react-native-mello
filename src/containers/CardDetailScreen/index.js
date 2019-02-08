@@ -55,9 +55,6 @@ import {
   setCurrentFeed,
   getFeedoList,
 } from '../../redux/feedo/actions'
-import {
-  handleShowPremiumAlert
-} from '../../redux/user/actions'
 import * as types from '../../redux/card/types'
 import * as feedoTypes from '../../redux/feedo/types'
 import { getDurationFromNow } from '../../service/dateUtils'
@@ -747,15 +744,27 @@ class CardDetailScreen extends React.Component {
   }
 
   onAddDocument() {
-    this.props.handleShowPremiumAlert()
-    return
     setTimeout(() => {
     DocumentPicker.show({
       filetype: [DocumentPickerUtil.allFiles()],
     },(error, response) => {
       if (error === null) {
         if (response.fileSize > 1024 * 1024 * 10) {
-          this.props.handleShowPremiumAlert()
+          Alert.alert(
+            '',
+            CONSTANTS.PREMIUM_10MB_ALERT_MESSAGE,
+            [
+              {
+                text: 'Ok',
+                style: 'cancel'
+              },
+              {
+                text: 'Discover',
+                onPress: () => Actions.PremiumScreen()
+              }
+            ],
+            { cancelable: false }
+          )
         } else {
           let type = 'FILE';
           const mimeType = mime.lookup(response.uri);
@@ -797,7 +806,21 @@ class CardDetailScreen extends React.Component {
     ImagePicker.launchCamera(options, (response)  => {
       if (!response.didCancel) {
         if (response.fileSize > 1024 * 1024 * 10) {
-          this.props.handleShowPremiumAlert()
+          Alert.alert(
+            '',
+            CONSTANTS.PREMIUM_10MB_ALERT_MESSAGE,
+            [
+              {
+                text: 'Ok',
+                style: 'cancel'
+              },
+              {
+                text: 'Discover',
+                onPress: () => Actions.PremiumScreen()
+              }
+            ],
+            { cancelable: false }
+          )
         } else {
           if (!response.fileName) {
             response.fileName = response.uri.replace(/^.*[\\\/]/, '')
@@ -812,7 +835,21 @@ class CardDetailScreen extends React.Component {
     ImagePicker.launchImageLibrary(options, (response)  => {
       if (!response.didCancel) {
         if (response.fileSize > 1024 * 1024 * 10) {
-          this.props.handleShowPremiumAlert()
+          Alert.alert(
+            '',
+            CONSTANTS.PREMIUM_10MB_ALERT_MESSAGE,
+            [
+              {
+                text: 'Ok',
+                style: 'cancel'
+              },
+              {
+                text: 'Discover',
+                onPress: () => Actions.PremiumScreen()
+              }
+            ],
+            { cancelable: false }
+          )
         } else {
           this.uploadFile(this.props.card.currentCard, response, 'MEDIA');
         }
@@ -1440,8 +1477,7 @@ const mapDispatchToProps = dispatch => ({
   getOpenGraph: (url) => dispatch(getOpenGraph(url)),
   addLink: (ideaId, originalUrl, title, description, imageUrl, faviconUrl) => dispatch(addLink(ideaId, originalUrl, title, description, imageUrl, faviconUrl)),
   deleteLink: (ideaId, linkId) => dispatch(deleteLink(ideaId, linkId)),
-  resetCardError: () => dispatch(resetCardError()),
-  handleShowPremiumAlert: () => dispatch(handleShowPremiumAlert())
+  resetCardError: () => dispatch(resetCardError())
 })
 
 

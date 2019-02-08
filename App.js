@@ -310,6 +310,7 @@ export default class Root extends React.Component {
               <Scene key="ResetPasswordScreen" component={ ResetPasswordScreen } panHandlers={null} navigationBarStyle={styles.emptyBorderNavigationBar} />
               <Scene key="ResetPasswordSuccessScreen" component={ ResetPasswordSuccessScreen } hideNavBar panHandlers={null} />
               <Scene key="FeedFilterScreen" component={ FeedFilterScreen } hideNavBar />
+              <Scene key="PremiumScreen" component={ ProfilePremiumScreen } navigationBarStyle={styles.defaultNavigationBar} />
             </Scene>
           </Tabs>
           <Stack key="ProfileScreen" hideNavBar>
