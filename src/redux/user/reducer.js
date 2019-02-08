@@ -21,9 +21,7 @@ const initialState = {
   listHomeType: 'list',
   showClipboardToaster: false,
   clipboardToasterContent: '',
-  clipboardToasterPrevpage: 'card',
-  showPremiumAlert: false,
-  showPremiumModal: false
+  clipboardToasterPrevpage: 'card'
 };
 
 export default function user(state = initialState, action = {}) {
@@ -656,33 +654,6 @@ export default function user(state = initialState, action = {}) {
       return {
         ...state,
         showClipboardToaster: false
-      }
-    }
-    /**
-     * Show premium modal for files over 10MB
-     */
-    case types.SHOW_PREMIUM_ALERT: {
-      return {
-        ...state,
-        showPremiumAlert: true
-      }
-    }
-    case types.HIDE_PREMIUM_ALERT: {
-      return {
-        ...state,
-        showPremiumAlert: false,
-      }
-    }
-    case types.SHOW_PREMIUM_MODAL: {
-      return {
-        ...state,
-        showPremiumModal: true
-      }
-    }
-    case types.HIDE_PREMIUM_MODAL: {
-      return {
-        ...state,
-        showPremiumModal: false
       }
     }
     default:

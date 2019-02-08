@@ -4,14 +4,14 @@ import PropTypes from 'prop-types'
 import SVGImage from 'react-native-remote-svg'
 import styles from './styles'
 
-const CLOSE_ICON = require('../../../../assets/images/Close/Grey.png')
-const STAR_ICON = require('../../../../assets/svgs/StarIconPremium.svg')
-const FACEBOOK_ICON = require('../../../../assets/svgs/facebookPremium.svg')
-const TWITTER_ICON = require('../../../../assets/svgs/twitterPremium.svg')
-const LINKEDIN_ICON = require('../../../../assets/svgs/linkedinPremium.svg')
-const DRIBBLE_ICON = require('../../../../assets/svgs/dribbblePremium.svg')
+const CLOSE_ICON = require('../../../assets/images/Close/Grey.png')
+const STAR_ICON = require('../../../assets/svgs/StarIconPremium.svg')
+const FACEBOOK_ICON = require('../../../assets/svgs/facebookPremium.svg')
+const TWITTER_ICON = require('../../../assets/svgs/twitterPremium.svg')
+const LINKEDIN_ICON = require('../../../assets/svgs/linkedinPremium.svg')
+const DRIBBLE_ICON = require('../../../assets/svgs/dribbblePremium.svg')
 
-class PremiumAlert extends React.Component {
+class PremiumModal extends React.Component {
   get renderHeader() {
     return (
       <TouchableOpacity 
@@ -56,12 +56,12 @@ class PremiumAlert extends React.Component {
   }
 }
 
-PremiumAlert.defaultProps = {
+PremiumModal.defaultProps = {
   onClose: () => {}
 }
 
-PremiumAlert.propTypes = {
+PremiumModal.propTypes = {
   onClose: PropTypes.func
 }
 
-export default PremiumAlert
+export default PremiumModal

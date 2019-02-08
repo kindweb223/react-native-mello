@@ -10,11 +10,12 @@ import PropTypes from 'prop-types'
 import { Actions } from 'react-native-router-flux'
 import Ionicons from 'react-native-vector-icons/Ionicons'
 import SVGImage from 'react-native-remote-svg'
+import Modal from 'react-native-modal'
 import _ from 'lodash'
-import { handleShowPremiumModal } from '../../redux/user/actions'
 import COLORS from '../../service/colors'
 import styles from './styles'
 import Analytics from '../../lib/firebase'
+import PremiumModal from '../../components/PremiumModalComponent'
 
 const UPLOAD_ICON = require('../../../assets/svgs/Upload_10MB.svg')
 const OFFLINE_ICON = require('../../../assets/svgs/MelloOffline.svg')
@@ -75,12 +76,19 @@ class ProfilePremiumScreen extends React.Component {
     );
   }
 
+  constructor(props) {
+    super(props)
+    this.state = {
+      showPremiumModal: false
+    }
+  }
+
   componentDidMount() {
     Analytics.setCurrentScreen('ProfilePremiumScren')
   }
 
   upgradeMe() {
-    this.props.handleShowPremiumModal()
+    this.setState({ showPremiumModal: true })
   }
 
   render () {
@@ -115,6 +123,20 @@ class ProfilePremiumScreen extends React.Component {
             </View>
           </TouchableOpacity>
         </ScrollView>
+
+        <Modal
+          isVisible={this.state.showPremiumModal}
+          backdropColor='#656974'
+          backdropOpacity={0.6}
+          animationIn="slideInUp"
+          animationOut="slideOutDown"
+          animationInTiming={300}
+          onBackdropPress={() => this.setState({ showPremiumModal: false })}
+        >
+          <PremiumModal
+            onClose={() => this.setState({ showPremiumModal: false })}
+          />
+        </Modal>
       </View>
     )
   }
@@ -128,11 +150,4 @@ ProfilePremiumScreen.propTypes = {
   onClose: PropTypes.func
 }
 
-const mapDispatchToProps =  dispatch => ({
-  handleShowPremiumModal: () => dispatch(handleShowPremiumModal())
-})
-
-export default connect(
-  null,
-  mapDispatchToProps
-)(ProfilePremiumScreen)
+export default ProfilePremiumScreen
