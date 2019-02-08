@@ -214,14 +214,17 @@ export default class Root extends React.Component {
   resetStackToProperRoute = (url) => {
     Linking.canOpenURL(url).then((supported) => {
       if (supported) {
-        let params = _.split(decodeURIComponent(url), '/')
+        const url_ = url.replace('//', '/')
+        let params = _.split(decodeURIComponent(url_), '/')
         const path = params[params.length - 2]
-        console.log('UNIVERSAL_LINK: ', decodeURIComponent(url), ' Path: ', path)
+        console.log('UNIVERSAL_LINK: ', decodeURIComponent(url_), ' Path: ', path)
 
-        if (path === 'get-started') {  
+        if (path === 'get-started' || path === 'mello-secure-site') {  
           const lastParam = params[params.length - 1]
           const paramArray = lastParam.split(/[?\=&]/)
           const type = paramArray[0]
+
+          console.log('paramArray: ', paramArray)
 
           if (type === 'signup') {  // Signup via invite
             const token = paramArray[2]
@@ -234,6 +237,7 @@ export default class Root extends React.Component {
             })
           } else if (type === 'check-token') {  // Confirm user
             const token = paramArray[2]
+            console.log('this.state.userInfo: ', this.state.userInfo)
             if (this.state.userInfo) {
               Actions.HomeScreen()
             } else {
