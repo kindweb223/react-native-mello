@@ -82,6 +82,7 @@ import PrivacyPolicyScreen from './src/containers/PrivacyPolicyScreen'
 import NotificationScreen from './src/containers/NotificationScreen'
 import TabbarContainer from './src/navigations/TabbarContainer'
 import TermsAndConditionsConfirmScreen from './src/containers/TermsAndConditionsConfirmScreen'
+import ProfilePremiumScreen from './src/containers/ProfilePremiumScreen'
 
 import { 
   getCardComments,
@@ -320,6 +321,7 @@ export default class Root extends React.Component {
               <Scene key="ProfileTermsAndConditionsScreen" component={ TermsAndConditionsScreen } navigationBarStyle={styles.emptyBorderNavigationBar} />
               <Scene key="ProfilePrivacyPolicyScreen" component={ PrivacyPolicyScreen } navigationBarStyle={styles.emptyBorderNavigationBar} />
               <Scene key="ArchivedFeedScreen" component={ ArchivedFeedScreen } navigationBarStyle={styles.defaultNavigationBar} />
+              <Scene key="ProfilePremiumScreen" component={ ProfilePremiumScreen } navigationBarStyle={styles.defaultNavigationBar} />
             </Stack>
           </Stack>
           <Stack key="NotificationScreen" hideNavBar>

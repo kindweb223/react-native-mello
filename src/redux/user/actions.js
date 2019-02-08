@@ -398,3 +398,27 @@ export const userGoogleSigin = (token) => {
       })  
   };
 }
+
+export const handleShowPremiumAlert = () => {
+  return {
+    type: types.SHOW_PREMIUM_ALERT
+  };
+}
+
+export const handleHidePremiumAlert = () => {
+  return {
+    type: types.HIDE_PREMIUM_ALERT
+  };
+}
+
+export const handleShowPremiumModal = () => {
+  return {
+    type: types.SHOW_PREMIUM_MODAL
+  };
+}
+
+export const handleHidePremiumModal = () => {
+  return {
+    type: types.HIDE_PREMIUM_MODAL
+  };
+}

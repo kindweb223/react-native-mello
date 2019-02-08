@@ -4,9 +4,12 @@ import {
   Animated
 } from 'react-native'
 import { connect } from 'react-redux'
+import Modal from 'react-native-modal'
 import ClipboardToasterComponent from '../../components/ClipboardToasterComponent'
 import CardNewScreen from '../../containers/CardNewScreen'
-import { closeClipboardToaster } from '../../redux/user/actions'
+import PremiumConfirmAlert from '../../components/PremiumModalComponent/ConfirmAlert'
+import PremiumModal from '../../components/PremiumModalComponent/PremiumModal'
+import { closeClipboardToaster, handleHidePremiumAlert, handleShowPremiumModal, handleHidePremiumModal } from '../../redux/user/actions'
 import styles from './styles'
 import CONSTANTS from '../../service/constants'
 
@@ -14,7 +17,8 @@ class TabbarContainer extends React.Component {
   constructor(props) {
     super(props)
     this.state = {
-      isVisibleCard: false
+      isVisibleCard: false,
+      isShowPremiumModal: false
     }
     this.animatedOpacity = new Animated.Value(0);
   }
@@ -46,8 +50,26 @@ class TabbarContainer extends React.Component {
     })
   }
 
+  onClosePremiumAlert = (isShowPremiumModal) => {
+    this.setState({ isShowPremiumModal }, () => {
+      this.props.handleHidePremiumAlert()
+    })
+  }
+
+  onHidePremiumAlertModal = () => {
+    if (this.state.isShowPremiumModal) {
+      this.props.handleShowPremiumModal()
+    }
+  }
+
   render () {
-    const { showClipboardToaster, clipboardToasterPrevpage, clipboardToasterContent } = this.props.user
+    const {
+      showClipboardToaster,
+      clipboardToasterPrevpage,
+      clipboardToasterContent,
+      showPremiumAlert,
+      showPremiumModal
+    } = this.props.user
 
     return (
       <View style={styles.container}>
@@ -76,6 +98,37 @@ class TabbarContainer extends React.Component {
             />
           </Animated.View>
         )}
+
+        <Modal
+          isVisible={showPremiumAlert}
+          style={{ margin: 0 }}
+          backdropColor='transparent'
+          animationIn="fadeIn"
+          animationOut="fadeOut"
+          animationInTiming={100}
+          onBackdropPress={() => {}}
+          onModalHide={() => this.onHidePremiumAlertModal()}
+        >
+          <PremiumConfirmAlert
+            onOk={() => this.onClosePremiumAlert(false)}
+            onDiscover={() => this.onClosePremiumAlert(true)}
+          />
+        </Modal>
+
+        <Modal
+          isVisible={showPremiumModal}
+          backdropColor='#656974'
+          backdropOpacity={0.6}
+          animationIn="slideInUp"
+          animationOut="slideOutDown"
+          animationInTiming={300}
+          onBackdropPress={() => this.props.handleHidePremiumModal()}
+          onModalShow={() => this.setState({ isShowPremiumModal: false })}
+        >
+          <PremiumModal
+            onClose={() => this.props.handleHidePremiumModal()}
+          />
+        </Modal>
       </View>
     )
   }
@@ -87,6 +140,9 @@ const mapStateToProps = ({ user }) => ({
 
 const mapDispatchToProps = dispatch => ({
   closeClipboardToaster: (data) => dispatch(closeClipboardToaster(data)),
+  handleHidePremiumAlert: () => dispatch(handleHidePremiumAlert()),
+  handleShowPremiumModal: () => dispatch(handleShowPremiumModal()),
+  handleHidePremiumModal: () => dispatch(handleHidePremiumModal())
 })
 
 export default connect(
