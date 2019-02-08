@@ -53,10 +53,10 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   textButton: {
-    color: '#fff',
-    fontSize: 15,
-    fontWeight: '500',
-    textAlign: 'center',
+    fontSize: 16,
+    lineHeight: 22,
+    fontWeight: '600',
+    textAlign: 'center'
   },
   mainContentContainer: {
     flex: 1,
@@ -101,7 +101,20 @@ const styles = StyleSheet.create({
   attachView: {
     marginLeft: 6,
     marginTop: 20
-  }
+  },
+  mainHeaderContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: 10
+  },
+  btnClose: {
+    width: 90,
+    height: 34,
+    paddingHorizontal: CONSTANTS.PADDING,
+    justifyContent: 'center',
+    alignItems: 'flex-start'
+  },
 })
 
 

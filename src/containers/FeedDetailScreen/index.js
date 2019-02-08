@@ -1060,6 +1060,7 @@ class FeedDetailScreen extends React.Component {
               onClose={() => this.onCloseEditFeedModal()}
               selectedFeedId={this.props.data.id}
               viewMode={this.state.feedoViewMode}
+              isNewCard={false}
             />
         }
       </Animated.View>
