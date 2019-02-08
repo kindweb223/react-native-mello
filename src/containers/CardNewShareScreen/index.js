@@ -72,6 +72,7 @@ class CardNewShareScreen extends React.Component {
       
       loading: false,
       isVisibleSelectFeedoModal: false,
+      isShowKeyboardButton: false,
     };
 
     this.selectedFile = null;
@@ -355,6 +356,18 @@ class CardNewShareScreen extends React.Component {
     }
   }
 
+  onFocusIdea() {
+    this.setState({
+      isShowKeyboardButton: true,
+    });
+  }
+
+  onBlurIdea() {
+    this.setState({
+      isShowKeyboardButton: false,
+    });
+  }
+
   onSelectFeedo() {
     this.draftFeedo = this.props.feedo.currentFeed;
     this.isDisabledKeyboard = true;
@@ -418,7 +431,7 @@ class CardNewShareScreen extends React.Component {
   scrollContent() {
     const yPosition = this.textInputPositionY + this.textInputHeightByCursor;
     if (this.scrollViewHeight > 0 && yPosition > this.scrollViewHeight) {
-      this.scrollViewRef.scrollTo({ x: 0, y: yPosition - this.scrollViewHeight + CONSTANTS.TEXT_INPUT_LINE_HEIGHT });
+      this.scrollViewRef.scrollTo({ x: 0, y: yPosition - this.scrollViewHeight + 30 });
     }
   }
 
@@ -479,8 +492,8 @@ class CardNewShareScreen extends React.Component {
           value={this.state.idea}
           onChangeText={(value) => this.onChangeIdea(value)}
           onKeyPress={this.onKeyPressIdea.bind(this)}
-          onFocus={() => {}}
-          onBlur={() => {}}
+          onFocus={() => this.onFocusIdea()}
+          onBlur={() => this.onBlurIdea()}
           onSelectionChange={this.onSelectionChange.bind(this)}
           selectionColor={COLORS.PURPLE}
         />
@@ -574,6 +587,9 @@ class CardNewShareScreen extends React.Component {
 
     let contentContainerStyle = {};
     let bottomMargin = CONSTANTS.SCREEN_VERTICAL_MIN_MARGIN;
+    if (this.state.isShowKeyboardButton) {
+      bottomMargin = 20;
+    }
 
     contentContainerStyle = {
       height: Animated.subtract(CONSTANTS.SCREEN_HEIGHT - CONSTANTS.SCREEN_VERTICAL_MIN_MARGIN - bottomMargin, this.animatedKeyboardHeight),
