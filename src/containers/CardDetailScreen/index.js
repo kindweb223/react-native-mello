@@ -160,6 +160,8 @@ class CardDetailScreen extends React.Component {
     this.currentShareImageIndex = 0;
     this.coverImageWidth = 0
     this.coverImageHeight = 0
+    this.coverImageScrollY = 0
+    this.closeAnimationTime = CONSTANTS.ANIMATEION_MILLI_SECONDS;
   }
 
   async UNSAFE_componentWillReceiveProps(nextProps) {
@@ -755,23 +757,23 @@ class CardDetailScreen extends React.Component {
       Animated.parallel([
         Animated.timing(this.state.position.x, {
           toValue: this._x,
-          duration: CONSTANTS.ANIMATEION_MILLI_SECONDS,
+          duration: this.closeAnimationTime,
         }),
         Animated.timing(this.state.position.y, {
           toValue: this._y,
-          duration: CONSTANTS.ANIMATEION_MILLI_SECONDS,
+          duration: this.closeAnimationTime,
         }),
         Animated.timing(this.state.size.x, {
           toValue: this._width,
-          duration: CONSTANTS.ANIMATEION_MILLI_SECONDS,
+          duration: this.closeAnimationTime,
         }),
         Animated.timing(this.state.size.y, {
           toValue: this._height,
-          duration: CONSTANTS.ANIMATEION_MILLI_SECONDS,
+          duration: this.closeAnimationTime,
         }),
         Animated.timing(this.animatedClose, {
           toValue: 0,
-          duration: CONSTANTS.ANIMATEION_MILLI_SECONDS,
+          duration: this.closeAnimationTime,
         })
       ]).start(() => {
         this.props.onClose()
@@ -1322,10 +1324,20 @@ class CardDetailScreen extends React.Component {
       this.setState({ cardPadding: Math.abs(scrollY / 4)})
     }
 
-    if (scrollY < -80 && !this.state.cardClosed ) {
-      this.setState({ cardClosed: true })
-      this.onClose()
+    if (scrollY === 0) {
+      this.coverImageScrollY = 0
     }
+
+    if (scrollY < -80 && !this.state.cardClosed ) {
+      if (this.coverImageScrollY === 0) {
+        this.coverImageScrollY = scrollY
+      } else if (scrollY > -90 && scrollY < this.coverImageScrollY) {
+        this.closeAnimationTime = CONSTANTS.ANIMATEION_MILLI_SECONDS + 200
+        this.setState({ cardClosed: true })
+        this.onClose()
+      }
+    }
+
     if (this.state.initLoad) {
       this.setState({ initLoad: false })
     }
