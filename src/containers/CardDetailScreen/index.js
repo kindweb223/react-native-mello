@@ -1362,21 +1362,13 @@ class CardDetailScreen extends React.Component {
           />
         </Modal>
 
-        <Modal 
+        <ToasterComponent
           isVisible={this.state.isCopyLink}
-          style={styles.successModal}
-          backdropColor='#e0e0e0'
-          backdropOpacity={0.9}
-          animationIn="fadeIn"
-          animationOut="fadeOut"
-          animationInTiming={500}
-          onBackdropPress={() => this.setState({ isCopyLink: false })}
-        >
-          <View style={styles.successView}>
-            <Octicons name="check" style={styles.successIcon} />
-            <Text style={styles.successText}>Copied</Text>
-          </View>
-        </Modal>
+          title="Copied"
+          buttonTitle="OK"
+          onPressButton={() => this.setState({ isCopyLink: false })}
+        />
+
         {this.state.isDeleteLink && (
           <ToasterComponent
             isVisible={this.state.isDeleteLink}
