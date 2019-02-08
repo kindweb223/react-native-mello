@@ -55,6 +55,9 @@ import {
   setCurrentFeed,
   getFeedoList,
 } from '../../redux/feedo/actions'
+import {
+  handleShowPremiumAlert
+} from '../../redux/user/actions'
 import * as types from '../../redux/card/types'
 import * as feedoTypes from '../../redux/feedo/types'
 import { getDurationFromNow } from '../../service/dateUtils'
@@ -744,13 +747,15 @@ class CardDetailScreen extends React.Component {
   }
 
   onAddDocument() {
+    this.props.handleShowPremiumAlert()
+    return
     setTimeout(() => {
     DocumentPicker.show({
       filetype: [DocumentPickerUtil.allFiles()],
     },(error, response) => {
       if (error === null) {
         if (response.fileSize > 1024 * 1024 * 10) {
-          Alert.alert('Warning', 'File size must be less than 10MB')
+          this.props.handleShowPremiumAlert()
         } else {
           let type = 'FILE';
           const mimeType = mime.lookup(response.uri);
@@ -792,7 +797,7 @@ class CardDetailScreen extends React.Component {
     ImagePicker.launchCamera(options, (response)  => {
       if (!response.didCancel) {
         if (response.fileSize > 1024 * 1024 * 10) {
-          Alert.alert('Warning', 'File size must be less than 10MB')
+          this.props.handleShowPremiumAlert()
         } else {
           if (!response.fileName) {
             response.fileName = response.uri.replace(/^.*[\\\/]/, '')
@@ -807,7 +812,7 @@ class CardDetailScreen extends React.Component {
     ImagePicker.launchImageLibrary(options, (response)  => {
       if (!response.didCancel) {
         if (response.fileSize > 1024 * 1024 * 10) {
-          Alert.alert('Warning', 'File size must be less than 10MB')
+          this.props.handleShowPremiumAlert()
         } else {
           this.uploadFile(this.props.card.currentCard, response, 'MEDIA');
         }
@@ -1436,6 +1441,7 @@ const mapDispatchToProps = dispatch => ({
   addLink: (ideaId, originalUrl, title, description, imageUrl, faviconUrl) => dispatch(addLink(ideaId, originalUrl, title, description, imageUrl, faviconUrl)),
   deleteLink: (ideaId, linkId) => dispatch(deleteLink(ideaId, linkId)),
   resetCardError: () => dispatch(resetCardError()),
+  handleShowPremiumAlert: () => dispatch(handleShowPremiumAlert())
 })
 
 

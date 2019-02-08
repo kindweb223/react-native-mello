@@ -6,6 +6,7 @@ import CONSTANTS from '../../../src/service/constants'
 import SharedGroupPreferences from 'react-native-shared-group-preferences'
 
 import pubnub from '../../lib/pubnub'
+import { Actions } from 'react-native-router-flux';
 
 const initialState = {
   loading: null,
@@ -20,7 +21,9 @@ const initialState = {
   listHomeType: 'list',
   showClipboardToaster: false,
   clipboardToasterContent: '',
-  clipboardToasterPrevpage: 'card'
+  clipboardToasterPrevpage: 'card',
+  showPremiumAlert: false,
+  showPremiumModal: false
 };
 
 export default function user(state = initialState, action = {}) {
@@ -653,6 +656,33 @@ export default function user(state = initialState, action = {}) {
       return {
         ...state,
         showClipboardToaster: false
+      }
+    }
+    /**
+     * Show premium modal for files over 10MB
+     */
+    case types.SHOW_PREMIUM_ALERT: {
+      return {
+        ...state,
+        showPremiumAlert: true
+      }
+    }
+    case types.HIDE_PREMIUM_ALERT: {
+      return {
+        ...state,
+        showPremiumAlert: false,
+      }
+    }
+    case types.SHOW_PREMIUM_MODAL: {
+      return {
+        ...state,
+        showPremiumModal: true
+      }
+    }
+    case types.HIDE_PREMIUM_MODAL: {
+      return {
+        ...state,
+        showPremiumModal: false
       }
     }
     default:
