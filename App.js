@@ -224,8 +224,6 @@ export default class Root extends React.Component {
           const paramArray = lastParam.split(/[?\=&]/)
           const type = paramArray[0]
 
-          console.log('paramArray: ', paramArray)
-
           if (type === 'signup') {  // Signup via invite
             const token = paramArray[2]
             const userEmail = paramArray[4]
@@ -237,7 +235,6 @@ export default class Root extends React.Component {
             })
           } else if (type === 'check-token') {  // Confirm user
             const token = paramArray[2]
-            console.log('this.state.userInfo: ', this.state.userInfo)
             if (this.state.userInfo) {
               Actions.HomeScreen()
             } else {
