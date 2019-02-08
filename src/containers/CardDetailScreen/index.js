@@ -803,7 +803,12 @@ class CardDetailScreen extends React.Component {
       }, 200)
   }
 
-  onCloseEditCard() {
+  onDoneEditCard() {
+    this.onUpdateCard()
+    this.onCancelEditCard()
+  }
+
+  onCancelEditCard() {
     this.setState({ showEditScreen: false })
   }
 
@@ -1325,7 +1330,8 @@ class CardDetailScreen extends React.Component {
               {...this.props}
               idea={idea}
               checkUrls={() => this.checkUrls()}
-              onClose={() => this.onCloseEditCard()}
+              onDoneEditCard={() => this.onDoneEditCard()}
+              onCancelEditCard={() => this.onCancelEditCard()}
               onChangeIdea={(value) => this.onChangeIdea(value)}
             />
           : this.renderCard
