@@ -396,12 +396,14 @@ export default function feedo(state = initialState, action = {}) {
         }
       } else if (flag === 'archive') {
         currentFeedIndex = findIndex(feedoList, feed => feed.id === currentFeed.id);
-        feedoList[currentFeedIndex] = Object.assign({}, currentFeed[0], { status: 'ARCHIVED' })
+        restFeedoList[currentFeedIndex] = Object.assign({}, currentFeed[0], { status: 'ARCHIVED' })
         return {
           ...state,
           loading: types.ARCHIVE_FEED_FULFILLED,
           archiveFeed: currentFeed,
-          feedoList
+          feedoList: [
+            ...restFeedoList
+          ]
         }
       } else if (flag === 'leave') {
         return {

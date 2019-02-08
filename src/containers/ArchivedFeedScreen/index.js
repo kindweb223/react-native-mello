@@ -133,7 +133,7 @@ class ArchivedFeedScreen extends React.Component {
         {isShowToaster && (
           <ToasterComponent
             isVisible={isShowToaster}
-            title="Mello restored."
+            title="Flow restored"
             onPressButton={this.undoAction}
           />
         )}

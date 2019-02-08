@@ -302,6 +302,7 @@ class FeedDetailScreen extends React.Component {
         let redrawMasonry = false
 
         if (feedo.loading === 'UPDATE_CARD_FULFILLED' ||
+          card.loading === 'UPDATE_CARD_FULFILLED' ||
           feedo.loading === 'ADD_CARD_COMMENT_FULFILLED' ||
           feedo.loading === 'DELETE_CARD_COMMENT_FULFILLED') 
         {
@@ -1331,17 +1332,7 @@ class FeedDetailScreen extends React.Component {
   showShareModal = () => {
     const { data } = this.props
     
-    const body = data.summary + ':\n' + SHARE_LINK_URL + data.id
-    
-    Share.share({
-      message: body, // message: data.summary || '',
-      // url: `${SHARE_LINK_URL}${data.id}`,
-      title: data.headline
-    },{
-      dialogTitle: data.headline,
-      tintColor: COLORS.PURPLE,
-      subject: data.headline
-    })
+    COMMON_FUNC.handleShareFeed(data)
   }
 
   leaveFeed = (selectedContact, feedId) => {
