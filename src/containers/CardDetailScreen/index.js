@@ -115,7 +115,9 @@ class CardDetailScreen extends React.Component {
       size: new Animated.ValueXY(),
       cardClosed: false,
       cardPadding: 0,
-      showOtherComponents: true
+      isOpeningCard: true,
+      fadeInUpAnimation: 'fadeInUp',
+      slideInUpAnimation: 'slideInUp',
     };
 
     this.selectedFile = null;
@@ -748,7 +750,7 @@ class CardDetailScreen extends React.Component {
     this.setState({
       originalCardTopY: this.props.intialLayout.py,
       originalCardBottomY: this.props.intialLayout.py + this.props.intialLayout.height,
-      showOtherComponents: false
+      isOpeningCard: false
     }, () => {
       Animated.parallel([
         Animated.timing(this.state.position.x, {
@@ -879,7 +881,11 @@ class CardDetailScreen extends React.Component {
   }
 
   onCloseEditCard() {
-    this.setState({ showEditScreen: false })
+    this.setState({
+      showEditScreen: false,
+      fadeInUpAnimation: '',
+      slideInUpAnimation: '',
+    })
   }
 
   onPressMoreActions() {
@@ -1111,7 +1117,7 @@ class CardDetailScreen extends React.Component {
 
   get renderText() {
     const { links } = this.props.card.currentCard;
-    const { coverImage, showOtherComponents } = this.state
+    const { coverImage, isOpeningCard } = this.state
   
     let marginTop = 24
     marginTop = coverImage ? 24 : 65
@@ -1122,15 +1128,22 @@ class CardDetailScreen extends React.Component {
     }
     this._textMarginTop = marginTop
 
-    const activeTextStyle = {
+    let activeTextStyle = {
       width: this.state.size.x,
       height: this.state.size.y,
       top: this.state.position.y,
       left: this.state.position.x,
     };
 
-    if (coverImage && !showOtherComponents) {
+    if (coverImage && !isOpeningCard) {
       return null
+    }
+
+    // Disable text only transition in masonry view or opening card
+    if (!coverImage) {
+      if (this.props.isMasonryView || isOpeningCard) {
+        activeTextStyle = null
+      }
     }
 
     return (
@@ -1138,7 +1151,7 @@ class CardDetailScreen extends React.Component {
         <Animated.View style={coverImage ? { opacity: this.animatedClose } : activeTextStyle}>
           <Animatable.View
             duration={CONSTANTS.ANIMATABLE_DURATION}
-            animation="fadeInUp"
+            animation={this.state.fadeInUpAnimation}
           >
             <Autolink
               style={styles.textInputIdea}
@@ -1181,7 +1194,7 @@ class CardDetailScreen extends React.Component {
 
     if (links && links.length > 0) {
       const firstLink = links[0];
-      return this.state.showOtherComponents && (
+      return this.state.isOpeningCard && (
         <WebMetaList
           viewMode="edit"
           links={[firstLink]}
@@ -1200,10 +1213,10 @@ class CardDetailScreen extends React.Component {
 
     const documentFiles = _.filter(files, file => file.fileType === 'FILE');
     if (documentFiles.length > 0) {
-      return this.state.showOtherComponents && (
+      return this.state.isOpeningCard && (
         <Animatable.View
           duration={CONSTANTS.ANIMATABLE_DURATION}
-          animation="fadeInUp"
+          animation={this.state.fadeInUpAnimation}
         >
           <View style={{ paddingHorizontal: 6 }}>
             <DocumentList
@@ -1218,7 +1231,7 @@ class CardDetailScreen extends React.Component {
   }
 
   get renderHeader() {
-    return this.state.showOtherComponents && (
+    return this.state.isOpeningCard && (
       <TouchableOpacity 
         style={styles.headerContainer}
         activeOpacity={0.7}
@@ -1269,10 +1282,10 @@ class CardDetailScreen extends React.Component {
       }
     }
 
-    return this.state.showOtherComponents && (
+    return this.state.isOpeningCard && (
       <Animatable.View
         duration={CONSTANTS.ANIMATABLE_DURATION}
-        animation="fadeInUp"
+        animation={this.state.fadeInUpAnimation}
       >
         <View style={styles.inviteeContainer}>
           <View style={styles.inviteeView}>
@@ -1292,10 +1305,10 @@ class CardDetailScreen extends React.Component {
   }
 
   get renderCommentList() {
-    return this.state.showOtherComponents && (
+    return this.state.isOpeningCard && (
       <Animatable.View
         duration={CONSTANTS.ANIMATABLE_DURATION}
-        animation="fadeInUp"
+        animation={this.state.fadeInUpAnimation}
       >
         <LastCommentComponent prevPage={this.props.prevPage} initLoad={this.state.initLoad} />
       </Animatable.View>
@@ -1380,9 +1393,9 @@ class CardDetailScreen extends React.Component {
     return (
       <Animatable.View
         duration={CONSTANTS.ANIMATABLE_DURATION + 200}
-        animation="slideInUp"
+        animation={this.state.slideInUpAnimation}
       >
-        <View style={[styles.footerContainer, { opacity: this.state.showOtherComponents }]}>
+        <View style={[styles.footerContainer, { opacity: this.state.isOpeningCard }]}>
           {!COMMON_FUNC.isFeedGuest(feedo.currentFeed) && 
             <View style={styles.addCommentView}>
               {this.renderAddComment}
