@@ -27,7 +27,7 @@ import resolveError from '../../service/resolveError'
 
 import { userGoogleSigin, getUserSession } from '../../redux/user/actions'
 
-const LOGO = require('../../../assets/images/Login/icon_60pt.png')
+const LOGO = require('../../../assets/images/Login/logoMelloIcon-Tutorial.png')
 const LOGO_TEXT = require('../../../assets/images/Login/logoMello-Tutorial.png')
 const GOOGLE_ICON = require('../../../assets/images/Login/iconMediumGoogle.png')
 const MAIL_ICON = require('../../../assets/images/Login/iconMediumEmailGrey.png')

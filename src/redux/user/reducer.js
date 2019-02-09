@@ -6,6 +6,7 @@ import CONSTANTS from '../../../src/service/constants'
 import SharedGroupPreferences from 'react-native-shared-group-preferences'
 
 import pubnub from '../../lib/pubnub'
+import { Actions } from 'react-native-router-flux';
 
 const initialState = {
   loading: null,

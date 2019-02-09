@@ -14,7 +14,7 @@ import Analytics from '../../lib/firebase'
 import { updateProfile } from '../../redux/user/actions'
 import FastImage from 'react-native-fast-image';
 
-const LOGO = require('../../../assets/images/Login/icon_60pt.png')
+const LOGO = require('../../../assets/images/Login/logoMelloIcon-Tutorial.png')
 
 class TermsAndConditionsConfirmScreen extends React.Component {
   constructor(props) {
