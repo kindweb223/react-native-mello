@@ -742,7 +742,8 @@ class CardDetailScreen extends React.Component {
     }
 
     let { cardPadding } = this.state
-    if (cardPadding !== 0 && Math.abs(cardPadding - 20) > 3) cardPadding = 20
+    if (cardPadding !== 0 && Math.abs(cardPadding - 20) > 3) cardPadding = 0
+    console.log('cPadding:', cardPadding)
 
     this._width = this._width + 2 * cardPadding
     this._height = this._height + 2 * cardPadding
@@ -1319,6 +1320,10 @@ class CardDetailScreen extends React.Component {
 
   onScrollContent(event) {
     const scrollY = event.nativeEvent.contentOffset.y
+    if (scrollY > 0) {
+      this.coverImageScrollY = scrollY
+      return
+    }
 
     if (scrollY <= 0) {
       this.setState({ cardPadding: Math.abs(scrollY / 4)})
@@ -1328,14 +1333,10 @@ class CardDetailScreen extends React.Component {
       this.coverImageScrollY = 0
     }
 
-    if (scrollY < -80 && !this.state.cardClosed ) {
-      if (this.coverImageScrollY === 0) {
-        this.coverImageScrollY = scrollY
-      } else if (scrollY > -90 && scrollY < this.coverImageScrollY) {
-        this.closeAnimationTime = CONSTANTS.ANIMATEION_MILLI_SECONDS + 200
-        this.setState({ cardClosed: true })
-        this.onClose()
-      }
+    if (this.coverImageScrollY === 0 && scrollY < -80 && !this.state.cardClosed ) {
+      this.closeAnimationTime = CONSTANTS.ANIMATEION_MILLI_SECONDS + 200
+      this.setState({ cardClosed: true })
+      this.onClose()
     }
 
     if (this.state.initLoad) {
