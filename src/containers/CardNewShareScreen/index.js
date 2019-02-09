@@ -72,6 +72,7 @@ class CardNewShareScreen extends React.Component {
       
       loading: false,
       isVisibleSelectFeedoModal: false,
+      isShowKeyboardButton: false,
     };
 
     this.selectedFile = null;
@@ -190,17 +191,24 @@ class CardNewShareScreen extends React.Component {
 
     if (this.props.feedo.loading !== feedoTypes.UPDATE_FEED_FULFILLED && nextProps.feedo.loading === feedoTypes.UPDATE_FEED_FULFILLED) {
       this.setState({ loading: false })
-      Actions.ShareSuccessScreen();
+      if (!this.state.isVisibleSelectFeedoModal) {
+        Actions.ShareSuccessScreen();
+      }
     }
 
     // showing error alert
     if (this.props.card.loading !== nextProps.card.loading || this.props.feedo.loading !== nextProps.feedo.loading) {
       if (nextProps.card.error || nextProps.feedo.error) {
+        this.setState({ loading: false })
         let error = null;
         if ((nextProps.card.error && nextProps.card.error.error) || (nextProps.feedo.error && nextProps.feedo.error.error)) {
           error = (nextProps.card.error && nextProps.card.error.error) || (nextProps.feedo.error && nextProps.feedo.error.error);
         } else {
           error = (nextProps.card.error && nextProps.card.error.message) || (nextProps.feedo.error && nextProps.feedo.error.message);
+        }
+        if (error) {
+          console.log('ERROR: ', error)
+          Alert.alert('Error', error)
         }
         this.props.resetCardError();
         return;
@@ -348,6 +356,18 @@ class CardNewShareScreen extends React.Component {
     }
   }
 
+  onFocusIdea() {
+    this.setState({
+      isShowKeyboardButton: true,
+    });
+  }
+
+  onBlurIdea() {
+    this.setState({
+      isShowKeyboardButton: false,
+    });
+  }
+
   onSelectFeedo() {
     this.draftFeedo = this.props.feedo.currentFeed;
     this.isDisabledKeyboard = true;
@@ -373,7 +393,14 @@ class CardNewShareScreen extends React.Component {
         tags,
         files,
       } = this.props.feedo.currentFeed;
-      this.props.updateFeed(id, headline || 'New flow', summary || '', tags, files);
+      const feedIndex = _.findIndex(this.props.feedo.feedoList, feed => feed.id === id);
+
+      if (feedIndex === -1) {
+        this.props.updateFeed(id, headline || 'New flow', summary || '', tags, files);
+      } else {
+        this.setState({ loading: false })
+        Actions.ShareSuccessScreen()
+      }
     }
   }
 
@@ -404,7 +431,7 @@ class CardNewShareScreen extends React.Component {
   scrollContent() {
     const yPosition = this.textInputPositionY + this.textInputHeightByCursor;
     if (this.scrollViewHeight > 0 && yPosition > this.scrollViewHeight) {
-      this.scrollViewRef.scrollTo({ x: 0, y: yPosition - this.scrollViewHeight + CONSTANTS.TEXT_INPUT_LINE_HEIGHT });
+      this.scrollViewRef.scrollTo({ x: 0, y: yPosition - this.scrollViewHeight + 30 });
     }
   }
 
@@ -465,8 +492,8 @@ class CardNewShareScreen extends React.Component {
           value={this.state.idea}
           onChangeText={(value) => this.onChangeIdea(value)}
           onKeyPress={this.onKeyPressIdea.bind(this)}
-          onFocus={() => {}}
-          onBlur={() => {}}
+          onFocus={() => this.onFocusIdea()}
+          onBlur={() => this.onBlurIdea()}
           onSelectionChange={this.onSelectionChange.bind(this)}
           selectionColor={COLORS.PURPLE}
         />
@@ -560,6 +587,9 @@ class CardNewShareScreen extends React.Component {
 
     let contentContainerStyle = {};
     let bottomMargin = CONSTANTS.SCREEN_VERTICAL_MIN_MARGIN;
+    if (this.state.isShowKeyboardButton) {
+      bottomMargin = 20;
+    }
 
     contentContainerStyle = {
       height: Animated.subtract(CONSTANTS.SCREEN_HEIGHT - CONSTANTS.SCREEN_VERTICAL_MIN_MARGIN - bottomMargin, this.animatedKeyboardHeight),

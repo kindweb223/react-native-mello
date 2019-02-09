@@ -14,6 +14,7 @@ import Swiper from 'react-native-swiper'
 import LottieView from 'lottie-react-native'
 import { ifIphoneX } from 'react-native-iphone-x-helper'
 import { GoogleSignin, statusCodes } from 'react-native-google-signin'
+import Video from 'react-native-video'
 
 import LoadingScreen from '../LoadingScreen'
 import COLORS from '../../service/colors'
@@ -35,12 +36,24 @@ import LOTTIE_SHARE from '../../../assets/lottie/3-Head.json'
 import LOTTIE_SERVICE from '../../../assets/lottie/4-Srevices.json'
 import LOTTIE_PEOPLE from '../../../assets/lottie/5-People.json'
 
+import VIDEO_COLLECT from '../../../assets/videos/Orbit.m4v'
+import VIDEO_REVIEW from '../../../assets/videos/Phone.m4v'
+import VIDEO_SHARE from '../../../assets/videos/Head.m4v'
+import VIDEO_SERVICE from '../../../assets/videos/Services.m4v'
+import VIDEO_PEOPLE from '../../../assets/videos/People.m4v'
+
+
 class TutorialScreen extends React.Component {
   constructor(props) {
     super(props)
     this.state = {
       position: 0,
-      loading: false
+      loading: false,
+      video1Paused: true,
+      video2Paused: true,
+      video3Paused: true,
+      video4Paused: true,
+      video5Paused: true,
     }
   }
 
@@ -146,52 +159,62 @@ class TutorialScreen extends React.Component {
   renderLottieView(title, lottieUrl, index) {
     return (
       <View style={styles.swipeContainer}>
-        <View style={styles.titleView}>
-          <Text style={styles.titleText}>{title}</Text>
-        </View>
-        <View style={styles.subContainer}>
+        <View style={styles.lottieContainer}>
           <View style={styles.lottieView}>
             {index === 1 && (
-              <LottieView
-                ref={animation => this.lottieFirst = animation}
-                source={lottieUrl}
-                loop
-                style={{ }}
-              />
+              <Video 
+                ref={(ref) => { this.player1 = ref }}
+                source={VIDEO_COLLECT}
+                allowsExternalPlayback={false}
+                paused={this.state.video1Paused}
+                style={styles.backgroundVideo}
+                resizeMode="contain" 
+                repeat={true} />            
             )}
             {index === 2 && (
-              <LottieView
-                ref={animation => this.lottieSecond = animation}
-                source={lottieUrl}
-                loop
-                style={{ }}
-              />
+              <Video  
+                ref={(ref) => { this.player2 = ref }}
+                source={VIDEO_REVIEW}
+                allowsExternalPlayback={false}
+                paused={this.state.video2Paused}
+                style={styles.backgroundVideo}
+                resizeMode="contain" 
+                repeat={true} />
             )}
             {index === 3 && (
-              <LottieView
-                ref={animation => this.lottieThird = animation}
-                source={lottieUrl}
-                loop
-                style={{ }}
-              />
+              <Video 
+                ref={(ref) => { this.player3 = ref }}
+                source={VIDEO_SHARE}
+                allowsExternalPlayback={false}
+                paused={this.state.video3Paused}
+                style={styles.backgroundVideo}
+                resizeMode="contain" 
+                repeat={true} />
             )}
             {index === 4 && (
-              <LottieView
-                ref={animation => this.lottieFourth = animation}
-                source={lottieUrl}
-                loop
-                style={{ }}
-              />
+              <Video 
+                ref={(ref) => { this.player4 = ref }}
+                source={VIDEO_SERVICE}
+                allowsExternalPlayback={false}
+                paused={this.state.video4Paused}
+                style={styles.backgroundVideo}
+                resizeMode="contain" 
+                repeat={true} />
             )}
             {index === 5 && (
-              <LottieView
-                ref={animation => this.lottieFifth = animation}
-                source={lottieUrl}
-                loop
-                style={{ }}
-              />
+              <Video 
+                ref={(ref) => { this.player5 = ref }}
+                source={VIDEO_PEOPLE}
+                allowsExternalPlayback={false}
+                paused={this.state.video5Paused}
+                style={styles.backgroundVideo}
+                resizeMode="contain" 
+                repeat={true} />
             )}     
           </View>
+        </View>
+        <View style={styles.titleView}>
+          <Text style={styles.titleText}>{title}</Text>
         </View>
       </View>
     )
@@ -232,22 +255,41 @@ class TutorialScreen extends React.Component {
   }
 
   onMomentumScrollEnd = (e, state, context) => {
-    this.lottieFirst.reset()
-    this.lottieSecond.reset()
-    this.lottieThird.reset()
-    this.lottieFourth.reset()
-    this.lottieFifth.reset()
+    // this.lottieFirst.reset()
+    // this.lottieSecond.reset()
+    // this.lottieThird.reset()
+    // this.lottieFourth.reset()
+    // this.lottieFifth.reset()
+
+    // Pause all videos
+    this.setState({
+      video1Paused: true, 
+      video2Paused: true, 
+      video3Paused: true, 
+      video4Paused: true, 
+      video5Paused: true
+    })
 
     if (context.state.index === 1) {
-      this.lottieFirst.play()
+      this.setState({video1Paused: false})
+      this.player1.seek(0)
+      // this.lottieFirst.play()
     } else if (context.state.index === 2) {
-      this.lottieSecond.play()
+      this.setState({video2Paused: false})
+      this.player2.seek(0)
+      // this.lottieSecond.play()
     } else if (context.state.index === 3) {
-      this.lottieThird.play()
+      this.setState({video3Paused: false})
+      this.player3.seek(0)
+      // this.lottieThird.play()
     } else if (context.state.index === 4) {
-      this.lottieFourth.play()
+      this.setState({video4Paused: false})
+      this.player4.seek(0)
+      // this.lottieFourth.play()
     } else if (context.state.index === 5) {
-      this.lottieFifth.play()
+      this.setState({video5Paused: false})
+      this.player5.seek(0)
+      // this.lottieFifth.play()
     }
 
     this.setState({ position: context.state.index })

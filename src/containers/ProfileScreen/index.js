@@ -19,6 +19,7 @@ import ImagePicker from 'react-native-image-picker'
 import ActionSheet from 'react-native-actionsheet'
 import VersionNumber from 'react-native-version-number'
 import { GoogleSignin } from 'react-native-google-signin';
+import SVGImage from 'react-native-remote-svg'
 import _ from 'lodash'
 import ToasterComponent from '../../components/ToasterComponent'
 import UserAvatarComponent from '../../components/UserAvatarComponent'
@@ -33,6 +34,7 @@ const TRASH_ICON = require('../../../assets/images/Trash/Blue.png')
 const LOCK_ICON = require('../../../assets/images/Lock/Blue.png')
 const EDIT_ICON = require('../../../assets/images/Edit/Blue.png')
 const PROFILE_ICON = require('../../../assets/images/Profile/Blue.png')
+const PREMIUM_ICON = require('../../../assets/svgs/IconMediumStarGold.svg')
 
 const ABOUT_ITEMS = [
   'Support',
@@ -52,6 +54,10 @@ const SETTING_ITEMS = [
   {
     icon: <Image source={TRASH_ICON} style={styles.leftIcon} />,
     title: 'Archived flows'
+  },
+  {
+    icon: <SVGImage source={PREMIUM_ICON} style={styles.leftIcon} />,
+    title: 'Upgrade to Mello Premium'
   }
 ]
 
@@ -209,6 +215,9 @@ class ProfileScreen extends React.Component {
         return
       case 3: // Archived feeds
         Actions.ArchivedFeedScreen()
+        return
+      case 4: // Premium screen
+        Actions.ProfilePremiumScreen()
         return
       default:
         return
