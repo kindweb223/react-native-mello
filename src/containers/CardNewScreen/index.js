@@ -922,7 +922,21 @@ class CardNewScreen extends React.Component {
     },(error, response) => {
       if (error === null) {
         if (response.fileSize > 1024 * 1024 * 10) {
-          Alert.alert('Warning', 'File size must be less than 10MB')
+          Alert.alert(
+            '',
+            CONSTANTS.PREMIUM_10MB_ALERT_MESSAGE,
+            [
+              {
+                text: 'Ok',
+                style: 'cancel'
+              },
+              {
+                text: 'Discover',
+                onPress: () => Actions.PremiumScreen()
+              }
+            ],
+            { cancelable: false }
+          )
         } else {
           let type = 'FILE';
           const mimeType = mime.lookup(response.uri);
@@ -993,7 +1007,21 @@ class CardNewScreen extends React.Component {
     ImagePicker.launchCamera(options, (response)  => {
       if (!response.didCancel) {
         if (response.fileSize > 1024 * 1024 * 10) {
-          Alert.alert('Warning', 'File size must be less than 10MB')
+          Alert.alert(
+            '',
+            CONSTANTS.PREMIUM_10MB_ALERT_MESSAGE,
+            [
+              {
+                text: 'Ok',
+                style: 'cancel'
+              },
+              {
+                text: 'Discover',
+                onPress: () => Actions.PremiumScreen()
+              }
+            ],
+            { cancelable: false }
+          )
         } else {
           if (!response.fileName) {
             response.fileName = response.uri.replace(/^.*[\\\/]/, '')
@@ -1008,7 +1036,21 @@ class CardNewScreen extends React.Component {
     ImagePicker.launchImageLibrary(options, (response)  => {
       if (!response.didCancel) {
         if (response.fileSize > 1024 * 1024 * 10) {
-          Alert.alert('Warning', 'File size must be less than 10MB')
+          Alert.alert(
+            '',
+            CONSTANTS.PREMIUM_10MB_ALERT_MESSAGE,
+            [
+              {
+                text: 'Ok',
+                style: 'cancel'
+              },
+              {
+                text: 'Discover',
+                onPress: () => Actions.PremiumScreen()
+              }
+            ],
+            { cancelable: false }
+          )
         } else {
           this.uploadFile(this.props.card.currentCard, response, 'MEDIA');
         }
@@ -1778,7 +1820,7 @@ const mapDispatchToProps = dispatch => ({
   addLink: (ideaId, originalUrl, title, description, imageUrl, faviconUrl) => dispatch(addLink(ideaId, originalUrl, title, description, imageUrl, faviconUrl)),
   deleteLink: (ideaId, linkId) => dispatch(deleteLink(ideaId, linkId)),
   moveCard: (ideaId, huntId) => dispatch(moveCard(ideaId, huntId)),
-  resetCardError: () => dispatch(resetCardError()),
+  resetCardError: () => dispatch(resetCardError())
 })
 
 

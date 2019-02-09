@@ -83,5 +83,6 @@ export default {
   // share extension modal buttons
   MODAL_OK: 1,
   MODAL_CLOSE: 2,
-  
+
+  PREMIUM_10MB_ALERT_MESSAGE: 'Oops you need to have a premium account to upload more than 10MB.'  
 }

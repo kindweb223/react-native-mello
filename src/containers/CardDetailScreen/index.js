@@ -871,7 +871,21 @@ class CardDetailScreen extends React.Component {
     },(error, response) => {
       if (error === null) {
         if (response.fileSize > 1024 * 1024 * 10) {
-          Alert.alert('Warning', 'File size must be less than 10MB')
+          Alert.alert(
+            '',
+            CONSTANTS.PREMIUM_10MB_ALERT_MESSAGE,
+            [
+              {
+                text: 'Ok',
+                style: 'cancel'
+              },
+              {
+                text: 'Discover',
+                onPress: () => Actions.PremiumScreen()
+              }
+            ],
+            { cancelable: false }
+          )
         } else {
           let type = 'FILE';
           const mimeType = mime.lookup(response.uri);
@@ -888,7 +902,12 @@ class CardDetailScreen extends React.Component {
     }, 200)
   }
 
-  onCloseEditCard() {
+  onDoneEditCard() {
+    this.onUpdateCard()
+    this.onCancelEditCard()
+  }
+
+  onCancelEditCard() {
     this.setState({
       showEditScreen: false,
       fadeInUpAnimation: '',
@@ -917,7 +936,21 @@ class CardDetailScreen extends React.Component {
     ImagePicker.launchCamera(options, (response)  => {
       if (!response.didCancel) {
         if (response.fileSize > 1024 * 1024 * 10) {
-          Alert.alert('Warning', 'File size must be less than 10MB')
+          Alert.alert(
+            '',
+            CONSTANTS.PREMIUM_10MB_ALERT_MESSAGE,
+            [
+              {
+                text: 'Ok',
+                style: 'cancel'
+              },
+              {
+                text: 'Discover',
+                onPress: () => Actions.PremiumScreen()
+              }
+            ],
+            { cancelable: false }
+          )
         } else {
           if (!response.fileName) {
             response.fileName = response.uri.replace(/^.*[\\\/]/, '')
@@ -932,7 +965,21 @@ class CardDetailScreen extends React.Component {
     ImagePicker.launchImageLibrary(options, (response)  => {
       if (!response.didCancel) {
         if (response.fileSize > 1024 * 1024 * 10) {
-          Alert.alert('Warning', 'File size must be less than 10MB')
+          Alert.alert(
+            '',
+            CONSTANTS.PREMIUM_10MB_ALERT_MESSAGE,
+            [
+              {
+                text: 'Ok',
+                style: 'cancel'
+              },
+              {
+                text: 'Discover',
+                onPress: () => Actions.PremiumScreen()
+              }
+            ],
+            { cancelable: false }
+          )
         } else {
           this.uploadFile(this.props.card.currentCard, response, 'MEDIA');
         }
@@ -1489,7 +1536,8 @@ class CardDetailScreen extends React.Component {
               {...this.props}
               idea={idea}
               checkUrls={() => this.checkUrls()}
-              onClose={() => this.onCloseEditCard()}
+              onDoneEditCard={() => this.onDoneEditCard()}
+              onCancelEditCard={() => this.onCancelEditCard()}
               onChangeIdea={(value) => this.onChangeIdea(value)}
             />
           : this.renderCard
@@ -1556,21 +1604,13 @@ class CardDetailScreen extends React.Component {
           />
         </Modal>
 
-        <Modal 
+        <ToasterComponent
           isVisible={this.state.isCopyLink}
-          style={styles.successModal}
-          backdropColor='#e0e0e0'
-          backdropOpacity={0.9}
-          animationIn="fadeIn"
-          animationOut="fadeOut"
-          animationInTiming={500}
-          onBackdropPress={() => this.setState({ isCopyLink: false })}
-        >
-          <View style={styles.successView}>
-            <Octicons name="check" style={styles.successIcon} />
-            <Text style={styles.successText}>Copied</Text>
-          </View>
-        </Modal>
+          title="Copied"
+          buttonTitle="OK"
+          onPressButton={() => this.setState({ isCopyLink: false })}
+        />
+
         {this.state.isDeleteLink && (
           <ToasterComponent
             isVisible={this.state.isDeleteLink}
@@ -1639,7 +1679,7 @@ const mapDispatchToProps = dispatch => ({
   getOpenGraph: (url) => dispatch(getOpenGraph(url)),
   addLink: (ideaId, originalUrl, title, description, imageUrl, faviconUrl) => dispatch(addLink(ideaId, originalUrl, title, description, imageUrl, faviconUrl)),
   deleteLink: (ideaId, linkId) => dispatch(deleteLink(ideaId, linkId)),
-  resetCardError: () => dispatch(resetCardError()),
+  resetCardError: () => dispatch(resetCardError())
 })
 
 

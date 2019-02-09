@@ -8,7 +8,8 @@ import {
   ScrollView,
   ActivityIndicator,
   Alert,
-  Share
+  Share,
+  Platform
 } from 'react-native'
 import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
@@ -271,15 +272,7 @@ class InviteeScreen extends React.Component {
   showShareModal = (data) => {
     let isEnableShare = data.sharingPreferences.level === 'INVITEES_ONLY' ? false : true
     if (isEnableShare) {
-      Share.share({
-        message: data.summary || '',
-        url: `${SHARE_LINK_URL}${data.id}`,
-        title: data.headline
-      },{
-        dialogTitle: data.headline,
-        tintColor: COLORS.PURPLE,
-        subject: data.headline
-      })
+      COMMON_FUNC.handleShareFeed(data)
     }
   }
 

@@ -41,5 +41,7 @@ export const TAGS_FEATURE = false
 
 export const TRELLO_URL = 'https://trello.com/b/xqBylYZO/mello'
 
+export const FAQS_URL = 'https://intercom.help/mello/'
+
 // client ID of type WEB for your server (needed to verify user ID and offline access)
 export const GOOGLE_WEB_CLIENT_ID = '887924189900-rar93hbeqrsr8bd4a1bhrf7gkdosfqqm.apps.googleusercontent.com'
