@@ -162,6 +162,7 @@ class CardDetailScreen extends React.Component {
     this.coverImageHeight = 0
     this.coverImageScrollY = 0
     this.closeAnimationTime = CONSTANTS.ANIMATEION_MILLI_SECONDS;
+    this.scrollEnabled = true
   }
 
   async UNSAFE_componentWillReceiveProps(nextProps) {
@@ -742,9 +743,13 @@ class CardDetailScreen extends React.Component {
     }
 
     let { cardPadding } = this.state
-    if (cardPadding !== 0 && Math.abs(cardPadding - 20) > 3) cardPadding = 0
+    if (cardPadding !== 0 && Math.abs(cardPadding - 20) > 3) {
+      cardPadding = 0
+      this.scrollEnabled = false
+    }
     console.log('cPadding:', cardPadding)
 
+    // Revise if attempt to close card by scrolling down
     this._width = this._width + 2 * cardPadding
     this._height = this._height + 2 * cardPadding
     this._x = this._x - cardPadding
@@ -1320,6 +1325,7 @@ class CardDetailScreen extends React.Component {
 
   onScrollContent(event) {
     const scrollY = event.nativeEvent.contentOffset.y
+    // If scroll down to go back to the top, do not close card
     if (scrollY > 0) {
       this.coverImageScrollY = scrollY
       return
@@ -1333,8 +1339,9 @@ class CardDetailScreen extends React.Component {
       this.coverImageScrollY = 0
     }
 
+    // If scroll dwon from top and scroll offset is less than -80, close card
     if (this.coverImageScrollY === 0 && scrollY < -80 && !this.state.cardClosed ) {
-      this.closeAnimationTime = CONSTANTS.ANIMATEION_MILLI_SECONDS + 200
+      this.closeAnimationTime = CONSTANTS.ANIMATEION_MILLI_SECONDS + 250
       this.setState({ cardClosed: true })
       this.onClose()
     }
@@ -1354,6 +1361,7 @@ class CardDetailScreen extends React.Component {
         onLayout={this.onLayoutScrollView.bind(this)}
         onScroll={this.onScrollContent.bind(this)}
         scrollEventThrottle={100}
+        scrollEnabled={this.scrollEnabled}
       >
         <View style={[styles.ideaContentView, { minHeight }]}>
           {this.renderCoverImage}
