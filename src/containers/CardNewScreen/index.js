@@ -487,7 +487,7 @@ class CardNewScreen extends React.Component {
       } else if (this.props.feedo.loading !== feedoTypes.CREATE_FEED_FULFILLED && nextProps.feedo.loading === feedoTypes.CREATE_FEED_FULFILLED) {
         // creating a feed
         if (this.props.viewMode === CONSTANTS.CARD_NEW) {
-          // loading = true;
+          loading = true;
           this.draftFeedo = nextProps.feedo.currentFeed;
           this.props.createCard(nextProps.feedo.currentFeed.id);
         }
