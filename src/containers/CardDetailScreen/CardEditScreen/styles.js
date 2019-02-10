@@ -27,20 +27,22 @@ const styles = StyleSheet.create({
   },
   headerContainer: {
     marginTop: 5,
-    paddingRight: 16,
+    paddingHorizontal: 6,
     backgroundColor: '#fff',
-    alignItems: 'flex-end'
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center'
   },
   closeButtonView: {
-    width: 69,
+    paddingHorizontal: 10,
     height: 34,
-    borderRadius: 17,
+    width: 90,
     justifyContent: 'center',
-    backgroundColor: COLORS.PURPLE
+    alignItems: 'flex-start'
   },
-  closeButtonText: {
-    color: '#fff',
+  textButton: {
     fontSize: 16,
+    lineHeight: 22,
     fontWeight: '500',
     textAlign: 'center',
   },
