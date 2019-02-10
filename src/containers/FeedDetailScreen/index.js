@@ -1480,6 +1480,8 @@ class FeedDetailScreen extends React.Component {
                                 prevPage={this.props.prevPage}
                                 longHold={isVisibleLongHoldMenu}
                                 longSelected={isVisibleLongHoldMenu && selectedLongHoldCardIndex === index}
+                                onPress={() => this.onSelectCard(index, item, invitees)}
+                                onLongPress={() => this.onLongPressCard(index, item, invitees)}
                                 onLinkPress={() => this.onSelectCard(index, item, invitees)}
                                 onLinkLongPress={() => this.onLongPressCard(index, item, invitees)}
                               />
@@ -1540,7 +1542,10 @@ class FeedDetailScreen extends React.Component {
                                   listType={this.state.viewPreference}
                                   cardType="view"
                                   prevPage={this.props.prevPage}
+                                  longHold={isVisibleLongHoldMenu}
                                   longSelected={isVisibleLongHoldMenu && selectedLongHoldCardIndex === item.index}
+                                  onPress={() => this.onSelectCard(item.index, item.data, invitees)}
+                                  onLongPress={() => this.onLongPressCard(item.index, item.data, invitees)}
                                   onLinkPress={() => this.onSelectCard(item.index, item.data, invitees)}
                                   onLinkLongPress={() => this.onLongPressCard(item.index, item.data, invitees)}
                                 />
