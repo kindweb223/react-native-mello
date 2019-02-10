@@ -9,7 +9,6 @@ import {
 import PropTypes from 'prop-types'
 import { Actions } from 'react-native-router-flux'
 import ActionSheet from 'react-native-actionsheet'
-import SVGImage from 'react-native-remote-svg'
 import _ from 'lodash'
 
 import FeedItemContentComponent from '../../components/FeedItemComponent/FeedItemContentComponent'
@@ -17,8 +16,6 @@ import FeedLoadingStateComponent from '../../components/FeedLoadingStateComponen
 import CONSTANTS from '../../service/constants'
 import COLORS from '../../service/colors'
 import styles from './styles'
-
-const NOTIFICATION_EMPTY_ICON = require('../../../assets/svgs/NotificationEmptyState.svg')
 
 class ArchivedFeedoListContainer extends React.Component {
   constructor(props) {
@@ -73,19 +70,6 @@ class ArchivedFeedoListContainer extends React.Component {
     const { loading, feedoList } = this.props
 
     if (loading) return <FeedLoadingStateComponent animating />
-
-    if (feedoList.length === 0) {
-      return (
-        <View style={styles.emptyView}>
-          <SVGImage
-            source={NOTIFICATION_EMPTY_ICON}
-          />
-          <Text style={styles.title}>No archived flows</Text>
-          <Text style={styles.subTitle}>Use archive for flows you may want to</Text>
-          <Text style={styles.subTitle}>come back to in the future.</Text>
-        </View>
-      )
-    }
 
     return [
       <FlatList
