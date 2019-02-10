@@ -22,18 +22,22 @@ const styles = StyleSheet.create({
     marginBottom: 5,
   },
   emptyView: {
-    position: 'absolute',
-    top: CONSTANTS.STATUSBAR_HEIGHT,
-    left: 0,
-    justifyContent: 'center',
-    alignItems: 'center',
     width: '100%',
-    height: CONSTANTS.SCREEN_HEIGHT - 100
+    height: '100%',
+    justifyContent: 'center',
+    alignItems: 'center'
   },
-  emptyText: {
+  title: {
+    fontSize: 18,
+    lineHeight: 22,
+    letterSpacing: 0.34,
+    fontWeight: '600',
+    marginTop: 38,
+    marginBottom: 10
+  },
+  subTitle: {
     fontSize: 14,
-    color: COLORS.MEDIUM_GREY,
-    marginTop: 27
+    lineHeight: 20
   }
 })
 
