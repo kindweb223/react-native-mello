@@ -568,7 +568,7 @@ class NotificationScreen extends React.Component {
       return;
     }
 
-    const cardTextLayout = {textPointX: CONSTANTS.SCREEN_WIDTH, textPointY: CONSTANTS.SCREEN_HEIGHT, textWidth: CONSTANTS.SCREEN_WIDTH, textHeight: CONSTANTS.SCREEN_WIDTH}
+    const cardTextLayout = {textPointX: 0, textPointY: CONSTANTS.SCREEN_HEIGHT, textWidth: CONSTANTS.SCREEN_WIDTH, textHeight: CONSTANTS.SCREEN_WIDTH}
     const cardImageLayout = {px: 0, py: CONSTANTS.SCREEN_HEIGHT, imgWidth: CONSTANTS.SCREEN_WIDTH, imgHeight: CONSTANTS.SCREEN_WIDTH}
 
     return (
