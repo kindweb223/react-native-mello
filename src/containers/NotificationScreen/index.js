@@ -19,12 +19,13 @@ import PropTypes from 'prop-types'
 import Swipeout from 'react-native-swipeout'
 import _ from 'lodash'
 import FontAwesome from 'react-native-vector-icons/FontAwesome'
+import SVGImage from 'react-native-remote-svg'
 
 import Analytics from '../../lib/firebase'
 import NotificationItemComponent from '../../components/NotificationItemComponent'
 import ActivityFeedComponent from '../../components/ActivityFeedComponent'
 import CardDetailScreen from '../CardDetailScreen'
-import SelectHuntScreen from '../SelectHuntScreen';
+import SelectHuntScreen from '../SelectHuntScreen'
 import ToasterComponent from '../../components/ToasterComponent'
 
 import {
@@ -49,6 +50,7 @@ import CONSTANTS from '../../service/constants'
 import styles from './styles'
 
 const CLOSE_ICON = require('../../../assets/images/Close/Blue.png')
+const NOTIFICATION_EMPTY_ICON = require('../../../assets/svgs/NotificationEmptyState.svg')
 
 const PAGE_COUNT = 50
 
@@ -372,25 +374,35 @@ class NotificationScreen extends React.Component {
         <SafeAreaView style={{ flex: 1 }}>
           {this.renderHeader}
 
-          <FlatList
-            style={styles.flatList}
-            contentContainerStyle={styles.contentFlatList}
-            data={notificationList}
-            keyExtractor={item => item.id}
-            automaticallyAdjustContentInsets={true}
-            renderItem={this.renderItem.bind(this)}
-            // ItemSeparatorComponent={this.renderSeparator}
-            ListFooterComponent={this.renderFooter}
-            refreshControl={
-              <RefreshControl 
-                refreshing={this.state.refreshing}
-                onRefresh={this.handleRefresh}
-                tintColor={COLORS.PURPLE}
+          {notificationList.length > 0
+          ? <FlatList
+              style={styles.flatList}
+              contentContainerStyle={styles.contentFlatList}
+              data={notificationList}
+              keyExtractor={item => item.id}
+              automaticallyAdjustContentInsets={true}
+              renderItem={this.renderItem.bind(this)}
+              // ItemSeparatorComponent={this.renderSeparator}
+              ListFooterComponent={this.renderFooter}
+              refreshControl={
+                <RefreshControl 
+                  refreshing={this.state.refreshing}
+                  onRefresh={this.handleRefresh}
+                  tintColor={COLORS.PURPLE}
+                />
+              }
+              onEndReached={this.handleLoadMore}
+              onEndReachedThreshold={0}
+            />
+          : <View style={styles.emptyView}>
+              <SVGImage
+                source={NOTIFICATION_EMPTY_ICON}
               />
-            }
-            onEndReached={this.handleLoadMore}
-            onEndReachedThreshold={0}
-          />
+              <Text style={styles.title}>No new notifications</Text>
+              <Text style={styles.subTitle}>Updates on collaboration with other</Text>
+              <Text style={styles.subTitle}>Mello users will appear here.</Text>
+            </View>
+          }
 
           {this.renderCardDetailModal}
 
