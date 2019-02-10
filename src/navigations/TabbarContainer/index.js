@@ -1,15 +1,11 @@
 import React from 'react'
 import {
   View,
-  Animated,
-  Alert
+  Animated
 } from 'react-native'
 import { connect } from 'react-redux'
-import Modal from 'react-native-modal'
-import { Actions } from 'react-native-router-flux'
 import ClipboardToasterComponent from '../../components/ClipboardToasterComponent'
 import CardNewScreen from '../../containers/CardNewScreen'
-import PremiumModal from '../../components/PremiumModalComponent'
 import { closeClipboardToaster } from '../../redux/user/actions'
 import styles from './styles'
 import CONSTANTS from '../../service/constants'
@@ -54,8 +50,7 @@ class TabbarContainer extends React.Component {
     const {
       showClipboardToaster,
       clipboardToasterPrevpage,
-      clipboardToasterContent,
-      showPremiumModal
+      clipboardToasterContent
     } = this.props.user
 
     return (
@@ -85,20 +80,6 @@ class TabbarContainer extends React.Component {
             />
           </Animated.View>
         )}
-
-        <Modal
-          isVisible={showPremiumModal}
-          backdropColor='#656974'
-          backdropOpacity={0.6}
-          animationIn="slideInUp"
-          animationOut="slideOutDown"
-          animationInTiming={300}
-          onBackdropPress={() => this.props.handleHidePremiumModal()}
-        >
-          <PremiumModal
-            onClose={() => this.props.handleHidePremiumModal()}
-          />
-        </Modal>
       </View>
     )
   }
