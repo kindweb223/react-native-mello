@@ -1469,6 +1469,7 @@ class FeedDetailScreen extends React.Component {
                             <TouchableHighlight
                               ref={ref => this.cardItemRefs[index] = ref}
                               style={{ paddingHorizontal: 8, borderRadius: 5 }}
+                              activeOpacity={1}
                               underlayColor="#fff"
                               onPress={() => this.onSelectCard(index, item, invitees)}
                               onLongPress={() => this.onLongPressCard(index, item, invitees)}
@@ -1533,6 +1534,7 @@ class FeedDetailScreen extends React.Component {
                               <TouchableHighlight
                                 ref={ref => this.cardItemRefs[item.index] = ref}
                                 style={{ paddingHorizontal: 8, borderRadius: 5 }}
+                                activeOpacity={1}
                                 underlayColor="#fff"
                                 onPress={() => this.onSelectCard(item.index, item.data, invitees)}
                                 onLongPress={() => this.onLongPressCard(item.index, item.data, invitees)}
