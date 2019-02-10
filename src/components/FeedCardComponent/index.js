@@ -50,6 +50,7 @@ class FeedCardComponent extends React.Component {
     } else {
       return (
         <TouchableHighlight
+          activeOpacity={1}
           underlayColor="#fff"
           onPressIn={this.onPressInAddFeed.bind(this)}
           onPressOut={this.onPressOutAddFeed.bind(this)}
