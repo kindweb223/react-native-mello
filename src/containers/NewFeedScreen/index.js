@@ -222,7 +222,6 @@ class NewFeedScreen extends React.Component {
   }
 
   componentDidMount() {
-    console.log('Current Feedo : ', this.props.feedo.currentFeed);
     Animated.timing(this.animatedShow, {
       toValue: 1,
       duration: CONSTANTS.ANIMATEION_MILLI_SECONDS,
@@ -458,7 +457,7 @@ class NewFeedScreen extends React.Component {
   }
 
   get renderHeader() {
-    const { feedoMode } = this.props;
+    const { feedoMode, isNewCard } = this.props;
     if (feedoMode === CONSTANTS.SHARE_EXTENTION_FEEDO) {
       return (
         <View style={styles.extensionTopContainer}>
@@ -481,24 +480,25 @@ class NewFeedScreen extends React.Component {
     }
 
     return (
-      <View style={styles.topContainer}>
+      <View style={styles.mainHeaderContainer}>
         <TouchableOpacity 
-          style={styles.closeButtonWrapper}
-          activeOpacity={0.6}
+          style={styles.btnClose}
+          activeOpacity={0.7}
           onPress={this.onOpenActionSheet.bind(this)}
         >
-          <MaterialCommunityIcons name="close" size={32} color={COLORS.PURPLE} />
+          <Text style={[styles.textButton, { color: COLORS.PURPLE, fontWeight: 'normal' }]}>Cancel</Text>
         </TouchableOpacity>
+        {isNewCard
+          ? <Text style={styles.textButton}>New flow</Text>
+          : <Text style={styles.textButton}>Edit flow</Text>
+        }
         <TouchableOpacity 
-          style={styles.createButtonWapper}
+          style={[styles.btnClose, { alignItems: 'flex-end' }]}
           activeOpacity={0.6}
           onPress={this.onUpdate.bind(this)}
         >
-          <Text style={styles.textButton}>
-            {this.props.selectedFeedId
-              ? this.props.viewMode === CONSTANTS.FEEDO_FROM_MAIN ? 'Save' : 'Done'
-              : 'Create Flow'
-            }
+          <Text style={[styles.textButton, { color: COLORS.PURPLE }]}>
+            Done
           </Text>
         </TouchableOpacity>
       </View>
@@ -783,7 +783,8 @@ NewFeedScreen.defaultProps = {
   viewMode: CONSTANTS.FEEDO_FROM_MAIN,
   feedoMode: CONSTANTS.MAIN_APP_FEEDO,
   onClose: () => {},
-  initFeedName: ''
+  initFeedName: '',
+  isNewCard: true
 }
 
 
@@ -794,7 +795,8 @@ NewFeedScreen.propTypes = {
   onClose: PropTypes.func,
   viewMode: PropTypes.number,
   feedoMode: PropTypes.number,
-  initFeedName: PropTypes.string
+  initFeedName: PropTypes.string,
+  isNewCard: PropTypes.bool
 }
 
 
