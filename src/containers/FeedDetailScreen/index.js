@@ -301,10 +301,9 @@ class FeedDetailScreen extends React.Component {
       this.setState({ currentBackFeed: currentFeed }, () => {
         let redrawMasonry = false
 
-        if (feedo.loading === 'UPDATE_CARD_FULFILLED' ||
-          card.loading === 'UPDATE_CARD_FULFILLED' ||
-          feedo.loading === 'ADD_CARD_COMMENT_FULFILLED' ||
-          feedo.loading === 'DELETE_CARD_COMMENT_FULFILLED') 
+        if (feedo.loading === 'UPDATE_CARD_FULFILLED' || card.loading === 'UPDATE_CARD_FULFILLED' ||
+          (feedo.loading === 'ADD_CARD_COMMENT_FULFILLED' && Actions.currentScene === 'CommentScreen') ||
+          (feedo.loading === 'DELETE_CARD_COMMENT_FULFILLED' && Actions.currentScene === 'CommentScreen'))
         {
           redrawMasonry = true
         }
@@ -1029,6 +1028,7 @@ class FeedDetailScreen extends React.Component {
 
   get renderNewCardModal() {
     const { isVisibleCard, cardViewMode, cardMode, isVisibleEditFeed } = this.state
+
     if (!isVisibleCard && !isVisibleEditFeed) {
       return;
     }
@@ -1069,6 +1069,7 @@ class FeedDetailScreen extends React.Component {
               onClose={() => this.onCloseEditFeedModal()}
               selectedFeedId={this.props.data.id}
               viewMode={this.state.feedoViewMode}
+              isNewCard={false}
             />
         }
       </Animated.View>

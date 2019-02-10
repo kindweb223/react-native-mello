@@ -175,9 +175,17 @@ class CardEditScreen extends React.Component {
         <TouchableOpacity 
           style={styles.closeButtonView}
           activeOpacity={0.7}
+          onPress={() => this.onCancelEditCard()}
+        >
+          <Text style={[styles.textButton, { color: COLORS.PURPLE, fontWeight: 'normal' }]}>Cancel</Text>
+        </TouchableOpacity>
+        <Text style={styles.textButton}>Edit card</Text>
+        <TouchableOpacity 
+          style={[styles.closeButtonView, { alignItems: 'flex-end' }]}
+          activeOpacity={0.7}
           onPress={() => this.onDoneEditCard()}
         >
-          <Text style={styles.closeButtonText}>Done</Text>
+          <Text style={[styles.textButton, { color: COLORS.PURPLE }]}>Done</Text>
         </TouchableOpacity>
       </View>
     )
