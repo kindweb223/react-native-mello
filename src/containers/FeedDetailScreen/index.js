@@ -318,7 +318,7 @@ class FeedDetailScreen extends React.Component {
         this.props.getActivityFeed(this.props.user.userInfo.id, { page: 0, size: PAGE_COUNT })
       }
 
-      if (this.props.feedo.loading === 'DELETE_INVITEE_PENDING' && feedo.loading === 'DELETE_INVITEE_FULFILLED') {
+      if (!COMMON_FUNC.isFeedOwnerEditor(currentFeed) && this.props.feedo.loading === 'DELETE_INVITEE_PENDING' && feedo.loading === 'DELETE_INVITEE_FULFILLED') {
         const feedId = this.props.data.id
         this.props.setFeedDetailAction({
           action: 'Leave',
