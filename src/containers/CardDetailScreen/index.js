@@ -1413,10 +1413,6 @@ class CardDetailScreen extends React.Component {
   }
 
   onScrollContent(event) {
-    if (this.props.isFromNotification) {
-      return
-    }
-
     const scrollY = event.nativeEvent.contentOffset.y
     // If scroll down to go back to the top, do not close card
     if (scrollY > 0) {
@@ -1425,7 +1421,9 @@ class CardDetailScreen extends React.Component {
     }
 
     if (scrollY <= 0) {
-      this.setState({ cardPadding: Math.abs(scrollY / 4)})
+      if (!this.props.isFromNotification) {
+        this.setState({ cardPadding: Math.abs(scrollY / 4)})
+      }
     }
 
     if (scrollY === 0) {
