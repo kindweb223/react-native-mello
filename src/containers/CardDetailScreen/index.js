@@ -1500,7 +1500,7 @@ class CardDetailScreen extends React.Component {
         duration={CONSTANTS.ANIMATABLE_DURATION + 200}
         animation={this.state.slideInUpAnimation}
       >
-        <View style={[styles.footerContainer, { opacity: this.state.isOpeningCard }]}>
+        <View style={[styles.footerContainer, { opacity: this.state.isOpeningCard ? 1 : 0}]}>
           {!COMMON_FUNC.isFeedGuest(feedo.currentFeed) && 
             <View style={styles.addCommentView}>
               {this.renderAddComment}
