@@ -407,7 +407,7 @@ class FeedDetailScreen extends React.Component {
           this.setState({ showBubble: true })
           setTimeout(() => {
             this.setState({ showBubbleCloseButton: true })
-          }, 30000)
+          }, 10000)
         } else {
           this.setState({ showBubble: false })
         }
