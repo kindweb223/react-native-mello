@@ -7,7 +7,8 @@ import {
   ScrollView,
   FlatList,
   Platform,
-  BackHandler
+  BackHandler,
+  Share
 } from 'react-native'
 import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
@@ -21,14 +22,17 @@ import ActionSheet from 'react-native-actionsheet'
 import VersionNumber from 'react-native-version-number'
 import { GoogleSignin } from 'react-native-google-signin';
 import SVGImage from 'react-native-remote-svg'
+import Modal from "react-native-modal"
 import _ from 'lodash'
 import ToasterComponent from '../../components/ToasterComponent'
 import UserAvatarComponent from '../../components/UserAvatarComponent'
 import LoadingScreen from '../LoadingScreen'
+import ShareWidgetTipsModal from '../../components/ShareWidgetModal/TipsModal'
 import { userSignOut, deleteProfilePhoto } from '../../redux/user/actions'
 import COLORS from '../../service/colors'
 import styles from './styles'
 import Analytics from '../../lib/firebase'
+import { TIP_SHARE_LINK_URL } from '../../service/api'
 
 const CLOSE_ICON = require('../../../assets/images/Close/Blue.png')
 const TRASH_ICON = require('../../../assets/images/Trash/Blue.png')
@@ -36,6 +40,7 @@ const LOCK_ICON = require('../../../assets/images/Lock/Blue.png')
 const EDIT_ICON = require('../../../assets/images/Edit/Blue.png')
 const PROFILE_ICON = require('../../../assets/images/Profile/Blue.png')
 const PREMIUM_ICON = require('../../../assets/svgs/IconMediumStarGold.svg')
+const SHARE_ICON = require('../../../assets/images/Share/Blue.png')
 
 const ABOUT_ITEMS = [
   'Support',
@@ -57,6 +62,10 @@ const SETTING_ITEMS = [
     title: 'Archived flows'
   },
   {
+    icon: <Image source={SHARE_ICON} style={styles.leftIcon} />,
+    title: 'Enable share extention'
+  },
+  {
     icon: <SVGImage source={PREMIUM_ICON} style={styles.leftIcon} />,
     title: 'Upgrade to Mello Premium'
   }
@@ -68,7 +77,8 @@ class ProfileScreen extends React.Component {
     this.state = {
       isShowToaster: false,
       toasterText: '',
-      loading: false
+      loading: false,
+      showShareTipsModal: false
     }
   }
 
@@ -215,6 +225,30 @@ class ProfileScreen extends React.Component {
     });
   }
 
+  showShareExtension = () => {
+    setTimeout(() => {
+      this.setState({ showShareTipsModal: true })
+    }, 100)
+
+    setTimeout(() => {
+      Share.share({
+        message: 'Mello',
+        title: 'Mello',
+        url: TIP_SHARE_LINK_URL
+      },{
+        dialogTitle: 'Mello',
+        subject: 'Mello',
+        excludedActivityTypes: ["com.apple.UIKit.activity.AirDrop"]
+      }).then(result => {
+        if (result.action === Share.dismissedAction) {
+          this.setState({ showShareTipsModal: false })
+        }
+      }).catch(error => {
+        console.log('ERROR: ', error)
+      })
+    }, 200)
+  }
+
   handleSettingItem = (index) => {
     const { userInfo } = this.state
     switch(index) {
@@ -229,7 +263,10 @@ class ProfileScreen extends React.Component {
       case 3: // Archived feeds
         Actions.ArchivedFeedScreen()
         return
-      case 4: // Premium screen
+      case 4: // Show share extension
+        this.showShareExtension()
+        return
+      case 5: // Premium screen
         Actions.ProfilePremiumScreen()
         return
       default:
@@ -415,6 +452,16 @@ class ProfileScreen extends React.Component {
             onPressButton={() => this.setState({ isShowToaster: false })}
           />
         )}
+
+        <Modal
+          animationIn="fadeIn"
+          animationOut="fadeOut"
+          backdropOpacity={0.5}
+          isVisible={this.state.showShareTipsModal}
+          style={{ margin: 8 }}
+        >
+          <ShareWidgetTipsModal />
+        </Modal>
 
       </View>
     )
