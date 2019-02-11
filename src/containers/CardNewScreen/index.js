@@ -734,6 +734,7 @@ class CardNewScreen extends React.Component {
     const feedoInfo = {
       time: moment().format('LLL'),
       feedoId: this.props.feedo.currentFeed.id,
+      currentFeed: this.props.feedo.currentFeed
     }
     SharedGroupPreferences.setItem(CONSTANTS.CARD_SAVED_LAST_FEEDO_INFO, JSON.stringify(feedoInfo), CONSTANTS.APP_GROUP_LAST_USED_FEEDO)
   }
