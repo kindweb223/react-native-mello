@@ -72,7 +72,7 @@ class CardNewShareScreen extends React.Component {
       
       loading: false,
       isVisibleSelectFeedoModal: false,
-      isShowKeyboardButton: false,
+      isShowKeyboardButton: false
     };
 
     this.selectedFile = null;
@@ -254,6 +254,16 @@ class CardNewShareScreen extends React.Component {
       }
     });
 
+    const strFeedoInfo = await SharedGroupPreferences.getItem(CONSTANTS.CARD_SAVED_LAST_FEEDO_INFO, CONSTANTS.APP_GROUP_LAST_USED_FEEDO);
+    if (strFeedoInfo) {
+      const feedoInfo = JSON.parse(strFeedoInfo);
+      const diffHours = moment().diff(moment(feedoInfo.time, 'LLL'), 'hours');
+      if (diffHours < 1) {
+        this.props.setCurrentFeed(feedoInfo.currentFeed);
+        this.draftFeedo = feedoInfo.currentFeed
+      }
+    }
+
     this.keyboardWillShowSubscription = Keyboard.addListener('keyboardWillShow', (e) => this.keyboardWillShow(e));
     this.keyboardWillHideSubscription = Keyboard.addListener('keyboardWillHide', (e) => this.keyboardWillHide(e));
     this.safariViewShowSubscription = SafariView.addEventListener('onShow', () => this.safariViewShow());
@@ -303,6 +313,7 @@ class CardNewShareScreen extends React.Component {
     const feedoInfo = {
       time: moment().format('LLL'),
       feedoId: this.props.feedo.currentFeed.id,
+      currentFeed: this.props.feedo.currentFeed
     }
     SharedGroupPreferences.setItem(CONSTANTS.CARD_SAVED_LAST_FEEDO_INFO, JSON.stringify(feedoInfo), CONSTANTS.APP_GROUP_LAST_USED_FEEDO)
   }
@@ -562,9 +573,9 @@ class CardNewShareScreen extends React.Component {
   get renderBottomContent() {
     return (
       <View style={styles.extensionSelectFeedoContainer}>
-        <Text style={[styles.textCreateCardIn, {color: COLORS.PRIMARY_BLACK}]}>Create card in:</Text>
+        <Text style={[styles.textCreateCardIn, { color: COLORS.PRIMARY_BLACK }]}>Create card in:</Text>
         <TouchableOpacity
-          style={[styles.selectFeedoButtonContainer, {paddingRight: 3}]}
+          style={[styles.selectFeedoButtonContainer, { paddingRight: 3 }]}
           activeOpacity={0.6}
           onPress={() => this.onSelectFeedo()}
         >
