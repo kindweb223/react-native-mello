@@ -14,7 +14,7 @@ import {
   Clipboard,
   Alert,
   Share,
-  NativeModules
+  BackHandler
 } from 'react-native'
 import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
@@ -193,20 +193,22 @@ class HomeScreen extends React.Component {
     let permissionInfo = JSON.parse(await AsyncStorage.getItem('permissionInfo'))
 
     // Check push notification
-    Permissions.check('notification')
-      .then(response => {
-        // Ask for notifications permission first
-        if (response === 'undetermined') {
-          Permissions.request('notification').then(response => {
-            // Then show share widget tip
+    if (Platform.OS === 'ios') {
+      Permissions.check('notification')
+        .then(response => {
+          // Ask for notifications permission first
+          if (response === 'undetermined') {
+            Permissions.request('notification').then(response => {
+              // Then show share widget tip
+              this.showSharePermissionModal(permissionInfo)
+            });
+          } 
+          // If notification permissions already asked, show share widget tip
+          else {
             this.showSharePermissionModal(permissionInfo)
-          });
-        } 
-        // If notification permissions already asked, show share widget tip
-        else {
-          this.showSharePermissionModal(permissionInfo)
-        }
-    });
+          }
+      });
+    }
 
     this.setState({ loading: true })
 
@@ -232,10 +234,18 @@ class HomeScreen extends React.Component {
 
     AppState.addEventListener('change', this.onHandleAppStateChange.bind(this));
     appOpened(this.props.user.userInfo.id);
+
+    BackHandler.addEventListener('hardwareBackPress', this.handleBackButton);
   }
 
   componentWillUnmount() {
     AppState.removeEventListener('change', this.onHandleAppStateChange);
+    BackHandler.removeEventListener('hardwareBackPress', this.handleBackButton);
+  }
+
+  handleBackButton = () => {
+    //nothing happens
+    return true;
   }
 
   static getDerivedStateFromProps(nextProps, prevState) {
@@ -1475,6 +1485,7 @@ class HomeScreen extends React.Component {
           backdropOpacity={0.6}
           animationInTiming={500}
           onBackdropPress={() => this.setState({ showSharePermissionModal: false })}
+          onBackButtonPress={() => this.setState({ showSharePermissionModal: false })}
           onModalHide={() => this.onCloseSharePermissionModal()}
         >
           <ShareWidgetPermissionModal
@@ -1501,6 +1512,7 @@ class HomeScreen extends React.Component {
           backdropOpacity={0.6}
           animationInTiming={500}
           onBackdropPress={() => this.setState({ showShareConfirmModal: false })}
+          onBackButtonPress={() => this.setState({ showShareConfirmModal: false })}
         >
           <ShareWidgetConfirmModal
             onClose={() => this.setState({ showShareConfirmModal: false })}

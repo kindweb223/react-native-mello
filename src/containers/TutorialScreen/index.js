@@ -5,7 +5,9 @@ import {
   Text,
   TouchableOpacity,
   Image,
-  Alert
+  BackHandler,
+  Alert,
+  Platform,
 } from 'react-native'
 import { connect } from 'react-redux'
 import { Actions } from 'react-native-router-flux'
@@ -64,6 +66,22 @@ class TutorialScreen extends React.Component {
       webClientId: GOOGLE_WEB_CLIENT_ID,
       offlineAccess: false
     })
+
+    BackHandler.addEventListener('hardwareBackPress', this.handleBackButton);
+  }
+
+  componentWillUnmount() {
+    BackHandler.removeEventListener('hardwareBackPress', this.handleBackButton);
+  }
+
+  handleBackButton = () => {
+    
+    const {position} = this.state;
+    if (position > 0)
+    {
+      this.swiperRef.scrollBy(-1, true)
+    }
+    return true;
   }
 
   componentWillReceiveProps(nextProps) {
@@ -301,7 +319,6 @@ class TutorialScreen extends React.Component {
 
   render () {
     const { position } = this.state
-
     return (
       <View style={styles.container}>
         <SafeAreaView style={styles.safeView}>
@@ -315,7 +332,7 @@ class TutorialScreen extends React.Component {
             ref={c => this.swiperRef = c}
             loop={false}
             index={position}
-            paginationStyle={{ bottom: ifIphoneX(5, 30) }}
+            paginationStyle={{ bottom: Platform.OS === 'ios' ? ifIphoneX(5, 30) : 50 }}
             dotStyle={styles.dotStyle}
             activeDotStyle={styles.dotStyle}
             activeDotColor={COLORS.DARK_GREY}

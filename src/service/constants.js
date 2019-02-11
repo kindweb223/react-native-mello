@@ -84,5 +84,9 @@ export default {
   MODAL_OK: 1,
   MODAL_CLOSE: 2,
 
-  PREMIUM_10MB_ALERT_MESSAGE: 'Oops you need to have a premium account to upload more than 10MB.'  
+  PREMIUM_10MB_ALERT_MESSAGE: 'Oops you need to have a premium account to upload more than 10MB.',
+
+  // file path in DocumentDirectoryPath
+  PRIVACY_POLICE: '/MELLO_PRIVACY_POLICY.txt',
+  TERMS_CONDITIONS: '/MELLO_TERMS_CONDITIONS.txt',
 }

@@ -8,7 +8,7 @@ const FOOTER_HEIGHT = 55
 const styles = StyleSheet.create({
   container: {
     width: CONSTANTS.SCREEN_WIDTH,
-    height:'100%', 
+    height: CONSTANTS.SCREEN_HEIGHT,
     backgroundColor: 'transparent',
     justifyContent: 'center',
   },
@@ -40,7 +40,7 @@ const styles = StyleSheet.create({
   },
   headerContainer: {
     position: 'absolute',
-    top: Platform.OS === 'ios' ? ifIphoneX(53, 30) : 30,
+    top: Platform.OS === 'ios' ? ifIphoneX(53, 30) : 10,
     right: 8,
     width: 50,
     height: 50,

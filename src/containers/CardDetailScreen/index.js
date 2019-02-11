@@ -11,7 +11,8 @@ import {
   ScrollView,
   Linking,
   SafeAreaView,
-  Platform
+  Platform,
+  BackHandler,
 } from 'react-native'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
@@ -221,12 +222,16 @@ class CardDetailScreen extends React.Component {
       const { id } = this.props.card.currentCard;
       const { objectKey } = this.props.card.fileUploadUrl;
       const fileType = (Platform.OS === 'ios') ? this.selectedFileMimeType : this.selectedFile.type;
-      const { width, height } = await this.getImageSize(this.selectedFile.uri);
-      const metadata = {
-        width,
-        height
+      if (fileType.indexOf('image/') !== -1) {
+        const { width, height } = await this.getImageSize(this.selectedFile.uri);
+        const metadata = {
+          width,
+          height
+        }
+        this.props.addFile(id, this.selectedFileType, fileType, this.selectedFileName, objectKey, metadata);
       }
-      this.props.addFile(id, this.selectedFileType, fileType, this.selectedFileName, objectKey, metadata);
+      else
+        this.props.addFile(id, this.selectedFileType, fileType, this.selectedFileName, objectKey, null);
 
     } else if (this.props.card.loading !== types.ADD_FILE_PENDING && nextProps.card.loading === types.ADD_FILE_PENDING) {
       loading = true;
@@ -589,6 +594,8 @@ class CardDetailScreen extends React.Component {
       this.safariViewShowSubscription = SafariView.addEventListener('onShow', () => this.safariViewShow());
       this.safariViewDismissSubscription = SafariView.addEventListener('onDismiss', () => this.safariViewDismiss());
     }
+
+    BackHandler.addEventListener('hardwareBackPress', this.handleBackButton);
   }
 
   componentWillUnmount() {
@@ -596,6 +603,13 @@ class CardDetailScreen extends React.Component {
       this.safariViewShowSubscription.remove();
       this.safariViewDismissSubscription.remove();
     }
+
+    BackHandler.removeEventListener('hardwareBackPress', this.handleBackButton);
+  }
+
+  handleBackButton = () => {
+    this.onBack(this);
+    return true;
   }
 
   getImageSize(uri) {
@@ -622,7 +636,7 @@ class CardDetailScreen extends React.Component {
   }
 
   async createCard(currentProps) {
-    Analytics.logEvent('new_card_new_card', {})
+    Analytics.logEvent('CardDetailScreen', {})
 
     const { cardMode, viewMode } = this.props;
     if (cardMode === CONSTANTS.MAIN_APP_CARD_FROM_DASHBOARD) {
@@ -651,6 +665,7 @@ class CardDetailScreen extends React.Component {
     const feedoInfo = {
       time: moment().format('LLL'),
       feedoId: this.props.feedo.currentFeed.id,
+      currentFeed: this.props.feedo.currentFeed
     }
     SharedGroupPreferences.setItem(CONSTANTS.CARD_SAVED_LAST_FEEDO_INFO, JSON.stringify(feedoInfo), CONSTANTS.APP_GROUP_LAST_USED_FEEDO)
   }
@@ -865,13 +880,35 @@ class CardDetailScreen extends React.Component {
   }
 
   onAddDocument() {
+    if (Platform.OS === 'ios') {
+      this.PickerDocumentShow();
+    }
+    else {
+      Permissions.check('storage').then(response => { //'storage' permission doesn't support on iOS
+        if (response === 'authorized') {
+          //permission already allowed
+          this.PickerDocumentShow();
+        }
+        else {
+          Permissions.request('storage').then(response => {
+            if (response === 'authorized') {
+              //storage permission was authorized
+              this.PickerDocumentShow();
+            }
+          });
+        }
+      });
+    }
+  }
+
+  PickerDocumentShow () {
     setTimeout(() => {
-    DocumentPicker.show({
-      filetype: [DocumentPickerUtil.allFiles()],
-    },(error, response) => {
-      if (error === null) {
-        if (response.fileSize > 1024 * 1024 * 10) {
-          Alert.alert(
+      DocumentPicker.show({
+        filetype: [DocumentPickerUtil.allFiles()],
+      },(error, response) => {
+        if (error === null) {
+          if (response.fileSize > 1024 * 1024 * 10) {
+            Alert.alert(
             '',
             CONSTANTS.PREMIUM_10MB_ALERT_MESSAGE,
             [
@@ -886,20 +923,20 @@ class CardDetailScreen extends React.Component {
             ],
             { cancelable: false }
           )
-        } else {
-          let type = 'FILE';
-          const mimeType = mime.lookup(response.uri);
-          if (mimeType !== false) {
-            if (mimeType.indexOf('image') !== -1 || mimeType.indexOf('video') !== -1) {
-              type = 'MEDIA';
+          } else {
+            let type = 'FILE';
+            const mimeType = mime.lookup(response.uri);
+            if (mimeType !== false) {
+              if (mimeType.indexOf('image') !== -1 || mimeType.indexOf('video') !== -1) {
+                type = 'MEDIA';
+              }
             }
+            this.uploadFile(this.props.card.currentCard, response, type);
           }
-          this.uploadFile(this.props.card.currentCard, response, type);
         }
-      }      
-    });
-    return;
-    }, 200)
+      });
+      return;
+      }, 200)
   }
 
   onDoneEditCard() {
@@ -1495,7 +1532,7 @@ class CardDetailScreen extends React.Component {
 
     const animatedTopMove = this.animatedShow.interpolate({
       inputRange: [0, 1],
-      outputRange: [CONSTANTS.SCREEN_HEIGHT, 0],
+      outputRange: [this.state.originalCardTopY, 0],
     });
     cardStyle = {
       // top: animatedTopMove,
@@ -1503,7 +1540,7 @@ class CardDetailScreen extends React.Component {
     };
 
     let contentContainerStyle = {
-      paddingTop: 0,
+      paddingBottom: Platform.OS==='android'? 20: 0,
       height: CONSTANTS.SCREEN_HEIGHT,
       backgroundColor: '#fff',
     }
@@ -1581,6 +1618,7 @@ class CardDetailScreen extends React.Component {
           animationInTiming={500}
           onModalHide={this.handleControlMenHide}
           onBackdropPress={() => this.setState({ isVisibleCardOpenMenu: false })}
+          onBackButtonPress={() => this.setState({ isVisibleCardOpenMenu: false })}
         >
           <Animated.View style={styles.settingCardMenuView}>
             <CardControlMenuComponent
@@ -1609,6 +1647,7 @@ class CardDetailScreen extends React.Component {
           title="Copied"
           buttonTitle="OK"
           onPressButton={() => this.setState({ isCopyLink: false })}
+          onBackButtonPress={() => this.setState({ isCopyLink: false })}
         />
 
         {this.state.isDeleteLink && (

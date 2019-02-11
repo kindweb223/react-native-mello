@@ -13,6 +13,7 @@ import {
   AsyncStorage,
   SafeAreaView,
   Platform,
+  BackHandler
 } from 'react-native'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
@@ -292,12 +293,17 @@ class CardNewScreen extends React.Component {
         objectKey,
       } = this.props.card.fileUploadUrl;
       const fileType = (Platform.OS === 'ios') ? this.selectedFileMimeType : this.selectedFile.type;
-      const { width, height } = await this.getImageSize(this.selectedFile.uri);
-      const metadata = {
-        width,
-        height
+      if (fileType.indexOf('image/') !== -1) {
+        const { width, height } = await this.getImageSize(this.selectedFile.uri);
+        const metadata = {
+          width,
+          height
+        }
+        this.props.addFile(id, this.selectedFileType, fileType, this.selectedFileName, objectKey, metadata);
       }
-      this.props.addFile(id, this.selectedFileType, fileType, this.selectedFileName, objectKey, metadata);
+      else
+        this.props.addFile(id, this.selectedFileType, fileType, this.selectedFileName, objectKey, null);
+
     } else if (this.props.card.loading !== types.ADD_FILE_PENDING && nextProps.card.loading === types.ADD_FILE_PENDING) {
       // adding a file
       loading = true;
@@ -487,7 +493,7 @@ class CardNewScreen extends React.Component {
       } else if (this.props.feedo.loading !== feedoTypes.CREATE_FEED_FULFILLED && nextProps.feedo.loading === feedoTypes.CREATE_FEED_FULFILLED) {
         // creating a feed
         if (this.props.viewMode === CONSTANTS.CARD_NEW) {
-          // loading = true;
+          loading = true;
           this.draftFeedo = nextProps.feedo.currentFeed;
           this.props.createCard(nextProps.feedo.currentFeed.id);
         }
@@ -628,6 +634,8 @@ class CardNewScreen extends React.Component {
       this.safariViewShowSubscription = SafariView.addEventListener('onShow', () => this.safariViewShow());
       this.safariViewDismissSubscription = SafariView.addEventListener('onDismiss', () => this.safariViewDismiss());
     }
+
+    BackHandler.addEventListener('hardwareBackPress', this.handleBackButton);
   }
 
   componentWillUnmount() {
@@ -637,6 +645,19 @@ class CardNewScreen extends React.Component {
       this.safariViewShowSubscription.remove();
       this.safariViewDismissSubscription.remove();
     }
+
+    BackHandler.removeEventListener('hardwareBackPress', this.handleBackButton);
+  }
+  
+  handleBackButton = () => {
+    const { cardMode, viewMode } = this.props;
+    if (cardMode === CONSTANTS.SHARE_EXTENTION_CARD) {
+      this.props.shareUrl !== '' && this.props.shareImageUrls.length > 0 ? Actions.pop() : this.props.onClose()
+    }
+    if (viewMode === CONSTANTS.CARD_NEW) {
+      this.leaveActionSheetRef.show()
+    }
+    return true;
   }
 
   keyboardWillShow(e) {
@@ -672,7 +693,7 @@ class CardNewScreen extends React.Component {
   }
 
   async createCard(currentProps) {
-    Analytics.logEvent('new_card_new_card', {})
+    Analytics.logEvent('CardNewScreen', {})
 
     const { cardMode, viewMode, prevPage } = this.props;
     if (prevPage !== 'card' && (cardMode === CONSTANTS.MAIN_APP_CARD_FROM_DASHBOARD) || (cardMode === CONSTANTS.SHARE_EXTENTION_CARD)) {
@@ -713,6 +734,7 @@ class CardNewScreen extends React.Component {
     const feedoInfo = {
       time: moment().format('LLL'),
       feedoId: this.props.feedo.currentFeed.id,
+      currentFeed: this.props.feedo.currentFeed
     }
     SharedGroupPreferences.setItem(CONSTANTS.CARD_SAVED_LAST_FEEDO_INFO, JSON.stringify(feedoInfo), CONSTANTS.APP_GROUP_LAST_USED_FEEDO)
   }
@@ -917,6 +939,28 @@ class CardNewScreen extends React.Component {
   }
 
   onAddDocument() {
+    if (Platform.OS === 'ios') {
+      this.PickerDocumentShow();
+    }
+    else {
+      Permissions.check('storage').then(response => { //'storage' permission doesn't support on iOS
+        if (response === 'authorized') {
+          //permission already allowed
+          this.PickerDocumentShow();
+        }
+        else {
+          Permissions.request('storage').then(response => {
+            if (response === 'authorized') {
+              //storage permission was authorized
+              this.PickerDocumentShow();
+            }
+          });
+        }
+      });
+    }
+  }
+  
+  PickerDocumentShow () {
     DocumentPicker.show({
       filetype: [DocumentPickerUtil.allFiles()],
     },(error, response) => {
@@ -951,7 +995,7 @@ class CardNewScreen extends React.Component {
     });
     return;
   }
-  
+
   onHideKeyboard() {
     const { cardMode } = this.props;
     if (cardMode === CONSTANTS.SHARE_EXTENTION_CARD) {
@@ -1746,6 +1790,7 @@ class CardNewScreen extends React.Component {
           animationOut="fadeOut"
           animationInTiming={500}
           onBackdropPress={() => this.setState({ isCopyLink: false })}
+          onBackButtonPress={() => this.setState({ isCopyLink: false })}
         >
           <View style={styles.successView}>
             <Octicons name="check" style={styles.successIcon} />

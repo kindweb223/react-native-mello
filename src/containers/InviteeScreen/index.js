@@ -399,6 +399,7 @@ class InviteeScreen extends React.Component {
           animationOut="slideOutDown"
           animationInTiming={500}
           onBackdropPress={() => this.setState({ isRemoveModal: false })}
+          onBackButtonPress={() => this.setState({ isRemoveModal: false })}
         >
           <View style={styles.removeModal}>
             {
@@ -431,6 +432,7 @@ class InviteeScreen extends React.Component {
           animationOut="slideOutDown"
           animationInTiming={500}
           onBackdropPress={() => this.setState({ isPermissionModal: false })}
+          onBackButtonPress={() => this.setState({ isPermissionModal: false })}
         >
           <LinkShareModalComponent
             inviteePermission={true}
