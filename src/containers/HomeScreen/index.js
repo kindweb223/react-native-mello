@@ -133,7 +133,7 @@ class HomeScreen extends React.Component {
       showLongHoldActionBar: true,
       isShowInviteToaster: false,
       inviteToasterTitle: '',
-      showSharePermissionModal: false,
+      showSharePermissionModal: true,
       enableShareWidget: false,
       showShareTipsModal: false,
       showShareConfirmModal: false

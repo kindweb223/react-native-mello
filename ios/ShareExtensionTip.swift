@@ -80,17 +80,17 @@ class ShareExtensionTip: UIView {
     view1.addSubview(imageView3)
 
 //    tipView.isUserInteractionEnabled = true
-    let gesture = UITapGestureRecognizer(
-      target: self,
-      action: #selector(singleTap(_:))
-    )
-    UIApplication.shared.keyWindow?.addGestureRecognizer(gesture)
-    
-    let longPress = UILongPressGestureRecognizer(
-      target: self,
-      action: #selector(longPress(_:))
-    )
-    UIApplication.shared.keyWindow?.addGestureRecognizer(longPress)
+//    let gesture = UITapGestureRecognizer(
+//      target: self,
+//      action: #selector(singleTap(_:))
+//    )
+//    UIApplication.shared.keyWindow?.addGestureRecognizer(gesture)
+//
+//    let longPress = UILongPressGestureRecognizer(
+//      target: self,
+//      action: #selector(longPress(_:))
+//    )
+//    UIApplication.shared.keyWindow?.addGestureRecognizer(longPress)
 
     tipView.addSubview(view1)
 
@@ -100,6 +100,12 @@ class ShareExtensionTip: UIView {
     let ac = UIActivityViewController(activityItems: items, applicationActivities: nil)
     ac.view.backgroundColor = UIColor.clear
     ac.view.tintColor = UIColor.clear
+    
+    ac.completionWithItemsHandler = {
+      (activity, success, items, error) in
+      self.tipView.removeFromSuperview()
+    };
+    ac.excludedActivityTypes = [ UIActivity.ActivityType.airDrop ]
     
     var rootViewController = UIApplication.shared.keyWindow?.rootViewController
     if let navigationController = rootViewController as? UINavigationController {
@@ -118,8 +124,8 @@ class ShareExtensionTip: UIView {
   
   @objc func singleTap(_ sender:UITapGestureRecognizer){
     // do other task
-    print("UITapGestureRecognizer");
-    tipView.removeFromSuperview()
+//    print("UITapGestureRecognizer");
+//    tipView.removeFromSuperview()
   }
   
   @objc func longPress(_ gesture: UILongPressGestureRecognizer) {
