@@ -14,7 +14,8 @@ import {
   AppState,
   Clipboard,
   Share,
-  Platform
+  Platform,
+  BackHandler
 } from 'react-native'
 
 import { connect } from 'react-redux'
@@ -195,12 +196,20 @@ class FeedDetailScreen extends React.Component {
     this.setState({ loading: true })
     this.props.getFeedDetail(data.id);
     AppState.addEventListener('change', this.onHandleAppStateChange);
+
+    BackHandler.addEventListener('hardwareBackPress', this.handleBackButton);
   }
 
   componentWillUnmount() {
     AppState.removeEventListener('change', this.onHandleAppStateChange);
+    BackHandler.removeEventListener('hardwareBackPress', this.handleBackButton);
   }
 
+  handleBackButton = () => {
+    this.backToDashboard();
+    return true;
+  }
+  
   async UNSAFE_componentWillReceiveProps(nextProps) {
     const { feedo, card } = nextProps
 
@@ -294,10 +303,9 @@ class FeedDetailScreen extends React.Component {
       this.setState({ currentBackFeed: currentFeed }, () => {
         let redrawMasonry = false
 
-        if (feedo.loading === 'UPDATE_CARD_FULFILLED' ||
-          card.loading === 'UPDATE_CARD_FULFILLED' ||
-          feedo.loading === 'ADD_CARD_COMMENT_FULFILLED' ||
-          feedo.loading === 'DELETE_CARD_COMMENT_FULFILLED') 
+        if (feedo.loading === 'UPDATE_CARD_FULFILLED' || card.loading === 'UPDATE_CARD_FULFILLED' ||
+          (feedo.loading === 'ADD_CARD_COMMENT_FULFILLED' && Actions.currentScene === 'CommentScreen') ||
+          (feedo.loading === 'DELETE_CARD_COMMENT_FULFILLED' && Actions.currentScene === 'CommentScreen'))
         {
           redrawMasonry = true
         }
@@ -1144,7 +1152,29 @@ class FeedDetailScreen extends React.Component {
     });
   }
 
-  onAddDocument = () => {
+  onAddDocument() {
+    if (Platform.OS === 'ios') {
+      this.PickerDocumentShow();
+    }
+    else {
+      Permissions.check('storage').then(response => { //'storage' permission doesn't support on iOS
+        if (response === 'authorized') {
+          //permission already allowed
+          this.PickerDocumentShow();
+        }
+        else {
+          Permissions.request('storage').then(response => {
+            if (response === 'authorized') {
+              //storage permission was authorized
+              this.PickerDocumentShow();
+            }
+          });
+        }
+      });
+    }
+  }
+
+  PickerDocumentShow = () => {
     DocumentPicker.show({
       filetype: [DocumentPickerUtil.allFiles()],
     },(error, response) => {
@@ -1460,7 +1490,7 @@ class FeedDetailScreen extends React.Component {
                   ? this.state.viewPreference === 'LIST'
                     ? currentFeed.ideas.length > 0
                       ? <View
-                          style={{ paddingHorizontal: 8, marginTop: Platform.OS === 'android' ? 10 : 0}}
+                          style={{ paddingHorizontal: 8, marginTop: Platform.OS === 'android' && isVisibleLongHoldMenu ? 30 : 0}}
                         >
                           {currentFeed.ideas.map((item, index) => (
                           <View
@@ -1518,7 +1548,7 @@ class FeedDetailScreen extends React.Component {
                           }
                         </View>
                     : <View
-                        style={{ paddingHorizontal: currentFeed.ideas.length > 0 ? 8 : 0 }}
+                        style={{ paddingHorizontal: currentFeed.ideas.length > 0 ? 8 : 0, marginTop: Platform.OS === 'android' && isVisibleLongHoldMenu ? 30 : 0}}
                       >
                         <Masonry
                           onLayout={(event) => this.onLayoutMasonry(event)}
@@ -1646,6 +1676,7 @@ class FeedDetailScreen extends React.Component {
           animationOutTiming={100}
           onModalHide={() => {}}
           onBackdropPress={() => this.closeShareModal()}
+          onBackButtonPress={() => this.closeShareModal()}
         >
           {
             COMMON_FUNC.isFeedOwnerEditor(currentFeed)
@@ -1672,6 +1703,7 @@ class FeedDetailScreen extends React.Component {
           animationInTiming={500}
           onModalHide={() => this.hideSettingMenu()}
           onBackdropPress={() => this.setState({ openMenu: false })}
+          onBackButtonPress={() => this.setState({ openMenu: false })}
         >
           <Animated.View style={styles.settingMenuView}>
             <FeedControlMenuComponent

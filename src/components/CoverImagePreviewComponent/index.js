@@ -82,6 +82,7 @@ export default class CoverImagePreviewComponent extends React.Component {
           animationOut='fadeOut'
           animationInTiming={100}
           animationOutTiming={100}
+          onBackButtonPress={() => this.setState({ isPreview: false })}
         >
           <ImageSliderScreen 
             mediaFiles={files}

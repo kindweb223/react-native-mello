@@ -281,6 +281,7 @@ class ShareScreen extends React.Component {
             animationOut="slideOutDown"
             animationInTiming={500}
             onBackdropPress={() => this.setState({ linkShareModal: false })}
+            onBackButtonPress={() => this.setState({ linkShareModal: false })}
           >
             <LinkShareModalComponent
               shareModalType={shareModalType}
@@ -301,6 +302,7 @@ class ShareScreen extends React.Component {
             animationOutTiming={100}
             onModalHide={() => {}}
             onBackdropPress={() => this.setState({ isInviteeModal: false })}
+            onBackButtonPress={() => this.setState({ isInviteeModal: false })}
           >
             <InviteeScreen
               data={data}
