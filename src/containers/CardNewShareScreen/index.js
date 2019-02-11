@@ -179,6 +179,30 @@ class CardNewShareScreen extends React.Component {
   }
 
   async UNSAFE_componentWillReceiveProps(nextProps) {
+    if (this.props.feedo.loading !== feedoTypes.GET_FEEDO_LIST_FULFILLED && nextProps.feedo.loading === feedoTypes.GET_FEEDO_LIST_FULFILLED) {
+      try {
+        const strFeedoInfo = await SharedGroupPreferences.getItem(CONSTANTS.CARD_SAVED_LAST_FEEDO_INFO, CONSTANTS.APP_GROUP_LAST_USED_FEEDO);
+        if (strFeedoInfo) {
+          const feedoInfo = JSON.parse(strFeedoInfo);
+          const diffHours = moment().diff(moment(feedoInfo.time, 'LLL'), 'hours');
+          if (diffHours < 1) {
+            const currentFeed = _.find(nextProps.feedo.feedoList, feed => feed.id === feedoInfo.feedoId)
+            if (currentFeed) {
+              this.props.setCurrentFeed(currentFeed);
+              this.draftFeedo = currentFeed
+              return;
+            } else {
+              this.props.createFeed();
+            }
+          }
+        } else {
+          this.props.createFeed();
+        }
+      } catch (error) {
+        console.log('error code : ', error);
+      }
+    }
+
     if (this.draftFeedo === null) {
       if (this.props.feedo.loading !== feedoTypes.CREATE_FEED_FULFILLED && nextProps.feedo.loading === feedoTypes.CREATE_FEED_FULFILLED) {
         this.draftFeedo = nextProps.feedo.currentFeed;
@@ -186,6 +210,7 @@ class CardNewShareScreen extends React.Component {
     }
 
     if (this.props.card.loading !== types.ADD_SHARE_EXTENSION_CARD_FULFILLED && nextProps.card.loading === types.ADD_SHARE_EXTENSION_CARD_FULFILLED) {
+      this.saveFeedId();
       this.onUpdateFeed()
     }
 
@@ -220,7 +245,6 @@ class CardNewShareScreen extends React.Component {
     this.textInputIdeaRef.focus();
 
     // this.setState({ loading: true })
-
     Animated.timing(this.animatedShow, {
       toValue: 1,
       duration: CONSTANTS.ANIMATEION_MILLI_SECONDS,
@@ -229,28 +253,6 @@ class CardNewShareScreen extends React.Component {
         this.props.getFeedoList(0);
       }
     });
-
-    try {
-      const strFeedoInfo = await SharedGroupPreferences.getItem(CONSTANTS.CARD_SAVED_LAST_FEEDO_INFO, CONSTANTS.APP_GROUP_LAST_USED_FEEDO);
-      if (strFeedoInfo) {
-        const feedoInfo = JSON.parse(strFeedoInfo);
-        const diffHours = moment().diff(moment(feedoInfo.time, 'LLL'), 'hours');
-        if (diffHours < 1) {
-          const currentFeed = _.find(currentProps.feedo.feedoList, feed => feed.id === feedoInfo.feedoId)
-          if (currentFeed) {
-            this.props.setCurrentFeed(currentFeed);
-            this.draftFeedo = currentFeed
-            return;
-          }
-        }
-      }
-    } catch (error) {
-      console.log('error code : ', error);
-    }
-
-    if (!this.props.feedo.currentFeed.id) {
-      this.props.createFeed();
-    }
 
     this.keyboardWillShowSubscription = Keyboard.addListener('keyboardWillShow', (e) => this.keyboardWillShow(e));
     this.keyboardWillHideSubscription = Keyboard.addListener('keyboardWillHide', (e) => this.keyboardWillHide(e));
