@@ -14,8 +14,15 @@ import {
   Clipboard,
   Alert,
   Share,
-  BackHandler
+  BackHandler,
+  requireNativeComponent,
+  UIManager,
+  findNodeHandle
 } from 'react-native'
+
+const COMPONENT_NAME = "ShareExtensionTip";
+const RNCounterView = requireNativeComponent(COMPONENT_NAME);
+
 import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
 import PushNotification from 'react-native-push-notification';
@@ -1493,7 +1500,7 @@ class HomeScreen extends React.Component {
           />
         </Modal>
 
-        <Modal
+        {/* <Modal
           animationIn="fadeIn"
           animationOut="fadeOut"
           backdropOpacity={0.5}
@@ -1501,8 +1508,13 @@ class HomeScreen extends React.Component {
           style={{ margin: 8 }}
         >
           <ShareWidgetTipsModal />
-        </Modal>
-
+        </Modal> */}
+        {
+        this.state.showShareTipsModal && 
+          <RNCounterView
+            ref={ref => (this.ref = ref)}
+          />
+        }
         <Modal 
           isVisible={this.state.showShareConfirmModal}
           animationIn="fadeIn"
