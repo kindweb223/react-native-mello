@@ -52,6 +52,7 @@ import {
   deleteLink,
   moveCard,
   resetCardError,
+  setCurrentCard
 } from '../../redux/card/actions'
 import { 
   createFeed,
@@ -176,6 +177,10 @@ class CardNewScreen extends React.Component {
         }
       });
     }
+  }
+
+  componentWillMount() {
+    this.props.setCurrentCard({})
   }
 
   async UNSAFE_componentWillReceiveProps(nextProps) {
@@ -1847,6 +1852,7 @@ const mapStateToProps = ({ card, feedo, user, }) => ({
 
 
 const mapDispatchToProps = dispatch => ({
+  setCurrentCard: (card) => dispatch(setCurrentCard(card)),
   createFeed: () => dispatch(createFeed()),
   updateFeed: (id, name, comments, tags, files) => dispatch(updateFeed(id, name, comments, tags, files)),
   deleteDraftFeed: (id) => dispatch(deleteDraftFeed(id)),
