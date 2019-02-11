@@ -578,7 +578,7 @@ class NotificationScreen extends React.Component {
     this.animatedOpacity.setValue(1);
     Animated.timing(this.animatedOpacity, {
       toValue: 0,
-      duration: CONSTANTS.ANIMATEION_MILLI_SECONDS + 200,
+      duration: CONSTANTS.ANIMATEION_MILLI_SECONDS + 300,
     }).start(() => {
       this.setState({ 
         isVisibleCard: false,
