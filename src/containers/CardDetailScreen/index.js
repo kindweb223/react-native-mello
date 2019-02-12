@@ -1196,7 +1196,7 @@ class CardDetailScreen extends React.Component {
     //   if (!otherInvitees || otherInvitees.length === 0) {
     //     return (
     //       <View style={styles.inviteeContainer}>
-    //         <Text style={styles.textInvitee}>{getDurationFromNow(currentCard.publishedDate)}</Text>
+    //         <Text style={styles.textInvitee}>{getDurationFromNow(currentCard.lastUpdated)}</Text>
     //       </View>
     //     );
     //   }
@@ -1217,7 +1217,7 @@ class CardDetailScreen extends React.Component {
           />
           <Text style={[styles.textInvitee, { marginLeft: 9, fontSize }]} numberOfLines={1}>{name}</Text>
           <Entypo name="dot-single" style={styles.iconDot} />
-          <Text style={styles.textInvitee}>{getDurationFromNow(currentCard.publishedDate)} ago</Text>
+          <Text style={styles.textInvitee}>{getDurationFromNow(currentCard.lastUpdated)}</Text>
         </View>
         {showLikes && idea && (
           <LikeComponent idea={idea} prevPage={this.props.prevPage} type="text" />
