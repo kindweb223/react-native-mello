@@ -20,9 +20,6 @@ import {
   findNodeHandle
 } from 'react-native'
 
-const COMPONENT_NAME = "ShareExtensionTip";
-const RNCounterView = requireNativeComponent(COMPONENT_NAME);
-
 import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
 import PushNotification from 'react-native-push-notification';
@@ -51,6 +48,7 @@ import SpeechBubbleComponent from '../../components/SpeechBubbleComponent'
 import ShareWidgetPermissionModal from '../../components/ShareWidgetModal/PermissionModal'
 import ShareWidgetTipsModal from '../../components/ShareWidgetModal/TipsModal'
 import ShareWidgetConfirmModal from '../../components/ShareWidgetModal/ConfirmModal'
+import ShareExtensionTip from '../../components/ShareExtensionTip'
 import styles from './styles'
 import CONSTANTS from '../../service/constants';
 import { TIP_SHARE_LINK_URL } from '../../service/api'
@@ -1501,21 +1499,13 @@ class HomeScreen extends React.Component {
           />
         </Modal>
 
-        {/* <Modal
-          animationIn="fadeIn"
-          animationOut="fadeOut"
-          backdropOpacity={0.5}
-          isVisible={this.state.showShareTipsModal}
-          style={{ margin: 8 }}
-        >
-          <ShareWidgetTipsModal />
-        </Modal> */}
         {
-        this.state.showShareTipsModal && 
-          <RNCounterView
-            ref={ref => (this.ref = ref)}
-          />
+          this.state.showShareTipsModal && 
+            <ShareExtensionTip
+              ref={ref => (this.ref = ref)}
+            />
         }
+        
         <Modal 
           isVisible={this.state.showShareConfirmModal}
           animationIn="fadeIn"

@@ -24,10 +24,10 @@ import { GoogleSignin } from 'react-native-google-signin';
 import SVGImage from 'react-native-remote-svg'
 import Modal from "react-native-modal"
 import _ from 'lodash'
+import ShareExtensionTip from '../../components/ShareExtensionTip'
 import ToasterComponent from '../../components/ToasterComponent'
 import UserAvatarComponent from '../../components/UserAvatarComponent'
 import LoadingScreen from '../LoadingScreen'
-import ShareWidgetTipsModal from '../../components/ShareWidgetModal/TipsModal'
 import { userSignOut, deleteProfilePhoto } from '../../redux/user/actions'
 import COLORS from '../../service/colors'
 import styles from './styles'
@@ -453,15 +453,12 @@ class ProfileScreen extends React.Component {
           />
         )}
 
-        <Modal
-          animationIn="fadeIn"
-          animationOut="fadeOut"
-          backdropOpacity={0.5}
-          isVisible={this.state.showShareTipsModal}
-          style={{ margin: 8 }}
-        >
-          <ShareWidgetTipsModal />
-        </Modal>
+        {
+          this.state.showShareTipsModal && 
+            <ShareExtensionTip
+              ref={ref => (this.ref = ref)}
+            />
+        }
 
       </View>
     )
