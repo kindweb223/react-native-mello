@@ -84,6 +84,8 @@ export default {
   MODAL_CLOSE: 2,
 
   PREMIUM_10MB_ALERT_MESSAGE: 'Oops you need to have a premium account to upload more than 10MB.',
+  // 10MB
+  MAX_UPLOAD_FILE_SIZE: 1024 * 1024 * 10,
 
   // file path in DocumentDirectoryPath
   PRIVACY_POLICE: '/MELLO_PRIVACY_POLICY.txt',
