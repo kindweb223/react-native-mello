@@ -1,7 +1,7 @@
 // Demo
 export const BASE_URL = 'https://demos.solvers.io/hunt/api/v1/'
 export const LAMBDA_BASE_URL = 'https://dev-lambda.trymello.com/'
-export const SHARE_LINK_URL = 'https://demos.solvers.io/solvers/feedo-secure-site/feed/'
+export const SHARE_LINK_URL = 'https://demos.solvers.io/solvers/mello-secure-site/feed/'
 
 // Prod
 // export const BASE_URL = 'https://api.tryfeedo.com/hunt/api/v1/'

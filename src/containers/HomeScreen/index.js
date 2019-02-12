@@ -521,7 +521,7 @@ class HomeScreen extends React.Component {
           this.setState({ showFeedInvitedNewUserBubble: true })
           setTimeout(() => {
             this.setState({ showBubbleCloseButton: true })
-          }, 30000)
+          }, 10000)
         } else {
           this.setState({ showFeedInvitedNewUserBubble: false })
         }

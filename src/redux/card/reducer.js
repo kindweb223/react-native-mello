@@ -1,6 +1,7 @@
 import _ from 'lodash'
 import * as types from './types'
 import * as feedTypes from '../feedo/types'
+import { Actions } from 'react-native-router-flux';
 
 const initialState = {
   loading: null,
@@ -15,7 +16,6 @@ const initialState = {
 
 export default function card(state = initialState, action = {}) {
   switch (action.type) {
-
     // create a card
     case types.CREATE_CARD_PENDING:
       return {
