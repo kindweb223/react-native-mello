@@ -63,6 +63,12 @@ const styles = StyleSheet.create({
   coverImageContainer: {
     zIndex: 2
   },
+  tempCoverImageContainer: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+  },
   ideaContentView: {
     paddingBottom: 50
   },
