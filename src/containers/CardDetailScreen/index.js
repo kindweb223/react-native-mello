@@ -112,11 +112,13 @@ class CardDetailScreen extends React.Component {
       isVisibleCardOpenMenu: false,
       cardOption: 0,
       initLoad: true,
+      tempPosition: new Animated.ValueXY(),
       position: new Animated.ValueXY(),
       size: new Animated.ValueXY(),
       cardClosed: false,
       cardPadding: 0,
       isOpeningCard: true,
+      isShowTempCard: false,
       fadeInUpAnimation: 'fadeInUp',
       slideInUpAnimation: 'slideInUp',
     };
@@ -162,7 +164,7 @@ class CardDetailScreen extends React.Component {
     this.coverImageWidth = 0
     this.coverImageHeight = 0
     this.coverImageScrollY = 0
-    this.closeAnimationTime = CONSTANTS.ANIMATEION_MILLI_SECONDS;
+    this.closeAnimationTime = CONSTANTS.ANIMATEION_MILLI_SECONDS + 150;
     this.scrollEnabled = true
   }
 
@@ -538,6 +540,11 @@ class CardDetailScreen extends React.Component {
         x: imgWidth,
         y: imgHeight,
       })
+
+      this.state.tempPosition.setValue({
+        x: px,
+        y: py,
+      })
     } else {
       this._width = textWidth + 16 * 2
       this._height = textHeight
@@ -576,6 +583,14 @@ class CardDetailScreen extends React.Component {
       }),
       Animated.spring(this.state.size.y, {
         toValue: this._tHeight,
+        friction
+      }),
+      Animated.spring(this.state.tempPosition.x, {
+        toValue: this._tX,
+        friction
+      }),
+      Animated.spring(this.state.tempPosition.y, {
+        toValue: 20 + 80 + ifIphoneX(22, 0), // 80 is limit scroll offset
         friction
       }),
       Animated.timing(this.animatedShow, {
@@ -759,7 +774,7 @@ class CardDetailScreen extends React.Component {
 
     let { cardPadding } = this.state
     if (cardPadding !== 0 && Math.abs(cardPadding - 20) > 3) {
-      cardPadding = 0
+      cardPadding = 20
       this.scrollEnabled = false
     }
     console.log('cPadding:', cardPadding)
@@ -768,7 +783,7 @@ class CardDetailScreen extends React.Component {
     this._width = this._width + 2 * cardPadding
     this._height = this._height + 2 * cardPadding
     this._x = this._x - cardPadding
-    this._y = this._y - 5.5 * cardPadding
+    this._y = this._y + ifIphoneX(22, 0)
 
     if (this.props.isFromNotification) {
       this.props.onClose()
@@ -778,7 +793,8 @@ class CardDetailScreen extends React.Component {
     this.setState({
       originalCardTopY: this.props.intialLayout.py,
       originalCardBottomY: this.props.intialLayout.py + this.props.intialLayout.height,
-      isOpeningCard: false
+      isOpeningCard: false,
+      isShowTempCard: cardPadding > 0
     }, () => {
       Animated.parallel([
         Animated.timing(this.state.position.x, {
@@ -795,6 +811,14 @@ class CardDetailScreen extends React.Component {
         }),
         Animated.timing(this.state.size.y, {
           toValue: this._height,
+          duration: this.closeAnimationTime,
+        }),
+        Animated.timing(this.state.tempPosition.x, {
+          toValue: this._x,
+          duration: this.closeAnimationTime,
+        }),
+        Animated.timing(this.state.tempPosition.y, {
+          toValue: this._y,
           duration: this.closeAnimationTime,
         }),
         Animated.timing(this.animatedClose, {
@@ -1150,6 +1174,35 @@ class CardDetailScreen extends React.Component {
     }
   }
 
+  get renderTempCoverImage() {
+    const { viewMode, card } = this.props;
+    const activeImageStyle = {
+      width: this.state.size.x,
+      height: this.state.size.y,
+      top: this.state.tempPosition.y,
+      left: this.state.tempPosition.x,
+      padding: 20,
+      opacity: this.state.isShowTempCard ? 1 : 0
+    };
+    let imageFiles = _.filter(card.currentCard.files, file => file.fileType === 'MEDIA');
+
+    if (this.state.coverImage) {
+      return (
+        <Animated.View style={[styles.tempCoverImageContainer, activeImageStyle]}>
+          <CoverImagePreviewComponent
+            coverImage={this.state.coverImage}
+            files={imageFiles}
+            editable={viewMode !== CONSTANTS.CARD_VIEW}
+            isFastImage={true}
+            isSetCoverImage={true}
+            onRemove={(fileId) => this.onRemoveFile(fileId)}
+            onSetCoverImage={(fileId) => this.onSetCoverImage(fileId)}
+          />
+        </Animated.View>
+      );
+    }
+  }
+
   // scroll functions for TextInput
   scrollContent() {
     const yPosition = this.textInputPositionY + this.textInputHeightByCursor;
@@ -1448,6 +1501,7 @@ class CardDetailScreen extends React.Component {
 
     return (
       <ScrollView
+        style={{ opacity: this.state.isShowTempCard ? 0 : 1 }}
         ref={ref => this.scrollViewRef = ref}
         onLayout={this.onLayoutScrollView.bind(this)}
         onScroll={this.onScrollContent.bind(this)}
@@ -1561,6 +1615,7 @@ class CardDetailScreen extends React.Component {
       >
         <Animated.View style={contentContainerStyle}>
           <SafeAreaView style={{ flex: 1 }}>
+            {this.renderTempCoverImage}
             {this.renderMainContent}
             {this.renderHeader}
             {this.renderFooter}
