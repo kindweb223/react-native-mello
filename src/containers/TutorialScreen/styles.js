@@ -66,7 +66,7 @@ export default {
   skipButtonView: {
     position: 'absolute',
     right: 0,
-    bottom: ifIphoneX(36, 27)
+    bottom: Platform.OS === 'ios' ? ifIphoneX(36, 27) : 48
   },
   skipButton: {
     paddingHorizontal: CONSTANTS.PADDING * 2
@@ -115,7 +115,8 @@ export default {
     width: '100%',
     alignItems: 'center',
     justifyContent: 'center',
-    marginTop: 28
+    marginTop: 28,
+    marginBottom: Platform.OS === 'android' ? 13 : 0
   },
   signinText: {
     color: COLORS.ACTION_SHEET_TITLE,
