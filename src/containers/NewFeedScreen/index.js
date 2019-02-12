@@ -352,7 +352,7 @@ class NewFeedScreen extends React.Component {
       filetype: [DocumentPickerUtil.allFiles()],
     },(error, response) => {
       if (error === null) {
-        if (response.fileSize > 1024 * 1024 * 10) {
+        if (response.fileSize > CONSTANTS.MAX_UPLOAD_FILE_SIZE) {
           Alert.alert('Warning', 'File size must be less than 10MB')
         } else {
           Analytics.logEvent('new_feed_add_file', {})
@@ -445,7 +445,7 @@ class NewFeedScreen extends React.Component {
   pickMediaFromCamera(options) {
     ImagePicker.launchCamera(options, (response)  => {
       if (!response.didCancel) {
-        if (response.fileSize > 1024 * 1024 * 10) {
+        if (response.fileSize > CONSTANTS.MAX_UPLOAD_FILE_SIZE) {
           Alert.alert('Warning', 'File size must be less than 10MB')
         } else {
           Analytics.logEvent('new_feed_add_camera_image', {})
@@ -462,7 +462,7 @@ class NewFeedScreen extends React.Component {
   pickMediaFromLibrary(options) {
     ImagePicker.launchImageLibrary(options, (response)  => {
       if (!response.didCancel) {
-        if (response.fileSize > 1024 * 1024 * 10) {
+        if (response.fileSize > CONSTANTS.MAX_UPLOAD_FILE_SIZE) {
           Alert.alert('Warning', 'File size must be less than 10MB')
         } else {
           Analytics.logEvent('new_feed_add_library_image', {})
