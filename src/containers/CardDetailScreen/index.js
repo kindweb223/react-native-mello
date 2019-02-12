@@ -783,7 +783,7 @@ class CardDetailScreen extends React.Component {
     this._width = this._width + 2 * cardPadding
     this._height = this._height + 2 * cardPadding
     this._x = this._x - cardPadding
-    this._y = this._y + ifIphoneX(22, 0)
+    this._y = this._y + ifIphoneX(cardPadding > 0 ? 22 : 0, 0)
 
     if (this.props.isFromNotification) {
       this.props.onClose()
