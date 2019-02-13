@@ -1200,7 +1200,17 @@ class FeedDetailScreen extends React.Component {
 
   uploadFile(file, type) {
     this.selectedFile = file.uri;
-    this.selectedFileMimeType = mime.lookup(file.uri);
+    
+    if (_.endsWith(file.uri, '.pages')) {
+      this.selectedFileMimeType = 'application/x-iwork-pages-sffpages'
+    } else if (_.endsWith(file.uri, '.numbers')) {
+      this.selectedFileMimeType = 'application/x-iwork-numbers-sffnumbers'
+    } else if (_.endsWith(file.uri, '.key')) {
+      this.selectedFileMimeType = 'application/x-iwork-keynote-sffkey'
+    } else {
+      this.selectedFileMimeType = mime.lookup(file.uri);
+    }
+
     this.selectedFileName = file.fileName;
     this.selectedFileType = type;
     if (this.props.feedo.currentFeed.id) {

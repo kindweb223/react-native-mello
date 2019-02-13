@@ -488,12 +488,15 @@ export default function card(state = initialState, action = {}) {
     case types.SET_COVER_IMAGE_FULFILLED: {
       const fileId = action.payload;
       const file = _.find(state.currentCard.files, file => file.id === fileId);
+
+      const isImage = file.contentType.toLowerCase().indexOf('image') !== -1;
+
       return {
         ...state,
         loading: types.SET_COVER_IMAGE_FULFILLED,
         currentCard: {
           ...state.currentCard,
-          coverImage: file.accessUrl,
+          coverImage: isImage ? file.accessUrl : file.thumbnailUrl,
         }
       }
     }

@@ -119,7 +119,7 @@ class NewFeedScreen extends React.Component {
       if (this.selectedFile) {
         // Image resizing...
         const fileType = (Platform.OS === 'ios') ? this.selectedFileMimeType : this.selectedFile.type;
-        if (fileType.indexOf('image/') !== -1) {
+        if (fileType && fileType.indexOf('image/') !== -1) {
           const width = Math.round(this.selectedFile.width / CONSTANTS.IMAGE_COMPRESS_DIMENSION_RATIO);
           const height = Math.round(this.selectedFile.height / CONSTANTS.IMAGE_COMPRESS_DIMENSION_RATIO)
           ImageResizer.createResizedImage(this.selectedFile.uri, width, height, CONSTANTS.IMAGE_COMPRESS_FORMAT, CONSTANTS.IMAGE_COMPRESS_QUALITY, 0, null)
@@ -423,7 +423,17 @@ class NewFeedScreen extends React.Component {
   
   uploadFile(file, type) {
     this.selectedFile = file;
-    this.selectedFileMimeType = mime.lookup(file.uri);
+    
+    if (_.endsWith(file.uri, '.pages')) {
+      this.selectedFileMimeType = 'application/x-iwork-pages-sffpages'
+    } else if (_.endsWith(file.uri, '.numbers')) {
+      this.selectedFileMimeType = 'application/x-iwork-numbers-sffnumbers'
+    } else if (_.endsWith(file.uri, '.key')) {
+      this.selectedFileMimeType = 'application/x-iwork-keynote-sffkey'
+    } else {
+      this.selectedFileMimeType = mime.lookup(file.uri);
+    }
+
     this.selectedFileName = file.fileName;
     this.selectedFileType = type;
 

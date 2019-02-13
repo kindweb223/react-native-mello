@@ -242,8 +242,8 @@ class CardNewScreen extends React.Component {
       loading = true;
       // Image resizing...
       const fileType = (Platform.OS === 'ios') ? this.selectedFileMimeType : this.selectedFile.type;
-      console.log('selectedFile: ', this.selectedFile);
-      if (fileType.indexOf('image/') !== -1)
+
+      if (fileType && fileType.indexOf('image/') !== -1)
       {
         // https://www.built.io/blog/improving-image-compression-what-we-ve-learned-from-whatsapp
         let actualHeight = this.selectedFile.height;
@@ -300,7 +300,7 @@ class CardNewScreen extends React.Component {
         objectKey,
       } = this.props.card.fileUploadUrl;
       const fileType = (Platform.OS === 'ios') ? this.selectedFileMimeType : this.selectedFile.type;
-      if (fileType.indexOf('image/') !== -1) {
+      if (fileType && fileType.indexOf('image/') !== -1) {
         const { width, height } = await this.getImageSize(this.selectedFile.uri);
         const metadata = {
           width,
@@ -320,9 +320,9 @@ class CardNewScreen extends React.Component {
       } = this.props.card.currentCard;
 
       const currentCard = nextProps.card.currentCard;
-      if (currentCard.files && currentCard.files.length > 0) {
-        this.setState({ coverImage: currentCard.files[0].thumbnailUrl })
-      }
+      // if (currentCard.files && currentCard.files.length > 0) {
+      //   this.setState({ coverImage: currentCard.files[0].thumbnailUrl })
+      // }
 
       const newImageFiles = _.filter(nextProps.card.currentCard.files, file => file.contentType.indexOf('image') !== -1 || file.contentType.indexOf('video') !== -1);
       if (newImageFiles.length === 1 && !nextProps.card.currentCard.coverImage) {
@@ -1053,7 +1053,17 @@ class CardNewScreen extends React.Component {
 
   async uploadFile(currentCard, file, type) {
     this.selectedFile = file;
-    this.selectedFileMimeType = mime.lookup(file.uri);
+    
+    if (_.endsWith(file.uri, '.pages')) {
+      this.selectedFileMimeType = 'application/x-iwork-pages-sffpages'
+    } else if (_.endsWith(file.uri, '.numbers')) {
+      this.selectedFileMimeType = 'application/x-iwork-numbers-sffnumbers'
+    } else if (_.endsWith(file.uri, '.key')) {
+      this.selectedFileMimeType = 'application/x-iwork-keynote-sffkey'
+    } else {
+      this.selectedFileMimeType = mime.lookup(file.uri);
+    }
+
     this.selectedFileName = file.fileName;
     this.selectedFileType = type;
     if (currentCard.id) {
