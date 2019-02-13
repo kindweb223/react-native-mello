@@ -308,7 +308,7 @@ class CardNewScreen extends React.Component {
         }
         this.props.addFile(id, this.selectedFileType, fileType, this.selectedFileName, objectKey, metadata);
       } else {
-        this.props.addFile(id, this.selectedFileType, fileType, this.selectedFileName, objectKey, metadata, this.base64String);
+        this.props.addFile(id, this.selectedFileType, fileType, this.selectedFileName, objectKey, null, this.base64String);
       }
     } else if (this.props.card.loading !== types.ADD_FILE_PENDING && nextProps.card.loading === types.ADD_FILE_PENDING) {
       // adding a file
@@ -1000,13 +1000,12 @@ class CardNewScreen extends React.Component {
             if (mimeType.indexOf('image') !== -1 || mimeType.indexOf('video') !== -1) {
               type = 'MEDIA';
             }
-
             this.generateThumbnail(response)  // Generate thumbnail if video
           }
 
           this.uploadFile(this.props.card.currentCard, response, type);
-          }
         }
+      }
     });
     return;
   }
@@ -1142,9 +1141,11 @@ class CardNewScreen extends React.Component {
 
   generateThumbnail(file) {
     const mimeType = mime.lookup(file.uri);
+    console.log('response: ', file, mimeType)
 
     if (mimeType.indexOf('video') !== -1) {
       RNThumbnail.get(file.uri).then((result) => {
+        console.log
         ImageResizer.createResizedImage(result.path, result.width, result.height, CONSTANTS.IMAGE_COMPRESS_FORMAT, 50, 0, null)
         .then((response) => {
           ImgToBase64.getBase64String(response.uri)
@@ -1153,7 +1154,9 @@ class CardNewScreen extends React.Component {
         }).catch((error) => {
           console.log('Image compress error: ', error);
         });
-      })
+      }).catch((error) => {
+        console.log('RNThumbnail error: ', error);
+      });
     }
   }
 

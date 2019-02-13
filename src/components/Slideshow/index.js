@@ -23,7 +23,6 @@ export default class SlideShow extends React.Component {
       position,
     } = this.props
 
-    console.log('offset: ', width, position)
     setTimeout(() => {
       this.scrollViewRef.scrollTo({x: width * position, y: 0});
     }, 0)
@@ -78,6 +77,7 @@ export default class SlideShow extends React.Component {
     } = this.props;
 
     const isImage = item.contentType.toLowerCase().indexOf('image') !== -1;
+
     if (isImage) {
       return (
         <TouchableOpacity
@@ -93,12 +93,14 @@ export default class SlideShow extends React.Component {
         </TouchableOpacity>
       );
     }
+
     const height = Math.round(width * 0.666);
+
     return (
-      <View style={{width, height, backgroundColor: '#CCC'}}>
+      <View style={{ width, height, backgroundColor: '#CCC' }}>
         <Video
-          style={{width, height}}
-          source={{uri: item.accessUrl}}
+          style={{ width, height }}
+          source={{ uri: item.accessUrl }}
           controls={true}
           resizeMode='cover'
           paused={this.state.currentIndex !== index}
