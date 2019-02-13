@@ -10,12 +10,12 @@ export default {
     left: 0,
     bottom: 0,
     paddingTop: CONSTANTS.STATUSBAR_HEIGHT,
-    paddingHorizontal: CONSTANTS.PADDING,
     backgroundColor: '#fff',
   },
   header: {
     width: '100%',
     height: 50,
+    paddingHorizontal: CONSTANTS.PADDING,
     marginBottom: 10,
     flexDirection: 'row',
     alignItems: 'center',
@@ -26,6 +26,7 @@ export default {
   },
   loadingView: {
     marginTop: 24,
+    marginBottom: 20,
     justifyContent: 'center',
     alignItems: 'center'
   },
@@ -40,14 +41,21 @@ export default {
     fontWeight: 'normal'
   },
   inviteeListView: {
+    maxHeight: CONSTANTS.SCREEN_HEIGHT - CONSTANTS.STATUSBAR_HEIGHT - CONSTANTS.STATUS_BOTTOM_BAR_HEIGHT - 60 - 110
   },
   inviteeList: {
-    marginTop: 15
+    paddingHorizontal: CONSTANTS.PADDING
   },
   inviteeItem: {
     paddingVertical: 7,
   },
+  buttonView: {
+    paddingHorizontal: CONSTANTS.PADDING
+  },
   button: {
-    marginTop: 50
+    marginTop: 30,
+    height: 60,
+    marginBottom: CONSTANTS.STATUS_BOTTOM_BAR_HEIGHT + 20,
+    width: '100%'
   }
 }

@@ -5,7 +5,8 @@ import {
   TouchableOpacity,
   Image,
   Share,
-  ScrollView
+  ScrollView,
+  Platform
 } from 'react-native'
 import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
@@ -111,15 +112,7 @@ class ShareScreen extends React.Component {
   showShareModal = () => {
     const { data } = this.props
 
-    Share.share({
-      message: data.summary || '',
-      url: `${SHARE_LINK_URL}${data.id}`,
-      title: data.headline
-    },{
-      dialogTitle: data.headline,
-      tintColor: COLORS.PURPLE,
-      subject: data.headline
-    })
+    COMMON_FUNC.handleShareFeed(data)
   }
 
   handleShareOption = (index) => {
@@ -288,6 +281,7 @@ class ShareScreen extends React.Component {
             animationOut="slideOutDown"
             animationInTiming={500}
             onBackdropPress={() => this.setState({ linkShareModal: false })}
+            onBackButtonPress={() => this.setState({ linkShareModal: false })}
           >
             <LinkShareModalComponent
               shareModalType={shareModalType}
@@ -308,6 +302,7 @@ class ShareScreen extends React.Component {
             animationOutTiming={100}
             onModalHide={() => {}}
             onBackdropPress={() => this.setState({ isInviteeModal: false })}
+            onBackButtonPress={() => this.setState({ isInviteeModal: false })}
           >
             <InviteeScreen
               data={data}

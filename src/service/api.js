@@ -1,15 +1,15 @@
 // Demo
 export const BASE_URL = 'https://demos.solvers.io/hunt/api/v1/'
-export const LAMBDA_BASE_URL = 'https://dev-lambda.trymello.com/'
-export const SHARE_LINK_URL = 'https://demos.solvers.io/solvers/feedo-secure-site/feed/'
+export const LAMBDA_BASE_URL = 'https://dev-lambda.melloapp.com/'
+export const SHARE_LINK_URL = 'https://demos.solvers.io/solvers/mello-secure-site/flow/'
 
 // Prod
-// export const BASE_URL = 'https://api.tryfeedo.com/hunt/api/v1/'
-// export const SHARE_LINK_URL = 'https://app.tryfeedo.com/solvers/feedo-secure-site/feed/'
-// export const LAMBDA_BASE_URL = 'https://lambda.trymello.com/'
+// export const BASE_URL = 'https://api.melloapp.com/hunt/api/v1/'
+// export const SHARE_LINK_URL = 'https://app.melloapp.com/flow/'
+// export const LAMBDA_BASE_URL = 'https://lambda.melloapp.com/'
 
 // Global
-export const TIP_SHARE_LINK_URL = 'https://trymello.com'
+export const TIP_SHARE_LINK_URL = 'https://melloapp.com'
 
 export const AXIOS_CONFIG = {
   headers: {
@@ -41,5 +41,7 @@ export const TAGS_FEATURE = false
 
 export const TRELLO_URL = 'https://trello.com/b/xqBylYZO/mello'
 
+export const FAQS_URL = 'https://intercom.help/mello/'
+
 // client ID of type WEB for your server (needed to verify user ID and offline access)
-export const GOOGLE_WEB_CLIENT_ID = '887924189900-cp9g9c2c4144b3o8uf5nr33dgf0mehod.apps.googleusercontent.com'
+export const GOOGLE_WEB_CLIENT_ID = '887924189900-rar93hbeqrsr8bd4a1bhrf7gkdosfqqm.apps.googleusercontent.com'

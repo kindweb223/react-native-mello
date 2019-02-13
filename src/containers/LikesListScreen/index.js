@@ -6,6 +6,7 @@ import {
   FlatList,
   Alert,
   TouchableOpacity,
+  BackHandler,
 } from 'react-native'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
@@ -62,6 +63,16 @@ class LikesListScreen extends React.Component {
       loading: true,
     });
     this.props.getCardLikes(this.props.idea.id);
+    BackHandler.addEventListener('hardwareBackPress', this.handleBackButton);
+  }
+
+  componentWillUnmount() {
+    BackHandler.removeEventListener('hardwareBackPress', this.handleBackButton);
+  }
+
+  handleBackButton = () => {
+    Actions.pop()
+    return true;
   }
 
   UNSAFE_componentWillReceiveProps(nextProps) {

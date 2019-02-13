@@ -10,7 +10,8 @@ import {
   ActivityIndicator,
   RefreshControl,
   Animated,
-  Alert
+  Alert,
+  BackHandler
 } from 'react-native'
 
 import { connect } from 'react-redux'
@@ -19,12 +20,13 @@ import PropTypes from 'prop-types'
 import Swipeout from 'react-native-swipeout'
 import _ from 'lodash'
 import FontAwesome from 'react-native-vector-icons/FontAwesome'
+import SVGImage from 'react-native-remote-svg'
 
 import Analytics from '../../lib/firebase'
 import NotificationItemComponent from '../../components/NotificationItemComponent'
 import ActivityFeedComponent from '../../components/ActivityFeedComponent'
 import CardDetailScreen from '../CardDetailScreen'
-import SelectHuntScreen from '../SelectHuntScreen';
+import SelectHuntScreen from '../SelectHuntScreen'
 import ToasterComponent from '../../components/ToasterComponent'
 
 import {
@@ -49,6 +51,7 @@ import CONSTANTS from '../../service/constants'
 import styles from './styles'
 
 const CLOSE_ICON = require('../../../assets/images/Close/Blue.png')
+const NOTIFICATION_EMPTY_ICON = require('../../../assets/svgs/NotificationEmptyState.svg')
 
 const PAGE_COUNT = 50
 
@@ -107,11 +110,22 @@ class NotificationScreen extends React.Component {
     const { feedo } = this.props
     let { invitedFeedList, activityFeedList } = feedo
 
-    invitedFeedList = _.orderBy(invitedFeedList, ['publishedDate'], ['desc'])
+    invitedFeedList = _.orderBy(invitedFeedList, ['metadata.myLastActivityDate'], ['desc'])
     activityFeedList = _.orderBy(activityFeedList, ['activityTime'], ['desc'])
 
     this.setState({ invitedFeedList, activityFeedList })
     this.setActivityFeeds(activityFeedList, invitedFeedList)
+
+    BackHandler.addEventListener('hardwareBackPress', this.handleBackButton);
+  }
+
+  componentWillUnmount() {
+    BackHandler.removeEventListener('hardwareBackPress', this.handleBackButton);
+  }
+
+  handleBackButton = () => {
+    Actions.pop()
+    return true;
   }
 
   UNSAFE_componentWillReceiveProps(nextProps) {
@@ -141,7 +155,7 @@ class NotificationScreen extends React.Component {
         Actions.currentScene !== 'CommentScreen' && Actions.currentScene !== 'ActivityCommentScreen' &&
         Actions.currentScene !== 'LikesListScreen' && Actions.currentScene !== 'ActivityLikesListScreen')
     ) {
-      const invitedFeedList = _.orderBy(feedo.invitedFeedList, ['publishedDate'], ['desc'])
+      const invitedFeedList = _.orderBy(feedo.invitedFeedList, ['metadata.myLastActivityDate'], ['desc'])
       this.setState({ invitedFeedList })
       this.setActivityFeeds(this.state.activityFeedList, invitedFeedList)
     }
@@ -212,7 +226,7 @@ class NotificationScreen extends React.Component {
     }
 
     if (this.props.feedo.loading !== 'UPDTE_FEED_INVITATION_FULFILLED' && feedo.loading === 'UPDTE_FEED_INVITATION_FULFILLED') {
-        let invitedFeedList = _.orderBy(feedo.invitedFeedList, ['publishedDate'], ['desc'])
+        let invitedFeedList = _.orderBy(feedo.invitedFeedList, ['metadata.myLastActivityDate'], ['desc'])
         this.setState({ invitedFeedList, isShowInviteToaster: true })
         this.setActivityFeeds(this.state.activityFeedList, invitedFeedList)
         
@@ -243,7 +257,7 @@ class NotificationScreen extends React.Component {
   renderInvitedFeedItem = (data) => {
     return (
       <View style={styles.itemView}>
-        <NotificationItemComponent data={data} />
+        <NotificationItemComponent data={data} avatarSize={58} />
       </View>
     )
   }
@@ -372,25 +386,35 @@ class NotificationScreen extends React.Component {
         <SafeAreaView style={{ flex: 1 }}>
           {this.renderHeader}
 
-          <FlatList
-            style={styles.flatList}
-            contentContainerStyle={styles.contentFlatList}
-            data={notificationList}
-            keyExtractor={item => item.id}
-            automaticallyAdjustContentInsets={true}
-            renderItem={this.renderItem.bind(this)}
-            // ItemSeparatorComponent={this.renderSeparator}
-            ListFooterComponent={this.renderFooter}
-            refreshControl={
-              <RefreshControl 
-                refreshing={this.state.refreshing}
-                onRefresh={this.handleRefresh}
-                tintColor={COLORS.PURPLE}
+          {notificationList.length > 0
+          ? <FlatList
+              style={styles.flatList}
+              contentContainerStyle={styles.contentFlatList}
+              data={notificationList}
+              keyExtractor={item => item.id}
+              automaticallyAdjustContentInsets={true}
+              renderItem={this.renderItem.bind(this)}
+              // ItemSeparatorComponent={this.renderSeparator}
+              ListFooterComponent={this.renderFooter}
+              refreshControl={
+                <RefreshControl 
+                  refreshing={this.state.refreshing}
+                  onRefresh={this.handleRefresh}
+                  tintColor={COLORS.PURPLE}
+                />
+              }
+              onEndReached={this.handleLoadMore}
+              onEndReachedThreshold={0}
+            />
+          : <View style={styles.emptyView}>
+              <SVGImage
+                source={NOTIFICATION_EMPTY_ICON}
               />
-            }
-            onEndReached={this.handleLoadMore}
-            onEndReachedThreshold={0}
-          />
+              <Text style={styles.title}>No new notifications</Text>
+              <Text style={styles.subTitle}>Updates on collaboration with other</Text>
+              <Text style={styles.subTitle}>Mello users will appear here.</Text>
+            </View>
+          }
 
           {this.renderCardDetailModal}
 
@@ -554,7 +578,7 @@ class NotificationScreen extends React.Component {
     this.animatedOpacity.setValue(1);
     Animated.timing(this.animatedOpacity, {
       toValue: 0,
-      duration: CONSTANTS.ANIMATEION_MILLI_SECONDS,
+      duration: CONSTANTS.ANIMATEION_MILLI_SECONDS + 300,
     }).start(() => {
       this.setState({ 
         isVisibleCard: false,
@@ -568,11 +592,19 @@ class NotificationScreen extends React.Component {
       return;
     }
 
+    const cardTextLayout = {textPointX: 0, textPointY: CONSTANTS.SCREEN_HEIGHT, textWidth: CONSTANTS.SCREEN_WIDTH, textHeight: CONSTANTS.SCREEN_WIDTH}
+    const cardImageLayout = {px: 0, py: CONSTANTS.SCREEN_HEIGHT, imgWidth: CONSTANTS.SCREEN_WIDTH, imgHeight: CONSTANTS.SCREEN_WIDTH}
+
+    const transformY = this.animatedOpacity.interpolate({
+      inputRange: [0, 1],
+      outputRange: [CONSTANTS.SCREEN_HEIGHT, 0]
+    })
+
     return (
       <Animated.View 
         style={[
           styles.modalContainer,
-          { opacity: this.animatedOpacity }
+          { top: transformY }
         ]}
       >
         {
@@ -584,6 +616,9 @@ class NotificationScreen extends React.Component {
             onClose={() => this.onCloseCardModal()}
             onMoveCard={this.onMoveCard}
             onDeleteCard={this.onDeleteCard}
+            cardImageLayout={cardImageLayout}
+            cardTextLayout={cardTextLayout}
+            isFromNotification
           />
         }
       </Animated.View>

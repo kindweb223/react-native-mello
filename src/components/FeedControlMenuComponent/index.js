@@ -24,7 +24,7 @@ class FeedControlMenuComponent extends React.Component {
 
   render() {
     const { feedo, pinText } = this.props
-    let isEnableShare = feedo.sharingPreferences.level === 'INVITEES_ONLY' ? false : true
+    let isEnableShare = COMMON_FUNC.isSharingEnabled(feedo)
     let isEnableShareAllowed = COMMON_FUNC.isFeedOwner(feedo) || COMMON_FUNC.isFeedEditor(feedo)
     let pinImg = pinText === 'Pin' ? images.pinGrey : images.pinActive
 
