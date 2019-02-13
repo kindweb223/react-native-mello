@@ -1,10 +1,11 @@
 import React from 'react'
-import { ScrollView, View, Image, TouchableOpacity, Animated } from 'react-native'
+import { ScrollView, View, Image, TouchableOpacity, Animated, ActivityIndicator } from 'react-native'
 import GestureRecognizer from 'react-native-swipe-gestures'
 import styles from './styles'
 import FastImage from "react-native-fast-image";
 import Video from 'react-native-video'
-
+import COLORS from '../../service/colors'
+import CONSANTS from '../../service/constants'
 
 export default class SlideShow extends React.Component {
   constructor (props) {
@@ -12,7 +13,8 @@ export default class SlideShow extends React.Component {
 
     this.state = {
       currentIndex: this.props.currentImageIndex,
-      isTouch: false
+      isTouch: false,
+      opacity: 0
     }
     this.buttonOpacity = new Animated.Value(1)
   }
@@ -70,6 +72,18 @@ export default class SlideShow extends React.Component {
     this.props.handleImage()
   }
 
+  onLoadStart = () => {
+    this.setState({ opacity: 1 })
+  }
+
+  onLoad = () => {
+    this.setState({ opacity: 0 })
+  }
+
+  onBuffer = ({ isBuffering }) => {
+    this.setState({ opacity: isBuffering ? 1 : 0 })
+  }
+
   renderItem(item, index) {
     const {
       width,
@@ -104,6 +118,20 @@ export default class SlideShow extends React.Component {
           controls={true}
           resizeMode='cover'
           paused={this.state.currentIndex !== index}
+          onBuffer={this.onBuffer}
+          onLoad={this.onLoad}
+          onLoadStart={this.onLoadStart}
+        />
+        <ActivityIndicator
+          animating
+          size="small"
+          color={COLORS.PURPLE}
+          style={{
+            opacity: this.state.opacity,
+            position: 'absolute',
+            top: height / 2 - 10,
+            left: CONSANTS.SCREEN_WIDTH / 2 - 10,
+          }}
         />
       </View>
     );
