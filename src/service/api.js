@@ -21,8 +21,9 @@ export const AXIOS_CONFIG = {
 export const xSecretToken = '-kTpbC0bhCQQY2ZKKW7DGAiuK86Ii-t72O-OrUAnBuD4FC2Aw6FI_8sp3suHkVbe9NVFNVC6KwJCyhndcWpodvA03ZN9qQ6dUsZ34iWHdWmYW-AVeRdTSnFhXG-Ch4_3kS-BX4T4NayqVVs9EDk04IbRuLp26pQGSOIMCc7QUjM'
 
 export const SCHEME = 'demos.solvers.io://'
-export const TNC_URL = 'https://d5qq4b94z26us.cloudfront.net/mello/legal/TandC.md'
-export const PRIVACY_POLICY_URL = 'https://d5qq4b94z26us.cloudfront.net/mello/legal/privacy-policy.md'
+export const TOS_URL = 'https://cdn.solvers.io/mello/legal/terms-of-service.md'
+export const TNC_URL = 'https://cdn.solvers.io/mello/legal/TandC.md'
+export const PRIVACY_POLICY_URL = 'https://cdn.solvers.io/mello/legal/privacy-policy.md'
 
 // Appstore, Google play store
 export const APP_LOCALE = 'us'
