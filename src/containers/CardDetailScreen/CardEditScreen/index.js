@@ -62,7 +62,9 @@ class CardEditScreen extends React.Component {
   }
 
   onDoneEditCard() {
-    const { idea } = this.props
+    if (this.props.onChangeIdea) {
+      this.props.onChangeIdea(this.state.idea);
+    }
 
     if (this.props.onDoneEditCard) {
       this.props.onDoneEditCard();
@@ -73,6 +75,10 @@ class CardEditScreen extends React.Component {
     if (this.props.onCancelEditCard) {
       this.props.onCancelEditCard();
     }
+  }
+
+  onChangeIdea(idea) {
+    this.setState({idea})
   }
 
   onKeyPressIdea(event) {
@@ -158,7 +164,7 @@ class CardEditScreen extends React.Component {
           multiline={true}
           underlineColorAndroid='transparent'
           value={idea}
-          onChangeText={(value) => this.props.onChangeIdea(value)}
+          onChangeText={(idea) => this.onChangeIdea(idea)}
           onKeyPress={this.onKeyPressIdea.bind(this)}
           onFocus={() => this.onFocus()}
           onBlur={() => this.onBlurIdea()}
