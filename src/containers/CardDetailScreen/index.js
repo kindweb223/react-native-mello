@@ -590,7 +590,7 @@ class CardDetailScreen extends React.Component {
         friction
       }),
       Animated.spring(this.state.tempPosition.y, {
-        toValue: 20 + 80 + ifIphoneX(22, 0), // 80 is limit scroll offset
+        toValue: 20 + 80 + ifIphoneX(22, 0), // 80: limit scroll offset
         friction
       }),
       Animated.timing(this.animatedShow, {
@@ -772,7 +772,7 @@ class CardDetailScreen extends React.Component {
       this.onUpdateCard()
     }
 
-    let { cardPadding } = this.state
+    let { cardPadding, coverImage } = this.state
     if (cardPadding !== 0 && Math.abs(cardPadding - 20) > 3) {
       cardPadding = 20
       this.scrollEnabled = false
@@ -780,12 +780,14 @@ class CardDetailScreen extends React.Component {
     console.log('cPadding:', cardPadding)
 
     // Revise if attempt to close card by scrolling down
-    this._width = this._width + 2 * cardPadding
-    this._height = this._height + 2 * cardPadding
-    this._x = this._x - cardPadding
-    this._y = this._y + ifIphoneX(cardPadding > 0 ? 22 : 0, 0)
+    if (coverImage) {
+      this._width = this._width + 2 * cardPadding
+      this._height = this._height + 2 * cardPadding
+      this._x = this._x - cardPadding
+      this._y = this._y + ifIphoneX(cardPadding > 0 ? 22 : 0, 0)
+    }
 
-    if (this.props.isFromNotification) {
+    if (this.props.isFromNotification || !coverImage) {
       this.props.onClose()
       return
     }
@@ -1485,7 +1487,9 @@ class CardDetailScreen extends React.Component {
 
     // If scroll dwon from top and scroll offset is less than -80, close card
     if (this.coverImageScrollY === 0 && scrollY < -80 && !this.state.cardClosed ) {
-      this.closeAnimationTime = CONSTANTS.ANIMATEION_MILLI_SECONDS + 250
+      if (this.state.coverImage) {
+        this.closeAnimationTime = CONSTANTS.ANIMATEION_MILLI_SECONDS + 250
+      }
       this.setState({ cardClosed: true })
       this.onClose()
     }
