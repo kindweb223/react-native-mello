@@ -1,15 +1,15 @@
 // Demo
 export const BASE_URL = 'https://demos.solvers.io/hunt/api/v1/'
-export const LAMBDA_BASE_URL = 'https://dev-lambda.trymello.com/'
-export const SHARE_LINK_URL = 'https://demos.solvers.io/solvers/mello-secure-site/feed/'
+export const LAMBDA_BASE_URL = 'https://dev-lambda.melloapp.com/'
+export const SHARE_LINK_URL = 'https://demos.solvers.io/solvers/mello-secure-site/flow/'
 
 // Prod
-// export const BASE_URL = 'https://api.tryfeedo.com/hunt/api/v1/'
-// export const SHARE_LINK_URL = 'https://app.tryfeedo.com/solvers/feedo-secure-site/feed/'
-// export const LAMBDA_BASE_URL = 'https://lambda.trymello.com/'
+// export const BASE_URL = 'https://api.melloapp.com/hunt/api/v1/'
+// export const SHARE_LINK_URL = 'https://app.melloapp.com/flow/'
+// export const LAMBDA_BASE_URL = 'https://lambda.melloapp.com/'
 
 // Global
-export const TIP_SHARE_LINK_URL = 'https://trymello.com'
+export const TIP_SHARE_LINK_URL = 'https://melloapp.com'
 
 export const AXIOS_CONFIG = {
   headers: {
