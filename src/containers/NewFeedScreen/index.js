@@ -10,7 +10,9 @@ import {
   ScrollView,
   Image,
   SafeAreaView,
-  AsyncStorage
+  AsyncStorage,
+  Platform,
+  BackHandler
 } from 'react-native'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
@@ -80,11 +82,6 @@ class NewFeedScreen extends React.Component {
     this.animatedTagTransition = new Animated.Value(1);
   }
 
-  componentDidMount() {
-    Analytics.setCurrentScreen('NewFeedScreen')
-    this.setState({ feedName: this.props.initFeedName })
-  }
-
   UNSAFE_componentWillReceiveProps(nextProps) {
     if (this.state.feedName !== nextProps.initFeedName) {
       this.setState({ feedName: nextProps.initFeedName })
@@ -121,20 +118,21 @@ class NewFeedScreen extends React.Component {
       loading = true;
       if (this.selectedFile) {
         // Image resizing...
-        if (this.selectedFileMimeType.indexOf('image/') !== -1) {
+        const fileType = (Platform.OS === 'ios') ? this.selectedFileMimeType : this.selectedFile.type;
+        if (fileType.indexOf('image/') !== -1) {
           const width = Math.round(this.selectedFile.width / CONSTANTS.IMAGE_COMPRESS_DIMENSION_RATIO);
           const height = Math.round(this.selectedFile.height / CONSTANTS.IMAGE_COMPRESS_DIMENSION_RATIO)
           ImageResizer.createResizedImage(this.selectedFile.uri, width, height, CONSTANTS.IMAGE_COMPRESS_FORMAT, CONSTANTS.IMAGE_COMPRESS_QUALITY, 0, null)
             .then((response) => {
               console.log('Image compress Success!');
-              this.props.uploadFileToS3(nextProps.feedo.fileUploadUrl.uploadUrl, response.uri, this.selectedFileName, this.selectedFileMimeType);
+              this.props.uploadFileToS3(nextProps.feedo.fileUploadUrl.uploadUrl, response.uri, this.selectedFileName, fileType);
             }).catch((error) => {
               console.log('Image compress error : ', error);
-              this.props.uploadFileToS3(nextProps.feedo.fileUploadUrl.uploadUrl, this.selectedFile.uri, this.selectedFileName, this.selectedFileMimeType);
+              this.props.uploadFileToS3(nextProps.feedo.fileUploadUrl.uploadUrl, this.selectedFile.uri, this.selectedFileName, fileType);
             });
           return;
         }
-        this.props.uploadFileToS3(nextProps.feedo.fileUploadUrl.uploadUrl, this.selectedFile.uri, this.selectedFileName, this.selectedFileMimeType);
+        this.props.uploadFileToS3(nextProps.feedo.fileUploadUrl.uploadUrl, this.selectedFile.uri, this.selectedFileName, fileType);
       }
     } else if (this.props.feedo.loading !== types.UPLOAD_FILE_PENDING && nextProps.feedo.loading === types.UPLOAD_FILE_PENDING) {
       // uploading a file
@@ -145,7 +143,8 @@ class NewFeedScreen extends React.Component {
       let { id } = this.state.feedData;
       const { objectKey } = this.props.feedo.fileUploadUrl;
       if (this.selectedFileType) {
-        this.props.addFile(id, this.selectedFileType, this.selectedFileMimeType, this.selectedFileName, objectKey);
+        const fileType = (Platform.OS === 'ios') ? this.selectedFileMimeType : this.selectedFile.type;
+        this.props.addFile(id, this.selectedFileType, fileType, this.selectedFileName, objectKey);
       }
     } else if (this.props.feedo.loading !== types.ADD_FILE_PENDING && nextProps.feedo.loading === types.ADD_FILE_PENDING) {
       // adding a file
@@ -219,7 +218,8 @@ class NewFeedScreen extends React.Component {
   }
 
   componentDidMount() {
-    console.log('Current Feedo : ', this.props.feedo.currentFeed);
+    Analytics.setCurrentScreen('NewFeedScreen')
+
     Animated.timing(this.animatedShow, {
       toValue: 1,
       duration: CONSTANTS.ANIMATEION_MILLI_SECONDS,
@@ -238,11 +238,20 @@ class NewFeedScreen extends React.Component {
     this.keyboardWillShowSubscription = Keyboard.addListener('keyboardWillShow', (e) => this.keyboardWillShow(e));
     this.keyboardWillHideSubscription = Keyboard.addListener('keyboardWillHide', (e) => this.keyboardWillHide(e));
     this.textInputFeedNameRef.focus();
+
+    BackHandler.addEventListener('hardwareBackPress', this.handleBackButton);
   }
 
   componentWillUnmount() {
     this.keyboardWillShowSubscription.remove();
     this.keyboardWillHideSubscription.remove();
+    BackHandler.removeEventListener('hardwareBackPress', this.handleBackButton);
+  }
+
+  handleBackButton = () => {
+    console.log('handleBackButton')
+    this.onOpenActionSheet()
+    return true;
   }
 
   keyboardWillShow(e) {
@@ -280,7 +289,7 @@ class NewFeedScreen extends React.Component {
     Analytics.logEvent('new_feed_create_new_feed', {})
 
     if (this.state.feedName === '') {
-      Alert.alert('', 'Please give your name a flow.', [{ text: 'Close' }]);
+      Alert.alert('', 'Please give your flow a name.', [{ text: 'Close' }]);
       return;
     }
 
@@ -289,10 +298,56 @@ class NewFeedScreen extends React.Component {
   }
 
   onAddMedia() {
-    this.imagePickerActionSheetRef.show();
+    Permissions.checkMultiple(['camera', 'photo']).then(response => {
+      if (response.camera === 'authorized' && response.photo === 'authorized') {
+        //permission already allowed
+        this.imagePickerActionSheetRef.show();
+      }
+      else {
+        Permissions.request('camera').then(response => {
+          if (response === 'authorized') {
+            //camera permission was authorized
+            Permissions.request('photo').then(response => {
+              if (response === 'authorized') {
+                //photo permission was authorized
+                this.imagePickerActionSheetRef.show();
+              }
+              else if (Platform.OS === 'ios') {
+                Permissions.openSettings();
+              }    
+            });
+          }
+          else if (Platform.OS === 'ios') {
+            Permissions.openSettings();
+          }
+        });
+      }
+    });
   }
 
   onAddDocument() {
+    if (Platform.OS === 'ios') {
+      this.PickerDocumentShow();
+    }
+    else {
+      Permissions.check('storage').then(response => { //'storage' permission doesn't support on iOS
+        if (response === 'authorized') {
+          //permission already allowed
+          this.PickerDocumentShow();
+        }
+        else {
+          Permissions.request('storage').then(response => {
+            if (response === 'authorized') {
+              //storage permission was authorized
+              this.PickerDocumentShow();
+            }
+          });
+        }
+      });
+    }
+  }
+
+  PickerDocumentShow() {
     DocumentPicker.show({
       filetype: [DocumentPickerUtil.allFiles()],
     },(error, response) => {
@@ -418,34 +473,10 @@ class NewFeedScreen extends React.Component {
         
     if (index === 0) {
       // from camera
-      Permissions.check('camera').then(response => {
-        if (response === 'authorized') {
-          this.pickMediaFromCamera(options);
-        } else if (response === 'undetermined') {
-          Permissions.request('camera').then(response => {
-            if (response === 'authorized') {
-              this.pickMediaFromCamera(options);
-            }
-          });
-        } else {
-          Permissions.openSettings();
-        }
-      });
+      this.pickMediaFromCamera(options);
     } else if (index === 1) {
       // from library
-      Permissions.check('photo').then(response => {
-        if (response === 'authorized') {
-          this.pickMediaFromLibrary(options);
-        } else if (response === 'undetermined') {
-          Permissions.request('photo').then(response => {
-            if (response === 'authorized') {
-              this.pickMediaFromLibrary(options);
-            }
-          });
-        } else {
-          Permissions.openSettings();
-        }
-      });
+      this.pickMediaFromLibrary(options);
     }
   }
 
@@ -455,7 +486,7 @@ class NewFeedScreen extends React.Component {
   }
 
   get renderHeader() {
-    const { feedoMode } = this.props;
+    const { feedoMode, isNewCard } = this.props;
     if (feedoMode === CONSTANTS.SHARE_EXTENTION_FEEDO) {
       return (
         <View style={styles.extensionTopContainer}>
@@ -478,24 +509,25 @@ class NewFeedScreen extends React.Component {
     }
 
     return (
-      <View style={styles.topContainer}>
+      <View style={styles.mainHeaderContainer}>
         <TouchableOpacity 
-          style={styles.closeButtonWrapper}
-          activeOpacity={0.6}
+          style={styles.btnClose}
+          activeOpacity={0.7}
           onPress={this.onOpenActionSheet.bind(this)}
         >
-          <MaterialCommunityIcons name="close" size={32} color={COLORS.PURPLE} />
+          <Text style={[styles.textButton, { color: COLORS.PURPLE, fontWeight: 'normal' }]}>Cancel</Text>
         </TouchableOpacity>
-        <TouchableOpacity 
-          style={styles.createButtonWapper}
+        {isNewCard
+          ? <Text style={styles.textButton}>New flow</Text>
+          : <Text style={styles.textButton}>Edit flow</Text>
+        }
+        <TouchableOpacity
+          style={[styles.btnClose, { alignItems: 'flex-end' }]}
           activeOpacity={0.6}
           onPress={this.onUpdate.bind(this)}
         >
-          <Text style={styles.textButton}>
-            {this.props.selectedFeedId
-              ? this.props.viewMode === CONSTANTS.FEEDO_FROM_MAIN ? 'Save' : 'Done'
-              : 'Create Flow'
-            }
+          <Text style={[styles.textButton, { color: COLORS.PURPLE }]}>
+            Done
           </Text>
         </TouchableOpacity>
       </View>
@@ -780,7 +812,8 @@ NewFeedScreen.defaultProps = {
   viewMode: CONSTANTS.FEEDO_FROM_MAIN,
   feedoMode: CONSTANTS.MAIN_APP_FEEDO,
   onClose: () => {},
-  initFeedName: ''
+  initFeedName: '',
+  isNewCard: true
 }
 
 
@@ -791,7 +824,8 @@ NewFeedScreen.propTypes = {
   onClose: PropTypes.func,
   viewMode: PropTypes.number,
   feedoMode: PropTypes.number,
-  initFeedName: PropTypes.string
+  initFeedName: PropTypes.string,
+  isNewCard: PropTypes.bool
 }
 
 

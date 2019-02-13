@@ -268,7 +268,7 @@ class ProfileUpdateScreen extends React.Component {
 
   render () {
     const { page } = this.props
-
+    
     return (
       <View style={styles.container}>
         {page === 'user' && this.renderUserContent()}
@@ -293,7 +293,7 @@ class ProfileUpdateScreen extends React.Component {
 
     return (
       <View style={styles.subContainer}>
-        <KeyboardScrollView>
+        {/* <KeyboardScrollView> - error in Android, useless in iOS */}
           <TextInputComponent
             label='Email'
             placeholder="Email"
@@ -312,7 +312,7 @@ class ProfileUpdateScreen extends React.Component {
             textContentType="name"
             onSubmitEditing={() => this.onSaveUser()}
           />
-        </KeyboardScrollView>
+        {/* </KeyboardScrollView> */}
 
         <TouchableOpacity onPress={() => this.onSaveUser()} style={styles.buttonView}>
           <View style={styles.button}>
@@ -337,7 +337,7 @@ class ProfileUpdateScreen extends React.Component {
 
     return (
       <View style={styles.subContainer}>
-        <KeyboardScrollView style={{ flex: 1 }}>
+        {/* <KeyboardScrollView style={{ flex: 1 }}> - error in Android, useless in iOS */}
           <View style={styles.inputView}>
             <TextInputComponent
               ref={ref => this.oldPasswordRef = ref}
@@ -404,7 +404,7 @@ class ProfileUpdateScreen extends React.Component {
               )}
             </View>
           </View>
-        </KeyboardScrollView>
+        {/* </KeyboardScrollView> */}
 
         <TouchableOpacity onPress={() => this.onSavePassword()} style={styles.buttonView}>
           <View style={styles.button}>

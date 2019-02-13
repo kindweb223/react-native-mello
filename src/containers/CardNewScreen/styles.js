@@ -4,13 +4,10 @@ import CONSTANTS from '../../service/constants'
 
 const styles = StyleSheet.create({
   container: {
-    width: CONSTANTS.SCREEN_WIDTH,
-    height: CONSTANTS.SCREEN_HEIGHT,
+    width: '100%',
+    height: '100%',
     backgroundColor: 'transparent',
     justifyContent: 'center',
-  },
-  backdropContainer: {
-    flex: 1,
   },
   cardContainer: {
     position: 'absolute',

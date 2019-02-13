@@ -19,6 +19,7 @@ export default {
   STATUS_BOTTOM_BAR_HEIGHT: Platform.OS === 'ios' ? ifIphoneX(40, 0) : 0,
   TAB_BAR_HEIGHT: 45,
   ANIMATEION_MILLI_SECONDS: 200,
+  ANIMATABLE_DURATION: 700,
   SCREEN_VERTICAL_MIN_MARGIN: Math.round(height * 0.145),
   TEXT_INPUT_LINE_HEIGHT: 23,
   CLIPBOARD_DATA_CONFIRM_DURATION: 6000,
@@ -61,6 +62,7 @@ export default {
   APP_GROUP_USER_IDENTIFIER: 'group.hunt.mobile.user.info',
   APP_GROUP_TOKEN_IDENTIFIER: 'group.hunt.mobile.token',
   APP_GROUP_LAST_USED_FEEDO: 'group.hunt.mobile.last.feedo',
+  APP_GROUP_SHARE_STATE: 'group.hunt.mobile.share.state',
 
   // Push Notification
   UNKOWN_PUSH_NOTIFICATION: 'UNKOWN_PUSH_NOTIFICATION',
@@ -81,5 +83,10 @@ export default {
   // share extension modal buttons
   MODAL_OK: 1,
   MODAL_CLOSE: 2,
-  
+
+  PREMIUM_10MB_ALERT_MESSAGE: 'Oops you need to have a premium account to upload more than 10MB.',
+
+  // file path in DocumentDirectoryPath
+  PRIVACY_POLICE: '/MELLO_PRIVACY_POLICY.txt',
+  TERMS_CONDITIONS: '/MELLO_TERMS_CONDITIONS.txt',
 }

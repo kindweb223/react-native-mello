@@ -7,9 +7,6 @@ const styles = StyleSheet.create({
     paddingHorizontal: CONSTANTS.PADDING,
     flexDirection: 'row'
   },
-  leftContainer: {
-    width: 50
-  },
   rightContainer: {
     flex: 1
   },

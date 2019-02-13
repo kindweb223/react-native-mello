@@ -5,7 +5,10 @@ import {
   TouchableOpacity,
   Image,
   ScrollView,
-  FlatList
+  FlatList,
+  Platform,
+  BackHandler,
+  Share
 } from 'react-native'
 import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
@@ -17,7 +20,11 @@ import Permissions from 'react-native-permissions'
 import ImagePicker from 'react-native-image-picker'
 import ActionSheet from 'react-native-actionsheet'
 import VersionNumber from 'react-native-version-number'
+import { GoogleSignin } from 'react-native-google-signin';
+import SVGImage from 'react-native-remote-svg'
+import Modal from "react-native-modal"
 import _ from 'lodash'
+import ShareExtensionTip from '../../components/ShareExtensionTip'
 import ToasterComponent from '../../components/ToasterComponent'
 import UserAvatarComponent from '../../components/UserAvatarComponent'
 import LoadingScreen from '../LoadingScreen'
@@ -25,32 +32,20 @@ import { userSignOut, deleteProfilePhoto } from '../../redux/user/actions'
 import COLORS from '../../service/colors'
 import styles from './styles'
 import Analytics from '../../lib/firebase'
+import { TIP_SHARE_LINK_URL } from '../../service/api'
 
 const CLOSE_ICON = require('../../../assets/images/Close/Blue.png')
 const TRASH_ICON = require('../../../assets/images/Trash/Blue.png')
 const LOCK_ICON = require('../../../assets/images/Lock/Blue.png')
 const EDIT_ICON = require('../../../assets/images/Edit/Blue.png')
 const PROFILE_ICON = require('../../../assets/images/Profile/Blue.png')
+const PREMIUM_ICON = require('../../../assets/svgs/IconMediumStarGold.svg')
+const SHARE_ICON = require('../../../assets/images/Share/Blue.png')
 
 const ABOUT_ITEMS = [
   'Support',
   'Privacy Policy',
   'Terms & Conditions'
-]
-
-const SETTING_ITEMS = [
-  {
-    icon: <Image source={PROFILE_ICON} style={styles.leftIcon} />,
-    title: 'Profile'
-  },
-  {
-    icon: <Image source={LOCK_ICON} style={styles.leftIcon} />,
-    title: 'Security'
-  },
-  {
-    icon: <Image source={TRASH_ICON} style={styles.leftIcon} />,
-    title: 'Archived flows'
-  }
 ]
 
 class ProfileScreen extends React.Component {
@@ -59,16 +54,58 @@ class ProfileScreen extends React.Component {
     this.state = {
       isShowToaster: false,
       toasterText: '',
-      loading: false
+      loading: false,
+      showShareTipsModal: false
     }
-  }
 
+    this.SETTING_ITEMS = []
+
+    this.SETTING_ITEMS.push({
+      icon: <Image source={PROFILE_ICON} style={styles.leftIcon} />,
+      title: 'Profile'
+    })
+    
+    this.SETTING_ITEMS.push({
+      icon: <Image source={LOCK_ICON} style={styles.leftIcon} />,
+      title: 'Security'
+    })
+    
+    this.SETTING_ITEMS.push({
+      icon: <Image source={TRASH_ICON} style={styles.leftIcon} />,
+      title: 'Archived flows'
+    })
+    
+    if(Platform.OS === 'ios') {
+      this.SETTING_ITEMS.push({
+        icon: <Image source={SHARE_ICON} style={styles.leftIcon} />,
+        title: 'Enable share extention'
+      })  
+    }
+
+    this.SETTING_ITEMS.push({
+      icon: <SVGImage source={PREMIUM_ICON} style={styles.leftIcon} />,
+      title: 'Upgrade to Mello Premium'
+    })  
+  }
+  
   componentDidMount() {
     Analytics.setCurrentScreen('ProfileScren')
 
     this.setState({ userInfo: this.props.user.userInfo })
+
+    BackHandler.addEventListener('hardwareBackPress', this.handleBackButton);
   }
 
+  componentWillUnmount() {
+    BackHandler.removeEventListener('hardwareBackPress', this.handleBackButton);
+  }
+
+  handleBackButton = () => {
+    Actions.pop()
+    return true;
+  }
+
+  
   UNSAFE_componentWillReceiveProps(nextProps) {
     const { user } = nextProps
 
@@ -102,10 +139,18 @@ class ProfileScreen extends React.Component {
     }
   }
 
-  onTapActionSheet = (index) => {
+  onTapActionSheet = async (index) => {
     if (index === 0) {
       Analytics.logEvent('profile_signout', {})
+      isSignedIn = await GoogleSignin.isSignedIn()
 
+      if (isSignedIn) {
+        try {
+          await GoogleSignin.signOut()
+        } catch (error ) {
+          console.error(error)
+        }
+      }
       this.props.userSignOut()
     }
   }
@@ -142,34 +187,12 @@ class ProfileScreen extends React.Component {
         
     if (index === 1) {
       // from camera
-      Permissions.check('camera').then(response => {
-        if (response === 'authorized') {
-          this.pickMediaFromCamera(options);
-        } else if (response === 'undetermined') {
-          Permissions.request('camera').then(response => {
-            if (response === 'authorized') {
-              this.pickMediaFromCamera(options);
-            }
-          });
-        } else {
-          Permissions.openSettings();
-        }
-      });
+       this.pickMediaFromCamera(options);
+
     } else if (index === 0) {
       // from library
-      Permissions.check('photo').then(response => {
-        if (response === 'authorized') {
-          this.pickMediaFromLibrary(options);
-        } else if (response === 'undetermined') {
-          Permissions.request('photo').then(response => {
-            if (response === 'authorized') {
-              this.pickMediaFromLibrary(options);
-            }
-          });
-        } else {
-          Permissions.openSettings();
-        }
-      });
+      this.pickMediaFromLibrary(options);
+
     } else if (index === 2) {
       // delete profile photo
       const { user } = this.props
@@ -181,7 +204,55 @@ class ProfileScreen extends React.Component {
   }
 
   updatePhoto = () => {
-    this.imagePickerActionSheetRef.show();
+    Permissions.checkMultiple(['camera', 'photo']).then(response => {
+      if (response.camera === 'authorized' && response.photo === 'authorized') {
+        //permission already allowed
+        this.imagePickerActionSheetRef.show();
+      }
+      else {
+        Permissions.request('camera').then(response => {
+          if (response === 'authorized') {
+            //camera permission was authorized
+            Permissions.request('photo').then(response => {
+              if (response === 'authorized') {
+                //photo permission was authorized
+                this.imagePickerActionSheetRef.show();
+              }
+              else if (Platform.OS === 'ios') {
+                Permissions.openSettings();
+              }    
+            });
+          }
+          else if (Platform.OS === 'ios') {
+            Permissions.openSettings();
+          }
+        });
+      }
+    });
+  }
+
+  showShareExtension = () => {
+    setTimeout(() => {
+      this.setState({ showShareTipsModal: true })
+    }, 100)
+
+    setTimeout(() => {
+      Share.share({
+        message: 'Mello',
+        title: 'Mello',
+        url: TIP_SHARE_LINK_URL
+      },{
+        dialogTitle: 'Mello',
+        subject: 'Mello',
+        excludedActivityTypes: ["com.apple.UIKit.activity.AirDrop"]
+      }).then(result => {
+        if (result.action === Share.dismissedAction) {
+          this.setState({ showShareTipsModal: false })
+        }
+      }).catch(error => {
+        console.log('ERROR: ', error)
+      })
+    }, 200)
   }
 
   handleSettingItem = (index) => {
@@ -197,6 +268,16 @@ class ProfileScreen extends React.Component {
         return
       case 3: // Archived feeds
         Actions.ArchivedFeedScreen()
+        return
+      case 4: // Show share extension
+        if (Platform.OS === 'ios') {
+          this.showShareExtension()
+        } else {
+          Actions.ProfilePremiumScreen()
+        }
+        return
+      case 5: // Premium screen
+        Actions.ProfilePremiumScreen()
         return
       default:
         return
@@ -242,9 +323,11 @@ class ProfileScreen extends React.Component {
                       color="#fff"
                       textColor={COLORS.PURPLE}
                     />
-                    <View style={styles.editView}>
-                        <Image source={EDIT_ICON} style={styles.editIcon} />
-                    </View>
+                  </TouchableOpacity>
+                  <TouchableOpacity 
+                    style={styles.editView}
+                    onPress={() => this.updatePhoto()}>
+                    <Image source={EDIT_ICON} style={styles.editIcon} />
                   </TouchableOpacity>
                 </View>
                 <Text style={styles.name}>
@@ -274,7 +357,7 @@ class ProfileScreen extends React.Component {
                   </TouchableOpacity>
                 </View> */}
                 {
-                  SETTING_ITEMS.map((item, key) => (
+                  this.SETTING_ITEMS.map((item, key) => (
                     <View key={key} style={styles.settingItem}>
                       <TouchableOpacity
                         onPress={() => this.handleSettingItem(key + 1)}
@@ -379,6 +462,13 @@ class ProfileScreen extends React.Component {
             onPressButton={() => this.setState({ isShowToaster: false })}
           />
         )}
+
+        {
+          this.state.showShareTipsModal && 
+            <ShareExtensionTip
+              ref={ref => (this.ref = ref)}
+            />
+        }
 
       </View>
     )

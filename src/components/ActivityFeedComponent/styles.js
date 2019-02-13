@@ -10,22 +10,41 @@ const styles = StyleSheet.create({
     paddingVertical: 15
   },
   leftContainer: {
-    width: 50
+    width: 70
+  },
+  iconView: {
+    width: 27,
+    height: 27,
+    borderRadius: 15,
+    position: 'absolute',
+    bottom: 0,
+    left: 0,
+    backgroundColor: '#fff',
+    justifyContent: 'center',
+    alignItems: 'center'
+  },
+  icon: {
+    width: 11,
+    height: 11
   },
   rightContainer: {
     flex: 1
   },
+  itemView: {
+    height: '100%',
+    justifyContent: 'space-between'
+  },
   title: {
     fontSize: 14,
-    lineHeight: 21,
+    lineHeight: 20,
     fontWeight: '600'
   },
   durationView: {
-    marginTop: 10,
     flexDirection: 'row'
   },
   text: {
     fontSize: 12,
+    lineHeight: 21,
     color: COLORS.DARK_GREY
   },
   dotIcon: {
