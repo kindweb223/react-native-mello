@@ -455,7 +455,7 @@ export default function card(state = initialState, action = {}) {
       const deletedFile = _.find(state.currentCard.files, file => file.id === fileId);
       const files = _.filter(state.currentCard.files, file => file.id !== fileId);
       let coverImage = state.currentCard.coverImage;
-      if (coverImage === deletedFile.accessUrl) {
+      if (coverImage === deletedFile.accessUrl || coverImage === deletedFile.thumbnailUrl) {
         coverImage = null;
       }
 

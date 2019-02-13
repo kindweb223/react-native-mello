@@ -403,7 +403,7 @@ class CardNewScreen extends React.Component {
       loading = true;
     } else if (this.props.card.loading !== types.DELETE_FILE_FULFILLED && nextProps.card.loading === types.DELETE_FILE_FULFILLED) {
       // success in deleting a file
-      imageFiles = _.filter(nextProps.card.currentCard.files, file => file.contentType.indexOf('image') !== -1);
+      imageFiles = _.filter(nextProps.card.currentCard.files, file => file.contentType.indexOf('image') !== -1 || file.contentType.indexOf('video') !== -1);
       if (imageFiles.length > 0 && !nextProps.card.currentCard.coverImage) {
         this.onSetCoverImage(nextProps.card.currentCard.files[0].id);
       } else {
@@ -1094,9 +1094,7 @@ class CardNewScreen extends React.Component {
           if (!response.fileName) {
             response.fileName = response.uri.replace(/^.*[\\\/]/, '')
           }
-
           this.generateThumbnail(response)  // Generate thumbnail if video
-
           this.uploadFile(this.props.card.currentCard, response, 'MEDIA');
         }
       }
@@ -1124,7 +1122,6 @@ class CardNewScreen extends React.Component {
           )
         } else {
           this.generateThumbnail(response)  // Generate thumbnail if video
-
           this.uploadFile(this.props.card.currentCard, response, 'MEDIA');
         }
       }
@@ -1151,7 +1148,6 @@ class CardNewScreen extends React.Component {
 
   generateThumbnail(file) {
     const mimeType = mime.lookup(file.uri);
-    console.log('response: ', file, mimeType)
 
     if (mimeType.indexOf('video') !== -1) {
       RNThumbnail.get(file.uri).then((result) => {
