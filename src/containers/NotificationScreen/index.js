@@ -578,7 +578,7 @@ class NotificationScreen extends React.Component {
     this.animatedOpacity.setValue(1);
     Animated.timing(this.animatedOpacity, {
       toValue: 0,
-      duration: CONSTANTS.ANIMATEION_MILLI_SECONDS,
+      duration: CONSTANTS.ANIMATEION_MILLI_SECONDS + 300,
     }).start(() => {
       this.setState({ 
         isVisibleCard: false,
@@ -592,11 +592,19 @@ class NotificationScreen extends React.Component {
       return;
     }
 
+    const cardTextLayout = {textPointX: 0, textPointY: CONSTANTS.SCREEN_HEIGHT, textWidth: CONSTANTS.SCREEN_WIDTH, textHeight: CONSTANTS.SCREEN_WIDTH}
+    const cardImageLayout = {px: 0, py: CONSTANTS.SCREEN_HEIGHT, imgWidth: CONSTANTS.SCREEN_WIDTH, imgHeight: CONSTANTS.SCREEN_WIDTH}
+
+    const transformY = this.animatedOpacity.interpolate({
+      inputRange: [0, 1],
+      outputRange: [CONSTANTS.SCREEN_HEIGHT, 0]
+    })
+
     return (
       <Animated.View 
         style={[
           styles.modalContainer,
-          { opacity: this.animatedOpacity }
+          { top: transformY }
         ]}
       >
         {
@@ -608,6 +616,9 @@ class NotificationScreen extends React.Component {
             onClose={() => this.onCloseCardModal()}
             onMoveCard={this.onMoveCard}
             onDeleteCard={this.onDeleteCard}
+            cardImageLayout={cardImageLayout}
+            cardTextLayout={cardTextLayout}
+            isFromNotification
           />
         }
       </Animated.View>

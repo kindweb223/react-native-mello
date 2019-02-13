@@ -131,6 +131,8 @@ class FeedDetailScreen extends React.Component {
       pinText: 'Pin',
       selectedIdeaInvitee: null,
       selectedIdeaLayout: {},
+      activeImageLayout: {},
+      activeTextLayout: {},
       isInviteeModal: false,
       showFilterModal: false,
       filterShowType: 'all',
@@ -818,6 +820,30 @@ class FeedDetailScreen extends React.Component {
       }
 
       this.cardItemRefs[index].measure((ox, oy, width, height, px, py) => {
+        let pointX, pointY //card image x,y point
+        let imgWidth, imgHeight //card image size
+        let textPointX = px //card text x point
+        let textPointY = py //card text y point
+        let textWidth, textHeight //card text size
+        if (this.state.viewPreference === 'LIST') {
+          pointX = CONSTANTS.SCREEN_WIDTH - 78 - 32 //32: margin from screen right
+          pointY = py - 1
+          imgWidth = 78
+          imgHeight = 78
+          textPointX = px + 21
+          textPointY = py + 32
+          textWidth = CONSTANTS.SCREEN_WIDTH - 29 * 2 //29: margin from screen left
+          textHeight = height - 103
+        } else {
+          pointX = px + 9
+          pointY = py - 21
+          imgWidth = width - 18
+          imgHeight = height - 111
+          textPointX = px + 21
+          textPointY = py + 19
+          textWidth = width - 38
+          textHeight = height - 97
+        }
         this.props.closeClipboardToaster()
 
         this.setState({
@@ -825,6 +851,8 @@ class FeedDetailScreen extends React.Component {
           cardViewMode,
           selectedIdeaInvitee: invitee,
           selectedIdeaLayout: { ox, oy, width, height, px, py },
+          activeImageLayout: { px: pointX, py: pointY, imgWidth, imgHeight },
+          activeTextLayout: { textPointX, textPointY, textWidth, textHeight }
         }, () => {
           this.animatedOpacity.setValue(0);
           Animated.timing(this.animatedOpacity, {
@@ -1029,8 +1057,7 @@ class FeedDetailScreen extends React.Component {
   }
 
   get renderNewCardModal() {
-    const { isVisibleCard, cardViewMode, cardMode, isVisibleEditFeed } = this.state
-
+    const { isVisibleCard, cardViewMode, cardMode, isVisibleEditFeed, activeImageLayout, activeTextLayout, viewPreference } = this.state
     if (!isVisibleCard && !isVisibleEditFeed) {
       return;
     }
@@ -1053,10 +1080,13 @@ class FeedDetailScreen extends React.Component {
                 onClose={() => this.onCloseCardModal()}
               />
             : <CardDetailScreen
+                isMasonryView={viewPreference === 'MASONRY'}
                 prevPage={this.props.prevPage}
                 viewMode={this.state.cardViewMode}
                 invitee={this.state.selectedIdeaInvitee}
                 intialLayout={this.state.selectedIdeaLayout}
+                cardImageLayout={activeImageLayout}
+                cardTextLayout={activeTextLayout}
                 shareUrl=''
                 onClose={() => this.onCloseCardModal()}
                 onOpenAction={(idea) => this.onOpenCardAction(idea)}
@@ -1472,6 +1502,7 @@ class FeedDetailScreen extends React.Component {
                             <TouchableHighlight
                               ref={ref => this.cardItemRefs[index] = ref}
                               style={{ paddingHorizontal: 8, borderRadius: 5 }}
+                              activeOpacity={1}
                               underlayColor="#fff"
                               onPress={() => this.onSelectCard(index, item, invitees)}
                               onLongPress={() => this.onLongPressCard(index, item, invitees)}
@@ -1484,6 +1515,8 @@ class FeedDetailScreen extends React.Component {
                                 prevPage={this.props.prevPage}
                                 longHold={isVisibleLongHoldMenu}
                                 longSelected={isVisibleLongHoldMenu && selectedLongHoldCardIndex === index}
+                                onPress={() => this.onSelectCard(index, item, invitees)}
+                                onLongPress={() => this.onLongPressCard(index, item, invitees)}
                                 onLinkPress={() => this.onSelectCard(index, item, invitees)}
                                 onLinkLongPress={() => this.onLongPressCard(index, item, invitees)}
                               />
@@ -1534,6 +1567,7 @@ class FeedDetailScreen extends React.Component {
                               <TouchableHighlight
                                 ref={ref => this.cardItemRefs[item.index] = ref}
                                 style={{ paddingHorizontal: 8, borderRadius: 5 }}
+                                activeOpacity={1}
                                 underlayColor="#fff"
                                 onPress={() => this.onSelectCard(item.index, item.data, invitees)}
                                 onLongPress={() => this.onLongPressCard(item.index, item.data, invitees)}
@@ -1544,7 +1578,10 @@ class FeedDetailScreen extends React.Component {
                                   listType={this.state.viewPreference}
                                   cardType="view"
                                   prevPage={this.props.prevPage}
+                                  longHold={isVisibleLongHoldMenu}
                                   longSelected={isVisibleLongHoldMenu && selectedLongHoldCardIndex === item.index}
+                                  onPress={() => this.onSelectCard(item.index, item.data, invitees)}
+                                  onLongPress={() => this.onLongPressCard(item.index, item.data, invitees)}
                                   onLinkPress={() => this.onSelectCard(item.index, item.data, invitees)}
                                   onLinkLongPress={() => this.onLongPressCard(item.index, item.data, invitees)}
                                 />
