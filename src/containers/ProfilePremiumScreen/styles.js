@@ -1,5 +1,7 @@
 import { StyleSheet, Platform } from 'react-native'
+import { ifIphoneX } from 'react-native-iphone-x-helper'
 import COLORS from '../../service/colors'
+import CONSTANTS from '../../service/constants'
 
 export default {
   container: {
@@ -20,9 +22,11 @@ export default {
     marginBottom: 5
   },
   scrollView: {
+    flex: 1
+  },
+  scrollInnerView: {
     paddingHorizontal: 32,
-    paddingTop: 25,
-    paddingBottom: 40,
+    paddingTop: 25
   },
   topView: {
     marginBottom: 60
@@ -51,7 +55,9 @@ export default {
     height: 64
   },
   buttonView: {
-    marginTop: 20,
+    marginTop: 17,
+    marginBottom: ifIphoneX(35, 17),
+    paddingHorizontal: CONSTANTS.PADDING,
     width: '100%'
   },
   button: {
