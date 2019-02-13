@@ -159,7 +159,8 @@ class FeedDetailScreen extends React.Component {
       isMasonryView: false,
       isShowInviteToaster: false,
       inviteToasterTitle: '',
-      viewPreference: 'LIST'
+      viewPreference: 'LIST',
+      isLeaveFlowClicked: false,
     };
     this.animatedOpacity = new Animated.Value(0)
     this.menuOpacity = new Animated.Value(0)
@@ -320,7 +321,8 @@ class FeedDetailScreen extends React.Component {
         this.props.getActivityFeed(this.props.user.userInfo.id, { page: 0, size: PAGE_COUNT })
       }
 
-      if (this.props.feedo.loading === 'DELETE_INVITEE_PENDING' && feedo.loading === 'DELETE_INVITEE_FULFILLED') {
+      if (this.state.isLeaveFlowClicked && !COMMON_FUNC.isFeedOwnerEditor(currentFeed) &&
+          this.props.feedo.loading === 'DELETE_INVITEE_PENDING' && feedo.loading === 'DELETE_INVITEE_FULFILLED') {
         const feedId = this.props.data.id
         this.props.setFeedDetailAction({
           action: 'Leave',
@@ -407,7 +409,7 @@ class FeedDetailScreen extends React.Component {
           this.setState({ showBubble: true })
           setTimeout(() => {
             this.setState({ showBubbleCloseButton: true })
-          }, 30000)
+          }, 10000)
         } else {
           this.setState({ showBubble: false })
         }
@@ -1384,6 +1386,7 @@ class FeedDetailScreen extends React.Component {
         const invitee = _.filter(feedo.currentFeed.invitees, invitee => invitee.userProfile.id === selectedContact.userProfile.id)
         deleteInvitee(feedId, invitee[0].id)
       } else {
+        this.setState({ isLeaveFlowClicked: true })
         const invitee = _.filter(feedo.currentFeed.invitees, invitee => invitee.userProfile.id === user.userInfo.id)
         deleteInvitee(feedId, invitee[0].id)
       }

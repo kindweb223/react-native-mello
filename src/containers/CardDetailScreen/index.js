@@ -86,13 +86,11 @@ class CardDetailScreen extends React.Component {
   constructor(props) {
     super(props);
 
-    let coverImage = '';
-    let idea = '';
-
     this.state = {
       // cardName: '',
-      idea,
-      coverImage,
+      idea: '',
+      coverImage: '',
+      links: [],
       textByCursor: '',
       
       loading: false,
@@ -480,6 +478,7 @@ class CardDetailScreen extends React.Component {
       this.setState({
         idea: nextProps.card.currentCard.idea,
         coverImage: nextProps.card.currentCard.coverImage,
+        links: nextProps.card.currentCard.links,
       })
     }
   }
@@ -509,6 +508,7 @@ class CardDetailScreen extends React.Component {
       this.setState({
         idea: card.currentCard.idea,
         coverImage: card.currentCard.coverImage,
+        links: card.currentCard.links
       });
     }
 
@@ -841,18 +841,15 @@ class CardDetailScreen extends React.Component {
   onUpdateCard() {
     const { currentCard } = this.props.card
     const { id, huntId, files } = currentCard
-    const { idea, coverImage } = this.state
+    const { idea, coverImage, links } = this.state
 
-    if (currentCard.idea !== idea || currentCard.coverImage !== coverImage) {
+    if (currentCard.idea !== idea || currentCard.coverImage !== coverImage || currentCard.links !== links) {
       this.props.updateCard(huntId, id, '', idea, coverImage, files, false);
     }
   }
 
   onTapActionSheet(index) {
     if (index === 0) {
-      console.log("****DELETE****")
-      console.log("this.props.card: ", this.props.card)
-      console.log("this.props.card.currentCard.id: ", this.props.card.currentCard.id)
       this.props.onDeleteCard(this.props.card.currentCard.id)
     }
   }
@@ -1342,7 +1339,7 @@ class CardDetailScreen extends React.Component {
 
   get renderWebMeta() {
     const { viewMode } = this.props;
-    const { links } = this.props.card.currentCard;    
+    const { links } = this.props.card.currentCard;
 
     if (links && links.length > 0) {
       const firstLink = links[0];
@@ -1421,7 +1418,7 @@ class CardDetailScreen extends React.Component {
     //   if (!otherInvitees || otherInvitees.length === 0) {
     //     return (
     //       <View style={styles.inviteeContainer}>
-    //         <Text style={styles.textInvitee}>{getDurationFromNow(currentCard.publishedDate)}</Text>
+    //         <Text style={styles.textInvitee}>{getDurationFromNow(currentCard.lastUpdated)}</Text>
     //       </View>
     //     );
     //   }
@@ -1446,7 +1443,7 @@ class CardDetailScreen extends React.Component {
             />
             <Text style={[styles.textInvitee, { marginLeft: 9, fontSize }]} numberOfLines={1}>{name}</Text>
             <Entypo name="dot-single" style={styles.iconDot} />
-            <Text style={styles.textInvitee}>{getDurationFromNow(currentCard.publishedDate)} ago</Text>
+            <Text style={styles.textInvitee}>{getDurationFromNow(currentCard.lastUpdated)}</Text>
           </View>
           {showLikes && idea && (
             <LikeComponent idea={idea} prevPage={this.props.prevPage} type="text" />

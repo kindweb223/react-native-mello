@@ -112,15 +112,17 @@ class FollowMemberScreen extends React.Component {
             )
         }
 
-        <Button
-          style={styles.button}
-          color='#F4F4F4'
-          labelColor={COLORS.PURPLE}
-          borderRadius={14}
-          label="Leave flow"
-          isLoading={this.props.feedo.loading === 'DELETE_INVITEE_PENDING'}
-          onPress={() => this.props.deleteInvitee()}
-        />
+        <View style={styles.buttonView}>
+          <Button
+            style={styles.button}
+            color='#F4F4F4'
+            labelColor={COLORS.PURPLE}
+            borderRadius={14}
+            label="Leave flow"
+            isLoading={this.props.feedo.loading === 'DELETE_INVITEE_PENDING'}
+            onPress={() => this.props.deleteInvitee()}
+          />
+        </View>
       </View>
     )
   }
