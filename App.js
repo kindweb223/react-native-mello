@@ -249,7 +249,7 @@ export default class Root extends React.Component {
           Actions.ResetPasswordScreen({ token })
         }
 
-        if (path === 'feed') { // Share an Idea
+        if (path === 'flow') { // Share an Idea
             const feedId = params[params.length - 1]
             const data = {
               id: feedId
