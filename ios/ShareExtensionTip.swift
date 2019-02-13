@@ -99,7 +99,7 @@ class ShareExtensionTip: UIView {
     labelNum3.layer.masksToBounds = true
     labelNum3.layer.cornerRadius = CGFloat(numbersize/2)
     labelTxt3.frame=CGRect(x: 50, y:96, width:260, height:20)
-    labelTxt3.text = "Tap Mello in the share panel"
+    labelTxt3.text = "Tap cancel when you are done"
     labelTxt3.font = labelTxt3.font.withSize(fontsize)
     labelTxt3.textColor = textcolor
     imageView3.frame = CGRect(x: ac.view.frame.width - 64, y:90, width:32, height:32)
