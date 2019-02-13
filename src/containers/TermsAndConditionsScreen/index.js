@@ -13,7 +13,7 @@ import LoadingScreen from '../LoadingScreen'
 import COLORS from '../../service/colors'
 import styles from './styles'
 import markdownStyles from './markdownStyles'
-import { TNC_URL } from '../../service/api'
+import { TOS_URL } from '../../service/api'
 import Analytics from '../../lib/firebase'
 
 class TermsAndConditionsScreen extends React.Component {
@@ -31,7 +31,7 @@ class TermsAndConditionsScreen extends React.Component {
 
   static renderTitle(props) {
     return (
-      <Text style={styles.textTitle}>Terms & Conditions</Text>
+      <Text style={styles.textTitle}>Terms of Service</Text>
     );
   }
 
@@ -48,7 +48,7 @@ class TermsAndConditionsScreen extends React.Component {
     Analytics.setCurrentScreen('TermsAndConditionsScreen')
 
     this.setState({ loading: true })
-    await RNFetchBlob.fetch('GET', TNC_URL)
+    await RNFetchBlob.fetch('GET', TOS_URL)
     .then((res) => {
       this.setState({ loading: false })
       let status = res.info().status

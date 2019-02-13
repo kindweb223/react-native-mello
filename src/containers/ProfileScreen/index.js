@@ -44,8 +44,7 @@ const SHARE_ICON = require('../../../assets/images/Share/Blue.png')
 
 const ABOUT_ITEMS = [
   'Support',
-  'Privacy Policy',
-  'Terms & Conditions'
+  'Terms of Service'
 ]
 
 class ProfileScreen extends React.Component {
@@ -290,9 +289,6 @@ class ProfileScreen extends React.Component {
         Actions.ProfileSupportScreen()
         return
       case 1:
-        Actions.ProfilePrivacyPolicyScreen()
-        return
-      case 2:
         Actions.ProfileTermsAndConditionsScreen()
         return
       default:
