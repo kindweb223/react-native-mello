@@ -184,7 +184,7 @@ class ImageSliderScreen extends React.Component {
         </Animated.View>
         {
           
-          this.props.removal && this.props.isSetCoverImage && isImage &&
+          this.props.removal && this.props.isSetCoverImage &&
           <Animated.View 
             style={[styles.coverButton, { opacity: this.buttonOpacity }]}
           >
