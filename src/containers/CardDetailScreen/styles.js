@@ -25,8 +25,9 @@ const styles = StyleSheet.create({
   },
   textInputIdea: {
     fontSize: 16,
-    lineHeight: CONSTANTS.TEXT_INPUT_LINE_HEIGHT,
-    marginBottom: 16,
+    fontWeight: 'normal',
+    lineHeight: CONSTANTS.TEXT_INPUT_LINE_HEIGHT - 4,
+    marginBottom: 0,
     marginHorizontal: 16,
     paddingLeft: 0,
     paddingRight: 0,
@@ -60,6 +61,13 @@ const styles = StyleSheet.create({
     paddingLeft: 2,
   },
   coverImageContainer: {
+    zIndex: 2
+  },
+  tempCoverImageContainer: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
   },
   ideaContentView: {
     paddingBottom: 50
@@ -94,14 +102,9 @@ const styles = StyleSheet.create({
     paddingVertical: 5,
     height: FOOTER_HEIGHT,
     backgroundColor: '#fff',
-    alignItems: 'flex-start'
-  },
-  footerView: {
-    // flex: 1,
-    height: 40,
-    flexDirection: 'row',
-    justifyContent: 'space-between',
     alignItems: 'center',
+    justifyContent: 'space-between',
+    flexDirection: 'row',
   },
   addCommentView: {
     justifyContent: 'center',

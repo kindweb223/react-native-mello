@@ -428,12 +428,12 @@ class SignUpScreen extends React.Component {
                 rightText="I'll accept the "
               >
                 <TouchableOpacity onPress={() => Actions.TermsAndConditionsScreen()}>
-                  <Text style={styles.termsText}>terms & conditions</Text>
+                  <Text style={styles.termsText}>terms of service</Text>
                 </TouchableOpacity>
               </CheckBox>
               <View style={styles.errorTncView}>
                 {this.state.showTncError && (
-                  <Text style={styles.errorText}>You must accept the Terms and Conditions</Text>
+                  <Text style={styles.errorText}>You must accept the Terms of Service</Text>
                 )}
               </View>
             </View>
