@@ -159,6 +159,7 @@ class FeedDetailScreen extends React.Component {
       inviteToasterTitle: '',
       viewPreference: 'LIST',
       isLeaveFlowClicked: false,
+      isEnableShare: false,
     };
     this.animatedOpacity = new Animated.Value(0)
     this.menuOpacity = new Animated.Value(0)
@@ -533,8 +534,10 @@ class FeedDetailScreen extends React.Component {
   }
 
   handleSetting = () => {
-    const { openMenu } = this.state
+    const { openMenu, currentFeed } = this.state
     this.setState({ openMenu: !openMenu, settingItem: null })
+
+    this.setState({isEnableShare: COMMON_FUNC.isSharingEnabled(currentFeed)})
   }
 
   handleShare = () => {
@@ -1323,7 +1326,10 @@ class FeedDetailScreen extends React.Component {
   }
 
   handleLinkSharing = (value, data) => {
+    this.setState({isEnableShare: value})
+    
     const { updateSharingPreferences } = this.props
+   
     if (value) {
       updateSharingPreferences(
         data.id,
@@ -1676,6 +1682,7 @@ class FeedDetailScreen extends React.Component {
               handleSettingItem={item => this.handleSettingItem(item)}
               feedo={currentFeed}
               pinText={pinText}
+              isEnableShare={this.state.isEnableShare}
               handleLinkSharing={value => this.handleLinkSharing(value, currentFeed)}
             />
           </Animated.View>

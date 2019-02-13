@@ -23,10 +23,11 @@ class FeedControlMenuComponent extends React.Component {
   }
 
   render() {
-    const { feedo, pinText } = this.props
-    let isEnableShare = COMMON_FUNC.isSharingEnabled(feedo)
+    const { feedo, pinText, isEnableShare } = this.props
+    
     let isEnableShareAllowed = COMMON_FUNC.isFeedOwner(feedo) || COMMON_FUNC.isFeedEditor(feedo)
     let pinImg = pinText === 'Pin' ? images.pinGrey : images.pinActive
+    let sharingImg = isEnableShare ? images.shareLinkActive : images.shareLinkGrey
 
     let MENU_ITEMS = []
     if (COMMON_FUNC.isFeedOwner(feedo)) {
@@ -56,7 +57,7 @@ class FeedControlMenuComponent extends React.Component {
           <TouchableOpacity
             style={styles.settingItem}
           >
-            <SVGImage source={images.shareLink} style={styles.menuIcon} />
+            <SVGImage source={sharingImg} style={styles.menuIcon} />
             <Text style={styles.settingButtonText}>Link sharing</Text>
             <Switch
               style={{ marginLeft: 20 }}
@@ -73,7 +74,7 @@ class FeedControlMenuComponent extends React.Component {
             style={styles.settingItem}
             onPress={() => this.props.handleSettingItem('ShareLink')}
           >
-            <SVGImage source={images.shareLink} style={[styles.menuIcon, { opacity: 0 }]} />
+            <SVGImage source={sharingImg} style={[styles.menuIcon, { opacity: 0 }]} />
             <Text style={styles.settingButtonText}>Share link</Text>
           </TouchableOpacity>
         }
@@ -130,7 +131,8 @@ class FeedControlMenuComponent extends React.Component {
 FeedControlMenuComponent.propTypes = {
   handleSettingItem: PropTypes.func.isRequired,
   pinText: PropTypes.string.isRequired,
-  feedo: PropTypes.objectOf(PropTypes.any).isRequired
+  feedo: PropTypes.objectOf(PropTypes.any).isRequired,
+  isEnableShare: PropTypes.bool,
 }
 
 export default FeedControlMenuComponent
