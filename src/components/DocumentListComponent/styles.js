@@ -1,4 +1,4 @@
-import { StyleSheet } from 'react-native'
+import { StyleSheet, Platform } from 'react-native'
 import COLORS from '../../service/colors'
 import CONSTANTS from '../../service/constants'
 
@@ -28,6 +28,7 @@ const styles = StyleSheet.create({
     paddingVertical: 4,
   },
   attachment: {
+    marginLeft: Platform.OS === 'android' ? 3 : 0,
     transform: [
       { rotate: '135deg' }, 
       { rotateY: '180deg' },

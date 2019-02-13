@@ -1,4 +1,4 @@
-import { StyleSheet } from 'react-native'
+import { StyleSheet, Platform } from 'react-native'
 import COLORS from '../../service/colors'
 import CONSTANTS from '../../service/constants'
 
@@ -6,7 +6,7 @@ const styles = StyleSheet.create({
   container: {
     marginHorizontal: 16,
     marginTop: 16,
-    marginBottom: CONSTANTS.STATUSBAR_HEIGHT,
+    marginBottom: Platform.OS === 'ios' ? CONSTANTS.STATUSBAR_HEIGHT : 0,
     backgroundColor: COLORS.SOFT_GREY,
     paddingHorizontal: 16,
     paddingVertical: 13,

@@ -1511,7 +1511,7 @@ class HomeScreen extends React.Component {
           <ShareWidgetTipsModal />
         </Modal> */}
         {
-        this.state.showShareTipsModal && 
+        this.state.showShareTipsModal && Platform.OS === 'ios' &&
           <RNCounterView
             ref={ref => (this.ref = ref)}
           />
