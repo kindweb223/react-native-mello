@@ -36,6 +36,7 @@ import moment from 'moment'
 import Autolink from 'react-native-autolink';
 import SafariView from "react-native-safari-view";
 import SharedGroupPreferences from 'react-native-shared-group-preferences';
+import * as Animatable from 'react-native-animatable';
 
 import { 
   createCard,
@@ -108,7 +109,16 @@ class CardDetailScreen extends React.Component {
       showEditScreen: false,
       isVisibleCardOpenMenu: false,
       cardOption: 0,
-      initLoad: true
+      initLoad: true,
+      tempPosition: new Animated.ValueXY(),
+      position: new Animated.ValueXY(),
+      size: new Animated.ValueXY(),
+      cardClosed: false,
+      cardPadding: 0,
+      isOpeningCard: true,
+      isShowTempCard: false,
+      fadeInUpAnimation: 'fadeInUp',
+      slideInUpAnimation: 'slideInUp',
     };
 
     this.selectedFile = null;
@@ -129,6 +139,7 @@ class CardDetailScreen extends React.Component {
     this.indexForAddedLinks = 0;
     this.openGraphLinksInfo = [];
 
+    this.animatedClose = new Animated.Value(1);
     this.animatedShow = new Animated.Value(0);
     this.scrollViewLayoutHeight = 0;
     this.isVisibleErrorDialog = false;
@@ -150,6 +161,9 @@ class CardDetailScreen extends React.Component {
     this.currentShareImageIndex = 0;
     this.coverImageWidth = 0
     this.coverImageHeight = 0
+    this.coverImageScrollY = 0
+    this.closeAnimationTime = CONSTANTS.ANIMATEION_MILLI_SECONDS + 150;
+    this.scrollEnabled = true
   }
 
   async UNSAFE_componentWillReceiveProps(nextProps) {
@@ -470,8 +484,10 @@ class CardDetailScreen extends React.Component {
   }
 
   async componentDidMount() {
-    const { viewMode, feedo, card } = this.props;
-
+    const { viewMode, feedo, card, cardImageLayout, cardTextLayout, isMasonryView } = this.props;
+    let { px, py, imgWidth, imgHeight } = cardImageLayout
+    const { textPointX, textPointY, textWidth, textHeight } = cardTextLayout
+    let imageHeight = 400
     if (viewMode === CONSTANTS.CARD_VIEW || viewMode === CONSTANTS.CARD_EDIT) {
       this.coverImageWidth = 0
       this.coverImageHeight = 0
@@ -479,7 +495,16 @@ class CardDetailScreen extends React.Component {
       if (coverData && coverData.metadata) {
         this.coverImageWidth = coverData.metadata.width
         this.coverImageHeight = coverData.metadata.height
+        const ratio = CONSTANTS.SCREEN_WIDTH / coverData.metadata.width
+        imageHeight = coverData.metadata.height * ratio
+
+        if (isMasonryView) {
+          const masonryCardWidth = (CONSTANTS.SCREEN_SUB_WIDTH - 16) / 2 + 2
+          const masonryRatio = coverData.metadata.width / masonryCardWidth
+          imgHeight = coverData.metadata.height / masonryRatio
+        }
       }
+
       this.setState({
         idea: card.currentCard.idea,
         coverImage: card.currentCard.coverImage,
@@ -493,10 +518,86 @@ class CardDetailScreen extends React.Component {
       });
     }
 
-    Animated.timing(this.animatedShow, {
-      toValue: 1,
-      duration: CONSTANTS.ANIMATEION_MILLI_SECONDS,
-    }).start(() => {
+    if (card.currentCard.coverImage) {
+      //origin values
+      this._width = imgWidth
+      this._height = imgHeight
+      this._x = px
+      this._y = py - ifIphoneX(22, 0)
+
+      //target values
+      this._tWidth = CONSTANTS.SCREEN_WIDTH
+      this._tHeight = imageHeight
+      this._tX = 0
+      this._tY = 0
+
+      this.state.position.setValue({
+        x: px,
+        y: py,
+      })
+
+      this.state.size.setValue({
+        x: imgWidth,
+        y: imgHeight,
+      })
+
+      this.state.tempPosition.setValue({
+        x: px,
+        y: py,
+      })
+    } else {
+      this._width = textWidth + 16 * 2
+      this._height = textHeight
+      this._x = textPointX - 16 // due to marginHorizontal of autolink text
+      this._y = textPointY - this._textMarginTop - ifIphoneX(22, 0) // due to marginTop of autolink text
+
+      this._tWidth = CONSTANTS.SCREEN_WIDTH
+      this._tHeight = 200
+      this._tX = 0
+      this._tY = 0
+
+      this.state.position.setValue({
+        x: textPointX,
+        y: textPointY,
+      })
+
+      this.state.size.setValue({
+        x: textWidth,
+        y: textHeight,
+      })
+    }
+
+    const friction = 10
+    Animated.parallel([
+      Animated.spring(this.state.position.x, {
+        toValue: this._tX,
+        friction
+      }),
+      Animated.spring(this.state.position.y, {
+        toValue: this._tY,
+        friction
+      }),
+      Animated.spring(this.state.size.x, {
+        toValue: this._tWidth,
+        friction
+      }),
+      Animated.spring(this.state.size.y, {
+        toValue: this._tHeight,
+        friction
+      }),
+      Animated.spring(this.state.tempPosition.x, {
+        toValue: this._tX,
+        friction
+      }),
+      Animated.spring(this.state.tempPosition.y, {
+        toValue: 20 + 80 + ifIphoneX(22, 0), // 80: limit scroll offset
+        friction
+      }),
+      Animated.timing(this.animatedShow, {
+        toValue: 1,
+        duration: CONSTANTS.ANIMATEION_MILLI_SECONDS,
+      })
+    ]).start(() => {
       if (feedo.feedoList.length == 0) {
         this.isGettingFeedoList = true;
         this.props.getFeedoList(0);
@@ -671,18 +772,69 @@ class CardDetailScreen extends React.Component {
       this.onUpdateCard()
     }
 
+    let { cardPadding, coverImage } = this.state
+    if (cardPadding !== 0 && Math.abs(cardPadding - 20) > 3) {
+      cardPadding = 20
+      this.scrollEnabled = false
+    }
+    console.log('cPadding:', cardPadding)
+
+    // Revise if attempt to close card by scrolling down
+    if (coverImage) {
+      this._width = this._width + 2 * cardPadding
+      this._height = this._height + 2 * cardPadding
+      this._x = this._x - cardPadding
+      this._y = this._y + ifIphoneX(cardPadding > 0 ? 22 : 0, 0)
+    }
+
+    if (this.props.isFromNotification || !coverImage) {
+      this.props.onClose()
+      return
+    }
+
     this.setState({
       originalCardTopY: this.props.intialLayout.py,
       originalCardBottomY: this.props.intialLayout.py + this.props.intialLayout.height,
+      isOpeningCard: false,
+      isShowTempCard: cardPadding > 0
     }, () => {
-      this.animatedShow.setValue(1);
-      Animated.timing(this.animatedShow, {
-        toValue: 0,
-        duration: CONSTANTS.ANIMATEION_MILLI_SECONDS + 200,
-      }).start();
-      if (this.props.onClose) {
-        this.props.onClose();
-      }
+      Animated.parallel([
+        Animated.timing(this.state.position.x, {
+          toValue: this._x,
+          duration: this.closeAnimationTime,
+        }),
+        Animated.timing(this.state.position.y, {
+          toValue: this._y,
+          duration: this.closeAnimationTime,
+        }),
+        Animated.timing(this.state.size.x, {
+          toValue: this._width,
+          duration: this.closeAnimationTime,
+        }),
+        Animated.timing(this.state.size.y, {
+          toValue: this._height,
+          duration: this.closeAnimationTime,
+        }),
+        Animated.timing(this.state.tempPosition.x, {
+          toValue: this._x,
+          duration: this.closeAnimationTime,
+        }),
+        Animated.timing(this.state.tempPosition.y, {
+          toValue: this._y,
+          duration: this.closeAnimationTime,
+        }),
+        Animated.timing(this.animatedClose, {
+          toValue: 0,
+          duration: this.closeAnimationTime,
+        })
+      ]).start(() => {
+        this.props.onClose()
+        this.animatedShow.setValue(1);
+        Animated.timing(this.animatedShow, {
+          toValue: 0,
+          duration: CONSTANTS.ANIMATEION_MILLI_SECONDS,
+        }).start()
+      });
     });
   }
 
@@ -821,7 +973,11 @@ class CardDetailScreen extends React.Component {
   }
 
   onCancelEditCard() {
-    this.setState({ showEditScreen: false })
+    this.setState({
+      showEditScreen: false,
+      fadeInUpAnimation: '',
+      slideInUpAnimation: '',
+    })
   }
 
   onPressMoreActions() {
@@ -991,12 +1147,18 @@ class CardDetailScreen extends React.Component {
 
   get renderCoverImage() {
     const { viewMode, card } = this.props;
+    const activeImageStyle = {
+      width: this.state.size.x,
+      height: this.state.size.y,
+      top: this.state.position.y,
+      left: this.state.position.x,
+      padding: this.state.cardPadding,
+    };
     let imageFiles = _.filter(card.currentCard.files, file => file.fileType === 'MEDIA');
 
-    const ratio = CONSTANTS.SCREEN_WIDTH / this.coverImageWidth
     if (this.state.coverImage) {
       return (
-        <View style={[styles.coverImageContainer, { width: CONSTANTS.SCREEN_WIDTH, height: this.coverImageHeight * ratio }]}>
+        <Animated.View style={[styles.coverImageContainer, activeImageStyle]}>
           <CoverImagePreviewComponent
             coverImage={this.state.coverImage}
             files={imageFiles}
@@ -1006,7 +1168,36 @@ class CardDetailScreen extends React.Component {
             onRemove={(fileId) => this.onRemoveFile(fileId)}
             onSetCoverImage={(fileId) => this.onSetCoverImage(fileId)}
           />
-        </View>
+        </Animated.View>
+      );
+    }
+  }
+
+  get renderTempCoverImage() {
+    const { viewMode, card } = this.props;
+    const activeImageStyle = {
+      width: this.state.size.x,
+      height: this.state.size.y,
+      top: this.state.tempPosition.y,
+      left: this.state.tempPosition.x,
+      padding: 20,
+      opacity: this.state.isShowTempCard ? 1 : 0
+    };
+    let imageFiles = _.filter(card.currentCard.files, file => file.fileType === 'MEDIA');
+
+    if (this.state.coverImage) {
+      return (
+        <Animated.View style={[styles.tempCoverImageContainer, activeImageStyle]}>
+          <CoverImagePreviewComponent
+            coverImage={this.state.coverImage}
+            files={imageFiles}
+            editable={viewMode !== CONSTANTS.CARD_VIEW}
+            isFastImage={true}
+            isSetCoverImage={true}
+            onRemove={(fileId) => this.onRemoveFile(fileId)}
+            onSetCoverImage={(fileId) => this.onSetCoverImage(fileId)}
+          />
+        </Animated.View>
       );
     }
   }
@@ -1075,7 +1266,7 @@ class CardDetailScreen extends React.Component {
 
   get renderText() {
     const { links } = this.props.card.currentCard;
-    const { coverImage } = this.state
+    const { coverImage, isOpeningCard } = this.state
   
     let marginTop = 24
     marginTop = coverImage ? 24 : 65
@@ -1084,14 +1275,40 @@ class CardDetailScreen extends React.Component {
     } else {
       marginTop = coverImage ? 24 : 65
     }
+    this._textMarginTop = marginTop
+
+    let activeTextStyle = {
+      width: this.state.size.x,
+      height: this.state.size.y,
+      top: this.state.position.y,
+      left: this.state.position.x,
+    };
+
+    if (coverImage && !isOpeningCard) {
+      return null
+    }
+
+    // Disable text only transition in masonry view or opening card
+    if (!coverImage) {
+      if (this.props.isMasonryView || isOpeningCard) {
+        activeTextStyle = null
+      }
+    }
 
     return (
-      <TouchableOpacity activeOpacity={1} onPress={() => this.onPressIdea()}>
-        <Autolink
-          style={[styles.textInputIdea, { marginTop }]}
-          text={this.state.idea}
-          onPress={(url, match) => this.onPressLink(url)}
-        />
+      <TouchableOpacity style={{ marginTop, marginBottom: 16 }} activeOpacity={1} onPress={() => this.onPressIdea()}>
+        <Animated.View style={coverImage ? { opacity: this.animatedClose } : activeTextStyle}>
+          <Animatable.View
+            duration={CONSTANTS.ANIMATABLE_DURATION}
+            animation={this.state.fadeInUpAnimation}
+          >
+            <Autolink
+              style={styles.textInputIdea}
+              text={this.state.idea}
+              onPress={(url, match) => this.onPressLink(url)}
+            />
+          </Animatable.View>
+        </Animated.View>
       </TouchableOpacity>
     );
   }
@@ -1126,7 +1343,7 @@ class CardDetailScreen extends React.Component {
 
     if (links && links.length > 0) {
       const firstLink = links[0];
-      return (
+      return this.state.isOpeningCard && (
         <WebMetaList
           viewMode="edit"
           links={[firstLink]}
@@ -1145,28 +1362,33 @@ class CardDetailScreen extends React.Component {
 
     const documentFiles = _.filter(files, file => file.fileType === 'FILE');
     if (documentFiles.length > 0) {
-      return (
-        <View style={{ paddingHorizontal: 6 }}>
-          <DocumentList
-            files={documentFiles}
-            editable={viewMode !== CONSTANTS.CARD_VIEW}
-            onRemove={(fileId) => this.onRemoveFile(fileId)}
-          />
-        </View>
+      return this.state.isOpeningCard && (
+        <Animatable.View
+          duration={CONSTANTS.ANIMATABLE_DURATION}
+          animation={this.state.fadeInUpAnimation}
+        >
+          <View style={{ paddingHorizontal: 6 }}>
+            <DocumentList
+              files={documentFiles}
+              editable={viewMode !== CONSTANTS.CARD_VIEW}
+              onRemove={(fileId) => this.onRemoveFile(fileId)}
+            />
+          </View>
+        </Animatable.View>
       )
     }
   }
 
   get renderHeader() {
-    return (
+    return this.state.isOpeningCard && (
       <TouchableOpacity 
         style={styles.headerContainer}
         activeOpacity={0.7}
         onPress={() => this.onBack()}
       >
-        <View style={styles.closeButtonView}>
+        <Animated.View style={[styles.closeButtonView, { opacity: this.animatedClose }]}>
           <Ionicons name="md-close" size={25} color="#fff" />
-        </View>
+        </Animated.View>
       </TouchableOpacity>
     )
   }
@@ -1209,30 +1431,66 @@ class CardDetailScreen extends React.Component {
       }
     }
 
-    return (
-      <View style={styles.inviteeContainer}>
-        <View style={styles.inviteeView}>
-          <UserAvatarComponent
-            user={userProfile}
-          />
-          <Text style={[styles.textInvitee, { marginLeft: 9, fontSize }]} numberOfLines={1}>{name}</Text>
-          <Entypo name="dot-single" style={styles.iconDot} />
-          <Text style={styles.textInvitee}>{getDurationFromNow(currentCard.lastUpdated)}</Text>
+    return this.state.isOpeningCard && (
+      <Animatable.View
+        duration={CONSTANTS.ANIMATABLE_DURATION}
+        animation={this.state.fadeInUpAnimation}
+      >
+        <View style={styles.inviteeContainer}>
+          <View style={styles.inviteeView}>
+            <UserAvatarComponent
+              user={userProfile}
+            />
+            <Text style={[styles.textInvitee, { marginLeft: 9, fontSize }]} numberOfLines={1}>{name}</Text>
+            <Entypo name="dot-single" style={styles.iconDot} />
+            <Text style={styles.textInvitee}>{getDurationFromNow(currentCard.lastUpdated)}</Text>
+          </View>
+          {showLikes && idea && (
+            <LikeComponent idea={idea} prevPage={this.props.prevPage} type="text" />
+          )}
         </View>
-        {showLikes && idea && (
-          <LikeComponent idea={idea} prevPage={this.props.prevPage} type="text" />
-        )}
-      </View>
+      </Animatable.View>
     );
   }
 
   get renderCommentList() {
-    return (
-      <LastCommentComponent prevPage={this.props.prevPage} initLoad={this.state.initLoad} />
+    return this.state.isOpeningCard && (
+      <Animatable.View
+        duration={CONSTANTS.ANIMATABLE_DURATION}
+        animation={this.state.fadeInUpAnimation}
+      >
+        <LastCommentComponent prevPage={this.props.prevPage} initLoad={this.state.initLoad} />
+      </Animatable.View>
     )
   }
 
-  onScrollContent() {
+  onScrollContent(event) {
+    const scrollY = event.nativeEvent.contentOffset.y
+    // If scroll down to go back to the top, do not close card
+    if (scrollY > 0) {
+      this.coverImageScrollY = scrollY
+      return
+    }
+
+    if (scrollY <= 0) {
+      if (!this.props.isFromNotification) {
+        this.setState({ cardPadding: Math.abs(scrollY / 4)})
+      }
+    }
+
+    if (scrollY === 0) {
+      this.coverImageScrollY = 0
+    }
+
+    // If scroll dwon from top and scroll offset is less than -80, close card
+    if (this.coverImageScrollY === 0 && scrollY < -80 && !this.state.cardClosed ) {
+      if (this.state.coverImage) {
+        this.closeAnimationTime = CONSTANTS.ANIMATEION_MILLI_SECONDS + 250
+      }
+      this.setState({ cardClosed: true })
+      this.onClose()
+    }
+
     if (this.state.initLoad) {
       this.setState({ initLoad: false })
     }
@@ -1244,9 +1502,12 @@ class CardDetailScreen extends React.Component {
 
     return (
       <ScrollView
+        style={{ opacity: this.state.isShowTempCard ? 0 : 1 }}
         ref={ref => this.scrollViewRef = ref}
         onLayout={this.onLayoutScrollView.bind(this)}
-        onScroll={() => this.onScrollContent()}
+        onScroll={this.onScrollContent.bind(this)}
+        scrollEventThrottle={100}
+        scrollEnabled={this.scrollEnabled}
       >
         <View style={[styles.ideaContentView, { minHeight }]}>
           {this.renderCoverImage}
@@ -1255,6 +1516,7 @@ class CardDetailScreen extends React.Component {
           {this.renderDocuments}
         </View>
 
+        {/* {this.renderHeader} */}
         {this.renderOwnerAndTime}
         {this.renderCommentList}
       </ScrollView>
@@ -1296,8 +1558,11 @@ class CardDetailScreen extends React.Component {
     const idea = _.find(this.props.feedo.currentFeed.ideas, idea => idea.id === this.props.card.currentCard.id)
 
     return (
-      <View style={styles.footerContainer}>
-        <View style={styles.footerView}>
+      <Animatable.View
+        duration={CONSTANTS.ANIMATABLE_DURATION + 200}
+        animation={this.state.slideInUpAnimation}
+      >
+        <View style={[styles.footerContainer, { opacity: this.state.isOpeningCard ? 1 : 0}]}>
           {!COMMON_FUNC.isFeedGuest(feedo.currentFeed) && 
             <View style={styles.addCommentView}>
               {this.renderAddComment}
@@ -1320,7 +1585,7 @@ class CardDetailScreen extends React.Component {
             )}
           </View>
         </View>
-      </View>
+      </Animatable.View>
     )
   }
 
@@ -1332,7 +1597,7 @@ class CardDetailScreen extends React.Component {
       outputRange: [this.state.originalCardTopY, 0],
     });
     cardStyle = {
-      top: animatedTopMove,
+      // top: animatedTopMove,
       opacity: this.animatedShow,
     };
 
@@ -1351,6 +1616,7 @@ class CardDetailScreen extends React.Component {
       >
         <Animated.View style={contentContainerStyle}>
           <SafeAreaView style={{ flex: 1 }}>
+            {this.renderTempCoverImage}
             {this.renderMainContent}
             {this.renderHeader}
             {this.renderFooter}
@@ -1465,10 +1731,12 @@ CardDetailScreen.defaultProps = {
   card: {},
   invitee: {},
   intialLayout: {},
+  cardImageLayout: {},
   viewMode: CONSTANTS.CARD_EDIT,
   cardMode: CONSTANTS.MAIN_APP_CARD_FROM_DETAIL,
   shareUrl: '',
   shareImageUrls: [],
+  isMasonryView: false,
   onClose: () => {},
   onOpenAction: () => {},
 }
@@ -1479,10 +1747,12 @@ CardDetailScreen.propTypes = {
   card: PropTypes.object,
   invitee: PropTypes.object,
   intialLayout: PropTypes.object,
+  cardImageLayout: PropTypes.object,
   viewMode: PropTypes.number,
   cardMode: PropTypes.number,
   shareUrl: PropTypes.string,
   shareImageUrls: PropTypes.array,
+  isMasonryView: PropTypes.bool,
   onClose: PropTypes.func,
   onOpenAction: PropTypes.func,
 }
