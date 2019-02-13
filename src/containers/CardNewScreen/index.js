@@ -52,6 +52,7 @@ import {
   deleteLink,
   moveCard,
   resetCardError,
+  setCurrentCard
 } from '../../redux/card/actions'
 import { 
   createFeed,
@@ -176,6 +177,10 @@ class CardNewScreen extends React.Component {
         }
       });
     }
+  }
+
+  componentWillMount() {
+    this.props.setCurrentCard({})
   }
 
   async UNSAFE_componentWillReceiveProps(nextProps) {
@@ -1547,7 +1552,7 @@ class CardNewScreen extends React.Component {
       if (!otherInvitees || otherInvitees.length === 0) {
         return (
           <View style={[styles.rowContainer, { flex: 1 }]}>
-            <Text style={styles.textInvitee}>{getDurationFromNow(this.props.card.currentCard.publishedDate)}</Text>
+            <Text style={styles.textInvitee}>{getDurationFromNow(this.props.card.currentCard.lastUpdated)}</Text>
           </View>
         );
       }
@@ -1560,7 +1565,7 @@ class CardNewScreen extends React.Component {
         />
         <Text style={[styles.textInvitee, { marginLeft: 9, fontSize,}]} numberOfLines={1}>{name}</Text>
         <Entypo name="dot-single" style={styles.iconDot} />
-        <Text style={styles.textInvitee}>{getDurationFromNow(this.props.card.currentCard.publishedDate)}</Text>
+        <Text style={styles.textInvitee}>{getDurationFromNow(this.props.card.currentCard.lastUpdated)}</Text>
       </View>
     );
   }
@@ -1847,6 +1852,7 @@ const mapStateToProps = ({ card, feedo, user, }) => ({
 
 
 const mapDispatchToProps = dispatch => ({
+  setCurrentCard: (card) => dispatch(setCurrentCard(card)),
   createFeed: () => dispatch(createFeed()),
   updateFeed: (id, name, comments, tags, files) => dispatch(updateFeed(id, name, comments, tags, files)),
   deleteDraftFeed: (id) => dispatch(deleteDraftFeed(id)),
