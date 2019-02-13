@@ -15,6 +15,8 @@ import styles from './styles'
 import markdownStyles from './markdownStyles'
 import { PRIVACY_POLICY_URL } from '../../service/api'
 import Analytics from '../../lib/firebase'
+import CONSTANTS from '../../service/constants'
+
 
 class PrivacyPolicyScreen extends React.Component {
   static renderLeftButton(props) {
@@ -39,14 +41,15 @@ class PrivacyPolicyScreen extends React.Component {
     super(props)
     this.state = {
       loading: false,
-      markdownText: ''
+      markdownText: '',
     }
   }
-
+  
   async componentWillMount() {
     Analytics.setCurrentScreen('PrivacyPolicyScreen')
 
     this.setState({ loading: true })
+
     await RNFetchBlob.fetch('GET', PRIVACY_POLICY_URL)
     .then((res) => {
       this.setState({ loading: false })
@@ -61,6 +64,7 @@ class PrivacyPolicyScreen extends React.Component {
       console.log('errorMessage: ', errorMessage)
     })
   }
+
 
   render () {
     const { userEmail } = this.props

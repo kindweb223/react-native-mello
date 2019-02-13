@@ -47,7 +47,11 @@ class TabbarContainer extends React.Component {
   }
 
   render () {
-    const { showClipboardToaster, clipboardToasterPrevpage, clipboardToasterContent } = this.props.user
+    const {
+      showClipboardToaster,
+      clipboardToasterPrevpage,
+      clipboardToasterContent
+    } = this.props.user
 
     return (
       <View style={styles.container}>
@@ -86,7 +90,7 @@ const mapStateToProps = ({ user }) => ({
 })
 
 const mapDispatchToProps = dispatch => ({
-  closeClipboardToaster: (data) => dispatch(closeClipboardToaster(data)),
+  closeClipboardToaster: (data) => dispatch(closeClipboardToaster(data))
 })
 
 export default connect(

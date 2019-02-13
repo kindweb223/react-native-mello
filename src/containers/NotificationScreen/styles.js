@@ -85,6 +85,24 @@ const styles = StyleSheet.create({
         elevation: 20
       }
     })
+  },
+  emptyView: {
+    width: '100%',
+    height: '100%',
+    justifyContent: 'center',
+    alignItems: 'center'
+  },
+  title: {
+    fontSize: 18,
+    lineHeight: 22,
+    letterSpacing: 0.34,
+    fontWeight: '600',
+    marginTop: 38,
+    marginBottom: 10
+  },
+  subTitle: {
+    fontSize: 14,
+    lineHeight: 20
   }
 })
 

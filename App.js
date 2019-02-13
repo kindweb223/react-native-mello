@@ -82,6 +82,7 @@ import PrivacyPolicyScreen from './src/containers/PrivacyPolicyScreen'
 import NotificationScreen from './src/containers/NotificationScreen'
 import TabbarContainer from './src/navigations/TabbarContainer'
 import TermsAndConditionsConfirmScreen from './src/containers/TermsAndConditionsConfirmScreen'
+import ProfilePremiumScreen from './src/containers/ProfilePremiumScreen'
 
 import { 
   getCardComments,
@@ -214,11 +215,12 @@ export default class Root extends React.Component {
   resetStackToProperRoute = (url) => {
     Linking.canOpenURL(url).then((supported) => {
       if (supported) {
-        let params = _.split(decodeURIComponent(url), '/')
+        const url_ = url.replace('//', '/')
+        let params = _.split(decodeURIComponent(url_), '/')
         const path = params[params.length - 2]
-        console.log('UNIVERSAL_LINK: ', decodeURIComponent(url), ' Path: ', path)
+        console.log('UNIVERSAL_LINK: ', decodeURIComponent(url_), ' Path: ', path)
 
-        if (path === 'get-started') {  
+        if (path === 'get-started' || path === 'mello-secure-site') {  
           const lastParam = params[params.length - 1]
           const paramArray = lastParam.split(/[?\=&]/)
           const type = paramArray[0]
@@ -247,7 +249,7 @@ export default class Root extends React.Component {
           Actions.ResetPasswordScreen({ token })
         }
 
-        if (path === 'feed') { // Share an Idea
+        if (path === 'flow') { // Share an Idea
             const feedId = params[params.length - 1]
             const data = {
               id: feedId
@@ -309,6 +311,7 @@ export default class Root extends React.Component {
               <Scene key="ResetPasswordScreen" component={ ResetPasswordScreen } panHandlers={null} navigationBarStyle={styles.emptyBorderNavigationBar} />
               <Scene key="ResetPasswordSuccessScreen" component={ ResetPasswordSuccessScreen } hideNavBar panHandlers={null} />
               <Scene key="FeedFilterScreen" component={ FeedFilterScreen } hideNavBar />
+              <Scene key="PremiumScreen" component={ ProfilePremiumScreen } navigationBarStyle={styles.defaultNavigationBar} />
             </Scene>
           </Tabs>
           <Stack key="ProfileScreen" hideNavBar>
@@ -320,6 +323,7 @@ export default class Root extends React.Component {
               <Scene key="ProfileTermsAndConditionsScreen" component={ TermsAndConditionsScreen } navigationBarStyle={styles.emptyBorderNavigationBar} />
               <Scene key="ProfilePrivacyPolicyScreen" component={ PrivacyPolicyScreen } navigationBarStyle={styles.emptyBorderNavigationBar} />
               <Scene key="ArchivedFeedScreen" component={ ArchivedFeedScreen } navigationBarStyle={styles.defaultNavigationBar} />
+              <Scene key="ProfilePremiumScreen" component={ ProfilePremiumScreen } navigationBarStyle={styles.defaultNavigationBar} />
             </Stack>
           </Stack>
           <Stack key="NotificationScreen" hideNavBar>

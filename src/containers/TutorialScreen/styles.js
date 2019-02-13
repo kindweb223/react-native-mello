@@ -45,34 +45,28 @@ export default {
     lineHeight: 32,
     letterSpacing: 1.2
   },
-  titleView: {
-    height: 70
-  },
-  titleText: {
-    fontSize: 22,
-    lineHeight: 28
-  },
-  subContainer: {
+  lottieContainer: {
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center'
   },
   lottieView: {
     width: '100%',
-    height : 375,
-    marginBottom: 50
+    height : '100%'
   },
-  imageView: {
-    width: '100%',
-    height : 375,
-    justifyContent: 'flex-start',
-    alignItems: 'center',
+  titleView: {
+    height: 150,
+    marginBottom: 50,
     marginTop: 50
+  },
+  titleText: {
+    fontSize: 22,
+    lineHeight: 28
   },
   skipButtonView: {
     position: 'absolute',
     right: 0,
-    bottom: ifIphoneX(36, 27)
+    bottom: Platform.OS === 'ios' ? ifIphoneX(36, 27) : 48
   },
   skipButton: {
     paddingHorizontal: CONSTANTS.PADDING * 2
@@ -121,11 +115,19 @@ export default {
     width: '100%',
     alignItems: 'center',
     justifyContent: 'center',
-    marginTop: 28
+    marginTop: 28,
+    marginBottom: Platform.OS === 'android' ? 13 : 0
   },
   signinText: {
     color: COLORS.ACTION_SHEET_TITLE,
     fontSize: 16,
     lineHeight: 22
-  }
+  },
+  backgroundVideo: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    bottom: 0,
+    right: 0,
+  },
 }

@@ -14,8 +14,12 @@ import {
   Clipboard,
   Alert,
   Share,
-  NativeModules
+  BackHandler,
+  requireNativeComponent,
+  UIManager,
+  findNodeHandle
 } from 'react-native'
+
 import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
 import PushNotification from 'react-native-push-notification';
@@ -44,6 +48,7 @@ import SpeechBubbleComponent from '../../components/SpeechBubbleComponent'
 import ShareWidgetPermissionModal from '../../components/ShareWidgetModal/PermissionModal'
 import ShareWidgetTipsModal from '../../components/ShareWidgetModal/TipsModal'
 import ShareWidgetConfirmModal from '../../components/ShareWidgetModal/ConfirmModal'
+import ShareExtensionTip from '../../components/ShareExtensionTip'
 import styles from './styles'
 import CONSTANTS from '../../service/constants';
 import { TIP_SHARE_LINK_URL } from '../../service/api'
@@ -193,20 +198,22 @@ class HomeScreen extends React.Component {
     let permissionInfo = JSON.parse(await AsyncStorage.getItem('permissionInfo'))
 
     // Check push notification
-    Permissions.check('notification')
-      .then(response => {
-        // Ask for notifications permission first
-        if (response === 'undetermined') {
-          Permissions.request('notification').then(response => {
-            // Then show share widget tip
+    if (Platform.OS === 'ios') {
+      Permissions.check('notification')
+        .then(response => {
+          // Ask for notifications permission first
+          if (response === 'undetermined') {
+            Permissions.request('notification').then(response => {
+              // Then show share widget tip
+              this.showSharePermissionModal(permissionInfo)
+            });
+          } 
+          // If notification permissions already asked, show share widget tip
+          else {
             this.showSharePermissionModal(permissionInfo)
-          });
-        } 
-        // If notification permissions already asked, show share widget tip
-        else {
-          this.showSharePermissionModal(permissionInfo)
-        }
-    });
+          }
+      });
+    }
 
     this.setState({ loading: true })
 
@@ -232,10 +239,18 @@ class HomeScreen extends React.Component {
 
     AppState.addEventListener('change', this.onHandleAppStateChange.bind(this));
     appOpened(this.props.user.userInfo.id);
+
+    BackHandler.addEventListener('hardwareBackPress', this.handleBackButton);
   }
 
   componentWillUnmount() {
     AppState.removeEventListener('change', this.onHandleAppStateChange);
+    BackHandler.removeEventListener('hardwareBackPress', this.handleBackButton);
+  }
+
+  handleBackButton = () => {
+    //nothing happens
+    return true;
   }
 
   static getDerivedStateFromProps(nextProps, prevState) {
@@ -293,22 +308,22 @@ class HomeScreen extends React.Component {
           )
         })
 
-        feedoList = orderBy(
-          filter(feedoList, item => item.status === 'PUBLISHED'),
-          ['publishedDate'],
-          ['desc']
-        )
+        if ((feedo.loading !== 'UPDATE_CARD_FULFILLED' || !feedo.isCreateCard) && feedo.loading !== 'UPDTE_FEED_INVITATION_FULFILLED') {
+          feedoList = orderBy(
+            filter(feedoList, item => item.status === 'PUBLISHED'),
+            ['metadata.myLastActivityDate'],
+            ['desc']
+          )
+        } else {
+          nextProps.getFeedoList()
+        }
         
         if (prevState.tabIndex === 0) {
           feedoList = filter(feedoList, item => item.metadata.owner)
         }
 
         if (prevState.tabIndex === 1) {
-          feedoList = orderBy(
-            filter(feedoList, item => item.metadata.myInviteStatus !== 'INVITED' && item.owner.id !== user.userInfo.id),
-            ['metadata.inviteAcceptedDate'],
-            ['desc']
-          )
+          feedoList = filter(feedoList, item => item.metadata.myInviteStatus !== 'INVITED' && item.owner.id !== user.userInfo.id)
         }
 
         if (prevState.tabIndex === 2) {
@@ -504,7 +519,7 @@ class HomeScreen extends React.Component {
           this.setState({ showFeedInvitedNewUserBubble: true })
           setTimeout(() => {
             this.setState({ showBubbleCloseButton: true })
-          }, 30000)
+          }, 10000)
         } else {
           this.setState({ showFeedInvitedNewUserBubble: false })
         }
@@ -766,21 +781,13 @@ class HomeScreen extends React.Component {
         )
       })
 
-      feedoList = orderBy(
-        filter(feedoList, item => item.status === 'PUBLISHED'),
-        ['publishedDate'],
-        ['desc']
-      )
+      feedoList = filter(feedoList, item => item.status === 'PUBLISHED')
       
       if (value.i === 0) {
         feedoList = filter(feedoList, item => item.metadata.owner)
       }
       if (value.i === 1) {
-        feedoList = orderBy(
-          filter(feedoList, item => item.metadata.myInviteStatus !== 'INVITED' && item.owner.id !== user.userInfo.id),
-          ['metadata.inviteAcceptedDate'],
-          ['desc']
-        )
+        feedoList = filter(feedoList, item => item.metadata.myInviteStatus !== 'INVITED' && item.owner.id !== user.userInfo.id)
       }
       if (value.i === 2) {
         feedoList = filter(feedoList, item => item.pinned !== null)
@@ -1092,6 +1099,7 @@ class HomeScreen extends React.Component {
             feedData={isEditFeed ? selectedFeedData : {}}
             onClose={(data) => this.onCloseNewFeedModal(data)}
             selectedFeedId={isEditFeed ? selectedFeedData.id : null}
+            viewMode={CONSTANTS.FEEDO_FROM_MAIN}
 
             // feedoMode={CONSTANTS.SHARE_EXTENTION_FEEDO}
           />  
@@ -1170,6 +1178,7 @@ class HomeScreen extends React.Component {
   onRefreshFeed = () => {
     this.setState({ isRefreshing: true })
     this.props.getFeedoList(this.state.tabIndex)
+    this.props.getInvitedFeedList()
   }
 
   render () {
@@ -1481,6 +1490,7 @@ class HomeScreen extends React.Component {
           backdropOpacity={0.6}
           animationInTiming={500}
           onBackdropPress={() => this.setState({ showSharePermissionModal: false })}
+          onBackButtonPress={() => this.setState({ showSharePermissionModal: false })}
           onModalHide={() => this.onCloseSharePermissionModal()}
         >
           <ShareWidgetPermissionModal
@@ -1489,16 +1499,13 @@ class HomeScreen extends React.Component {
           />
         </Modal>
 
-        <Modal
-          animationIn="fadeIn"
-          animationOut="fadeOut"
-          backdropOpacity={0.5}
-          isVisible={this.state.showShareTipsModal}
-          style={{ margin: 8 }}
-        >
-          <ShareWidgetTipsModal />
-        </Modal>
-
+        {
+          this.state.showShareTipsModal && 
+            <ShareExtensionTip
+              ref={ref => (this.ref = ref)}
+            />
+        }
+        
         <Modal 
           isVisible={this.state.showShareConfirmModal}
           animationIn="fadeIn"
@@ -1507,6 +1514,7 @@ class HomeScreen extends React.Component {
           backdropOpacity={0.6}
           animationInTiming={500}
           onBackdropPress={() => this.setState({ showShareConfirmModal: false })}
+          onBackButtonPress={() => this.setState({ showShareConfirmModal: false })}
         >
           <ShareWidgetConfirmModal
             onClose={() => this.setState({ showShareConfirmModal: false })}

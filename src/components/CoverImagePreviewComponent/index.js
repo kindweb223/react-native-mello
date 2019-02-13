@@ -39,7 +39,7 @@ export default class CoverImagePreviewComponent extends React.Component {
     if (isFastImage) {
       return (
         <TouchableOpacity style={styles.container} activeOpacity={0.8} onPress={() => this.onPressImage(position)}>
-          <FastImage style={styles.imageCover} source={{ uri: coverImage }} resizeMode={isShareExtension ? 'cover' : 'contain'} />
+          <FastImage style={styles.imageCover} source={{ uri: coverImage }} resizeMode={isShareExtension ? 'cover' : 'cover'} />
           {
             files.length > 1 && 
             <View style={styles.imageNumberContainer}>
@@ -82,6 +82,7 @@ export default class CoverImagePreviewComponent extends React.Component {
           animationOut='fadeOut'
           animationInTiming={100}
           animationOutTiming={100}
+          onBackButtonPress={() => this.setState({ isPreview: false })}
         >
           <ImageSliderScreen 
             mediaFiles={files}

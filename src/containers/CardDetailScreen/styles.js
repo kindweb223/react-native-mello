@@ -8,7 +8,7 @@ const FOOTER_HEIGHT = 55
 const styles = StyleSheet.create({
   container: {
     width: CONSTANTS.SCREEN_WIDTH,
-    height:'100%', 
+    height: CONSTANTS.SCREEN_HEIGHT,
     backgroundColor: 'transparent',
     justifyContent: 'center',
   },
@@ -25,8 +25,9 @@ const styles = StyleSheet.create({
   },
   textInputIdea: {
     fontSize: 16,
-    lineHeight: CONSTANTS.TEXT_INPUT_LINE_HEIGHT,
-    marginBottom: 16,
+    fontWeight: 'normal',
+    lineHeight: CONSTANTS.TEXT_INPUT_LINE_HEIGHT - 4,
+    marginBottom: 0,
     marginHorizontal: 16,
     paddingLeft: 0,
     paddingRight: 0,
@@ -39,7 +40,7 @@ const styles = StyleSheet.create({
   },
   headerContainer: {
     position: 'absolute',
-    top: Platform.OS === 'ios' ? ifIphoneX(53, 30) : 30,
+    top: Platform.OS === 'ios' ? ifIphoneX(53, 30) : 10,
     right: 8,
     width: 50,
     height: 50,
@@ -60,27 +61,13 @@ const styles = StyleSheet.create({
     paddingLeft: 2,
   },
   coverImageContainer: {
+    zIndex: 2
   },
-  successModal: {
-    margin: 0,
-    justifyContent: 'center',
-    alignItems: 'center'
-  },
-  successView: {
-    width: 146,
-    height: 146,
-    borderRadius: 24,
-    backgroundColor: '#fff',
-    justifyContent: 'center',
-    alignItems: 'center'
-  },
-  successIcon: {
-    fontSize: 80,
-    color: COLORS.PURPLE
-  },
-  successText: {
-    fontSize: 15,
-    color: COLORS.PURPLE
+  tempCoverImageContainer: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
   },
   ideaContentView: {
     paddingBottom: 50
@@ -114,14 +101,9 @@ const styles = StyleSheet.create({
     paddingVertical: 5,
     height: FOOTER_HEIGHT,
     backgroundColor: '#fff',
-    alignItems: 'flex-start'
-  },
-  footerView: {
-    // flex: 1,
-    height: 40,
-    flexDirection: 'row',
-    justifyContent: 'space-between',
     alignItems: 'center',
+    justifyContent: 'space-between',
+    flexDirection: 'row',
   },
   addCommentView: {
     justifyContent: 'center',

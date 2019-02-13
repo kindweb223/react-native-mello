@@ -15,7 +15,7 @@ import InAppBrowser from 'react-native-inappbrowser-reborn'
 import * as mime from 'react-native-mime-types';
 import SVGImage from 'react-native-remote-svg';
 import SvgUri from 'react-native-svg-uri';
-
+import _ from 'lodash'
 
 import styles from './styles'
 import COLORS from '../../service/colors'
@@ -49,7 +49,12 @@ export default class WebMetaList extends React.Component {
   }
 
   async onPressLink(index) {
-    const url = this.props.links[index].originalUrl;
+    let url = this.props.links[index].originalUrl;
+
+    if (_.startsWith(_.toLower(url), 'http') === false) {
+      url = `http://${url}`
+    }
+
     if (Platform.OS === 'ios') {
       SafariView.isAvailable()
         .then(SafariView.show({
@@ -58,6 +63,7 @@ export default class WebMetaList extends React.Component {
         }))
         .catch(error => {
           // Fallback WebView code for iOS 8 and earlier
+          console.log('ERROR: ', error)
           Linking.canOpenURL(url)
             .then(supported => {
               if (!supported) {
@@ -66,7 +72,10 @@ export default class WebMetaList extends React.Component {
                 return Linking.openURL(url);
               }
             })
-            .catch(error => console.error('An error occurred', error));
+            .catch(error => {
+              console.error('An error occurred', error)
+              console.log('ERROR1: ', error)
+            });
         });
     } else {
       // Android 
@@ -103,7 +112,7 @@ export default class WebMetaList extends React.Component {
       if (mimeType !== false && mimeType.indexOf('svg') !== -1) {
         return (
           <SVGImage
-            style={styles.imageCover}
+            style={[styles.imageCover]}
             source={{uri: item.faviconUrl}}
           />
         );
