@@ -88,7 +88,7 @@ class TutorialScreen extends React.Component {
     const { user } = nextProps
 
     if (nextProps.prevPage === 'login') {
-      this.onSkip(false)
+      this.onNext(false)
     }
 
     if (this.props.user.loading === 'USER_GOOGLE_SIGNIN_PENDING' && user.loading === 'USER_GOOGLE_SIGNIN_FULFILLED') {
@@ -313,7 +313,7 @@ class TutorialScreen extends React.Component {
     this.setState({ position: context.state.index })
   }
 
-  onSkip(animated) {
+  onNext(animated) {
     this.swiperRef.scrollBy(6 - this.state.position, animated)
   }
 
@@ -350,9 +350,9 @@ class TutorialScreen extends React.Component {
 
           {(position !== 0 && position !== 6) && (
             <View style={styles.skipButtonView}>
-              <TouchableOpacity onPress={() => this.onSkip(true)} activeOpacity={0.8}>
+              <TouchableOpacity onPress={() => this.onNext(true)} activeOpacity={0.8}>
                 <View style={styles.skipButton}>
-                  <Text style={styles.skipButtonText}>Skip</Text>
+                  <Text style={styles.skipButtonText}>Next</Text>
                 </View>
               </TouchableOpacity>
             </View>
