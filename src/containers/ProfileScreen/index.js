@@ -24,10 +24,10 @@ import { GoogleSignin } from 'react-native-google-signin';
 import SVGImage from 'react-native-remote-svg'
 import Modal from "react-native-modal"
 import _ from 'lodash'
+import ShareExtensionTip from '../../components/ShareExtensionTip'
 import ToasterComponent from '../../components/ToasterComponent'
 import UserAvatarComponent from '../../components/UserAvatarComponent'
 import LoadingScreen from '../LoadingScreen'
-import ShareWidgetTipsModal from '../../components/ShareWidgetModal/TipsModal'
 import { userSignOut, deleteProfilePhoto } from '../../redux/user/actions'
 import COLORS from '../../service/colors'
 import styles from './styles'
@@ -48,29 +48,6 @@ const ABOUT_ITEMS = [
   'Terms & Conditions'
 ]
 
-const SETTING_ITEMS = [
-  {
-    icon: <Image source={PROFILE_ICON} style={styles.leftIcon} />,
-    title: 'Profile'
-  },
-  {
-    icon: <Image source={LOCK_ICON} style={styles.leftIcon} />,
-    title: 'Security'
-  },
-  {
-    icon: <Image source={TRASH_ICON} style={styles.leftIcon} />,
-    title: 'Archived flows'
-  },
-  {
-    icon: <Image source={SHARE_ICON} style={styles.leftIcon} />,
-    title: 'Enable share extention'
-  },
-  {
-    icon: <SVGImage source={PREMIUM_ICON} style={styles.leftIcon} />,
-    title: 'Upgrade to Mello Premium'
-  }
-]
-
 class ProfileScreen extends React.Component {
   constructor(props) {
     super(props)
@@ -80,8 +57,37 @@ class ProfileScreen extends React.Component {
       loading: false,
       showShareTipsModal: false
     }
-  }
 
+    this.SETTING_ITEMS = []
+
+    this.SETTING_ITEMS.push({
+      icon: <Image source={PROFILE_ICON} style={styles.leftIcon} />,
+      title: 'Profile'
+    })
+    
+    this.SETTING_ITEMS.push({
+      icon: <Image source={LOCK_ICON} style={styles.leftIcon} />,
+      title: 'Security'
+    })
+    
+    this.SETTING_ITEMS.push({
+      icon: <Image source={TRASH_ICON} style={styles.leftIcon} />,
+      title: 'Archived flows'
+    })
+    
+    if(Platform.OS === 'ios') {
+      this.SETTING_ITEMS.push({
+        icon: <Image source={SHARE_ICON} style={styles.leftIcon} />,
+        title: 'Enable share extention'
+      })  
+    }
+
+    this.SETTING_ITEMS.push({
+      icon: <SVGImage source={PREMIUM_ICON} style={styles.leftIcon} />,
+      title: 'Upgrade to Mello Premium'
+    })  
+  }
+  
   componentDidMount() {
     Analytics.setCurrentScreen('ProfileScren')
 
@@ -264,7 +270,11 @@ class ProfileScreen extends React.Component {
         Actions.ArchivedFeedScreen()
         return
       case 4: // Show share extension
-        this.showShareExtension()
+        if (Platform.OS === 'ios') {
+          this.showShareExtension()
+        } else {
+          Actions.ProfilePremiumScreen()
+        }
         return
       case 5: // Premium screen
         Actions.ProfilePremiumScreen()
@@ -347,7 +357,7 @@ class ProfileScreen extends React.Component {
                   </TouchableOpacity>
                 </View> */}
                 {
-                  SETTING_ITEMS.map((item, key) => (
+                  this.SETTING_ITEMS.map((item, key) => (
                     <View key={key} style={styles.settingItem}>
                       <TouchableOpacity
                         onPress={() => this.handleSettingItem(key + 1)}
@@ -453,15 +463,12 @@ class ProfileScreen extends React.Component {
           />
         )}
 
-        <Modal
-          animationIn="fadeIn"
-          animationOut="fadeOut"
-          backdropOpacity={0.5}
-          isVisible={this.state.showShareTipsModal}
-          style={{ margin: 8 }}
-        >
-          <ShareWidgetTipsModal />
-        </Modal>
+        {
+          this.state.showShareTipsModal && 
+            <ShareExtensionTip
+              ref={ref => (this.ref = ref)}
+            />
+        }
 
       </View>
     )
