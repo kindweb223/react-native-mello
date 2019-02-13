@@ -97,7 +97,7 @@ class ShareSuccessScreen extends React.Component {
       }
       if (isSelect) {
         console.log('FEED_ID: ', this.props.feedo.currentFeed.id)
-        ShareExtension.goToMainApp(`demos.solvers.io://feed/${this.props.feedo.currentFeed.id}`);
+        ShareExtension.goToMainApp(`demos.solvers.io://flow/${this.props.feedo.currentFeed.id}`);
         ShareExtension.close();
       } else {
         ShareExtension.close();

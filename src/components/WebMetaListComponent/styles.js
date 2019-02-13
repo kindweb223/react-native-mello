@@ -5,7 +5,8 @@ import COLORS from '../../service/colors'
 const styles = StyleSheet.create({
   container: {
     marginHorizontal: 16,
-    marginTop: 15
+    marginTop: 15,
+    zIndex: 1
   },
   itemContainer: {
     height: 40,

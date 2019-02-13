@@ -93,7 +93,7 @@ const styles = StyleSheet.create({
     top: 0,
     bottom: 0,
     zIndex: 15,
-    backgroundColor: COLORS.LIGHT_GREY_MODAL_BACKGROUND,
+    backgroundColor: 'transparent',
   },
   settingMenuView: {
     borderRadius: 20,
