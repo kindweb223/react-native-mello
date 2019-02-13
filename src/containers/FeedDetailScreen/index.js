@@ -13,7 +13,9 @@ import {
   RefreshControl,
   AppState,
   Clipboard,
-  Share
+  Share,
+  Platform,
+  BackHandler
 } from 'react-native'
 
 import { connect } from 'react-redux'
@@ -23,7 +25,7 @@ import { Actions } from 'react-native-router-flux'
 import Ionicons from 'react-native-vector-icons/Ionicons'
 import ActionSheet from 'react-native-actionsheet'
 import Modal from "react-native-modal"
-import ReactNativeHaptic from 'react-native-haptic'
+import ReactNativeHapticFeedback from 'react-native-haptic-feedback';
 import ImagePicker from 'react-native-image-picker'
 import { DocumentPicker, DocumentPickerUtil } from 'react-native-document-picker'
 import Permissions from 'react-native-permissions'
@@ -129,6 +131,8 @@ class FeedDetailScreen extends React.Component {
       pinText: 'Pin',
       selectedIdeaInvitee: null,
       selectedIdeaLayout: {},
+      activeImageLayout: {},
+      activeTextLayout: {},
       isInviteeModal: false,
       showFilterModal: false,
       filterShowType: 'all',
@@ -153,10 +157,10 @@ class FeedDetailScreen extends React.Component {
       copiedUrl: '',
       appState: AppState.currentState,
       isMasonryView: false,
-      MasonryData: [],
       isShowInviteToaster: false,
       inviteToasterTitle: '',
-      viewPreference: 'LIST'
+      viewPreference: 'LIST',
+      isLeaveFlowClicked: false,
     };
     this.animatedOpacity = new Animated.Value(0)
     this.menuOpacity = new Animated.Value(0)
@@ -193,12 +197,20 @@ class FeedDetailScreen extends React.Component {
     this.setState({ loading: true })
     this.props.getFeedDetail(data.id);
     AppState.addEventListener('change', this.onHandleAppStateChange);
+
+    BackHandler.addEventListener('hardwareBackPress', this.handleBackButton);
   }
 
   componentWillUnmount() {
     AppState.removeEventListener('change', this.onHandleAppStateChange);
+    BackHandler.removeEventListener('hardwareBackPress', this.handleBackButton);
   }
 
+  handleBackButton = () => {
+    this.backToDashboard();
+    return true;
+  }
+  
   async UNSAFE_componentWillReceiveProps(nextProps) {
     const { feedo, card } = nextProps
 
@@ -290,7 +302,16 @@ class FeedDetailScreen extends React.Component {
       })
 
       this.setState({ currentBackFeed: currentFeed }, () => {
-        this.filterCards(currentFeed)
+        let redrawMasonry = false
+
+        if (feedo.loading === 'UPDATE_CARD_FULFILLED' || card.loading === 'UPDATE_CARD_FULFILLED' ||
+          (feedo.loading === 'ADD_CARD_COMMENT_FULFILLED' && Actions.currentScene === 'CommentScreen') ||
+          (feedo.loading === 'DELETE_CARD_COMMENT_FULFILLED' && Actions.currentScene === 'CommentScreen'))
+        {
+          redrawMasonry = true
+        }
+        
+        this.filterCards(currentFeed, redrawMasonry)
       })
 
       if (feedo.loading === 'PUBNUB_GET_FEED_DETAIL_FULFILLED' || feedo.loading === 'GET_CARD_FULFILLED' ||
@@ -298,6 +319,17 @@ class FeedDetailScreen extends React.Component {
           (feedo.loading === 'GET_CARD_COMMENTS_FULFILLED' && (Actions.currentScene !== 'CommentScreen' && Actions.currentScene !== 'ActivityCommentScreen'))
       ) {
         this.props.getActivityFeed(this.props.user.userInfo.id, { page: 0, size: PAGE_COUNT })
+      }
+
+      if (this.state.isLeaveFlowClicked && !COMMON_FUNC.isFeedOwnerEditor(currentFeed) &&
+          this.props.feedo.loading === 'DELETE_INVITEE_PENDING' && feedo.loading === 'DELETE_INVITEE_FULFILLED') {
+        const feedId = this.props.data.id
+        this.props.setFeedDetailAction({
+          action: 'Leave',
+          feedId
+        })
+        this.setState({ isShowShare: false })
+        setTimeout(() => Actions.pop(), 300);
       }
     }
 
@@ -377,7 +409,7 @@ class FeedDetailScreen extends React.Component {
           this.setState({ showBubble: true })
           setTimeout(() => {
             this.setState({ showBubbleCloseButton: true })
-          }, 30000)
+          }, 10000)
         } else {
           this.setState({ showBubble: false })
         }
@@ -403,7 +435,7 @@ class FeedDetailScreen extends React.Component {
     AsyncStorage.setItem('CardBubbleState', JSON.stringify(data));
   }
 
-  filterCards = (currentFeed) => {
+  filterCards = (currentFeed, redrawMasonry = true) => {
     const { currentBackFeed, filterShowType, filterSortType } = this.state
     const { ideas } = currentFeed
     let filterIdeas = {}, sortIdeas = {}
@@ -450,7 +482,7 @@ class FeedDetailScreen extends React.Component {
       }
     })
 
-    if (this.state.viewPreference === 'MASONRY' && this.refs.masonry) {
+    if (this.state.viewPreference === 'MASONRY' && this.refs.masonry && redrawMasonry) {
       this.setMasonryData(sortIdeas)
     }
   }
@@ -472,21 +504,20 @@ class FeedDetailScreen extends React.Component {
   }
 
   setMasonryData = (ideas) => {
-    this.refs.masonry.clear()
+    this.setState({ isMasonryView: true }, () => {
 
-    setTimeout(() => {
-      this.setState({ isMasonryView: true }, () => {
-
-        if (ideas.length > 0) {
-          const MasonryData = ideas.map((data, i) => ({
-            key: `item_${i}`,
-            index: i,
-            data
-          }))
+      if (ideas.length > 0) {
+        const MasonryData = ideas.map((data, i) => ({
+          key: `item_${i}`,
+          index: i,
+          data
+        }))
+        this.refs.masonry.clear()
+        setTimeout(() => {
           this.refs.masonry.addItems(MasonryData)
-        }
-      })
-    }, 100)
+        }, 150)
+      }
+    })
   }
 
   onLayoutMasonry = (event) => {
@@ -789,6 +820,30 @@ class FeedDetailScreen extends React.Component {
       }
 
       this.cardItemRefs[index].measure((ox, oy, width, height, px, py) => {
+        let pointX, pointY //card image x,y point
+        let imgWidth, imgHeight //card image size
+        let textPointX = px //card text x point
+        let textPointY = py //card text y point
+        let textWidth, textHeight //card text size
+        if (this.state.viewPreference === 'LIST') {
+          pointX = CONSTANTS.SCREEN_WIDTH - 78 - 32 //32: margin from screen right
+          pointY = py - 1
+          imgWidth = 78
+          imgHeight = 78
+          textPointX = px + 21
+          textPointY = py + 32
+          textWidth = CONSTANTS.SCREEN_WIDTH - 29 * 2 //29: margin from screen left
+          textHeight = height - 103
+        } else {
+          pointX = px + 9
+          pointY = py - 21
+          imgWidth = width - 18
+          imgHeight = height - 111
+          textPointX = px + 21
+          textPointY = py + 19
+          textWidth = width - 38
+          textHeight = height - 97
+        }
         this.props.closeClipboardToaster()
 
         this.setState({
@@ -796,6 +851,8 @@ class FeedDetailScreen extends React.Component {
           cardViewMode,
           selectedIdeaInvitee: invitee,
           selectedIdeaLayout: { ox, oy, width, height, px, py },
+          activeImageLayout: { px: pointX, py: pointY, imgWidth, imgHeight },
+          activeTextLayout: { textPointX, textPointY, textWidth, textHeight }
         }, () => {
           this.animatedOpacity.setValue(0);
           Animated.timing(this.animatedOpacity, {
@@ -816,7 +873,7 @@ class FeedDetailScreen extends React.Component {
       return
     }
 
-    ReactNativeHaptic.generate('impactHeavy');
+    ReactNativeHapticFeedback.trigger('impactHeavy', true);
 
     this.setState({
       selectedLongHoldCardIndex: index,
@@ -1000,7 +1057,7 @@ class FeedDetailScreen extends React.Component {
   }
 
   get renderNewCardModal() {
-    const { isVisibleCard, cardViewMode, cardMode, isVisibleEditFeed } = this.state
+    const { isVisibleCard, cardViewMode, cardMode, isVisibleEditFeed, activeImageLayout, activeTextLayout, viewPreference } = this.state
     if (!isVisibleCard && !isVisibleEditFeed) {
       return;
     }
@@ -1023,10 +1080,13 @@ class FeedDetailScreen extends React.Component {
                 onClose={() => this.onCloseCardModal()}
               />
             : <CardDetailScreen
+                isMasonryView={viewPreference === 'MASONRY'}
                 prevPage={this.props.prevPage}
                 viewMode={this.state.cardViewMode}
                 invitee={this.state.selectedIdeaInvitee}
                 intialLayout={this.state.selectedIdeaLayout}
+                cardImageLayout={activeImageLayout}
+                cardTextLayout={activeTextLayout}
                 shareUrl=''
                 onClose={() => this.onCloseCardModal()}
                 onOpenAction={(idea) => this.onOpenCardAction(idea)}
@@ -1041,6 +1101,7 @@ class FeedDetailScreen extends React.Component {
               onClose={() => this.onCloseEditFeedModal()}
               selectedFeedId={this.props.data.id}
               viewMode={this.state.feedoViewMode}
+              isNewCard={false}
             />
         }
       </Animated.View>
@@ -1066,10 +1127,56 @@ class FeedDetailScreen extends React.Component {
   }
 
   onAddMedia = () => {
-    this.imagePickerActionSheetRef.show();
+    Permissions.checkMultiple(['camera', 'photo']).then(response => {
+      if (response.camera === 'authorized' && response.photo === 'authorized') {
+        //permission already allowed
+        this.imagePickerActionSheetRef.show();
+      }
+      else {
+        Permissions.request('camera').then(response => {
+          if (response === 'authorized') {
+            //camera permission was authorized
+            Permissions.request('photo').then(response => {
+              if (response === 'authorized') {
+                //photo permission was authorized
+                this.imagePickerActionSheetRef.show();
+              }
+              else if (Platform.OS === 'ios') {
+                Permissions.openSettings();
+              }    
+            });
+          }
+          else if (Platform.OS === 'ios') {
+            Permissions.openSettings();
+          }
+        });
+      }
+    });
   }
 
-  onAddDocument = () => {
+  onAddDocument() {
+    if (Platform.OS === 'ios') {
+      this.PickerDocumentShow();
+    }
+    else {
+      Permissions.check('storage').then(response => { //'storage' permission doesn't support on iOS
+        if (response === 'authorized') {
+          //permission already allowed
+          this.PickerDocumentShow();
+        }
+        else {
+          Permissions.request('storage').then(response => {
+            if (response === 'authorized') {
+              //storage permission was authorized
+              this.PickerDocumentShow();
+            }
+          });
+        }
+      });
+    }
+  }
+
+  PickerDocumentShow = () => {
     DocumentPicker.show({
       filetype: [DocumentPickerUtil.allFiles()],
     },(error, response) => {
@@ -1138,34 +1245,10 @@ class FeedDetailScreen extends React.Component {
         
     if (index === 0) {
       // from camera
-      Permissions.check('camera').then(response => {
-        if (response === 'authorized') {
-          this.pickMediaFromCamera(options);
-        } else if (response === 'undetermined') {
-          Permissions.request('camera').then(response => {
-            if (response === 'authorized') {
-              this.pickMediaFromCamera(options);
-            }
-          });
-        } else {
-          Permissions.openSettings();
-        }
-      });
+      this.pickMediaFromCamera(options);
     } else if (index === 1) {
       // from library
-      Permissions.check('photo').then(response => {
-        if (response === 'authorized') {
-          this.pickMediaFromLibrary(options);
-        } else if (response === 'undetermined') {
-          Permissions.request('photo').then(response => {
-            if (response === 'authorized') {
-              this.pickMediaFromLibrary(options);
-            }
-          });
-        } else {
-          Permissions.openSettings();
-        }
-      });
+      this.pickMediaFromLibrary(options);
     }
   }
 
@@ -1291,16 +1374,8 @@ class FeedDetailScreen extends React.Component {
 
   showShareModal = () => {
     const { data } = this.props
-
-    Share.share({
-      message: data.summary || '',
-      url: `${SHARE_LINK_URL}${data.id}`,
-      title: data.headline
-    },{
-      dialogTitle: data.headline,
-      tintColor: COLORS.PURPLE,
-      subject: data.headline
-    })
+    
+    COMMON_FUNC.handleShareFeed(data)
   }
 
   leaveFeed = (selectedContact, feedId) => {
@@ -1311,9 +1386,9 @@ class FeedDetailScreen extends React.Component {
         const invitee = _.filter(feedo.currentFeed.invitees, invitee => invitee.userProfile.id === selectedContact.userProfile.id)
         deleteInvitee(feedId, invitee[0].id)
       } else {
+        this.setState({ isLeaveFlowClicked: true })
         const invitee = _.filter(feedo.currentFeed.invitees, invitee => invitee.userProfile.id === user.userInfo.id)
         deleteInvitee(feedId, invitee[0].id)
-        this.setState({ isShowShare: false })
       }
   }
 
@@ -1418,7 +1493,7 @@ class FeedDetailScreen extends React.Component {
                   ? this.state.viewPreference === 'LIST'
                     ? currentFeed.ideas.length > 0
                       ? <View
-                          style={{ paddingHorizontal: 8 }}
+                          style={{ paddingHorizontal: 8, marginTop: Platform.OS === 'android' && isVisibleLongHoldMenu ? 30 : 0}}
                         >
                           {currentFeed.ideas.map((item, index) => (
                           <View
@@ -1427,6 +1502,7 @@ class FeedDetailScreen extends React.Component {
                             <TouchableHighlight
                               ref={ref => this.cardItemRefs[index] = ref}
                               style={{ paddingHorizontal: 8, borderRadius: 5 }}
+                              activeOpacity={1}
                               underlayColor="#fff"
                               onPress={() => this.onSelectCard(index, item, invitees)}
                               onLongPress={() => this.onLongPressCard(index, item, invitees)}
@@ -1439,6 +1515,8 @@ class FeedDetailScreen extends React.Component {
                                 prevPage={this.props.prevPage}
                                 longHold={isVisibleLongHoldMenu}
                                 longSelected={isVisibleLongHoldMenu && selectedLongHoldCardIndex === index}
+                                onPress={() => this.onSelectCard(index, item, invitees)}
+                                onLongPress={() => this.onLongPressCard(index, item, invitees)}
                                 onLinkPress={() => this.onSelectCard(index, item, invitees)}
                                 onLinkLongPress={() => this.onLongPressCard(index, item, invitees)}
                               />
@@ -1473,12 +1551,11 @@ class FeedDetailScreen extends React.Component {
                           }
                         </View>
                     : <View
-                        style={{ paddingHorizontal: currentFeed.ideas.length > 0 ? 8 : 0 }}
+                        style={{ paddingHorizontal: currentFeed.ideas.length > 0 ? 8 : 0, marginTop: Platform.OS === 'android' && isVisibleLongHoldMenu ? 30 : 0}}
                       >
                         <Masonry
                           onLayout={(event) => this.onLayoutMasonry(event)}
                           ref="masonry"
-                          items={this.state.MasonryData}
                           isExistingUser={this.state.isExistingUser}
                           showEmptyBubble={this.state.showEmptyBubble}
                           onOpenNewCardModal={this.onOpenNewCardModal.bind(this)}
@@ -1490,6 +1567,7 @@ class FeedDetailScreen extends React.Component {
                               <TouchableHighlight
                                 ref={ref => this.cardItemRefs[item.index] = ref}
                                 style={{ paddingHorizontal: 8, borderRadius: 5 }}
+                                activeOpacity={1}
                                 underlayColor="#fff"
                                 onPress={() => this.onSelectCard(item.index, item.data, invitees)}
                                 onLongPress={() => this.onLongPressCard(item.index, item.data, invitees)}
@@ -1500,7 +1578,10 @@ class FeedDetailScreen extends React.Component {
                                   listType={this.state.viewPreference}
                                   cardType="view"
                                   prevPage={this.props.prevPage}
+                                  longHold={isVisibleLongHoldMenu}
                                   longSelected={isVisibleLongHoldMenu && selectedLongHoldCardIndex === item.index}
+                                  onPress={() => this.onSelectCard(item.index, item.data, invitees)}
+                                  onLongPress={() => this.onLongPressCard(item.index, item.data, invitees)}
                                   onLinkPress={() => this.onSelectCard(item.index, item.data, invitees)}
                                   onLinkLongPress={() => this.onLongPressCard(item.index, item.data, invitees)}
                                 />
@@ -1598,6 +1679,7 @@ class FeedDetailScreen extends React.Component {
           animationOutTiming={100}
           onModalHide={() => {}}
           onBackdropPress={() => this.closeShareModal()}
+          onBackButtonPress={() => this.closeShareModal()}
         >
           {
             COMMON_FUNC.isFeedOwnerEditor(currentFeed)
@@ -1624,6 +1706,7 @@ class FeedDetailScreen extends React.Component {
           animationInTiming={500}
           onModalHide={() => this.hideSettingMenu()}
           onBackdropPress={() => this.setState({ openMenu: false })}
+          onBackButtonPress={() => this.setState({ openMenu: false })}
         >
           <Animated.View style={styles.settingMenuView}>
             <FeedControlMenuComponent

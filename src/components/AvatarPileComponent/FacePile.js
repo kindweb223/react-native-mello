@@ -9,9 +9,8 @@ const styles = StyleSheet.create({
   container: {
     flexDirection: 'row-reverse',
     flexWrap: 'nowrap',
-    justifyContent: 'center',
+    justifyContent: 'flex-end',
     alignItems: 'center',
-    alignSelf: 'center'
   },
   overflow: {
     backgroundColor: '#A2A5AE',
@@ -209,7 +208,7 @@ export default class FacePile extends PureComponent {
   }
 
   render () {
-    const { faces, numFaces, hideOverflow, containerStyle, showPlus } = this.props
+    const { faces, numFaces, hideOverflow, containerStyle, showPlus, circleSize } = this.props
 
     if (faces.length === 0) 
       return null
@@ -217,7 +216,7 @@ export default class FacePile extends PureComponent {
     const { facesToRender, overflow } = renderFacePile(faces, numFaces)
 
     return (
-      <View style={[styles.container, containerStyle]}>
+      <View style={[styles.container, containerStyle, {paddingRight: circleSize / 1.6}]}>
         {!hideOverflow && (
           overflow > 0 ? this._renderOverflowCircle(overflow) : (showPlus && this._renderEmptyOverflowCircle())
         )}

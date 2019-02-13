@@ -23,14 +23,12 @@ class FeedCardExtendComponent extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      loading: false,
-      imageHeight: 120
+      loading: false
     };
   }
 
   render() {
     const { invitees, idea, feedo, cardType, longSelected, longHold } = this.props;
-    const { imageHeight } = this.state
 
     const invitee = _.find(invitees, item => item.id === idea.inviteeId)
     let isOnlyInvitee = false
@@ -40,25 +38,26 @@ class FeedCardExtendComponent extends React.Component {
     }
 
     let hasCoverImage = idea.coverImage && idea.coverImage.length > 0
+    let cardHeight = 0
+    if (hasCoverImage) {
+      const coverImageData = _.find(idea.files, file => file.accessUrl === idea.coverImage)
+      const cardWidth = (CONSTANTS.SCREEN_SUB_WIDTH - 16) / 2
+      if (coverImageData.metadata) {
+        const ratio = coverImageData.metadata.width / cardWidth
+        cardHeight = coverImageData.metadata.height / ratio
+      } else {
+        cardHeight = cardWidth / 2
+      }
+    }
 
     return (
       <View style={[styles.container, longSelected && styles.selected]}>
         <View style={styles.subContainer}>
           {hasCoverImage &&
-            <View style={[styles.thumbnailsView, { height: imageHeight > CONSTANTS.SCREEN_HEIGHT / 2 ? CONSTANTS.SCREEN_HEIGHT / 2 : imageHeight }]}>
+            <View style={[styles.thumbnailsView, { height: cardHeight }]}>
               <FastImage
                 style={styles.thumbnails}
                 source={{ uri: idea.coverImage }}
-                onLoad={ 
-                  e => {
-                    let { height, width } = e.nativeEvent
-                    let maxImgWidth = cardType === 'long' ? CONSTANTS.SCREEN_WIDTH : (CONSTANTS.SCREEN_SUB_WIDTH - 16) / 2
-                    let ratio = width / maxImgWidth
-                    height = height / ratio 
-
-                    this.setState({ imageHeight: height })
-                  }
-                }
               />
             </View>
           }

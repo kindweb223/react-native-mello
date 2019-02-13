@@ -35,7 +35,6 @@ const styles = StyleSheet.create({
     width: '100%',
     height: NAV_BAR_HEIGHT,
     paddingRight: CONSTANTS.PADDING,
-    backgroundColor: '#fff',
     zIndex: 11,
     flexDirection: 'row',
     justifyContent: 'space-between',
@@ -59,7 +58,6 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     backgroundColor: '#fff',
-    paddingBottom: 10
   },
   avatarView: {
     height: '100%',
@@ -70,7 +68,7 @@ const styles = StyleSheet.create({
     height: '100%',
     justifyContent: 'center',
     alignItems: 'center',
-    marginLeft: 13
+    marginLeft: 8
   },
   collapseView: {
     width: '100%',
@@ -94,7 +92,8 @@ const styles = StyleSheet.create({
     right: 0,
     top: 0,
     bottom: 0,
-    backgroundColor: COLORS.LIGHT_GREY_MODAL_BACKGROUND,
+    zIndex: 15,
+    backgroundColor: 'transparent',
   },
   settingMenuView: {
     borderRadius: 20,

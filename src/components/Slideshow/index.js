@@ -11,13 +11,23 @@ export default class SlideShow extends React.Component {
     super(props)
 
     this.state = {
-      currentIndex: 0,
+      currentIndex: this.props.currentImageIndex,
       isTouch: false
     }
     this.buttonOpacity = new Animated.Value(1)
   }
 
-  onSetPostion() {
+  componentDidMount() {
+    const {
+      width,
+      position,
+    } = this.props
+
+    console.log('offset: ', width, position)
+    setTimeout(() => {
+      this.scrollViewRef.scrollTo({x: width * position, y: 0});
+    }, 0)
+
   }
 
   renderBubbles = () => {
@@ -66,6 +76,7 @@ export default class SlideShow extends React.Component {
       width,
       isFastImage,
     } = this.props;
+
     const isImage = item.contentType.toLowerCase().indexOf('image') !== -1;
     if (isImage) {
       return (
@@ -103,17 +114,20 @@ export default class SlideShow extends React.Component {
       width,
       position,
     } = this.props
+    
     return (
       <View style={[styles.container, { width, height }]}>
         <ScrollView
+          ref={(ref) => { this.scrollViewRef = ref; }}
           horizontal={true}
           pagingEnabled={true}
           showsHorizontalScrollIndicator={false}
           contentOffset={{ x: width * position, y: 0 }}
           scrollEventThrottle={10}
+          
           onScroll={e => {
             const offset = e.nativeEvent.contentOffset.x
-            const currentIndex = offset / width;
+            const currentIndex = parseInt(offset / width + 0.5);
             this.setState({ currentIndex })
             this.props.setPosition({ pos: currentIndex })
           }}

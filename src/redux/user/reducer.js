@@ -6,6 +6,7 @@ import CONSTANTS from '../../../src/service/constants'
 import SharedGroupPreferences from 'react-native-shared-group-preferences'
 
 import pubnub from '../../lib/pubnub'
+import { Actions } from 'react-native-router-flux';
 
 const initialState = {
   loading: null,
@@ -92,6 +93,47 @@ export default function user(state = initialState, action = {}) {
       return {
         ...state,
         loading: types.USER_SIGNIN_REJECTED,
+        userInfo: null,
+        error: action.error.response.data
+      }
+    }
+    /**
+     * User signIn with google
+     */
+    case types.USER_GOOGLE_SIGNIN_PENDING:
+      return {
+        ...state,
+        userConfirmed: false,
+        loading: types.USER_GOOGLE_SIGNIN_PENDING,
+        userInfo: null,
+      }
+    case types.USER_GOOGLE_SIGNIN_FULFILLED: {
+      const { data, headers } = action.result
+
+      const xAuthToken = headers['x-auth-token']
+
+      if (xAuthToken) {
+        axios.defaults.headers['x-auth-token'] = xAuthToken
+        AsyncStorage.setItem('xAuthToken', xAuthToken)
+        SharedGroupPreferences.setItem('xAuthToken', xAuthToken, CONSTANTS.APP_GROUP_TOKEN_IDENTIFIER)
+      } else {
+        AsyncStorage.removeItem('xAuthToken')
+        AsyncStorage.removeItem('userInfo')
+        SharedGroupPreferences.setItem('xAuthToken', null, CONSTANTS.APP_GROUP_TOKEN_IDENTIFIER)
+        SharedGroupPreferences.setItem('userInfo', null, CONSTANTS.APP_GROUP_USER_IDENTIFIER)
+      }
+
+      return {
+        ...state,
+        error: null,
+        userInfo: data,
+        loading: types.USER_GOOGLE_SIGNIN_FULFILLED
+      }
+    }
+    case types.USER_GOOGLE_SIGNIN_REJECTED: {
+      return {
+        ...state,
+        loading: types.USER_GOOGLE_SIGNIN_REJECTED,
         userInfo: null,
         error: action.error.response.data
       }

@@ -12,7 +12,12 @@ import {
   AsyncStorage,
   AppState,
   Clipboard,
-  Alert
+  Alert,
+  Share,
+  BackHandler,
+  requireNativeComponent,
+  UIManager,
+  findNodeHandle
 } from 'react-native'
 
 import { connect } from 'react-redux'
@@ -25,6 +30,7 @@ import { Actions } from 'react-native-router-flux'
 import * as R from 'ramda'
 import { find, filter, orderBy } from 'lodash'
 import DeviceInfo from 'react-native-device-info';
+import Permissions from 'react-native-permissions'
 
 import pubnub from '../../lib/pubnub'
 import Analytics from '../../lib/firebase'
@@ -39,9 +45,13 @@ import ToasterComponent from '../../components/ToasterComponent'
 import FeedLoadingStateComponent from '../../components/FeedLoadingStateComponent'
 import EmptyStateComponent from '../../components/EmptyStateComponent'
 import SpeechBubbleComponent from '../../components/SpeechBubbleComponent'
+import ShareWidgetPermissionModal from '../../components/ShareWidgetModal/PermissionModal'
+import ShareWidgetTipsModal from '../../components/ShareWidgetModal/TipsModal'
+import ShareWidgetConfirmModal from '../../components/ShareWidgetModal/ConfirmModal'
+import ShareExtensionTip from '../../components/ShareExtensionTip'
 import styles from './styles'
 import CONSTANTS from '../../service/constants';
-
+import { TIP_SHARE_LINK_URL } from '../../service/api'
 const SEARCH_ICON = require('../../../assets/images/Search/Grey.png')
 const SETTING_ICON = require('../../../assets/images/Settings/Grey.png')
 
@@ -120,7 +130,11 @@ class HomeScreen extends React.Component {
       feedClickEvent: 'normal',
       showLongHoldActionBar: true,
       isShowInviteToaster: false,
-      inviteToasterTitle: ''
+      inviteToasterTitle: '',
+      showSharePermissionModal: false,
+      enableShareWidget: false,
+      showShareTipsModal: false,
+      showShareConfirmModal: false
     };
 
     this.currentRef = null;
@@ -130,17 +144,82 @@ class HomeScreen extends React.Component {
     this.animatedSelectFeed = new Animated.Value(1);
   }
 
+  showSharePermissionModal(permissionInfo) {
+    // If we haven't asked to enable share widget before
+    if (!permissionInfo) {
+        this.setState({ showSharePermissionModal: true })
+    } 
+  }
+
+  onCloseSharePermissionModal = () => {
+    if (this.state.enableShareWidget) {
+      setTimeout(() => {
+        this.setState({ showShareTipsModal: true })
+      }, 100)
+
+      setTimeout(() => {
+        Share.share({
+          message: 'Mello',
+          title: 'Mello',
+          url: TIP_SHARE_LINK_URL
+        },{
+          dialogTitle: 'Mello',
+          subject: 'Mello',
+          excludedActivityTypes: ["com.apple.UIKit.activity.AirDrop"]
+        }).then(result => {
+          if (result.action === Share.dismissedAction) {
+            this.setState({ showShareTipsModal: false })
+            // setTimeout(() => {
+            //   this.setState({ showShareConfirmModal: true })
+            // }, 300)
+          }
+        }).catch(error => {
+          console.log('ERROR: ', error)
+        })
+      }, 300)
+    }
+  }
+
+  onSkipShareWidget = () => {
+    AsyncStorage.setItem('permissionInfo', JSON.stringify('true'))
+    this.setState({ showSharePermissionModal: false, enableShareWidget: false })
+  }
+
+  onEnableShareWidget = () => {
+    AsyncStorage.setItem('permissionInfo', JSON.stringify('true'))
+    this.setState({ showSharePermissionModal: false, enableShareWidget: true })
+  }
+
   async componentDidMount() {
     Analytics.setCurrentScreen('DashboardScreen')
 
-    this.setState({ loading: true })
+    this.props.setUserInfo(JSON.parse(await AsyncStorage.getItem('userInfo')))
 
-    const userInfo = await AsyncStorage.getItem('userInfo')
-    this.props.setUserInfo(JSON.parse(userInfo))
+    let permissionInfo = JSON.parse(await AsyncStorage.getItem('permissionInfo'))
+
+    // Check push notification
+    if (Platform.OS === 'ios') {
+      Permissions.check('notification')
+        .then(response => {
+          // Ask for notifications permission first
+          if (response === 'undetermined') {
+            Permissions.request('notification').then(response => {
+              // Then show share widget tip
+              this.showSharePermissionModal(permissionInfo)
+            });
+          } 
+          // If notification permissions already asked, show share widget tip
+          else {
+            this.showSharePermissionModal(permissionInfo)
+          }
+      });
+    }
+
+    this.setState({ loading: true })
 
     // Set the inital list view mode
     const viewMode = JSON.parse(await AsyncStorage.getItem('DashboardViewMode'))
-    if (viewMode && viewMode.userId === JSON.parse(userInfo).id) {
+    if (viewMode && viewMode.userId === this.props.user.userInfo.id) {
       this.props.setHomeListType(viewMode.type)
     }
     else {
@@ -160,10 +239,18 @@ class HomeScreen extends React.Component {
 
     AppState.addEventListener('change', this.onHandleAppStateChange.bind(this));
     appOpened(this.props.user.userInfo.id);
+
+    BackHandler.addEventListener('hardwareBackPress', this.handleBackButton);
   }
 
   componentWillUnmount() {
     AppState.removeEventListener('change', this.onHandleAppStateChange);
+    BackHandler.removeEventListener('hardwareBackPress', this.handleBackButton);
+  }
+
+  handleBackButton = () => {
+    //nothing happens
+    return true;
   }
 
   static getDerivedStateFromProps(nextProps, prevState) {
@@ -183,8 +270,7 @@ class HomeScreen extends React.Component {
       (feedo.loading === 'PIN_FEED_FULFILLED') || (feedo.loading === 'UNPIN_FEED_FULFILLED') ||
       (feedo.loading === 'RESTORE_ARCHIVE_FEED_FULFILLED') || (feedo.loading === 'ADD_DUMMY_FEED'))) ||
       (feedo.loading === 'PUBNUB_GET_FEED_DETAIL_FULFILLED') || (feedo.loading === 'DELETE_CARD_FULFILLED') || 
-      (feedo.loading === 'PUBNUB_MOVE_IDEA_FULFILLED') ||
-      (feedo.loading === 'MOVE_CARD_FULFILLED') || (feedo.loading === 'UPDATE_CARD_FULFILLED') ||
+      (feedo.loading === 'PUBNUB_MOVE_IDEA_FULFILLED') || (feedo.loading === 'MOVE_CARD_FULFILLED') ||
       (feedo.loading === 'READ_ACTIVITY_FEED_FULFILLED') || (feedo.loading === 'DEL_ACTIVITY_FEED_FULFILLED') ||
       (feedo.loading === 'UPDATE_CARD_FULFILLED') || (feedo.loading === 'GET_CARD_FULFILLED') ||
       (feedo.loading === 'DEL_DUMMY_CARD') || (feedo.loading === 'MOVE_DUMMY_CARD') ||
@@ -222,22 +308,22 @@ class HomeScreen extends React.Component {
           )
         })
 
-        feedoList = orderBy(
-          filter(feedoList, item => item.status === 'PUBLISHED'),
-          ['publishedDate'],
-          ['desc']
-        )
+        if ((feedo.loading !== 'UPDATE_CARD_FULFILLED' || !feedo.isCreateCard) && feedo.loading !== 'UPDTE_FEED_INVITATION_FULFILLED') {
+          feedoList = orderBy(
+            filter(feedoList, item => item.status === 'PUBLISHED'),
+            ['metadata.myLastActivityDate'],
+            ['desc']
+          )
+        } else {
+          nextProps.getFeedoList()
+        }
         
         if (prevState.tabIndex === 0) {
           feedoList = filter(feedoList, item => item.metadata.owner)
         }
 
         if (prevState.tabIndex === 1) {
-          feedoList = orderBy(
-            filter(feedoList, item => item.metadata.myInviteStatus !== 'INVITED' && item.owner.id !== user.userInfo.id),
-            ['metadata.inviteAcceptedDate'],
-            ['desc']
-          )
+          feedoList = filter(feedoList, item => item.metadata.myInviteStatus !== 'INVITED' && item.owner.id !== user.userInfo.id)
         }
 
         if (prevState.tabIndex === 2) {
@@ -433,7 +519,7 @@ class HomeScreen extends React.Component {
           this.setState({ showFeedInvitedNewUserBubble: true })
           setTimeout(() => {
             this.setState({ showBubbleCloseButton: true })
-          }, 30000)
+          }, 10000)
         } else {
           this.setState({ showFeedInvitedNewUserBubble: false })
         }
@@ -481,7 +567,10 @@ class HomeScreen extends React.Component {
         // this.props.getActivityFeed(this.props.user.userInfo.id, { page: 0, size: PAGE_COUNT })            
       }  
       this.showClipboardToast();
-      this.props.getUserSession()
+      
+      if (Actions.currentScene !== 'TutorialScreen' && Actions.currentScene !== 'LoginScreen') {
+        this.props.getUserSession()
+      }
     }
     this.setState({appState: nextAppState});
   }
@@ -692,21 +781,13 @@ class HomeScreen extends React.Component {
         )
       })
 
-      feedoList = orderBy(
-        filter(feedoList, item => item.status === 'PUBLISHED'),
-        ['publishedDate'],
-        ['desc']
-      )
+      feedoList = filter(feedoList, item => item.status === 'PUBLISHED')
       
       if (value.i === 0) {
         feedoList = filter(feedoList, item => item.metadata.owner)
       }
       if (value.i === 1) {
-        feedoList = orderBy(
-          filter(feedoList, item => item.metadata.myInviteStatus !== 'INVITED' && item.owner.id !== user.userInfo.id),
-          ['metadata.inviteAcceptedDate'],
-          ['desc']
-        )
+        feedoList = filter(feedoList, item => item.metadata.myInviteStatus !== 'INVITED' && item.owner.id !== user.userInfo.id)
       }
       if (value.i === 2) {
         feedoList = filter(feedoList, item => item.pinned !== null)
@@ -1018,6 +1099,7 @@ class HomeScreen extends React.Component {
             feedData={isEditFeed ? selectedFeedData : {}}
             onClose={(data) => this.onCloseNewFeedModal(data)}
             selectedFeedId={isEditFeed ? selectedFeedData.id : null}
+            viewMode={CONSTANTS.FEEDO_FROM_MAIN}
 
             // feedoMode={CONSTANTS.SHARE_EXTENTION_FEEDO}
           />  
@@ -1096,6 +1178,7 @@ class HomeScreen extends React.Component {
   onRefreshFeed = () => {
     this.setState({ isRefreshing: true })
     this.props.getFeedoList(this.state.tabIndex)
+    this.props.getInvitedFeedList()
   }
 
   render () {
@@ -1400,6 +1483,44 @@ class HomeScreen extends React.Component {
             onPressButton={() => this.setState({ isShowInviteToaster: false })}
           />
         )}
+
+        <Modal 
+          isVisible={this.state.showSharePermissionModal}
+          style={{ margin: 8 }}
+          backdropOpacity={0.6}
+          animationInTiming={500}
+          onBackdropPress={() => this.setState({ showSharePermissionModal: false })}
+          onBackButtonPress={() => this.setState({ showSharePermissionModal: false })}
+          onModalHide={() => this.onCloseSharePermissionModal()}
+        >
+          <ShareWidgetPermissionModal
+            onClose={() => this.onSkipShareWidget()}
+            onEnableShareWidget={() => this.onEnableShareWidget()}
+          />
+        </Modal>
+
+        {
+          this.state.showShareTipsModal && 
+            <ShareExtensionTip
+              ref={ref => (this.ref = ref)}
+            />
+        }
+        
+        <Modal 
+          isVisible={this.state.showShareConfirmModal}
+          animationIn="fadeIn"
+          animationOut="fadeOut"
+          style={{ margin: 8 }}
+          backdropOpacity={0.6}
+          animationInTiming={500}
+          onBackdropPress={() => this.setState({ showShareConfirmModal: false })}
+          onBackButtonPress={() => this.setState({ showShareConfirmModal: false })}
+        >
+          <ShareWidgetConfirmModal
+            onClose={() => this.setState({ showShareConfirmModal: false })}
+          />
+        </Modal>
+
       </SafeAreaView>
     )
   }
@@ -1458,4 +1579,3 @@ export default connect(
   mapStateToProps,
   mapDispatchToProps
 )(HomeScreen)
-

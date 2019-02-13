@@ -7,6 +7,7 @@ import {
   Animated,
   Keyboard,
   Alert,
+  BackHandler,
 } from 'react-native'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
@@ -89,13 +90,22 @@ class CommentScreen extends React.Component {
         this.inputToolbarRef.focus();  
       });
     }
+
+    BackHandler.addEventListener('hardwareBackPress', this.handleBackButton);
   }
 
   componentWillUnmount() {
     this.keyboardWillShowSubscription.remove();
     this.keyboardWillHideSubscription.remove();
+
+    BackHandler.removeEventListener('hardwareBackPress', this.handleBackButton);
   }
 
+  handleBackButton = () => {
+    Actions.pop();
+    return true;
+  }
+  
   UNSAFE_componentWillReceiveProps(nextProps) {
     // if (nextProps.feedo.loading === 'PUBNUB_DELETE_FEED') {
     //   console.log('CCCCC')

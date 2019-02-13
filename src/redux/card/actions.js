@@ -25,7 +25,7 @@ export const createCard = (huntId) => {
 /**
  * Update a card
  */
-export const updateCard = (huntId, ideaId, title, idea, coverImage, files) => {
+export const updateCard = (huntId, ideaId, title, idea, coverImage, files, isCreateCard) => {
   let url = `ideas/${ideaId}`
   const data = {
     status: 'PUBLISHED',
@@ -42,6 +42,7 @@ export const updateCard = (huntId, ideaId, title, idea, coverImage, files) => {
       url: url,
       data,
     }),
+    payload: isCreateCard
   };
 }
 
@@ -262,6 +263,7 @@ export const uploadFileToS3 = (signedUrl, file, fileName, mimeType) => {
       new Promise((resolve, reject) => {
         const xhr = new XMLHttpRequest();
         xhr.open('PUT', signedUrl);
+        xhr.setRequestHeader("Content-type", "application/json"); 
         xhr.onreadystatechange = function() {
           if (xhr.readyState === 4) {
             if (xhr.status === 200) {
@@ -279,13 +281,15 @@ export const uploadFileToS3 = (signedUrl, file, fileName, mimeType) => {
 /**
  * Add a file
  */
-export const addFile = (ideaId, fileType, contentType, name, objectKey) => {
+export const addFile = (ideaId, fileType, contentType, name, objectKey, metadata) => {
+  console.log('METADAT: ', metadata)
   let url = `ideas/${ideaId}/files`
   const data = {
     fileType,
     contentType,
     name,
     objectKey,
+    metadata
   }
   return {
     types: [types.ADD_FILE_PENDING, types.ADD_FILE_FULFILLED, types.ADD_FILE_REJECTED],
@@ -381,6 +385,30 @@ export const getOpenGraph = (urlPath, isSharing = false) => {
       method: 'post',
       baseURL: LAMBDA_BASE_URL,
       url,
+      data,
+    }),
+    originalUrl: urlPath
+  };
+}
+
+/**
+ * Add a card in share extesnsion
+ */
+export const addSharExtensionCard = (huntId, idea, links, files, status) => {
+  let url = 'ideas/shareExtension'
+  const data = {
+    huntId,
+    idea,
+    links,
+    files,
+    status
+  }
+
+  return {
+    types: [types.ADD_SHARE_EXTENSION_CARD_PENDING, types.ADD_SHARE_EXTENSION_CARD_FULFILLED, types.ADD_SHARE_EXTENSION_CARD_REJECTED],
+    promise: axios({
+      method: 'post',
+      url: url,
       data,
     }),
   };

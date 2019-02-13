@@ -61,16 +61,24 @@ class CardEditScreen extends React.Component {
     ).start();
   }
 
-  onClose() {
-    const { idea } = this.props
-    if (idea.length === 0) {
-      Alert.alert('Error', 'Enter some text or add an image')
-      return;
+  onDoneEditCard() {
+    if (this.props.onChangeIdea) {
+      this.props.onChangeIdea(this.state.idea);
     }
 
-    if (this.props.onClose) {
-      this.props.onClose();
+    if (this.props.onDoneEditCard) {
+      this.props.onDoneEditCard();
     }
+  }
+
+  onCancelEditCard() {
+    if (this.props.onCancelEditCard) {
+      this.props.onCancelEditCard();
+    }
+  }
+
+  onChangeIdea(idea) {
+    this.setState({idea})
   }
 
   onKeyPressIdea(event) {
@@ -156,7 +164,7 @@ class CardEditScreen extends React.Component {
           multiline={true}
           underlineColorAndroid='transparent'
           value={idea}
-          onChangeText={(value) => this.props.onChangeIdea(value)}
+          onChangeText={(idea) => this.onChangeIdea(idea)}
           onKeyPress={this.onKeyPressIdea.bind(this)}
           onFocus={() => this.onFocus()}
           onBlur={() => this.onBlurIdea()}
@@ -173,9 +181,17 @@ class CardEditScreen extends React.Component {
         <TouchableOpacity 
           style={styles.closeButtonView}
           activeOpacity={0.7}
-          onPress={() => this.onClose()}
+          onPress={() => this.onCancelEditCard()}
         >
-          <Text style={styles.closeButtonText}>Done</Text>
+          <Text style={[styles.textButton, { color: COLORS.PURPLE, fontWeight: 'normal' }]}>Cancel</Text>
+        </TouchableOpacity>
+        <Text style={styles.textButton}>Edit card</Text>
+        <TouchableOpacity 
+          style={[styles.closeButtonView, { alignItems: 'flex-end' }]}
+          activeOpacity={0.7}
+          onPress={() => this.onDoneEditCard()}
+        >
+          <Text style={[styles.textButton, { color: COLORS.PURPLE }]}>Done</Text>
         </TouchableOpacity>
       </View>
     )
@@ -231,7 +247,7 @@ class CardEditScreen extends React.Component {
   }
 }
 
-
+// TODO define props
 CardEditScreen.defaultProps = {
 }
 

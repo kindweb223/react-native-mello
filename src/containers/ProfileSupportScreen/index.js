@@ -3,19 +3,22 @@ import {
   View,
   Text, 
   TouchableOpacity,
-  FlatList
+  FlatList,
+  Platform,
+  Linking
 } from 'react-native'
 import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
 import { Actions } from 'react-native-router-flux'
 import Ionicons from 'react-native-vector-icons/Ionicons'
 import SafariView from "react-native-safari-view"
+import InAppBrowser from 'react-native-inappbrowser-reborn'
 import _ from 'lodash'
 import { userSignOut, deleteProfilePhoto } from '../../redux/user/actions'
 import COLORS from '../../service/colors'
 import styles from './styles'
 import Analytics from '../../lib/firebase'
-import { TRELLO_URL } from '../../service/api'
+import { TRELLO_URL, FAQS_URL } from '../../service/api'
 
 const SUPPORT_ITEMS = [
   'FAQs',
@@ -50,34 +53,52 @@ class ProfileSupportScreen extends React.Component {
     Analytics.setCurrentScreen('ProfileSupportScren')
   }
 
-  handleSupportItem = (index) => {
+  handleSupportItem = async(index) => {
     switch(index) {
       case 0:
+        this.openURL(FAQS_URL)
         return
       case 1:
-        const url = TRELLO_URL
-        SafariView.isAvailable()
-          .then(SafariView.show({
-            url: url,
-            tintColor: COLORS.PURPLE
-          }))
-          .catch(error => {
-            // Fallback WebView code for iOS 8 and earlier
-            Linking.canOpenURL(url)
-              .then(supported => {
-                if (!supported) {
-                  console.log('Can\'t handle url: ' + url);
-                } else {
-                  return Linking.openURL(url);
-                }
-              })
-              .catch(error => console.error('An error occurred', error));
-          });
+        this.openURL(TRELLO_URL)
         return
       case 2:
         return
       default:
         return
+    }
+  }
+
+  openURL = async(url) => {
+    if (Platform.OS === 'ios') {
+      SafariView.isAvailable()
+        .then(SafariView.show({
+          url: url,
+          tintColor: COLORS.PURPLE
+        }))
+        .catch(error => {
+          // Fallback WebView code for iOS 8 and earlier
+          Linking.canOpenURL(url)
+            .then(supported => {
+              if (!supported) {
+                console.log('Can\'t handle url: ' + url);
+              } else {
+                return Linking.openURL(url);
+              }
+            })
+            .catch(error => console.error('An error occurred', error));
+        });
+    } else {
+      // Android
+      try {
+        await InAppBrowser.isAvailable()
+        InAppBrowser.open(url, {
+          toolbarColor: COLORS.PURPLE,
+        }).then((result) => {
+          console.log(result);
+        })
+      } catch (error) {
+        console.log(error);
+      }
     }
   }
 

@@ -12,6 +12,8 @@ import {
   ScrollView,
   AsyncStorage,
   SafeAreaView,
+  Platform,
+  BackHandler
 } from 'react-native'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
@@ -33,6 +35,7 @@ import _ from 'lodash';
 import Modal from 'react-native-modal';
 import moment from 'moment'
 import SafariView from "react-native-safari-view";
+import InAppBrowser from 'react-native-inappbrowser-reborn'
 import SharedGroupPreferences from 'react-native-shared-group-preferences';
 
 import { 
@@ -49,6 +52,7 @@ import {
   deleteLink,
   moveCard,
   resetCardError,
+  setCurrentCard
 } from '../../redux/card/actions'
 import { 
   createFeed,
@@ -175,6 +179,10 @@ class CardNewScreen extends React.Component {
     }
   }
 
+  componentWillMount() {
+    this.props.setCurrentCard({})
+  }
+
   async UNSAFE_componentWillReceiveProps(nextProps) {
     let loading = false;
     if (this.props.card.loading !== types.CREATE_CARD_PENDING && nextProps.card.loading === types.CREATE_CARD_PENDING) {
@@ -231,7 +239,10 @@ class CardNewScreen extends React.Component {
       // success in getting a file upload url
       loading = true;
       // Image resizing...
-      if (this.selectedFileMimeType.indexOf('image/') !== -1) {
+      const fileType = (Platform.OS === 'ios') ? this.selectedFileMimeType : this.selectedFile.type;
+      console.log('selectedFile: ', this.selectedFile);
+      if (fileType.indexOf('image/') !== -1)
+      {
         // https://www.built.io/blog/improving-image-compression-what-we-ve-learned-from-whatsapp
         let actualHeight = this.selectedFile.height;
         let actualWidth = this.selectedFile.width;
@@ -240,36 +251,40 @@ class CardNewScreen extends React.Component {
         let imgRatio = actualWidth/actualHeight;
         let maxRatio = maxWidth/maxHeight;
 
-        if (actualHeight > maxHeight || actualWidth > maxWidth) {
-          if(imgRatio < maxRatio){
-              //adjust width according to maxHeight
-              imgRatio = maxHeight / actualHeight;
-              actualWidth = imgRatio * actualWidth;
-              actualHeight = maxHeight;
+        console.log(this.selectedFile, actualHeight, actualWidth);
+        if (actualHeight !== undefined && actualWidth !== undefined)
+        {
+          if (actualHeight > maxHeight || actualWidth > maxWidth) {
+            if(imgRatio < maxRatio){
+                //adjust width according to maxHeight
+                imgRatio = maxHeight / actualHeight;
+                actualWidth = imgRatio * actualWidth;
+                actualHeight = maxHeight;
+            }
+            else if(imgRatio > maxRatio){
+                //adjust height according to maxWidth
+                imgRatio = maxWidth / actualWidth;
+                actualHeight = imgRatio * actualHeight;
+                actualWidth = maxWidth;
+            }
+            else{
+                actualHeight = maxHeight;
+                actualWidth = maxWidth;
+            }
           }
-          else if(imgRatio > maxRatio){
-              //adjust height according to maxWidth
-              imgRatio = maxWidth / actualWidth;
-              actualHeight = imgRatio * actualHeight;
-              actualWidth = maxWidth;
-          }
-          else{
-              actualHeight = maxHeight;
-              actualWidth = maxWidth;
-          }
-        }
 
-        ImageResizer.createResizedImage(this.selectedFile.uri, actualWidth, actualHeight, CONSTANTS.IMAGE_COMPRESS_FORMAT, CONSTANTS.IMAGE_COMPRESS_QUALITY, 0, null)
-          .then((response) => {
-            console.log('Image compress Success!');
-            this.props.uploadFileToS3(nextProps.card.fileUploadUrl.uploadUrl, response.uri, this.selectedFileName, this.selectedFileMimeType);
-          }).catch((error) => {
-            console.log('Image compress error: ', error);
-            this.props.uploadFileToS3(nextProps.card.fileUploadUrl.uploadUrl, this.selectedFile.uri, this.selectedFileName, this.selectedFileMimeType);
-          });
-        return;
+          ImageResizer.createResizedImage(this.selectedFile.uri, actualWidth, actualHeight, CONSTANTS.IMAGE_COMPRESS_FORMAT, CONSTANTS.IMAGE_COMPRESS_QUALITY, 0, null)
+            .then((response) => {
+              console.log('Image compress Success!');
+              this.props.uploadFileToS3(nextProps.card.fileUploadUrl.uploadUrl, response.uri, this.selectedFileName, fileType);
+            }).catch((error) => {
+              console.log('Image compress error: ', error);
+              this.props.uploadFileToS3(nextProps.card.fileUploadUrl.uploadUrl, this.selectedFile.uri, this.selectedFileName, fileType);
+            });
+          return;
+        }
       }
-      this.props.uploadFileToS3(nextProps.card.fileUploadUrl.uploadUrl, this.selectedFile.uri, this.selectedFileName, this.selectedFileMimeType);
+      this.props.uploadFileToS3(nextProps.card.fileUploadUrl.uploadUrl, this.selectedFile.uri, this.selectedFileName, fileType);
     } else if (this.props.card.loading !== types.UPLOAD_FILE_PENDING && nextProps.card.loading === types.UPLOAD_FILE_PENDING) {
       // uploading a file
       loading = true;
@@ -282,7 +297,18 @@ class CardNewScreen extends React.Component {
       const {
         objectKey,
       } = this.props.card.fileUploadUrl;
-      this.props.addFile(id, this.selectedFileType, this.selectedFileMimeType, this.selectedFileName, objectKey);
+      const fileType = (Platform.OS === 'ios') ? this.selectedFileMimeType : this.selectedFile.type;
+      if (fileType.indexOf('image/') !== -1) {
+        const { width, height } = await this.getImageSize(this.selectedFile.uri);
+        const metadata = {
+          width,
+          height
+        }
+        this.props.addFile(id, this.selectedFileType, fileType, this.selectedFileName, objectKey, metadata);
+      }
+      else
+        this.props.addFile(id, this.selectedFileType, fileType, this.selectedFileName, objectKey, null);
+
     } else if (this.props.card.loading !== types.ADD_FILE_PENDING && nextProps.card.loading === types.ADD_FILE_PENDING) {
       // adding a file
       loading = true;
@@ -472,7 +498,7 @@ class CardNewScreen extends React.Component {
       } else if (this.props.feedo.loading !== feedoTypes.CREATE_FEED_FULFILLED && nextProps.feedo.loading === feedoTypes.CREATE_FEED_FULFILLED) {
         // creating a feed
         if (this.props.viewMode === CONSTANTS.CARD_NEW) {
-          // loading = true;
+          loading = true;
           this.draftFeedo = nextProps.feedo.currentFeed;
           this.props.createCard(nextProps.feedo.currentFeed.id);
         }
@@ -509,11 +535,58 @@ class CardNewScreen extends React.Component {
         } else {
           error = (nextProps.card.error && nextProps.card.error.message) || (nextProps.feedo.error && nextProps.feedo.error.message);
         }
+
         if (error) {
           if (nextProps.card.loading === types.GET_OPEN_GRAPH_REJECTED) {
+            // success in getting open graph
+            if (this.props.card.currentCard.links === null || this.props.card.currentCard.links.length === 0) {
+              loading = true;
+            }
+            if (this.allLinkImages.length === 0) {
+              if (nextProps.card.currentOpneGraph.images) {
+                this.allLinkImages = nextProps.card.currentOpneGraph.images;
+              } else if (nextProps.card.currentOpneGraph.image) {
+                this.allLinkImages.push(nextProps.card.currentOpneGraph.image);
+              }
+            }
+
+            let currentIdea = this.state.idea;
+            currentIdea = currentIdea.replace(' ', '');
+            currentIdea = currentIdea.replace(',', '');
+            currentIdea = currentIdea.replace('\n', '');
+            if (currentIdea.toLowerCase() === this.linksForOpenGraph[this.indexForOpenGraph].toLowerCase()) {
+              this.setState({
+                idea: nextProps.card.currentOpneGraph.title,
+              });
+            }
+            this.openGraphLinksInfo.push({
+              url: nextProps.card.currentOpneGraph.url,
+              title: nextProps.card.currentOpneGraph.title,
+              description: nextProps.card.currentOpneGraph.description,
+              image: nextProps.card.currentOpneGraph.image,
+              favicon: nextProps.card.currentOpneGraph.favicon
+            });
+            
+            this.indexForOpenGraph ++;
+            
+            if (this.indexForOpenGraph < this.linksForOpenGraph.length) {
+              this.props.getOpenGraph(this.linksForOpenGraph[this.indexForOpenGraph]);
+            } else {
+              this.indexForAddedLinks = 0;
+              const { id } = this.props.card.currentCard;
+              const {
+                url,
+                title,
+                description,
+                image,
+                favicon,
+              } = this.openGraphLinksInfo[this.indexForAddedLinks++];
+              this.props.addLink(id, url, title, description, image, favicon);
+            }
+
             if (this.props.card.currentCard.links === null || this.props.card.currentCard.links.length === 0) {
               if (this.parseErrorUrls(error)) {
-                error = 'Sorry, this link cannot be read';
+                error = 'Oops, we can\'t get the details from this link';
               } else {
                 // return;
               }
@@ -562,15 +635,34 @@ class CardNewScreen extends React.Component {
 
     this.keyboardWillShowSubscription = Keyboard.addListener('keyboardWillShow', (e) => this.keyboardWillShow(e));
     this.keyboardWillHideSubscription = Keyboard.addListener('keyboardWillHide', (e) => this.keyboardWillHide(e));
-    this.safariViewShowSubscription = SafariView.addEventListener('onShow', () => this.safariViewShow());
-    this.safariViewDismissSubscription = SafariView.addEventListener('onDismiss', () => this.safariViewDismiss());
+    if (Platform.OS === 'ios') {
+      this.safariViewShowSubscription = SafariView.addEventListener('onShow', () => this.safariViewShow());
+      this.safariViewDismissSubscription = SafariView.addEventListener('onDismiss', () => this.safariViewDismiss());
+    }
+
+    BackHandler.addEventListener('hardwareBackPress', this.handleBackButton);
   }
 
   componentWillUnmount() {
     this.keyboardWillShowSubscription.remove();
     this.keyboardWillHideSubscription.remove();
-    this.safariViewShowSubscription.remove();
-    this.safariViewDismissSubscription.remove();
+    if (Platform.OS === 'ios') {
+      this.safariViewShowSubscription.remove();
+      this.safariViewDismissSubscription.remove();
+    }
+
+    BackHandler.removeEventListener('hardwareBackPress', this.handleBackButton);
+  }
+  
+  handleBackButton = () => {
+    const { cardMode, viewMode } = this.props;
+    if (cardMode === CONSTANTS.SHARE_EXTENTION_CARD) {
+      this.props.shareUrl !== '' && this.props.shareImageUrls.length > 0 ? Actions.pop() : this.props.onClose()
+    }
+    if (viewMode === CONSTANTS.CARD_NEW) {
+      this.leaveActionSheetRef.show()
+    }
+    return true;
   }
 
   keyboardWillShow(e) {
@@ -606,7 +698,7 @@ class CardNewScreen extends React.Component {
   }
 
   async createCard(currentProps) {
-    Analytics.logEvent('new_card_new_card', {})
+    Analytics.logEvent('CardNewScreen', {})
 
     const { cardMode, viewMode, prevPage } = this.props;
     if (prevPage !== 'card' && (cardMode === CONSTANTS.MAIN_APP_CARD_FROM_DASHBOARD) || (cardMode === CONSTANTS.SHARE_EXTENTION_CARD)) {
@@ -647,6 +739,7 @@ class CardNewScreen extends React.Component {
     const feedoInfo = {
       time: moment().format('LLL'),
       feedoId: this.props.feedo.currentFeed.id,
+      currentFeed: this.props.feedo.currentFeed
     }
     SharedGroupPreferences.setItem(CONSTANTS.CARD_SAVED_LAST_FEEDO_INFO, JSON.stringify(feedoInfo), CONSTANTS.APP_GROUP_LAST_USED_FEEDO)
   }
@@ -793,7 +886,7 @@ class CardNewScreen extends React.Component {
 
     if (this.isCardValid(idea, files)) {
       const cardName = '';
-      this.props.updateCard(this.props.feedo.currentFeed.id, id, cardName, this.state.idea, this.state.coverImage, files);
+      this.props.updateCard(this.props.feedo.currentFeed.id, id, cardName, this.state.idea, this.state.coverImage, files, true);
     } else {
       Alert.alert('Error', 'Enter some text or add an image')
     }
@@ -819,20 +912,80 @@ class CardNewScreen extends React.Component {
     //   cardName = '';
     // }
     const cardName = '';
-    this.props.updateCard(this.props.feedo.currentFeed.id, id, cardName, this.state.idea, this.state.coverImage, files);
+    this.props.updateCard(this.props.feedo.currentFeed.id, id, cardName, this.state.idea, this.state.coverImage, files, true);
   }
 
   onAddMedia() {
-    this.imagePickerActionSheetRef.show();
+    Permissions.checkMultiple(['camera', 'photo']).then(response => {
+      if (response.camera === 'authorized' && response.photo === 'authorized') {
+        //permission already allowed
+        this.imagePickerActionSheetRef.show();
+      }
+      else {
+        Permissions.request('camera').then(response => {
+          if (response === 'authorized') {
+            //camera permission was authorized
+            Permissions.request('photo').then(response => {
+              if (response === 'authorized') {
+                //photo permission was authorized
+                this.imagePickerActionSheetRef.show();
+              }
+              else if (Platform.OS === 'ios') {
+                Permissions.openSettings();
+              }    
+            });
+          }
+          else if (Platform.OS === 'ios') {
+            Permissions.openSettings();
+          }
+        });
+      }
+    });
   }
 
   onAddDocument() {
+    if (Platform.OS === 'ios') {
+      this.PickerDocumentShow();
+    }
+    else {
+      Permissions.check('storage').then(response => { //'storage' permission doesn't support on iOS
+        if (response === 'authorized') {
+          //permission already allowed
+          this.PickerDocumentShow();
+        }
+        else {
+          Permissions.request('storage').then(response => {
+            if (response === 'authorized') {
+              //storage permission was authorized
+              this.PickerDocumentShow();
+            }
+          });
+        }
+      });
+    }
+  }
+  
+  PickerDocumentShow () {
     DocumentPicker.show({
       filetype: [DocumentPickerUtil.allFiles()],
     },(error, response) => {
       if (error === null) {
         if (response.fileSize > 1024 * 1024 * 10) {
-          Alert.alert('Warning', 'File size must be less than 10MB')
+          Alert.alert(
+            '',
+            CONSTANTS.PREMIUM_10MB_ALERT_MESSAGE,
+            [
+              {
+                text: 'Ok',
+                style: 'cancel'
+              },
+              {
+                text: 'Discover',
+                onPress: () => Actions.PremiumScreen()
+              }
+            ],
+            { cancelable: false }
+          )
         } else {
           let type = 'FILE';
           const mimeType = mime.lookup(response.uri);
@@ -847,7 +1000,7 @@ class CardNewScreen extends React.Component {
     });
     return;
   }
-  
+
   onHideKeyboard() {
     const { cardMode } = this.props;
     if (cardMode === CONSTANTS.SHARE_EXTENTION_CARD) {
@@ -903,7 +1056,21 @@ class CardNewScreen extends React.Component {
     ImagePicker.launchCamera(options, (response)  => {
       if (!response.didCancel) {
         if (response.fileSize > 1024 * 1024 * 10) {
-          Alert.alert('Warning', 'File size must be less than 10MB')
+          Alert.alert(
+            '',
+            CONSTANTS.PREMIUM_10MB_ALERT_MESSAGE,
+            [
+              {
+                text: 'Ok',
+                style: 'cancel'
+              },
+              {
+                text: 'Discover',
+                onPress: () => Actions.PremiumScreen()
+              }
+            ],
+            { cancelable: false }
+          )
         } else {
           if (!response.fileName) {
             response.fileName = response.uri.replace(/^.*[\\\/]/, '')
@@ -918,7 +1085,21 @@ class CardNewScreen extends React.Component {
     ImagePicker.launchImageLibrary(options, (response)  => {
       if (!response.didCancel) {
         if (response.fileSize > 1024 * 1024 * 10) {
-          Alert.alert('Warning', 'File size must be less than 10MB')
+          Alert.alert(
+            '',
+            CONSTANTS.PREMIUM_10MB_ALERT_MESSAGE,
+            [
+              {
+                text: 'Ok',
+                style: 'cancel'
+              },
+              {
+                text: 'Discover',
+                onPress: () => Actions.PremiumScreen()
+              }
+            ],
+            { cancelable: false }
+          )
         } else {
           this.uploadFile(this.props.card.currentCard, response, 'MEDIA');
         }
@@ -937,34 +1118,10 @@ class CardNewScreen extends React.Component {
         
     if (index === 0) {
       // from camera
-      Permissions.check('camera').then(response => {
-        if (response === 'authorized') {
-          this.pickMediaFromCamera(options);
-        } else if (response === 'undetermined') {
-          Permissions.request('camera').then(response => {
-            if (response === 'authorized') {
-              this.pickMediaFromCamera(options);
-            }
-          });
-        } else {
-          Permissions.openSettings();
-        }
-      });
+      this.pickMediaFromCamera(options);
     } else if (index === 1) {
       // from library
-      Permissions.check('photo').then(response => {
-        if (response === 'authorized') {
-          this.pickMediaFromLibrary(options);
-        } else if (response === 'undetermined') {
-          Permissions.request('photo').then(response => {
-            if (response === 'authorized') {
-              this.pickMediaFromLibrary(options);
-            }
-          });
-        } else {
-          Permissions.openSettings();
-        }
-      });
+      this.pickMediaFromLibrary(options);
     }
   }
 
@@ -1132,10 +1289,17 @@ class CardNewScreen extends React.Component {
     }
   }
 
-  addLinkImage(id, imageUrl) {
+  async addLinkImage(id, imageUrl) {
     const mimeType = mime.lookup(imageUrl) || 'image/jpeg';
     const filename = imageUrl.replace(/^.*[\\\/]/, '')
-    this.props.addFile(id, 'MEDIA', mimeType, filename, imageUrl);
+
+    const { width, height } = await this.getImageSize(imageUrl);
+    const metadata = {
+      width,
+      height
+    }
+
+    this.props.addFile(id, 'MEDIA', mimeType, filename, imageUrl, metadata);
   }
 
   get renderCoverImage() {
@@ -1388,7 +1552,7 @@ class CardNewScreen extends React.Component {
       if (!otherInvitees || otherInvitees.length === 0) {
         return (
           <View style={[styles.rowContainer, { flex: 1 }]}>
-            <Text style={styles.textInvitee}>{getDurationFromNow(this.props.card.currentCard.publishedDate)}</Text>
+            <Text style={styles.textInvitee}>{getDurationFromNow(this.props.card.currentCard.lastUpdated)}</Text>
           </View>
         );
       }
@@ -1401,7 +1565,7 @@ class CardNewScreen extends React.Component {
         />
         <Text style={[styles.textInvitee, { marginLeft: 9, fontSize,}]} numberOfLines={1}>{name}</Text>
         <Entypo name="dot-single" style={styles.iconDot} />
-        <Text style={styles.textInvitee}>{getDurationFromNow(this.props.card.currentCard.publishedDate)}</Text>
+        <Text style={styles.textInvitee}>{getDurationFromNow(this.props.card.currentCard.lastUpdated)}</Text>
       </View>
     );
   }
@@ -1522,7 +1686,7 @@ class CardNewScreen extends React.Component {
       contentContainerStyle = {
         paddingTop: 0,
         paddingBottom: this.animatedKeyboardHeight,
-        height: CONSTANTS.SCREEN_HEIGHT,
+        height: '100%',
         backgroundColor: '#fff',
       }
     }
@@ -1631,6 +1795,7 @@ class CardNewScreen extends React.Component {
           animationOut="fadeOut"
           animationInTiming={500}
           onBackdropPress={() => this.setState({ isCopyLink: false })}
+          onBackButtonPress={() => this.setState({ isCopyLink: false })}
         >
           <View style={styles.successView}>
             <Octicons name="check" style={styles.successIcon} />
@@ -1687,6 +1852,7 @@ const mapStateToProps = ({ card, feedo, user, }) => ({
 
 
 const mapDispatchToProps = dispatch => ({
+  setCurrentCard: (card) => dispatch(setCurrentCard(card)),
   createFeed: () => dispatch(createFeed()),
   updateFeed: (id, name, comments, tags, files) => dispatch(updateFeed(id, name, comments, tags, files)),
   deleteDraftFeed: (id) => dispatch(deleteDraftFeed(id)),
@@ -1695,17 +1861,17 @@ const mapDispatchToProps = dispatch => ({
 
   createCard: (huntId) => dispatch(createCard(huntId)),
   getCard: (ideaId) => dispatch(getCard(ideaId)),
-  updateCard: (huntId, ideaId, title, idea, coverImage, files) => dispatch(updateCard(huntId, ideaId, title, idea, coverImage, files)),
+  updateCard: (huntId, ideaId, title, idea, coverImage, files, isCreateCard) => dispatch(updateCard(huntId, ideaId, title, idea, coverImage, files, isCreateCard)),
   getFileUploadUrl: (huntId, ideaId) => dispatch(getFileUploadUrl(huntId, ideaId)),
   uploadFileToS3: (signedUrl, file, fileName, mimeType) => dispatch(uploadFileToS3(signedUrl, file, fileName, mimeType)),
-  addFile: (ideaId, fileType, contentType, name, objectKey) => dispatch(addFile(ideaId, fileType, contentType, name, objectKey)),
+  addFile: (ideaId, fileType, contentType, name, objectKey, metadata) => dispatch(addFile(ideaId, fileType, contentType, name, objectKey, metadata)),
   deleteFile: (ideaId, fileId) => dispatch(deleteFile(ideaId, fileId)),
   setCoverImage: (ideaId, fileId) => dispatch(setCoverImage(ideaId, fileId)),
   getOpenGraph: (url) => dispatch(getOpenGraph(url)),
   addLink: (ideaId, originalUrl, title, description, imageUrl, faviconUrl) => dispatch(addLink(ideaId, originalUrl, title, description, imageUrl, faviconUrl)),
   deleteLink: (ideaId, linkId) => dispatch(deleteLink(ideaId, linkId)),
   moveCard: (ideaId, huntId) => dispatch(moveCard(ideaId, huntId)),
-  resetCardError: () => dispatch(resetCardError()),
+  resetCardError: () => dispatch(resetCardError())
 })
 
 
