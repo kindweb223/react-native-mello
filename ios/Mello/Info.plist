@@ -44,6 +44,17 @@
 				<string>com.googleusercontent.apps.887924189900-cp9g9c2c4144b3o8uf5nr33dgf0mehod</string>
 			</array>
 		</dict>
+		<dict>
+			<key>CFBundleTypeRole</key>
+			<string>Editor</string>
+			<key>CFBundleURLName</key>
+			<string>my.melloapp.com</string>
+			<key>CFBundleURLSchemes</key>
+			<array>
+				<string>my.melloapp.com</string>
+			</array>
+		</dict>
+		<dict/>
 	</array>
 	<key>CFBundleVersion</key>
 	<string>56</string>
