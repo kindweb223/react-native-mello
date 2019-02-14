@@ -28,6 +28,8 @@ class CardEditScreen extends React.Component {
 
     this.animatedShow = new Animated.Value(0);
     this.animatedKeyboardHeight = new Animated.Value(0);
+    this.onFocusDelayed = _.debounce(this.onFocus, 500)
+    this.onBlurDelayed = _.debounce(this.onBlurIdea, 500)
   }
 
   async componentDidMount() {
@@ -87,13 +89,13 @@ class CardEditScreen extends React.Component {
     }
   }
 
-  onFocus() {
+  onFocus = () => {
     this.setState({
       isShowKeyboardButton: true,
     });
   }
 
-  onBlurIdea() {
+  onBlurIdea = () => {
     this.setState({
       isShowKeyboardButton: false,
     });
@@ -166,8 +168,8 @@ class CardEditScreen extends React.Component {
           value={idea}
           onChangeText={(idea) => this.onChangeIdea(idea)}
           onKeyPress={this.onKeyPressIdea.bind(this)}
-          onFocus={() => this.onFocus()}
-          onBlur={() => this.onBlurIdea()}
+          onFocus={this.onFocusDelayed}
+          onBlur={this.onBlurDelayed}
           onSelectionChange={this.onSelectionChange.bind(this)}
           selectionColor={COLORS.PURPLE}
         />
