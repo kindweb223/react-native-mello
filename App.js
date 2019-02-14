@@ -226,7 +226,7 @@ export default class Root extends React.Component {
         const path = params[params.length - 2]
         console.log('UNIVERSAL_LINK: ', decodeURIComponent(url_), ' Path: ', path)
 
-        if (path === 'get-started' || path === 'mello-secure-site' || path === 'feedo-secure-site') {  
+        if (path) {  
           const lastParam = params[params.length - 1]
           const paramArray = lastParam.split(/[?\=&]/)
           const type = paramArray[0]
