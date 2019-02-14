@@ -12,6 +12,7 @@ import { Actions } from 'react-native-router-flux'
 import PropTypes from 'prop-types'
 import _ from 'lodash'
 import Ionicons from 'react-native-vector-icons/Ionicons'
+import SVGImage from 'react-native-remote-svg'
 import ToasterComponent from '../../components/ToasterComponent'
 import ArchivedFeedoListContainer from '../ArchivedFeedoListContainer'
 
@@ -24,7 +25,8 @@ import {
 
 import COLORS from '../../service/colors'
 import styles from './styles'
-const EMPTY_ICON = require('../../../assets/images/empty_state/asset-emptystate.png')
+
+const NOTIFICATION_EMPTY_ICON = require('../../../assets/svgs/NotificationEmptyState.svg')
 
 class ArchivedFeedScreen extends React.Component {
   static renderLeftButton(props) {
@@ -113,7 +115,7 @@ class ArchivedFeedScreen extends React.Component {
   render () {
     let { archivedFeedList, loading, isShowToaster } = this.state
 
-    archivedFeedList = _.orderBy(archivedFeedList, ['publishedDate'], ['desc'])
+    archivedFeedList = _.orderBy(archivedFeedList, ['metadata.myLastActivityDate'], ['desc'])
 
     return (
       <View style={styles.container}>
@@ -125,15 +127,19 @@ class ArchivedFeedScreen extends React.Component {
 
         {archivedFeedList.length === 0 && !loading && (
           <View style={styles.emptyView}>
-            <Image source={EMPTY_ICON} />
-            <Text style={styles.emptyText}>Mello is more fun with flows</Text>
+            <SVGImage
+              source={NOTIFICATION_EMPTY_ICON}
+            />
+            <Text style={styles.title}>No archived flows</Text>
+            <Text style={styles.subTitle}>Use archive for flows you may want to</Text>
+            <Text style={styles.subTitle}>come back to in the future.</Text>
           </View>
         )}
 
         {isShowToaster && (
           <ToasterComponent
             isVisible={isShowToaster}
-            title="Mello restored."
+            title="Flow restored"
             onPressButton={this.undoAction}
           />
         )}

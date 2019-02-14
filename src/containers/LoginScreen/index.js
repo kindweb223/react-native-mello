@@ -165,7 +165,7 @@ class LoginScreen extends React.Component {
     if (userEmail.length === 0) {
       Alert.alert('Error', 'Email is required')
     } else if (!COMMON_FUNC.validateEmail(userEmail)) {
-      Alert.alert('Error', 'Email is invalid')
+      Alert.alert('Error', 'Please enter a valid email address')
     } else {
       const param = {
         email: userEmail
@@ -202,7 +202,7 @@ class LoginScreen extends React.Component {
           {
             code: 'com.signup.email.invalid',
             field: 'email',
-            message: 'Email is invalid'
+            message: 'Please enter a valid email address'
           }
         ]
       }
@@ -253,16 +253,22 @@ class LoginScreen extends React.Component {
         this.setState({ loading: false })
         if (error.code === statusCodes.SIGN_IN_CANCELLED) {
           // user cancelled the login flow
-        } else if (error.code === statusCodes.IN_PROGRESS) {
+        } 
+        else if (error.code === statusCodes.IN_PROGRESS) {
           // operation (f.e. sign in) is in progress already
-        } else if (error.code === statusCodes.PLAY_SERVICES_NOT_AVAILABLE) {
+          Alert.alert('Error', 'Sign in is in progress already')
+        } 
+        else if (error.code === statusCodes.PLAY_SERVICES_NOT_AVAILABLE) {
           // play services not available or outdated
-        } else {
+          Alert.alert('Error', 'You must enable Play Services to Sign in with Google')
+        } 
+        else {
           // some other error happened
+          Alert.alert('Error', 'Sign in with Google failed')
         }
       }
     } catch (err) {
-      Alert.alert('Warning', 'play services are not available')
+      Alert.alert('Error', 'You must enable Play Services to Sign in with Google')
     }
   }
 
@@ -326,7 +332,7 @@ class LoginScreen extends React.Component {
             <View style={styles.signupButtonView}>
               <Text style={[styles.btnSend, { color: COLORS.MEDIUM_GREY }]}>Don't have an account? </Text>
               <TouchableOpacity onPress={() => this.onSignUp()}>
-                <Text style={[styles.btnSend, { color: COLORS.PURPLE }]}>Sign up.</Text>
+                <Text onPress={() => this.onSignUp()} suppressHighlightin={true} style={[styles.btnSend, { color: COLORS.PURPLE }]}>Sign up.</Text>
               </TouchableOpacity>
             </View>
           </View>

@@ -5,7 +5,9 @@ import {
   Text,
   TouchableOpacity,
   Image,
-  Alert
+  BackHandler,
+  Alert,
+  Platform,
 } from 'react-native'
 import { connect } from 'react-redux'
 import { Actions } from 'react-native-router-flux'
@@ -14,6 +16,7 @@ import Swiper from 'react-native-swiper'
 import LottieView from 'lottie-react-native'
 import { ifIphoneX } from 'react-native-iphone-x-helper'
 import { GoogleSignin, statusCodes } from 'react-native-google-signin'
+import Video from 'react-native-video'
 
 import LoadingScreen from '../LoadingScreen'
 import COLORS from '../../service/colors'
@@ -26,20 +29,33 @@ import { userGoogleSigin, getUserSession } from '../../redux/user/actions'
 
 const LOGO = require('../../../assets/images/Login/logoMelloIcon-Tutorial.png')
 const LOGO_TEXT = require('../../../assets/images/Login/logoMello-Tutorial.png')
-const TEMP_IMG = require('../../../assets/images/Login/tutorialTempImg.png')
 const GOOGLE_ICON = require('../../../assets/images/Login/iconMediumGoogle.png')
 const MAIL_ICON = require('../../../assets/images/Login/iconMediumEmailGrey.png')
 
-import LOTTIE_COLLECT from '../../../assets/lottie/showcase-collect.json'
-import LOTTIE_REVIEW from '../../../assets/lottie/showcase-review.json'
-import LOTTIE_SHARE from '../../../assets/lottie/showcase-share.json'
+import LOTTIE_COLLECT from '../../../assets/lottie/1-Orbit.json'
+import LOTTIE_REVIEW from '../../../assets/lottie/2-Phone.json'
+import LOTTIE_SHARE from '../../../assets/lottie/3-Head.json'
+import LOTTIE_SERVICE from '../../../assets/lottie/4-Srevices.json'
+import LOTTIE_PEOPLE from '../../../assets/lottie/5-People.json'
+
+import VIDEO_COLLECT from '../../../assets/videos/Orbit.m4v'
+import VIDEO_REVIEW from '../../../assets/videos/Phone.m4v'
+import VIDEO_SHARE from '../../../assets/videos/Head.m4v'
+import VIDEO_SERVICE from '../../../assets/videos/Services.m4v'
+import VIDEO_PEOPLE from '../../../assets/videos/People.m4v'
+
 
 class TutorialScreen extends React.Component {
   constructor(props) {
     super(props)
     this.state = {
       position: 0,
-      loading: false
+      loading: false,
+      video1Paused: true,
+      video2Paused: true,
+      video3Paused: true,
+      video4Paused: true,
+      video5Paused: true,
     }
   }
 
@@ -50,13 +66,29 @@ class TutorialScreen extends React.Component {
       webClientId: GOOGLE_WEB_CLIENT_ID,
       offlineAccess: false
     })
+
+    BackHandler.addEventListener('hardwareBackPress', this.handleBackButton);
+  }
+
+  componentWillUnmount() {
+    BackHandler.removeEventListener('hardwareBackPress', this.handleBackButton);
+  }
+
+  handleBackButton = () => {
+    
+    const {position} = this.state;
+    if (position > 0)
+    {
+      this.swiperRef.scrollBy(-1, true)
+    }
+    return true;
   }
 
   componentWillReceiveProps(nextProps) {
     const { user } = nextProps
 
     if (nextProps.prevPage === 'login') {
-      this.onSkip(false)
+      this.swiperRef.scrollBy(6, false)
     }
 
     if (this.props.user.loading === 'USER_GOOGLE_SIGNIN_PENDING' && user.loading === 'USER_GOOGLE_SIGNIN_FULFILLED') {
@@ -75,13 +107,15 @@ class TutorialScreen extends React.Component {
     }
 
     if (this.props.user.loading === 'GET_USER_SESSION_PENDING' && user.loading === 'GET_USER_SESSION_FULFILLED') {
-      this.setState({ loading: false }, () => {
-        if (user.userInfo.tandcAccepted) {
-          Actions.HomeScreen()
-        } else {
-          Actions.TermsAndConditionsConfirmScreen()
-        }
-      })
+      if (Actions.currentScene === 'TutorialScreen') {
+        this.setState({ loading: false }, () => {
+          if (user.userInfo.tandcAccepted) {
+            Actions.HomeScreen()
+          } else {
+            Actions.TermsAndConditionsConfirmScreen()
+          }
+        })
+      }
     }
 
     if (this.props.user.loading === 'GET_USER_SESSION_PENDING' && user.loading === 'GET_USER_SESSION_REJECTED') {
@@ -110,16 +144,22 @@ class TutorialScreen extends React.Component {
         this.setState({ loading: false })
         if (error.code === statusCodes.SIGN_IN_CANCELLED) {
           // user cancelled the login flow
-        } else if (error.code === statusCodes.IN_PROGRESS) {
+        } 
+        else if (error.code === statusCodes.IN_PROGRESS) {
           // operation (f.e. sign in) is in progress already
-        } else if (error.code === statusCodes.PLAY_SERVICES_NOT_AVAILABLE) {
+          Alert.alert('Error', 'Sign in is in progress already')
+        } 
+        else if (error.code === statusCodes.PLAY_SERVICES_NOT_AVAILABLE) {
           // play services not available or outdated
-        } else {
+          Alert.alert('Error', 'You must enable Play Services to Sign in with Google')
+        } 
+        else {
           // some other error happened
+          Alert.alert('Error', 'Sign in with Google failed')
         }
       }
     } catch (err) {
-      Alert.alert('Warning', 'play services are not available')
+      Alert.alert('Error', 'You must enable Play Services to Sign in with Google')
     }
   }
 
@@ -137,51 +177,62 @@ class TutorialScreen extends React.Component {
   renderLottieView(title, lottieUrl, index) {
     return (
       <View style={styles.swipeContainer}>
-        <View style={styles.titleView}>
-          <Text style={styles.titleText}>{title}</Text>
-        </View>
-        <View style={styles.subContainer}>
+        <View style={styles.lottieContainer}>
           <View style={styles.lottieView}>
             {index === 1 && (
-              <LottieView
-                ref={animation => this.lottieFirst = animation}
-                source={lottieUrl}
-                loop
-                style={{ }}
-              />
+              <Video 
+                ref={(ref) => { this.player1 = ref }}
+                source={VIDEO_COLLECT}
+                allowsExternalPlayback={false}
+                paused={this.state.video1Paused}
+                style={styles.backgroundVideo}
+                resizeMode="contain" 
+                repeat={true} />            
             )}
             {index === 2 && (
-              <LottieView
-                ref={animation => this.lottieSecond = animation}
-                source={lottieUrl}
-                loop
-                style={{ }}
-              />
+              <Video  
+                ref={(ref) => { this.player2 = ref }}
+                source={VIDEO_REVIEW}
+                allowsExternalPlayback={false}
+                paused={this.state.video2Paused}
+                style={styles.backgroundVideo}
+                resizeMode="contain" 
+                repeat={true} />
             )}
             {index === 3 && (
-              <LottieView
-                ref={animation => this.lottieThird = animation}
-                source={lottieUrl}
-                loop
-                style={{ }}
-              />
-            )}          
+              <Video 
+                ref={(ref) => { this.player3 = ref }}
+                source={VIDEO_SHARE}
+                allowsExternalPlayback={false}
+                paused={this.state.video3Paused}
+                style={styles.backgroundVideo}
+                resizeMode="contain" 
+                repeat={true} />
+            )}
+            {index === 4 && (
+              <Video 
+                ref={(ref) => { this.player4 = ref }}
+                source={VIDEO_SERVICE}
+                allowsExternalPlayback={false}
+                paused={this.state.video4Paused}
+                style={styles.backgroundVideo}
+                resizeMode="contain" 
+                repeat={true} />
+            )}
+            {index === 5 && (
+              <Video 
+                ref={(ref) => { this.player5 = ref }}
+                source={VIDEO_PEOPLE}
+                allowsExternalPlayback={false}
+                paused={this.state.video5Paused}
+                style={styles.backgroundVideo}
+                resizeMode="contain" 
+                repeat={true} />
+            )}     
           </View>
         </View>
-      </View>
-    )
-  }
-
-  renderImageView(title, imageUrl) {
-    return (
-      <View style={styles.swipeContainer}>
         <View style={styles.titleView}>
           <Text style={styles.titleText}>{title}</Text>
-        </View>
-        <View style={styles.subContainer}>
-          <View style={styles.imageView}>
-            <Image style={styles.navLogo} source={imageUrl} />
-          </View>
         </View>
       </View>
     )
@@ -222,28 +273,52 @@ class TutorialScreen extends React.Component {
   }
 
   onMomentumScrollEnd = (e, state, context) => {
-    this.lottieFirst.reset()
-    this.lottieSecond.reset()
-    this.lottieThird.reset()
+    // this.lottieFirst.reset()
+    // this.lottieSecond.reset()
+    // this.lottieThird.reset()
+    // this.lottieFourth.reset()
+    // this.lottieFifth.reset()
+
+    // Pause all videos
+    this.setState({
+      video1Paused: true, 
+      video2Paused: true, 
+      video3Paused: true, 
+      video4Paused: true, 
+      video5Paused: true
+    })
 
     if (context.state.index === 1) {
-      this.lottieFirst.play()
+      this.setState({video1Paused: false})
+      this.player1.seek(0)
+      // this.lottieFirst.play()
     } else if (context.state.index === 2) {
-      this.lottieSecond.play()
+      this.setState({video2Paused: false})
+      this.player2.seek(0)
+      // this.lottieSecond.play()
     } else if (context.state.index === 3) {
-      this.lottieThird.play()
+      this.setState({video3Paused: false})
+      this.player3.seek(0)
+      // this.lottieThird.play()
+    } else if (context.state.index === 4) {
+      this.setState({video4Paused: false})
+      this.player4.seek(0)
+      // this.lottieFourth.play()
+    } else if (context.state.index === 5) {
+      this.setState({video5Paused: false})
+      this.player5.seek(0)
+      // this.lottieFifth.play()
     }
 
     this.setState({ position: context.state.index })
   }
 
-  onSkip(animated) {
-    this.swiperRef.scrollBy(6 - this.state.position, animated)
+  onNext(animated) {
+    this.swiperRef.scrollBy(1, animated)
   }
 
   render () {
     const { position } = this.state
-
     return (
       <View style={styles.container}>
         <SafeAreaView style={styles.safeView}>
@@ -257,7 +332,7 @@ class TutorialScreen extends React.Component {
             ref={c => this.swiperRef = c}
             loop={false}
             index={position}
-            paginationStyle={{ bottom: ifIphoneX(5, 30) }}
+            paginationStyle={{ bottom: Platform.OS === 'ios' ? ifIphoneX(5, 30) : 50 }}
             dotStyle={styles.dotStyle}
             activeDotStyle={styles.dotStyle}
             activeDotColor={COLORS.DARK_GREY}
@@ -267,17 +342,17 @@ class TutorialScreen extends React.Component {
             {this.renderLogoView()}
             {this.renderLottieView('Save important content from the web.', LOTTIE_COLLECT, 1)}
             {this.renderLottieView('... or from your camera.', LOTTIE_REVIEW, 2)}
-            {this.renderLottieView('... or just straight out of you brain.', LOTTIE_SHARE, 3)}
-            {this.renderImageView('... from instagram, Photos, Dropbox, YouTube, Pinterest, Slack... You get the idea.', TEMP_IMG)}
-            {this.renderImageView('Collaborate with your teammates and close friends.', TEMP_IMG)}
+            {this.renderLottieView('... or just straight out of your brain.', LOTTIE_SHARE, 3)}
+            {this.renderLottieView('... from instagram, Photos, Dropbox, YouTube, Pinterest, Slack... You get the idea.', LOTTIE_SERVICE, 4)}
+            {this.renderLottieView('Collaborate with your teammates and close friends.', LOTTIE_PEOPLE, 5)}
             {this.renderSignupView()}
           </Swiper>
 
-          {(position !== 0 && position !== 6) && (
+          {(position !== 6) && (
             <View style={styles.skipButtonView}>
-              <TouchableOpacity onPress={() => this.onSkip(true)} activeOpacity={0.8}>
+              <TouchableOpacity onPress={() => this.onNext(true)} activeOpacity={0.8}>
                 <View style={styles.skipButton}>
-                  <Text style={styles.skipButtonText}>Skip</Text>
+                  <Text style={styles.skipButtonText}>Next</Text>
                 </View>
               </TouchableOpacity>
             </View>

@@ -248,7 +248,7 @@ class SignUpScreen extends React.Component {
           {
             code: 'com.signup.email.invalid',
             field: 'email',
-            message: 'Email is invalid'
+            message: 'Please enter a valid email address'
           }
         ]
       }
@@ -428,12 +428,12 @@ class SignUpScreen extends React.Component {
                 rightText="I'll accept the "
               >
                 <TouchableOpacity onPress={() => Actions.TermsAndConditionsScreen()}>
-                  <Text style={styles.termsText}>terms & conditions</Text>
+                  <Text style={styles.termsText}>terms of service</Text>
                 </TouchableOpacity>
               </CheckBox>
               <View style={styles.errorTncView}>
                 {this.state.showTncError && (
-                  <Text style={styles.errorText}>You must accept the Terms and Conditions</Text>
+                  <Text style={styles.errorText}>You must accept the Terms of Service</Text>
                 )}
               </View>
             </View>
@@ -447,7 +447,7 @@ class SignUpScreen extends React.Component {
             <View style={styles.loginButtonView}>
               <Text style={[styles.btnSend, { color: COLORS.MEDIUM_GREY }]}>Already have an account? </Text>
               <TouchableOpacity onPress={() => this.onSignIn()}>
-                <Text style={[styles.btnSend, { color: COLORS.PURPLE }]}>Sign in.</Text>
+                <Text onPress={() => this.onSignIn()} suppressHighlighting={true} style={[styles.btnSend, { color: COLORS.PURPLE }]}>Sign in.</Text>
               </TouchableOpacity>
             </View>
           </View>

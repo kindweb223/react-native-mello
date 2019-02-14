@@ -7,7 +7,11 @@
 		<key>Mello-tvOS.xcscheme_^#shared#^_</key>
 		<dict>
 			<key>orderHint</key>
+<<<<<<< HEAD
 			<integer>3</integer>
+=======
+			<integer>2</integer>
+>>>>>>> develop
 		</dict>
 		<key>Mello.xcscheme_^#shared#^_</key>
 		<dict>
@@ -17,7 +21,11 @@
 		<key>MelloEx.xcscheme_^#shared#^_</key>
 		<dict>
 			<key>orderHint</key>
+<<<<<<< HEAD
 			<integer>5</integer>
+=======
+			<integer>4</integer>
+>>>>>>> develop
 		</dict>
 	</dict>
 </dict>

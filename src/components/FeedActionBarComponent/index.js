@@ -5,6 +5,9 @@ import {
   TouchableOpacity,
   FlatList,
   Animated,
+  Share,
+  Platform,
+  Alert,
 } from 'react-native'
 import PropTypes from 'prop-types'
 import Octicons from 'react-native-vector-icons/Octicons'
@@ -13,6 +16,8 @@ import styles from './styles'
 import Analytics from '../../lib/firebase'
 
 import CONSTANTS from '../../service/constants'
+import COLORS from '../../service/colors'
+import { SHARE_LINK_URL } from "../../service/api"
 import * as COMMON_FUNC from '../../service/commonFunc'
 import Modal from "react-native-modal"
 
@@ -56,25 +61,16 @@ class FeedActionBarComponent extends React.Component {
   }
 
   onPressShare = () => {
-    this.setState({
-      selectedButton: SELECT_SHARE,
-    }, () => {
-      Animated.sequence([
-        Animated.timing(this.animatedSelect, {
-          toValue: 0.8,
-          duration: 100,
-        }),
-        Animated.timing(this.animatedSelect, {
-          toValue: 1,
-          duration: 100,
-        }),
-      ]).start(() => {
-        Analytics.logEvent('dashboard_share', {})
+    const {data} = this.props
 
-        this.props.handleShare()
-        this.setState({ isSettingMenu: false })
-      });
-    });
+    Analytics.logEvent('dashboard_share', {})
+
+    if (COMMON_FUNC.isSharingEnabled(data)) {
+      COMMON_FUNC.handleShareFeed(data)
+    } 
+    else {
+      Alert.alert('Warning', 'Sharing is not enabled for this flow')
+    }
   }
 
   onPressMenu() {
@@ -138,6 +134,7 @@ class FeedActionBarComponent extends React.Component {
           animationInTiming={600}
           onModalHide={this.onSettingMenuHide}
           onBackdropPress={() => this.setState({ isSettingMenu: false })}
+          onBackButtonPress={() => this.setState({ isSettingMenu: false })}
         >
           <View style={[styles.settingMenuView, { right: settingMenuMargin }]}>
             <FlatList

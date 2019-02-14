@@ -11,7 +11,8 @@ import {
   Image,
   SafeAreaView,
   AsyncStorage,
-  Platform
+  Platform,
+  BackHandler
 } from 'react-native'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
@@ -81,11 +82,6 @@ class NewFeedScreen extends React.Component {
     this.animatedTagTransition = new Animated.Value(1);
   }
 
-  componentDidMount() {
-    Analytics.setCurrentScreen('NewFeedScreen')
-    this.setState({ feedName: this.props.initFeedName })
-  }
-
   UNSAFE_componentWillReceiveProps(nextProps) {
     if (this.state.feedName !== nextProps.initFeedName) {
       this.setState({ feedName: nextProps.initFeedName })
@@ -123,7 +119,7 @@ class NewFeedScreen extends React.Component {
       if (this.selectedFile) {
         // Image resizing...
         const fileType = (Platform.OS === 'ios') ? this.selectedFileMimeType : this.selectedFile.type;
-        if (fileType.indexOf('image/') !== -1) {
+        if (fileType && fileType.indexOf('image/') !== -1) {
           const width = Math.round(this.selectedFile.width / CONSTANTS.IMAGE_COMPRESS_DIMENSION_RATIO);
           const height = Math.round(this.selectedFile.height / CONSTANTS.IMAGE_COMPRESS_DIMENSION_RATIO)
           ImageResizer.createResizedImage(this.selectedFile.uri, width, height, CONSTANTS.IMAGE_COMPRESS_FORMAT, CONSTANTS.IMAGE_COMPRESS_QUALITY, 0, null)
@@ -222,7 +218,8 @@ class NewFeedScreen extends React.Component {
   }
 
   componentDidMount() {
-    console.log('Current Feedo : ', this.props.feedo.currentFeed);
+    Analytics.setCurrentScreen('NewFeedScreen')
+
     Animated.timing(this.animatedShow, {
       toValue: 1,
       duration: CONSTANTS.ANIMATEION_MILLI_SECONDS,
@@ -241,11 +238,20 @@ class NewFeedScreen extends React.Component {
     this.keyboardWillShowSubscription = Keyboard.addListener('keyboardWillShow', (e) => this.keyboardWillShow(e));
     this.keyboardWillHideSubscription = Keyboard.addListener('keyboardWillHide', (e) => this.keyboardWillHide(e));
     this.textInputFeedNameRef.focus();
+
+    BackHandler.addEventListener('hardwareBackPress', this.handleBackButton);
   }
 
   componentWillUnmount() {
     this.keyboardWillShowSubscription.remove();
     this.keyboardWillHideSubscription.remove();
+    BackHandler.removeEventListener('hardwareBackPress', this.handleBackButton);
+  }
+
+  handleBackButton = () => {
+    console.log('handleBackButton')
+    this.onOpenActionSheet()
+    return true;
   }
 
   keyboardWillShow(e) {
@@ -320,11 +326,33 @@ class NewFeedScreen extends React.Component {
   }
 
   onAddDocument() {
+    if (Platform.OS === 'ios') {
+      this.PickerDocumentShow();
+    }
+    else {
+      Permissions.check('storage').then(response => { //'storage' permission doesn't support on iOS
+        if (response === 'authorized') {
+          //permission already allowed
+          this.PickerDocumentShow();
+        }
+        else {
+          Permissions.request('storage').then(response => {
+            if (response === 'authorized') {
+              //storage permission was authorized
+              this.PickerDocumentShow();
+            }
+          });
+        }
+      });
+    }
+  }
+
+  PickerDocumentShow() {
     DocumentPicker.show({
       filetype: [DocumentPickerUtil.allFiles()],
     },(error, response) => {
       if (error === null) {
-        if (response.fileSize > 1024 * 1024 * 10) {
+        if (response.fileSize > CONSTANTS.MAX_UPLOAD_FILE_SIZE) {
           Alert.alert('Warning', 'File size must be less than 10MB')
         } else {
           Analytics.logEvent('new_feed_add_file', {})
@@ -395,7 +423,17 @@ class NewFeedScreen extends React.Component {
   
   uploadFile(file, type) {
     this.selectedFile = file;
-    this.selectedFileMimeType = mime.lookup(file.uri);
+    
+    if (_.endsWith(file.uri, '.pages')) {
+      this.selectedFileMimeType = 'application/x-iwork-pages-sffpages'
+    } else if (_.endsWith(file.uri, '.numbers')) {
+      this.selectedFileMimeType = 'application/x-iwork-numbers-sffnumbers'
+    } else if (_.endsWith(file.uri, '.key')) {
+      this.selectedFileMimeType = 'application/x-iwork-keynote-sffkey'
+    } else {
+      this.selectedFileMimeType = mime.lookup(file.uri);
+    }
+
     this.selectedFileName = file.fileName;
     this.selectedFileType = type;
 
@@ -407,7 +445,7 @@ class NewFeedScreen extends React.Component {
   pickMediaFromCamera(options) {
     ImagePicker.launchCamera(options, (response)  => {
       if (!response.didCancel) {
-        if (response.fileSize > 1024 * 1024 * 10) {
+        if (response.fileSize > CONSTANTS.MAX_UPLOAD_FILE_SIZE) {
           Alert.alert('Warning', 'File size must be less than 10MB')
         } else {
           Analytics.logEvent('new_feed_add_camera_image', {})
@@ -424,7 +462,7 @@ class NewFeedScreen extends React.Component {
   pickMediaFromLibrary(options) {
     ImagePicker.launchImageLibrary(options, (response)  => {
       if (!response.didCancel) {
-        if (response.fileSize > 1024 * 1024 * 10) {
+        if (response.fileSize > CONSTANTS.MAX_UPLOAD_FILE_SIZE) {
           Alert.alert('Warning', 'File size must be less than 10MB')
         } else {
           Analytics.logEvent('new_feed_add_library_image', {})
@@ -458,7 +496,7 @@ class NewFeedScreen extends React.Component {
   }
 
   get renderHeader() {
-    const { feedoMode } = this.props;
+    const { feedoMode, isNewCard } = this.props;
     if (feedoMode === CONSTANTS.SHARE_EXTENTION_FEEDO) {
       return (
         <View style={styles.extensionTopContainer}>
@@ -481,24 +519,25 @@ class NewFeedScreen extends React.Component {
     }
 
     return (
-      <View style={styles.topContainer}>
+      <View style={styles.mainHeaderContainer}>
         <TouchableOpacity 
-          style={styles.closeButtonWrapper}
-          activeOpacity={0.6}
+          style={styles.btnClose}
+          activeOpacity={0.7}
           onPress={this.onOpenActionSheet.bind(this)}
         >
-          <MaterialCommunityIcons name="close" size={32} color={COLORS.PURPLE} />
+          <Text style={[styles.textButton, { color: COLORS.PURPLE, fontWeight: 'normal' }]}>Cancel</Text>
         </TouchableOpacity>
-        <TouchableOpacity 
-          style={styles.createButtonWapper}
+        {isNewCard
+          ? <Text style={styles.textButton}>New flow</Text>
+          : <Text style={styles.textButton}>Edit flow</Text>
+        }
+        <TouchableOpacity
+          style={[styles.btnClose, { alignItems: 'flex-end' }]}
           activeOpacity={0.6}
           onPress={this.onUpdate.bind(this)}
         >
-          <Text style={styles.textButton}>
-            {this.props.selectedFeedId
-              ? this.props.viewMode === CONSTANTS.FEEDO_FROM_MAIN ? 'Save' : 'Done'
-              : 'Create Flow'
-            }
+          <Text style={[styles.textButton, { color: COLORS.PURPLE }]}>
+            Done
           </Text>
         </TouchableOpacity>
       </View>
@@ -783,7 +822,8 @@ NewFeedScreen.defaultProps = {
   viewMode: CONSTANTS.FEEDO_FROM_MAIN,
   feedoMode: CONSTANTS.MAIN_APP_FEEDO,
   onClose: () => {},
-  initFeedName: ''
+  initFeedName: '',
+  isNewCard: true
 }
 
 
@@ -794,7 +834,8 @@ NewFeedScreen.propTypes = {
   onClose: PropTypes.func,
   viewMode: PropTypes.number,
   feedoMode: PropTypes.number,
-  initFeedName: PropTypes.string
+  initFeedName: PropTypes.string,
+  isNewCard: PropTypes.bool
 }
 
 
