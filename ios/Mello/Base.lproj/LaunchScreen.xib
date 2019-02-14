@@ -23,7 +23,7 @@
                     </constraints>
                 </imageView>
             </subviews>
-            <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+            <color key="backgroundColor" red="0.97254901960784312" green="0.96470588235294119" blue="1" alpha="1" colorSpace="calibratedRGB"/>
             <constraints>
                 <constraint firstItem="Ezw-zB-Itm" firstAttribute="centerY" secondItem="iN0-l3-epB" secondAttribute="centerY" id="2Hn-F9-VKR"/>
                 <constraint firstItem="Ezw-zB-Itm" firstAttribute="centerX" secondItem="iN0-l3-epB" secondAttribute="centerX" id="Chr-3S-6hV"/>
@@ -34,6 +34,6 @@
         </view>
     </objects>
     <resources>
-        <image name="LogoIcon" width="1024" height="1024"/>
+        <image name="LogoIcon" width="40" height="40"/>
     </resources>
 </document>
