@@ -1184,7 +1184,7 @@ class FeedDetailScreen extends React.Component {
       filetype: [DocumentPickerUtil.allFiles()],
     },(error, response) => {
       if (error === null) {
-        if (response.fileSize > 1024 * 1024 * 10) {
+        if (response.fileSize > CONSTANTS.MAX_UPLOAD_FILE_SIZE) {
           Alert.alert('Warning', 'File size must be less than 10MB')
         } else {
           let type = 'FILE';
@@ -1203,7 +1203,17 @@ class FeedDetailScreen extends React.Component {
 
   uploadFile(file, type) {
     this.selectedFile = file.uri;
-    this.selectedFileMimeType = mime.lookup(file.uri);
+    
+    if (_.endsWith(file.uri, '.pages')) {
+      this.selectedFileMimeType = 'application/x-iwork-pages-sffpages'
+    } else if (_.endsWith(file.uri, '.numbers')) {
+      this.selectedFileMimeType = 'application/x-iwork-numbers-sffnumbers'
+    } else if (_.endsWith(file.uri, '.key')) {
+      this.selectedFileMimeType = 'application/x-iwork-keynote-sffkey'
+    } else {
+      this.selectedFileMimeType = mime.lookup(file.uri);
+    }
+
     this.selectedFileName = file.fileName;
     this.selectedFileType = type;
     if (this.props.feedo.currentFeed.id) {
@@ -1214,7 +1224,7 @@ class FeedDetailScreen extends React.Component {
   pickMediaFromCamera(options) {
     ImagePicker.launchCamera(options, (response)  => {
       if (!response.didCancel) {
-        if (response.fileSize > 1024 * 1024 * 10) {
+        if (response.fileSize > CONSTANTS.MAX_UPLOAD_FILE_SIZE) {
           Alert.alert('Warning', 'File size must be less than 10MB')
         } else {
           if (!response.fileName) {
@@ -1229,7 +1239,7 @@ class FeedDetailScreen extends React.Component {
   pickMediaFromLibrary(options) {
     ImagePicker.launchImageLibrary(options, (response)  => {
       if (!response.didCancel) {
-        if (response.fileSize > 1024 * 1024 * 10) {
+        if (response.fileSize > CONSTANTS.MAX_UPLOAD_FILE_SIZE) {
           Alert.alert('Warning', 'File size must be less than 10MB')
         } else {
           this.uploadFile(response, 'MEDIA');

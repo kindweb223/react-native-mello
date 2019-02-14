@@ -94,7 +94,7 @@ class ProfilePremiumScreen extends React.Component {
   render () {
     return (
       <View style={styles.container}>
-        <ScrollView contentContainerStyle={styles.scrollView}>
+        <ScrollView contentContainerStyle={styles.scrollInnerView} style={styles.scrollView}>
           <View style={styles.topView}>
             <Text style={styles.title}>Take control of your content with Premium</Text>
             <Text style={styles.description}>Hella narwhal Cosby sweater kitsch before they sold out High Life.</Text>
@@ -116,13 +116,13 @@ class ProfilePremiumScreen extends React.Component {
               ))
             }
           </View>
-
-          <TouchableOpacity onPress={() => this.upgradeMe()} style={styles.buttonView}>
-            <View style={styles.button}>
-              <Text style={styles.buttonText}>Upgrade Me</Text>
-            </View>
-          </TouchableOpacity>
         </ScrollView>
+
+        <TouchableOpacity onPress={() => this.upgradeMe()} style={styles.buttonView}>
+          <View style={styles.button}>
+            <Text style={styles.buttonText}>Upgrade Me</Text>
+          </View>
+        </TouchableOpacity>
 
         <Modal
           isVisible={this.state.showPremiumModal}

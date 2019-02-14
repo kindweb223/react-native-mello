@@ -241,7 +241,7 @@ class CardNewScreen extends React.Component {
       // Image resizing...
       const fileType = (Platform.OS === 'ios') ? this.selectedFileMimeType : this.selectedFile.type;
       console.log('selectedFile: ', this.selectedFile);
-      if (fileType.indexOf('image/') !== -1)
+      if (fileType && fileType.indexOf('image/') !== -1)
       {
         // https://www.built.io/blog/improving-image-compression-what-we-ve-learned-from-whatsapp
         let actualHeight = this.selectedFile.height;
@@ -298,7 +298,7 @@ class CardNewScreen extends React.Component {
         objectKey,
       } = this.props.card.fileUploadUrl;
       const fileType = (Platform.OS === 'ios') ? this.selectedFileMimeType : this.selectedFile.type;
-      if (fileType.indexOf('image/') !== -1) {
+      if (fileType && fileType.indexOf('image/') !== -1) {
         const { width, height } = await this.getImageSize(this.selectedFile.uri);
         const metadata = {
           width,
@@ -970,22 +970,8 @@ class CardNewScreen extends React.Component {
       filetype: [DocumentPickerUtil.allFiles()],
     },(error, response) => {
       if (error === null) {
-        if (response.fileSize > 1024 * 1024 * 10) {
-          Alert.alert(
-            '',
-            CONSTANTS.PREMIUM_10MB_ALERT_MESSAGE,
-            [
-              {
-                text: 'Ok',
-                style: 'cancel'
-              },
-              {
-                text: 'Discover',
-                onPress: () => Actions.PremiumScreen()
-              }
-            ],
-            { cancelable: false }
-          )
+        if (response.fileSize > CONSTANTS.MAX_UPLOAD_FILE_SIZE) {
+          COMMON_FUNC.showPremiumAlert()
         } else {
           let type = 'FILE';
           const mimeType = mime.lookup(response.uri);
@@ -1044,7 +1030,17 @@ class CardNewScreen extends React.Component {
 
   async uploadFile(currentCard, file, type) {
     this.selectedFile = file;
-    this.selectedFileMimeType = mime.lookup(file.uri);
+    
+    if (_.endsWith(file.uri, '.pages')) {
+      this.selectedFileMimeType = 'application/x-iwork-pages-sffpages'
+    } else if (_.endsWith(file.uri, '.numbers')) {
+      this.selectedFileMimeType = 'application/x-iwork-numbers-sffnumbers'
+    } else if (_.endsWith(file.uri, '.key')) {
+      this.selectedFileMimeType = 'application/x-iwork-keynote-sffkey'
+    } else {
+      this.selectedFileMimeType = mime.lookup(file.uri);
+    }
+
     this.selectedFileName = file.fileName;
     this.selectedFileType = type;
     if (currentCard.id) {
@@ -1055,22 +1051,8 @@ class CardNewScreen extends React.Component {
   pickMediaFromCamera(options) {
     ImagePicker.launchCamera(options, (response)  => {
       if (!response.didCancel) {
-        if (response.fileSize > 1024 * 1024 * 10) {
-          Alert.alert(
-            '',
-            CONSTANTS.PREMIUM_10MB_ALERT_MESSAGE,
-            [
-              {
-                text: 'Ok',
-                style: 'cancel'
-              },
-              {
-                text: 'Discover',
-                onPress: () => Actions.PremiumScreen()
-              }
-            ],
-            { cancelable: false }
-          )
+        if (response.fileSize > CONSTANTS.MAX_UPLOAD_FILE_SIZE) {
+          COMMON_FUNC.showPremiumAlert()
         } else {
           if (!response.fileName) {
             response.fileName = response.uri.replace(/^.*[\\\/]/, '')
@@ -1084,22 +1066,8 @@ class CardNewScreen extends React.Component {
   pickMediaFromLibrary(options) {
     ImagePicker.launchImageLibrary(options, (response)  => {
       if (!response.didCancel) {
-        if (response.fileSize > 1024 * 1024 * 10) {
-          Alert.alert(
-            '',
-            CONSTANTS.PREMIUM_10MB_ALERT_MESSAGE,
-            [
-              {
-                text: 'Ok',
-                style: 'cancel'
-              },
-              {
-                text: 'Discover',
-                onPress: () => Actions.PremiumScreen()
-              }
-            ],
-            { cancelable: false }
-          )
+        if (response.fileSize > CONSTANTS.MAX_UPLOAD_FILE_SIZE) {
+          COMMON_FUNC.showPremiumAlert()
         } else {
           this.uploadFile(this.props.card.currentCard, response, 'MEDIA');
         }
