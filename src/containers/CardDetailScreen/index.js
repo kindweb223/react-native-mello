@@ -27,6 +27,7 @@ import ActionSheet from 'react-native-actionsheet'
 import ImagePicker from 'react-native-image-picker'
 import ImageResizer from 'react-native-image-resizer';
 import RNThumbnail from 'react-native-thumbnail';
+import ImgToBase64 from 'react-native-image-base64';
 
 import { DocumentPicker, DocumentPickerUtil } from 'react-native-document-picker'
 import Permissions from 'react-native-permissions'
@@ -1089,7 +1090,6 @@ class CardDetailScreen extends React.Component {
 
     if (mimeType.indexOf('video') !== -1) {
       RNThumbnail.get(file.uri).then((result) => {
-        console.log
         ImageResizer.createResizedImage(result.path, result.width, result.height, CONSTANTS.IMAGE_COMPRESS_FORMAT, 50, 0, null)
         .then((response) => {
           ImgToBase64.getBase64String(response.uri)
