@@ -65,7 +65,7 @@ class TermsAndConditionsConfirmScreen extends React.Component {
                 Tap Continue to accept 
               </Text>
               <TouchableOpacity onPress={() => Actions.TermsAndConditionsScreen()}>
-                <Text style={[styles.tcText, { color: COLORS.PURPLE }]}> Terms & Conditions</Text>
+                <Text style={[styles.tcText, { color: COLORS.PURPLE }]}> Terms of Service</Text>
               </TouchableOpacity>
             </View>
 

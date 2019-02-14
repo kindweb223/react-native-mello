@@ -977,22 +977,8 @@ class CardNewScreen extends React.Component {
       filetype: [DocumentPickerUtil.allFiles()],
     },(error, response) => {
       if (error === null) {
-        if (response.fileSize > 1024 * 1024 * 10) {
-          Alert.alert(
-            '',
-            CONSTANTS.PREMIUM_10MB_ALERT_MESSAGE,
-            [
-              {
-                text: 'Ok',
-                style: 'cancel'
-              },
-              {
-                text: 'Discover',
-                onPress: () => Actions.PremiumScreen()
-              }
-            ],
-            { cancelable: false }
-          )
+        if (response.fileSize > CONSTANTS.MAX_UPLOAD_FILE_SIZE) {
+          COMMON_FUNC.showPremiumAlert()
         } else {
           let type = 'FILE';
           const mimeType = mime.lookup(response.uri);
@@ -1074,22 +1060,8 @@ class CardNewScreen extends React.Component {
   pickMediaFromCamera(options) {
     ImagePicker.launchCamera(options, (response)  => {
       if (!response.didCancel) {
-        if (response.fileSize > 1024 * 1024 * 10) {
-          Alert.alert(
-            '',
-            CONSTANTS.PREMIUM_10MB_ALERT_MESSAGE,
-            [
-              {
-                text: 'Ok',
-                style: 'cancel'
-              },
-              {
-                text: 'Discover',
-                onPress: () => Actions.PremiumScreen()
-              }
-            ],
-            { cancelable: false }
-          )
+        if (response.fileSize > CONSTANTS.MAX_UPLOAD_FILE_SIZE) {
+          COMMON_FUNC.showPremiumAlert()
         } else {
           if (!response.fileName) {
             response.fileName = response.uri.replace(/^.*[\\\/]/, '')
@@ -1104,22 +1076,8 @@ class CardNewScreen extends React.Component {
   pickMediaFromLibrary(options) {
     ImagePicker.launchImageLibrary(options, (response)  => {
       if (!response.didCancel) {
-        if (response.fileSize > 1024 * 1024 * 10) {
-          Alert.alert(
-            '',
-            CONSTANTS.PREMIUM_10MB_ALERT_MESSAGE,
-            [
-              {
-                text: 'Ok',
-                style: 'cancel'
-              },
-              {
-                text: 'Discover',
-                onPress: () => Actions.PremiumScreen()
-              }
-            ],
-            { cancelable: false }
-          )
+        if (response.fileSize > CONSTANTS.MAX_UPLOAD_FILE_SIZE) {
+          COMMON_FUNC.showPremiumAlert()
         } else {
           this.generateThumbnail(response)  // Generate thumbnail if video
           this.uploadFile(this.props.card.currentCard, response, 'MEDIA');
