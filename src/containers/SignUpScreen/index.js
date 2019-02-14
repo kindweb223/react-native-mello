@@ -433,7 +433,7 @@ class SignUpScreen extends React.Component {
               </CheckBox>
               <View style={styles.errorTncView}>
                 {this.state.showTncError && (
-                  <Text style={styles.errorText}>You must accept the Terms of Service</Text>
+                  <Text style={styles.errorText}>You must accept the Terms of Service to proceed</Text>
                 )}
               </View>
             </View>
