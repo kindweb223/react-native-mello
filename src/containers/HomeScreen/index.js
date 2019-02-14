@@ -546,6 +546,7 @@ class HomeScreen extends React.Component {
   }
 
   async showClipboardToast() {
+    console.log('Homescreen: showClipboardToast')
     if (Actions.currentScene !== 'FeedDetailScreen') {
       const clipboardContent = await Clipboard.getString();
       const lastClipboardData = await AsyncStorage.getItem(CONSTANTS.CLIPBOARD_DATA)

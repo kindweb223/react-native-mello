@@ -5,7 +5,6 @@ import {
   View,
   TouchableOpacity,
   FlatList,
-  BackHandler,
 } from 'react-native'
 import PropTypes from 'prop-types'
 
@@ -24,19 +23,6 @@ export default class ChooseLinkImages extends React.Component {
     };
   }
   
-  componentDidMount() {
-    BackHandler.addEventListener('hardwareBackPress', this.handleBackButton);
-  }
-
-  componentWillUnmount() {
-    BackHandler.removeEventListener('hardwareBackPress', this.handleBackButton);
-  }
-
-  handleBackButton = () => {
-    this.onBack.bind(this);
-    return true;
-  }
-
   onSelectItem(image) {
     let selectedImages = this.state.selectedImages;
     const index = selectedImages.indexOf(image)
