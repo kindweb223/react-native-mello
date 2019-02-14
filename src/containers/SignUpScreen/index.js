@@ -248,7 +248,7 @@ class SignUpScreen extends React.Component {
           {
             code: 'com.signup.email.invalid',
             field: 'email',
-            message: 'Email is invalid'
+            message: 'Please enter a valid email address'
           }
         ]
       }
