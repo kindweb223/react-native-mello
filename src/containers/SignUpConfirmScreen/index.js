@@ -148,7 +148,6 @@ class SignUpConfirmScreen extends React.Component {
             : <View style={styles.subTitleView}>
                 <Text style={styles.subTitle}>Please validate your email in the </Text>
                 <Text style={styles.subTitle}>confirmation email sent to {userEmail}</Text>
-                // Todo: Go with the flow button
               </View>
           }
 
