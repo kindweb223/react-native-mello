@@ -65,7 +65,7 @@ class SignUpConfirmScreen extends React.Component {
       if (this.props.user.loading !== 'RESEND_CONFIRMATION_EMAIL_FULFILLED' && user.loading === 'RESEND_CONFIRMATION_EMAIL_FULFILLED') {
         this.setState({ loading: false }, () => {
           Alert.alert(
-            "We've resent a confirmation email"
+            "Confirmation resent to " + {userEmail}
           )
         })
       }
@@ -143,11 +143,11 @@ class SignUpConfirmScreen extends React.Component {
 
           {deepLinking
             ? <View style={styles.subTitleView}>
-                <Text style={styles.subTitle}>We have sent you a confirmation email</Text>
+                <Text style={styles.subTitle}>Almost done!</Text>
               </View>
             : <View style={styles.subTitleView}>
-                <Text style={styles.subTitle}>We have sent a confirmation</Text>
-                <Text style={styles.subTitle}>email to {userEmail}</Text>
+                <Text style={styles.subTitle}>Please validate your email in the </Text>
+                <Text style={styles.subTitle}>confirmation email sent to {userEmail}</Text>
               </View>
           }
 

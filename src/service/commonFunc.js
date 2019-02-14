@@ -1,11 +1,14 @@
 import {
   Share,
   Platform,
+  Alert
 } from 'react-native'
 
+import { Actions } from 'react-native-router-flux'
 import _ from 'lodash'
 import { SHARE_LINK_URL } from "../service/api"
 import COLORS from '../service/colors'
+import CONSTANTS from '../service/constants'
 
 /**
  * If the user is the invitee, return true
@@ -120,6 +123,24 @@ const handleShareFeed = (feed) => {
   })
 }
 
+const showPremiumAlert = () => {
+  Alert.alert(
+    '',
+    CONSTANTS.PREMIUM_10MB_ALERT_MESSAGE,
+    [
+      {
+        text: 'Ok',
+        style: 'cancel'
+      },
+      {
+        text: 'Discover',
+        onPress: () => Actions.PremiumScreen()
+      }
+    ],
+    { cancelable: false }
+  )
+}
+
 export {
   checkUserIsInvitee,
   isFeedOwner,
@@ -135,5 +156,6 @@ export {
   filterRemovedInvitees,
   isSharingEnabled,
   generateRandomString,
-  handleShareFeed
+  handleShareFeed,
+  showPremiumAlert
 }

@@ -116,7 +116,6 @@ class DocumentSliderScreen extends React.Component {
           >
             {
               docFiles.map((file, index) => {
-                console.log('file.accessUrl: ', file.accessUrl)
                 return (
                   <ScrollView
                     key={index}

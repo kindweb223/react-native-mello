@@ -220,7 +220,7 @@ export default class Root extends React.Component {
         const path = params[params.length - 2]
         console.log('UNIVERSAL_LINK: ', decodeURIComponent(url_), ' Path: ', path)
 
-        if (path === 'get-started' || path === 'mello-secure-site') {  
+        if (path === 'get-started' || path === 'mello-secure-site' || path === 'feedo-secure-site') {  
           const lastParam = params[params.length - 1]
           const paramArray = lastParam.split(/[?\=&]/)
           const type = paramArray[0]
@@ -261,10 +261,10 @@ export default class Root extends React.Component {
 
               if (userInfo) {
                 if (Actions.currentScene === 'FeedDetailScreen') {                  
-                  Actions.FeedDetailScreen({ type: 'replace', data });
+                  Actions.FeedDetailScreen({ type: 'replace', data, isDeepLink: true });
                 } 
                 else {
-                  Actions.FeedDetailScreen({ data })
+                  Actions.FeedDetailScreen({ data, isDeepLink: true })
                 }
               } 
               else {
