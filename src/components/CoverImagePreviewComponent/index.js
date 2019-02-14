@@ -69,7 +69,7 @@ export default class CoverImagePreviewComponent extends React.Component {
       files,
     } = this.state;
 
-    const position = _.findIndex(files, file => file.accessUrl === coverImage)
+    const position = _.findIndex(files, file => (file.accessUrl === coverImage || file.thumbnailUrl === coverImage))
 
     return (
       <View style={styles.container}>

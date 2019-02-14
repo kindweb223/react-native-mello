@@ -40,7 +40,7 @@ class FeedCardExtendComponent extends React.Component {
     let hasCoverImage = idea.coverImage && idea.coverImage.length > 0
     let cardHeight = 0
     if (hasCoverImage) {
-      const coverImageData = _.find(idea.files, file => file.accessUrl === idea.coverImage)
+      const coverImageData = _.find(idea.files, file => (file.accessUrl === idea.coverImage || file.thumbnailUrl === idea.coverImage))
       const cardWidth = (CONSTANTS.SCREEN_SUB_WIDTH - 16) / 2
       if (coverImageData.metadata) {
         const ratio = coverImageData.metadata.width / cardWidth
