@@ -96,7 +96,8 @@ class LoginScreen extends React.Component {
           if (user.error) {
             Alert.alert(
               'Warning',
-              resolveError(user.error.code, user.error.message)
+              // ToDo: Msg not being picked up  -> resolveError(user.error.code, user.error.message)
+              'Login failed'
             )
           }
         })
