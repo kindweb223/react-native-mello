@@ -19,6 +19,7 @@ export default {
   STATUS_BOTTOM_BAR_HEIGHT: Platform.OS === 'ios' ? ifIphoneX(40, 0) : 0,
   TAB_BAR_HEIGHT: 45,
   ANIMATEION_MILLI_SECONDS: 200,
+  ANIMATABLE_DURATION: 700,
   SCREEN_VERTICAL_MIN_MARGIN: Math.round(height * 0.145),
   TEXT_INPUT_LINE_HEIGHT: 23,
   CLIPBOARD_DATA_CONFIRM_DURATION: 6000,
@@ -82,5 +83,12 @@ export default {
   // share extension modal buttons
   MODAL_OK: 1,
   MODAL_CLOSE: 2,
-  
+
+  PREMIUM_10MB_ALERT_MESSAGE: 'Oops you need to have a premium account to upload more than 10MB.',
+  // 10MB
+  MAX_UPLOAD_FILE_SIZE: 1024 * 1024 * 10,
+
+  // file path in DocumentDirectoryPath
+  PRIVACY_POLICE: '/MELLO_PRIVACY_POLICY.txt',
+  TERMS_CONDITIONS: '/MELLO_TERMS_CONDITIONS.txt',
 }

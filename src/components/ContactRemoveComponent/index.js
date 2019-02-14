@@ -27,6 +27,7 @@ class ContactRemove extends React.Component {
         animationOut="slideOutDown"
         animationInTiming={500}
         onBackdropPress={() => this.props.onRemove()}
+        onBackButtonPress={() => this.props.onRemove()}
       >
         <View style={styles.overlay}>
           {selectedContact &&

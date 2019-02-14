@@ -1,4 +1,14 @@
+import {
+  Share,
+  Platform,
+  Alert
+} from 'react-native'
+
+import { Actions } from 'react-native-router-flux'
 import _ from 'lodash'
+import { SHARE_LINK_URL } from "../service/api"
+import COLORS from '../service/colors'
+import CONSTANTS from '../service/constants'
 
 /**
  * If the user is the invitee, return true
@@ -88,8 +98,47 @@ const isUserInvitee = (user, invitee) => {
   return user.userInfo.id === invitee.userProfile.id
 }
 
+const isSharingEnabled = (feed) => {
+  return feed.sharingPreferences.level === 'INVITEES_ONLY' ? false : true
+}
+
 const generateRandomString = () => {
   return Math.random().toString(36).substring(2, 15)
+}
+
+const handleShareFeed = (feed) => {
+  let message = feed.headline
+    
+  if (Platform.OS === 'android') {
+    message += ' ' + `${SHARE_LINK_URL}${feed.id}`
+  }
+
+  Share.share({
+    message: message,
+    url: `${SHARE_LINK_URL}${feed.id}`,
+    title: feed.headline
+  },{
+    tintColor: COLORS.PURPLE,
+    subject: 'Join my flow on Mello: ' + feed.headline
+  })
+}
+
+const showPremiumAlert = () => {
+  Alert.alert(
+    '',
+    CONSTANTS.PREMIUM_10MB_ALERT_MESSAGE,
+    [
+      {
+        text: 'Ok',
+        style: 'cancel'
+      },
+      {
+        text: 'Discover',
+        onPress: () => Actions.PremiumScreen()
+      }
+    ],
+    { cancelable: false }
+  )
 }
 
 export {
@@ -105,5 +154,8 @@ export {
   validateEmail,
   isUserInvitee,
   filterRemovedInvitees,
-  generateRandomString
+  isSharingEnabled,
+  generateRandomString,
+  handleShareFeed,
+  showPremiumAlert
 }
