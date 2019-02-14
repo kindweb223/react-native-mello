@@ -334,7 +334,7 @@ export const uploadFileToS3 = (signedUrl, file, fileName, mimeType) => {
         //   }
         // })
         xhr.open('PUT', signedUrl);
-        xhr.setRequestHeader('Content-Type', fileData.type)
+        xhr.setRequestHeader('Content-Type', mimeType)
         xhr.onreadystatechange = function() {
           if (xhr.readyState === 4) {
             if (xhr.status === 200) {
