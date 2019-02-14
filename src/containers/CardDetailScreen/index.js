@@ -493,7 +493,7 @@ class CardDetailScreen extends React.Component {
     if (viewMode === CONSTANTS.CARD_VIEW || viewMode === CONSTANTS.CARD_EDIT) {
       this.coverImageWidth = 0
       this.coverImageHeight = 0
-      const coverData = _.find(card.currentCard.files, file => file.accessUrl === card.currentCard.coverImage)
+      const coverData = _.find(card.currentCard.files, file => (file.accessUrl === card.currentCard.coverImage || file.thumbnailUrl === card.currentCard.coverImage))
       if (coverData && coverData.metadata) {
         this.coverImageWidth = coverData.metadata.width
         this.coverImageHeight = coverData.metadata.height
@@ -779,7 +779,6 @@ class CardDetailScreen extends React.Component {
       cardPadding = 20
       this.scrollEnabled = false
     }
-    console.log('cPadding:', cardPadding)
 
     // Revise if attempt to close card by scrolling down
     if (coverImage) {
@@ -1433,7 +1432,6 @@ class CardDetailScreen extends React.Component {
     const { currentFeed } = this.props.feedo;
     const { currentCard } = this.props.card;
     const { userInfo } = this.props.user;
-    console.log('currentCard: ', currentCard)
 
     const idea = _.find(currentFeed.ideas, idea => idea.id === currentCard.id)
 
