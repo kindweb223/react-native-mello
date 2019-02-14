@@ -745,7 +745,7 @@ class HomeScreen extends React.Component {
         Analytics.logEvent('dashboard_parse_push_notification', {})
         this.parsePushNotification(notification);
       },
-      senderID: "sender-id",
+      senderID: "12345678",
     });
   }
 
