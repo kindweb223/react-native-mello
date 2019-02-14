@@ -35,7 +35,6 @@ class SignUpSuccessScreen extends React.Component {
           <View style={styles.titleView}>
             <Text style={styles.title}>👍 Success!</Text>
             <Text style={styles.subTitle}>Welcome to Mello!</Text>
-            <Image source={BUTTON} />
           </View>
         </View>
       </View>
