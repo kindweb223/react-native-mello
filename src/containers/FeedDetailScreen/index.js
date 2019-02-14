@@ -243,6 +243,9 @@ class FeedDetailScreen extends React.Component {
 
     if (this.props.feedo.loading !== 'GET_FEED_DETAIL_FULFILLED' && feedo.loading === 'GET_FEED_DETAIL_FULFILLED') {
       this.setState({ viewPreference: feedo.currentFeed.metadata.myViewPreference ? feedo.currentFeed.metadata.myViewPreference : 'LIST' })
+      if (this.props.isDeepLink) {
+        this.props.getFeedoList()
+      }
     }
 
     if ((this.props.feedo.loading !== 'GET_FEED_DETAIL_FULFILLED' && feedo.loading === 'GET_FEED_DETAIL_FULFILLED') ||
@@ -1812,7 +1815,8 @@ FeedDetailScreen.defaultProps = {
   data: [],
   getFeedDetail: () => {},
   setFeedDetailAction: () => {},
-  prevPage: 'home'
+  prevPage: 'home',
+  isDeepLink: false
 }
 
 FeedDetailScreen.propTypes = {
@@ -1826,7 +1830,8 @@ FeedDetailScreen.propTypes = {
   deleteDuplicatedFeed: PropTypes.func.isRequired,
   deleteDummyCard: PropTypes.func,
   moveDummyCard: PropTypes.func,
-  prevPage: PropTypes.string
+  prevPage: PropTypes.string,
+  isDeepLink: PropTypes.bool
 }
 
 export default connect(
