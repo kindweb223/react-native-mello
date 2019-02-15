@@ -165,7 +165,7 @@ class LoginScreen extends React.Component {
     if (userEmail.length === 0) {
       Alert.alert('Error', 'Email is required')
     } else if (!COMMON_FUNC.validateEmail(userEmail)) {
-      Alert.alert('Error', 'Email is invalid')
+      Alert.alert('Error', 'Please enter a valid email address')
     } else {
       const param = {
         email: userEmail
@@ -202,7 +202,7 @@ class LoginScreen extends React.Component {
           {
             code: 'com.signup.email.invalid',
             field: 'email',
-            message: 'Email is invalid'
+            message: 'Please enter a valid email address'
           }
         ]
       }

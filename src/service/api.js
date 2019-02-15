@@ -1,15 +1,15 @@
 // Demo
 export const BASE_URL = 'https://demos.solvers.io/hunt/api/v1/'
-export const LAMBDA_BASE_URL = 'https://dev-lambda.trymello.com/'
-export const SHARE_LINK_URL = 'https://demos.solvers.io/solvers/mello-secure-site/feed/'
+export const LAMBDA_BASE_URL = 'https://dev-lambda.melloapp.com/'
+export const SHARE_LINK_URL = 'https://demos.solvers.io/solvers/mello-secure-site/flow/'
 
 // Prod
-// export const BASE_URL = 'https://api.tryfeedo.com/hunt/api/v1/'
-// export const SHARE_LINK_URL = 'https://app.tryfeedo.com/solvers/feedo-secure-site/feed/'
-// export const LAMBDA_BASE_URL = 'https://lambda.trymello.com/'
+// export const BASE_URL = 'https://api.melloapp.com/hunt/api/v1/'
+// export const SHARE_LINK_URL = 'https://app.melloapp.com/flow/'
+// export const LAMBDA_BASE_URL = 'https://lambda.melloapp.com/'
 
 // Global
-export const TIP_SHARE_LINK_URL = 'https://trymello.com'
+export const TIP_SHARE_LINK_URL = 'https://melloapp.com'
 
 export const AXIOS_CONFIG = {
   headers: {
@@ -21,8 +21,9 @@ export const AXIOS_CONFIG = {
 export const xSecretToken = '-kTpbC0bhCQQY2ZKKW7DGAiuK86Ii-t72O-OrUAnBuD4FC2Aw6FI_8sp3suHkVbe9NVFNVC6KwJCyhndcWpodvA03ZN9qQ6dUsZ34iWHdWmYW-AVeRdTSnFhXG-Ch4_3kS-BX4T4NayqVVs9EDk04IbRuLp26pQGSOIMCc7QUjM'
 
 export const SCHEME = 'demos.solvers.io://'
-export const TNC_URL = 'https://d5qq4b94z26us.cloudfront.net/mello/legal/TandC.md'
-export const PRIVACY_POLICY_URL = 'https://d5qq4b94z26us.cloudfront.net/mello/legal/privacy-policy.md'
+export const TOS_URL = 'https://cdn.solvers.io/mello/legal/terms-of-service.md'
+export const TNC_URL = 'https://cdn.solvers.io/mello/legal/TandC.md'
+export const PRIVACY_POLICY_URL = 'https://cdn.solvers.io/mello/legal/privacy-policy.md'
 
 // Appstore, Google play store
 export const APP_LOCALE = 'us'

@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="86px" height="86px" viewBox="0 0 86 86" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 53 (72520) - https://sketchapp.com -->
+    <title>splashLogo</title>
+    <desc>Created with Sketch.</desc>
+    <g id="Sign-Up-&amp;-Log-In-v6" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="Splash-screen-1.0-2-Copy" transform="translate(-145.000000, -363.000000)">
+            <g id="splashLogo" transform="translate(145.000000, 363.000000)">
+                <path d="M-7.10542736e-15,42.563105 C-7.10542736e-15,19.0561771 19.0561771,-3.55271368e-15 42.563105,-3.55271368e-15 C66.0700328,-3.55271368e-15 85.1262099,19.0561771 85.1262099,42.563105 C85.1262099,66.0700328 66.0700328,85.1262099 42.563105,85.1262099 C19.0561771,85.1262099 -7.10542736e-15,66.0700328 -7.10542736e-15,42.563105" id="Fill-1" fill="#E2DCF4"></path>
+                <polygon id="Fill-4" fill="#3E25B2" points="23.5493755 61.5792046 23.5493755 23.5495909 42.5646132 42.5643978"></polygon>
+                <polygon id="Fill-6" fill="#A28CDB" points="23.5493755 23.5495909 61.5794201 23.5495909 42.5646132 42.5643978"></polygon>
+                <polygon id="Fill-8" fill="#C6B7ED" points="42.5643978 42.5643978 61.5792046 23.5495909 61.5792046 61.5792046"></polygon>
+            </g>
+        </g>
+    </g>
+</svg>

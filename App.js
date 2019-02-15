@@ -17,6 +17,8 @@ import promiseMiddleware from './src/service/promiseMiddleware'
 import { Actions, Scene, Router, Modal, Lightbox, Stack, Tabs } from 'react-native-router-flux'
 import SharedGroupPreferences from 'react-native-shared-group-preferences'
 import { Client, Configuration  } from 'bugsnag-react-native'
+import SplashScreen from 'react-native-splash-screen'
+import SVGImage from 'react-native-remote-svg'
 import axios from 'axios'
 import CONSTANTS from './src/service/constants'
 import COLORS from './src/service/colors'
@@ -100,6 +102,8 @@ import {
   getFeedoList
 } from './src/redux/feedo/actions'
 
+const SPLASH_LOGO = require('./assets/svgs/SplashLogo.svg')
+
 const store = createStore(reducers, applyMiddleware(thunk, promiseMiddleware))
 
 export default class Root extends React.Component {
@@ -114,6 +118,8 @@ export default class Root extends React.Component {
   }
 
   async UNSAFE_componentWillMount() {
+    SplashScreen.hide()
+
     pubnub.addListener({
       status: function(statusEvent) {
           if (statusEvent.category === "PNConnectedCategory") {
@@ -220,7 +226,7 @@ export default class Root extends React.Component {
         const path = params[params.length - 2]
         console.log('UNIVERSAL_LINK: ', decodeURIComponent(url_), ' Path: ', path)
 
-        if (path === 'get-started' || path === 'mello-secure-site') {  
+        if (path === 'get-started' || path === 'mello-secure-site' || path === 'feedo-secure-site') {  
           const lastParam = params[params.length - 1]
           const paramArray = lastParam.split(/[?\=&]/)
           const type = paramArray[0]
@@ -249,7 +255,7 @@ export default class Root extends React.Component {
           Actions.ResetPasswordScreen({ token })
         }
 
-        if (path === 'feed') { // Share an Idea
+        if (path === 'flow') { // Share an Idea
             const feedId = params[params.length - 1]
             const data = {
               id: feedId
@@ -261,10 +267,10 @@ export default class Root extends React.Component {
 
               if (userInfo) {
                 if (Actions.currentScene === 'FeedDetailScreen') {                  
-                  Actions.FeedDetailScreen({ type: 'replace', data });
+                  Actions.FeedDetailScreen({ type: 'replace', data, isDeepLink: true });
                 } 
                 else {
-                  Actions.FeedDetailScreen({ data })
+                  Actions.FeedDetailScreen({ data, isDeepLink: true })
                 }
               } 
               else {
@@ -343,10 +349,14 @@ export default class Root extends React.Component {
     if (this.state.loading) {
       return (
         <View style={styles.loadingContainer}>
-          <ActivityIndicator 
+          {/* <ActivityIndicator 
             animating
             size="large"
             color={COLORS.PURPLE}
+          /> */}
+          <SVGImage
+            source={SPLASH_LOGO}
+            style={styles.splashLogo}
           />
         </View>
       )
@@ -377,6 +387,10 @@ const styles = StyleSheet.create({
     height: CONSTANTS.SCREEN_HEIGHT,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: '#fff'
+    backgroundColor: '#F8F6FF'
   },
+  splashLogo: {
+    width: 150,
+    height: 150
+  }
 });

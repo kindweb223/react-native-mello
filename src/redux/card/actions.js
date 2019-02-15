@@ -263,7 +263,7 @@ export const uploadFileToS3 = (signedUrl, file, fileName, mimeType) => {
       new Promise((resolve, reject) => {
         const xhr = new XMLHttpRequest();
         xhr.open('PUT', signedUrl);
-        xhr.setRequestHeader("Content-type", "application/json"); 
+        xhr.setRequestHeader("Content-type", mimeType); 
         xhr.onreadystatechange = function() {
           if (xhr.readyState === 4) {
             if (xhr.status === 200) {
@@ -282,7 +282,6 @@ export const uploadFileToS3 = (signedUrl, file, fileName, mimeType) => {
  * Add a file
  */
 export const addFile = (ideaId, fileType, contentType, name, objectKey, metadata) => {
-  console.log('METADAT: ', metadata)
   let url = `ideas/${ideaId}/files`
   const data = {
     fileType,
