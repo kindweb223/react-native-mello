@@ -71,7 +71,7 @@ class ClipboardToasterComponent extends React.Component {
           }
         ).start();
       }
-    }, 3000);
+    }, 4000);
 
     setTimeout(() => {
       if (!this.isClosed) {
@@ -82,22 +82,16 @@ class ClipboardToasterComponent extends React.Component {
           }
         ).start();
       }
-    }, 4000);
+    }, 5000);
 
     setTimeout(() => {
       if (!this.isClosed) {
         Animated.timing(
           this.animatedMoveX, {
-            toValue: 0,
+            toValue: -CONSTANTS.SCREEN_WIDTH,
             duration: 1000
           }
         ).start();
-      }
-    }, 5000);
-
-    setTimeout(() => {
-      if (!this.isClosed) {
-        this.setState({ animationType: 'slideOutLeft' });
       }
     }, 6000);
 
