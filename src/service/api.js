@@ -38,8 +38,10 @@ export const BUGSNAG_KEY = 'ff91b9f4357b0367f0fac2f9f70855c5'
 // PubNub
 export const PUBNUB_SUBSCRIBER_KEY = 'sub-c-ec322a90-a60e-11e8-bb88-163ac01f2f4e'
 
-// Feature toggle
+// Feature toggles
 export const TAGS_FEATURE = false
+export const PIN_FEATURE = false
+export const COMMENT_FEATURE = false
 
 export const TRELLO_URL = 'https://trello.com/b/xqBylYZO/mello'
 
