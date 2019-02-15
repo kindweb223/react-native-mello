@@ -29,7 +29,7 @@ import resolveError from '../../service/resolveError'
 import { userGoogleSigin, getUserSession } from '../../redux/user/actions'
 
 const LOGO = require('../../../assets/images/Login/logoMelloIcon-Tutorial.png')
-const LOGO_TEXT = require('../../../assets/svgs/logoMello-Tutorial.svg')
+const LOGO_TEXT = require('../../../assets/images/Login/logoMello-Tutorial.png')
 const GOOGLE_ICON = require('../../../assets/images/Login/iconMediumGoogle.png')
 const MAIL_ICON = require('../../../assets/images/Login/iconMediumEmailGrey.png')
 
@@ -168,7 +168,7 @@ class TutorialScreen extends React.Component {
     return (
       <View style={styles.logoViewContainer}>
         <View style={styles.logoView}>
-          <SVGImage
+          <Image
             source={LOGO_TEXT}
             style={styles.logo}
           />
