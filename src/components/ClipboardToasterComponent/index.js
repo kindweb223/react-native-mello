@@ -2,6 +2,7 @@ import React from 'react'
 import { View, Text, Animated, PanResponder } from 'react-native'
 import PropTypes from 'prop-types'
 import Ionicons from 'react-native-vector-icons/Ionicons'
+import * as Animatable from 'react-native-animatable'
 
 import styles from './styles'
 import CONSTANTS from '../../service/constants';
@@ -12,7 +13,11 @@ const SelectDelta = 2;
 class ClipboardToasterComponent extends React.Component {
   constructor(props) {
     super(props);
-    
+
+    this.state = {
+      animationType: 'slideInUp'
+    }
+
     this.animatedFade = new Animated.Value(0),
     this.animatedMoveX = new Animated.Value(0),
     this.showClipboardTimeout = null;
@@ -28,10 +33,11 @@ class ClipboardToasterComponent extends React.Component {
       },
       onPanResponderMove: (evt, gestureState) => {
         if (Math.abs(gestureState.vx) > CloseVelocity) {
+          this.setState({ animationType: gestureState.vx < 0 ? 'slideOutLeft' : 'slideOutRight' });
           this.isClosed = true;
           this.closeView(false);
         } else {
-          this.animatedMoveX.setValue(gestureState.moveX - gestureState.x0);
+          // this.animatedMoveX.setValue(gestureState.moveX - gestureState.x0);
         }
       },
       onPanResponderTerminationRequest: (evt, gestureState) => true,
@@ -56,6 +62,45 @@ class ClipboardToasterComponent extends React.Component {
   }
 
   componentDidMount() {
+    setTimeout(() => {
+      if (!this.isClosed) {
+        Animated.timing(
+          this.animatedMoveX, {
+            toValue: -200,
+            duration: 1000
+          }
+        ).start();
+      }
+    }, 3000);
+
+    setTimeout(() => {
+      if (!this.isClosed) {
+        Animated.timing(
+          this.animatedMoveX, {
+            toValue: 200,
+            duration: 1000
+          }
+        ).start();
+      }
+    }, 4000);
+
+    setTimeout(() => {
+      if (!this.isClosed) {
+        Animated.timing(
+          this.animatedMoveX, {
+            toValue: 0,
+            duration: 1000
+          }
+        ).start();
+      }
+    }, 5000);
+
+    setTimeout(() => {
+      if (!this.isClosed) {
+        this.setState({ animationType: 'slideOutLeft' });
+      }
+    }, 6000);
+
     Animated.timing(
       this.animatedFade, {
         toValue: 1,
@@ -103,7 +148,7 @@ class ClipboardToasterComponent extends React.Component {
   render() {
     const { title, description } = this.props
     return (
-      <Animated.View style={[styles.container, { opacity: this.animatedFade }]}>
+      <Animatable.View animation={this.state.animationType} style={[styles.container]}>
         <Animated.View
           style={[
             styles.mainContainer,
@@ -119,7 +164,7 @@ class ClipboardToasterComponent extends React.Component {
             </View>
           </View>
         </Animated.View>
-      </Animated.View>
+      </Animatable.View>
     )
   }
 }
