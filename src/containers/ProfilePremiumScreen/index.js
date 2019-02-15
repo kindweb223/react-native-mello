@@ -3,13 +3,13 @@ import {
   View,
   Text, 
   TouchableOpacity,
-  ScrollView
+  ScrollView,
+  Image
 } from 'react-native'
 import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
 import { Actions } from 'react-native-router-flux'
 import Ionicons from 'react-native-vector-icons/Ionicons'
-import SVGImage from 'react-native-remote-svg'
 import Modal from 'react-native-modal'
 import _ from 'lodash'
 import COLORS from '../../service/colors'
@@ -17,41 +17,41 @@ import styles from './styles'
 import Analytics from '../../lib/firebase'
 import PremiumModal from '../../components/PremiumModalComponent'
 
-const UPLOAD_ICON = require('../../../assets/svgs/Upload_10MB.svg')
-const OFFLINE_ICON = require('../../../assets/svgs/MelloOffline.svg')
-const SEARCH_ICON = require('../../../assets/svgs/AdvancedSearch.svg')
-const EDIT_ICON = require('../../../assets/svgs/BetterEditing.svg')
-const TAG_ICON = require('../../../assets/svgs/Tagging.svg')
-const CONTROL_ICON = require('../../../assets/svgs/UserControls.svg')
+const UPLOAD_ICON = require('../../../assets/images/Premium/Upload_10MB.png')
+const OFFLINE_ICON = require('../../../assets/images/Premium/MelloOffline.png')
+const SEARCH_ICON = require('../../../assets/images/Premium/AdvancedSearch.png')
+const EDIT_ICON = require('../../../assets/images/Premium/BetterEditing.png')
+const TAG_ICON = require('../../../assets/images/Premium/Tagging.png')
+const CONTROL_ICON = require('../../../assets/images/Premium/UserControls.png')
 
 const PREMIUM_LIST = [
   {
-    icon: <SVGImage source={UPLOAD_ICON} style={styles.premiumIcon} />,
+    icon: <Image source={UPLOAD_ICON} style={styles.premiumIcon} />,
     title: 'Upload > 10 MB',
     description: 'Hella narwhal Cosby sweater kitsch before they sold out High Life.'
   },
   {
-    icon: <SVGImage source={OFFLINE_ICON} style={styles.premiumIcon} />,
+    icon: <Image source={OFFLINE_ICON} style={styles.premiumIcon} />,
     title: 'Work in Mello offline',
     description: 'Hella narwhal Cosby sweater kitsch before they sold out High Life.'
   },
   {
-    icon: <SVGImage source={SEARCH_ICON} style={styles.premiumIcon} />,
+    icon: <Image source={SEARCH_ICON} style={styles.premiumIcon} />,
     title: 'Advanced search',
     description: 'Hella narwhal Cosby sweater kitsch before they sold out High Life.'
   },
   {
-    icon: <SVGImage source={EDIT_ICON} style={styles.premiumIcon} />,
+    icon: <Image source={EDIT_ICON} style={styles.premiumIcon} />,
     title: 'Better text editing',
     description: 'Hella narwhal Cosby sweater kitsch before they sold out High Life.'
   },
   {
-    icon: <SVGImage source={TAG_ICON} style={styles.premiumIcon} />,
+    icon: <Image source={TAG_ICON} style={styles.premiumIcon} />,
     title: 'Tagging',
     description: 'Hella narwhal Cosby sweater kitsch before they sold out High Life.'
   },
   {
-    icon: <SVGImage source={CONTROL_ICON} style={styles.premiumIcon} />,
+    icon: <Image source={CONTROL_ICON} style={styles.premiumIcon} />,
     title: 'Better user controls',
     description: 'Hella narwhal Cosby sweater kitsch before they sold out High Life.'
   }
