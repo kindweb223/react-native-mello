@@ -387,7 +387,7 @@ class CardNewScreen extends React.Component {
         this.saveFeedId();
       }
       if (this.props.cardMode === CONSTANTS.SHARE_EXTENTION_CARD) {
-        Actions.ShareSuccessScreen();
+        Actions.ShareSuccessScreen({type: 'replace'});
         return;
       }
       this.onClose();
