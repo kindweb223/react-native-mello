@@ -12,7 +12,7 @@ import Modal from 'react-native-modal'
 import _ from 'lodash'
 import COLORS from '../../service/colors'
 import styles from './styles'
-import { TAGS_FEATURE } from '../../service/api'
+import { COMMENT_FEATURE } from '../../service/api'
 
 const CLOSE_ICON = require('../../../assets/images/Close/Blue.png')
 
@@ -126,7 +126,7 @@ class CardFilterComponent extends React.Component {
 
                 <View style={styles.splitter} />
 
-                {TAGS_FEATURE && (
+                {COMMENT_FEATURE && (
                   <TouchableOpacity onPress={() => this.sortCards('comment')} style={styles.buttonView}>
                     <View style={[styles.button, sortType === 'comment' ? styles.buttonSelect : styles.buttonDeselect]}>
                       <Text style={[styles.btnText, sortType === 'comment' ? styles.btnSelectText : styles.btnDeselectText]}>

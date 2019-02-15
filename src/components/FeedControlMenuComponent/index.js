@@ -13,7 +13,7 @@ import * as COMMON_FUNC from '../../service/commonFunc'
 import { images } from '../../themes'
 import colors from '../../service/colors'
 
-import { TAGS_FEATURE } from '../../service/api'
+import { PIN_FEATURE } from '../../service/api'
 
 class FeedControlMenuComponent extends React.Component {
 
@@ -78,11 +78,11 @@ class FeedControlMenuComponent extends React.Component {
           </TouchableOpacity>
         }
 
-        {TAGS_FEATURE && (
+        {PIN_FEATURE && (
           <View style={styles.separator} />
         )}
 
-        {TAGS_FEATURE && (
+        {PIN_FEATURE && (
           <TouchableOpacity
             style={styles.settingItem}
             onPress={() => this.props.handleSettingItem(pinText)}

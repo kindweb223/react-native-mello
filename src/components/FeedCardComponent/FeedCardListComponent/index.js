@@ -17,7 +17,7 @@ import UserAvatarComponent from '../../UserAvatarComponent';
 
 import FastImage from "react-native-fast-image";
 import Autolink from 'react-native-autolink';
-import { TAGS_FEATURE } from '../../../service/api'
+import { COMMENT_FEATURE } from '../../../service/api'
 
 class FeedCardListComponent extends React.Component {
   constructor(props) {
@@ -85,7 +85,7 @@ class FeedCardListComponent extends React.Component {
                 prevPage={this.props.prevPage}
                 type="all"
               />
-              {TAGS_FEATURE && (
+              {COMMENT_FEATURE && (
                 <CommentComponent 
                   idea={idea}
                   longHold={longHold}
