@@ -16,17 +16,17 @@
             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
             <subviews>
                 <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="LogoIcon" translatesAutoresizingMaskIntoConstraints="NO" id="Ezw-zB-Itm">
-                    <rect key="frame" x="122.66666666666669" y="341" width="130" height="130"/>
+                    <rect key="frame" x="112" y="331" width="150" height="150"/>
                     <constraints>
-                        <constraint firstAttribute="height" constant="130" id="5y3-tK-eMQ"/>
-                        <constraint firstAttribute="width" constant="130" id="avS-xW-dSC"/>
+                        <constraint firstAttribute="height" constant="150" id="7pK-db-ISy"/>
+                        <constraint firstAttribute="width" constant="150" id="xEs-Dx-xXs"/>
                     </constraints>
                 </imageView>
             </subviews>
             <color key="backgroundColor" red="0.97254901960784312" green="0.96470588235294119" blue="1" alpha="1" colorSpace="calibratedRGB"/>
             <constraints>
-                <constraint firstItem="Ezw-zB-Itm" firstAttribute="centerY" secondItem="iN0-l3-epB" secondAttribute="centerY" id="2Hn-F9-VKR"/>
-                <constraint firstItem="Ezw-zB-Itm" firstAttribute="centerX" secondItem="iN0-l3-epB" secondAttribute="centerX" id="Chr-3S-6hV"/>
+                <constraint firstItem="Ezw-zB-Itm" firstAttribute="centerX" secondItem="iN0-l3-epB" secondAttribute="centerX" id="1hr-K8-Uxx"/>
+                <constraint firstItem="Ezw-zB-Itm" firstAttribute="centerY" secondItem="iN0-l3-epB" secondAttribute="centerY" id="9JT-yf-Rng"/>
             </constraints>
             <nil key="simulatedStatusBarMetrics"/>
             <modalPageSheetSimulatedSizeMetrics key="simulatedDestinationMetrics"/>
@@ -34,6 +34,6 @@
         </view>
     </objects>
     <resources>
-        <image name="LogoIcon" width="40" height="40"/>
+        <image name="LogoIcon" width="86" height="86"/>
     </resources>
 </document>

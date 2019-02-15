@@ -147,6 +147,7 @@ android {
 }
 
 dependencies {
+    compile project(':react-native-splash-screen')
     compile project(':react-native-google-signin')
     compile project(':react-native-haptic-feedback')
     compile project(':react-native-inappbrowser-reborn')
