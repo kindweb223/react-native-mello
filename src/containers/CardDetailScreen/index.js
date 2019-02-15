@@ -1477,7 +1477,7 @@ class CardDetailScreen extends React.Component {
     // If scroll dwon from top and scroll offset is less than -80, close card
     if (this.coverImageScrollY === 0 && scrollY < -80 && !this.state.cardClosed ) {
       if (this.state.coverImage) {
-        this.closeAnimationTime = CONSTANTS.ANIMATEION_MILLI_SECONDS + 250
+        this.closeAnimationTime = CONSTANTS.ANIMATEION_MILLI_SECONDS
       }
       this.setState({ cardClosed: true })
       this.onClose()

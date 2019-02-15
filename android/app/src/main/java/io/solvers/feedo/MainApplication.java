@@ -3,6 +3,7 @@ package io.solvers.feedo;
 import android.app.Application;
 
 import com.facebook.react.ReactApplication;
+import org.devio.rn.splashscreen.SplashScreenReactPackage;
 import fr.snapp.imagebase64.RNImgToBase64Package;
 import me.hauvo.thumbnail.RNThumbnailPackage;
 import co.apptailor.googlesignin.RNGoogleSigninPackage;
@@ -45,6 +46,7 @@ public class MainApplication extends Application implements ReactApplication {
     protected List<ReactPackage> getPackages() {
       return Arrays.<ReactPackage>asList(
           new MainReactPackage(),
+            new SplashScreenReactPackage(),
             new RNImgToBase64Package(),
             new RNThumbnailPackage(),
             new RNGoogleSigninPackage(),

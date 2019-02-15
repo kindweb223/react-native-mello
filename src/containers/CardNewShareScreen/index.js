@@ -218,7 +218,7 @@ class CardNewShareScreen extends React.Component {
     if (this.props.feedo.loading !== feedoTypes.UPDATE_FEED_FULFILLED && nextProps.feedo.loading === feedoTypes.UPDATE_FEED_FULFILLED) {
       this.setState({ loading: false })
       if (!this.state.isVisibleSelectFeedoModal) {
-        Actions.ShareSuccessScreen();
+        Actions.ShareSuccessScreen({type: 'replace'});
       }
     }
 
@@ -417,7 +417,7 @@ class CardNewShareScreen extends React.Component {
         this.props.updateFeed(id, headline || 'New flow', summary || '', tags, files);
       } else {
         this.setState({ loading: false })
-        Actions.ShareSuccessScreen()
+        Actions.ShareSuccessScreen({type: 'replace'})
       }
     }
   }
