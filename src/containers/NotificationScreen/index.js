@@ -20,7 +20,6 @@ import PropTypes from 'prop-types'
 import Swipeout from 'react-native-swipeout'
 import _ from 'lodash'
 import FontAwesome from 'react-native-vector-icons/FontAwesome'
-import SVGImage from 'react-native-remote-svg'
 
 import Analytics from '../../lib/firebase'
 import NotificationItemComponent from '../../components/NotificationItemComponent'
@@ -51,7 +50,7 @@ import CONSTANTS from '../../service/constants'
 import styles from './styles'
 
 const CLOSE_ICON = require('../../../assets/images/Close/Blue.png')
-const NOTIFICATION_EMPTY_ICON = require('../../../assets/svgs/NotificationEmptyState.svg')
+const NOTIFICATION_EMPTY_ICON = require('../../../assets/images/empty_state/NotificationEmptyState.png')
 
 const PAGE_COUNT = 50
 
@@ -407,7 +406,7 @@ class NotificationScreen extends React.Component {
               onEndReachedThreshold={0}
             />
           : <View style={styles.emptyView}>
-              <SVGImage
+              <Image
                 source={NOTIFICATION_EMPTY_ICON}
               />
               <Text style={styles.title}>No new notifications</Text>
