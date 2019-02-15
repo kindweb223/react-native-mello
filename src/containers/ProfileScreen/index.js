@@ -21,7 +21,6 @@ import ImagePicker from 'react-native-image-picker'
 import ActionSheet from 'react-native-actionsheet'
 import VersionNumber from 'react-native-version-number'
 import { GoogleSignin } from 'react-native-google-signin';
-import SVGImage from 'react-native-remote-svg'
 import Modal from "react-native-modal"
 import _ from 'lodash'
 import ShareExtensionTip from '../../components/ShareExtensionTip'
@@ -39,7 +38,7 @@ const TRASH_ICON = require('../../../assets/images/Trash/Blue.png')
 const LOCK_ICON = require('../../../assets/images/Lock/Blue.png')
 const EDIT_ICON = require('../../../assets/images/Edit/Blue.png')
 const PROFILE_ICON = require('../../../assets/images/Profile/Blue.png')
-const PREMIUM_ICON = require('../../../assets/svgs/IconMediumStarGold.svg')
+const PREMIUM_ICON = require('../../../assets/images/Premium/IconMediumStarGold.png')
 const SHARE_ICON = require('../../../assets/images/Share/Blue.png')
 
 const ABOUT_ITEMS = [
@@ -82,7 +81,7 @@ class ProfileScreen extends React.Component {
     }
 
     this.SETTING_ITEMS.push({
-      icon: <SVGImage source={PREMIUM_ICON} style={styles.leftIcon} />,
+      icon: <Image source={PREMIUM_ICON} style={styles.leftIcon} />,
       title: 'Upgrade to Mello Premium'
     })  
   }

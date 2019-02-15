@@ -33,7 +33,7 @@ axios.interceptors.response.use(
       (error.response.status === 401 && error.response.data.code === 'session.expired') ||
       (error.response.status === 403 && error.response.data.code === 'error.user.not.authenticated')
     )) {
-      ShareExtension.goToMainApp('demos.solvers.io://');
+      ShareExtension.goToMainApp(CONSTANTS.SCHEME);
     }
     throw error
   }

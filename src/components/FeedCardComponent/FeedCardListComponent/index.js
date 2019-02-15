@@ -99,7 +99,7 @@ class FeedCardListComponent extends React.Component {
           )}
         </View>
 
-        {idea.coverImage && idea.coverImage.length && 
+        {idea.coverImage && idea.coverImage.length &&
           <View style={styles.thumbnailsView}>
             <FastImage
               style={styles.thumbnails}
