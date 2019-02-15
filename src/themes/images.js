@@ -1,13 +1,13 @@
 const images = {
-    addProfile: require('../../assets/svgs/AddPeopleGrey.svg'),
-    archive: require('../../assets/svgs/ArchiveGrey.svg'),
-    delete: require('../../assets/svgs/DeleteGrey.svg'),
-    duplicate: require('../../assets/svgs/DuplicateGrey.svg'),
-    edit: require('../../assets/svgs/EditGrey.svg'),
-    pinGrey: require('../../assets/svgs/PinGrey.svg'),
-    pinActive: require('../../assets/svgs/PinActive.svg'),
-    shareLinkGrey: require('../../assets/svgs/ShareLinkGrey.svg'),
-    shareLinkActive: require('../../assets/svgs/ShareLinkBlue.svg'),
+    addProfile: require('../../assets/images/Feed_option/AddPeopleGrey.png'),
+    archive: require('../../assets/images/Feed_option/ArchiveGrey.png'),
+    delete: require('../../assets/images/Feed_option/DeleteGrey.png'),
+    duplicate: require('../../assets/images/Feed_option/DuplicateGrey.png'),
+    edit: require('../../assets/images/Feed_option/EditGrey.png'),
+    pinGrey: require('../../assets/images/Feed_option/PinGrey.png'),
+    pinActive: require('../../assets/images/Feed_option/PinBlue.png'),
+    shareLink: require('../../assets/images/Feed_option/ShareLinkGrey.png'),
+    shareLinkPurple: require('../../assets/images/Feed_option/ShareLinkBlue.png'),
 }
 
 export default images

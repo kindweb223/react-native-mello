@@ -32,24 +32,35 @@
       android:icon="@mipmap/ic_launcher"
       android:allowBackup="false"
       android:theme="@style/AppTheme">
+
+      <activity
+        android:name=".SplashActivity"
+        android:theme="@style/SplashTheme"
+        android:label="@string/app_name">
+        <intent-filter>
+            <action android:name="android.intent.action.MAIN" />
+            <category android:name="android.intent.category.LAUNCHER" />
+        </intent-filter>
+      </activity>
+
       <activity
         android:name=".MainActivity"
         android:label="@string/app_name"
         android:launchMode="singleTask"
         android:configChanges="keyboard|keyboardHidden|orientation|screenSize"
         android:windowSoftInputMode="adjustResize"
-        android:screenOrientation="portrait"
-        android:documentLaunchMode="never">
+        android:documentLaunchMode="never"
+        android:exported="true"
+        android:screenOrientation="portrait">
         <intent-filter>
-          <action android:name="android.intent.action.MAIN" />
-          <category android:name="android.intent.category.LAUNCHER" />
           <action android:name="android.intent.action.DOWNLOAD_COMPLETE"/>
         </intent-filter>
         <intent-filter>
           <action android:name="android.intent.action.VIEW" />
           <category android:name="android.intent.category.DEFAULT" />
           <category android:name="android.intent.category.BROWSABLE" />
-          <data android:scheme="https" android:host="demos.solvers.io"/>
+          <!-- <data android:scheme="https" android:host="demos.solvers.io"/> -->
+          <data android:scheme="https" android:host="my.melloapp.com"/>
         </intent-filter>
         <intent-filter>
           <action android:name="android.intent.action.SEND" />
