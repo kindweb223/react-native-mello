@@ -13,6 +13,7 @@ import {
   SafeAreaView,
   Platform,
   BackHandler,
+  Easing
 } from 'react-native'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
@@ -569,30 +570,31 @@ class CardDetailScreen extends React.Component {
     }
 
     const friction = 10
+    const easing = Easing.linear
     Animated.parallel([
-      Animated.spring(this.state.position.x, {
+      Animated.timing(this.state.position.x, {
         toValue: this._tX,
-        friction
+        easing
       }),
-      Animated.spring(this.state.position.y, {
+      Animated.timing(this.state.position.y, {
         toValue: this._tY,
-        friction
+        easing
       }),
-      Animated.spring(this.state.size.x, {
+      Animated.timing(this.state.size.x, {
         toValue: this._tWidth,
-        friction
+        easing
       }),
-      Animated.spring(this.state.size.y, {
+      Animated.timing(this.state.size.y, {
         toValue: this._tHeight,
-        friction
+        easing
       }),
-      Animated.spring(this.state.tempPosition.x, {
+      Animated.timing(this.state.tempPosition.x, {
         toValue: this._tX,
-        friction
+        easing
       }),
-      Animated.spring(this.state.tempPosition.y, {
+      Animated.timing(this.state.tempPosition.y, {
         toValue: 20 + 80 + ifIphoneX(22, 0), // 80: limit scroll offset
-        friction
+        easing
       }),
       Animated.timing(this.animatedShow, {
         toValue: 1,
