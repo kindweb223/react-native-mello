@@ -2,9 +2,8 @@ import React from 'react'
 import {
   StyleSheet,
   AsyncStorage,
-  ActivityIndicator,
   View,
-  Text,
+  Image,
   YellowBox,
   Linking,
   Platform
@@ -18,10 +17,8 @@ import { Actions, Scene, Router, Modal, Lightbox, Stack, Tabs } from 'react-nati
 import SharedGroupPreferences from 'react-native-shared-group-preferences'
 import { Client, Configuration  } from 'bugsnag-react-native'
 import SplashScreen from 'react-native-splash-screen'
-import SVGImage from 'react-native-remote-svg'
 import axios from 'axios'
 import CONSTANTS from './src/service/constants'
-import COLORS from './src/service/colors'
 import { BASE_URL, BUGSNAG_KEY, APP_LOCALE, APP_NAME, APP_STORE_ID, PLAY_STORE_ID } from './src/service/api'
 import pubnub from './src/lib/pubnub'
 
@@ -102,7 +99,7 @@ import {
   getFeedoList
 } from './src/redux/feedo/actions'
 
-const SPLASH_LOGO = require('./assets/svgs/SplashLogo.svg')
+const SPLASH_LOGO = require('./assets/images/Splash/splashLogo.png')
 
 const store = createStore(reducers, applyMiddleware(thunk, promiseMiddleware))
 
@@ -354,7 +351,7 @@ export default class Root extends React.Component {
             size="large"
             color={COLORS.PURPLE}
           /> */}
-          <SVGImage
+          <Image
             source={SPLASH_LOGO}
             style={styles.splashLogo}
           />
