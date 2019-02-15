@@ -18,7 +18,7 @@ import CommentComponent from '../../CommentComponent';
 import UserAvatarComponent from '../../UserAvatarComponent';
 
 import CONSTANTS from '../../../service/constants'
-import { TAGS_FEATURE } from '../../../service/api'
+import { COMMENT_FEATURE } from '../../../service/api'
 
 class FeedCardExtendComponent extends React.Component {
   constructor(props) {
@@ -106,7 +106,7 @@ class FeedCardExtendComponent extends React.Component {
                   prevPage={this.props.prevPage}
                   type="all"
                 />
-                {TAGS_FEATURE && (
+                {COMMENT_FEATURE && (
                   <CommentComponent
                     idea={idea}
                     longHold={longHold}

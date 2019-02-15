@@ -51,7 +51,7 @@ import ShareWidgetConfirmModal from '../../components/ShareWidgetModal/ConfirmMo
 import ShareExtensionTip from '../../components/ShareExtensionTip'
 import styles from './styles'
 import CONSTANTS from '../../service/constants';
-import { TAGS_FEATURE } from '../../service/api'
+import { PIN_FEATURE } from '../../service/api'
 import { TIP_SHARE_LINK_URL } from '../../service/api'
 const SEARCH_ICON = require('../../../assets/images/Search/Grey.png')
 const SETTING_ICON = require('../../../assets/images/Settings/Grey.png')
@@ -1386,7 +1386,7 @@ class HomeScreen extends React.Component {
                     </View>
                 }
               </View>
-              {TAGS_FEATURE && (
+              {PIN_FEATURE && (
                 <View
                   style={[!this.state.isLongHoldMenuVisible ? styles.feedListContainer : styles.feedListContainerLongHold, , feedClickEvent === 'normal' && { paddingBottom: 30 }]}
                   ref={ref => this.scrollTabPinned = ref}

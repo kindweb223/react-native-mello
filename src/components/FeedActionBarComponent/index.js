@@ -20,7 +20,7 @@ import COLORS from '../../service/colors'
 import { SHARE_LINK_URL } from "../../service/api"
 import * as COMMON_FUNC from '../../service/commonFunc'
 import Modal from "react-native-modal"
-import { TAGS_FEATURE } from '../../service/api'
+import { PIN_FEATURE } from '../../service/api'
 
 const SELECT_NONE = 0;
 const SELECT_PIN_UNPIN = 1;
@@ -124,7 +124,7 @@ class FeedActionBarComponent extends React.Component {
       actionBarWidth = BAR_WIDTH_PIN
     }
 
-    if (!TAGS_FEATURE) {
+    if (!PIN_FEATURE) {
       actionBarWidth = 170 
       settingMenuMargin = 120
     }
@@ -163,7 +163,7 @@ class FeedActionBarComponent extends React.Component {
         </Modal>
 
         <View style={[styles.rowContainer, { width: actionBarWidth }]}>
-          {TAGS_FEATURE && (
+          {PIN_FEATURE && (
             <Animated.View
               style={
                 this.state.selectedButton === SELECT_PIN_UNPIN &&
