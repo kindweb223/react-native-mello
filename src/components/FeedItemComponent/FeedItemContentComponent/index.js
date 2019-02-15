@@ -48,7 +48,7 @@ class FeedItemContentComponent extends React.Component {
         <View style={styles.titleView}>
           <Text style={styles.title} numberOfLines={1} ellipsizeMode="tail">{data.headline}</Text>
           <View style={styles.rightView}>
-            {pinFlag && (
+            {TAGS_FEATURE && pinFlag && (
               <Image source={PIN_ICON_PURPLE} />
             )}
             {avatars.length > 0 && (

@@ -65,7 +65,7 @@ class FeedMiniItemContentComponent extends React.Component {
               </Text>
             </View>
             <View style={styles.rightView}>
-              {pinFlag && (
+              {TAGS_FEATURE && pinFlag && (
                 <Image source={PIN_ICON_PURPLE} />
               )}
               {avatars.length > 0 && (
