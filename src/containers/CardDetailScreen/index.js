@@ -38,6 +38,8 @@ import SafariView from "react-native-safari-view";
 import SharedGroupPreferences from 'react-native-shared-group-preferences';
 import * as Animatable from 'react-native-animatable';
 
+import { TAGS_FEATURE } from '../../service/api'
+
 import { 
   createCard,
   getCard,
@@ -1487,7 +1489,7 @@ class CardDetailScreen extends React.Component {
 
         {/* {this.renderHeader} */}
         {this.renderOwnerAndTime}
-        {this.renderCommentList}
+        {TAGS_FEATURE && this.renderCommentList}
       </ScrollView>
     );
   }
@@ -1531,8 +1533,8 @@ class CardDetailScreen extends React.Component {
         duration={CONSTANTS.ANIMATABLE_DURATION + 200}
         animation={this.state.slideInUpAnimation}
       >
-        <View style={[styles.footerContainer, { opacity: this.state.isOpeningCard ? 1 : 0}]}>
-          {!COMMON_FUNC.isFeedGuest(feedo.currentFeed) && 
+        <View style={[styles.footerContainer, { opacity: this.state.isOpeningCard ? 1 : 0 }]}>
+          {TAGS_FEATURE && !COMMON_FUNC.isFeedGuest(feedo.currentFeed) && 
             <View style={styles.addCommentView}>
               {this.renderAddComment}
             </View>
