@@ -75,7 +75,7 @@ class CardNewShareScreen extends React.Component {
       loading: false,
       isVisibleSelectFeedoModal: false,
       isShowKeyboardButton: false,
-      feedList: [],
+      cachedFeedList: [],
       createEnabled: false
     };
 
@@ -184,7 +184,7 @@ class CardNewShareScreen extends React.Component {
 
   async UNSAFE_componentWillReceiveProps(nextProps) {
     if (this.props.feedo.loading !== feedoTypes.GET_FEEDO_LIST_FULFILLED && nextProps.feedo.loading === feedoTypes.GET_FEEDO_LIST_FULFILLED) {
-      this.setState({feedList: nextProps.feedo.feedoList, createEnabled: true})
+      this.setState({cachedFeedList: nextProps.feedo.feedoList, createEnabled: true})
 
       try {
         const strFeedoInfo = await SharedGroupPreferences.getItem(CONSTANTS.CARD_SAVED_LAST_FEEDO_INFO, CONSTANTS.APP_GROUP_LAST_USED_FEEDO);
@@ -663,12 +663,12 @@ class CardNewShareScreen extends React.Component {
   }
 
   get renderSelectHunt() {
-    const { feedList } = this.state
+    const { cachedFeedList } = this.state
 
     if (this.state.isVisibleSelectFeedoModal) {
       return (
         <SelectHuntScreen
-          cachedFeedList={feedList}
+          cachedFeedList={cachedFeedList}
           selectMode={CONSTANTS.FEEDO_SELECT_FROM_SHARE_EXTENSION}
           onClosed={() => this.onCloseSelectHunt()}
         />
