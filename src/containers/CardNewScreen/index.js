@@ -1734,6 +1734,7 @@ class CardNewScreen extends React.Component {
     if (this.state.isVisibleSelectFeedoModal) {
       return (
         <SelectHuntScreen
+          cachedFeedList={this.props.feedo.feedoList}
           selectMode={cardMode !== CONSTANTS.SHARE_EXTENTION_CARD ? CONSTANTS.FEEDO_SELECT_FROM_MAIN : CONSTANTS.FEEDO_SELECT_FROM_SHARE_EXTENSION}
           onClosed={() => this.onCloseSelectHunt()}
         />
