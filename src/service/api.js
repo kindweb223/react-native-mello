@@ -2,11 +2,13 @@
 export const BASE_URL = 'https://demos.solvers.io/hunt/api/v1/'
 export const LAMBDA_BASE_URL = 'https://dev-lambda.melloapp.com/'
 export const SHARE_LINK_URL = 'https://demos.solvers.io/solvers/mello-secure-site/flow/'
+export const SCHEME = 'demos.solvers.io://'
 
 // Prod
 // export const BASE_URL = 'https://api.melloapp.com/hunt/api/v1/'
-// export const SHARE_LINK_URL = 'https://app.melloapp.com/flow/'
 // export const LAMBDA_BASE_URL = 'https://lambda.melloapp.com/'
+// export const SHARE_LINK_URL = 'https://my.melloapp.com/flow/'
+// export const SCHEME = 'my.melloapp.com://'
 
 // Global
 export const TIP_SHARE_LINK_URL = 'https://melloapp.com'
@@ -20,7 +22,6 @@ export const AXIOS_CONFIG = {
 
 export const xSecretToken = '-kTpbC0bhCQQY2ZKKW7DGAiuK86Ii-t72O-OrUAnBuD4FC2Aw6FI_8sp3suHkVbe9NVFNVC6KwJCyhndcWpodvA03ZN9qQ6dUsZ34iWHdWmYW-AVeRdTSnFhXG-Ch4_3kS-BX4T4NayqVVs9EDk04IbRuLp26pQGSOIMCc7QUjM'
 
-export const SCHEME = 'demos.solvers.io://'
 export const TOS_URL = 'https://cdn.solvers.io/mello/legal/terms-of-service.md'
 export const TNC_URL = 'https://cdn.solvers.io/mello/legal/TandC.md'
 export const PRIVACY_POLICY_URL = 'https://cdn.solvers.io/mello/legal/privacy-policy.md'
@@ -37,8 +38,10 @@ export const BUGSNAG_KEY = 'ff91b9f4357b0367f0fac2f9f70855c5'
 // PubNub
 export const PUBNUB_SUBSCRIBER_KEY = 'sub-c-ec322a90-a60e-11e8-bb88-163ac01f2f4e'
 
-// Feature toggle
+// Feature toggles
 export const TAGS_FEATURE = false
+export const PIN_FEATURE = false
+export const COMMENT_FEATURE = false
 
 export const TRELLO_URL = 'https://trello.com/b/xqBylYZO/mello'
 

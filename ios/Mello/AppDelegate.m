@@ -13,6 +13,7 @@
 #import <React/RCTPushNotificationManager.h>
 #import <BugsnagReactNative/BugsnagReactNative.h>
 @import Firebase;
+#import "RNSplashScreen.h"
 
 @implementation AppDelegate
 
@@ -51,6 +52,7 @@
   self.window.rootViewController = rootViewController;
   [self.window makeKeyAndVisible];
 
+  [RNSplashScreen show];
   return YES;
 }
 

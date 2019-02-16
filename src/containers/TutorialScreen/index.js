@@ -17,6 +17,7 @@ import LottieView from 'lottie-react-native'
 import { ifIphoneX } from 'react-native-iphone-x-helper'
 import { GoogleSignin, statusCodes } from 'react-native-google-signin'
 import Video from 'react-native-video'
+import SVGImage from 'react-native-remote-svg'
 
 import LoadingScreen from '../LoadingScreen'
 import COLORS from '../../service/colors'
@@ -167,7 +168,10 @@ class TutorialScreen extends React.Component {
     return (
       <View style={styles.logoViewContainer}>
         <View style={styles.logoView}>
-          <Image style={styles.logo} source={LOGO_TEXT} />
+          <Image
+            source={LOGO_TEXT}
+            style={styles.logo}
+          />
         </View>
         <Text style={styles.subText}>A place to put things that matter to you.</Text>
       </View>
