@@ -13,6 +13,8 @@ import * as COMMON_FUNC from '../../service/commonFunc'
 import { images } from '../../themes'
 import colors from '../../service/colors'
 
+import { PIN_FEATURE } from '../../service/api'
+
 class FeedControlMenuComponent extends React.Component {
 
   handleSwitchValue = (value) => {
@@ -77,15 +79,19 @@ class FeedControlMenuComponent extends React.Component {
           </TouchableOpacity>
         }
 
-        <View style={styles.separator} />
+        {PIN_FEATURE && (
+          <View style={styles.separator} />
+        )}
 
-        <TouchableOpacity
-          style={styles.settingItem}
-          onPress={() => this.props.handleSettingItem(pinText)}
-        >
-          <Image source={pinImg} style={styles.menuIcon} />
-          <Text style={styles.settingButtonText}>{pinText}</Text>
-        </TouchableOpacity>
+        {PIN_FEATURE && (
+          <TouchableOpacity
+            style={styles.settingItem}
+            onPress={() => this.props.handleSettingItem(pinText)}
+          >
+            <Image source={pinImg} style={styles.menuIcon} />
+            <Text style={styles.settingButtonText}>{pinText}</Text>
+          </TouchableOpacity>
+        )}
 
         <View style={styles.separator} />
 

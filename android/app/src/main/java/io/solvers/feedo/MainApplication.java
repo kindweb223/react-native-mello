@@ -5,6 +5,8 @@ import android.app.Application;
 import com.facebook.react.ReactApplication;
 import com.meedan.ShareMenuPackage;
 import org.devio.rn.splashscreen.SplashScreenReactPackage;
+import fr.snapp.imagebase64.RNImgToBase64Package;
+import me.hauvo.thumbnail.RNThumbnailPackage;
 import co.apptailor.googlesignin.RNGoogleSigninPackage;
 import com.mkuczera.RNReactNativeHapticFeedbackPackage;
 import com.proyecto26.inappbrowser.RNInAppBrowserPackage;
@@ -47,6 +49,8 @@ public class MainApplication extends Application implements ReactApplication {
           new MainReactPackage(),
             new ShareMenuPackage(),
             new SplashScreenReactPackage(),
+            new RNImgToBase64Package(),
+            new RNThumbnailPackage(),
             new RNGoogleSigninPackage(),
             new RNReactNativeHapticFeedbackPackage(),
             new RNInAppBrowserPackage(),
