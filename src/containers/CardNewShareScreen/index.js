@@ -195,15 +195,15 @@ class CardNewShareScreen extends React.Component {
               this.props.setCurrentFeed(currentFeed);
               this.draftFeedo = currentFeed
               return;
-            } else {
-              this.props.createFeed();
             }
           }
-        } else {
-          this.props.createFeed();
         }
       } catch (error) {
         console.log('error code : ', error);
+      }
+
+      if (!this.props.feedo.currentFeed.id) {
+        this.props.createFeed();
       }
     }
 
@@ -258,14 +258,19 @@ class CardNewShareScreen extends React.Component {
       }
     });
 
-    const strFeedoInfo = await SharedGroupPreferences.getItem(CONSTANTS.CARD_SAVED_LAST_FEEDO_INFO, CONSTANTS.APP_GROUP_LAST_USED_FEEDO);
-    if (strFeedoInfo) {
-      const feedoInfo = JSON.parse(strFeedoInfo);
-      const diffHours = moment().diff(moment(feedoInfo.time, 'LLL'), 'hours');
-      if (diffHours < 1) {
-        this.props.setCurrentFeed(feedoInfo.currentFeed);
-        this.draftFeedo = feedoInfo.currentFeed
+    try {
+      const strFeedoInfo = await SharedGroupPreferences.getItem(CONSTANTS.CARD_SAVED_LAST_FEEDO_INFO, CONSTANTS.APP_GROUP_LAST_USED_FEEDO);
+      if (strFeedoInfo) {
+        const feedoInfo = JSON.parse(strFeedoInfo);
+        const diffHours = moment().diff(moment(feedoInfo.time, 'LLL'), 'hours');
+        if (diffHours < 1) {
+          this.props.setCurrentFeed(feedoInfo.currentFeed);
+          this.draftFeedo = feedoInfo.currentFeed
+        }
       }
+    }
+    catch(error) {
+
     }
 
     this.keyboardWillShowSubscription = Keyboard.addListener('keyboardWillShow', (e) => this.keyboardWillShow(e));
