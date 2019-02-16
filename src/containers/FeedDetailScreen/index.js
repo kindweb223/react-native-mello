@@ -540,9 +540,7 @@ class FeedDetailScreen extends React.Component {
 
   handleSetting = () => {
     const { openMenu, currentFeed } = this.state
-    this.setState({ openMenu: !openMenu, settingItem: null })
-
-    this.setState({isEnableShare: COMMON_FUNC.isSharingEnabled(currentFeed)})
+    this.setState({ openMenu: !openMenu, settingItem: null, isEnableShare: COMMON_FUNC.isSharingEnabled(currentFeed) })
   }
 
   handleShare = () => {

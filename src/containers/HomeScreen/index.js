@@ -547,7 +547,6 @@ class HomeScreen extends React.Component {
   }
 
   async showClipboardToast() {
-    console.log('Homescreen: showClipboardToast')
     if (Actions.currentScene !== 'FeedDetailScreen') {
       const clipboardContent = await Clipboard.getString();
       const lastClipboardData = await AsyncStorage.getItem(CONSTANTS.CLIPBOARD_DATA)
@@ -1504,10 +1503,10 @@ class HomeScreen extends React.Component {
         </Modal>
 
         {
-        this.state.showShareTipsModal && Platform.OS === 'ios' &&
-          <RNCounterView
-            ref={ref => (this.ref = ref)}
-          />
+          this.state.showShareTipsModal &&
+            <ShareExtensionTip
+              ref={ref => (this.ref = ref)}
+            />
         }
         
         <Modal 
