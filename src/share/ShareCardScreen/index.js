@@ -27,8 +27,7 @@ export default class ShareCardScreen extends React.Component {
 
   render() {
     const { imageUrls, shareUrl, notesText } = this.props;
-    console.log('imageUrls: ', imageUrls)
-    console.log('shareUrl: ', shareUrl)
+
     return (
       <View style={styles.container}>
         {shareUrl !== ''
