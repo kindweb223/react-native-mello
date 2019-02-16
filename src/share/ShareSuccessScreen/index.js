@@ -5,9 +5,10 @@ import * as mime from 'react-native-mime-types';
 import SVGImage from 'react-native-remote-svg';
 import SvgUri from 'react-native-svg-uri';
 
-import CONSTANTS from '../../service/constants'
+import { SCHEME } from '../../service/api'
 import ShareExtension from '../shareExtension'
 import styles from './styles'
+import * as Animatable from 'react-native-animatable'
 
 const CloseVelocity = 1.25;
 const SelectDelta = 2;
@@ -21,6 +22,11 @@ class ShareSuccessScreen extends React.Component {
     this.animatedMoveX = new Animated.Value(0),
     this.showClipboardTimeout = null;
     this.isClosed = false;
+
+    this.state = {
+      animationType: 'slideInUp',
+      duration: 750
+    }
 
     this._panResponder = PanResponder.create({
       onStartShouldSetPanResponder: (evt, gestureState) => true,
@@ -69,7 +75,7 @@ class ShareSuccessScreen extends React.Component {
       this.showClipboardTimeout = setTimeout(() => {
         this.showClipboardTimeout = null;
         this.closeView(false);
-      }, 3000);
+      }, 2500);
     })
   }
 
@@ -85,11 +91,13 @@ class ShareSuccessScreen extends React.Component {
   }
 
   closeView(isSelect = true) {
+    this.setState({animationType: 'fadeOutDownBig', duration: 1500})
+
     this.animatedFade.setValue(1);
     Animated.timing(
       this.animatedFade, {
         toValue: 0,
-        duration: 750
+        duration: 1500
       }
     ).start(() => {
       if (this.showClipboardTimeout) {
@@ -98,7 +106,7 @@ class ShareSuccessScreen extends React.Component {
       }
       if (isSelect) {
         console.log('FEED_ID: ', this.props.feedo.currentFeed.id)
-        ShareExtension.goToMainApp(CONSTANTS.SCHEME + `flow/${this.props.feedo.currentFeed.id}`);
+        ShareExtension.goToMainApp(SCHEME + `flow/${this.props.feedo.currentFeed.id}`);
         ShareExtension.close();
       } else {
         ShareExtension.close();
@@ -138,7 +146,7 @@ class ShareSuccessScreen extends React.Component {
 
     return (
       <View style={styles.container}>
-        <Animated.View style={[styles.toasterContainer, { opacity: this.animatedFade }]}>
+        <Animatable.View animation={this.state.animationType} duration={this.state.duration} style={[styles.toasterContainer, { opacity: this.animatedFade }]}>
           <Animated.View
             style={[
               styles.mainContainer,
@@ -156,7 +164,7 @@ class ShareSuccessScreen extends React.Component {
               </View>
             </View>
           </Animated.View>
-        </Animated.View>
+        </Animatable.View>
       </View>
     )
   }
