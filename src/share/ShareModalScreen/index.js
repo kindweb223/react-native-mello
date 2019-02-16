@@ -116,7 +116,7 @@ ShareModalScreen.defaultProps = {
   buttons: CONSTANTS.MODAL_OK | CONSTANTS.MODAL_CLOSE,
   okLabel: 'OK',
   onOk: () => {
-    ShareExtension.goToMainApp('demos.solvers.io://');
+    ShareExtension.goToMainApp(CONSTANTS.SCHEME);
   },
   onClose: () => {},
 }
