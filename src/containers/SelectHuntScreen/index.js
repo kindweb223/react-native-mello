@@ -9,6 +9,7 @@ import {
 } from 'react-native'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
+import * as feedoTypes from '../../redux/feedo/types'
 
 import Ionicons from 'react-native-vector-icons/Ionicons'
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons'
@@ -38,7 +39,8 @@ class SelectHuntScreen extends React.Component {
       loading: false,
       isVisibleNewFeedScreen: false,
       isKeyboardShow: false,
-      filterText: ''
+      filterText: '',
+      cachedFeedList: props.cachedFeedList
     };
     this.animatedShow = new Animated.Value(0);
     this.animatedMove = new Animated.Value(0);
@@ -46,8 +48,13 @@ class SelectHuntScreen extends React.Component {
   }
 
   componentDidMount() {
+    const { cachedFeedList } = this.state
     Analytics.setCurrentScreen('SelectHuntScreen')
-    this.props.getFeedoList(3, true);
+
+    if (cachedFeedList.length == 0) {
+      this.props.getFeedoList(3, true);
+    }
+
     Animated.timing(this.animatedShow, {
       toValue: 1,
       duration: CONSTANTS.ANIMATEION_MILLI_SECONDS * 1.5,
@@ -65,6 +72,12 @@ class SelectHuntScreen extends React.Component {
     this.keyboardWillHideSubscription.remove();
   }
 
+  async UNSAFE_componentWillReceiveProps(nextProps) {
+    if (this.props.feedo.loading !== feedoTypes.GET_FEEDO_LIST_FULFILLED && nextProps.feedo.loading === feedoTypes.GET_FEEDO_LIST_FULFILLED) {
+      this.setState({cachedFeedList: nextProps.feedo.feedoListForCardMove})      
+    }
+  }
+  
   keyboardWillShow(e) {
     this.setState({ isKeyboardShow: true })
     Animated.timing(
@@ -230,12 +243,14 @@ class SelectHuntScreen extends React.Component {
   }
 
   render () {
+    const { cachedFeedList } = this.state
+
     const animatedMove  = this.animatedMove.interpolate({
       inputRange: [0, 1],
       outputRange: [CONSTANTS.SCREEN_WIDTH, 0],
     });
 
-    let feedoList = this.props.feedo.feedoListForCardMove;
+    let feedoList = cachedFeedList;
     if (this.props.hiddenFeedoId) {
       feedoList = _.filter(feedoList, feedo => feedo.id !== this.props.hiddenFeedoId);
     }
@@ -341,6 +356,7 @@ SelectHuntScreen.defaultProps = {
   hiddenFeedoId: null,
   direction: 'left',
   onClosed: () => {},
+  cachedFeedList: []
 }
 
 
@@ -349,6 +365,7 @@ SelectHuntScreen.propTypes = {
   hiddenFeedoId: PropTypes.string,
   direction: PropTypes.string,
   onClosed: PropTypes.func,
+  cachedFeedList: PropTypes.array,
 }
 
 

@@ -13,7 +13,8 @@ import {
   AsyncStorage,
   SafeAreaView,
   Platform,
-  BackHandler
+  BackHandler,
+  ActivityIndicator
 } from 'react-native'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
@@ -106,7 +107,7 @@ class CardNewScreen extends React.Component {
       coverImage,
       textByCursor: '',
       
-      loading: false,
+      loading: true,
       // isFullScreenCard: false,
       originalCardTopY: this.props.intialLayout.py,
       originalCardBottomY: this.props.intialLayout.py + this.props.intialLayout.height,
@@ -1594,7 +1595,7 @@ class CardNewScreen extends React.Component {
             activeOpacity={0.6}
             onPress={this.onUpdateFeed.bind(this)}
           >
-            <Text style={[styles.textButton, {color: COLORS.PURPLE}]}>Create card</Text>
+            <Text style={[styles.textButton, {color: this.state.loading ? COLORS.MEDIUM_GREY : COLORS.PURPLE}]}>Create card</Text>
           </TouchableOpacity>
         </View>
       );
@@ -1630,14 +1631,22 @@ class CardNewScreen extends React.Component {
       return (
         <View style={styles.extensionSelectFeedoContainer}>
           <Text style={[styles.textCreateCardIn, {color: COLORS.PRIMARY_BLACK}]}>Create card in:</Text>
-          <TouchableOpacity
-            style={[styles.selectFeedoButtonContainer, {paddingRight: 3}]}
-            activeOpacity={0.6}
-            onPress={this.onSelectFeedo.bind(this)}
-          >
-            <Text style={styles.textFeedoName} numberOfLines={1}>{this.props.feedo.currentFeed.headline || 'New flow'}</Text>
-            <Entypo name="chevron-right" size={20} color={COLORS.PURPLE} />
-          </TouchableOpacity>
+          {!this.state.loading
+            ? <TouchableOpacity
+              style={[styles.selectFeedoButtonContainer, {paddingRight: 3}]}
+              activeOpacity={0.6}
+              onPress={this.onSelectFeedo.bind(this)}
+              >
+                <Text style={styles.textFeedoName} numberOfLines={1}>{this.props.feedo.currentFeed.headline || 'New flow'}</Text>
+                <Entypo name="chevron-right" size={20} color={COLORS.PURPLE} />
+              </TouchableOpacity>
+            :
+              <ActivityIndicator 
+                style={[styles.selectFeedoButtonContainer, {paddingRight: 9, width: 50}]}
+                animating
+                color={COLORS.PURPLE}
+              />
+          }
         </View>
       )
     }
@@ -1734,6 +1743,7 @@ class CardNewScreen extends React.Component {
     if (this.state.isVisibleSelectFeedoModal) {
       return (
         <SelectHuntScreen
+          cachedFeedList={this.props.feedo.feedoList}
           selectMode={cardMode !== CONSTANTS.SHARE_EXTENTION_CARD ? CONSTANTS.FEEDO_SELECT_FROM_MAIN : CONSTANTS.FEEDO_SELECT_FROM_SHARE_EXTENSION}
           onClosed={() => this.onCloseSelectHunt()}
         />
@@ -1772,7 +1782,10 @@ class CardNewScreen extends React.Component {
           onPress={(index) => this.onTapWebLinkActionSheet(index)}
         />
 
-        {this.state.loading && <LoadingScreen />}
+        {
+          this.state.loading && 
+            <LoadingScreen containerStyle={this.props.cardMode === CONSTANTS.SHARE_EXTENTION_CARD ? {marginBottom: CONSTANTS.SCREEN_VERTICAL_MIN_MARGIN + 100} : {}} />
+        }
         <Modal 
           style={{ margin: 0 }}
           isVisible={this.state.isVisibleChooseLinkImagesModal}
