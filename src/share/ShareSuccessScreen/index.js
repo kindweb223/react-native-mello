@@ -91,13 +91,13 @@ class ShareSuccessScreen extends React.Component {
   }
 
   closeView(isSelect = true) {
-    this.setState({animationType: 'fadeOutDown', duration: 1000})
+    this.setState({animationType: 'fadeOutDownBig', duration: 1500})
 
     this.animatedFade.setValue(1);
     Animated.timing(
       this.animatedFade, {
         toValue: 0,
-        duration: 1000
+        duration: 1500
       }
     ).start(() => {
       if (this.showClipboardTimeout) {
