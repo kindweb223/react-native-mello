@@ -1773,7 +1773,10 @@ class CardNewScreen extends React.Component {
           onPress={(index) => this.onTapWebLinkActionSheet(index)}
         />
 
-        {this.state.loading && <LoadingScreen />}
+        {
+          this.state.loading && 
+            <LoadingScreen containerStyle={this.props.cardMode === CONSTANTS.SHARE_EXTENTION_CARD ? {marginBottom: CONSTANTS.SCREEN_VERTICAL_MIN_MARGIN + 100} : {}} />
+        }
         <Modal 
           style={{ margin: 0 }}
           isVisible={this.state.isVisibleChooseLinkImagesModal}
