@@ -12,7 +12,8 @@ import {
   ScrollView,
   AsyncStorage,
   SafeAreaView,
-  Platform
+  Platform,
+  ActivityIndicator
 } from 'react-native'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
@@ -74,7 +75,8 @@ class CardNewShareScreen extends React.Component {
       loading: false,
       isVisibleSelectFeedoModal: false,
       isShowKeyboardButton: false,
-      feedList: []
+      feedList: [],
+      createEnabled: false
     };
 
     this.selectedFile = null;
@@ -182,7 +184,7 @@ class CardNewShareScreen extends React.Component {
 
   async UNSAFE_componentWillReceiveProps(nextProps) {
     if (this.props.feedo.loading !== feedoTypes.GET_FEEDO_LIST_FULFILLED && nextProps.feedo.loading === feedoTypes.GET_FEEDO_LIST_FULFILLED) {
-      this.setState({feedList: nextProps.feedo.feedoList})
+      this.setState({feedList: nextProps.feedo.feedoList, createEnabled: true})
 
       try {
         const strFeedoInfo = await SharedGroupPreferences.getItem(CONSTANTS.CARD_SAVED_LAST_FEEDO_INFO, CONSTANTS.APP_GROUP_LAST_USED_FEEDO);
@@ -259,6 +261,9 @@ class CardNewShareScreen extends React.Component {
     }).start(() => {
       if (this.props.feedo.feedoList.length == 0) {
         this.props.getFeedoList(0);
+      }
+      else {
+        this.setState({createEnabled: true})
       }
     });
 
@@ -579,9 +584,9 @@ class CardNewShareScreen extends React.Component {
         <TouchableOpacity 
           style={styles.closeButtonShareWrapper}
           activeOpacity={0.6}
-          onPress={() => this.onCreateCard()}
+          onPress={() => this.state.createEnabled ? this.onCreateCard() : {}}
         >
-          <Text style={[styles.textButton, { color: COLORS.PURPLE }]}>Create card</Text>
+          <Text style={[styles.textButton, { color: this.state.createEnabled ? COLORS.PURPLE : COLORS.MEDIUM_GREY }]}>Create card</Text>
         </TouchableOpacity>
       </View>
     );
@@ -591,7 +596,9 @@ class CardNewShareScreen extends React.Component {
     return (
       <View style={styles.extensionSelectFeedoContainer}>
         <Text style={[styles.textCreateCardIn, { color: COLORS.PRIMARY_BLACK }]}>Create card in:</Text>
-        <TouchableOpacity
+        {
+          this.state.createEnabled 
+          ? <TouchableOpacity
           style={[styles.selectFeedoButtonContainer, { paddingRight: 3 }]}
           activeOpacity={0.6}
           onPress={() => this.onSelectFeedo()}
@@ -599,6 +606,12 @@ class CardNewShareScreen extends React.Component {
           <Text style={styles.textFeedoName} numberOfLines={1}>{this.props.feedo.currentFeed.headline || 'New flow'}</Text>
           <Entypo name="chevron-right" size={20} color={COLORS.PURPLE} />
         </TouchableOpacity>
+          : <ActivityIndicator 
+              style={[styles.selectFeedoButtonContainer, {paddingRight: 9, width: 50}]}
+              animating
+              color={COLORS.PURPLE}
+            />
+        }
       </View>
     )
   }
