@@ -18,6 +18,7 @@ import CommentComponent from '../../CommentComponent';
 import UserAvatarComponent from '../../UserAvatarComponent';
 
 import CONSTANTS from '../../../service/constants'
+import { COMMENT_FEATURE } from '../../../service/api'
 
 class FeedCardExtendComponent extends React.Component {
   constructor(props) {
@@ -40,7 +41,7 @@ class FeedCardExtendComponent extends React.Component {
     let hasCoverImage = idea.coverImage && idea.coverImage.length > 0
     let cardHeight = 0
     if (hasCoverImage) {
-      const coverImageData = _.find(idea.files, file => file.accessUrl === idea.coverImage)
+      const coverImageData = _.find(idea.files, file => (file.accessUrl === idea.coverImage || file.thumbnailUrl === idea.coverImage))
       const cardWidth = (CONSTANTS.SCREEN_SUB_WIDTH - 16) / 2
       if (coverImageData.metadata) {
         const ratio = coverImageData.metadata.width / cardWidth
@@ -105,14 +106,16 @@ class FeedCardExtendComponent extends React.Component {
                   prevPage={this.props.prevPage}
                   type="all"
                 />
-                <CommentComponent 
-                  idea={idea}
-                  longHold={longHold}
-                  isOnlyInvitee={isOnlyInvitee}
-                  currentFeed={feedo.currentFeed}
-                  onComment={this.props.onComment}
-                  prevPage={this.props.prevPage}
-                />
+                {COMMENT_FEATURE && (
+                  <CommentComponent
+                    idea={idea}
+                    longHold={longHold}
+                    isOnlyInvitee={isOnlyInvitee}
+                    currentFeed={feedo.currentFeed}
+                    onComment={this.props.onComment}
+                    prevPage={this.props.prevPage}
+                  />
+                )}
               </View>
             )}
           </View>
