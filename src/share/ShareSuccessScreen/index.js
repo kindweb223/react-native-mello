@@ -5,7 +5,7 @@ import * as mime from 'react-native-mime-types';
 import SVGImage from 'react-native-remote-svg';
 import SvgUri from 'react-native-svg-uri';
 
-import CONSTANTS from '../../service/constants'
+import { SCHEME } from '../../service/api'
 import ShareExtension from '../shareExtension'
 import styles from './styles'
 
@@ -98,7 +98,7 @@ class ShareSuccessScreen extends React.Component {
       }
       if (isSelect) {
         console.log('FEED_ID: ', this.props.feedo.currentFeed.id)
-        ShareExtension.goToMainApp(CONSTANTS.SCHEME + `flow/${this.props.feedo.currentFeed.id}`);
+        ShareExtension.goToMainApp(SCHEME + `flow/${this.props.feedo.currentFeed.id}`);
         ShareExtension.close();
       } else {
         ShareExtension.close();
