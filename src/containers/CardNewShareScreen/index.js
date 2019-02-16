@@ -196,6 +196,10 @@ class CardNewShareScreen extends React.Component {
               this.draftFeedo = currentFeed
               return;
             }
+            else {
+              this.props.setCurrentFeed({});
+              this.draftFeedo = null
+            }
           }
         }
       } catch (error) {
