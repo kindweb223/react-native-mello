@@ -682,7 +682,7 @@ class CardNewShareScreen extends React.Component {
         {this.renderCard}
         {this.renderSelectHunt}
 
-        {this.state.loading && <LoadingScreen />}
+        {this.state.loading && <LoadingScreen containerStyle={{marginBottom: CONSTANTS.SCREEN_VERTICAL_MIN_MARGIN + 100}} />}
 
       </View>
     );
