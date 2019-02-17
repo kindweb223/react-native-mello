@@ -17,7 +17,7 @@ import { Scene, Router } from 'react-native-router-flux'
 import SharedGroupPreferences from 'react-native-shared-group-preferences'
 import axios from 'axios'
 
-import { BASE_URL } from '../service/api'
+import { BASE_URL, SCHEME } from '../service/api'
 axios.defaults.baseURL = BASE_URL
 axios.defaults.headers.get['Content-Type'] = 'application/json'
 axios.defaults.headers.get.Accept = 'application/json'
@@ -33,7 +33,7 @@ axios.interceptors.response.use(
       (error.response.status === 401 && error.response.data.code === 'session.expired') ||
       (error.response.status === 403 && error.response.data.code === 'error.user.not.authenticated')
     )) {
-      ShareExtension.goToMainApp('demos.solvers.io://');
+      ShareExtension.goToMainApp(SCHEME);
     }
     throw error
   }
@@ -88,11 +88,11 @@ export default class Share extends Component {
       <View style={styles.rootContainer}>
         <Provider store={store}>
           <Router>
-            <Scene key="root" hideNavBar>
-              <Scene key="ChooseLinkImageFromExtension" component={ChooseLinkImageFromExtension} /> 
-              <Scene key="ShareCardScreen" component={ShareCardScreen} />
-              <Scene key="ShareSuccessScreen" component={ShareSuccessScreen} />
-              <Scene key="ShareModalScreen" component={ShareModalScreen} okLabel='Sign In' initial={this.state.isVisibleModal} />
+            <Scene key="root" hideNavBar duration={0}>
+              <Scene key="ChooseLinkImageFromExtension" component={ChooseLinkImageFromExtension} duration={0} /> 
+              <Scene key="ShareCardScreen" component={ShareCardScreen} duration={0} />
+              <Scene key="ShareSuccessScreen" component={ShareSuccessScreen} duration={0} />
+              <Scene key="ShareModalScreen" component={ShareModalScreen} okLabel='Sign In' initial={this.state.isVisibleModal} duration={0} />
             </Scene>
           </Router>
         </Provider>

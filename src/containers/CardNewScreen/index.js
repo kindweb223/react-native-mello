@@ -13,7 +13,8 @@ import {
   AsyncStorage,
   SafeAreaView,
   Platform,
-  BackHandler
+  BackHandler,
+  ActivityIndicator
 } from 'react-native'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
@@ -27,6 +28,8 @@ import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityI
 import ActionSheet from 'react-native-actionsheet'
 import ImagePicker from 'react-native-image-picker'
 import ImageResizer from 'react-native-image-resizer';
+import RNThumbnail from 'react-native-thumbnail';
+import ImgToBase64 from 'react-native-image-base64';
 
 import { DocumentPicker, DocumentPickerUtil } from 'react-native-document-picker'
 import Permissions from 'react-native-permissions'
@@ -104,7 +107,7 @@ class CardNewScreen extends React.Component {
       coverImage,
       textByCursor: '',
       
-      loading: false,
+      loading: true,
       // isFullScreenCard: false,
       originalCardTopY: this.props.intialLayout.py,
       originalCardBottomY: this.props.intialLayout.py + this.props.intialLayout.height,
@@ -157,8 +160,8 @@ class CardNewScreen extends React.Component {
     this.shareImageUrls = [];
     this.currentShareImageIndex = 0;
 
-    this.coverImageWidth = 0
-    this.coverImageHeight = 0
+    this.coverImageWidth = CONSTANTS.SCREEN_WIDTH
+    this.coverImageHeight = CONSTANTS.SCREEN_HEIGHT
 
     if (props.cardMode === CONSTANTS.SHARE_EXTENTION_CARD && props.shareUrl === '' && props.shareImageUrls.length) {
       props.shareImageUrls.forEach( async(imageUri, index) => {
@@ -240,7 +243,7 @@ class CardNewScreen extends React.Component {
       loading = true;
       // Image resizing...
       const fileType = (Platform.OS === 'ios') ? this.selectedFileMimeType : this.selectedFile.type;
-      console.log('selectedFile: ', this.selectedFile);
+
       if (fileType && fileType.indexOf('image/') !== -1)
       {
         // https://www.built.io/blog/improving-image-compression-what-we-ve-learned-from-whatsapp
@@ -305,10 +308,9 @@ class CardNewScreen extends React.Component {
           height
         }
         this.props.addFile(id, this.selectedFileType, fileType, this.selectedFileName, objectKey, metadata);
+      } else {
+        this.props.addFile(id, this.selectedFileType, fileType, this.selectedFileName, objectKey, null, this.base64String);
       }
-      else
-        this.props.addFile(id, this.selectedFileType, fileType, this.selectedFileName, objectKey, null);
-
     } else if (this.props.card.loading !== types.ADD_FILE_PENDING && nextProps.card.loading === types.ADD_FILE_PENDING) {
       // adding a file
       loading = true;
@@ -317,7 +319,13 @@ class CardNewScreen extends React.Component {
       const {
         id, 
       } = this.props.card.currentCard;
-      const newImageFiles = _.filter(nextProps.card.currentCard.files, file => file.contentType.indexOf('image') !== -1);
+
+      const currentCard = nextProps.card.currentCard;
+      // if (currentCard.files && currentCard.files.length > 0) {
+      //   this.setState({ coverImage: currentCard.files[0].thumbnailUrl })
+      // }
+
+      const newImageFiles = _.filter(nextProps.card.currentCard.files, file => file.contentType.indexOf('image') !== -1 || file.contentType.indexOf('video') !== -1);
       if (newImageFiles.length === 1 && !nextProps.card.currentCard.coverImage) {
         this.onSetCoverImage(newImageFiles[0].id);
       }
@@ -387,7 +395,7 @@ class CardNewScreen extends React.Component {
         this.saveFeedId();
       }
       if (this.props.cardMode === CONSTANTS.SHARE_EXTENTION_CARD) {
-        Actions.ShareSuccessScreen();
+        Actions.ShareSuccessScreen({type: 'replace'});
         return;
       }
       this.onClose();
@@ -396,7 +404,7 @@ class CardNewScreen extends React.Component {
       loading = true;
     } else if (this.props.card.loading !== types.DELETE_FILE_FULFILLED && nextProps.card.loading === types.DELETE_FILE_FULFILLED) {
       // success in deleting a file
-      imageFiles = _.filter(nextProps.card.currentCard.files, file => file.contentType.indexOf('image') !== -1);
+      imageFiles = _.filter(nextProps.card.currentCard.files, file => file.contentType.indexOf('image') !== -1 || file.contentType.indexOf('video') !== -1);
       if (imageFiles.length > 0 && !nextProps.card.currentCard.coverImage) {
         this.onSetCoverImage(nextProps.card.currentCard.files[0].id);
       } else {
@@ -979,10 +987,12 @@ class CardNewScreen extends React.Component {
             if (mimeType.indexOf('image') !== -1 || mimeType.indexOf('video') !== -1) {
               type = 'MEDIA';
             }
+            this.generateThumbnail(response)  // Generate thumbnail if video
           }
+
           this.uploadFile(this.props.card.currentCard, response, type);
         }
-      }      
+      }
     });
     return;
   }
@@ -1057,6 +1067,7 @@ class CardNewScreen extends React.Component {
           if (!response.fileName) {
             response.fileName = response.uri.replace(/^.*[\\\/]/, '')
           }
+          this.generateThumbnail(response)  // Generate thumbnail if video
           this.uploadFile(this.props.card.currentCard, response, 'MEDIA');
         }
       }
@@ -1069,6 +1080,7 @@ class CardNewScreen extends React.Component {
         if (response.fileSize > CONSTANTS.MAX_UPLOAD_FILE_SIZE) {
           COMMON_FUNC.showPremiumAlert()
         } else {
+          this.generateThumbnail(response)  // Generate thumbnail if video
           this.uploadFile(this.props.card.currentCard, response, 'MEDIA');
         }
       }
@@ -1090,6 +1102,26 @@ class CardNewScreen extends React.Component {
     } else if (index === 1) {
       // from library
       this.pickMediaFromLibrary(options);
+    }
+  }
+
+  generateThumbnail(file) {
+    const mimeType = mime.lookup(file.uri);
+
+    if (mimeType.indexOf('video') !== -1) {
+      RNThumbnail.get(file.uri).then((result) => {
+        console.log
+        ImageResizer.createResizedImage(result.path, result.width, result.height, CONSTANTS.IMAGE_COMPRESS_FORMAT, 50, 0, null)
+        .then((response) => {
+          ImgToBase64.getBase64String(response.uri)
+            .then(base64String => this.base64String = 'data:image/png;base64,' + base64String)
+            .catch(err => console.log(err));                
+        }).catch((error) => {
+          console.log('Image compress error: ', error);
+        });
+      }).catch((error) => {
+        console.log('RNThumbnail error: ', error);
+      });
     }
   }
 
@@ -1563,7 +1595,7 @@ class CardNewScreen extends React.Component {
             activeOpacity={0.6}
             onPress={this.onUpdateFeed.bind(this)}
           >
-            <Text style={[styles.textButton, {color: COLORS.PURPLE}]}>Create card</Text>
+            <Text style={[styles.textButton, {color: this.state.loading ? COLORS.MEDIUM_GREY : COLORS.PURPLE}]}>Create card</Text>
           </TouchableOpacity>
         </View>
       );
@@ -1599,14 +1631,22 @@ class CardNewScreen extends React.Component {
       return (
         <View style={styles.extensionSelectFeedoContainer}>
           <Text style={[styles.textCreateCardIn, {color: COLORS.PRIMARY_BLACK}]}>Create card in:</Text>
-          <TouchableOpacity
-            style={[styles.selectFeedoButtonContainer, {paddingRight: 3}]}
-            activeOpacity={0.6}
-            onPress={this.onSelectFeedo.bind(this)}
-          >
-            <Text style={styles.textFeedoName} numberOfLines={1}>{this.props.feedo.currentFeed.headline || 'New flow'}</Text>
-            <Entypo name="chevron-right" size={20} color={COLORS.PURPLE} />
-          </TouchableOpacity>
+          {!this.state.loading
+            ? <TouchableOpacity
+              style={[styles.selectFeedoButtonContainer, {paddingRight: 3}]}
+              activeOpacity={0.6}
+              onPress={this.onSelectFeedo.bind(this)}
+              >
+                <Text style={styles.textFeedoName} numberOfLines={1}>{this.props.feedo.currentFeed.headline || 'New flow'}</Text>
+                <Entypo name="chevron-right" size={20} color={COLORS.PURPLE} />
+              </TouchableOpacity>
+            :
+              <ActivityIndicator 
+                style={[styles.selectFeedoButtonContainer, {paddingRight: 9, width: 50}]}
+                animating
+                color={COLORS.PURPLE}
+              />
+          }
         </View>
       )
     }
@@ -1703,6 +1743,7 @@ class CardNewScreen extends React.Component {
     if (this.state.isVisibleSelectFeedoModal) {
       return (
         <SelectHuntScreen
+          cachedFeedList={this.props.feedo.feedoList}
           selectMode={cardMode !== CONSTANTS.SHARE_EXTENTION_CARD ? CONSTANTS.FEEDO_SELECT_FROM_MAIN : CONSTANTS.FEEDO_SELECT_FROM_SHARE_EXTENSION}
           onClosed={() => this.onCloseSelectHunt()}
         />
@@ -1741,7 +1782,10 @@ class CardNewScreen extends React.Component {
           onPress={(index) => this.onTapWebLinkActionSheet(index)}
         />
 
-        {this.state.loading && <LoadingScreen />}
+        {
+          this.state.loading && 
+            <LoadingScreen containerStyle={this.props.cardMode === CONSTANTS.SHARE_EXTENTION_CARD ? {marginBottom: CONSTANTS.SCREEN_VERTICAL_MIN_MARGIN + 100} : {}} />
+        }
         <Modal 
           style={{ margin: 0 }}
           isVisible={this.state.isVisibleChooseLinkImagesModal}
@@ -1832,7 +1876,7 @@ const mapDispatchToProps = dispatch => ({
   updateCard: (huntId, ideaId, title, idea, coverImage, files, isCreateCard) => dispatch(updateCard(huntId, ideaId, title, idea, coverImage, files, isCreateCard)),
   getFileUploadUrl: (huntId, ideaId) => dispatch(getFileUploadUrl(huntId, ideaId)),
   uploadFileToS3: (signedUrl, file, fileName, mimeType) => dispatch(uploadFileToS3(signedUrl, file, fileName, mimeType)),
-  addFile: (ideaId, fileType, contentType, name, objectKey, metadata) => dispatch(addFile(ideaId, fileType, contentType, name, objectKey, metadata)),
+  addFile: (ideaId, fileType, contentType, name, objectKey, metadata, base64String) => dispatch(addFile(ideaId, fileType, contentType, name, objectKey, metadata, base64String)),
   deleteFile: (ideaId, fileId) => dispatch(deleteFile(ideaId, fileId)),
   setCoverImage: (ideaId, fileId) => dispatch(setCoverImage(ideaId, fileId)),
   getOpenGraph: (url) => dispatch(getOpenGraph(url)),

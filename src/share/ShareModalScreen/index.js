@@ -10,6 +10,7 @@ import ShareExtension from '../shareExtension'
 import styles from './styles'
 import Modal from 'react-native-modalbox'
 import CONSTANTS from '../../service/constants'
+import { SCHEME } from '../../service/api'
 
 
 export default class ShareModalScreen extends React.Component {
@@ -116,7 +117,7 @@ ShareModalScreen.defaultProps = {
   buttons: CONSTANTS.MODAL_OK | CONSTANTS.MODAL_CLOSE,
   okLabel: 'OK',
   onOk: () => {
-    ShareExtension.goToMainApp('demos.solvers.io://');
+    ShareExtension.goToMainApp(SCHEME);
   },
   onClose: () => {},
 }

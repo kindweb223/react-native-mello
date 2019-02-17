@@ -51,6 +51,7 @@ import ShareWidgetConfirmModal from '../../components/ShareWidgetModal/ConfirmMo
 import ShareExtensionTip from '../../components/ShareExtensionTip'
 import styles from './styles'
 import CONSTANTS from '../../service/constants';
+import { PIN_FEATURE } from '../../service/api'
 import { TIP_SHARE_LINK_URL } from '../../service/api'
 const SEARCH_ICON = require('../../../assets/images/Search/Grey.png')
 const SETTING_ICON = require('../../../assets/images/Settings/Grey.png')
@@ -1385,35 +1386,37 @@ class HomeScreen extends React.Component {
                     </View>
                 }
               </View>
-              <View
-                style={[!this.state.isLongHoldMenuVisible ? styles.feedListContainer : styles.feedListContainerLongHold, , feedClickEvent === 'normal' && { paddingBottom: 30 }]}
-                ref={ref => this.scrollTabPinned = ref}
-                tabLabel={{ label: 'Pinned', badge: 0 }}
-              >
-                {feedoList.length > 0
-                  ? <FeedoListContainer
-                      loading={loading}
-                      feedoList={feedoList}
-                      selectedLongHoldFeedoIndex={selectedLongHoldFeedoIndex}
-                      feedClickEvent={feedClickEvent}
-                      animatedSelectFeed={this.animatedSelectFeed}
-                      updateSelectIndex={(index, item) =>
-                        this.setState({ selectedLongHoldFeedoIndex: index, selectedFeedData: item, showLongHoldActionBar: true })
-                      }
-                      handleLongHoldMenu={this.handleLongHoldMenu}
-                      page="home"
-                      isRefreshing={this.state.isRefreshing}
-                      onRefreshFeed={() => this.onRefreshFeed()}
-                    />
-                  : <View style={styles.emptyTabInnerSubView}>
-                      <SpeechBubbleComponent
-                        page="pinned"
-                        title="Your pinned items will appear here. To pin a feed tap and hold it to bring up quick actions and select"
-                        subTitle="Watch a 15 sec Quick Start video "
+              {PIN_FEATURE && (
+                <View
+                  style={[!this.state.isLongHoldMenuVisible ? styles.feedListContainer : styles.feedListContainerLongHold, , feedClickEvent === 'normal' && { paddingBottom: 30 }]}
+                  ref={ref => this.scrollTabPinned = ref}
+                  tabLabel={{ label: 'Pinned', badge: 0 }}
+                >
+                  {feedoList.length > 0
+                    ? <FeedoListContainer
+                        loading={loading}
+                        feedoList={feedoList}
+                        selectedLongHoldFeedoIndex={selectedLongHoldFeedoIndex}
+                        feedClickEvent={feedClickEvent}
+                        animatedSelectFeed={this.animatedSelectFeed}
+                        updateSelectIndex={(index, item) =>
+                          this.setState({ selectedLongHoldFeedoIndex: index, selectedFeedData: item, showLongHoldActionBar: true })
+                        }
+                        handleLongHoldMenu={this.handleLongHoldMenu}
+                        page="home"
+                        isRefreshing={this.state.isRefreshing}
+                        onRefreshFeed={() => this.onRefreshFeed()}
                       />
-                    </View>
-                }
-              </View>
+                    : <View style={styles.emptyTabInnerSubView}>
+                        <SpeechBubbleComponent
+                          page="pinned"
+                          title="Your pinned items will appear here. To pin a feed tap and hold it to bring up quick actions and select"
+                          subTitle="Watch a 15 sec Quick Start video "
+                        />
+                      </View>
+                  }
+                </View>
+              )}
             </ScrollableTabView>
 
             <View style={styles.settingIconView}>

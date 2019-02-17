@@ -4,16 +4,16 @@ import {
   Text,
   TouchableOpacity,
   FlatList,
-  Switch
+  Switch,
+  Image
 } from 'react-native'
 import PropTypes from 'prop-types'
-import Octicons from 'react-native-vector-icons/Octicons'
-import Entypo from 'react-native-vector-icons/Entypo'
-import SVGImage from 'react-native-remote-svg'
 import styles from './styles'
 import * as COMMON_FUNC from '../../service/commonFunc'
 import { images } from '../../themes'
 import colors from '../../service/colors'
+
+import { PIN_FEATURE } from '../../service/api'
 
 class FeedControlMenuComponent extends React.Component {
 
@@ -47,8 +47,8 @@ class FeedControlMenuComponent extends React.Component {
           style={styles.settingItem}
           onPress={() => this.props.handleSettingItem('AddPeople')}
         >
-          <SVGImage source={images.addProfile} style={styles.menuIcon} />
-          <Text style={styles.settingButtonText}>Add people</Text>
+          <Image source={images.addProfile} style={styles.menuIcon} />
+          <Text style={styles.settingButtonText}>{isEnableShareAllowed ? 'Add people' : 'Flow members'}</Text>
         </TouchableOpacity>
 
         {
@@ -56,7 +56,7 @@ class FeedControlMenuComponent extends React.Component {
           <TouchableOpacity
             style={styles.settingItem}
           >
-            <SVGImage source={images.shareLink} style={styles.menuIcon} />
+            <Image source={images.shareLink} style={styles.menuIcon} />
             <Text style={styles.settingButtonText}>Link sharing</Text>
             <Switch
               style={{ marginLeft: 20 }}
@@ -73,20 +73,24 @@ class FeedControlMenuComponent extends React.Component {
             style={styles.settingItem}
             onPress={() => this.props.handleSettingItem('ShareLink')}
           >
-            <SVGImage source={images.shareLink} style={[styles.menuIcon, { opacity: 0 }]} />
+            <Image source={images.shareLink} style={[styles.menuIcon, { opacity: 0 }]} />
             <Text style={styles.settingButtonText}>Share link</Text>
           </TouchableOpacity>
         }
 
-        <View style={styles.separator} />
+        {PIN_FEATURE && (
+          <View style={styles.separator} />
+        )}
 
-        <TouchableOpacity
-          style={styles.settingItem}
-          onPress={() => this.props.handleSettingItem(pinText)}
-        >
-          <SVGImage source={pinImg} style={styles.menuIcon} />
-          <Text style={styles.settingButtonText}>{pinText}</Text>
-        </TouchableOpacity>
+        {PIN_FEATURE && (
+          <TouchableOpacity
+            style={styles.settingItem}
+            onPress={() => this.props.handleSettingItem(pinText)}
+          >
+            <Image source={pinImg} style={styles.menuIcon} />
+            <Text style={styles.settingButtonText}>{pinText}</Text>
+          </TouchableOpacity>
+        )}
 
         <View style={styles.separator} />
 
@@ -113,7 +117,7 @@ class FeedControlMenuComponent extends React.Component {
                 activeOpacity={0.5}
               >
                 <View style={styles.settingItem}>
-                  <SVGImage source={iconSource} style={styles.menuIcon} />
+                  <Image source={iconSource} style={styles.menuIcon} />
                   <Text style={(item === 'Delete' || item === 'Leave Flow') ? styles.deleteButtonText : styles.settingButtonText}>
                     {item}
                   </Text>
