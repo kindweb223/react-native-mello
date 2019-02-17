@@ -33,7 +33,7 @@ class PremiumModal extends React.Component {
         <View style={styles.mainView}>
           <Image source={STAR_ICON} style={styles.iconView} />
           <Text style={styles.title}>Premium will be available in the coming weeks to a select number of users.</Text>
-          <Text style={styles.subTitle}>If you want to be one of those select share Mello with your friends.</Text>
+          <Text style={styles.subTitle}>Help mello reach it's full potential by sharing it with your connections.</Text>
         </View>
 
         <View style={styles.buttonView}>

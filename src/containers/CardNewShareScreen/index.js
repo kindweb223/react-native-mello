@@ -521,7 +521,7 @@ class CardNewShareScreen extends React.Component {
           ref={ref => this.textInputIdeaRef = ref}
           style={styles.textInputIdea}
           autoCorrect={true}
-          placeholder='Type text or paste a link'
+          placeholder='Let your ideas flow. Type text, paste a link, add an image, video or audio'
           multiline={true}
           underlineColorAndroid='transparent'
           value={this.state.idea}

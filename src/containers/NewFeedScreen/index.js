@@ -605,7 +605,7 @@ class NewFeedScreen extends React.Component {
         <TextInput
           ref={ref => this.textInputFeedNoteRef = ref}
           style={styles.textInputNote}
-          placeholder='Tap to add description'
+          placeholder='Tap to give this flow a description'
           multiline={true}
           onContentSizeChange={this.inputContentChange}
           onSelectionChange={this.inputSelectionChange}
@@ -791,11 +791,11 @@ class NewFeedScreen extends React.Component {
       <View style={styles.container}>
         {this.renderFeed}
         {TAGS_FEATURE && this.renderCreateTag}
-
+        
         <ActionSheet
           ref={ref => this.leaveActionSheetRef = ref}
-          title='Are you sure that you wish to leave?'
-          options={['Continue editing', this.props.selectedFeedId ? 'Close and discard' : 'Leave and discard', 'Cancel']}
+          title='Are you sure you want to discard?'
+          options={['Keep Editing', this.props.selectedFeedId ? 'Close' : 'Discard', 'Cancel']}
           cancelButtonIndex={2}
           destructiveButtonIndex={1}
           tintColor={COLORS.PURPLE}

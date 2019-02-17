@@ -110,8 +110,18 @@ class SignUpScreen extends React.Component {
         const { error } = this.props.user
         this.setState({ loading: false }, () => {
           Alert.alert(
-            'Error',
-            error.message
+            'Oops',
+            resolveError(error.code, error.message),
+            [
+              {
+                text: 'OK',
+                style: 'cancel'
+              },
+              {
+                text: 'Login',
+                onPress: () => Actions.LoginScreen()
+              }
+            ]
           )
         })
       }
@@ -269,7 +279,7 @@ class SignUpScreen extends React.Component {
         {
           code: 'com.signup.password.invalid',
           field: 'password',
-          message: 'Password must have at least 6 characters'
+          message: 'Password must be at least 6 characters'
         }
       ]
     }
