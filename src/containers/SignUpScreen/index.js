@@ -200,25 +200,27 @@ class SignUpScreen extends React.Component {
   }
 
   onSignUp = () => {
-    if (Platform.OS === 'ios') {
-      this.signUp();
-    }
-    else {
-      Permissions.check('storage').then(response => { //'storage' permission doesn't support on iOS
-        if (response === 'authorized') {
-          //permission already allowed
-          this.signUp();
-        }
-        else {
-          Permissions.request('storage').then(response => {
-            if (response === 'authorized') {
-              //storage permission was authorized
-              this.signUp();
-            }
-          });
-        }
-      });
-    }
+    this.signUp();
+
+    // if (Platform.OS === 'ios') {
+    //   this.signUp();
+    // }
+    // else {
+    //   Permissions.check('storage').then(response => { //'storage' permission doesn't support on iOS
+    //     if (response === 'authorized') {
+    //       //permission already allowed
+    //       this.signUp();
+    //     }
+    //     else {
+    //       Permissions.request('storage').then(response => {
+    //         if (response === 'authorized') {
+    //           //storage permission was authorized
+    //           this.signUp();
+    //         }
+    //       });
+    //     }
+    //   });
+    // }
   }
 
   signUp() {
