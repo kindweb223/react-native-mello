@@ -356,7 +356,7 @@ class TutorialScreen extends React.Component {
             <View style={styles.skipButtonView}>
               <TouchableOpacity onPress={() => this.onNext(true)} activeOpacity={0.8}>
                 <View style={styles.skipButton}>
-                  <Text style={styles.skipButtonText}>Next</Text>
+                  <Text style={styles.skipButtonText} onPress={() => this.onNext(true)} suppressHighlighting={true}>Next</Text>
                 </View>
               </TouchableOpacity>
             </View>
