@@ -48,7 +48,7 @@ class FeedControlMenuComponent extends React.Component {
           onPress={() => this.props.handleSettingItem('AddPeople')}
         >
           <Image source={images.addProfile} style={styles.menuIcon} />
-          <Text style={styles.settingButtonText}>Add people</Text>
+          <Text style={styles.settingButtonText}>{isEnableShareAllowed ? 'Add people' : 'Flow members'}</Text>
         </TouchableOpacity>
 
         {
