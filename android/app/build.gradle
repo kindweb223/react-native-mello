@@ -101,7 +101,7 @@ android {
         applicationId "io.solvers.feedo"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode 56
+        versionCode 59
         versionName "1.0"
         multiDexEnabled true
         ndk {
@@ -118,10 +118,10 @@ android {
     }
     signingConfigs {
         release {
-//            storeFile file(MYAPP_RELEASE_STORE_FILE)
-//            storePassword MYAPP_RELEASE_STORE_PASSWORD
-//            keyAlias MYAPP_RELEASE_KEY_ALIAS
-//            keyPassword MYAPP_RELEASE_KEY_PASSWORD
+           storeFile file(MYAPP_RELEASE_STORE_FILE)
+           storePassword MYAPP_RELEASE_STORE_PASSWORD
+           keyAlias MYAPP_RELEASE_KEY_ALIAS
+           keyPassword MYAPP_RELEASE_KEY_PASSWORD
         }
     }
     buildTypes {
@@ -147,6 +147,9 @@ android {
 }
 
 dependencies {
+    compile project(':react-native-image-base64')
+    compile project(':react-native-thumbnail')
+    compile project(':react-native-splash-screen')
     compile project(':react-native-google-signin')
     compile project(':react-native-haptic-feedback')
     compile project(':react-native-inappbrowser-reborn')

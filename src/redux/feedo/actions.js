@@ -536,8 +536,7 @@ export const getActivityFeed = (userId, data) => {
     promise:
       axios({
         method: 'get',
-        url: url,
-        data
+        url: url
       })
   };
 }

@@ -102,7 +102,7 @@ const styles = StyleSheet.create({
     height: FOOTER_HEIGHT,
     backgroundColor: '#fff',
     alignItems: 'center',
-    justifyContent: 'space-between',
+    justifyContent: 'flex-end',
     flexDirection: 'row',
   },
   addCommentView: {

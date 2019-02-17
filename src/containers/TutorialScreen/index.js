@@ -17,6 +17,7 @@ import LottieView from 'lottie-react-native'
 import { ifIphoneX } from 'react-native-iphone-x-helper'
 import { GoogleSignin, statusCodes } from 'react-native-google-signin'
 import Video from 'react-native-video'
+import SVGImage from 'react-native-remote-svg'
 
 import LoadingScreen from '../LoadingScreen'
 import COLORS from '../../service/colors'
@@ -88,7 +89,7 @@ class TutorialScreen extends React.Component {
     const { user } = nextProps
 
     if (nextProps.prevPage === 'login') {
-      this.onSkip(false)
+      this.swiperRef.scrollBy(6, false)
     }
 
     if (this.props.user.loading === 'USER_GOOGLE_SIGNIN_PENDING' && user.loading === 'USER_GOOGLE_SIGNIN_FULFILLED') {
@@ -167,7 +168,10 @@ class TutorialScreen extends React.Component {
     return (
       <View style={styles.logoViewContainer}>
         <View style={styles.logoView}>
-          <Image style={styles.logo} source={LOGO_TEXT} />
+          <Image
+            source={LOGO_TEXT}
+            style={styles.logo}
+          />
         </View>
         <Text style={styles.subText}>A place to put things that matter to you.</Text>
       </View>
@@ -313,8 +317,8 @@ class TutorialScreen extends React.Component {
     this.setState({ position: context.state.index })
   }
 
-  onSkip(animated) {
-    this.swiperRef.scrollBy(6 - this.state.position, animated)
+  onNext(animated) {
+    this.swiperRef.scrollBy(1, animated)
   }
 
   render () {
@@ -348,11 +352,11 @@ class TutorialScreen extends React.Component {
             {this.renderSignupView()}
           </Swiper>
 
-          {(position !== 0 && position !== 6) && (
+          {(position !== 6) && (
             <View style={styles.skipButtonView}>
-              <TouchableOpacity onPress={() => this.onSkip(true)} activeOpacity={0.8}>
+              <TouchableOpacity onPress={() => this.onNext(true)} activeOpacity={0.8}>
                 <View style={styles.skipButton}>
-                  <Text style={styles.skipButtonText}>Skip</Text>
+                  <Text style={styles.skipButtonText}>Next</Text>
                 </View>
               </TouchableOpacity>
             </View>
