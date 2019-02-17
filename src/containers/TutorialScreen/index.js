@@ -258,7 +258,7 @@ class TutorialScreen extends React.Component {
           <TouchableOpacity onPress={() => this.onSignUp()} activeOpacity={0.8}>
             <View style={styles.buttonView}>
               <Image source={MAIL_ICON} />
-              <Text style={styles.buttonText}>Sign up with e-mail</Text>
+              <Text style={styles.buttonText}>Sign up with email</Text>
             </View>
           </TouchableOpacity>
 
@@ -344,11 +344,11 @@ class TutorialScreen extends React.Component {
             onMomentumScrollEnd={this.onMomentumScrollEnd}
           >
             {this.renderLogoView()}
-            {this.renderLottieView('Save important content from the web.', LOTTIE_COLLECT, 1)}
-            {this.renderLottieView('... or from your camera.', LOTTIE_REVIEW, 2)}
-            {this.renderLottieView('... or just straight out of your brain.', LOTTIE_SHARE, 3)}
-            {this.renderLottieView('... from instagram, Photos, Dropbox, YouTube, Pinterest, Slack... You get the idea.', LOTTIE_SERVICE, 4)}
-            {this.renderLottieView('Collaborate with your teammates and close friends.', LOTTIE_PEOPLE, 5)}
+            {this.renderLottieView('Collect ideas as you browse the web', LOTTIE_COLLECT, 1)}
+            {this.renderLottieView('Take pictures of real things that inspire you', LOTTIE_REVIEW, 2)}
+            {this.renderLottieView('Quickly create a note of your thoughts', LOTTIE_SHARE, 3)}
+            {this.renderLottieView('Save things from apps you use for inspiration', LOTTIE_SERVICE, 4)}
+            {this.renderLottieView('Get feedback and ask your friends to contribute to your ideas', LOTTIE_PEOPLE, 5)}
             {this.renderSignupView()}
           </Swiper>
 

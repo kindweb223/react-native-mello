@@ -417,9 +417,9 @@ class ProfileScreen extends React.Component {
               <View style={styles.bottomView}>
                 <Text style={styles.version}>Version {VersionNumber.appVersion}.{VersionNumber.buildVersion}</Text>
                 <View style={styles.bottomItemView}>
-                  <Text style={styles.version}>Crafted with</Text>
+                  <Text style={styles.version}>Made with</Text>
                   <MaterialIcons name='favorite' size={12} color={COLORS.MEDIUM_GREY} style={styles.favicon}/>
-                  <Text style={styles.version}>in Dublin</Text>
+                  <Text style={styles.version}>in Solvers</Text>
                 </View>
               </View>
             </View>

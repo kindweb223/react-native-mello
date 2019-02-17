@@ -1390,7 +1390,7 @@ class CardNewScreen extends React.Component {
           ref={ref => this.textInputIdeaRef = ref}
           style={styles.textInputIdea}
           autoCorrect={true}
-          placeholder='Type text or paste a link'
+          placeholder='Let your ideas flow. Type text, paste a link, add an image, video or audio'
           multiline={true}
           underlineColorAndroid='transparent'
           value={this.state.idea}
@@ -1766,8 +1766,8 @@ class CardNewScreen extends React.Component {
         />
         <ActionSheet
           ref={ref => this.leaveActionSheetRef = ref}
-          title='Are you sure that you wish to leave?'
-          options={['Continue editing', 'Leave and discard', 'Cancel']}
+          title='Are you sure you want to cancel?'
+          options={['Keep Editing', 'Discard', 'Cancel']}
           cancelButtonIndex={2}
           destructiveButtonIndex={1}
           tintColor={COLORS.PURPLE}

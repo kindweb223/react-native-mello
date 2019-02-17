@@ -37,12 +37,12 @@ class ShareWidgetPermissionModal extends React.Component {
             <Image source={SHARE_ICON} style={styles.shareIcon} />
           </View>
           <Text style={styles.title}>Did you know you can save to Mello from anywhere?</Text>
-          <Text style={styles.subTitle}>Just tab Share button in your favorite app and send to Mello.</Text>
+          <Text style={styles.subTitle}>Tab the share button and save anything from anwyhere to Mello.</Text>
         </View>
 
         <View style={styles.buttonView}>
           <TouchableOpacity style={styles.button} onPress={() => this.enableShareWidget()}>
-            <Text style={styles.buttonText}>Enable share widget</Text>
+            <Text style={styles.buttonText}>Enable share extension</Text>
           </TouchableOpacity>
         </View>
         

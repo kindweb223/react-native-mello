@@ -146,7 +146,7 @@ class HomeScreen extends React.Component {
   }
 
   showSharePermissionModal(permissionInfo) {
-    // If we haven't asked to enable share widget before
+    // If we haven't asked to enable share extension before
     if (!permissionInfo) {
         this.setState({ showSharePermissionModal: true })
     } 
@@ -1380,7 +1380,7 @@ class HomeScreen extends React.Component {
                   : <View style={styles.emptyTabInnerSubView}>
                       <SpeechBubbleComponent
                         page="shared"
-                        title="Flows can be shared with friends and colleagues for collaboration. Flows you've been invited to will appear here."
+                        title="Don't flow-it alone. Flows you've been invited to will appear here 👇."
                         subTitle="All you need to know about sharing in 15 secs "
                       />
                     </View>
@@ -1410,7 +1410,7 @@ class HomeScreen extends React.Component {
                     : <View style={styles.emptyTabInnerSubView}>
                         <SpeechBubbleComponent
                           page="pinned"
-                          title="Your pinned items will appear here. To pin a feed tap and hold it to bring up quick actions and select"
+                          title="Pin flows for quicker access. To pin a flow, long hold a flow and tap pin in the actions menu"
                           subTitle="Watch a 15 sec Quick Start video "
                         />
                       </View>

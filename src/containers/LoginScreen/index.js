@@ -94,11 +94,38 @@ class LoginScreen extends React.Component {
       if (this.props.user.loading === 'USER_SIGNIN_PENDING' && user.loading === 'USER_SIGNIN_REJECTED') {
         this.setState({ loading: false }, () => {
           if (user.error) {
-            Alert.alert(
-              'Warning',
-              // ToDo: Msg not being picked up  -> resolveError(user.error.code, user.error.message)
-              'Login failed'
-            )
+            if (user.error.code === 'error.login.disabled') {
+              Alert.alert(
+                'Oops',
+                resolveError(user.error.code, user.error.message),
+                [
+                  {
+                    text: 'Try Again Later',
+                    style: 'cancel'
+                  },
+                  {
+                    text: 'Reset Password',
+                    onPress: () => this.onForgotPassword()
+                  }
+                ]
+              )
+            }
+            else {
+              Alert.alert(
+                'Oops',
+                resolveError(user.error.code, user.error.message),
+                [
+                  {
+                    text: 'Try Again',
+                    style: 'cancel'
+                  },
+                  {
+                    text: 'Forgot Password',
+                    onPress: () => this.onForgotPassword()
+                  }
+                ]
+              )
+            }
           }
         })
       }
@@ -288,7 +315,7 @@ class LoginScreen extends React.Component {
           <View style={styles.innerContainer}>
             <TextInputComponent
               ref={ref => this.emailRef = ref}
-              placeholder="E-mail"
+              placeholder="Email"
               value={this.state.userEmail}
               isError={emailError.length > 0 ? true : false}
               errorText={emailError.length > 0 ? resolveError(emailError[0].code, emailError[0].message) : ''}
