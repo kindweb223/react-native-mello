@@ -543,7 +543,7 @@ class CardNewScreen extends React.Component {
         } else {
           error = (nextProps.card.error && nextProps.card.error.message) || (nextProps.feedo.error && nextProps.feedo.error.message);
         }
-        
+
         if (error) {
           if (nextProps.card.loading === types.GET_OPEN_GRAPH_REJECTED) {
             // success in getting open graph
@@ -595,10 +595,6 @@ class CardNewScreen extends React.Component {
             if (this.props.card.currentCard.links === null || this.props.card.currentCard.links.length === 0) {
               if (this.parseErrorUrls(error)) {
                 error = 'Oops, we can\'t get the details from this link';
-                setTimeout(() => {
-                  this.onCloseLinkImages();
-                }, 10);    
-  
               } else {
                 // return;
               }
@@ -668,10 +664,10 @@ class CardNewScreen extends React.Component {
   
   handleBackButton = () => {
     const { cardMode, viewMode } = this.props;
-    if (cardMode === CONSTANTS.SHARE_EXTENTION_CARD || cardMode === CONSTANTS.MAIN_APP_CARD_FROM_DASHBOARD) {
+    if (cardMode === CONSTANTS.SHARE_EXTENTION_CARD) {
       this.props.shareUrl !== '' && this.props.shareImageUrls.length > 0 ? Actions.pop() : this.props.onClose()
     }
-    else if (viewMode === CONSTANTS.CARD_NEW) {
+    if (viewMode === CONSTANTS.CARD_NEW) {
       this.leaveActionSheetRef.show()
     }
     return true;
@@ -826,7 +822,7 @@ class CardNewScreen extends React.Component {
       }
 
       if (filteredUrls.length > 0) {
-        Analytics.logEvent('CardNewScreen', {})
+        Analytics.logEvent('new_card_typed_link', {})
 
         // this.isOpenGraphForNewCard = false;
         this.indexForOpenGraph = 0;
@@ -1222,11 +1218,6 @@ class CardNewScreen extends React.Component {
     this.setState({
       isVisibleChooseLinkImagesModal: false,
     });
-
-    const { cardMode } = this.props;
-    if (cardMode === CONSTANTS.MAIN_APP_CARD_FROM_DASHBOARD) {
-      this.props.shareUrl !== '' && this.props.shareImageUrls.length > 0 ? Actions.pop() : this.props.onClose()
-    }
   }
 
   onSaveLinkImages(selectedImages) {
