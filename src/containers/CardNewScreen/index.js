@@ -1715,7 +1715,7 @@ class CardNewScreen extends React.Component {
             {this.renderBottomContent}
             {
               // If show keyboard button, and not quick add card from dashboard as interferes with change Feed https://cl.ly/ba004cb3a34b
-              viewMode === CONSTANTS.CARD_NEW && this.state.isShowKeyboardButton && cardMode !== CONSTANTS.MAIN_APP_CARD_FROM_DASHBOARD && cardMode !== CONSTANTS.SHARE_EXTENTION_CARD &&
+              Platform.OS === 'ios' && viewMode === CONSTANTS.CARD_NEW && this.state.isShowKeyboardButton && cardMode !== CONSTANTS.MAIN_APP_CARD_FROM_DASHBOARD && cardMode !== CONSTANTS.SHARE_EXTENTION_CARD &&
               <Animated.View style={styles.hideKeyboardContainer}>
                 <TouchableOpacity
                   style={[
@@ -1790,6 +1790,7 @@ class CardNewScreen extends React.Component {
           style={{ margin: 0 }}
           isVisible={this.state.isVisibleChooseLinkImagesModal}
           animationInTiming={300}
+          onBackButtonPress={() => this.onCloseLinkImages()}
         >
           <ChooseLinkImages
             images={this.allLinkImages}
