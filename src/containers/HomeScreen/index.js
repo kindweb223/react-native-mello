@@ -155,30 +155,7 @@ class HomeScreen extends React.Component {
 
   onCloseSharePermissionModal = () => {
     if (this.state.enableShareWidget) {
-      setTimeout(() => {
-        this.setState({ showShareTipsModal: true })
-      }, 100)
-
-      setTimeout(() => {
-        Share.share({
-          message: 'Mello',
-          title: 'Mello',
-          url: TIP_SHARE_LINK_URL
-        },{
-          dialogTitle: 'Mello',
-          subject: 'Mello',
-          excludedActivityTypes: ["com.apple.UIKit.activity.AirDrop"]
-        }).then(result => {
-          if (result.action === Share.dismissedAction) {
-            this.setState({ showShareTipsModal: false })
-            // setTimeout(() => {
-            //   this.setState({ showShareConfirmModal: true })
-            // }, 300)
-          }
-        }).catch(error => {
-          console.log('ERROR: ', error)
-        })
-      }, 300)
+      this.setState({ showShareTipsModal: true })
     }
   }
 
@@ -1189,6 +1166,10 @@ class HomeScreen extends React.Component {
     this.props.getInvitedFeedList()
   }
 
+  dismiss = (e) => {
+    this.setState({ showShareTipsModal: false })
+  };
+
   render () {
     const {
       loading,
@@ -1521,6 +1502,7 @@ class HomeScreen extends React.Component {
         {
           this.state.showShareTipsModal &&
             <ShareExtensionTip
+              onDismiss={this.dismiss}
               ref={ref => (this.ref = ref)}
             />
         }

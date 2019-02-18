@@ -14,6 +14,8 @@ class ShareExtensionTip: UIView {
 
   let tipView: UIView = UIView()
   
+  @objc var onDismiss: RCTDirectEventBlock?
+
   override init(frame: CGRect) {
     super.init(frame: frame)
 
@@ -26,6 +28,9 @@ class ShareExtensionTip: UIView {
     ac.completionWithItemsHandler = {
       (activity, success, items, error) in
       self.tipView.removeFromSuperview()
+      if self.onDismiss != nil {
+        self.onDismiss!(["dismiss" : true])
+      }
     };
     ac.excludedActivityTypes = [ UIActivity.ActivityType.airDrop ]
     
