@@ -9,6 +9,8 @@ import {
   Text,
   ScrollView,
   SafeAreaView,
+  BackHandler,
+  Platform,
 } from 'react-native'
 
 import _ from 'lodash';
@@ -34,11 +36,18 @@ class CardEditScreen extends React.Component {
     this.textInputIdeaRef.focus()
     this.keyboardWillShowSubscription = Keyboard.addListener('keyboardWillShow', (e) => this.keyboardWillShow(e));
     this.keyboardWillHideSubscription = Keyboard.addListener('keyboardWillHide', (e) => this.keyboardWillHide(e));
+    BackHandler.addEventListener('hardwareBackPress', this.handleBackButton);
   }
 
   componentWillUnmount() {
     this.keyboardWillShowSubscription.remove();
     this.keyboardWillHideSubscription.remove();
+    BackHandler.removeEventListener('hardwareBackPress', this.handleBackButton);
+  }
+
+  handleBackButton = () => {
+    this.onCancelEditCard();
+    return true;
   }
 
   keyboardWillShow(e) {
@@ -163,7 +172,7 @@ class CardEditScreen extends React.Component {
           placeholder='Let your ideas flow. Type text, paste a link, add an image, video or audio'
           multiline={true}
           underlineColorAndroid='transparent'
-          value={idea}
+          defaultValue={idea}
           onChangeText={(idea) => this.onChangeIdea(idea)}
           onKeyPress={this.onKeyPressIdea.bind(this)}
           onFocus={() => this.onFocus()}
@@ -229,7 +238,7 @@ class CardEditScreen extends React.Component {
             {this.renderHeader}
             {this.renderMainContent}
 
-            {this.state.isShowKeyboardButton && (
+            {Platform.OS === 'ios' && this.state.isShowKeyboardButton && (
               <Animated.View style={styles.keyboardContainer}>
                 <TouchableOpacity
                   style={styles.keyboardButtonView}

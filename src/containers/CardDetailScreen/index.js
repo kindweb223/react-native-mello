@@ -740,7 +740,7 @@ class CardDetailScreen extends React.Component {
       }
 
       if (filteredUrls.length > 0) {
-        Analytics.logEvent('new_card_typed_link', {})
+        Analytics.logEvent('CardDetailScreen', {})
 
         // this.isOpenGraphForNewCard = false;
         this.indexForOpenGraph = 0;
@@ -1691,6 +1691,7 @@ class CardDetailScreen extends React.Component {
         <Modal 
           style={styles.shareScreenContainer}
           isVisible={this.state.isVisibleChooseLinkImagesModal}
+          onBackButtonPress={() => this.onCloseLinkImages()}
         >
           <ChooseLinkImages
             images={this.allLinkImages}
