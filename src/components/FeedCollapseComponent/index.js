@@ -94,7 +94,7 @@ class FeedCollapseComponent extends React.Component {
               style={styles.summaryView}
               onPress={() => COMMON_FUNC.isFeedOwnerEditor(feedData) ? this.props.onEditFeed() : {}}
             >
-              <Text style={styles.summaryPlaceHolderText}>Tap to add description</Text>
+              <Text style={styles.summaryPlaceHolderText}>Tap to give this flow a description</Text>
             </TouchableOpacity>
         }
 

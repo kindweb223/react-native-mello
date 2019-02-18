@@ -409,9 +409,9 @@ class NotificationScreen extends React.Component {
               <Image
                 source={NOTIFICATION_EMPTY_ICON}
               />
-              <Text style={styles.title}>No new notifications</Text>
-              <Text style={styles.subTitle}>Updates on collaboration with other</Text>
-              <Text style={styles.subTitle}>Mello users will appear here.</Text>
+              <Text style={styles.title}>It's pretty lonely here</Text>
+              <Text style={styles.subTitle}>Invite a friend to your flows and </Text>
+              <Text style={styles.subTitle}>you'll see their activity here 👇.</Text>
             </View>
           }
 

@@ -112,7 +112,7 @@ class CropImageScreen extends React.Component {
 
           <View style={styles.headerView}>
             <View style={styles.closeButton} />
-            <Text style={styles.title}>Update avatar</Text>
+            <Text style={styles.title}>Update Profile Photo</Text>
             <TouchableOpacity onPress={() => Actions.pop()} style={styles.closeButton}>
               <Image source={CLOSE_ICON} />
             </TouchableOpacity>

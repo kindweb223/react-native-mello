@@ -1647,8 +1647,8 @@ class CardDetailScreen extends React.Component {
         />
         <ActionSheet
           ref={ref => this.deleteActionSheet = ref}
-          title={'This will permanentely delete your card'}
-          options={['Delete card', 'Cancel']}
+          title={'Cards are the start of great ideas. Are you sure want to delete?'}
+          options={['Delete', 'Cancel']}
           cancelButtonIndex={1}
           destructiveButtonIndex={0}
           tintColor={COLORS.PURPLE}
