@@ -274,7 +274,6 @@ class InviteeScreen extends React.Component {
   }
 
   showShareModal = (data) => {
-    // let isEnableShare = data.sharingPreferences.level === 'INVITEES_ONLY' ? false : true
     if (this.state.isEnableShare) {
       COMMON_FUNC.handleShareFeed(data)
     }

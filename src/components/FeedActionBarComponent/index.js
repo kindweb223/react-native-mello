@@ -126,7 +126,6 @@ class FeedActionBarComponent extends React.Component {
 
     if (!PIN_FEATURE) {
       actionBarWidth = 170 
-      settingMenuMargin = 120
     }
 
     return (

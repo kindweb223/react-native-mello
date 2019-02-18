@@ -129,9 +129,8 @@ class ArchivedFeedScreen extends React.Component {
             <Image
               source={NOTIFICATION_EMPTY_ICON}
             />
-            <Text style={styles.title}>No archived flows</Text>
-            <Text style={styles.subTitle}>Use archive for flows you may want to</Text>
-            <Text style={styles.subTitle}>come back to in the future.</Text>
+            <Text style={styles.title}>Nothing archived yet</Text>
+            <Text style={styles.subTitle}>Archive old flows to clear space for new ones!</Text>
           </View>
         )}
 
