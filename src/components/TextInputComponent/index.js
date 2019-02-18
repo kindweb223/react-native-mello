@@ -2,7 +2,8 @@ import React from 'react'
 import {
   View,
   Text,
-  TextInput
+  TextInput,
+  Platform
 } from 'react-native'
 import PropTypes from 'prop-types'
 import styles from './styles'
@@ -105,7 +106,7 @@ class TextInputComponent extends React.Component {
             returnKeyType={returnKeyType}
             textContentType={textContentType}
             onSubmitEditing={() => this.props.onSubmitEditing()}
-            selectionColor={COLORS.PURPLE}
+            selectionColor={Platform.OS === 'ios' ? COLORS.PURPLE : COLORS.LIGHT_PURPLE}
           />
         
           {this.props.children}

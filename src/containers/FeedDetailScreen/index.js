@@ -161,6 +161,7 @@ class FeedDetailScreen extends React.Component {
       inviteToasterTitle: '',
       viewPreference: 'LIST',
       isLeaveFlowClicked: false,
+      isEnableShare: false,
     };
     this.animatedOpacity = new Animated.Value(0)
     this.menuOpacity = new Animated.Value(0)
@@ -273,7 +274,7 @@ class FeedDetailScreen extends React.Component {
       }
 
       if (this.props.feedo.loading === 'INVITE_HUNT_PENDING' && feedo.loading === 'INVITE_HUNT_FULFILLED') {
-        this.setState({ isShowInviteToaster: true, inviteToasterTitle: 'Invitation sent' })
+        this.setState({ isShowInviteToaster: true, inviteToasterTitle: 'Invitation sent - Collaboration is cooking!' })
 
         setTimeout(() => {
           this.setState({ isShowInviteToaster: false })
@@ -538,8 +539,8 @@ class FeedDetailScreen extends React.Component {
   }
 
   handleSetting = () => {
-    const { openMenu } = this.state
-    this.setState({ openMenu: !openMenu, settingItem: null })
+    const { openMenu, currentFeed } = this.state
+    this.setState({ openMenu: !openMenu, settingItem: null, isEnableShare: COMMON_FUNC.isSharingEnabled(currentFeed) })
   }
 
   handleShare = () => {
@@ -1366,7 +1367,10 @@ class FeedDetailScreen extends React.Component {
   }
 
   handleLinkSharing = (value, data) => {
+    this.setState({isEnableShare: value})
+    
     const { updateSharingPreferences } = this.props
+   
     if (value) {
       updateSharingPreferences(
         data.id,
@@ -1554,7 +1558,7 @@ class FeedDetailScreen extends React.Component {
                                     />
                                   : <EmptyStateComponent
                                       page="card"
-                                      title="It's pretty boring here... Let's create some cards!"
+                                      title="It's pretty empty here. Get your creativity working and add some stuff to your flow!"
                                       subTitle="Watch a 15 sec video about creating cards"
                                       ctaTitle="Create your first card"
                                       onCreateNewCard={this.onOpenNewCardModal.bind(this)}
@@ -1619,7 +1623,7 @@ class FeedDetailScreen extends React.Component {
                                 />
                               : <EmptyStateComponent
                                   page="card"
-                                  title="It's pretty boring here... Let's create some cards!"
+                                  title="It's pretty empty here. Get your creativity working and add some stuff to your flow!"
                                   subTitle="Watch a 15 sec video about creating cards"
                                   ctaTitle="Create your first card"
                                   onCreateNewCard={this.onOpenNewCardModal.bind(this)}
@@ -1656,14 +1660,14 @@ class FeedDetailScreen extends React.Component {
 
         <ActionSheet
           ref={ref => this.feedoActionSheet = ref}
-          title={'Are you sure you want to delete this flow, everything will be gone ...'}
-          options={['Delete flow', 'Cancel']}
+          title={'Are you sure you want to delete? All your content in this flow will be gone'}
+          options={['Delete Flow', 'Cancel']}
           cancelButtonIndex={1}
           destructiveButtonIndex={0}
           tintColor={COLORS.PURPLE}
           onPress={(index) => this.onTapFeedoActionSheet(index)}
         />
-
+        
         {this.state.isShowToaster && (
           <ToasterComponent
             isVisible={this.state.isShowToaster}
@@ -1726,6 +1730,7 @@ class FeedDetailScreen extends React.Component {
               handleSettingItem={item => this.handleSettingItem(item)}
               feedo={currentFeed}
               pinText={pinText}
+              isEnableShare={this.state.isEnableShare}
               handleLinkSharing={value => this.handleLinkSharing(value, currentFeed)}
             />
           </Animated.View>

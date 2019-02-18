@@ -1,13 +1,14 @@
 {
   "error.invitee.feed.invalid": "Email is duplicated",
   "error.login.invalid": "Your email or password is incorrect",
+  "error.login.disabled": "Your account is temporarily disabled, please try again later or reset password to enable your account",
   "error.user.password.invalid.registrationRequest.password": "Password doesnt meet password strength requirements",
   "com.signup.fullname.empty": "Full name is required",
   "com.signup.fullname.invalid": "Please enter your full name",
   "com.signup.email.empty": "Email is required",
   "com.signup.email.invalid": "Please enter a valid email address",
   "com.signup.password.empty": "Password is required",
-  "com.signup.password.invalid": "Password must have at least 6 characters",
+  "com.signup.password.invalid": "Password must be at least 6 characters",
   "com.signup.oldpassword.empty": "Old password is required",
   "error.user.password.old.invalid": "Old password entered didn't match record in database",
   "error.user.exists": "Email is already registered"

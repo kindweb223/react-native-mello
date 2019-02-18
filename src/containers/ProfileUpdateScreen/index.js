@@ -236,7 +236,7 @@ class ProfileUpdateScreen extends React.Component {
         {
           code: 'com.signup.password.invalid',
           field: 'password',
-          message: 'Password must have at least 6 characters'
+          message: 'Password must be at least 6 characters'
         }
       ]
     }

@@ -17,7 +17,7 @@ import { Scene, Router } from 'react-native-router-flux'
 import SharedGroupPreferences from 'react-native-shared-group-preferences'
 import axios from 'axios'
 
-import { BASE_URL } from '../service/api'
+import { BASE_URL, SCHEME } from '../service/api'
 axios.defaults.baseURL = BASE_URL
 axios.defaults.headers.get['Content-Type'] = 'application/json'
 axios.defaults.headers.get.Accept = 'application/json'
@@ -33,7 +33,7 @@ axios.interceptors.response.use(
       (error.response.status === 401 && error.response.data.code === 'session.expired') ||
       (error.response.status === 403 && error.response.data.code === 'error.user.not.authenticated')
     )) {
-      ShareExtension.goToMainApp('demos.solvers.io://');
+      ShareExtension.goToMainApp(SCHEME);
     }
     throw error
   }

@@ -5,7 +5,8 @@ import {
   TouchableOpacity,
   Image,
   Alert,
-  Keyboard
+  Keyboard,
+  Platform
 } from 'react-native'
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
 import { connect } from 'react-redux'
@@ -13,6 +14,7 @@ import PropTypes from 'prop-types'
 import { Actions } from 'react-native-router-flux'
 import Ionicons from 'react-native-vector-icons/Ionicons'
 import * as Progress from 'react-native-progress'
+import Permissions from 'react-native-permissions'
 import CheckBox from '../../components/CheckBoxComponent'
 import zxcvbn from 'zxcvbn'
 import _ from 'lodash'
@@ -110,8 +112,18 @@ class SignUpScreen extends React.Component {
         const { error } = this.props.user
         this.setState({ loading: false }, () => {
           Alert.alert(
-            'Error',
-            error.message
+            'Oops',
+            resolveError(error.code, error.message),
+            [
+              {
+                text: 'OK',
+                style: 'cancel'
+              },
+              {
+                text: 'Login',
+                onPress: () => Actions.LoginScreen()
+              }
+            ]
           )
         })
       }
@@ -198,6 +210,30 @@ class SignUpScreen extends React.Component {
   }
 
   onSignUp = () => {
+    this.signUp();
+
+    // if (Platform.OS === 'ios') {
+    //   this.signUp();
+    // }
+    // else {
+    //   Permissions.check('storage').then(response => { //'storage' permission doesn't support on iOS
+    //     if (response === 'authorized') {
+    //       //permission already allowed
+    //       this.signUp();
+    //     }
+    //     else {
+    //       Permissions.request('storage').then(response => {
+    //         if (response === 'authorized') {
+    //           //storage permission was authorized
+    //           this.signUp();
+    //         }
+    //       });
+    //     }
+    //   });
+    // }
+  }
+
+  signUp() {
     Analytics.logEvent('signup_signup', {})
 
     const {
@@ -269,7 +305,7 @@ class SignUpScreen extends React.Component {
         {
           code: 'com.signup.password.invalid',
           field: 'password',
-          message: 'Password must have at least 6 characters'
+          message: 'Password must be at least 6 characters'
         }
       ]
     }
@@ -433,7 +469,7 @@ class SignUpScreen extends React.Component {
               </CheckBox>
               <View style={styles.errorTncView}>
                 {this.state.showTncError && (
-                  <Text style={styles.errorText}>You must accept the Terms of Service</Text>
+                  <Text style={styles.errorText}>You must accept the Terms of Service to proceed</Text>
                 )}
               </View>
             </View>
