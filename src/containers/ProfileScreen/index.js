@@ -230,27 +230,7 @@ class ProfileScreen extends React.Component {
   }
 
   showShareExtension = () => {
-    setTimeout(() => {
-      this.setState({ showShareTipsModal: true })
-    }, 100)
-
-    setTimeout(() => {
-      Share.share({
-        message: 'Mello',
-        title: 'Mello',
-        url: TIP_SHARE_LINK_URL
-      },{
-        dialogTitle: 'Mello',
-        subject: 'Mello',
-        excludedActivityTypes: ["com.apple.UIKit.activity.AirDrop"]
-      }).then(result => {
-        if (result.action === Share.dismissedAction) {
-          this.setState({ showShareTipsModal: false })
-        }
-      }).catch(error => {
-        console.log('ERROR: ', error)
-      })
-    }, 200)
+    this.setState({ showShareTipsModal: true })
   }
 
   handleSettingItem = (index) => {
@@ -295,9 +275,12 @@ class ProfileScreen extends React.Component {
     }
   }
 
+  dismiss = (e) => {
+    this.setState({ showShareTipsModal: false })
+  };
+
   render () {
     const { userInfo } = this.state
-
     return (
       <View style={styles.overlay}>
         {userInfo && (
@@ -461,6 +444,7 @@ class ProfileScreen extends React.Component {
         {
           this.state.showShareTipsModal && 
             <ShareExtensionTip
+              onDismiss={this.dismiss}
               ref={ref => (this.ref = ref)}
             />
         }
