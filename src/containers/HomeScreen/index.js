@@ -131,6 +131,8 @@ class HomeScreen extends React.Component {
       showLongHoldActionBar: true,
       isShowInviteToaster: false,
       inviteToasterTitle: '',
+      isShowCardAddedToaster: false,
+      cardAddedToasterTitle: '',
       showSharePermissionModal: false,
       enableShareWidget: false,
       showShareTipsModal: false,
@@ -488,7 +490,13 @@ class HomeScreen extends React.Component {
         currentPushNotificationType: CONSTANTS.UNKOWN_PUSH_NOTIFICATION,
         currentPushNotificationData: null,
       });
-    } 
+    } else if (prevProps.feedo.loading !== 'UPDATE_CARD_FULFILLED' && feedo.loading === 'UPDATE_CARD_FULFILLED' && Actions.currentScene === 'HomeScreen') {
+      this.setState({ isShowCardAddedToaster: true, cardAddedToasterTitle: 'Card added to ' + feedo.currentFeed.headline })
+  
+      setTimeout(() => {
+        this.setState({ isShowCardAddedToaster: false })
+      }, TOASTER_DURATION)
+    }   
   }
 
   async setBubbles(feedoList) {
@@ -1483,6 +1491,15 @@ class HomeScreen extends React.Component {
             title={this.state.inviteToasterTitle}
             buttonTitle="OK"
             onPressButton={() => this.setState({ isShowInviteToaster: false })}
+          />
+        )}
+
+        {this.state.isShowCardAddedToaster && (
+          <ToasterComponent
+            isVisible={this.state.isShowCardAddedToaster}
+            title={this.state.cardAddedToasterTitle}
+            buttonTitle="OK"
+            onPressButton={() => this.setState({ isShowCardAddedToaster: false })}
           />
         )}
 
