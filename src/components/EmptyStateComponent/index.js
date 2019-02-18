@@ -54,7 +54,7 @@ class EmptyStateComponent extends React.Component {
     }
 
     if (page === 'card') {
-      height = 120
+      height = 150
       marginTop = -100
     }
 

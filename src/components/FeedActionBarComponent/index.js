@@ -20,6 +20,7 @@ import COLORS from '../../service/colors'
 import { SHARE_LINK_URL } from "../../service/api"
 import * as COMMON_FUNC from '../../service/commonFunc'
 import Modal from "react-native-modal"
+import { PIN_FEATURE } from '../../service/api'
 
 const SELECT_NONE = 0;
 const SELECT_PIN_UNPIN = 1;
@@ -123,6 +124,11 @@ class FeedActionBarComponent extends React.Component {
       actionBarWidth = BAR_WIDTH_PIN
     }
 
+    if (!PIN_FEATURE) {
+      actionBarWidth = 170 
+      settingMenuMargin = 120
+    }
+
     return (
       <View style={styles.container}>
         <Modal
@@ -157,25 +163,27 @@ class FeedActionBarComponent extends React.Component {
         </Modal>
 
         <View style={[styles.rowContainer, { width: actionBarWidth }]}>
-          <Animated.View
-            style={
-              this.state.selectedButton === SELECT_PIN_UNPIN &&
-              {
-                transform: [
-                  { scale: this.animatedSelect },
-                ],
+          {PIN_FEATURE && (
+            <Animated.View
+              style={
+                this.state.selectedButton === SELECT_PIN_UNPIN &&
+                {
+                  transform: [
+                    { scale: this.animatedSelect },
+                  ],
+                }
               }
-            }
-          >
-            <TouchableOpacity 
-              style={styles.buttonView}
-              activeOpacity={0.7}
-              onPress={this.onPressPin}
             >
-              <Octicons name="pin" style={styles.pinIcon} size={22} color="#fff" />
-              <Text style={styles.buttonText}>{pinFlag ? 'Unpin' : 'Pin'}</Text>
-            </TouchableOpacity>
-          </Animated.View>
+              <TouchableOpacity 
+                style={styles.buttonView}
+                activeOpacity={0.7}
+                onPress={this.onPressPin}
+              >
+                <Octicons name="pin" style={styles.pinIcon} size={22} color="#fff" />
+                <Text style={styles.buttonText}>{pinFlag ? 'Unpin' : 'Pin'}</Text>
+              </TouchableOpacity>
+            </Animated.View>
+          )}
           <Animated.View
             style={
               this.state.selectedButton === SELECT_SHARE &&

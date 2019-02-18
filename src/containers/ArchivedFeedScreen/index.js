@@ -12,7 +12,6 @@ import { Actions } from 'react-native-router-flux'
 import PropTypes from 'prop-types'
 import _ from 'lodash'
 import Ionicons from 'react-native-vector-icons/Ionicons'
-import SVGImage from 'react-native-remote-svg'
 import ToasterComponent from '../../components/ToasterComponent'
 import ArchivedFeedoListContainer from '../ArchivedFeedoListContainer'
 
@@ -26,7 +25,7 @@ import {
 import COLORS from '../../service/colors'
 import styles from './styles'
 
-const NOTIFICATION_EMPTY_ICON = require('../../../assets/svgs/NotificationEmptyState.svg')
+const NOTIFICATION_EMPTY_ICON = require('../../../assets/images/empty_state/NotificationEmptyState.png')
 
 class ArchivedFeedScreen extends React.Component {
   static renderLeftButton(props) {
@@ -127,12 +126,11 @@ class ArchivedFeedScreen extends React.Component {
 
         {archivedFeedList.length === 0 && !loading && (
           <View style={styles.emptyView}>
-            <SVGImage
+            <Image
               source={NOTIFICATION_EMPTY_ICON}
             />
-            <Text style={styles.title}>No archived flows</Text>
-            <Text style={styles.subTitle}>Use archive for flows you may want to</Text>
-            <Text style={styles.subTitle}>come back to in the future.</Text>
+            <Text style={styles.title}>Nothing archived yet</Text>
+            <Text style={styles.subTitle}>Archive old flows to clear space for new ones!</Text>
           </View>
         )}
 
