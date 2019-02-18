@@ -29,7 +29,6 @@ class ImageSliderScreen extends React.Component {
     this.state = {
       position: this.props.position,
       loading: false,
-      maxImageHeight: 0,
       isTouch: false,
       imageIndex: this.props.position,
       setCoveredIndex: this.props.position
@@ -39,18 +38,6 @@ class ImageSliderScreen extends React.Component {
 
   componentDidMount() {
     Analytics.setCurrentScreen('ImageSliderScreen')
-
-    const {
-      mediaFiles,
-    } = this.props;
-
-    let imageHeightList = []
-    mediaFiles.forEach(element => {
-      Image.getSize(element.accessUrl, (width, height) => {
-        imageHeightList = [ ...imageHeightList, CONSTANTS.SCREEN_WIDTH / width * height ];
-        this.setState({ maxImageHeight: max(imageHeightList) })
-      })
-    });
   }
 
   UNSAFE_componentWillReceiveProps(nextProps) {
@@ -145,17 +132,9 @@ class ImageSliderScreen extends React.Component {
   }
 
   render () {
-    const { maxImageHeight } = this.state
     const { mediaFiles, isFastImage } = this.props;
-    let isImage = true;
-    if (mediaFiles.length > 0) {
-      const mediaFile = mediaFiles[this.state.imageIndex];
-      if (mediaFile) {
-        isImage = mediaFile && mediaFile.contentType.toLowerCase().indexOf('image') !== -1;
-      }
-    }
 
-    const isCoveredImage = this.state.setCoveredIndex===this.state.imageIndex
+    const isCoveredImage = this.state.setCoveredIndex === this.state.imageIndex
 
     return (
       <View style={styles.container}>
@@ -184,7 +163,7 @@ class ImageSliderScreen extends React.Component {
         </Animated.View>
         {
           
-          this.props.removal && this.props.isSetCoverImage && isImage &&
+          this.props.removal && this.props.isSetCoverImage &&
           <Animated.View 
             style={[styles.coverButton, { opacity: this.buttonOpacity }]}
           >

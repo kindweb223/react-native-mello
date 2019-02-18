@@ -12,7 +12,8 @@ import {
   ScrollView,
   AsyncStorage,
   SafeAreaView,
-  Platform
+  Platform,
+  ActivityIndicator
 } from 'react-native'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
@@ -73,7 +74,9 @@ class CardNewShareScreen extends React.Component {
       
       loading: false,
       isVisibleSelectFeedoModal: false,
-      isShowKeyboardButton: false
+      isShowKeyboardButton: false,
+      cachedFeedList: [],
+      createEnabled: false
     };
 
     this.selectedFile = null;
@@ -181,6 +184,8 @@ class CardNewShareScreen extends React.Component {
 
   async UNSAFE_componentWillReceiveProps(nextProps) {
     if (this.props.feedo.loading !== feedoTypes.GET_FEEDO_LIST_FULFILLED && nextProps.feedo.loading === feedoTypes.GET_FEEDO_LIST_FULFILLED) {
+      this.setState({cachedFeedList: nextProps.feedo.feedoList, createEnabled: true})
+
       try {
         const strFeedoInfo = await SharedGroupPreferences.getItem(CONSTANTS.CARD_SAVED_LAST_FEEDO_INFO, CONSTANTS.APP_GROUP_LAST_USED_FEEDO);
         if (strFeedoInfo) {
@@ -192,15 +197,19 @@ class CardNewShareScreen extends React.Component {
               this.props.setCurrentFeed(currentFeed);
               this.draftFeedo = currentFeed
               return;
-            } else {
-              this.props.createFeed();
+            }
+            else {
+              this.props.setCurrentFeed({});
+              this.draftFeedo = null
             }
           }
-        } else {
-          this.props.createFeed();
         }
       } catch (error) {
         console.log('error code : ', error);
+      }
+
+      if (!this.props.feedo.currentFeed.id) {
+        this.props.createFeed();
       }
     }
 
@@ -253,16 +262,24 @@ class CardNewShareScreen extends React.Component {
       if (this.props.feedo.feedoList.length == 0) {
         this.props.getFeedoList(0);
       }
+      else {
+        this.setState({createEnabled: true})
+      }
     });
 
-    const strFeedoInfo = await SharedGroupPreferences.getItem(CONSTANTS.CARD_SAVED_LAST_FEEDO_INFO, CONSTANTS.APP_GROUP_LAST_USED_FEEDO);
-    if (strFeedoInfo) {
-      const feedoInfo = JSON.parse(strFeedoInfo);
-      const diffHours = moment().diff(moment(feedoInfo.time, 'LLL'), 'hours');
-      if (diffHours < 1) {
-        this.props.setCurrentFeed(feedoInfo.currentFeed);
-        this.draftFeedo = feedoInfo.currentFeed
+    try {
+      const strFeedoInfo = await SharedGroupPreferences.getItem(CONSTANTS.CARD_SAVED_LAST_FEEDO_INFO, CONSTANTS.APP_GROUP_LAST_USED_FEEDO);
+      if (strFeedoInfo) {
+        const feedoInfo = JSON.parse(strFeedoInfo);
+        const diffHours = moment().diff(moment(feedoInfo.time, 'LLL'), 'hours');
+        if (diffHours < 1) {
+          this.props.setCurrentFeed(feedoInfo.currentFeed);
+          this.draftFeedo = feedoInfo.currentFeed
+        }
       }
+    }
+    catch(error) {
+
     }
 
     this.keyboardWillShowSubscription = Keyboard.addListener('keyboardWillShow', (e) => this.keyboardWillShow(e));
@@ -504,7 +521,7 @@ class CardNewShareScreen extends React.Component {
           ref={ref => this.textInputIdeaRef = ref}
           style={styles.textInputIdea}
           autoCorrect={true}
-          placeholder='Type text or paste a link'
+          placeholder='Let your ideas flow. Type text, paste a link, add an image, video or audio'
           multiline={true}
           underlineColorAndroid='transparent'
           value={this.state.idea}
@@ -567,9 +584,9 @@ class CardNewShareScreen extends React.Component {
         <TouchableOpacity 
           style={styles.closeButtonShareWrapper}
           activeOpacity={0.6}
-          onPress={() => this.onCreateCard()}
+          onPress={() => this.state.createEnabled ? this.onCreateCard() : {}}
         >
-          <Text style={[styles.textButton, { color: COLORS.PURPLE }]}>Create card</Text>
+          <Text style={[styles.textButton, { color: this.state.createEnabled ? COLORS.PURPLE : COLORS.MEDIUM_GREY }]}>Create card</Text>
         </TouchableOpacity>
       </View>
     );
@@ -579,7 +596,9 @@ class CardNewShareScreen extends React.Component {
     return (
       <View style={styles.extensionSelectFeedoContainer}>
         <Text style={[styles.textCreateCardIn, { color: COLORS.PRIMARY_BLACK }]}>Create card in:</Text>
-        <TouchableOpacity
+        {
+          this.state.createEnabled 
+          ? <TouchableOpacity
           style={[styles.selectFeedoButtonContainer, { paddingRight: 3 }]}
           activeOpacity={0.6}
           onPress={() => this.onSelectFeedo()}
@@ -587,6 +606,12 @@ class CardNewShareScreen extends React.Component {
           <Text style={styles.textFeedoName} numberOfLines={1}>{this.props.feedo.currentFeed.headline || 'New flow'}</Text>
           <Entypo name="chevron-right" size={20} color={COLORS.PURPLE} />
         </TouchableOpacity>
+          : <ActivityIndicator 
+              style={[styles.selectFeedoButtonContainer, {paddingRight: 9, width: 50}]}
+              animating
+              color={COLORS.PURPLE}
+            />
+        }
       </View>
     )
   }
@@ -638,9 +663,12 @@ class CardNewShareScreen extends React.Component {
   }
 
   get renderSelectHunt() {
+    const { cachedFeedList } = this.state
+
     if (this.state.isVisibleSelectFeedoModal) {
       return (
         <SelectHuntScreen
+          cachedFeedList={cachedFeedList}
           selectMode={CONSTANTS.FEEDO_SELECT_FROM_SHARE_EXTENSION}
           onClosed={() => this.onCloseSelectHunt()}
         />
@@ -654,7 +682,7 @@ class CardNewShareScreen extends React.Component {
         {this.renderCard}
         {this.renderSelectHunt}
 
-        {this.state.loading && <LoadingScreen />}
+        {this.state.loading && <LoadingScreen containerStyle={{marginBottom: CONSTANTS.SCREEN_VERTICAL_MIN_MARGIN + 100}} />}
 
       </View>
     );
