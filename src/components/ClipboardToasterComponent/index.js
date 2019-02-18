@@ -36,7 +36,10 @@ class ClipboardToasterComponent extends React.Component {
         clearTimeout(this.showClipboardTimeout);
         this.showClipboardTimeout = null;
         if (Math.abs(gestureState.vx) > CloseVelocity) {
-          this.setState({ animationType: gestureState.vx < 0 ? 'slideOutLeft' : 'slideOutRight' });
+          this.setState({
+            animationType: gestureState.vx < 0 ? 'slideOutLeft' : 'slideOutRight',
+            animationDuration: 1000
+          });
           this.isClosed = true;
           this.closeView(false);
         } else {
@@ -73,7 +76,7 @@ class ClipboardToasterComponent extends React.Component {
     ).start(() => {
       this.showClipboardTimeout = setTimeout(() => {
         this.showClipboardTimeout = null;
-        this.setState({ animationType: 'fadeOutDown' });
+        this.setState({ animationType: 'fadeOutDownBig', animationDuration: 1500 });
         this.closeView(false);
       }, CONSTANTS.CLIPBOARD_DATA_CONFIRM_DURATION);
     })
@@ -87,18 +90,16 @@ class ClipboardToasterComponent extends React.Component {
   }
 
   onSelect() {
-    this.setState({ animationType: 'fadeOutDown' });
+    this.setState({ animationType: 'fadeOutDownBig', animationDuration: 1500 });
     this.closeView(true);
   }
 
   closeView(isSelect=true) {
-    this.setState({ animationDuration: 1000 })
-
     this.animatedFade.setValue(1);
     Animated.timing(
       this.animatedFade, {
         toValue: 0,
-        duration: 1000
+        duration: this.state.animationDuration
       }
     ).start(() => {
       if (this.showClipboardTimeout) {
