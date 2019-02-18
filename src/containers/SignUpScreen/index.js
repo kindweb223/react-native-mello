@@ -112,8 +112,18 @@ class SignUpScreen extends React.Component {
         const { error } = this.props.user
         this.setState({ loading: false }, () => {
           Alert.alert(
-            'Error',
-            error.message
+            'Oops',
+            resolveError(error.code, error.message),
+            [
+              {
+                text: 'OK',
+                style: 'cancel'
+              },
+              {
+                text: 'Login',
+                onPress: () => Actions.LoginScreen()
+              }
+            ]
           )
         })
       }
@@ -295,7 +305,7 @@ class SignUpScreen extends React.Component {
         {
           code: 'com.signup.password.invalid',
           field: 'password',
-          message: 'Password must have at least 6 characters'
+          message: 'Password must be at least 6 characters'
         }
       ]
     }
@@ -459,7 +469,7 @@ class SignUpScreen extends React.Component {
               </CheckBox>
               <View style={styles.errorTncView}>
                 {this.state.showTncError && (
-                  <Text style={styles.errorText}>You must accept the Terms of Service</Text>
+                  <Text style={styles.errorText}>You must accept the Terms of Service to proceed</Text>
                 )}
               </View>
             </View>
