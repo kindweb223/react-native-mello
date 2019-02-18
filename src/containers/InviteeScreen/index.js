@@ -57,7 +57,8 @@ class InviteeScreen extends React.Component {
       isInvalidEmail: false,
       invalidEmail: [],
       loading: false,
-      tagText: ''
+      tagText: '',
+      isEnableShare: false,
     }
     this.isMount = false
   }
@@ -70,6 +71,7 @@ class InviteeScreen extends React.Component {
     this.setState({ loading: true })
     this.props.getContactList(userInfo.id)
     this.setState({ currentMembers: COMMON_FUNC.filterRemovedInvitees(this.props.data.invitees) })
+    this.setState({isEnableShare: COMMON_FUNC.isSharingEnabled(this.props.data)})
   }
 
   UNSAFE_componentWillReceiveProps(nextProps) {
@@ -154,6 +156,8 @@ class InviteeScreen extends React.Component {
   }
 
   handleLinkSharing = (value, data) => {
+    this.setState({isEnableShare: value})
+
     const { updateSharingPreferences } = this.props
     if (value) {
       updateSharingPreferences(
@@ -270,8 +274,7 @@ class InviteeScreen extends React.Component {
   }
 
   showShareModal = (data) => {
-    let isEnableShare = data.sharingPreferences.level === 'INVITEES_ONLY' ? false : true
-    if (isEnableShare) {
+    if (this.state.isEnableShare) {
       COMMON_FUNC.handleShareFeed(data)
     }
   }
@@ -358,6 +361,7 @@ class InviteeScreen extends React.Component {
                   isViewOnly={false}
                   feed={data}
                   onPress={() => this.showShareModal(data)}
+                  isEnableShare={this.state.isEnableShare}
                   handleLinkSharing={value => this.handleLinkSharing(value, data)}
                 />
               </View>

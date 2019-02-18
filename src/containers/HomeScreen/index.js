@@ -51,8 +51,7 @@ import ShareWidgetConfirmModal from '../../components/ShareWidgetModal/ConfirmMo
 import ShareExtensionTip from '../../components/ShareExtensionTip'
 import styles from './styles'
 import CONSTANTS from '../../service/constants';
-import { PIN_FEATURE } from '../../service/api'
-import { TIP_SHARE_LINK_URL } from '../../service/api'
+import { TIP_SHARE_LINK_URL, ANDROID_PUSH_SENDER_ID, PIN_FEATURE } from '../../service/api'
 const SEARCH_ICON = require('../../../assets/images/Search/Grey.png')
 const SETTING_ICON = require('../../../assets/images/Settings/Grey.png')
 
@@ -745,7 +744,7 @@ class HomeScreen extends React.Component {
         Analytics.logEvent('dashboard_parse_push_notification', {})
         this.parsePushNotification(notification);
       },
-      senderID: "sender-id",
+      senderID: ANDROID_PUSH_SENDER_ID,
     });
   }
 
@@ -1503,7 +1502,7 @@ class HomeScreen extends React.Component {
         </Modal>
 
         {
-          this.state.showShareTipsModal && 
+          this.state.showShareTipsModal &&
             <ShareExtensionTip
               ref={ref => (this.ref = ref)}
             />

@@ -40,7 +40,7 @@ const styles = StyleSheet.create({
   },
   headerContainer: {
     position: 'absolute',
-    top: Platform.OS === 'ios' ? ifIphoneX(53, 30) : 10,
+    top: Platform.OS === 'ios' ? ifIphoneX(53, 30) : 20,
     right: 8,
     width: 50,
     height: 50,
@@ -98,6 +98,7 @@ const styles = StyleSheet.create({
     color: COLORS.DARK_GREY,
   },
   footerContainer: {
+    marginBottom: Platform.os === 'android' ? 5 : 0,
     paddingVertical: 5,
     height: FOOTER_HEIGHT,
     backgroundColor: '#fff',
