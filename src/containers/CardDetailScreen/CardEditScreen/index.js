@@ -10,7 +10,7 @@ import {
   ScrollView,
   SafeAreaView,
   BackHandler,
-  Platform,
+  Platform
 } from 'react-native'
 
 import _ from 'lodash';
@@ -33,9 +33,9 @@ class CardEditScreen extends React.Component {
   }
 
   async componentDidMount() {
-    this.textInputIdeaRef.focus()
-    this.keyboardWillShowSubscription = Keyboard.addListener('keyboardWillShow', (e) => this.keyboardWillShow(e));
-    this.keyboardWillHideSubscription = Keyboard.addListener('keyboardWillHide', (e) => this.keyboardWillHide(e));
+    this.textInputIdeaRef.focus();
+    this.keyboardWillShowSubscription = Keyboard.addListener('keyboardWillShow', (e) => this.keyboardWillShow(e))
+    this.keyboardWillHideSubscription = Keyboard.addListener('keyboardWillHide', (e) => this.keyboardWillHide(e))
     BackHandler.addEventListener('hardwareBackPress', this.handleBackButton);
   }
 
@@ -56,9 +56,7 @@ class CardEditScreen extends React.Component {
         toValue: e.endCoordinates.height,
         duration: e.duration,
       }
-    ).start(() => {      
-      this.textInputIdeaRef.focus();
-    });
+    ).start();
   }
 
   keyboardWillHide(e) {
@@ -87,7 +85,7 @@ class CardEditScreen extends React.Component {
   }
 
   onChangeIdea(idea) {
-    this.setState({idea})
+    this.setState({ idea });
   }
 
   onKeyPressIdea(event) {
@@ -96,15 +94,15 @@ class CardEditScreen extends React.Component {
     }
   }
 
-  onFocus() {
+  onFocus = () => {
     this.setState({
-      isShowKeyboardButton: true,
+      isShowKeyboardButton: true
     });
   }
 
-  onBlurIdea() {
+  onBlurIdea = () => {
     this.setState({
-      isShowKeyboardButton: false,
+      isShowKeyboardButton: false
     });
   }
 
@@ -112,7 +110,7 @@ class CardEditScreen extends React.Component {
   scrollContent() {
     const yPosition = this.textInputPositionY + this.textInputHeightByCursor;
     if (this.scrollViewHeight > 0 && yPosition > this.scrollViewHeight) {
-      this.scrollViewRef.scrollTo({x: 0, y: yPosition - this.scrollViewHeight + CONSTANTS.TEXT_INPUT_LINE_HEIGHT});
+      this.scrollViewRef.scrollTo({ x: 0, y: yPosition - this.scrollViewHeight + CONSTANTS.TEXT_INPUT_LINE_HEIGHT });
     }
   }
 
@@ -175,8 +173,8 @@ class CardEditScreen extends React.Component {
           defaultValue={idea}
           onChangeText={(idea) => this.onChangeIdea(idea)}
           onKeyPress={this.onKeyPressIdea.bind(this)}
-          onFocus={() => this.onFocus()}
-          onBlur={() => this.onBlurIdea()}
+          onFocus={this.onFocus}
+          onBlur={this.onBlurIdea}
           onSelectionChange={this.onSelectionChange.bind(this)}
           selectionColor={COLORS.PURPLE}
         />
