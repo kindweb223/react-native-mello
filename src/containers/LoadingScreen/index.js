@@ -21,7 +21,7 @@ export default class LoadingScreen extends React.Component {
 
   render () {
     return (
-      <SafeAreaView style={styles.container}>
+      <SafeAreaView style={[styles.container, this.props.containerStyle]}>
         <ActivityIndicator 
           animating
           size="large"

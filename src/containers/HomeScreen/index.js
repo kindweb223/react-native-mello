@@ -51,7 +51,7 @@ import ShareWidgetConfirmModal from '../../components/ShareWidgetModal/ConfirmMo
 import ShareExtensionTip from '../../components/ShareExtensionTip'
 import styles from './styles'
 import CONSTANTS from '../../service/constants';
-import { TIP_SHARE_LINK_URL } from '../../service/api'
+import { TIP_SHARE_LINK_URL, ANDROID_PUSH_SENDER_ID, PIN_FEATURE } from '../../service/api'
 const SEARCH_ICON = require('../../../assets/images/Search/Grey.png')
 const SETTING_ICON = require('../../../assets/images/Settings/Grey.png')
 
@@ -145,7 +145,7 @@ class HomeScreen extends React.Component {
   }
 
   showSharePermissionModal(permissionInfo) {
-    // If we haven't asked to enable share widget before
+    // If we haven't asked to enable share extension before
     if (!permissionInfo) {
         this.setState({ showSharePermissionModal: true })
     } 
@@ -744,7 +744,7 @@ class HomeScreen extends React.Component {
         Analytics.logEvent('dashboard_parse_push_notification', {})
         this.parsePushNotification(notification);
       },
-      senderID: "sender-id",
+      senderID: ANDROID_PUSH_SENDER_ID,
     });
   }
 
@@ -1379,41 +1379,43 @@ class HomeScreen extends React.Component {
                   : <View style={styles.emptyTabInnerSubView}>
                       <SpeechBubbleComponent
                         page="shared"
-                        title="Flows can be shared with friends and colleagues for collaboration. Flows you've been invited to will appear here."
+                        title="Don't flow-it alone. Flows you've been invited to will appear here 👇."
                         subTitle="All you need to know about sharing in 15 secs "
                       />
                     </View>
                 }
               </View>
-              <View
-                style={[!this.state.isLongHoldMenuVisible ? styles.feedListContainer : styles.feedListContainerLongHold, , feedClickEvent === 'normal' && { paddingBottom: 30 }]}
-                ref={ref => this.scrollTabPinned = ref}
-                tabLabel={{ label: 'Pinned', badge: 0 }}
-              >
-                {feedoList.length > 0
-                  ? <FeedoListContainer
-                      loading={loading}
-                      feedoList={feedoList}
-                      selectedLongHoldFeedoIndex={selectedLongHoldFeedoIndex}
-                      feedClickEvent={feedClickEvent}
-                      animatedSelectFeed={this.animatedSelectFeed}
-                      updateSelectIndex={(index, item) =>
-                        this.setState({ selectedLongHoldFeedoIndex: index, selectedFeedData: item, showLongHoldActionBar: true })
-                      }
-                      handleLongHoldMenu={this.handleLongHoldMenu}
-                      page="home"
-                      isRefreshing={this.state.isRefreshing}
-                      onRefreshFeed={() => this.onRefreshFeed()}
-                    />
-                  : <View style={styles.emptyTabInnerSubView}>
-                      <SpeechBubbleComponent
-                        page="pinned"
-                        title="Your pinned items will appear here. To pin a feed tap and hold it to bring up quick actions and select"
-                        subTitle="Watch a 15 sec Quick Start video "
+              {PIN_FEATURE && (
+                <View
+                  style={[!this.state.isLongHoldMenuVisible ? styles.feedListContainer : styles.feedListContainerLongHold, , feedClickEvent === 'normal' && { paddingBottom: 30 }]}
+                  ref={ref => this.scrollTabPinned = ref}
+                  tabLabel={{ label: 'Pinned', badge: 0 }}
+                >
+                  {feedoList.length > 0
+                    ? <FeedoListContainer
+                        loading={loading}
+                        feedoList={feedoList}
+                        selectedLongHoldFeedoIndex={selectedLongHoldFeedoIndex}
+                        feedClickEvent={feedClickEvent}
+                        animatedSelectFeed={this.animatedSelectFeed}
+                        updateSelectIndex={(index, item) =>
+                          this.setState({ selectedLongHoldFeedoIndex: index, selectedFeedData: item, showLongHoldActionBar: true })
+                        }
+                        handleLongHoldMenu={this.handleLongHoldMenu}
+                        page="home"
+                        isRefreshing={this.state.isRefreshing}
+                        onRefreshFeed={() => this.onRefreshFeed()}
                       />
-                    </View>
-                }
-              </View>
+                    : <View style={styles.emptyTabInnerSubView}>
+                        <SpeechBubbleComponent
+                          page="pinned"
+                          title="Pin flows for quicker access. To pin a flow, long hold a flow and tap pin in the actions menu"
+                          subTitle="Watch a 15 sec Quick Start video "
+                        />
+                      </View>
+                  }
+                </View>
+              )}
             </ScrollableTabView>
 
             <View style={styles.settingIconView}>
@@ -1500,7 +1502,7 @@ class HomeScreen extends React.Component {
         </Modal>
 
         {
-          this.state.showShareTipsModal && 
+          this.state.showShareTipsModal &&
             <ShareExtensionTip
               ref={ref => (this.ref = ref)}
             />
