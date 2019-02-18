@@ -38,6 +38,10 @@ class ShareSuccessScreen extends React.Component {
       },
       onPanResponderMove: (evt, gestureState) => {
         if (Math.abs(gestureState.vx) > CloseVelocity) {
+          this.setState({
+            animationType: gestureState.vx < 0 ? 'slideOutLeft' : 'slideOutRight',
+            animationDuration: 1000
+          });
           this.isClosed = true;
           this.closeView(false);
         } else {
@@ -74,6 +78,7 @@ class ShareSuccessScreen extends React.Component {
     ).start(() => {
       this.showClipboardTimeout = setTimeout(() => {
         this.showClipboardTimeout = null;
+        this.setState({ animationType: 'fadeOutDownBig', animationDuration: 1500 });
         this.closeView(false);
       }, 2500);
     })
@@ -87,17 +92,16 @@ class ShareSuccessScreen extends React.Component {
   }
 
   onSelect() {
+    this.setState({ animationType: 'fadeOutDownBig', animationDuration: 1500 });
     this.closeView(true);
   }
 
   closeView(isSelect = true) {
-    this.setState({animationType: 'fadeOutDownBig', duration: 1500})
-
     this.animatedFade.setValue(1);
     Animated.timing(
       this.animatedFade, {
         toValue: 0,
-        duration: 1500
+        duration: this.state.animationDuration
       }
     ).start(() => {
       if (this.showClipboardTimeout) {
