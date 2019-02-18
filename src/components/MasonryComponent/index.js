@@ -155,7 +155,7 @@ export default class Masonry extends React.Component {
 							/>
 						: <EmptyStateComponent
 								page="card"
-								title="It's pretty boring here... Let's create some cards!"
+								title="It's pretty empty here. Get your creativity working and add some stuff to your flow!"
 								subTitle="Watch a 15 sec video about creating cards"
 								ctaTitle="Create your first card"
 								onCreateNewCard={this.props.onOpenNewCardModal.bind(this)}

@@ -60,12 +60,13 @@ class SignUpConfirmScreen extends React.Component {
 
   UNSAFE_componentWillReceiveProps(nextProps) {
     const { user, deepLinking } = nextProps
+    const { userEmail } = this.props
 
     if (Actions.currentScene === 'SignUpConfirmScreen') {
       if (this.props.user.loading !== 'RESEND_CONFIRMATION_EMAIL_FULFILLED' && user.loading === 'RESEND_CONFIRMATION_EMAIL_FULFILLED') {
         this.setState({ loading: false }, () => {
           Alert.alert(
-            "Confirmation resent to " + {userEmail}
+            "Confirmation resent to " + userEmail
           )
         })
       }

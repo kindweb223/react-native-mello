@@ -6,8 +6,8 @@ const images = {
     edit: require('../../assets/images/Feed_option/EditGrey.png'),
     pinGrey: require('../../assets/images/Feed_option/PinGrey.png'),
     pinActive: require('../../assets/images/Feed_option/PinBlue.png'),
-    shareLink: require('../../assets/images/Feed_option/ShareLinkGrey.png'),
-    shareLinkPurple: require('../../assets/images/Feed_option/ShareLinkBlue.png'),
+    shareLinkGrey: require('../../assets/images/Feed_option/ShareLinkGrey.png'),
+    shareLinkActive: require('../../assets/images/Feed_option/ShareLinkBlue.png'),
 }
 
 export default images

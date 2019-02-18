@@ -28,32 +28,32 @@ const PREMIUM_LIST = [
   {
     icon: <Image source={UPLOAD_ICON} style={styles.premiumIcon} />,
     title: 'Upload > 10 MB',
-    description: 'Hella narwhal Cosby sweater kitsch before they sold out High Life.'
+    description: 'Upload files greater than 10 MB to your cards.'
   },
   {
     icon: <Image source={OFFLINE_ICON} style={styles.premiumIcon} />,
     title: 'Work in Mello offline',
-    description: 'Hella narwhal Cosby sweater kitsch before they sold out High Life.'
+    description: 'No internet? No problem. Work on your ideas offline.'
   },
   {
     icon: <Image source={SEARCH_ICON} style={styles.premiumIcon} />,
     title: 'Advanced search',
-    description: 'Hella narwhal Cosby sweater kitsch before they sold out High Life.'
+    description: 'Search your flow titles, descriptions, tags, cards, comments and more.'
   },
   {
     icon: <Image source={EDIT_ICON} style={styles.premiumIcon} />,
-    title: 'Better text editing',
-    description: 'Hella narwhal Cosby sweater kitsch before they sold out High Life.'
+    title: 'Style your ideas',
+    description: 'Customize your text with a complete text editor tool.'
   },
   {
     icon: <Image source={TAG_ICON} style={styles.premiumIcon} />,
-    title: 'Tagging',
-    description: 'Hella narwhal Cosby sweater kitsch before they sold out High Life.'
+    title: 'Become more organised',
+    description: 'Add tags to your flows to group or seperate projects.'
   },
   {
     icon: <Image source={CONTROL_ICON} style={styles.premiumIcon} />,
-    title: 'Better user controls',
-    description: 'Hella narwhal Cosby sweater kitsch before they sold out High Life.'
+    title: 'Have more control',
+    description: 'Decide who can edit and who can only view your flow.'
   }
 ]
 
@@ -96,9 +96,9 @@ class ProfilePremiumScreen extends React.Component {
       <View style={styles.container}>
         <ScrollView contentContainerStyle={styles.scrollInnerView} style={styles.scrollView}>
           <View style={styles.topView}>
-            <Text style={styles.title}>Take control of your content with Premium</Text>
-            <Text style={styles.description}>Hella narwhal Cosby sweater kitsch before they sold out High Life.</Text>
-            <Text style={styles.subTitle}>What you can do with Premium:</Text>
+            <Text style={styles.title}>Mello Premium</Text>
+            <Text style={styles.description}>Upgrade to smarter and better collection, reviewing and focusing experiences for your thoughts and ideas for only $29.99 per year</Text>
+            {/* <Text style={styles.subTitle}>What you can do with Premium:</Text> */}
           </View>
 
           <View style={styles.premiumList}>
@@ -116,11 +116,16 @@ class ProfilePremiumScreen extends React.Component {
               ))
             }
           </View>
+
+          <View style={styles.topView}>
+            <Text style={styles.description}>Anything you'd like that we haven't mentioned? Let us know [Contact Us]</Text>
+          </View>
+
         </ScrollView>
 
         <TouchableOpacity onPress={() => this.upgradeMe()} style={styles.buttonView}>
           <View style={styles.button}>
-            <Text style={styles.buttonText}>Upgrade Me</Text>
+            <Text style={styles.buttonText}>Activate Premium for $29.99 py</Text>
           </View>
         </TouchableOpacity>
 

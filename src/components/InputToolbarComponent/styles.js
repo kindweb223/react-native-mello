@@ -6,7 +6,7 @@ const styles = StyleSheet.create({
   container: {
     marginHorizontal: 16,
     marginTop: 16,
-    marginBottom: Platform.OS === 'ios' ? CONSTANTS.STATUSBAR_HEIGHT : 0,
+    marginBottom: CONSTANTS.STATUSBAR_HEIGHT,
     backgroundColor: COLORS.SOFT_GREY,
     paddingHorizontal: 16,
     paddingVertical: 13,

@@ -13,7 +13,8 @@ import {
   AsyncStorage,
   SafeAreaView,
   Platform,
-  BackHandler
+  BackHandler,
+  ActivityIndicator
 } from 'react-native'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
@@ -106,7 +107,7 @@ class CardNewScreen extends React.Component {
       coverImage,
       textByCursor: '',
       
-      loading: false,
+      loading: true,
       // isFullScreenCard: false,
       originalCardTopY: this.props.intialLayout.py,
       originalCardBottomY: this.props.intialLayout.py + this.props.intialLayout.height,
@@ -542,7 +543,7 @@ class CardNewScreen extends React.Component {
         } else {
           error = (nextProps.card.error && nextProps.card.error.message) || (nextProps.feedo.error && nextProps.feedo.error.message);
         }
-        
+
         if (error) {
           if (nextProps.card.loading === types.GET_OPEN_GRAPH_REJECTED) {
             // success in getting open graph
@@ -594,10 +595,6 @@ class CardNewScreen extends React.Component {
             if (this.props.card.currentCard.links === null || this.props.card.currentCard.links.length === 0) {
               if (this.parseErrorUrls(error)) {
                 error = 'Oops, we can\'t get the details from this link';
-                setTimeout(() => {
-                  this.onCloseLinkImages();
-                }, 10);    
-  
               } else {
                 // return;
               }
@@ -667,10 +664,10 @@ class CardNewScreen extends React.Component {
   
   handleBackButton = () => {
     const { cardMode, viewMode } = this.props;
-    if (cardMode === CONSTANTS.SHARE_EXTENTION_CARD || cardMode === CONSTANTS.MAIN_APP_CARD_FROM_DASHBOARD) {
+    if (cardMode === CONSTANTS.SHARE_EXTENTION_CARD) {
       this.props.shareUrl !== '' && this.props.shareImageUrls.length > 0 ? Actions.pop() : this.props.onClose()
     }
-    else if (viewMode === CONSTANTS.CARD_NEW) {
+    if (viewMode === CONSTANTS.CARD_NEW) {
       this.leaveActionSheetRef.show()
     }
     return true;
@@ -825,7 +822,7 @@ class CardNewScreen extends React.Component {
       }
 
       if (filteredUrls.length > 0) {
-        Analytics.logEvent('CardNewScreen', {})
+        Analytics.logEvent('new_card_typed_link', {})
 
         // this.isOpenGraphForNewCard = false;
         this.indexForOpenGraph = 0;
@@ -1221,11 +1218,6 @@ class CardNewScreen extends React.Component {
     this.setState({
       isVisibleChooseLinkImagesModal: false,
     });
-
-    const { cardMode } = this.props;
-    if (cardMode === CONSTANTS.MAIN_APP_CARD_FROM_DASHBOARD) {
-      this.props.shareUrl !== '' && this.props.shareImageUrls.length > 0 ? Actions.pop() : this.props.onClose()
-    }
   }
 
   onSaveLinkImages(selectedImages) {
@@ -1398,7 +1390,7 @@ class CardNewScreen extends React.Component {
           ref={ref => this.textInputIdeaRef = ref}
           style={styles.textInputIdea}
           autoCorrect={true}
-          placeholder='Type text or paste a link'
+          placeholder='Let your ideas flow. Type text, paste a link, add an image, video or audio'
           multiline={true}
           underlineColorAndroid='transparent'
           value={this.state.idea}
@@ -1603,7 +1595,7 @@ class CardNewScreen extends React.Component {
             activeOpacity={0.6}
             onPress={this.onUpdateFeed.bind(this)}
           >
-            <Text style={[styles.textButton, {color: COLORS.PURPLE}]}>Create card</Text>
+            <Text style={[styles.textButton, {color: this.state.loading ? COLORS.MEDIUM_GREY : COLORS.PURPLE}]}>Create card</Text>
           </TouchableOpacity>
         </View>
       );
@@ -1639,14 +1631,22 @@ class CardNewScreen extends React.Component {
       return (
         <View style={styles.extensionSelectFeedoContainer}>
           <Text style={[styles.textCreateCardIn, {color: COLORS.PRIMARY_BLACK}]}>Create card in:</Text>
-          <TouchableOpacity
-            style={[styles.selectFeedoButtonContainer, {paddingRight: 3}]}
-            activeOpacity={0.6}
-            onPress={this.onSelectFeedo.bind(this)}
-          >
-            <Text style={styles.textFeedoName} numberOfLines={1}>{this.props.feedo.currentFeed.headline || 'New flow'}</Text>
-            <Entypo name="chevron-right" size={20} color={COLORS.PURPLE} />
-          </TouchableOpacity>
+          {!this.state.loading
+            ? <TouchableOpacity
+              style={[styles.selectFeedoButtonContainer, {paddingRight: 3}]}
+              activeOpacity={0.6}
+              onPress={this.onSelectFeedo.bind(this)}
+              >
+                <Text style={styles.textFeedoName} numberOfLines={1}>{this.props.feedo.currentFeed.headline || 'New flow'}</Text>
+                <Entypo name="chevron-right" size={20} color={COLORS.PURPLE} />
+              </TouchableOpacity>
+            :
+              <ActivityIndicator 
+                style={[styles.selectFeedoButtonContainer, {paddingRight: 9, width: 50}]}
+                animating
+                color={COLORS.PURPLE}
+              />
+          }
         </View>
       )
     }
@@ -1715,7 +1715,7 @@ class CardNewScreen extends React.Component {
             {this.renderBottomContent}
             {
               // If show keyboard button, and not quick add card from dashboard as interferes with change Feed https://cl.ly/ba004cb3a34b
-              viewMode === CONSTANTS.CARD_NEW && this.state.isShowKeyboardButton && cardMode !== CONSTANTS.MAIN_APP_CARD_FROM_DASHBOARD && cardMode !== CONSTANTS.SHARE_EXTENTION_CARD &&
+              Platform.OS === 'ios' && viewMode === CONSTANTS.CARD_NEW && this.state.isShowKeyboardButton && cardMode !== CONSTANTS.MAIN_APP_CARD_FROM_DASHBOARD && cardMode !== CONSTANTS.SHARE_EXTENTION_CARD &&
               <Animated.View style={styles.hideKeyboardContainer}>
                 <TouchableOpacity
                   style={[
@@ -1743,6 +1743,7 @@ class CardNewScreen extends React.Component {
     if (this.state.isVisibleSelectFeedoModal) {
       return (
         <SelectHuntScreen
+          cachedFeedList={this.props.feedo.feedoList}
           selectMode={cardMode !== CONSTANTS.SHARE_EXTENTION_CARD ? CONSTANTS.FEEDO_SELECT_FROM_MAIN : CONSTANTS.FEEDO_SELECT_FROM_SHARE_EXTENSION}
           onClosed={() => this.onCloseSelectHunt()}
         />
@@ -1765,8 +1766,8 @@ class CardNewScreen extends React.Component {
         />
         <ActionSheet
           ref={ref => this.leaveActionSheetRef = ref}
-          title='Are you sure that you wish to leave?'
-          options={['Continue editing', 'Leave and discard', 'Cancel']}
+          title='Are you sure you want to cancel?'
+          options={['Keep Editing', 'Discard', 'Cancel']}
           cancelButtonIndex={2}
           destructiveButtonIndex={1}
           tintColor={COLORS.PURPLE}
@@ -1781,7 +1782,10 @@ class CardNewScreen extends React.Component {
           onPress={(index) => this.onTapWebLinkActionSheet(index)}
         />
 
-        {this.state.loading && <LoadingScreen />}
+        {
+          this.state.loading && 
+            <LoadingScreen containerStyle={this.props.cardMode === CONSTANTS.SHARE_EXTENTION_CARD ? {marginBottom: CONSTANTS.SCREEN_VERTICAL_MIN_MARGIN + 100} : {}} />
+        }
         <Modal 
           style={{ margin: 0 }}
           isVisible={this.state.isVisibleChooseLinkImagesModal}

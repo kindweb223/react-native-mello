@@ -24,7 +24,7 @@ class FeedControlMenuComponent extends React.Component {
 
   render() {
     const { feedo, pinText, isEnableShare } = this.props
-    
+
     let isEnableShareAllowed = COMMON_FUNC.isFeedOwner(feedo) || COMMON_FUNC.isFeedEditor(feedo)
     let pinImg = pinText === 'Pin' ? images.pinGrey : images.pinActive
     let sharingImg = isEnableShare ? images.shareLinkActive : images.shareLinkGrey
@@ -49,7 +49,7 @@ class FeedControlMenuComponent extends React.Component {
           onPress={() => this.props.handleSettingItem('AddPeople')}
         >
           <Image source={images.addProfile} style={styles.menuIcon} />
-          <Text style={styles.settingButtonText}>Add people</Text>
+          <Text style={styles.settingButtonText}>{isEnableShareAllowed ? 'Add people' : 'Flow members'}</Text>
         </TouchableOpacity>
 
         {
@@ -57,7 +57,7 @@ class FeedControlMenuComponent extends React.Component {
           <TouchableOpacity
             style={styles.settingItem}
           >
-            <Image source={images.shareLink} style={styles.menuIcon} />
+            <Image source={sharingImg} style={styles.menuIcon} />
             <Text style={styles.settingButtonText}>Link sharing</Text>
             <Switch
               style={{ marginLeft: 20 }}
@@ -74,7 +74,7 @@ class FeedControlMenuComponent extends React.Component {
             style={styles.settingItem}
             onPress={() => this.props.handleSettingItem('ShareLink')}
           >
-            <Image source={images.shareLink} style={[styles.menuIcon, { opacity: 0 }]} />
+            <Image source={sharingImg} style={[styles.menuIcon, { opacity: 0 }]} />
             <Text style={styles.settingButtonText}>Share link</Text>
           </TouchableOpacity>
         }

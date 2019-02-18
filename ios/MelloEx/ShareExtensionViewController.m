@@ -87,7 +87,7 @@ RCT_REMAP_METHOD(data,
                 //*stop = YES;
             } else if ([provider hasItemConformingToTypeIdentifier:IMAGE_IDENTIFIER]){
 //                imageProvider = provider;
-              if (imageProviders.count == 0)
+//              if (imageProviders.count == 0)
                 [imageProviders addObject:provider];
                 //*stop = YES;
             }
@@ -107,7 +107,20 @@ RCT_REMAP_METHOD(data,
             
             [imageProvider loadItemForTypeIdentifier:IMAGE_IDENTIFIER options:nil completionHandler:^(id<NSSecureCoding> item, NSError *error){
               
-              if ([(NSObject *)item isKindOfClass:[UIImage class]]){
+              if ([(NSObject *)item isKindOfClass:[NSURL class]]) {
+                NSURL *url = (NSURL *)item;
+                [imageUrls addObject:[url absoluteString]];
+                if (imageUrls.count >= imageProviders.count) {
+                  if (callback) {
+                    NSString * value = [imageUrls componentsJoinedByString:@" , "];
+                    
+                    callback(value, @"images", nil);
+                  }
+                }
+
+              }
+              else
+              {
                 // for screenshot
                 // Cast the item to a UIImage and save into a temporary directory so pass a URL back to React Native
                 UIImage *sharedImage = (UIImage *)item;
@@ -117,18 +130,6 @@ RCT_REMAP_METHOD(data,
                 
                 if(callback){
                   callback(filePath, @"images", nil);
-                }
-
-              }
-              else
-              {
-                NSURL *url = (NSURL *)item;
-                [imageUrls addObject:[url absoluteString]];
-                if (imageUrls.count >= imageProviders.count) {
-                    if (callback) {
-                        NSString * value = [imageUrls componentsJoinedByString:@" , "];
-                        callback(value, @"images", nil);
-                    }
                 }
               }
             }];
