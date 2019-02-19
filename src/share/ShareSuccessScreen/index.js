@@ -25,7 +25,7 @@ class ShareSuccessScreen extends React.Component {
 
     this.state = {
       animationType: 'slideInUp',
-      duration: 750
+      animationDuration: 750
     }
 
     this._panResponder = PanResponder.create({
@@ -41,9 +41,10 @@ class ShareSuccessScreen extends React.Component {
           this.setState({
             animationType: gestureState.vx < 0 ? 'slideOutLeft' : 'slideOutRight',
             animationDuration: 1000
+          }, () => {
+            this.isClosed = true;
+            this.closeView(false);
           });
-          this.isClosed = true;
-          this.closeView(false);
         } else {
           this.animatedMoveX.setValue(gestureState.moveX - gestureState.x0);
         }
@@ -52,7 +53,7 @@ class ShareSuccessScreen extends React.Component {
       onPanResponderRelease: (evt, gestureState) => {
         if (Math.abs(gestureState.dx) < SelectDelta) {
           this.onSelect();
-        } else if (this.isClosed == false) {
+        } else if (this.isClosed === false) {
           Animated.timing(
             this.animatedMoveX, {
               toValue: 0,
@@ -78,8 +79,12 @@ class ShareSuccessScreen extends React.Component {
     ).start(() => {
       this.showClipboardTimeout = setTimeout(() => {
         this.showClipboardTimeout = null;
-        this.setState({ animationType: 'fadeOutDownBig', animationDuration: 1500 });
-        this.closeView(false);
+        this.setState({
+          animationType: 'fadeOutDownBig',
+          animationDuration: 1500
+        }, () => {
+          this.closeView(false);
+        });
       }, 2500);
     })
   }
@@ -92,8 +97,12 @@ class ShareSuccessScreen extends React.Component {
   }
 
   onSelect() {
-    this.setState({ animationType: 'fadeOutDownBig', animationDuration: 1500 });
-    this.closeView(true);
+    this.setState({
+      animationType: 'fadeOutDownBig',
+      animationDuration: 1500
+    }, () => {
+      this.closeView(true);
+    });
   }
 
   closeView(isSelect = true) {
@@ -150,7 +159,7 @@ class ShareSuccessScreen extends React.Component {
 
     return (
       <View style={styles.container}>
-        <Animatable.View animation={this.state.animationType} duration={this.state.duration} style={[styles.toasterContainer, { opacity: this.animatedFade }]}>
+        <Animatable.View animation={this.state.animationType} duration={this.state.animationDuration} style={[styles.toasterContainer, { opacity: this.animatedFade }]}>
           <Animated.View
             style={[
               styles.mainContainer,
