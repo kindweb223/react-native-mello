@@ -513,6 +513,7 @@ class CardDetailScreen extends React.Component {
       this.setState({
         idea: card.currentCard.idea,
         coverImage: card.currentCard.coverImage,
+        prevCoverImage: card.currentCard.coverImage,
         links: card.currentCard.links
       });
     }
@@ -772,7 +773,7 @@ class CardDetailScreen extends React.Component {
     return false;
   }
 
-  onClose() {
+  onClose() {    
     if (this.props.viewMode === CONSTANTS.CARD_EDIT) {
       this.onUpdateCard()
     }
@@ -845,9 +846,9 @@ class CardDetailScreen extends React.Component {
   onUpdateCard() {
     const { currentCard } = this.props.card
     const { id, huntId, files } = currentCard
-    const { idea, coverImage, links } = this.state
+    const { idea, prevCoverImage, coverImage, links } = this.state
 
-    if (currentCard.idea !== idea || currentCard.coverImage !== coverImage || currentCard.links !== links) {
+    if (currentCard.idea !== idea || prevCoverImage !== coverImage || currentCard.links !== links) {
       this.props.updateCard(huntId, id, '', idea, coverImage, files, false);
     }
   }
