@@ -20,13 +20,13 @@ class ToasterComponent extends React.Component {
   }
 
   render() {
-    const { title, buttonTitle, isVisible } = this.props
+    const { title, buttonTitle, isVisible, numberOfLines, ellipsizeMode } = this.props
     const { fadeAnimate } = this.state
 
     if (isVisible) {
       return (
         <Animated.View style={[styles.container, { opacity: fadeAnimate }]}>
-          <Text style={styles.title}>{title}</Text>
+          <Text style={styles.title} numberOfLines={numberOfLines} ellipsizeMode={ellipsizeMode}>{title}</Text>
           <TouchableOpacity onPress={() => this.props.onPressButton()}>
             <View style={styles.buttonView}>
               <Text style={styles.button}>{buttonTitle}</Text>
@@ -44,14 +44,18 @@ ToasterComponent.defaultProps = {
   onPressButton: () => {},
   title: '',
   buttonTitle: 'undo',
-  isVisible: false
+  isVisible: false,
+  numberOfLines: 1,
+  ellipsizeMode: 'tail'
 }
 
 ToasterComponent.propTypes = {
   title: PropTypes.string,
   buttonTitle: PropTypes.string,
   onPressButton: PropTypes.func,
-  isVisible: PropTypes.bool
+  isVisible: PropTypes.bool,
+  numberOfLines: PropTypes.number,
+  ellipsizeMode: PropTypes.string
 }
 
 export default ToasterComponent
