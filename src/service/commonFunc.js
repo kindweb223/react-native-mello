@@ -141,6 +141,10 @@ const showPremiumAlert = () => {
   )
 }
 
+const checkVideoCoverImage = (images, coverImage) => {
+  return _.find(images, image => image.thumbnailUrl === coverImage)
+}
+
 export {
   checkUserIsInvitee,
   isFeedOwner,
@@ -157,5 +161,6 @@ export {
   isSharingEnabled,
   generateRandomString,
   handleShareFeed,
-  showPremiumAlert
+  showPremiumAlert,
+  checkVideoCoverImage
 }

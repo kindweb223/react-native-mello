@@ -21,7 +21,6 @@ import { ifIphoneX } from 'react-native-iphone-x-helper'
 import { Actions } from 'react-native-router-flux'
 import Entypo from 'react-native-vector-icons/Entypo'
 import Ionicons from 'react-native-vector-icons/Ionicons'
-import Octicons from 'react-native-vector-icons/Octicons'
 
 import ActionSheet from 'react-native-actionsheet'
 import ImagePicker from 'react-native-image-picker'
