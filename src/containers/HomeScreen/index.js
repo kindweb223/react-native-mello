@@ -131,6 +131,8 @@ class HomeScreen extends React.Component {
       showLongHoldActionBar: true,
       isShowInviteToaster: false,
       inviteToasterTitle: '',
+      isShowCardAddedToaster: false,
+      cardAddedToasterTitle: '',
       showSharePermissionModal: false,
       enableShareWidget: false,
       showShareTipsModal: false,
@@ -153,30 +155,7 @@ class HomeScreen extends React.Component {
 
   onCloseSharePermissionModal = () => {
     if (this.state.enableShareWidget) {
-      setTimeout(() => {
-        this.setState({ showShareTipsModal: true })
-      }, 100)
-
-      setTimeout(() => {
-        Share.share({
-          message: 'Mello',
-          title: 'Mello',
-          url: TIP_SHARE_LINK_URL
-        },{
-          dialogTitle: 'Mello',
-          subject: 'Mello',
-          excludedActivityTypes: ["com.apple.UIKit.activity.AirDrop"]
-        }).then(result => {
-          if (result.action === Share.dismissedAction) {
-            this.setState({ showShareTipsModal: false })
-            // setTimeout(() => {
-            //   this.setState({ showShareConfirmModal: true })
-            // }, 300)
-          }
-        }).catch(error => {
-          console.log('ERROR: ', error)
-        })
-      }, 300)
+      this.setState({ showShareTipsModal: true })
     }
   }
 
@@ -488,7 +467,13 @@ class HomeScreen extends React.Component {
         currentPushNotificationType: CONSTANTS.UNKOWN_PUSH_NOTIFICATION,
         currentPushNotificationData: null,
       });
-    } 
+    } else if (prevProps.feedo.loading !== 'UPDATE_CARD_FULFILLED' && feedo.loading === 'UPDATE_CARD_FULFILLED' && Actions.currentScene === 'HomeScreen') {
+      this.setState({ isShowCardAddedToaster: true, cardAddedToasterTitle: 'Card added to ' + feedo.currentFeed.headline })
+  
+      setTimeout(() => {
+        this.setState({ isShowCardAddedToaster: false })
+      }, TOASTER_DURATION)
+    }   
   }
 
   async setBubbles(feedoList) {
@@ -1181,6 +1166,10 @@ class HomeScreen extends React.Component {
     this.props.getInvitedFeedList()
   }
 
+  dismiss = (e) => {
+    this.setState({ showShareTipsModal: false })
+  };
+
   render () {
     const {
       loading,
@@ -1486,6 +1475,15 @@ class HomeScreen extends React.Component {
           />
         )}
 
+        {this.state.isShowCardAddedToaster && (
+          <ToasterComponent
+            isVisible={this.state.isShowCardAddedToaster}
+            title={this.state.cardAddedToasterTitle}
+            buttonTitle="OK"
+            onPressButton={() => this.setState({ isShowCardAddedToaster: false })}
+          />
+        )}
+
         <Modal 
           isVisible={this.state.showSharePermissionModal}
           style={{ margin: 8 }}
@@ -1504,6 +1502,7 @@ class HomeScreen extends React.Component {
         {
           this.state.showShareTipsModal &&
             <ShareExtensionTip
+              onDismiss={this.dismiss}
               ref={ref => (this.ref = ref)}
             />
         }
