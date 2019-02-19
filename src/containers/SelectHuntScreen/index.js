@@ -13,6 +13,7 @@ import * as feedoTypes from '../../redux/feedo/types'
 
 import Ionicons from 'react-native-vector-icons/Ionicons'
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons'
+import * as Animatable from 'react-native-animatable'
 
 import _ from 'lodash'
 import Search from 'react-native-search-box';
@@ -40,7 +41,8 @@ class SelectHuntScreen extends React.Component {
       isVisibleNewFeedScreen: false,
       isKeyboardShow: false,
       filterText: '',
-      cachedFeedList: props.cachedFeedList
+      cachedFeedList: props.cachedFeedList,
+      animationType: 'slideInRight'
     };
     this.animatedShow = new Animated.Value(0);
     this.animatedMove = new Animated.Value(0);
@@ -54,6 +56,9 @@ class SelectHuntScreen extends React.Component {
     if (cachedFeedList.length == 0) {
       this.props.getFeedoList(3, true);
     }
+
+    const animationType = this.props.direction === 'left' ? 'slideInRight' : 'slideInDown'
+    this.setState({ animationType })
 
     Animated.timing(this.animatedShow, {
       toValue: 1,
@@ -117,6 +122,9 @@ class SelectHuntScreen extends React.Component {
     } else {
       this.animatedShow.setValue(0);
     }
+
+    const animationType = this.props.direction === 'left' ? 'slideOutRight' : 'slideOutUp'
+    this.setState({ animationType })
   }
 
   onBack() {
@@ -243,7 +251,7 @@ class SelectHuntScreen extends React.Component {
   }
 
   render () {
-    const { cachedFeedList } = this.state
+    const { cachedFeedList, animationType } = this.state
 
     const animatedMove  = this.animatedMove.interpolate({
       inputRange: [0, 1],
@@ -268,15 +276,13 @@ class SelectHuntScreen extends React.Component {
     }
 
     return (
-      <View style={[styles.container, selectMode !== CONSTANTS.FEEDO_SELECT_FROM_SHARE_EXTENSION && {backgroundColor: COLORS.MODAL_BACKGROUND}]}>
-        <Animated.View 
-          style={[
-            styles.feedContainer, {opacity: this.animatedShow},
-            this.props.direction === 'left' && {left: animatedMove},
-            this.props.direction === 'top' && {top: animatedMove} 
-          ]}
-        >
-          <Animated.View 
+      <Animatable.View
+        animation={animationType}
+        duration={500}
+        style={[styles.container, selectMode !== CONSTANTS.FEEDO_SELECT_FROM_SHARE_EXTENSION && {backgroundColor: COLORS.MODAL_BACKGROUND}]}
+      >
+        <View style={styles.feedContainer}>
+          <Animated.View
             style={[
               styles.contentContainer, 
               {
@@ -333,7 +339,7 @@ class SelectHuntScreen extends React.Component {
             />
             {this.state.loading && <LoadingScreen />}
           </Animated.View>
-        </Animated.View>
+        </View>
         {
           this.state.isVisibleNewFeedScreen && 
             <View style={styles.newFeedContainer}>
@@ -345,7 +351,7 @@ class SelectHuntScreen extends React.Component {
               />
             </View>
         }
-      </View>
+      </Animatable.View>
     );
   }
 }
