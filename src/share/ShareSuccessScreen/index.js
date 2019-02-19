@@ -37,6 +37,8 @@ class ShareSuccessScreen extends React.Component {
         this.isClosed = false;
       },
       onPanResponderMove: (evt, gestureState) => {
+        clearTimeout(this.showClipboardTimeout);
+        this.showClipboardTimeout = null;
         if (Math.abs(gestureState.vx) > CloseVelocity) {
           this.setState({
             animationType: gestureState.vx < 0 ? 'slideOutLeft' : 'slideOutRight',
