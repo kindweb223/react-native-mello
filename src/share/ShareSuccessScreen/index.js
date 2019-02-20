@@ -12,7 +12,11 @@ import * as Animatable from 'react-native-animatable'
 
 const CloseVelocity = 1.25;
 const SelectDelta = 2;
-
+const FADE_IN_TIME = 750;
+const FADE_OUT_TIME = 0;
+const FADE_OUT_DOWN_TIME = 1000;
+const SLIDE_OUT_TIME = 1250;
+const SLIDE_OUT_TIME_MIN = 600;
 
 class ShareSuccessScreen extends React.Component {
   constructor(props) {
@@ -25,7 +29,7 @@ class ShareSuccessScreen extends React.Component {
 
     this.state = {
       animationType: 'slideInUp',
-      animationDuration: 750
+      animationDuration: FADE_IN_TIME
     }
 
     this._panResponder = PanResponder.create({
@@ -40,13 +44,16 @@ class ShareSuccessScreen extends React.Component {
         clearTimeout(this.showClipboardTimeout);
         this.showClipboardTimeout = null;
         if (Math.abs(gestureState.vx) > CloseVelocity) {
-          this.setState({
-            animationType: gestureState.vx < 0 ? 'slideOutLeft' : 'slideOutRight',
-            animationDuration: 1000
-          }, () => {
-            this.isClosed = true;
-            this.closeView(false);
-          });
+          // Need to check close hasnt already been initiated
+          if (!this.isClosed) {
+            this.setState({
+              animationType: gestureState.vx < 0 ? 'slideOutLeft' : 'slideOutRight',
+              animationDuration: SLIDE_OUT_TIME / Math.abs(gestureState.vx) < SLIDE_OUT_TIME_MIN ? SLIDE_OUT_TIME_MIN : SLIDE_OUT_TIME / Math.abs(gestureState.vx) 
+            }, () => {
+              this.isClosed = true;
+              this.closeView(false);
+            });
+          }
         } else {
           this.animatedMoveX.setValue(gestureState.moveX - gestureState.x0);
         }
@@ -76,14 +83,14 @@ class ShareSuccessScreen extends React.Component {
     Animated.timing(
       this.animatedFade, {
         toValue: 1,
-        duration: 750
+        duration: FADE_IN_TIME
       }
     ).start(() => {
       this.showClipboardTimeout = setTimeout(() => {
         this.showClipboardTimeout = null;
         this.setState({
           animationType: 'fadeOutDownBig',
-          animationDuration: 1500
+          animationDuration: FADE_OUT_DOWN_TIME
         }, () => {
           this.closeView(false);
         });
@@ -98,10 +105,11 @@ class ShareSuccessScreen extends React.Component {
     }
   }
 
+  // No animation and 0 milliseconds for instant open
   onSelect() {
     this.setState({
-      animationType: 'fadeOutDownBig',
-      animationDuration: 1500
+      animationType: '',
+      animationDuration: FADE_OUT_TIME
     }, () => {
       this.closeView(true);
     });
@@ -120,7 +128,6 @@ class ShareSuccessScreen extends React.Component {
         this.showClipboardTimeout = null;
       }
       if (isSelect) {
-        console.log('FEED_ID: ', this.props.feedo.currentFeed.id)
         ShareExtension.goToMainApp(SCHEME + `flow/${this.props.feedo.currentFeed.id}`);
         ShareExtension.close();
       } else {
