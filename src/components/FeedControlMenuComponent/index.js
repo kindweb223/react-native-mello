@@ -42,15 +42,21 @@ class FeedControlMenuComponent extends React.Component {
       MENU_ITEMS = ['Leave Flow']
     }
 
+    if (COMMON_FUNC.isMelloTipFeed(feedo)) {
+      MENU_ITEMS = ['Leave Flow']
+    }
+
     return (
       <View style={styles.menuContainer}>
-        <TouchableOpacity
-          style={styles.settingItem}
-          onPress={() => this.props.handleSettingItem('AddPeople')}
-        >
-          <Image source={images.addProfile} style={styles.menuIcon} />
-          <Text style={styles.settingButtonText}>{isEnableShareAllowed ? 'Add people' : 'Flow members'}</Text>
-        </TouchableOpacity>
+        {!COMMON_FUNC.isMelloTipFeed(feedo) && (
+          <TouchableOpacity
+            style={styles.settingItem}
+            onPress={() => this.props.handleSettingItem('AddPeople')}
+          >
+            <Image source={images.addProfile} style={styles.menuIcon} />
+            <Text style={styles.settingButtonText}>{isEnableShareAllowed ? 'Add people' : 'Flow members'}</Text>
+          </TouchableOpacity>
+        )}
 
         {
           isEnableShareAllowed &&

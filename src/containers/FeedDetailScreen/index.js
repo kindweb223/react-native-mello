@@ -1429,11 +1429,13 @@ class FeedDetailScreen extends React.Component {
                 <Ionicons name="ios-arrow-back" size={32} color={COLORS.PURPLE} />
               </TouchableOpacity>
               <View style={styles.rightHeader}>
-                <View style={styles.avatarView}>
-                  <TouchableOpacity onPress={() => this.handleShare()}>
-                    <AvatarPileComponent avatars={avatars} />
-                  </TouchableOpacity>
-                </View>
+                {!_.isEmpty(currentFeed) && !COMMON_FUNC.isMelloTipFeed(currentFeed) && (
+                  <View style={styles.avatarView}>
+                    <TouchableOpacity onPress={() => this.handleShare()}>
+                      <AvatarPileComponent avatars={avatars} />
+                    </TouchableOpacity>
+                  </View>
+                )}
                 <View style={styles.settingView}>
                   <FeedNavbarSettingComponent handleSetting={() => this.handleSetting()} />
                 </View>
