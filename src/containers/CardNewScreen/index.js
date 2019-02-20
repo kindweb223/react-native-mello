@@ -309,7 +309,11 @@ class CardNewScreen extends React.Component {
         }
         this.props.addFile(id, this.selectedFileType, fileType, this.selectedFileName, objectKey, metadata);
       } else {
-        this.props.addFile(id, this.selectedFileType, fileType, this.selectedFileName, objectKey, null, this.base64String);
+        const metadata = {
+          width: this.base64FileWidth,
+          height: this.base64FileHeight
+        }
+        this.props.addFile(id, this.selectedFileType, fileType, this.selectedFileName, objectKey, metadata, this.base64String);
       }
     } else if (this.props.card.loading !== types.ADD_FILE_PENDING && nextProps.card.loading === types.ADD_FILE_PENDING) {
       // adding a file
@@ -1114,7 +1118,11 @@ class CardNewScreen extends React.Component {
         ImageResizer.createResizedImage(result.path, result.width, result.height, CONSTANTS.IMAGE_COMPRESS_FORMAT, 50, 0, null)
         .then((response) => {
           ImgToBase64.getBase64String(response.uri)
-            .then(base64String => this.base64String = 'data:image/png;base64,' + base64String)
+            .then(base64String => {
+              this.base64String = 'data:image/png;base64,' + base64String
+              this.base64FileWidth = result.width
+              this.base64FileHeight = result.height
+            })
             .catch(err => console.log(err));                
         }).catch((error) => {
           console.log('Image compress error: ', error);
