@@ -63,7 +63,7 @@ class FeedItemContentComponent extends React.Component {
           <View style={styles.statsItemView}>
             <Image source={CARD_ICON_GREY} style={styles.cardIcon} />
             <Text style={[styles.feedText, styles.inActive]}>
-              {data.ideas.length}
+              {data.metadata.ideasSubmitted}
             </Text>
           </View>
         </View>
