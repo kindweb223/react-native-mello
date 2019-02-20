@@ -574,34 +574,43 @@ class CardDetailScreen extends React.Component {
     }
 
     const friction = 10
+    const bounciness = 100
+    const speed = 100
+
     Animated.parallel([
       Animated.spring(this.state.position.x, {
         toValue: this._tX,
-        friction
+        bounciness,
+        speed,
       }),
       Animated.spring(this.state.position.y, {
         toValue: this._tY,
-        friction
+        bounciness,
+        speed,
       }),
       Animated.spring(this.state.size.x, {
         toValue: this._tWidth,
-        friction
+        bounciness,
+        speed,
       }),
       Animated.spring(this.state.size.y, {
         toValue: this._tHeight,
-        friction
+        bounciness,
+        speed,
       }),
       Animated.spring(this.state.tempPosition.x, {
         toValue: this._tX,
-        friction
+        bounciness,
+        speed,
       }),
       Animated.spring(this.state.tempPosition.y, {
         toValue: 20 + 80 + ifIphoneX(22, 0), // 80: limit scroll offset
-        friction
+        bounciness,
+        speed,
       }),
       Animated.timing(this.animatedShow, {
         toValue: 1,
-        duration: CONSTANTS.ANIMATEION_MILLI_SECONDS,
+        duration: 0,
       })
     ]).start(() => {
       if (feedo.feedoList.length == 0) {
