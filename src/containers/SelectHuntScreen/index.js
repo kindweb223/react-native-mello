@@ -276,13 +276,11 @@ class SelectHuntScreen extends React.Component {
     }
 
     return (
-      <Animatable.View
-        animation={animationType}
-        duration={500}
-        style={[styles.container, selectMode !== CONSTANTS.FEEDO_SELECT_FROM_SHARE_EXTENSION && {backgroundColor: COLORS.MODAL_BACKGROUND}]}
-      >
+      <View style={[styles.container, selectMode !== CONSTANTS.FEEDO_SELECT_FROM_SHARE_EXTENSION && {backgroundColor: COLORS.MODAL_BACKGROUND}]}>
         <View style={styles.feedContainer}>
-          <Animated.View
+          <Animatable.View
+            animation={animationType}
+            duration={500}
             style={[
               styles.contentContainer, 
               {
@@ -338,7 +336,7 @@ class SelectHuntScreen extends React.Component {
               extraData={this.state}
             />
             {this.state.loading && <LoadingScreen />}
-          </Animated.View>
+          </Animatable.View>
         </View>
         {
           this.state.isVisibleNewFeedScreen && 
@@ -351,7 +349,7 @@ class SelectHuntScreen extends React.Component {
               />
             </View>
         }
-      </Animatable.View>
+      </View>
     );
   }
 }
