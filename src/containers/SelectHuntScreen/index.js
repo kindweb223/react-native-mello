@@ -292,13 +292,13 @@ class SelectHuntScreen extends React.Component {
             <View style={styles.searchContainer}>
               <Search
                 inputStyle={{
-                  backgroundColor: 'rgba(142,142,147,0.12)',
                   padding: 0,
                   paddingRight: 30,
                   marginRight: 10,
                   height: 36,
                   borderRadius: 10,
-                  fontSize: 16
+                  fontSize: 16,
+                  backgroundColor: '#f1f1f2',
                 }}
                 cancelButtonStyle={{
                   alignItems: 'flex-start',
