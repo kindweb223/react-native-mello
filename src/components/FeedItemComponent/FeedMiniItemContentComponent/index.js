@@ -44,6 +44,7 @@ class FeedMiniItemContentComponent extends React.Component {
 
   render() {
     const { data, avatars, pinFlag, page, clickEvent, thumbnailImage } = this.props
+
     return (
       <View style={styles.container}>
         <View style={styles.leftContainer}>
@@ -60,9 +61,11 @@ class FeedMiniItemContentComponent extends React.Component {
           <View style={styles.statsView}>
             <View style={styles.statsItemView}>
               <Image source={CARD_ICON_GREY} style={styles.cardIcon} />
-              <Text style={[styles.feedText, styles.inActive]}>
-                {data.ideas.length}
-              </Text>
+              {data.ideas && (
+                <Text style={[styles.feedText, styles.inActive]}>
+                  {data.ideas.length}
+                </Text>
+              )}
             </View>
             <View style={styles.rightView}>
               {PIN_FEATURE && pinFlag && (
