@@ -1357,11 +1357,11 @@ class CardNewScreen extends React.Component {
     }, 0);    
   }
 
-  onLayoutTextInput({nativeEvent: {layout}}) {
+  onLayoutTextInput({ nativeEvent: { layout } }) {
     this.textInputPositionY = layout.y;
   }
 
-  onLayoutScrollView({nativeEvent: {layout}}) {
+  onLayoutScrollView({ nativeEvent: { layout } }) {
     this.scrollViewHeight = layout.height;
     this.scrollContent();
   }
