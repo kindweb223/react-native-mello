@@ -82,7 +82,7 @@ import COLORS from '../../service/colors';
 import CONSTANTS from '../../service/constants';
 import styles from './styles';
 
-const FOOTER_HEIGHT = 55
+const FOOTER_HEIGHT = Platform.OS === 'ios' ? 55 : 60
 const FIXED_COMMENT_HEIGHT = 150
 const IDEA_CONTENT_HEIGHT = CONSTANTS.SCREEN_HEIGHT - CONSTANTS.STATUSBAR_HEIGHT - FIXED_COMMENT_HEIGHT - FOOTER_HEIGHT - CONSTANTS.STATUS_BOTTOM_BAR_HEIGHT + ifIphoneX(0, 5)
 
