@@ -57,7 +57,7 @@ class SelectHuntScreen extends React.Component {
       this.props.getFeedoList(3, true);
     }
 
-    const animationType = this.props.direction === 'left' ? 'slideInRight' : 'slideInDown'
+    const animationType = this.props.direction === 'left' ? 'slideInRight' : 'slideInUp'
     this.setState({ animationType })
 
     Animated.timing(this.animatedShow, {
@@ -123,7 +123,7 @@ class SelectHuntScreen extends React.Component {
       this.animatedShow.setValue(0);
     }
 
-    const animationType = this.props.direction === 'left' ? 'slideOutRight' : 'slideOutUp'
+    const animationType = this.props.direction === 'left' ? 'slideOutRight' : 'slideOutDown'
     this.setState({ animationType })
   }
 
@@ -280,7 +280,7 @@ class SelectHuntScreen extends React.Component {
         <View style={styles.feedContainer}>
           <Animatable.View
             animation={animationType}
-            duration={500}
+            duration={300}
             style={[
               styles.contentContainer, 
               {
