@@ -155,7 +155,9 @@ class HomeScreen extends React.Component {
 
   onCloseSharePermissionModal = () => {
     if (this.state.enableShareWidget) {
-      this.setState({ showShareTipsModal: true })
+      setTimeout(() => {
+        this.setState({ showShareTipsModal: true })
+      }, 100)
     }
   }
 
