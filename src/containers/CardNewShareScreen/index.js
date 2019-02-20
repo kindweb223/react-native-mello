@@ -417,6 +417,9 @@ class CardNewShareScreen extends React.Component {
     if (!this.props.feedo.currentFeed.id) {
       this.props.setCurrentFeed(this.draftFeedo);
     }
+    if(this.textInputIdeaRef) {
+      this.textInputIdeaRef.focus();
+    }
   }
 
   onUpdateFeed() {
