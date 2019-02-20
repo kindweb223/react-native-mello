@@ -43,6 +43,7 @@ class TabbarContainer extends React.Component {
       this.setState({ 
         isVisibleCard: false
       })
+      this.onDismissClipboardToaster()
     })
   }
 
@@ -91,7 +92,7 @@ const mapStateToProps = ({ user }) => ({
 })
 
 const mapDispatchToProps = dispatch => ({
-  closeClipboardToaster: (data) => dispatch(closeClipboardToaster(data))
+  closeClipboardToaster: () => dispatch(closeClipboardToaster())
 })
 
 export default connect(

@@ -4,7 +4,11 @@ import CONSTANTS from '../../service/constants'
 export default StyleSheet.create({
   container: {
     position: 'absolute',
-    bottom: 0
+    bottom: 0,
+    height: 140,
+    width: CONSTANTS.SCREEN_WIDTH,
+    backgroundColor: 'transparent',
+    zIndex: 1
   },
   containerCard: {
     width: CONSTANTS.SCREEN_WIDTH,
