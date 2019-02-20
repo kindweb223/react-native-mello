@@ -1,4 +1,4 @@
-import { StyleSheet } from 'react-native'
+import { StyleSheet, Platform } from 'react-native'
 import CONSTANTS from '../../service/constants'
 
 export default StyleSheet.create({
@@ -6,8 +6,14 @@ export default StyleSheet.create({
     position: 'absolute',
     bottom: 0
   },
+  containerCard: {
+    width: CONSTANTS.SCREEN_WIDTH,
+    height: CONSTANTS.SCREEN_HEIGHT,
+    backgroundColor: 'transparent'
+  },
   modalContainer: {
     width: CONSTANTS.SCREEN_WIDTH,
-    height: CONSTANTS.SCREEN_HEIGHT
+    height: CONSTANTS.SCREEN_HEIGHT,
+    paddingBottom: Platform.OS === 'android' ? 24 : 0
   }
 })
