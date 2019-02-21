@@ -1079,9 +1079,11 @@ export default function feedo(state = initialState, action = {}) {
       const ideaId = action.payload;
       const ideas = filter(currentFeed.ideas, idea => idea.id !== ideaId);
 
+      const ideasSubmitted = currentFeed.metadata.ideasSubmitted - 1
       const newCurrentFeed = {
         ...currentFeed,
         ideas,
+        metadata: Object.assign({}, currentFeed.metadata, { ideasSubmitted })
       }
 
       return {
@@ -1099,13 +1101,14 @@ export default function feedo(state = initialState, action = {}) {
       const { ideaId } = action.payload;
 
       const ideas = filter(currentFeed.ideas, idea => idea.id !== ideaId);
-
+      const ideasSubmitted = currentFeed.metadata.ideasSubmitted - 1
       return {
         ...state,
         loading: 'MOVE_CARD_FULFILLED',
         currentFeed: {
           ...currentFeed,
           ideas,
+          metadata: Object.assign({}, currentFeed.metadata, { ideasSubmitted })
         }
       }
     }
@@ -1357,14 +1360,20 @@ export default function feedo(state = initialState, action = {}) {
       if (type === 0) { //delete
         const ideas = filter(currentFeed.ideas, idea => idea.id !== ideaId);
         dummyDelCard = filter(currentFeed.ideas, idea => idea.id === ideaId);
+        const ideasSubmitted = currentFeed.metadata.ideasSubmitted - 1
         newCurrentFeed = {
           ...currentFeed,
           ideas,
+          metadata: Object.assign({}, currentFeed.metadata, { ideasSubmitted })
         }
       } else {  //restore
         currentFeed.ideas.push(state.dummyDelCard[0])
         dummyDelCard = {}
-        newCurrentFeed = currentFeed
+        const ideasSubmitted = currentFeed.metadata.ideasSubmitted + 1
+        newCurrentFeed = {
+          ...currentFeed,
+          metadata: Object.assign({}, currentFeed.metadata, { ideasSubmitted })
+        }
       }
 
       const restFeedoList = filter(feedoList, feed => feed.id !== currentFeed.id)
@@ -1399,15 +1408,17 @@ export default function feedo(state = initialState, action = {}) {
         const movedCard = find(currentFeed.ideas, idea => idea.id === ideaId)
         
         const moveToFeedIndex = findIndex(restFeedoList, feed => feed.id === huntId)
-
+        
         if (moveToFeedIndex !== -1) {
           restFeedoList[moveToFeedIndex].ideas.push(movedCard);
+          restFeedoList[moveToFeedIndex].metadata.ideasSubmitted = restFeedoList[moveToFeedIndex].metadata.ideasSubmitted + 1
         }
 
         newCurrentFeed = {
           ...currentFeed,
           ideas
         }
+        newCurrentFeed.metadata.ideasSubmitted = newCurrentFeed.metadata.ideasSubmitted - 1
 
         newFeedList = [
           ...restFeedoList,
@@ -1420,15 +1431,17 @@ export default function feedo(state = initialState, action = {}) {
         restFeedoList = filter(feedoList, feed => feed.id !== dummyMoveCard.feedId)
 
         const ideas = filter(dummyMoveCard.newFeed.ideas, idea => idea.id !== dummyMoveCard.ideaId)
-        const movedFeed = {
+        let movedFeed = {
           ...dummyMoveCard.newFeed,
           ideas
         }
+        movedFeed.metadata.ideasSubmitted = movedFeed.metadata.ideasSubmitted - 1
         
         const originalFeedIndex = findIndex(restFeedoList, feed => feed.id === currentFeed.id)
 
         if (originalFeedIndex !== -1) {
           restFeedoList[originalFeedIndex].ideas.push(dummyMoveCard.movedCard);
+          restFeedoList[originalFeedIndex].metadata.ideasSubmitted = restFeedoList[originalFeedIndex].metadata.ideasSubmitted + 1
         }
 
         newFeedList = [
