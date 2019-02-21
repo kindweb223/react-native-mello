@@ -1727,7 +1727,7 @@ class FeedDetailScreen extends React.Component {
           onBackdropPress={() => this.setState({ openMenu: false })}
           onBackButtonPress={() => this.setState({ openMenu: false })}
         >
-          <Animated.View style={styles.settingMenuView}>
+          <Animated.View style={[styles.settingMenuView, (!_.isEmpty(currentFeed) && COMMON_FUNC.isMelloTipFeed(currentFeed)) && { width: 150 }]}>
             <FeedControlMenuComponent
               handleSettingItem={item => this.handleSettingItem(item)}
               feedo={currentFeed}
