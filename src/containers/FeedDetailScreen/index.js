@@ -1458,10 +1458,6 @@ class FeedDetailScreen extends React.Component {
               }
             ]}
           >     
-            <GestureRecognizer
-              style={{ width: '100%', height: '100%' }}
-              onSwipeRight={this.backToDashboard}
-            >
               <View style={styles.detailView} onLayout={this.onLayoutScroll}>
                 {!_.isEmpty(currentFeed) && !isVisibleLongHoldMenu && (
                   <View style={styles.collapseView}>
@@ -1634,7 +1630,6 @@ class FeedDetailScreen extends React.Component {
                     </View>
                 }
               </View>
-            </GestureRecognizer>
           </Animated.ScrollView>
         </View>
 
