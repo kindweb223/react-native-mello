@@ -141,6 +141,10 @@ const showPremiumAlert = () => {
   )
 }
 
+const isMelloTipFeed = (feed) => {
+  return feed.sharingPreferences.level === 'REGISTERED_ONLY_BCC'
+}
+
 export {
   checkUserIsInvitee,
   isFeedOwner,
@@ -157,5 +161,6 @@ export {
   isSharingEnabled,
   generateRandomString,
   handleShareFeed,
-  showPremiumAlert
+  showPremiumAlert,
+  isMelloTipFeed
 }
