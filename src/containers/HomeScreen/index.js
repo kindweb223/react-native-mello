@@ -769,7 +769,7 @@ class HomeScreen extends React.Component {
       })
 
       feedoList = filter(feedoList, item => item.status === 'PUBLISHED')
-      
+
       if (value.i === 0) {
         feedoList = filter(feedoList, item => item.metadata.owner)
       }
