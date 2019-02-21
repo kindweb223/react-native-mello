@@ -9,14 +9,14 @@ import FastImage from "react-native-fast-image";
 
 import { images } from '../../themes'
 
+const AnimatedFastImage = Animated.createAnimatedComponent(FastImage);
+
 class ExFastImage extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
       loaded: false,
-      imageOpacity: props.source
-        ? new Animated.Value(1.0)
-        : new Animated.Value(0.0),
+      imageOpacity: new Animated.Value(0.0),
       placeholderOpacity: new Animated.Value(1.0),
       placeholderScale: new Animated.Value(1.0),
       placeholderSource: images.placeholder,
@@ -27,49 +27,55 @@ class ExFastImage extends React.Component {
   onLoadStart = () => {
   }
 
-  onLoadEnd = () => {
+  onLoad = () => {
     const {
       placeholderScale,
       placeholderOpacity,
       imageOpacity
     } = this.state
 
-    Animated.sequence([
-      Animated.parallel([
-        Animated.timing(placeholderScale, {
-          toValue: 0.7,
-          duration: 100,
-          useNativeDriver: true
-        }),
-        Animated.timing(placeholderOpacity, {
-          toValue: 0.66,
-          duration: 100,
-          useNativeDriver: true
-        }),
-      ]),
-      Animated.parallel([
-        Animated.parallel([
-          Animated.timing(placeholderOpacity, {
-            toValue: 0,
-            duration: 200,
-            useNativeDriver: true
-          }),
-          Animated.timing(placeholderScale, {
-            toValue: 1.2,
-            duration: 200,
-            useNativeDriver: true
-          }),
-        ]),
-        Animated.timing(imageOpacity, {
-          toValue: 1.0,
-          delay: 200,
-          duration: 300,
-          useNativeDriver: true
-        })
-      ])
-    ]).start(() => {
-      this.setState(() => ({ loaded: true }))
-    })
+    Animated.timing(imageOpacity, {
+      toValue: 1.0,
+      duration: 300,
+      useNativeDriver: true
+    }).start();
+
+    // Animated.sequence([
+    //   Animated.parallel([
+    //     Animated.timing(placeholderScale, {
+    //       toValue: 0.7,
+    //       duration: 100,
+    //       useNativeDriver: true
+    //     }),
+    //     Animated.timing(placeholderOpacity, {
+    //       toValue: 0.66,
+    //       duration: 100,
+    //       useNativeDriver: true
+    //     }),
+    //   ]),
+    //   Animated.parallel([
+    //     Animated.parallel([
+    //       Animated.timing(placeholderOpacity, {
+    //         toValue: 0,
+    //         duration: 200,
+    //         useNativeDriver: true
+    //       }),
+    //       Animated.timing(placeholderScale, {
+    //         toValue: 1.2,
+    //         duration: 200,
+    //         useNativeDriver: true
+    //       }),
+    //     ]),
+    //     Animated.timing(imageOpacity, {
+    //       toValue: 1.0,
+    //       delay: 200,
+    //       duration: 300,
+    //       useNativeDriver: true
+    //     })
+    //   ])
+    // ]).start(() => {
+    //   this.setState(() => ({ loaded: true }))
+    // })
   }
 
   render() {
@@ -89,12 +95,18 @@ class ExFastImage extends React.Component {
 
     return (
       <View style={{ flex: 1 }}>
-        <FastImage
+        <AnimatedFastImage
+          style={[style, { opacity: this.state.imageOpacity }]}
+          source={source}
+          resizeMode={resizeMode}
+          onLoad={this.onLoad}
+        />
+        {/* <FastImage
           style={style}
           source={source}
           resizeMode={resizeMode}
           onLoadStart={this.onLoadStart}
-          onLoad={this.onLoadEnd}
+          onLoad={this.onLoad}
         />
 
         {(placeholderSource && !loaded) &&
@@ -120,7 +132,7 @@ class ExFastImage extends React.Component {
                 transform: [{ scale: placeholderScale }]
               }
             ]} />
-        }
+        } */}
       </View>
     )
   }
