@@ -417,6 +417,9 @@ class CardNewShareScreen extends React.Component {
     if (!this.props.feedo.currentFeed.id) {
       this.props.setCurrentFeed(this.draftFeedo);
     }
+    if(this.textInputIdeaRef) {
+      this.textInputIdeaRef.focus();
+    }
   }
 
   onUpdateFeed() {
@@ -682,7 +685,7 @@ class CardNewShareScreen extends React.Component {
         {this.renderCard}
         {this.renderSelectHunt}
 
-        {this.state.loading && <LoadingScreen containerStyle={{marginBottom: CONSTANTS.SCREEN_VERTICAL_MIN_MARGIN + 100}} />}
+        {this.state.loading && <LoadingScreen />}
 
       </View>
     );
