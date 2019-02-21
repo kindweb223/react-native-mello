@@ -87,6 +87,7 @@ class ExFastImage extends React.Component {
 
     const {
       loaded,
+      imageOpacity,
       placeholderOpacity,
       placeholderScale,
       placeholderSource,
@@ -96,7 +97,17 @@ class ExFastImage extends React.Component {
     return (
       <View style={{ flex: 1 }}>
         <AnimatedFastImage
-          style={[style, { opacity: this.state.imageOpacity }]}
+          style={[style, {
+            opacity: imageOpacity,
+            transform: [
+              {
+                scale: imageOpacity.interpolate({
+                  inputRange: [0, 1],
+                  outputRange: [0.85, 1],
+                })
+              }
+            ]
+          }]}
           source={source}
           resizeMode={resizeMode}
           onLoad={this.onLoad}
