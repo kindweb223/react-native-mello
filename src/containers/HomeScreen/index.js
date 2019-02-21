@@ -155,7 +155,9 @@ class HomeScreen extends React.Component {
 
   onCloseSharePermissionModal = () => {
     if (this.state.enableShareWidget) {
-      this.setState({ showShareTipsModal: true })
+      setTimeout(() => {
+        this.setState({ showShareTipsModal: true })
+      }, 100)
     }
   }
 
@@ -767,7 +769,7 @@ class HomeScreen extends React.Component {
       })
 
       feedoList = filter(feedoList, item => item.status === 'PUBLISHED')
-      
+
       if (value.i === 0) {
         feedoList = filter(feedoList, item => item.metadata.owner)
       }
