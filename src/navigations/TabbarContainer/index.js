@@ -56,7 +56,7 @@ class TabbarContainer extends React.Component {
     const { isVisibleCard } = this.state
 
     return (
-      <View style={isVisibleCard ? styles.containerCard : styles.container}>
+      <View style={isVisibleCard ? styles.containerCard : [styles.container, showClipboardToaster && { height: 80 }]}>
         {showClipboardToaster && (
           <ClipboardToasterComponent
             description={clipboardToasterContent}

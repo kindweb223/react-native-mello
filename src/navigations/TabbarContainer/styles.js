@@ -4,8 +4,8 @@ import CONSTANTS from '../../service/constants'
 export default StyleSheet.create({
   container: {
     position: 'absolute',
-    bottom: 0,
-    height: 140,
+    bottom: CONSTANTS.ACTION_BAR_HEIGHT,
+    // height: 140,
     width: CONSTANTS.SCREEN_WIDTH,
     backgroundColor: 'transparent',
     zIndex: 1
