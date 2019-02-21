@@ -117,6 +117,10 @@ class FeedActionBarComponent extends React.Component {
       MENU_ITEMS = ['Leave Flow']
     }
 
+    if (COMMON_FUNC.isMelloTipFeed(data)) {
+      MENU_ITEMS = ['Leave Flow']
+    }
+
     let settingMenuMargin = (CONSTANTS.SCREEN_WIDTH - BAR_WIDTH_UNPIN) / 2
     let actionBarWidth = BAR_WIDTH_UNPIN
     if (pinFlag) {
@@ -126,6 +130,7 @@ class FeedActionBarComponent extends React.Component {
 
     if (!PIN_FEATURE) {
       actionBarWidth = 170 
+      settingMenuMargin = (CONSTANTS.SCREEN_WIDTH - 170) / 2
     }
 
     return (

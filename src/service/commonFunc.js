@@ -141,6 +141,10 @@ const showPremiumAlert = () => {
   )
 }
 
+const isMelloTipFeed = (feed) => {
+  return feed.sharingPreferences.level === 'REGISTERED_ONLY_BCC'
+}
+
 const checkVideoCoverImage = (images, coverImage) => {
   return _.find(images, image => image.thumbnailUrl === coverImage)
 }
@@ -162,5 +166,6 @@ export {
   generateRandomString,
   handleShareFeed,
   showPremiumAlert,
+  isMelloTipFeed,
   checkVideoCoverImage
 }

@@ -82,7 +82,7 @@ import COLORS from '../../service/colors';
 import CONSTANTS from '../../service/constants';
 import styles from './styles';
 
-const FOOTER_HEIGHT = 55
+const FOOTER_HEIGHT = Platform.OS === 'ios' ? CONSTANTS.SCREEN_WIDTH / 7.5 : CONSTANTS.SCREEN_WIDTH / 7.5 + 10
 const FIXED_COMMENT_HEIGHT = 150
 const IDEA_CONTENT_HEIGHT = CONSTANTS.SCREEN_HEIGHT - CONSTANTS.STATUSBAR_HEIGHT - FIXED_COMMENT_HEIGHT - FOOTER_HEIGHT - CONSTANTS.STATUS_BOTTOM_BAR_HEIGHT + ifIphoneX(0, 5)
 
@@ -517,6 +517,7 @@ class CardDetailScreen extends React.Component {
       this.setState({
         idea: card.currentCard.idea,
         coverImage: card.currentCard.coverImage,
+        prevCoverImage: card.currentCard.coverImage,
         links: card.currentCard.links
       });
     }
@@ -577,34 +578,43 @@ class CardDetailScreen extends React.Component {
     }
 
     const friction = 10
+    const bounciness = 100
+    const speed = 100
+
     Animated.parallel([
       Animated.spring(this.state.position.x, {
         toValue: this._tX,
-        friction
+        bounciness,
+        speed,
       }),
       Animated.spring(this.state.position.y, {
         toValue: this._tY,
-        friction
+        bounciness,
+        speed,
       }),
       Animated.spring(this.state.size.x, {
         toValue: this._tWidth,
-        friction
+        bounciness,
+        speed,
       }),
       Animated.spring(this.state.size.y, {
         toValue: this._tHeight,
-        friction
+        bounciness,
+        speed,
       }),
       Animated.spring(this.state.tempPosition.x, {
         toValue: this._tX,
-        friction
+        bounciness,
+        speed,
       }),
       Animated.spring(this.state.tempPosition.y, {
         toValue: 20 + 80 + ifIphoneX(22, 0), // 80: limit scroll offset
-        friction
+        bounciness,
+        speed,
       }),
       Animated.timing(this.animatedShow, {
         toValue: 1,
-        duration: CONSTANTS.ANIMATEION_MILLI_SECONDS,
+        duration: 0,
       })
     ]).start(() => {
       if (feedo.feedoList.length == 0) {
@@ -776,7 +786,7 @@ class CardDetailScreen extends React.Component {
     return false;
   }
 
-  onClose() {
+  onClose() {    
     if (this.props.viewMode === CONSTANTS.CARD_EDIT) {
       this.onUpdateCard()
     }
@@ -849,9 +859,9 @@ class CardDetailScreen extends React.Component {
   onUpdateCard() {
     const { currentCard } = this.props.card
     const { id, huntId, files } = currentCard
-    const { idea, coverImage, links } = this.state
+    const { idea, prevCoverImage, coverImage, links } = this.state
 
-    if (currentCard.idea !== idea || currentCard.coverImage !== coverImage || currentCard.links !== links) {
+    if (currentCard.idea !== idea || prevCoverImage !== coverImage || currentCard.links !== links) {
       this.props.updateCard(huntId, id, '', idea, coverImage, files, false);
     }
   }
@@ -1366,6 +1376,10 @@ class CardDetailScreen extends React.Component {
     if (links && links.length > 0) {
       const firstLink = links[0];
       return this.state.isOpeningCard && (
+        <Animatable.View
+          duration={CONSTANTS.ANIMATABLE_DURATION}
+          animation={this.state.fadeInUpAnimation}
+        >
         <WebMetaList
           viewMode="edit"
           links={[firstLink]}
@@ -1374,6 +1388,7 @@ class CardDetailScreen extends React.Component {
           editable={viewMode !== CONSTANTS.CARD_VIEW}
           longPressLink={(link) => this.onLongPressWbeMetaLink(link)}
         />
+        </Animatable.View>
       )
     }
   }

@@ -20,20 +20,6 @@ const styles = StyleSheet.create({
     color: COLORS.RED,
     fontSize: 14,
   },
-  buttonView: {
-    width: 92,
-    height: 34,
-    borderRadius: 17,
-    backgroundColor: COLORS.PURPLE,
-    paddingHorizontal: 12,
-    flexDirection: 'row',
-    justifyContent: 'space-around',
-    alignItems: 'center',
-    marginBottom: 15
-  },
-  buttonShareView: {
-    marginBottom: 5
-  },
   menuIcon: {
     width: 24,
     height: 24,
