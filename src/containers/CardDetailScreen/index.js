@@ -82,7 +82,7 @@ import COLORS from '../../service/colors';
 import CONSTANTS from '../../service/constants';
 import styles from './styles';
 
-const FOOTER_HEIGHT = Platform.OS === 'ios' ? 55 : 60
+const FOOTER_HEIGHT = Platform.OS === 'ios' ? CONSTANTS.SCREEN_WIDTH / 7.5 : CONSTANTS.SCREEN_WIDTH / 7.5 + 10
 const FIXED_COMMENT_HEIGHT = 150
 const IDEA_CONTENT_HEIGHT = CONSTANTS.SCREEN_HEIGHT - CONSTANTS.STATUSBAR_HEIGHT - FIXED_COMMENT_HEIGHT - FOOTER_HEIGHT - CONSTANTS.STATUS_BOTTOM_BAR_HEIGHT + ifIphoneX(0, 5)
 
@@ -1558,7 +1558,7 @@ class CardDetailScreen extends React.Component {
         animation={this.state.slideInUpAnimation}
       >
         <View style={[styles.footerContainer, { opacity: this.state.isOpeningCard ? 1 : 0 }]}>
-          {COMMENT_FEATURE && !COMMON_FUNC.isFeedGuest(feedo.currentFeed) &&
+          {!COMMENT_FEATURE && !COMMON_FUNC.isFeedGuest(feedo.currentFeed) &&
             <View style={styles.addCommentView}>
               {this.renderAddComment}
             </View>
