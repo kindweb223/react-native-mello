@@ -20,23 +20,29 @@ class ExFastImage extends React.Component {
       placeholderOpacity: new Animated.Value(1.0),
       placeholderScale: new Animated.Value(1.0),
       placeholderSource: images.placeholder,
-      placeholderColor: '#b3e5fc'
+      placeholderColor: '#b3e5fc',
+      loadFromCache: true
     }
   }
 
   onLoadStart = () => {
   }
 
+  onProgress = (e) => {
+    this.setState({ loadFromCache: false })
+  }
+
   onLoad = () => {
     const {
       placeholderScale,
       placeholderOpacity,
-      imageOpacity
+      imageOpacity,
+      loadFromCache
     } = this.state
 
     Animated.timing(imageOpacity, {
       toValue: 1.0,
-      duration: 300,
+      duration: loadFromCache ? 10 : 500,
       useNativeDriver: true
     }).start();
 
@@ -111,6 +117,7 @@ class ExFastImage extends React.Component {
           source={source}
           resizeMode={resizeMode}
           onLoad={this.onLoad}
+          onProgress={this.onProgress}
         />
         {/* <FastImage
           style={style}
