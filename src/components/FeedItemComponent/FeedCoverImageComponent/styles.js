@@ -30,7 +30,8 @@ const styles = StyleSheet.create({
     borderBottomRightRadius: 10
   },
   image: {
-    flex: 1
+    width: '100%',
+    height: '100%'
   },
   emptyCoverImageView: {
     flex: 1,
