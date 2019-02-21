@@ -1348,6 +1348,10 @@ class CardDetailScreen extends React.Component {
     if (links && links.length > 0) {
       const firstLink = links[0];
       return this.state.isOpeningCard && (
+        <Animatable.View
+          duration={CONSTANTS.ANIMATABLE_DURATION}
+          animation={this.state.fadeInUpAnimation}
+        >
         <WebMetaList
           viewMode="edit"
           links={[firstLink]}
@@ -1356,6 +1360,7 @@ class CardDetailScreen extends React.Component {
           editable={viewMode !== CONSTANTS.CARD_VIEW}
           longPressLink={(link) => this.onLongPressWbeMetaLink(link)}
         />
+        </Animatable.View>
       )
     }
   }
