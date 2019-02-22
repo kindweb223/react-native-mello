@@ -1113,9 +1113,12 @@ class CardNewScreen extends React.Component {
   generateThumbnail(file) {
     const mimeType = mime.lookup(file.uri);
 
+    // Important - files containing spaces break, need to uri decode the url before passing to RNThumbnail
+    // https://github.com/wkh237/react-native-fetch-blob/issues/248#issuecomment-297988317
+    let fileUri = decodeURI(file.uri)
+
     if (mimeType.indexOf('video') !== -1) {
-      RNThumbnail.get(file.uri).then((result) => {
-        console.log
+      RNThumbnail.get(fileUri).then((result) => {
         ImageResizer.createResizedImage(result.path, result.width, result.height, CONSTANTS.IMAGE_COMPRESS_FORMAT, 50, 0, null)
         .then((response) => {
           ImgToBase64.getBase64String(response.uri)
