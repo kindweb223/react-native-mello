@@ -4,6 +4,12 @@ export const LAMBDA_BASE_URL = 'https://dev-lambda.melloapp.com/'
 export const SHARE_LINK_URL = 'https://demos.solvers.io/solvers/mello-secure-site/flow/'
 export const SCHEME = 'demos.solvers.io://'
 
+// Staging
+// export const BASE_URL = 'https://stageapi.mello.solvers.io/hunt/api/v1/'
+// export const LAMBDA_BASE_URL = 'https://dev-lambda.melloapp.com/'
+// export const SHARE_LINK_URL = 'https://stageapp.mello.solvers.io/flow/'
+// export const SCHEME = 'stageapp.mello.solvers.io://'
+
 // Prod
 // export const BASE_URL = 'https://api.melloapp.com/hunt/api/v1/'
 // export const LAMBDA_BASE_URL = 'https://lambda.melloapp.com/'

@@ -19,6 +19,7 @@ import UserAvatarComponent from '../../UserAvatarComponent';
 
 import CONSTANTS from '../../../service/constants'
 import { COMMENT_FEATURE } from '../../../service/api'
+import ExFastImage from '../../ExFastImage';
 
 class FeedCardExtendComponent extends React.Component {
   constructor(props) {
@@ -56,7 +57,7 @@ class FeedCardExtendComponent extends React.Component {
         <View style={styles.subContainer}>
           {hasCoverImage &&
             <View style={[styles.thumbnailsView, { height: cardHeight }]}>
-              <FastImage
+              <ExFastImage
                 style={styles.thumbnails}
                 source={{ uri: idea.coverImage }}
               />
