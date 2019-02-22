@@ -309,9 +309,12 @@ class CardNewScreen extends React.Component {
         }
         this.props.addFile(id, this.selectedFileType, fileType, this.selectedFileName, objectKey, metadata);
       } else {
-        const metadata = {
-          width: this.base64FileWidth,
-          height: this.base64FileHeight
+        let metadata = null
+        if (this.base64FileWidth && this.base64FileHeight) {
+          metadata = {
+            width: this.base64FileWidth,
+            height: this.base64FileHeight
+          }  
         }
         this.props.addFile(id, this.selectedFileType, fileType, this.selectedFileName, objectKey, metadata, this.base64String);
       }
