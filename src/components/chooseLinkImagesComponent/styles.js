@@ -46,7 +46,7 @@ const styles = StyleSheet.create({
   imageItem: {
     width: '100%',
     height: '100%',
-    backgroundColor: 'rgba(0, 0, 0, 0.05);'    
+    backgroundColor: 'rgba(0, 0, 0, 0.05)'
   },
   selectedIcon: {
     position: 'absolute',
