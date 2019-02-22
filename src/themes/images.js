@@ -8,6 +8,7 @@ const images = {
     pinActive: require('../../assets/images/Feed_option/PinBlue.png'),
     shareLinkGrey: require('../../assets/images/Feed_option/ShareLinkGrey.png'),
     shareLinkActive: require('../../assets/images/Feed_option/ShareLinkBlue.png'),
+    placeholder: require('../../assets/images/placeholder.png'),
 }
 
 export default images
