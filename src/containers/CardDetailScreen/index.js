@@ -301,8 +301,6 @@ class CardDetailScreen extends React.Component {
       if (this.props.cardMode === CONSTANTS.MAIN_APP_CARD_FROM_DASHBOARD) {
         this.saveFeedId();
       }
-    } else if (this.props.card.loading !== types.UPDATE_CARD_REJECTED && nextProps.card.loading === types.UPDATE_CARD_REJECTED) {
-      Alert.alert('Error', 'Update card fails')
     } else if (this.props.card.loading !== types.DELETE_FILE_PENDING && nextProps.card.loading === types.DELETE_FILE_PENDING) {
       // deleting a file
       loading = true;
