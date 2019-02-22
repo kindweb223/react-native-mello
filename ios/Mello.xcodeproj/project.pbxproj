@@ -55,7 +55,6 @@
 		4CC861B921933F8F00481DED /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 4CC8617A21933F8A00481DED /* GoogleService-Info.plist */; };
 		4CD904DC21F8A7C200258740 /* libRNSVG.a in Frameworks */ = {isa = PBXBuildFile; fileRef = A49C3621219230EA00AA0AFD /* libRNSVG.a */; };
 		4CF0DB4F2199BBA6000ED175 /* libRNFirebase.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 4CC8621D2193408300481DED /* libRNFirebase.a */; };
-		4CFB9C95221C75EC00F9797A /* libSplashScreen.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 4CFB9C94221C75BE00F9797A /* libSplashScreen.a */; };
 		4D155804DAC84ABD8370724D /* FontAwesome5_Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 9AFE45238BF344909F881B0C /* FontAwesome5_Regular.ttf */; };
 		4DF31AFCC7DA42929C8B67CC /* libLottieReactNative.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 1BBE45B3BBA8440189B9842C /* libLottieReactNative.a */; };
 		4F7697CE36E840CDA629D4D2 /* Entypo.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 49E66C7627DA4206B745FC76 /* Entypo.ttf */; };
@@ -799,7 +798,6 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				4CFB9C95221C75EC00F9797A /* libSplashScreen.a in Frameworks */,
 				A4BF285821234CFE0054D7A9 /* CloudKit.framework in Frameworks */,
 				A46C2E1421497101007E54FA /* libRCTPushNotification.a in Frameworks */,
 				ADBDB9381DFEBF1600ED6528 /* libRCTBlob.a in Frameworks */,
