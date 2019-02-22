@@ -59,6 +59,9 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
+  loadingIcon: {
+    marginRight: 15
+  }
 })
 
 
