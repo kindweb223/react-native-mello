@@ -40,6 +40,8 @@ class CardEditScreen extends React.Component {
     this.keyboardWillShowSubscription = Keyboard.addListener('keyboardWillShow', (e) => this.keyboardWillShow(e))
     this.keyboardWillHideSubscription = Keyboard.addListener('keyboardWillHide', (e) => this.keyboardWillHide(e))
     BackHandler.addEventListener('hardwareBackPress', this.handleBackButton);
+
+    this.scrollViewRef.scrollToEnd()
   }
 
   componentWillUnmount() {
