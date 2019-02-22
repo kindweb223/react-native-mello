@@ -10,7 +10,8 @@ import {
   ScrollView,
   SafeAreaView,
   BackHandler,
-  Platform
+  Platform,
+  ActivityIndicator
 } from 'react-native'
 
 import _ from 'lodash';
@@ -18,6 +19,7 @@ import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityI
 
 import COLORS from '../../../service/colors';
 import CONSTANTS from '../../../service/constants';
+import Button from '../../../components/Button';
 import styles from './styles';
 
 class CardEditScreen extends React.Component {
@@ -25,7 +27,8 @@ class CardEditScreen extends React.Component {
     super(props);
     this.state = {
       isShowKeyboardButton: false,
-      textByCursor: ''
+      textByCursor: '',
+      idea: props.idea
     }
 
     this.animatedShow = new Animated.Value(0);
@@ -193,13 +196,18 @@ class CardEditScreen extends React.Component {
           <Text style={[styles.textButton, { color: COLORS.PURPLE, fontWeight: 'normal' }]}>Cancel</Text>
         </TouchableOpacity>
         <Text style={styles.textButton}>Edit card</Text>
-        <TouchableOpacity 
-          style={[styles.closeButtonView, { alignItems: 'flex-end' }]}
-          activeOpacity={0.7}
-          onPress={() => this.onDoneEditCard()}
-        >
-          <Text style={[styles.textButton, { color: COLORS.PURPLE }]}>Done</Text>
-        </TouchableOpacity>
+        {this.props.card.loading === 'UPDATE_CARD_PENDING'
+          ? <View style={[styles.closeButtonView, { alignItems: 'flex-end' }]}>
+              <ActivityIndicator color={COLORS.PURPLE} size="small" style={styles.loadingIcon} />
+            </View>
+          : <TouchableOpacity
+              style={[styles.closeButtonView, { alignItems: 'flex-end' }]}
+              activeOpacity={0.7}
+              onPress={() => this.onDoneEditCard()}
+            >
+              <Text style={[styles.textButton, { color: COLORS.PURPLE }]}>Done</Text>
+            </TouchableOpacity>
+        }
       </View>
     )
   }
