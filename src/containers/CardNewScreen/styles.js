@@ -20,6 +20,7 @@ const styles = StyleSheet.create({
   textInputIdea: {
     fontSize: 16,
     lineHeight: CONSTANTS.TEXT_INPUT_LINE_HEIGHT,
+    minHeight: 40,
     marginTop: 16,
     marginBottom: 16,
     marginHorizontal: 16,

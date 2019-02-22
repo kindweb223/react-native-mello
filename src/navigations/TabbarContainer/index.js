@@ -43,6 +43,7 @@ class TabbarContainer extends React.Component {
       this.setState({ 
         isVisibleCard: false
       })
+      this.onDismissClipboardToaster()
     })
   }
 
@@ -52,9 +53,10 @@ class TabbarContainer extends React.Component {
       clipboardToasterPrevpage,
       clipboardToasterContent
     } = this.props.user
+    const { isVisibleCard } = this.state
 
     return (
-      <View style={styles.container}>
+      <View style={isVisibleCard ? styles.containerCard : [styles.container, showClipboardToaster && { height: 80 }]}>
         {showClipboardToaster && (
           <ClipboardToasterComponent
             description={clipboardToasterContent}
@@ -63,7 +65,7 @@ class TabbarContainer extends React.Component {
           />
         )}
 
-        {this.state.isVisibleCard && (
+        {isVisibleCard && (
           <Animated.View
             style={[
               styles.modalContainer,
@@ -90,7 +92,7 @@ const mapStateToProps = ({ user }) => ({
 })
 
 const mapDispatchToProps = dispatch => ({
-  closeClipboardToaster: (data) => dispatch(closeClipboardToaster(data))
+  closeClipboardToaster: () => dispatch(closeClipboardToaster())
 })
 
 export default connect(
