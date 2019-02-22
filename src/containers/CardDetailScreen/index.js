@@ -297,6 +297,7 @@ class CardDetailScreen extends React.Component {
       // success in setting a file as cover image
     } else if (this.props.card.loading !== types.UPDATE_CARD_FULFILLED && nextProps.card.loading === types.UPDATE_CARD_FULFILLED) {
       // success in updating a card
+      this.onCancelEditCard()
       if (this.props.cardMode === CONSTANTS.MAIN_APP_CARD_FROM_DASHBOARD) {
         this.saveFeedId();
       }
@@ -859,6 +860,8 @@ class CardDetailScreen extends React.Component {
 
     if (currentCard.idea !== idea || prevCoverImage !== coverImage || currentCard.links !== links) {
       this.props.updateCard(huntId, id, '', idea, coverImage, files, false);
+    } else {
+      this.onCancelEditCard()
     }
   }
 
@@ -970,7 +973,6 @@ class CardDetailScreen extends React.Component {
 
   onDoneEditCard() {
     this.onUpdateCard()
-    this.onCancelEditCard()
   }
 
   onCancelEditCard() {
@@ -1088,6 +1090,8 @@ class CardDetailScreen extends React.Component {
   onChangeIdea(text) {
     this.setState({
       idea: text
+    }, () => {
+      this.onDoneEditCard()
     })
   }
 
@@ -1645,7 +1649,7 @@ class CardDetailScreen extends React.Component {
               {...this.props}
               idea={idea}
               checkUrls={() => this.checkUrls()}
-              onDoneEditCard={() => this.onDoneEditCard()}
+              // onDoneEditCard={() => this.onDoneEditCard()}
               onCancelEditCard={() => this.onCancelEditCard()}
               onChangeIdea={(value) => this.onChangeIdea(value)}
             />
