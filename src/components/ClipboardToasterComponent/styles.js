@@ -27,7 +27,7 @@ const styles = StyleSheet.create({
     // zIndex: 1,
     
     position: 'absolute',
-    bottom: CONSTANTS.ACTION_BAR_HEIGHT,
+    bottom: 0,
     width: CONSTANTS.SCREEN_WIDTH,
     zIndex: 1,
   },

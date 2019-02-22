@@ -731,11 +731,9 @@ class CardNewScreen extends React.Component {
       // If prev page not 'card' or if we don't have a current feed
       // Create feed will be called for a new feed
       // Card will be added on successful response to create feed
-      if (this.props.prevPage !== 'card' || !this.props.feedo.currentFeed.id) {
+      if (this.props.prevPage !== 'card' && (!this.props.feedo.currentFeed.id || this.props.feedo.currentFeed.status === 'TEMP')) {
         this.props.createFeed();
-      }
-      // Otherwise add the card straight to the current feed we have
-      else {
+      } else {  // Otherwise add the card straight to the current feed we have
         this.props.createCard(this.props.feedo.currentFeed.id)
       }
     } else if (viewMode === CONSTANTS.CARD_NEW) {
@@ -1360,11 +1358,11 @@ class CardNewScreen extends React.Component {
     }, 0);    
   }
 
-  onLayoutTextInput({nativeEvent: {layout}}) {
+  onLayoutTextInput({ nativeEvent: { layout } }) {
     this.textInputPositionY = layout.y;
   }
 
-  onLayoutScrollView({nativeEvent: {layout}}) {
+  onLayoutScrollView({ nativeEvent: { layout } }) {
     this.scrollViewHeight = layout.height;
     this.scrollContent();
   }
@@ -1490,6 +1488,7 @@ class CardNewScreen extends React.Component {
     if (cardMode !== CONSTANTS.MAIN_APP_CARD_FROM_DASHBOARD) {
       return;
     }
+
     return (
       <View style={styles.selectFeedoContainer}>
         <Text style={styles.textCreateCardIn}>Create card in:</Text>
