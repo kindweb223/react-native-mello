@@ -120,7 +120,7 @@ class ProfileScreen extends React.Component {
 
     if (Actions.currentScene === 'ProfileScreen') {
       if (this.props.user.loading === 'USER_SIGNOUT_PENDING' && user.loading === 'USER_SIGNOUT_FULFILLED') {
-        Actions.LoginScreen()
+        Actions.LoginScreen({ type: 'replace', prevPage: 'loggedOut' })
       }
 
       if (this.props.user.loading === 'UPDATE_PASSWORD_PENDING' && user.loading === 'UPDATE_PASSWORD_FULFILLED') {

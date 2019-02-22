@@ -39,6 +39,8 @@ class LoginScreen extends React.Component {
         onPress={() => {
           if (props.prevPage === 'signup') {
             Actions.pop()
+          } else if (props.prevPage === 'loggedOut') {
+            Actions.TutorialScreen({ type: 'replace', prevPage: 'login' })
           } else {
             Actions.pop({ refresh: { prevPage: 'login' } } )
           }
