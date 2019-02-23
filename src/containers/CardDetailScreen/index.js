@@ -963,7 +963,7 @@ class CardDetailScreen extends React.Component {
             COMMON_FUNC.showPremiumAlert()
           } else {
             let type = 'FILE';
-            const mimeType = mime.lookup(response.uri);
+            const mimeType = (Platform.OS === 'ios') ? mime.lookup(response.uri) : response.type;
             if (mimeType !== false) {
               if (mimeType.indexOf('image') !== -1 || mimeType.indexOf('video') !== -1) {
                 type = 'MEDIA';
@@ -1011,7 +1011,7 @@ class CardDetailScreen extends React.Component {
     } else if (_.endsWith(file.uri, '.key')) {
       this.selectedFileMimeType = 'application/x-iwork-keynote-sffkey'
     } else {
-      this.selectedFileMimeType = mime.lookup(file.uri);
+      this.selectedFileMimeType = (Platform.OS === 'ios') ? mime.lookup(file.uri) : file.type;
     }
 
     this.selectedFileName = file.fileName;
@@ -1091,11 +1091,8 @@ class CardDetailScreen extends React.Component {
   }
 
   generateThumbnail = (file) => {
-    const mimeType = mime.lookup(file.uri);
-    console.log('mimeType: ', mimeType)
+    const mimeType = (Platform.OS === 'ios') ? mime.lookup(file.uri) : file.type;
 
-    console.log('RESPONSE: ', file)
-    
     if (mimeType.indexOf('video') !== -1) {
       if (Platform.OS === 'ios') {
         // Important - files containing spaces break, need to uri decode the url before passing to RNThumbnail

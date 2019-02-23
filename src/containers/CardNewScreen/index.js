@@ -987,7 +987,7 @@ class CardNewScreen extends React.Component {
           COMMON_FUNC.showPremiumAlert()
         } else {
           let type = 'FILE';
-          const mimeType = mime.lookup(response.uri);
+          const mimeType = (Platform.OS === 'ios') ? mime.lookup(response.uri) : response.type;
           if (mimeType !== false) {
             if (mimeType.indexOf('image') !== -1 || mimeType.indexOf('video') !== -1) {
               type = 'MEDIA';
@@ -1053,7 +1053,7 @@ class CardNewScreen extends React.Component {
     } else if (_.endsWith(file.uri, '.key')) {
       this.selectedFileMimeType = 'application/x-iwork-keynote-sffkey'
     } else {
-      this.selectedFileMimeType = mime.lookup(file.uri);
+      this.selectedFileMimeType = (Platform.OS === 'ios') ? mime.lookup(file.uri) : file.type;
     }
 
     this.selectedFileName = file.fileName;
@@ -1111,7 +1111,7 @@ class CardNewScreen extends React.Component {
   }
 
   generateThumbnail(file) {
-    const mimeType = mime.lookup(file.uri);
+    const mimeType = (Platform.OS === 'ios') ? mime.lookup(file.uri) : file.type;
 
     // Important - files containing spaces break, need to uri decode the url before passing to RNThumbnail
     // https://github.com/wkh237/react-native-fetch-blob/issues/248#issuecomment-297988317
