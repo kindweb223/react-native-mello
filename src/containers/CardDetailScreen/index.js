@@ -969,8 +969,9 @@ class CardDetailScreen extends React.Component {
                 type = 'MEDIA';
               }
               this.generateThumbnail(response)  // Generate thumbnail if video
+            } else {
+              this.uploadFile(this.props.card.currentCard, response, type);
             }
-            this.uploadFile(this.props.card.currentCard, response, type);
           }
         }
       });
@@ -1032,7 +1033,6 @@ class CardDetailScreen extends React.Component {
             response.fileName = response.uri.replace(/^.*[\\\/]/, '')
           }
           this.generateThumbnail(response)  // Generate thumbnail if video
-          this.uploadFile(this.props.card.currentCard, response, 'MEDIA');
         }
       }
     });
@@ -1045,7 +1045,6 @@ class CardDetailScreen extends React.Component {
           COMMON_FUNC.showPremiumAlert()
         } else {
           this.generateThumbnail(response)  // Generate thumbnail if video
-          this.uploadFile(this.props.card.currentCard, response, 'MEDIA');
         }
       }
     });
@@ -1069,24 +1068,26 @@ class CardDetailScreen extends React.Component {
     }
   }
 
-  getThumbnailUrl = uri => {
+  getThumbnailUrl = (file, uri) => {
     RNThumbnail.get(uri).then((result) => {
-      console.log('RESULT', result)
       ImageResizer.createResizedImage(result.path, result.width, result.height, CONSTANTS.IMAGE_COMPRESS_FORMAT, 50, 0, null)
       .then((response) => {
-        console.log('RESPONSE', response)
         ImgToBase64.getBase64String(response.uri)
           .then(base64String => {
             this.base64String = 'data:image/png;base64,' + base64String
             this.base64FileWidth = result.width
             this.base64FileHeight = result.height
+
+            this.uploadFile(this.props.card.currentCard, file, 'MEDIA');
           })
           .catch(err => console.log(err));
       }).catch((error) => {
         console.log('Image compress error: ', error);
+        this.uploadFile(this.props.card.currentCard, file, 'MEDIA');
       });
     }).catch((error) => {
       console.log('RNThumbnail error: ', error);
+      this.uploadFile(this.props.card.currentCard, file, 'MEDIA');
     });
   }
 
@@ -1095,19 +1096,15 @@ class CardDetailScreen extends React.Component {
 
     if (mimeType.indexOf('video') !== -1) {
       if (Platform.OS === 'ios') {
-        // Important - files containing spaces break, need to uri decode the url before passing to RNThumbnail
-        // https://github.com/wkh237/react-native-fetch-blob/issues/248#issuecomment-297988317
         let fileUri = decodeURI(file.uri)
-
-        this.getThumbnailUrl(fileUri)
+        this.getThumbnailUrl(file, fileUri)
       } else {
         this.setState({ loading: true })
         RNFetchBlob.fs
         .stat(file.uri)
         .then(stats => {
-          console.log('STATS: ', stats)
           filepath = stats.path;
-          this.getThumbnailUrl(filepath)
+          this.getThumbnailUrl(file, filepath)
         })
       }
     }
