@@ -1096,6 +1096,8 @@ class CardDetailScreen extends React.Component {
 
     if (mimeType.indexOf('video') !== -1) {
       if (Platform.OS === 'ios') {
+        // Important - files containing spaces break, need to uri decode the url before passing to RNThumbnail
+        // https://github.com/wkh237/react-native-fetch-blob/issues/248#issuecomment-297988317
         let fileUri = decodeURI(file.uri)
         this.getThumbnailUrl(file, fileUri)
       } else {
