@@ -30,6 +30,7 @@ import ImagePicker from 'react-native-image-picker'
 import ImageResizer from 'react-native-image-resizer';
 import RNThumbnail from 'react-native-thumbnail';
 import ImgToBase64 from 'react-native-image-base64';
+import RNFetchBlob from 'rn-fetch-blob'
 
 import { DocumentPicker, DocumentPickerUtil } from 'react-native-document-picker'
 import Permissions from 'react-native-permissions'
@@ -990,9 +991,9 @@ class CardNewScreen extends React.Component {
               type = 'MEDIA';
             }
             this.generateThumbnail(response)  // Generate thumbnail if video
+          } else {
+            this.uploadFile(this.props.card.currentCard, response, type);
           }
-
-          this.uploadFile(this.props.card.currentCard, response, type);
         }
       }
     });
@@ -1070,7 +1071,6 @@ class CardNewScreen extends React.Component {
             response.fileName = response.uri.replace(/^.*[\\\/]/, '')
           }
           this.generateThumbnail(response)  // Generate thumbnail if video
-          this.uploadFile(this.props.card.currentCard, response, 'MEDIA');
         }
       }
     });
@@ -1083,7 +1083,6 @@ class CardNewScreen extends React.Component {
           COMMON_FUNC.showPremiumAlert()
         } else {
           this.generateThumbnail(response)  // Generate thumbnail if video
-          this.uploadFile(this.props.card.currentCard, response, 'MEDIA');
         }
       }
     });
@@ -1107,27 +1106,44 @@ class CardNewScreen extends React.Component {
     }
   }
 
-  generateThumbnail(file) {
+  getThumbnailUrl = (file, uri) => {
+    RNThumbnail.get(uri).then((result) => {
+      ImageResizer.createResizedImage(result.path, result.width, result.height, CONSTANTS.IMAGE_COMPRESS_FORMAT, 50, 0, null)
+      .then((response) => {
+        ImgToBase64.getBase64String(response.uri)
+          .then(base64String => {
+            this.base64String = 'data:image/png;base64,' + base64String
+            this.base64FileWidth = result.width
+            this.base64FileHeight = result.height
+
+            this.uploadFile(this.props.card.currentCard, file, 'MEDIA');
+          })
+          .catch(err => console.log(err));
+      }).catch((error) => {
+        console.log('Image compress error: ', error);
+        this.uploadFile(this.props.card.currentCard, file, 'MEDIA');
+      });
+    }).catch((error) => {
+      console.log('RNThumbnail error: ', error);
+      this.uploadFile(this.props.card.currentCard, file, 'MEDIA');
+    });
+  }
+
+  generateThumbnail = (file) => {
     const mimeType = mime.lookup(file.uri);
 
     if (mimeType.indexOf('video') !== -1) {
-      RNThumbnail.get(file.uri).then((result) => {
-        console.log
-        ImageResizer.createResizedImage(result.path, result.width, result.height, CONSTANTS.IMAGE_COMPRESS_FORMAT, 50, 0, null)
-        .then((response) => {
-          ImgToBase64.getBase64String(response.uri)
-            .then(base64String => {
-              this.base64String = 'data:image/png;base64,' + base64String
-              this.base64FileWidth = result.width
-              this.base64FileHeight = result.height
-            })
-            .catch(err => console.log(err));                
-        }).catch((error) => {
-          console.log('Image compress error: ', error);
-        });
-      }).catch((error) => {
-        console.log('RNThumbnail error: ', error);
-      });
+      if (Platform.OS === 'ios') {
+        this.getThumbnailUrl(file, file.uri)
+      } else {
+        this.setState({ loading: true })
+        RNFetchBlob.fs
+        .stat(file.uri)
+        .then(stats => {
+          filepath = stats.path;
+          this.getThumbnailUrl(file, filepath)
+        })
+      }
     }
   }
 
