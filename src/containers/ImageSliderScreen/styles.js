@@ -24,7 +24,7 @@ const styles = StyleSheet.create({
     paddingTop: 8
   },
   coverButton: {
-    bottom: Platform.OS === 'ios' ? 36 : 24,
+    bottom: Platform.OS === 'ios' ? 32 : 16,
     left: 20,
     alignItems: 'center',
     justifyContent: 'center',
