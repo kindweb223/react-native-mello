@@ -4,7 +4,8 @@ import {
   Text,
   TouchableOpacity,
   Image,
-  Alert
+  Alert,
+  Platform
 } from 'react-native'
 import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
@@ -101,7 +102,7 @@ class CropImageScreen extends React.Component {
           <View style={styles.imageView}>
             <ImageCrop
               ref={c => this.imageCrop = c}
-              source={{ uri: avatarFile.uri }}
+              source={{ uri: Platform.OS === 'ios' ? avatarFile.uri : 'file://' + avatarFile.path }}
             />
           </View>
           {/* <Image
