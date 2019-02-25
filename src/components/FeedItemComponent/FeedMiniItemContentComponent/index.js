@@ -45,6 +45,7 @@ class FeedMiniItemContentComponent extends React.Component {
 
   render() {
     const { data, avatars, pinFlag, page, clickEvent, thumbnailImage } = this.props
+
     return (
       <View style={styles.container}>
         <View style={styles.leftContainer}>
