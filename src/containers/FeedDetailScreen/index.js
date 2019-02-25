@@ -1189,7 +1189,7 @@ class FeedDetailScreen extends React.Component {
           Alert.alert('Warning', 'File size must be less than 10MB')
         } else {
           let type = 'FILE';
-          const mimeType = mime.lookup(response.uri);
+          const mimeType = (Platform.OS === 'ios') ? mime.lookup(response.uri) : response.type;
           if (mimeType !== false) {
             if (mimeType.indexOf('image') !== -1 || mimeType.indexOf('video') !== -1) {
               type = 'MEDIA';
@@ -1212,7 +1212,7 @@ class FeedDetailScreen extends React.Component {
     } else if (_.endsWith(file.uri, '.key')) {
       this.selectedFileMimeType = 'application/x-iwork-keynote-sffkey'
     } else {
-      this.selectedFileMimeType = mime.lookup(file.uri);
+      this.selectedFileMimeType = (Platform.OS === 'ios') ? mime.lookup(file.uri) : file.type;
     }
 
     this.selectedFileName = file.fileName;
