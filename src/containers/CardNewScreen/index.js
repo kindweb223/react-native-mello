@@ -119,6 +119,7 @@ class CardNewScreen extends React.Component {
       isCopyLink: false,
       isDeleteLink: false,
       copiedLink: null,
+      imageUploading: false,
     };
 
     this.selectedFile = null;
@@ -161,7 +162,7 @@ class CardNewScreen extends React.Component {
     this.currentShareImageIndex = 0;
 
     this.coverImageWidth = CONSTANTS.SCREEN_WIDTH
-    this.coverImageHeight = CONSTANTS.SCREEN_HEIGHT
+    this.coverImageHeight = CONSTANTS.SCREEN_HEIGHT / 2
 
     if (props.cardMode === CONSTANTS.SHARE_EXTENTION_CARD && props.shareUrl === '' && props.shareImageUrls.length) {
       props.shareImageUrls.forEach( async(imageUri, index) => {
@@ -377,6 +378,7 @@ class CardNewScreen extends React.Component {
 
       this.setState({
         coverImage: nextProps.card.currentCard.coverImage,
+        imageUploading: false
       }, () => {
         if (this.props.cardMode === CONSTANTS.SHARE_EXTENTION_CARD) {
           setTimeout(() => {
@@ -1040,7 +1042,11 @@ class CardNewScreen extends React.Component {
 
   async uploadFile(currentCard, file, type) {
     this.selectedFile = file;
-    
+    this.setState({
+      imageUploadStarted: true,
+      imageUploading: true
+    });
+
     if (_.endsWith(file.uri, '.pages')) {
       this.selectedFileMimeType = 'application/x-iwork-pages-sffpages'
     } else if (_.endsWith(file.uri, '.numbers')) {
@@ -1110,7 +1116,7 @@ class CardNewScreen extends React.Component {
 
     if (mimeType.indexOf('video') !== -1) {
       RNThumbnail.get(file.uri).then((result) => {
-        console.log
+        // console.log
         ImageResizer.createResizedImage(result.path, result.width, result.height, CONSTANTS.IMAGE_COMPRESS_FORMAT, 50, 0, null)
         .then((response) => {
           ImgToBase64.getBase64String(response.uri)
@@ -1310,7 +1316,7 @@ class CardNewScreen extends React.Component {
     let imageFiles = _.filter(this.props.card.currentCard.files, file => file.fileType === 'MEDIA');
 
     const ratio = CONSTANTS.SCREEN_WIDTH / this.coverImageWidth
-    if (this.state.coverImage) {
+    if (this.state.imageUploadStarted) {
       return (
         <View
           style={
@@ -1320,6 +1326,7 @@ class CardNewScreen extends React.Component {
           }
         >
           <CoverImagePreviewComponent
+            imageUploading={this.state.imageUploading}
             isShareExtension={cardMode === CONSTANTS.SHARE_EXTENTION_CARD}
             coverImage={this.state.coverImage}
             files={imageFiles}

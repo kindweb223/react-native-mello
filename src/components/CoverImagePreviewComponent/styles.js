@@ -42,6 +42,25 @@ const styles = StyleSheet.create({
     lineHeight: 21,
     color: COLORS.DARK_GREY,
   },
+  progressView: {
+    position: 'absolute',
+    left: 0,
+    right: 0,
+    top: 0,
+    bottom: 0,
+    backgroundColor: '#E3E4E7'
+  },
+  progressContainer: {
+    position: 'absolute',
+    left: 24,
+    bottom: 24,
+    width: 171,
+    height: 20,
+    borderRadius: 6,
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    alignItems: 'center',
+    justifyContent: 'center'
+  },
 })
 
 

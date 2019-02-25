@@ -123,6 +123,7 @@ class CardDetailScreen extends React.Component {
       isShowTempCard: false,
       fadeInUpAnimation: 'fadeInUp',
       slideInUpAnimation: 'slideInUp',
+      imageUploading: false,
     };
 
     this.selectedFile = null;
@@ -242,6 +243,7 @@ class CardDetailScreen extends React.Component {
       loading = true;
     } else if (this.props.card.loading !== types.ADD_FILE_FULFILLED && nextProps.card.loading === types.ADD_FILE_FULFILLED) {
       // success in adding a file
+      this.setState({ imageUploading: false });
       const { id } = this.props.card.currentCard;
       const newImageFiles = _.filter(nextProps.card.currentCard.files, file => file.contentType.indexOf('image') !== -1 || file.contentType.indexOf('video') !== -1);
       if (newImageFiles.length === 1 && !nextProps.card.currentCard.coverImage) {
@@ -989,6 +991,7 @@ class CardDetailScreen extends React.Component {
 
   async uploadFile(currentCard, file, type) {
     this.selectedFile = file;
+    this.setState({ imageUploading: true })
 
     if (_.endsWith(file.uri, '.pages')) {
       this.selectedFileMimeType = 'application/x-iwork-pages-sffpages'
@@ -1164,6 +1167,7 @@ class CardDetailScreen extends React.Component {
       return (
         <Animated.View style={[styles.coverImageContainer, activeImageStyle]}>
           <CoverImagePreviewComponent
+            imageUploading={this.state.imageUploading}
             coverImage={this.state.coverImage}
             files={imageFiles}
             editable={viewMode !== CONSTANTS.CARD_VIEW}
