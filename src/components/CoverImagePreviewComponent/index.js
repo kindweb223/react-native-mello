@@ -26,6 +26,7 @@ export default class CoverImagePreviewComponent extends React.Component {
       position: 0,
       progress: 0,
       indeterminate: false,
+      loadEnd: false
     };
    
   }
@@ -53,6 +54,10 @@ export default class CoverImagePreviewComponent extends React.Component {
   }
 
   get renderProgressBar() {
+    if (this.props.cardMode === 'CardNew' && this.state.loadEnd) {
+      return;
+    }
+
     return this.props.imageUploading && (
       <View style={styles.progressView}>
         <View style={styles.progressContainer}>
@@ -74,7 +79,12 @@ export default class CoverImagePreviewComponent extends React.Component {
     if (isFastImage) {
       return (
         <TouchableOpacity style={styles.container} activeOpacity={1} onPress={() => this.onPressImage(position)}>
-          <ExFastImage style={styles.imageCover} source={{ uri: coverImage }} resizeMode={isShareExtension ? 'cover' : 'cover'} />
+          <ExFastImage
+            style={styles.imageCover}
+            source={{ uri: coverImage }}
+            resizeMode={isShareExtension ? 'cover' : 'cover'}
+            onLoadEnd={() => this.setState({ loadEnd: true })}
+          />
           {
             files.length > 1 && 
             <View style={styles.imageNumberContainer}>
@@ -87,7 +97,12 @@ export default class CoverImagePreviewComponent extends React.Component {
     return (
       // Don't all
       <TouchableOpacity style={styles.container} activeOpacity={1}>
-        <Image style={styles.imageCover} source={{ uri: coverImage }} resizeMode={isShareExtension ? 'cover' : 'contain'} />
+        <Image
+          style={styles.imageCover}
+          source={{ uri: coverImage }}
+          resizeMode={isShareExtension ? 'cover' : 'contain'}
+          onLoadEnd={() => this.setState({ loadEnd: true })}
+        />
         {
             files && files.length > 1 &&
             <View style={styles.imageNumberContainer}>

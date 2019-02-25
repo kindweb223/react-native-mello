@@ -162,7 +162,7 @@ class CardNewScreen extends React.Component {
     this.currentShareImageIndex = 0;
 
     this.coverImageWidth = CONSTANTS.SCREEN_WIDTH
-    this.coverImageHeight = CONSTANTS.SCREEN_HEIGHT / 2
+    this.coverImageHeight = CONSTANTS.SCREEN_HEIGHT / 3
 
     if (props.cardMode === CONSTANTS.SHARE_EXTENTION_CARD && props.shareUrl === '' && props.shareImageUrls.length) {
       props.shareImageUrls.forEach( async(imageUri, index) => {
@@ -378,7 +378,7 @@ class CardNewScreen extends React.Component {
 
       this.setState({
         coverImage: nextProps.card.currentCard.coverImage,
-        imageUploading: false
+        // imageUploading: false
       }, () => {
         if (this.props.cardMode === CONSTANTS.SHARE_EXTENTION_CARD) {
           setTimeout(() => {
@@ -1327,6 +1327,7 @@ class CardNewScreen extends React.Component {
         >
           <CoverImagePreviewComponent
             imageUploading={this.state.imageUploading}
+            cardMode='CardNew'
             isShareExtension={cardMode === CONSTANTS.SHARE_EXTENTION_CARD}
             coverImage={this.state.coverImage}
             files={imageFiles}

@@ -1168,6 +1168,7 @@ class CardDetailScreen extends React.Component {
         <Animated.View style={[styles.coverImageContainer, activeImageStyle]}>
           <CoverImagePreviewComponent
             imageUploading={this.state.imageUploading}
+            cardMode='CardDetail'
             coverImage={this.state.coverImage}
             files={imageFiles}
             editable={viewMode !== CONSTANTS.CARD_VIEW}
