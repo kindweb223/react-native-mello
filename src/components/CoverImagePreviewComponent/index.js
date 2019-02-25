@@ -7,11 +7,13 @@ import {
 } from 'react-native'
 import PropTypes from 'prop-types'
 
+import * as Progress from 'react-native-progress';
 import Ionicons from 'react-native-vector-icons/Ionicons'
 import Modal from 'react-native-modal'
 import FastImage from 'react-native-fast-image'
 import _ from 'lodash'
 import ImageSliderScreen from '../../containers/ImageSliderScreen'
+import ExFastImage from '../ExFastImage';
 import styles from './styles'
 import CONSTANTS from '../../service/constants'
 
@@ -21,25 +23,58 @@ export default class CoverImagePreviewComponent extends React.Component {
     this.state = {
       files: this.props.files,
       isPreview: false,
-      position: 0
+      position: 0,
+      progress: 0,
+      indeterminate: false,
     };
    
   }
 
   UNSAFE_componentWillReceiveProps(nextProps) {
     this.setState({ files: nextProps.files })
+    if (nextProps.imageUploading && this.state.progress === 0) {
+      this.animateProgressBar();
+    }
   }
 
   onPressImage(index) {
     this.setState({ isPreview: true, position: index })
   }
 
+  animateProgressBar() {
+    let progress = 0;
+    setInterval(() => {
+      progress += 0.1;
+      if (progress > 1) {
+        this.setState({ indeterminate: true })
+      }
+      this.setState({ progress });
+    }, 500);
+  }
+
+  get renderProgressBar() {
+    return this.props.imageUploading && (
+      <View style={styles.progressView}>
+        <View style={styles.progressContainer}>
+          <Progress.Bar
+            progress={this.state.progress}
+            indeterminate={this.state.indeterminate}
+            color='white'
+            unfilledColor='#A1A5AE'
+            borderWidth={0}
+          />
+        </View>
+      </View>
+    )
+  }
+
   renderCoverImage(files, coverImage, position) {
     const { isFastImage, isShareExtension } = this.props;
+    if (!coverImage) return;
     if (isFastImage) {
       return (
         <TouchableOpacity style={styles.container} activeOpacity={1} onPress={() => this.onPressImage(position)}>
-          <FastImage style={styles.imageCover} source={{ uri: coverImage }} resizeMode={isShareExtension ? 'cover' : 'cover'} />
+          <ExFastImage style={styles.imageCover} source={{ uri: coverImage }} resizeMode={isShareExtension ? 'cover' : 'cover'} />
           {
             files.length > 1 && 
             <View style={styles.imageNumberContainer}>
@@ -74,6 +109,7 @@ export default class CoverImagePreviewComponent extends React.Component {
     return (
       <View style={styles.container}>
         {this.renderCoverImage(files, coverImage, position)}
+        {this.renderProgressBar}
         <Modal 
           isVisible={this.state.isPreview}
           style={styles.previewModal}
