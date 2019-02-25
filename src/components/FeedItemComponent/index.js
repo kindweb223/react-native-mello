@@ -28,7 +28,7 @@ const FeedItemComponent = ({ item, pinFlag, page, clickEvent, listType }) => {
     ]
   })
 
-  if (listType === 'list') {
+  if (listType === 'LIST') {
     return (
       <View style={styles.container}>
         {item.coverImages && item.coverImages.length > 0 && (
