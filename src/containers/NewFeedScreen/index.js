@@ -600,7 +600,7 @@ class NewFeedScreen extends React.Component {
           value={this.state.feedName}
           multiline
           onChangeText={(value) => this.setState({feedName: value})}
-          selectionColor={COLORS.PURPLE}
+          selectionColor={Platform.OS === 'ios' ? COLORS.PURPLE : COLORS.LIGHT_PURPLE}
         />
         <TextInput
           ref={ref => this.textInputFeedNoteRef = ref}
@@ -612,7 +612,7 @@ class NewFeedScreen extends React.Component {
           underlineColorAndroid='transparent'
           value={this.state.comments}
           onChangeText={(value) => this.onChangeNote(value)}
-          selectionColor={COLORS.PURPLE}
+          selectionColor={Platform.OS === 'ios' ? COLORS.PURPLE : COLORS.LIGHT_PURPLE}
         />
 
         {this.renderImages}

@@ -20,7 +20,8 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
   },
   feedListContainer: {
-    marginTop: 8
+    marginTop: 8,
+    flex: 1
   },
   feedListContainerLongHold: {
     marginTop: -32
@@ -80,21 +81,12 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     alignItems: 'center'
   },
-  notificationView: {
-    paddingHorizontal: 16,
+  searchIconView: {
+    paddingHorizontal: 12,
     height: 42,    
     flexDirection: 'row',
     justifyContent: 'center',
     alignItems: 'center'
-  },
-  notificationIcon: {
-    width: 18
-  },
-  notificationText: {
-    color: COLORS.PURPLE,
-    fontSize: 16,
-    marginLeft: 5,
-    lineHeight: 20
   },
   settingIconView: {
     width: 60,

@@ -24,6 +24,20 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center'
   },
+  notificationView: {
+    paddingHorizontal: 16,
+    height: 42,    
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center'
+  },
+  notificationText: {
+    color: COLORS.PURPLE,
+    fontSize: 14,
+    marginLeft: 5,
+    marginBottom: 2,
+    fontWeight: '500'
+  },
   rightContainer: {
     height: 42,
     justifyContent: 'center',

@@ -181,7 +181,7 @@ class CardEditScreen extends React.Component {
           onFocus={this.onFocus}
           onBlur={this.onBlurIdea}
           onSelectionChange={this.onSelectionChange.bind(this)}
-          selectionColor={COLORS.PURPLE}
+          selectionColor={Platform.OS === 'ios' ? COLORS.PURPLE : COLORS.LIGHT_PURPLE}
         />
       </View>
     );

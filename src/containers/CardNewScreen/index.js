@@ -987,16 +987,7 @@ class CardNewScreen extends React.Component {
         if (response.fileSize > CONSTANTS.MAX_UPLOAD_FILE_SIZE) {
           COMMON_FUNC.showPremiumAlert()
         } else {
-          let type = 'FILE';
-          const mimeType = (Platform.OS === 'ios') ? mime.lookup(response.uri) : response.type;
-          if (mimeType !== false) {
-            if (mimeType.indexOf('image') !== -1 || mimeType.indexOf('video') !== -1) {
-              type = 'MEDIA';
-            }
-            this.generateThumbnail(response)  // Generate thumbnail if video
-          } else {
-            this.uploadFile(this.props.card.currentCard, response, type);
-          }
+          this.handleFile(response)
         }
       }
     });
@@ -1073,7 +1064,7 @@ class CardNewScreen extends React.Component {
           if (!response.fileName) {
             response.fileName = response.uri.replace(/^.*[\\\/]/, '')
           }
-          this.generateThumbnail(response)  // Generate thumbnail if video
+          this.handleFile(response)
         }
       }
     });
@@ -1085,7 +1076,7 @@ class CardNewScreen extends React.Component {
         if (response.fileSize > CONSTANTS.MAX_UPLOAD_FILE_SIZE) {
           COMMON_FUNC.showPremiumAlert()
         } else {
-          this.generateThumbnail(response)  // Generate thumbnail if video
+          this.handleFile(response)
         }
       }
     });
@@ -1132,8 +1123,15 @@ class CardNewScreen extends React.Component {
     });
   }
 
-  generateThumbnail = (file) => {
+  handleFile = (file) => {
     const mimeType = (Platform.OS === 'ios') ? mime.lookup(file.uri) : file.type;
+
+    let type = 'FILE';
+    if (mimeType !== false) {
+      if (mimeType.indexOf('image') !== -1 || mimeType.indexOf('video') !== -1) {
+        type = 'MEDIA';
+      }
+    }
 
     if (mimeType.indexOf('video') !== -1) {
       if (Platform.OS === 'ios') {
@@ -1150,6 +1148,9 @@ class CardNewScreen extends React.Component {
           this.getThumbnailUrl(file, filepath)
         })
       }
+    }
+    else {
+      this.uploadFile(this.props.card.currentCard, file, type);
     }
   }
 
@@ -1398,6 +1399,8 @@ class CardNewScreen extends React.Component {
   }
 
   get renderText() {
+    const { cardMode } = this.props;
+
     return (
       <View 
         style={{ flex: 1 }}
@@ -1421,7 +1424,7 @@ class CardNewScreen extends React.Component {
           ref={ref => this.textInputIdeaRef = ref}
           style={styles.textInputIdea}
           autoCorrect={true}
-          placeholder='Let your ideas flow. Type text, paste a link, add an image, video or audio'
+          placeholder={cardMode === CONSTANTS.SHARE_EXTENTION_CARD ? 'Add a note' : 'Let your ideas flow. Type text, paste a link, add an image, video or audio'}
           multiline={true}
           underlineColorAndroid='transparent'
           value={this.state.idea}
@@ -1430,7 +1433,8 @@ class CardNewScreen extends React.Component {
           onFocus={() => this.onFocus()}
           onBlur={() => this.onBlurIdea()}
           onSelectionChange={this.onSelectionChange.bind(this)}
-          selectionColor={COLORS.PURPLE}
+          selectionColor={Platform.OS === 'ios' ? COLORS.PURPLE : COLORS.LIGHT_PURPLE}
+          textAlignVertical={'top'}
         />
       </View>
     )
