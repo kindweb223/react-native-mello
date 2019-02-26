@@ -1119,6 +1119,8 @@ class CardNewScreen extends React.Component {
   }
 
   generateThumbnail(file) {
+    this.coverImageWidth = file.width;
+    this.coverImageHeight = file.height;
     const mimeType = mime.lookup(file.uri);
 
     if (mimeType.indexOf('video') !== -1) {
