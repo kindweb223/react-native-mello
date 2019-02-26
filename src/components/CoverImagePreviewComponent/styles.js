@@ -42,6 +42,16 @@ const styles = StyleSheet.create({
     lineHeight: 21,
     color: COLORS.DARK_GREY,
   },
+  videoIconView: {
+    position: 'absolute',
+    left: 0,
+    top: 0,
+    backgroundColor: 'transparent',
+    width: '100%',
+    height: '100%',
+    alignItems: 'center',
+    justifyContent: 'center'
+  }
 })
 
 

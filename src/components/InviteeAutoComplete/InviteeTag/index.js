@@ -5,6 +5,7 @@ import {
   Text,
   TextInput,
   TouchableOpacity,
+  Platform,
 } from 'react-native';
 
 import _ from 'lodash'
@@ -123,7 +124,7 @@ class InviteeTag extends React.Component {
             textContentType='emailAddress'
             autoCapitalize="none"
             underlineColorAndroid='transparent'
-            selectionColor={COLORS.PURPLE}
+            selectionColor={Platform.OS === 'ios' ? COLORS.PURPLE : COLORS.LIGHT_PURPLE}
           />
         </View>
       );

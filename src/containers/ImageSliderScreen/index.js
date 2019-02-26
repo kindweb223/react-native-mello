@@ -5,7 +5,8 @@ import {
   TouchableOpacity,
   Image,
   Alert,
-  Animated
+  Animated,
+  ActivityIndicator
 } from 'react-native'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
@@ -20,6 +21,7 @@ import LoadingScreen from '../LoadingScreen';
 import * as feedTypes from '../../redux/feedo/types'
 import * as cardTypes from '../../redux/card/types'
 import CONSTANTS from '../../service/constants'
+import COLORS from '../../service/colors'
 import Analytics from '../../lib/firebase'
 
 class ImageSliderScreen extends React.Component {
@@ -31,7 +33,8 @@ class ImageSliderScreen extends React.Component {
       loading: false,
       isTouch: false,
       imageIndex: this.props.position,
-      setCoveredIndex: this.props.position
+      setCoveredIndex: this.props.position,
+      updatingCoverImage: false
     };
     this.buttonOpacity = new Animated.Value(1)
   }
@@ -51,9 +54,13 @@ class ImageSliderScreen extends React.Component {
       // fullfilled in deleting a file
     } else if (this.props.card.loading !== cardTypes.SET_COVER_IMAGE_PENDING && nextProps.card.loading === cardTypes.SET_COVER_IMAGE_PENDING) {
       // setting a file as cover image
-      // loading = true;
+      this.setState({updatingCoverImage: true})
     } else if (this.props.card.loading !== cardTypes.SET_COVER_IMAGE_FULFILLED && nextProps.card.loading === cardTypes.SET_COVER_IMAGE_FULFILLED) {
-      // success in setting a file as cover image
+      // success in setting a file as cover image      
+      setTimeout(() => {
+        this.setState({updatingCoverImage: false})
+      }, 300)
+  
     } 
 
     this.setState({
@@ -171,8 +178,16 @@ class ImageSliderScreen extends React.Component {
               activeOpacity={0.6}
               disabled={isCoveredImage ? true: false}
               onPress={() => this.onSetCoverImage()}
+              style={{padding: 4}}
             >
-              <Text style={{color: isCoveredImage ? '#888' : '#fff'}}>Set Cover Image</Text>
+              { this.state.updatingCoverImage
+                ?
+                <View style={{paddingLeft: 32, justifyContent: 'center', alignItems: 'flex-start' }}>
+                  <ActivityIndicator color={'#fff'} size="small" style={styles.loadingIcon} />
+                </View>
+                :
+                <Text style={{color: isCoveredImage ? '#888' : '#fff'}}>Set Cover Image</Text>
+              }
             </TouchableOpacity>
           </Animated.View>
         }

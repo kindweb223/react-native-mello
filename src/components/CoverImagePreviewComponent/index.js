@@ -7,13 +7,15 @@ import {
 } from 'react-native'
 import PropTypes from 'prop-types'
 
-import Ionicons from 'react-native-vector-icons/Ionicons'
+import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons'
 import Modal from 'react-native-modal'
 import FastImage from 'react-native-fast-image'
 import _ from 'lodash'
 import ImageSliderScreen from '../../containers/ImageSliderScreen'
+import * as COMMON_FUNC from '../../service/commonFunc'
 import styles from './styles'
 import CONSTANTS from '../../service/constants'
+import COLORS from '../../service/colors'
 
 export default class CoverImagePreviewComponent extends React.Component {
   constructor(props) {
@@ -36,16 +38,23 @@ export default class CoverImagePreviewComponent extends React.Component {
 
   renderCoverImage(files, coverImage, position) {
     const { isFastImage, isShareExtension } = this.props;
+    const videoFile = COMMON_FUNC.checkVideoCoverImage(files, coverImage)
+
     if (isFastImage) {
       return (
         <TouchableOpacity style={styles.container} activeOpacity={1} onPress={() => this.onPressImage(position)}>
-          <FastImage style={styles.imageCover} source={{ uri: coverImage }} resizeMode={isShareExtension ? 'cover' : 'cover'} />
+          <FastImage style={styles.imageCover} source={{ uri: coverImage }} resizeMode={isShareExtension ? 'cover' : 'contain'} />
           {
             files.length > 1 && 
             <View style={styles.imageNumberContainer}>
               <Text style={styles.textImageNumber}>+{files.length - 1}</Text>
             </View>
           }
+          {videoFile && (
+            <View style={styles.videoIconView}>
+              <MaterialCommunityIcons name="play-circle-outline" size={60} color={COLORS.LIGHT_SOFT_GREY} />
+            </View>
+          )}
         </TouchableOpacity>
       );
     }
@@ -59,6 +68,11 @@ export default class CoverImagePreviewComponent extends React.Component {
               <Text style={styles.textImageNumber}>+{files.length - 1}</Text>
             </View>
         }
+        {videoFile && (
+          <View style={styles.videoIconView}>
+            <MaterialCommunityIcons name="play-circle-outline" size={60} color={COLORS.LIGHT_SOFT_GREY} />
+          </View>
+        )}
       </TouchableOpacity>
     );
   }
