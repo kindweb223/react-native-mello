@@ -548,6 +548,9 @@ class HomeScreen extends React.Component {
     console.log('NOTIFICATION : ', notification);
     const { feedoList } = this.props.feedo
 
+    if(!notification.data)
+      return
+
     const type = notification.data.type;
     if (notification.badge) {
       PushNotification.setApplicationIconBadgeNumber(notification.badge)
