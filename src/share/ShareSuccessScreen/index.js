@@ -1,9 +1,10 @@
 import React from 'react'
-import { View, Text, Animated, PanResponder, Image } from 'react-native'
+import { View, Text, Animated, PanResponder, Image, AsyncStorage, Platform } from 'react-native'
 import { connect } from 'react-redux'
 import * as mime from 'react-native-mime-types';
 import SVGImage from 'react-native-remote-svg';
 import SvgUri from 'react-native-svg-uri';
+import { Actions } from 'react-native-router-flux'
 
 import { SCHEME } from '../../service/api'
 import ShareExtension from '../shareExtension'
@@ -91,6 +92,7 @@ class ShareSuccessScreen extends React.Component {
   }
 
   closeView(isSelect = true) {
+    console.log('closeView', isSelect)
     this.setState({animationType: 'fadeOutDownBig', duration: 1500})
 
     this.animatedFade.setValue(1);
@@ -106,8 +108,29 @@ class ShareSuccessScreen extends React.Component {
       }
       if (isSelect) {
         console.log('FEED_ID: ', this.props.feedo.currentFeed.id)
-        ShareExtension.goToMainApp(SCHEME + `flow/${this.props.feedo.currentFeed.id}`);
-        ShareExtension.close();
+        if (Platform.OS === 'ios') {
+          ShareExtension.goToMainApp(SCHEME + `flow/${this.props.feedo.currentFeed.id}`);
+          ShareExtension.close();
+        }
+        else
+        {
+          const data = {
+            id: this.props.feedo.currentFeed.id
+          }
+          const userInfo = AsyncStorage.getItem('userInfo')
+          console.log('data: ', data, userInfo)
+          // store.dispatch(getFeedoList())
+          if (userInfo) {
+            if (Actions.currentScene === 'FeedDetailScreen') {
+              Actions.FeedDetailScreen({type: 'replace', data, isDeepLink: true});
+            } else {
+              Actions.FeedDetailScreen({data, isDeepLink: true})
+            }
+          }
+          else {
+            Actions.LoginScreen()
+          }
+        }
       } else {
         ShareExtension.close();
       }

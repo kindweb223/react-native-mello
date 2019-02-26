@@ -5,10 +5,12 @@ import {
   TouchableOpacity,
   FlatList,
   Image,
+  Platform,
 } from 'react-native'
 import { connect } from 'react-redux'
 import { Actions } from 'react-native-router-flux'
 import Ionicons from 'react-native-vector-icons/Ionicons';
+import PropTypes from 'prop-types'
 
 import styles from './styles'
 import { 
@@ -39,15 +41,28 @@ class ChooseLinkImageFromExtension extends React.Component {
 
   async componentDidMount() {
     try {
-      const { type, value } = await ShareExtension.data();
-      console.log('SHARE_DATA: ', type, value)
-      if (type === 'url') {
+      var type_, value_;
+
+      console.log('componentDidMount')
+      if (Platform.OS === 'ios') {
+        const { type, value } = await ShareExtension.data();
+        type_ = type
+        value_ = value
+        console.log('SHARE_DATA: ', type, value)
+      }
+      else 
+      {
+        type_ = this.props.mode
+        value_ = this.props.value
+      }
+      console.log('SHARE_DATA: ', type_, value_)
+      if (type_ === 'url') {
         this.setState({initialized: true});
         console.log('componentDidMount1')
-        const urls = value.match(/(http(s)?:\/\/.)?(www\.)?[-a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,6}\b([-a-zA-Z0-9@:%_\+.~#?&//=]*)/gi);
+        const urls = value_.match(/(http(s)?:\/\/.)?(www\.)?[-a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,6}\b([-a-zA-Z0-9@:%_\+.~#?&//=]*)/gi);
         if (urls === null)
         {
-          const text = value;
+          const text = value_;
           if (text !== '') {
             Actions.ShareCardScreen({
               notesText: text,
@@ -57,8 +72,8 @@ class ChooseLinkImageFromExtension extends React.Component {
           this.shareUrl = urls[0]
           this.props.getOpenGraph(urls[0], true)
         }
-      } else if (type === 'images') {
-        const images = value.split(" , ");
+      } else if (type_ === 'images') {
+        const images = value_.split(" , ");
         if (images.length > 0) {
           Actions.ShareCardScreen({
             imageUrls: images,
@@ -240,10 +255,14 @@ class ChooseLinkImageFromExtension extends React.Component {
 
 
 ChooseLinkImageFromExtension.defaultProps = {
+  mode: '',
+  value: '',
 }
 
 
 ChooseLinkImageFromExtension.propTypes = {
+  mode: PropTypes.string,
+  value: PropTypes.string,
 }
 
 
