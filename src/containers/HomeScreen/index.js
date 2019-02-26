@@ -42,9 +42,10 @@ import ShareWidgetPermissionModal from '../../components/ShareWidgetModal/Permis
 import ShareWidgetTipsModal from '../../components/ShareWidgetModal/TipsModal'
 import ShareWidgetConfirmModal from '../../components/ShareWidgetModal/ConfirmModal'
 import ShareExtensionTip from '../../components/ShareExtensionTip'
+import FeedFilterComponent from '../../components/FeedFilterComponent'
 import styles from './styles'
 import CONSTANTS from '../../service/constants';
-import { TIP_SHARE_LINK_URL, ANDROID_PUSH_SENDER_ID, PIN_FEATURE } from '../../service/api'
+import { TIP_SHARE_LINK_URL, ANDROID_PUSH_SENDER_ID, PIN_FEATURE, SEARCH_FEATURE } from '../../service/api'
 const SEARCH_ICON = require('../../../assets/images/Search/Grey.png')
 const SETTING_ICON = require('../../../assets/images/Settings/Grey.png')
 
@@ -88,6 +89,8 @@ class HomeScreen extends React.Component {
     super(props);
     this.state = {
       feedoList: [],
+      feedoPinnedList: [],
+      feedoUnPinnedList: [],
       loading: false,
       apiLoading: null,
       isVisibleNewFeed: false,
@@ -121,7 +124,10 @@ class HomeScreen extends React.Component {
       showSharePermissionModal: false,
       enableShareWidget: false,
       showShareTipsModal: false,
-      showShareConfirmModal: false
+      showShareConfirmModal: false,
+      showFilterModal: false,
+      filterShowType: 'all',
+      filterSortType: 'recent'
     };
 
     this.currentRef = null;
@@ -231,7 +237,7 @@ class HomeScreen extends React.Component {
     if ((prevState.apiLoading !== feedo.loading && ((feedo.loading === 'GET_FEEDO_LIST_FULFILLED') || (feedo.loading === 'GET_FEEDO_LIST_REJECTED') ||
       (feedo.loading === 'FEED_FULFILLED') || (feedo.loading === 'DEL_FEED_FULFILLED') || (feedo.loading === 'ARCHIVE_FEED_FULFILLED') ||
       (feedo.loading === 'DUPLICATE_FEED_FULFILLED') || (feedo.loading === 'UPDATE_FEED_FULFILLED') || (feedo.loading === 'LEAVE_FEED_FULFILLED') ||
-      (feedo.loading === 'UPDTE_FEED_INVITATION_FULFILLED') || (feedo.loading === 'INVITE_HUNT_FULFILLED') ||
+      (feedo.loading === 'UPDATE_FEED_INVITATION_FULFILLED') || (feedo.loading === 'INVITE_HUNT_FULFILLED') ||
       (feedo.loading === 'ADD_HUNT_TAG_FULFILLED') || (feedo.loading === 'REMOVE_HUNT_TAG_FULFILLED') ||
       (feedo.loading === 'PIN_FEED_FULFILLED') || (feedo.loading === 'UNPIN_FEED_FULFILLED') ||
       (feedo.loading === 'RESTORE_ARCHIVE_FEED_FULFILLED') || (feedo.loading === 'ADD_DUMMY_FEED'))) ||
@@ -247,9 +253,9 @@ class HomeScreen extends React.Component {
                           Actions.currentScene !== 'CommentScreen' && Actions.currentScene !== 'ActivityCommentScreen' &&
                           Actions.currentScene !== 'LikesListScreen' && Actions.currentScene !== 'ActivityLikesListScreen'))
     {
-      let feedoList = []
-      let feedoOwnSharedList = []
-      let feedoPinnedList = []
+      let feedoList = [];
+      let feedoPinnedList = [];
+      let feedoUnPinnedList = [];
 
       if (feedo.feedoList && feedo.feedoList.length > 0) {
         feedoList = feedo.feedoList.map(item => {
@@ -276,26 +282,23 @@ class HomeScreen extends React.Component {
           )
         })
 
-        if ((feedo.loading !== 'UPDATE_CARD_FULFILLED' || !feedo.isCreateCard) && feedo.loading !== 'UPDTE_FEED_INVITATION_FULFILLED') {
-          // Filter unpinned flows and orderby myLastActivityDate, headline, inviteAcceptedDate
-          feedoOwnSharedList = orderBy(
-            filter(feedoList, item => item.status === 'PUBLISHED' && item.pinned === null),
-            ['metadata.myLastActivityDate'],
-            ['desc']
-          );
+        if ((feedo.loading !== 'UPDATE_CARD_FULFILLED' || !feedo.isCreateCard)) {
+          const { filterSortType, filterShowType } = prevState
+
+          const feedoFullList = filter(feedoList, item => item.status === 'PUBLISHED' && item.metadata.myInviteStatus !== 'INVITED')
+
           // Filter pinned flows and orderby myLastActivityDate
           feedoPinnedList = orderBy(
-            filter(feedoList, item => item.status === 'PUBLISHED' && item.pinned !== null),
+            filter(feedoFullList, item => item.pinned !== null),
             ['metadata.myLastActivityDate'],
             ['desc']
           );
+          feedoUnPinnedList = filter(feedoFullList, item => item.pinned === null);
+          feedoList = HomeScreen.getFilteredFeeds(feedoPinnedList, feedoUnPinnedList, filterShowType, filterSortType);
         } else {
           nextProps.getFeedoList()
         }
       }
-
-      // Filter accepted flows only
-      feedoList = filter([...feedoPinnedList, ...feedoOwnSharedList], item => item.metadata.myInviteStatus !== 'INVITED')
 
       if (prevState.feedClickEvent === 'long' && feedoList.length === 0) {
         return {
@@ -308,6 +311,8 @@ class HomeScreen extends React.Component {
 
       return {
         feedoList,
+        feedoPinnedList,
+        feedoUnPinnedList,
         invitedFeedList: feedo.invitedFeedList,
         badgeCount: feedo.badgeCount,
         loading: false,
@@ -337,8 +342,8 @@ class HomeScreen extends React.Component {
     const { feedo, user, card } = this.props
     const { feedoList } = feedo
 
-    if (prevProps.feedo.loading !== 'UPDTE_FEED_INVITATION_FULFILLED' &&
-        feedo.loading === 'UPDTE_FEED_INVITATION_FULFILLED' &&
+    if (prevProps.feedo.loading !== 'UPDATE_FEED_INVITATION_FULFILLED' &&
+        feedo.loading === 'UPDATE_FEED_INVITATION_FULFILLED' &&
         Actions.currentScene !== 'NotificationScreen' && Actions.currentScene !== 'FeedDetailScreen'
     ) {
       this.setState({ isShowInviteToaster: true })
@@ -1026,6 +1031,9 @@ class HomeScreen extends React.Component {
   }
 
   handleFilter = () => {
+    Analytics.logEvent('dashboard_filter_flow', {})
+
+    this.setState({ showFilterModal: true })
   }
 
   handleList = () => {
@@ -1102,6 +1110,59 @@ class HomeScreen extends React.Component {
     this.setState({ showShareTipsModal: false })
   };
 
+  onFilterShow = (type) => {
+    this.setState({ filterShowType: type }, () => {
+      this.filterFeeds()
+    })
+  }
+
+  onFilterSort = (type) => {
+    this.setState({ filterSortType: type }, () => {
+      this.filterFeeds()
+    })
+  }
+
+  static getFilteredFeeds = (feedoPinnedList, feedoUnPinnedList, filterShowType, filterSortType) => {
+    let orderField = ['metadata.myLastActivityDate'];
+    let orderType = ['desc'];
+
+    if (filterSortType === 'headline') {
+      orderField = [feed => feed.headline.toLowerCase()];
+      orderType = ['asc'];
+    } else if (filterSortType === 'date') {
+      orderField = ['metadata.inviteAcceptedDate'];
+      orderType = ['desc'];
+    }
+
+    if (filterShowType === 'all') {
+      filteredFeedList = orderBy(
+        feedoUnPinnedList,
+        orderField,
+        orderType
+      );
+    } else if (filterShowType === 'owned') {
+      filteredFeedList = orderBy(
+        filter(feedoUnPinnedList, item => item.metadata.owner === true),
+        orderField,
+        orderType
+      );
+    } else if (filterShowType === 'shared') {
+      filteredFeedList = orderBy(
+        filter(feedoUnPinnedList, item => item.metadata.owner === false),
+        orderField,
+        orderType
+      );
+    }
+
+    return [...feedoPinnedList, ...filteredFeedList]
+  }
+
+  filterFeeds = () => {
+    const { feedoPinnedList, feedoUnPinnedList, filterShowType, filterSortType } = this.state;
+    const feedoList = HomeScreen.getFilteredFeeds(feedoPinnedList, feedoUnPinnedList, filterShowType, filterSortType);
+    this.setState({ feedoList });
+  }
+
   render () {
     const {
       loading,
@@ -1112,9 +1173,6 @@ class HomeScreen extends React.Component {
       feedClickEvent,
       selectedLongHoldFeedoIndex
     } = this.state
-
-    // console.log('FEED_LIST: ', feedoList)
-    // console.log('INVITE_FEED_LIST: ', invitedFeedList)
 
     return (
       <SafeAreaView style={styles.safeArea}>
@@ -1128,9 +1186,11 @@ class HomeScreen extends React.Component {
           <View style={styles.headerView}>
             <TouchableOpacity
               style={styles.searchIconView}
-              onPress={() =>{}}
+              onPress={() => SEARCH_FEATURE ? this.onSearch() : {}}
             >
-              <Image style={styles.searchIcon} source={SEARCH_ICON} />
+              {SEARCH_FEATURE && (
+                <Image style={styles.searchIcon} source={SEARCH_ICON} />
+              )}
             </TouchableOpacity>
             <View style={styles.settingIconView}>
               <TouchableOpacity onPress={() => this.handleSetting()}>
@@ -1207,12 +1267,13 @@ class HomeScreen extends React.Component {
 
         {!this.state.isLongHoldMenuVisible && (
           <DashboardActionBar
-            filtering={false}
             showList={true}
             listType={this.props.user.listHomeType}
             onAddFeed={this.onOpenNewFeedModal.bind(this)}
             handleFilter={() => this.handleFilter()}
             handleList={() => this.handleList()}
+            filterType={this.state.filterShowType}
+            sortType={this.state.filterSortType}
             badgeCount={badgeCount}
             page="home"
           />
@@ -1309,6 +1370,13 @@ class HomeScreen extends React.Component {
             onClose={() => this.setState({ showShareConfirmModal: false })}
           />
         </Modal>
+
+        <FeedFilterComponent
+          show={this.state.showFilterModal}
+          onFilterShow={this.onFilterShow}
+          onFilterSort={this.onFilterSort}
+          onClose={() => this.setState({ showFilterModal: false }) }
+        />
 
       </SafeAreaView>
     )

@@ -53,7 +53,7 @@ export const updateInvitation = (feedId, type) => {
   let url = `hunts/${feedId}/invitees/invitation`
 
   return {
-    types: [types.UPDTE_FEED_INVITATION_PENDING, types.UPDTE_FEED_INVITATION_FULFILLED, types.UPDTE_FEED_INVITATION_REJECTED],
+    types: [types.UPDATE_FEED_INVITATION_PENDING, types.UPDATE_FEED_INVITATION_FULFILLED, types.UPDATE_FEED_INVITATION_REJECTED],
     promise: axios({
       method: 'put',
       url: url,

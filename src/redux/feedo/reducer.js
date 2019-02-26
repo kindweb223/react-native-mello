@@ -88,12 +88,12 @@ export default function feedo(state = initialState, action = {}) {
     /**
      * Update feedo invitation (accept, ignore)
      */
-    case types.UPDTE_FEED_INVITATION_PENDING:
+    case types.UPDATE_FEED_INVITATION_PENDING:
       return {
         ...state,
-        loading: types.UPDTE_FEED_INVITATION_PENDING,
+        loading: types.UPDATE_FEED_INVITATION_PENDING,
       }
-    case types.UPDTE_FEED_INVITATION_FULFILLED: {
+    case types.UPDATE_FEED_INVITATION_FULFILLED: {
       PushNotification.getApplicationIconBadgeNumber((badgeCount) => {
         if (badgeCount && badgeCount > 0) {
           PushNotification.setApplicationIconBadgeNumber(badgeCount - 1)
@@ -154,7 +154,7 @@ export default function feedo(state = initialState, action = {}) {
 
       return {
         ...state,
-        loading: types.UPDTE_FEED_INVITATION_FULFILLED,
+        loading: types.UPDATE_FEED_INVITATION_FULFILLED,
         invitedFeedList: restInvitedFeedList,
         feedoList: type ? (updateFeed ? [updateFeed, ...restFeedoList] : restFeedoList) : restFeedoList,
         currentFeed: newCurrentFeed,
@@ -162,10 +162,10 @@ export default function feedo(state = initialState, action = {}) {
         badgeCount: state.badgeCount > 0 ? state.badgeCount - 1 : 0
       }
     }
-    case types.UPDTE_FEED_INVITATION_REJECTED: {
+    case types.UPDATE_FEED_INVITATION_REJECTED: {
       return {
         ...state,
-        loading: types.UPDTE_FEED_INVITATION_REJECTED,
+        loading: types.UPDATE_FEED_INVITATION_REJECTED,
         error: action.error,
       }
     }
