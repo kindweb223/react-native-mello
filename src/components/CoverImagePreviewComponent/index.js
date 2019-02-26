@@ -44,7 +44,7 @@ export default class CoverImagePreviewComponent extends React.Component {
 
   animateProgressBar() {
     let progress = 0;
-    setInterval(() => {
+    let animateProgressInterval = setInterval(() => {
       progress += 0.1;
       if (progress > 1) {
         this.setState({ indeterminate: true, progress: 0 });
@@ -52,6 +52,7 @@ export default class CoverImagePreviewComponent extends React.Component {
         this.setState({ progress });
       }
     }, 500);
+    setTimeout(() => clearInterval(animateProgressInterval), 6000);
   }
 
   get renderProgressBar() {
