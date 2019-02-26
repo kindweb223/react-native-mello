@@ -149,7 +149,6 @@ android {
 }
 
 dependencies {
-    compile project(':react-native-share-menu')
     compile project(':react-native-image-base64')
     compile project(':react-native-thumbnail')
     compile project(':react-native-splash-screen')
@@ -198,4 +197,4 @@ task copyDownloadableDepsToLibs(type: Copy) {
 
 apply plugin: 'com.google.gms.google-services'
 
-//com.google.gms.googleservices.GoogleServicesPlugin.config.disableVersionCheck = true
+// com.google.gms.googleservices.GoogleServicesPlugin.config.disableVersionCheck = true

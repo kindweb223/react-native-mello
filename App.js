@@ -292,7 +292,16 @@ export default class Root extends React.Component {
           }
         }
         if (Platform.OS === 'android' && i !== -1) { //share extension for Android
-          const type = params[searchIndex + 1]
+          var type = '';
+          if (params[searchIndex + 1] === 'image' && params[searchIndex + 2] === 'jpeg') {
+            type = 'images'
+            searchIndex ++;
+          } else if (params[searchIndex + 1] === 'url') {
+            type = 'url'
+          } else {
+            console.log('error: wrong share link')
+          }
+
           var value = ''
           for (i = searchIndex+2; i < params.length; i ++)
           {

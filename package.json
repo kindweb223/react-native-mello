@@ -49,7 +49,6 @@
     "react-native-safari-view": "^2.1.0",
     "react-native-scrollable-tab-view": "git+https://github.com/skv-headless/react-native-scrollable-tab-view.git",
     "react-native-search-box": "0.0.19",
-    "react-native-share-menu": "^2.2.0",
     "react-native-shared-group-preferences": "^1.0.6",
     "react-native-slideshow": "git+https://github.com/haqiqiw/react-native-slideshow.git",
     "react-native-splash-screen": "^3.2.0",

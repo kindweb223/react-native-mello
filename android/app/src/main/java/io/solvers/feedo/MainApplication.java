@@ -3,7 +3,6 @@ package io.solvers.feedo;
 import android.app.Application;
 
 import com.facebook.react.ReactApplication;
-import com.meedan.ShareMenuPackage;
 import org.devio.rn.splashscreen.SplashScreenReactPackage;
 import fr.snapp.imagebase64.RNImgToBase64Package;
 import io.solvers.feedo.shareextension.SharePackage;
@@ -48,7 +47,6 @@ public class MainApplication extends Application implements ReactApplication {
     protected List<ReactPackage> getPackages() {
       return Arrays.<ReactPackage>asList(
           new MainReactPackage(),
-          // new ShareMenuPackage(),
           new SharePackage(),
           new SplashScreenReactPackage(),
           new RNImgToBase64Package(),
