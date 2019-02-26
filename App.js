@@ -83,6 +83,11 @@ import TabbarContainer from './src/navigations/TabbarContainer'
 import TermsAndConditionsConfirmScreen from './src/containers/TermsAndConditionsConfirmScreen'
 import ProfilePremiumScreen from './src/containers/ProfilePremiumScreen'
 
+import ShareCardScreen from './src/share/ShareCardScreen'
+import ShareModalScreen from './src/share/ShareModalScreen'
+import ChooseLinkImageFromExtension from './src/share/ChooseLinkImageFromExtension'
+import ShareSuccessScreen from './src/share/ShareSuccessScreen'
+
 import { 
   getCardComments,
   getCard
@@ -277,6 +282,26 @@ export default class Root extends React.Component {
             catch (e) {
             }
         }
+        
+        var searchIndex = -1;
+        for (i = 3; i < params.length; i ++)
+        {
+          if (params[i] === 'share') {
+            searchIndex = i
+            break;
+          }
+        }
+        if (Platform.OS === 'android' && i !== -1) { //share extension for Android
+          const type = params[searchIndex + 1]
+          var value = ''
+          for (i = searchIndex+2; i < params.length; i ++)
+          {
+            if (params[i] !== '')
+              value += `${params[i]}/`
+          }
+          console.log('path: ', type, value)
+          Actions.ChooseLinkImageFromExtension({mode: type, value: value});
+        }
 
       } else {
         if (Platform.OS === 'ios') {
@@ -293,6 +318,7 @@ export default class Root extends React.Component {
   }
 
   render() {
+    const isAndroid = Platform.OS === 'android'
     const scenes = Actions.create(
       <Lightbox>
         <Modal hideNavBar>
@@ -315,6 +341,11 @@ export default class Root extends React.Component {
               <Scene key="ResetPasswordSuccessScreen" component={ ResetPasswordSuccessScreen } hideNavBar panHandlers={null} />
               <Scene key="FeedFilterScreen" component={ FeedFilterScreen } hideNavBar />
               <Scene key="PremiumScreen" component={ ProfilePremiumScreen } navigationBarStyle={styles.defaultNavigationBar} />
+              <Scene key={isAndroid ? "ChooseLinkImageFromExtension" : "none1"} component={ChooseLinkImageFromExtension} hideNavBar panHandlers={null}/>
+              <Scene key={isAndroid ? "ShareCardScreen" : "none2"} component={ShareCardScreen} hideNavBar panHandlers={null} />
+              <Scene key={isAndroid ? "ShareSuccessScreen" : "none3"} component={ShareSuccessScreen}  hideNavBar panHandlers={null} />
+              <Scene key={isAndroid ? "ShareModalScreen" : "none4"} component={ShareModalScreen} okLabel='Sign In' hideNavBar panHandlers={null} />
+              
             </Scene>
           </Tabs>
           <Stack key="ProfileScreen" hideNavBar>
