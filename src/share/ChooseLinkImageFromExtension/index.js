@@ -43,12 +43,10 @@ class ChooseLinkImageFromExtension extends React.Component {
     try {
       var type_, value_;
 
-      console.log('componentDidMount')
       if (Platform.OS === 'ios') {
         const { type, value } = await ShareExtension.data();
         type_ = type
         value_ = value
-        console.log('SHARE_DATA: ', type, value)
       }
       else 
       {
@@ -58,7 +56,6 @@ class ChooseLinkImageFromExtension extends React.Component {
       console.log('SHARE_DATA: ', type_, value_)
       if (type_ === 'url') {
         this.setState({initialized: true});
-        console.log('componentDidMount1')
         const urls = value_.match(/(http(s)?:\/\/.)?(www\.)?[-a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,6}\b([-a-zA-Z0-9@:%_\+.~#?&//=]*)/gi);
         if (urls === null)
         {
@@ -80,6 +77,9 @@ class ChooseLinkImageFromExtension extends React.Component {
           });
         }
       } 
+      else {
+        console.log('error: wrong share link', type_, value_)
+      }
     } catch(error) {
       console.log('error : ', error)
     }

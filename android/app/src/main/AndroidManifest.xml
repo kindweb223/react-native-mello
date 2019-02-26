@@ -65,15 +65,6 @@
           <data android:scheme="https" android:host="my.melloapp.com"/>
         </intent-filter>
 
-        <!--for Share Extension Menu-->
-        <!--<intent-filter>-->
-          <!--<action android:name="android.intent.action.SEND" />-->
-          <!--<category android:name="android.intent.category.DEFAULT" />-->
-          <!--<data android:mimeType="text/plain" />-->
-          <!--<data android:mimeType="image/*" />-->
-        <!--</intent-filter>-->
-        <!--for Share Extension Menu-->
-
       </activity>
       <activity android:name="com.facebook.react.devsupport.DevSettingsActivity" />
 
