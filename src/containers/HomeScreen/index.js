@@ -47,8 +47,6 @@ import CONSTANTS from '../../service/constants';
 import { TIP_SHARE_LINK_URL, ANDROID_PUSH_SENDER_ID, PIN_FEATURE } from '../../service/api'
 const SEARCH_ICON = require('../../../assets/images/Search/Grey.png')
 const SETTING_ICON = require('../../../assets/images/Settings/Grey.png')
-const BELL_ICON_B = require('../../../assets/images/Bell/Blue.png')
-const BELL_ICON_G = require('../../../assets/images/Bell/Grey.png')
 
 import {
   getFeedoList,
@@ -282,8 +280,8 @@ class HomeScreen extends React.Component {
           // Filter unpinned flows and orderby myLastActivityDate, headline, inviteAcceptedDate
           feedoOwnSharedList = orderBy(
             filter(feedoList, item => item.status === 'PUBLISHED' && item.pinned === null),
-            ['metadata.owner', 'metadata.myLastActivityDate', 'headline', 'metadata.inviteAcceptedDate'],
-            ['desc', 'desc', 'asc', 'desc']
+            ['metadata.myLastActivityDate'],
+            ['desc']
           );
           // Filter pinned flows and orderby myLastActivityDate
           feedoPinnedList = orderBy(
@@ -547,6 +545,9 @@ class HomeScreen extends React.Component {
   parsePushNotification(notification) {
     console.log('NOTIFICATION : ', notification);
     const { feedoList } = this.props.feedo
+
+    if(!notification.data)
+      return
 
     const type = notification.data.type;
     if (notification.badge) {
@@ -1126,13 +1127,10 @@ class HomeScreen extends React.Component {
 
           <View style={styles.headerView}>
             <TouchableOpacity
-              style={styles.notificationView}
-              onPress={() => Actions.NotificationScreen()}
+              style={styles.searchIconView}
+              onPress={() =>{}}
             >
-              <Image style={styles.notificationIcon} source={badgeCount > 0 ? BELL_ICON_B : BELL_ICON_G} />
-              {badgeCount > 0 && (
-                <Text style={styles.notificationText}>{badgeCount}</Text>
-              )}
+              <Image style={styles.searchIcon} source={SEARCH_ICON} />
             </TouchableOpacity>
             <View style={styles.settingIconView}>
               <TouchableOpacity onPress={() => this.handleSetting()}>
