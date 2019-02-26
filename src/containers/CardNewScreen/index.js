@@ -120,6 +120,7 @@ class CardNewScreen extends React.Component {
       isDeleteLink: false,
       copiedLink: null,
       imageUploading: false,
+      cardMode: 'CardNewSingle'
     };
 
     this.selectedFile = null;
@@ -329,6 +330,9 @@ class CardNewScreen extends React.Component {
       const newImageFiles = _.filter(nextProps.card.currentCard.files, file => file.contentType.indexOf('image') !== -1 || file.contentType.indexOf('video') !== -1);
       if (newImageFiles.length === 1 && !nextProps.card.currentCard.coverImage) {
         this.onSetCoverImage(newImageFiles[0].id);
+      }
+      if (newImageFiles.length > 1) { // Need to stop image uploading state here for 2nd Image
+        this.setState({ imageUploading: false });
       }
       this.currentSelectedLinkImageIndex ++;
       if (this.currentSelectedLinkImageIndex < this.selectedLinkImages.length) {
@@ -1042,9 +1046,11 @@ class CardNewScreen extends React.Component {
 
   async uploadFile(currentCard, file, type) {
     this.selectedFile = file;
+    let imageFiles = _.filter(currentCard.files, file => file.fileType === 'MEDIA');
     this.setState({
       imageUploadStarted: true,
-      imageUploading: true
+      imageUploading: true,
+      cardMode: imageFiles.length > 0 ? 'CardNewMulti' : 'CardNewSingle'
     });
 
     if (_.endsWith(file.uri, '.pages')) {
@@ -1094,6 +1100,7 @@ class CardNewScreen extends React.Component {
   }
 
   onTapMediaPickerActionSheet(index) {
+    this.setState({ imageUploading: false });
     var options = {
       storageOptions: {
         skipBackup: true,
@@ -1327,7 +1334,7 @@ class CardNewScreen extends React.Component {
         >
           <CoverImagePreviewComponent
             imageUploading={this.state.imageUploading}
-            cardMode='CardNew'
+            cardMode={this.state.cardMode}
             isShareExtension={cardMode === CONSTANTS.SHARE_EXTENTION_CARD}
             coverImage={this.state.coverImage}
             files={imageFiles}
