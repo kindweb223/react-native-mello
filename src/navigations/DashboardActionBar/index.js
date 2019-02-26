@@ -14,6 +14,8 @@ import _ from 'lodash'
 import styles from './styles'
 import * as COMMON_FUNC from '../../service/commonFunc'
 
+const BELL_ICON_B = require('../../../assets/images/Bell/Blue.png')
+const BELL_ICON_G = require('../../../assets/images/Bell/Grey.png')
 const FILTER_ICON_B = require('../../../assets/images/Filter/Blue.png')
 const FILTER_ICON_G = require('../../../assets/images/Filter/Grey.png')
 const LIST_ICON = require('../../../assets/images/List/List.png')
@@ -48,7 +50,7 @@ class DashboardActionBar extends React.Component {
   }
 
   render () {
-    const { filtering, filterType, sortType, feed, showList, listType, page } = this.props
+    const { filtering, filterType, sortType, notifications, feed, badgeCount, showList, listType, page } = this.props
 
     return (
       <View style={styles.container}>
@@ -66,6 +68,17 @@ class DashboardActionBar extends React.Component {
               <Image source={filterType === 'all' && sortType ==='date' ? FILTER_ICON_G : FILTER_ICON_B} />
             </TouchableOpacity>
           )}
+          {notifications &&
+            <TouchableOpacity
+              style={styles.notificationView}
+              onPress={() => Actions.NotificationScreen()}
+            >
+              <Image source={badgeCount > 0 ? BELL_ICON_B : BELL_ICON_G} />
+              {badgeCount > 0 && (
+                <Text style={styles.notificationText}>{badgeCount}</Text>
+              )}
+            </TouchableOpacity>
+          }
         </View>
 
         <View style={styles.rightContainer}>
@@ -95,7 +108,9 @@ DashboardActionBar.defaultProps = {
   filtering: true,  
   filterType: 'all',
   sortType: 'date',
+  notifications: true,
   feed: {},
+  badgeCount: 0,
   handleList: () => {},
   handleFilter: () => {}
 }
@@ -110,7 +125,9 @@ DashboardActionBar.propTypes = {
   onAddFeed: PropTypes.func,
   handleList: PropTypes.func,
   handleFilter: PropTypes.func,
-  feed: PropTypes.object
+  notifications: PropTypes.bool,
+  feed: PropTypes.object,
+  badgeCount: PropTypes.number
 }
 
 export default DashboardActionBar
