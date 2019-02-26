@@ -123,6 +123,7 @@ class CardDetailScreen extends React.Component {
       isShowTempCard: false,
       fadeInUpAnimation: 'fadeInUp',
       slideInUpAnimation: 'slideInUp',
+      cardMode: 'CardDetailSingle',
       imageUploading: false,
     };
 
@@ -243,11 +244,13 @@ class CardDetailScreen extends React.Component {
       loading = true;
     } else if (this.props.card.loading !== types.ADD_FILE_FULFILLED && nextProps.card.loading === types.ADD_FILE_FULFILLED) {
       // success in adding a file
-      this.setState({ imageUploading: false });
       const { id } = this.props.card.currentCard;
       const newImageFiles = _.filter(nextProps.card.currentCard.files, file => file.contentType.indexOf('image') !== -1 || file.contentType.indexOf('video') !== -1);
       if (newImageFiles.length === 1 && !nextProps.card.currentCard.coverImage) {
         this.onSetCoverImage(newImageFiles[0].id);
+      }
+      if (newImageFiles.length > 1) { // Need to stop image uploading state here for 2nd Image
+        this.setState({ imageUploading: false });
       }
       this.currentSelectedLinkImageIndex ++;
       if (this.currentSelectedLinkImageIndex < this.selectedLinkImages.length) {
@@ -991,7 +994,12 @@ class CardDetailScreen extends React.Component {
 
   async uploadFile(currentCard, file, type) {
     this.selectedFile = file;
-    this.setState({ imageUploading: true })
+    let imageFiles = _.filter(currentCard.files, file => file.fileType === 'MEDIA');
+    this.setState({
+      imageUploadStarted: true,
+      imageUploading: true,
+      cardMode: imageFiles.length > 0 ? 'CardDetailMulti' : 'CardDetailSingle'
+    });
 
     if (_.endsWith(file.uri, '.pages')) {
       this.selectedFileMimeType = 'application/x-iwork-pages-sffpages'
@@ -1041,6 +1049,7 @@ class CardDetailScreen extends React.Component {
   }
 
   onTapMediaPickerActionSheet(index) {
+    this.setState({ imageUploading: false });
     var options = {
       storageOptions: {
         skipBackup: true,
@@ -1163,12 +1172,12 @@ class CardDetailScreen extends React.Component {
     };
     let imageFiles = _.filter(card.currentCard.files, file => file.fileType === 'MEDIA');
 
-    if (this.state.coverImage) {
+    if (this.state.coverImage || this.state.imageUploadStarted) {
       return (
         <Animated.View style={[styles.coverImageContainer, activeImageStyle]}>
           <CoverImagePreviewComponent
             imageUploading={this.state.imageUploading}
-            cardMode='CardDetail'
+            cardMode={this.state.cardMode}
             coverImage={this.state.coverImage}
             files={imageFiles}
             editable={viewMode !== CONSTANTS.CARD_VIEW}

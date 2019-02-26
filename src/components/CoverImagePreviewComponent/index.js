@@ -47,14 +47,19 @@ export default class CoverImagePreviewComponent extends React.Component {
     setInterval(() => {
       progress += 0.1;
       if (progress > 1) {
-        this.setState({ indeterminate: true })
+        this.setState({ indeterminate: true, progress: 0 });
+      } else {
+        this.setState({ progress });
       }
-      this.setState({ progress });
     }, 500);
   }
 
   get renderProgressBar() {
-    if (this.props.cardMode === 'CardNew' && this.state.loadEnd) {
+    if (this.props.cardMode === 'CardNewSingle' && this.state.loadEnd) {
+      return;
+    }
+
+    if (this.props.cardMode === 'CardDetailSingle' && this.state.loadEnd) {
       return;
     }
 
