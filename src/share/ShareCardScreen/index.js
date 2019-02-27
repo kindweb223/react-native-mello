@@ -44,6 +44,7 @@ export default class ShareCardScreen extends React.Component {
             shareImageUrls={imageUrls}
             shareText={notesText}
             onClose={() => this.onClosed()}
+            prevPage={'shareExtension'}
           />
         }
       </View>
