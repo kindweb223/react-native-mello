@@ -1,6 +1,7 @@
 import { StyleSheet, Platform } from 'react-native'
 import COLORS from '../../service/colors'
 import CONSTANTS from '../../service/constants'
+import { ifIphoneX } from 'react-native-iphone-x-helper'
 
 export default {
   overlay: {
@@ -9,8 +10,9 @@ export default {
     bottom: 0,
     left: 0,
     paddingTop: 10,
-    paddingBottom: 45,
-    borderRadius: 18,
+    paddingBottom: ifIphoneX(32, 10),
+    borderTopLeftRadius: 18,
+    borderTopRightRadius: 18,
     backgroundColor: '#fff',
     ...Platform.select({
       ios: {
