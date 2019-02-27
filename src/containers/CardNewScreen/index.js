@@ -739,6 +739,9 @@ class CardNewScreen extends React.Component {
               this.props.createCard(this.props.feedo.currentFeed.id);
               return;
             }
+            else {
+              this.props.setCurrentFeed({});
+            }
           }
         }
       } catch (error) {
@@ -1865,8 +1868,8 @@ class CardNewScreen extends React.Component {
         <Modal 
           isVisible={this.state.isCopyLink}
           style={styles.successModal}
-          backdropColor='#e0e0e0'
-          backdropOpacity={0.9}
+          backdropColor={COLORS.MODAL_BACKDROP}
+          backdropOpacity={0.4}
           animationIn="fadeIn"
           animationOut="fadeOut"
           animationInTiming={500}

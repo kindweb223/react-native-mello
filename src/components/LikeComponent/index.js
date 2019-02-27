@@ -201,7 +201,7 @@ class LikeComponent extends React.Component {
         {(type === 'text' || type === 'all') && (
           !this.props.isOnlyInvitee && (
             <Animated.Text style={[styles.iconText, { top: animatedMove1, opacity: animatedOpacity1 }, type === 'all' && { left: 30 }]}>
-              {prevLikes} {type !== 'all' && ((prevLikes === 1 || prevLikes === 0) ? 'like' : 'likes')}
+              {prevLikes} {type !== 'all' && ((prevLikes === 1) ? 'like' : 'likes')}
             </Animated.Text>
           )
         )}
@@ -209,7 +209,7 @@ class LikeComponent extends React.Component {
         {(type === 'text' || type === 'all') && (
           !this.props.isOnlyInvitee && (
             <Animated.Text style={[styles.iconText, { top: animatedMove2, opacity: animatedOpacity2 }, type === 'all' && { left: 30 }]}>
-              {likes} {type !== 'all' && ((likes === 1 || likes === 0) ? 'like' : 'likes')}
+              {likes} {type !== 'all' && ((likes === 1) ? 'like' : 'likes')}
             </Animated.Text>
           )
         )}

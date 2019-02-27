@@ -18,7 +18,7 @@ const initialState = {
   userLookup: null,
   userConfirmed: false,
   cropUrl: null,
-  listHomeType: 'list',
+  listHomeType: 'LIST',
   showClipboardToaster: false,
   clipboardToasterContent: '',
   clipboardToasterPrevpage: 'card'
