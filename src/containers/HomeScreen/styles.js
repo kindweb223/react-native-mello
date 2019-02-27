@@ -13,10 +13,10 @@ const styles = StyleSheet.create({
   },
   container: {
     flex: 1,
-    paddingTop: Platform.OS === 'ios' ? ifIphoneX(0, 10) : 10
+    paddingTop: Platform.OS === 'ios' ? ifIphoneX(0, 10) : 8
   },
   statusBarUnderlay: {
-    height: 24,
+    height: 0,
     backgroundColor: '#fff',
   },
   feedListContainer: {
