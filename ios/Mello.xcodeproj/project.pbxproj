@@ -5,6 +5,7 @@
 	};
 	objectVersion = 46;
 	objects = {
+
 /* Begin PBXBuildFile section */
 		00C302E51ABCBA2D00DB3ED1 /* libRCTActionSheet.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 00C302AC1ABCB8CE00DB3ED1 /* libRCTActionSheet.a */; };
 		00C302E71ABCBA2D00DB3ED1 /* libRCTGeolocation.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 00C302BA1ABCB90400DB3ED1 /* libRCTGeolocation.a */; };
@@ -54,6 +55,10 @@
 		4CC861B921933F8F00481DED /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 4CC8617A21933F8A00481DED /* GoogleService-Info.plist */; };
 		4CD904DC21F8A7C200258740 /* libRNSVG.a in Frameworks */ = {isa = PBXBuildFile; fileRef = A49C3621219230EA00AA0AFD /* libRNSVG.a */; };
 		4CF0DB4F2199BBA6000ED175 /* libRNFirebase.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 4CC8621D2193408300481DED /* libRNFirebase.a */; };
+		4CF315F122270BE200A7A104 /* Intercom.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4CF315AE22270BE100A7A104 /* Intercom.framework */; };
+		4CF315F222270BE200A7A104 /* Intercom.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 4CF315AE22270BE100A7A104 /* Intercom.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		4CF315FA22270F4000A7A104 /* libSplashScreen.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 4CF315F922270F2B00A7A104 /* libSplashScreen.a */; };
+		4CF316012227105400A7A104 /* libRNIntercom.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 4CF316002227104C00A7A104 /* libRNIntercom.a */; };
 		4D155804DAC84ABD8370724D /* FontAwesome5_Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 9AFE45238BF344909F881B0C /* FontAwesome5_Regular.ttf */; };
 		4DF31AFCC7DA42929C8B67CC /* libLottieReactNative.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 1BBE45B3BBA8440189B9842C /* libLottieReactNative.a */; };
 		4F7697CE36E840CDA629D4D2 /* Entypo.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 49E66C7627DA4206B745FC76 /* Entypo.ttf */; };
@@ -391,6 +396,20 @@
 			remoteGlobalIDString = 8AD256131D6DE5F600C7D842;
 			remoteInfo = BugsnagReactNative;
 		};
+		4CF315F822270F2B00A7A104 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 4CF315F422270F2B00A7A104 /* SplashScreen.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 3D7682761D8E76B80014119E;
+			remoteInfo = SplashScreen;
+		};
+		4CF315FF2227104C00A7A104 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 4CF315FB2227104C00A7A104 /* RNIntercom.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 112EE36D1CC0AB8A00BF6BB8;
+			remoteInfo = RNIntercom;
+		};
 		5E9157321DD0AC6500FF2AA8 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 5E91572D1DD0AC6500FF2AA8 /* RCTAnimation.xcodeproj */;
@@ -650,6 +669,7 @@
 			dstSubfolderSpec = 10;
 			files = (
 				B509BBF421778AA6006ED535 /* Lottie.framework in Embed Frameworks */,
+				4CF315F222270BE200A7A104 /* Intercom.framework in Embed Frameworks */,
 			);
 			name = "Embed Frameworks";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -699,6 +719,9 @@
 		4C3C63F52199E8BC00B68196 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		4CC8617A21933F8A00481DED /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		4CF0DB4C219983A6000ED175 /* libFirebaseCore.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; path = libFirebaseCore.a; sourceTree = BUILT_PRODUCTS_DIR; };
+		4CF315AE22270BE100A7A104 /* Intercom.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = Intercom.framework; sourceTree = "<group>"; };
+		4CF315F422270F2B00A7A104 /* SplashScreen.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = SplashScreen.xcodeproj; path = "../node_modules/react-native-splash-screen/ios/SplashScreen.xcodeproj"; sourceTree = "<group>"; };
+		4CF315FB2227104C00A7A104 /* RNIntercom.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RNIntercom.xcodeproj; path = "../node_modules/react-native-intercom/iOS/RNIntercom.xcodeproj"; sourceTree = "<group>"; };
 		5394A3ED34ED4B6EB2B6B100 /* libRNReactNativeSharedGroupPreferences.a */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = archive.ar; path = libRNReactNativeSharedGroupPreferences.a; sourceTree = "<group>"; };
 		5604B7BB394C40CF89F6501C /* RNDeviceInfo.xcodeproj */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = "wrapper.pb-project"; name = RNDeviceInfo.xcodeproj; path = "../node_modules/react-native-device-info/ios/RNDeviceInfo.xcodeproj"; sourceTree = "<group>"; };
 		5E91572D1DD0AC6500FF2AA8 /* RCTAnimation.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RCTAnimation.xcodeproj; path = "../node_modules/react-native/Libraries/NativeAnimation/RCTAnimation.xcodeproj"; sourceTree = "<group>"; };
@@ -789,6 +812,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				4CF316012227105400A7A104 /* libRNIntercom.a in Frameworks */,
+				4CF315FA22270F4000A7A104 /* libSplashScreen.a in Frameworks */,
 				A4BF285821234CFE0054D7A9 /* CloudKit.framework in Frameworks */,
 				A46C2E1421497101007E54FA /* libRCTPushNotification.a in Frameworks */,
 				ADBDB9381DFEBF1600ED6528 /* libRCTBlob.a in Frameworks */,
@@ -796,6 +821,7 @@
 				146834051AC3E58100842450 /* libReact.a in Frameworks */,
 				5E9157361DD0AC6A00FF2AA8 /* libRCTAnimation.a in Frameworks */,
 				00C302E51ABCBA2D00DB3ED1 /* libRCTActionSheet.a in Frameworks */,
+				4CF315F122270BE200A7A104 /* Intercom.framework in Frameworks */,
 				00C302E71ABCBA2D00DB3ED1 /* libRCTGeolocation.a in Frameworks */,
 				00C302E81ABCBA2D00DB3ED1 /* libRCTImage.a in Frameworks */,
 				133E29F31AD74F7200F7D852 /* libRCTLinking.a in Frameworks */,
@@ -1082,6 +1108,22 @@
 			name = Products;
 			sourceTree = "<group>";
 		};
+		4CF315F522270F2B00A7A104 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				4CF315F922270F2B00A7A104 /* libSplashScreen.a */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		4CF315FC2227104C00A7A104 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				4CF316002227104C00A7A104 /* libRNIntercom.a */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
 		5684B0E0BE49C917AB54FE18 /* Pods */ = {
 			isa = PBXGroup;
 			children = (
@@ -1130,6 +1172,8 @@
 		832341AE1AAA6A7D00B99B32 /* Libraries */ = {
 			isa = PBXGroup;
 			children = (
+				4CF315FB2227104C00A7A104 /* RNIntercom.xcodeproj */,
+				4CF315F422270F2B00A7A104 /* SplashScreen.xcodeproj */,
 				A46C2DDB214970D5007E54FA /* RCTPushNotification.xcodeproj */,
 				5E91572D1DD0AC6500FF2AA8 /* RCTAnimation.xcodeproj */,
 				146833FF1AC3E56700842450 /* React.xcodeproj */,
@@ -1179,6 +1223,7 @@
 		83CBB9F61A601CBA00E9B192 = {
 			isa = PBXGroup;
 			children = (
+				4CF315AE22270BE100A7A104 /* Intercom.framework */,
 				13B07FAE1A68108700A75B9A /* Mello */,
 				832341AE1AAA6A7D00B99B32 /* Libraries */,
 				00E356EF1AD99517003FC87E /* MelloTests */,
@@ -1429,6 +1474,7 @@
 				A43563DD2138358C00A6D4EA /* Embed App Extensions */,
 				B509BBF721778AA6006ED535 /* Embed Frameworks */,
 				C946D844359990B9B2B11901 /* [CP] Copy Pods Resources */,
+				4CF315F322270BFE00A7A104 /* ShellScript */,
 			);
 			buildRules = (
 			);
@@ -1675,6 +1721,10 @@
 					ProjectRef = D2974AD2940A4DED8393FE7F /* RNImgToBase64.xcodeproj */;
 				},
 				{
+					ProductGroup = 4CF315FC2227104C00A7A104 /* Products */;
+					ProjectRef = 4CF315FB2227104C00A7A104 /* RNIntercom.xcodeproj */;
+				},
+				{
 					ProductGroup = A466CC312140042B00B3430F /* Products */;
 					ProjectRef = B08A94F41567427AB02CD8DC /* RNReactNativeSharedGroupPreferences.xcodeproj */;
 				},
@@ -1697,6 +1747,10 @@
 				{
 					ProductGroup = 2D2167F021511EA40039FBE7 /* Products */;
 					ProjectRef = 94BDD0529B2B41739DBEBD1D /* SafariViewManager.xcodeproj */;
+				},
+				{
+					ProductGroup = 4CF315F522270F2B00A7A104 /* Products */;
+					ProjectRef = 4CF315F422270F2B00A7A104 /* SplashScreen.xcodeproj */;
 				},
 			);
 			projectRoot = "";
@@ -1954,6 +2008,20 @@
 			fileType = archive.ar;
 			path = libBugsnagReactNative.a;
 			remoteRef = 4CD459ED218C8D3600E5AD2F /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		4CF315F922270F2B00A7A104 /* libSplashScreen.a */ = {
+			isa = PBXReferenceProxy;
+			fileType = archive.ar;
+			path = libSplashScreen.a;
+			remoteRef = 4CF315F822270F2B00A7A104 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		4CF316002227104C00A7A104 /* libRNIntercom.a */ = {
+			isa = PBXReferenceProxy;
+			fileType = archive.ar;
+			path = libRNIntercom.a;
+			remoteRef = 4CF315FF2227104C00A7A104 /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
 		5E9157331DD0AC6500FF2AA8 /* libRCTAnimation.a */ = {
@@ -2284,6 +2352,23 @@
 			shellPath = /bin/sh;
 			shellScript = "export NODE_BINARY=node\n../node_modules/react-native/scripts/react-native-xcode.sh";
 		};
+		4CF315F322270BFE00A7A104 /* ShellScript */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+			);
+			outputFileListPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "bash \"${BUILT_PRODUCTS_DIR}/${FRAMEWORKS_FOLDER_PATH}/Intercom.framework/strip-frameworks.sh\"\n";
+		};
 		A4CD66F72139B93E00874CB1 /* Bundle React Native code and images */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
@@ -2561,6 +2646,10 @@
 				CURRENT_PROJECT_VERSION = 1;
 				DEAD_CODE_STRIPPING = NO;
 				DEVELOPMENT_TEAM = B2TWZYTK2Q;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)",
+				);
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(SRCROOT)/../node_modules/react-native-vector-icons/RNVectorIconsManager",
@@ -2617,6 +2706,10 @@
 				CODE_SIGN_STYLE = Manual;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = B2TWZYTK2Q;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)",
+				);
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(SRCROOT)/../node_modules/react-native-vector-icons/RNVectorIconsManager",
