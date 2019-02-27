@@ -18,6 +18,9 @@ pod install
 cd ..
 npm start -- --reset-cache
 
+
+react-native unlink react-native-splash-screen
+
 # Production Build
 Comment in the prod urls in src/service/api.js
 
