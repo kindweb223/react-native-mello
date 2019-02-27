@@ -275,8 +275,8 @@ class ShareScreen extends React.Component {
           <Modal 
             isVisible={linkShareModal}
             style={{ margin: 0 }}
-            backdropColor='#e0e0e0'
-            backdropOpacity={0.9}
+            backdropColor={COLORS.MODAL_BACKDROP}
+            backdropOpacity={0.4}
             animationIn="slideInUp"
             animationOut="slideOutDown"
             animationInTiming={500}
@@ -294,8 +294,8 @@ class ShareScreen extends React.Component {
           <Modal
             isVisible={this.state.isInviteeModal}
             style={{ margin: 0 }}
-            backdropColor='#f5f5f5'
-            backdropOpacity={0.9}
+            backdropColor={COLORS.MODAL_BACKDROP}
+            backdropOpacity={0.4}
             animationIn="slideInUp"
             animationOut="slideOutDown"
             animationInTiming={800}

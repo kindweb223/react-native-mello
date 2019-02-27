@@ -224,7 +224,7 @@ class NotificationScreen extends React.Component {
       this.setActivityFeeds(activityFeedList, this.state.invitedFeedList)
     }
 
-    if (this.props.feedo.loading !== 'UPDTE_FEED_INVITATION_FULFILLED' && feedo.loading === 'UPDTE_FEED_INVITATION_FULFILLED') {
+    if (this.props.feedo.loading !== 'UPDATE_FEED_INVITATION_FULFILLED' && feedo.loading === 'UPDATE_FEED_INVITATION_FULFILLED') {
         let invitedFeedList = _.orderBy(feedo.invitedFeedList, ['metadata.myLastActivityDate'], ['desc'])
         this.setState({ invitedFeedList, isShowInviteToaster: true })
         this.setActivityFeeds(this.state.activityFeedList, invitedFeedList)

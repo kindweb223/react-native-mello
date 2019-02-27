@@ -1,6 +1,7 @@
 import { StyleSheet, Platform } from 'react-native'
 import COLORS from '../../service/colors'
 import CONSTANTS from '../../service/constants'
+import { ifIphoneX } from 'react-native-iphone-x-helper'
 
 export default {
   overlay: {
@@ -8,9 +9,10 @@ export default {
     width: '100%',
     bottom: 0,
     left: 0,
-    paddingTop: 21,
-    paddingBottom: 40,
-    borderRadius: 18,
+    paddingTop: 10,
+    paddingBottom: ifIphoneX(32, 10),
+    borderTopLeftRadius: 18,
+    borderTopRightRadius: 18,
     backgroundColor: '#fff',
     ...Platform.select({
       ios: {
@@ -26,21 +28,21 @@ export default {
   },
   header: {
     width: '100%',
-    height: 50,
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    paddingHorizontal: CONSTANTS.PADDING,
     marginBottom: 10,
   },
   closeButton: {
     width: 50,
     height: 50,
-    alignItems: 'flex-start',
+    alignItems: 'center',
     justifyContent: 'center'
   },
   headerTitle: {
+    paddingLeft: CONSTANTS.PADDING,
     fontSize: 18,
+    lineHeight: 25,
     color: '#000'
   },
   body: {
@@ -49,8 +51,10 @@ export default {
   row: {
     marginBottom: 25,
   },
-  countText: {
-    fontSize: 14
+  labelText: {
+    fontSize: 14,
+    lineHeight: 20,
+    color: '#000'
   },
   buttonGroup: {
     width: '100%',
@@ -76,17 +80,18 @@ export default {
     backgroundColor: COLORS.PURPLE
   },
   buttonDeselect: {
-    backgroundColor: COLORS.LIGHT_GREY_LINE
+    backgroundColor: COLORS.SOFT_GREY
   },
   btnText: {
-    fontSize: 14,
+    fontSize: 13,
+    lineHeight: 14,
     fontWeight: '500'
   },
   btnSelectText: {
     color: '#fff'
   },
   btnDeselectText: {
-    color: '#000',
+    color: '#000'
   },
   heartIcon: {
     marginRight: 6
@@ -94,6 +99,6 @@ export default {
   splitter: {
     width: 1,
     height: '100%',
-    backgroundColor: COLORS.LIGHT_GREY
+    backgroundColor: COLORS.LIGHT_GREY_BORDER_LINE
   }
 }

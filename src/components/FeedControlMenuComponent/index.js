@@ -118,6 +118,8 @@ class FeedControlMenuComponent extends React.Component {
               iconSource = images.archive
             } else if (item === 'Delete') {
               iconSource = images.delete
+            } else if (item === 'Leave Flow') {
+              iconSource = images.leave
             }
 
             return (
