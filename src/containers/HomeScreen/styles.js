@@ -76,7 +76,6 @@ const styles = StyleSheet.create({
   headerView: {
     width: CONSTANTS.SCREEN_WIDTH,
     height: 45,
-    paddingTop: 10,
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center'
@@ -93,9 +92,8 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'flex-end',
     position: 'absolute',
-    right: 12,
-    paddingTop: 10
-  },
+    right: 12
+  }
 })
 
 export default styles

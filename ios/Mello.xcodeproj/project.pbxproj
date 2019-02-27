@@ -48,6 +48,7 @@
 		45A806F94F774736BDFCF564 /* libBugsnagReactNative.a in Frameworks */ = {isa = PBXBuildFile; fileRef = D9E1BD18BB5B4D62B4263950 /* libBugsnagReactNative.a */; };
 		47CA4A9854C645189A59042C /* libRNDocumentPicker.a in Frameworks */ = {isa = PBXBuildFile; fileRef = CEF9CE0D4C3B419DAD8284A6 /* libRNDocumentPicker.a */; };
 		4C030DDBB9734D8CB1045CEB /* libBVLinearGradient.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 1AE0342E1F8E4EB593320F3B /* libBVLinearGradient.a */; };
+		4C20B6CA222664CF00F16011 /* libSplashScreen.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 4CFB9C94221C75BE00F9797A /* libSplashScreen.a */; };
 		4C3145432191BCE8009A40C5 /* libRNDeviceInfo.a in Frameworks */ = {isa = PBXBuildFile; fileRef = A46A87CD2190EE9D009D3FB3 /* libRNDeviceInfo.a */; };
 		4C3C63F62199E8BC00B68196 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 4C3C63F52199E8BC00B68196 /* GoogleService-Info.plist */; };
 		4C6D85F821FE088100455C94 /* libRNSVG.a in Frameworks */ = {isa = PBXBuildFile; fileRef = A49C3621219230EA00AA0AFD /* libRNSVG.a */; };
@@ -798,6 +799,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				4C20B6CA222664CF00F16011 /* libSplashScreen.a in Frameworks */,
 				A4BF285821234CFE0054D7A9 /* CloudKit.framework in Frameworks */,
 				A46C2E1421497101007E54FA /* libRCTPushNotification.a in Frameworks */,
 				ADBDB9381DFEBF1600ED6528 /* libRCTBlob.a in Frameworks */,
