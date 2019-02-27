@@ -519,7 +519,7 @@ class FeedDetailScreen extends React.Component {
         this.refs.masonry.clear()
         setTimeout(() => {
           this.refs.masonry.addItems(MasonryData)
-        }, 150)
+        }, 0)
       }
     })
   }
