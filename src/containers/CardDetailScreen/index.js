@@ -1560,7 +1560,7 @@ class CardDetailScreen extends React.Component {
         scrollEventThrottle={100}
         scrollEnabled={this.scrollEnabled}
       >
-        <View style={[styles.ideaContentView, { minHeight, backgroundColor: 'red' }]}>
+        <View style={[styles.ideaContentView, { minHeight }]}>
           {this.renderCoverImage}
           {this.renderWebMeta}
           {this.renderText}
