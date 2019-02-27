@@ -46,7 +46,7 @@ class FeedoListContainer extends React.Component {
   renderItem(item, index) {
     const { feedoList, feedClickEvent, selectedLongHoldFeedoIndex } = this.props
     const { listHomeType } = this.props
-    const paddingVertical = listHomeType === 'list' ? 15 : 12
+    const paddingVertical = listHomeType === 'LIST' ? 15 : 12
 
     return (
       <View key={index}>

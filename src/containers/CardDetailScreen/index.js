@@ -82,7 +82,7 @@ import COLORS from '../../service/colors';
 import CONSTANTS from '../../service/constants';
 import styles from './styles';
 
-const FOOTER_HEIGHT = Platform.OS === 'ios' ? CONSTANTS.SCREEN_WIDTH / 7.5 : CONSTANTS.SCREEN_WIDTH / 7.5 + 10
+const FOOTER_HEIGHT = Platform.OS === 'ios' ? CONSTANTS.SCREEN_WIDTH / 7.3 : CONSTANTS.SCREEN_WIDTH / 7.5 + 15
 const FIXED_COMMENT_HEIGHT = 150
 const IDEA_CONTENT_HEIGHT = CONSTANTS.SCREEN_HEIGHT - CONSTANTS.STATUSBAR_HEIGHT - FIXED_COMMENT_HEIGHT - FOOTER_HEIGHT - CONSTANTS.STATUS_BOTTOM_BAR_HEIGHT + ifIphoneX(0, 5)
 
@@ -1560,7 +1560,7 @@ class CardDetailScreen extends React.Component {
         scrollEventThrottle={100}
         scrollEnabled={this.scrollEnabled}
       >
-        <View style={[styles.ideaContentView, { minHeight }]}>
+        <View style={[styles.ideaContentView, { minHeight, backgroundColor: 'red' }]}>
           {this.renderCoverImage}
           {this.renderWebMeta}
           {this.renderText}
