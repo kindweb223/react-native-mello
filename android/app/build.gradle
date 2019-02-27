@@ -174,8 +174,7 @@ dependencies {
     compile "com.android.support:appcompat-v7:${rootProject.ext.supportLibVersion}"
     compile "com.facebook.react:react-native:+"  // From node_modules
 
-    compile 'io.intercom.android:intercom-sdk-base:3.+'
-    compile 'io.intercom.android:intercom-sdk-fcm:3.+'
+    compile 'io.intercom.android:intercom-sdk:5.+'
 
     // Firebase dependencies
     implementation "com.google.android.gms:play-services-base:16.0.1"
