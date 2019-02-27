@@ -2,6 +2,7 @@ import { AsyncStorage } from 'react-native'
 import PushNotification from 'react-native-push-notification'
 import * as types from './types'
 import * as cardTypes from '../card/types'
+import * as userTypes from '../user/types'
 import { filter, find, findIndex, isEmpty } from 'lodash'
 import resolveError from './../../service/resolveError'
 import { restoreArchiveFeed } from './actions';
@@ -1742,6 +1743,15 @@ export default function feedo(state = initialState, action = {}) {
         ...state,
         loading: types.SAVE_FLOW_PREFERENCE_REJECTED,
         error: action.error.response,
+      }
+    }
+    case userTypes.USER_SIGNOUT_FULFILLED: {
+      return {
+        ...state,
+        feedoList: [],
+        archivedFeedList: [],
+        invitedFeedList: [],
+        activityFeedList: []
       }
     }
     default:

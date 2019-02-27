@@ -3,6 +3,7 @@ package io.solvers.feedo;
 import android.app.Application;
 
 import com.facebook.react.ReactApplication;
+import com.robinpowered.react.Intercom.IntercomPackage;
 import org.devio.rn.splashscreen.SplashScreenReactPackage;
 import fr.snapp.imagebase64.RNImgToBase64Package;
 import me.hauvo.thumbnail.RNThumbnailPackage;
@@ -46,6 +47,7 @@ public class MainApplication extends Application implements ReactApplication {
     protected List<ReactPackage> getPackages() {
       return Arrays.<ReactPackage>asList(
           new MainReactPackage(),
+            new IntercomPackage(),
             new SplashScreenReactPackage(),
             new RNImgToBase64Package(),
             new RNThumbnailPackage(),

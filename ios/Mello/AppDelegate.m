@@ -14,6 +14,7 @@
 #import <BugsnagReactNative/BugsnagReactNative.h>
 @import Firebase;
 #import "RNSplashScreen.h"
+#import "Intercom/intercom.h"
 
 @implementation AppDelegate
 
@@ -34,6 +35,12 @@
 {
   [BugsnagReactNative start];
   
+  // DEV
+  [Intercom setApiKey:@"ios_sdk-7715eaa799799c5d8b599c8bf65b232dbb1529b1" forAppId:@"spgs5xuc"];
+  // PROD
+//  [Intercom setApiKey:@"ios_sdk-5ed8d6fab2b12f1a3011f3948a87e2bea47af5ee" forAppId:@"b4x3v190"];
+  [Intercom registerUnidentifiedUser];
+
   NSURL *jsCodeLocation;
 
   jsCodeLocation = [[RCTBundleURLProvider sharedSettings] jsBundleURLForBundleRoot:@"index" fallbackResource:nil];
@@ -65,6 +72,7 @@
 - (void)application:(UIApplication *)application didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)deviceToken
 {
   [RCTPushNotificationManager didRegisterForRemoteNotificationsWithDeviceToken:deviceToken];
+  [Intercom setDeviceToken:deviceToken];
 }
 // Required for the notification event. You must call the completion handler after handling the remote notification.
 - (void)application:(UIApplication *)application didReceiveRemoteNotification:(NSDictionary *)userInfo

@@ -37,6 +37,8 @@ target 'Mello' do
 
   pod 'react-native-splash-screen', :path => '../node_modules/react-native-splash-screen'
 
+  pod 'react-native-intercom', :path => '../node_modules/react-native-intercom'
+
 end
 
 target 'MelloEx' do
