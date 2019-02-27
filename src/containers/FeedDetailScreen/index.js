@@ -1189,7 +1189,7 @@ class FeedDetailScreen extends React.Component {
           Alert.alert('Warning', 'File size must be less than 10MB')
         } else {
           let type = 'FILE';
-          const mimeType = mime.lookup(response.uri);
+          const mimeType = (Platform.OS === 'ios') ? mime.lookup(response.uri) : response.type;
           if (mimeType !== false) {
             if (mimeType.indexOf('image') !== -1 || mimeType.indexOf('video') !== -1) {
               type = 'MEDIA';
@@ -1212,7 +1212,7 @@ class FeedDetailScreen extends React.Component {
     } else if (_.endsWith(file.uri, '.key')) {
       this.selectedFileMimeType = 'application/x-iwork-keynote-sffkey'
     } else {
-      this.selectedFileMimeType = mime.lookup(file.uri);
+      this.selectedFileMimeType = (Platform.OS === 'ios') ? mime.lookup(file.uri) : file.type;
     }
 
     this.selectedFileName = file.fileName;
@@ -1429,11 +1429,13 @@ class FeedDetailScreen extends React.Component {
                 <Ionicons name="ios-arrow-back" size={32} color={COLORS.PURPLE} />
               </TouchableOpacity>
               <View style={styles.rightHeader}>
-                <View style={styles.avatarView}>
-                  <TouchableOpacity onPress={() => this.handleShare()}>
-                    <AvatarPileComponent avatars={avatars} />
-                  </TouchableOpacity>
-                </View>
+                {!_.isEmpty(currentFeed) && !COMMON_FUNC.isMelloTipFeed(currentFeed) && (
+                  <View style={styles.avatarView}>
+                    <TouchableOpacity onPress={() => this.handleShare()}>
+                      <AvatarPileComponent avatars={avatars} />
+                    </TouchableOpacity>
+                  </View>
+                )}
                 <View style={styles.settingView}>
                   <FeedNavbarSettingComponent handleSetting={() => this.handleSetting()} />
                 </View>
@@ -1720,7 +1722,7 @@ class FeedDetailScreen extends React.Component {
           onBackdropPress={() => this.setState({ openMenu: false })}
           onBackButtonPress={() => this.setState({ openMenu: false })}
         >
-          <Animated.View style={styles.settingMenuView}>
+          <Animated.View style={[styles.settingMenuView, (!_.isEmpty(currentFeed) && COMMON_FUNC.isMelloTipFeed(currentFeed)) && { width: 150 }]}>
             <FeedControlMenuComponent
               handleSettingItem={item => this.handleSettingItem(item)}
               feedo={currentFeed}

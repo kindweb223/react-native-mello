@@ -21,13 +21,13 @@ import { ifIphoneX } from 'react-native-iphone-x-helper'
 import { Actions } from 'react-native-router-flux'
 import Entypo from 'react-native-vector-icons/Entypo'
 import Ionicons from 'react-native-vector-icons/Ionicons'
-import Octicons from 'react-native-vector-icons/Octicons'
 
 import ActionSheet from 'react-native-actionsheet'
 import ImagePicker from 'react-native-image-picker'
 import ImageResizer from 'react-native-image-resizer';
 import RNThumbnail from 'react-native-thumbnail';
 import ImgToBase64 from 'react-native-image-base64';
+import RNFetchBlob from 'rn-fetch-blob'
 
 import { DocumentPicker, DocumentPickerUtil } from 'react-native-document-picker'
 import Permissions from 'react-native-permissions'
@@ -238,7 +238,14 @@ class CardDetailScreen extends React.Component {
         this.props.addFile(id, this.selectedFileType, fileType, this.selectedFileName, objectKey, metadata);
       }
       else {
-        this.props.addFile(id, this.selectedFileType, fileType, this.selectedFileName, objectKey, null, this.base64String);
+        let metadata = null
+        if (this.base64FileWidth && this.base64FileHeight) {
+          metadata = {
+            width: this.base64FileWidth,
+            height: this.base64FileHeight
+          }  
+        }
+        this.props.addFile(id, this.selectedFileType, fileType, this.selectedFileName, objectKey, metadata, this.base64String);
       }
     } else if (this.props.card.loading !== types.ADD_FILE_PENDING && nextProps.card.loading === types.ADD_FILE_PENDING) {
       loading = true;
@@ -302,6 +309,7 @@ class CardDetailScreen extends React.Component {
       // success in setting a file as cover image
     } else if (this.props.card.loading !== types.UPDATE_CARD_FULFILLED && nextProps.card.loading === types.UPDATE_CARD_FULFILLED) {
       // success in updating a card
+      this.onCancelEditCard()
       if (this.props.cardMode === CONSTANTS.MAIN_APP_CARD_FROM_DASHBOARD) {
         this.saveFeedId();
       }
@@ -864,6 +872,8 @@ class CardDetailScreen extends React.Component {
 
     if (currentCard.idea !== idea || prevCoverImage !== coverImage || currentCard.links !== links) {
       this.props.updateCard(huntId, id, '', idea, coverImage, files, false);
+    } else {
+      this.onCancelEditCard()
     }
   }
 
@@ -926,7 +936,7 @@ class CardDetailScreen extends React.Component {
     });
   }
 
-  onAddDocument() {
+  onAddDocument = () => {
     if (Platform.OS === 'ios') {
       this.PickerDocumentShow();
     }
@@ -948,7 +958,7 @@ class CardDetailScreen extends React.Component {
     }
   }
 
-  PickerDocumentShow () {
+  PickerDocumentShow = () => {
     setTimeout(() => {
       DocumentPicker.show({
         filetype: [DocumentPickerUtil.allFiles()],
@@ -957,33 +967,29 @@ class CardDetailScreen extends React.Component {
           if (response.fileSize > CONSTANTS.MAX_UPLOAD_FILE_SIZE) {
             COMMON_FUNC.showPremiumAlert()
           } else {
-            let type = 'FILE';
-            const mimeType = mime.lookup(response.uri);
-            if (mimeType !== false) {
-              if (mimeType.indexOf('image') !== -1 || mimeType.indexOf('video') !== -1) {
-                type = 'MEDIA';
-              }
-              this.generateThumbnail(response)  // Generate thumbnail if video
-            }
-            this.uploadFile(this.props.card.currentCard, response, type);
+            this.handleFile(response, type)  // Generate thumbnail if video
           }
         }
       });
       return;
-      }, 200)
+    }, 200)
   }
 
   onDoneEditCard() {
     this.onUpdateCard()
-    this.onCancelEditCard()
   }
 
   onCancelEditCard() {
     this.setState({
       showEditScreen: false,
       fadeInUpAnimation: '',
-      slideInUpAnimation: '',
+      slideInUpAnimation: ''
     })
+  }
+
+  onCloseEditCard = () => {
+    this.setState({ idea: this.props.card.currentCard.idea })
+    this.onCancelEditCard()
   }
 
   onPressMoreActions() {
@@ -1008,7 +1014,7 @@ class CardDetailScreen extends React.Component {
     } else if (_.endsWith(file.uri, '.key')) {
       this.selectedFileMimeType = 'application/x-iwork-keynote-sffkey'
     } else {
-      this.selectedFileMimeType = mime.lookup(file.uri);
+      this.selectedFileMimeType = (Platform.OS === 'ios') ? mime.lookup(file.uri) : file.type;
     }
 
     this.selectedFileName = file.fileName;
@@ -1028,8 +1034,7 @@ class CardDetailScreen extends React.Component {
           if (!response.fileName) {
             response.fileName = response.uri.replace(/^.*[\\\/]/, '')
           }
-          this.generateThumbnail(response)  // Generate thumbnail if video
-          this.uploadFile(this.props.card.currentCard, response, 'MEDIA');
+          this.handleFile(response)
         }
       }
     });
@@ -1041,8 +1046,7 @@ class CardDetailScreen extends React.Component {
         if (response.fileSize > CONSTANTS.MAX_UPLOAD_FILE_SIZE) {
           COMMON_FUNC.showPremiumAlert()
         } else {
-          this.generateThumbnail(response)  // Generate thumbnail if video
-          this.uploadFile(this.props.card.currentCard, response, 'MEDIA');
+          this.handleFile(response)
         }
       }
     });
@@ -1067,22 +1071,58 @@ class CardDetailScreen extends React.Component {
     }
   }
 
-  generateThumbnail(file) {
-    const mimeType = mime.lookup(file.uri);
+  getThumbnailUrl = (file, uri) => {
+    RNThumbnail.get(uri).then((result) => {
+      ImageResizer.createResizedImage(result.path, result.width, result.height, CONSTANTS.IMAGE_COMPRESS_FORMAT, 50, 0, null)
+      .then((response) => {
+        ImgToBase64.getBase64String(response.uri)
+          .then(base64String => {
+            this.base64String = 'data:image/png;base64,' + base64String
+            this.base64FileWidth = result.width
+            this.base64FileHeight = result.height
 
-    if (mimeType.indexOf('video') !== -1) {
-      RNThumbnail.get(file.uri).then((result) => {
-        ImageResizer.createResizedImage(result.path, result.width, result.height, CONSTANTS.IMAGE_COMPRESS_FORMAT, 50, 0, null)
-        .then((response) => {
-          ImgToBase64.getBase64String(response.uri)
-            .then(base64String => this.base64String = 'data:image/png;base64,' + base64String)
-            .catch(err => console.log(err));                
-        }).catch((error) => {
-          console.log('Image compress error: ', error);
-        });
+            this.uploadFile(this.props.card.currentCard, file, 'MEDIA');
+          })
+          .catch(err => console.log(err));
       }).catch((error) => {
-        console.log('RNThumbnail error: ', error);
+        console.log('Image compress error: ', error);
+        this.uploadFile(this.props.card.currentCard, file, 'MEDIA');
       });
+    }).catch((error) => {
+      console.log('RNThumbnail error: ', error);
+      this.uploadFile(this.props.card.currentCard, file, 'MEDIA');
+    });
+  }
+
+  handleFile = (file) => {
+    const mimeType = (Platform.OS === 'ios') ? mime.lookup(file.uri) : file.type;
+
+    let type = 'FILE';
+    if (mimeType !== false) {
+      if (mimeType.indexOf('image') !== -1 || mimeType.indexOf('video') !== -1) {
+        type = 'MEDIA';
+      }
+    }
+
+    // Generate thumbnail if a video
+    if (mimeType.indexOf('video') !== -1) {
+      if (Platform.OS === 'ios') {
+        // Important - files containing spaces break, need to uri decode the url before passing to RNThumbnail
+        // https://github.com/wkh237/react-native-fetch-blob/issues/248#issuecomment-297988317
+        let fileUri = decodeURI(file.uri)
+        this.getThumbnailUrl(file, fileUri)
+      } else {
+        this.setState({ loading: true })
+        RNFetchBlob.fs
+        .stat(file.uri)
+        .then(stats => {
+          filepath = stats.path;
+          this.getThumbnailUrl(file, filepath)
+        })
+      }
+    }
+    else {
+      this.uploadFile(this.props.card.currentCard, file, type);
     }
   }
 
@@ -1100,6 +1140,8 @@ class CardDetailScreen extends React.Component {
   onChangeIdea(text) {
     this.setState({
       idea: text
+    }, () => {
+      this.onDoneEditCard()
     })
   }
 
@@ -1659,8 +1701,8 @@ class CardDetailScreen extends React.Component {
               {...this.props}
               idea={idea}
               checkUrls={() => this.checkUrls()}
-              onDoneEditCard={() => this.onDoneEditCard()}
-              onCancelEditCard={() => this.onCancelEditCard()}
+              // onDoneEditCard={() => this.onDoneEditCard()}
+              onCancelEditCard={() => this.onCloseEditCard()}
               onChangeIdea={(value) => this.onChangeIdea(value)}
             />
           : this.renderCard

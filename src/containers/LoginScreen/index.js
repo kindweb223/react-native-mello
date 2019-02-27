@@ -7,7 +7,8 @@ import {
   Image,
   Alert,
   Keyboard,
-  AsyncStorage
+  AsyncStorage,
+  Platform,
 } from 'react-native'
 
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
@@ -39,6 +40,8 @@ class LoginScreen extends React.Component {
         onPress={() => {
           if (props.prevPage === 'signup') {
             Actions.pop()
+          } else if (props.prevPage === 'loggedOut') {
+            Actions.TutorialScreen({ type: 'replace', prevPage: 'login' })
           } else {
             Actions.pop({ refresh: { prevPage: 'login' } } )
           }
@@ -335,7 +338,7 @@ class LoginScreen extends React.Component {
               errorText={passwordError.length > 0 ? resolveError(passwordError[0].code, passwordError[0].message) : ''}
               handleChange={text => this.changePassword(text)}
               onSubmitEditing={() => this.onSignIn()}
-              selectionColor={COLORS.PURPLE}
+              selectionColor={Platform.OS === 'ios' ? COLORS.PURPLE : COLORS.LIGHT_PURPLE}
             >
               <TouchableOpacity onPress={() => this.onForgotPassword()} activeOpacity={0.8}>
                 <View style={styles.forgotView}>

@@ -425,7 +425,7 @@ class HomeScreen extends React.Component {
         this.handleLeaveFeed(feedo.feedDetailAction.feedId)
       }
     } else if (prevProps.user.loading === 'USER_SIGNOUT_PENDING' && user.loading === 'USER_SIGNOUT_FULFILLED') {
-      Actions.LoginScreen()
+      this.props.closeClipboardToaster()
     } else if (feedo.loading === 'GET_FEEDO_LIST_FULFILLED' && this.state.currentPushNotificationType === CONSTANTS.USER_INVITED_TO_HUNT && this.state.currentPushNotificationData) {
       const { currentPushNotificationData } = this.state
 
@@ -565,6 +565,9 @@ class HomeScreen extends React.Component {
   parsePushNotification(notification) {
     console.log('NOTIFICATION : ', notification);
     const { feedoList } = this.props.feedo
+
+    if(!notification.data)
+      return
 
     const type = notification.data.type;
     if (notification.badge) {
