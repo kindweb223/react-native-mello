@@ -31,6 +31,7 @@
       android:name=".MainApplication"
       android:label="@string/app_name"
       android:icon="@mipmap/ic_launcher"
+      android:roundIcon="@mipmap/ic_launcher_round"
       android:allowBackup="false"
       android:theme="@style/AppTheme"
       tools:ignore="GoogleAppIndexingWarning">
@@ -62,7 +63,7 @@
           <category android:name="android.intent.category.DEFAULT" />
           <category android:name="android.intent.category.BROWSABLE" />
           <data android:scheme="https" android:host="demos.solvers.io"/>
-          <data android:scheme="https" android:host="my.melloapp.com"/>
+          <!--<data android:scheme="https" android:host="my.melloapp.com"/>-->
         </intent-filter>
 
       </activity>

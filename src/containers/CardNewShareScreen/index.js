@@ -417,6 +417,9 @@ class CardNewShareScreen extends React.Component {
     if (!this.props.feedo.currentFeed.id) {
       this.props.setCurrentFeed(this.draftFeedo);
     }
+    if(this.textInputIdeaRef) {
+      this.textInputIdeaRef.focus();
+    }
   }
 
   onUpdateFeed() {
@@ -521,7 +524,7 @@ class CardNewShareScreen extends React.Component {
           ref={ref => this.textInputIdeaRef = ref}
           style={styles.textInputIdea}
           autoCorrect={true}
-          placeholder='Let your ideas flow. Type text, paste a link, add an image, video or audio'
+          placeholder='Add a note'
           multiline={true}
           underlineColorAndroid='transparent'
           value={this.state.idea}
@@ -530,7 +533,7 @@ class CardNewShareScreen extends React.Component {
           onFocus={() => this.onFocusIdea()}
           onBlur={() => this.onBlurIdea()}
           onSelectionChange={this.onSelectionChange.bind(this)}
-          selectionColor={COLORS.PURPLE}
+          selectionColor={Platform.OS === 'ios' ? COLORS.PURPLE : COLORS.LIGHT_PURPLE}
         />
       </View>
     )
@@ -682,7 +685,7 @@ class CardNewShareScreen extends React.Component {
         {this.renderCard}
         {this.renderSelectHunt}
 
-        {this.state.loading && <LoadingScreen containerStyle={{marginBottom: CONSTANTS.SCREEN_VERTICAL_MIN_MARGIN + 100}} />}
+        {this.state.loading && <LoadingScreen />}
 
       </View>
     );

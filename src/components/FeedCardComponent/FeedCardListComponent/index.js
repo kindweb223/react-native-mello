@@ -18,6 +18,7 @@ import UserAvatarComponent from '../../UserAvatarComponent';
 import FastImage from "react-native-fast-image";
 import Autolink from 'react-native-autolink';
 import { COMMENT_FEATURE } from '../../../service/api'
+import ExFastImage from '../../ExFastImage';
 
 class FeedCardListComponent extends React.Component {
   constructor(props) {
@@ -101,7 +102,7 @@ class FeedCardListComponent extends React.Component {
 
         {idea.coverImage && idea.coverImage.length &&
           <View style={styles.thumbnailsView}>
-            <FastImage
+            <ExFastImage
               style={styles.thumbnails}
               source={{ uri: idea.coverImage }}
             />

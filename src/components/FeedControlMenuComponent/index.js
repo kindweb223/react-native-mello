@@ -42,18 +42,24 @@ class FeedControlMenuComponent extends React.Component {
       MENU_ITEMS = ['Leave Flow']
     }
 
+    if (COMMON_FUNC.isMelloTipFeed(feedo)) {
+      MENU_ITEMS = ['Leave Flow']
+    }
+
     return (
       <View style={styles.menuContainer}>
-        <TouchableOpacity
-          style={styles.settingItem}
-          onPress={() => this.props.handleSettingItem('AddPeople')}
-        >
-          <Image source={images.addProfile} style={styles.menuIcon} />
-          <Text style={styles.settingButtonText}>{isEnableShareAllowed ? 'Add people' : 'Flow members'}</Text>
-        </TouchableOpacity>
+        {!COMMON_FUNC.isMelloTipFeed(feedo) && (
+          <TouchableOpacity
+            style={styles.settingItem}
+            onPress={() => this.props.handleSettingItem('AddPeople')}
+          >
+            <Image source={images.addProfile} style={styles.menuIcon} />
+            <Text style={styles.settingButtonText}>{isEnableShareAllowed ? 'Add people' : 'Flow members'}</Text>
+          </TouchableOpacity>
+        )}
 
         {
-          isEnableShareAllowed &&
+          isEnableShareAllowed && !COMMON_FUNC.isMelloTipFeed(feedo) &&
           <TouchableOpacity
             style={styles.settingItem}
           >
@@ -71,10 +77,12 @@ class FeedControlMenuComponent extends React.Component {
         {
           isEnableShare &&
           <TouchableOpacity
-            style={styles.settingItem}
+            style={[styles.settingItem, COMMON_FUNC.isMelloTipFeed(feedo) && { justifyContent: 'center' }]}
             onPress={() => this.props.handleSettingItem('ShareLink')}
           >
-            <Image source={sharingImg} style={[styles.menuIcon, { opacity: 0 }]} />
+            {!COMMON_FUNC.isMelloTipFeed(feedo) && (
+              <Image source={sharingImg} style={[styles.menuIcon, { opacity: 0 }]} />
+            )}
             <Text style={styles.settingButtonText}>Share link</Text>
           </TouchableOpacity>
         }
@@ -117,8 +125,10 @@ class FeedControlMenuComponent extends React.Component {
                 onPress={() => this.props.handleSettingItem(item)}
                 activeOpacity={0.5}
               >
-                <View style={styles.settingItem}>
-                  <Image source={iconSource} style={styles.menuIcon} />
+                <View style={[styles.settingItem, COMMON_FUNC.isMelloTipFeed(feedo) && { justifyContent: 'center' }]}>
+                  {!COMMON_FUNC.isMelloTipFeed(feedo) &&
+                    <Image source={iconSource} style={styles.menuIcon} />
+                  }
                   <Text style={(item === 'Delete' || item === 'Leave Flow') ? styles.deleteButtonText : styles.settingButtonText}>
                     {item}
                   </Text>

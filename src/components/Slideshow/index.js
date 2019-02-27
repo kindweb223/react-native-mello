@@ -116,7 +116,7 @@ export default class SlideShow extends React.Component {
           style={{ width, height }}
           source={{ uri: item.accessUrl }}
           controls={true}
-          resizeMode='cover'
+          resizeMode='contain'
           paused={this.state.currentIndex !== index}
           onBuffer={this.onBuffer}
           onLoad={this.onLoad}

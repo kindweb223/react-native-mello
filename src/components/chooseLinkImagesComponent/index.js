@@ -124,6 +124,7 @@ export default class ChooseLinkImages extends React.Component {
         <SafeAreaView style={{ flex: 1 }}>
           {this.renderHeader}
           <FlatList
+            keyboardShouldPersistTaps={'handled'}
             contentContainerStyle={styles.mainInnerContainer}
             data={images}
             renderItem={this.renderImage.bind(this)}

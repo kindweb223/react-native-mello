@@ -30,6 +30,7 @@ import ImagePicker from 'react-native-image-picker'
 import ImageResizer from 'react-native-image-resizer';
 import RNThumbnail from 'react-native-thumbnail';
 import ImgToBase64 from 'react-native-image-base64';
+import RNFetchBlob from 'rn-fetch-blob'
 
 import { DocumentPicker, DocumentPickerUtil } from 'react-native-document-picker'
 import Permissions from 'react-native-permissions'
@@ -309,7 +310,14 @@ class CardNewScreen extends React.Component {
         }
         this.props.addFile(id, this.selectedFileType, fileType, this.selectedFileName, objectKey, metadata);
       } else {
-        this.props.addFile(id, this.selectedFileType, fileType, this.selectedFileName, objectKey, null, this.base64String);
+        let metadata = null
+        if (this.base64FileWidth && this.base64FileHeight) {
+          metadata = {
+            width: this.base64FileWidth,
+            height: this.base64FileHeight
+          }  
+        }
+        this.props.addFile(id, this.selectedFileType, fileType, this.selectedFileName, objectKey, metadata, this.base64String);
       }
     } else if (this.props.card.loading !== types.ADD_FILE_PENDING && nextProps.card.loading === types.ADD_FILE_PENDING) {
       // adding a file
@@ -731,11 +739,9 @@ class CardNewScreen extends React.Component {
       // If prev page not 'card' or if we don't have a current feed
       // Create feed will be called for a new feed
       // Card will be added on successful response to create feed
-      if (this.props.prevPage !== 'card' || !this.props.feedo.currentFeed.id) {
+      if (this.props.prevPage !== 'card' && (!this.props.feedo.currentFeed.id || this.props.feedo.currentFeed.status === 'TEMP')) {
         this.props.createFeed();
-      }
-      // Otherwise add the card straight to the current feed we have
-      else {
+      } else {  // Otherwise add the card straight to the current feed we have
         this.props.createCard(this.props.feedo.currentFeed.id)
       }
     } else if (viewMode === CONSTANTS.CARD_NEW) {
@@ -981,16 +987,7 @@ class CardNewScreen extends React.Component {
         if (response.fileSize > CONSTANTS.MAX_UPLOAD_FILE_SIZE) {
           COMMON_FUNC.showPremiumAlert()
         } else {
-          let type = 'FILE';
-          const mimeType = mime.lookup(response.uri);
-          if (mimeType !== false) {
-            if (mimeType.indexOf('image') !== -1 || mimeType.indexOf('video') !== -1) {
-              type = 'MEDIA';
-            }
-            this.generateThumbnail(response)  // Generate thumbnail if video
-          }
-
-          this.uploadFile(this.props.card.currentCard, response, type);
+          this.handleFile(response)
         }
       }
     });
@@ -1048,7 +1045,7 @@ class CardNewScreen extends React.Component {
     } else if (_.endsWith(file.uri, '.key')) {
       this.selectedFileMimeType = 'application/x-iwork-keynote-sffkey'
     } else {
-      this.selectedFileMimeType = mime.lookup(file.uri);
+      this.selectedFileMimeType = (Platform.OS === 'ios') ? mime.lookup(file.uri) : file.type;
     }
 
     this.selectedFileName = file.fileName;
@@ -1067,8 +1064,7 @@ class CardNewScreen extends React.Component {
           if (!response.fileName) {
             response.fileName = response.uri.replace(/^.*[\\\/]/, '')
           }
-          this.generateThumbnail(response)  // Generate thumbnail if video
-          this.uploadFile(this.props.card.currentCard, response, 'MEDIA');
+          this.handleFile(response)
         }
       }
     });
@@ -1080,8 +1076,7 @@ class CardNewScreen extends React.Component {
         if (response.fileSize > CONSTANTS.MAX_UPLOAD_FILE_SIZE) {
           COMMON_FUNC.showPremiumAlert()
         } else {
-          this.generateThumbnail(response)  // Generate thumbnail if video
-          this.uploadFile(this.props.card.currentCard, response, 'MEDIA');
+          this.handleFile(response)
         }
       }
     });
@@ -1105,23 +1100,57 @@ class CardNewScreen extends React.Component {
     }
   }
 
-  generateThumbnail(file) {
-    const mimeType = mime.lookup(file.uri);
+  getThumbnailUrl = (file, uri) => {
+    RNThumbnail.get(uri).then((result) => {
+      ImageResizer.createResizedImage(result.path, result.width, result.height, CONSTANTS.IMAGE_COMPRESS_FORMAT, 50, 0, null)
+      .then((response) => {
+        ImgToBase64.getBase64String(response.uri)
+          .then(base64String => {
+            this.base64String = 'data:image/png;base64,' + base64String
+            this.base64FileWidth = result.width
+            this.base64FileHeight = result.height
+
+            this.uploadFile(this.props.card.currentCard, file, 'MEDIA');
+          })
+          .catch(err => console.log(err));
+      }).catch((error) => {
+        console.log('Image compress error: ', error);
+        this.uploadFile(this.props.card.currentCard, file, 'MEDIA');
+      });
+    }).catch((error) => {
+      console.log('RNThumbnail error: ', error);
+      this.uploadFile(this.props.card.currentCard, file, 'MEDIA');
+    });
+  }
+
+  handleFile = (file) => {
+    const mimeType = (Platform.OS === 'ios') ? mime.lookup(file.uri) : file.type;
+
+    let type = 'FILE';
+    if (mimeType !== false) {
+      if (mimeType.indexOf('image') !== -1 || mimeType.indexOf('video') !== -1) {
+        type = 'MEDIA';
+      }
+    }
 
     if (mimeType.indexOf('video') !== -1) {
-      RNThumbnail.get(file.uri).then((result) => {
-        console.log
-        ImageResizer.createResizedImage(result.path, result.width, result.height, CONSTANTS.IMAGE_COMPRESS_FORMAT, 50, 0, null)
-        .then((response) => {
-          ImgToBase64.getBase64String(response.uri)
-            .then(base64String => this.base64String = 'data:image/png;base64,' + base64String)
-            .catch(err => console.log(err));                
-        }).catch((error) => {
-          console.log('Image compress error: ', error);
-        });
-      }).catch((error) => {
-        console.log('RNThumbnail error: ', error);
-      });
+      if (Platform.OS === 'ios') {
+        // Important - files containing spaces break, need to uri decode the url before passing to RNThumbnail
+        // https://github.com/wkh237/react-native-fetch-blob/issues/248#issuecomment-297988317
+        let fileUri = decodeURI(file.uri)
+        this.getThumbnailUrl(file, fileUri)
+      } else {
+        this.setState({ loading: true })
+        RNFetchBlob.fs
+        .stat(file.uri)
+        .then(stats => {
+          filepath = stats.path;
+          this.getThumbnailUrl(file, filepath)
+        })
+      }
+    }
+    else {
+      this.uploadFile(this.props.card.currentCard, file, type);
     }
   }
 
@@ -1257,6 +1286,9 @@ class CardNewScreen extends React.Component {
       this.props.moveCard(this.props.card.currentCard.id, this.props.feedo.currentFeed.id);
     }
     this.prevFeedo = null;
+    if(this.textInputIdeaRef) {
+      this.textInputIdeaRef.focus();
+    }
   }
 
   onUpdateFeed() {
@@ -1357,16 +1389,18 @@ class CardNewScreen extends React.Component {
     }, 0);    
   }
 
-  onLayoutTextInput({nativeEvent: {layout}}) {
+  onLayoutTextInput({ nativeEvent: { layout } }) {
     this.textInputPositionY = layout.y;
   }
 
-  onLayoutScrollView({nativeEvent: {layout}}) {
+  onLayoutScrollView({ nativeEvent: { layout } }) {
     this.scrollViewHeight = layout.height;
     this.scrollContent();
   }
 
   get renderText() {
+    const { cardMode } = this.props;
+
     return (
       <View 
         style={{ flex: 1 }}
@@ -1390,7 +1424,7 @@ class CardNewScreen extends React.Component {
           ref={ref => this.textInputIdeaRef = ref}
           style={styles.textInputIdea}
           autoCorrect={true}
-          placeholder='Let your ideas flow. Type text, paste a link, add an image, video or audio'
+          placeholder={cardMode === CONSTANTS.SHARE_EXTENTION_CARD ? 'Add a note' : 'Let your ideas flow. Type text, paste a link, add an image, video or audio'}
           multiline={true}
           underlineColorAndroid='transparent'
           value={this.state.idea}
@@ -1399,7 +1433,8 @@ class CardNewScreen extends React.Component {
           onFocus={() => this.onFocus()}
           onBlur={() => this.onBlurIdea()}
           onSelectionChange={this.onSelectionChange.bind(this)}
-          selectionColor={COLORS.PURPLE}
+          selectionColor={Platform.OS === 'ios' ? COLORS.PURPLE : COLORS.LIGHT_PURPLE}
+          textAlignVertical={'top'}
         />
       </View>
     )
@@ -1487,6 +1522,7 @@ class CardNewScreen extends React.Component {
     if (cardMode !== CONSTANTS.MAIN_APP_CARD_FROM_DASHBOARD) {
       return;
     }
+
     return (
       <View style={styles.selectFeedoContainer}>
         <Text style={styles.textCreateCardIn}>Create card in:</Text>

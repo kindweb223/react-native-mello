@@ -3,7 +3,7 @@ import { ifIphoneX } from 'react-native-iphone-x-helper'
 import COLORS from '../../service/colors'
 import CONSTANTS from '../../service/constants'
 
-const FOOTER_HEIGHT = 55
+const FOOTER_HEIGHT = Platform.OS === 'ios' ? CONSTANTS.SCREEN_WIDTH / 7.5 : CONSTANTS.SCREEN_WIDTH / 7.5 + 10
 
 const styles = StyleSheet.create({
   container: {
@@ -26,7 +26,8 @@ const styles = StyleSheet.create({
   textInputIdea: {
     fontSize: 16,
     fontWeight: 'normal',
-    lineHeight: CONSTANTS.TEXT_INPUT_LINE_HEIGHT - 4,
+    color: 'black',
+    lineHeight: CONSTANTS.TEXT_INPUT_LINE_HEIGHT,
     marginBottom: 0,
     marginHorizontal: 16,
     paddingLeft: 0,
@@ -98,7 +99,7 @@ const styles = StyleSheet.create({
     color: COLORS.DARK_GREY,
   },
   footerContainer: {
-    marginBottom: Platform.os === 'android' ? 5 : 0,
+    marginBottom: Platform.OS === 'android' ? 10 : 0,
     paddingVertical: 5,
     height: FOOTER_HEIGHT,
     backgroundColor: '#fff',

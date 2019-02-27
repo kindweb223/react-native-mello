@@ -101,7 +101,7 @@ android {
         applicationId "io.solvers.feedo"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode 59
+        versionCode 63
         versionName "1.0"
         multiDexEnabled true
         ndk {
@@ -187,14 +187,6 @@ task copyDownloadableDepsToLibs(type: Copy) {
     into 'libs'
 }
 
-// android {
-//     compileOptions {
-//         sourceCompatibility JavaVersion.VERSION_1_8
-//         targetCompatibility JavaVersion.VERSION_1_8
-//     }
-// }
-
-
 apply plugin: 'com.google.gms.google-services'
 
-// com.google.gms.googleservices.GoogleServicesPlugin.config.disableVersionCheck = true
+com.google.gms.googleservices.GoogleServicesPlugin.config.disableVersionCheck = true
