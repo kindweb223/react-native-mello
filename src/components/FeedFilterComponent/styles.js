@@ -78,7 +78,7 @@ export default {
     backgroundColor: COLORS.PURPLE
   },
   buttonDeselect: {
-    backgroundColor: COLORS.LIGHT_GREY_LINE
+    backgroundColor: COLORS.SOFT_GREY
   },
   btnText: {
     fontSize: 13,
@@ -89,7 +89,7 @@ export default {
     color: '#fff'
   },
   btnDeselectText: {
-    color: '#000',
+    color: '#000'
   },
   heartIcon: {
     marginRight: 6
@@ -97,6 +97,6 @@ export default {
   splitter: {
     width: 1,
     height: '100%',
-    backgroundColor: COLORS.LIGHT_GREY
+    backgroundColor: COLORS.LIGHT_GREY_BORDER_LINE
   }
 }
