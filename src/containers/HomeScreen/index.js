@@ -288,11 +288,7 @@ class HomeScreen extends React.Component {
           const feedoFullList = filter(feedoList, item => item.status === 'PUBLISHED' && item.metadata.myInviteStatus !== 'INVITED')
 
           // Filter pinned flows and orderby myLastActivityDate
-          feedoPinnedList = orderBy(
-            filter(feedoFullList, item => item.pinned !== null),
-            ['metadata.myLastActivityDate'],
-            ['desc']
-          );
+          feedoPinnedList = filter(feedoFullList, item => item.pinned !== null);
           feedoUnPinnedList = filter(feedoFullList, item => item.pinned === null);
           feedoList = HomeScreen.getFilteredFeeds(feedoPinnedList, feedoUnPinnedList, filterShowType, filterSortType);
         } else {
@@ -1135,26 +1131,41 @@ class HomeScreen extends React.Component {
     }
 
     if (filterShowType === 'all') {
-      filteredFeedList = orderBy(
+      filteredPinnedFeedList = orderBy(
+        feedoPinnedList,
+        orderField,
+        orderType
+      );
+      filteredUnPinnedFeedList = orderBy(
         feedoUnPinnedList,
         orderField,
         orderType
       );
     } else if (filterShowType === 'owned') {
-      filteredFeedList = orderBy(
+      filteredPinnedFeedList = orderBy(
+        filter(feedoPinnedList, item => item.metadata.owner === true),
+        orderField,
+        orderType
+      );
+      filteredUnPinnedFeedList = orderBy(
         filter(feedoUnPinnedList, item => item.metadata.owner === true),
         orderField,
         orderType
       );
     } else if (filterShowType === 'shared') {
-      filteredFeedList = orderBy(
+      filteredPinnedFeedList = orderBy(
+        filter(feedoPinnedList, item => item.metadata.owner === false),
+        orderField,
+        orderType
+      );
+      filteredUnPinnedFeedList = orderBy(
         filter(feedoUnPinnedList, item => item.metadata.owner === false),
         orderField,
         orderType
       );
     }
 
-    return [...feedoPinnedList, ...filteredFeedList]
+    return [...filteredPinnedFeedList, ...filteredUnPinnedFeedList]
   }
 
   filterFeeds = () => {

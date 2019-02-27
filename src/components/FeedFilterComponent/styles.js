@@ -8,8 +8,8 @@ export default {
     width: '100%',
     bottom: 0,
     left: 0,
-    paddingTop: 21,
-    paddingBottom: 40,
+    paddingTop: 10,
+    paddingBottom: 45,
     borderRadius: 18,
     backgroundColor: '#fff',
     ...Platform.select({
@@ -26,21 +26,21 @@ export default {
   },
   header: {
     width: '100%',
-    height: 50,
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    paddingHorizontal: CONSTANTS.PADDING,
     marginBottom: 10,
   },
   closeButton: {
     width: 50,
     height: 50,
-    alignItems: 'flex-start',
+    alignItems: 'center',
     justifyContent: 'center'
   },
   headerTitle: {
+    paddingLeft: CONSTANTS.PADDING,
     fontSize: 18,
+    lineHeight: 25,
     color: '#000'
   },
   body: {
@@ -49,8 +49,10 @@ export default {
   row: {
     marginBottom: 25,
   },
-  countText: {
-    fontSize: 14
+  labelText: {
+    fontSize: 14,
+    lineHeight: 20,
+    color: '#000'
   },
   buttonGroup: {
     width: '100%',
@@ -79,7 +81,8 @@ export default {
     backgroundColor: COLORS.LIGHT_GREY_LINE
   },
   btnText: {
-    fontSize: 14,
+    fontSize: 13,
+    lineHeight: 14,
     fontWeight: '500'
   },
   btnSelectText: {

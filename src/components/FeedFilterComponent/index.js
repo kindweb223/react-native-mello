@@ -40,7 +40,7 @@ class FeedFilterComponent extends React.Component {
         isVisible={show}
         style={{ margin: 0 }}
         backdropColor='#e0e0e0'
-        backdropOpacity={0.9}
+        backdropOpacity={0.3}
         animationIn="slideInUp"
         animationOut="slideOutDown"
         animationInTiming={500}
@@ -57,7 +57,7 @@ class FeedFilterComponent extends React.Component {
 
           <View style={styles.body}>
             <View style={styles.row}>
-              <Text style={styles.countText}>Filters</Text>
+              <Text style={styles.labelText}>Filters</Text>
               <View style={styles.buttonGroup}>
                 <TouchableOpacity onPress={() => this.showFeeds('all')} style={styles.buttonView}>
                   <View style={[styles.button, showType === 'all' ? styles.buttonSelect : styles.buttonDeselect]}>
@@ -90,7 +90,7 @@ class FeedFilterComponent extends React.Component {
             </View>
 
             <View style={styles.row}>
-              <Text style={styles.countText}>Sort by</Text>
+              <Text style={styles.labelText}>Sort by</Text>
               <View style={styles.buttonGroup}>
                 <TouchableOpacity onPress={() => this.sortFeeds('recent')} style={styles.buttonView}>
                   <View style={[styles.button, sortType === 'recent' ? styles.buttonSelect : styles.buttonDeselect]}>
