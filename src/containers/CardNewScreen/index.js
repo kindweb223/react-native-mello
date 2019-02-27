@@ -730,6 +730,9 @@ class CardNewScreen extends React.Component {
               this.props.createCard(this.props.feedo.currentFeed.id);
               return;
             }
+            else {
+              this.props.setCurrentFeed({});
+            }
           }
         }
       } catch (error) {
