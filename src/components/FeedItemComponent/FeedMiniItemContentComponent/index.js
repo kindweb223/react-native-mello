@@ -28,6 +28,7 @@ const PIN_ICON_PURPLE = require('../../../../assets/images/Pin/Blue.png')
 import { 
   addFilterTag
 } from '../../../redux/feedo/actions'
+import ExFastImage from '../../ExFastImage';
 
 class FeedMiniItemContentComponent extends React.Component {
   onTagPress = (initialTag, page, clickEvent) => {
@@ -44,11 +45,12 @@ class FeedMiniItemContentComponent extends React.Component {
 
   render() {
     const { data, avatars, pinFlag, page, clickEvent, thumbnailImage } = this.props
+
     return (
       <View style={styles.container}>
         <View style={styles.leftContainer}>
           {thumbnailImage
-            ? <FastImage source={{ uri: thumbnailImage.coverImage }} resizeMode="cover" style={styles.thumbnailImage} />
+            ? <ExFastImage source={{ uri: thumbnailImage.coverImage }} resizeMode="cover" style={styles.thumbnailImage} />
             : <View style={styles.thumbnailImage} />
           }
         </View>
@@ -61,7 +63,7 @@ class FeedMiniItemContentComponent extends React.Component {
             <View style={styles.statsItemView}>
               <Image source={CARD_ICON_GREY} style={styles.cardIcon} />
               <Text style={[styles.feedText, styles.inActive]}>
-                {data.ideas.length}
+                {data.metadata.ideasSubmitted}
               </Text>
             </View>
             <View style={styles.rightView}>
