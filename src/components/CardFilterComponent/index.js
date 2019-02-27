@@ -62,8 +62,8 @@ class CardFilterComponent extends React.Component {
       <Modal
         isVisible={show}
         style={{ margin: 0 }}
-        backdropColor='#e0e0e0'
-        backdropOpacity={0.3}
+        backdropColor={COLORS.MODAL_BACKDROP}
+        backdropOpacity={0.4}
         animationIn="slideInUp"
         animationOut="slideOutDown"
         animationInTiming={500}

@@ -45,6 +45,7 @@ import ShareExtensionTip from '../../components/ShareExtensionTip'
 import FeedFilterComponent from '../../components/FeedFilterComponent'
 import styles from './styles'
 import CONSTANTS from '../../service/constants';
+import COLORS from '../../service/colors'
 import { TIP_SHARE_LINK_URL, ANDROID_PUSH_SENDER_ID, PIN_FEATURE, SEARCH_FEATURE } from '../../service/api'
 const SEARCH_ICON = require('../../../assets/images/Search/Grey.png')
 const SETTING_ICON = require('../../../assets/images/Settings/Grey.png')
@@ -1347,7 +1348,8 @@ class HomeScreen extends React.Component {
         <Modal 
           isVisible={this.state.showSharePermissionModal}
           style={{ margin: 8 }}
-          backdropOpacity={0.6}
+          backdropColor={COLORS.MODAL_BACKDROP}
+          backdropOpacity={0.4}
           animationInTiming={500}
           onBackdropPress={() => this.setState({ showSharePermissionModal: false })}
           onBackButtonPress={() => this.setState({ showSharePermissionModal: false })}
@@ -1372,7 +1374,8 @@ class HomeScreen extends React.Component {
           animationIn="fadeIn"
           animationOut="fadeOut"
           style={{ margin: 8 }}
-          backdropOpacity={0.6}
+          backdropColor={COLORS.MODAL_BACKDROP}
+          backdropOpacity={0.4}
           animationInTiming={500}
           onBackdropPress={() => this.setState({ showShareConfirmModal: false })}
           onBackButtonPress={() => this.setState({ showShareConfirmModal: false })}

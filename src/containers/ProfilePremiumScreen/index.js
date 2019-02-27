@@ -131,8 +131,8 @@ class ProfilePremiumScreen extends React.Component {
 
         <Modal
           isVisible={this.state.showPremiumModal}
-          backdropColor='#656974'
-          backdropOpacity={0.6}
+          backdropColor={'COLORS.MODAL_BACKDROP'}
+          backdropOpacity={0.4}
           animationIn="slideInUp"
           animationOut="slideOutDown"
           animationInTiming={300}

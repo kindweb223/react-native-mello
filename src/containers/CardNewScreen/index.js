@@ -1838,8 +1838,8 @@ class CardNewScreen extends React.Component {
         <Modal 
           isVisible={this.state.isCopyLink}
           style={styles.successModal}
-          backdropColor='#e0e0e0'
-          backdropOpacity={0.9}
+          backdropColor={COLORS.MODAL_BACKDROP}
+          backdropOpacity={0.4}
           animationIn="fadeIn"
           animationOut="fadeOut"
           animationInTiming={500}

@@ -121,8 +121,8 @@ class FeedLongHoldMenuScreen extends React.Component {
         key="4"
         isVisible={this.state.isShowShare}
         style={{ margin: 0 }}
-        backdropColor='#f5f5f5'
-        backdropOpacity={0.9}
+        backdropColor={COLORS.MODAL_BACKDROP}
+        backdropOpacity={0.4}
         animationIn="zoomInUp"
         animationOut="zoomOutDown"
         animationInTiming={500}

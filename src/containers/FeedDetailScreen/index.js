@@ -1685,8 +1685,8 @@ class FeedDetailScreen extends React.Component {
         <Modal
           isVisible={this.state.isShowShare}
           style={styles.shareScreenContainer}
-          backdropColor='#f5f5f5'
-          backdropOpacity={0.9}
+          backdropColor={COLORS.MODAL_BACKDROP}
+          backdropOpacity={0.4}
           animationIn="slideInUp"
           animationOut="slideOutDown"
           animationInTiming={300}

@@ -9,6 +9,7 @@ import PropTypes from 'prop-types'
 import Modal from 'react-native-modal'
 import _ from 'lodash'
 import styles from './styles'
+import COLORS from '../../service/colors'
 
 const CLOSE_ICON = require('../../../assets/images/Close/Blue.png')
 
@@ -39,8 +40,8 @@ class FeedFilterComponent extends React.Component {
       <Modal
         isVisible={show}
         style={{ margin: 0 }}
-        backdropColor='#e0e0e0'
-        backdropOpacity={0.3}
+        backdropColor={COLORS.MODAL_BACKDROP}
+        backdropOpacity={0.4}
         animationIn="slideInUp"
         animationOut="slideOutDown"
         animationInTiming={500}
