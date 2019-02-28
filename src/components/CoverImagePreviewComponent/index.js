@@ -36,8 +36,12 @@ export default class CoverImagePreviewComponent extends React.Component {
 
   UNSAFE_componentWillReceiveProps(nextProps) {
     this.setState({ files: nextProps.files })
-    if (nextProps.imageUploading && this.state.progress === 0) {
-      this.animateProgressBar();
+    if (nextProps.imageUploading) {
+      this.setState({ 
+        progress: 0,
+      }, () => {
+        this.animateProgressBar();
+      });
     }
   }
 
@@ -49,12 +53,12 @@ export default class CoverImagePreviewComponent extends React.Component {
     let progress = 0;
     let animateProgressInterval = setInterval(() => {
       progress += 0.1;
-      if (progress > 1) {
-        this.setState({ indeterminate: true, progress: 0 });
+      if (progress >= 0.9) {
+        this.setState({ progress: 0.9 });
       } else {
         this.setState({ progress });
       }
-    }, 500);
+    }, 200);
     setTimeout(() => clearInterval(animateProgressInterval), 6000);
   }
 
