@@ -26,6 +26,11 @@ react-native unlink react-native-splash-screen
 2. In `AppDelegate.m` comment in production for intercom
 3. In `MainApplication.java` comment in production for intercom
 
+# Intercom setting
+Update native code for PROD and DEV config
+- Android/app/src/main/java/io/solvers/feedo/MainApplication.java onCreate() line: 95
+- ios/Mello/AppDelegate.m didFinishLaunchingWithOptions() line: 40
+
 Bump versions
  - npm --no-git-tag-version version patch
  - iOS info.plist
@@ -37,7 +42,7 @@ run
 
 bugsnag-sourcemaps upload \
     --api-key ff91b9f4357b0367f0fac2f9f70855c5 \
-    --app-version 1.0.60 \
+    --app-version 1.0.65 \
     --minified-file android-release.bundle \
     --source-map android-release.bundle.map \
     --minified-url index.android.bundle \
@@ -45,13 +50,8 @@ bugsnag-sourcemaps upload \
 
 bugsnag-sourcemaps upload \
     --api-key ff91b9f4357b0367f0fac2f9f70855c5 \
-    --app-version 1.0.60 \
+    --app-version 1.0.65 \
     --minified-file ios-release.bundle \
     --source-map ios-release.bundle.map \
     --minified-url main.jsbundle \
     --upload-sources
-
-# Intercom setting
-Update native code for PROD and DEV config
-- Android/app/src/main/java/io/solvers/feedo/MainApplication.java onCreate() line: 95
-- ios/Mello/AppDelegate.m didFinishLaunchingWithOptions() line: 40
