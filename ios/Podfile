@@ -39,6 +39,8 @@ target 'Mello' do
 
   pod 'react-native-intercom', :path => '../node_modules/react-native-intercom'
 
+  pod 'Intercom'
+
 end
 
 target 'MelloEx' do
