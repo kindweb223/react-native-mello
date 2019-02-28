@@ -27,6 +27,9 @@ const isFeedOwner = (feed) => {
   return feed && feed.metadata && feed.metadata.owner
 }
 
+const isFeedOwnerOnlyInvitee = (feed) => {
+  return feed.invitees.length === 1 && isInviteeOwner(feed, feed.invitees[0])
+}
 /**
  * If the invitee is feed owner, return true
  */
@@ -167,5 +170,6 @@ export {
   handleShareFeed,
   showPremiumAlert,
   isMelloTipFeed,
-  checkVideoCoverImage
+  checkVideoCoverImage,
+  isFeedOwnerOnlyInvitee
 }
