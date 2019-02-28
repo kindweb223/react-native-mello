@@ -135,6 +135,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
     width: 122,
     paddingVertical: 10,
+    marginBottom: 32,
     position: 'absolute',
     right: 55,
     bottom: CONSTANTS.STATUS_BOTTOM_BAR_HEIGHT + 10,

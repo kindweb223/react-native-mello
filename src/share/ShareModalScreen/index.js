@@ -11,6 +11,7 @@ import ShareExtension from '../shareExtension'
 import styles from './styles'
 import Modal from 'react-native-modalbox'
 import CONSTANTS from '../../service/constants'
+import COLORS from '../../service/colors'
 import { SCHEME } from '../../service/api'
 import { Actions } from 'react-native-router-flux'
 
@@ -87,7 +88,8 @@ export default class ShareModalScreen extends React.Component {
         <Modal
           style={{ backgroundColor: 'transparent' }}
           scrollOffset={CONSTANTS.SCREEN_HEIGHT}
-          backdropOpacity={0.2}
+          backdropColor={COLORS.MODAL_BACKDROP}
+          backdropOpacity={0.4}
           swipeToClose={false}
           position="center"
           backdropPressToClose={false}

@@ -135,7 +135,7 @@ export default class Masonry extends React.Component {
 				item.onLayout = callback;
 				minCol.addItems( [ item ] );
 			}
-		}, 100)
+		}, 0)
 	}
 
 	render() {
