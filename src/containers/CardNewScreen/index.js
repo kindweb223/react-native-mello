@@ -120,8 +120,11 @@ class CardNewScreen extends React.Component {
       isCopyLink: false,
       isDeleteLink: false,
       copiedLink: null,
+      imageUploading: false,
+      cardMode: 'CardNewSingle'
     };
 
+    this.imageUploading = false;
     this.selectedFile = null;
     this.selectedFileMimeType = null;
     this.selectedFileType = null;
@@ -162,7 +165,7 @@ class CardNewScreen extends React.Component {
     this.currentShareImageIndex = 0;
 
     this.coverImageWidth = CONSTANTS.SCREEN_WIDTH
-    this.coverImageHeight = CONSTANTS.SCREEN_HEIGHT
+    this.coverImageHeight = CONSTANTS.SCREEN_HEIGHT / 3
 
     if (props.cardMode === CONSTANTS.SHARE_EXTENTION_CARD && props.shareUrl === '' && props.shareImageUrls.length) {
       props.shareImageUrls.forEach( async(imageUri, index) => {
@@ -337,6 +340,12 @@ class CardNewScreen extends React.Component {
       if (newImageFiles.length === 1 && !nextProps.card.currentCard.coverImage) {
         this.onSetCoverImage(newImageFiles[0].id);
       }
+
+      // Set uploading false
+      // To handle non image files so will pass isValidCard
+        this.setState({ imageUploading: false });
+        this.imageUploading = false;
+
       this.currentSelectedLinkImageIndex ++;
       if (this.currentSelectedLinkImageIndex < this.selectedLinkImages.length) {
         this.addLinkImage(id, this.selectedLinkImages[this.currentSelectedLinkImageIndex]);
@@ -382,9 +391,11 @@ class CardNewScreen extends React.Component {
       const { width, height } = await this.getImageSize(nextProps.card.currentCard.coverImage);
       this.coverImageWidth = width
       this.coverImageHeight = height
+      this.imageUploading = false;
 
       this.setState({
         coverImage: nextProps.card.currentCard.coverImage,
+        // imageUploading: false
       }, () => {
         if (this.props.cardMode === CONSTANTS.SHARE_EXTENTION_CARD) {
           setTimeout(() => {
@@ -916,6 +927,9 @@ class CardNewScreen extends React.Component {
    * @param {*} files 
    */
   isCardValid(idea, files) {
+    if (this.imageUploading) {
+      return false;
+    }
     return idea.length > 0 || (files && files.length > 0) ? true : false
   }
 
@@ -1040,7 +1054,15 @@ class CardNewScreen extends React.Component {
 
   async uploadFile(currentCard, file, type) {
     this.selectedFile = file;
-    
+    this.imageUploading = true;
+    this.textInputIdeaRef.focus(); // To show progress bar for long image
+    let imageFiles = _.filter(currentCard.files, file => file.fileType === 'MEDIA');
+    this.setState({
+      imageUploadStarted: true,
+      imageUploading: true,
+      cardMode: imageFiles.length > 0 ? 'CardNewMulti' : 'CardNewSingle'
+    });
+
     if (_.endsWith(file.uri, '.pages')) {
       this.selectedFileMimeType = 'application/x-iwork-pages-sffpages'
     } else if (_.endsWith(file.uri, '.numbers')) {
@@ -1086,6 +1108,9 @@ class CardNewScreen extends React.Component {
   }
 
   onTapMediaPickerActionSheet(index) {
+    this.setState({ imageUploading: false });
+    this.imageUploading = false;
+    this.textInputIdeaRef.blur(); // To show progress bar for long image
     var options = {
       storageOptions: {
         skipBackup: true,
@@ -1127,6 +1152,8 @@ class CardNewScreen extends React.Component {
   }
 
   handleFile = (file) => {
+    this.coverImageWidth = file.width;
+    this.coverImageHeight = file.height;
     const mimeType = (Platform.OS === 'ios') ? mime.lookup(file.uri) : file.type;
 
     let type = 'FILE';
@@ -1342,7 +1369,7 @@ class CardNewScreen extends React.Component {
     let imageFiles = _.filter(this.props.card.currentCard.files, file => file.fileType === 'MEDIA');
 
     const ratio = CONSTANTS.SCREEN_WIDTH / this.coverImageWidth
-    if (this.state.coverImage) {
+    if (this.state.imageUploadStarted) {
       return (
         <View
           style={
@@ -1352,6 +1379,8 @@ class CardNewScreen extends React.Component {
           }
         >
           <CoverImagePreviewComponent
+            imageUploading={this.state.imageUploading}
+            cardMode={this.state.cardMode}
             isShareExtension={cardMode === CONSTANTS.SHARE_EXTENTION_CARD}
             coverImage={this.state.coverImage}
             files={imageFiles}
