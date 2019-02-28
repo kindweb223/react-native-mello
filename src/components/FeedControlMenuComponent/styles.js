@@ -10,8 +10,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'space-between',
     paddingHorizontal: 10,
-    marginTop: 10,
-    marginBottom: 5
+    marginVertical: 5
   },
   switchTextView: {
     flexDirection: 'row',
