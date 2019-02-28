@@ -195,7 +195,8 @@ const styles = StyleSheet.create({
   btnInvite: {
     color: COLORS.PURPLE,
     fontSize: 16,
-    fontWeight: '500'
+    fontWeight: '500',
+    marginRight: 3
   }
 })
 
