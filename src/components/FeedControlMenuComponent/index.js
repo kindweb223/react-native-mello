@@ -60,16 +60,18 @@ class FeedControlMenuComponent extends React.Component {
 
         {
           isEnableShareAllowed && !COMMON_FUNC.isMelloTipFeed(feedo) &&
-          <TouchableOpacity style={styles.settingItem} onPress={() => isEnableShare ? this.props.handleSettingItem('ShareLink') : {}} >
-            <Image source={sharingImg} style={styles.menuIcon} />
-            <Text style={styles.settingButtonText}>Link sharing {isEnableShare ? 'on' : 'off'}</Text>
+          <View style={styles.switchView}>
+            <TouchableOpacity style={styles.switchTextView} onPress={() => isEnableShare ? this.props.handleSettingItem('ShareLink') : {}} >
+              <Image source={sharingImg} style={styles.menuIcon} />
+              <Text style={styles.settingButtonText}>Link sharing {isEnableShare ? 'on' : 'off'}</Text>
+            </TouchableOpacity>
             <Switch
-              style={{ marginLeft: 5 }}
+              style={styles.switch}
               trackColor={{true: colors.PURPLE, false: null}}
               value={isEnableShare}
               onValueChange={value => this.handleSwitchValue(value)}
             />
-          </TouchableOpacity>
+          </View>
         }
 
         {PIN_FEATURE && (
