@@ -72,7 +72,7 @@ export default class CoverImagePreviewComponent extends React.Component {
     }
 
     return this.props.imageUploading && (
-      <View style={styles.progressView}>
+      <View style={[styles.progressView, this.state.files.length > 0 && { backgroundColor: 'transparent' } ]}>
         <View style={styles.progressContainer}>
           <Progress.Bar
             progress={this.state.progress}
