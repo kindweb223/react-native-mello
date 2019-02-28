@@ -209,6 +209,8 @@ class HomeScreen extends React.Component {
     this.registerPushNotification();
 
     // To enable iOS push notifications for Intercom
+    Intercom.registerIdentifiedUser({ userId: this.props.user.userInfo.id });
+
     if (Platform.OS === 'ios') {
       Intercom.registerForPush();
     } else {
