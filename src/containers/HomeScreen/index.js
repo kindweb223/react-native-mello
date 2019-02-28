@@ -219,10 +219,8 @@ class HomeScreen extends React.Component {
           console.log('error : ', error);
           return;
         }
-        console.log('RESULT: ', result)
         if (result) {
           const deviceTokenInfo = JSON.parse(result);
-          console.log('DEVINCE_TOKEN: ', deviceTokenInfo)
           Intercom.sendTokenToIntercom(deviceTokenInfo.deviceToken);
         }
       })
