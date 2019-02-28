@@ -12,13 +12,6 @@ class FeedNavbarSettingComponent extends React.Component {
   render() {
     return (
       <View style={styles.settingView}>
-        {/*
-        <TouchableOpacity style={styles.zapButton}>
-          <View style={styles.zapButtonView}>
-            <Octicons name="zap" style={styles.zapIcon} />
-          </View>
-        </TouchableOpacity>
-        */}
         <TouchableOpacity onPress={() => this.props.handleSetting()}>
           <View style={styles.button}>
             <Entypo name="dots-three-horizontal" style={styles.settingIcon} />

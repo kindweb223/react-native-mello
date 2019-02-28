@@ -68,7 +68,7 @@ const styles = StyleSheet.create({
     height: '100%',
     justifyContent: 'center',
     alignItems: 'center',
-    marginLeft: 8
+    marginLeft: 5
   },
   collapseView: {
     width: '100%',
@@ -195,8 +195,7 @@ const styles = StyleSheet.create({
   btnInvite: {
     color: COLORS.PURPLE,
     fontSize: 16,
-    fontWeight: '500',
-    marginRight: 3
+    fontWeight: '500'
   }
 })
 
