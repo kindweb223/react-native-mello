@@ -34,7 +34,6 @@ const styles = StyleSheet.create({
   navBar: {
     width: '100%',
     height: NAV_BAR_HEIGHT,
-    paddingRight: CONSTANTS.PADDING,
     zIndex: 11,
     flexDirection: 'row',
     justifyContent: 'space-between',
@@ -68,7 +67,7 @@ const styles = StyleSheet.create({
     height: '100%',
     justifyContent: 'center',
     alignItems: 'center',
-    marginLeft: 5
+    marginLeft: 2
   },
   collapseView: {
     width: '100%',
