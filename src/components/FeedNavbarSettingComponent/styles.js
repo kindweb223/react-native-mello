@@ -10,8 +10,6 @@ const styles = StyleSheet.create({
   button: {
     width: 34,
     height: 34,
-    backgroundColor: COLORS.PURPLE,
-    borderRadius: 17,
     justifyContent: 'center',
     alignItems: 'center',
     paddingTop: 2,
@@ -19,7 +17,7 @@ const styles = StyleSheet.create({
   },
   settingIcon: {
     fontSize: 20,
-    color: '#fff',
+    color: COLORS.ACTION_SHEET_TITLE
   },
   zapButton: {
     marginRight: 10

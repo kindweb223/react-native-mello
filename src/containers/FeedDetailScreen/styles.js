@@ -191,6 +191,11 @@ const styles = StyleSheet.create({
     color: '#fff',
     fontSize: 15,
     fontWeight: '500'
+  },
+  btnInvite: {
+    color: COLORS.PURPLE,
+    fontSize: 16,
+    fontWeight: '500'
   }
 })
 
