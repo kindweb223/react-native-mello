@@ -1289,6 +1289,9 @@ class CardNewScreen extends React.Component {
     if (this.selectedLinkImages.length > 0) {
       this.addLinkImage(id, this.selectedLinkImages[this.currentSelectedLinkImageIndex]);
     }
+
+    // So cover image will show and skip uploading transition
+    this.setState({imageUploadStarted: true, imageUploading: false})
   }
 
   onSelectCoverImage() {
