@@ -340,10 +340,12 @@ class CardNewScreen extends React.Component {
       if (newImageFiles.length === 1 && !nextProps.card.currentCard.coverImage) {
         this.onSetCoverImage(newImageFiles[0].id);
       }
-      if (newImageFiles.length > 1) { // Need to stop image uploading state here for 2nd Image
+
+      // Set uploading false
+      // To handle non image files so will pass isValidCard
         this.setState({ imageUploading: false });
         this.imageUploading = false;
-      }
+
       this.currentSelectedLinkImageIndex ++;
       if (this.currentSelectedLinkImageIndex < this.selectedLinkImages.length) {
         this.addLinkImage(id, this.selectedLinkImages[this.currentSelectedLinkImageIndex]);
