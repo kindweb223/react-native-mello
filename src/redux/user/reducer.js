@@ -4,9 +4,8 @@ import FastImage from "react-native-fast-image"
 import * as types from './types'
 import CONSTANTS from '../../../src/service/constants'
 import SharedGroupPreferences from 'react-native-shared-group-preferences'
-
+import Intercom from 'react-native-intercom'
 import pubnub from '../../lib/pubnub'
-import { Actions } from 'react-native-router-flux';
 
 const initialState = {
   loading: null,
@@ -233,6 +232,9 @@ export default function user(state = initialState, action = {}) {
 
       // Unsubscribe pubnub channels
       pubnub.unsubscribeAll()
+
+      // Logout intercom
+      Intercom.logout()
 
       return {
         ...state,

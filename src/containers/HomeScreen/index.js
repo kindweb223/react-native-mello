@@ -25,6 +25,7 @@ import * as R from 'ramda'
 import { find, filter, orderBy } from 'lodash'
 import DeviceInfo from 'react-native-device-info';
 import Permissions from 'react-native-permissions'
+import Intercom from 'react-native-intercom'
 
 import pubnub from '../../lib/pubnub'
 import Analytics from '../../lib/firebase'
@@ -206,9 +207,31 @@ class HomeScreen extends React.Component {
     });
 
     this.registerPushNotification();
+
+    // To enable iOS push notifications for Intercom
+    Intercom.registerIdentifiedUser({ userId: this.props.user.userInfo.id });
+
+    if (Platform.OS === 'ios') {
+      Intercom.registerForPush();
+    } else {
+      AsyncStorage.getItem(CONSTANTS.USER_DEVICE_TOKEN, (error, result) => {
+        if (error) {
+          console.log('error : ', error);
+          return;
+        }
+        if (result) {
+          const deviceTokenInfo = JSON.parse(result);
+          Intercom.sendTokenToIntercom(deviceTokenInfo.deviceToken);
+        }
+      })
+    }
+    Intercom.handlePushMessage();
+
     this.props.getFeedoList()
     this.props.getInvitedFeedList()
     this.props.getActivityFeed(this.props.user.userInfo.id, { page: 0, size: PAGE_COUNT })
+
+    Intercom.addEventListener(Intercom.Notifications.UNREAD_COUNT, this._onUnreadIntercomChange);
 
     AppState.addEventListener('change', this.onHandleAppStateChange.bind(this));
     appOpened(this.props.user.userInfo.id);
@@ -218,7 +241,12 @@ class HomeScreen extends React.Component {
 
   componentWillUnmount() {
     AppState.removeEventListener('change', this.onHandleAppStateChange);
+    Intercom.removeEventListener(Intercom.Notifications.UNREAD_COUNT, this._onUnreadIntercomChange);
     BackHandler.removeEventListener('hardwareBackPress', this.handleBackButton);
+  }
+
+  _onUnreadIntercomChange = ({ count }) => {
+    // console.log('INTERCOM_COUNT: ', count)
   }
 
   handleBackButton = () => {
