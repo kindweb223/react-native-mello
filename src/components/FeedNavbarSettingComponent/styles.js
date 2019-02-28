@@ -13,27 +13,11 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     paddingTop: 2,
-    paddingLeft: 1
+    paddingLeft: 14
   },
   settingIcon: {
     fontSize: 20,
     color: COLORS.ACTION_SHEET_TITLE
-  },
-  zapButton: {
-    marginRight: 10
-  },
-  zapButtonView: {
-    width: 34,
-    height: 34,
-    backgroundColor: COLORS.PURPLE,
-    borderRadius: 17,
-    justifyContent: 'center',
-    marginLeft: 10
-  },
-  zapIcon: {
-    fontSize: 20,
-    color: '#fff',
-    marginLeft: 10
   }
 })
 
