@@ -55,10 +55,7 @@ class ProfileSupportScreen extends React.Component {
   }
 
   onCallIntercom = () => {
-    const { user: { userInfo } } = this.props;
-
     Intercom.logEvent('viewed_screen', { extra: 'metadata' });
-    Intercom.registerIdentifiedUser({ userId: userInfo.id });
     Intercom.displayConversationsList();
   }
 

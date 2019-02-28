@@ -48,3 +48,8 @@ bugsnag-sourcemaps upload \
     --source-map ios-release.bundle.map \
     --minified-url main.jsbundle \
     --upload-sources
+
+#Intercom setting
+Update native code for PROD and DEV config
+- Android/app/src/main/java/io/solvers/feedo/MainApplication.java onCreate() line: 95
+- ios/Mello/AppDelegate.m didFinishLaunchingWithOptions() line: 40
