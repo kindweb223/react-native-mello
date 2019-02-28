@@ -88,7 +88,8 @@ class ExFastImage extends React.Component {
     const {
       style,
       resizeMode,
-      source
+      source,
+      onLoadEnd
     } = this.props;
 
     const {
@@ -117,6 +118,7 @@ class ExFastImage extends React.Component {
           source={source}
           resizeMode={resizeMode}
           onLoad={this.onLoad}
+          onLoadEnd={onLoadEnd}
           onProgress={this.onProgress}
         />
         {/* <FastImage

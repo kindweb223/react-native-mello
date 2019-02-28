@@ -186,6 +186,8 @@ class TutorialScreen extends React.Component {
             {index === 1 && (
               <Video 
                 ref={(ref) => { this.player1 = ref }}
+                ignoreSilentSwitch={'obey'}
+                muted={true}
                 source={VIDEO_COLLECT}
                 allowsExternalPlayback={false}
                 paused={this.state.video1Paused}
@@ -196,6 +198,8 @@ class TutorialScreen extends React.Component {
             {index === 2 && (
               <Video  
                 ref={(ref) => { this.player2 = ref }}
+                ignoreSilentSwitch={'obey'}
+                muted={true}
                 source={VIDEO_REVIEW}
                 allowsExternalPlayback={false}
                 paused={this.state.video2Paused}
@@ -206,6 +210,8 @@ class TutorialScreen extends React.Component {
             {index === 3 && (
               <Video 
                 ref={(ref) => { this.player3 = ref }}
+                ignoreSilentSwitch={'obey'}
+                muted={true}
                 source={VIDEO_SHARE}
                 allowsExternalPlayback={false}
                 paused={this.state.video3Paused}
@@ -216,6 +222,8 @@ class TutorialScreen extends React.Component {
             {index === 4 && (
               <Video 
                 ref={(ref) => { this.player4 = ref }}
+                ignoreSilentSwitch={'obey'}
+                muted={true}
                 source={VIDEO_SERVICE}
                 allowsExternalPlayback={false}
                 paused={this.state.video4Paused}
@@ -226,6 +234,8 @@ class TutorialScreen extends React.Component {
             {index === 5 && (
               <Video 
                 ref={(ref) => { this.player5 = ref }}
+                ignoreSilentSwitch={'obey'}
+                muted={true}
                 source={VIDEO_PEOPLE}
                 allowsExternalPlayback={false}
                 paused={this.state.video5Paused}

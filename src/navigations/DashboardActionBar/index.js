@@ -65,7 +65,7 @@ class DashboardActionBar extends React.Component {
           )}
           {filtering && (
             <TouchableOpacity style={styles.iconView} onPress={() => this.props.handleFilter()}>
-              <Image source={filterType === 'all' && sortType ==='date' ? FILTER_ICON_G : FILTER_ICON_B} />
+              <Image source={filterType === 'all' && (sortType === 'date' || sortType === 'recent') ? FILTER_ICON_G : FILTER_ICON_B} />
             </TouchableOpacity>
           )}
           {notifications &&

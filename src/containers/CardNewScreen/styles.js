@@ -77,7 +77,8 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    marginBottom: 10
+    marginBottom: 10,
+    marginTop: Platform.OS === 'ios' ? 0 : 10
   },
   extensionHeaderContainer: {
     flexDirection: 'row',

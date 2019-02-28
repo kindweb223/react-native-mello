@@ -7,11 +7,14 @@ import {
 } from 'react-native'
 import PropTypes from 'prop-types'
 
+import * as Progress from 'react-native-progress';
+import Ionicons from 'react-native-vector-icons/Ionicons'
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons'
 import Modal from 'react-native-modal'
 import FastImage from 'react-native-fast-image'
 import _ from 'lodash'
 import ImageSliderScreen from '../../containers/ImageSliderScreen'
+import ExFastImage from '../ExFastImage';
 import * as COMMON_FUNC from '../../service/commonFunc'
 import styles from './styles'
 import CONSTANTS from '../../service/constants'
@@ -23,27 +26,80 @@ export default class CoverImagePreviewComponent extends React.Component {
     this.state = {
       files: this.props.files,
       isPreview: false,
-      position: 0
+      position: 0,
+      progress: 0,
+      indeterminate: false,
+      loadEnd: false
     };
    
   }
 
   UNSAFE_componentWillReceiveProps(nextProps) {
     this.setState({ files: nextProps.files })
+    if (nextProps.imageUploading) {
+      this.setState({ 
+        progress: 0,
+      }, () => {
+        this.animateProgressBar();
+      });
+    }
   }
 
   onPressImage(index) {
     this.setState({ isPreview: true, position: index })
   }
 
+  animateProgressBar() {
+    let progress = 0;
+    let animateProgressInterval = setInterval(() => {
+      progress += 0.1;
+      if (progress >= 0.9) {
+        this.setState({ progress: 0.9 });
+      } else {
+        this.setState({ progress });
+      }
+    }, 200);
+    setTimeout(() => clearInterval(animateProgressInterval), 6000);
+  }
+
+  get renderProgressBar() {
+    if (this.props.cardMode === 'CardNewSingle' && this.state.loadEnd) {
+      return;
+    }
+
+    if (this.props.cardMode === 'CardDetailSingle' && this.state.loadEnd) {
+      return;
+    }
+
+    return this.props.imageUploading && (
+      <View style={[styles.progressView, this.state.files.length > 0 && { backgroundColor: 'transparent' } ]}>
+        <View style={styles.progressContainer}>
+          <Progress.Bar
+            progress={this.state.progress}
+            indeterminate={this.state.indeterminate}
+            color='white'
+            unfilledColor='#A1A5AE'
+            borderWidth={0}
+          />
+        </View>
+      </View>
+    )
+  }
+
   renderCoverImage(files, coverImage, position) {
     const { isFastImage, isShareExtension } = this.props;
     const videoFile = COMMON_FUNC.checkVideoCoverImage(files, coverImage)
 
+    if (!coverImage) return;
     if (isFastImage) {
       return (
         <TouchableOpacity style={styles.container} activeOpacity={1} onPress={() => this.onPressImage(position)}>
-          <FastImage style={styles.imageCover} source={{ uri: coverImage }} resizeMode={isShareExtension ? 'cover' : 'contain'} />
+          <ExFastImage
+            style={styles.imageCover}
+            source={{ uri: coverImage }}
+            resizeMode={isShareExtension ? 'cover' : 'cover'}
+            onLoadEnd={() => this.setState({ loadEnd: true })}
+          />
           {
             files.length > 1 && 
             <View style={styles.imageNumberContainer}>
@@ -61,7 +117,12 @@ export default class CoverImagePreviewComponent extends React.Component {
     return (
       // Don't all
       <TouchableOpacity style={styles.container} activeOpacity={1}>
-        <Image style={styles.imageCover} source={{ uri: coverImage }} resizeMode={isShareExtension ? 'cover' : 'contain'} />
+        <Image
+          style={styles.imageCover}
+          source={{ uri: coverImage }}
+          resizeMode={isShareExtension ? 'cover' : 'contain'}
+          onLoadEnd={() => this.setState({ loadEnd: true })}
+        />
         {
             files && files.length > 1 &&
             <View style={styles.imageNumberContainer}>
@@ -88,6 +149,7 @@ export default class CoverImagePreviewComponent extends React.Component {
     return (
       <View style={styles.container}>
         {this.renderCoverImage(files, coverImage, position)}
+        {this.renderProgressBar}
         <Modal 
           isVisible={this.state.isPreview}
           style={styles.previewModal}
