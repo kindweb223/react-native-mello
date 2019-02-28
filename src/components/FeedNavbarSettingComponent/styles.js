@@ -1,5 +1,6 @@
 import { StyleSheet } from 'react-native'
 import COLORS from '../../service/colors'
+import CONSTANTS from '../../service/constants'
 
 const styles = StyleSheet.create({
   settingView: {
@@ -8,12 +9,11 @@ const styles = StyleSheet.create({
     alignItems: 'center'
   },
   button: {
-    width: 34,
     height: 34,
     justifyContent: 'center',
-    alignItems: 'center',
+    alignItems: 'flex-end',
     paddingTop: 2,
-    paddingLeft: 14
+    paddingHorizontal: CONSTANTS.PADDING
   },
   settingIcon: {
     fontSize: 20,
