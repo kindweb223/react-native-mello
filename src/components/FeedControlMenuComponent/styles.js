@@ -5,6 +5,20 @@ import CONSTANTS from '../../service/constants'
 const styles = StyleSheet.create({
   menuContainer: {
   },
+  switchView: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    paddingHorizontal: 10,
+    marginVertical: 5
+  },
+  switchTextView: {
+    flexDirection: 'row',
+    alignItems: 'center'    
+  },
+  switch: {
+    transform: Platform.OS === 'ios' ? [{ scaleX: 0.7 }, { scaleY: 0.7 }] : [{ scaleX: 1 }, { scaleY: 1 }]
+  },
   settingItem: {
     flexDirection: 'row',
     alignItems: 'center',
