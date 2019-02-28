@@ -1432,7 +1432,7 @@ class FeedDetailScreen extends React.Component {
                 {!_.isEmpty(currentFeed) && !COMMON_FUNC.isMelloTipFeed(currentFeed) && (
                   <View style={styles.avatarView}>
                     <TouchableOpacity onPress={() => this.handleShare()}>
-                      <AvatarPileComponent avatars={avatars} />
+                      <AvatarPileComponent avatars={avatars} showPlus={false} />
                     </TouchableOpacity>
                   </View>
                 )}
