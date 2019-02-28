@@ -660,8 +660,8 @@ class CardNewScreen extends React.Component {
       }
     });
 
-    this.keyboardWillShowSubscription = Keyboard.addListener('keyboardWillShow', (e) => this.keyboardWillShow(e));
-    this.keyboardWillHideSubscription = Keyboard.addListener('keyboardWillHide', (e) => this.keyboardWillHide(e));
+    this.keyboardWillShowSubscription = Keyboard.addListener('keyboardDidShow', (e) => this.keyboardWillShow(e));
+    this.keyboardWillHideSubscription = Keyboard.addListener('keyboardDidHide', (e) => this.keyboardWillHide(e));
     if (Platform.OS === 'ios') {
       this.safariViewShowSubscription = SafariView.addEventListener('onShow', () => this.safariViewShow());
       this.safariViewDismissSubscription = SafariView.addEventListener('onDismiss', () => this.safariViewDismiss());
@@ -696,7 +696,7 @@ class CardNewScreen extends React.Component {
     Animated.timing(
       this.animatedKeyboardHeight, {
         toValue: e.endCoordinates.height,
-        duration: e.duration,
+        duration: CONSTANTS.ANIMATEION_MILLI_SECONDS,
       }
     ).start(() => {
       if (this.isDisabledKeyboard === true || !this.textInputIdeaRef) {
@@ -711,7 +711,7 @@ class CardNewScreen extends React.Component {
     Animated.timing(
       this.animatedKeyboardHeight, {
         toValue: 0,
-        duration: e.duration,
+        duration: CONSTANTS.ANIMATEION_MILLI_SECONDS,
       }
     ).start();
   }
@@ -1748,7 +1748,7 @@ class CardNewScreen extends React.Component {
     if (cardMode === CONSTANTS.SHARE_EXTENTION_CARD) {
       let bottomMargin = CONSTANTS.SCREEN_VERTICAL_MIN_MARGIN;
       if (this.state.isShowKeyboardButton) {
-        bottomMargin = 20;
+        bottomMargin = Platform.OS === 'ios' ? 20 : 40;
       }
       contentContainerStyle = {
         height: Animated.subtract(CONSTANTS.SCREEN_HEIGHT - CONSTANTS.SCREEN_VERTICAL_MIN_MARGIN - bottomMargin, this.animatedKeyboardHeight),
