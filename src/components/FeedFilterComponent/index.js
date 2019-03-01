@@ -113,9 +113,9 @@ class FeedFilterComponent extends React.Component {
 
                 <View style={styles.splitter} />
 
-                <TouchableOpacity onPress={() => this.sortFeeds('date')} style={styles.buttonView}>
-                  <View style={[styles.button, sortType === 'date' ? styles.buttonSelect : styles.buttonDeselect]}>
-                    <Text style={[styles.btnText, sortType === 'date' ? styles.btnSelectText : styles.btnDeselectText]}>
+                <TouchableOpacity onPress={() => this.sortFeeds('acceptedDate')} style={styles.buttonView}>
+                  <View style={[styles.button, sortType === 'acceptedDate' ? styles.buttonSelect : styles.buttonDeselect]}>
+                    <Text style={[styles.btnText, sortType === 'acceptedDate' ? styles.btnSelectText : styles.btnDeselectText]}>
                       Date
                     </Text>
                   </View>
