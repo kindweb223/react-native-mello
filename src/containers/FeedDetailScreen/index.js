@@ -267,7 +267,7 @@ class FeedDetailScreen extends React.Component {
         (feedo.loading === 'PUBNUB_GET_FEED_DETAIL_FULFILLED') || (feedo.loading === 'PUBNUB_MOVE_IDEA_FULFILLED') ||
         (feedo.loading === 'PUBNUB_LIKE_CARD_FULFILLED') || (feedo.loading === 'PUBNUB_UNLIKE_CARD_FULFILLED') ||
         (feedo.loading === 'GET_CARD_FULFILLED') || (feedo.loading === 'GET_CARD_COMMENTS_FULFILLED') ||
-        (feedo.loading === 'PUBNUB_DELETE_INVITEE_FULFILLED')) {
+        (feedo.loading === 'PUBNUB_DELETE_INVITEE_FULFILLED') || (feedo.loading === 'DEL_DUMMY_CARD')) {
 
       if (feedo.currentFeed.metadata.myInviteStatus === 'DECLINED') {
         Actions.pop()
@@ -991,7 +991,7 @@ class FeedDetailScreen extends React.Component {
     }, () => {
       this.setBubbles(this.state.currentFeed)
     });
-
+    console.log('CARD: ', this.state.currentFeed.metadata.ideasSubmitted)
     this.props.deleteDummyCard(cardInfo.ideaId, 0)
 
     this.processCardActions();
