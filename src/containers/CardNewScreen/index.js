@@ -660,11 +660,15 @@ class CardNewScreen extends React.Component {
       }
     });
 
-    this.keyboardWillShowSubscription = Keyboard.addListener('keyboardDidShow', (e) => this.keyboardWillShow(e));
-    this.keyboardWillHideSubscription = Keyboard.addListener('keyboardDidHide', (e) => this.keyboardWillHide(e));
     if (Platform.OS === 'ios') {
+      this.keyboardWillShowSubscription = Keyboard.addListener('keyboardWillShow', (e) => this.keyboardWillShow(e));
+      this.keyboardWillHideSubscription = Keyboard.addListener('keyboardWillHide', (e) => this.keyboardWillHide(e));
       this.safariViewShowSubscription = SafariView.addEventListener('onShow', () => this.safariViewShow());
       this.safariViewDismissSubscription = SafariView.addEventListener('onDismiss', () => this.safariViewDismiss());
+    }
+    else {
+      this.keyboardWillShowSubscription = Keyboard.addListener('keyboardDidShow', (e) => this.keyboardWillShow(e));
+      this.keyboardWillHideSubscription = Keyboard.addListener('keyboardDidHide', (e) => this.keyboardWillHide(e));
     }
 
     BackHandler.addEventListener('hardwareBackPress', this.handleBackButton);
@@ -696,7 +700,7 @@ class CardNewScreen extends React.Component {
     Animated.timing(
       this.animatedKeyboardHeight, {
         toValue: e.endCoordinates.height,
-        duration: CONSTANTS.ANIMATEION_MILLI_SECONDS,
+        duration: Platform.OS === 'ios' ? e.duration : CONSTANTS.ANIMATEION_MILLI_SECONDS,
       }
     ).start(() => {
       if (this.isDisabledKeyboard === true || !this.textInputIdeaRef) {
@@ -711,7 +715,7 @@ class CardNewScreen extends React.Component {
     Animated.timing(
       this.animatedKeyboardHeight, {
         toValue: 0,
-        duration: CONSTANTS.ANIMATEION_MILLI_SECONDS,
+        duration: Platform.OS === 'ios' ? e.duration : CONSTANTS.ANIMATEION_MILLI_SECONDS,
       }
     ).start();
   }
