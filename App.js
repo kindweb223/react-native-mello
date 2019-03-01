@@ -6,7 +6,8 @@ import {
   Image,
   YellowBox,
   Linking,
-  Platform
+  Platform,
+  PixelRatio
 } from 'react-native'
 import { createStore, applyMiddleware } from 'redux'
 import { Provider } from 'react-redux'
@@ -387,7 +388,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#F8F6FF'
   },
   splashLogo: {
-    width: 150,
-    height: 150
+    width: 75,
+    height: 75
   }
 });
