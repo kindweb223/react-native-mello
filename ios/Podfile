@@ -37,6 +37,10 @@ target 'Mello' do
 
   pod 'react-native-splash-screen', :path => '../node_modules/react-native-splash-screen'
 
+  pod 'react-native-intercom', :path => '../node_modules/react-native-intercom'
+
+  pod 'Intercom'
+
 end
 
 target 'MelloEx' do
@@ -46,6 +50,7 @@ target 'MelloEx' do
   # Pods for MelloEx
   pod 'Firebase/Core'
 
+  pod 'Intercom'
 end
 
 post_install do |installer|

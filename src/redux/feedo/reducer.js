@@ -2,6 +2,7 @@ import { AsyncStorage } from 'react-native'
 import PushNotification from 'react-native-push-notification'
 import * as types from './types'
 import * as cardTypes from '../card/types'
+import * as userTypes from '../user/types'
 import { filter, find, findIndex, isEmpty } from 'lodash'
 import resolveError from './../../service/resolveError'
 import { restoreArchiveFeed } from './actions';
@@ -284,7 +285,7 @@ export default function feedo(state = initialState, action = {}) {
           loading: types.DEL_FEED_FULFILLED,
         }
       } else {  // Delete duplicated Feed
-        const restFeedoList = filter(feedoList, feed => feed.id !== feedId)        
+        const restFeedoList = filter(feedoList, feed => feed.id !== feedId)
         return {
           ...state,
           loading: types.DEL_FEED_FULFILLED,
@@ -392,7 +393,9 @@ export default function feedo(state = initialState, action = {}) {
           ...state,
           loading: types.DEL_FEED_FULFILLED,
           deleteFeed: currentFeed,
-          feedoList: restFeedoList
+          feedoList: [
+            ...restFeedoList
+          ]
         }
       } else if (flag === 'archive') {
         currentFeedIndex = findIndex(feedoList, feed => feed.id === currentFeed.id);
@@ -1072,28 +1075,6 @@ export default function feedo(state = initialState, action = {}) {
     }
 
     /**
-     * delete a card
-     */
-    case cardTypes.DELETE_CARD_FULFILLED: {
-      const { currentFeed } = state
-      const ideaId = action.payload;
-      const ideas = filter(currentFeed.ideas, idea => idea.id !== ideaId);
-
-      const ideasSubmitted = currentFeed.metadata.ideasSubmitted - 1
-      const newCurrentFeed = {
-        ...currentFeed,
-        ideas,
-        metadata: Object.assign({}, currentFeed.metadata, { ideasSubmitted })
-      }
-
-      return {
-        ...state,
-        loading: 'DELETE_CARD_FULFILLED',
-        currentFeed: newCurrentFeed
-      }
-    }
-
-    /**
      * move a card
      */
     case cardTypes.MOVE_CARD_FULFILLED: {
@@ -1742,6 +1723,15 @@ export default function feedo(state = initialState, action = {}) {
         ...state,
         loading: types.SAVE_FLOW_PREFERENCE_REJECTED,
         error: action.error.response,
+      }
+    }
+    case userTypes.USER_SIGNOUT_FULFILLED: {
+      return {
+        ...state,
+        feedoList: [],
+        archivedFeedList: [],
+        invitedFeedList: [],
+        activityFeedList: []
       }
     }
     default:

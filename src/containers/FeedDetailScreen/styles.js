@@ -34,7 +34,6 @@ const styles = StyleSheet.create({
   navBar: {
     width: '100%',
     height: NAV_BAR_HEIGHT,
-    paddingRight: CONSTANTS.PADDING,
     zIndex: 11,
     flexDirection: 'row',
     justifyContent: 'space-between',
@@ -68,7 +67,7 @@ const styles = StyleSheet.create({
     height: '100%',
     justifyContent: 'center',
     alignItems: 'center',
-    marginLeft: 8
+    marginLeft: 2
   },
   collapseView: {
     width: '100%',
@@ -99,7 +98,8 @@ const styles = StyleSheet.create({
     borderRadius: 20,
     backgroundColor: '#fff',
     width: 220,
-    paddingVertical: 10,
+    paddingTop: 10,
+    paddingBottom: 15,
     position: 'absolute',
     right: CONSTANTS.PADDING,
     top: CONSTANTS.STATUSBAR_HEIGHT + ifIphoneX(70, 60),
@@ -190,6 +190,11 @@ const styles = StyleSheet.create({
   btnDoneText: {
     color: '#fff',
     fontSize: 15,
+    fontWeight: '500'
+  },
+  btnInvite: {
+    color: COLORS.PURPLE,
+    fontSize: 16,
     fontWeight: '500'
   }
 })
