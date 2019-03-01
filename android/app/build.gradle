@@ -190,6 +190,13 @@ task copyDownloadableDepsToLibs(type: Copy) {
     into 'libs'
 }
 
+// android {
+//     compileOptions {
+//         sourceCompatibility JavaVersion.VERSION_1_8
+//         targetCompatibility JavaVersion.VERSION_1_8
+//     }
+// }
+
 apply plugin: 'com.google.gms.google-services'
 
 com.google.gms.googleservices.GoogleServicesPlugin.config.disableVersionCheck = true
