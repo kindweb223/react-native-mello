@@ -52,8 +52,8 @@
 		4C3C63F62199E8BC00B68196 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 4C3C63F52199E8BC00B68196 /* GoogleService-Info.plist */; };
 		4C6D85F821FE088100455C94 /* libRNSVG.a in Frameworks */ = {isa = PBXBuildFile; fileRef = A49C3621219230EA00AA0AFD /* libRNSVG.a */; };
 		4C6D85F921FE08AB00455C94 /* libRNSVG.a in Frameworks */ = {isa = PBXBuildFile; fileRef = A49C3621219230EA00AA0AFD /* libRNSVG.a */; };
+		4CBE8102222932090023FAE7 /* libRNIntercom.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 4C246BB6222793AD00FD052A /* libRNIntercom.a */; };
 		4CC861B921933F8F00481DED /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 4CC8617A21933F8A00481DED /* GoogleService-Info.plist */; };
-		4CD904DC21F8A7C200258740 /* libRNSVG.a in Frameworks */ = {isa = PBXBuildFile; fileRef = A49C3621219230EA00AA0AFD /* libRNSVG.a */; };
 		4CF0DB4F2199BBA6000ED175 /* libRNFirebase.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 4CC8621D2193408300481DED /* libRNFirebase.a */; };
 		4D155804DAC84ABD8370724D /* FontAwesome5_Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 9AFE45238BF344909F881B0C /* FontAwesome5_Regular.ttf */; };
 		4DF31AFCC7DA42929C8B67CC /* libLottieReactNative.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 1BBE45B3BBA8440189B9842C /* libLottieReactNative.a */; };
@@ -878,7 +878,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				4CD904DC21F8A7C200258740 /* libRNSVG.a in Frameworks */,
+				4CBE8102222932090023FAE7 /* libRNIntercom.a in Frameworks */,
 				4CF0DB4F2199BBA6000ED175 /* libRNFirebase.a in Frameworks */,
 				4C3145432191BCE8009A40C5 /* libRNDeviceInfo.a in Frameworks */,
 				2D52C42B218E625B003C52C8 /* libBugsnagReactNative.a in Frameworks */,
@@ -1521,6 +1521,7 @@
 				A4CD668B2139B67F00874CB1 /* Frameworks */,
 				A4CD668C2139B67F00874CB1 /* Resources */,
 				A4CD66F72139B93E00874CB1 /* Bundle React Native code and images */,
+				A5DF8082B45E1CC37B5BBC9D /* [CP] Copy Pods Resources */,
 			);
 			buildRules = (
 			);
@@ -2354,6 +2355,30 @@
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
 			shellScript = "export NODE_BINARY=node\n../bin/react-native-xcode.sh\n";
+		};
+		A5DF8082B45E1CC37B5BBC9D /* [CP] Copy Pods Resources */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+				"${SRCROOT}/Pods/Target Support Files/Pods-MelloEx/Pods-MelloEx-resources.sh",
+				"${PODS_ROOT}/Intercom/Intercom/Intercom.framework/Versions/A/Resources/Intercom.bundle",
+				"${PODS_ROOT}/Intercom/Intercom/Intercom.framework/Versions/A/Resources/IntercomTranslations.bundle",
+			);
+			name = "[CP] Copy Pods Resources";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/Intercom.bundle",
+				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/IntercomTranslations.bundle",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-MelloEx/Pods-MelloEx-resources.sh\"\n";
+			showEnvVarsInLog = 0;
 		};
 		C272A68C1907409EB7735F34 /* [CP] Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;
