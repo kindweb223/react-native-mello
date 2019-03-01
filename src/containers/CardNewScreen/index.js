@@ -171,11 +171,14 @@ class CardNewScreen extends React.Component {
       props.shareImageUrls.forEach( async(imageUri, index) => {
         const fileName = imageUri.substring(imageUri.lastIndexOf("/") + 1, imageUri.length);
         const {width, height} = await this.getImageSize(imageUri);
+        const type = mime.lookup(imageUri) || 'image/jpeg';
+
         this.shareImageUrls.push({
           uri: imageUri,
           fileName,
           width,
           height,
+          type,
         });
         if (index === 0 && this.state.coverImage === '') {
           this.setState({
