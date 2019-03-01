@@ -74,7 +74,7 @@ import styles from './styles';
 import LoadingScreen from '../LoadingScreen';
 import DocumentList from '../../components/DocumentListComponent';
 import WebMetaList from '../../components/WebMetaListComponent';
-import ChooseLinkImages from '../../components/chooseLinkImagesComponent';
+import ChooseLinkImages from '../../components/ChooseLinkImagesComponent';
 import UserAvatarComponent from '../../components/UserAvatarComponent';
 import CoverImagePreviewComponent from '../../components/CoverImagePreviewComponent';
 import SelectHuntScreen from '../SelectHuntScreen';

@@ -1156,7 +1156,7 @@ class HomeScreen extends React.Component {
     if (filterSortType === 'headline') {
       orderField = [feed => feed.headline.toLowerCase()];
       orderType = ['asc'];
-    } else if (filterSortType === 'date') {
+    } else if (filterSortType === 'acceptedDate') {
       orderField = ['metadata.inviteAcceptedDate'];
       orderType = ['desc'];
     }
