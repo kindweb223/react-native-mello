@@ -305,8 +305,12 @@ export default class Root extends React.Component {
           var value = ''
           for (i = searchIndex+2; i < params.length; i ++)
           {
-            if (params[i] !== '')
-              value += `${params[i]}/`
+            if (params[i] !== '') {
+              if (i === params.length - 1)
+                value += `${params[i]}`
+              else
+                value += `${params[i]}/`
+            }
           }
           console.log('path: ', type, value)
           Actions.ChooseLinkImageFromExtension({mode: type, value: value});
