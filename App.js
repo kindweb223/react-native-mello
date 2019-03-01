@@ -291,7 +291,7 @@ export default class Root extends React.Component {
             break;
           }
         }
-        if (Platform.OS === 'android' && i !== -1) { //share extension for Android
+        if (Platform.OS === 'android' && searchIndex !== -1) { //share extension for Android
           var type = '';
           if (params[searchIndex + 1] === 'image' && params[searchIndex + 2] === 'jpeg') {
             type = 'images'
