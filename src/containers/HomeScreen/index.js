@@ -25,6 +25,7 @@ import * as R from 'ramda'
 import { find, filter, orderBy } from 'lodash'
 import DeviceInfo from 'react-native-device-info';
 import Permissions from 'react-native-permissions'
+import Intercom from 'react-native-intercom'
 
 import pubnub from '../../lib/pubnub'
 import Analytics from '../../lib/firebase'
@@ -206,9 +207,31 @@ class HomeScreen extends React.Component {
     });
 
     this.registerPushNotification();
+
+    // To enable iOS push notifications for Intercom
+    Intercom.registerIdentifiedUser({ userId: this.props.user.userInfo.id });
+
+    if (Platform.OS === 'ios') {
+      Intercom.registerForPush();
+    } else {
+      AsyncStorage.getItem(CONSTANTS.USER_DEVICE_TOKEN, (error, result) => {
+        if (error) {
+          console.log('error : ', error);
+          return;
+        }
+        if (result) {
+          const deviceTokenInfo = JSON.parse(result);
+          Intercom.sendTokenToIntercom(deviceTokenInfo.deviceToken);
+        }
+      })
+    }
+    Intercom.handlePushMessage();
+
     this.props.getFeedoList()
     this.props.getInvitedFeedList()
     this.props.getActivityFeed(this.props.user.userInfo.id, { page: 0, size: PAGE_COUNT })
+
+    Intercom.addEventListener(Intercom.Notifications.UNREAD_COUNT, this._onUnreadIntercomChange);
 
     AppState.addEventListener('change', this.onHandleAppStateChange.bind(this));
     appOpened(this.props.user.userInfo.id);
@@ -218,7 +241,12 @@ class HomeScreen extends React.Component {
 
   componentWillUnmount() {
     AppState.removeEventListener('change', this.onHandleAppStateChange);
+    Intercom.removeEventListener(Intercom.Notifications.UNREAD_COUNT, this._onUnreadIntercomChange);
     BackHandler.removeEventListener('hardwareBackPress', this.handleBackButton);
+  }
+
+  _onUnreadIntercomChange = ({ count }) => {
+    // console.log('INTERCOM_COUNT: ', count)
   }
 
   handleBackButton = () => {
@@ -235,13 +263,14 @@ class HomeScreen extends React.Component {
       }
     }
 
-    if ((prevState.apiLoading !== feedo.loading && ((feedo.loading === 'GET_FEEDO_LIST_FULFILLED') || (feedo.loading === 'GET_FEEDO_LIST_REJECTED') ||
-      (feedo.loading === 'FEED_FULFILLED') || (feedo.loading === 'DEL_FEED_FULFILLED') || (feedo.loading === 'ARCHIVE_FEED_FULFILLED') ||
-      (feedo.loading === 'DUPLICATE_FEED_FULFILLED') || (feedo.loading === 'UPDATE_FEED_FULFILLED') || (feedo.loading === 'LEAVE_FEED_FULFILLED') ||
+    if ((prevState.apiLoading !== feedo.loading && ((feedo.loading === 'GET_FEEDO_LIST_FULFILLED') ||
+      (feedo.loading === 'GET_FEEDO_LIST_REJECTED') ||(feedo.loading === 'FEED_FULFILLED') ||
+      (feedo.loading === 'DUPLICATE_FEED_FULFILLED') || (feedo.loading === 'UPDATE_FEED_FULFILLED') ||
       (feedo.loading === 'UPDATE_FEED_INVITATION_FULFILLED') || (feedo.loading === 'INVITE_HUNT_FULFILLED') ||
       (feedo.loading === 'ADD_HUNT_TAG_FULFILLED') || (feedo.loading === 'REMOVE_HUNT_TAG_FULFILLED') ||
       (feedo.loading === 'PIN_FEED_FULFILLED') || (feedo.loading === 'UNPIN_FEED_FULFILLED') ||
       (feedo.loading === 'RESTORE_ARCHIVE_FEED_FULFILLED') || (feedo.loading === 'ADD_DUMMY_FEED'))) ||
+      (feedo.loading === 'DEL_FEED_FULFILLED') || (feedo.loading === 'ARCHIVE_FEED_FULFILLED') || (feedo.loading === 'LEAVE_FEED_FULFILLED') ||
       (feedo.loading === 'PUBNUB_GET_FEED_DETAIL_FULFILLED') || (feedo.loading === 'DELETE_CARD_FULFILLED') || 
       (feedo.loading === 'PUBNUB_MOVE_IDEA_FULFILLED') || (feedo.loading === 'MOVE_CARD_FULFILLED') ||
       (feedo.loading === 'READ_ACTIVITY_FEED_FULFILLED') || (feedo.loading === 'DEL_ACTIVITY_FEED_FULFILLED') ||
@@ -769,6 +798,7 @@ class HomeScreen extends React.Component {
   }
 
   handleDeleteFeed = (feedId) => {
+    console.log('DEL_FEED_ID: ', feedId)
     this.closeLongHoldMenu()
 
     this.setState({ isShowActionToaster: true, isDelete: true, toasterTitle: 'Flow deleted', feedId })
@@ -1126,7 +1156,7 @@ class HomeScreen extends React.Component {
     if (filterSortType === 'headline') {
       orderField = [feed => feed.headline.toLowerCase()];
       orderType = ['asc'];
-    } else if (filterSortType === 'date') {
+    } else if (filterSortType === 'acceptedDate') {
       orderField = ['metadata.inviteAcceptedDate'];
       orderType = ['desc'];
     }

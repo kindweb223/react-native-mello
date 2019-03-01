@@ -13,6 +13,7 @@ import { Actions } from 'react-native-router-flux'
 import Ionicons from 'react-native-vector-icons/Ionicons'
 import SafariView from "react-native-safari-view"
 import InAppBrowser from 'react-native-inappbrowser-reborn'
+import Intercom from 'react-native-intercom'
 import _ from 'lodash'
 import { userSignOut, deleteProfilePhoto } from '../../redux/user/actions'
 import COLORS from '../../service/colors'
@@ -53,15 +54,21 @@ class ProfileSupportScreen extends React.Component {
     Analytics.setCurrentScreen('ProfileSupportScren')
   }
 
+  onCallIntercom = () => {
+    Intercom.logEvent('viewed_screen', { extra: 'metadata' });
+    Intercom.displayConversationsList();
+  }
+
   handleSupportItem = async(index) => {
     switch(index) {
       case 0:
-        this.openURL(FAQS_URL)
+        this.openURL(FAQS_URL);
         return
       case 1:
-        this.openURL(TRELLO_URL)
+        this.openURL(TRELLO_URL);
         return
       case 2:
+        this.onCallIntercom();
         return
       default:
         return

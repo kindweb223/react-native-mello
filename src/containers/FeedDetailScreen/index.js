@@ -267,7 +267,7 @@ class FeedDetailScreen extends React.Component {
         (feedo.loading === 'PUBNUB_GET_FEED_DETAIL_FULFILLED') || (feedo.loading === 'PUBNUB_MOVE_IDEA_FULFILLED') ||
         (feedo.loading === 'PUBNUB_LIKE_CARD_FULFILLED') || (feedo.loading === 'PUBNUB_UNLIKE_CARD_FULFILLED') ||
         (feedo.loading === 'GET_CARD_FULFILLED') || (feedo.loading === 'GET_CARD_COMMENTS_FULFILLED') ||
-        (feedo.loading === 'PUBNUB_DELETE_INVITEE_FULFILLED')) {
+        (feedo.loading === 'PUBNUB_DELETE_INVITEE_FULFILLED') || (feedo.loading === 'DEL_DUMMY_CARD')) {
 
       if (feedo.currentFeed.metadata.myInviteStatus === 'DECLINED') {
         Actions.pop()
@@ -991,7 +991,7 @@ class FeedDetailScreen extends React.Component {
     }, () => {
       this.setBubbles(this.state.currentFeed)
     });
-
+    console.log('CARD: ', this.state.currentFeed.metadata.ideasSubmitted)
     this.props.deleteDummyCard(cardInfo.ideaId, 0)
 
     this.processCardActions();
@@ -1431,9 +1431,14 @@ class FeedDetailScreen extends React.Component {
               <View style={styles.rightHeader}>
                 {!_.isEmpty(currentFeed) && !COMMON_FUNC.isMelloTipFeed(currentFeed) && (
                   <View style={styles.avatarView}>
-                    <TouchableOpacity onPress={() => this.handleShare()}>
-                      <AvatarPileComponent avatars={avatars} showPlus={false} />
-                    </TouchableOpacity>
+                    {COMMON_FUNC.isFeedOwner(currentFeed) && COMMON_FUNC.isFeedOwnerOnlyInvitee(currentFeed)
+                      ? <TouchableOpacity onPress={() => this.handleShare()}>
+                          <Text style={styles.btnInvite}>Invite</Text>
+                        </TouchableOpacity>
+                      : <TouchableOpacity onPress={() => this.handleShare()}>
+                          <AvatarPileComponent avatars={avatars} showPlus={false} />
+                        </TouchableOpacity>
+                    }
                   </View>
                 )}
                 <View style={styles.settingView}>

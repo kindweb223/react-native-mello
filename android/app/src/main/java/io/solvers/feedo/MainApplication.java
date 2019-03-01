@@ -3,6 +3,8 @@ package io.solvers.feedo;
 import android.app.Application;
 
 import com.facebook.react.ReactApplication;
+import com.robinpowered.react.Intercom.IntercomPackage;
+import io.intercom.android.sdk.Intercom;
 import org.devio.rn.splashscreen.SplashScreenReactPackage;
 import fr.snapp.imagebase64.RNImgToBase64Package;
 import io.solvers.feedo.shareextension.SharePackage;
@@ -48,6 +50,7 @@ public class MainApplication extends Application implements ReactApplication {
       return Arrays.<ReactPackage>asList(
           new MainReactPackage(),
           new SharePackage(),
+          new IntercomPackage(),
           new SplashScreenReactPackage(),
           new RNImgToBase64Package(),
           new RNThumbnailPackage(),
@@ -89,5 +92,9 @@ public class MainApplication extends Application implements ReactApplication {
   public void onCreate() {
     super.onCreate();
     SoLoader.init(this, /* native exopackage */ false);
+    // DEV
+    Intercom.initialize(this, "android_sdk-c0adbb1c6817c6370b6138cfb27b821706169733", "spgs5xuc");
+    // PROD
+    // Intercom.initialize(this, "android_sdk-c97fdf20f89a7b0ad1cb02fbed97d182fc3b6e47", "b4x3v190");
   }
 }

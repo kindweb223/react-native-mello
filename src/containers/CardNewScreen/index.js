@@ -74,7 +74,7 @@ import styles from './styles';
 import LoadingScreen from '../LoadingScreen';
 import DocumentList from '../../components/DocumentListComponent';
 import WebMetaList from '../../components/WebMetaListComponent';
-import ChooseLinkImages from '../../components/chooseLinkImagesComponent';
+import ChooseLinkImages from '../../components/ChooseLinkImagesComponent';
 import UserAvatarComponent from '../../components/UserAvatarComponent';
 import CoverImagePreviewComponent from '../../components/CoverImagePreviewComponent';
 import SelectHuntScreen from '../SelectHuntScreen';
@@ -1293,6 +1293,9 @@ class CardNewScreen extends React.Component {
     if (this.selectedLinkImages.length > 0) {
       this.addLinkImage(id, this.selectedLinkImages[this.currentSelectedLinkImageIndex]);
     }
+
+    // So cover image will show and skip uploading transition
+    this.setState({imageUploadStarted: true, imageUploading: false})
   }
 
   onSelectCoverImage() {
