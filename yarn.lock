@@ -2696,9 +2696,10 @@ lottie-ios@^2.5.0:
   version "2.5.0"
   resolved "https://registry.yarnpkg.com/lottie-ios/-/lottie-ios-2.5.0.tgz#55c808e785d4a6933b0c10b395530b17098b05de"
 
-lottie-react-native@^2.5.9:
+lottie-react-native@^2.5.11:
   version "2.5.11"
   resolved "https://registry.yarnpkg.com/lottie-react-native/-/lottie-react-native-2.5.11.tgz#95771a0eadf75847a50f627ec43740dcbe5c5870"
+  integrity sha512-RIDBEQJQy8lxqTyulpd3xaxmlibYy1j+4iVekX3AjjA2imrM5EIggCNxZhnjqu4HuTYC1/KylaQihIfWCRwuRw==
   dependencies:
     invariant "^2.2.2"
     lottie-ios "^2.5.0"
@@ -3666,9 +3667,10 @@ react-native-actionsheet@^2.4.2:
   version "2.4.2"
   resolved "https://registry.yarnpkg.com/react-native-actionsheet/-/react-native-actionsheet-2.4.2.tgz#6a00dd51a75ef2c8974312130e405af73191500f"
 
-react-native-animatable@^1.2.4:
+react-native-animatable@^1.2.4, react-native-animatable@^1.3.1:
   version "1.3.1"
   resolved "https://registry.yarnpkg.com/react-native-animatable/-/react-native-animatable-1.3.1.tgz#f004a7e9de6838d0fbf210d642593cff7affd9ef"
+  integrity sha512-NoE6OAgCrhggWBRV6rBJup5vLAGoTjx168Tku1RZmjUGIdYRAyGesP/MoqvxiNJjhTAgwYx2LT63VTT1xO8g4Q==
   dependencies:
     prop-types "^15.5.10"
 
@@ -3728,13 +3730,19 @@ react-native-firebase@^5.1.0:
     opencollective-postinstall "^2.0.0"
     prop-types "^15.6.2"
 
-react-native-google-signin@^1.0.2:
-  version "1.0.2"
-  resolved "https://registry.yarnpkg.com/react-native-google-signin/-/react-native-google-signin-1.0.2.tgz#027b2bba3c03504170fdf6e44cd44bf65ecdbc7f"
+react-native-google-signin@^1.0.4:
+  version "1.2.1"
+  resolved "https://registry.yarnpkg.com/react-native-google-signin/-/react-native-google-signin-1.2.1.tgz#c4d442c24039ba3ef6983aab18cf13991a29a71f"
+  integrity sha512-i19hQF/HYXdDjwFMM4tx3b7IbztHpKqrpDbjyH7jm+d26F2ow/51iUVRFekTIFRkdSHaKjqprtw9HKCntxXetA==
 
 react-native-haptic-feedback@^1.4.2:
   version "1.5.0"
   resolved "https://registry.yarnpkg.com/react-native-haptic-feedback/-/react-native-haptic-feedback-1.5.0.tgz#79d427f4d8c8ba3871b26f459f60ec7a7b38ce4d"
+
+react-native-image-base64@^0.1.3:
+  version "0.1.3"
+  resolved "https://registry.yarnpkg.com/react-native-image-base64/-/react-native-image-base64-0.1.3.tgz#bfc9eaf7cd3ec705aa25f00f6a11d0c379217fe8"
+  integrity sha512-0n1gLLvA9VJZ1w0zyaDYZQH/Re2VOQFW5kt0P/qYhqs4f1MvWsaTs+7CxXIQR3L2wgEsfDJ1sIKyrAZ0RoR2Hg==
 
 react-native-image-picker@^0.26.10:
   version "0.26.10"
@@ -3756,9 +3764,15 @@ react-native-inappbrowser-reborn@^1.3.10:
   dependencies:
     invariant "^2.2.4"
 
-react-native-iphone-x-helper@^1.0.3:
+react-native-intercom@^13.0.0:
+  version "13.0.0"
+  resolved "https://registry.yarnpkg.com/react-native-intercom/-/react-native-intercom-13.0.0.tgz#7e6f6a491231df9bb474f56fd6fd2820fccf54fd"
+  integrity sha512-KJEgesZzOox4SOf888eQxJ8u2oOb3Vh9dKFY+e2BFRsF1Z4g1I4gyEkIQMQp2A/h301qb59K9yHlbI0+JWGLWA==
+
+react-native-iphone-x-helper@^1.0.3, react-native-iphone-x-helper@^1.2.0:
   version "1.2.0"
   resolved "https://registry.yarnpkg.com/react-native-iphone-x-helper/-/react-native-iphone-x-helper-1.2.0.tgz#9f8a376eb00bc712115abff4420318a0063fa796"
+  integrity sha512-xIeTo4s77wwKgBZLVRIZC9tM9/PkXS46Ul76NXmvmixEb3ZwqGdQesR3zRiLMOoIdfOURB6N9bba9po7+x9Bag==
 
 react-native-keyboard-aware-scroll-view@^0.7.1:
   version "0.7.4"
@@ -3869,6 +3883,11 @@ react-native-shared-group-preferences@^1.0.6:
   version "1.0.1"
   resolved "git+https://github.com/haqiqiw/react-native-slideshow.git#afd5961317f69cf3ab439668b198d0d9bba28ca0"
 
+react-native-splash-screen@^3.2.0:
+  version "3.2.0"
+  resolved "https://registry.yarnpkg.com/react-native-splash-screen/-/react-native-splash-screen-3.2.0.tgz#d47ec8557b1ba988ee3ea98d01463081b60fff45"
+  integrity sha512-Ls9qiNZzW/OLFoI25wfjjAcrf2DZ975hn2vr6U9gyuxi2nooVbzQeFoQS5vQcbCt9QX5NY8ASEEAtlLdIa6KVg==
+
 react-native-svg-uri@^1.2.3:
   version "1.2.3"
   resolved "https://registry.yarnpkg.com/react-native-svg-uri/-/react-native-svg-uri-1.2.3.tgz#2f67f30564068a0fee68a751845332a5185a1aab"
@@ -3922,6 +3941,11 @@ react-native-tabular-grid-markdown-view@0.1.x:
 react-native-tags@^1.2.1:
   version "1.7.0"
   resolved "https://registry.yarnpkg.com/react-native-tags/-/react-native-tags-1.7.0.tgz#e876d4f06520eac898b85020a7d818668ef36119"
+
+react-native-thumbnail@^1.1.3:
+  version "1.1.3"
+  resolved "https://registry.yarnpkg.com/react-native-thumbnail/-/react-native-thumbnail-1.1.3.tgz#0fdd4ed2bbdc5d9407a2707580fd3fc4294a7050"
+  integrity sha512-x/9q9QPzq7BiHbpmPL/QrNrkxa4f+RQOAQ0Lw+p907jhpKpgojIo7pTTC/kvlyp+6YcYBeuq9sEELEEwzmk4nA==
 
 react-native-underline-tabbar@^1.3.6:
   version "1.3.6"
