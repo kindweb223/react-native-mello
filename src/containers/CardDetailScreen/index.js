@@ -967,7 +967,7 @@ class CardDetailScreen extends React.Component {
           if (response.fileSize > CONSTANTS.MAX_UPLOAD_FILE_SIZE) {
             COMMON_FUNC.showPremiumAlert()
           } else {
-            this.handleFile(response, type)  // Generate thumbnail if video
+            this.handleFile(response)  // Generate thumbnail if video
           }
         }
       });
@@ -1002,8 +1002,8 @@ class CardDetailScreen extends React.Component {
     this.selectedFile = file;
     let imageFiles = _.filter(currentCard.files, file => file.fileType === 'MEDIA');
     this.setState({
-      imageUploadStarted: true,
-      imageUploading: true,
+      imageUploadStarted: file.fileType === 'MEDIA',
+      imageUploading: file.fileType === 'MEDIA',
       cardMode: imageFiles.length > 0 ? 'CardDetailMulti' : 'CardDetailSingle'
     });
 
@@ -1095,6 +1095,8 @@ class CardDetailScreen extends React.Component {
   }
 
   handleFile = (file) => {
+    this.coverImageWidth = file.width;
+    this.coverImageHeight = file.height;
     const mimeType = (Platform.OS === 'ios') ? mime.lookup(file.uri) : file.type;
 
     let type = 'FILE';
