@@ -308,7 +308,7 @@ class FeedDetailScreen extends React.Component {
       this.setState({ currentBackFeed: currentFeed }, () => {
         let redrawMasonry = false
 
-        if (feedo.loading === 'UPDATE_CARD_FULFILLED' || card.loading === 'UPDATE_CARD_FULFILLED' ||
+        if (feedo.loading === 'UPDATE_CARD_FULFILLED' || card.loading === 'UPDATE_CARD_FULFILLED' || feedo.loading === 'GET_FEED_DETAIL_FULFILLED' ||
           (feedo.loading === 'ADD_CARD_COMMENT_FULFILLED' && Actions.currentScene === 'CommentScreen') ||
           (feedo.loading === 'DELETE_CARD_COMMENT_FULFILLED' && Actions.currentScene === 'CommentScreen'))
         {
