@@ -157,7 +157,7 @@ class NewFeedScreen extends React.Component {
       })
     } else if (this.props.feedo.loading !== types.UPDATE_FEED_PENDING && nextProps.feedo.loading === types.UPDATE_FEED_PENDING) {
       // updating a feed
-      loading = true;
+      // loading = true;
     } else if (this.props.feedo.loading !== types.UPDATE_FEED_FULFILLED && nextProps.feedo.loading === types.UPDATE_FEED_FULFILLED) {
       // success in updating a feed
       this.onClose(nextProps.feedo.currentFeed);
