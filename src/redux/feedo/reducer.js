@@ -96,7 +96,7 @@ export default function feedo(state = initialState, action = {}) {
       }
     case types.UPDATE_FEED_INVITATION_FULFILLED: {
       PushNotification.getApplicationIconBadgeNumber((badgeCount) => {
-        if (badgeCount && badgeCount > 0) {
+        if (badgeCount > 0) {
           PushNotification.setApplicationIconBadgeNumber(badgeCount - 1)
         }
       })
@@ -1221,7 +1221,7 @@ export default function feedo(state = initialState, action = {}) {
     case types.GET_ACTIVITY_FEED_FULFILLED: {
       const { data } = action.result
 
-      if(data.badgeCount) {
+      if(data.badgeCount >= 0) {
         PushNotification.setApplicationIconBadgeNumber(data.badgeCount)
       }
 
@@ -1650,7 +1650,7 @@ export default function feedo(state = initialState, action = {}) {
     case types.GET_ACTIVITY_FEED_VISITED_FULFILLED: {
       const { data } = action.result
 
-      if(data.count) {
+      if(data.count >= 0) {
         PushNotification.setApplicationIconBadgeNumber(data.count)
       }
 
