@@ -1299,7 +1299,14 @@ class CardDetailScreen extends React.Component {
 
   onPressIdea() {
     if (this.props.viewMode === CONSTANTS.CARD_EDIT) {
-      this.setState({ showEditScreen: true })
+      // Android, 3 dots -> edit note (keyboard does not appear so need to add timeout)
+      if (Platform.OS === 'android') {
+        setTimeout(() => {
+          this.setState({ showEditScreen: true })
+        }, 10)  
+      } else {
+        this.setState({ showEditScreen: true })
+      }
     }
   }
 
