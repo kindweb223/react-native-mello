@@ -663,15 +663,17 @@ class CardNewScreen extends React.Component {
       }
     });
 
-    if (Platform.OS === 'ios') {
-      this.keyboardWillShowSubscription = Keyboard.addListener('keyboardWillShow', (e) => this.keyboardWillShow(e));
-      this.keyboardWillHideSubscription = Keyboard.addListener('keyboardWillHide', (e) => this.keyboardWillHide(e));
-      this.safariViewShowSubscription = SafariView.addEventListener('onShow', () => this.safariViewShow());
-      this.safariViewDismissSubscription = SafariView.addEventListener('onDismiss', () => this.safariViewDismiss());
-    }
-    else {
+    if (Platform.OS === 'android' && this.props.cardMode === CONSTANTS.SHARE_EXTENTION_CARD) {
       this.keyboardWillShowSubscription = Keyboard.addListener('keyboardDidShow', (e) => this.keyboardWillShow(e));
       this.keyboardWillHideSubscription = Keyboard.addListener('keyboardDidHide', (e) => this.keyboardWillHide(e));
+    }
+    else {
+      this.keyboardWillShowSubscription = Keyboard.addListener('keyboardWillShow', (e) => this.keyboardWillShow(e));
+      this.keyboardWillHideSubscription = Keyboard.addListener('keyboardWillHide', (e) => this.keyboardWillHide(e));
+    }
+    if (Platform.OS === 'ios') {
+      this.safariViewShowSubscription = SafariView.addEventListener('onShow', () => this.safariViewShow());
+      this.safariViewDismissSubscription = SafariView.addEventListener('onDismiss', () => this.safariViewDismiss());
     }
 
     BackHandler.addEventListener('hardwareBackPress', this.handleBackButton);
@@ -703,7 +705,7 @@ class CardNewScreen extends React.Component {
     Animated.timing(
       this.animatedKeyboardHeight, {
         toValue: e.endCoordinates.height,
-        duration: Platform.OS === 'ios' ? e.duration : CONSTANTS.ANIMATEION_MILLI_SECONDS,
+        duration: Platform.OS === 'android' && this.props.cardMode === CONSTANTS.SHARE_EXTENTION_CARD ? CONSTANTS.ANIMATEION_MILLI_SECONDS : e.duration
       }
     ).start(() => {
       if (this.isDisabledKeyboard === true || !this.textInputIdeaRef) {
@@ -718,7 +720,7 @@ class CardNewScreen extends React.Component {
     Animated.timing(
       this.animatedKeyboardHeight, {
         toValue: 0,
-        duration: Platform.OS === 'ios' ? e.duration : CONSTANTS.ANIMATEION_MILLI_SECONDS,
+        duration: Platform.OS === 'android' && this.props.cardMode === CONSTANTS.SHARE_EXTENTION_CARD ? CONSTANTS.ANIMATEION_MILLI_SECONDS : e.duration
       }
     ).start();
   }
