@@ -207,6 +207,9 @@ const styles = StyleSheet.create({
   successText: {
     fontSize: 15,
     color: COLORS.PURPLE
+  },
+  loadingIcon: {
+    marginRight: 10
   }
 })
 

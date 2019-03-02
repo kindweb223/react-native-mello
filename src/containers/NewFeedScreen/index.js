@@ -12,7 +12,8 @@ import {
   SafeAreaView,
   AsyncStorage,
   Platform,
-  BackHandler
+  BackHandler,
+  ActivityIndicator
 } from 'react-native'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
@@ -531,15 +532,19 @@ class NewFeedScreen extends React.Component {
           ? <Text style={styles.textButton}>New flow</Text>
           : <Text style={styles.textButton}>Edit flow</Text>
         }
-        <TouchableOpacity
-          style={[styles.btnClose, { alignItems: 'flex-end' }]}
-          activeOpacity={0.6}
-          onPress={this.onUpdate.bind(this)}
-        >
-          <Text style={[styles.textButton, { color: COLORS.PURPLE }]}>
-            Done
-          </Text>
-        </TouchableOpacity>
+        {this.props.feedo.loading === types.UPDATE_FEED_PENDING
+          ? <View style={[styles.btnClose, { alignItems: 'flex-end' }]}>
+              <ActivityIndicator color={COLORS.PURPLE} size="small" style={styles.loadingIcon} />
+            </View>
+          :
+            <TouchableOpacity
+              style={[styles.btnClose, { alignItems: 'flex-end' }]}
+              activeOpacity={0.6}
+              onPress={this.onUpdate.bind(this)}
+            >
+              <Text style={[styles.textButton, { color: COLORS.PURPLE }]}>Done</Text>
+            </TouchableOpacity>
+        }
       </View>
     );
   }
