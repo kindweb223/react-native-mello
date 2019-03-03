@@ -154,7 +154,16 @@ class ShareSuccessScreen extends React.Component {
           }
         }
       } else {
-        ShareExtension.close();
+        if (Platform.OS === 'ios')
+          ShareExtension.close();
+        else {
+          //go to previous scene
+          Actions.pop()
+          Actions.pop()
+          setTimeout(() => {
+            ShareExtension.close();
+          }, 100)
+        }
       }
     })
   }

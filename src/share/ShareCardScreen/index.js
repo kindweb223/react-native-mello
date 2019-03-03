@@ -1,8 +1,10 @@
 import React from 'react'
 import {
   View,
+  Platform,
 } from 'react-native'
 import PropTypes from 'prop-types'
+import { Actions } from 'react-native-router-flux'
 
 import ShareExtension from '../shareExtension'
 
@@ -22,7 +24,16 @@ export default class ShareCardScreen extends React.Component {
   }
 
   onClosed() {
-    ShareExtension.close();
+    if (Platform.OS === 'ios')
+      ShareExtension.close();
+    else {
+      //go to previous scene
+      Actions.pop()
+      Actions.pop()
+      setTimeout(() => {
+        ShareExtension.close();
+      }, 100)
+    }
   }
 
   render() {

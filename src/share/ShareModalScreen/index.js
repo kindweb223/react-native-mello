@@ -28,7 +28,14 @@ export default class ShareModalScreen extends React.Component {
   }
 
   onClosed() {
-    ShareExtension.close();
+    if (Platform.OS === 'ios')
+      ShareExtension.close();
+    else {
+      Actions.pop()
+      setTimeout(() => {
+        ShareExtension.close();
+      }, 100)
+    }
   }
 
   onPressOk() {

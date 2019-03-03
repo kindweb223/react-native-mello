@@ -147,7 +147,14 @@ class ChooseLinkImageFromExtension extends React.Component {
   }
 
   onCancel() {
-    ShareExtension.close();
+    if (Platform.OS === 'ios')
+      ShareExtension.close();
+    else {
+      Actions.pop()
+      setTimeout(() => {
+        ShareExtension.close();
+      }, 100)
+    }
   }
 
   onSkip() {
