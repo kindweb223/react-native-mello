@@ -42,11 +42,11 @@ axios.interceptors.response.use(
       (error.response.status === 401 && error.response.data.code === 'session.expired') ||
       (error.response.status === 403 && error.response.data.code === 'error.user.not.authenticated')
     )) {
-      AsyncStorage.removeItem('xAuthToken')
-      SharedGroupPreferences.setItem('xAuthToken', null, CONSTANTS.APP_GROUP_TOKEN_IDENTIFIER)
+        AsyncStorage.removeItem('xAuthToken')
+        SharedGroupPreferences.setItem('xAuthToken', null, CONSTANTS.APP_GROUP_TOKEN_IDENTIFIER)
 
-      if (Actions.currentScene !== 'TutorialScreen') {
-        Actions.LoginScreen({ type: 'replace' })
+        if (Actions.currentScene !== 'TutorialScreen') {
+          Actions.LoginScreen({ type: 'replace' })
       }
       return
     }
@@ -292,28 +292,32 @@ export default class Root extends React.Component {
           }
         }
         if (Platform.OS === 'android' && searchIndex !== -1) { //share extension for Android
-          var type = '';
-          if (params[searchIndex + 1] === 'image' && params[searchIndex + 2] === 'jpeg') {
-            type = 'images'
-            searchIndex ++;
-          } else if (params[searchIndex + 1] === 'url') {
-            type = 'url'
-          } else {
-            console.log('error: wrong share link')
-          }
-
-          var value = ''
-          for (i = searchIndex+2; i < params.length; i ++)
-          {
-            if (params[i] !== '') {
-              if (i === params.length - 1)
-                value += `${params[i]}`
-              else
-                value += `${params[i]}/`
+          const xAuthToken = AsyncStorage.getItem('xAuthToken')
+          console.log('xAuthToken', xAuthToken)
+          if (xAuthToken) {
+            var type = '';
+            if (params[searchIndex + 1] === 'image' && params[searchIndex + 2] === 'jpeg') {
+              type = 'images'
+              searchIndex ++;
+            } else if (params[searchIndex + 1] === 'url') {
+              type = 'url'
+            } else {
+              console.log('error: wrong share link')
             }
+
+            var value = ''
+            for (i = searchIndex+2; i < params.length; i ++)
+            {
+              if (params[i] !== '') {
+                if (i === params.length - 1)
+                  value += `${params[i]}`
+                else
+                  value += `${params[i]}/`
+              }
+            }
+            console.log('path: ', type, value)
+            Actions.ChooseLinkImageFromExtension({mode: type, value: value});
           }
-          console.log('path: ', type, value)
-          Actions.ChooseLinkImageFromExtension({mode: type, value: value});
         }
 
       } else {
