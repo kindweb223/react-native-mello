@@ -1336,6 +1336,7 @@ class CardDetailScreen extends React.Component {
   get renderText() {
     const { links } = this.props.card.currentCard;
     const { coverImage, isOpeningCard } = this.state
+    const { viewMode } = this.props
   
     let marginTop = 24
     marginTop = coverImage ? 24 : 65
@@ -1371,11 +1372,19 @@ class CardDetailScreen extends React.Component {
             duration={CONSTANTS.ANIMATABLE_DURATION}
             animation={this.state.fadeInUpAnimation}
           >
-            <Autolink
-              style={styles.textInputIdea}
-              text={this.state.idea}
-              onPress={(url, match) => this.onPressLink(url)}
-            />
+            {!this.state.idea && viewMode === CONSTANTS.CARD_EDIT
+              ?
+              <TextInput
+                style={styles.textInputIdea}
+                multiline={true}
+                pointerEvents="none" 
+                placeholder={'Let your ideas flow. Type text, paste a link, add an image, video or audio'}/>
+              :
+              <Autolink
+                style={styles.textInputIdea}
+                text={this.state.idea}
+                onPress={(url, match) => this.onPressLink(url)}/>
+            }
           </Animatable.View>
         </Animated.View>
       </TouchableOpacity>
