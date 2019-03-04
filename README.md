@@ -42,7 +42,7 @@ run
 
 bugsnag-sourcemaps upload \
     --api-key ff91b9f4357b0367f0fac2f9f70855c5 \
-    --app-version 1.0.66 \
+    --app-version 1.0.67 \
     --minified-file android-release.bundle \
     --source-map android-release.bundle.map \
     --minified-url index.android.bundle \
@@ -50,7 +50,7 @@ bugsnag-sourcemaps upload \
 
 bugsnag-sourcemaps upload \
     --api-key ff91b9f4357b0367f0fac2f9f70855c5 \
-    --app-version 1.0.66 \
+    --app-version 1.0.67 \
     --minified-file ios-release.bundle \
     --source-map ios-release.bundle.map \
     --minified-url main.jsbundle \
