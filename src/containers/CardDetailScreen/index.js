@@ -967,7 +967,7 @@ class CardDetailScreen extends React.Component {
           if (response.fileSize > CONSTANTS.MAX_UPLOAD_FILE_SIZE) {
             COMMON_FUNC.showPremiumAlert()
           } else {
-            this.handleFile(response, type)  // Generate thumbnail if video
+            this.handleFile(response)  // Generate thumbnail if video
           }
         }
       });
@@ -1002,8 +1002,8 @@ class CardDetailScreen extends React.Component {
     this.selectedFile = file;
     let imageFiles = _.filter(currentCard.files, file => file.fileType === 'MEDIA');
     this.setState({
-      imageUploadStarted: true,
-      imageUploading: true,
+      imageUploadStarted: file.fileType === 'MEDIA',
+      imageUploading: file.fileType === 'MEDIA',
       cardMode: imageFiles.length > 0 ? 'CardDetailMulti' : 'CardDetailSingle'
     });
 
@@ -1095,6 +1095,8 @@ class CardDetailScreen extends React.Component {
   }
 
   handleFile = (file) => {
+    this.coverImageWidth = file.width;
+    this.coverImageHeight = file.height;
     const mimeType = (Platform.OS === 'ios') ? mime.lookup(file.uri) : file.type;
 
     let type = 'FILE';
@@ -1299,7 +1301,14 @@ class CardDetailScreen extends React.Component {
 
   onPressIdea() {
     if (this.props.viewMode === CONSTANTS.CARD_EDIT) {
-      this.setState({ showEditScreen: true })
+      // Android, 3 dots -> edit note (keyboard does not appear so need to add timeout)
+      if (Platform.OS === 'android') {
+        setTimeout(() => {
+          this.setState({ showEditScreen: true })
+        }, 10)  
+      } else {
+        this.setState({ showEditScreen: true })
+      }
     }
   }
 
@@ -1327,6 +1336,7 @@ class CardDetailScreen extends React.Component {
   get renderText() {
     const { links } = this.props.card.currentCard;
     const { coverImage, isOpeningCard } = this.state
+    const { viewMode } = this.props
   
     let marginTop = 24
     marginTop = coverImage ? 24 : 65
@@ -1362,11 +1372,19 @@ class CardDetailScreen extends React.Component {
             duration={CONSTANTS.ANIMATABLE_DURATION}
             animation={this.state.fadeInUpAnimation}
           >
-            <Autolink
-              style={styles.textInputIdea}
-              text={this.state.idea}
-              onPress={(url, match) => this.onPressLink(url)}
-            />
+            {!this.state.idea && viewMode === CONSTANTS.CARD_EDIT
+              ?
+              <TextInput
+                style={styles.textInputIdea}
+                multiline={true}
+                pointerEvents="none" 
+                placeholder={'Let your ideas flow. Type text, paste a link, add an image, video or audio'}/>
+              :
+              <Autolink
+                style={styles.textInputIdea}
+                text={this.state.idea}
+                onPress={(url, match) => this.onPressLink(url)}/>
+            }
           </Animatable.View>
         </Animated.View>
       </TouchableOpacity>

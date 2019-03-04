@@ -176,6 +176,7 @@ class ResetPasswordScreen extends React.Component {
                 isSecure={this.state.isSecure}
                 ContainerStyle={{ marginBottom: 0 }}
                 isErrorView={false}
+                value={this.state.password}
                 handleChange={text => this.changePassword(text)}
                 onFocus={() => this.onPasswordFocus(true)}
                 onBlur={() => this.onPasswordFocus(false)}

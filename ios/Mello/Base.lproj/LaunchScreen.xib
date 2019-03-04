@@ -16,24 +16,24 @@
             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
             <subviews>
                 <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="LogoIcon" translatesAutoresizingMaskIntoConstraints="NO" id="Ezw-zB-Itm">
-                    <rect key="frame" x="112" y="331" width="150" height="150"/>
+                    <rect key="frame" x="150" y="368.66666666666669" width="75" height="75"/>
                     <constraints>
-                        <constraint firstAttribute="height" constant="150" id="7pK-db-ISy"/>
-                        <constraint firstAttribute="width" constant="150" id="xEs-Dx-xXs"/>
+                        <constraint firstAttribute="width" constant="75" id="8g7-qu-BPg"/>
+                        <constraint firstAttribute="height" constant="75" id="BnR-of-u5f"/>
                     </constraints>
                 </imageView>
             </subviews>
             <color key="backgroundColor" red="0.97254901960784312" green="0.96470588235294119" blue="1" alpha="1" colorSpace="calibratedRGB"/>
             <constraints>
-                <constraint firstItem="Ezw-zB-Itm" firstAttribute="centerX" secondItem="iN0-l3-epB" secondAttribute="centerX" id="1hr-K8-Uxx"/>
-                <constraint firstItem="Ezw-zB-Itm" firstAttribute="centerY" secondItem="iN0-l3-epB" secondAttribute="centerY" id="9JT-yf-Rng"/>
+                <constraint firstItem="Ezw-zB-Itm" firstAttribute="centerX" secondItem="iN0-l3-epB" secondAttribute="centerX" id="4yM-Rl-Cu0"/>
+                <constraint firstItem="Ezw-zB-Itm" firstAttribute="centerY" secondItem="iN0-l3-epB" secondAttribute="centerY" id="gDX-HJ-ONU"/>
             </constraints>
             <nil key="simulatedStatusBarMetrics"/>
             <modalPageSheetSimulatedSizeMetrics key="simulatedDestinationMetrics"/>
-            <point key="canvasLocation" x="547.5" y="454.5"/>
+            <point key="canvasLocation" x="546.39999999999998" y="454.43349753694582"/>
         </view>
     </objects>
     <resources>
-        <image name="LogoIcon" width="86" height="86"/>
+        <image name="LogoIcon" width="75" height="75"/>
     </resources>
 </document>

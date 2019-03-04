@@ -121,7 +121,8 @@ class CardNewScreen extends React.Component {
       isDeleteLink: false,
       copiedLink: null,
       imageUploading: false,
-      cardMode: 'CardNewSingle'
+      cardMode: 'CardNewSingle',
+      isSaving: false
     };
 
     this.imageUploading = false;
@@ -534,7 +535,7 @@ class CardNewScreen extends React.Component {
         }
       } else if (this.props.feedo.loading !== feedoTypes.UPDATE_FEED_PENDING && nextProps.feedo.loading === feedoTypes.UPDATE_FEED_PENDING) {
         // updating a feed
-        loading = true;
+        // loading = true;  // handled by isSaving in state
       } else if (this.props.feedo.loading !== feedoTypes.UPDATE_FEED_FULFILLED && nextProps.feedo.loading === feedoTypes.UPDATE_FEED_FULFILLED) {
         // success in updating a feed
         this.onUpdateCard();
@@ -1352,6 +1353,7 @@ class CardNewScreen extends React.Component {
           tags,
           files,
         } = this.props.feedo.currentFeed;  
+        this.setState({isSaving: true})
         this.props.updateFeed(id, headline || 'New flow', summary || '', tags, files);
         return;
       }
@@ -1359,6 +1361,7 @@ class CardNewScreen extends React.Component {
       this.props.deleteDraftFeed(this.draftFeedo.id)
     } else {
       Analytics.logEvent('new_card_update_card', {})
+      this.setState({isSaving: true})
       this.onUpdateCard();
     }
   }
@@ -1714,13 +1717,18 @@ class CardNewScreen extends React.Component {
             <Text style={[styles.textButton, { color: COLORS.PURPLE }]}>Cancel</Text>
           </TouchableOpacity>
           <Text style={styles.textButton}>New card</Text>
-          <TouchableOpacity 
-            style={[styles.btnClose, { alignItems: 'flex-end' }]}
-            activeOpacity={0.6}
-            onPress={this.onUpdateFeed.bind(this)}
-          >
-            <Text style={[styles.textButton, { color: this.isCardValid(idea, files) ? COLORS.PURPLE : COLORS.MEDIUM_GREY }]}>Done</Text>
-          </TouchableOpacity>
+          {this.state.isSaving
+            ? <View style={[styles.btnClose, { alignItems: 'flex-end' }]}>
+                <ActivityIndicator color={COLORS.PURPLE} size="small" style={styles.loadingIcon} />
+              </View>
+            : <TouchableOpacity 
+                style={[styles.btnClose, { alignItems: 'flex-end' }]}
+                activeOpacity={0.6}
+                onPress={this.onUpdateFeed.bind(this)}
+              >
+                <Text style={[styles.textButton, { color: this.isCardValid(idea, files) ? COLORS.PURPLE : COLORS.MEDIUM_GREY }]}>Done</Text>
+              </TouchableOpacity>
+          }
         </View>
       )
     }
