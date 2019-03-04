@@ -8,7 +8,7 @@ import UserAvatar from 'react-native-user-avatar'
 
 import EvilIcons from 'react-native-vector-icons/EvilIcons'
 import styles from './styles'
-import FastImage from "react-native-fast-image";
+import ExFastImage from '../ExFastImage';
 
 
 export default class UserAvatarComponent extends React.Component {
@@ -41,7 +41,7 @@ export default class UserAvatarComponent extends React.Component {
           name={name}
           color={color}
           textColor={textColor}
-          component={isFastImage ? FastImage : Image}
+          component={isFastImage ? ExFastImage : Image}
           src={user.imageUrl}
         />
       );
