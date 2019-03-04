@@ -182,6 +182,8 @@ class FeedDetailScreen extends React.Component {
     this.userActions = [];
     this.userActionTimer = null;
     this.scrollviewHeight = 0
+
+    this.deletedCardId = null
   }
 
   UNSAFE_componentWillMount() {
@@ -939,24 +941,30 @@ class FeedDetailScreen extends React.Component {
       return;
     }
     const currentCardInfo = this.userActions[0];
+
     this.setState({ 
       currentActionType: currentCardInfo.currentActionType,
       isShowToaster: true,
       toasterTitle: currentCardInfo.toasterTitle,
     });
+
     this.userActionTimer = setTimeout(() => {
-      // this.setState({ isShowToaster: false })
       if (this.state.currentActionType === ACTION_CARD_DELETE) {
-        Analytics.logEvent('feed_detail_delete_card', {})
-        this.props.deleteCard(currentCardInfo.ideaId)
+        if (this.deletedCardId !== currentCardInfo.ideaId) {
+          Analytics.logEvent('feed_detail_delete_card', {})
+          this.deletedCardId = currentCardInfo.ideaId
+          this.props.deleteCard(currentCardInfo.ideaId)
+          this.userActionTimer = null;
+          this.userActions.shift();
+        }
       } else if (this.state.currentActionType === ACTION_CARD_MOVE) {
         Analytics.logEvent('feed_detail_move_card', {})
         this.props.moveCard(currentCardInfo.ideaId, currentCardInfo.feedoId);
+        this.userActionTimer = null;
+        this.userActions.shift();
       }
-      this.userActionTimer = null;
-      this.userActions.shift();
       this.processCardActions();
-    }, TOASTER_DURATION + 5);
+    }, TOASTER_DURATION + 50);
   }
 
   onDeleteCard = (ideaId) => {
@@ -991,7 +999,6 @@ class FeedDetailScreen extends React.Component {
     }, () => {
       this.setBubbles(this.state.currentFeed)
     });
-    console.log('CARD: ', this.state.currentFeed.metadata.ideasSubmitted)
     this.props.deleteDummyCard(cardInfo.ideaId, 0)
 
     this.processCardActions();
