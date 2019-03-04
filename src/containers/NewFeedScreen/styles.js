@@ -117,6 +117,9 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'flex-start'
   },
+  loadingIcon: {
+    marginRight: 10
+  }
 })
 
 

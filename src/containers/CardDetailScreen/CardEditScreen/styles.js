@@ -63,7 +63,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   loadingIcon: {
-    marginRight: 15
+    marginRight: 10
   }
 })
 

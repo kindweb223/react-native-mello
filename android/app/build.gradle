@@ -101,7 +101,7 @@ android {
         applicationId "io.solvers.feedo"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode 65
+        versionCode 66
         versionName "1.0"
         multiDexEnabled true
         ndk {
@@ -177,6 +177,7 @@ dependencies {
     compile "com.facebook.react:react-native:+"  // From node_modules
 
     compile 'io.intercom.android:intercom-sdk:5.+'
+    compile 'io.intercom.android:intercom-sdk-fcm:5.+'
 
     // Firebase dependencies
     implementation "com.google.android.gms:play-services-base:16.0.1"

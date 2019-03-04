@@ -581,7 +581,7 @@ class HomeScreen extends React.Component {
       return
 
     const type = notification.data.type;
-    if (notification.badge) {
+    if (notification.badge >= 0) {
       PushNotification.setApplicationIconBadgeNumber(notification.badge)
     }
 

@@ -213,8 +213,9 @@ class ShareSuccessScreen extends React.Component {
                 this.renderImage(card.currentCard)
               )}
               <View style={(card.currentCard && card.currentCard.coverImage) ? styles.textsContainer : styles.textsContainerNoImage}>
-                <Text style={styles.textTitle}>Saved to</Text>
-                <Text style={styles.feedTitle} numberOfLines={1} ellipsizeMode="tail">{feedo.currentFeed.headline}</Text>
+                <Text style={styles.textTitle} numberOfLines={1} ellipsizeMode="tail">
+                  Saved to <Text style={styles.feedTitle}>{feedo.currentFeed.headline}</Text>
+                </Text>
               </View>
             </View>
           </Animated.View>
