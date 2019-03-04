@@ -41,7 +41,16 @@ export default class ShareCardScreen extends React.Component {
 
     return (
       <View style={styles.container}>
-        {shareUrl !== ''
+        <CardNewScreen
+          cardMode={CONSTANTS.SHARE_EXTENTION_CARD}
+          shareUrl={shareUrl}
+          shareImageUrls={imageUrls}
+          shareText={notesText}
+          onClose={() => this.onClosed()}
+          prevPage={'shareExtension'}
+        />
+
+        {/* {shareUrl !== ''
         ? <CardNewShareScreen
             cardMode={CONSTANTS.SHARE_EXTENTION_CARD}
             shareUrl={shareUrl}
@@ -57,7 +66,7 @@ export default class ShareCardScreen extends React.Component {
             onClose={() => this.onClosed()}
             prevPage={'shareExtension'}
           />
-        }
+        }  */}
       </View>
     );
   }
