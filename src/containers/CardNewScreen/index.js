@@ -1380,30 +1380,52 @@ class CardNewScreen extends React.Component {
     const { viewMode, cardMode } = this.props;
     let imageFiles = _.filter(this.props.card.currentCard.files, file => file.fileType === 'MEDIA');
 
-    const ratio = CONSTANTS.SCREEN_WIDTH / this.coverImageWidth
-    if (this.state.imageUploadStarted) {
-      return (
-        <View
-          style={
-            cardMode === CONSTANTS.SHARE_EXTENTION_CARD
-              ? styles.extensionCoverImageContainer
-              : [styles.coverImageContainer, { width: CONSTANTS.SCREEN_WIDTH, height: this.coverImageHeight * ratio }]
-          }
-        >
-          <CoverImagePreviewComponent
-            imageUploading={this.state.imageUploading}
-            cardMode={this.state.cardMode}
-            isShareExtension={cardMode === CONSTANTS.SHARE_EXTENTION_CARD}
-            coverImage={this.state.coverImage}
-            files={imageFiles}
-            editable={viewMode !== CONSTANTS.CARD_VIEW}
-            isFastImage={cardMode !== CONSTANTS.SHARE_EXTENTION_CARD}
-            isSetCoverImage={true}
-            onRemove={(fileId) => this.onRemoveFile(fileId)}
-            onSetCoverImage={(fileId) => this.onSetCoverImage(fileId)}
-          />
-        </View>
-      );
+    if (this.props.shareUrl !== '' && this.props.shareImageUrls.length > 0) {
+      if (this.state.coverImage) {
+        return (
+          <View
+            style={styles.extensionCoverImageContainer}
+          >
+            <CoverImagePreviewComponent
+              isShareExtension={true}
+              coverImage={this.state.coverImage}
+              files={imageFiles}
+              editable={true}
+              isFastImage={false}
+              isSetCoverImage={true}
+              onRemove={(fileId) => this.onRemoveFile(fileId)}
+              onSetCoverImage={(fileId) => this.onSetCoverImage(fileId)}
+            />
+          </View>
+        );
+      }
+    }
+    else {
+      const ratio = CONSTANTS.SCREEN_WIDTH / this.coverImageWidth
+      if (this.state.imageUploadStarted) {
+        return (
+          <View
+            style={
+              cardMode === CONSTANTS.SHARE_EXTENTION_CARD
+                ? styles.extensionCoverImageContainer
+                : [styles.coverImageContainer, { width: CONSTANTS.SCREEN_WIDTH, height: this.coverImageHeight * ratio }]
+            }
+          >
+            <CoverImagePreviewComponent
+              imageUploading={this.state.imageUploading}
+              cardMode={this.state.cardMode}
+              isShareExtension={cardMode === CONSTANTS.SHARE_EXTENTION_CARD}
+              coverImage={this.state.coverImage}
+              files={imageFiles}
+              editable={viewMode !== CONSTANTS.CARD_VIEW}
+              isFastImage={cardMode !== CONSTANTS.SHARE_EXTENTION_CARD}
+              isSetCoverImage={true}
+              onRemove={(fileId) => this.onRemoveFile(fileId)}
+              onSetCoverImage={(fileId) => this.onSetCoverImage(fileId)}
+            />
+          </View>
+        );
+      }
     }
   }
 
