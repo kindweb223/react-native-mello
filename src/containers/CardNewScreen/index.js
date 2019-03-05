@@ -122,6 +122,7 @@ class CardNewScreen extends React.Component {
       copiedLink: null,
       imageUploading: false,
       cardMode: 'CardNewSingle',
+      fileType: '',
       isSaving: false
     };
 
@@ -350,9 +351,10 @@ class CardNewScreen extends React.Component {
       }
 
       // Set uploading false
-      // To handle non image files so will pass isValidCard
+      if (newImageFiles.length > 1) {
         this.setState({ imageUploading: false });
         this.imageUploading = false;
+      }
 
       this.currentSelectedLinkImageIndex ++;
       if (this.currentSelectedLinkImageIndex < this.selectedLinkImages.length) {
@@ -935,7 +937,9 @@ class CardNewScreen extends React.Component {
    * @param {*} files 
    */
   isCardValid(idea, files) {
-    if (this.imageUploading) {
+    if (this.state.fileType === 'MEDIA' && // To handle non image files so will pass isValidCard
+        this.imageUploading
+    ) {
       return false;
     }
     return idea.length > 0 || (files && files.length > 0) ? true : false
@@ -1062,12 +1066,12 @@ class CardNewScreen extends React.Component {
 
   async uploadFile(currentCard, file, type) {
     this.selectedFile = file;
-    this.imageUploading = true;
+    this.imageUploading = type === 'MEDIA';
     this.textInputIdeaRef.focus(); // To show progress bar for long image
     let imageFiles = _.filter(currentCard.files, file => file.fileType === 'MEDIA');
     this.setState({
-      imageUploadStarted: true,
-      imageUploading: true,
+      imageUploadStarted: type === 'MEDIA',
+      imageUploading: type === 'MEDIA',
       cardMode: imageFiles.length > 0 ? 'CardNewMulti' : 'CardNewSingle'
     });
 
@@ -1170,6 +1174,7 @@ class CardNewScreen extends React.Component {
         type = 'MEDIA';
       }
     }
+    this.setState({ fileType: type });
 
     if (mimeType.indexOf('video') !== -1) {
       if (Platform.OS === 'ios') {
@@ -1869,7 +1874,7 @@ class CardNewScreen extends React.Component {
         />
 
         {
-          this.state.loading && 
+          this.state.loading && this.state.fileType === 'FILE' && 
             <LoadingScreen containerStyle={this.props.cardMode === CONSTANTS.SHARE_EXTENTION_CARD ? {marginBottom: CONSTANTS.SCREEN_VERTICAL_MIN_MARGIN + 100} : {}} />
         }
         <Modal 

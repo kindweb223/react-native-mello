@@ -36,7 +36,11 @@ export default class CoverImagePreviewComponent extends React.Component {
 
   UNSAFE_componentWillReceiveProps(nextProps) {
     this.setState({ files: nextProps.files })
-    if (nextProps.imageUploading) {
+    if (this.props.imageUploading && !nextProps.imageUploading) {
+      this.setState({ progress: 0 });
+    }
+
+    if (nextProps.imageUploading && this.state.progress === 0) {
       this.setState({ 
         progress: 0,
       }, () => {
@@ -49,17 +53,22 @@ export default class CoverImagePreviewComponent extends React.Component {
     this.setState({ isPreview: true, position: index })
   }
 
+  onLoadEnd = () => {
+    this.setState({
+      loadEnd: true,
+      progress: 0
+    });
+  }
+
   animateProgressBar() {
     let progress = 0;
     let animateProgressInterval = setInterval(() => {
       progress += 0.1;
-      if (progress >= 0.9) {
-        this.setState({ progress: 0.9 });
-      } else {
+      if (progress <= 0.9) {
         this.setState({ progress });
       }
     }, 200);
-    setTimeout(() => clearInterval(animateProgressInterval), 6000);
+    setTimeout(() => clearInterval(animateProgressInterval), 2000);
   }
 
   get renderProgressBar() {
@@ -98,7 +107,7 @@ export default class CoverImagePreviewComponent extends React.Component {
             style={styles.imageCover}
             source={{ uri: coverImage }}
             resizeMode={isShareExtension ? 'cover' : 'cover'}
-            onLoadEnd={() => this.setState({ loadEnd: true })}
+            onLoadEnd={this.onLoadEnd}
           />
           {
             files.length > 1 && 
@@ -121,7 +130,7 @@ export default class CoverImagePreviewComponent extends React.Component {
           style={styles.imageCover}
           source={{ uri: coverImage }}
           resizeMode={isShareExtension ? 'cover' : 'contain'}
-          onLoadEnd={() => this.setState({ loadEnd: true })}
+          onLoadEnd={this.onLoadEnd}
         />
         {
             files && files.length > 1 &&
