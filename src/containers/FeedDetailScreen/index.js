@@ -90,7 +90,7 @@ import COLORS from '../../service/colors'
 import CONSTANTS from '../../service/constants'
 import * as COMMON_FUNC from '../../service/commonFunc'
 import styles from './styles'
-import { TAGS_FEATURE, SHARE_LINK_URL } from "../../service/api"
+import { TAGS_FEATURE, SHARE_LINK_URL, TIP_FEATURE } from "../../service/api"
 
 import Analytics from '../../lib/firebase'
 
@@ -1502,7 +1502,7 @@ class FeedDetailScreen extends React.Component {
                   </View>
                 )}
 
-                {!_.isEmpty(currentFeed) && currentFeed && currentFeed.ideas && currentFeed.ideas.length > 0 && this.state.showBubble && (
+                {TIP_FEATURE && !_.isEmpty(currentFeed) && currentFeed && currentFeed.ideas && currentFeed.ideas.length > 0 && this.state.showBubble && (
                   <SpeechBubbleComponent
                     page="detail"
                     title="Flows contain cards. Cards can have, images, text, attachments and likes. My granny enjoys liking."
