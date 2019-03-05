@@ -32,7 +32,7 @@ export default class ShareCardScreen extends React.Component {
       Actions.pop()
       setTimeout(() => {
         ShareExtension.close();
-      }, 100)
+      }, 500)
     }
   }
 
