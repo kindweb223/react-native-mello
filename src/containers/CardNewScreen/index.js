@@ -1718,7 +1718,6 @@ class CardNewScreen extends React.Component {
 
   get renderBottomContent() {
     const { cardMode } = this.props;
-    console.log('PPPPPP: ', this.props.feedo.currentFeed)
 
     if (cardMode === CONSTANTS.SHARE_EXTENTION_CARD) {
       return (
