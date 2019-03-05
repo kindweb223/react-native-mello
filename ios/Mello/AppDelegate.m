@@ -38,8 +38,7 @@
   // DEV
   [Intercom setApiKey:@"ios_sdk-7715eaa799799c5d8b599c8bf65b232dbb1529b1" forAppId:@"spgs5xuc"];
   // PROD
-//  [Intercom setApiKey:@"ios_sdk-5ed8d6fab2b12f1a3011f3948a87e2bea47af5ee" forAppId:@"b4x3v190"];
-  // [Intercom registerUnidentifiedUser];
+  // [Intercom setApiKey:@"ios_sdk-5ed8d6fab2b12f1a3011f3948a87e2bea47af5ee" forAppId:@"b4x3v190"];
 
   NSURL *jsCodeLocation;
 

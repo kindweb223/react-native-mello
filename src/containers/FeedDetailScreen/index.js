@@ -94,7 +94,7 @@ import { TAGS_FEATURE, SHARE_LINK_URL } from "../../service/api"
 
 import Analytics from '../../lib/firebase'
 
-const TOASTER_DURATION = 5000
+const TOASTER_DURATION = 3000
 
 const ACTION_NONE = 0;
 const ACTION_FEEDO_PIN = 1;
@@ -182,6 +182,8 @@ class FeedDetailScreen extends React.Component {
     this.userActions = [];
     this.userActionTimer = null;
     this.scrollviewHeight = 0
+
+    this.deletedCardId = null
   }
 
   UNSAFE_componentWillMount() {
@@ -247,6 +249,10 @@ class FeedDetailScreen extends React.Component {
       if (this.props.isDeepLink) {
         this.props.getFeedoList()
       }
+    }
+
+    if (card.loading === 'CREATE_CARD_FULFILLED') {
+      this.setState({ showBubble: false })
     }
 
     if ((this.props.feedo.loading !== 'GET_FEED_DETAIL_FULFILLED' && feedo.loading === 'GET_FEED_DETAIL_FULFILLED') ||
@@ -939,24 +945,32 @@ class FeedDetailScreen extends React.Component {
       return;
     }
     const currentCardInfo = this.userActions[0];
+
     this.setState({ 
       currentActionType: currentCardInfo.currentActionType,
       isShowToaster: true,
       toasterTitle: currentCardInfo.toasterTitle,
     });
+
     this.userActionTimer = setTimeout(() => {
-      // this.setState({ isShowToaster: false })
       if (this.state.currentActionType === ACTION_CARD_DELETE) {
-        Analytics.logEvent('feed_detail_delete_card', {})
-        this.props.deleteCard(currentCardInfo.ideaId)
+        if (this.deletedCardId !== currentCardInfo.ideaId) {
+          Analytics.logEvent('feed_detail_delete_card', {})
+          this.deletedCardId = currentCardInfo.ideaId
+          this.props.deleteCard(currentCardInfo.ideaId)
+          this.userActionTimer = null;
+          this.setState({ isShowToaster: false })
+          this.userActions.shift();
+        }
       } else if (this.state.currentActionType === ACTION_CARD_MOVE) {
         Analytics.logEvent('feed_detail_move_card', {})
         this.props.moveCard(currentCardInfo.ideaId, currentCardInfo.feedoId);
+        this.userActionTimer = null;
+        this.setState({ isShowToaster: false })
+        this.userActions.shift();
       }
-      this.userActionTimer = null;
-      this.userActions.shift();
       this.processCardActions();
-    }, TOASTER_DURATION + 5);
+    }, TOASTER_DURATION + 50);
   }
 
   onDeleteCard = (ideaId) => {
@@ -991,7 +1005,7 @@ class FeedDetailScreen extends React.Component {
     }, () => {
       this.setBubbles(this.state.currentFeed)
     });
-    console.log('CARD: ', this.state.currentFeed.metadata.ideasSubmitted)
+
     this.props.deleteDummyCard(cardInfo.ideaId, 0)
 
     this.processCardActions();
@@ -1498,7 +1512,7 @@ class FeedDetailScreen extends React.Component {
                   </View>
                 )}
 
-                {!_.isEmpty(currentFeed) && currentFeed && currentFeed.ideas && currentFeed.ideas.length > 0 && this.state.showBubble && (
+                {/* {!_.isEmpty(currentFeed) && currentFeed && currentFeed.ideas && currentFeed.ideas.length > 0 && this.state.showBubble && (
                   <SpeechBubbleComponent
                     page="detail"
                     title="Flows contain cards. Cards can have, images, text, attachments and likes. My granny enjoys liking."
@@ -1506,7 +1520,7 @@ class FeedDetailScreen extends React.Component {
                     onCloseBubble={() => this.closeBubble()}
                     showBubbleCloseButton={this.state.showBubbleCloseButton}
                   />
-                )}
+                )} */}
 
                 {
                 (!_.isEmpty(currentFeed) && currentFeed && currentFeed.ideas)

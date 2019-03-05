@@ -14,13 +14,14 @@ import * as COMMON_FUNC from '../../service/commonFunc'
 const FeedItemComponent = ({ item, pinFlag, page, clickEvent, listType }) => {
   let avatars = []
   invitees = item.invitees
-
-  if (item.metadata.owner) {
-    invitees = _.filter(invitees, invitee => invitee.userProfile.id !== item.owner.id)
-  }
   
   invitees = COMMON_FUNC.filterRemovedInvitees(invitees)
 
+  // If you own the flow and are the only invitee
+  if (COMMON_FUNC.isFeedOwnerOnlyInvitee(item)) {
+    invitees = _.filter(invitees, invitee => invitee.userProfile.id !== item.owner.id)
+  }
+  
   invitees.forEach(data => {
     avatars = [
       ...avatars,
