@@ -155,7 +155,7 @@ class CardNewShareScreen extends React.Component {
     if (this.props.shareImageUrls.length > 0) {
       const file = this.props.shareImageUrls[0]
       this.selectedFile = file;
-      this.selectedFileMimeType = mime.lookup(file);
+      this.selectedFileMimeType = mime.lookup(file) || 'image/png';
       this.selectedFileName = file.replace(/^.*[\\\/]/, '')
       this.selectedFileType = 'MEDIA';
 
