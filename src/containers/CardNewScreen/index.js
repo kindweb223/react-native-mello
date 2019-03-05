@@ -418,7 +418,7 @@ class CardNewScreen extends React.Component {
         this.saveFeedId();
       }
       if (this.props.cardMode === CONSTANTS.SHARE_EXTENTION_CARD) {
-        Actions.ShareSuccessScreen({type: 'replace'});
+        Actions.ShareSuccessScreen({type: 'replace', prev_scene: this.props.prev_scene});
         return;
       }
       this.onClose();
@@ -1950,6 +1950,7 @@ CardNewScreen.defaultProps = {
   shareImageUrls: [],
   shareText: '',
   onClose: () => {},
+  prev_scene: '',
 }
 
 
@@ -1964,6 +1965,7 @@ CardNewScreen.propTypes = {
   shareImageUrls: PropTypes.array,
   shareText: PropTypes.string,
   onClose: PropTypes.func,
+  prev_scene: PropTypes.string,
 }
 
 

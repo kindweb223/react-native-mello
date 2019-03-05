@@ -158,11 +158,12 @@ class ShareSuccessScreen extends React.Component {
           ShareExtension.close();
         else {
           //go to previous scene
-          Actions.pop()
-          Actions.pop()
+          if (this.props.prev_scene !== '') {
+            Actions.popTo(this.props.prev_scene)
+          }
           setTimeout(() => {
             ShareExtension.close();
-          }, 500)
+          }, 100)
         }
       }
     })

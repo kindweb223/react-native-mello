@@ -293,9 +293,8 @@ export default class Root extends React.Component {
           }
         }
         if (Platform.OS === 'android' && searchIndex !== -1) { //share extension for Android
-          const xAuthToken = AsyncStorage.getItem('xAuthToken')
-          console.log('xAuthToken', xAuthToken)
-          if (xAuthToken) {
+          const currentScene = Actions.currentScene
+          if (currentScene !== 'TutorialScreen' && currentScene !== 'LoginScreen' && currentScene !== 'SignUpScreen' && currentScene !== 'SignUpConfirmScreen') {
             var type = '';
             if (params[searchIndex + 1] === 'image') {
               type = 'images'
@@ -317,7 +316,7 @@ export default class Root extends React.Component {
               }
             }
             console.log('path: ', type, value)
-            Actions.ChooseLinkImageFromExtension({mode: type, value: value});
+            Actions.ChooseLinkImageFromExtension({mode: type, value: value, prev_scene: currentScene});
           }
         }
 
