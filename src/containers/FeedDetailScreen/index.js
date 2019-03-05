@@ -251,6 +251,10 @@ class FeedDetailScreen extends React.Component {
       }
     }
 
+    if (card.loading === 'CREATE_CARD_FULFILLED') {
+      this.setState({ showBubble: false })
+    }
+
     if ((this.props.feedo.loading !== 'GET_FEED_DETAIL_FULFILLED' && feedo.loading === 'GET_FEED_DETAIL_FULFILLED') ||
         (this.props.feedo.loading === 'DELETE_INVITEE_PENDING' && feedo.loading === 'DELETE_INVITEE_FULFILLED') ||
         (this.props.feedo.loading === 'UPDATE_SHARING_PREFERENCES_PENDING' && feedo.loading === 'UPDATE_SHARING_PREFERENCES_FULFILLED') ||
@@ -1001,6 +1005,7 @@ class FeedDetailScreen extends React.Component {
     }, () => {
       this.setBubbles(this.state.currentFeed)
     });
+
     this.props.deleteDummyCard(cardInfo.ideaId, 0)
 
     this.processCardActions();
@@ -1507,7 +1512,7 @@ class FeedDetailScreen extends React.Component {
                   </View>
                 )}
 
-                {!_.isEmpty(currentFeed) && currentFeed && currentFeed.ideas && currentFeed.ideas.length > 0 && this.state.showBubble && (
+                {/* {!_.isEmpty(currentFeed) && currentFeed && currentFeed.ideas && currentFeed.ideas.length > 0 && this.state.showBubble && (
                   <SpeechBubbleComponent
                     page="detail"
                     title="Flows contain cards. Cards can have, images, text, attachments and likes. My granny enjoys liking."
@@ -1515,7 +1520,7 @@ class FeedDetailScreen extends React.Component {
                     onCloseBubble={() => this.closeBubble()}
                     showBubbleCloseButton={this.state.showBubbleCloseButton}
                   />
-                )}
+                )} */}
 
                 {
                 (!_.isEmpty(currentFeed) && currentFeed && currentFeed.ideas)
