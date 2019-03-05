@@ -196,6 +196,13 @@ class CardNewScreen extends React.Component {
     if (this.props.card.loading !== types.CREATE_CARD_PENDING && nextProps.card.loading === types.CREATE_CARD_PENDING) {
       // loading = true;
     } else if (this.props.card.loading !== types.CREATE_CARD_FULFILLED && nextProps.card.loading === types.CREATE_CARD_FULFILLED) {
+      // Hide tops on detail page
+      const cardBubbleData = {
+        userId: nextProps.user.userInfo.id,
+        state: 'false'
+      }
+      AsyncStorage.setItem('CardBubbleState', JSON.stringify(cardBubbleData));
+
       // If share extension and a url has been passed
       if (this.props.cardMode === CONSTANTS.SHARE_EXTENTION_CARD && this.props.shareUrl !== '') {
         const openGraph = this.props.card.currentOpneGraph;
