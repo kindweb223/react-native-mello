@@ -51,7 +51,6 @@ export const TAGS_FEATURE = false
 export const PIN_FEATURE = false
 export const COMMENT_FEATURE = false
 export const SEARCH_FEATURE = false
-export const TIP_FEATURE = false
 
 export const TRELLO_URL = 'https://trello.com/b/xqBylYZO/mello'
 
