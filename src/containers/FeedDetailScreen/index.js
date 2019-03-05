@@ -94,7 +94,7 @@ import { TAGS_FEATURE, SHARE_LINK_URL } from "../../service/api"
 
 import Analytics from '../../lib/firebase'
 
-const TOASTER_DURATION = 5000
+const TOASTER_DURATION = 3000
 
 const ACTION_NONE = 0;
 const ACTION_FEEDO_PIN = 1;
