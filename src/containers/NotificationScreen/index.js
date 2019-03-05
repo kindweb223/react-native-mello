@@ -27,11 +27,13 @@ import ActivityFeedComponent from '../../components/ActivityFeedComponent'
 import CardDetailScreen from '../CardDetailScreen'
 import SelectHuntScreen from '../SelectHuntScreen'
 import ToasterComponent from '../../components/ToasterComponent'
+import LoadingScreen from '../LoadingScreen';
 
 import {
   getFeedDetail,
   getActivityFeed,
   readActivityFeed,
+  alreadyReadActivityFeed,
   deleteActivityFeed,
   readAllActivityFeed,
   setCurrentFeed,
@@ -131,6 +133,11 @@ class NotificationScreen extends React.Component {
     const { feedo, card } = nextProps
     const { selectedActivity } = this.state
 
+    // Set loading indicator when pending
+    if(feedo.loading === 'GET_FEED_DETAIL_PENDING' || card.loading === 'GET_CARD_PENDING') {
+      this.setState({loading: true})
+    }
+    
     if (feedo.loading === 'PUBNUB_GET_FEED_DETAIL_FULFILLED' && Actions.currentScene !== 'FeedDetailScreen' ||
         feedo.loading === 'GET_CARD_FULFILLED' && Actions.currentScene !== 'FeedDetailScreen' ||
         feedo.loading === 'PUBNUB_LIKE_CARD_FULFILLED' && Actions.currentScene !== 'FeedDetailScreen' ||
@@ -174,6 +181,8 @@ class NotificationScreen extends React.Component {
           Actions.FeedDetailScreen({ data: { id: selectedActivity.metadata.HUNT_ID }, prevPage: 'activity' })
         } else if (selectedActivity.activityTypeEnum === 'HUNT_UPDATED') {
           Actions.FeedDetailScreen({ data: { id: selectedActivity.metadata.HUNT_ID }, prevPage: 'activity' })
+        } else {
+          this.setState({ loading: false })
         }
       }
     }
@@ -182,17 +191,21 @@ class NotificationScreen extends React.Component {
       Analytics.logEvent('notification_delete_activity', {})
     }
 
-    if (this.props.feedo.loading !== 'GET_FEED_DETAIL_FULFILLED' && feedo.loading === 'GET_FEED_DETAIL_FULFILLED') {
+    if (this.props.feedo.loading !== 'GET_FEED_DETAIL_FULFILLED' && feedo.loading === 'GET_FEED_DETAIL_FULFILLED') {      
       this.prevFeedo = feedo.currentFeed;
       if (!_.isEmpty(selectedActivity)) {
         const ideaIndex = _.findIndex(feedo.currentFeed.ideas, idea => idea.id === selectedActivity.metadata.IDEA_ID)        
         if (ideaIndex !== -1) {
           this.props.getCard(selectedActivity.metadata.IDEA_ID)
+        } else {
+          this.setState({ loading: false })
         }
       }
     }
 
     if (this.props.card.loading !== 'GET_CARD_FULFILLED' && card.loading === 'GET_CARD_FULFILLED') {
+      this.setState({ loading: false })
+
       if (selectedActivity.activityTypeEnum === 'COMMENT_ADDED') {
         this.onSelectNewComment(selectedActivity)
       } else {
@@ -208,19 +221,13 @@ class NotificationScreen extends React.Component {
         }
       }
     }
-
-    if (this.props.card.loading !== 'GET_CARD_REJECTED' && card.loading === 'GET_CARD_REJECTED') {
-      if (card.error.code === 'error.idea.not.found') {
-        Alert.alert('Error', card.error.message)
-      }
-    }
-
+    
     if ((this.props.feedo.loading !== 'GET_ACTIVITY_FEED_FULFILLED' && feedo.loading === 'GET_ACTIVITY_FEED_FULFILLED') ||
         (this.props.feedo.loading !== 'READ_ACTIVITY_FEED_FULFILLED' && feedo.loading === 'READ_ACTIVITY_FEED_FULFILLED') ||
         (this.props.feedo.loading !== 'DEL_ACTIVITY_FEED_FULFILLED' && feedo.loading === 'DEL_ACTIVITY_FEED_FULFILLED'))
     {
       let activityFeedList = _.orderBy(feedo.activityFeedList, ['activityTime'], ['desc'])
-      this.setState({ refreshing: false, loading: false, activityFeedList })
+      this.setState({ refreshing: false, activityFeedList })
       this.setActivityFeeds(activityFeedList, this.state.invitedFeedList)
     }
 
@@ -238,6 +245,20 @@ class NotificationScreen extends React.Component {
           this.setState({ isShowInviteToaster: false })
         }, TOASTER_DURATION)
     }
+
+    // Handle rejections
+    if(feedo.loading === 'READ_ACTIVITY_FEED_REJECTED' || feedo.loading === 'GET_FEED_DETAIL_REJECTED') {
+      this.setState({loading: false})
+    }
+
+    if (this.props.card.loading !== 'GET_CARD_REJECTED' && card.loading === 'GET_CARD_REJECTED') {
+      this.setState({loading: false})
+
+      if (card.error.code === 'error.idea.not.found') {
+        Alert.alert('Error', card.error.message)
+      }
+    } 
+
   }
 
   getActivityFeedList = (page, size) => {
@@ -267,7 +288,12 @@ class NotificationScreen extends React.Component {
 
   onReadActivity = (data) => {
     this.setState({ selectedActivity: data })
-    this.props.readActivityFeed(this.props.user.userInfo.id, data.id)
+    // If not read then call API, otherwise dummy call
+    if (!data.read) {
+      this.props.readActivityFeed(this.props.user.userInfo.id, data.id)
+    } else {
+      this.props.alreadyReadActivityFeed(data.id)
+    }
   }
 
   get renderDeleteComponent() {
@@ -378,7 +404,7 @@ class NotificationScreen extends React.Component {
   )
   
   render () {
-    const { notificationList } = this.state
+    const { notificationList, loading } = this.state
 
     return (
       <View style={styles.container}>
@@ -414,6 +440,8 @@ class NotificationScreen extends React.Component {
               <Text style={styles.subTitle}>you'll see their activity here 👇.</Text>
             </View>
           }
+
+          {loading && <LoadingScreen />}
 
           {this.renderCardDetailModal}
 
@@ -635,6 +663,7 @@ const mapDispatchToProps = dispatch => ({
   getActivityFeed: (userId, param) => dispatch(getActivityFeed(userId, param)),
   readAllActivityFeed: (userId) => dispatch(readAllActivityFeed(userId)),
   readActivityFeed: (userId, activityId) => dispatch(readActivityFeed(userId, activityId)),
+  alreadyReadActivityFeed: (activityId) => dispatch(alreadyReadActivityFeed(activityId)),
   deleteActivityFeed: (userId, activityId) => dispatch(deleteActivityFeed(userId, activityId)),
   getFeedDetail: (feedId) => dispatch(getFeedDetail(feedId)),
   getCard: (ideaId) => dispatch(getCard(ideaId)),
