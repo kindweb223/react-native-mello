@@ -1,4 +1,4 @@
-import React, { PureComponent } from 'react'
+import React from 'react'
 import PropTypes from 'prop-types'
 import { View, Text, StyleSheet, Animated } from 'react-native'
 import Feather from 'react-native-vector-icons/Feather'
@@ -27,7 +27,7 @@ const styles = StyleSheet.create({
   }
 })
 
-class Circle extends PureComponent {
+class Circle extends React.Component {
   static propTypes = {
     imageStyle: PropTypes.objectOf(PropTypes.any),
     circleSize: PropTypes.number.isRequired,
@@ -81,7 +81,7 @@ export function renderFacePile (faces = [], numFaces) {
   }
 }
 
-export default class FacePile extends PureComponent {
+export default class FacePile extends React.Component {
   static propTypes = {
     faces: PropTypes.array.isRequired,
     circleSize: PropTypes.number,
