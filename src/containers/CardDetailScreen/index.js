@@ -1002,8 +1002,8 @@ class CardDetailScreen extends React.Component {
     this.selectedFile = file;
     let imageFiles = _.filter(currentCard.files, file => file.fileType === 'MEDIA');
     this.setState({
-      imageUploadStarted: file.fileType === 'MEDIA',
-      imageUploading: file.fileType === 'MEDIA',
+      imageUploadStarted: type === 'MEDIA',
+      imageUploading: type === 'MEDIA',
       cardMode: imageFiles.length > 0 ? 'CardDetailMulti' : 'CardDetailSingle'
     });
 
@@ -1095,6 +1095,7 @@ class CardDetailScreen extends React.Component {
   }
 
   handleFile = (file) => {
+    // console.log('card details handle file:', file)
     this.coverImageWidth = file.width;
     this.coverImageHeight = file.height;
     const mimeType = (Platform.OS === 'ios') ? mime.lookup(file.uri) : file.type;
@@ -1105,6 +1106,7 @@ class CardDetailScreen extends React.Component {
         type = 'MEDIA';
       }
     }
+    this.setState({ fileType: type });
 
     // Generate thumbnail if a video
     if (mimeType.indexOf('video') !== -1) {
@@ -1710,7 +1712,7 @@ class CardDetailScreen extends React.Component {
   }
 
   render () {
-    const { showEditScreen, idea, loading } = this.state
+    const { showEditScreen, idea, loading, fileType } = this.state
 
     return (
       <View style={styles.container}>
@@ -1752,7 +1754,7 @@ class CardDetailScreen extends React.Component {
           onPress={(index) => this.onTapWebLinkActionSheet(index)}
         />
 
-        {loading && <LoadingScreen />}
+        {loading && fileType === 'FILE' && <LoadingScreen />}
 
         <Modal
           isVisible={this.state.isVisibleCardOpenMenu}
