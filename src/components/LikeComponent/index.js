@@ -31,6 +31,7 @@ class LikeComponent extends React.Component {
       liked: this.props.idea.metadata.liked,
       likes: this.props.idea.metadata.likes,
       prevLikes: this.props.idea.metadata.likes,
+      disabled: false
     }
     let animationValue = 0;
     if (this.props.idea.metadata.liked) {
@@ -47,6 +48,7 @@ class LikeComponent extends React.Component {
         this.setState({
           liked: nextProps.idea.metadata.liked,
           likes: nextProps.idea.metadata.likes,
+          disabled: false
         }, () => {
           this.animatedShow.setValue(0);
           Animated.timing(this.animatedShow, {
@@ -64,6 +66,7 @@ class LikeComponent extends React.Component {
       if (this.props.card.currentCard.id === this.props.idea.id) {
         this.setState({
           prevLikes: nextProps.idea.metadata.likes,
+          disabled: false
         }, () => {
           this.animatedShow.setValue(1);
           Animated.timing(this.animatedShow, {
@@ -107,7 +110,31 @@ class LikeComponent extends React.Component {
     }
   }
 
+  animateLike() {
+    this.animatedShow.setValue(0);
+    Animated.timing(this.animatedShow, {
+      toValue: 1,
+      duration: CONSTANTS.ANIMATEION_MILLI_SECONDS * 1.5,
+    }).start();
+  }
+
+  animateUnlink() {
+    this.animatedShow.setValue(1);
+    Animated.timing(this.animatedShow, {
+      toValue: 0,
+      duration: CONSTANTS.ANIMATEION_MILLI_SECONDS * 1.5,
+    }).start();
+  }
+
   onLike(liked) {
+    // TODO not working ???
+    // if (liked) {
+    //   this.animateUnlink();
+    // } else {
+    //   this.animateLike();
+    // }
+
+    this.setState({ disabled: true });
     // Move to like list for Guest
     if (COMMON_FUNC.isFeedGuest(this.props.feedo.currentFeed)) {
       Analytics.logEvent('feed_detail_show_like_list', {})
@@ -130,7 +157,8 @@ class LikeComponent extends React.Component {
     const {
       liked,
       likes,
-      prevLikes
+      prevLikes,
+      disabled
     } = this.state;
     const {
       longHold,
@@ -166,6 +194,7 @@ class LikeComponent extends React.Component {
       <TouchableOpacity
         style={[styles.container, this.props.isOnlyInvitee ? { width: 25 } : { width: 45 }, type === 'text' && { justifyContent: 'flex-end' }]}
         activeOpacity={0.7}
+        disabled={disabled}
         onPress={() => longHold ? {} : ( type === 'text' ? this.onShowLikes() : this.onLike(liked))}
         onLongPress={() => longHold ? {} : this.onShowLikes()}
       >
