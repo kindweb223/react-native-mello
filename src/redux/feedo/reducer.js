@@ -1458,12 +1458,16 @@ export default function feedo(state = initialState, action = {}) {
       const { data } = action.result
       const { feedoList, currentFeed } = state
 
-      const updateFeed = find(feedoList, feed => feed.id === data.huntId )
+      let updateFeed = find(feedoList, feed => feed.id === data.huntId)
 
       if (updateFeed) {
-        const restIdeas = filter(updateFeed.ideas, idea => idea.id !== data.id )
+        if (updateFeed.id === currentFeed.id) {
+          updateFeed = currentFeed
+        }
+
+        const restIdeas = filter(updateFeed.ideas, idea => idea.id !== data.id)
         const newUpdateFeed = {...updateFeed, ideas: [...restIdeas, data]}
-        const restFeedoList = filter(feedoList, feed => feed.id !== data.huntId )
+        const restFeedoList = filter(feedoList, feed => feed.id !== data.huntId)
 
         const newCurrentFeed = (!isEmpty(currentFeed) && currentFeed.id === data.huntId) ? newUpdateFeed : currentFeed
 
@@ -1471,7 +1475,7 @@ export default function feedo(state = initialState, action = {}) {
           ...state,
           loading: 'GET_CARD_FULFILLED',
           feedoList: [...restFeedoList, newUpdateFeed],
-          currentFeed: newCurrentFeed
+          currentFeed: { ...newCurrentFeed }
         }
       } else {
         return {
