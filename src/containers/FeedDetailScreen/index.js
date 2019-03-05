@@ -955,12 +955,14 @@ class FeedDetailScreen extends React.Component {
           this.deletedCardId = currentCardInfo.ideaId
           this.props.deleteCard(currentCardInfo.ideaId)
           this.userActionTimer = null;
+          this.setState({ isShowToaster: false })
           this.userActions.shift();
         }
       } else if (this.state.currentActionType === ACTION_CARD_MOVE) {
         Analytics.logEvent('feed_detail_move_card', {})
         this.props.moveCard(currentCardInfo.ideaId, currentCardInfo.feedoId);
         this.userActionTimer = null;
+        this.setState({ isShowToaster: false })
         this.userActions.shift();
       }
       this.processCardActions();
