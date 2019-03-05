@@ -28,7 +28,8 @@ const isFeedOwner = (feed) => {
 }
 
 const isFeedOwnerOnlyInvitee = (feed) => {
-  return feed.invitees.length === 1 && isInviteeOwner(feed, feed.invitees[0])
+  const invitees = filterRemovedInvitees(feed.invitees)
+  return invitees.length === 1 && isInviteeOwner(feed, feed.invitees[0])
 }
 /**
  * If the invitee is feed owner, return true
