@@ -17,8 +17,6 @@ export default class Share extends Component {
     super(props)
     this.state = {
       initialized: false,
-      type: '',
-      value: '',
     }
     YellowBox.ignoreWarnings(['RCTBridge'])
   }
@@ -28,19 +26,25 @@ export default class Share extends Component {
       initialized: true,
     })
 
-    const { type, value } = await ShareExtension.data();
+    try {
+      let { type, value } = await ShareExtension.data();
 
-    this.setState({value})
-    if (type === 'text/plain')
-      this.setState({type: 'url'})
-    else
-      this.setState({type})
+      if (type === '' || value === '')
+      {
+        console.log('empty share data:')
+        return;
+      }
+      
+      if (type === 'text/plain')
+        type = 'url'
 
-    setTimeout(() => {
-        Linking.openURL('https://' + SCHEME + `share/${this.state.type}/${this.state.value}`)
-    }, 10)
+      console.log('share data:', type, value)
+      Linking.openURL('https://' + SCHEME + `share/${type}/${value}`)
+
+    } catch(error) {
+      console.log('error : ', error)
+    }
   
-    
   }
 
   

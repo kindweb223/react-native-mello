@@ -297,7 +297,7 @@ export default class Root extends React.Component {
           console.log('xAuthToken', xAuthToken)
           if (xAuthToken) {
             var type = '';
-            if (params[searchIndex + 1] === 'image' && params[searchIndex + 2] === 'jpeg') {
+            if (params[searchIndex + 1] === 'image') {
               type = 'images'
               searchIndex ++;
             } else if (params[searchIndex + 1] === 'url') {
