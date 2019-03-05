@@ -1378,7 +1378,7 @@ class CardDetailScreen extends React.Component {
                 style={styles.textInputIdea}
                 multiline={true}
                 pointerEvents="none" 
-                placeholder={'Let your ideas flow. Type text, paste a link, add an image, video or audio'}/>
+                placeholder={'Add a note'}/>
               :
               <Autolink
                 style={styles.textInputIdea}
