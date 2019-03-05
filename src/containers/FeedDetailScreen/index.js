@@ -249,6 +249,10 @@ class FeedDetailScreen extends React.Component {
       }
     }
 
+    if (card.loading === 'CREATE_CARD_FULFILLED') {
+      this.setState({ showBubble: false })
+    }
+
     if ((this.props.feedo.loading !== 'GET_FEED_DETAIL_FULFILLED' && feedo.loading === 'GET_FEED_DETAIL_FULFILLED') ||
         (this.props.feedo.loading === 'DELETE_INVITEE_PENDING' && feedo.loading === 'DELETE_INVITEE_FULFILLED') ||
         (this.props.feedo.loading === 'UPDATE_SHARING_PREFERENCES_PENDING' && feedo.loading === 'UPDATE_SHARING_PREFERENCES_FULFILLED') ||
@@ -991,7 +995,7 @@ class FeedDetailScreen extends React.Component {
     }, () => {
       this.setBubbles(this.state.currentFeed)
     });
-    console.log('CARD: ', this.state.currentFeed.metadata.ideasSubmitted)
+
     this.props.deleteDummyCard(cardInfo.ideaId, 0)
 
     this.processCardActions();
