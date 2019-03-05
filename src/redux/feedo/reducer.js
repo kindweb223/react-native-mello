@@ -1734,6 +1734,24 @@ export default function feedo(state = initialState, action = {}) {
         activityFeedList: []
       }
     }
+    case userTypes.UPDATE_PROFILE_FULFILLED: {
+      const { feedoList } = state
+      const { data } = action.result
+
+      const updatedFeedList = feedoList.map(feed => {
+        ownerIndex = findIndex(feed.invitees, invitee => invitee.userProfile.id === data.id)
+        if (ownerIndex) {
+          feed.invitees[ownerIndex].userProfile.imageUrl = data.imageUrl
+        }
+        return feed
+      })
+
+      return {
+        ...state,
+        loading: userTypes.UPDATE_PROFILE_FULFILLED,
+        feedoList: [...updatedFeedList]
+      }
+    }
     default:
       return state;
   }

@@ -21,7 +21,7 @@ const FeedItemComponent = ({ item, pinFlag, page, clickEvent, listType }) => {
   
   invitees = COMMON_FUNC.filterRemovedInvitees(invitees)
 
-  invitees.forEach((data, key) => {
+  invitees.forEach(data => {
     avatars = [
       ...avatars,
       data.userProfile
