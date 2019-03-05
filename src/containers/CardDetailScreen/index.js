@@ -795,7 +795,7 @@ class CardDetailScreen extends React.Component {
     return false;
   }
 
-  onClose() {    
+  onClose() {
     if (this.props.viewMode === CONSTANTS.CARD_EDIT) {
       this.onUpdateCard()
     }
