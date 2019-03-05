@@ -34,7 +34,7 @@ export default class ShareModalScreen extends React.Component {
       Actions.pop()
       setTimeout(() => {
         ShareExtension.close();
-      }, 500)
+      }, 100)
     }
   }
 

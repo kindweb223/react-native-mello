@@ -63,6 +63,7 @@ class ChooseLinkImageFromExtension extends React.Component {
           if (text !== '') {
             Actions.ShareCardScreen({
               notesText: text,
+              prev_scene: this.props.prev_scene
             });
           }
         } else {
@@ -74,6 +75,7 @@ class ChooseLinkImageFromExtension extends React.Component {
         if (images.length > 0) {
           Actions.ShareCardScreen({
             imageUrls: images,
+            prev_scene: this.props.prev_scene
           });
         }
       } 
@@ -143,6 +145,7 @@ class ChooseLinkImageFromExtension extends React.Component {
     Actions.ShareCardScreen({
       imageUrls: [imageUrl],
       shareUrl: this.shareUrl,
+      prev_scene: this.props.prev_scene
     });
   }
 
@@ -153,13 +156,14 @@ class ChooseLinkImageFromExtension extends React.Component {
       Actions.pop()
       setTimeout(() => {
         ShareExtension.close();
-      }, 500)
+      }, 100)
     }
   }
 
   onSkip() {
     Actions.ShareCardScreen({
       shareUrl: this.shareUrl,
+      prev_scene: this.props.prev_scene
     });
   }
 
@@ -264,12 +268,14 @@ class ChooseLinkImageFromExtension extends React.Component {
 ChooseLinkImageFromExtension.defaultProps = {
   mode: '',
   value: '',
+  prev_scene: '',
 }
 
 
 ChooseLinkImageFromExtension.propTypes = {
   mode: PropTypes.string,
   value: PropTypes.string,
+  prev_scene: PropTypes.string,
 }
 
 

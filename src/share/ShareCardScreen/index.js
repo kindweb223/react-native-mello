@@ -28,16 +28,17 @@ export default class ShareCardScreen extends React.Component {
       ShareExtension.close();
     else {
       //go to previous scene
-      Actions.pop()
-      Actions.pop()
+      if (this.props.prev_scene !== '') {
+        Actions.popTo(this.props.prev_scene)
+      }
       setTimeout(() => {
         ShareExtension.close();
-      }, 500)
+      }, 100)
     }
   }
 
   render() {
-    const { imageUrls, shareUrl, notesText } = this.props;
+    const { imageUrls, shareUrl, notesText, prev_scene } = this.props;
 
     return (
       <View style={styles.container}>
@@ -48,6 +49,7 @@ export default class ShareCardScreen extends React.Component {
           shareText={notesText}
           onClose={() => this.onClosed()}
           prevPage={'shareExtension'}
+          prev_scene={prev_scene}
         />
 
         {/* {shareUrl !== ''
@@ -77,6 +79,7 @@ ShareCardScreen.defaultProps = {
   imageUrls: [],
   shareUrl: '',
   notesText: '',
+  prev_scene: ''
 }
 
 
@@ -84,4 +87,5 @@ ShareCardScreen.propTypes = {
   imageUrls: PropTypes.array,
   shareUrl: PropTypes.string,
   notesText: PropTypes.string,
+  prev_scene: PropTypes.string,
 }
