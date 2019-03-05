@@ -188,7 +188,12 @@ class InviteeScreen extends React.Component {
 
   onSelectContact = (contact) => {
     let { inviteeEmails, recentContacts } = this.state
-    const name = `${contact.userProfile.firstName} ${contact.userProfile.lastName}`
+    let name
+    if (contact.userProfile.newUser) {
+      name = contact.userProfile.email
+    } else {
+      name = `${contact.userProfile.firstName} ${contact.userProfile.lastName}`
+    }
 
     inviteeEmails.push({
       text: name,
