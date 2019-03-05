@@ -564,6 +564,12 @@ class CardNewScreen extends React.Component {
     // showing error alert
     if (this.props.card.loading !== nextProps.card.loading || this.props.feedo.loading !== nextProps.feedo.loading) {
       if (nextProps.card.error || nextProps.feedo.error) {
+
+        if (nextProps.card.error.code === 'error.hunt.not.found') {
+          this.props.resetCardError();
+          this.props.createFeed();
+          return
+        }
         let error = null;
         if ((nextProps.card.error && nextProps.card.error.error) || (nextProps.feedo.error && nextProps.feedo.error.error)) {
           error = (nextProps.card.error && nextProps.card.error.error) || (nextProps.feedo.error && nextProps.feedo.error.error);
@@ -1712,6 +1718,7 @@ class CardNewScreen extends React.Component {
 
   get renderBottomContent() {
     const { cardMode } = this.props;
+    console.log('PPPPPP: ', this.props.feedo.currentFeed)
 
     if (cardMode === CONSTANTS.SHARE_EXTENTION_CARD) {
       return (
