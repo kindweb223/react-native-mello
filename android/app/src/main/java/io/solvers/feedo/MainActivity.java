@@ -5,6 +5,7 @@ import android.view.View;
 
 import com.facebook.react.ReactActivity;
 import org.devio.rn.splashscreen.SplashScreen;
+import com.rnfs.RNFSPackage;
 
 public class MainActivity extends ReactActivity {
 

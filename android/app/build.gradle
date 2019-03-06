@@ -173,6 +173,7 @@ dependencies {
     compile fileTree(dir: "libs", include: ["*.jar"])
     compile "com.android.support:appcompat-v7:${rootProject.ext.supportLibVersion}"
     compile "com.facebook.react:react-native:+"  // From node_modules
+    compile project(':react-native-fs')
 
     compile 'io.intercom.android:intercom-sdk:5.+'
     compile 'io.intercom.android:intercom-sdk-fcm:5.+'
