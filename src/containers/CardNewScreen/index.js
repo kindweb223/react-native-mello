@@ -1453,9 +1453,11 @@ class CardNewScreen extends React.Component {
     const { cardMode } = this.props;
 
     return (
-      <View 
+      <TouchableOpacity
         style={{ flex: 1 }}
         onLayout={this.onLayoutTextInput.bind(this)}
+        onPress={() => this.textInputIdeaRef.focus()}
+        activeOpacity={1.0}
       >
         <TextInput
           style={[styles.textInputIdea, {
@@ -1487,7 +1489,7 @@ class CardNewScreen extends React.Component {
           selectionColor={Platform.OS === 'ios' ? COLORS.PURPLE : COLORS.LIGHT_PURPLE}
           textAlignVertical={'top'}
         />
-      </View>
+      </TouchableOpacity>
     )
   }
 
@@ -1557,6 +1559,7 @@ class CardNewScreen extends React.Component {
   get renderMainContent() {
     return (
       <ScrollView
+        contentContainerStyle={{ flex: 1 }}
         ref={ref => this.scrollViewRef = ref}
         onLayout={this.onLayoutScrollView.bind(this)}
       >
