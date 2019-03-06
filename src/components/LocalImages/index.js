@@ -6,18 +6,25 @@ const userDirMustExist = (userId) => {
     return new Promise((resolve, reject) => {
         RNFS.exists(RNFS.DocumentDirectoryPath + '/' + userId)
             .then((result) => {
-                console.log('RNFS - User dir exists at ', RNFS.DocumentDirectoryPath + '/' + userId)
-                resolve(true)
+                console.log('RNFS - dire xists result is ' + result)
+                if(result){
+                    console.log('RNFS - User dir exists at ', RNFS.DocumentDirectoryPath + '/' + userId)
+                    resolve(true)
+                } else {
+
+                    RNFS.mkdir(RNFS.DocumentDirectoryPath + '/' + userId)
+                        .then((result)=>{
+                            console.log('RNFS - made user dir', result)
+                            resolve(true)
+                        })
+                        .catch((error)=>{
+                            reject(error)
+                        })
+                }
             })
-            .catch((result) => {
-                RNFS.mkdir(RNFS.DocumentDirectoryPath + '/' + userId)
-                    .then((result)=>{
-                        console.log('RNFS - made user dir', result)
-                        resolve(true)
-                    })
-                    .catch((error)=>{
+            .catch((error) => {
+
                         reject(error)
-                    })
 
             })
 
@@ -66,24 +73,24 @@ function checkAndStore(file, userId) {
 
                             RNFS.downloadFile({
                                 fromUrl: file.accessUrl,
-                                toFile: fileDownloadLocation
+                                toFile: fileDownloadLocation + file.id + fileExt[2]
                             }).promise.then((result) => {
-                                console.log('RNFS download: ', result, fileDownloadLocation, fileStoreLocation)
-                                RNFS.copyFile(fileDownloadLocation + fileExt[0], fileStoreLocation)
-                                    .then(()=> {
-                                        resolve({
-                                            fileStoredLocally: true,
-                                            fileDownloadLocation,
-                                            payload: result,
-                                        })
-
-                                    })
-                                    .catch((error) => {
-                                        reject({
-                                            error,
-                                            msg: 'Could not move file'
-                                        })
-                                    })
+                                console.log('RNFS download: ', result, fileDownloadLocation, fileStoreLocation, file.accessUrl)
+                                // RNFS.copyFile(fileDownloadLocation + fileExt[0], fileStoreLocation)
+                                //     .then(()=> {
+                                //         resolve({
+                                //             fileStoredLocally: true,
+                                //             fileDownloadLocation,
+                                //             payload: result,
+                                //         })
+                                //
+                                //     })
+                                //     .catch((error) => {
+                                //         reject({
+                                //             error,
+                                //             msg: 'Could not move file'
+                                //         })
+                                //     })
 
 
                             })
@@ -113,18 +120,32 @@ class LocalImages extends React.Component {
 
     componentDidMount(): void {
         const { user, ideas } = this.props
-        checkDirectories()
-            .then(result => this.setState({files: result}))
-        userDirMustExist(user.id)
-            .then(() => {
-                ideas.map((idea) => {
-                    idea.files.map((file) => {
-                        checkAndStore(file, user.id)
-                            .then(result => console.log('RNFS ', result))
-                    })
-                })
+        const dir = RNFS.DocumentDirectoryPath + '/' + user.id
+        // RNFS.unlink(dir)
+        //     .then(()=>{
+                checkDirectories()
+                    .then(result => this.setState({files: result}))
+                userDirMustExist(user.id)
+                    .then(() => {
+                        ideas.map((idea) => {
+                            idea.files.map((file) => {
+                                checkAndStore(file, user.id)
+                                    .then(result => console.log('RNFS ', result))
+                            })
+                        })
+                        const dir = RNFS.DocumentDirectoryPath + '/' + user.id
+                        console.log('RNFS dir is ' + dir)
+                        RNFS.readDir(dir)
+                            .then(result => console.log('RNFS - ', result))
+                            .catch(error => console.log('RNFS - ',  error))
 
-            })
+                    })
+
+            // })
+
+
+
+
 
     }
 
