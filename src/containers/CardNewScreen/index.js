@@ -1164,8 +1164,11 @@ class CardNewScreen extends React.Component {
   }
 
   handleFile = (file) => {
-    this.coverImageWidth = file.width;
-    this.coverImageHeight = file.height;
+    let imageFiles = _.filter(this.props.card.currentCard.files, file => file.fileType === 'MEDIA');
+    if (imageFiles.length === 0) { // To keep size of first cover image
+      this.coverImageWidth = file.width;
+      this.coverImageHeight = file.height;
+    }
     const mimeType = (Platform.OS === 'ios') ? mime.lookup(file.uri) : file.type;
 
     let type = 'FILE';

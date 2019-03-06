@@ -1098,6 +1098,13 @@ class CardDetailScreen extends React.Component {
     // console.log('card details handle file:', file)
     this.coverImageWidth = file.width;
     this.coverImageHeight = file.height;
+
+    // To set size of first image in text only card
+    const ratio = CONSTANTS.SCREEN_WIDTH / this.coverImageWidth;
+    this.state.size.setValue({
+      x: CONSTANTS.SCREEN_WIDTH,
+      y: this.coverImageHeight * ratio
+    })
     const mimeType = (Platform.OS === 'ios') ? mime.lookup(file.uri) : file.type;
 
     let type = 'FILE';
@@ -1209,6 +1216,7 @@ class CardDetailScreen extends React.Component {
 
   get renderCoverImage() {
     const { viewMode, card } = this.props;
+    const { coverImage, imageUploadStarted, imageUploading, cardMode } = this.state;
     const activeImageStyle = {
       width: this.state.size.x,
       height: this.state.size.y,
@@ -1218,13 +1226,18 @@ class CardDetailScreen extends React.Component {
     };
     let imageFiles = _.filter(card.currentCard.files, file => file.fileType === 'MEDIA');
 
-    if (this.state.coverImage || this.state.imageUploadStarted) {
+    if (coverImage || imageUploadStarted) {
       return (
-        <Animated.View style={[styles.coverImageContainer, activeImageStyle]}>
+        <Animated.View
+          style={[
+            styles.coverImageContainer,
+            activeImageStyle
+          ]}
+        >
           <CoverImagePreviewComponent
-            imageUploading={this.state.imageUploading}
-            cardMode={this.state.cardMode}
-            coverImage={this.state.coverImage}
+            imageUploading={imageUploading}
+            cardMode={cardMode}
+            coverImage={coverImage}
             files={imageFiles}
             editable={viewMode !== CONSTANTS.CARD_VIEW}
             isFastImage={true}
