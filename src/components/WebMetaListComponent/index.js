@@ -20,7 +20,6 @@ import _ from 'lodash'
 import styles from './styles'
 import COLORS from '../../service/colors'
 import FastImage from "react-native-fast-image";
-import colors from '../../service/colors';
 
 
 export default class WebMetaList extends React.Component {
