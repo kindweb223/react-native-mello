@@ -72,5 +72,8 @@
     "redux-thunk": "^2.3.0",
     "rn-fetch-blob": "^0.10.13",
     "zxcvbn": "^4.4.2"
+  },
+  "devDependencies": {
+    "react-native-fs": "^2.13.3"
   }
 }

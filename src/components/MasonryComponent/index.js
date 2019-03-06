@@ -5,9 +5,9 @@ import EmptyStateComponent from '../EmptyStateComponent'
 import styles from './styles'
 
 const Item = ({ item, renderItem, onLayout }) => (
-  <View style={{ flex: 1 }} onLayout={onLayout}>
-    {renderItem(item)}
-  </View>
+	<View style={{ flex: 1 }} onLayout={onLayout}>
+		{renderItem(item)}
+	</View>
 )
 
 class Column extends React.Component {
@@ -50,7 +50,7 @@ class Column extends React.Component {
       />
     )
   }
-  
+
   render() {
 		return (
       <View style={{ flex: 1, overflow: "hidden" }}>
@@ -87,7 +87,7 @@ export default class Masonry extends React.Component {
 		};
 		this.itemQueue = [];
   }
-  
+
   componentWillMount() {
     let columns = [];
     for ( let i = 0; i < this.props.columns; i++ ) {
@@ -168,7 +168,7 @@ export default class Masonry extends React.Component {
 		return (
       <ScrollView {...this.props}>
         <View style={[ { flexDirection: "row" }, this.props.containerStyle ]}>
-          {this.state.columns.map(( col, index ) => 
+          {this.state.columns.map(( col, index ) =>
             <Column
               key={index}
               ref={( ref ) => this.state.columns[ index ] = ref}

@@ -54,6 +54,8 @@ import LoadingScreen from '../LoadingScreen'
 import EmptyStateComponent from '../../components/EmptyStateComponent'
 import SpeechBubbleComponent from '../../components/SpeechBubbleComponent'
 import FollowMemberScreen from '../FollowMembersScreen'
+import LocalImages from '../../components/LocalImages'
+
 
 import {
   getFeedDetail,
@@ -117,7 +119,7 @@ class FeedDetailScreen extends React.Component {
       currentFeed: {},
       loading: false,
       apiLoading: false,
-      
+
       isVisibleCard: false,
       cardViewMode: CONSTANTS.CARD_NONE,
       cardMode: CONSTANTS.MAIN_APP_CARD_FROM_DETAIL,
@@ -211,7 +213,7 @@ class FeedDetailScreen extends React.Component {
     this.backToDashboard();
     return true;
   }
-  
+
   async UNSAFE_componentWillReceiveProps(nextProps) {
     const { feedo, card } = nextProps
 
@@ -226,7 +228,7 @@ class FeedDetailScreen extends React.Component {
         this.setState({
           apiLoading: false
         });
-      }  
+      }
       return;
     }
     if ((this.props.feedo.loading === 'ADD_FILE_PENDING' && feedo.loading === 'ADD_FILE_FULFILLED') ||
@@ -259,7 +261,7 @@ class FeedDetailScreen extends React.Component {
         (this.props.feedo.loading === 'ADD_FILE_PENDING' && feedo.loading === 'ADD_FILE_FULFILLED') ||
         (this.props.feedo.loading === 'ADD_HUNT_TAG_PENDING' && feedo.loading === 'ADD_HUNT_TAG_FULFILLED') ||
         (this.props.feedo.loading === 'REMOVE_HUNT_TAG_PENDING' && feedo.loading === 'REMOVE_HUNT_TAG_FULFILLED') ||
-        (this.props.card.loading !== 'UPDATE_CARD_FULFILLED' && card.loading === 'UPDATE_CARD_FULFILLED') || 
+        (this.props.card.loading !== 'UPDATE_CARD_FULFILLED' && card.loading === 'UPDATE_CARD_FULFILLED') ||
         (this.props.card.loading !== 'DELETE_CARD_FULFILLED' && card.loading === 'DELETE_CARD_FULFILLED') ||
         (this.props.card.loading !== 'MOVE_CARD_FULFILLED' && card.loading === 'MOVE_CARD_FULFILLED') ||
         (this.props.feedo.loading === 'UPDATE_FEED_INVITATION_PENDING' && feedo.loading === 'UPDATE_FEED_INVITATION_FULFILLED') ||
@@ -314,7 +316,7 @@ class FeedDetailScreen extends React.Component {
         {
           redrawMasonry = true
         }
-        
+
         this.filterCards(currentFeed, redrawMasonry)
       })
 
@@ -612,7 +614,7 @@ class FeedDetailScreen extends React.Component {
         toValue: 1,
         duration: CONSTANTS.ANIMATEION_MILLI_SECONDS,
       }).start();
-    });  
+    });
 
   }
 
@@ -630,7 +632,7 @@ class FeedDetailScreen extends React.Component {
   }
 
   handlePinFeed = (feedId) => {
-    this.setState({ 
+    this.setState({
       isShowToaster: true,
       currentActionType: ACTION_FEEDO_PIN,
       toasterTitle: 'Flow pinned',
@@ -651,7 +653,7 @@ class FeedDetailScreen extends React.Component {
   }
 
   handleUnpinFeed = (feedId) => {
-    this.setState({ 
+    this.setState({
       isShowToaster: true,
       currentActionType: ACTION_FEEDO_UNPIN,
       toasterTitle: 'Flow un-pinned',
@@ -673,7 +675,7 @@ class FeedDetailScreen extends React.Component {
   }
 
   handleDuplicateFeed = (feedId) => {
-    this.setState({ 
+    this.setState({
       isShowToaster: true,
       currentActionType: ACTION_FEEDO_DUPLICATE,
       toasterTitle: 'Flow duplicated',
@@ -685,7 +687,7 @@ class FeedDetailScreen extends React.Component {
       this.duplicateFeed()
     }, TOASTER_DURATION)
   }
-  
+
   duplicateFeed = () => {
     if (this.state.currentActionType === ACTION_FEEDO_DUPLICATE) {
       Analytics.logEvent('feed_detail_duplicate_feed', {})
@@ -718,7 +720,7 @@ class FeedDetailScreen extends React.Component {
         this.props.moveDummyCard('null', 'null', 1)
       }
 
-      this.setState((state) => { 
+      this.setState((state) => {
         let filterIdeas = this.props.feedo.currentFeed.ideas;
         for(let i = 0; i < this.userActions.length; i ++) {
           const cardInfo = this.userActions[i];
@@ -734,12 +736,12 @@ class FeedDetailScreen extends React.Component {
       }, () => {
         this.setBubbles(this.state.currentFeed)
       });
-  
+
       this.processCardActions();
       return;
     }
     this.setState({
-      isShowToaster: false, 
+      isShowToaster: false,
       currentActionType: ACTION_NONE,
     })
   }
@@ -762,7 +764,7 @@ class FeedDetailScreen extends React.Component {
       toValue: 0,
       duration: CONSTANTS.ANIMATEION_MILLI_SECONDS,
     }).start(() => {
-      this.setState({ 
+      this.setState({
         isVisibleEditFeed: false,
       });
     });
@@ -793,7 +795,7 @@ class FeedDetailScreen extends React.Component {
       toValue: 0,
       duration: CONSTANTS.ANIMATEION_MILLI_SECONDS,
     }).start(() => {
-      this.setState({ 
+      this.setState({
         isVisibleCard: false,
         cardViewMode: CONSTANTS.CARD_NONE
       });
@@ -917,7 +919,7 @@ class FeedDetailScreen extends React.Component {
       this.onCloseLongHold();
     }
 
-    this.setState({ 
+    this.setState({
       isVisibleCard: false,
       isVisibleCardOpenMenu: false,
       currentActionType: ACTION_CARD_MOVE,
@@ -933,13 +935,13 @@ class FeedDetailScreen extends React.Component {
   processCardActions() {
     if (this.userActions.length === 0) {
       this.setState({
-        isShowToaster: false, 
+        isShowToaster: false,
         currentActionType: ACTION_NONE,
       });
       return;
     }
     const currentCardInfo = this.userActions[0];
-    this.setState({ 
+    this.setState({
       currentActionType: currentCardInfo.currentActionType,
       isShowToaster: true,
       toasterTitle: currentCardInfo.toasterTitle,
@@ -975,7 +977,7 @@ class FeedDetailScreen extends React.Component {
     cardInfo.ideaId = ideaId;
     this.userActions.push(cardInfo);
 
-    this.setState((state) => { 
+    this.setState((state) => {
       let filterIdeas = state.currentFeed.ideas;
       for(let i = 0; i < this.userActions.length; i ++) {
         const cardInfo = this.userActions[i];
@@ -1014,7 +1016,7 @@ class FeedDetailScreen extends React.Component {
     cardInfo.feedoId = feedoId;
     this.userActions.push(cardInfo);
 
-    this.setState((state) => { 
+    this.setState((state) => {
       let filterIdeas = state.currentFeed.ideas;
       for(let i = 0; i < this.userActions.length; i ++) {
         const cardInfo = this.userActions[i];
@@ -1067,7 +1069,7 @@ class FeedDetailScreen extends React.Component {
     }
 
     return (
-      <Animated.View 
+      <Animated.View
         style={[
           styles.modalContainer,
           { opacity: this.animatedOpacity }
@@ -1076,7 +1078,7 @@ class FeedDetailScreen extends React.Component {
         {
           isVisibleCard && (
             cardViewMode === CONSTANTS.CARD_NEW
-            ? <CardNewScreen 
+            ? <CardNewScreen
                 viewMode={this.state.cardViewMode}
                 cardMode={cardMode}
                 invitee={this.state.selectedIdeaInvitee}
@@ -1098,9 +1100,9 @@ class FeedDetailScreen extends React.Component {
                 onDeleteCard={this.onDeleteCard}
               />
         )}
-        {  
-          isVisibleEditFeed && 
-            <NewFeedScreen 
+        {
+          isVisibleEditFeed &&
+            <NewFeedScreen
               feedData={this.state.currentFeed}
               onClose={() => this.onCloseEditFeedModal()}
               selectedFeedId={this.props.data.id}
@@ -1111,7 +1113,7 @@ class FeedDetailScreen extends React.Component {
       </Animated.View>
     );
   }
-  
+
   handleFilter = () => {
     Analytics.logEvent('feed_detail_filter_card', {})
 
@@ -1147,7 +1149,7 @@ class FeedDetailScreen extends React.Component {
               }
               else if (Platform.OS === 'ios') {
                 Permissions.openSettings();
-              }    
+              }
             });
           }
           else if (Platform.OS === 'ios') {
@@ -1197,14 +1199,14 @@ class FeedDetailScreen extends React.Component {
           }
           this.uploadFile(response, type);
         }
-      }      
+      }
     });
     return;
   }
 
   uploadFile(file, type) {
     this.selectedFile = file.uri;
-    
+
     if (_.endsWith(file.uri, '.pages')) {
       this.selectedFileMimeType = 'application/x-iwork-pages-sffpages'
     } else if (_.endsWith(file.uri, '.numbers')) {
@@ -1256,7 +1258,7 @@ class FeedDetailScreen extends React.Component {
         path: 'feedo'
       }
     };
-        
+
     if (index === 0) {
       // from camera
       this.pickMediaFromCamera(options);
@@ -1368,9 +1370,9 @@ class FeedDetailScreen extends React.Component {
 
   handleLinkSharing = (value, data) => {
     this.setState({isEnableShare: value})
-    
+
     const { updateSharingPreferences } = this.props
-   
+
     if (value) {
       updateSharingPreferences(
         data.id,
@@ -1391,7 +1393,7 @@ class FeedDetailScreen extends React.Component {
 
   showShareModal = () => {
     const { data } = this.props
-    
+
     COMMON_FUNC.handleShareFeed(data)
   }
 
@@ -1447,6 +1449,10 @@ class FeedDetailScreen extends React.Component {
               </View>
             </View>
           )}
+          {currentFeed.ideas && currentFeed.ideas.length > 1 && (
+              <LocalImages ideas={currentFeed.ideas} user={this.props.user.userInfo} />
+          )}
+
 
           <Animated.ScrollView
             showsVerticalScrollIndicator={false}
@@ -1464,7 +1470,7 @@ class FeedDetailScreen extends React.Component {
                 transform: [{ scale: this.animatedSelectCard}],
               }
             ]}
-          >     
+          >
               <View style={styles.detailView} onLayout={this.onLayoutScroll}>
                 {!_.isEmpty(currentFeed) && !isVisibleLongHoldMenu && (
                   <View style={styles.collapseView}>
@@ -1582,7 +1588,7 @@ class FeedDetailScreen extends React.Component {
                           ideas={currentFeed.ideas}
                           columns={2}
                           keyExtractor={item => item.key}
-                          renderItem={(item) => 
+                          renderItem={(item) =>
                             <View>
                               <TouchableHighlight
                                 ref={ref => this.cardItemRefs[item.index] = ref}
@@ -1641,8 +1647,8 @@ class FeedDetailScreen extends React.Component {
         </View>
 
         {TAGS_FEATURE && this.renderCreateTag}
-        
-        {!isVisibleLongHoldMenu && 
+
+        {!isVisibleLongHoldMenu &&
           <DashboardActionBar
             onAddFeed={this.onOpenNewCardModal.bind(this)}
             handleFilter={this.handleFilter}
@@ -1669,7 +1675,7 @@ class FeedDetailScreen extends React.Component {
           tintColor={COLORS.PURPLE}
           onPress={(index) => this.onTapFeedoActionSheet(index)}
         />
-        
+
         {this.state.isShowToaster && (
           <ToasterComponent
             isVisible={this.state.isShowToaster}
@@ -1715,7 +1721,7 @@ class FeedDetailScreen extends React.Component {
           }
         </Modal>
 
-        <Modal 
+        <Modal
           isVisible={this.state.openMenu}
           style={styles.shareScreenContainer}
           backdropColor='#fff'
@@ -1758,7 +1764,7 @@ class FeedDetailScreen extends React.Component {
             </TouchableOpacity>
           </View>
         )}
-        
+
 
         <CardFilterComponent
           cardCount={currentFeed && currentFeed.ideas ? currentFeed.ideas.length : 0}
@@ -1793,7 +1799,7 @@ const mapStateToProps = ({ feedo, card, user }) => ({
 
 const mapDispatchToProps = dispatch => ({
   getFeedDetail: data => dispatch(getFeedDetail(data)),
-  setFeedDetailAction: data => dispatch(setFeedDetailAction(data)),  
+  setFeedDetailAction: data => dispatch(setFeedDetailAction(data)),
   pinFeed: (data) => dispatch(pinFeed(data)),
   unpinFeed: (data) => dispatch(unpinFeed(data)),
   duplicateFeed: (data) => dispatch(duplicateFeed(data)),
