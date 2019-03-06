@@ -1366,7 +1366,11 @@ class CardDetailScreen extends React.Component {
     }
 
     return (
-      <TouchableOpacity style={{ marginTop, marginBottom: 16 }} activeOpacity={1} onPress={() => this.onPressIdea()}>
+      <TouchableOpacity
+        style={{ marginTop, marginBottom: 16, flex: 1 }}
+        activeOpacity={1}
+        onPress={() => this.onPressIdea()}
+      >
         <Animated.View style={coverImage ? { opacity: this.animatedClose } : activeTextStyle}>
           <Animatable.View
             duration={CONSTANTS.ANIMATABLE_DURATION}

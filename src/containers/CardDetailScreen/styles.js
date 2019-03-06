@@ -71,7 +71,7 @@ const styles = StyleSheet.create({
     right: 0,
   },
   ideaContentView: {
-    paddingBottom: 50
+    paddingBottom: 50 // Why padding 50?
   },
   inviteeContainer: {
     flexDirection: 'row',
