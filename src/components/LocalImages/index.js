@@ -4,21 +4,23 @@ import { FlatList, ScrollView, View, Text, ViewPropTypes } from "react-native";
 
 const userDirMustExist = (userId) => {
     return new Promise((resolve, reject) => {
-        RNFS.exists(RNFS.DocumentDirectoryPath + '/' + userId)
+        const userDir = RNFS.DocumentDirectoryPath + '/' + userId
+        RNFS.stat(userDir)
             .then((result) => {
-                console.log('RNFS - dire xists result is ' + result)
-                if(result){
+                if(result.isDirectory()){
                     console.log('RNFS - User dir exists at ', RNFS.DocumentDirectoryPath + '/' + userId)
                     resolve(true)
                 } else {
-
-                    RNFS.mkdir(RNFS.DocumentDirectoryPath + '/' + userId)
-                        .then((result)=>{
-                            console.log('RNFS - made user dir', result)
-                            resolve(true)
-                        })
-                        .catch((error)=>{
-                            reject(error)
+                    RNFS.unlink(userDir)
+                        .then(()=>{
+                            RNFS.mkdir(RNFS.DocumentDirectoryPath + '/' + userId)
+                                .then((result)=>{
+                                    console.log('RNFS - made user dir', result)
+                                    resolve(true)
+                                })
+                                .catch((error)=>{
+                                    reject(error)
+                                })
                         })
                 }
             })
@@ -54,7 +56,7 @@ function checkDirectories() {
 
 
 function checkAndStore(file, userId) {
-    const regex = /([A-Za-z0-9\-_]+)(\.[a-z]{3,4})$/
+    const regex = /([A-Za-z0-9\-_]+)(\.[a-z]{3,4})($|\?)/
     const fileExt  = file.accessUrl.match(regex)
     const fileStoreLocation = RNFS.DocumentDirectoryPath + '/' + userId + '/' + file.id + fileExt[2]
     const fileDownloadLocation = RNFS.DocumentDirectoryPath + '/' + userId + '/'
@@ -76,21 +78,6 @@ function checkAndStore(file, userId) {
                                 toFile: fileDownloadLocation + file.id + fileExt[2]
                             }).promise.then((result) => {
                                 console.log('RNFS download: ', result, fileDownloadLocation, fileStoreLocation, file.accessUrl)
-                                // RNFS.copyFile(fileDownloadLocation + fileExt[0], fileStoreLocation)
-                                //     .then(()=> {
-                                //         resolve({
-                                //             fileStoredLocally: true,
-                                //             fileDownloadLocation,
-                                //             payload: result,
-                                //         })
-                                //
-                                //     })
-                                //     .catch((error) => {
-                                //         reject({
-                                //             error,
-                                //             msg: 'Could not move file'
-                                //         })
-                                //     })
 
 
                             })
@@ -120,33 +107,32 @@ class LocalImages extends React.Component {
 
     componentDidMount(): void {
         const { user, ideas } = this.props
-        const dir = RNFS.DocumentDirectoryPath + '/' + user.id
-        // RNFS.unlink(dir)
-        //     .then(()=>{
-                checkDirectories()
-                    .then(result => this.setState({files: result}))
-                userDirMustExist(user.id)
-                    .then(() => {
-                        ideas.map((idea) => {
-                            idea.files.map((file) => {
-                                checkAndStore(file, user.id)
-                                    .then(result => console.log('RNFS ', result))
-                            })
-                        })
-                        const dir = RNFS.DocumentDirectoryPath + '/' + user.id
-                        console.log('RNFS dir is ' + dir)
-                        RNFS.readDir(dir)
-                            .then(result => console.log('RNFS - ', result))
-                            .catch(error => console.log('RNFS - ',  error))
-
+        checkDirectories()
+            .then(result => this.setState({files: result}))
+        userDirMustExist(user.id)
+            .then(() => {
+                console.log('RNFS - ideas are: ', ideas)
+                ideas.map((idea) => {
+                    idea.files.map((file) => {
+                        checkAndStore(file, user.id)
+                            .then(result => console.log('RNFS ', result))
                     })
+                })
+                const dir = RNFS.DocumentDirectoryPath + '/' + user.id
+                console.log('RNFS dir is ' + dir)
+                RNFS.readDir(dir)
+                    .then(result => console.log('RNFS o- ', result))
+                    .catch(error => console.log('RNFS o- ',  error))
 
-            // })
+            })
 
 
+    }
 
-
-
+    componentDidUpdate(prevProps: Readonly<P>, prevState: Readonly<S>, snapshot: SS): void {
+        if(prevProps.feed.id !== this.props.feed.id){
+            console.log('RNFS - feed changed to ', this.props.feed)
+        }
     }
 
     render() {

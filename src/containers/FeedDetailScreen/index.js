@@ -1450,7 +1450,7 @@ class FeedDetailScreen extends React.Component {
             </View>
           )}
           {currentFeed.ideas && currentFeed.ideas.length > 1 && (
-              <LocalImages ideas={currentFeed.ideas} user={this.props.user.userInfo} />
+              <LocalImages feed={currentFeed} ideas={currentFeed.ideas} user={this.props.user.userInfo} />
           )}
 
 
