@@ -46,19 +46,10 @@ class LikeComponent extends React.Component {
       // success in liking a card
       if (this.props.card.currentCard.id === this.props.idea.id) {
         this.setState({
+          prevLikes: nextProps.idea.metadata.likes,
           liked: nextProps.idea.metadata.liked,
           likes: nextProps.idea.metadata.likes,
           disabled: false
-        }, () => {
-          this.animatedShow.setValue(0);
-          Animated.timing(this.animatedShow, {
-            toValue: 1,
-            duration: CONSTANTS.ANIMATEION_MILLI_SECONDS * 1.5,
-          }).start(() => {
-            this.setState({
-              prevLikes: nextProps.idea.metadata.likes,
-            });
-          });
         });
       }
     } else if (this.props.card.loading !== types.UNLIKE_CARD_FULFILLED && nextProps.card.loading === types.UNLIKE_CARD_FULFILLED) {
@@ -66,32 +57,23 @@ class LikeComponent extends React.Component {
       if (this.props.card.currentCard.id === this.props.idea.id) {
         this.setState({
           prevLikes: nextProps.idea.metadata.likes,
+          liked: nextProps.idea.metadata.liked,
+          likes: nextProps.idea.metadata.likes,
           disabled: false
-        }, () => {
-          this.animatedShow.setValue(1);
-          Animated.timing(this.animatedShow, {
-            toValue: 0,
-            duration: CONSTANTS.ANIMATEION_MILLI_SECONDS * 1.5,
-          }).start(() => {
-            this.setState({
-              liked: nextProps.idea.metadata.liked,
-              likes: nextProps.idea.metadata.likes,
-            });
-          });
         });
       }
     } else {
-      this.setState({
-        liked: nextProps.idea.metadata.liked,
-        likes: nextProps.idea.metadata.likes,
-        prevLikes: nextProps.idea.metadata.likes,
-      }, () => {
-        let animationValue = 0;
-        if (nextProps.idea.metadata.liked) {
-          animationValue = 1;
-        }
-        this.animatedShow.setValue(animationValue);
-      });
+      // this.setState({
+      //   liked: nextProps.idea.metadata.liked,
+      //   likes: nextProps.idea.metadata.likes,
+      //   prevLikes: nextProps.idea.metadata.likes,
+      // }, () => {
+      //   let animationValue = 0;
+      //   if (nextProps.idea.metadata.liked) {
+      //     animationValue = 1;
+      //   }
+      //   this.animatedShow.setValue(animationValue);
+      // });
     }
   }
 
@@ -116,6 +98,12 @@ class LikeComponent extends React.Component {
       toValue: 1,
       duration: CONSTANTS.ANIMATEION_MILLI_SECONDS * 1.5,
     }).start();
+
+    this.setState({
+      liked: true,
+      likes: this.state.likes + 1,
+      prevLikes: this.state.likes + 1,
+    });
   }
 
   animateUnlink() {
@@ -124,15 +112,20 @@ class LikeComponent extends React.Component {
       toValue: 0,
       duration: CONSTANTS.ANIMATEION_MILLI_SECONDS * 1.5,
     }).start();
+
+    this.setState({
+      liked: false,
+      likes: this.state.likes - 1,
+      prevLikes: this.state.likes - 1
+    });
   }
 
   onLike(liked) {
-    // TODO not working ???
-    // if (liked) {
-    //   this.animateUnlink();
-    // } else {
-    //   this.animateLike();
-    // }
+    if (liked) {
+      this.animateUnlink();
+    } else {
+      this.animateLike();
+    }
 
     this.setState({ disabled: true });
     // Move to like list for Guest
