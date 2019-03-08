@@ -39,7 +39,10 @@ export default class Share extends Component {
         type = 'url'
 
       console.log('share data:', type, value)
-      Linking.openURL('https://' + SCHEME + `share/${type}/${value}`)
+      setTimeout(() => {
+        Linking.openURL('https://' + SCHEME + `share/${type}/${value}`)
+      }, 100); 
+
 
     } catch(error) {
       console.log('error : ', error)
