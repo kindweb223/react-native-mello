@@ -293,31 +293,39 @@ export default class Root extends React.Component {
           }
         }
         if (Platform.OS === 'android' && searchIndex !== -1) { //share extension for Android
-          const currentScene = Actions.currentScene
-          if (currentScene !== 'TutorialScreen' && currentScene !== 'LoginScreen' && currentScene !== 'SignUpScreen' && currentScene !== 'SignUpConfirmScreen') {
-            var type = '';
-            if (params[searchIndex + 1] === 'image') {
-              type = 'images'
-              searchIndex ++;
-            } else if (params[searchIndex + 1] === 'url') {
-              type = 'url'
-            } else {
-              console.log('error: wrong share link')
-            }
-
-            var value = ''
-            for (i = searchIndex+2; i < params.length; i ++)
-            {
-              if (params[i] !== '') {
-                if (i === params.length - 1)
-                  value += `${params[i]}`
-                else
-                  value += `${params[i]}/`
-              }
-            }
-            console.log('path: ', type, value)
-            Actions.ChooseLinkImageFromExtension({mode: type, value: value, prev_scene: currentScene});
+          var type = '';
+          if (params[searchIndex + 1] === 'image') {
+            type = 'images'
+            searchIndex ++;
+          } else if (params[searchIndex + 1] === 'url') {
+            type = 'url'
+          } else {
+            console.log('error: wrong share link')
           }
+
+          var value = ''
+          for (i = searchIndex+2; i < params.length; i ++)
+          {
+            if (params[i] !== '') {
+              if (i === params.length - 1)
+                value += `${params[i]}`
+              else
+                value += `${params[i]}/`
+            }
+          }
+          console.log('path: ', type, value)
+
+          AsyncStorage.getItem("xAuthToken").then((token) => {
+            if (token) {
+              const currentScene = Actions.currentScene
+              const data = {
+                type,
+                value,
+              }
+              AsyncStorage.setItem('AndroidShareExtension', JSON.stringify(data));
+              Actions.ChooseLinkImageFromExtension({mode: type, value: value, prev_scene: currentScene});
+            }
+          });
         }
 
       } else {
