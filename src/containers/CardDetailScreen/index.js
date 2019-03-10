@@ -22,7 +22,7 @@ import { Actions } from 'react-native-router-flux'
 import Entypo from 'react-native-vector-icons/Entypo'
 import Ionicons from 'react-native-vector-icons/Ionicons'
 
-import ActionSheet from 'react-native-actionsheet'
+import ActionSheet, { ActionSheetCustom } from 'react-native-actionsheet'
 import ImagePicker from 'react-native-image-picker'
 import ImageResizer from 'react-native-image-resizer';
 import RNThumbnail from 'react-native-thumbnail';
@@ -41,6 +41,7 @@ import SharedGroupPreferences from 'react-native-shared-group-preferences';
 import * as Animatable from 'react-native-animatable';
 
 import { COMMENT_FEATURE } from '../../service/api'
+import COMMON_STYLES from '../../themes/styles'
 
 import { 
   createCard,
@@ -1736,7 +1737,11 @@ class CardDetailScreen extends React.Component {
         />
         <ActionSheet
           ref={ref => this.deleteActionSheet = ref}
-          title={'Cards are the start of great ideas. Are you sure want to delete?'}
+          title={
+            Platform.OS === 'ios'
+            ? 'Cards are the start of great ideas. Are you sure want to delete?'
+            : <Text style={COMMON_STYLES.actionSheetTitleText}>Cards are the start of great ideas. Are you sure want to delete?</Text>
+          }
           options={['Delete', 'Cancel']}
           cancelButtonIndex={1}
           destructiveButtonIndex={0}
