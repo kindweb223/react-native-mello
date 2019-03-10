@@ -1390,7 +1390,7 @@ class CardNewScreen extends React.Component {
     let imageFiles = _.filter(this.props.card.currentCard.files, file => file.fileType === 'MEDIA');
 
     const ratio = CONSTANTS.SCREEN_WIDTH / this.coverImageWidth
-    if (this.state.imageUploadStarted) {
+    if (this.state.coverImage || this.state.imageUploadStarted) {
       return (
         <View
           style={
