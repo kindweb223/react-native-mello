@@ -1427,14 +1427,14 @@ class CardDetailScreen extends React.Component {
           duration={CONSTANTS.ANIMATABLE_DURATION}
           animation={this.state.fadeInUpAnimation}
         >
-        <WebMetaList
-          viewMode="edit"
-          links={[firstLink]}
-          isFastImage={true}
-          coverImage={this.state.coverImage}
-          editable={viewMode !== CONSTANTS.CARD_VIEW}
-          longPressLink={(link) => this.onLongPressWbeMetaLink(link)}
-        />
+          <WebMetaList
+            viewMode="edit"
+            links={[firstLink]}
+            isFastImage={true}
+            coverImage={this.state.coverImage}
+            editable={viewMode !== CONSTANTS.CARD_VIEW}
+            longPressLink={(link) => this.onLongPressWbeMetaLink(link)}
+          />
         </Animatable.View>
       )
     }
