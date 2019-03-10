@@ -1100,11 +1100,14 @@ class CardDetailScreen extends React.Component {
     this.coverImageHeight = file.height;
 
     // To set size of first image in text only card
-    const ratio = CONSTANTS.SCREEN_WIDTH / this.coverImageWidth;
-    this.state.size.setValue({
-      x: CONSTANTS.SCREEN_WIDTH,
-      y: this.coverImageHeight * ratio
-    })
+    if(!this.state.coverImage) {
+      const ratio = CONSTANTS.SCREEN_WIDTH / this.coverImageWidth;
+      this.state.size.setValue({
+        x: CONSTANTS.SCREEN_WIDTH,
+        y: this.coverImageHeight * ratio
+      })
+    }
+
     const mimeType = (Platform.OS === 'ios') ? mime.lookup(file.uri) : file.type;
 
     let type = 'FILE';
