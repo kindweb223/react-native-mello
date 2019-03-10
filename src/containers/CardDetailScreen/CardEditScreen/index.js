@@ -150,9 +150,11 @@ class CardEditScreen extends React.Component {
     const { idea } = this.props
 
     return (
-      <View 
+      <TouchableOpacity
         style={{ flex: 1 }}
         onLayout={this.onLayoutTextInput.bind(this)}
+        onPress={() => this.textInputIdeaRef.focus()}
+        activeOpacity={1.0}
       >
         <TextInput
           style={[styles.textInputIdea, {
@@ -172,7 +174,7 @@ class CardEditScreen extends React.Component {
           ref={ref => this.textInputIdeaRef = ref}
           style={styles.textInputIdea}
           autoCorrect={true}
-          placeholder='Let your ideas flow. Type text, paste a link, add an image, video or audio'
+          placeholder='Add a note'
           multiline={true}
           underlineColorAndroid='transparent'
           defaultValue={idea}
@@ -183,7 +185,7 @@ class CardEditScreen extends React.Component {
           onSelectionChange={this.onSelectionChange.bind(this)}
           selectionColor={Platform.OS === 'ios' ? COLORS.PURPLE : COLORS.LIGHT_PURPLE}
         />
-      </View>
+      </TouchableOpacity>
     );
   }
 
@@ -217,12 +219,11 @@ class CardEditScreen extends React.Component {
   get renderMainContent() { 
     return (
       <ScrollView
+        contentContainerStyle={{ flexGrow: 1 }}
         ref={ref => this.scrollViewRef = ref}
         onLayout={this.onLayoutScrollView.bind(this)}
       >
-        <View style={styles.ideaContentView}>
-          {this.renderText}
-        </View>
+        {this.renderText}
       </ScrollView>
     );
   }
