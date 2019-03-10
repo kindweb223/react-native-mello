@@ -1367,7 +1367,7 @@ class CardDetailScreen extends React.Component {
 
     return (
       <TouchableOpacity
-        style={{ marginTop, marginBottom: 16, flex: 1 }}
+        style={{ marginTop, marginBottom: 16 }}
         activeOpacity={1}
         onPress={() => this.onPressIdea()}
       >
