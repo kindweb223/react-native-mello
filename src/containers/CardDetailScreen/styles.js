@@ -41,7 +41,7 @@ const styles = StyleSheet.create({
   },
   headerContainer: {
     position: 'absolute',
-    top: Platform.OS === 'ios' ? ifIphoneX(53, 30) : 20,
+    top: Platform.OS === 'ios' ? ifIphoneX(53, 30) : 10,
     right: 8,
     width: 50,
     height: 50,
@@ -52,14 +52,12 @@ const styles = StyleSheet.create({
   closeButtonView: {
     justifyContent: 'center',
     alignItems: 'center',
-    width: '100%',
-    height: '100%',
     backgroundColor: COLORS.ACTION_SHEET_TITLE,
     width: 34,
     height: 34,
     borderRadius: 17,
-    paddingTop: 2,
-    paddingLeft: 2,
+    paddingTop: Platform.OS === 'ios' ? 2 : 0,
+    paddingLeft: Platform.OS === 'ios' ? 2 : 0
   },
   coverImageContainer: {
     zIndex: 2
