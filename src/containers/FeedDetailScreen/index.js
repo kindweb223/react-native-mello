@@ -31,7 +31,8 @@ import { DocumentPicker, DocumentPickerUtil } from 'react-native-document-picker
 import Permissions from 'react-native-permissions'
 import * as mime from 'react-native-mime-types'
 import GestureRecognizer from 'react-native-swipe-gestures'
-import Masonry from '../../components/MasonryComponent'
+// import Masonry from '../../components/MasonryComponent'
+import MasonryList from '../../components/MasonryComponent/react-native-masonry-list'
 
 import DashboardActionBar from '../../navigations/DashboardActionBar'
 import FeedCardComponent from '../../components/FeedCardComponent'
@@ -1423,6 +1424,22 @@ class FeedDetailScreen extends React.Component {
       }
   }
 
+  getCoverImageHeight = (idea) => {
+    let hasCoverImage = idea.coverImage && idea.coverImage.length > 0
+    let cardHeight = 0
+    if (hasCoverImage) {
+      const coverImageData = _.find(idea.files, file => (file.accessUrl === idea.coverImage || file.thumbnailUrl === idea.coverImage))
+      const cardWidth = (CONSTANTS.SCREEN_SUB_WIDTH - 16) / 2
+      if (coverImageData.metadata) {
+        const ratio = coverImageData.metadata.width / cardWidth
+        cardHeight = coverImageData.metadata.height / ratio
+      } else {
+        cardHeight = cardWidth / 2
+      }
+    }
+    return cardHeight
+  }
+
   render () {
     const {
       currentFeed,
@@ -1433,6 +1450,33 @@ class FeedDetailScreen extends React.Component {
       isVisibleLongHoldMenu,
       invitees
     } = this.state
+
+    let MasonryListData = []
+    if (currentFeed.ideas) {
+      currentFeed.ideas.forEach((idea, index) => {
+        let hasCoverImage = idea.coverImage && idea.coverImage.length > 0
+        let cardHeight = 0
+        if (hasCoverImage) {
+          const coverImageData = _.find(idea.files, file => (file.accessUrl === idea.coverImage || file.thumbnailUrl === idea.coverImage))
+          const cardWidth = (CONSTANTS.SCREEN_SUB_WIDTH - 16) / 2
+          if (coverImageData.metadata) {
+            const ratio = coverImageData.metadata.width / cardWidth
+            cardHeight = coverImageData.metadata.height / ratio
+          } else {
+            cardHeight = cardWidth / 2
+          }
+        }
+
+        MasonryListData.push({
+          index,
+          width: (CONSTANTS.SCREEN_SUB_WIDTH - 16) / 2,
+          height: cardHeight,
+          uri: idea.coverImage,
+          data: idea
+        })
+      })
+      console.log('IDEAS: ', MasonryListData)
+    }
 
     return (
       <SafeAreaView style={styles.safeArea}>
@@ -1587,7 +1631,39 @@ class FeedDetailScreen extends React.Component {
                     : <View
                         style={{ paddingHorizontal: currentFeed.ideas.length > 0 ? 8 : 0, marginTop: Platform.OS === 'android' && isVisibleLongHoldMenu ? 30 : 0}}
                       >
-                        <Masonry
+                        <MasonryList
+                          images={MasonryListData}
+                          containerWidth={CONSTANTS.SCREEN_SUB_WIDTH}
+                          renderIndividualFooter={(item) => {
+                            return (
+                              <View>
+                                <TouchableHighlight
+                                  ref={ref => this.cardItemRefs[item.index] = ref}
+                                  style={{ paddingHorizontal: 8, borderRadius: 5 }}
+                                  activeOpacity={1}
+                                  underlayColor="#fff"
+                                  onPress={() => this.onSelectCard(item.index, item.data, invitees)}
+                                  onLongPress={() => this.onLongPressCard(item.index, item.data, invitees)}
+                                >
+                                  <FeedCardComponent
+                                    idea={item.data}
+                                    invitees={invitees}
+                                    listType={this.state.viewPreference}
+                                    cardType="view"
+                                    prevPage={this.props.prevPage}
+                                    longHold={isVisibleLongHoldMenu}
+                                    longSelected={isVisibleLongHoldMenu && selectedLongHoldCardIndex === item.index}
+                                    onPress={() => this.onSelectCard(item.index, item.data, invitees)}
+                                    onLongPress={() => this.onLongPressCard(item.index, item.data, invitees)}
+                                    onLinkPress={() => this.onSelectCard(item.index, item.data, invitees)}
+                                    onLinkLongPress={() => this.onLongPressCard(item.index, item.data, invitees)}
+                                  />
+                                </TouchableHighlight>
+                              </View>
+                            )
+                          }}
+                        />
+                        {/* <Masonry
                           onLayout={(event) => this.onLayoutMasonry(event)}
                           ref="masonry"
                           isExistingUser={this.state.isExistingUser}
@@ -1621,7 +1697,7 @@ class FeedDetailScreen extends React.Component {
                                 />
                               </TouchableHighlight>
                             </View>}
-                        />
+                        /> */}
                       </View>
                   : <View style={styles.emptyView}>
                     {loading
