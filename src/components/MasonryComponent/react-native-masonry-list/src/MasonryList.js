@@ -16,17 +16,33 @@ export default class MasonryList extends React.PureComponent {
 	_calculatedData = [];
 
 	static propTypes = {
-		itemSource: PropTypes.array,
+        itemSource: PropTypes.array,
 		images: PropTypes.array.isRequired,
 		layoutDimensions: PropTypes.object.isRequired,
 		containerWidth: PropTypes.number,
 
 		columns: PropTypes.number,
+		spacing: PropTypes.number,
+		initialColToRender: PropTypes.number,
+		initialNumInColsToRender: PropTypes.number,
 		sorted: PropTypes.bool,
-		renderMasonryItem: PropTypes.func,
+		backgroundColor: PropTypes.string,
+		imageContainerStyle: PropTypes.object,
+		renderIndividualHeader: PropTypes.func,
+		renderIndividualFooter: PropTypes.func,
 		masonryFlatListColProps: PropTypes.object,
 
+		customImageComponent: PropTypes.oneOfType([
+			PropTypes.func,
+			PropTypes.object
+		]),
+		customImageProps: PropTypes.object,
+		completeCustomComponent: PropTypes.func,
+
 		onImageResolved: PropTypes.func,
+
+		onPressImage: PropTypes.func,
+		onLongPressImage: PropTypes.func,
 
 		onEndReachedThreshold: PropTypes.number,
 	};
@@ -63,6 +79,7 @@ export default class MasonryList extends React.PureComponent {
 		}
 		else if (nextProps.orientation !== this.props.orientation ||
 			nextProps.columns !== this.props.columns ||
+			nextProps.spacing !== this.props.spacing ||
 			nextProps.sorted !== this.props.sorted ||
 			nextProps.containerWidth !== this.props.containerWidth) {
 				this.resolveImages(
@@ -84,7 +101,7 @@ export default class MasonryList extends React.PureComponent {
 		}
 	}
 
-	_getCalculatedDimensions(imgDimensions = { width: 0, height: 0 }, columnWidth = 0, gutterSize = 0) {
+    _getCalculatedDimensions(imgDimensions = { width: 0, height: 0 }, columnWidth = 0, gutterSize = 0) {
 		const countDecimals = function (value) {
 			if (Math.floor(value) === value) {
 				return 0;
@@ -94,13 +111,17 @@ export default class MasonryList extends React.PureComponent {
 
 		const divider = imgDimensions.width / columnWidth;
 
+		const tempWidth = (imgDimensions.width / divider) - (gutterSize * 1.5);
 		const tempHeight = (imgDimensions.height / divider) - (gutterSize * 1.5);
 
+		const newWidth = countDecimals(tempWidth) > 10
+			? parseFloat(tempWidth.toFixed(10))
+			: tempWidth;
 		const newHeight = countDecimals(tempHeight) > 10
 			? parseFloat(tempHeight.toFixed(10))
 			: tempHeight;
 
-		return { width: 100, height: imgDimensions.height, gutter: 0, margin: 8 };
+		return { width: newWidth, height: newHeight, gutter: gutterSize, margin: gutterSize / 2 };
 	}
 
 	resolveImages(
@@ -146,6 +167,14 @@ export default class MasonryList extends React.PureComponent {
 
 					if (source) {
 						image.source = source;
+					} else {
+						/* eslint-disable no-console */
+						console.warn(
+							"react-native-masonry-list",
+							"Please provide a valid image field in " +
+							"data images. Ex. source, uri, URI, url, URL"
+						);
+						/* eslint-enable no-console */
 					}
 
 					if (image.dimensions && image.dimensions.width && image.dimensions.height) {
@@ -158,6 +187,13 @@ export default class MasonryList extends React.PureComponent {
 
 					if (uri) {
 						return resolveImage(uri, image, item, itemSource);
+					} else {
+						/* eslint-disable no-console */
+						console.warn(
+							"react-native-masonry-list",
+							"Please provide dimensions for your local images."
+						);
+						/* eslint-enable no-console */
 					}
 				})
 				.map((resolveTask, index) => {
@@ -218,6 +254,14 @@ export default class MasonryList extends React.PureComponent {
 
 					if (source) {
 						image.source = source;
+					} else {
+						/* eslint-disable no-console */
+						console.warn(
+							"react-native-masonry-list",
+							"Please provide a valid image field in " +
+							"data images. Ex. source, uri, URI, url, URL"
+						);
+						/* eslint-enable no-console */
 					}
 
 					if (image.dimensions && image.dimensions.width && image.dimensions.height) {
@@ -230,6 +274,13 @@ export default class MasonryList extends React.PureComponent {
 
 					if (uri) {
 						return resolveImage(uri, image);
+					} else {
+						/* eslint-disable no-console */
+						console.warn(
+							"react-native-masonry-list",
+							"Please provide dimensions for your local images."
+						);
+						/* eslint-enable no-console */
 					}
 				})
 				.map((resolveTask, index) => {
@@ -291,7 +342,11 @@ export default class MasonryList extends React.PureComponent {
 	render() {
 		return (
 			<FlatList
-				style={{ flex: 1 }}
+				style={{
+					flex: 1,
+					padding: (this.props.layoutDimensions.width / 100) * this.props.spacing / 2,
+					backgroundColor: this.props.backgroundColor
+				}}
 				contentContainerStyle={{
 					justifyContent: "space-between",
 					flexDirection: "row",
@@ -301,20 +356,36 @@ export default class MasonryList extends React.PureComponent {
 				onEndReachedThreshold={this.props.onEndReachedThreshold}
 				{...this.props.masonryFlatListColProps}
 				onEndReached={this._onCallEndReach}
-				initialNumToRender={this.props.columns}
+				initialNumToRender={
+					this.props.initialColToRender
+						? this.props.initialColToRender
+						: this.props.columns
+				}
 				keyExtractor={(item, index) => {
 					return "COLUMN-" + index.toString() + "/"; // + (this.props.columns - 1);
 				}}
 				data={this.state._sortedData}
-				renderItem={({ item, index }) => {
+				renderItem={({item, index}) => {
 					return (
 						<Column
 							data={item}
 							itemSource={this.props.itemSource}
+							initialNumInColsToRender={this.props.initialNumInColsToRender}
 							layoutDimensions={this.props.layoutDimensions}
+							backgroundColor={this.props.backgroundColor}
+							imageContainerStyle={this.props.imageContainerStyle}
+							spacing={this.props.spacing}
 							key={`MASONRY-COLUMN-${index}`}
 
-							renderMasonryItem={this.props.renderMasonryItem}
+							customImageComponent={this.props.customImageComponent}
+							customImageProps={this.props.customImageProps}
+							completeCustomComponent={this.props.completeCustomComponent}
+
+							onPressImage={this.props.onPressImage}
+							onLongPressImage={this.props.onLongPressImage}
+
+							renderIndividualHeader={this.props.renderIndividualHeader}
+							renderIndividualFooter={this.props.renderIndividualFooter}
 						/>
 					);
 				}}

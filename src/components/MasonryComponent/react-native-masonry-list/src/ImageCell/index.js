@@ -9,35 +9,56 @@ export default class ImageCell extends React.PureComponent {
 	static propTypes = {
 		data: PropTypes.object.isRequired,
 		source: PropTypes.any.isRequired,
+		imageContainerStyle: PropTypes.object,
 		masonryDimensions: PropTypes.object,
-		renderMasonryItem: PropTypes.func
+		customImageComponent: PropTypes.oneOfType([
+			PropTypes.func,
+			PropTypes.object
+		]),
+		customImageProps: PropTypes.object,
+		completeCustomComponent: PropTypes.func,
+		onPressImage: PropTypes.func,
+		onLongPressImage: PropTypes.func,
+		renderIndividualHeader: PropTypes.func,
+		renderIndividualFooter: PropTypes.func
 	}
 
 	_renderImage = () => {
 		const {
-			data, source, masonryDimensions
+			data, source, imageContainerStyle, onPressImage,
+			onLongPressImage, customImageComponent,
+			customImageProps, masonryDimensions
 		} = this.props;
 		const { width, height, gutter } = masonryDimensions;
 
 		return onPressImage || onLongPressImage
 			? <TouchableImageComponent
-					data={data}
-					width={width}
-					height={height}
-					gutter={gutter}
-					source={source}
-				/>
+				data={data}
+				width={width}
+				height={height}
+				gutter={gutter}
+				source={source}
+				imageContainerStyle={imageContainerStyle}
+				customImageComponent={customImageComponent}
+				customImageProps={customImageProps}
+
+				onPressImage={onPressImage}
+				onLongPressImage={onLongPressImage}
+			/>
 			: <ImageComponent
-					width={width}
-					height={height}
-					gutter={gutter}
-					source={source}
-				/>;
+				width={width}
+				height={height}
+				gutter={gutter}
+				source={source}
+				imageContainerStyle={imageContainerStyle}
+				customImageComponent={customImageComponent}
+				customImageProps={customImageProps}
+			/>;
 	}
 
 	_renderCustomImage = () => {
 		const {
-			data, source, masonryDimensions
+			data, source, completeCustomComponent, masonryDimensions
 		} = this.props;
 		const { width, height, gutter } = masonryDimensions;
 
@@ -48,27 +69,32 @@ export default class ImageCell extends React.PureComponent {
 				height={height}
 				gutter={gutter}
 				source={source}
+				completeCustomComponent={completeCustomComponent}
 			/>
 		);
 	}
 
 	render() {
 		const {
-			data,
-			renderMasonryItem
+			data, renderIndividualHeader,
+			renderIndividualFooter,
+			completeCustomComponent
 		} = this.props;
 
-		const renderItem = renderMasonryItem &&renderMasonryItem(data, data.index);
+		const renderHeader = renderIndividualHeader &&
+			renderIndividualHeader(data, data.index);
+		const renderFooter = renderIndividualFooter &&
+			renderIndividualFooter(data, data.index);
 
 		return (
 			<View>
-				{/* {renderHeader} */}
-				{/* {data.uri && (
+				{renderHeader}
+				{data.uri && (
 					completeCustomComponent
 						? this._renderCustomImage()
 						: this._renderImage()
-				)} */}
-				{renderItem}
+				)}
+				{renderFooter}
 			</View>
 		);
 	}
