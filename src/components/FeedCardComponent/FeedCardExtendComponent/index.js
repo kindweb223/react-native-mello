@@ -34,7 +34,7 @@ class FeedCardExtendComponent extends React.Component {
 
     const invitee = _.find(invitees, item => item.id === idea.inviteeId)
     let isOnlyInvitee = false
-    
+
     if (invitees.length === 1 && invitee) {
       isOnlyInvitee = true
     }
