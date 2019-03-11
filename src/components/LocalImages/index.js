@@ -1,6 +1,19 @@
 import React from "react";
 import RNFS, {downloadFile} from 'react-native-fs';
-import { FlatList, ScrollView, View, Text, ViewPropTypes } from "react-native";
+import { Button, FlatList, ScrollView, View, Text, ViewPropTypes } from "react-native";
+
+
+const makeUserDir = (id, resolve, reject) => {
+    const userDir = RNFS.DocumentDirectoryPath + '/' + id
+    RNFS.mkdir(userDir)
+        .then((result)=>{
+            console.log('RNFS - made user dir', result)
+            resolve(true)
+        })
+        .catch((error)=>{
+            reject(error)
+        })
+}
 
 const userDirMustExist = (userId) => {
     return new Promise((resolve, reject) => {
@@ -25,8 +38,7 @@ const userDirMustExist = (userId) => {
                 }
             })
             .catch((error) => {
-
-                        reject(error)
+                makeUserDir(userId, resolve, reject)
 
             })
 
@@ -105,6 +117,15 @@ class LocalImages extends React.Component {
         };
     }
 
+    listFiles = () => {
+        const { user } = this.props
+        console.log('RNFS - listFiles called')
+        const dir = RNFS.DocumentDirectoryPath + '/' + user.id
+        RNFS.readDir(dir)
+            .then(result => console.log('RNFS o- ', result))
+            .catch(error => console.log('RNFS o- ',  error))
+    }
+
     componentDidMount(): void {
         const { user, ideas } = this.props
         checkDirectories()
@@ -118,13 +139,9 @@ class LocalImages extends React.Component {
                             .then(result => console.log('RNFS ', result))
                     })
                 })
-                const dir = RNFS.DocumentDirectoryPath + '/' + user.id
-                console.log('RNFS dir is ' + dir)
-                RNFS.readDir(dir)
-                    .then(result => console.log('RNFS o- ', result))
-                    .catch(error => console.log('RNFS o- ',  error))
 
             })
+            .catch(err => console.log('no user dir and no resolution - ', err))
 
 
     }
@@ -139,7 +156,10 @@ class LocalImages extends React.Component {
         const { files } =  this.state
         const { ideas } = this.props
         return (
-            <Text>Blah and {ideas.length} vs {files.length}</Text>
+            <View>
+                <Button title="List Files" onPress={this.listFiles}>List Files</Button>
+                <Text>Blah and {ideas.length} vs {files.length}</Text>
+            </View>
         )
     }
 }
