@@ -22,7 +22,7 @@ const FeedItemComponent = ({ item, pinFlag, page, clickEvent, listType }) => {
     invitees = _.filter(invitees, invitee => invitee.userProfile.id !== item.owner.id)
   }
   
-  invitees.forEach((data, key) => {
+  invitees.forEach(data => {
     avatars = [
       ...avatars,
       data.userProfile

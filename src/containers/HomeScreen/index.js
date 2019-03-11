@@ -293,6 +293,7 @@ class HomeScreen extends React.Component {
       (feedo.loading === 'DEL_DUMMY_CARD') || (feedo.loading === 'MOVE_DUMMY_CARD') ||
       (feedo.loading === 'PUBNUB_DELETE_INVITEE_FULFILLED') || (feedo.loading === 'GET_FEED_DETAIL_REJECTED') ||
       (feedo.loading === 'SAVE_FLOW_PREFERENCE_FULFILLED') ||
+      (feedo.loading === 'UPDATE_PROFILE_FULFILLED') ||
       (feedo.loading === 'PUBNUB_DELETE_FEED' &&
                           Actions.currentScene !== 'FeedDetailScreen' && 
                           Actions.currentScene !== 'CommentScreen' && Actions.currentScene !== 'ActivityCommentScreen' &&

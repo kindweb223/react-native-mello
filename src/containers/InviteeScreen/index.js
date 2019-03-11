@@ -138,22 +138,15 @@ class InviteeScreen extends React.Component {
       isInput: text.length > 0 ? true : false
     })
 
-    let filteredContacts = []
-
-    for (let i = 0; i < recentContacts.length; i ++) {
-      const email = recentContacts[i].userProfile.email
-      const name = `${recentContacts[i].userProfile.firstName} ${recentContacts[i].userProfile.lastName}`
-
-      if (email.includes(text.toLowerCase()) || name.includes(text.toLowerCase())) {
-        if (_.findIndex(inviteeEmails, item => item.text === email) === -1 &&
-            _.findIndex(inviteeEmails, item => item.name === name) === -1) {
-          filteredContacts.push(recentContacts[i])
-        }
-      }
-    }
+    const filteredContacts = recentContacts.filter(this.contactFilter(text.toLowerCase()))
 
     this.setState({ tagText: text, filteredContacts })
   }
+
+  contactFilter = value => c => (
+    [`${c.userProfile.firstName} ${c.userProfile.lastName}`, c.userProfile.email].join().indexOf(value) !== -1
+    && !c.added
+  )
 
   handleLinkSharing = (value, data) => {
     this.setState({isEnableShare: value})
@@ -188,7 +181,12 @@ class InviteeScreen extends React.Component {
 
   onSelectContact = (contact) => {
     let { inviteeEmails, recentContacts } = this.state
-    const name = `${contact.userProfile.firstName} ${contact.userProfile.lastName}`
+    let name
+    if (contact.userProfile.newUser) {
+      name = contact.userProfile.email
+    } else {
+      name = `${contact.userProfile.firstName} ${contact.userProfile.lastName}`
+    }
 
     inviteeEmails.push({
       text: name,
