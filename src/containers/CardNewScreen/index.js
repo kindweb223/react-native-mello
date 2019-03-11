@@ -199,6 +199,13 @@ class CardNewScreen extends React.Component {
     if (this.props.card.loading !== types.CREATE_CARD_PENDING && nextProps.card.loading === types.CREATE_CARD_PENDING) {
       // loading = true;
     } else if (this.props.card.loading !== types.CREATE_CARD_FULFILLED && nextProps.card.loading === types.CREATE_CARD_FULFILLED) {
+      // Hide tops on detail page
+      const cardBubbleData = {
+        userId: nextProps.user.userInfo.id,
+        state: 'false'
+      }
+      AsyncStorage.setItem('CardBubbleState', JSON.stringify(cardBubbleData));
+
       // If share extension and a url has been passed
       if (this.props.cardMode === CONSTANTS.SHARE_EXTENTION_CARD && this.props.shareUrl !== '') {
         const openGraph = this.props.card.currentOpneGraph;
@@ -560,6 +567,12 @@ class CardNewScreen extends React.Component {
     // showing error alert
     if (this.props.card.loading !== nextProps.card.loading || this.props.feedo.loading !== nextProps.feedo.loading) {
       if (nextProps.card.error || nextProps.feedo.error) {
+
+        if (nextProps.card.error.code === 'error.hunt.not.found') {
+          this.props.resetCardError();
+          this.props.createFeed();
+          return
+        }
         let error = null;
         if ((nextProps.card.error && nextProps.card.error.error) || (nextProps.feedo.error && nextProps.feedo.error.error)) {
           error = (nextProps.card.error && nextProps.card.error.error) || (nextProps.feedo.error && nextProps.feedo.error.error);
@@ -1471,9 +1484,11 @@ class CardNewScreen extends React.Component {
     const { cardMode } = this.props;
 
     return (
-      <View 
+      <TouchableOpacity
         style={{ flex: 1 }}
         onLayout={this.onLayoutTextInput.bind(this)}
+        onPress={() => this.textInputIdeaRef.focus()}
+        activeOpacity={1.0}
       >
         <TextInput
           style={[styles.textInputIdea, {
@@ -1505,7 +1520,7 @@ class CardNewScreen extends React.Component {
           selectionColor={Platform.OS === 'ios' ? COLORS.PURPLE : COLORS.LIGHT_PURPLE}
           textAlignVertical={'top'}
         />
-      </View>
+      </TouchableOpacity>
     )
   }
 
@@ -1575,6 +1590,7 @@ class CardNewScreen extends React.Component {
   get renderMainContent() {
     return (
       <ScrollView
+        contentContainerStyle={{ flexGrow: 1 }}
         ref={ref => this.scrollViewRef = ref}
         onLayout={this.onLayoutScrollView.bind(this)}
       >
