@@ -9,6 +9,12 @@ export default class ImageComponent extends React.PureComponent {
 		height: PropTypes.number.isRequired,
 		gutter: PropTypes.number.isRequired,
 		source: PropTypes.any.isRequired,
+		imageContainerStyle: PropTypes.object,
+		customImageComponent: PropTypes.oneOfType([
+			PropTypes.func,
+			PropTypes.object
+		]),
+		customImageProps: PropTypes.object
 	}
 
 	render() {
@@ -17,6 +23,9 @@ export default class ImageComponent extends React.PureComponent {
 			height,
 			gutter,
 			source,
+			imageContainerStyle,
+			customImageComponent,
+			customImageProps
 		} = this.props;
 		const imageProps = {
 			source: source,
@@ -26,6 +35,7 @@ export default class ImageComponent extends React.PureComponent {
 				height: height,
 				margin: gutter / 2,
 				backgroundColor: "gainsboro",
+				...imageContainerStyle
 			}
 		};
 

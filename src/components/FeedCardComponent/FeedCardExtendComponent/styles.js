@@ -9,14 +9,12 @@ const styles = StyleSheet.create({
   selected: {
     borderWidth: 1,
     borderColor: COLORS.PURPLE,
-    borderBottomLeftRadius: 10,
-    borderBottomRightRadius: 10,
+    borderRadius: 16
   },
   subContainer: {
     width: '100%',
     justifyContent: 'center',
-    borderBottomLeftRadius: 10,
-    borderBottomRightRadius: 10,
+    borderRadius: 16,
     backgroundColor: COLORS.LIGHT_SOFT_GREY,
     overflow: 'hidden'
   },
