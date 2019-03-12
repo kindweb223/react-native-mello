@@ -1372,7 +1372,7 @@ class CardDetailScreen extends React.Component {
 
   get renderText() {
     const { links } = this.props.card.currentCard;
-    const { coverImage, isOpeningCard } = this.state
+    const { coverImage, isOpeningCard, imageUploadStarted } = this.state
     const { viewMode } = this.props
   
     let marginTop = 24
@@ -1381,6 +1381,11 @@ class CardDetailScreen extends React.Component {
       marginTop = 6
     } else {
       marginTop = coverImage ? 24 : 65
+    }
+
+    // To fix wrong margin when add image to text only card
+    if (imageUploadStarted) {
+      marginTop = 24
     }
     this._textMarginTop = marginTop
 
