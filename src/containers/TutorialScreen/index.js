@@ -125,7 +125,7 @@ class TutorialScreen extends React.Component {
   }
 
   onLogin = () => {
-    Actions.LoginScreen()
+    Actions.LoginScreen({ prevPage: 'tutorial' })
   }
 
   onSignUp = () => {
