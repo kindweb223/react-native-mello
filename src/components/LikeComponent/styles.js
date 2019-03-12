@@ -4,9 +4,9 @@ import COLORS from '../../service/colors'
 const styles = StyleSheet.create({
   container: {
     height: 30,
-    marginLeft: 10,
     flexDirection: 'row',
-    alignItems: 'center'
+    alignItems: 'center',
+    paddingLeft: 10
   },
   likeContainer: {
     width: 30,
