@@ -23,7 +23,7 @@ import PropTypes from 'prop-types'
 import _ from 'lodash'
 import { Actions } from 'react-native-router-flux'
 import Ionicons from 'react-native-vector-icons/Ionicons'
-import ActionSheet from 'react-native-actionsheet'
+import ActionSheet, { ActionSheetCustom } from 'react-native-actionsheet'
 import Modal from "react-native-modal"
 import ReactNativeHapticFeedback from 'react-native-haptic-feedback';
 import ImagePicker from 'react-native-image-picker'
@@ -91,6 +91,8 @@ import CONSTANTS from '../../service/constants'
 import * as COMMON_FUNC from '../../service/commonFunc'
 import styles from './styles'
 import { TAGS_FEATURE, SHARE_LINK_URL } from "../../service/api"
+
+import COMMON_STYLES from '../../themes/styles'
 
 import Analytics from '../../lib/firebase'
 
@@ -1677,7 +1679,11 @@ class FeedDetailScreen extends React.Component {
 
         <ActionSheet
           ref={ref => this.feedoActionSheet = ref}
-          title={'Are you sure you want to delete? All your content in this flow will be gone'}
+          title={
+            Platform.OS === 'ios'
+            ? 'Are you sure you want to delete? All your content in this flow will be gone'
+            : <Text style={COMMON_STYLES.actionSheetTitleText}>Are you sure you want to delete? All your content in this flow will be gone</Text>
+          }
           options={['Delete Flow', 'Cancel']}
           cancelButtonIndex={1}
           destructiveButtonIndex={0}
