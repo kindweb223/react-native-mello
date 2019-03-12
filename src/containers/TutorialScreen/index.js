@@ -50,7 +50,7 @@ class TutorialScreen extends React.Component {
   constructor(props) {
     super(props)
     this.state = {
-      position: 0,
+      position: 6,
       loading: false,
       video1Paused: true,
       video2Paused: true,
@@ -67,6 +67,10 @@ class TutorialScreen extends React.Component {
       webClientId: GOOGLE_WEB_CLIENT_ID,
       offlineAccess: false
     })
+
+    if (this.props.prevPage === 'start') {
+      this.setState({ position: 0 })
+    }
 
     BackHandler.addEventListener('hardwareBackPress', this.handleBackButton);
   }
@@ -87,10 +91,6 @@ class TutorialScreen extends React.Component {
 
   componentWillReceiveProps(nextProps) {
     const { user } = nextProps
-
-    if (nextProps.prevPage === 'login') {
-      this.swiperRef.scrollBy(6, false)
-    }
 
     if (this.props.user.loading === 'USER_GOOGLE_SIGNIN_PENDING' && user.loading === 'USER_GOOGLE_SIGNIN_FULFILLED') {
       this.props.getUserSession()
