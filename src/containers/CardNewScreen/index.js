@@ -1166,13 +1166,9 @@ class CardNewScreen extends React.Component {
   }
 
   handleFile = (file) => {
-    console.log("handleFile called")
     this.coverImageWidth = file.width;
     this.coverImageHeight = file.height;
     const mimeType = (Platform.OS === 'ios') ? mime.lookup(file.uri) : file.type;
-    console.log('mimeType = ', mimeType);
-    console.log('file.type = ', file.type);
-    console.log('fileType = ', file.type);
 
     let type = 'FILE';
     if (mimeType !== false) {
