@@ -306,6 +306,13 @@ class CardDetailScreen extends React.Component {
         coverImage: nextProps.card.currentCard.coverImage,
       });
       this.checkUrls();
+
+      // To fix close animation after add image to text only card (Masonry)
+      if (this.props.isMasonryView) {
+        const masonryCardWidth = (CONSTANTS.SCREEN_SUB_WIDTH - 16) / 2 + 2
+        const masonryRatio = width / masonryCardWidth
+        this._height = height / masonryRatio
+      }
       // success in setting a file as cover image
     } else if (this.props.card.loading !== types.UPDATE_CARD_FULFILLED && nextProps.card.loading === types.UPDATE_CARD_FULFILLED) {
       // success in updating a card
@@ -505,6 +512,13 @@ class CardDetailScreen extends React.Component {
     const { viewMode, feedo, card, cardImageLayout, cardTextLayout, isMasonryView } = this.props;
     let { px, py, imgWidth, imgHeight } = cardImageLayout
     const { textPointX, textPointY, textWidth, textHeight } = cardTextLayout
+
+    // To fix close animation after add image to text only card
+    this.imgPx = px;
+    this.imgPy = py;
+    this.imgWidth = imgWidth;
+    this.imgHeight = imgHeight;
+
     let imageHeight = 400
     if (viewMode === CONSTANTS.CARD_VIEW || viewMode === CONSTANTS.CARD_EDIT) {
       this.coverImageWidth = 0
@@ -1099,8 +1113,13 @@ class CardDetailScreen extends React.Component {
     this.coverImageWidth = file.width;
     this.coverImageHeight = file.height;
 
-    // To set size of first image in text only card
+    // To fix close animation after add image to text only card
     if(!this.state.coverImage) {
+      this._width = this.imgWidth;
+      this._height = this.imgHeight;
+      this._x = this.imgPx;
+      this._y = this.imgPy - ifIphoneX(22, 0);
+
       const ratio = CONSTANTS.SCREEN_WIDTH / this.coverImageWidth;
       this.state.size.setValue({
         x: CONSTANTS.SCREEN_WIDTH,
