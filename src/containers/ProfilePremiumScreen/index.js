@@ -4,7 +4,8 @@ import {
   Text, 
   TouchableOpacity,
   ScrollView,
-  Image
+  Image,
+  BackHandler
 } from 'react-native'
 import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
@@ -85,10 +86,24 @@ class ProfilePremiumScreen extends React.Component {
 
   componentDidMount() {
     Analytics.setCurrentScreen('ProfilePremiumScren')
+    BackHandler.addEventListener('hardwareBackPress', this.handleBackButton);
+  }
+
+  componentWillUnmount() {
+    BackHandler.removeEventListener('hardwareBackPress', this.handleBackButton);
+  }
+
+  handleBackButton = () => {
+    Actions.pop();
+    return true;
   }
 
   upgradeMe() {
     this.setState({ showPremiumModal: true })
+  }
+
+  closeModal() {
+    this.setState({ showPremiumModal: false })
   }
 
   render () {
@@ -136,10 +151,11 @@ class ProfilePremiumScreen extends React.Component {
           animationIn="slideInUp"
           animationOut="slideOutDown"
           animationInTiming={300}
-          onBackdropPress={() => this.setState({ showPremiumModal: false })}
+          onBackdropPress={() => this.closeModal()}
+          onRequestClose={() => this.closeModal()}
         >
           <PremiumModal
-            onClose={() => this.setState({ showPremiumModal: false })}
+            onClose={() => this.closeModal()}
           />
         </Modal>
       </View>

@@ -564,6 +564,12 @@ class CardNewScreen extends React.Component {
     // showing error alert
     if (this.props.card.loading !== nextProps.card.loading || this.props.feedo.loading !== nextProps.feedo.loading) {
       if (nextProps.card.error || nextProps.feedo.error) {
+
+        if (nextProps.card.error.code === 'error.hunt.not.found') {
+          this.props.resetCardError();
+          this.props.createFeed();
+          return
+        }
         let error = null;
         if ((nextProps.card.error && nextProps.card.error.error) || (nextProps.feedo.error && nextProps.feedo.error.error)) {
           error = (nextProps.card.error && nextProps.card.error.error) || (nextProps.feedo.error && nextProps.feedo.error.error);
@@ -1447,9 +1453,11 @@ class CardNewScreen extends React.Component {
     const { cardMode } = this.props;
 
     return (
-      <View 
+      <TouchableOpacity
         style={{ flex: 1 }}
         onLayout={this.onLayoutTextInput.bind(this)}
+        onPress={() => this.textInputIdeaRef.focus()}
+        activeOpacity={1.0}
       >
         <TextInput
           style={[styles.textInputIdea, {
@@ -1481,7 +1489,7 @@ class CardNewScreen extends React.Component {
           selectionColor={Platform.OS === 'ios' ? COLORS.PURPLE : COLORS.LIGHT_PURPLE}
           textAlignVertical={'top'}
         />
-      </View>
+      </TouchableOpacity>
     )
   }
 
@@ -1551,6 +1559,7 @@ class CardNewScreen extends React.Component {
   get renderMainContent() {
     return (
       <ScrollView
+        contentContainerStyle={{ flexGrow: 1 }}
         ref={ref => this.scrollViewRef = ref}
         onLayout={this.onLayoutScrollView.bind(this)}
       >

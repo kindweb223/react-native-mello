@@ -22,7 +22,7 @@ import { Actions } from 'react-native-router-flux'
 import Entypo from 'react-native-vector-icons/Entypo'
 import Ionicons from 'react-native-vector-icons/Ionicons'
 
-import ActionSheet from 'react-native-actionsheet'
+import ActionSheet, { ActionSheetCustom } from 'react-native-actionsheet'
 import ImagePicker from 'react-native-image-picker'
 import ImageResizer from 'react-native-image-resizer';
 import RNThumbnail from 'react-native-thumbnail';
@@ -41,6 +41,7 @@ import SharedGroupPreferences from 'react-native-shared-group-preferences';
 import * as Animatable from 'react-native-animatable';
 
 import { COMMENT_FEATURE } from '../../service/api'
+import COMMON_STYLES from '../../themes/styles'
 
 import { 
   createCard,
@@ -1366,7 +1367,11 @@ class CardDetailScreen extends React.Component {
     }
 
     return (
-      <TouchableOpacity style={{ marginTop, marginBottom: 16 }} activeOpacity={1} onPress={() => this.onPressIdea()}>
+      <TouchableOpacity
+        style={{ marginTop, marginBottom: 16 }}
+        activeOpacity={1}
+        onPress={() => this.onPressIdea()}
+      >
         <Animated.View style={coverImage ? { opacity: this.animatedClose } : activeTextStyle}>
           <Animatable.View
             duration={CONSTANTS.ANIMATABLE_DURATION}
@@ -1378,7 +1383,7 @@ class CardDetailScreen extends React.Component {
                 style={styles.textInputIdea}
                 multiline={true}
                 pointerEvents="none" 
-                placeholder={'Let your ideas flow. Type text, paste a link, add an image, video or audio'}/>
+                placeholder={'Add a note'}/>
               :
               <Autolink
                 style={styles.textInputIdea}
@@ -1426,14 +1431,14 @@ class CardDetailScreen extends React.Component {
           duration={CONSTANTS.ANIMATABLE_DURATION}
           animation={this.state.fadeInUpAnimation}
         >
-        <WebMetaList
-          viewMode="edit"
-          links={[firstLink]}
-          isFastImage={true}
-          coverImage={this.state.coverImage}
-          editable={viewMode !== CONSTANTS.CARD_VIEW}
-          longPressLink={(link) => this.onLongPressWbeMetaLink(link)}
-        />
+          <WebMetaList
+            viewMode="edit"
+            links={[firstLink]}
+            isFastImage={true}
+            coverImage={this.state.coverImage}
+            editable={viewMode !== CONSTANTS.CARD_VIEW}
+            longPressLink={(link) => this.onLongPressWbeMetaLink(link)}
+          />
         </Animatable.View>
       )
     }
@@ -1736,7 +1741,11 @@ class CardDetailScreen extends React.Component {
         />
         <ActionSheet
           ref={ref => this.deleteActionSheet = ref}
-          title={'Cards are the start of great ideas. Are you sure want to delete?'}
+          title={
+            Platform.OS === 'ios'
+            ? 'Cards are the start of great ideas. Are you sure want to delete?'
+            : <Text style={COMMON_STYLES.actionSheetTitleText}>Cards are the start of great ideas. Are you sure want to delete?</Text>
+          }
           options={['Delete', 'Cancel']}
           cancelButtonIndex={1}
           destructiveButtonIndex={0}
