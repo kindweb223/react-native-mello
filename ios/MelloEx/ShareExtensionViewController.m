@@ -4,7 +4,7 @@
 #import <React/RCTRootView.h>
 #import <React/RCTLog.h>
 #import <MobileCoreServices/MobileCoreServices.h>
-//#import <Firebase.h>
+#import <Firebase.h>
 
 #define URL_IDENTIFIER @"public.url"
 #define IMAGE_IDENTIFIER @"public.image"
@@ -32,7 +32,7 @@ RCT_EXPORT_MODULE();
 
     NSURL *jsCodeLocation;
 
-//    [FIRApp configure];
+    [FIRApp configure];
   
     jsCodeLocation = [[RCTBundleURLProvider sharedSettings] jsBundleURLForBundleRoot:@"index.share" fallbackResource:nil];
   
