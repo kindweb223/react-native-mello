@@ -1166,34 +1166,40 @@ class CardNewScreen extends React.Component {
   }
 
   handleFile = (file) => {
+    console.log("handleFile called")
     this.coverImageWidth = file.width;
     this.coverImageHeight = file.height;
     const mimeType = (Platform.OS === 'ios') ? mime.lookup(file.uri) : file.type;
+    console.log('mimeType = ', mimeType);
+    console.log('file.type = ', file.type);
+    console.log('fileType = ', file.type);
 
     let type = 'FILE';
     if (mimeType !== false) {
+      console.log('mimeType is not false')
       if (mimeType.indexOf('image') !== -1 || mimeType.indexOf('video') !== -1) {
         type = 'MEDIA';
       }
-    }
 
-    if (mimeType.indexOf('video') !== -1) {
-      if (Platform.OS === 'ios') {
-        // Important - files containing spaces break, need to uri decode the url before passing to RNThumbnail
-        // https://github.com/wkh237/react-native-fetch-blob/issues/248#issuecomment-297988317
-        let fileUri = decodeURI(file.uri)
-        this.getThumbnailUrl(file, fileUri)
+      if (mimeType.indexOf('video') !== -1) {
+        if (Platform.OS === 'ios') {
+          // Important - files containing spaces break, need to uri decode the url before passing to RNThumbnail
+          // https://github.com/wkh237/react-native-fetch-blob/issues/248#issuecomment-297988317
+          let fileUri = decodeURI(file.uri)
+          this.getThumbnailUrl(file, fileUri)
+        } else {
+          this.setState({ loading: true })
+          RNFetchBlob.fs
+          .stat(file.uri)
+          .then(stats => {
+            filepath = stats.path;
+            this.getThumbnailUrl(file, filepath)
+          })
+        }
       } else {
-        this.setState({ loading: true })
-        RNFetchBlob.fs
-        .stat(file.uri)
-        .then(stats => {
-          filepath = stats.path;
-          this.getThumbnailUrl(file, filepath)
-        })
+        this.uploadFile(this.props.card.currentCard, file, type);
       }
-    }
-    else {
+    } else {
       this.uploadFile(this.props.card.currentCard, file, type);
     }
   }
