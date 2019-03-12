@@ -241,7 +241,7 @@ class HomeScreen extends React.Component {
       AsyncStorage.getItem("AndroidShareExtension").then((value) => {
         let shareExtData = JSON.parse(value)
         console.log('shareExtensionData', shareExtData)
-        if (shareExtData.type !== '' && shareExtData.value !== '') {
+        if (shareExtData !== null && shareExtData.type !== '' && shareExtData.value !== '') {
           setTimeout(() => {
             Actions.ChooseLinkImageFromExtension({mode: shareExtData.type, value: shareExtData.value, prev_scene: 'HomeScreen'});
           }, 100)
