@@ -54,8 +54,9 @@ class ChooseLinkImageFromExtension extends React.Component {
         value_ = this.props.value
       }
       console.log('SHARE_DATA: ', type_, value_)
-      this.setState({initialized: true});
+      
       if (type_ === 'url') {
+        this.setState({initialized: true});
         const urls = value_.match(/(http(s)?:\/\/.)?(www\.)?[-a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,6}\b([-a-zA-Z0-9@:%_\+.~#?&//=]*)/gi);
         if (urls === null)
         {
