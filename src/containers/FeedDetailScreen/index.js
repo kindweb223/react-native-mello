@@ -23,7 +23,7 @@ import PropTypes from 'prop-types'
 import _ from 'lodash'
 import { Actions } from 'react-native-router-flux'
 import Ionicons from 'react-native-vector-icons/Ionicons'
-import ActionSheet from 'react-native-actionsheet'
+import ActionSheet, { ActionSheetCustom } from 'react-native-actionsheet'
 import Modal from "react-native-modal"
 import ReactNativeHapticFeedback from 'react-native-haptic-feedback';
 import ImagePicker from 'react-native-image-picker'
@@ -93,6 +93,8 @@ import * as COMMON_FUNC from '../../service/commonFunc'
 import styles from './styles'
 import { TAGS_FEATURE, SHARE_LINK_URL } from "../../service/api"
 
+import COMMON_STYLES from '../../themes/styles'
+
 import Analytics from '../../lib/firebase'
 
 const TOASTER_DURATION = 3000
@@ -157,12 +159,12 @@ class FeedDetailScreen extends React.Component {
       filteredInvitees: [],
       copiedUrl: '',
       appState: AppState.currentState,
-      isMasonryView: false,
       isShowInviteToaster: false,
       inviteToasterTitle: '',
       viewPreference: 'LIST',
       isLeaveFlowClicked: false,
       isEnableShare: false,
+      MasonryListData: []
     };
     this.animatedOpacity = new Animated.Value(0)
     this.menuOpacity = new Animated.Value(0)
@@ -312,17 +314,8 @@ class FeedDetailScreen extends React.Component {
         pinText: !currentFeed.pinned ? 'Pin' : 'Unpin'
       })
 
-      this.setState({ currentBackFeed: currentFeed }, () => {
-        let redrawMasonry = false
-
-        if (feedo.loading === 'UPDATE_CARD_FULFILLED' || card.loading === 'UPDATE_CARD_FULFILLED' || feedo.loading === 'GET_FEED_DETAIL_FULFILLED' ||
-          (feedo.loading === 'ADD_CARD_COMMENT_FULFILLED' && Actions.currentScene === 'CommentScreen') ||
-          (feedo.loading === 'DELETE_CARD_COMMENT_FULFILLED' && Actions.currentScene === 'CommentScreen'))
-        {
-          redrawMasonry = true
-        }
-        
-        this.filterCards(currentFeed, redrawMasonry)
+      this.setState({ currentBackFeed: currentFeed }, () => {      
+        this.filterCards(currentFeed)
       })
 
       if (feedo.loading === 'PUBNUB_GET_FEED_DETAIL_FULFILLED' || feedo.loading === 'GET_CARD_FULFILLED' ||
@@ -446,7 +439,7 @@ class FeedDetailScreen extends React.Component {
     AsyncStorage.setItem('CardBubbleState', JSON.stringify(data));
   }
 
-  filterCards = (currentFeed, redrawMasonry = true) => {
+  filterCards = (currentFeed) => {
     const { currentBackFeed, filterShowType, filterSortType } = this.state
     const { ideas } = currentFeed
     let filterIdeas = {}, sortIdeas = {}
@@ -486,16 +479,14 @@ class FeedDetailScreen extends React.Component {
       this.setState({ avatars, invitees, filteredInvitees })
     }
 
+    this.setMasonryData(sortIdeas)
+
     this.setState({
       currentFeed: {
         ...currentFeed,
         ideas: sortIdeas
       }
     })
-
-    if (this.state.viewPreference === 'MASONRY' && this.refs.masonry && redrawMasonry) {
-      this.setMasonryData(sortIdeas)
-    }
   }
 
   onFilterShow = (type) => {
@@ -535,11 +526,11 @@ class FeedDetailScreen extends React.Component {
           index,
           width: (CONSTANTS.SCREEN_WIDTH - 16) / 2,
           height: cardHeight,
-          uri: idea.coverImage ? idea.coverImage : 'https://solvers-hunt.s3-accelerate.amazonaws.com/solvers-dev/hunts/fef056cb-4d8e-4887-9747-fba23ccf6ad5/ideas/ccbf3cda-7d16-4f2f-921c-5f86fde1f458/419262bf-c5fe-4f46-b2d7-daa4714b7599?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Date=20190308T153053Z&X-Amz-SignedHeaders=host&X-Amz-Expires=604799&X-Amz-Credential=AKIAJWOLNJ6JUTX6P2CQ%2F20190308%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Signature=49b17650e86929fcc81ad64bc6d8bea3a3ff8d6e8c97c49b005e459b0fe51f23',
           data: idea
         })
       })
     }
+
     this.setState({ MasonryListData })
   }
 
@@ -739,7 +730,7 @@ class FeedDetailScreen extends React.Component {
         }
         state.currentFeed.ideas = filterIdeas;
 
-        if (this.state.viewPreference === 'MASONRY' && this.refs.masonry) {
+        if (this.state.viewPreference === 'MASONRY') {
           this.filterCards(state.currentFeed)
         }
 
@@ -1004,9 +995,7 @@ class FeedDetailScreen extends React.Component {
       }
       state.currentFeed.ideas = filterIdeas;
 
-      if (this.state.viewPreference === 'MASONRY' && this.refs.masonry) {
-        this.setMasonryData(filterIdeas)
-      }
+      this.setMasonryData(filterIdeas)
 
       return state;
     }, () => {
@@ -1043,9 +1032,7 @@ class FeedDetailScreen extends React.Component {
       }
       state.currentFeed.ideas = filterIdeas;
 
-      if (this.state.viewPreference === 'MASONRY' && this.refs.masonry) {
-        this.setMasonryData(filterIdeas)
-      }
+      this.setMasonryData(filterIdeas)
 
       return state;
     }, () => {
@@ -1360,9 +1347,7 @@ class FeedDetailScreen extends React.Component {
     const invitee = _.find(currentFeed.invitees, data => data.userProfile.id === userInfo.id)
 
     const preference = viewPreference === 'MASONRY' ? 'LIST' : 'MASONRY'
-    if (preference === 'MASONRY') {
-      this.setState({ isMasonryView: false })
-    }
+
     this.setState({ viewPreference: preference })
     this.props.saveFlowViewPreference(currentFeed.id, invitee.id, preference)
   }
@@ -1699,7 +1684,11 @@ class FeedDetailScreen extends React.Component {
 
         <ActionSheet
           ref={ref => this.feedoActionSheet = ref}
-          title={'Are you sure you want to delete? All your content in this flow will be gone'}
+          title={
+            Platform.OS === 'ios'
+            ? 'Are you sure you want to delete? All your content in this flow will be gone'
+            : <Text style={COMMON_STYLES.actionSheetTitleText}>Are you sure you want to delete? All your content in this flow will be gone</Text>
+          }
           options={['Delete Flow', 'Cancel']}
           cancelButtonIndex={1}
           destructiveButtonIndex={0}
