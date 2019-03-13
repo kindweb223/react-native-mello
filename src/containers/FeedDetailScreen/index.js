@@ -1601,6 +1601,7 @@ class FeedDetailScreen extends React.Component {
                           keyExtractor={item => item.key}
                           renderItem={(item) => {
                             renderIdea = _.find(currentFeed.ideas, idea => idea.id === item.data.id)
+                            if (!renderIdea) return
                             return (
                               <View>
                                 <TouchableHighlight
