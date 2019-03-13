@@ -164,7 +164,7 @@ class LikeComponent extends React.Component {
 
     return (
       <TouchableOpacity
-        style={[styles.container, this.props.isOnlyInvitee ? { width: 25 } : { width: 45 }, type === 'text' && { justifyContent: 'flex-end' }]}
+        style={[styles.container, this.props.isOnlyInvitee ? { width: 45 } : { width: 55 }, type === 'text' && { justifyContent: 'flex-end' }]}
         activeOpacity={0.7}
         onPress={() => longHold ? {} : ( type === 'text' ? this.onShowLikes() : this.onLike(liked))}
         onLongPress={() => longHold ? {} : this.onShowLikes()}
@@ -200,7 +200,7 @@ class LikeComponent extends React.Component {
 
         {(type === 'text' || type === 'all') && (
           !this.props.isOnlyInvitee && (
-            <Animated.Text style={[styles.iconText, { top: animatedMove1, opacity: animatedOpacity1 }, type === 'all' && { left: 30 }]}>
+            <Animated.Text style={[styles.iconText, { top: animatedMove1, opacity: animatedOpacity1 }, type === 'all' && { left: 40 }]}>
               {prevLikes} {type !== 'all' && ((prevLikes === 1) ? 'like' : 'likes')}
             </Animated.Text>
           )
@@ -208,7 +208,7 @@ class LikeComponent extends React.Component {
 
         {(type === 'text' || type === 'all') && (
           !this.props.isOnlyInvitee && (
-            <Animated.Text style={[styles.iconText, { top: animatedMove2, opacity: animatedOpacity2 }, type === 'all' && { left: 30 }]}>
+            <Animated.Text style={[styles.iconText, { top: animatedMove2, opacity: animatedOpacity2 }, type === 'all' && { left: 40 }]}>
               {likes} {type !== 'all' && ((likes === 1) ? 'like' : 'likes')}
             </Animated.Text>
           )
