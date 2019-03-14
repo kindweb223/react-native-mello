@@ -256,7 +256,8 @@ class FeedDetailScreen extends React.Component {
     if (card.loading === 'CREATE_CARD_FULFILLED') {
       this.setState({ showBubble: false })
     }
-
+    console.log('LOADING: ', feedo.loading)
+    
     if ((this.props.feedo.loading !== 'GET_FEED_DETAIL_FULFILLED' && feedo.loading === 'GET_FEED_DETAIL_FULFILLED') ||
         (this.props.feedo.loading === 'DELETE_INVITEE_PENDING' && feedo.loading === 'DELETE_INVITEE_FULFILLED') ||
         (this.props.feedo.loading === 'UPDATE_SHARING_PREFERENCES_PENDING' && feedo.loading === 'UPDATE_SHARING_PREFERENCES_FULFILLED') ||
@@ -1598,31 +1599,36 @@ class FeedDetailScreen extends React.Component {
                           ideas={currentFeed.ideas}
                           columns={2}
                           keyExtractor={item => item.key}
-                          renderItem={(item) => 
-                            <View>
-                              <TouchableHighlight
-                                ref={ref => this.cardItemRefs[item.index] = ref}
-                                style={{ paddingHorizontal: 8, borderRadius: 5 }}
-                                activeOpacity={1}
-                                underlayColor="#fff"
-                                onPress={() => this.onSelectCard(item.index, item.data, invitees)}
-                                onLongPress={() => this.onLongPressCard(item.index, item.data, invitees)}
-                              >
-                                <FeedCardComponent
-                                  idea={item.data}
-                                  invitees={invitees}
-                                  listType={this.state.viewPreference}
-                                  cardType="view"
-                                  prevPage={this.props.prevPage}
-                                  longHold={isVisibleLongHoldMenu}
-                                  longSelected={isVisibleLongHoldMenu && selectedLongHoldCardIndex === item.index}
+                          renderItem={(item) => {
+                            renderIdea = _.find(currentFeed.ideas, idea => idea.id === item.data.id)
+                            if (!renderIdea) return
+                            return (
+                              <View>
+                                <TouchableHighlight
+                                  ref={ref => this.cardItemRefs[item.index] = ref}
+                                  style={{ paddingHorizontal: 8, borderRadius: 5 }}
+                                  activeOpacity={1}
+                                  underlayColor="#fff"
                                   onPress={() => this.onSelectCard(item.index, item.data, invitees)}
                                   onLongPress={() => this.onLongPressCard(item.index, item.data, invitees)}
-                                  onLinkPress={() => this.onSelectCard(item.index, item.data, invitees)}
-                                  onLinkLongPress={() => this.onLongPressCard(item.index, item.data, invitees)}
-                                />
-                              </TouchableHighlight>
-                            </View>}
+                                >
+                                  <FeedCardComponent
+                                    idea={renderIdea}
+                                    invitees={invitees}
+                                    listType={this.state.viewPreference}
+                                    cardType="view"
+                                    prevPage={this.props.prevPage}
+                                    longHold={isVisibleLongHoldMenu}
+                                    longSelected={isVisibleLongHoldMenu && selectedLongHoldCardIndex === item.index}
+                                    onPress={() => this.onSelectCard(item.index, item.data, invitees)}
+                                    onLongPress={() => this.onLongPressCard(item.index, item.data, invitees)}
+                                    onLinkPress={() => this.onSelectCard(item.index, item.data, invitees)}
+                                    onLinkLongPress={() => this.onLongPressCard(item.index, item.data, invitees)}
+                                  />
+                                </TouchableHighlight>
+                              </View>
+                            )
+                          }}
                         />
                       </View>
                   : <View style={styles.emptyView}>
