@@ -48,6 +48,11 @@ subprojects {
             android {
                 compileSdkVersion 28 // <-- match this to your project's compileSdkVersion
                 buildToolsVersion '28.0.3' // <-- match this to your project's buildToolsVersion
+                 configurations.all {
+                    resolutionStrategy {
+                        force 'com.airbnb.android:lottie:2.5.5'
+                    }
+                }
             }
         }
     }
