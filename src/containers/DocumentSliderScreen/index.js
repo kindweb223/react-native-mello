@@ -2,9 +2,9 @@ import React from 'react'
 import {
   TouchableOpacity,
   View,
-  WebView,
   ScrollView,
-  RefreshControl
+  RefreshControl,
+  WebView
 } from 'react-native'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
@@ -12,7 +12,6 @@ import { connect } from 'react-redux'
 import Swiper from 'react-native-swiper'
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons'
 import Feather from 'react-native-vector-icons/Feather'
-
 import styles from './styles'
 import COLORS from '../../service/colors'
 import LoadingScreen from '../LoadingScreen'

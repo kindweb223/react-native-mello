@@ -23,7 +23,7 @@ import PropTypes from 'prop-types'
 import _ from 'lodash'
 import { Actions } from 'react-native-router-flux'
 import Ionicons from 'react-native-vector-icons/Ionicons'
-import ActionSheet from 'react-native-actionsheet'
+import ActionSheet, { ActionSheetCustom } from 'react-native-actionsheet'
 import Modal from "react-native-modal"
 import ReactNativeHapticFeedback from 'react-native-haptic-feedback';
 import ImagePicker from 'react-native-image-picker'
@@ -91,6 +91,8 @@ import CONSTANTS from '../../service/constants'
 import * as COMMON_FUNC from '../../service/commonFunc'
 import styles from './styles'
 import { TAGS_FEATURE, SHARE_LINK_URL } from "../../service/api"
+
+import COMMON_STYLES from '../../themes/styles'
 
 import Analytics from '../../lib/firebase'
 
@@ -254,7 +256,8 @@ class FeedDetailScreen extends React.Component {
     if (card.loading === 'CREATE_CARD_FULFILLED') {
       this.setState({ showBubble: false })
     }
-
+    console.log('LOADING: ', feedo.loading)
+    
     if ((this.props.feedo.loading !== 'GET_FEED_DETAIL_FULFILLED' && feedo.loading === 'GET_FEED_DETAIL_FULFILLED') ||
         (this.props.feedo.loading === 'DELETE_INVITEE_PENDING' && feedo.loading === 'DELETE_INVITEE_FULFILLED') ||
         (this.props.feedo.loading === 'UPDATE_SHARING_PREFERENCES_PENDING' && feedo.loading === 'UPDATE_SHARING_PREFERENCES_FULFILLED') ||
@@ -1596,31 +1599,36 @@ class FeedDetailScreen extends React.Component {
                           ideas={currentFeed.ideas}
                           columns={2}
                           keyExtractor={item => item.key}
-                          renderItem={(item) => 
-                            <View>
-                              <TouchableHighlight
-                                ref={ref => this.cardItemRefs[item.index] = ref}
-                                style={{ paddingHorizontal: 8, borderRadius: 5 }}
-                                activeOpacity={1}
-                                underlayColor="#fff"
-                                onPress={() => this.onSelectCard(item.index, item.data, invitees)}
-                                onLongPress={() => this.onLongPressCard(item.index, item.data, invitees)}
-                              >
-                                <FeedCardComponent
-                                  idea={item.data}
-                                  invitees={invitees}
-                                  listType={this.state.viewPreference}
-                                  cardType="view"
-                                  prevPage={this.props.prevPage}
-                                  longHold={isVisibleLongHoldMenu}
-                                  longSelected={isVisibleLongHoldMenu && selectedLongHoldCardIndex === item.index}
+                          renderItem={(item) => {
+                            renderIdea = _.find(currentFeed.ideas, idea => idea.id === item.data.id)
+                            if (!renderIdea) return
+                            return (
+                              <View>
+                                <TouchableHighlight
+                                  ref={ref => this.cardItemRefs[item.index] = ref}
+                                  style={{ paddingHorizontal: 8, borderRadius: 5 }}
+                                  activeOpacity={1}
+                                  underlayColor="#fff"
                                   onPress={() => this.onSelectCard(item.index, item.data, invitees)}
                                   onLongPress={() => this.onLongPressCard(item.index, item.data, invitees)}
-                                  onLinkPress={() => this.onSelectCard(item.index, item.data, invitees)}
-                                  onLinkLongPress={() => this.onLongPressCard(item.index, item.data, invitees)}
-                                />
-                              </TouchableHighlight>
-                            </View>}
+                                >
+                                  <FeedCardComponent
+                                    idea={renderIdea}
+                                    invitees={invitees}
+                                    listType={this.state.viewPreference}
+                                    cardType="view"
+                                    prevPage={this.props.prevPage}
+                                    longHold={isVisibleLongHoldMenu}
+                                    longSelected={isVisibleLongHoldMenu && selectedLongHoldCardIndex === item.index}
+                                    onPress={() => this.onSelectCard(item.index, item.data, invitees)}
+                                    onLongPress={() => this.onLongPressCard(item.index, item.data, invitees)}
+                                    onLinkPress={() => this.onSelectCard(item.index, item.data, invitees)}
+                                    onLinkLongPress={() => this.onLongPressCard(item.index, item.data, invitees)}
+                                  />
+                                </TouchableHighlight>
+                              </View>
+                            )
+                          }}
                         />
                       </View>
                   : <View style={styles.emptyView}>
@@ -1676,7 +1684,11 @@ class FeedDetailScreen extends React.Component {
 
         <ActionSheet
           ref={ref => this.feedoActionSheet = ref}
-          title={'Are you sure you want to delete? All your content in this flow will be gone'}
+          title={
+            Platform.OS === 'ios'
+            ? 'Are you sure you want to delete? All your content in this flow will be gone'
+            : <Text style={COMMON_STYLES.actionSheetTitleText}>Are you sure you want to delete? All your content in this flow will be gone</Text>
+          }
           options={['Delete Flow', 'Cancel']}
           cancelButtonIndex={1}
           destructiveButtonIndex={0}
