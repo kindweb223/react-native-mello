@@ -9,8 +9,6 @@ import {
 import Column from "./Column";
 
 export default class MasonryList extends React.Component {
-	_calculatedData = [];
-
 	static propTypes = {
 		images: PropTypes.array.isRequired,
 		layoutDimensions: PropTypes.object.isRequired,
@@ -18,15 +16,20 @@ export default class MasonryList extends React.Component {
 
 		columns: PropTypes.number,
 		initialNumInColsToRender: PropTypes.number,
-		sorted: PropTypes.bool,
 
 		completeCustomComponent: PropTypes.func,
 
 		onEndReachedThreshold: PropTypes.number,
 	};
 
-	state = {
-		_sortedData: []
+	constructor(props) {
+		super(props)
+
+		this.state = {
+			_sortedData: []
+		}
+
+		this._calculatedData = [];
 	}
 
 	componentWillMount() {
@@ -34,8 +37,7 @@ export default class MasonryList extends React.Component {
 			this.resolveImages(
 				this.props.images,
 				this.props.layoutDimensions,
-				this.props.columns,
-				this.props.sorted
+				this.props.columns
 			);
 		}
 	}
@@ -45,8 +47,7 @@ export default class MasonryList extends React.Component {
 			this.resolveImages(
 				nextProps.images,
 				nextProps.layoutDimensions,
-				nextProps.columns,
-				nextProps.sorted
+				nextProps.columns
 			);
 		}
 	}
@@ -74,12 +75,7 @@ export default class MasonryList extends React.Component {
 		return { width: newWidth, height: newHeight };
 	}
 
-	resolveImages(
-		images = this.props.images,
-		layoutDimensions = this.props.layoutDimensions,
-		columns = this.props.columns,
-		sorted = this.props.sorted
-	) {
+	resolveImages(images, layoutDimensions, columns) {
 		let unsortedIndex = 0;
 		let renderIndex = 0;
 
@@ -117,12 +113,8 @@ export default class MasonryList extends React.Component {
 						// eslint-disable-next-line handle-callback-err, no-console
 						(err) => console.warn("react-native-masonry-list", "Image failed to load."),
 						(resolvedImage) => {
-							if (sorted) {
-								resolvedImage.index = index;
-							} else {
-								resolvedImage.index = unsortedIndex;
-								unsortedIndex++;
-							}
+							resolvedImage.index = unsortedIndex;
+							unsortedIndex++;
 
 							resolvedImage.masonryDimensions =
 								this._getCalculatedDimensions(
@@ -134,7 +126,7 @@ export default class MasonryList extends React.Component {
 
 							if (renderIndex !== 0) {
 								this.setState((state) => {
-									const sortedData = insertIntoColumn(resolvedImage, state._sortedData, sorted);
+									const sortedData = insertIntoColumn(resolvedImage, state._sortedData);
 									this._calculatedData = this._calculatedData.concat(resolvedImage);
 									renderIndex++;
 									return {
@@ -142,7 +134,7 @@ export default class MasonryList extends React.Component {
 									};
 								});
 							} else {
-								const sortedData = insertIntoColumn(resolvedImage, [], sorted);
+								const sortedData = insertIntoColumn(resolvedImage, []);
 								this._calculatedData = [resolvedImage];
 								renderIndex++;
 								this.setState({
@@ -166,8 +158,7 @@ export default class MasonryList extends React.Component {
 		return (
 			<FlatList
 				style={{
-					flex: 1,
-					backgroundColor: '#ff0'
+					flex: 1
 				}}
 				contentContainerStyle={{
 					justifyContent: "space-between",
@@ -176,8 +167,8 @@ export default class MasonryList extends React.Component {
 				}}
 				removeClippedSubviews={true}
 				onEndReachedThreshold={this.props.onEndReachedThreshold}
-				{...this.props.masonryFlatListColProps}
-				onEndReached={this._onCallEndReach}
+				// {...this.props.masonryFlatListColProps}
+				// onEndReached={this._onCallEndReach}
 				initialNumToRender={this.props.columns}
 				keyExtractor={(item, index) => {
 					return "COLUMN-" + index.toString() + "/"; // + (this.props.columns - 1);

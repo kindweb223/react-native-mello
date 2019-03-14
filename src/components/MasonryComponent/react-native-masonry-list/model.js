@@ -5,7 +5,7 @@ export const resolveImage = (image) => {
 		...image,
 		dimensions: {
 			width: image.width,
-			height: image.height
+			height: image.height + 100
 		}
 	// eslint-disable-next-line
 	}), (err) => reject(err));
