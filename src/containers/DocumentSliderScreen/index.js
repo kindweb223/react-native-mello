@@ -124,7 +124,7 @@ class DocumentSliderScreen extends React.Component {
               source={{uri: docFile.accessUrl}}
               onLoadStart={() =>  this.setState({ loading: true })}
               onLoadEnd={() =>  this.setState({ loading: false })}
-              onError={()  => this.setState({ error: true }) }
+              onError={()  => this.setState({ error: true, loading: false }) }
             />
           </ScrollView>
         </View>
