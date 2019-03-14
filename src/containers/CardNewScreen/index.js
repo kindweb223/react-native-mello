@@ -198,11 +198,13 @@ class CardNewScreen extends React.Component {
       // loading = true;
     } else if (this.props.card.loading !== types.CREATE_CARD_FULFILLED && nextProps.card.loading === types.CREATE_CARD_FULFILLED) {
       // Hide tops on detail page
-      const cardBubbleData = {
-        userId: nextProps.user.userInfo.id,
-        state: 'false'
+      if (nextProps.user && nextProps.user.userInfo && nextProps.user.userInfo.id) {
+        const cardBubbleData = {
+          userId: nextProps.user.userInfo.id,
+          state: 'false'
+        }
+        AsyncStorage.setItem('CardBubbleState', JSON.stringify(cardBubbleData));  
       }
-      AsyncStorage.setItem('CardBubbleState', JSON.stringify(cardBubbleData));
 
       // If share extension and a url has been passed
       if (this.props.cardMode === CONSTANTS.SHARE_EXTENTION_CARD && this.props.shareUrl !== '') {
