@@ -1,8 +1,8 @@
 import React from "react";
-import { FlatList } from "react-native";
+import { View, FlatList, ScrollView } from "react-native";
 import PropTypes from "prop-types";
 
-import { resolveImage } from "./model";
+import { resolveData } from "./model";
 import {
 	insertIntoColumn
 } from "./utils";
@@ -10,7 +10,7 @@ import Column from "./Column";
 
 export default class MasonryList extends React.Component {
 	static propTypes = {
-		images: PropTypes.array.isRequired,
+		data: PropTypes.array.isRequired,
 		layoutDimensions: PropTypes.object.isRequired,
 		containerWidth: PropTypes.number,
 
@@ -34,25 +34,23 @@ export default class MasonryList extends React.Component {
 
 	componentWillMount() {
 		if (this.props.containerWidth) {
-			this.resolveImages(
-				this.props.images,
-				this.props.layoutDimensions,
+			this.setColumnHeight(
+				this.props.data,
 				this.props.columns
 			);
 		}
 	}
 
 	componentWillReceiveProps = (nextProps) => {
-		if (nextProps.images !== this.props.images) {
-			this.resolveImages(
-				nextProps.images,
-				nextProps.layoutDimensions,
+		if (nextProps.data !== this.props.data) {
+			this.setColumnHeight(
+				nextProps.data,
 				nextProps.columns
 			);
 		}
 	}
 
-	_getCalculatedDimensions(imgDimensions = { width: 0, height: 0 }, columnWidth = 0) {
+	_getCalculatedDimensions(imgDimensions = { width: 0, height: 0 }) {
 		const countDecimals = function (value) {
 			if (Math.floor(value) === value) {
 				return 0;
@@ -60,10 +58,8 @@ export default class MasonryList extends React.Component {
 			return value.toString().split(".")[1].length || 0;
 		};
 
-		const divider = imgDimensions.width / columnWidth;
-
-		const tempWidth = (imgDimensions.width / divider);
-		const tempHeight = (imgDimensions.height / divider);
+		const tempWidth = imgDimensions.width
+		const tempHeight = imgDimensions.height
 
 		const newWidth = countDecimals(tempWidth) > 10
 			? parseFloat(tempWidth.toFixed(10))
@@ -75,7 +71,7 @@ export default class MasonryList extends React.Component {
 		return { width: newWidth, height: newHeight };
 	}
 
-	resolveImages(images, layoutDimensions, columns) {
+	setColumnHeight(data, columns) {
 		let unsortedIndex = 0;
 		let renderIndex = 0;
 
@@ -83,9 +79,9 @@ export default class MasonryList extends React.Component {
 		let columnCounting = 1;
 		let columnHighestHeight = null;
 
-		function _assignColumns(image, nColumns) {
+		function _assignColumns(item, nColumns) {
 			const columnIndex = columnCounting - 1;
-			const { height } = image.masonryDimensions;
+			const { height } = item.masonryDimensions;
 
 			if (!columnHeightTotals[columnCounting - 1]) {
 				columnHeightTotals[columnCounting - 1] = height;
@@ -104,38 +100,34 @@ export default class MasonryList extends React.Component {
 			return columnIndex;
 		}
 
-		if (images) {
-			images.map((image) => {
-				return resolveImage(image);
+		if (data) {
+			data.map((item) => {
+				return resolveData(item);
 			}).map((resolveTask, index) => {
 				if (resolveTask && resolveTask.fork) {
 					resolveTask.fork(
 						// eslint-disable-next-line handle-callback-err, no-console
 						(err) => console.warn("react-native-masonry-list", "Image failed to load."),
-						(resolvedImage) => {
-							resolvedImage.index = unsortedIndex;
+						(resolvedData) => {
+							resolvedData.index = unsortedIndex;
 							unsortedIndex++;
 
-							resolvedImage.masonryDimensions =
-								this._getCalculatedDimensions(
-									resolvedImage.dimensions,
-									layoutDimensions.columnWidth
-								);
+							resolvedData.masonryDimensions = this._getCalculatedDimensions(resolvedData.dimensions);
 
-							resolvedImage.column = _assignColumns(resolvedImage, columns);
+							resolvedData.column = _assignColumns(resolvedData, columns);
 
 							if (renderIndex !== 0) {
 								this.setState((state) => {
-									const sortedData = insertIntoColumn(resolvedImage, state._sortedData);
-									this._calculatedData = this._calculatedData.concat(resolvedImage);
+									const sortedData = insertIntoColumn(resolvedData, state._sortedData);
+									this._calculatedData = this._calculatedData.concat(resolvedData);
 									renderIndex++;
 									return {
 										_sortedData: sortedData
 									};
 								});
 							} else {
-								const sortedData = insertIntoColumn(resolvedImage, []);
-								this._calculatedData = [resolvedImage];
+								const sortedData = insertIntoColumn(resolvedData, []);
+								this._calculatedData = [resolvedData];
 								renderIndex++;
 								this.setState({
 									_sortedData: sortedData
@@ -148,44 +140,21 @@ export default class MasonryList extends React.Component {
 		}
 	}
 
-	_onCallEndReach = () => {
-		this.props.masonryFlatListColProps &&
-		this.props.masonryFlatListColProps.onEndReached &&
-		this.props.masonryFlatListColProps.onEndReached();
-	}
-
 	render() {
+		const { _sortedData } = this.state
+
 		return (
-			<FlatList
-				style={{
-					flex: 1
-				}}
-				contentContainerStyle={{
-					justifyContent: "space-between",
-					flexDirection: "row",
-					width: "100%"
-				}}
-				removeClippedSubviews={true}
-				onEndReachedThreshold={this.props.onEndReachedThreshold}
-				// {...this.props.masonryFlatListColProps}
-				// onEndReached={this._onCallEndReach}
-				initialNumToRender={this.props.columns}
-				keyExtractor={(item, index) => {
-					return "COLUMN-" + index.toString() + "/"; // + (this.props.columns - 1);
-				}}
-				data={this.state._sortedData}
-				renderItem={({item, index}) => {
-					return (
-						<Column
-							data={item}
-							initialNumInColsToRender={this.props.initialNumInColsToRender}
-							layoutDimensions={this.props.layoutDimensions}
-							key={`MASONRY-COLUMN-${index}`}
-							completeCustomComponent={this.props.completeCustomComponent}
-						/>
-					);
-				}}
-			/>
-		);
+			<ScrollView style={{ flex: 1 }} contentContainerStyle={{ flexDirection: 'row', justifyContent: 'space-between' }}>
+				{_sortedData.map((item, index) => (
+					<Column
+						data={item}
+						initialNumInColsToRender={this.props.initialNumInColsToRender}
+						layoutDimensions={this.props.layoutDimensions}
+						key={`MASONRY-COLUMN-${index}`}
+						completeCustomComponent={this.props.completeCustomComponent}
+					/>
+				))}
+			</ScrollView>
+		)
 	}
 }

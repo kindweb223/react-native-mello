@@ -31,8 +31,8 @@ import { DocumentPicker, DocumentPickerUtil } from 'react-native-document-picker
 import Permissions from 'react-native-permissions'
 import * as mime from 'react-native-mime-types'
 import GestureRecognizer from 'react-native-swipe-gestures'
-// import Masonry from '../../components/MasonryComponent'
-import MasonryList from '../../components/MasonryComponent/react-native-masonry-list'
+import rnTextSize from 'react-native-text-size'
+import MasonryList from '../../components/MasonryComponent'
 
 import DashboardActionBar from '../../navigations/DashboardActionBar'
 import FeedCardComponent from '../../components/FeedCardComponent'
@@ -111,6 +111,12 @@ const FeedDetailMode = 1;
 const TagCreateMode = 2;
 
 const PAGE_COUNT = 50
+
+const fontSpecs = {
+  fontFamily: undefined,
+  fontSize: 13,
+  fontWeight: '500'
+}
 
 class FeedDetailScreen extends React.Component {
   constructor(props) {
@@ -257,7 +263,8 @@ class FeedDetailScreen extends React.Component {
     if (card.loading === 'CREATE_CARD_FULFILLED') {
       this.setState({ showBubble: false })
     }
-
+    console.log('LOADING: ', feedo.loading)
+    
     if ((this.props.feedo.loading !== 'GET_FEED_DETAIL_FULFILLED' && feedo.loading === 'GET_FEED_DETAIL_FULFILLED') ||
         (this.props.feedo.loading === 'DELETE_INVITEE_PENDING' && feedo.loading === 'DELETE_INVITEE_FULFILLED') ||
         (this.props.feedo.loading === 'UPDATE_SHARING_PREFERENCES_PENDING' && feedo.loading === 'UPDATE_SHARING_PREFERENCES_FULFILLED') ||
@@ -505,22 +512,48 @@ class FeedDetailScreen extends React.Component {
     })
   }
 
-  setMasonryData = (ideas) => {
+  setMasonryData = async (ideas) => {
     let MasonryListData = []
     if (ideas) {
-      ideas.forEach((idea, index) => {
+      for (let index = 0 ; index < ideas.length; index ++) {
+        const idea = ideas[index]
+        const cardWidth = (CONSTANTS.SCREEN_SUB_WIDTH - 16) / 2
+
+        const textSize = await rnTextSize.measure({
+          text: idea.idea,
+          width: cardWidth - 16,
+          ...fontSpecs
+        })
+
         let hasCoverImage = idea.coverImage && idea.coverImage.length > 0
-        let cardHeight = 50
+        let cardHeight = 0
+        let contentHeight = 0
+
+        if (hasCoverImage) {
+          if (textSize.lineCount > 3) {
+            contentHeight = 80 + (textSize.height / textSize.lineCount * 4)
+          } else {
+            contentHeight = 80 + textSize.height
+          }
+        } else {
+          if (textSize.lineCount > 9) {
+            contentHeight = 80 + (textSize.height / textSize.lineCount * 10)
+          } else {
+            contentHeight = 80 + textSize.height
+          }
+        }
+
         if (hasCoverImage) {
           const coverImageData = _.find(idea.files, file => (file.accessUrl === idea.coverImage || file.thumbnailUrl === idea.coverImage))
-          const cardWidth = (CONSTANTS.SCREEN_SUB_WIDTH - 16) / 2
 
           if (_.isObject(coverImageData) && coverImageData.metadata) {
             const ratio = coverImageData.metadata.width / cardWidth
-            cardHeight = coverImageData.metadata.height / ratio
+            cardHeight = coverImageData.metadata.height / ratio + contentHeight
           } else {
-            cardHeight = cardWidth / 2
+            cardHeight = cardWidth / 2 + contentHeight
           }
+        } else {
+          cardHeight = contentHeight
         }
 
         MasonryListData.push({
@@ -529,7 +562,7 @@ class FeedDetailScreen extends React.Component {
           height: cardHeight,
           data: idea
         })
-      })
+      }
     }
 
     this.setState({ MasonryListData })
@@ -1599,36 +1632,35 @@ class FeedDetailScreen extends React.Component {
                         style={{ paddingHorizontal: currentFeed.ideas.length > 0 ? 8 : 0, marginTop: Platform.OS === 'android' && isVisibleLongHoldMenu ? 30 : 0}}
                       >
                         <MasonryList
-                          images={MasonryListData}
+                          data={MasonryListData}
                           containerWidth={CONSTANTS.SCREEN_WIDTH - 16}
-                          completeCustomComponent={(result) => {
-                            const item = result.data
+                          completeCustomComponent={(item) => {
+                            renderIdea = _.find(currentFeed.ideas, idea => idea.id === item.data.id)
+                            if (!renderIdea) return
 
                             return (
-                              <View style={{ width: item.width }}>
-                                <TouchableHighlight
-                                  ref={ref => this.cardItemRefs[item.index] = ref}
-                                  style={{ paddingHorizontal: 8, borderRadius: 5 }}
-                                  activeOpacity={1}
-                                  underlayColor="#fff"
+                              <TouchableHighlight
+                                ref={ref => this.cardItemRefs[item.index] = ref}
+                                style={{ paddingHorizontal: 8, borderRadius: 5 }}
+                                activeOpacity={1}
+                                underlayColor="#fff"
+                                onPress={() => this.onSelectCard(item.index, item.data, invitees)}
+                                onLongPress={() => this.onLongPressCard(item.index, item.data, invitees)}
+                              >
+                                <FeedCardComponent
+                                  idea={renderIdea}
+                                  invitees={invitees}
+                                  listType={this.state.viewPreference}
+                                  cardType="view"
+                                  prevPage={this.props.prevPage}
+                                  longHold={isVisibleLongHoldMenu}
+                                  longSelected={isVisibleLongHoldMenu && selectedLongHoldCardIndex === item.index}
                                   onPress={() => this.onSelectCard(item.index, item.data, invitees)}
                                   onLongPress={() => this.onLongPressCard(item.index, item.data, invitees)}
-                                >
-                                  <FeedCardComponent
-                                    idea={item.data}
-                                    invitees={invitees}
-                                    listType={this.state.viewPreference}
-                                    cardType="view"
-                                    prevPage={this.props.prevPage}
-                                    longHold={isVisibleLongHoldMenu}
-                                    longSelected={isVisibleLongHoldMenu && selectedLongHoldCardIndex === item.index}
-                                    onPress={() => this.onSelectCard(item.index, item.data, invitees)}
-                                    onLongPress={() => this.onLongPressCard(item.index, item.data, invitees)}
-                                    onLinkPress={() => this.onSelectCard(item.index, item.data, invitees)}
-                                    onLinkLongPress={() => this.onLongPressCard(item.index, item.data, invitees)}
-                                  />
-                                </TouchableHighlight>
-                              </View>
+                                  onLinkPress={() => this.onSelectCard(item.index, item.data, invitees)}
+                                  onLinkLongPress={() => this.onLongPressCard(item.index, item.data, invitees)}
+                                />
+                              </TouchableHighlight>
                             )
                           }}
                         />

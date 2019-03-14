@@ -1,11 +1,11 @@
 import Task from "data.task";
 
-export const resolveImage = (image) => {
+export const resolveData = (item) => {
 	return new Task((reject, resolve) => resolve({
-		...image,
+		...item,
 		dimensions: {
-			width: image.width,
-			height: image.height + 100
+			width: item.width,
+			height: item.height
 		}
 	// eslint-disable-next-line
 	}), (err) => reject(err));

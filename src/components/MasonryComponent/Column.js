@@ -1,8 +1,6 @@
 import React from "react";
-import { FlatList } from "react-native";
+import { View, Text, FlatList } from "react-native";
 import PropTypes from "prop-types";
-
-import ImageCell from "./ImageCell";
 
 export default class Column extends React.Component {
 	static propTypes = {
@@ -15,17 +13,10 @@ export default class Column extends React.Component {
 	};
 
 	_renderItem = ({item, index}) => {
-		const { completeCustomComponent } = this.props;
-
-		const image = item;
-
 		return (
-			<ImageCell
-				key={image.uri}
-				data={item}
-				masonryDimensions={image.masonryDimensions}
-				completeCustomComponent={completeCustomComponent}
-			/>
+			<View style={{ width: item.width }}>
+				{this.props.completeCustomComponent(item)}
+			</View>
 		);
 	}
 
