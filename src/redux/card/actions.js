@@ -250,7 +250,7 @@ export const getFileUploadUrl = (huntId, ideaId ) => {
 /**
  * Upload a file
  */
-export const uploadFileToS3 = (signedUrl, file, fileName, mimeType) => {
+export const uploadFileToS3 = (signedUrl, file, fileName, mimeType, uploadProgress) => {
   const fileData = {
     uri: file,
     name: fileName,
@@ -264,6 +264,10 @@ export const uploadFileToS3 = (signedUrl, file, fileName, mimeType) => {
         const xhr = new XMLHttpRequest();
         xhr.open('PUT', signedUrl);
         xhr.setRequestHeader("Content-type", mimeType); 
+        xhr.upload.onprogress = function(progress) {
+          var percentComplete = Math.ceil((progress.loaded / progress.total) * 100);
+          uploadProgress(percentComplete)
+        }
         xhr.onreadystatechange = function() {
           if (xhr.readyState === 4) {
             if (xhr.status === 200) {

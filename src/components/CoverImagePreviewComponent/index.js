@@ -41,7 +41,7 @@ export default class CoverImagePreviewComponent extends React.Component {
     }
 
     if (nextProps.imageUploading && this.state.progress === 0) {
-      this.setState({ 
+      this.setState({
         progress: 0,
       }, () => {
         this.animateProgressBar();
@@ -72,6 +72,8 @@ export default class CoverImagePreviewComponent extends React.Component {
   }
 
   get renderProgressBar() {
+    const { progress, useRealProgress } = this.props
+
     if (this.props.cardMode === 'CardNewSingle' && this.state.loadEnd) {
       return;
     }
@@ -84,7 +86,7 @@ export default class CoverImagePreviewComponent extends React.Component {
       <View style={[styles.progressView, this.state.files.length > 0 && { backgroundColor: 'transparent' } ]}>
         <View style={styles.progressContainer}>
           <Progress.Bar
-            progress={this.state.progress}
+            progress={useRealProgress === true ? progress : this.state.progress}
             indeterminate={this.state.indeterminate}
             color='white'
             unfilledColor='#A1A5AE'
@@ -195,6 +197,8 @@ CoverImagePreviewComponent.defaultProps = {
   isShareExtension: false,
   onRemove: () => {},
   onSetCoverImage: () => {},
+  progress: 0,
+  useRealProgress: true
 }
 
 
@@ -206,5 +210,7 @@ CoverImagePreviewComponent.propTypes = {
   isFastImage: PropTypes.bool,
   isShareExtension: PropTypes.bool,
   onRemove: PropTypes.func,
-  onSetCoverImage: PropTypes.func
+  onSetCoverImage: PropTypes.func,
+  progress: PropTypes.number,
+  useRealProgress: PropTypes.bool
 }
