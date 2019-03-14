@@ -194,8 +194,7 @@ export default class DocumentList extends React.Component {
           style={styles.modalContainer}
         >
           <DocumentSliderScreen 
-            docFiles={this.props.files}
-            position={this.state.position}
+            docFile={this.props.files[this.state.position]}
             removal={this.props.editable}
             onRemove={(id) => this.props.onRemove(id)}
             onClose={() => this.setState({ isVisibleDocSlider: false })}
