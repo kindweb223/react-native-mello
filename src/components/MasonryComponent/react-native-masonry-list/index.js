@@ -14,7 +14,6 @@ export default class Masonry extends React.Component {
 
     columns: PropTypes.number,
     initialNumInColsToRender: PropTypes.number,
-    sorted: PropTypes.bool,
 
     completeCustomComponent: PropTypes.func,
 
@@ -25,7 +24,6 @@ export default class Masonry extends React.Component {
 		images: [],
 		columns: 2,
 		initialNumInColsToRender: 1,
-		sorted: false,
 		onEndReachedThreshold: 25
 	};
 
@@ -43,15 +41,6 @@ export default class Masonry extends React.Component {
     this._mounted = true;
   }
 
-  componentWillReceiveProps = (nextProps) => {
-    this.setState({
-      layoutDimensions: {
-        width: nextProps.containerWidth,
-        columnWidth: nextProps.containerWidth / nextProps.columns
-      }
-    });
-	}
-
   componentWillUnmount() {
     this._mounted = false;
   }
@@ -66,7 +55,6 @@ export default class Masonry extends React.Component {
           images={this.props.images}
           columns={this.props.columns}
           initialNumInColsToRender={this.props.initialNumInColsToRender}
-          sorted={this.props.sorted}
           masonryFlatListColProps={this.props.masonryFlatListColProps}
 
           completeCustomComponent={this.props.completeCustomComponent}
