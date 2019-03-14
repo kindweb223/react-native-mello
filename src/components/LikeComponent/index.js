@@ -61,14 +61,14 @@ class LikeComponent extends React.Component {
           disabled: false
         });
       }
-    } else {
+    } else if (nextProps.card.loading === 'PUBNUB_LIKE_CARD_FULFILLED' || nextProps.card.loading === 'PUBNUB_UNLIKE_CARD_FULFILLED') {
       this.setState({
         liked: nextProps.idea.metadata.liked,
         likes: nextProps.idea.metadata.likes,
         prevLikes: nextProps.idea.metadata.likes,
         disabled: false
       });
-
+    } else {
       // this.setState({
       //   liked: nextProps.idea.metadata.liked,
       //   likes: nextProps.idea.metadata.likes,
