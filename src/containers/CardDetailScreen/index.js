@@ -126,6 +126,7 @@ class CardDetailScreen extends React.Component {
       slideInUpAnimation: 'slideInUp',
       cardMode: 'CardDetailSingle',
       imageUploading: false,
+      uploadProgress: 0
     };
 
     this.selectedFile = null;
@@ -173,6 +174,10 @@ class CardDetailScreen extends React.Component {
     this.scrollEnabled = true
   }
 
+  updateUploadProgress = (value) => {
+    this.setState({ uploadProgress: value })
+  }
+
   async UNSAFE_componentWillReceiveProps(nextProps) {
     let loading = false;
     if (this.props.card.loading !== types.GET_FILE_UPLOAD_URL_PENDING && nextProps.card.loading === types.GET_FILE_UPLOAD_URL_PENDING) {
@@ -210,17 +215,20 @@ class CardDetailScreen extends React.Component {
           }
         }
 
+        this.updateUploadProgress(0);
         ImageResizer.createResizedImage(this.selectedFile.uri, actualWidth, actualHeight, CONSTANTS.IMAGE_COMPRESS_FORMAT, CONSTANTS.IMAGE_COMPRESS_QUALITY, 0, null)
           .then((response) => {
             console.log('Image compress Success!');
-            this.props.uploadFileToS3(nextProps.card.fileUploadUrl.uploadUrl, response.uri, this.selectedFileName, fileType);
+            this.props.uploadFileToS3(nextProps.card.fileUploadUrl.uploadUrl, response.uri, this.selectedFileName, fileType, this.updateUploadProgress);
           }).catch((error) => {
             console.log('Image compress error : ', error);
-            this.props.uploadFileToS3(nextProps.card.fileUploadUrl.uploadUrl, this.selectedFile.uri, this.selectedFileName, fileType);
+            this.props.uploadFileToS3(nextProps.card.fileUploadUrl.uploadUrl, this.selectedFile.uri, this.selectedFileName, fileType, this.updateUploadProgress);
           });
         return;
       }
-      this.props.uploadFileToS3(nextProps.card.fileUploadUrl.uploadUrl, this.selectedFile.uri, this.selectedFileName, fileType);
+
+      this.updateUploadProgress(0);
+      this.props.uploadFileToS3(nextProps.card.fileUploadUrl.uploadUrl, this.selectedFile.uri, this.selectedFileName, fileType, this.updateUploadProgress);
     } else if (this.props.card.loading !== types.UPLOAD_FILE_PENDING && nextProps.card.loading === types.UPLOAD_FILE_PENDING) {
       // uploading a file
       loading = true;
@@ -307,6 +315,13 @@ class CardDetailScreen extends React.Component {
         coverImage: nextProps.card.currentCard.coverImage,
       });
       this.checkUrls();
+
+      // To fix close animation after add image to text only card (Masonry)
+      if (this.props.isMasonryView) {
+        const masonryCardWidth = (CONSTANTS.SCREEN_SUB_WIDTH - 16) / 2 + 2
+        const masonryRatio = width / masonryCardWidth
+        this._height = height / masonryRatio
+      }
       // success in setting a file as cover image
     } else if (this.props.card.loading !== types.UPDATE_CARD_FULFILLED && nextProps.card.loading === types.UPDATE_CARD_FULFILLED) {
       // success in updating a card
@@ -506,6 +521,13 @@ class CardDetailScreen extends React.Component {
     const { viewMode, feedo, card, cardImageLayout, cardTextLayout, isMasonryView } = this.props;
     let { px, py, imgWidth, imgHeight } = cardImageLayout
     const { textPointX, textPointY, textWidth, textHeight } = cardTextLayout
+
+    // To fix close animation after add image to text only card
+    this.imgPx = px;
+    this.imgPy = py;
+    this.imgWidth = imgWidth;
+    this.imgHeight = imgHeight;
+
     let imageHeight = 400
     if (viewMode === CONSTANTS.CARD_VIEW || viewMode === CONSTANTS.CARD_EDIT) {
       this.coverImageWidth = 0
@@ -1003,8 +1025,8 @@ class CardDetailScreen extends React.Component {
     this.selectedFile = file;
     let imageFiles = _.filter(currentCard.files, file => file.fileType === 'MEDIA');
     this.setState({
-      imageUploadStarted: file.fileType === 'MEDIA',
-      imageUploading: file.fileType === 'MEDIA',
+      imageUploadStarted: type === 'MEDIA',
+      imageUploading: type === 'MEDIA',
       cardMode: imageFiles.length > 0 ? 'CardDetailMulti' : 'CardDetailSingle'
     });
 
@@ -1096,8 +1118,25 @@ class CardDetailScreen extends React.Component {
   }
 
   handleFile = (file) => {
+    this.updateUploadProgress(0);
+
     this.coverImageWidth = file.width;
     this.coverImageHeight = file.height;
+
+    // To fix close animation after add image to text only card
+    if(!this.state.coverImage) {
+      this._width = this.imgWidth;
+      this._height = this.imgHeight;
+      this._x = this.imgPx;
+      this._y = this.imgPy - ifIphoneX(22, 0);
+
+      const ratio = CONSTANTS.SCREEN_WIDTH / this.coverImageWidth;
+      this.state.size.setValue({
+        x: CONSTANTS.SCREEN_WIDTH,
+        y: this.coverImageHeight * ratio
+      })
+    }
+
     const mimeType = (Platform.OS === 'ios') ? mime.lookup(file.uri) : file.type;
 
     let type = 'FILE';
@@ -1106,6 +1145,7 @@ class CardDetailScreen extends React.Component {
         type = 'MEDIA';
       }
     }
+    this.setState({ fileType: type });
 
     // Generate thumbnail if a video
     if (mimeType.indexOf('video') !== -1) {
@@ -1208,6 +1248,7 @@ class CardDetailScreen extends React.Component {
 
   get renderCoverImage() {
     const { viewMode, card } = this.props;
+    const { coverImage, imageUploadStarted, imageUploading, cardMode } = this.state;
     const activeImageStyle = {
       width: this.state.size.x,
       height: this.state.size.y,
@@ -1217,19 +1258,25 @@ class CardDetailScreen extends React.Component {
     };
     let imageFiles = _.filter(card.currentCard.files, file => file.fileType === 'MEDIA');
 
-    if (this.state.coverImage || this.state.imageUploadStarted) {
+    if (coverImage || imageUploadStarted) {
       return (
-        <Animated.View style={[styles.coverImageContainer, activeImageStyle]}>
+        <Animated.View
+          style={[
+            styles.coverImageContainer,
+            activeImageStyle
+          ]}
+        >
           <CoverImagePreviewComponent
-            imageUploading={this.state.imageUploading}
-            cardMode={this.state.cardMode}
-            coverImage={this.state.coverImage}
+            imageUploading={imageUploading}
+            cardMode={cardMode}
+            coverImage={coverImage}
             files={imageFiles}
             editable={viewMode !== CONSTANTS.CARD_VIEW}
             isFastImage={true}
             isSetCoverImage={true}
             onRemove={(fileId) => this.onRemoveFile(fileId)}
             onSetCoverImage={(fileId) => this.onSetCoverImage(fileId)}
+            progress={this.state.uploadProgress}
           />
         </Animated.View>
       );
@@ -1336,7 +1383,7 @@ class CardDetailScreen extends React.Component {
 
   get renderText() {
     const { links } = this.props.card.currentCard;
-    const { coverImage, isOpeningCard } = this.state
+    const { coverImage, isOpeningCard, imageUploadStarted } = this.state
     const { viewMode } = this.props
   
     let marginTop = 24
@@ -1345,6 +1392,11 @@ class CardDetailScreen extends React.Component {
       marginTop = 6
     } else {
       marginTop = coverImage ? 24 : 65
+    }
+
+    // To fix wrong margin when add image to text only card
+    if (imageUploadStarted) {
+      marginTop = 24
     }
     this._textMarginTop = marginTop
 
@@ -1715,7 +1767,7 @@ class CardDetailScreen extends React.Component {
   }
 
   render () {
-    const { showEditScreen, idea, loading } = this.state
+    const { showEditScreen, idea, loading, fileType } = this.state
 
     return (
       <View style={styles.container}>
@@ -1761,7 +1813,7 @@ class CardDetailScreen extends React.Component {
           onPress={(index) => this.onTapWebLinkActionSheet(index)}
         />
 
-        {loading && <LoadingScreen />}
+        {loading && fileType === 'FILE' && <LoadingScreen />}
 
         <Modal
           isVisible={this.state.isVisibleCardOpenMenu}
@@ -1867,7 +1919,7 @@ const mapDispatchToProps = dispatch => ({
   getCard: (ideaId) => dispatch(getCard(ideaId)),
   updateCard: (huntId, ideaId, title, idea, coverImage, files, isCreateCard) => dispatch(updateCard(huntId, ideaId, title, idea, coverImage, files, isCreateCard)),
   getFileUploadUrl: (huntId, ideaId) => dispatch(getFileUploadUrl(huntId, ideaId)),
-  uploadFileToS3: (signedUrl, file, fileName, mimeType) => dispatch(uploadFileToS3(signedUrl, file, fileName, mimeType)),
+  uploadFileToS3: (signedUrl, file, fileName, mimeType, uploadProgress) => dispatch(uploadFileToS3(signedUrl, file, fileName, mimeType, uploadProgress)),
   addFile: (ideaId, fileType, contentType, name, objectKey, metadata, base64String) => dispatch(addFile(ideaId, fileType, contentType, name, objectKey, metadata, base64String)),
   deleteFile: (ideaId, fileId) => dispatch(deleteFile(ideaId, fileId)),
   setCoverImage: (ideaId, fileId) => dispatch(setCoverImage(ideaId, fileId)),
