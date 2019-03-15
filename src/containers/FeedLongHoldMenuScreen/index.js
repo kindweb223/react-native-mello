@@ -1,13 +1,13 @@
 import React from 'react'
-import { Text } from 'react-native'
+import { Text, View, Platform } from 'react-native'
 import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
-import ActionSheet from 'react-native-actionsheet'
+import ActionSheet, { ActionSheetCustom } from 'react-native-actionsheet'
 import Modal from "react-native-modal"
 import FeedActionBarComponent from '../../components/FeedActionBarComponent'
-import FeedItemComponent from '../../components/FeedItemComponent'
 import ShareScreen from '../ShareScreen'
 import COLORS from '../../service/colors'
+import COMMON_STYLES from '../../themes/styles'
 
 import {
   getFeedDetail
@@ -110,7 +110,11 @@ class FeedLongHoldMenuScreen extends React.Component {
       <ActionSheet
         key="3"
         ref={ref => this.ActionSheet = ref}
-        title={'Are you sure you want to delete this flow, everything will be gone ...'}
+        title={
+          Platform.OS === 'ios'
+          ? 'Are you sure you want to delete this flow, everything will be gone ...'
+          : <Text style={COMMON_STYLES.actionSheetTitleText}>Are you sure you want to delete this flow, everything will be gone ...</Text>
+        }
         options={['Delete flow', 'Cancel']}
         cancelButtonIndex={1}
         destructiveButtonIndex={0}

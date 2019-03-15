@@ -595,7 +595,7 @@ class NewFeedScreen extends React.Component {
     return (
       <ScrollView 
         ref={ref => this.scrollViewMainContentRef = ref}
-        style={styles.mainContentContainer}
+        contentContainerStyle={styles.mainContentContainer}
       >
         <TextInput 
           ref={ref => this.textInputFeedNameRef = ref}
@@ -607,18 +607,24 @@ class NewFeedScreen extends React.Component {
           onChangeText={(value) => this.setState({feedName: value})}
           selectionColor={Platform.OS === 'ios' ? COLORS.PURPLE : COLORS.LIGHT_PURPLE}
         />
-        <TextInput
-          ref={ref => this.textInputFeedNoteRef = ref}
-          style={styles.textInputNote}
-          placeholder='Tap to give this flow a description'
-          multiline={true}
-          onContentSizeChange={this.inputContentChange}
-          onSelectionChange={this.inputSelectionChange}
-          underlineColorAndroid='transparent'
-          value={this.state.comments}
-          onChangeText={(value) => this.onChangeNote(value)}
-          selectionColor={Platform.OS === 'ios' ? COLORS.PURPLE : COLORS.LIGHT_PURPLE}
-        />
+        <TouchableOpacity
+          style={{ flex: 1 }}
+          onPress={() => this.textInputFeedNoteRef.focus()}
+          activeOpacity={1.0}
+        >
+          <TextInput
+            ref={ref => this.textInputFeedNoteRef = ref}
+            style={styles.textInputNote}
+            placeholder='Tap to give this flow a description'
+            multiline={true}
+            onContentSizeChange={this.inputContentChange}
+            onSelectionChange={this.inputSelectionChange}
+            underlineColorAndroid='transparent'
+            value={this.state.comments}
+            onChangeText={(value) => this.onChangeNote(value)}
+            selectionColor={Platform.OS === 'ios' ? COLORS.PURPLE : COLORS.LIGHT_PURPLE}
+          />
+        </TouchableOpacity>
 
         {this.renderImages}
 

@@ -192,7 +192,8 @@ export default function card(state = initialState, action = {}) {
         }
       } else {
         return {
-          ...state
+          ...state,
+          loading: feedTypes.PUBNUB_LIKE_CARD_FULFILLED
         }
       }
     }
@@ -214,7 +215,8 @@ export default function card(state = initialState, action = {}) {
         }
       } else {
         return {
-          ...state
+          ...state,
+          loading: feedTypes.PUBNUB_UNLIKE_CARD_FULFILLED
         }
       }
     }
