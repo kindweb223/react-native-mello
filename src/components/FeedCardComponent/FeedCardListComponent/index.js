@@ -61,7 +61,7 @@ class FeedCardListComponent extends React.Component {
               </View>
             )}
 
-            {idea.idea && idea.idea.length > 0 && (
+            {idea.idea !== null && idea.idea.length > 0 && (
               <View style={styles.subView}>
                 <Autolink
                   style={styles.title}
@@ -77,7 +77,7 @@ class FeedCardListComponent extends React.Component {
             )}
           </View>
 
-          {idea && idea.metadata && (
+          {idea !== null && idea.metadata && (
             <View style={styles.commentView}>
               <LikeComponent
                 idea={idea}
