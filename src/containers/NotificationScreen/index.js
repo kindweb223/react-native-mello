@@ -148,7 +148,8 @@ class NotificationScreen extends React.Component {
     const { selectedActivity } = this.state
 
     // If current scene is not NotificationScreen then bugger off
-    if(Actions.currentScene !== 'NotificationScreen') {
+    // If !selectedActivity handles pubnub updates and other users making updates
+    if(Actions.currentScene !== 'NotificationScreen' || _.isEmpty(selectedActivity)) {
         return;
     }
 
@@ -204,16 +205,16 @@ class NotificationScreen extends React.Component {
             break;
           case 'HUNT_DELETED':
             // Alert the flow has been deleted
-            this.setState({ loading: false });
+            this.finishLoading()
             Alert.alert('Error', 'This flow no longer exists')
             break;
           case 'IDEA_DELETED':
             // Alert the card has been deleted
-            this.setState({ loading: false });
+            this.finishLoading()
             Alert.alert('Error', 'This card no longer exists')
             break;
           default: 
-            this.setState({ loading: false });
+            this.finishLoading()
             break;
         }
       }
@@ -232,8 +233,8 @@ class NotificationScreen extends React.Component {
           case 'USER_INVITED_TO_HUNT':
           case 'USER_JOINED_HUNT':
           case 'HUNT_UPDATED':
-            this.setState({ loading: false });
             Actions.FeedDetailScreen({ data: { id: selectedActivity.metadata.HUNT_ID }, prevPage: 'activity' })
+            this.finishLoading()
             break;
           // Get the card
           case 'IDEA_LIKED':
@@ -248,7 +249,7 @@ class NotificationScreen extends React.Component {
             })
 
             if (!cardExists) {
-              this.setState({ loading: false });
+              this.finishLoading()
               Alert.alert('Error', 'This card no longer exists')
             }
             else {
@@ -257,7 +258,7 @@ class NotificationScreen extends React.Component {
 
             break;
           default: 
-            this.setState({ loading: false });
+            this.finishLoading()
             break;
         }
       }
@@ -267,15 +268,15 @@ class NotificationScreen extends React.Component {
       switch (selectedActivity.activityTypeEnum) {
         case 'COMMENT_ADDED':
         case 'USER_MENTIONED':
-          this.setState({ loading: false });
           this.onSelectNewComment(selectedActivity)
+          this.finishLoading()
           break;
         // Get the card
         case 'IDEA_LIKED':
         case 'IDEA_ADDED':
         case 'IDEA_MOVED':
         case 'IDEA_UPDATED':
-          this.setState({ loading: false });
+          this.finishLoading()
 
           const { currentFeed } = feedo
 
@@ -323,22 +324,30 @@ class NotificationScreen extends React.Component {
 
     // Handle rejections
     if(feedo.loading === 'READ_ACTIVITY_FEED_REJECTED') {
-      this.setState({loading: false})
+      this.finishLoading()
     }
 
     if (feedo.loading === 'GET_FEED_DETAIL_REJECTED') {
       // Error alert handled in HomeScreen
-      this.setState({loading: false})
+      this.finishLoading()
     }
 
     if (this.props.card.loading !== 'GET_CARD_REJECTED' && card.loading === 'GET_CARD_REJECTED') {
-      this.setState({loading: false})
+      this.finishLoading()
 
       if (card.error.code === 'error.idea.not.found') {
         Alert.alert('Error', 'This card no longer exists')
       }
     } 
 
+  }
+
+  startLoading() {
+    this.setState({loading: true})
+  }
+
+  finishLoading() {
+    this.setState({loading: false, selectedActivity: {}})
   }
 
   getActivityFeedList = (page, size) => {
