@@ -66,6 +66,20 @@ const ACTION_CARD_MOVE = 4;
 const ACTION_CARD_EDIT = 5;
 const ACTION_CARD_DELETE = 6;
 
+/**
+ * 'IDEA_LIKED' - open the card that was like
+ * 'COMMENT_ADDED' - open the comment screen
+ * 'USER_ACCESS_CHANGED' - open the flow
+ * 'USER_INVITED_TO_HUNT' - open the flow
+ * 'USER_JOINED_HUNT' - open the flow
+ * 'IDEA_ADDED' - open the card
+ * 'HUNT_UPDATED' - open the flow
+ * 'IDEA_MOVED' - open the card
+ * 'IDEA_UPDATED' - open the card
+ * 'HUNT_DELETED' - alert the flow is no longer available
+ * 'IDEA_DELETED' - alert the card is not longer available
+ * 'USER_MENTIONED' - open the comment screen
+ */
 class NotificationScreen extends React.Component {
   get renderHeader() {
     return (
@@ -133,6 +147,11 @@ class NotificationScreen extends React.Component {
     const { feedo, card } = nextProps
     const { selectedActivity } = this.state
 
+    // If current scene is not NotificationScreen then bugger off
+    if(Actions.currentScene !== 'NotificationScreen') {
+        return;
+    }
+
     // Set loading indicator when pending
     if(feedo.loading === 'GET_FEED_DETAIL_PENDING' || card.loading === 'GET_CARD_PENDING') {
       this.setState({loading: true})
@@ -166,23 +185,36 @@ class NotificationScreen extends React.Component {
       this.setActivityFeeds(this.state.activityFeedList, invitedFeedList)
     }
 
-    if (this.props.feedo.loading !== 'READ_ACTIVITY_FEED_FULFILLED' && feedo.loading === 'READ_ACTIVITY_FEED_FULFILLED') {
+    if (feedo.loading === 'READ_ACTIVITY_FEED_FULFILLED') {
       if (!_.isEmpty(selectedActivity)) {
         Analytics.logEvent('notification_read_activity', {})
-        if (selectedActivity.activityTypeEnum === 'IDEA_ADDED' || selectedActivity.activityTypeEnum === 'IDEA_UPDATED') {
-          this.props.getFeedDetail(selectedActivity.metadata.HUNT_ID)
-        } else if (selectedActivity.activityTypeEnum === 'COMMENT_ADDED') {
-          this.props.getFeedDetail(selectedActivity.metadata.HUNT_ID)
-        } else if (selectedActivity.activityTypeEnum === 'IDEA_LIKED') {
-          this.props.getFeedDetail(selectedActivity.metadata.HUNT_ID)
-        } else if (selectedActivity.activityTypeEnum === 'USER_JOINED_HUNT') {
-          Actions.FeedDetailScreen({ data: { id: selectedActivity.metadata.HUNT_ID }, prevPage: 'activity' })
-        } else if (selectedActivity.activityTypeEnum === 'USER_INVITED_TO_HUNT') {
-          Actions.FeedDetailScreen({ data: { id: selectedActivity.metadata.HUNT_ID }, prevPage: 'activity' })
-        } else if (selectedActivity.activityTypeEnum === 'HUNT_UPDATED') {
-          Actions.FeedDetailScreen({ data: { id: selectedActivity.metadata.HUNT_ID }, prevPage: 'activity' })
-        } else {
-          this.setState({ loading: false })
+        switch (selectedActivity.activityTypeEnum) {
+          case 'IDEA_LIKED':          
+          case 'COMMENT_ADDED':
+          case 'USER_ACCESS_CHANGED':
+          case 'USER_INVITED_TO_HUNT':
+          case 'USER_JOINED_HUNT':
+          case 'IDEA_ADDED':
+          case 'HUNT_UPDATED':
+          case 'IDEA_MOVED':
+          case 'IDEA_UPDATED':
+          case 'USER_MENTIONED':
+            // We call get feed detail first as it might be deleted and we have to show an alert
+            this.props.getFeedDetail(selectedActivity.metadata.HUNT_ID);
+            break;
+          case 'HUNT_DELETED':
+            // Alert the flow has been deleted
+            this.setState({ loading: false });
+            Alert.alert('Error', 'This flow no longer exists')
+            break;
+          case 'IDEA_DELETED':
+            // Alert the card has been deleted
+            this.setState({ loading: false });
+            Alert.alert('Error', 'This card no longer exists')
+            break;
+          default: 
+            this.setState({ loading: false });
+            break;
         }
       }
     }
@@ -194,31 +226,74 @@ class NotificationScreen extends React.Component {
     if (this.props.feedo.loading !== 'GET_FEED_DETAIL_FULFILLED' && feedo.loading === 'GET_FEED_DETAIL_FULFILLED') {      
       this.prevFeedo = feedo.currentFeed;
       if (!_.isEmpty(selectedActivity)) {
-        const ideaIndex = _.findIndex(feedo.currentFeed.ideas, idea => idea.id === selectedActivity.metadata.IDEA_ID)        
-        if (ideaIndex !== -1) {
-          this.props.getCard(selectedActivity.metadata.IDEA_ID)
-        } else {
-          this.setState({ loading: false })
+        switch (selectedActivity.activityTypeEnum) {
+          // Go to the flow
+          case 'USER_ACCESS_CHANGED':
+          case 'USER_INVITED_TO_HUNT':
+          case 'USER_JOINED_HUNT':
+          case 'HUNT_UPDATED':
+            this.setState({ loading: false });
+            Actions.FeedDetailScreen({ data: { id: selectedActivity.metadata.HUNT_ID }, prevPage: 'activity' })
+            break;
+          // Get the card
+          case 'IDEA_LIKED':
+          case 'COMMENT_ADDED':
+          case 'IDEA_ADDED':
+          case 'IDEA_MOVED':
+          case 'IDEA_UPDATED':
+          case 'USER_MENTIONED':
+            // Check the card is in this Flow, it may no longer exist or have been moved
+            const cardExists = _.find(feedo.currentFeed.ideas, (i) => {
+              return (i.id === selectedActivity.metadata.IDEA_ID)
+            })
+
+            if (!cardExists) {
+              this.setState({ loading: false });
+              Alert.alert('Error', 'This card no longer exists')
+            }
+            else {
+              this.props.getCard(selectedActivity.metadata.IDEA_ID);
+            }
+
+            break;
+          default: 
+            this.setState({ loading: false });
+            break;
         }
       }
     }
 
     if (this.props.card.loading !== 'GET_CARD_FULFILLED' && card.loading === 'GET_CARD_FULFILLED') {
-      this.setState({ loading: false })
+      switch (selectedActivity.activityTypeEnum) {
+        case 'COMMENT_ADDED':
+        case 'USER_MENTIONED':
+          this.setState({ loading: false });
+          this.onSelectNewComment(selectedActivity)
+          break;
+        // Get the card
+        case 'IDEA_LIKED':
+        case 'IDEA_ADDED':
+        case 'IDEA_MOVED':
+        case 'IDEA_UPDATED':
+          this.setState({ loading: false });
 
-      if (selectedActivity.activityTypeEnum === 'COMMENT_ADDED') {
-        this.onSelectNewComment(selectedActivity)
-      } else {
-        const { currentFeed } = feedo
-        if (!this.state.isVisibleCard) {
-          const invitee = _.find(currentFeed.invitees, (o) => {
-            return (o.id === card.currentCard.inviteeId)
-          })
+          const { currentFeed } = feedo
 
-          this.setState({ selectedIdeaInvitee: invitee }, () => {
-            this.onSelectNewCard(card.currentCard)
-          })
-        }
+          if (!this.state.isVisibleCard) {
+            const invitee = _.find(currentFeed.invitees, (o) => {
+              return (o.id === card.currentCard.inviteeId)
+            })
+
+            if(invitee) {
+              this.setState({ selectedIdeaInvitee: invitee }, () => {
+                this.onSelectNewCard(card.currentCard)
+              })  
+            }
+            else {
+              Alert.alert('Error', 'This card no longer exists')
+            }
+          }
+          break;
       }
     }
     
@@ -247,7 +322,12 @@ class NotificationScreen extends React.Component {
     }
 
     // Handle rejections
-    if(feedo.loading === 'READ_ACTIVITY_FEED_REJECTED' || feedo.loading === 'GET_FEED_DETAIL_REJECTED') {
+    if(feedo.loading === 'READ_ACTIVITY_FEED_REJECTED') {
+      this.setState({loading: false})
+    }
+
+    if (feedo.loading === 'GET_FEED_DETAIL_REJECTED') {
+      // Error alert handled in HomeScreen
       this.setState({loading: false})
     }
 
@@ -255,7 +335,7 @@ class NotificationScreen extends React.Component {
       this.setState({loading: false})
 
       if (card.error.code === 'error.idea.not.found') {
-        Alert.alert('Error', card.error.message)
+        Alert.alert('Error', 'This card no longer exists')
       }
     } 
 
@@ -287,13 +367,17 @@ class NotificationScreen extends React.Component {
   }
 
   onReadActivity = (data) => {
-    this.setState({ selectedActivity: data })
+    this.setState({ 
+      selectedActivity: data 
+    }, () => {
     // If not read then call API, otherwise dummy call
-    if (!data.read) {
-      this.props.readActivityFeed(this.props.user.userInfo.id, data.id)
-    } else {
-      this.props.alreadyReadActivityFeed(data.id)
-    }
+      if (!data.read) {
+        this.setState({loading: true})
+        this.props.readActivityFeed(this.props.user.userInfo.id, data.id)
+      } else {
+        this.props.alreadyReadActivityFeed(data.id)
+      }
+    })
   }
 
   get renderDeleteComponent() {
