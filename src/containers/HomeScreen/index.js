@@ -258,8 +258,12 @@ class HomeScreen extends React.Component {
     const { feedo, card, user } = nextProps
 
     if (feedo.loading === 'GET_FEED_DETAIL_REJECTED') {
-      if (feedo.error.code === 'error.hunt.not.found' || feedo.error.code === 'error.hunt.access.denied') {
-        Alert.alert('Error', 'This flow is no longer available')
+      if (feedo.error.code === 'error.hunt.not.found') {
+        Alert.alert('Error', 'This flow no longer exists')
+      }
+
+      if (feedo.error.code === 'error.hunt.access.denied') {
+        Alert.alert('Error', 'You don\'t have access to this flow')
       }
     }
 
