@@ -377,7 +377,7 @@ export default class Root extends React.Component {
 const styles = StyleSheet.create({
   defaultNavigationBar: {
     height: 54,
-    marginHorizontal: 6,
+    marginHorizontal: 0,
     backgroundColor: '#FEFEFE'
   },
   emptyBorderNavigationBar: {
