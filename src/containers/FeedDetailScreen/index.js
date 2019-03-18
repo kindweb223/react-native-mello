@@ -528,6 +528,7 @@ class FeedDetailScreen extends React.Component {
         let hasCoverImage = idea.coverImage && idea.coverImage.length > 0
         let cardHeight = 0
         let contentHeight = 0
+        let imageHeight = 0
 
         if (hasCoverImage) {
           if (textSize.lineCount > 3) {
@@ -548,18 +549,22 @@ class FeedDetailScreen extends React.Component {
 
           if (_.isObject(coverImageData) && coverImageData.metadata) {
             const ratio = coverImageData.metadata.width / cardWidth
-            cardHeight = coverImageData.metadata.height / ratio + contentHeight
+            imageHeight = coverImageData.metadata.height / ratio
+            cardHeight = imageHeight + contentHeight
           } else {
-            cardHeight = cardWidth / 2 + contentHeight
+            imageHeight = cardWidth / 2
+            cardHeight = imageHeight + contentHeight
           }
         } else {
           cardHeight = contentHeight
+          imageHeight = 0
         }
 
         MasonryListData.push({
           index,
           width: (CONSTANTS.SCREEN_WIDTH - 16) / 2,
           height: cardHeight,
+          imageHeight,
           data: idea
         })
       }
@@ -1649,6 +1654,7 @@ class FeedDetailScreen extends React.Component {
                               >
                                 <FeedCardComponent
                                   idea={renderIdea}
+                                  imageHeight={item.imageHeight}
                                   invitees={invitees}
                                   listType={this.state.viewPreference}
                                   cardType="view"
