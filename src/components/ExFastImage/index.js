@@ -25,14 +25,11 @@ class ExFastImage extends React.Component {
     }
   }
 
-  onLoadStart = () => {
-  }
-
-  onProgress = (e) => {
+  onLoad = () => {
     this.setState({ loadFromCache: false })
   }
 
-  onLoad = () => {
+  onLoadEnd = () => {
     const {
       placeholderScale,
       placeholderOpacity,
@@ -88,8 +85,7 @@ class ExFastImage extends React.Component {
     const {
       style,
       resizeMode,
-      source,
-      onLoadEnd
+      source
     } = this.props;
 
     const {
@@ -118,8 +114,7 @@ class ExFastImage extends React.Component {
           source={source}
           resizeMode={resizeMode}
           onLoad={this.onLoad}
-          onLoadEnd={onLoadEnd}
-          onProgress={this.onProgress}
+          onLoadEnd={this.onLoadEnd}
         />
         {/* <FastImage
           style={style}
