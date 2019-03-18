@@ -16,28 +16,30 @@ class ExFastImage extends React.Component {
     super(props);
     this.state = {
       loaded: false,
-      imageOpacity: new Animated.Value(0.0),
       placeholderOpacity: new Animated.Value(1.0),
       placeholderScale: new Animated.Value(1.0),
       placeholderSource: images.placeholder,
       placeholderColor: '#b3e5fc',
       loadFromCache: true
     }
+    this.imageOpacity = new Animated.Value(0.0)
   }
 
-  onLoad = () => {
+  onLoadStart = () => {
+  }
+
+  onProgress = (e) => {
     this.setState({ loadFromCache: false })
   }
 
-  onLoadEnd = () => {
+  onLoad = () => {
     const {
       placeholderScale,
       placeholderOpacity,
-      imageOpacity,
       loadFromCache
     } = this.state
 
-    Animated.timing(imageOpacity, {
+    Animated.timing(this.imageOpacity, {
       toValue: 1.0,
       duration: loadFromCache ? 0 : 500,
       // useNativeDriver: false
@@ -85,12 +87,12 @@ class ExFastImage extends React.Component {
     const {
       style,
       resizeMode,
-      source
+      source,
+      onLoadEnd
     } = this.props;
 
     const {
       loaded,
-      imageOpacity,
       placeholderOpacity,
       placeholderScale,
       placeholderSource,
@@ -101,10 +103,10 @@ class ExFastImage extends React.Component {
       <View style={{ flex: 1 }}>
         <AnimatedFastImage
           style={[style, {
-            opacity: imageOpacity,
+            opacity: this.imageOpacity,
             transform: [
               {
-                scale: imageOpacity.interpolate({
+                scale: this.imageOpacity.interpolate({
                   inputRange: [0, 1],
                   outputRange: [0.85, 1],
                 })
@@ -114,7 +116,8 @@ class ExFastImage extends React.Component {
           source={source}
           resizeMode={resizeMode}
           onLoad={this.onLoad}
-          onLoadEnd={this.onLoadEnd}
+          onLoadEnd={onLoadEnd}
+          onProgress={this.onProgress}
         />
         {/* <FastImage
           style={style}
