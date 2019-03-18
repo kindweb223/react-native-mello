@@ -42,8 +42,7 @@ class ExFastImage extends React.Component {
 
     Animated.timing(imageOpacity, {
       toValue: 1.0,
-      duration: 500,
-      // duration: loadFromCache ? 10 : 500,
+      duration: loadFromCache ? 0 : 500,
       // useNativeDriver: false
     }).start();
 
