@@ -18,6 +18,7 @@ export default StyleSheet.create({
   modalContainer: {
     width: CONSTANTS.SCREEN_WIDTH,
     height: CONSTANTS.SCREEN_HEIGHT,
-    paddingBottom: Platform.OS === 'android' ? 24 : 0
+    paddingBottom: Platform.OS === 'android' ? 24 : 0,
+    backgroundColor: '#fff'
   }
 })
