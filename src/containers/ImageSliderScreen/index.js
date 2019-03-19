@@ -6,7 +6,8 @@ import {
   Image,
   Alert,
   Animated,
-  ActivityIndicator
+  ActivityIndicator,
+  Platform
 } from 'react-native'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
@@ -34,7 +35,8 @@ class ImageSliderScreen extends React.Component {
       isTouch: false,
       imageIndex: this.props.position,
       setCoveredIndex: this.props.position,
-      updatingCoverImage: false
+      updatingCoverImage: false,
+      isFileDeleted: false
     };
     this.buttonOpacity = new Animated.Value(1)
   }
@@ -52,6 +54,15 @@ class ImageSliderScreen extends React.Component {
     } else if ((this.props.feedo.loading !== feedTypes.DELETE_FILE_FULFILLED && nextProps.feedo.loading === feedTypes.DELETE_FILE_FULFILLED)
       || (this.props.card.loading !== cardTypes.DELETE_FILE_FULFILLED && nextProps.card.loading === cardTypes.DELETE_FILE_FULFILLED)) {
       // fullfilled in deleting a file
+      if (Platform.OS === 'android') {
+        if (nextProps.mediaFiles.length === 0) {
+          this.props.onClose()
+        } else {
+          if (this.state.imageIndex === nextProps.mediaFiles.length) {
+            this.setState({ isFileDeleted: true, imageIndex: this.state.imageIndex - 1 })
+          }
+        }
+      }
     } else if (this.props.card.loading !== cardTypes.SET_COVER_IMAGE_PENDING && nextProps.card.loading === cardTypes.SET_COVER_IMAGE_PENDING) {
       // setting a file as cover image
       this.setState({updatingCoverImage: true})
@@ -155,6 +166,8 @@ class ImageSliderScreen extends React.Component {
           onSwipeDown={this.onSwipeDown}
           setPosition={value => this.setState({ imageIndex: value.pos })}
           currentImageIndex={this.state.imageIndex}
+          isFileDeleted={this.state.isFileDeleted}
+          updateStatus={() => this.setState({ isFileDeleted: false })}
         />
 
         <Animated.View 
