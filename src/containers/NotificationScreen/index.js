@@ -27,6 +27,7 @@ import ActivityFeedComponent from '../../components/ActivityFeedComponent'
 import CardDetailScreen from '../CardDetailScreen'
 import SelectHuntScreen from '../SelectHuntScreen'
 import ToasterComponent from '../../components/ToasterComponent'
+import AlertController from '../../components/AlertController'
 
 import {
   getFeedDetail,
@@ -211,7 +212,7 @@ class NotificationScreen extends React.Component {
 
     if (this.props.card.loading !== 'GET_CARD_REJECTED' && card.loading === 'GET_CARD_REJECTED') {
       if (card.error.code === 'error.idea.not.found') {
-        Alert.alert('Error', card.error.message)
+        AlertController.shared.showAlert('Error', card.error.message)
       }
     }
 
