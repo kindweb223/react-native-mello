@@ -1,5 +1,5 @@
 import React from 'react'
-import { ScrollView, View, Image, TouchableOpacity, Animated, ActivityIndicator } from 'react-native'
+import { ScrollView, View, Image, TouchableOpacity, Animated, ActivityIndicator, Platform } from 'react-native'
 import GestureRecognizer from 'react-native-swipe-gestures'
 import styles from './styles'
 import FastImage from "react-native-fast-image";
@@ -26,9 +26,24 @@ export default class SlideShow extends React.Component {
     } = this.props
 
     setTimeout(() => {
-      this.scrollViewRef.scrollTo({x: width * position, y: 0});
+      this.scrollViewRef.scrollTo({ x: width * position, y: 0 });
     }, 0)
 
+  }
+
+  componentWillReceiveProps(nextProps) {
+    const {
+      width,
+      currentImageIndex,
+      isFileDeleted
+    } = this.props
+
+    if (Platform.OS === 'android' && isFileDeleted) {
+      setTimeout(() => {
+        this.scrollViewRef.scrollTo({ x: width * currentImageIndex, y: 0 });
+        this.props.updateStatus()
+      }, 0)
+    }
   }
 
   renderBubbles = () => {
