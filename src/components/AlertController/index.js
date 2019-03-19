@@ -7,19 +7,17 @@ export default class AlertController {
     isShown = false
 
     showAlert(title, text) {
-        console.log("[AlertController] show alert without actions called")
         if (this.isShown) { return }
         this.isShown = true
-        console.log("[AlertController] Showing text: ", text)
         Alert.alert(title, text, [{ text: 'OK', onPress: () => this.didDismiss() }])
     }
 
     showAlert(title, text, actions) {
         if (this.isShown) { return }
+        
         this.isShown = true
-
-        console.log("[AlertController] show alert with actions called")
         newActions = []
+
         actions.forEach(element => {
             newActions.push({ 
                 text: element.text, 
@@ -39,7 +37,6 @@ export default class AlertController {
 
     // Call this when using custom actions, to reset state
     didDismiss() {
-        console.log("[AlertController] didDismiss called")
         this.isShown = false
     }
 }
