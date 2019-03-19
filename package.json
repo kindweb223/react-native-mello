@@ -13,6 +13,7 @@
     "lodash": "^4.17.10",
     "lottie-react-native": "^2.5.11",
     "moment": "^2.22.2",
+    "path": "^0.12.7",
     "prop-types": "^15.6.2",
     "pubnub-react": "^1.2.0",
     "ramda": "^0.25.0",
@@ -74,6 +75,7 @@
     "zxcvbn": "^4.4.2"
   },
   "devDependencies": {
+    "mime-types": "^2.1.22",
     "react-native-fs": "^2.13.3"
   }
 }

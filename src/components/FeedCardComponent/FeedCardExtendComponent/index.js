@@ -57,7 +57,7 @@ class FeedCardExtendComponent extends React.Component {
         <View style={styles.subContainer}>
           {hasCoverImage &&
             <View style={[styles.thumbnailsView, { height: cardHeight }]}>
-              <ExFastImage
+              <Image
                 style={styles.thumbnails}
                 source={{ uri: idea.coverImage }}
               />
