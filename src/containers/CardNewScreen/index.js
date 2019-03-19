@@ -686,8 +686,9 @@ class CardNewScreen extends React.Component {
       }
     });
 
-    this.keyboardWillShowSubscription = Keyboard.addListener('keyboardWillShow', (e) => this.keyboardWillShow(e));
-    this.keyboardWillHideSubscription = Keyboard.addListener('keyboardWillHide', (e) => this.keyboardWillHide(e));
+    this.keyboardDidShowSubscription = Keyboard.addListener('keyboardDidShow', (e) => this.keyboardDidShow(e));
+    this.keyboardDidHideSubscription = Keyboard.addListener('keyboardDidHide', (e) => this.keyboardDidHide(e));
+
     if (Platform.OS === 'ios') {
       this.safariViewShowSubscription = SafariView.addEventListener('onShow', () => this.safariViewShow());
       this.safariViewDismissSubscription = SafariView.addEventListener('onDismiss', () => this.safariViewDismiss());
@@ -697,8 +698,8 @@ class CardNewScreen extends React.Component {
   }
 
   componentWillUnmount() {
-    this.keyboardWillShowSubscription.remove();
-    this.keyboardWillHideSubscription.remove();
+    this.keyboardDidShowSubscription.remove();
+    this.keyboardDidHideSubscription.remove();
     if (Platform.OS === 'ios') {
       this.safariViewShowSubscription.remove();
       this.safariViewDismissSubscription.remove();
@@ -718,28 +719,31 @@ class CardNewScreen extends React.Component {
     return true;
   }
 
-  keyboardWillShow(e) {
-    Animated.timing(
-      this.animatedKeyboardHeight, {
-        toValue: e.endCoordinates.height,
-        duration: e.duration,
-      }
-    ).start(() => {
-      if (this.isDisabledKeyboard === true || !this.textInputIdeaRef) {
-        return;
-      }
-      
-      this.textInputIdeaRef.focus();
-    });
+  keyboardDidShow(e) {
+    if ((this.props.isClipboard && Platform.OS === 'android') || Platform.OS === 'ios') {
+      Animated.timing(
+        this.animatedKeyboardHeight, {
+          toValue: e.endCoordinates.height,
+          duration: Platform.OS === 'ios' ? e.duration : 30,
+        }
+      ).start(() => {
+        if (this.isDisabledKeyboard === true || !this.textInputIdeaRef) {
+          return;
+        }
+        // this.textInputIdeaRef.focus();
+      });
+    }
   }
 
-  keyboardWillHide(e) {
-    Animated.timing(
-      this.animatedKeyboardHeight, {
-        toValue: 0,
-        duration: e.duration,
-      }
-    ).start();
+  keyboardDidHide(e) {
+    if ((this.props.isClipboard && Platform.OS === 'android') || Platform.OS === 'ios') {
+      Animated.timing(
+        this.animatedKeyboardHeight, {
+          toValue: 0,
+          duration: Platform.OS === 'ios' ? e.duration : 30,
+        }
+      ).start();
+    }
   }
 
   safariViewShow() {
@@ -1955,6 +1959,7 @@ CardNewScreen.defaultProps = {
   shareImageUrls: [],
   shareText: '',
   onClose: () => {},
+  isClipboard: false
 }
 
 
