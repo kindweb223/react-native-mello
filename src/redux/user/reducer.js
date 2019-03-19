@@ -28,7 +28,7 @@ export default function user(state = initialState, action = {}) {
   switch (action.type) {
     case 'NETWORK_FAILED':
     console.log('error for internet')
-      Alert.alert('Error', 'No Internet Connection')
+      AlertController.shared.showAlert('Error', 'No Internet Connection')
       return {
         ...state,
         error: null
