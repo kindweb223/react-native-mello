@@ -1,7 +1,7 @@
 import React from "react";
 import RNFS, {downloadFile} from 'react-native-fs';
 import { Button, FlatList, ScrollView, View, Text, ViewPropTypes } from "react-native";
-
+import mime from 'mime-types'
 
 const makeUserDir = (id, resolve, reject) => {
     const userDir = RNFS.DocumentDirectoryPath + '/' + id
@@ -66,14 +66,22 @@ function checkDirectories() {
 
 }
 
-
 function checkAndStore(file, userId) {
-    const regex = /([A-Za-z0-9\-_]+)(\.[a-z]{3,4})($|\?)/
-    const fileExt  = file.accessUrl.match(regex)
-    const fileStoreLocation = RNFS.DocumentDirectoryPath + '/' + userId + '/' + file.id + fileExt[2]
+    console.log('RNFS - CAS', file, userId)
+    // const regex = /([A-Za-z0-9\-_]+)(\.[a-z]{3,4})($|\?)/
+    // const fileExt  = file.accessUrl.match(regex)
+    // console.log('RNFS - file ext - ', fileExt, ' - ', typeof fileExt)
+    // console.log('RNFS - file ext 2 - ', fileExt[2])
+    const fileExt = '.'+mime.extension(file.contentType)
+    const fileStoreLocation = RNFS.DocumentDirectoryPath + '/' + userId + '/' + file.id + fileExt
     const fileDownloadLocation = RNFS.DocumentDirectoryPath + '/' + userId + '/'
     console.log('RNFS - file location is ' + fileDownloadLocation)
     return new Promise((resolve, reject) => {
+
+        // if ( fileExt === null){
+        //     reject('file match is null because it\'s ', file.accessUrl )
+        // }
+
         RNFS.exists(fileStoreLocation)
             .then((result) => {
                 if(result) {
@@ -81,16 +89,32 @@ function checkAndStore(file, userId) {
                     resolve({
                         fileStoredLocally: true,
                         fileDownloadLocation,
+                        fileStoreLocation,
                     })
                 } else {
                     console.log('RNFS - not stored, let us try to store it at ', fileDownloadLocation)
 
+                            let downloadedFileExt = ''
+                            const updateFileExt = (args) => {
+                                const contentType =  args.headers['Content-Type']
+                                console.log('RNFS - headers:',args.headers['Content-Type'])
+                                downloadedFileExt = '.'+mime.extension(contentType)
+                            }
+
                             RNFS.downloadFile({
                                 fromUrl: file.accessUrl,
-                                toFile: fileDownloadLocation + file.id + fileExt[2]
+                                toFile: fileStoreLocation,
+                                begin: updateFileExt,
                             }).promise.then((result) => {
-                                console.log('RNFS download: ', result, fileDownloadLocation, fileStoreLocation, file.accessUrl)
-
+                                console.log('RNFS download: ', result, fileDownloadLocation, fileStoreLocation, file.accessUrl, ' ext=',downloadedFileExt)
+                                if(downloadedFileExt !== fileExt){
+                                    console.log('RNFS - mismatch:', downloadedFileExt, ' vs ', fileExt)
+                                }
+                                resolve({
+                                    result,
+                                    fileStoreLocation,
+                                    fileExt,
+                                })
 
                             })
                                 .catch((error) => {
@@ -103,6 +127,10 @@ function checkAndStore(file, userId) {
 
 
                 }
+            })
+            .catch(err => {
+                console.log('RNFS file store location does not exist ', err)
+                reject(err)
             })
     })
 }
@@ -127,21 +155,33 @@ class LocalImages extends React.Component {
     }
 
     componentDidMount(): void {
-        const { user, ideas } = this.props
+        const { user, ideas, replaceFeedIdeas } = this.props
         checkDirectories()
             .then(result => this.setState({files: result}))
         userDirMustExist(user.id)
             .then(() => {
-                console.log('RNFS - ideas are: ', ideas)
-                ideas.map((idea) => {
-                    idea.files.map((file) => {
+                console.log('RNFS - ideas are: ', ideas.length)
+                // console.log('RNFS - first idea has: ', ideas[0].files.length)
+                ideas.map((idea, ideaIndex) => {
+                    idea.files && idea.files.map((file, fileIndex) => {
+                        console.log('RNFS - start of CAS')
                         checkAndStore(file, user.id)
-                            .then(result => console.log('RNFS ', result))
+                            .then(result => {
+                                console.log('RNFS cas-> ', result)
+                                console.log('RNFS, files, ', file.accessUrl, result.fileStoreLocation)
+                                const localUrl = 'file:///'+result.fileStoreLocation
+                                if(file.accessUrl === idea.coverImage){
+                                    idea.coverImage = localUrl
+                                }
+                                file.accessUrl = localUrl
+
+                            })
+                            .catch(err => console.log('RNFS - can not store file because ', err))
                     })
                 })
 
             })
-            .catch(err => console.log('no user dir and no resolution - ', err))
+            .catch(err => console.log('RNFS - no user dir and no resolution - ', err))
 
 
     }

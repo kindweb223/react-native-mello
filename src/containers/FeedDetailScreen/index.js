@@ -1411,6 +1411,14 @@ class FeedDetailScreen extends React.Component {
       }
   }
 
+  replaceFeedIdeas = (newFeed) => {
+    const {currentFeed} = this.state
+    currentFeed.ideas = newFeed;
+    this.setState({
+      currentFeed,
+    })
+  }
+
   render () {
     const {
       currentFeed,
@@ -1450,7 +1458,7 @@ class FeedDetailScreen extends React.Component {
             </View>
           )}
           {currentFeed.ideas && currentFeed.ideas.length > 1 && (
-              <LocalImages feed={currentFeed} ideas={currentFeed.ideas} user={this.props.user.userInfo} />
+              <LocalImages feed={currentFeed} ideas={currentFeed.ideas} replaceFeedIdeas={this.replaceFeedIdeas} user={this.props.user.userInfo} />
           )}
 
 
