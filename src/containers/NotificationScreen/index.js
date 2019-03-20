@@ -148,8 +148,6 @@ class NotificationScreen extends React.Component {
     const { selectedActivity } = this.state
 
     if (this.props.feedo.loading !== 'DEL_ACTIVITY_FEED_FULFILLED' && feedo.loading === 'DEL_ACTIVITY_FEED_FULFILLED') {
-      this.setState({ loading: false })
-      Alert.alert('Success', 'Successfully deleted')
       Analytics.logEvent('notification_delete_activity', {})
     }
 
@@ -374,7 +372,6 @@ class NotificationScreen extends React.Component {
   }
 
   onDeleteActivity = (data) => {
-    this.setState({loading: true})
     this.props.deleteActivityFeed(this.props.user.userInfo.id, data.id)
   }
 
