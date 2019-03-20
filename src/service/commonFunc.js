@@ -9,6 +9,7 @@ import _ from 'lodash'
 import { SHARE_LINK_URL } from "../service/api"
 import COLORS from '../service/colors'
 import CONSTANTS from '../service/constants'
+import AlertController from '../components/AlertController'
 
 /**
  * If the user is the invitee, return true
@@ -128,7 +129,7 @@ const handleShareFeed = (feed) => {
 }
 
 const showPremiumAlert = () => {
-  Alert.alert(
+  AlertController.shared.showAlert(
     '',
     CONSTANTS.PREMIUM_10MB_ALERT_MESSAGE,
     [

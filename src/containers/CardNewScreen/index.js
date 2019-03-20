@@ -80,6 +80,7 @@ import CoverImagePreviewComponent from '../../components/CoverImagePreviewCompon
 import SelectHuntScreen from '../SelectHuntScreen';
 import Analytics from '../../lib/firebase'
 import ToasterComponent from '../../components/ToasterComponent'
+import AlertController from '../../components/AlertController'
 
 import * as COMMON_FUNC from '../../service/commonFunc'
 const ATTACHMENT_ICON = require('../../../assets/images/Attachment/Blue.png')
@@ -649,8 +650,10 @@ class CardNewScreen extends React.Component {
           }
           if (!this.isVisibleErrorDialog) {
             this.isVisibleErrorDialog = true;
-            Alert.alert('Error', error, [
-              {text: 'Close', onPress: () => this.isVisibleErrorDialog = false},
+            AlertController.shared.showAlert('Error', error, [
+              {text: 'Close', onPress: () => { 
+                this.isVisibleErrorDialog = false;
+              }},
             ]);
           }
         }
@@ -946,7 +949,7 @@ class CardNewScreen extends React.Component {
       const cardName = '';
       this.props.updateCard(this.props.feedo.currentFeed.id, id, cardName, this.state.idea, this.state.coverImage, files, true);
     } else {
-      Alert.alert('Error', 'Enter some text or add an image')
+      AlertController.shared.showAlert('Error', 'Enter some text or add an image')
     }
   }
 
@@ -1367,7 +1370,7 @@ class CardNewScreen extends React.Component {
     } = this.props.card.currentCard;
     const { idea } = this.state
     if (!this.isCardValid(idea, files)) {
-      Alert.alert('Error', 'Enter some text or add an image')
+      AlertController.shared.showAlert('Error', 'Enter some text or add an image')
       return;
     }
     if (this.draftFeedo) {

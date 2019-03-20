@@ -27,6 +27,7 @@ import CONSTANTS from '../../service/constants'
 import resolveError from '../../service/resolveError'
 import * as COMMON_FUNC from '../../service/commonFunc'
 import styles from './styles'
+import AlertController from '../../components/AlertController'
 
 const LOGO = require('../../../assets/images/Login/icon_40pt.png')
 
@@ -111,7 +112,7 @@ class SignUpScreen extends React.Component {
       if (prevProps.user.loading === 'USER_SIGNUP_PENDING' && this.props.user.loading === 'USER_SIGNUP_REJECTED') {
         const { error } = this.props.user
         this.setState({ loading: false }, () => {
-          Alert.alert(
+          AlertController.shared.showAlert(
             'Oops',
             resolveError(error.code, error.message),
             [
@@ -136,7 +137,7 @@ class SignUpScreen extends React.Component {
         // Invitation has expired
         const { error } = this.props.user
         this.setState({ loading: false, isInvite: false })
-        Alert.alert(
+        AlertController.shared.showAlert(
           'Error',
           error.message
         )
@@ -150,7 +151,7 @@ class SignUpScreen extends React.Component {
       if (prevProps.user.loading === 'COMPLETE_INVITE_PENDING' && this.props.user.loading === 'COMPLETE_INVITE_REJECTED') {
         const { error } = this.props.user
         this.setState({ loading: false, isInvite: false })
-        Alert.alert(
+        AlertController.shared.showAlert(
           'Error',
           error.message
         )
