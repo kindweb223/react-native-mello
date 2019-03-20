@@ -77,6 +77,7 @@ import LoadingScreen from '../LoadingScreen';
 import CardEditScreen from './CardEditScreen'
 import CardControlMenuComponent from '../../components/CardControlMenuComponent'
 import ToasterComponent from '../../components/ToasterComponent'
+import AlertController from '../../components/AlertController'
 
 import * as COMMON_FUNC from '../../service/commonFunc'
 import COLORS from '../../service/colors';
@@ -150,7 +151,6 @@ class CardDetailScreen extends React.Component {
     this.animatedClose = new Animated.Value(1);
     this.animatedShow = new Animated.Value(0);
     this.scrollViewLayoutHeight = 0;
-    this.isVisibleErrorDialog = false;
 
     this.parsingErrorLinks = [];
 
@@ -492,16 +492,12 @@ class CardDetailScreen extends React.Component {
               } else {
                 // return;
               }
-            } else {
-              this.isVisibleErrorDialog = true;
             }
           }
-          if (!this.isVisibleErrorDialog) {
-            this.isVisibleErrorDialog = true;
-            Alert.alert('Error', error, [
-              {text: 'Close', onPress: () => this.isVisibleErrorDialog = false},
-            ]);
-          }
+          
+          AlertController.shared.showAlert('Error', error, [
+            { text: 'Close' }
+          ]);
         }
         this.props.resetCardError();
         return;

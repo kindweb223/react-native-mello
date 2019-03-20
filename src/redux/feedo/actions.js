@@ -580,6 +580,16 @@ export const readActivityFeed = (userId, activityId) => {
 }
 
 /**
+ * Read activity feed
+ */
+export const alreadyReadActivityFeed = (activityId) => {
+  return {
+    type: types.READ_ACTIVITY_FEED_FULFILLED,
+    payload: activityId
+  };
+}
+
+/**
  * Delete activity feed
  */
 export const deleteActivityFeed = (userId, activityId) => {

@@ -24,6 +24,7 @@ import * as cardTypes from '../../redux/card/types'
 import CONSTANTS from '../../service/constants'
 import COLORS from '../../service/colors'
 import Analytics from '../../lib/firebase'
+import AlertController from '../../components/AlertController'
 
 class ImageSliderScreen extends React.Component {
   constructor(props) {
@@ -91,8 +92,8 @@ class ImageSliderScreen extends React.Component {
         errorMessage = error.message;
       }
       if (errorMessage) {
-        Alert.alert('Error', errorMessage, [
-          {text: 'Close'},
+        AlertController.shared.showAlert('Error', errorMessage, [
+          { text: 'Close' }
         ]);
       }
       return;
