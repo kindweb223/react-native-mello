@@ -55,6 +55,7 @@ import LoadingScreen from '../LoadingScreen'
 import EmptyStateComponent from '../../components/EmptyStateComponent'
 import SpeechBubbleComponent from '../../components/SpeechBubbleComponent'
 import FollowMemberScreen from '../FollowMembersScreen'
+import AlertController from '../../components/AlertController'
 
 import {
   getFeedDetail,
@@ -1233,7 +1234,7 @@ class FeedDetailScreen extends React.Component {
     },(error, response) => {
       if (error === null) {
         if (response.fileSize > CONSTANTS.MAX_UPLOAD_FILE_SIZE) {
-          Alert.alert('Warning', 'File size must be less than 10MB')
+          AlertController.shared.showAlert('Warning', 'File size must be less than 10MB')
         } else {
           let type = 'FILE';
           const mimeType = (Platform.OS === 'ios') ? mime.lookup(response.uri) : response.type;
@@ -1273,7 +1274,7 @@ class FeedDetailScreen extends React.Component {
     ImagePicker.launchCamera(options, (response)  => {
       if (!response.didCancel) {
         if (response.fileSize > CONSTANTS.MAX_UPLOAD_FILE_SIZE) {
-          Alert.alert('Warning', 'File size must be less than 10MB')
+          AlertController.shared.showAlert('Warning', 'File size must be less than 10MB')
         } else {
           if (!response.fileName) {
             response.fileName = response.uri.replace(/^.*[\\\/]/, '')
@@ -1288,7 +1289,7 @@ class FeedDetailScreen extends React.Component {
     ImagePicker.launchImageLibrary(options, (response)  => {
       if (!response.didCancel) {
         if (response.fileSize > CONSTANTS.MAX_UPLOAD_FILE_SIZE) {
-          Alert.alert('Warning', 'File size must be less than 10MB')
+          AlertController.shared.showAlert('Warning', 'File size must be less than 10MB')
         } else {
           this.uploadFile(response, 'MEDIA');
         }
