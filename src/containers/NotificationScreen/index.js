@@ -147,6 +147,21 @@ class NotificationScreen extends React.Component {
     const { feedo, card } = nextProps
     const { selectedActivity } = this.state
 
+    if (this.props.feedo.loading !== 'DEL_ACTIVITY_FEED_FULFILLED' && feedo.loading === 'DEL_ACTIVITY_FEED_FULFILLED') {
+      this.setState({ loading: false })
+      Alert.alert('Success', 'Successfully deleted')
+      Analytics.logEvent('notification_delete_activity', {})
+    }
+
+    if ((this.props.feedo.loading !== 'GET_ACTIVITY_FEED_FULFILLED' && feedo.loading === 'GET_ACTIVITY_FEED_FULFILLED') ||
+        (this.props.feedo.loading !== 'READ_ACTIVITY_FEED_FULFILLED' && feedo.loading === 'READ_ACTIVITY_FEED_FULFILLED') ||
+        (this.props.feedo.loading !== 'DEL_ACTIVITY_FEED_FULFILLED' && feedo.loading === 'DEL_ACTIVITY_FEED_FULFILLED'))
+    {
+      let activityFeedList = _.orderBy(feedo.activityFeedList, ['activityTime'], ['desc'])
+      this.setState({ refreshing: false, activityFeedList })
+      this.setActivityFeeds(activityFeedList, this.state.invitedFeedList)
+    }
+
     // If current scene is not NotificationScreen then bugger off
     // If !selectedActivity handles pubnub updates and other users making updates
     if(Actions.currentScene !== 'NotificationScreen' || _.isEmpty(selectedActivity)) {
@@ -218,10 +233,6 @@ class NotificationScreen extends React.Component {
             break;
         }
       }
-    }
-
-    if (this.props.feedo.loading !== 'DEL_ACTIVITY_FEED_FULFILLED' && feedo.loading === 'DEL_ACTIVITY_FEED_FULFILLED') {
-      Analytics.logEvent('notification_delete_activity', {})
     }
 
     if (this.props.feedo.loading !== 'GET_FEED_DETAIL_FULFILLED' && feedo.loading === 'GET_FEED_DETAIL_FULFILLED') {      
@@ -297,15 +308,6 @@ class NotificationScreen extends React.Component {
           break;
       }
     }
-    
-    if ((this.props.feedo.loading !== 'GET_ACTIVITY_FEED_FULFILLED' && feedo.loading === 'GET_ACTIVITY_FEED_FULFILLED') ||
-        (this.props.feedo.loading !== 'READ_ACTIVITY_FEED_FULFILLED' && feedo.loading === 'READ_ACTIVITY_FEED_FULFILLED') ||
-        (this.props.feedo.loading !== 'DEL_ACTIVITY_FEED_FULFILLED' && feedo.loading === 'DEL_ACTIVITY_FEED_FULFILLED'))
-    {
-      let activityFeedList = _.orderBy(feedo.activityFeedList, ['activityTime'], ['desc'])
-      this.setState({ refreshing: false, activityFeedList })
-      this.setActivityFeeds(activityFeedList, this.state.invitedFeedList)
-    }
 
     if (this.props.feedo.loading !== 'UPDATE_FEED_INVITATION_FULFILLED' && feedo.loading === 'UPDATE_FEED_INVITATION_FULFILLED') {
         let invitedFeedList = _.orderBy(feedo.invitedFeedList, ['metadata.myLastActivityDate'], ['desc'])
@@ -372,6 +374,7 @@ class NotificationScreen extends React.Component {
   }
 
   onDeleteActivity = (data) => {
+    this.setState({loading: true})
     this.props.deleteActivityFeed(this.props.user.userInfo.id, data.id)
   }
 

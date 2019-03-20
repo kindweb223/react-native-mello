@@ -1314,6 +1314,7 @@ export default function feedo(state = initialState, action = {}) {
         loading: types.DEL_ACTIVITY_FEED_PENDING,
       }
     case types.DEL_ACTIVITY_FEED_FULFILLED: {
+      console.log('QQQQQQ')
       const activityId = action.payload
       const { activityFeedList, activityData } = state
 
@@ -1542,10 +1543,12 @@ export default function feedo(state = initialState, action = {}) {
       const restOldIdeas = filter(oldFeed.ideas, idea => idea.id !== ideaId)
 
       let newCurrentFeed = currentFeed
+      const ideasSubmitted = oldFeed.metadata.ideasSubmitted - 1
       if (currentFeed.id === feedId) {
         newCurrentFeed = {
           ...newCurrentFeed,
-          ideas: filter(newCurrentFeed.ideas, idea => idea.id !== ideaId)
+          ideas: filter(newCurrentFeed.ideas, idea => idea.id !== ideaId),
+          metadata: Object.assign({}, currentFeed.metadata, { ideasSubmitted })
         }
       }
 
@@ -1556,7 +1559,8 @@ export default function feedo(state = initialState, action = {}) {
           ...restFeedoList,
           {
             ...oldFeed,
-            ideas: restOldIdeas
+            ideas: restOldIdeas,
+            metadata: Object.assign({}, currentFeed.metadata, { ideasSubmitted })
           }
         ],
         currentFeed: newCurrentFeed
