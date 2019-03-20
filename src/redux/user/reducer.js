@@ -6,6 +6,7 @@ import CONSTANTS from '../../../src/service/constants'
 import SharedGroupPreferences from 'react-native-shared-group-preferences'
 import Intercom from 'react-native-intercom'
 import pubnub from '../../lib/pubnub'
+import AlertController from '../../components/AlertController'
 
 const initialState = {
   loading: null,
@@ -26,7 +27,8 @@ const initialState = {
 export default function user(state = initialState, action = {}) {
   switch (action.type) {
     case 'NETWORK_FAILED':
-      Alert.alert('Error', 'No Internet Connection')
+    console.log('error for internet')
+      AlertController.shared.showAlert('Error', 'No Internet Connection')
       return {
         ...state,
         error: null

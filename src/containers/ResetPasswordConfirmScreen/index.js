@@ -15,6 +15,7 @@ import { sendResetPasswordEmail } from '../../redux/user/actions'
 import COLORS from '../../service/colors'
 import styles from './styles'
 import Analytics from '../../lib/firebase'
+import AlertController from '../../components/AlertController'
 
 const LOGO = require('../../../assets/images/Login/icon_40pt.png')
 const MAIL_ICON = require('../../../assets/images/Success/iconMailBig.png')
@@ -67,7 +68,7 @@ class ResetPasswordConfirmScreen extends React.Component {
     }
     this.props.sendResetPasswordEmail(param)
 
-    Alert.alert(
+    AlertController.shared.showAlert(
       '',
       'Email resent to ' + param.email,
     )
