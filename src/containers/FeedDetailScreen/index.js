@@ -1458,7 +1458,7 @@ class FeedDetailScreen extends React.Component {
             </View>
           )}
           {currentFeed.ideas && currentFeed.ideas.length > 1 && (
-              <LocalImages feed={currentFeed} ideas={currentFeed.ideas} replaceFeedIdeas={this.replaceFeedIdeas} user={this.props.user.userInfo} />
+              <LocalImages replaceFeedIdeas={this.replaceFeedIdeas} user={this.props.user.userInfo} />
           )}
 
 
@@ -1799,10 +1799,10 @@ class FeedDetailScreen extends React.Component {
   }
 }
 
-const mapStateToProps = ({ feedo, card, user }) => ({
+const mapStateToProps = ({ feedo, user, card }) => ({
   feedo,
+  user,
   card,
-  user
 })
 
 const mapDispatchToProps = dispatch => ({
