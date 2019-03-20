@@ -48,6 +48,8 @@ import styles from './styles'
 import CONSTANTS from '../../service/constants';
 import COLORS from '../../service/colors'
 import { TIP_SHARE_LINK_URL, ANDROID_PUSH_SENDER_ID, PIN_FEATURE, SEARCH_FEATURE } from '../../service/api'
+import AlertController from '../../components/AlertController'
+
 const SEARCH_ICON = require('../../../assets/images/Search/Grey.png')
 const SETTING_ICON = require('../../../assets/images/Settings/Grey.png')
 
@@ -258,8 +260,12 @@ class HomeScreen extends React.Component {
     const { feedo, card, user } = nextProps
 
     if (feedo.loading === 'GET_FEED_DETAIL_REJECTED') {
-      if (feedo.error.code === 'error.hunt.not.found' || feedo.error.code === 'error.hunt.access.denied') {
-        Alert.alert('Error', 'This flow is no longer available')
+      if (feedo.error.code === 'error.hunt.not.found') {
+        AlertController.shared.showAlert('Error', 'This flow no longer exists')
+      }
+
+      if (feedo.error.code === 'error.hunt.access.denied') {
+        AlertController.shared.showAlert('Error', 'You don\'t have access to this flow')
       }
     }
 

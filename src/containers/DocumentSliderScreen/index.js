@@ -17,6 +17,7 @@ import COLORS from '../../service/colors'
 import LoadingScreen from '../LoadingScreen'
 import * as feedTypes from '../../redux/feedo/types'
 import * as cardTypes from '../../redux/card/types'
+import AlertController from '../../components/AlertController'
 
 import Analytics from '../../lib/firebase'
 
@@ -61,8 +62,11 @@ class DocumentSliderScreen extends React.Component {
         errorMessage = error.message;
       }
       if (errorMessage) {
-        Alert.alert('Error', errorMessage, [
-          {text: 'Close'},
+        AlertController.shared.showAlert('Error', errorMessage, [
+          {
+            text: 'Close',
+            onPress: () => AlertController.shared.didDimsiss() 
+          },
         ]);
       }
       return;

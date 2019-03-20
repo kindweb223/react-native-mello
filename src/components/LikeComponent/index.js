@@ -68,7 +68,21 @@ class LikeComponent extends React.Component {
         prevLikes: nextProps.idea.metadata.likes,
         disabled: false
       });
+    } else if (this.props.idea !== nextProps.idea) {
+      if (nextProps.idea.metadata.liked) {
+        this.animatedShow.setValue(1);
+      } else {
+        this.animatedShow.setValue(0);
+      }
+
+      this.setState({
+        liked: nextProps.idea.metadata.liked,
+        likes: nextProps.idea.metadata.likes,
+        prevLikes: nextProps.idea.metadata.likes,
+        disabled: false
+      });
     } else {
+
       // this.setState({
       //   liked: nextProps.idea.metadata.liked,
       //   likes: nextProps.idea.metadata.likes,
