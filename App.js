@@ -39,6 +39,7 @@ axios.interceptors.response.use(
     response
   ),
   (error) => {
+    // TODO add handling for offline use
     if (error.response && (
       (error.response.status === 401 && error.response.data.code === 'session.expired') ||
       (error.response.status === 403 && error.response.data.code === 'error.user.not.authenticated')
@@ -84,7 +85,7 @@ import TabbarContainer from './src/navigations/TabbarContainer'
 import TermsAndConditionsConfirmScreen from './src/containers/TermsAndConditionsConfirmScreen'
 import ProfilePremiumScreen from './src/containers/ProfilePremiumScreen'
 
-import { 
+import {
   getCardComments,
   getCard
 } from './src/redux/card/actions'
@@ -224,7 +225,7 @@ export default class Root extends React.Component {
         const path = params[params.length - 2]
         console.log('UNIVERSAL_LINK: ', decodeURIComponent(url_), ' Path: ', path)
 
-        if (path) {  
+        if (path) {
           const lastParam = params[params.length - 1]
           const paramArray = lastParam.split(/[?\=&]/)
           const type = paramArray[0]
@@ -232,7 +233,7 @@ export default class Root extends React.Component {
           if (type === 'signup') {  // Signup via invite
             const token = paramArray[2]
             const userEmail = paramArray[4]
-            
+
             Actions.SignUpScreen({
               userEmail,
               token,
@@ -264,17 +265,17 @@ export default class Root extends React.Component {
               store.dispatch(getFeedoList())
 
               if (userInfo) {
-                if (Actions.currentScene === 'FeedDetailScreen') {                  
+                if (Actions.currentScene === 'FeedDetailScreen') {
                   Actions.FeedDetailScreen({ type: 'replace', data, isDeepLink: true });
-                } 
+                }
                 else {
                   Actions.FeedDetailScreen({ data, isDeepLink: true })
                 }
-              } 
+              }
               else {
                 Actions.LoginScreen()
               }
-            } 
+            }
             catch (e) {
             }
         }
@@ -347,7 +348,7 @@ export default class Root extends React.Component {
     if (this.state.loading) {
       return (
         <View style={styles.loadingContainer}>
-          {/* <ActivityIndicator 
+          {/* <ActivityIndicator
             animating
             size="large"
             color={COLORS.PURPLE}
