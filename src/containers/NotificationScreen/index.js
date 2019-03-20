@@ -27,6 +27,7 @@ import ActivityFeedComponent from '../../components/ActivityFeedComponent'
 import CardDetailScreen from '../CardDetailScreen'
 import SelectHuntScreen from '../SelectHuntScreen'
 import ToasterComponent from '../../components/ToasterComponent'
+import AlertController from '../../components/AlertController'
 import LoadingScreen from '../LoadingScreen';
 
 import {
@@ -170,7 +171,7 @@ class NotificationScreen extends React.Component {
     if(feedo.loading === 'GET_FEED_DETAIL_PENDING' || card.loading === 'GET_CARD_PENDING') {
       this.setState({loading: true})
     }
-    
+
     if (feedo.loading === 'PUBNUB_GET_FEED_DETAIL_FULFILLED' && Actions.currentScene !== 'FeedDetailScreen' ||
         feedo.loading === 'GET_CARD_FULFILLED' && Actions.currentScene !== 'FeedDetailScreen' ||
         feedo.loading === 'PUBNUB_LIKE_CARD_FULFILLED' && Actions.currentScene !== 'FeedDetailScreen' ||
@@ -203,7 +204,7 @@ class NotificationScreen extends React.Component {
       if (!_.isEmpty(selectedActivity)) {
         Analytics.logEvent('notification_read_activity', {})
         switch (selectedActivity.activityTypeEnum) {
-          case 'IDEA_LIKED':          
+          case 'IDEA_LIKED':
           case 'COMMENT_ADDED':
           case 'USER_ACCESS_CHANGED':
           case 'USER_INVITED_TO_HUNT':
@@ -219,21 +220,21 @@ class NotificationScreen extends React.Component {
           case 'HUNT_DELETED':
             // Alert the flow has been deleted
             this.finishLoading()
-            Alert.alert('Error', 'This flow no longer exists')
+            AlertController.shared.showAlert('Error', 'This flow no longer exists')
             break;
           case 'IDEA_DELETED':
             // Alert the card has been deleted
             this.finishLoading()
-            Alert.alert('Error', 'This card no longer exists')
+            AlertController.shared.showAlert('Error', 'This card no longer exists')
             break;
-          default: 
+          default:
             this.finishLoading()
             break;
         }
       }
     }
 
-    if (this.props.feedo.loading !== 'GET_FEED_DETAIL_FULFILLED' && feedo.loading === 'GET_FEED_DETAIL_FULFILLED') {      
+    if (this.props.feedo.loading !== 'GET_FEED_DETAIL_FULFILLED' && feedo.loading === 'GET_FEED_DETAIL_FULFILLED') {
       this.prevFeedo = feedo.currentFeed;
       if (!_.isEmpty(selectedActivity)) {
         switch (selectedActivity.activityTypeEnum) {
@@ -259,14 +260,14 @@ class NotificationScreen extends React.Component {
 
             if (!cardExists) {
               this.finishLoading()
-              Alert.alert('Error', 'This card no longer exists')
+              AlertController.shared.showAlert('Error', 'This card no longer exists')
             }
             else {
               this.props.getCard(selectedActivity.metadata.IDEA_ID);
             }
 
             break;
-          default: 
+          default:
             this.finishLoading()
             break;
         }
@@ -297,10 +298,10 @@ class NotificationScreen extends React.Component {
             if(invitee) {
               this.setState({ selectedIdeaInvitee: invitee }, () => {
                 this.onSelectNewCard(card.currentCard)
-              })  
+              })
             }
             else {
-              Alert.alert('Error', 'This card no longer exists')
+              AlertController.shared.showAlert('Error', 'This card no longer exists')
             }
           }
           break;
@@ -336,9 +337,9 @@ class NotificationScreen extends React.Component {
       this.finishLoading()
 
       if (card.error.code === 'error.idea.not.found') {
-        Alert.alert('Error', 'This card no longer exists')
+        AlertController.shared.showAlert('Error', 'This card no longer exists')
       }
-    } 
+    }
 
   }
 
@@ -376,8 +377,8 @@ class NotificationScreen extends React.Component {
   }
 
   onReadActivity = (data) => {
-    this.setState({ 
-      selectedActivity: data 
+    this.setState({
+      selectedActivity: data
     }, () => {
     // If not read then call API, otherwise dummy call
       if (!data.read) {

@@ -16,13 +16,13 @@ class ExFastImage extends React.Component {
     super(props);
     this.state = {
       loaded: false,
-      imageOpacity: new Animated.Value(0.0),
       placeholderOpacity: new Animated.Value(1.0),
       placeholderScale: new Animated.Value(1.0),
       placeholderSource: images.placeholder,
       placeholderColor: '#b3e5fc',
       loadFromCache: true
     }
+    this.imageOpacity = new Animated.Value(0.0)
   }
 
   onLoadStart = () => {
@@ -36,14 +36,13 @@ class ExFastImage extends React.Component {
     const {
       placeholderScale,
       placeholderOpacity,
-      imageOpacity,
       loadFromCache
     } = this.state
 
-    Animated.timing(imageOpacity, {
+    Animated.timing(this.imageOpacity, {
       toValue: 1.0,
-      duration: loadFromCache ? 10 : 500,
-      useNativeDriver: false
+      duration: loadFromCache ? 0 : 500,
+      // useNativeDriver: false
     }).start();
 
     // Animated.sequence([
@@ -94,7 +93,6 @@ class ExFastImage extends React.Component {
 
     const {
       loaded,
-      imageOpacity,
       placeholderOpacity,
       placeholderScale,
       placeholderSource,
@@ -105,10 +103,10 @@ class ExFastImage extends React.Component {
       <View style={{ flex: 1 }}>
         <AnimatedFastImage
           style={[style, {
-            opacity: imageOpacity,
+            opacity: this.imageOpacity,
             transform: [
               {
-                scale: imageOpacity.interpolate({
+                scale: this.imageOpacity.interpolate({
                   inputRange: [0, 1],
                   outputRange: [0.85, 1],
                 })
