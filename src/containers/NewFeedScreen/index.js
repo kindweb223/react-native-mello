@@ -50,6 +50,7 @@ import TagCreateScreen from '../TagCreateScreen'
 import { TAGS_FEATURE } from '../../service/api'
 import Analytics from '../../lib/firebase'
 import pubnub from '../../lib/pubnub'
+import AlertController from '../../components/AlertController'
 
 // const ATTACHMENT_ICON = require('../../../assets/images/Attachment/Blue.png')
 // const IMAGE_ICON = require('../../../assets/images/Image/Blue.png')
@@ -208,7 +209,7 @@ class NewFeedScreen extends React.Component {
         if (error) {
           if (!this.isVisibleErrorDialog) {
             this.isVisibleErrorDialog = true;
-            Alert.alert('Error', error, [
+            AlertController.shared.showAlert('Error', error, [
               {text: 'Close', onPress: () => this.isVisibleErrorDialog = false},
             ]);
           }
@@ -290,7 +291,7 @@ class NewFeedScreen extends React.Component {
     Analytics.logEvent('new_feed_create_new_feed', {})
 
     if (this.state.feedName === '') {
-      Alert.alert('', 'Please give your flow a name.', [{ text: 'Close' }]);
+      AlertController.shared.showAlert('', 'Please give your flow a name.', [{ text: 'Close' }]);
       return;
     }
 
@@ -354,7 +355,7 @@ class NewFeedScreen extends React.Component {
     },(error, response) => {
       if (error === null) {
         if (response.fileSize > CONSTANTS.MAX_UPLOAD_FILE_SIZE) {
-          Alert.alert('Warning', 'File size must be less than 10MB')
+          AlertController.shared.showAlert('Warning', 'File size must be less than 10MB')
         } else {
           Analytics.logEvent('new_feed_add_file', {})
 
@@ -447,7 +448,7 @@ class NewFeedScreen extends React.Component {
     ImagePicker.launchCamera(options, (response)  => {
       if (!response.didCancel) {
         if (response.fileSize > CONSTANTS.MAX_UPLOAD_FILE_SIZE) {
-          Alert.alert('Warning', 'File size must be less than 10MB')
+          AlertController.shared.showAlert('Warning', 'File size must be less than 10MB')
         } else {
           Analytics.logEvent('new_feed_add_camera_image', {})
 
@@ -464,7 +465,7 @@ class NewFeedScreen extends React.Component {
     ImagePicker.launchImageLibrary(options, (response)  => {
       if (!response.didCancel) {
         if (response.fileSize > CONSTANTS.MAX_UPLOAD_FILE_SIZE) {
-          Alert.alert('Warning', 'File size must be less than 10MB')
+          AlertController.shared.showAlert('Warning', 'File size must be less than 10MB')
         } else {
           Analytics.logEvent('new_feed_add_library_image', {})
 

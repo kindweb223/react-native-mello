@@ -27,6 +27,7 @@ import COLORS from '../../service/colors'
 import resolveError from '../../service/resolveError'
 import * as COMMON_FUNC from '../../service/commonFunc'
 import styles from './styles'
+import AlertController from '../../components/AlertController';
 
 const LOGO = require('../../../assets/images/Login/icon_40pt.png')
 const GOOGLE_ICON = require('../../../assets/images/Login/iconMediumGoogle.png')
@@ -100,33 +101,38 @@ class LoginScreen extends React.Component {
         this.setState({ loading: false }, () => {
           if (user.error) {
             if (user.error.code === 'error.login.disabled') {
-              Alert.alert(
+              AlertController.shared.showAlert(
                 'Oops',
                 resolveError(user.error.code, user.error.message),
                 [
                   {
                     text: 'Try Again Later',
-                    style: 'cancel'
+                    style: 'cancel',
                   },
                   {
                     text: 'Reset Password',
-                    onPress: () => this.onForgotPassword()
+                    onPress: () => {
+                      console.log("did press onforgotpassword")
+                      this.onForgotPassword()
+                    }
                   }
                 ]
               )
             }
             else {
-              Alert.alert(
+              AlertController.shared.showAlert(
                 'Oops',
                 resolveError(user.error.code, user.error.message),
                 [
                   {
                     text: 'Try Again',
-                    style: 'cancel'
+                    style: 'cancel',
                   },
                   {
                     text: 'Forgot Password',
-                    onPress: () => this.onForgotPassword()
+                    onPress: () => {
+                      this.onForgotPassword()
+                    }
                   }
                 ]
               )
@@ -142,7 +148,7 @@ class LoginScreen extends React.Component {
       if (this.props.user.loading === 'USER_GOOGLE_SIGNIN_PENDING' && user.loading === 'USER_GOOGLE_SIGNIN_REJECTED') {
         this.setState({ loading: false }, () => {
           if (user.error) {
-            Alert.alert(
+            AlertController.shared.showAlert(
               'Warning',
               resolveError(user.error.code, user.error.message)
             )
@@ -196,9 +202,9 @@ class LoginScreen extends React.Component {
     Analytics.logEvent('login_reset_password', {})
 
     if (userEmail.length === 0) {
-      Alert.alert('Error', 'Email is required')
+      AlertController.shared.showAlert('Error', 'Email is required')
     } else if (!COMMON_FUNC.validateEmail(userEmail)) {
-      Alert.alert('Error', 'Please enter a valid email address')
+      AlertController.shared.showAlert('Error', 'Please enter a valid email address')
     } else {
       const param = {
         email: userEmail
@@ -289,19 +295,19 @@ class LoginScreen extends React.Component {
         } 
         else if (error.code === statusCodes.IN_PROGRESS) {
           // operation (f.e. sign in) is in progress already
-          Alert.alert('Error', 'Sign in is in progress already')
+          AlertController.shared.showAlert('Error', 'Sign in is in progress already')
         } 
         else if (error.code === statusCodes.PLAY_SERVICES_NOT_AVAILABLE) {
           // play services not available or outdated
-          Alert.alert('Error', 'You must enable Play Services to Sign in with Google')
+          AlertController.shared.showAlert('Error', 'You must enable Play Services to Sign in with Google')
         } 
         else {
           // some other error happened
-          Alert.alert('Error', 'Sign in with Google failed')
+          AlertController.shared.showAlert('Error', 'Sign in with Google failed')
         }
       }
     } catch (err) {
-      Alert.alert('Error', 'You must enable Play Services to Sign in with Google')
+      AlertController.shared.showAlert('Error', 'You must enable Play Services to Sign in with Google')
     }
   }
 
