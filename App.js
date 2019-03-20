@@ -382,7 +382,7 @@ const styles = StyleSheet.create({
   },
   emptyBorderNavigationBar: {
     height: 54,
-    marginHorizontal: 6,
+    marginHorizontal: 0,
     backgroundColor: '#fff',
     borderBottomWidth: 0
   },
