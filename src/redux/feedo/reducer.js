@@ -1314,7 +1314,6 @@ export default function feedo(state = initialState, action = {}) {
         loading: types.DEL_ACTIVITY_FEED_PENDING,
       }
     case types.DEL_ACTIVITY_FEED_FULFILLED: {
-      console.log('QQQQQQ')
       const activityId = action.payload
       const { activityFeedList, activityData } = state
 
