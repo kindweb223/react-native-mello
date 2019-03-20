@@ -147,6 +147,7 @@ android {
 }
 
 dependencies {
+    compile project(':react-native-text-size')
     compile project(':react-native-intercom')
     compile project(':react-native-image-base64')
     compile project(':react-native-thumbnail')

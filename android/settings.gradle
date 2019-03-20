@@ -1,4 +1,6 @@
 rootProject.name = 'Mello'
+include ':react-native-text-size'
+project(':react-native-text-size').projectDir = new File(rootProject.projectDir, '../node_modules/react-native-text-size/android')
 include ':react-native-intercom'
 project(':react-native-intercom').projectDir = new File(rootProject.projectDir, '../node_modules/react-native-intercom/android')
 include ':react-native-splash-screen'

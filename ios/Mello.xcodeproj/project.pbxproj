@@ -62,6 +62,7 @@
 		5D4845C5F9C349359FEE44B4 /* libRNFetchBlob.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 644B2D9A94784859B6ECCCD3 /* libRNFetchBlob.a */; };
 		5E9157361DD0AC6A00FF2AA8 /* libRCTAnimation.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 5E9157331DD0AC6500FF2AA8 /* libRCTAnimation.a */; };
 		616841DB94F14927B791ECFB /* libFastImage.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 77E9C8AEA81B42B39062B950 /* libFastImage.a */; };
+		630C8F6D277640E0AC78F336 /* libRNTextSize.a in Frameworks */ = {isa = PBXBuildFile; fileRef = D737F6C3F4964BBBB207DE7B /* libRNTextSize.a */; };
 		6938B943A0AE484E9E5A8DCD /* Octicons.ttf in Resources */ = {isa = PBXBuildFile; fileRef = C01A3DFF0BBD47CA8E552943 /* Octicons.ttf */; };
 		6EBDD815484C4CB6A8095806 /* libRNDeviceInfo.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 44C268ED8ACC4BCE9CDA61FC /* libRNDeviceInfo.a */; };
 		707DC7BF4F8B460B91F782CD /* libRNImagePicker.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 47BA3513B6514BE58476D7B4 /* libRNImagePicker.a */; };
@@ -383,6 +384,13 @@
 			proxyType = 2;
 			remoteGlobalIDString = 112EE36D1CC0AB8A00BF6BB8;
 			remoteInfo = RNIntercom;
+		};
+		4C96B855223AD4570069FDDC /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 9FE2ECE3EA2740B890191BF7 /* RNTextSize.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 134814201AA4EA6300B7C361;
+			remoteInfo = RNTextSize;
 		};
 		4CC8621C2193408300481DED /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
@@ -741,6 +749,7 @@
 		967ED53775644A5E9E9E82CB /* Foundation.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = Foundation.ttf; path = "../node_modules/react-native-vector-icons/Fonts/Foundation.ttf"; sourceTree = "<group>"; };
 		9AFE45238BF344909F881B0C /* FontAwesome5_Regular.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = FontAwesome5_Regular.ttf; path = "../node_modules/react-native-vector-icons/Fonts/FontAwesome5_Regular.ttf"; sourceTree = "<group>"; };
 		9F983F5C323D41389ED0DD7F /* libRNSVG.a */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = archive.ar; path = libRNSVG.a; sourceTree = "<group>"; };
+		9FE2ECE3EA2740B890191BF7 /* RNTextSize.xcodeproj */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = "wrapper.pb-project"; name = RNTextSize.xcodeproj; path = "../node_modules/react-native-text-size/ios/RNTextSize.xcodeproj"; sourceTree = "<group>"; };
 		A43563E0213837A200A6D4EA /* libSDWebImage iOS static.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; path = "libSDWebImage iOS static.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		A43563E2213837A200A6D4EA /* libSDWebImage watchOS static.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; path = "libSDWebImage watchOS static.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		A43563E4213837A200A6D4EA /* SDWebImage.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = SDWebImage.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -780,6 +789,7 @@
 		D6B8B24022109ABA00F9788D /* ShareExtensionTipManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShareExtensionTipManager.swift; sourceTree = "<group>"; };
 		D6B8B28222109B4200F9788D /* ShareExtensionTipManager.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ShareExtensionTipManager.m; sourceTree = "<group>"; };
 		D6B8B2842210C3EE00F9788D /* ShareExtensionTip.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShareExtensionTip.swift; sourceTree = "<group>"; };
+		D737F6C3F4964BBBB207DE7B /* libRNTextSize.a */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = archive.ar; path = libRNTextSize.a; sourceTree = "<group>"; };
 		D987827413CAB2D1572A10CA /* Pods-Mello.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Mello.release.xcconfig"; path = "Pods/Target Support Files/Pods-Mello/Pods-Mello.release.xcconfig"; sourceTree = "<group>"; };
 		D9E1BD18BB5B4D62B4263950 /* libBugsnagReactNative.a */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = archive.ar; path = libBugsnagReactNative.a; sourceTree = "<group>"; };
 		DDF2F7A8F2BB4EE4B265F759 /* RNImagePicker.xcodeproj */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = "wrapper.pb-project"; name = RNImagePicker.xcodeproj; path = "../node_modules/react-native-image-picker/ios/RNImagePicker.xcodeproj"; sourceTree = "<group>"; };
@@ -844,6 +854,7 @@
 				9CD6677E73B85E6F01711321 /* libPods-Mello.a in Frameworks */,
 				2D2CBD90DAC84BB8A182DAEB /* libRNThumbnail.a in Frameworks */,
 				F4F899BFA10D4129B959DAE8 /* libRNImgToBase64.a in Frameworks */,
+				630C8F6D277640E0AC78F336 /* libRNTextSize.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1090,6 +1101,14 @@
 			name = Products;
 			sourceTree = "<group>";
 		};
+		4C96B852223AD4570069FDDC /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				4C96B856223AD4570069FDDC /* libRNTextSize.a */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
 		4CC862192193408300481DED /* Products */ = {
 			isa = PBXGroup;
 			children = (
@@ -1197,6 +1216,7 @@
 				6F3D386719FC416CB3C92A02 /* RNSVG.xcodeproj */,
 				F5D07B917BD8461AA104117F /* RNThumbnail.xcodeproj */,
 				D2974AD2940A4DED8393FE7F /* RNImgToBase64.xcodeproj */,
+				9FE2ECE3EA2740B890191BF7 /* RNTextSize.xcodeproj */,
 			);
 			name = Libraries;
 			sourceTree = "<group>";
@@ -1401,7 +1421,7 @@
 				9505C59301A84E59BFF300C6 /* libRNSVG-tvOS.a */,
 				37CA782AC31D47CCBB55CA40 /* libRNThumbnail.a */,
 				48E815D86AC4450E91A11738 /* libRNImgToBase64.a */,
-				BEABEBA18DFB4A2F964A45A1 /* libRNFileViewer.a */,
+				D737F6C3F4964BBBB207DE7B /* libRNTextSize.a */,
 			);
 			name = "Recovered References";
 			sourceTree = "<group>";
@@ -1723,6 +1743,10 @@
 					ProjectRef = 6F3D386719FC416CB3C92A02 /* RNSVG.xcodeproj */;
 				},
 				{
+					ProductGroup = 4C96B852223AD4570069FDDC /* Products */;
+					ProjectRef = 9FE2ECE3EA2740B890191BF7 /* RNTextSize.xcodeproj */;
+				},
+				{
 					ProductGroup = 7183840C2208A6F500A76E12 /* Products */;
 					ProjectRef = F5D07B917BD8461AA104117F /* RNThumbnail.xcodeproj */;
 				},
@@ -1991,6 +2015,13 @@
 			fileType = archive.ar;
 			path = libRNIntercom.a;
 			remoteRef = 4C246BB5222793AD00FD052A /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		4C96B856223AD4570069FDDC /* libRNTextSize.a */ = {
+			isa = PBXReferenceProxy;
+			fileType = archive.ar;
+			path = libRNTextSize.a;
+			remoteRef = 4C96B855223AD4570069FDDC /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
 		4CC8621D2193408300481DED /* libRNFirebase.a */ = {
@@ -2566,6 +2597,7 @@
 					"$(SRCROOT)/../node_modules/react-native-svg/ios/**",
 					"$(SRCROOT)/../node_modules/react-native-thumbnail/ios",
 					"$(SRCROOT)/../node_modules/react-native-image-base64/ios",
+					"$(SRCROOT)/../node_modules/react-native-text-size/ios",
 				);
 				INFOPLIST_FILE = MelloTests/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
@@ -2573,6 +2605,7 @@
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					"\"$(SRCROOT)/$(TARGET_NAME)/System/Library/Frameworks\"",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 				);
 				OTHER_LDFLAGS = (
 					"-ObjC",
@@ -2616,6 +2649,7 @@
 					"$(SRCROOT)/../node_modules/react-native-svg/ios/**",
 					"$(SRCROOT)/../node_modules/react-native-thumbnail/ios",
 					"$(SRCROOT)/../node_modules/react-native-image-base64/ios",
+					"$(SRCROOT)/../node_modules/react-native-text-size/ios",
 				);
 				INFOPLIST_FILE = MelloTests/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
@@ -2623,6 +2657,7 @@
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					"\"$(SRCROOT)/$(TARGET_NAME)/System/Library/Frameworks\"",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 				);
 				OTHER_LDFLAGS = (
 					"-ObjC",
@@ -2675,6 +2710,7 @@
 					"$(SRCROOT)/../node_modules/react-native-splash-screen/ios/**",
 					"$(SRCROOT)/../node_modules/react-native-thumbnail/ios",
 					"$(SRCROOT)/../node_modules/react-native-image-base64/ios",
+					"$(SRCROOT)/../node_modules/react-native-text-size/ios",
 				);
 				INFOPLIST_FILE = Mello/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
@@ -2735,6 +2771,7 @@
 					"$(SRCROOT)/../node_modules/react-native-splash-screen/ios/**",
 					"$(SRCROOT)/../node_modules/react-native-thumbnail/ios",
 					"$(SRCROOT)/../node_modules/react-native-image-base64/ios",
+					"$(SRCROOT)/../node_modules/react-native-text-size/ios",
 				);
 				INFOPLIST_FILE = Mello/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
@@ -2792,12 +2829,14 @@
 					"$(SRCROOT)/../node_modules/react-native-svg/ios/**",
 					"$(SRCROOT)/../node_modules/react-native-thumbnail/ios",
 					"$(SRCROOT)/../node_modules/react-native-image-base64/ios",
+					"$(SRCROOT)/../node_modules/react-native-text-size/ios",
 				);
 				INFOPLIST_FILE = "Mello-tvOS/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					"\"$(SRCROOT)/$(TARGET_NAME)/System/Library/Frameworks\"",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 				);
 				OTHER_LDFLAGS = (
 					"-ObjC",
@@ -2851,12 +2890,14 @@
 					"$(SRCROOT)/../node_modules/react-native-svg/ios/**",
 					"$(SRCROOT)/../node_modules/react-native-thumbnail/ios",
 					"$(SRCROOT)/../node_modules/react-native-image-base64/ios",
+					"$(SRCROOT)/../node_modules/react-native-text-size/ios",
 				);
 				INFOPLIST_FILE = "Mello-tvOS/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					"\"$(SRCROOT)/$(TARGET_NAME)/System/Library/Frameworks\"",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 				);
 				OTHER_LDFLAGS = (
 					"-ObjC",
@@ -2905,12 +2946,14 @@
 					"$(SRCROOT)/../node_modules/react-native-svg/ios/**",
 					"$(SRCROOT)/../node_modules/react-native-thumbnail/ios",
 					"$(SRCROOT)/../node_modules/react-native-image-base64/ios",
+					"$(SRCROOT)/../node_modules/react-native-text-size/ios",
 				);
 				INFOPLIST_FILE = "Mello-tvOSTests/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					"\"$(SRCROOT)/$(TARGET_NAME)/System/Library/Frameworks\"",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 				);
 				OTHER_LDFLAGS = (
 					"-ObjC",
@@ -2958,12 +3001,14 @@
 					"$(SRCROOT)/../node_modules/react-native-svg/ios/**",
 					"$(SRCROOT)/../node_modules/react-native-thumbnail/ios",
 					"$(SRCROOT)/../node_modules/react-native-image-base64/ios",
+					"$(SRCROOT)/../node_modules/react-native-text-size/ios",
 				);
 				INFOPLIST_FILE = "Mello-tvOSTests/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					"\"$(SRCROOT)/$(TARGET_NAME)/System/Library/Frameworks\"",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 				);
 				OTHER_LDFLAGS = (
 					"-ObjC",
@@ -3097,6 +3142,7 @@
 					"$(SRCROOT)/../node_modules/react-native-svg/ios/**",
 					"$(SRCROOT)/../node_modules/react-native-thumbnail/ios",
 					"$(SRCROOT)/../node_modules/react-native-image-base64/ios",
+					"$(SRCROOT)/../node_modules/react-native-text-size/ios",
 				);
 				INFOPLIST_FILE = MelloEx/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
@@ -3104,6 +3150,7 @@
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					"\"$(SRCROOT)/$(TARGET_NAME)/System/Library/Frameworks\"",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 				);
 				OTHER_LDFLAGS = (
 					"$(inherited)",
@@ -3163,6 +3210,7 @@
 					"$(SRCROOT)/../node_modules/react-native-svg/ios/**",
 					"$(SRCROOT)/../node_modules/react-native-thumbnail/ios",
 					"$(SRCROOT)/../node_modules/react-native-image-base64/ios",
+					"$(SRCROOT)/../node_modules/react-native-text-size/ios",
 				);
 				INFOPLIST_FILE = MelloEx/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
@@ -3170,6 +3218,7 @@
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					"\"$(SRCROOT)/$(TARGET_NAME)/System/Library/Frameworks\"",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 				);
 				OTHER_LDFLAGS = (
 					"$(inherited)",

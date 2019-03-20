@@ -4,19 +4,17 @@ import COLORS from '../../../service/colors'
 const styles = StyleSheet.create({
   container: {
     width: '100%',
-    marginBottom: 16,
-    borderWidth: 1,
-    borderColor: '#fff'
+    marginBottom: 16
   },
   selected: {
     borderWidth: 1,
     borderColor: COLORS.PURPLE,
-    borderRadius: 10
+    borderRadius: 16
   },
   subContainer: {
     width: '100%',
     justifyContent: 'center',
-    borderRadius: 10,
+    borderRadius: 16,
     backgroundColor: COLORS.LIGHT_SOFT_GREY,
     overflow: 'hidden'
   },
