@@ -1774,6 +1774,12 @@ export default function feedo(state = initialState, action = {}) {
         feedoList: [...updatedFeedList]
       }
     }
+    case types.PUBNUB_USER_INVITED_FULFILLED: {
+      return {
+        ...state,
+        loading: types.PUBNUB_USER_INVITED_FULFILLED
+      }
+    }
     default:
       return state;
   }

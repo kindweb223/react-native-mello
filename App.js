@@ -97,7 +97,8 @@ import {
   pubnubDeleteInvitee,
   pubnubDeleteOtherInvitee,
   pubnubMoveIdea,
-  getFeedoList
+  getFeedoList,
+  pubnubUserInvited
 } from './src/redux/feedo/actions'
 
 const SPLASH_LOGO = require('./assets/images/Splash/splashLogo.png')
@@ -154,7 +155,7 @@ export default class Root extends React.Component {
         }
         if (response.message.action === 'USER_INVITED_TO_HUNT') {
           store.dispatch(getInvitedFeedList())
-          // store.dispatch(pubnubGetFeedDetail(response.message.data.huntId))
+          store.dispatch(pubnubUserInvited())
         }
         if (response.message.action === 'USER_JOINED_HUNT') {
           store.dispatch(pubnubGetFeedDetail(response.message.data.huntId))
