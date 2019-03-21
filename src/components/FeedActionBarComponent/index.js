@@ -21,6 +21,7 @@ import { SHARE_LINK_URL } from "../../service/api"
 import * as COMMON_FUNC from '../../service/commonFunc'
 import Modal from "react-native-modal"
 import { PIN_FEATURE } from '../../service/api'
+import AlertController from '../AlertController';
 
 const SELECT_NONE = 0;
 const SELECT_PIN_UNPIN = 1;
@@ -70,7 +71,7 @@ class FeedActionBarComponent extends React.Component {
       COMMON_FUNC.handleShareFeed(data)
     } 
     else {
-      Alert.alert('Warning', 'Sharing is not enabled for this flow')
+      AlertController.shared.showAlert('Warning', 'Sharing is not enabled for this flow')
     }
   }
 
