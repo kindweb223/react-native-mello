@@ -18,6 +18,7 @@ import styles from './styles'
 import COLORS from '../../service/colors'
 import * as COMMON_FUNC from '../../service/commonFunc'
 import Analytics from '../../lib/firebase'
+import AlertController from '../../components/AlertController'
 
 class FollowMemberScreen extends React.Component {
   constructor(props) {
@@ -46,7 +47,7 @@ class FollowMemberScreen extends React.Component {
 
     if (this.props.feedo.loading === 'INVITE_HUNT_PENDING' && feedo.loading === 'INVITE_HUNT_FULFILLED') {
       if (this.props.feedo.error) {
-        Alert.alert(
+        AlertController.shared.showAlert(
           'Error',
           feedo.error
         )

@@ -170,7 +170,7 @@ class ActivityFeedComponent extends React.Component {
           <Text>
             <Text style={styles.title}>
               {data.activityTypeEnum === 'USER_INVITED_TO_HUNT'
-                ? data.metadata.INVIEE_NAME
+                ? data.metadata.INVITEE_NAME
                 : `${data.instigatorFirstName} ${data.instigatorLastName}`
               }
             </Text>

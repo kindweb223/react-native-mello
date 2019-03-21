@@ -1557,10 +1557,12 @@ export default function feedo(state = initialState, action = {}) {
       const restOldIdeas = filter(oldFeed.ideas, idea => idea.id !== ideaId)
 
       let newCurrentFeed = currentFeed
+      const ideasSubmitted = oldFeed.metadata.ideasSubmitted - 1
       if (currentFeed.id === feedId) {
         newCurrentFeed = {
           ...newCurrentFeed,
-          ideas: filter(newCurrentFeed.ideas, idea => idea.id !== ideaId)
+          ideas: filter(newCurrentFeed.ideas, idea => idea.id !== ideaId),
+          metadata: Object.assign({}, currentFeed.metadata, { ideasSubmitted })
         }
       }
 
@@ -1571,7 +1573,8 @@ export default function feedo(state = initialState, action = {}) {
           ...restFeedoList,
           {
             ...oldFeed,
-            ideas: restOldIdeas
+            ideas: restOldIdeas,
+            metadata: Object.assign({}, currentFeed.metadata, { ideasSubmitted })
           }
         ],
         currentFeed: newCurrentFeed
