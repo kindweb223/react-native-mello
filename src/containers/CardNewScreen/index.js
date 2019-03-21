@@ -689,12 +689,19 @@ class CardNewScreen extends React.Component {
       }
     });
 
-    this.keyboardDidShowSubscription = Keyboard.addListener('keyboardDidShow', (e) => this.keyboardDidShow(e));
-    this.keyboardDidHideSubscription = Keyboard.addListener('keyboardDidHide', (e) => this.keyboardDidHide(e));
-
     if (Platform.OS === 'ios') {
       this.safariViewShowSubscription = SafariView.addEventListener('onShow', () => this.safariViewShow());
       this.safariViewDismissSubscription = SafariView.addEventListener('onDismiss', () => this.safariViewDismiss());
+    }
+    
+    if (Platform.OS === 'android' && this.props.isClipboard === true) {
+      this.keyboardDidShowSubscription = Keyboard.addListener('keyboardDidShow', (e) => this.keyboardDidShow(e));
+      this.keyboardDidHideSubscription = Keyboard.addListener('keyboardDidHide', (e) => this.keyboardDidHide(e));
+    }
+    else {
+      // Alert.alert('NOT', 'CLIPBOARD')
+      this.keyboardDidShowSubscription = Keyboard.addListener('keyboardWillShow', (e) => this.keyboardDidShow(e));
+      this.keyboardDidHideSubscription = Keyboard.addListener('keyboardWillHide', (e) => this.keyboardDidHide(e));
     }
 
     BackHandler.addEventListener('hardwareBackPress', this.handleBackButton);
@@ -726,13 +733,14 @@ class CardNewScreen extends React.Component {
     Animated.timing(
       this.animatedKeyboardHeight, {
         toValue: e.endCoordinates.height,
-        duration: Platform.OS === 'ios' ? e.duration : 30,
+        duration: Platform.OS === 'android' && this.props.isClipboard === true ? 30 : e.duration,
       }
     ).start(() => {
       if (this.isDisabledKeyboard === true || !this.textInputIdeaRef) {
         return;
       }
-      // this.textInputIdeaRef.focus();
+
+      this.textInputIdeaRef.focus();
     });
   }
 
@@ -740,7 +748,7 @@ class CardNewScreen extends React.Component {
     Animated.timing(
       this.animatedKeyboardHeight, {
         toValue: 0,
-        duration: Platform.OS === 'ios' ? e.duration : 30,
+        duration: Platform.OS === 'android' && this.props.isClipboard === true ? 30 : e.duration,
       }
     ).start();
   }
@@ -1957,7 +1965,8 @@ CardNewScreen.defaultProps = {
   shareUrl: '',
   shareImageUrls: [],
   shareText: '',
-  onClose: () => {}
+  onClose: () => {},
+  isClipboard: false
 }
 
 
@@ -1972,6 +1981,7 @@ CardNewScreen.propTypes = {
   shareImageUrls: PropTypes.array,
   shareText: PropTypes.string,
   onClose: PropTypes.func,
+  isClipboard: PropTypes.bool,
 }
 
 
