@@ -387,8 +387,6 @@ class FeedDetailScreen extends React.Component {
   onHandleAppStateChange = async(nextAppState) => {
     if (this.state.appState.match(/inactive|background/) && nextAppState === 'active' && Actions.currentScene === 'FeedDetailScreen' && !this.state.isVisibleCard) {
       if (this.state.loading === false) {
-        this.setState({ loading: true })
-        this.props.getFeedDetail(this.props.data.id);
         this.showClipboardToast()
       }
     }
