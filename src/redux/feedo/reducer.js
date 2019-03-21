@@ -181,6 +181,21 @@ export default function feedo(state = initialState, action = {}) {
       }
     case types.GET_FEED_DETAIL_FULFILLED: {
       const { data } = action.result
+      const { invitedFeedList, feedoList } = state
+      const feedIndex = findIndex(invitedFeedList, feed => feed.id === data.id);
+      if (feedIndex !== -1 && data.metadata.myInviteStatus === 'ACCEPTED') {
+        invitedFeedList.pop(feedIndex)
+        feedoList.push(data)
+
+        return {
+          ...state,
+          loading: types.GET_FEED_DETAIL_FULFILLED,
+          currentFeed: data,
+          feedoList,
+          invitedFeedList
+        }
+      }
+
       return {
         ...state,
         loading: types.GET_FEED_DETAIL_FULFILLED,
@@ -1757,6 +1772,12 @@ export default function feedo(state = initialState, action = {}) {
         ...state,
         loading: userTypes.UPDATE_PROFILE_FULFILLED,
         feedoList: [...updatedFeedList]
+      }
+    }
+    case types.PUBNUB_USER_INVITED_FULFILLED: {
+      return {
+        ...state,
+        loading: types.PUBNUB_USER_INVITED_FULFILLED
       }
     }
     default:

@@ -729,3 +729,9 @@ export const saveFlowViewPreference = (feedId, inviteeId, preference) => {
     payload: { feedId, preference }
   }
 }
+
+export const pubnubUserInvited = () => {
+  return {
+    type: types.PUBNUB_USER_INVITED_FULFILLED
+  };
+}

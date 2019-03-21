@@ -190,6 +190,7 @@ class NotificationScreen extends React.Component {
 
     if ((this.props.feedo.loading !== 'GET_INVITED_FEEDO_LIST_FULFILLED' && feedo.loading === 'GET_INVITED_FEEDO_LIST_FULFILLED') ||
         (this.props.feedo.loading !== 'SAVE_FLOW_PREFERENCE_FULFILLED' && feedo.loading === 'SAVE_FLOW_PREFERENCE_FULFILLED') ||
+        (feedo.loading === 'GET_FEED_DETAIL_FULFILLED') ||
         (feedo.loading === 'PUBNUB_DELETE_FEED' &&
         Actions.currentScene !== 'FeedDetailScreen' && 
         Actions.currentScene !== 'CommentScreen' && Actions.currentScene !== 'ActivityCommentScreen' &&
