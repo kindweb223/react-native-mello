@@ -271,7 +271,6 @@ export default class Root extends React.Component {
 
               if (userInfo) {
                 if (Actions.currentScene === 'FeedDetailScreen') {                  
-                  // Actions.FeedDetailScreen({ type: 'replace', data, isDeepLink: true });
                   store.dispatch(getFeedDetail(data.id));
                 } 
                 else {
