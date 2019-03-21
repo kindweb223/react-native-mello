@@ -283,8 +283,8 @@ class HomeScreen extends React.Component {
       (feedo.loading === 'UPDATE_CARD_FULFILLED') || (feedo.loading === 'GET_CARD_FULFILLED') ||
       (feedo.loading === 'DEL_DUMMY_CARD') || (feedo.loading === 'MOVE_DUMMY_CARD') ||
       (feedo.loading === 'PUBNUB_DELETE_INVITEE_FULFILLED') || (feedo.loading === 'GET_FEED_DETAIL_REJECTED') ||
-      (feedo.loading === 'SAVE_FLOW_PREFERENCE_FULFILLED') ||
-      (feedo.loading === 'UPDATE_PROFILE_FULFILLED') ||
+      (feedo.loading === 'SAVE_FLOW_PREFERENCE_FULFILLED') || (feedo.loading === 'GET_INVITED_FEEDO_LIST_FULFILLED') ||
+      (feedo.loading === 'UPDATE_PROFILE_FULFILLED') || (feedo.loading === 'GET_FEED_DETAIL_FULFILLED') ||
       (feedo.loading === 'PUBNUB_DELETE_FEED' &&
                           Actions.currentScene !== 'FeedDetailScreen' && 
                           Actions.currentScene !== 'CommentScreen' && Actions.currentScene !== 'ActivityCommentScreen' &&
@@ -396,6 +396,7 @@ class HomeScreen extends React.Component {
         feedo.loading === 'GET_CARD_FULFILLED' && Actions.currentScene !== 'FeedDetailScreen' ||
         feedo.loading === 'PUBNUB_LIKE_CARD_FULFILLED' && Actions.currentScene !== 'FeedDetailScreen' ||
         feedo.loading === 'PUBNUB_UNLIKE_CARD_FULFILLED' && Actions.currentScene !== 'FeedDetailScreen' ||
+        feedo.loading === 'PUBNUB_USER_INVITED_FULFILLED' ||
         (feedo.loading === 'GET_CARD_COMMENTS_FULFILLED' &&
                           Actions.currentScene !== 'FeedDetailScreen' && 
                           Actions.currentScene !== 'CommentScreen' && Actions.currentScene !== 'ActivityCommentScreen' &&
