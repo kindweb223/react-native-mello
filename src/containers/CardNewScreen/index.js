@@ -723,30 +723,26 @@ class CardNewScreen extends React.Component {
   }
 
   keyboardDidShow(e) {
-    if ((this.props.isClipboard && Platform.OS === 'android') || Platform.OS === 'ios') {
-      Animated.timing(
-        this.animatedKeyboardHeight, {
-          toValue: e.endCoordinates.height,
-          duration: Platform.OS === 'ios' ? e.duration : 30,
-        }
-      ).start(() => {
-        if (this.isDisabledKeyboard === true || !this.textInputIdeaRef) {
-          return;
-        }
-        // this.textInputIdeaRef.focus();
-      });
-    }
+    Animated.timing(
+      this.animatedKeyboardHeight, {
+        toValue: e.endCoordinates.height,
+        duration: Platform.OS === 'ios' ? e.duration : 30,
+      }
+    ).start(() => {
+      if (this.isDisabledKeyboard === true || !this.textInputIdeaRef) {
+        return;
+      }
+      // this.textInputIdeaRef.focus();
+    });
   }
 
   keyboardDidHide(e) {
-    if ((this.props.isClipboard && Platform.OS === 'android') || Platform.OS === 'ios') {
-      Animated.timing(
-        this.animatedKeyboardHeight, {
-          toValue: 0,
-          duration: Platform.OS === 'ios' ? e.duration : 30,
-        }
-      ).start();
-    }
+    Animated.timing(
+      this.animatedKeyboardHeight, {
+        toValue: 0,
+        duration: Platform.OS === 'ios' ? e.duration : 30,
+      }
+    ).start();
   }
 
   safariViewShow() {
@@ -1961,8 +1957,7 @@ CardNewScreen.defaultProps = {
   shareUrl: '',
   shareImageUrls: [],
   shareText: '',
-  onClose: () => {},
-  isClipboard: false
+  onClose: () => {}
 }
 
 

@@ -4,9 +4,8 @@ import CONSTANTS from '../../service/constants'
 
 const styles = StyleSheet.create({
   container: {
-    width: '100%',
-    height: '100%',
-    backgroundColor: 'transparent',
+    width: CONSTANTS.SCREEN_WIDTH,
+    height: CONSTANTS.SCREEN_HEIGHT,
     justifyContent: 'center',
   },
   cardContainer: {
@@ -14,6 +13,7 @@ const styles = StyleSheet.create({
     left: 0,
     right: 0,
     bottom: 0,
+    paddingBottom: Platform.OS === 'android' ? 24 : 0,
     justifyContent: 'center',
     backgroundColor: 'transparent',
   },
