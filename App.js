@@ -98,7 +98,8 @@ import {
   pubnubDeleteOtherInvitee,
   pubnubMoveIdea,
   getFeedoList,
-  pubnubUserInvited
+  pubnubUserInvited,
+  getFeedDetail
 } from './src/redux/feedo/actions'
 
 const SPLASH_LOGO = require('./assets/images/Splash/splashLogo.png')
@@ -270,7 +271,8 @@ export default class Root extends React.Component {
 
               if (userInfo) {
                 if (Actions.currentScene === 'FeedDetailScreen') {                  
-                  Actions.FeedDetailScreen({ type: 'replace', data, isDeepLink: true });
+                  // Actions.FeedDetailScreen({ type: 'replace', data, isDeepLink: true });
+                  store.dispatch(getFeedDetail(data.id));
                 } 
                 else {
                   Actions.FeedDetailScreen({ data, isDeepLink: true })
