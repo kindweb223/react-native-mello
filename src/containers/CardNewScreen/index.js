@@ -125,7 +125,8 @@ class CardNewScreen extends React.Component {
       cardMode: 'CardNewSingle',
       fileType: '',
       isSaving: false,
-      uploadProgress: 0
+      uploadProgress: 0,
+      bottomButtonsPadding: 0
     };
 
     this.imageUploading = false;
@@ -730,6 +731,11 @@ class CardNewScreen extends React.Component {
   }
 
   keyboardDidShow(e) {
+    // Padding issue with Android in clipboard mode 
+    if(Platform.OS === 'android' && this.props.isClipboard === true) {
+      this.setState({bottomButtonsPadding: 24})
+    }
+
     Animated.timing(
       this.animatedKeyboardHeight, {
         toValue: e.endCoordinates.height,
@@ -745,6 +751,11 @@ class CardNewScreen extends React.Component {
   }
 
   keyboardDidHide(e) {
+    // Padding issue with Android in clipboard mode
+    if(Platform.OS === 'android' && this.props.isClipboard === true) {
+      this.setState({bottomButtonsPadding: 0})
+    }
+
     Animated.timing(
       this.animatedKeyboardHeight, {
         toValue: 0,
@@ -1625,13 +1636,15 @@ class CardNewScreen extends React.Component {
 
   get renderBottomAttachmentButtons() {
     const { viewMode, cardMode } = this.props;
+    const { bottomButtonsPadding } = this.state;
+
     if (cardMode === CONSTANTS.SHARE_EXTENTION_CARD) {
       return;
     } else if (viewMode !== CONSTANTS.CARD_NEW) {
       return;
     }
     return (
-      <View style={[styles.attachmentButtonsContainer, { paddingHorizontal: 16, marginVertical: 16 }]}>
+      <View style={[styles.attachmentButtonsContainer, { paddingHorizontal: 16, marginVertical: 16, paddingBottom: bottomButtonsPadding }]}>
         <TouchableOpacity 
           style={styles.iconView}
           activeOpacity={0.6}
