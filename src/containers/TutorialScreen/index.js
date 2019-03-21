@@ -44,13 +44,14 @@ import VIDEO_REVIEW from '../../../assets/videos/Phone.m4v'
 import VIDEO_SHARE from '../../../assets/videos/Head.m4v'
 import VIDEO_SERVICE from '../../../assets/videos/Services.m4v'
 import VIDEO_PEOPLE from '../../../assets/videos/People.m4v'
+import AlertController from '../../components/AlertController';
 
 
 class TutorialScreen extends React.Component {
   constructor(props) {
     super(props)
     this.state = {
-      position: 0,
+      position: 6,
       loading: false,
       video1Paused: true,
       video2Paused: true,
@@ -67,6 +68,10 @@ class TutorialScreen extends React.Component {
       webClientId: GOOGLE_WEB_CLIENT_ID,
       offlineAccess: false
     })
+
+    if (this.props.prevPage === 'start') {
+      this.setState({ position: 0 })
+    }
 
     BackHandler.addEventListener('hardwareBackPress', this.handleBackButton);
   }
@@ -88,10 +93,6 @@ class TutorialScreen extends React.Component {
   componentWillReceiveProps(nextProps) {
     const { user } = nextProps
 
-    if (nextProps.prevPage === 'login') {
-      this.swiperRef.scrollBy(6, false)
-    }
-
     if (this.props.user.loading === 'USER_GOOGLE_SIGNIN_PENDING' && user.loading === 'USER_GOOGLE_SIGNIN_FULFILLED') {
       this.props.getUserSession()
     }
@@ -99,7 +100,7 @@ class TutorialScreen extends React.Component {
     if (this.props.user.loading === 'USER_GOOGLE_SIGNIN_PENDING' && user.loading === 'USER_GOOGLE_SIGNIN_REJECTED') {
       this.setState({ loading: false }, () => {
         if (user.error) {
-          Alert.alert(
+          AlertController.shared.showAlert(
             'Warning',
             resolveError(user.error.code, user.error.message)
           )
@@ -125,7 +126,7 @@ class TutorialScreen extends React.Component {
   }
 
   onLogin = () => {
-    Actions.LoginScreen()
+    Actions.LoginScreen({ prevPage: 'tutorial' })
   }
 
   onSignUp = () => {
@@ -148,19 +149,19 @@ class TutorialScreen extends React.Component {
         } 
         else if (error.code === statusCodes.IN_PROGRESS) {
           // operation (f.e. sign in) is in progress already
-          Alert.alert('Error', 'Sign in is in progress already')
+          AlertController.shared.showAlert('Error', 'Sign in is in progress already')
         } 
         else if (error.code === statusCodes.PLAY_SERVICES_NOT_AVAILABLE) {
           // play services not available or outdated
-          Alert.alert('Error', 'You must enable Play Services to Sign in with Google')
+          AlertController.shared.showAlert('Error', 'You must enable Play Services to Sign in with Google')
         } 
         else {
           // some other error happened
-          Alert.alert('Error', 'Sign in with Google failed')
+          AlertController.shared.showAlert('Error', 'Sign in with Google failed')
         }
       }
     } catch (err) {
-      Alert.alert('Error', 'You must enable Play Services to Sign in with Google')
+      AlertController.shared.showAlert('Error', 'You must enable Play Services to Sign in with Google')
     }
   }
 

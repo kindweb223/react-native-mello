@@ -24,7 +24,7 @@ const styles = StyleSheet.create({
     flex: 1
   },
   feedListContainerLongHold: {
-    marginTop: -32
+    marginTop: Platform.OS === 'ios' ? -56 : -48
   },
   modalContainer: {
     position: 'absolute',
@@ -55,7 +55,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: CONSTANTS.PADDING,
     position: 'absolute',
     right: 0,
-    top: CONSTANTS.STATUSBAR_HEIGHT,
+    top: Platform.OS === 'ios' ? CONSTANTS.STATUSBAR_HEIGHT : 0,
     paddingTop: 8,
     alignItems: 'flex-end',
     backgroundColor: '#fff'
@@ -69,9 +69,11 @@ const styles = StyleSheet.create({
     alignItems: 'center'
   },
   btnDoneText: {
-    color: '#fff',
-    fontSize: 15,
-    fontWeight: '500'
+    paddingTop: 10,
+    fontSize: 16,
+    lineHeight: 22,
+    fontWeight: '600',
+    textAlign: 'center',
   },
   headerView: {
     width: CONSTANTS.SCREEN_WIDTH,

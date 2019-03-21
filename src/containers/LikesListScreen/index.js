@@ -25,6 +25,7 @@ import {
 } from '../../redux/card/actions'
 import { getDurationFromNow } from '../../service/dateUtils'
 import UserAvatarComponent from '../../components/UserAvatarComponent';
+import AlertController from '../../components/AlertController'
 
 import Analytics from '../../lib/firebase'
 
@@ -99,7 +100,7 @@ class LikesListScreen extends React.Component {
         errorMessage = error.message;
       }
       if (errorMessage) {
-        Alert.alert('Error', errorMessage, [
+        AlertController.shared.showAlert('Error', errorMessage, [
           {text: 'Close'},
         ]);
       }
