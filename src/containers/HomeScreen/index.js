@@ -1347,9 +1347,7 @@ class HomeScreen extends React.Component {
         {this.state.isLongHoldMenuVisible && (
           <View style={styles.topButtonView}>
             <TouchableOpacity onPress={() => this.closeLongHoldMenu()}>
-              <View style={styles.btnDoneView}>
-                <Text style={styles.btnDoneText}>Done</Text>
-              </View>
+              <Text style={[styles.btnDoneText, { color: COLORS.PURPLE }]}>Done</Text>
             </TouchableOpacity>
           </View>
         )}
