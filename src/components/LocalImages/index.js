@@ -252,6 +252,7 @@ class LocalImages extends React.Component {
             })
         }
     }
+    
 
     render() {
         const { files } =  this.state
