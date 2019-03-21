@@ -161,27 +161,27 @@ export default class CoverImagePreviewComponent extends React.Component {
       <View style={styles.container}>
         {this.renderCoverImage(files, coverImage, position)}
         {this.renderProgressBar}
-        <Modal 
-          isVisible={this.state.isPreview}
-          style={styles.previewModal}
-          backdropColor='rgba(0, 0, 0, 0.9)'
-          animationIn='fadeIn'
-          animationOut='fadeOut'
-          animationInTiming={100}
-          animationOutTiming={100}
-          onBackButtonPress={() => this.setState({ isPreview: false })}
-        >
-          <ImageSliderScreen 
-            mediaFiles={files}
-            position={position}
-            removal={this.props.editable}
-            isSetCoverImage={this.props.isSetCoverImage}
-            isFastImage={isFastImage}
-            onRemove={(id) => this.props.onRemove(id)}
-            onSetCoverImage={(id) => this.props.onSetCoverImage(id)}
-            onClose={() => this.setState({ isPreview: false })}
-          />
-        </Modal>
+          <Modal 
+            isVisible={this.state.isPreview}
+            style={styles.previewModal}
+            backdropColor='rgba(0, 0, 0, 0.9)'
+            animationIn='fadeIn'
+            animationOut='fadeOut'
+            animationInTiming={100}
+            animationOutTiming={100}
+            onBackButtonPress={() => this.setState({ isPreview: false })}
+          >
+            <ImageSliderScreen 
+              mediaFiles={files}
+              position={position}
+              removal={this.props.editable}
+              isSetCoverImage={this.props.isSetCoverImage}
+              isFastImage={isFastImage}
+              onRemove={(id) => this.props.onRemove(id)}
+              onSetCoverImage={(id) => this.props.onSetCoverImage(id)}
+              onClose={() => this.setState({ isPreview: false })}
+            />
+          </Modal>
       </View>
     );
   }

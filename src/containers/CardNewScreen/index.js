@@ -366,6 +366,7 @@ class CardNewScreen extends React.Component {
         this.setState({ imageUploading: false });
         this.imageUploading = false;
       }
+      this.setState({ imageUploadStarted: false })
 
       this.currentSelectedLinkImageIndex ++;
       if (this.currentSelectedLinkImageIndex < this.selectedLinkImages.length) {

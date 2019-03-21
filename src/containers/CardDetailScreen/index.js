@@ -268,6 +268,8 @@ class CardDetailScreen extends React.Component {
       if (newImageFiles.length > 1) { // Need to stop image uploading state here for 2nd Image
         this.setState({ imageUploading: false });
       }
+      this.setState({ imageUploadStarted: false })
+
       this.currentSelectedLinkImageIndex ++;
       if (this.currentSelectedLinkImageIndex < this.selectedLinkImages.length) {
         this.addLinkImage(id, this.selectedLinkImages[this.currentSelectedLinkImageIndex]);
@@ -1245,13 +1247,24 @@ class CardDetailScreen extends React.Component {
   get renderCoverImage() {
     const { viewMode, card } = this.props;
     const { coverImage, imageUploadStarted, imageUploading, cardMode } = this.state;
-    const activeImageStyle = {
-      width: this.state.size.x,
-      height: this.state.size.y,
-      top: this.state.position.y,
-      left: this.state.position.x,
-      padding: this.state.cardPadding,
+
+    let activeImageStyle = {
+      width: 0,
+      height: 0,
+      toip: 0,
+      left: 0
     };
+
+    if (coverImage || imageUploadStarted) {
+      activeImageStyle = {
+        width: this.state.size.x,
+        height: this.state.size.y,
+        top: this.state.position.y,
+        left: this.state.position.x,
+        padding: this.state.cardPadding,
+      };
+    }
+
     let imageFiles = _.filter(card.currentCard.files, file => file.fileType === 'MEDIA');
 
     if (coverImage || imageUploadStarted) {
