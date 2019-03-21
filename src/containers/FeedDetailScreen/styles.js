@@ -174,7 +174,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: CONSTANTS.PADDING,
     position: 'absolute',
     right: 0,
-    top: CONSTANTS.STATUSBAR_HEIGHT,
+    top: Platform.OS === 'ios' ? CONSTANTS.STATUSBAR_HEIGHT : 0,
     paddingTop: 8,
     alignItems: 'flex-end',
     backgroundColor: '#fff'
