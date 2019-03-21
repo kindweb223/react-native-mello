@@ -125,7 +125,8 @@ class CardNewScreen extends React.Component {
       cardMode: 'CardNewSingle',
       fileType: '',
       isSaving: false,
-      uploadProgress: 0
+      uploadProgress: 0,
+      bottomButtonsPadding: 0
     };
 
     this.imageUploading = false;
@@ -690,19 +691,27 @@ class CardNewScreen extends React.Component {
       }
     });
 
-    this.keyboardWillShowSubscription = Keyboard.addListener('keyboardWillShow', (e) => this.keyboardWillShow(e));
-    this.keyboardWillHideSubscription = Keyboard.addListener('keyboardWillHide', (e) => this.keyboardWillHide(e));
     if (Platform.OS === 'ios') {
       this.safariViewShowSubscription = SafariView.addEventListener('onShow', () => this.safariViewShow());
       this.safariViewDismissSubscription = SafariView.addEventListener('onDismiss', () => this.safariViewDismiss());
+    }
+    
+    if (Platform.OS === 'android' && this.props.isClipboard === true) {
+      this.keyboardDidShowSubscription = Keyboard.addListener('keyboardDidShow', (e) => this.keyboardDidShow(e));
+      this.keyboardDidHideSubscription = Keyboard.addListener('keyboardDidHide', (e) => this.keyboardDidHide(e));
+    }
+    else {
+      // Alert.alert('NOT', 'CLIPBOARD')
+      this.keyboardDidShowSubscription = Keyboard.addListener('keyboardWillShow', (e) => this.keyboardDidShow(e));
+      this.keyboardDidHideSubscription = Keyboard.addListener('keyboardWillHide', (e) => this.keyboardDidHide(e));
     }
 
     BackHandler.addEventListener('hardwareBackPress', this.handleBackButton);
   }
 
   componentWillUnmount() {
-    this.keyboardWillShowSubscription.remove();
-    this.keyboardWillHideSubscription.remove();
+    this.keyboardDidShowSubscription.remove();
+    this.keyboardDidHideSubscription.remove();
     if (Platform.OS === 'ios') {
       this.safariViewShowSubscription.remove();
       this.safariViewDismissSubscription.remove();
@@ -722,26 +731,36 @@ class CardNewScreen extends React.Component {
     return true;
   }
 
-  keyboardWillShow(e) {
+  keyboardDidShow(e) {
+    // Padding issue with Android in clipboard mode 
+    if(Platform.OS === 'android' && this.props.isClipboard === true) {
+      this.setState({bottomButtonsPadding: 24})
+    }
+
     Animated.timing(
       this.animatedKeyboardHeight, {
         toValue: e.endCoordinates.height,
-        duration: e.duration,
+        duration: Platform.OS === 'android' && this.props.isClipboard === true ? 30 : e.duration,
       }
     ).start(() => {
       if (this.isDisabledKeyboard === true || !this.textInputIdeaRef) {
         return;
       }
-      
+
       this.textInputIdeaRef.focus();
     });
   }
 
-  keyboardWillHide(e) {
+  keyboardDidHide(e) {
+    // Padding issue with Android in clipboard mode
+    if(Platform.OS === 'android' && this.props.isClipboard === true) {
+      this.setState({bottomButtonsPadding: 0})
+    }
+
     Animated.timing(
       this.animatedKeyboardHeight, {
         toValue: 0,
-        duration: e.duration,
+        duration: Platform.OS === 'android' && this.props.isClipboard === true ? 30 : e.duration,
       }
     ).start();
   }
@@ -1618,13 +1637,15 @@ class CardNewScreen extends React.Component {
 
   get renderBottomAttachmentButtons() {
     const { viewMode, cardMode } = this.props;
+    const { bottomButtonsPadding } = this.state;
+
     if (cardMode === CONSTANTS.SHARE_EXTENTION_CARD) {
       return;
     } else if (viewMode !== CONSTANTS.CARD_NEW) {
       return;
     }
     return (
-      <View style={[styles.attachmentButtonsContainer, { paddingHorizontal: 16, marginVertical: 16 }]}>
+      <View style={[styles.attachmentButtonsContainer, { paddingHorizontal: 16, marginVertical: 16, paddingBottom: bottomButtonsPadding }]}>
         <TouchableOpacity 
           style={styles.iconView}
           activeOpacity={0.6}
@@ -1959,6 +1980,7 @@ CardNewScreen.defaultProps = {
   shareImageUrls: [],
   shareText: '',
   onClose: () => {},
+  isClipboard: false
 }
 
 
@@ -1973,6 +1995,7 @@ CardNewScreen.propTypes = {
   shareImageUrls: PropTypes.array,
   shareText: PropTypes.string,
   onClose: PropTypes.func,
+  isClipboard: PropTypes.bool,
 }
 
 
