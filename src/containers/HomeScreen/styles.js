@@ -69,9 +69,11 @@ const styles = StyleSheet.create({
     alignItems: 'center'
   },
   btnDoneText: {
-    color: '#fff',
-    fontSize: 15,
-    fontWeight: '500'
+    paddingTop: 10,
+    fontSize: 16,
+    lineHeight: 22,
+    fontWeight: '600',
+    textAlign: 'center',
   },
   headerView: {
     width: CONSTANTS.SCREEN_WIDTH,
