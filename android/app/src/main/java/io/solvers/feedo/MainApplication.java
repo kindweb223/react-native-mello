@@ -3,6 +3,7 @@ package io.solvers.feedo;
 import android.app.Application;
 
 import com.facebook.react.ReactApplication;
+import com.github.amarcruz.rntextsize.RNTextSizePackage;
 import com.robinpowered.react.Intercom.IntercomPackage;
 import io.intercom.android.sdk.Intercom;
 import org.devio.rn.splashscreen.SplashScreenReactPackage;
@@ -48,6 +49,7 @@ public class MainApplication extends Application implements ReactApplication {
     protected List<ReactPackage> getPackages() {
       return Arrays.<ReactPackage>asList(
           new MainReactPackage(),
+            new RNTextSizePackage(),
             new IntercomPackage(),
             new SplashScreenReactPackage(),
             new RNImgToBase64Package(),
