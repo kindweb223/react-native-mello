@@ -25,20 +25,21 @@ class CardLongHoldMenuScreen extends React.Component {
         }, 200)
         return
       case 'Edit':
-        this.props.onEdit(this.props.idea)
+        // this.props.onEdit(this.props.idea)
         return;
     }
   }
 
   onTapActionSheet(index) {
     if (index === 0) {
-      this.props.onDelete(this.props.idea.id)
+      // this.props.onDelete(this.props.idea.id)
     }
   }
 
   onMoveCard() {
     if (this.props.onMove) {
-      this.props.onMove(this.props.idea.id);
+      console.log('CARD_LIST: ', this.props.cardList)
+      // this.props.onMove(this.props.idea.id);
     }
   }
 
@@ -49,12 +50,12 @@ class CardLongHoldMenuScreen extends React.Component {
   }
 
   render () {
-    const { idea, currentFeed } = this.props
+    const { currentFeed } = this.props
 
     let viewMode = CONSTANTS.CARD_VIEW
-    if (COMMON_FUNC.isFeedOwnerEditor(currentFeed) || (COMMON_FUNC.isFeedContributor(currentFeed) && COMMON_FUNC.isCardOwner(idea))) {
-      viewMode = CONSTANTS.CARD_EDIT
-    }
+    // if (COMMON_FUNC.isFeedOwnerEditor(currentFeed) || (COMMON_FUNC.isFeedContributor(currentFeed) && COMMON_FUNC.isCardOwner(idea))) {
+    //   viewMode = CONSTANTS.CARD_EDIT
+    // }
 
     return [
       <CardActionBarComponent
@@ -86,8 +87,7 @@ const mapDispatchToProps = dispatch => ({
 })
 
 CardLongHoldMenuScreen.propTypes = {
-  idea: PropTypes.object.isRequired,
-  invitees: PropTypes.array.isRequired,
+  cardList: PropTypes.array.isRequired,
   onClose: PropTypes.func.isRequired,
   onMove: PropTypes.func.isRequired,
   onDelete: PropTypes.func.isRequired,
