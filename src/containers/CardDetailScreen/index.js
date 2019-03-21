@@ -1891,8 +1891,7 @@ CardDetailScreen.defaultProps = {
   shareUrl: '',
   shareImageUrls: [],
   isMasonryView: false,
-  onClose: () => {},
-  onOpenAction: () => {},
+  onClose: () => {}
 }
 
 
@@ -1907,8 +1906,7 @@ CardDetailScreen.propTypes = {
   shareUrl: PropTypes.string,
   shareImageUrls: PropTypes.array,
   isMasonryView: PropTypes.bool,
-  onClose: PropTypes.func,
-  onOpenAction: PropTypes.func,
+  onClose: PropTypes.func
 }
 
 

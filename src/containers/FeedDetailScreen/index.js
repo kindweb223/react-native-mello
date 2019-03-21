@@ -147,12 +147,9 @@ class FeedDetailScreen extends React.Component {
       showFilterModal: false,
       filterShowType: 'all',
       filterSortType: 'date',
-      selectedLongHoldIdea: {},
-      selectedLongHoldInvitees: [],
-      selectedLongHoldCardIndex: -1,
+      selectedLongHoldCardList: [],
       currentActionType: ACTION_NONE,
       totalCardCount: 0,
-      isVisibleCardOpenMenu: false,
       currentScreen: FeedDetailMode,
       feedoMode: 1,
       showBubble: false,
@@ -846,11 +843,9 @@ class FeedDetailScreen extends React.Component {
 
   onSelectCard(index, idea, invitees) {
     if (this.state.isVisibleLongHoldMenu) {
-      this.setState({
-        selectedLongHoldCardIndex: index,
-        selectedLongHoldIdea: idea,
-        selectedLongHoldInvitees: invitees
-      })
+      let { selectedLongHoldCardList } = this.state
+      selectedLongHoldCardList.push({ 'index': index, 'idea': idea })
+      this.setState({ selectedLongHoldCardList })
     } else {
       this.props.setCurrentCard(idea);
       const { currentFeed } = this.state;
@@ -923,10 +918,11 @@ class FeedDetailScreen extends React.Component {
 
     ReactNativeHapticFeedback.trigger('impactHeavy', true);
 
+    let { selectedLongHoldCardList } = this.state
+    selectedLongHoldCardList.push({ 'index': index, 'idea': idea })
+
     this.setState({
-      selectedLongHoldCardIndex: index,
-      selectedLongHoldIdea: idea,
-      selectedLongHoldInvitees: invitees,
+      selectedLongHoldCardList,
       isVisibleLongHoldMenu: true
     }, () => {
       Animated.spring(this.animatedSelectCard, {
@@ -963,7 +959,6 @@ class FeedDetailScreen extends React.Component {
 
     this.setState({ 
       isVisibleCard: false,
-      isVisibleCardOpenMenu: false,
       currentActionType: ACTION_CARD_MOVE,
     });
     this.moveCardId = ideaId;
@@ -1101,13 +1096,6 @@ class FeedDetailScreen extends React.Component {
     });
   }
 
-  onOpenCardAction(idea) {
-    this.setState({
-      isVisibleCardOpenMenu: true,
-      selectedLongHoldIdea: idea,
-    })
-  }
-
   get renderNewCardModal() {
     const { isVisibleCard, cardViewMode, cardMode, isVisibleEditFeed, activeImageLayout, activeTextLayout, viewPreference } = this.state
     if (!isVisibleCard && !isVisibleEditFeed) {
@@ -1141,7 +1129,6 @@ class FeedDetailScreen extends React.Component {
                 cardTextLayout={activeTextLayout}
                 shareUrl=''
                 onClose={() => this.onCloseCardModal()}
-                onOpenAction={(idea) => this.onOpenCardAction(idea)}
                 onMoveCard={this.onMoveCard}
                 onDeleteCard={this.onDeleteCard}
               />
@@ -1478,7 +1465,7 @@ class FeedDetailScreen extends React.Component {
       loading,
       pinText,
       avatars,
-      selectedLongHoldCardIndex,
+      selectedLongHoldCardList,
       isVisibleLongHoldMenu,
       invitees,
       MasonryListData
@@ -1598,7 +1585,7 @@ class FeedDetailScreen extends React.Component {
                                 cardType="view"
                                 prevPage={this.props.prevPage}
                                 longHold={isVisibleLongHoldMenu}
-                                longSelected={isVisibleLongHoldMenu && selectedLongHoldCardIndex === index}
+                                longSelected={isVisibleLongHoldMenu && _.find(selectedLongHoldCardList, longCard => longCard.index === index)}
                                 onPress={() => this.onSelectCard(index, item, invitees)}
                                 onLongPress={() => this.onLongPressCard(index, item, invitees)}
                                 onLinkPress={() => this.onSelectCard(index, item, invitees)}
@@ -1661,7 +1648,7 @@ class FeedDetailScreen extends React.Component {
                                   cardType="view"
                                   prevPage={this.props.prevPage}
                                   longHold={isVisibleLongHoldMenu}
-                                  longSelected={isVisibleLongHoldMenu && selectedLongHoldCardIndex === item.index}
+                                  longSelected={isVisibleLongHoldMenu && _.find(selectedLongHoldCardList, longCard => longCard.index === item.index)}
                                   onPress={() => this.onSelectCard(item.index, item.data, invitees)}
                                   onLongPress={() => this.onLongPressCard(item.index, item.data, invitees)}
                                   onLinkPress={() => this.onSelectCard(item.index, item.data, invitees)}
@@ -1807,9 +1794,8 @@ class FeedDetailScreen extends React.Component {
 
         {isVisibleLongHoldMenu && (
           <CardLongHoldMenuScreen
-            idea={this.state.selectedLongHoldIdea}
+            cardList={selectedLongHoldCardList}
             currentFeed={currentFeed}
-            invitees={this.state.selectedLongHoldInvitees}
             onMove={this.onMoveCard}
             onDelete={this.onDeleteCard}
             onClose={() => this.onCloseLongHold()}
