@@ -76,9 +76,21 @@ function checkAndStore(file, userId) {
     // console.log('RNFS - file location is ' + fileDownloadLocation)
     return new Promise((resolve, reject) => {
 
-        // if ( fileExt === null){
-        //     reject('file match is null because it\'s ', file.accessUrl )
-        // }
+        if ( fileExt === null){
+            reject('file match is null because it\'s ', file.accessUrl )
+        }
+
+        // await AsyncStorage.getItem('file/'+file.id)
+        //     .then(result => {
+        //         console.log('RNFS - result of async get is ', result)
+        //         resolve({
+        //             fileStoredLocally: true,
+        //             result,
+        //        })
+        //     })
+        //     .catch(err => {
+        //         console.log('RNFS file not in store')
+        //     })
 
         RNFS.exists(fileStoreLocation)
             .then((result) => {
@@ -111,15 +123,33 @@ function checkAndStore(file, userId) {
                                     //TODO if there's a mismatch, move to have downloaded file ext
                                     //TODO if there's a mismatch, update file entry on DB to have correct filetype
                                 }
-                                resolve({
-                                    result,
-                                    fileStoreLocation,
-                                    fileExt,
-                                })
+                                if (result.statusCode === 404 || result.statusCode === 403) {
+                                    reject({
+                                        result,
+                                        fileStoreLocation,
+                                        fileStoredLocally: false,
+                                    })
+                                } else {
+                                    const locKey = ('file/'+file.id).toString()
+                                    const locString = fileStoreLocation.toString()
+                                    AsyncStorage.setItem(locKey, locString)
+                                    .then(aresult => {
+                                        console.log('RNFS async - ', aresult, fileStoreLocation)
+                                        resolve({
+                                            result,
+                                            fileStoreLocation,
+                                            fileExt,
+                                        })
+
+                                    })
+                                    .catch(err => {
+                                        console.log('RNFS async set error -', err)
+                                    })
+                                }
 
                             })
                                 .catch((error) => {
-                                    console.log('RNFS error ', error)
+                                    console.log('RNFS error ', error, fileStoreLocation, file.accessUrl)
                                     // TODO handle 404s and so on here
                                     reject({
                                         fileStoredLocally: false,
@@ -202,6 +232,7 @@ class LocalImages extends React.Component {
                 ideas.map((idea, ideaIndex) => {
                     idea.files && idea.files.map((file, fileIndex) => {
                         console.log('RNFS - start of CAS')
+
                         checkAndStore(file, user.userInfo.id)
                             .then(result => {
                                 // console.log('RNFS cas-> ', result)
@@ -236,17 +267,40 @@ class LocalImages extends React.Component {
             console.log('RNFS batch - there are now ', this.state.ideas.length, ' in state')
             ideas.map(idea => {
                 idea.files && idea.files.map(file => {
-                    checkAndStore(file, user.userInfo.id)
-                        .then(result => {
-                            console.log('RNFS batch, files, ', file.accessUrl, result.fileStoreLocation)
-                            const localUrl = 'file:///'+result.fileStoreLocation
-                            if(file.accessUrl === idea.coverImage){
-                                idea.coverImage = localUrl
-                            }
-                            file.accessUrl = localUrl
+                    AsyncStorage.getItem('file/'+file.id)
+                    .then(ares => {
+                        if(ares !== null){
+                            file.accessUrl = ares
+                        }
+                        else{
+                            checkAndStore(file, user.userInfo.id)
+                                .then(result => {
+                                    console.log('RNFS batch, files, ', file.accessUrl, result.fileStoreLocation)
+                                    const localUrl = 'file:///'+result.fileStoreLocation
+                                    if(file.accessUrl === idea.coverImage){
+                                        idea.coverImage = localUrl
+                                    }
+                                    file.accessUrl = localUrl
+        
+                                })
+                                .catch(err => console.log('RNFS batch - can not store file because ', err))
 
-                        })
-                        .catch(err => console.log('RNFS batch - can not store file because ', err))
+                        }
+                    })
+                    .catch(() => {
+                        checkAndStore(file, user.userInfo.id)
+                            .then(result => {
+                                console.log('RNFS batch, files, ', file.accessUrl, result.fileStoreLocation)
+                                const localUrl = 'file:///'+result.fileStoreLocation
+                                if(file.accessUrl === idea.coverImage){
+                                    idea.coverImage = localUrl
+                                }
+                                file.accessUrl = localUrl
+    
+                            })
+                            .catch(err => console.log('RNFS batch - can not store file because ', err))
+
+                    })
 
                 })
             })
