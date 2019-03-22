@@ -154,6 +154,14 @@ const checkVideoCoverImage = (images, coverImage) => {
   return _.find(images, image => image.thumbnailUrl === coverImage)
 }
 
+const getCardViewMode = (feed, idea) => {
+  let viewMode = CONSTANTS.CARD_VIEW
+  if (isFeedOwnerEditor(feed) || (isFeedContributor(feed) && isCardOwner(idea))) {
+    viewMode = CONSTANTS.CARD_EDIT
+  }
+  return viewMode
+}
+
 export {
   checkUserIsInvitee,
   isFeedOwner,
@@ -173,5 +181,6 @@ export {
   showPremiumAlert,
   isMelloTipFeed,
   checkVideoCoverImage,
-  isFeedOwnerOnlyInvitee
+  isFeedOwnerOnlyInvitee,
+  getCardViewMode
 }

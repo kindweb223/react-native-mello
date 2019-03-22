@@ -9,7 +9,6 @@ import { connect } from 'react-redux'
 
 import _ from 'lodash'
 
-import FastImage from "react-native-fast-image";
 import Autolink from 'react-native-autolink';
 
 import styles from './styles'
@@ -20,6 +19,7 @@ import UserAvatarComponent from '../../UserAvatarComponent';
 import CONSTANTS from '../../../service/constants'
 import { COMMENT_FEATURE } from '../../../service/api'
 import ExFastImage from '../../ExFastImage';
+import * as COMMON_FUNC from '../../../service/commonFunc'
 
 class FeedCardExtendComponent extends React.Component {
   constructor(props) {
@@ -39,10 +39,11 @@ class FeedCardExtendComponent extends React.Component {
       isOnlyInvitee = true
     }
 
-    let hasCoverImage = idea.coverImage && idea.coverImage.length > 0
+    const hasCoverImage = idea.coverImage && idea.coverImage.length > 0
+    const viewMode = COMMON_FUNC.getCardViewMode(feedo.currentFeed, idea)
 
     return (
-      <View style={[styles.container, longSelected && styles.selected]}>
+      <View style={[styles.container, longSelected && styles.selected, longHold && viewMode === CONSTANTS.CARD_VIEW && { opacity: 0.4 }]}>
         <View style={styles.subContainer}>
           {hasCoverImage &&
             <View style={[styles.thumbnailsView, { height: imageHeight }]}>

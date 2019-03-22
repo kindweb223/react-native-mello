@@ -5,29 +5,28 @@ import CONSTANTS from '../../service/constants'
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    height: 54 + 28,
+    height: 50 + 40,
     width: '100%',
     alignItems: 'center',
     paddingVertical: 8,
-    marginBottom: 8,
     position: 'absolute',
     bottom: 0,
     backgroundColor: 'transparent'
   },
   rowContainer: {
-    height: 54,
+    height: 50,
+    width: 210,
+    paddingHorizontal: 23,
     flexDirection: 'row',
     justifyContent: 'space-between',
-    backgroundColor: COLORS.PURPLE,
-    borderRadius: 18,
-    paddingHorizontal: 10
+    backgroundColor: COLORS.TOASTER_GREY,
+    borderRadius: 8
   },
   buttonView: {
     height: '100%',
     flexDirection: 'row',
     justifyContent: 'center',
-    alignItems: 'center',
-    marginHorizontal: 13
+    alignItems: 'center'
   },
   buttonText: {
     color: '#fff',
