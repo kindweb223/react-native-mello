@@ -176,7 +176,7 @@ class FeedDetailScreen extends React.Component {
     this.animatedSelectCard = new Animated.Value(1);
 
     this.cardItemRefs = [];
-    this.moveCardId = null;
+    this.moveCardList = [];
 
     this.animatedTagTransition = new Animated.Value(1)
 
@@ -190,7 +190,7 @@ class FeedDetailScreen extends React.Component {
     this.userActionTimer = null;
     this.scrollviewHeight = 0
 
-    this.deletedCardId = null
+    this.deletedCardList = []
   }
 
   UNSAFE_componentWillMount() {
@@ -205,6 +205,7 @@ class FeedDetailScreen extends React.Component {
     Analytics.setCurrentScreen('FeedDetailScreen')
 
     this.setState({ loading: true })
+
     this.props.getFeedDetail(data.id);
     AppState.addEventListener('change', this.onHandleAppStateChange);
 
@@ -223,6 +224,7 @@ class FeedDetailScreen extends React.Component {
   
   async UNSAFE_componentWillReceiveProps(nextProps) {
     const { feedo, card } = nextProps
+    console.log('LOADING: ', nextProps.feedo.loading)
 
     if (this.state.isVisibleSelectFeedo) {
       if (this.props.feedo.loading !== 'GET_FEEDO_LIST_PENDING' && feedo.loading === 'GET_FEEDO_LIST_PENDING') {
@@ -261,7 +263,6 @@ class FeedDetailScreen extends React.Component {
     if (card.loading === 'CREATE_CARD_FULFILLED') {
       this.setState({ showBubble: false })
     }
-    console.log('LOADING: ', feedo.loading)
     
     if ((this.props.feedo.loading !== 'GET_FEED_DETAIL_FULFILLED' && feedo.loading === 'GET_FEED_DETAIL_FULFILLED') ||
         (this.props.feedo.loading === 'DELETE_INVITEE_PENDING' && feedo.loading === 'DELETE_INVITEE_FULFILLED') ||
@@ -307,7 +308,7 @@ class FeedDetailScreen extends React.Component {
       let filterIdeas = currentFeed.ideas
       for (let i = 0; i < this.userActions.length; i ++) {
         const cardInfo = this.userActions[i];
-        filterIdeas = _.filter(filterIdeas, idea => idea.id !== cardInfo.ideaId)
+        filterIdeas = _.filter(filterIdeas, idea => _.findIndex(cardInfo.cardList, card => card.idea.id === idea.id ) === -1)
       }
       currentFeed.ideas = filterIdeas;
 
@@ -383,8 +384,6 @@ class FeedDetailScreen extends React.Component {
   onHandleAppStateChange = async(nextAppState) => {
     if (this.state.appState.match(/inactive|background/) && nextAppState === 'active' && Actions.currentScene === 'FeedDetailScreen' && !this.state.isVisibleCard) {
       if (this.state.loading === false) {
-        this.setState({ loading: true })
-        this.props.getFeedDetail(this.props.data.id);
         this.showClipboardToast()
       }
     }
@@ -763,7 +762,7 @@ class FeedDetailScreen extends React.Component {
         let filterIdeas = this.props.feedo.currentFeed.ideas;
         for(let i = 0; i < this.userActions.length; i ++) {
           const cardInfo = this.userActions[i];
-          filterIdeas = _.filter(filterIdeas, idea => idea.id !== cardInfo.ideaId)
+          filterIdeas = _.filter(filterIdeas, idea => findIndex(cardInfo.cardList, card => card.idea.id === idea.id ) === -1)
         }
         state.currentFeed.ideas = filterIdeas;
 
@@ -842,25 +841,27 @@ class FeedDetailScreen extends React.Component {
   }
 
   onSelectCard(index, idea, invitees) {
+    const { currentFeed } = this.state;
+
     if (this.state.isVisibleLongHoldMenu) {
+      if (COMMON_FUNC.getCardViewMode(currentFeed, idea) === CONSTANTS.CARD_VIEW) {
+        return
+      }
+
       let { selectedLongHoldCardList } = this.state
-      selectedLongHoldCardList.push({ 'index': index, 'idea': idea })
+      const selectedCardIndex = _.findIndex(selectedLongHoldCardList, card => card.idea.id === idea.id)
+      if (selectedCardIndex === -1) {
+        selectedLongHoldCardList.push({ 'index': index, 'idea': idea })
+      } else {
+        selectedLongHoldCardList = _.filter(selectedLongHoldCardList, card => card.idea.id !== idea.id)
+      }
       this.setState({ selectedLongHoldCardList })
     } else {
       this.props.setCurrentCard(idea);
-      const { currentFeed } = this.state;
       const invitee = _.find(invitees, (o) => {
         return (o.id == idea.inviteeId)
       });
-      let cardViewMode = CONSTANTS.CARD_VIEW;
-      if (COMMON_FUNC.isFeedOwner(currentFeed) || COMMON_FUNC.isFeedEditor(currentFeed)) {
-        cardViewMode = CONSTANTS.CARD_EDIT;
-      }
-
-      // Contributor can just edit own cards
-      if (COMMON_FUNC.isFeedContributor(currentFeed) && COMMON_FUNC.isCardOwner(idea)) {
-        cardViewMode = CONSTANTS.CARD_EDIT;
-      }
+      let cardViewMode = COMMON_FUNC.getCardViewMode(currentFeed, idea)
 
       this.cardItemRefs[index].measure((ox, oy, width, height, px, py) => {
         let pointX, pointY //card image x,y point
@@ -912,7 +913,9 @@ class FeedDetailScreen extends React.Component {
   }
 
   onLongPressCard(index, idea, invitees) {
-    if (COMMON_FUNC.isFeedGuest(this.state.currentFeed)) {
+    const { currentFeed } = this.state
+
+    if (COMMON_FUNC.getCardViewMode(currentFeed, idea) === CONSTANTS.CARD_VIEW) {
       return
     }
 
@@ -934,7 +937,8 @@ class FeedDetailScreen extends React.Component {
 
   onCloseLongHold = () => {
     this.setState({
-      isVisibleLongHoldMenu: false
+      isVisibleLongHoldMenu: false,
+      selectedLongHoldCardList: []
     }, () => {
       Animated.spring(this.animatedSelectCard, {
         toValue: 1,
@@ -943,16 +947,7 @@ class FeedDetailScreen extends React.Component {
     });
   }
 
-  onHiddenLongHoldMenu() {
-    if (this.state.currentActionType === ACTION_CARD_MOVE) {
-      this.prevFeedo = this.props.feedo.currentFeed;
-      this.setState({
-        isVisibleSelectFeedo: true,
-      });
-    }
-  }
-
-  onMoveCard = (ideaId) => {
+  onMoveCard = (cardList) => {
     if (this.state.isVisibleLongHoldMenu) {
       this.onCloseLongHold();
     }
@@ -961,7 +956,7 @@ class FeedDetailScreen extends React.Component {
       isVisibleCard: false,
       currentActionType: ACTION_CARD_MOVE,
     });
-    this.moveCardId = ideaId;
+    this.moveCardList = cardList;
 
     this.prevFeedo = this.props.feedo.currentFeed;
     this.setState({
@@ -987,17 +982,19 @@ class FeedDetailScreen extends React.Component {
 
     this.userActionTimer = setTimeout(() => {
       if (this.state.currentActionType === ACTION_CARD_DELETE) {
-        if (this.deletedCardId !== currentCardInfo.ideaId) {
+        // Delete cards
+        if (this.deletedCardList !== currentCardInfo.cardList) {
           Analytics.logEvent('feed_detail_delete_card', {})
-          this.deletedCardId = currentCardInfo.ideaId
-          this.props.deleteCard(currentCardInfo.ideaId)
+          this.deletedCardList = currentCardInfo.cardList
+          this.props.deleteCard(currentCardInfo.cardList)
           this.userActionTimer = null;
           this.setState({ isShowToaster: false })
           this.userActions.shift();
         }
       } else if (this.state.currentActionType === ACTION_CARD_MOVE) {
+        // Move cards
         Analytics.logEvent('feed_detail_move_card', {})
-        this.props.moveCard(currentCardInfo.ideaId, currentCardInfo.feedoId);
+        this.props.moveCard(currentCardInfo.cardList, currentCardInfo.feedoId);
         this.userActionTimer = null;
         this.setState({ isShowToaster: false })
         this.userActions.shift();
@@ -1006,7 +1003,7 @@ class FeedDetailScreen extends React.Component {
     }, TOASTER_DURATION + 50);
   }
 
-  onDeleteCard = (ideaId) => {
+  onDeleteCard = (cardList) => {
     if (this.state.isVisibleLongHoldMenu) {
       this.onCloseLongHold();
     }
@@ -1019,14 +1016,14 @@ class FeedDetailScreen extends React.Component {
     const cardInfo = {};
     cardInfo.currentActionType = ACTION_CARD_DELETE;
     cardInfo.toasterTitle = 'Card deleted';
-    cardInfo.ideaId = ideaId;
+    cardInfo.cardList = cardList;
     this.userActions.push(cardInfo);
 
     this.setState((state) => { 
       let filterIdeas = state.currentFeed.ideas;
       for(let i = 0; i < this.userActions.length; i ++) {
         const cardInfo = this.userActions[i];
-        filterIdeas = _.filter(filterIdeas, idea => idea.id !== cardInfo.ideaId)
+        filterIdeas = _.filter(filterIdeas, idea => _.findIndex(cardInfo.cardList, card => card.idea.id === idea.id) === -1)
       }
       state.currentFeed.ideas = filterIdeas;
 
@@ -1037,7 +1034,7 @@ class FeedDetailScreen extends React.Component {
       this.setBubbles(this.state.currentFeed)
     });
 
-    this.props.deleteDummyCard(cardInfo.ideaId, 0)
+    this.props.deleteDummyCard(cardInfo.cardList, 0)
 
     this.processCardActions();
   }
@@ -1055,7 +1052,7 @@ class FeedDetailScreen extends React.Component {
     const cardInfo = {};
     cardInfo.currentActionType = ACTION_CARD_MOVE;
     cardInfo.toasterTitle = 'Card moved';
-    cardInfo.ideaId = this.moveCardId;
+    cardInfo.cardList = this.moveCardList;
     cardInfo.feedoId = feedoId;
     this.userActions.push(cardInfo);
 
@@ -1063,7 +1060,7 @@ class FeedDetailScreen extends React.Component {
       let filterIdeas = state.currentFeed.ideas;
       for(let i = 0; i < this.userActions.length; i ++) {
         const cardInfo = this.userActions[i];
-        filterIdeas = _.filter(filterIdeas, idea => idea.id !== cardInfo.ideaId)
+        filterIdeas = _.filter(filterIdeas, idea => _.findIndex(cardInfo.cardList, card => card.idea.id === idea.id) === -1)
       }
       state.currentFeed.ideas = filterIdeas;
 
@@ -1074,10 +1071,10 @@ class FeedDetailScreen extends React.Component {
       this.setBubbles(this.state.currentFeed)
     });
 
-    this.props.moveDummyCard(cardInfo.ideaId, cardInfo.feedoId, 0)
+    this.props.moveDummyCard(cardInfo.cardList, cardInfo.feedoId, 0)
 
     this.processCardActions();
-    this.moveCardId = null;
+    this.moveCardList = [];
   }
 
   onCloseSelectFeedoModal() {
@@ -1459,6 +1456,37 @@ class FeedDetailScreen extends React.Component {
     return cardHeight
   }
 
+  renderEmptyView = (loading) => {
+    if (loading) {
+      return (
+        <View style={styles.loadingView}>
+          <FeedLoadingStateComponent />
+        </View>
+      )
+    }
+    return (
+      <View style={styles.emptyInnerView}>
+        {this.state.showEmptyBubble && (
+          this.state.isExistingUser
+          ? <EmptyStateComponent
+              page="card_exist"
+              title="Ah, that sense of freshness! Let's start a new day."
+              subTitle="Need a few hints on all awesome ways to create a card?"
+              ctaTitle="Create a card"
+              onCreateNewCard={this.onOpenNewCardModal.bind(this)}
+            />
+          : <EmptyStateComponent
+              page="card"
+              title="It's pretty empty here. Get your creativity working and add some stuff to your flow!"
+              subTitle="Watch a 15 sec video about creating cards"
+              ctaTitle="Create your first card"
+              onCreateNewCard={this.onOpenNewCardModal.bind(this)}
+            />
+        )}
+      </View>
+    )
+  }
+
   render () {
     const {
       currentFeed,
@@ -1596,94 +1624,52 @@ class FeedDetailScreen extends React.Component {
                           ))}
                         </View>
                       : <View style={styles.emptyView}>
-                          {loading
-                            ? <View style={styles.loadingView}>
-                                <FeedLoadingStateComponent />
-                              </View>
-                            : <View style={styles.emptyInnerView}>
-                                {this.state.showEmptyBubble && (
-                                  this.state.isExistingUser
-                                  ? <EmptyStateComponent
-                                      page="card_exist"
-                                      title="Ah, that sense of freshness! Let's start a new day."
-                                      subTitle="Need a few hints on all awesome ways to create a card?"
-                                      ctaTitle="Create a card"
-                                      onCreateNewCard={this.onOpenNewCardModal.bind(this)}
-                                    />
-                                  : <EmptyStateComponent
-                                      page="card"
-                                      title="It's pretty empty here. Get your creativity working and add some stuff to your flow!"
-                                      subTitle="Watch a 15 sec video about creating cards"
-                                      ctaTitle="Create your first card"
-                                      onCreateNewCard={this.onOpenNewCardModal.bind(this)}
-                                    />
-                                )}
-                              </View>
-                          }
+                          {this.renderEmptyView(loading)}
                         </View>
-                    : <View
-                        style={{ paddingHorizontal: currentFeed.ideas.length > 0 ? 8 : 0, marginTop: Platform.OS === 'android' && isVisibleLongHoldMenu ? 30 : 0}}
-                      >
-                        <MasonryList
-                          data={MasonryListData}
-                          containerWidth={CONSTANTS.SCREEN_WIDTH - 16}
-                          completeCustomComponent={(item) => {
-                            renderIdea = _.find(currentFeed.ideas, idea => idea.id === item.data.id)
-                            if (!renderIdea) return
+                    : currentFeed.ideas.length > 0
+                      ? <View
+                          style={{ paddingHorizontal: currentFeed.ideas.length > 0 ? 8 : 0, marginTop: Platform.OS === 'android' && isVisibleLongHoldMenu ? 30 : 0}}
+                        >
+                          <MasonryList
+                            data={MasonryListData}
+                            containerWidth={CONSTANTS.SCREEN_WIDTH - 16}
+                            completeCustomComponent={(item) => {
+                              renderIdea = _.find(currentFeed.ideas, idea => idea.id === item.data.id)
+                              if (!renderIdea) return
 
-                            return (
-                              <TouchableHighlight
-                                ref={ref => this.cardItemRefs[item.index] = ref}
-                                style={{ paddingHorizontal: 8, borderRadius: 5 }}
-                                activeOpacity={1}
-                                underlayColor="#fff"
-                                onPress={() => this.onSelectCard(item.index, item.data, invitees)}
-                                onLongPress={() => this.onLongPressCard(item.index, item.data, invitees)}
-                              >
-                                <FeedCardComponent
-                                  idea={renderIdea}
-                                  imageHeight={item.imageHeight}
-                                  invitees={invitees}
-                                  listType={this.state.viewPreference}
-                                  cardType="view"
-                                  prevPage={this.props.prevPage}
-                                  longHold={isVisibleLongHoldMenu}
-                                  longSelected={isVisibleLongHoldMenu && _.find(selectedLongHoldCardList, longCard => longCard.index === item.index)}
+                              return (
+                                <TouchableHighlight
+                                  ref={ref => this.cardItemRefs[item.index] = ref}
+                                  style={{ paddingHorizontal: 8, borderRadius: 5 }}
+                                  activeOpacity={1}
+                                  underlayColor="#fff"
                                   onPress={() => this.onSelectCard(item.index, item.data, invitees)}
                                   onLongPress={() => this.onLongPressCard(item.index, item.data, invitees)}
-                                  onLinkPress={() => this.onSelectCard(item.index, item.data, invitees)}
-                                  onLinkLongPress={() => this.onLongPressCard(item.index, item.data, invitees)}
-                                />
-                              </TouchableHighlight>
-                            )
-                          }}
-                        />
-                      </View>
+                                >
+                                  <FeedCardComponent
+                                    idea={renderIdea}
+                                    imageHeight={item.imageHeight}
+                                    invitees={invitees}
+                                    listType={this.state.viewPreference}
+                                    cardType="view"
+                                    prevPage={this.props.prevPage}
+                                    longHold={isVisibleLongHoldMenu}
+                                    longSelected={isVisibleLongHoldMenu && _.find(selectedLongHoldCardList, longCard => longCard.index === item.index)}
+                                    onPress={() => this.onSelectCard(item.index, item.data, invitees)}
+                                    onLongPress={() => this.onLongPressCard(item.index, item.data, invitees)}
+                                    onLinkPress={() => this.onSelectCard(item.index, item.data, invitees)}
+                                    onLinkLongPress={() => this.onLongPressCard(item.index, item.data, invitees)}
+                                  />
+                                </TouchableHighlight>
+                              )
+                            }}
+                          />
+                        </View>
+                      : <View style={styles.emptyView}>
+                          {this.renderEmptyView(loading)}
+                        </View>
                   : <View style={styles.emptyView}>
-                    {loading
-                      ? <View style={styles.loadingView}>
-                          <FeedLoadingStateComponent />
-                        </View>
-                      : <View style={styles.emptyInnerView}>
-                          {this.state.showEmptyBubble && (
-                            this.state.isExistingUser
-                              ? <EmptyStateComponent
-                                  page="card_exist"
-                                  title="Ah, that sense of freshness! Let's start a new day."
-                                  subTitle="Need a few hints on all awesome ways to create a card?"
-                                  ctaTitle="Create a card"
-                                  onCreateNewCard={this.onOpenNewCardModal.bind(this)}
-                                />
-                              : <EmptyStateComponent
-                                  page="card"
-                                  title="It's pretty empty here. Get your creativity working and add some stuff to your flow!"
-                                  subTitle="Watch a 15 sec video about creating cards"
-                                  ctaTitle="Create your first card"
-                                  onCreateNewCard={this.onOpenNewCardModal.bind(this)}
-                                />
-                          )}
-                        </View>
-                    }
+                      {this.renderEmptyView(loading)}
                     </View>
                 }
               </View>
@@ -1805,9 +1791,7 @@ class FeedDetailScreen extends React.Component {
         {isVisibleLongHoldMenu && (
           <View style={styles.topButtonView}>
             <TouchableOpacity onPress={() => this.onCloseLongHold()}>
-              <View style={styles.btnDoneView}>
-                <Text style={styles.btnDoneText}>Done</Text>
-              </View>
+              <Text style={[styles.btnDoneText, { color: COLORS.PURPLE }]}>Done</Text>
             </TouchableOpacity>
           </View>
         )}

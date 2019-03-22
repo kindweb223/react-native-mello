@@ -4,8 +4,6 @@ import PropTypes from 'prop-types'
 import ActionSheet from 'react-native-actionsheet'
 import CardActionBarComponent from '../../components/CardActionBarComponent'
 import COLORS from '../../service/colors'
-import CONSTANTS from '../../service/constants'
-import * as COMMON_FUNC from '../../service/commonFunc'
 
 class CardLongHoldMenuScreen extends React.Component {
   constructor(props) {
@@ -32,14 +30,13 @@ class CardLongHoldMenuScreen extends React.Component {
 
   onTapActionSheet(index) {
     if (index === 0) {
-      // this.props.onDelete(this.props.idea.id)
+      this.props.onDelete(this.props.cardList)
     }
   }
 
   onMoveCard() {
     if (this.props.onMove) {
-      console.log('CARD_LIST: ', this.props.cardList)
-      // this.props.onMove(this.props.idea.id);
+      this.props.onMove(this.props.cardList);
     }
   }
 
@@ -50,20 +47,16 @@ class CardLongHoldMenuScreen extends React.Component {
   }
 
   render () {
-    const { currentFeed } = this.props
-
-    let viewMode = CONSTANTS.CARD_VIEW
-    // if (COMMON_FUNC.isFeedOwnerEditor(currentFeed) || (COMMON_FUNC.isFeedContributor(currentFeed) && COMMON_FUNC.isCardOwner(idea))) {
-    //   viewMode = CONSTANTS.CARD_EDIT
-    // }
+    const { cardList } = this.props
+    if (cardList.length === 0) {
+      return null;
+    }
 
     return [
       <CardActionBarComponent
         key='1'
         onMove={this.onMoveCard.bind(this)}
         onHandleSettings={this.onHandleSettings.bind(this)}
-        idea={idea}
-        viewMode={viewMode}
       />,
       <ActionSheet
         key="2"

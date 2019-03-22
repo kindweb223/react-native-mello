@@ -900,7 +900,11 @@ class CardDetailScreen extends React.Component {
 
   onTapActionSheet(index) {
     if (index === 0) {
-      this.props.onDeleteCard(this.props.card.currentCard.id)
+      data = [{
+        'index': 0,
+        'idea': this.props.card.currentCard
+      }]
+      this.props.onDeleteCard(data)
     }
   }
 
@@ -918,7 +922,11 @@ class CardDetailScreen extends React.Component {
     } else if (cardOption === 3) {
       this.onAddDocument()
     } else if (cardOption === 4) {
-      this.props.onMoveCard(this.props.card.currentCard.id)
+      data = [{
+        'index': 0,
+        'idea': this.props.card.currentCard
+      }]
+      this.props.onMoveCard(data)
     } else if (cardOption === 5) {
       setTimeout(() => {
         this.deleteActionSheet.show()

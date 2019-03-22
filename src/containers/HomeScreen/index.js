@@ -259,6 +259,8 @@ class HomeScreen extends React.Component {
   static getDerivedStateFromProps(nextProps, prevState) {
     const { feedo, card, user } = nextProps
 
+    console.log('LOADING: ', nextProps.feedo.loading)
+
     if (feedo.loading === 'GET_FEED_DETAIL_REJECTED') {
       if (feedo.error.code === 'error.hunt.not.found') {
         AlertController.shared.showAlert('Error', 'This flow no longer exists')
@@ -283,8 +285,8 @@ class HomeScreen extends React.Component {
       (feedo.loading === 'UPDATE_CARD_FULFILLED') || (feedo.loading === 'GET_CARD_FULFILLED') ||
       (feedo.loading === 'DEL_DUMMY_CARD') || (feedo.loading === 'MOVE_DUMMY_CARD') ||
       (feedo.loading === 'PUBNUB_DELETE_INVITEE_FULFILLED') || (feedo.loading === 'GET_FEED_DETAIL_REJECTED') ||
-      (feedo.loading === 'SAVE_FLOW_PREFERENCE_FULFILLED') ||
-      (feedo.loading === 'UPDATE_PROFILE_FULFILLED') ||
+      (feedo.loading === 'SAVE_FLOW_PREFERENCE_FULFILLED') || (feedo.loading === 'GET_INVITED_FEEDO_LIST_FULFILLED') ||
+      (feedo.loading === 'UPDATE_PROFILE_FULFILLED') || (feedo.loading === 'GET_FEED_DETAIL_FULFILLED') ||
       (feedo.loading === 'PUBNUB_DELETE_FEED' &&
                           Actions.currentScene !== 'FeedDetailScreen' && 
                           Actions.currentScene !== 'CommentScreen' && Actions.currentScene !== 'ActivityCommentScreen' &&
@@ -396,6 +398,7 @@ class HomeScreen extends React.Component {
         feedo.loading === 'GET_CARD_FULFILLED' && Actions.currentScene !== 'FeedDetailScreen' ||
         feedo.loading === 'PUBNUB_LIKE_CARD_FULFILLED' && Actions.currentScene !== 'FeedDetailScreen' ||
         feedo.loading === 'PUBNUB_UNLIKE_CARD_FULFILLED' && Actions.currentScene !== 'FeedDetailScreen' ||
+        feedo.loading === 'PUBNUB_USER_INVITED_FULFILLED' ||
         (feedo.loading === 'GET_CARD_COMMENTS_FULFILLED' &&
                           Actions.currentScene !== 'FeedDetailScreen' && 
                           Actions.currentScene !== 'CommentScreen' && Actions.currentScene !== 'ActivityCommentScreen' &&
@@ -1347,9 +1350,7 @@ class HomeScreen extends React.Component {
         {this.state.isLongHoldMenuVisible && (
           <View style={styles.topButtonView}>
             <TouchableOpacity onPress={() => this.closeLongHoldMenu()}>
-              <View style={styles.btnDoneView}>
-                <Text style={styles.btnDoneText}>Done</Text>
-              </View>
+              <Text style={[styles.btnDoneText, { color: COLORS.PURPLE }]}>Done</Text>
             </TouchableOpacity>
           </View>
         )}
