@@ -177,6 +177,7 @@ class FeedDetailScreen extends React.Component {
 
     this.cardItemRefs = [];
     this.moveCardList = [];
+    this.deletedCardList = []
 
     this.animatedTagTransition = new Animated.Value(1)
 
@@ -189,8 +190,6 @@ class FeedDetailScreen extends React.Component {
     this.userActions = [];
     this.userActionTimer = null;
     this.scrollviewHeight = 0
-
-    this.deletedCardList = []
   }
 
   UNSAFE_componentWillMount() {
@@ -224,7 +223,6 @@ class FeedDetailScreen extends React.Component {
   
   async UNSAFE_componentWillReceiveProps(nextProps) {
     const { feedo, card } = nextProps
-    console.log('LOADING: ', nextProps.feedo.loading)
 
     if (this.state.isVisibleSelectFeedo) {
       if (this.props.feedo.loading !== 'GET_FEEDO_LIST_PENDING' && feedo.loading === 'GET_FEEDO_LIST_PENDING') {

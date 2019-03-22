@@ -259,8 +259,6 @@ class HomeScreen extends React.Component {
   static getDerivedStateFromProps(nextProps, prevState) {
     const { feedo, card, user } = nextProps
 
-    console.log('LOADING: ', nextProps.feedo.loading)
-
     if (feedo.loading === 'GET_FEED_DETAIL_REJECTED') {
       if (feedo.error.code === 'error.hunt.not.found') {
         AlertController.shared.showAlert('Error', 'This flow no longer exists')
