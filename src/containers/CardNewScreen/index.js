@@ -210,7 +210,7 @@ class CardNewScreen extends React.Component {
           userId: nextProps.user.userInfo.id,
           state: 'false'
         }
-        AsyncStorage.setItem('CardBubbleState', JSON.stringify(cardBubbleData));  
+        AsyncStorage.setItem('CardBubbleState', JSON.stringify(cardBubbleData));
       }
 
       // If share extension and a url has been passed
@@ -310,7 +310,7 @@ class CardNewScreen extends React.Component {
           return;
         }
       }
-      
+
       this.updateUploadProgress(0);
       this.props.uploadFileToS3(nextProps.card.fileUploadUrl.uploadUrl, this.selectedFile.uri, this.selectedFileName, fileType, this.updateUploadProgress);
     } else if (this.props.card.loading !== types.UPLOAD_FILE_PENDING && nextProps.card.loading === types.UPLOAD_FILE_PENDING) {
@@ -653,7 +653,7 @@ class CardNewScreen extends React.Component {
           if (!this.isVisibleErrorDialog) {
             this.isVisibleErrorDialog = true;
             AlertController.shared.showAlert('Error', error, [
-              {text: 'Close', onPress: () => { 
+              {text: 'Close', onPress: () => {
                 this.isVisibleErrorDialog = false;
               }},
             ]);
@@ -695,7 +695,7 @@ class CardNewScreen extends React.Component {
       this.safariViewShowSubscription = SafariView.addEventListener('onShow', () => this.safariViewShow());
       this.safariViewDismissSubscription = SafariView.addEventListener('onDismiss', () => this.safariViewDismiss());
     }
-    
+
     if (Platform.OS === 'android' && this.props.isClipboard === true) {
       this.keyboardDidShowSubscription = Keyboard.addListener('keyboardDidShow', (e) => this.keyboardDidShow(e));
       this.keyboardDidHideSubscription = Keyboard.addListener('keyboardDidHide', (e) => this.keyboardDidHide(e));
@@ -732,7 +732,7 @@ class CardNewScreen extends React.Component {
   }
 
   keyboardDidShow(e) {
-    // Padding issue with Android in clipboard mode 
+    // Padding issue with Android in clipboard mode
     if(Platform.OS === 'android' && this.props.isClipboard === true) {
       this.setState({bottomButtonsPadding: 24})
     }
@@ -1213,29 +1213,32 @@ class CardNewScreen extends React.Component {
 
     let type = 'FILE';
     if (mimeType !== false) {
+      console.log('mimeType is not false')
       if (mimeType.indexOf('image') !== -1 || mimeType.indexOf('video') !== -1) {
         type = 'MEDIA';
       }
-    }
-    this.setState({ fileType: type });
 
-    if (mimeType.indexOf('video') !== -1) {
-      if (Platform.OS === 'ios') {
-        // Important - files containing spaces break, need to uri decode the url before passing to RNThumbnail
-        // https://github.com/wkh237/react-native-fetch-blob/issues/248#issuecomment-297988317
-        let fileUri = decodeURI(file.uri)
-        this.getThumbnailUrl(file, fileUri)
+      this.setState({ fileType: type });
+
+      if (mimeType.indexOf('video') !== -1) {
+        if (Platform.OS === 'ios') {
+          // Important - files containing spaces break, need to uri decode the url before passing to RNThumbnail
+          // https://github.com/wkh237/react-native-fetch-blob/issues/248#issuecomment-297988317
+          let fileUri = decodeURI(file.uri)
+          this.getThumbnailUrl(file, fileUri)
+        } else {
+          this.setState({ loading: true })
+          RNFetchBlob.fs
+          .stat(file.uri)
+          .then(stats => {
+            filepath = stats.path;
+            this.getThumbnailUrl(file, filepath)
+          })
+        }
       } else {
-        this.setState({ loading: true })
-        RNFetchBlob.fs
-        .stat(file.uri)
-        .then(stats => {
-          filepath = stats.path;
-          this.getThumbnailUrl(file, filepath)
-        })
+        this.uploadFile(this.props.card.currentCard, file, type);
       }
-    }
-    else {
+    } else {
       this.uploadFile(this.props.card.currentCard, file, type);
     }
   }
@@ -1923,7 +1926,7 @@ class CardNewScreen extends React.Component {
         />
 
         {
-          this.state.loading && this.state.fileType === 'FILE' && 
+          this.state.loading && this.state.fileType === 'FILE' &&
             <LoadingScreen containerStyle={this.props.cardMode === CONSTANTS.SHARE_EXTENTION_CARD ? {marginBottom: CONSTANTS.SCREEN_VERTICAL_MIN_MARGIN + 100} : {}} />
         }
         <Modal 
