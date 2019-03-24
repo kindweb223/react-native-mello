@@ -85,7 +85,7 @@ import {
   getCard,
 } from '../../redux/card/actions'
 
-const TOASTER_DURATION = 5000
+const TOASTER_DURATION = 3000
 const PAGE_COUNT = 50
 
 class HomeScreen extends React.Component {
