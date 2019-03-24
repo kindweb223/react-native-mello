@@ -23,13 +23,17 @@ const styles = StyleSheet.create({
     top: 80,
     bottom: 35,
   },
-  slideContainer: {
+  scrollViewContainer: {
     flex: 1,
     marginBottom: 45,
     backgroundColor: '#fff'
   },
-  slideContentContainer: {
+  scrollViewContentContainer: {
     flex: 1
+  },
+  errorViewContainer: {
+    flex: 1,
+    backgroundColor: 'steelblue'
   },
   deleteButtonWrapper: {
     position: 'absolute',
