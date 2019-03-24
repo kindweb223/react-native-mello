@@ -30,6 +30,8 @@ import Intercom from 'react-native-intercom'
 import pubnub from '../../lib/pubnub'
 import Analytics from '../../lib/firebase'
 
+import SideMenu from 'react-native-side-menu'
+
 import DashboardActionBar from '../../navigations/DashboardActionBar'
 import FeedoListContainer from '../FeedoListContainer'
 import NewFeedScreen from '../NewFeedScreen'
@@ -49,6 +51,7 @@ import CONSTANTS from '../../service/constants';
 import COLORS from '../../service/colors'
 import { TIP_SHARE_LINK_URL, ANDROID_PUSH_SENDER_ID, PIN_FEATURE, SEARCH_FEATURE } from '../../service/api'
 import AlertController from '../../components/AlertController'
+import SideMenuComponent from '../../components/SideMenuComponent'
 
 const SEARCH_ICON = require('../../../assets/images/Search/Grey.png')
 const SETTING_ICON = require('../../../assets/images/Settings/Grey.png')
@@ -84,6 +87,7 @@ import {
 import { 
   getCard,
 } from '../../redux/card/actions'
+import { images } from '../../themes';
 
 const TOASTER_DURATION = 5000
 const PAGE_COUNT = 50
@@ -131,7 +135,9 @@ class HomeScreen extends React.Component {
       showShareConfirmModal: false,
       showFilterModal: false,
       filterShowType: 'all',
-      filterSortType: 'recent'
+      filterSortType: 'recent',
+      isSideMenuOpen: false,
+      selectedItemTitle: 'All flows',
     };
 
     this.currentRef = null;
@@ -1144,8 +1150,8 @@ class HomeScreen extends React.Component {
     this.setState({ showShareTipsModal: false })
   };
 
-  onFilterShow = (type) => {
-    this.setState({ filterShowType: type }, () => {
+  onFilterShow = (type, selectedItemTitle) => {
+    this.setState({ filterShowType: type, selectedItemTitle, isSideMenuOpen: false }, () => {
       this.filterFeeds()
     })
   }
@@ -1212,6 +1218,14 @@ class HomeScreen extends React.Component {
     this.setState({ feedoList });
   }
 
+  toggleSideMenu = () => {
+    this.setState({ isSideMenuOpen: !this.state.isSideMenuOpen });
+  }
+
+  updateMenuState(isSideMenuOpen) {
+    this.setState({ isSideMenuOpen });
+  }
+
   render () {
     const {
       loading,
@@ -1220,10 +1234,19 @@ class HomeScreen extends React.Component {
       badgeCount,
       showFeedInvitedNewUserBubble,
       feedClickEvent,
-      selectedLongHoldFeedoIndex
+      selectedLongHoldFeedoIndex,
+      isSideMenuOpen,
+      filterShowType,
+      selectedItemTitle
     } = this.state
+    const menu = <SideMenuComponent onItemSelected={this.onFilterShow} selectedItem={filterShowType} />
 
     return (
+      <SideMenu
+        menu={menu}
+        isOpen={isSideMenuOpen}
+        onChange={isOpen => this.updateMenuState(isOpen)}
+      >
       <SafeAreaView style={styles.safeArea}>
         <View feedAction="null" />
         <View style={styles.container}>
@@ -1234,13 +1257,23 @@ class HomeScreen extends React.Component {
 
           <View style={styles.headerView}>
             <TouchableOpacity
+              style={styles.menuIconView}
+              activeOpacity={0.7}
+              onPress={this.toggleSideMenu}
+            >
+              <Image source={images.iconMenu} style={styles.menuIcon} />
+            </TouchableOpacity>
+            <Text style={styles.title}>
+              {selectedItemTitle}
+            </Text>
+            {/* <TouchableOpacity
               style={styles.searchIconView}
               onPress={() => SEARCH_FEATURE ? this.onSearch() : {}}
             >
               {SEARCH_FEATURE && (
                 <Image style={styles.searchIcon} source={SEARCH_ICON} />
               )}
-            </TouchableOpacity>
+            </TouchableOpacity> */}
             <View style={styles.settingIconView}>
               <TouchableOpacity onPress={() => this.handleSetting()}>
                 <Image source={SETTING_ICON} />
@@ -1428,8 +1461,8 @@ class HomeScreen extends React.Component {
           onFilterSort={this.onFilterSort}
           onClose={() => this.setState({ showFilterModal: false }) }
         />
-
       </SafeAreaView>
+      </SideMenu>
     )
   }
 }

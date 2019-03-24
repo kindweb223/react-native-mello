@@ -12,6 +12,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff'
   },
   container: {
+    backgroundColor: 'white',
     flex: 1,
     paddingTop: Platform.OS === 'ios' ? ifIphoneX(0, 10) : 8
   },
@@ -89,10 +90,21 @@ const styles = StyleSheet.create({
   },
   settingIconView: {
     width: 60,
-    justifyContent: 'center',
     alignItems: 'flex-end',
-    position: 'absolute',
-    right: 12
+    marginRight: 12
+  },
+  menuIconView: {
+    padding: 10,
+    marginLeft: 12
+  },
+  menuIcon: {
+    width: 24,
+    height: 18
+  },
+  title: {
+    fontWeight: '500',
+    fontSize: 16,
+    color: 'black'
   }
 })
 
