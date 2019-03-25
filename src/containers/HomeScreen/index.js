@@ -1359,10 +1359,12 @@ class HomeScreen extends React.Component {
         {!this.state.isLongHoldMenuVisible && (
           <DashboardActionBar
             showList={true}
+            showSearch
             listType={this.props.user.listHomeType}
             onAddFeed={this.onOpenNewFeedModal.bind(this)}
             handleFilter={() => this.handleFilter()}
             handleList={() => this.handleList()}
+            handleSearch={() => SEARCH_FEATURE ? this.onSearch() : {}}
             filterType={this.state.filterShowType}
             sortType={this.state.filterSortType}
             badgeCount={badgeCount}
