@@ -4,11 +4,15 @@ import {
   View,
   ScrollView,
   RefreshControl,
-  WebView
+  WebView,
+  Text,
+  Platform,
+  Share
 } from 'react-native'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 
+import ActionSheet from 'react-native-actionsheet'
 import Swiper from 'react-native-swiper'
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons'
 import Feather from 'react-native-vector-icons/Feather'
@@ -19,6 +23,7 @@ import DocumentNotSupportedScreen from '../DocumentNotSupportedScreen'
 import * as feedTypes from '../../redux/feedo/types'
 import * as cardTypes from '../../redux/card/types'
 import AlertController from '../../components/AlertController'
+import COMMON_STYLES from '../../themes/styles'
 
 import Analytics from '../../lib/firebase'
 
@@ -80,6 +85,26 @@ class DocumentSliderScreen extends React.Component {
     }
   }
 
+  onShare() {
+    Share.share({
+      title: "Open in",
+      url: `${this.props.docFile.accessUrl}`
+      
+    })
+  }
+
+  onOptions() {
+    setTimeout(() => {
+      this.deleteActionSheet.show()
+    }, 200)
+  }
+
+  onTapActionSheet(index) {
+    if (index == 0) {
+      this.onDelete()
+    }
+  }
+
   onDelete() {
     const {
       docFile,
@@ -93,7 +118,7 @@ class DocumentSliderScreen extends React.Component {
     this.props.onClose()
   }
 
-  render () {
+  render() {
     const {
       docFile,
     } = this.props;
@@ -104,13 +129,35 @@ class DocumentSliderScreen extends React.Component {
 
     return (
       <View style={styles.container}>
-        <TouchableOpacity 
-          style={styles.closeButtonWrapper}
-          activeOpacity={0.6}
-          onPress={this.onClose.bind(this)}
-        >
-          <MaterialCommunityIcons name="close" size={25} color={'#fff'} />
-        </TouchableOpacity>
+        <View style={styles.topBarWrapper}>
+          <TouchableOpacity 
+            style={styles.closeButtonWrapper}
+            activeOpacity={0.6}
+            onPress={this.onClose.bind(this)}
+          >
+            <MaterialCommunityIcons name="close" size={25} color={COLORS.PURPLE} />
+          </TouchableOpacity>
+          <Text style={styles.headerTitleLabel}> 
+            {docFile.name}
+          </Text>
+          <TouchableOpacity 
+            style={styles.closeButtonWrapper}
+            activeOpacity={0.6}
+            onPress={this.onShare.bind(this)}
+          >
+            <Feather name="share" size={20} color={COLORS.PURPLE} />
+          </TouchableOpacity>
+          {
+            this.props.removal &&
+          <TouchableOpacity 
+            style={styles.closeButtonWrapper}
+            activeOpacity={0.6}
+            onPress={this.onOptions.bind(this)}
+          >
+             <Feather name="trash-2" size={20} color={COLORS.PURPLE} />
+          </TouchableOpacity>
+          }
+        </View>
         <View style={styles.webViewContainer}>
           {this.state.loading && <LoadingScreen />}
           {this.state.error && <DocumentNotSupportedScreen />}
@@ -119,7 +166,7 @@ class DocumentSliderScreen extends React.Component {
             contentContainerStyle={styles.scrollViewContentContainer}
             refreshControl={
               <RefreshControl
-                tintColor="#fff"
+                tintColor="white"
                 onRefresh={() => this.onRefreshWebView()}
               />
             }
@@ -132,16 +179,19 @@ class DocumentSliderScreen extends React.Component {
             />
           </ScrollView>
         </View>
-        {
-          this.props.removal && 
-            <TouchableOpacity 
-              style={styles.deleteButtonWrapper}
-              activeOpacity={0.6}
-              onPress={() => this.onDelete()}
-            >
-              <Feather name="trash-2" size={25} color={'#fff'} />
-            </TouchableOpacity>
-        }
+        <ActionSheet
+          ref={ref => this.deleteActionSheet = ref}
+          title={
+            Platform.OS === 'ios'
+            ? 'Are you sure want to delete?'
+            : <Text style={COMMON_STYLES.actionSheetTitleText}>Are you sure want to delete?</Text>
+          }
+          options={['Delete', 'Cancel']}
+          cancelButtonIndex={1}
+          destructiveButtonIndex={0}
+          tintColor={COLORS.PURPLE}
+          onPress={(index) => this.onTapActionSheet(index)}
+        />
       </View>
     );
   }
