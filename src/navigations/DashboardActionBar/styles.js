@@ -20,7 +20,7 @@ const styles = StyleSheet.create({
   },
   iconView: {
     height: 42,
-    paddingHorizontal: 10,
+    paddingHorizontal: 9,
     justifyContent: 'center',
     alignItems: 'center'
   },
