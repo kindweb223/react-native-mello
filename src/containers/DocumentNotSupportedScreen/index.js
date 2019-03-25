@@ -22,8 +22,11 @@ export default class DocumentNotSupportedScreen extends React.Component {
     render () {
         return (
           <SafeAreaView style={[styles.container, this.props.containerStyle]}>
-            <Text style={[styles.text]}>
-                Sorry, your file type is not supported
+            <Text style={styles.topText}>
+                File can't be previewed
+            </Text>
+            <Text style={styles.bottomText}>
+                To view this file, open it in another app.
             </Text>
           </SafeAreaView>
         )
