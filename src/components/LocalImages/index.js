@@ -189,11 +189,22 @@ class LocalImages extends React.Component {
             .catch(error => console.log('RNFS o- ',  error))
     }
 
+    saveFeedList = () => {
+        const { user } = this.props
+        const { feeds } = this.state
+        if (feeds.length) {
+            const feedKey = user.userInfo.id + '/flows'
+            const valueString = JSON.stringify(feeds)
+            AsyncStorage.setItem(feedKey, valueString)
+        }
+    }
+
     flattenIdeas = () => {
             const allIdeas = []
             const { feeds } = this.state
             let waitForAll;
             feeds.map((feed, index) => {
+                AsyncStorage.setItem('flow/'+feed.id, JSON.stringify(feed))
                 // allIdeas.push(...feed.ideas)
                 // console.log('RNFS one feeds ideas are ', ...feed.ideas)
                 axios({
@@ -254,7 +265,12 @@ class LocalImages extends React.Component {
 
     componentDidMount(): void {
         // this.saveImagesOnCurrentFeed()
-        this.flattenIdeas()
+        const { user } = this.props
+        userDirMustExist(user.userInfo.id)
+            .then(()=>{
+                this.flattenIdeas()
+                this.saveFeedList()
+            })
     }
 
     componentDidUpdate(prevProps: Readonly<P>, prevState: Readonly<S>, snapshot: SS): void {
@@ -266,6 +282,8 @@ class LocalImages extends React.Component {
         if (prevState.ideas.length < this.state.ideas.length) {
             console.log('RNFS batch - there are now ', this.state.ideas.length, ' in state')
             ideas.map(idea => {
+
+                AsyncStorage.setItem('idea/'+idea.id, JSON.stringify(idea))
                 idea.files && idea.files.map(file => {
                     AsyncStorage.getItem('file/'+file.id)
                     .then(ares => {
@@ -281,7 +299,7 @@ class LocalImages extends React.Component {
                                         idea.coverImage = localUrl
                                     }
                                     file.accessUrl = localUrl
-        
+
                                 })
                                 .catch(err => console.log('RNFS batch - can not store file because ', err))
 
@@ -296,7 +314,7 @@ class LocalImages extends React.Component {
                                     idea.coverImage = localUrl
                                 }
                                 file.accessUrl = localUrl
-    
+
                             })
                             .catch(err => console.log('RNFS batch - can not store file because ', err))
 
@@ -306,7 +324,7 @@ class LocalImages extends React.Component {
             })
         }
     }
-    
+
 
     render() {
         const { files } =  this.state

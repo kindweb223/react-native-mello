@@ -68,7 +68,7 @@ import {
   getActivityFeed
 } from '../../redux/feedo/actions'
 
-import { 
+import {
   setUserInfo,
   addDeviceToken,
   updateDeviceToken,
@@ -79,7 +79,7 @@ import {
   closeClipboardToaster
 } from '../../redux/user/actions'
 
-import { 
+import {
   getCard,
 } from '../../redux/card/actions'
 
@@ -143,7 +143,7 @@ class HomeScreen extends React.Component {
     // If we haven't asked to enable share extension before
     if (!permissionInfo) {
         this.setState({ showSharePermissionModal: true })
-    } 
+    }
   }
 
   onCloseSharePermissionModal = () => {
@@ -181,7 +181,7 @@ class HomeScreen extends React.Component {
               // Then show share widget tip
               this.showSharePermissionModal(permissionInfo)
             });
-          } 
+          }
           // If notification permissions already asked, show share widget tip
           else {
             this.showSharePermissionModal(permissionInfo)
@@ -271,7 +271,7 @@ class HomeScreen extends React.Component {
       (feedo.loading === 'PIN_FEED_FULFILLED') || (feedo.loading === 'UNPIN_FEED_FULFILLED') ||
       (feedo.loading === 'RESTORE_ARCHIVE_FEED_FULFILLED') || (feedo.loading === 'ADD_DUMMY_FEED'))) ||
       (feedo.loading === 'DEL_FEED_FULFILLED') || (feedo.loading === 'ARCHIVE_FEED_FULFILLED') || (feedo.loading === 'LEAVE_FEED_FULFILLED') ||
-      (feedo.loading === 'PUBNUB_GET_FEED_DETAIL_FULFILLED') || (feedo.loading === 'DELETE_CARD_FULFILLED') || 
+      (feedo.loading === 'PUBNUB_GET_FEED_DETAIL_FULFILLED') || (feedo.loading === 'DELETE_CARD_FULFILLED') ||
       (feedo.loading === 'PUBNUB_MOVE_IDEA_FULFILLED') || (feedo.loading === 'MOVE_CARD_FULFILLED') ||
       (feedo.loading === 'READ_ACTIVITY_FEED_FULFILLED') || (feedo.loading === 'DEL_ACTIVITY_FEED_FULFILLED') ||
       (feedo.loading === 'UPDATE_CARD_FULFILLED') || (feedo.loading === 'GET_CARD_FULFILLED') ||
@@ -279,7 +279,7 @@ class HomeScreen extends React.Component {
       (feedo.loading === 'PUBNUB_DELETE_INVITEE_FULFILLED') || (feedo.loading === 'GET_FEED_DETAIL_REJECTED') ||
       (feedo.loading === 'SAVE_FLOW_PREFERENCE_FULFILLED') ||
       (feedo.loading === 'PUBNUB_DELETE_FEED' &&
-                          Actions.currentScene !== 'FeedDetailScreen' && 
+                          Actions.currentScene !== 'FeedDetailScreen' &&
                           Actions.currentScene !== 'CommentScreen' && Actions.currentScene !== 'ActivityCommentScreen' &&
                           Actions.currentScene !== 'LikesListScreen' && Actions.currentScene !== 'ActivityLikesListScreen'))
     {
@@ -373,7 +373,7 @@ class HomeScreen extends React.Component {
         Actions.currentScene !== 'NotificationScreen' && Actions.currentScene !== 'FeedDetailScreen'
     ) {
       this.setState({ isShowInviteToaster: true })
-      
+
       if (feedo.inviteUpdateType) {
         this.setState({ inviteToasterTitle: 'Invitation accepted' })
       } else {
@@ -390,11 +390,11 @@ class HomeScreen extends React.Component {
         feedo.loading === 'PUBNUB_LIKE_CARD_FULFILLED' && Actions.currentScene !== 'FeedDetailScreen' ||
         feedo.loading === 'PUBNUB_UNLIKE_CARD_FULFILLED' && Actions.currentScene !== 'FeedDetailScreen' ||
         (feedo.loading === 'GET_CARD_COMMENTS_FULFILLED' &&
-                          Actions.currentScene !== 'FeedDetailScreen' && 
+                          Actions.currentScene !== 'FeedDetailScreen' &&
                           Actions.currentScene !== 'CommentScreen' && Actions.currentScene !== 'ActivityCommentScreen' &&
                           Actions.currentScene !== 'LikesListScreen' && Actions.currentScene !== 'ActivityLikesListScreen') ||
         (feedo.loading === 'PUBNUB_DELETE_FEED' &&
-                          Actions.currentScene !== 'FeedDetailScreen' && 
+                          Actions.currentScene !== 'FeedDetailScreen' &&
                           Actions.currentScene !== 'CommentScreen' && Actions.currentScene !== 'ActivityCommentScreen' &&
                           Actions.currentScene !== 'LikesListScreen' && Actions.currentScene !== 'ActivityLikesListScreen')
     ) {
@@ -418,7 +418,7 @@ class HomeScreen extends React.Component {
         (prevProps.feedo.loading !== 'DEL_FEED_FULFILLED' && feedo.loading === 'DEL_FEED_FULFILLED') ||
         (prevProps.feedo.loading !== 'ARCHIVE_FEED_FULFILLED' && feedo.loading === 'ARCHIVE_FEED_FULFILLED') ||
         (feedo.loading === 'PUBNUB_DELETE_FEED' &&
-                          Actions.currentScene !== 'FeedDetailScreen' && 
+                          Actions.currentScene !== 'FeedDetailScreen' &&
                           Actions.currentScene !== 'CommentScreen' && Actions.currentScene !== 'ActivityCommentScreen' &&
                           Actions.currentScene !== 'LikesListScreen' && Actions.currentScene !== 'ActivityLikesListScreen')) {
       this.setState({ isRefreshing: false })
@@ -468,7 +468,7 @@ class HomeScreen extends React.Component {
         Actions.FeedDetailScreen({
           type: 'replace',
           data: this.state.currentPushNotificationData
-        })  
+        })
       } else {
         Actions.FeedDetailScreen({
           data: this.state.currentPushNotificationData
@@ -487,11 +487,11 @@ class HomeScreen extends React.Component {
       });
     } else if (prevProps.feedo.loading !== 'UPDATE_CARD_FULFILLED' && feedo.loading === 'UPDATE_CARD_FULFILLED' && Actions.currentScene === 'HomeScreen') {
       this.setState({ isShowCardAddedToaster: true, cardAddedToasterTitle: 'Card added to ' + feedo.currentFeed.headline })
-  
+
       setTimeout(() => {
         this.setState({ isShowCardAddedToaster: false })
       }, TOASTER_DURATION)
-    }   
+    }
   }
 
   async setBubbles(feedoList) {
@@ -522,7 +522,7 @@ class HomeScreen extends React.Component {
           this.setState({ showFeedInvitedNewUserBubble: false })
         }
       }
-    }    
+    }
 
     if (feedoList && ownFeedoList.length === 0) {
       this.setState({ showEmptyBubble: true })
@@ -562,10 +562,10 @@ class HomeScreen extends React.Component {
 
         // TEMPORARY: REMOVE WITH PUBNUB INTEGRATION
         // this.props.getInvitedFeedList()
-        // this.props.getActivityFeed(this.props.user.userInfo.id, { page: 0, size: PAGE_COUNT })            
-      }  
+        // this.props.getActivityFeed(this.props.user.userInfo.id, { page: 0, size: PAGE_COUNT })
+      }
       this.showClipboardToast();
-      
+
       if (Actions.currentScene !== 'TutorialScreen' && Actions.currentScene !== 'LoginScreen') {
         this.props.getUserSession()
       }
@@ -750,8 +750,8 @@ class HomeScreen extends React.Component {
   }
 
   handleLongHoldMenu = (index, selectedFeedData) => {
-    this.setState({ 
-      selectedLongHoldFeedoIndex: index, 
+    this.setState({
+      selectedLongHoldFeedoIndex: index,
       feedClickEvent: 'long',
       selectedFeedData,
       isLongHoldMenuVisible: true
@@ -765,7 +765,7 @@ class HomeScreen extends React.Component {
 
   closeLongHoldMenu = () => {
     this.setState({
-      selectedLongHoldFeedoIndex: -1, 
+      selectedLongHoldFeedoIndex: -1,
       feedClickEvent: 'normal',
       isLongHoldMenuVisible: false
     }, () => {
@@ -778,7 +778,7 @@ class HomeScreen extends React.Component {
 
   handleArchiveFeed = (feedId) => {
     this.closeLongHoldMenu()
-    
+
     this.setState({ isShowActionToaster: true, isArchive: true, toasterTitle: 'Flow archived', feedId })
     this.props.addDummyFeed({ feedId, flag: 'archive' })
 
@@ -807,7 +807,7 @@ class HomeScreen extends React.Component {
     setTimeout(() => {
       this.setState({ isShowActionToaster: false })
       this.deleteFeed(feedId)
-    }, TOASTER_DURATION)      
+    }, TOASTER_DURATION)
 }
 
   deleteFeed = (feedId) => {
@@ -887,9 +887,9 @@ class HomeScreen extends React.Component {
     setTimeout(() => {
       this.setState({ isShowActionToaster: false })
       this.duplicateFeed()
-    }, TOASTER_DURATION + 5)      
+    }, TOASTER_DURATION + 5)
   }
-  
+
   duplicateFeed = () => {
     if (this.state.isDuplicate) {
       Analytics.logEvent('dashboard_duplicate_feed', {})
@@ -976,7 +976,7 @@ class HomeScreen extends React.Component {
       Analytics.logEvent('dashboard_new_feed', {})
 
       this.props.setCurrentFeed({});
-      this.setState({ 
+      this.setState({
         isVisibleCreateNewFeedModal: false,
         isVisibleNewFeed: true,
         isEditFeed: false,
@@ -990,12 +990,12 @@ class HomeScreen extends React.Component {
       toValue: 0,
       duration: CONSTANTS.ANIMATEION_MILLI_SECONDS,
     }).start(() => {
-      this.setState({ 
+      this.setState({
         isVisibleCreateNewFeedModal: false,
       });
     });
   }
-  
+
   onCloseNewFeedModal(data) {
     // Ignore discarding feed
     // if (data.currentFeed) {
@@ -1030,14 +1030,14 @@ class HomeScreen extends React.Component {
     }
 
     return (
-      <Animated.View 
+      <Animated.View
         style={[
           styles.modalContainer,
           { opacity: this.animatedOpacity }
         ]}
       >
         {isVisibleCreateNewFeedModal && (
-          <CreateNewFeedComponent 
+          <CreateNewFeedComponent
             onSelect={(type) => this.onSelectNewFeedType(type)}
             onClose={() => this.onCloseCreateNewFeedModal()}
           />
@@ -1051,7 +1051,7 @@ class HomeScreen extends React.Component {
             viewMode={CONSTANTS.FEEDO_FROM_MAIN}
 
             // feedoMode={CONSTANTS.SHARE_EXTENTION_FEEDO}
-          />  
+          />
         )}
       </Animated.View>
     );
@@ -1090,7 +1090,7 @@ class HomeScreen extends React.Component {
       toValue: 0,
       duration: CONSTANTS.ANIMATEION_MILLI_SECONDS,
     }).start(() => {
-      this.setState({ 
+      this.setState({
         isVisibleCard: false
       });
     });
@@ -1105,13 +1105,13 @@ class HomeScreen extends React.Component {
       cardMode = CONSTANTS.MAIN_APP_CARD_FROM_DASHBOARD;
     }
     return (
-      <Animated.View 
+      <Animated.View
         style={[
           styles.modalContainer,
           {opacity: this.animatedOpacity}
         ]}
       >
-        <CardNewScreen 
+        <CardNewScreen
           viewMode={this.state.cardViewMode}
           cardMode={cardMode}
           invitee={this.state.selectedIdeaInvitee}
@@ -1375,7 +1375,7 @@ class HomeScreen extends React.Component {
           />
         )}
 
-        <Modal 
+        <Modal
           isVisible={this.state.showSharePermissionModal}
           style={{ margin: 8 }}
           backdropColor={COLORS.MODAL_BACKDROP}
@@ -1398,8 +1398,8 @@ class HomeScreen extends React.Component {
               ref={ref => (this.ref = ref)}
             />
         }
-        
-        <Modal 
+
+        <Modal
           isVisible={this.state.showShareConfirmModal}
           animationIn="fadeIn"
           animationOut="fadeOut"

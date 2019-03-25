@@ -14,7 +14,7 @@ export const userLookup = (data) => {
         method: 'post',
         url,
         data
-      })  
+      })
   };
 }
 
@@ -31,7 +31,7 @@ export const userSignIn = (data) => {
         method: 'post',
         url,
         data
-      })  
+      })
   };
 }
 
@@ -47,7 +47,7 @@ export const getUserSession = () => {
       axios({
         method: 'get',
         url
-      })  
+      })
   };
 }
 
@@ -64,7 +64,7 @@ export const userSignUp = (data) => {
         method: 'post',
         url,
         data
-      })  
+      })
   };
 }
 
@@ -80,7 +80,7 @@ export const userSignOut = () => {
       axios({
         method: 'post',
         url
-      })  
+      })
   };
 }
 
@@ -96,7 +96,7 @@ export const getContactList = (userId) => {
       axios({
         method: 'get',
         url: url
-      })  
+      })
   };
 }
 
@@ -112,7 +112,7 @@ export const getImageUrl = (userId) => {
       axios({
         method: 'get',
         url: url
-      })  
+      })
   };
 }
 
@@ -128,7 +128,7 @@ export const resendConfirmationEmail = () => {
       axios({
         method: 'get',
         url: url
-      })  
+      })
   };
 }
 
@@ -210,7 +210,7 @@ export const sendResetPasswordEmail = (data) => {
         method: 'post',
         url,
         data
-      })  
+      })
   };
 }
 /**
@@ -226,7 +226,7 @@ export const resetPassword = (data) => {
         method: 'put',
         url,
         data
-      })  
+      })
   };
 }
 
@@ -243,7 +243,7 @@ export const validateInvite = (data) => {
         method: 'post',
         url,
         data
-      })  
+      })
   }
 }
 
@@ -260,7 +260,7 @@ export const completeInvite = (data) => {
         method: 'post',
         url,
         data
-      })  
+      })
   }
 }
 
@@ -276,7 +276,7 @@ export const addDeviceToken = (userId, data) => {
         method: 'post',
         url,
         data
-      })  
+      })
   };
 }
 
@@ -293,7 +293,7 @@ export const updateDeviceToken = (userId, deviceId, data) => {
         method: 'put',
         url,
         data
-      })  
+      })
   };
 }
 
@@ -308,7 +308,7 @@ export const deleteProfilePhoto = (userId) => {
       axios({
         method: 'delete',
         url
-      })  
+      })
   };
 }
 
@@ -395,6 +395,6 @@ export const userGoogleSigin = (token) => {
         method: 'post',
         url,
         data: { token }
-      })  
+      })
   };
 }
