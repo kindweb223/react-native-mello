@@ -11,10 +11,10 @@ const images = {
     leave: require('../../assets/images/Feed_option/LeaveGrey.png'),
     placeholder: require('../../assets/images/placeholder.png'),
     iconHashtag: require('../../assets/images/IconHashtag/IconMediumHashtagWhite.png'),
-    iconFlow: require('../../assets/images/IconFlow/IconMediumFlowWhite.png'),
+    iconFlow: require('../../assets/images/IconFlow/IconsMediumFlowWhite.png'),
     iconMenu: require('../../assets/images/IconMenu/IconMediumMenuGrey.png'),
-    iconPeople: require('../../assets/images/IconPeople/IconMediumPeopleWhite.png'),
-    iconPerson: require('../../assets/images/IconPerson/IconMediumPersonWhite.png'),
+    iconPeople: require('../../assets/images/IconPeople/IconsMediumPeopleWhite.png'),
+    iconPerson: require('../../assets/images/IconPerson/IconsMediumPersonWhite.png'),
     iconMello: require('../../assets/images/IconMello/IconMelloMediumWhite.png'),
 }
 

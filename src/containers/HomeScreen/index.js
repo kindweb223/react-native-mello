@@ -1300,6 +1300,15 @@ class HomeScreen extends React.Component {
               <View style={styles.emptyView}>
                 {!loading && (
                   <View style={showFeedInvitedNewUserBubble ? styles.emptyInnerSubView : styles.emptyInnerView}>
+                    {(filterShowType === 'shared' && invitedFeedList.length === 0) &&
+                      <View style={{ position: 'absolute', top: 0 }}>
+                        <SpeechBubbleComponent
+                          page="shared"
+                          title="Flows can be shared with friends and colleagues for collaboration. Flows you've been invited to will appear here."
+                          subTitle="All you need to know about sharing in 15 secs "
+                        />
+                      </View>
+                    }
                     {this.state.showEmptyBubble && (
                       this.state.isExistingUser
                         ? <EmptyStateComponent
