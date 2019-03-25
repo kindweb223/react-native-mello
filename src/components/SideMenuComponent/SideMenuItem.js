@@ -39,19 +39,19 @@ const styles = {
     marginBottom: 12,
     paddingLeft: 10,
     paddingRight: 10,
-    paddingTop: 8,
-    paddingBottom: 8,
     flexDirection: 'row',
     alignItems: 'center',
   },
   text: {
     fontWeight: '500',
     fontSize: 16,
-    color: 'white'
+    color: 'white',
+    paddingTop: 8,
+    paddingBottom: 8
   },
   icon: {
-    width: 25,
-    height: 20,
+    width: 20,
+    height: 34,
     marginRight: 18
   }
 }
