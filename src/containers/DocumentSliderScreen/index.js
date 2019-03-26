@@ -15,6 +15,7 @@ import Feather from 'react-native-vector-icons/Feather'
 import styles from './styles'
 import COLORS from '../../service/colors'
 import LoadingScreen from '../LoadingScreen'
+import DocumentNotSupportedScreen from '../DocumentNotSupportedScreen'
 import * as feedTypes from '../../redux/feedo/types'
 import * as cardTypes from '../../redux/card/types'
 import AlertController from '../../components/AlertController'
@@ -25,8 +26,8 @@ class DocumentSliderScreen extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      position: this.props.position,
-      loading: false
+      loading: false,
+      error: false
     };
   }
 
@@ -81,10 +82,10 @@ class DocumentSliderScreen extends React.Component {
 
   onDelete() {
     const {
-      docFiles,
+      docFile,
     } = this.props;
     if (this.props.onRemove) {
-      this.props.onRemove(docFiles[this.state.position].id);
+      this.props.onRemove(docFile.id);
     }
   }
 
@@ -94,8 +95,12 @@ class DocumentSliderScreen extends React.Component {
 
   render () {
     const {
-      docFiles,
+      docFile,
     } = this.props;
+
+    if (this.state.loading) { 
+      setTimeout(() => { this.setState({ error: true }) }, 15000);
+    }
 
     return (
       <View style={styles.container}>
@@ -107,40 +112,25 @@ class DocumentSliderScreen extends React.Component {
           <MaterialCommunityIcons name="close" size={25} color={'#fff'} />
         </TouchableOpacity>
         <View style={styles.webViewContainer}>
-          <Swiper 
-            loop={false}
-            index={this.state.position}
-            paginationStyle={{ bottom: 0 }}
-            dotStyle={styles.dotStyle}
-            activeDotStyle={styles.dotStyle}
-            activeDotColor='#fff'
-            dotColor={COLORS.MEDIUM_GREY}
-            onIndexChanged={(index) => this.setState({position: index})}
-          >
-            {
-              docFiles.map((file, index) => {
-                return (
-                  <ScrollView
-                    key={index}
-                    style={styles.slideContainer}
-                    contentContainerStyle={styles.slideContentContainer}
-                    refreshControl={
-                      <RefreshControl
-                        tintColor="#fff"
-                        onRefresh={() => this.onRefreshWebView()}
-                      />
-                    }
-                  >
-                    <WebView 
-                      source={{uri: file.accessUrl}}
-                      onLoadStart={() =>  this.setState({loading: true})}
-                      onLoadEnd={() =>  this.setState({loading: false})}
-                    />
-                  </ScrollView>
-                )
-              })
+          {this.state.loading && <LoadingScreen />}
+          {this.state.error && <DocumentNotSupportedScreen />}
+          <ScrollView
+            style={styles.scrollViewContainer}
+            contentContainerStyle={styles.scrollViewContentContainer}
+            refreshControl={
+              <RefreshControl
+                tintColor="#fff"
+                onRefresh={() => this.onRefreshWebView()}
+              />
             }
-          </Swiper>
+          >
+            <WebView 
+              source={{uri: docFile.accessUrl}}
+              onLoadStart={() =>  this.setState({ loading: true })}
+              onLoadEnd={() =>  this.setState({ loading: false })}
+              onError={()  => this.setState({ error: true, loading: false }) }
+            />
+          </ScrollView>
         </View>
         {
           this.props.removal && 
@@ -152,7 +142,6 @@ class DocumentSliderScreen extends React.Component {
               <Feather name="trash-2" size={25} color={'#fff'} />
             </TouchableOpacity>
         }
-        {this.state.loading && <LoadingScreen />}
       </View>
     );
   }
@@ -160,17 +149,14 @@ class DocumentSliderScreen extends React.Component {
 
 
 DocumentSliderScreen.defaultProps = {
-  docFiles: [],
-  position: 0,
+  docFile: null,
   removal: true,
   onRemove: () => {},
   onClose: () => {},
 }
 
-
 DocumentSliderScreen.propTypes = {
-  docFiles: PropTypes.array,
-  position: PropTypes.number,
+  docFile: PropTypes.object,
   removal: PropTypes.bool,
   onRemove: PropTypes.func,
   onClose: PropTypes.func,
