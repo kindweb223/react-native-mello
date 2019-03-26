@@ -26,6 +26,8 @@ import AlertController from '../../components/AlertController'
 import COMMON_STYLES from '../../themes/styles'
 
 import Analytics from '../../lib/firebase'
+import RNFS from 'react-native-fs'
+import FileViewer from 'react-native-file-viewer'
 
 class DocumentSliderScreen extends React.Component {
   constructor(props) {
@@ -37,7 +39,29 @@ class DocumentSliderScreen extends React.Component {
   }
 
   componentDidMount() {
+    console.log('componentdidmount')
+
     Analytics.setCurrentScreen('DocumentSliderScreen')
+
+    if (Platform.OS === 'android') {
+      const toFile = `${RNFS.TemporaryDirectoryPath}${this.props.docFile.name}`
+      console.log("[FILE] ToFile: ", toFile)
+      fileOptions = {fromUrl: this.props.docFile.accessUrl, toFile: toFile, background: true}
+
+      RNFS.downloadFile(fileOptions).promise
+      .then((result) => {
+        console.log("[FILE] downloaded: ", result)
+        FileViewer.open(toFile, { showOpenWithDialog: true })
+        .then(() => {
+          console.log("[FILE] did open fileviewer");
+        })
+        .catch(error => {
+          console.log("[FILE] did fail opening fileviewer: ", error)
+        });
+      }).catch((error) => {
+        console.log("[FILE] error downloading: ", error)
+      });
+    }
   }
 
   UNSAFE_componentWillReceiveProps(nextProps) {
