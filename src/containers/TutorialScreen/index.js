@@ -294,6 +294,8 @@ class TutorialScreen extends React.Component {
     // this.lottieFourth.reset()
     // this.lottieFifth.reset()
 
+    const seek = 0
+
     // Pause all videos
     this.setState({
       video1Paused: true, 
@@ -301,27 +303,28 @@ class TutorialScreen extends React.Component {
       video3Paused: true, 
       video4Paused: true, 
       video5Paused: true
-    })
+    }, () => {
+      this.player1.seek(seek)
+      this.player2.seek(seek)
+      this.player3.seek(seek)
+      this.player4.seek(seek)
+      this.player5.seek(seek)
+    });
 
     if (context.state.index === 1) {
       this.setState({video1Paused: false})
-      this.player1.seek(0)
       // this.lottieFirst.play()
     } else if (context.state.index === 2) {
       this.setState({video2Paused: false})
-      this.player2.seek(0)
       // this.lottieSecond.play()
     } else if (context.state.index === 3) {
       this.setState({video3Paused: false})
-      this.player3.seek(0)
       // this.lottieThird.play()
     } else if (context.state.index === 4) {
       this.setState({video4Paused: false})
-      this.player4.seek(0)
       // this.lottieFourth.play()
     } else if (context.state.index === 5) {
       this.setState({video5Paused: false})
-      this.player5.seek(0)
       // this.lottieFifth.play()
     }
 

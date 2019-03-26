@@ -59,7 +59,7 @@ const NOTIFICATION_EMPTY_ICON = require('../../../assets/images/empty_state/Noti
 
 const PAGE_COUNT = 50
 
-const TOASTER_DURATION = 5000
+const TOASTER_DURATION = 3000
 
 const ACTION_NONE = 0;
 const ACTION_FEEDO_PIN = 1;
