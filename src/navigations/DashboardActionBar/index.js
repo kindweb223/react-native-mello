@@ -76,7 +76,7 @@ class DashboardActionBar extends React.Component {
           )} */}
           {notifications &&
             <TouchableOpacity
-              style={styles.iconView}
+              style={styles.notificationView}
               onPress={() => Actions.NotificationScreen()}
             >
               <Image source={badgeCount > 0 ? BELL_ICON_B : BELL_ICON_G} style={styles.notificationIcon} />

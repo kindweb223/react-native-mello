@@ -26,8 +26,7 @@ const styles = StyleSheet.create({
     alignItems: 'center'
   },
   notificationView: {
-    paddingHorizontal: 16,
-    height: 42,    
+    height: 42,
     flexDirection: 'row',
     justifyContent: 'center',
     alignItems: 'center'
