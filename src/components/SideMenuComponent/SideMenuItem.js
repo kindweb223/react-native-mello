@@ -26,7 +26,7 @@ class SideMenuItem extends React.Component {
         onPress={onPress}
       >
         <Image source={icon} style={styles.icon} />
-        <Text style={styles.text}>
+        <Text style={[styles.text, { color: selected ? 'white' : '#B5B5B5' }]}>
           {text}
         </Text>
       </TouchableOpacity>
