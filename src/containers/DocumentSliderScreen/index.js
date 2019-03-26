@@ -10,7 +10,8 @@ import {
   Share,
   Image, 
   Button,
-  ToastAndroid
+  ToastAndroid,
+  BackHandler
 } from 'react-native'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
@@ -42,13 +43,16 @@ class DocumentSliderScreen extends React.Component {
   }
 
   componentDidMount() {
-    console.log('componentdidmount')
-
+    BackHandler.addEventListener('hardwareBackPress', this.handleBackButton);
     Analytics.setCurrentScreen('DocumentSliderScreen')
 
     if (Platform.OS === 'android') {
       this.onOpenIn()      
     }
+  }
+
+  componentWillUnmount() {
+    BackHandler.removeEventListener('hardwareBackPress', this.handleBackButton);
   }
 
   UNSAFE_componentWillReceiveProps(nextProps) {
@@ -88,6 +92,11 @@ class DocumentSliderScreen extends React.Component {
       }
       return;
     }
+  }
+
+  handleBackButton = () => {
+    Actions.pop();
+    return true;
   }
 
   onClose() {
@@ -175,7 +184,7 @@ class DocumentSliderScreen extends React.Component {
           >
             <MaterialCommunityIcons name="close" size={25} color={COLORS.PURPLE} />
           </TouchableOpacity>
-          <Text style={styles.headerTitleLabel}> 
+          <Text numberOfLines={1} style={styles.headerTitleLabel}> 
             {docFile.name}
           </Text>
           <TouchableOpacity 
