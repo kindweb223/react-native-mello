@@ -25,19 +25,19 @@ class SideMenuComponent extends React.Component {
           text='All flows'
           selected={selectedItem === 'all'}
           onPress={() => onItemSelected('all', 'All flows')}
-          icon={images.iconFlow}
+          icon={selectedItem === 'all' ? images.iconFlow : images.iconFlowGrey}
         />
         <SideMenuItem
           text='My flows'
           selected={selectedItem === 'owned'}
           onPress={() => onItemSelected('owned', 'My flows')}
-          icon={images.iconPerson}
+          icon={selectedItem === 'owned' ? images.iconPerson : images.iconPersonGrey}
         />
         <SideMenuItem
           text='Shared with me'
           selected={selectedItem === 'shared'}
           onPress={() => onItemSelected('shared', 'Shared with me')}
-          icon={images.iconPeople}
+          icon={selectedItem === 'shared' ? images.iconPeople : images.iconPeopleGrey}
         />
       </View>
     )
