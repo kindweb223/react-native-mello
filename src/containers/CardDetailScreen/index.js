@@ -1396,11 +1396,11 @@ class CardDetailScreen extends React.Component {
     const { viewMode } = this.props
   
     let marginTop = 24
-    marginTop = coverImage ? 24 : 65
+    marginTop = coverImage ? 24 : 56
     if (links && links.length > 0) {
       marginTop = 6
     } else {
-      marginTop = coverImage ? 24 : 65
+      marginTop = coverImage ? 24 : 56
     }
 
     // To fix wrong margin when add image to text only card
