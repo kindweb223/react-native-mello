@@ -13,6 +13,11 @@ const styles = StyleSheet.create({
       backgroundColor: 'white',
       zIndex: 999,
     },
+    documentImage: {
+      width: 56,
+      height: 65,
+      marginBottom: 20
+    },
     topText: {
       fontSize: 18,
       fontWeight: 'bold',
@@ -24,6 +29,13 @@ const styles = StyleSheet.create({
       fontWeight: 'normal',
       textAlign: 'center',
       marginBottom: 5
+    },
+    openIn: {
+      marginTop: 24,
+      fontSize: 18,
+      fontWeight: 'bold',
+      color: COLORS.PURPLE,
+      textAlign: 'center'
     }
   });
   
