@@ -20,7 +20,7 @@ class SideMenuItem extends React.Component {
       <TouchableOpacity
         style={[
           styles.container,
-          selected ? { backgroundColor: colors.DARK_GREY, borderRadius: 5 } : null
+          selected ? { backgroundColor: '#565656', borderRadius: 5 } : null
         ]}
         activeOpacity={0.7}
         onPress={onPress}
@@ -36,7 +36,7 @@ class SideMenuItem extends React.Component {
 
 const styles = {
   container: {
-    marginBottom: 12,
+    marginBottom: 4,
     paddingLeft: 10,
     paddingRight: 10,
     flexDirection: 'row',
@@ -50,8 +50,8 @@ const styles = {
     paddingBottom: 8
   },
   icon: {
-    width: 20,
-    height: 34,
+    width: 19,
+    height: 32,
     marginRight: 18
   }
 }

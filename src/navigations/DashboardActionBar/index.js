@@ -57,15 +57,15 @@ class DashboardActionBar extends React.Component {
       <View style={styles.container}>
         <View style={styles.leftContainer}>
           {showSearch && (
-            <TouchableOpacity style={styles.iconView} onPress={handleSearch}>
-              <Image source={SEARCH_ICON} />
+            <TouchableOpacity style={[styles.iconView, { marginRight: 25 }]} onPress={handleSearch}>
+              <Image source={SEARCH_ICON} style={styles.searchIcon} />
             </TouchableOpacity>
           )}
           {showList && (
             <TouchableOpacity style={styles.iconView} onPress={() => this.props.handleList()}>
               {page === 'detail'
-                ? <Image source={listType === 'LIST' ? MASONRY_ICON : LIST_ICON} />
-                : <Image source={listType === 'LIST' ? LIST_ICON : LIST_ICON_THUMBNAIL} />
+                ? <Image source={listType === 'LIST' ? MASONRY_ICON : LIST_ICON} style={styles.listIcon} />
+                : <Image source={listType === 'LIST' ? LIST_ICON : LIST_ICON_THUMBNAIL} style={styles.listIcon} />
               }
             </TouchableOpacity>
           )}
@@ -76,10 +76,10 @@ class DashboardActionBar extends React.Component {
           )} */}
           {notifications &&
             <TouchableOpacity
-              style={styles.notificationView}
+              style={styles.iconView}
               onPress={() => Actions.NotificationScreen()}
             >
-              <Image source={badgeCount > 0 ? BELL_ICON_B : BELL_ICON_G} />
+              <Image source={badgeCount > 0 ? BELL_ICON_B : BELL_ICON_G} style={styles.notificationIcon} />
               {badgeCount > 0 && (
                 <Text style={styles.notificationText}>{badgeCount}</Text>
               )}
