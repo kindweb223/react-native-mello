@@ -7,7 +7,10 @@ import {
   WebView,
   Text,
   Platform,
-  Share
+  Share,
+  Image, 
+  Button,
+  ToastAndroid
 } from 'react-native'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
@@ -44,23 +47,7 @@ class DocumentSliderScreen extends React.Component {
     Analytics.setCurrentScreen('DocumentSliderScreen')
 
     if (Platform.OS === 'android') {
-      const toFile = `${RNFS.TemporaryDirectoryPath}${this.props.docFile.name}`
-      console.log("[FILE] ToFile: ", toFile)
-      fileOptions = {fromUrl: this.props.docFile.accessUrl, toFile: toFile, background: true}
-
-      RNFS.downloadFile(fileOptions).promise
-      .then((result) => {
-        console.log("[FILE] downloaded: ", result)
-        FileViewer.open(toFile, { showOpenWithDialog: true })
-        .then(() => {
-          console.log("[FILE] did open fileviewer");
-        })
-        .catch(error => {
-          console.log("[FILE] did fail opening fileviewer: ", error)
-        });
-      }).catch((error) => {
-        console.log("[FILE] error downloading: ", error)
-      });
+      this.onOpenIn()      
     }
   }
 
@@ -113,7 +100,6 @@ class DocumentSliderScreen extends React.Component {
     Share.share({
       title: "Open in",
       url: `${this.props.docFile.accessUrl}`
-      
     })
   }
 
@@ -136,6 +122,34 @@ class DocumentSliderScreen extends React.Component {
     if (this.props.onRemove) {
       this.props.onRemove(docFile.id);
     }
+  }
+
+  onOpenIn = () => {
+    const {
+      docFile,
+    } = this.props;
+
+    this.setState({ loading: false, error: true })
+
+    const savingFolder = `${RNFS.TemporaryDirectoryPath}/`
+
+    // Download and present option to open in different apps
+    const toFile = `${savingFolder}${docFile.name}`
+    fileOptions = {fromUrl: docFile.accessUrl, toFile: toFile}
+
+    RNFS.downloadFile(fileOptions).promise
+    .then((result) => {
+      FileViewer.open(toFile)
+      .then(() => {
+        this.setState({ loading: false, error: true })
+      }).catch(error => {
+        this.setState({ loading: false, error: true })
+        ToastAndroid.show('You have no available apps for this file type', ToastAndroid.CENTER);
+      });
+    }).catch((error) => {
+      ToastAndroid.show(error.message, ToastAndroid.CENTER);
+      this.setState({ loading: false, error: true })
+    });
   }
 
   onRefreshWebView = () => {
@@ -184,7 +198,7 @@ class DocumentSliderScreen extends React.Component {
         </View>
         <View style={styles.webViewContainer}>
           {this.state.loading && <LoadingScreen />}
-          {this.state.error && <DocumentNotSupportedScreen />}
+          {this.state.error && <DocumentNotSupportedScreen onOpenIn={this.onOpenIn} />}
           <ScrollView
             style={styles.scrollViewContainer}
             contentContainerStyle={styles.scrollViewContentContainer}
@@ -195,12 +209,14 @@ class DocumentSliderScreen extends React.Component {
               />
             }
           >
+          { Platform.OS === "ios" &&
             <WebView 
               source={{uri: docFile.accessUrl}}
               onLoadStart={() =>  this.setState({ loading: true })}
               onLoadEnd={() =>  this.setState({ loading: false })}
               onError={()  => this.setState({ error: true, loading: false }) }
             />
+          }
           </ScrollView>
         </View>
         <ActionSheet

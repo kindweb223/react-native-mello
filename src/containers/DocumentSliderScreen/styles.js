@@ -62,6 +62,11 @@ const styles = StyleSheet.create({
   dotStyle: {
     width: 6,
     height: 6,
+  },
+  documentImage: {
+    width: 56,
+    height: 65,
+    marginBottom: 20
   }
 })
 
