@@ -55,9 +55,9 @@ class FeedLongHoldMenuScreen extends React.Component {
     const { selectedFeedList } = this.props
 
     if (selectedFeedList[0].feed.pinned) {
-      this.props.handleUnpinFeed(selectedFeedList[0].feed.id)
+      this.props.handleUnpinFeed(selectedFeedList)
     } else {
-      this.props.handlePinFeed(selectedFeedList[0].feed.id)
+      this.props.handlePinFeed(selectedFeedList)
     }
   }
 

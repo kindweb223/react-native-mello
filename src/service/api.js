@@ -48,7 +48,7 @@ export const ANDROID_PUSH_SENDER_ID = '887924189900'
 
 // Feature toggles
 export const TAGS_FEATURE = false
-export const PIN_FEATURE = false
+export const PIN_FEATURE = true
 export const COMMENT_FEATURE = false
 export const SEARCH_FEATURE = false
 

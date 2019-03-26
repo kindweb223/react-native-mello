@@ -115,12 +115,16 @@ export const unpinFeed = (feedId) => {
 /**
  * Delete Feed
  */
-export const deleteFeed = (feedId) => {
-  let url = `hunts/${feedId}`
+export const deleteFeed = (feedList) => {
+  let url = 'hunts'
+
+  const data = feedList.map(item => {
+    return { 'id': item.feed.id }
+  })
 
   return {
     types: [types.DEL_FEED_PENDING, types.DEL_FEED_FULFILLED, types.DEL_FEED_REJECTED],
-    promise: axios.delete(url),
+    promise: axios.delete(url, { data }),
     payload: 'empty'
   };
 }
@@ -128,17 +132,19 @@ export const deleteFeed = (feedId) => {
 /**
  * Archive Feed
  */
-export const archiveFeed = (feedId) => {
-  let url = `hunts/${feedId}`
+export const archiveFeed = (feedList) => {
+  let url = 'hunts/archive'
+  const data = feedList.map(item => {
+    return { 'id': item.feed.id }
+  })
 
   return {
     types: [types.ARCHIVE_FEED_PENDING, types.ARCHIVE_FEED_FULFILLED, types.ARCHIVE_FEED_REJECTED],
     promise: axios({
-      method: 'put',
+      method: 'post',
       url: url,
-      data: { status: 'ARCHIVED' }
-    }),
-    payload: feedId
+      data
+    })
   };
 }
 
