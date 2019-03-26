@@ -120,6 +120,7 @@ class HomeScreen extends React.Component {
       invitedFeedList: [],
       badgeCount: 0,
       selectedFeedList: [],
+      backFeedList: [],
       feedClickEvent: 'normal',
       showLongHoldActionBar: false,
       isShowInviteToaster: false,
@@ -820,113 +821,110 @@ class HomeScreen extends React.Component {
     })
   }
 
-  handleArchiveFeed = (feedId) => {
+  handleArchiveFeed = (backFeedList) => {
     this.closeLongHoldMenu()
     
-    this.setState({ isShowActionToaster: true, isArchive: true, toasterTitle: 'Flow archived', feedId })
-    this.props.addDummyFeed({ feedId, flag: 'archive' })
+    this.setState({ isShowActionToaster: true, isArchive: true, toasterTitle: 'Flow archived', backFeedList })
+    this.props.addDummyFeed({ backFeedList, flag: 'archive' })
 
     setTimeout(() => {
       this.setState({ isShowActionToaster: false })
-      this.archiveFeed(feedId)
+      this.archiveFeed(backFeedList)
     }, TOASTER_DURATION)
   }
 
-  archiveFeed = (feedId) => {
+  archiveFeed = (backFeedList) => {
     if (this.state.isArchive) {
       Analytics.logEvent('dashboard_archive_feed', {})
 
-      this.props.archiveFeed(feedId)
-      this.setState({ isArchive: false })
+      this.props.archiveFeed(backFeedList)
+      this.setState({ isArchive: false, backFeedList: [] })
     }
   }
 
-  handleDeleteFeed = (feedId) => {
-    console.log('DEL_FEED_ID: ', feedId)
-    // this.closeLongHoldMenu()
-
-    // this.setState({ isShowActionToaster: true, isDelete: true, toasterTitle: 'Flow deleted', feedId })
-    // this.props.addDummyFeed({ feedId, flag: 'delete' })
-
-    // setTimeout(() => {
-    //   this.setState({ isShowActionToaster: false })
-    //   this.deleteFeed(feedId)
-    // }, TOASTER_DURATION)      
-  }
-
-  deleteFeed = (feedId) => {
-    if (this.state.isDelete) {
-      Analytics.logEvent('dashboard_delete_feed', {})
-
-      this.props.deleteFeed(feedId)
-      this.setState({ isDelete: false })
-    }
-  }
-
-  handleLeaveFeed = (feedId) => {
+  handleDeleteFeed = (backFeedList) => {
     this.closeLongHoldMenu()
 
-    this.setState({ isShowActionToaster: true, isLeave: true, toasterTitle: 'Left Flow', feedId })
-    this.props.addDummyFeed({ feedId, flag: 'leave' })
+    this.setState({ isShowActionToaster: true, isDelete: true, toasterTitle: 'Flow deleted', backFeedList })
+    this.props.addDummyFeed({ backFeedList, flag: 'delete' })
 
     setTimeout(() => {
       this.setState({ isShowActionToaster: false })
-      this.leaveFeed(feedId)
+      this.deleteFeed(backFeedList)
+    }, TOASTER_DURATION + 10000)
+  }
+
+  deleteFeed = (backFeedList) => {
+    if (this.state.isDelete) {
+      Analytics.logEvent('dashboard_delete_feed', {})
+
+      this.props.deleteFeed(backFeedList)
+      this.setState({ isDelete: false, backFeedList: [] })
+    }
+  }
+
+  handleLeaveFeed = (backFeedList) => {
+    this.closeLongHoldMenu()
+
+    this.setState({ isShowActionToaster: true, isLeave: true, toasterTitle: 'Left Flow', backFeedList })
+    this.props.addDummyFeed({ backFeedList, flag: 'leave' })
+
+    setTimeout(() => {
+      this.setState({ isShowActionToaster: false })
+      this.leaveFeed(backFeedList)
     }, TOASTER_DURATION)
   }
 
-  leaveFeed = (feedId) => {
+  leaveFeed = (backFeedList) => {
     if (this.state.isLeave) {
       Analytics.logEvent('dashboard_leave_feed', {})
       const { feedo, user } = this.props
 
-      const invitee = filter(feedo.leaveFeed[0].invitees, invitee => invitee.userProfile.id === user.userInfo.id)
-      this.props.deleteInvitee(feedId, invitee[0].id)
-      this.setState({ isLeave: false })
+      const invitee = filter(feedo.leaveFeedList[0].invitees, invitee => invitee.userProfile.id === user.userInfo.id)
+      this.props.deleteInvitee(backFeedList[0].feed.id, invitee[0].id)
+      this.setState({ isLeave: false, backFeedList: [] })
     }
   }
 
-  handlePinFeed = (feedId) => {
+  handlePinFeed = (backFeedList) => {
     this.closeLongHoldMenu()
 
-    this.setState({ isShowActionToaster: true, isPin: true, toasterTitle: 'Flow pinned', feedId })
+    this.setState({ isShowActionToaster: true, isPin: true, toasterTitle: 'Flow pinned', backFeedList })
 
-    this.pinFeed(feedId)
+    this.pinFeed(backFeedList)
 
     setTimeout(() => {
       this.setState({ isShowActionToaster: false, isPin: false })
-    }, TOASTER_DURATION)
+    }, TOASTER_DURATION + 100000)
   }
 
-  pinFeed = (feedId) => {
+  pinFeed = (backFeedList) => {
     Analytics.logEvent('dashboard_pin_feed', {})
-
-    this.props.pinFeed(feedId)
+    this.props.pinFeed(backFeedList[0].feed.id)
   }
 
-  handleUnpinFeed = (feedId) => {
+  handleUnpinFeed = (backFeedList) => {
     this.closeLongHoldMenu()
 
-    this.setState({ isShowActionToaster: true, isUnPin: true, toasterTitle: 'Flow un-pinned', feedId })
+    this.setState({ isShowActionToaster: true, isUnPin: true, toasterTitle: 'Flow un-pinned', backFeedList })
 
-    this.unpinFeed(feedId)
+    this.unpinFeed(backFeedList)
 
     setTimeout(() => {
       this.setState({ isShowActionToaster: false, isUnPin: true })
     }, TOASTER_DURATION)
   }
 
-  unpinFeed = (feedId) => {
+  unpinFeed = (backFeedList) => {
     Analytics.logEvent('dashboard_unpin_feed', {})
-
-    this.props.unpinFeed(feedId)
+    this.props.unpinFeed(backFeedList[0].feed.id)
   }
 
-  handleDuplicateFeed = (feedId) => {
+  handleDuplicateFeed = (backFeedList) => {
     this.closeLongHoldMenu()
 
-    this.setState({ isShowActionToaster: true, isDuplicate: true, toasterTitle: 'Flow duplicated', feedId })
-    this.props.duplicateFeed(feedId)
+    this.setState({ isShowActionToaster: true, isDuplicate: true, toasterTitle: 'Flow duplicated', backFeedList })
+    this.props.duplicateFeed(backFeedList)
 
     setTimeout(() => {
       this.setState({ isShowActionToaster: false })
@@ -937,7 +935,7 @@ class HomeScreen extends React.Component {
   duplicateFeed = () => {
     if (this.state.isDuplicate) {
       Analytics.logEvent('dashboard_duplicate_feed', {})
-
+      this.setState({ backFeedList: [] })
       this.setState({ isDuplicate: false })
     }
   }
@@ -961,23 +959,23 @@ class HomeScreen extends React.Component {
         }).start()
       })
     }, 400)
-}
+  }
 
   undoAction = () => {
     if (this.state.isPin) {
-      this.unpinFeed(this.state.feedId)
+      this.unpinFeed(this.state.backFeedList)
     } else if (this.state.isUnPin) {
-      this.pinFeed(this.state.feedId)
+      this.pinFeed(this.state.backFeedList)
     } else if (this.state.isDelete) {
-      this.props.removeDummyFeed({ feedId: this.state.feedId, flag: 'delete' })
+      this.props.removeDummyFeed({ backFeedList: this.state.backFeedList, flag: 'delete' })
     } else if (this.state.isArchive) {
-      this.props.removeDummyFeed({ feedId: this.state.feedId, flag: 'archive' })
+      this.props.removeDummyFeed({ backFeedList: this.state.backFeedList, flag: 'archive' })
     } else if (this.state.isDuplicate) {
       if (this.props.feedo.duplicatedId) {
-        this.props.deleteDuplicatedFeed(this.props.feedo.duplicatedId)
+        this.props.deleteDuplicatedFeed(this.props.feedo.backDuplicatedFeedList)
       }
     } else if (this.state.isLeave) {
-      this.props.removeDummyFeed({ feedId: this.state.feedId, flag: 'leave' })
+      this.props.removeDummyFeed({ backFeedList: this.state.backFeedList, flag: 'leave' })
     }
 
     this.setState({
