@@ -946,10 +946,6 @@ class FeedDetailScreen extends React.Component {
   }
 
   onMoveCard = (cardList) => {
-    if (this.state.isVisibleLongHoldMenu) {
-      this.onCloseLongHold();
-    }
-
     this.setState({ 
       isVisibleCard: false,
       currentActionType: ACTION_CARD_MOVE,
@@ -1080,6 +1076,7 @@ class FeedDetailScreen extends React.Component {
       const moveToFeedo = this.props.feedo.currentFeed;
       this.props.setCurrentFeed(this.prevFeedo);
       if (moveToFeedo.id) {
+        this.onCloseLongHold()
         this.onSelectFeedoToMoveCard(moveToFeedo.id);
         return;
       }
