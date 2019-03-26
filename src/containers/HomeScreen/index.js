@@ -50,6 +50,8 @@ import COLORS from '../../service/colors'
 import { TIP_SHARE_LINK_URL, ANDROID_PUSH_SENDER_ID, PIN_FEATURE, SEARCH_FEATURE } from '../../service/api'
 import AlertController from '../../components/AlertController'
 
+import * as COMMON_FUNC from '../../service/commonFunc'
+
 const SEARCH_ICON = require('../../../assets/images/Search/Grey.png')
 const SETTING_ICON = require('../../../assets/images/Settings/Grey.png')
 
@@ -101,7 +103,6 @@ class HomeScreen extends React.Component {
       isEditFeed: false,
       isVisibleCreateNewFeedModal: false,
       isLongHoldMenuVisible: false,
-      selectedFeedData: {},
       isShowActionToaster: false,
       scrollY: new Animated.Value(0),
       currentPushNotificationType: CONSTANTS.UNKOWN_PUSH_NOTIFICATION,
@@ -118,9 +119,9 @@ class HomeScreen extends React.Component {
       isRefreshing: false,
       invitedFeedList: [],
       badgeCount: 0,
-      selectedLongHoldFeedoIndex: -1,
+      selectedFeedList: [],
       feedClickEvent: 'normal',
-      showLongHoldActionBar: true,
+      showLongHoldActionBar: false,
       isShowInviteToaster: false,
       inviteToasterTitle: '',
       isShowCardAddedToaster: false,
@@ -131,7 +132,8 @@ class HomeScreen extends React.Component {
       showShareConfirmModal: false,
       showFilterModal: false,
       filterShowType: 'all',
-      filterSortType: 'recent'
+      filterSortType: 'recent',
+      unSelectFeed: false
     };
 
     this.currentRef = null;
@@ -337,8 +339,7 @@ class HomeScreen extends React.Component {
         return {
           isLongHoldMenuVisible: false,
           feedClickEvent: 'normal',
-          selectedLongHoldFeedoIndex: -1,
-          selectedFeedData: {}
+          selectedFeedList: []
         }
       }
 
@@ -757,12 +758,18 @@ class HomeScreen extends React.Component {
     });
   }
 
-  handleLongHoldMenu = (index, selectedFeedData) => {
-    this.setState({ 
-      selectedLongHoldFeedoIndex: index, 
+  handleLongHoldMenu = (index, feed) => {
+    const selectedFeedList = []
+    selectedFeedList.push({
+      index,
+      feed
+    })
+
+    this.setState({
       feedClickEvent: 'long',
-      selectedFeedData,
-      isLongHoldMenuVisible: true
+      selectedFeedList,
+      isLongHoldMenuVisible: true,
+      showLongHoldActionBar: true
     }, () => {
       Animated.spring(this.animatedSelectFeed, {
         toValue: 0.85,
@@ -771,11 +778,39 @@ class HomeScreen extends React.Component {
     });
   }
 
+  updateSelectedFeedList = (index, feed) => {
+    let { selectedFeedList } = this.state
+
+    if (selectedFeedList.length > 0 && !COMMON_FUNC.isFeedOwner(selectedFeedList[0].feed)) {
+      selectedFeedList = []
+    }
+
+    if (COMMON_FUNC.isFeedOwner(feed)) {
+      if (find(selectedFeedList, item => item.index === index)) {
+        selectedFeedList = filter(selectedFeedList, item => item.index !== index)
+      } else {
+        selectedFeedList = [
+          ...selectedFeedList,
+          {
+            index,
+            feed
+          }
+        ]
+      }
+    }
+    this.setState({
+      selectedFeedList,
+      showLongHoldActionBar: selectedFeedList.length > 0 ? true : false,
+      unSelectFeed: true
+    })  
+  }
+
   closeLongHoldMenu = () => {
     this.setState({
-      selectedLongHoldFeedoIndex: -1, 
+      selectedFeedList: [],
       feedClickEvent: 'normal',
-      isLongHoldMenuVisible: false
+      isLongHoldMenuVisible: false,
+      unSelectFeed: false
     }, () => {
       Animated.spring(this.animatedSelectFeed, {
         toValue: 1,
@@ -807,16 +842,16 @@ class HomeScreen extends React.Component {
 
   handleDeleteFeed = (feedId) => {
     console.log('DEL_FEED_ID: ', feedId)
-    this.closeLongHoldMenu()
+    // this.closeLongHoldMenu()
 
-    this.setState({ isShowActionToaster: true, isDelete: true, toasterTitle: 'Flow deleted', feedId })
-    this.props.addDummyFeed({ feedId, flag: 'delete' })
+    // this.setState({ isShowActionToaster: true, isDelete: true, toasterTitle: 'Flow deleted', feedId })
+    // this.props.addDummyFeed({ feedId, flag: 'delete' })
 
-    setTimeout(() => {
-      this.setState({ isShowActionToaster: false })
-      this.deleteFeed(feedId)
-    }, TOASTER_DURATION)      
-}
+    // setTimeout(() => {
+    //   this.setState({ isShowActionToaster: false })
+    //   this.deleteFeed(feedId)
+    // }, TOASTER_DURATION)      
+  }
 
   deleteFeed = (feedId) => {
     if (this.state.isDelete) {
@@ -906,7 +941,7 @@ class HomeScreen extends React.Component {
     }
   }
 
-  handleEditFeed = (feedId) => {
+  handleEditFeed = (selectedFeedList) => {
     this.closeLongHoldMenu()
 
     setTimeout(() => {
@@ -916,6 +951,7 @@ class HomeScreen extends React.Component {
       this.setState({
         isVisibleNewFeed: true,
         isEditFeed: true,
+        selectedFeedList,
       }, () => {
         this.animatedOpacity.setValue(0);
         Animated.timing(this.animatedOpacity, {
@@ -1031,7 +1067,7 @@ class HomeScreen extends React.Component {
   }
 
   get renderNewFeedModals() {
-    const { isEditFeed, isVisibleNewFeed, isVisibleCreateNewFeedModal, selectedFeedData } = this.state
+    const { isEditFeed, isVisibleNewFeed, isVisibleCreateNewFeedModal, selectedFeedList } = this.state
 
     if (!isVisibleNewFeed && !isVisibleCreateNewFeedModal) {
       return;
@@ -1053,9 +1089,9 @@ class HomeScreen extends React.Component {
 
         {isVisibleNewFeed && (
           <NewFeedScreen
-            feedData={isEditFeed ? selectedFeedData : {}}
+            feedData={isEditFeed ? selectedFeedList[0].feed : {}}
             onClose={(data) => this.onCloseNewFeedModal(data)}
-            selectedFeedId={isEditFeed ? selectedFeedData.id : null}
+            selectedFeedId={isEditFeed ? selectedFeedList[0].feed.id : null}
             viewMode={CONSTANTS.FEEDO_FROM_MAIN}
 
             // feedoMode={CONSTANTS.SHARE_EXTENTION_FEEDO}
@@ -1221,7 +1257,9 @@ class HomeScreen extends React.Component {
       badgeCount,
       showFeedInvitedNewUserBubble,
       feedClickEvent,
-      selectedLongHoldFeedoIndex
+      selectedFeedList,
+      isLongHoldMenuVisible,
+      unSelectFeed
     } = this.state
 
     return (
@@ -1250,7 +1288,7 @@ class HomeScreen extends React.Component {
           </View>
 
           <View
-            style={[!this.state.isLongHoldMenuVisible ? styles.feedListContainer : styles.feedListContainerLongHold, feedClickEvent === 'normal' && { paddingBottom: 30 }]}
+            style={[!isLongHoldMenuVisible ? styles.feedListContainer : styles.feedListContainerLongHold, feedClickEvent === 'normal' && { paddingBottom: 30 }]}
           >
             {showFeedInvitedNewUserBubble && (
               <View style={{ height: 200 }}>
@@ -1300,12 +1338,11 @@ class HomeScreen extends React.Component {
               loading={loading}
               feedoList={feedoList}
               invitedFeedList={invitedFeedList}
-              selectedLongHoldFeedoIndex={selectedLongHoldFeedoIndex}
+              selectedFeedList={selectedFeedList}
               feedClickEvent={feedClickEvent}
+              unSelectFeed={unSelectFeed}
               animatedSelectFeed={this.animatedSelectFeed}
-              updateSelectIndex={(index, item) =>
-                this.setState({ selectedLongHoldFeedoIndex: index, selectedFeedData: item, showLongHoldActionBar: true })
-              }
+              updateSelectIndex={this.updateSelectedFeedList}
               handleLongHoldMenu={this.handleLongHoldMenu}
               page="home"
               isRefreshing={this.state.isRefreshing}
@@ -1315,7 +1352,7 @@ class HomeScreen extends React.Component {
 
         </View>
 
-        {!this.state.isLongHoldMenuVisible && (
+        {!isLongHoldMenuVisible && (
           <DashboardActionBar
             showList={true}
             listType={this.props.user.listHomeType}
@@ -1331,9 +1368,9 @@ class HomeScreen extends React.Component {
 
         {this.renderNewFeedModals}
 
-        {this.state.isLongHoldMenuVisible && (
+        {isLongHoldMenuVisible && (
           <FeedLongHoldMenuScreen
-            feedData={this.state.selectedFeedData}
+            selectedFeedList={selectedFeedList}
             showLongHoldActionBar={this.state.showLongHoldActionBar}
             handleArchiveFeed={this.handleArchiveFeed}
             handleDeleteFeed={this.handleDeleteFeed}
@@ -1345,7 +1382,7 @@ class HomeScreen extends React.Component {
           />
         )}
 
-        {this.state.isLongHoldMenuVisible && (
+        {isLongHoldMenuVisible && (
           <View style={styles.topButtonView}>
             <TouchableOpacity onPress={() => this.closeLongHoldMenu()}>
               <Text style={[styles.btnDoneText, { color: COLORS.PURPLE }]}>Done</Text>
