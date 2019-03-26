@@ -98,13 +98,13 @@ const styles = StyleSheet.create({
     marginLeft: 12
   },
   menuIcon: {
-    width: 24,
-    height: 18
+    width: 18,
+    height: 14
   },
   title: {
     fontWeight: '500',
-    fontSize: 16,
-    color: 'black'
+    fontSize: 18,
+    color: 'rgba(102, 104, 115, 1)'
   }
 })
 
