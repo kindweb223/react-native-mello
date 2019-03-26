@@ -85,7 +85,6 @@ export default class Share extends Component {
       );
     }
     return (
-      <View style={styles.rootContainer}>
         <Provider store={store}>
           <Router>
             <Scene key="root" hideNavBar duration={0}>
@@ -96,7 +95,6 @@ export default class Share extends Component {
             </Scene>
           </Router>
         </Provider>
-      </View>
     )
   }
 }
