@@ -46,8 +46,8 @@ const styles = {
     fontWeight: '500',
     fontSize: 16,
     color: 'white',
-    paddingTop: 8,
-    paddingBottom: 8
+    paddingTop: 4,
+    paddingBottom: 4
   },
   icon: {
     width: 19,
