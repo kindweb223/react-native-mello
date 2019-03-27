@@ -25,6 +25,10 @@ class CardFilterComponent extends React.Component {
     }
   }
 
+  componentWillReceiveProps(nextProps) {
+    this.setState({ showType: nextProps.filterShowType })
+  }
+
   showCards = (showType) => {
     this.setState({ showType })
     this.props.onFilterShow(showType)
@@ -94,7 +98,7 @@ class CardFilterComponent extends React.Component {
 
                 <TouchableOpacity onPress={() => this.showCards('like')} style={styles.buttonView}>
                   <View style={[styles.button, showType === 'like' ? styles.buttonSelect : styles.buttonDeselect]}>
-                    <FontAwesome name='heart' size={15} color={COLORS.RED} style={styles.heartIcon} />
+                    {/* <FontAwesome name='heart' size={15} color={COLORS.RED} style={styles.heartIcon} /> */}
                     <Text style={[styles.btnText, showType === 'like' ? styles.btnSelectText : styles.btnDeselectText]}>
                       Show liked
                     </Text>
