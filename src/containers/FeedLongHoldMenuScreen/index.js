@@ -74,8 +74,6 @@ class FeedLongHoldMenuScreen extends React.Component {
   render () {
     const { selectedFeedList, showLongHoldActionBar } = this.props
 
-    console.log('BBB: ', selectedFeedList)
-
     if (!showLongHoldActionBar) {
       return null
     }

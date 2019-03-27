@@ -146,7 +146,6 @@ class FeedActionBarComponent extends React.Component {
       settingMenuMargin = (CONSTANTS.SCREEN_WIDTH - 130) / 2
       actionBarWidth = 60
     }
-    console.log('selectedFeedList: ', selectedFeedList)
 
     return (
       <View style={styles.container}>

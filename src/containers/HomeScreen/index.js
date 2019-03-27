@@ -30,6 +30,8 @@ import Intercom from 'react-native-intercom'
 import pubnub from '../../lib/pubnub'
 import Analytics from '../../lib/firebase'
 
+import SideMenu from 'react-native-side-menu'
+
 import DashboardActionBar from '../../navigations/DashboardActionBar'
 import FeedoListContainer from '../FeedoListContainer'
 import NewFeedScreen from '../NewFeedScreen'
@@ -49,6 +51,7 @@ import CONSTANTS from '../../service/constants';
 import COLORS from '../../service/colors'
 import { TIP_SHARE_LINK_URL, ANDROID_PUSH_SENDER_ID, PIN_FEATURE, SEARCH_FEATURE } from '../../service/api'
 import AlertController from '../../components/AlertController'
+import SideMenuComponent from '../../components/SideMenuComponent'
 
 import * as COMMON_FUNC from '../../service/commonFunc'
 
@@ -86,6 +89,7 @@ import {
 import { 
   getCard,
 } from '../../redux/card/actions'
+import { images } from '../../themes';
 
 const TOASTER_DURATION = 3000
 const PAGE_COUNT = 50
@@ -134,7 +138,9 @@ class HomeScreen extends React.Component {
       showFilterModal: false,
       filterShowType: 'all',
       filterSortType: 'recent',
-      unSelectFeed: false
+      unSelectFeed: false,
+      isSideMenuOpen: false,
+      selectedItemTitle: 'All flows',
     };
 
     this.currentRef = null;
@@ -923,13 +929,13 @@ class HomeScreen extends React.Component {
   handleDuplicateFeed = (backFeedList) => {
     this.closeLongHoldMenu()
 
-    this.setState({ isShowActionToaster: true, isDuplicate: true, toasterTitle: 'Flow duplicated', backFeedList })
+    this.setState({ isShowActionToaster: true, isDuplicate: true, toasterTitle: 'Flow duplicated' })
     this.props.duplicateFeed(backFeedList)
 
     setTimeout(() => {
       this.setState({ isShowActionToaster: false })
       this.duplicateFeed()
-    }, TOASTER_DURATION + 5 + 100000)
+    }, TOASTER_DURATION + 5)
   }
   
   duplicateFeed = () => {
@@ -971,7 +977,10 @@ class HomeScreen extends React.Component {
       this.props.removeDummyFeed({ backFeedList: this.state.backFeedList, flag: 'archive' })
     } else if (this.state.isDuplicate) {
       if (this.props.feedo.duplicatedFeedList.length > 0) {
-        this.props.deleteDuplicatedFeed(this.props.feedo.duplicatedFeedList)
+        const data = this.props.feedo.duplicatedFeedList.map((feed, index) => {
+          return { 'id': index, feed }
+        })
+        this.props.deleteDuplicatedFeed(data)
       }
     } else if (this.state.isLeave) {
       this.props.removeDummyFeed({ backFeedList: this.state.backFeedList, flag: 'leave' })
@@ -1179,8 +1188,8 @@ class HomeScreen extends React.Component {
     this.setState({ showShareTipsModal: false })
   };
 
-  onFilterShow = (type) => {
-    this.setState({ filterShowType: type }, () => {
+  onFilterShow = (type, selectedItemTitle) => {
+    this.setState({ filterShowType: type, selectedItemTitle, isSideMenuOpen: false }, () => {
       this.filterFeeds()
     })
   }
@@ -1247,6 +1256,14 @@ class HomeScreen extends React.Component {
     this.setState({ feedoList });
   }
 
+  toggleSideMenu = () => {
+    this.setState({ isSideMenuOpen: !this.state.isSideMenuOpen });
+  }
+
+  updateMenuState(isSideMenuOpen) {
+    this.setState({ isSideMenuOpen });
+  }
+
   render () {
     const {
       loading,
@@ -1257,10 +1274,20 @@ class HomeScreen extends React.Component {
       feedClickEvent,
       selectedFeedList,
       isLongHoldMenuVisible,
-      unSelectFeed
+      unSelectFeed,
+      selectedLongHoldFeedoIndex,
+      isSideMenuOpen,
+      filterShowType,
+      selectedItemTitle
     } = this.state
+    const menu = <SideMenuComponent onItemSelected={this.onFilterShow} selectedItem={filterShowType} />
 
     return (
+      <SideMenu
+        menu={menu}
+        isOpen={isSideMenuOpen}
+        onChange={isOpen => this.updateMenuState(isOpen)}
+      >
       <SafeAreaView style={styles.safeArea}>
         <View feedAction="null" />
         <View style={styles.container}>
@@ -1271,13 +1298,23 @@ class HomeScreen extends React.Component {
 
           <View style={styles.headerView}>
             <TouchableOpacity
+              style={styles.menuIconView}
+              activeOpacity={0.7}
+              onPress={this.toggleSideMenu}
+            >
+              <Image source={images.iconMenu} style={styles.menuIcon} />
+            </TouchableOpacity>
+            <Text style={styles.title}>
+              {selectedItemTitle}
+            </Text>
+            {/* <TouchableOpacity
               style={styles.searchIconView}
               onPress={() => SEARCH_FEATURE ? this.onSearch() : {}}
             >
               {SEARCH_FEATURE && (
                 <Image style={styles.searchIcon} source={SEARCH_ICON} />
               )}
-            </TouchableOpacity>
+            </TouchableOpacity> */}
             <View style={styles.settingIconView}>
               <TouchableOpacity onPress={() => this.handleSetting()}>
                 <Image source={SETTING_ICON} />
@@ -1300,7 +1337,16 @@ class HomeScreen extends React.Component {
               </View>
             )}
 
-            {feedoList.length === 0 && (
+            {filterShowType === 'shared' && invitedFeedList.length === 0 && feedoList.length === 0 &&
+              <View>
+                <SpeechBubbleComponent
+                  page="shared"
+                  title="Flows can be shared with friends and colleagues for collaboration. Flows you've been invited to will appear here."
+                  subTitle="All you need to know about sharing in 15 secs "
+                />
+              </View>
+            }
+            {filterShowType !== 'shared' && feedoList.length === 0 && (
               <View style={styles.emptyView}>
                 {!loading && (
                   <View style={showFeedInvitedNewUserBubble ? styles.emptyInnerSubView : styles.emptyInnerView}>
@@ -1339,6 +1385,7 @@ class HomeScreen extends React.Component {
               selectedFeedList={selectedFeedList}
               feedClickEvent={feedClickEvent}
               unSelectFeed={unSelectFeed}
+              isLongHoldMenuVisible={isLongHoldMenuVisible}
               animatedSelectFeed={this.animatedSelectFeed}
               updateSelectIndex={this.updateSelectedFeedList}
               handleLongHoldMenu={this.handleLongHoldMenu}
@@ -1353,10 +1400,12 @@ class HomeScreen extends React.Component {
         {!isLongHoldMenuVisible && (
           <DashboardActionBar
             showList={true}
+            showSearch
             listType={this.props.user.listHomeType}
             onAddFeed={this.onOpenNewFeedModal.bind(this)}
             handleFilter={() => this.handleFilter()}
             handleList={() => this.handleList()}
+            handleSearch={() => SEARCH_FEATURE ? this.onSearch() : {}}
             filterType={this.state.filterShowType}
             sortType={this.state.filterSortType}
             badgeCount={badgeCount}
@@ -1462,8 +1511,8 @@ class HomeScreen extends React.Component {
           onFilterSort={this.onFilterSort}
           onClose={() => this.setState({ showFilterModal: false }) }
         />
-
       </SafeAreaView>
+      </SideMenu>
     )
   }
 }

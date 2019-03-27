@@ -45,7 +45,7 @@ class FeedoListContainer extends React.Component {
   }
 
   renderItem(item, index) {
-    const { feedoList, feedClickEvent, selectedFeedList, unSelectFeed } = this.props
+    const { feedoList, feedClickEvent, selectedFeedList, unSelectFeed, isLongHoldMenuVisible } = this.props
     const { listHomeType } = this.props
     const paddingVertical = listHomeType === 'LIST' ? 15 : 12
 
@@ -59,7 +59,7 @@ class FeedoListContainer extends React.Component {
 
             <View
               style={[
-                _.find(selectedFeedList, item => item.index === index) ? styles.feedoSelectItem : styles.feedoItem,
+                isLongHoldMenuVisible && _.find(selectedFeedList, item => item.index === index) ? styles.feedoSelectItem : styles.feedoItem,
                 { paddingVertical },
                 unSelectFeed && !COMMON_FUNC.isFeedOwner(item) ? { opacity: 0.4 } : { opacity: 1 }
               ]}
@@ -152,7 +152,8 @@ FeedoListContainer.defaultProps = {
   feedClickEvent: 'normal',
   invitedFeedList: [],
   selectedFeedList: [],
-  unSelectFeed: false
+  unSelectFeed: false,
+  isLongHoldMenuVisible: false
 }
 
 FeedoListContainer.propTypes = {
@@ -166,6 +167,7 @@ FeedoListContainer.propTypes = {
   invitedFeedList: PropTypes.arrayOf(PropTypes.any),
   selectedFeedList: PropTypes.arrayOf(PropTypes.any),
   unSelectFeed: PropTypes.bool,
+  isLongHoldMenuVisible: PropTypes.bool
 }
 
 const mapStateToProps = ({ user }) => ({
