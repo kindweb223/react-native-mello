@@ -263,6 +263,7 @@ export default class Root extends React.Component {
             try {
               const userInfo = AsyncStorage.getItem('userInfo')
               store.dispatch(getFeedoList())
+              console.log('GFL called on App.js')
 
               if (userInfo) {
                 if (Actions.currentScene === 'FeedDetailScreen') {

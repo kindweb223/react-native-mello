@@ -41,6 +41,7 @@ export default function feedo(state = initialState, action = {}) {
         loading: types.GET_FEEDO_LIST_PENDING,
       }
     case types.GET_FEEDO_LIST_FULFILLED: {
+      console.log('action is ', action)
       const { data } = action.result
       const isForCardMove = action.payload;
       if (!isForCardMove) {
@@ -48,6 +49,23 @@ export default function feedo(state = initialState, action = {}) {
           ...state,
           loading: types.GET_FEEDO_LIST_FULFILLED,
           feedoList: data.content,
+        }
+      }
+      return {
+        ...state,
+        loading: types.GET_FEEDO_LIST_FULFILLED,
+        feedoListForCardMove: data.content,
+      }
+    }
+    case types.SET_FEEDO_LIST_FROM_STORAGE: {
+      console.log('action is ', action)
+      const { data } = action.feedList
+      const isForCardMove = action.payload;
+      if (!isForCardMove) {
+        return {
+          ...state,
+          loading: types.GET_FEEDO_LIST_FULFILLED,
+          feedoList: data,
         }
       }
       return {
