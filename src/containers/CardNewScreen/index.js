@@ -1500,7 +1500,6 @@ class CardNewScreen extends React.Component {
 
     return (
       <TouchableOpacity
-        style={{ flex: 1 }}
         onLayout={this.onLayoutTextInput.bind(this)}
         onPress={() => this.textInputIdeaRef.focus()}
         activeOpacity={1.0}
