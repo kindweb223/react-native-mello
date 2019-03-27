@@ -1,31 +1,46 @@
 import { StyleSheet } from 'react-native'
 import COLORS from '../../service/colors'
 import CONSTANTS from '../../service/constants'
+import { ifIphoneX } from 'react-native-iphone-x-helper'
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: 'black',
+    backgroundColor: 'white',
     alignItems: 'center',
     justifyContent: 'center',
+    flexDirection: 'column'
+  },
+  topBarWrapper: {
+    flex: 1,
+    height: 44,
+    top: ifIphoneX(44, 20),
+    alignSelf: 'stretch',
+    flexDirection: 'row',
   },
   closeButtonWrapper: {
-    position: 'absolute',
-    top: 20,
-    left: 10,
+    left: 0,
+    paddingLeft: 20,
     padding: 10,
-    alignSelf: 'flex-end',
+    width: 60,
+  },
+  headerTitleLabel: {
+    flex: 1,
+    textAlign: 'center',
+    fontSize: 16,
+    fontWeight: 'bold',
+    top: 12
   },
   webViewContainer: {
     position: 'absolute',
     left: 0,
     right: 0,
-    top: 80,
-    bottom: 35,
+    top: ifIphoneX(84, 64),
+    bottom: 0,
   },
   scrollViewContainer: {
     flex: 1,
-    marginBottom: 45,
+    marginBottom: 0,
     backgroundColor: '#fff'
   },
   scrollViewContentContainer: {
@@ -47,6 +62,11 @@ const styles = StyleSheet.create({
   dotStyle: {
     width: 6,
     height: 6,
+  },
+  documentImage: {
+    width: 56,
+    height: 65,
+    marginBottom: 20
   }
 })
 

@@ -14,7 +14,8 @@ target 'Mello' do
     'RCTText',
     'RCTNetwork',
     'RCTWebSocket', # Needed for debugging
-    'RCTAnimation', # Needed for FlatList and animations running on native UI thread
+    'RCTAnimation',
+    'RCTImage'# Needed for FlatList and animations running on native UI thread
     # Add any other subspecs you want to use in your project
   ]
   # Explicitly include Yoga if you are using RN >= 0.42.0
@@ -41,6 +42,8 @@ target 'Mello' do
 
   pod 'Intercom'
 
+
+  pod 'RNFS', :path => '../node_modules/react-native-fs'
 
 end
 

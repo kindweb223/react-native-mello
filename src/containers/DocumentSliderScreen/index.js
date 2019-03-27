@@ -4,11 +4,19 @@ import {
   View,
   ScrollView,
   RefreshControl,
-  WebView
+  WebView,
+  Text,
+  Platform,
+  Share,
+  Image, 
+  Button,
+  ToastAndroid,
+  BackHandler
 } from 'react-native'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 
+import ActionSheet from 'react-native-actionsheet'
 import Swiper from 'react-native-swiper'
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons'
 import Feather from 'react-native-vector-icons/Feather'
@@ -19,8 +27,11 @@ import DocumentNotSupportedScreen from '../DocumentNotSupportedScreen'
 import * as feedTypes from '../../redux/feedo/types'
 import * as cardTypes from '../../redux/card/types'
 import AlertController from '../../components/AlertController'
+import COMMON_STYLES from '../../themes/styles'
 
 import Analytics from '../../lib/firebase'
+import RNFS from 'react-native-fs'
+import FileViewer from 'react-native-file-viewer'
 
 class DocumentSliderScreen extends React.Component {
   constructor(props) {
@@ -32,7 +43,16 @@ class DocumentSliderScreen extends React.Component {
   }
 
   componentDidMount() {
+    BackHandler.addEventListener('hardwareBackPress', this.handleBackButton);
     Analytics.setCurrentScreen('DocumentSliderScreen')
+
+    if (Platform.OS === 'android') {
+      this.onOpenIn()      
+    }
+  }
+
+  componentWillUnmount() {
+    BackHandler.removeEventListener('hardwareBackPress', this.handleBackButton);
   }
 
   UNSAFE_componentWillReceiveProps(nextProps) {
@@ -74,9 +94,33 @@ class DocumentSliderScreen extends React.Component {
     }
   }
 
+  handleBackButton = () => {
+    Actions.pop();
+    return true;
+  }
+
   onClose() {
     if (this.props.onClose) {
       this.props.onClose()
+    }
+  }
+
+  onShare() {
+    Share.share({
+      title: "Open in",
+      url: `${this.props.docFile.accessUrl}`
+    })
+  }
+
+  onOptions() {
+    setTimeout(() => {
+      this.deleteActionSheet.show()
+    }, 200)
+  }
+
+  onTapActionSheet(index) {
+    if (index == 0) {
+      this.onDelete()
     }
   }
 
@@ -89,11 +133,39 @@ class DocumentSliderScreen extends React.Component {
     }
   }
 
+  onOpenIn = () => {
+    const {
+      docFile,
+    } = this.props;
+
+    this.setState({ loading: false, error: true })
+
+    const savingFolder = `${RNFS.TemporaryDirectoryPath}/`
+
+    // Download and present option to open in different apps
+    const toFile = `${savingFolder}${docFile.name}`
+    fileOptions = {fromUrl: docFile.accessUrl, toFile: toFile}
+
+    RNFS.downloadFile(fileOptions).promise
+    .then((result) => {
+      FileViewer.open(toFile)
+      .then(() => {
+        this.setState({ loading: false, error: true })
+      }).catch(error => {
+        this.setState({ loading: false, error: true })
+        ToastAndroid.show('You have no available apps for this file type', ToastAndroid.CENTER);
+      });
+    }).catch((error) => {
+      ToastAndroid.show(error.message, ToastAndroid.CENTER);
+      this.setState({ loading: false, error: true })
+    });
+  }
+
   onRefreshWebView = () => {
     this.props.onClose()
   }
 
-  render () {
+  render() {
     const {
       docFile,
     } = this.props;
@@ -104,44 +176,71 @@ class DocumentSliderScreen extends React.Component {
 
     return (
       <View style={styles.container}>
-        <TouchableOpacity 
-          style={styles.closeButtonWrapper}
-          activeOpacity={0.6}
-          onPress={this.onClose.bind(this)}
-        >
-          <MaterialCommunityIcons name="close" size={25} color={'#fff'} />
-        </TouchableOpacity>
+        <View style={styles.topBarWrapper}>
+          <TouchableOpacity 
+            style={styles.closeButtonWrapper}
+            activeOpacity={0.6}
+            onPress={this.onClose.bind(this)}
+          >
+            <MaterialCommunityIcons name="close" size={25} color={COLORS.PURPLE} />
+          </TouchableOpacity>
+          <Text numberOfLines={1} style={styles.headerTitleLabel}> 
+            {docFile.name}
+          </Text>
+          <TouchableOpacity 
+            style={styles.closeButtonWrapper}
+            activeOpacity={0.6}
+            onPress={this.onShare.bind(this)}
+          >
+            <Feather name="share" size={20} color={COLORS.PURPLE} />
+          </TouchableOpacity>
+          {
+            this.props.removal &&
+          <TouchableOpacity 
+            style={styles.closeButtonWrapper}
+            activeOpacity={0.6}
+            onPress={this.onOptions.bind(this)}
+          >
+             <Feather name="trash-2" size={20} color={COLORS.PURPLE} />
+          </TouchableOpacity>
+          }
+        </View>
         <View style={styles.webViewContainer}>
           {this.state.loading && <LoadingScreen />}
-          {this.state.error && <DocumentNotSupportedScreen />}
+          {this.state.error && <DocumentNotSupportedScreen onOpenIn={this.onOpenIn} />}
           <ScrollView
             style={styles.scrollViewContainer}
             contentContainerStyle={styles.scrollViewContentContainer}
             refreshControl={
               <RefreshControl
-                tintColor="#fff"
+                tintColor="white"
                 onRefresh={() => this.onRefreshWebView()}
               />
             }
           >
+          { Platform.OS === "ios" &&
             <WebView 
               source={{uri: docFile.accessUrl}}
               onLoadStart={() =>  this.setState({ loading: true })}
               onLoadEnd={() =>  this.setState({ loading: false })}
               onError={()  => this.setState({ error: true, loading: false }) }
             />
+          }
           </ScrollView>
         </View>
-        {
-          this.props.removal && 
-            <TouchableOpacity 
-              style={styles.deleteButtonWrapper}
-              activeOpacity={0.6}
-              onPress={() => this.onDelete()}
-            >
-              <Feather name="trash-2" size={25} color={'#fff'} />
-            </TouchableOpacity>
-        }
+        <ActionSheet
+          ref={ref => this.deleteActionSheet = ref}
+          title={
+            Platform.OS === 'ios'
+            ? 'Are you sure want to delete?'
+            : <Text style={COMMON_STYLES.actionSheetTitleText}>Are you sure want to delete?</Text>
+          }
+          options={['Delete', 'Cancel']}
+          cancelButtonIndex={1}
+          destructiveButtonIndex={0}
+          tintColor={COLORS.PURPLE}
+          onPress={(index) => this.onTapActionSheet(index)}
+        />
       </View>
     );
   }

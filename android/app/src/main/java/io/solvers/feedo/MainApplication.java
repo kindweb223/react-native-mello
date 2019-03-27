@@ -3,6 +3,8 @@ package io.solvers.feedo;
 import android.app.Application;
 
 import com.facebook.react.ReactApplication;
+import com.rnfs.RNFSPackage;
+import com.vinzscam.reactnativefileviewer.RNFileViewerPackage;
 import com.github.amarcruz.rntextsize.RNTextSizePackage;
 import com.robinpowered.react.Intercom.IntercomPackage;
 import io.intercom.android.sdk.Intercom;
@@ -49,6 +51,8 @@ public class MainApplication extends Application implements ReactApplication {
     protected List<ReactPackage> getPackages() {
       return Arrays.<ReactPackage>asList(
           new MainReactPackage(),
+            new RNFSPackage(),
+            new RNFileViewerPackage(),
             new RNTextSizePackage(),
             new IntercomPackage(),
             new SplashScreenReactPackage(),
