@@ -47,7 +47,7 @@ class FeedoListContainer extends React.Component {
   renderItem(item, index) {
     const { feedoList, feedClickEvent, selectedFeedList, unSelectFeed, isLongHoldMenuVisible } = this.props
     const { listHomeType } = this.props
-    const paddingVertical = listHomeType === 'LIST' ? 15 : 12
+    const paddingVertical = listHomeType === 'LIST' ? 12 : 9
 
     return (
       <View key={index}>
@@ -60,18 +60,25 @@ class FeedoListContainer extends React.Component {
             <View
               style={[
                 isLongHoldMenuVisible && _.find(selectedFeedList, item => item.index === index) ? styles.feedoSelectItem : styles.feedoItem,
-                { paddingVertical },
+                { paddingVertical: 3 },
                 unSelectFeed && !COMMON_FUNC.isFeedOwner(item) ? { opacity: 0.4 } : { opacity: 1 }
               ]}
             >
-              <TouchableOpacity
-                activeOpacity={0.8}
-                delayLongPress={1000}
-                onLongPress={() => this.onLongPressFeedo(index, item)}
-                onPress={() => this.onPressFeedo(index, item)}
+              <View
+                style={[
+                  { paddingVertical },
+                  isLongHoldMenuVisible && _.find(selectedFeedList, item => item.index === index) ? styles.feedoSelectInnerItem : styles.feedoInnerItem
+                ]}
               >
-                <FeedItemComponent item={item} pinFlag={item.pinned ? true : false} page={this.props.page} listType={listHomeType} />
-              </TouchableOpacity>
+                <TouchableOpacity
+                  activeOpacity={0.8}
+                  delayLongPress={1000}
+                  onLongPress={() => this.onLongPressFeedo(index, item)}
+                  onPress={() => this.onPressFeedo(index, item)}
+                >
+                  <FeedItemComponent item={item} pinFlag={item.pinned ? true : false} page={this.props.page} listType={listHomeType} />
+                </TouchableOpacity>
+              </View>
             </View>
 
             {this.props.feedoList.length > 0 && (
