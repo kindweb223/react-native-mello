@@ -25,6 +25,10 @@ const styles = StyleSheet.create({
     fontSize: 14,
     color: COLORS.MEDIUM_GREY
   },
+  favIcon: {
+    width: 15,
+    height: 13
+  }
 })
 
 export default styles
