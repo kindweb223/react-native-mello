@@ -439,17 +439,17 @@ class HomeScreen extends React.Component {
     if (feedo.loading === 'SET_FEED_DETAIL_ACTION' && prevProps.feedo.feedDetailAction !== feedo.feedDetailAction) {
       if (feedo.feedDetailAction.action === 'Delete') {
         this.setState({ isShowActionToaster: true })
-        this.handleDeleteFeed(feedo.feedDetailAction.feedId)
+        this.handleDeleteFeed(feedo.feedDetailAction.feedList)
       }
 
       if (feedo.feedDetailAction.action === 'Archive') {
         this.setState({ isShowActionToaster: true })
-        this.handleArchiveFeed(feedo.feedDetailAction.feedId)
+        this.handleArchiveFeed(feedo.feedDetailAction.feedList)
       }
 
       if (feedo.feedDetailAction.action === 'Leave') {
         this.setState({ isShowActionToaster: true })
-        this.handleLeaveFeed(feedo.feedDetailAction.feedId)
+        this.handleLeaveFeed(feedo.feedDetailAction.feedList)
       }
     } else if (prevProps.user.loading === 'USER_SIGNOUT_PENDING' && user.loading === 'USER_SIGNOUT_FULFILLED') {
       this.props.closeClipboardToaster()
@@ -851,7 +851,7 @@ class HomeScreen extends React.Component {
     setTimeout(() => {
       this.setState({ isShowActionToaster: false })
       this.deleteFeed(backFeedList)
-    }, TOASTER_DURATION + 10000)
+    }, TOASTER_DURATION)
   }
 
   deleteFeed = (backFeedList) => {
@@ -895,7 +895,7 @@ class HomeScreen extends React.Component {
 
     setTimeout(() => {
       this.setState({ isShowActionToaster: false, isPin: false })
-    }, TOASTER_DURATION + 100000)
+    }, TOASTER_DURATION)
   }
 
   pinFeed = (backFeedList) => {
@@ -929,13 +929,12 @@ class HomeScreen extends React.Component {
     setTimeout(() => {
       this.setState({ isShowActionToaster: false })
       this.duplicateFeed()
-    }, TOASTER_DURATION + 5)      
+    }, TOASTER_DURATION + 5 + 100000)
   }
   
   duplicateFeed = () => {
     if (this.state.isDuplicate) {
       Analytics.logEvent('dashboard_duplicate_feed', {})
-      this.setState({ backFeedList: [] })
       this.setState({ isDuplicate: false })
     }
   }
@@ -971,8 +970,8 @@ class HomeScreen extends React.Component {
     } else if (this.state.isArchive) {
       this.props.removeDummyFeed({ backFeedList: this.state.backFeedList, flag: 'archive' })
     } else if (this.state.isDuplicate) {
-      if (this.props.feedo.duplicatedId) {
-        this.props.deleteDuplicatedFeed(this.props.feedo.backDuplicatedFeedList)
+      if (this.props.feedo.duplicatedFeedList.length > 0) {
+        this.props.deleteDuplicatedFeed(this.props.feedo.duplicatedFeedList)
       }
     } else if (this.state.isLeave) {
       this.props.removeDummyFeed({ backFeedList: this.state.backFeedList, flag: 'leave' })
