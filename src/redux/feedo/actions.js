@@ -199,7 +199,7 @@ export const deleteDuplicatedFeed = (feedList) => {
   return {
     types: [types.DEL_FEED_PENDING, types.DEL_FEED_FULFILLED, types.DEL_FEED_REJECTED],
     promise: axios.delete(url, { data }),
-    payload: { flag: 'duplicate', backFeedList: feedList }
+    payload: { flag: 'duplicate', backFeedList: data }
   };
 }
 

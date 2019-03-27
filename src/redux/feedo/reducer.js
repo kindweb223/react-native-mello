@@ -377,15 +377,14 @@ export default function feedo(state = initialState, action = {}) {
     case types.DUPLICATE_FEED_FULFILLED: {
       const { feedoList } = state
       const { data } = action.result
-      const backFeedList = action.payload
 
       return {
         ...state,
         feedoList: [
           ...feedoList,
-          data
+          ...data
         ],
-        duplicatedFeedList: backFeedList,
+        duplicatedFeedList: data,
         loading: types.DUPLICATE_FEED_FULFILLED,
       }
     }
@@ -417,10 +416,8 @@ export default function feedo(state = initialState, action = {}) {
           ]
         }
       } else if (flag === 'archive') {
-        console.log('backFeedList: ', backFeedList)
         for (let i = 0; i < backFeedList.length; i ++) {
           const index = findIndex(feedoList, feed => feed.id === backFeedList[i].id)
-          console.log('INDX: ', index)
           if (index !== -1) {
             feedoList[index] = Object.assign({}, feedoList[index], { status: 'ARCHIVED' })
           }
@@ -516,7 +513,6 @@ export default function feedo(state = initialState, action = {}) {
      */
     case types.SET_FEED_DETAIL_ACTION: {
       const feedDetailAction = action.payload
-      console.log('feedDetailAction: ', feedDetailAction)
       return {
         ...state,
         loading: types.SET_FEED_DETAIL_ACTION,

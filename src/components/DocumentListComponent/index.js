@@ -61,6 +61,10 @@ export default class DocumentList extends React.Component {
     }
   }
 
+  onCloseModal() {
+    this.setState({ isVisibleDocSlider: false })
+  }
+
   onLongPressDocumnet(index) {
     if (!this.props.editable) {
       return;
@@ -192,12 +196,13 @@ export default class DocumentList extends React.Component {
         <Modal 
           isVisible={this.state.isVisibleDocSlider}
           style={styles.modalContainer}
+          onBackButtonPress={() => this.onCloseModal()}
         >
           <DocumentSliderScreen 
             docFile={this.props.files[this.state.position]}
             removal={this.props.editable}
             onRemove={(id) => this.props.onRemove(id)}
-            onClose={() => this.setState({ isVisibleDocSlider: false })}
+            onClose={() => this.onCloseModal()}
           />
         </Modal>
       </View>
