@@ -656,6 +656,8 @@ class CardNewScreen extends React.Component {
       if (this.props.feedo.feedoList.length == 0) {
         this.isGettingFeedoList = true;
         this.props.getFeedoList(0);
+        console.log('GFL called on CardNewScreen.js')
+
       } else {
         this.createCard(this.props);
       }

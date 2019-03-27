@@ -54,7 +54,7 @@ import LoadingScreen from '../LoadingScreen'
 import EmptyStateComponent from '../../components/EmptyStateComponent'
 import SpeechBubbleComponent from '../../components/SpeechBubbleComponent'
 import FollowMemberScreen from '../FollowMembersScreen'
-import LocalImages from '../../components/LocalImages'
+import LocalStorage from '../../components/LocalStorage'
 
 
 import {
@@ -1458,7 +1458,7 @@ class FeedDetailScreen extends React.Component {
             </View>
           )}
           {currentFeed.ideas && currentFeed.ideas.length > 1 && (
-              <LocalImages replaceFeedIdeas={this.replaceFeedIdeas} user={this.props.user.userInfo} />
+              <LocalStorage />
           )}
 
 

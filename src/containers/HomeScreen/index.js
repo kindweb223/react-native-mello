@@ -65,7 +65,8 @@ import {
   setCurrentFeed,
   deleteInvitee,
   getInvitedFeedList,
-  getActivityFeed
+  getActivityFeed,
+  setFeedoListFromStorage
 } from '../../redux/feedo/actions'
 
 import {
@@ -164,6 +165,25 @@ class HomeScreen extends React.Component {
     this.setState({ showSharePermissionModal: false, enableShareWidget: true })
   }
 
+  getFeedsFromStorage = () => {
+    console.log('GFL calling gffs')
+    const { user } = this.props 
+
+    console.log('GFL user is ', user)
+    const key = user.userInfo.id + '/flows'
+
+    console.log('GFL user is ', user, ' key is ', key)
+
+    AsyncStorage.getItem(key)
+    .then((result) => {
+      const feeds = JSON.parse(result)
+      console.log('GFL async result', feeds)
+      this.props.setFeedoListFromStorage(feeds)
+    })
+    .catch((error) => console.log('GFL async error', error))
+
+  }
+
   async componentDidMount() {
     Analytics.setCurrentScreen('DashboardScreen')
 
@@ -227,7 +247,9 @@ class HomeScreen extends React.Component {
     }
     Intercom.handlePushMessage();
 
-    this.props.getFeedoList()
+    this.props.getFeedoList(null, this.getFeedsFromStorage, this.getFeedsFromStorage)
+    console.log('GFL called on HomeScreen.js')
+
     this.props.getInvitedFeedList()
     this.props.getActivityFeed(this.props.user.userInfo.id, { page: 0, size: PAGE_COUNT })
 
@@ -322,7 +344,7 @@ class HomeScreen extends React.Component {
           feedoUnPinnedList = filter(feedoFullList, item => item.pinned === null);
           feedoList = HomeScreen.getFilteredFeeds(feedoPinnedList, feedoUnPinnedList, filterShowType, filterSortType);
         } else {
-          nextProps.getFeedoList()
+          nextProps.getFeedoList(null, this.getFeedsFromStorage, this.getFeedsFromStorage)
         }
       }
 
@@ -558,7 +580,7 @@ class HomeScreen extends React.Component {
     if (this.state.appState.match(/inactive|background/) && nextAppState === 'active') {
       appOpened(this.props.user.userInfo.id);
       if (Actions.currentScene === 'HomeScreen') {
-        this.props.getFeedoList();
+        this.props.getFeedoList(null, this.getFeedsFromStorage, this.getFeedsFromStorage)
 
         // TEMPORARY: REMOVE WITH PUBNUB INTEGRATION
         // this.props.getInvitedFeedList()
@@ -602,7 +624,7 @@ class HomeScreen extends React.Component {
             currentPushNotificationType: CONSTANTS.USER_INVITED_TO_HUNT,
             currentPushNotificationData: huntId
           });
-          this.props.getFeedoList();
+          this.props.getFeedoList(null, this.getFeedsFromStorage, this.getFeedsFromStorage);
           this.props.getInvitedFeedList()
         }
         break;
@@ -682,7 +704,7 @@ class HomeScreen extends React.Component {
             currentPushNotificationType: CONSTANTS.USER_JOINED_HUNT,
             currentPushNotificationData: huntId,
           });
-          this.props.getFeedoList();
+          this.props.getFeedoList(null, this.getFeedsFromStorage, this.getFeedsFromStorage);
         }
         break;
       }
@@ -701,7 +723,7 @@ class HomeScreen extends React.Component {
             currentPushNotificationType: CONSTANTS.USER_INVITED_TO_HUNT,
             currentPushNotificationData: huntId,
           });
-          this.props.getFeedoList();
+          this.props.getFeedoList(null, this.getFeedsFromStorage, this.getFeedsFromStorage);
         }
         break;
       }
@@ -1129,8 +1151,8 @@ class HomeScreen extends React.Component {
 
   onRefreshFeed = () => {
     this.setState({ isRefreshing: true })
-    this.props.getFeedoList()
     this.props.getInvitedFeedList()
+    console.log('OD - onRefreshFeed')
   }
 
   dismiss = (e) => {
@@ -1434,7 +1456,17 @@ const mapStateToProps = ({ user, feedo, card }) => ({
 })
 
 const mapDispatchToProps = dispatch => ({
-  getFeedoList: (index) => dispatch(getFeedoList(index)),
+  getFeedoList: (index, successAction, errorAction) => dispatch(getFeedoList(index))
+  .then(success => {
+    console.log('GFL success on HS')
+    // successAction(success)
+    successAction(success)
+  })
+  .catch(error => {
+    console.log('GFL error on HS')
+    errorAction(error)
+  }),
+  setFeedoListFromStorage: (feeds) => dispatch(setFeedoListFromStorage(feeds)),
   pinFeed: (data) => dispatch(pinFeed(data)),
   unpinFeed: (data) => dispatch(unpinFeed(data)),
   deleteFeed: (data) => dispatch(deleteFeed(data)),
@@ -1460,6 +1492,7 @@ const mapDispatchToProps = dispatch => ({
 
 HomeScreen.propTypes = {
   getFeedoList: PropTypes.func.isRequired,
+  setFeedoListFromStorage: PropTypes.func.isRequired,
   feedo: PropTypes.objectOf(PropTypes.any),
   pinFeed: PropTypes.func.isRequired,
   unpinFeed: PropTypes.func.isRequired,
