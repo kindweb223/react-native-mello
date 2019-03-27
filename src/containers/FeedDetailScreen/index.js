@@ -336,10 +336,9 @@ class FeedDetailScreen extends React.Component {
 
       if (this.state.isLeaveFlowClicked && !COMMON_FUNC.isFeedOwnerEditor(currentFeed) &&
           this.props.feedo.loading === 'DELETE_INVITEE_PENDING' && feedo.loading === 'DELETE_INVITEE_FULFILLED') {
-        const feedId = this.props.data.id
         this.props.setFeedDetailAction({
           action: 'Leave',
-          feedId
+          feedList: [{ 'index': 0, 'feed': this.props.data }]
         })
         this.setState({ isShowShare: false })
         setTimeout(() => Actions.pop(), 300);
@@ -593,23 +592,26 @@ class FeedDetailScreen extends React.Component {
   }
 
   hideSettingMenu = () => {
-    const feedId = this.props.data.id
     const { settingItem } = this.state
+    let feedList = [{
+      'index': 0,
+      'feed': this.props.data
+    }]
 
     switch(settingItem) {
       case 'AddPeople':
         this.handleAddPeople()
         return
       case 'Pin':
-        this.handlePinFeed(feedId)
+        this.handlePinFeed(feedList)
         return
       case 'Unpin':
-        this.handleUnpinFeed(feedId)
+        this.handleUnpinFeed(feedList)
         return
       case 'ShareLink':
         return
       case 'Duplicate':
-        this.handleDuplicateFeed(feedId)
+        this.handleDuplicateFeed(feedList)
         return
       case 'Delete':
         setTimeout(() => {
@@ -621,20 +623,20 @@ class FeedDetailScreen extends React.Component {
 
         this.props.setFeedDetailAction({
           action: 'Archive',
-          feedId
+          feedList
         })
         Actions.pop()
         return
       case 'Edit':
         this.setState({ feedoViewMode: CONSTANTS.FEEDO_FROM_MAIN })
-        this.handleEdit(feedId);
+        this.handleEdit();
         return
       case 'Leave Flow':
         Analytics.logEvent('feed_detail_leave_feed', {})
 
         this.props.setFeedDetailAction({
           action: 'Leave',
-          feedId
+          feedList
         })
         Actions.pop()
         return
@@ -643,7 +645,7 @@ class FeedDetailScreen extends React.Component {
     }
   }
 
-  handleEdit = (feedId) => {
+  handleEdit = () => {
     Analytics.logEvent('feed_detail_edit_feed', {})
 
     this.setState({
@@ -672,15 +674,16 @@ class FeedDetailScreen extends React.Component {
     this.setState({ isShowShare: true })
   }
 
-  handlePinFeed = (feedId) => {
+  handlePinFeed = (feedList) => {
     this.setState({ 
       isShowToaster: true,
       currentActionType: ACTION_FEEDO_PIN,
       toasterTitle: 'Flow pinned',
-      feedId, pinText: 'Unpin',
+      backFeedList: feedList,
+      pinText: 'Unpin',
     })
 
-    this.pinFeed(feedId)
+    this.pinFeed(feedList[0].feed.id)
 
     setTimeout(() => {
       this.setState({ isShowToaster: false, currentActionType: ACTION_NONE })
@@ -693,16 +696,16 @@ class FeedDetailScreen extends React.Component {
     this.props.pinFeed(feedId)
   }
 
-  handleUnpinFeed = (feedId) => {
+  handleUnpinFeed = (feedList) => {
     this.setState({ 
       isShowToaster: true,
       currentActionType: ACTION_FEEDO_UNPIN,
       toasterTitle: 'Flow un-pinned',
-      feedId,
+      backFeedList: feedList,
       pinText: 'Pin',
     })
 
-    this.unpinFeed(feedId)
+    this.unpinFeed(feedList[0].feed.id)
 
     setTimeout(() => {
       this.setState({ isShowToaster: false, currentActionType: ACTION_NONE })
@@ -715,14 +718,16 @@ class FeedDetailScreen extends React.Component {
     this.props.unpinFeed(feedId)
   }
 
-  handleDuplicateFeed = (feedId) => {
+  handleDuplicateFeed = (feedList) => {
     this.setState({ 
       isShowToaster: true,
       currentActionType: ACTION_FEEDO_DUPLICATE,
       toasterTitle: 'Flow duplicated',
-      feedId,
+      backFeedList: feedList,
     })
-    this.props.duplicateFeed(feedId)
+
+    this.props.duplicateFeed(feedList)
+
     setTimeout(() => {
       this.setState({ isShowToaster: false })
       this.duplicateFeed()
@@ -740,13 +745,13 @@ class FeedDetailScreen extends React.Component {
   undoAction = () => {
     if (this.state.currentActionType === ACTION_FEEDO_PIN) {
       this.setState({ pinText: 'Pin' })
-      this.unpinFeed(this.state.feedId)
+      this.unpinFeed(this.state.backFeedList[0].feed.id)
     } else if (this.state.currentActionType === ACTION_FEEDO_UNPIN) {
       this.setState({ pinText: 'Unpin' })
-      this.pinFeed(this.state.feedId)
+      this.pinFeed(this.state.backFeedList[0].feed.id)
     } else if (this.state.currentActionType === ACTION_FEEDO_DUPLICATE) {
-      if (this.props.feedo.duplicatedId) {
-        this.props.deleteDuplicatedFeed(this.props.feedo.duplicatedId)
+      if (this.props.feedo.duplicatedFeedList.length > 0) {
+        this.props.deleteDuplicatedFeed(this.props.feedo.duplicatedFeedList)
       }
     } else if (this.state.currentActionType === ACTION_CARD_DELETE || this.state.currentActionType === ACTION_CARD_MOVE) {
       clearTimeout(this.userActionTimer);
@@ -790,10 +795,10 @@ class FeedDetailScreen extends React.Component {
   onTapFeedoActionSheet = (index) => {
     if (index === 0) {
       Analytics.logEvent('feed_detail_delete_feed', {})
-
+      let feedList = [{ 'index': 0, 'feed': this.props.data }]
       this.props.setFeedDetailAction({
         action: 'Delete',
-        feedId: this.props.data.id
+        feedList
       })
       Actions.pop()
     }

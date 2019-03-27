@@ -182,7 +182,7 @@ class FeedActionBarComponent extends React.Component {
         </Modal>
 
         <View style={[styles.rowContainer, { width: actionBarWidth }]}>
-          {PIN_FEATURE && (
+          {selectedFeedList.length === 1 && PIN_FEATURE && (
             <Animated.View
               style={
                 this.state.selectedButton === SELECT_PIN_UNPIN &&

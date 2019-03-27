@@ -15,7 +15,6 @@ const initialState = {
   feedoListForCardMove: [],
   currentFeed: {},
   pinResult: null,
-  duplicaetdId: null,
   feedDetailAction: null,
   fileUploadUrl: {},
   userTags: [],
@@ -26,7 +25,8 @@ const initialState = {
   dummyDelCard: {},
   dummyMoveCard: {},
   badgeCount: 0,
-  isCreateCard: false
+  isCreateCard: false,
+  duplicatedFeedList: []
 };
 
 export default function feedo(state = initialState, action = {}) {
@@ -293,14 +293,15 @@ export default function feedo(state = initialState, action = {}) {
     }
     case types.DEL_FEED_FULFILLED: {
       const { feedoList } = state
-      const feedId = action.payload
-      if (feedId === 'empty') {
+      const data = action.payload
+
+      if (data.flag === 'delete') {
         return {
           ...state,
           loading: types.DEL_FEED_FULFILLED,
         }
       } else {  // Delete duplicated Feed
-        const restFeedoList = filter(feedoList, feed => feed.id !== feedId)
+        const restFeedoList = filter(feedoList, feed => findIndex(data.backFeedList, item => item.id === feed.id) === -1)
         return {
           ...state,
           loading: types.DEL_FEED_FULFILLED,
@@ -369,12 +370,14 @@ export default function feedo(state = initialState, action = {}) {
       return {
         ...state,
         loading: types.DUPLICATE_FEED_PENDING,
+        duplicatedFeedList: [],
         error: null,
       }
     }
     case types.DUPLICATE_FEED_FULFILLED: {
       const { feedoList } = state
       const { data } = action.result
+      const backFeedList = action.payload
 
       return {
         ...state,
@@ -382,7 +385,7 @@ export default function feedo(state = initialState, action = {}) {
           ...feedoList,
           data
         ],
-        duplicatedId: data.id,
+        duplicatedFeedList: backFeedList,
         loading: types.DUPLICATE_FEED_FULFILLED,
       }
     }
@@ -390,6 +393,7 @@ export default function feedo(state = initialState, action = {}) {
       return {
         ...state,
         loading: types.DUPLICATE_FEED_REJECTED,
+        duplicatedFeedList: [],
         error: action.error,
       }
     }
@@ -511,11 +515,12 @@ export default function feedo(state = initialState, action = {}) {
      * Set Feed detail action (Delete, Archive, Leave)
      */
     case types.SET_FEED_DETAIL_ACTION: {
-      const { payload } = action
+      const feedDetailAction = action.payload
+      console.log('feedDetailAction: ', feedDetailAction)
       return {
         ...state,
         loading: types.SET_FEED_DETAIL_ACTION,
-        feedDetailAction: payload
+        feedDetailAction
       }
     }
     // create a feed
