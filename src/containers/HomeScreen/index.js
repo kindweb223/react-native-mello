@@ -777,7 +777,8 @@ class HomeScreen extends React.Component {
       feedClickEvent: 'long',
       selectedFeedList,
       isLongHoldMenuVisible: true,
-      showLongHoldActionBar: true
+      showLongHoldActionBar: true,
+      unSelectFeed: COMMON_FUNC.isFeedOwner(feed) ? true : false
     }, () => {
       Animated.spring(this.animatedSelectFeed, {
         toValue: 0.85,
