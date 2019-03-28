@@ -300,6 +300,22 @@ class FeedDetailScreen extends React.Component {
       }
       currentFeed.ideas = filterIdeas;
 
+      currentFeed.ideas.map(idea => {
+        idea.files && idea.files.map((file) => {
+          console.log('OXO lets see if we already stored ', file.id, ' which is like ', file)
+          AsyncStorage.getItem('file/'+file.id)
+          .then(success => {
+            console.log('OXO it was a ', success)
+            const newUrl = 'file:///'+success
+            if(file.accessUrl === idea.coverImage){
+              idea.coverImage = newUrl
+            }
+            file.accessUrl = newUrl
+
+          })
+        })
+      })
+
       this.setBubbles(currentFeed)
       this.setState({
         loading: false,
