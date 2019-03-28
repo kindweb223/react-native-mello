@@ -32,10 +32,11 @@ export const getFeedoList = (index = 0, isForCardMove = false) => {
   };
 }
 
-export const setFeedoListFromStorage = (feedList) => {
+export const setFeedoListFromStorage = (feedoList) => {
+  console.log('FL here is ', feedoList)
   return {
     type: types.SET_FEEDO_LIST_FROM_STORAGE,
-    feedList,
+    feedoList,
   }
 }
 
@@ -93,6 +94,16 @@ export const getFeedDetail = (feedId) => {
     payload: feedId
   };
 }
+
+
+export const setFeedDetailFromStorage = (feed) => {
+  console.log('FL feed here is ', feed)
+  return {
+    type: types.SET_FEED_DETAIL_FROM_STORAGE,
+    feed,
+  }
+}
+
 
 /**
  * Pin Feed

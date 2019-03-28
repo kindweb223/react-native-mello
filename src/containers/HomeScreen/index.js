@@ -51,6 +51,9 @@ import { TIP_SHARE_LINK_URL, ANDROID_PUSH_SENDER_ID, PIN_FEATURE, SEARCH_FEATURE
 const SEARCH_ICON = require('../../../assets/images/Search/Grey.png')
 const SETTING_ICON = require('../../../assets/images/Settings/Grey.png')
 
+import LocalStorage from '../../components/LocalStorage'
+
+
 import {
   getFeedoList,
   pinFeed,
@@ -177,6 +180,7 @@ class HomeScreen extends React.Component {
     AsyncStorage.getItem(key)
     .then((result) => {
       const feeds = JSON.parse(result)
+      feeds.shift()
       console.log('GFL async result', feeds)
       this.props.setFeedoListFromStorage(feeds)
     })
@@ -299,7 +303,7 @@ class HomeScreen extends React.Component {
       (feedo.loading === 'UPDATE_CARD_FULFILLED') || (feedo.loading === 'GET_CARD_FULFILLED') ||
       (feedo.loading === 'DEL_DUMMY_CARD') || (feedo.loading === 'MOVE_DUMMY_CARD') ||
       (feedo.loading === 'PUBNUB_DELETE_INVITEE_FULFILLED') || (feedo.loading === 'GET_FEED_DETAIL_REJECTED') ||
-      (feedo.loading === 'SAVE_FLOW_PREFERENCE_FULFILLED') ||
+      (feedo.loading === 'SAVE_FLOW_PREFERENCE_FULFILLED') || (feedo.loading === 'SET_FEEDO_LIST_FROM_STORAGE') ||
       (feedo.loading === 'PUBNUB_DELETE_FEED' &&
                           Actions.currentScene !== 'FeedDetailScreen' &&
                           Actions.currentScene !== 'CommentScreen' && Actions.currentScene !== 'ActivityCommentScreen' &&
@@ -308,6 +312,8 @@ class HomeScreen extends React.Component {
       let feedoList = [];
       let feedoPinnedList = [];
       let feedoUnPinnedList = [];
+
+      console.log('FL = ', feedo.loading, feedo)
 
       if (feedo.feedoList && feedo.feedoList.length > 0) {
         feedoList = feedo.feedoList.map(item => {
@@ -1152,7 +1158,6 @@ class HomeScreen extends React.Component {
   onRefreshFeed = () => {
     this.setState({ isRefreshing: true })
     this.props.getInvitedFeedList()
-    console.log('OD - onRefreshFeed')
   }
 
   dismiss = (e) => {
@@ -1444,6 +1449,8 @@ class HomeScreen extends React.Component {
           onClose={() => this.setState({ showFilterModal: false }) }
         />
 
+        <LocalStorage />
+
       </SafeAreaView>
     )
   }
@@ -1459,7 +1466,6 @@ const mapDispatchToProps = dispatch => ({
   getFeedoList: (index, successAction, errorAction) => dispatch(getFeedoList(index))
   .then(success => {
     console.log('GFL success on HS')
-    // successAction(success)
     successAction(success)
   })
   .catch(error => {

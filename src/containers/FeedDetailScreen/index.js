@@ -54,7 +54,6 @@ import LoadingScreen from '../LoadingScreen'
 import EmptyStateComponent from '../../components/EmptyStateComponent'
 import SpeechBubbleComponent from '../../components/SpeechBubbleComponent'
 import FollowMemberScreen from '../FollowMembersScreen'
-import LocalStorage from '../../components/LocalStorage'
 
 
 import {
@@ -77,6 +76,7 @@ import {
   updateSharingPreferences,
   deleteInvitee,
   saveFlowViewPreference,
+  setFeedDetailFromStorage,
 } from '../../redux/feedo/actions';
 import {
   setCurrentCard,
@@ -252,13 +252,14 @@ class FeedDetailScreen extends React.Component {
     }
 
     if ((this.props.feedo.loading !== 'GET_FEED_DETAIL_FULFILLED' && feedo.loading === 'GET_FEED_DETAIL_FULFILLED') ||
+        (this.props.feedo.loading !== 'SET_FEED_DETAIL_FROM_STORAGE') ||
         (this.props.feedo.loading === 'DELETE_INVITEE_PENDING' && feedo.loading === 'DELETE_INVITEE_FULFILLED') ||
         (this.props.feedo.loading === 'UPDATE_SHARING_PREFERENCES_PENDING' && feedo.loading === 'UPDATE_SHARING_PREFERENCES_FULFILLED') ||
         (this.props.feedo.loading === 'UPDATE_INVITEE_PERMISSION_PENDING' && feedo.loading === 'UPDATE_INVITEE_PERMISSION_FULFILLED') ||
         (this.props.feedo.loading === 'UPDATE_FEED_PENDING' && feedo.loading === 'UPDATE_FEED_FULFILLED') ||
         (this.props.feedo.loading === 'INVITE_HUNT_PENDING' && feedo.loading === 'INVITE_HUNT_FULFILLED') ||
         (this.props.feedo.loading === 'DELETE_FILE_PENDING' && feedo.loading === 'DELETE_FILE_FULFILLED') ||
-        (this.props.feedo.loading === 'ADD_FILE_PENDING' && feedo.loading === 'ADD_FILE_FULFILLED') ||
+        (this.props.feedo.lfoading === 'ADD_FILE_PENDING' && feedo.loading === 'ADD_FILE_FULFILLED') ||
         (this.props.feedo.loading === 'ADD_HUNT_TAG_PENDING' && feedo.loading === 'ADD_HUNT_TAG_FULFILLED') ||
         (this.props.feedo.loading === 'REMOVE_HUNT_TAG_PENDING' && feedo.loading === 'REMOVE_HUNT_TAG_FULFILLED') ||
         (this.props.card.loading !== 'UPDATE_CARD_FULFILLED' && card.loading === 'UPDATE_CARD_FULFILLED') ||
@@ -1457,9 +1458,6 @@ class FeedDetailScreen extends React.Component {
               </View>
             </View>
           )}
-          {currentFeed.ideas && currentFeed.ideas.length > 1 && (
-              <LocalStorage />
-          )}
 
 
           <Animated.ScrollView
@@ -1806,7 +1804,21 @@ const mapStateToProps = ({ feedo, user, card }) => ({
 })
 
 const mapDispatchToProps = dispatch => ({
-  getFeedDetail: data => dispatch(getFeedDetail(data)),
+  getFeedDetail: data => dispatch(getFeedDetail(data))
+    .then(success => {
+      console.log('Async A')
+      AsyncStorage.setItem('flow/'+data, JSON.stringify(success.result.data))
+        .then(asuccess => {
+          
+        })})
+    .catch(error => {
+      AsyncStorage.getItem('flow/'+data)
+        .then(success => {
+          const feed = JSON.parse(success)
+          console.log('Async Feed for  ', data, ' is ', feed)
+          dispatch(setFeedDetailFromStorage(feed))
+        })
+    }),
   setFeedDetailAction: data => dispatch(setFeedDetailAction(data)),
   pinFeed: (data) => dispatch(pinFeed(data)),
   unpinFeed: (data) => dispatch(unpinFeed(data)),
