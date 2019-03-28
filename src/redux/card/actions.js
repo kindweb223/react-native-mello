@@ -83,26 +83,43 @@ export const resetCardError = () => {
 /**
  * Delete a card
  */
-export const deleteCard = (id) => {
-  let url = `ideas/${id}`
+export const deleteCard = (deletedIdeaList) => {
+  // let url = `ideas/${id}`
+  let url = 'ideas'
+  const data = []
+  for (let i = 0; i < deletedIdeaList.length; i ++) {
+    data.push(
+      {
+        'id': deletedIdeaList[i].idea.id
+      }
+    )
+  }
   return {
     types: [types.DELETE_CARD_PENDING, types.DELETE_CARD_FULFILLED, types.DELETE_CARD_REJECTED],
     promise: axios({
       method: 'delete',
       url: url,
-    }),
-    payload: id,
+      data: data
+    })
   };
 }
 
 /**
  * Move a card
  */
-export const moveCard = (ideaId, huntId) => {
-  let url = `ideas/${ideaId}/move`
-  const data = {
-    huntId,
+export const moveCard = (movedIdeaList, huntId) => {
+  // let url = `ideas/${ideaId}/move`
+  let url = 'ideas/move'
+  const data = []
+  for (let i = 0; i < movedIdeaList.length; i ++) {
+    data.push(
+      {
+        'ideaId': movedIdeaList[i].idea.id,
+        'huntId': huntId
+      }
+    )
   }
+
   return {
     types: [types.MOVE_CARD_PENDING, types.MOVE_CARD_FULFILLED, types.MOVE_CARD_REJECTED],
     promise: axios({
@@ -110,10 +127,7 @@ export const moveCard = (ideaId, huntId) => {
       url: url,
       data,
     }),
-    payload: {
-      ideaId,
-      huntId,
-    },
+    payload: data
   };
 }
 

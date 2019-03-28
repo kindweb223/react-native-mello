@@ -71,58 +71,48 @@ class CardActionBarComponent extends React.Component {
   }
 
   render() {
-    const { viewMode } = this.props
-
-    if (viewMode !== CONSTANTS.CARD_EDIT) {
-      return null
-    }
-
     return (
       <View style={styles.container}>
         <View style={styles.rowContainer}>
-          {viewMode === CONSTANTS.CARD_EDIT && (
-            <Animated.View
-              style={
-                this.state.selectedButton === SELECT_MOVE &&
-                {
-                  transform: [
-                    { scale: this.animatedSelect },
-                  ]
-                }
+          <Animated.View
+            style={
+              this.state.selectedButton === SELECT_MOVE &&
+              {
+                transform: [
+                  { scale: this.animatedSelect },
+                ]
               }
+            }
+          >
+            <TouchableOpacity
+              style={styles.buttonView}
+              activeOpacity={0.7}
+              onPress={this.onMove.bind(this)}
             >
-              <TouchableOpacity
-                style={styles.buttonView}
-                activeOpacity={0.7}
-                onPress={this.onMove.bind(this)}
-              >
-                <Ionicons name='md-arrow-forward' size={22} color='#fff' style={styles.arrowIcon} />
-                <Text style={styles.buttonText}>Move</Text>
-              </TouchableOpacity>
-            </Animated.View>
-          )}
+              <Ionicons name='md-arrow-forward' size={22} color='#fff' style={styles.arrowIcon} />
+              <Text style={styles.buttonText}>Move</Text>
+            </TouchableOpacity>
+          </Animated.View>
 
-          {viewMode === CONSTANTS.CARD_EDIT && (
-            <Animated.View
-              style={
-                this.state.selectedButton === SELECT_DELETE &&
-                {
-                  transform: [
-                    { scale: this.animatedSelect },
-                  ]
-                }
+          <Animated.View
+            style={
+              this.state.selectedButton === SELECT_DELETE &&
+              {
+                transform: [
+                  { scale: this.animatedSelect },
+                ]
               }
+            }
+          >
+            <TouchableOpacity
+              style={styles.buttonView}
+              activeOpacity={0.7}
+              onPress={this.onDelete.bind(this)}
             >
-              <TouchableOpacity
-                style={styles.buttonView}
-                activeOpacity={0.7}
-                onPress={this.onDelete.bind(this)}
-              >
-                <Image source={TRASH_ICON} />
-                <Text style={styles.buttonText}>Delete</Text>
-              </TouchableOpacity>
-            </Animated.View>
-          )}
+              <Image source={TRASH_ICON} />
+              <Text style={styles.buttonText}>Delete</Text>
+            </TouchableOpacity>
+          </Animated.View>
         </View>
       </View>
     )
