@@ -15,10 +15,11 @@ import LikeComponent from '../../LikeComponent';
 import CommentComponent from '../../CommentComponent';
 import UserAvatarComponent from '../../UserAvatarComponent';
 
-import FastImage from "react-native-fast-image";
 import Autolink from 'react-native-autolink';
 import { COMMENT_FEATURE } from '../../../service/api'
 import ExFastImage from '../../ExFastImage';
+import * as COMMON_FUNC from '../../../service/commonFunc'
+import CONSTANTS from '../../../service/constants'
 
 class FeedCardListComponent extends React.Component {
   constructor(props) {
@@ -37,8 +38,10 @@ class FeedCardListComponent extends React.Component {
       isOnlyInvitee = true
     }
 
+    const viewMode = COMMON_FUNC.getCardViewMode(feedo.currentFeed, idea)
+
     return (
-      <View style={[styles.container, longSelected && styles.selected]}>
+      <View style={[styles.container, longSelected && styles.selected, longHold && viewMode === CONSTANTS.CARD_VIEW && { opacity: 0.4 }]}>
         <View style={styles.leftContainer}>
           <View>
             {!isOnlyInvitee && invitee && (

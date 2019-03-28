@@ -85,7 +85,7 @@ class NewFeedScreen extends React.Component {
   }
 
   UNSAFE_componentWillReceiveProps(nextProps) {
-    if (this.state.feedName !== nextProps.initFeedName) {
+    if (nextProps.initFeedName !== '' && this.state.feedName !== nextProps.initFeedName) {
       this.setState({ feedName: nextProps.initFeedName })
     }
 
