@@ -39,7 +39,9 @@ import {
   readAllActivityFeed,
   setCurrentFeed,
   getInvitedFeedList,
-  getActivityFeedVisited
+  getActivityFeedVisited,
+  deleteDummyCard,
+  moveDummyCard
 } from '../../redux/feedo/actions'
 import {
   getCard,
@@ -115,7 +117,8 @@ class NotificationScreen extends React.Component {
     this.animatedOpacity = new Animated.Value(0)
     this.userActions = []
     this.userActionTimer = null
-    this.prevFeedo = null
+    this.prevFeedo = null,
+    this.moveCardList = []
   }
 
   componentDidMount() {
@@ -588,10 +591,10 @@ class NotificationScreen extends React.Component {
       // this.setState({ isShowToaster: false })
       if (this.state.currentActionType === ACTION_CARD_DELETE) {
         Analytics.logEvent('notification_delete_card', {})
-        this.props.deleteCard(currentCardInfo.ideaId)
+        this.props.deleteCard(currentCardInfo.cardList)
       } else if (this.state.currentActionType === ACTION_CARD_MOVE) {
         Analytics.logEvent('notification_move_card', {})
-        this.props.moveCard(currentCardInfo.ideaId, currentCardInfo.feedoId);
+        this.props.moveCard(currentCardInfo.cardList, currentCardInfo.feedoId);
       }
       this.userActionTimer = null;
       this.userActions.shift();
@@ -605,6 +608,14 @@ class NotificationScreen extends React.Component {
       this.userActionTimer = null;
       this.userActions.shift();
   
+      if (this.state.currentActionType === ACTION_CARD_DELETE) {
+        this.props.deleteDummyCard('null', 1)
+      }
+
+      if (this.state.currentActionType === ACTION_CARD_MOVE) {
+        this.props.moveDummyCard('null', 'null', 1)
+      }
+
       this.processCardActions();
       return;
     }
@@ -615,7 +626,7 @@ class NotificationScreen extends React.Component {
     })
   }
 
-  onDeleteCard = (ideaId) => {
+  onDeleteCard = (cardList) => {
     this.onCloseCardModal();
     this.setState({
       isShowToaster: true
@@ -624,17 +635,20 @@ class NotificationScreen extends React.Component {
     const cardInfo = {};
     cardInfo.currentActionType = ACTION_CARD_DELETE;
     cardInfo.toasterTitle = 'Card deleted';
-    cardInfo.ideaId = ideaId;
+    cardInfo.cardList = cardList;
     this.userActions.push(cardInfo);
+
+    this.props.deleteDummyCard(cardInfo.cardList, 0)
 
     this.processCardActions();
   }
 
-  onMoveCard = (ideaId) => {
+  onMoveCard = (cardList) => {
     this.setState({ 
       currentActionType: ACTION_CARD_MOVE,
+      isVisibleSelectFeedo: true,
     });
-    this.moveCardId = ideaId;
+    this.moveCardList = cardList;
   }
 
   onSelectFeedoToMoveCard(feedoId) {
@@ -648,29 +662,34 @@ class NotificationScreen extends React.Component {
     const cardInfo = {};
     cardInfo.currentActionType = ACTION_CARD_MOVE;
     cardInfo.toasterTitle = 'Card moved';
-    cardInfo.ideaId = this.moveCardId;
+    cardInfo.cardList = this.moveCardList;
     cardInfo.feedoId = feedoId;
     this.userActions.push(cardInfo);
 
+    this.props.moveDummyCard(cardInfo.cardList, cardInfo.feedoId, 0)
+
     this.processCardActions();
-    this.moveCardId = null;
+    this.moveCardList = [];
   }
 
   onCloseSelectFeedoModal() {
-    if (this.prevFeedo.id !== this.props.feedo.currentFeed.id) {
-      const moveToFeedo = this.props.feedo.currentFeed;
-      this.props.setCurrentFeed(this.prevFeedo);
-
-      if (moveToFeedo.id) {
-        this.onSelectFeedoToMoveCard(moveToFeedo.id);
-        return;
+    this.setState({ isVisibleCard: false }, () => {
+      if (this.prevFeedo.id !== this.props.feedo.currentFeed.id) {
+        const moveToFeedo = this.props.feedo.currentFeed;
+        this.props.setCurrentFeed(this.prevFeedo);
+  
+        if (moveToFeedo.id) {
+          this.onSelectFeedoToMoveCard(moveToFeedo.id);
+          return;
+        }
       }
-    }
-    this.prevFeedo = null;
-    this.setState({
-      isVisibleSelectFeedo: false,
-      currentActionType: ACTION_NONE,
-    });
+      this.prevFeedo = null
+  
+      this.setState({
+        isVisibleSelectFeedo: false,
+        currentActionType: ACTION_NONE,
+      });
+    })
   }
 
   get renderSelectHunt() {
@@ -685,14 +704,6 @@ class NotificationScreen extends React.Component {
           />
         </View>
       );
-    }
-  }
-
-  onHiddenLongHoldMenu() {
-    if (this.state.currentActionType === ACTION_CARD_MOVE) {
-      this.setState({
-        isVisibleSelectFeedo: true,
-      });
     }
   }
 
@@ -762,11 +773,13 @@ const mapDispatchToProps = dispatch => ({
   deleteActivityFeed: (userId, activityId) => dispatch(deleteActivityFeed(userId, activityId)),
   getFeedDetail: (feedId) => dispatch(getFeedDetail(feedId)),
   getCard: (ideaId) => dispatch(getCard(ideaId)),
-  moveCard: (ideaId, huntId) => dispatch(moveCard(ideaId, huntId)),
-  deleteCard: (ideaId) => dispatch(deleteCard(ideaId)),
+  moveCard: (cardList, huntId) => dispatch(moveCard(cardList, huntId)),
+  deleteCard: (cardList) => dispatch(deleteCard(cardList)),
   setCurrentFeed: (data) => dispatch(setCurrentFeed(data)),
   getInvitedFeedList: () => dispatch(getInvitedFeedList()),
   getActivityFeedVisited: (userId) => dispatch(getActivityFeedVisited(userId)),
+  moveDummyCard: (cardList, feedId, type) => dispatch(moveDummyCard(cardList, feedId, type)),
+  deleteDummyCard: (cardList, type) => dispatch(deleteDummyCard(cardList, type))
 })
 
 NotificationScreen.propTypes = {
