@@ -2426,7 +2426,7 @@
 			inputFileListPaths = (
 			);
 			inputPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-MelloEx/Pods-MelloEx-resources.sh",
+				"${SRCROOT}/Pods/Target Support Files/Pods-MelloEx/Pods-MelloEx-resources.sh",
 				"${PODS_ROOT}/Intercom/Intercom/Intercom.framework/Versions/A/Resources/Intercom.bundle",
 				"${PODS_ROOT}/Intercom/Intercom/Intercom.framework/Versions/A/Resources/IntercomTranslations.bundle",
 			);
@@ -2439,7 +2439,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-MelloEx/Pods-MelloEx-resources.sh\"\n";
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-MelloEx/Pods-MelloEx-resources.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
 		C272A68C1907409EB7735F34 /* [CP] Check Pods Manifest.lock */ = {
@@ -2466,7 +2466,7 @@
 			files = (
 			);
 			inputPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-Mello/Pods-Mello-resources.sh",
+				"${SRCROOT}/Pods/Target Support Files/Pods-Mello/Pods-Mello-resources.sh",
 				"${PODS_ROOT}/GoogleSignIn/Resources/GoogleSignIn.bundle",
 				"${PODS_ROOT}/Intercom/Intercom/Intercom.framework/Versions/A/Resources/Intercom.bundle",
 				"${PODS_ROOT}/Intercom/Intercom/Intercom.framework/Versions/A/Resources/IntercomTranslations.bundle",
@@ -2479,7 +2479,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-Mello/Pods-Mello-resources.sh\"\n";
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-Mello/Pods-Mello-resources.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
 		F8482088474C5A2FFC624808 /* [CP] Check Pods Manifest.lock */ = {

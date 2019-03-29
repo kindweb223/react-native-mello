@@ -91,7 +91,7 @@ const styles = StyleSheet.create({
     alignItems: 'center'
   },
   settingIconView: {
-    width: 60,
+    width: 38,
     alignItems: 'flex-end',
     marginRight: 12
   },
