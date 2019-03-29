@@ -2,6 +2,7 @@ import React from 'react'
 import {
     View,
     Text,
+    Button,
 } from 'react-native'
 import { NetworkConsumer } from 'react-native-offline'
 
@@ -11,10 +12,8 @@ class OfflineIndicator extends React.Component {
         return (
             <NetworkConsumer pingInterval={2000}>
                 {({ isConnected }) => (
-                    isConnected ? (
-                        <Text>Connected</Text>
-                    ) : (
-                        <Text>Not Connected</Text>
+                    isConnected ? null : (
+                        <Button title="Device is offline" color="#cc1234"></Button>
                     )
                 )}
             </NetworkConsumer>
