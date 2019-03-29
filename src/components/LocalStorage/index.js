@@ -191,8 +191,9 @@ class LocalStorage extends React.Component {
 
     flattenIdeas = () => {
             const allIdeas = []
-            const { feedo } = this.props
+            const { feedo, user } = this.props
             const { feedoList } = feedo
+            AsyncStorage.setItem(user.userInfo.id + '/flows', JSON.stringify(feedoList))
             console.log('RNFS feedoList is ', feedo, feedoList)
             let waitForAll;
             feedoList.map((feed, index) => {
@@ -320,7 +321,7 @@ class LocalStorage extends React.Component {
         const { user, feedo } = this.props
         const { ideas } = this.state
 
-        if(prevProps.feedo.feedoList.length === 0 && feedo.feedoList.length > 0){
+        if((prevProps.feedo.feedoList === null || prevProps.feedo.feedoList.length === 0) && (feedo.feedoList && feedo.feedoList.length > 0)){
             userDirMustExist(user.userInfo.id)
             .then(()=>{
                 console.log('RNFS try and do stuff')

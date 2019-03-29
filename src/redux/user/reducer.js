@@ -26,6 +26,7 @@ const initialState = {
 export default function user(state = initialState, action = {}) {
   switch (action.type) {
     case 'NETWORK_FAILED':
+      // TODO: replace with something nicer looking
       Alert.alert('Error', 'No Internet Connection')
       return {
         ...state,
@@ -151,7 +152,7 @@ export default function user(state = initialState, action = {}) {
       const xAuthToken = axios.defaults.headers['x-auth-token']
       AsyncStorage.setItem('xAuthToken', xAuthToken)
       SharedGroupPreferences.setItem('xAuthToken', xAuthToken, CONSTANTS.APP_GROUP_TOKEN_IDENTIFIER)
-      
+
       AsyncStorage.setItem('userInfo', JSON.stringify(data))
       AsyncStorage.setItem('userBackInfo', JSON.stringify(data))
       SharedGroupPreferences.setItem('userInfo', JSON.stringify(data), CONSTANTS.APP_GROUP_USER_IDENTIFIER)
