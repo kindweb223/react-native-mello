@@ -12,6 +12,7 @@ import {
 import PropTypes from 'prop-types'
 import Octicons from 'react-native-vector-icons/Octicons'
 import Entypo from 'react-native-vector-icons/Entypo'
+import Feather from 'react-native-vector-icons/Feather'
 import styles from './styles'
 import Analytics from '../../lib/firebase'
 
@@ -137,14 +138,16 @@ class FeedActionBarComponent extends React.Component {
       }
 
       if (!PIN_FEATURE) {
-        actionBarWidth = 170 
+        actionBarWidth = 170
         settingMenuMargin = (CONSTANTS.SCREEN_WIDTH - 170) / 2
       }
     } else {
       // Multiple select
-      MENU_ITEMS = ['Delete', 'Duplicate', 'Archive']
-      settingMenuMargin = (CONSTANTS.SCREEN_WIDTH - 130) / 2
-      actionBarWidth = 60
+      MENU_ITEMS = ['Duplicate', 'Archive']
+      if (!PIN_FEATURE) {
+        actionBarWidth = 170
+        settingMenuMargin = (CONSTANTS.SCREEN_WIDTH - 170) / 2
+      }
     }
 
     return (
@@ -181,7 +184,7 @@ class FeedActionBarComponent extends React.Component {
         </Modal>
 
         <View style={[styles.rowContainer, { width: actionBarWidth }]}>
-          {selectedFeedList.length === 1 && PIN_FEATURE && (
+          {PIN_FEATURE && (
             <Animated.View
               style={
                 this.state.selectedButton === SELECT_PIN_UNPIN &&
@@ -203,27 +206,35 @@ class FeedActionBarComponent extends React.Component {
             </Animated.View>
           )}
 
-          {selectedFeedList.length === 1 && (
-            <Animated.View
-              style={
-                this.state.selectedButton === SELECT_SHARE &&
-                {
-                  transform: [
-                    { scale: this.animatedSelect },
-                  ],
-                }
+          <Animated.View
+            style={
+              this.state.selectedButton === SELECT_SHARE &&
+              {
+                transform: [
+                  { scale: this.animatedSelect },
+                ],
               }
-            >
-              <TouchableOpacity 
-                style={styles.buttonView}
-                activeOpacity={0.7}
-                onPress={this.onPressShare}
-              >
-                <Entypo name="share-alternative" style={styles.shareIcon} size={22} color="#fff" />
-                <Text style={styles.buttonText}>Share</Text>
-              </TouchableOpacity>
-            </Animated.View>
-          )}
+            }
+          >
+            {selectedFeedList.length === 1
+              ? <TouchableOpacity 
+                  style={styles.buttonView}
+                  activeOpacity={0.7}
+                  onPress={this.onPressShare}
+                >
+                  <Entypo name="share-alternative" style={styles.shareIcon} size={22} color="#fff" />
+                  <Text style={styles.buttonText}>Share</Text>
+                </TouchableOpacity>
+              : <TouchableOpacity 
+                  style={styles.buttonView}
+                  activeOpacity={0.7}
+                  onPress={() => this.props.handleDelete()}
+                >
+                  <Feather name="trash-2" style={styles.shareIcon} size={22} color="#fff" />
+                  <Text style={styles.buttonText}>Delete</Text>
+                </TouchableOpacity>
+            }
+          </Animated.View>
 
           {MENU_ITEMS.length > 0 && (
             <Animated.View
@@ -251,12 +262,17 @@ class FeedActionBarComponent extends React.Component {
   }
 }
 
+FeedActionBarComponent.defaultProps = {
+  handleDelete: () => {}
+}
+
 FeedActionBarComponent.propTypes = {
   handlePin: PropTypes.func.isRequired,
   handleShare: PropTypes.func.isRequired,
   handleSetting: PropTypes.func.isRequired,
   selectedFeedList: PropTypes.arrayOf(PropTypes.any).isRequired,
-  userInfo: PropTypes.object
+  userInfo: PropTypes.object,
+  handleDelete: PropTypes.func
 }
 
 export default FeedActionBarComponent

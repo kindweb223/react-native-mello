@@ -85,6 +85,7 @@ class FeedLongHoldMenuScreen extends React.Component {
         handleShare={this.openShareModal}
         handleSetting={this.handleSetting}
         selectedFeedList={selectedFeedList}
+        handleDelete={() => this.handleSetting('Delete')}
       />,
       <ActionSheet
         key="3"
