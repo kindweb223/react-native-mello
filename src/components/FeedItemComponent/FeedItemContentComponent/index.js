@@ -53,7 +53,7 @@ class FeedItemContentComponent extends React.Component {
             )}
             {avatars.length > 0 && (
               <View style={styles.avatarView}>
-                <AvatarPileComponent avatars={avatars} size={24} numFaces={2} showPlus={false} />
+                <AvatarPileComponent avatars={avatars} size={29} numFaces={2} showPlus={false} showStroke />
               </View>
             )}
           </View>

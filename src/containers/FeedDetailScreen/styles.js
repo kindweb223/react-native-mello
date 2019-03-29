@@ -69,12 +69,26 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     marginLeft: 2
   },
+  titleContainer: {
+    flexDirection: 'row'
+  },
   collapseView: {
-    width: '100%',
-    marginBottom: 25,
+    flex: 1,
+    marginBottom: 16,
     paddingTop: 0,
     backgroundColor: '#fff',
     zIndex: 11
+  },
+  filterIconView: {
+    justifyContent: 'center',
+    alignItems: 'flex-end',
+    marginRight: 16,
+    width: 40,
+    height: 30
+  },
+  filterIcon: {
+    width: 18,
+    height: 14
   },
   collpaseSeparator: {
     marginTop: 16

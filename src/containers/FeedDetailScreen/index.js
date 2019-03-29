@@ -15,7 +15,8 @@ import {
   Clipboard,
   Share,
   Platform,
-  BackHandler
+  BackHandler,
+  Image
 } from 'react-native'
 
 import { connect } from 'react-redux'
@@ -56,6 +57,7 @@ import EmptyStateComponent from '../../components/EmptyStateComponent'
 import SpeechBubbleComponent from '../../components/SpeechBubbleComponent'
 import FollowMemberScreen from '../FollowMembersScreen'
 import AlertController from '../../components/AlertController'
+import TapRemoveComponent from '../../components/TapRemoveComponent'
 
 import {
   getFeedDetail,
@@ -97,6 +99,7 @@ import { TAGS_FEATURE, SHARE_LINK_URL } from "../../service/api"
 import COMMON_STYLES from '../../themes/styles'
 
 import Analytics from '../../lib/firebase'
+import { images } from '../../themes'
 
 const TOASTER_DURATION = 3000
 
@@ -1491,7 +1494,8 @@ class FeedDetailScreen extends React.Component {
       selectedLongHoldCardList,
       isVisibleLongHoldMenu,
       invitees,
-      MasonryListData
+      MasonryListData,
+      filterShowType
     } = this.state
 
     return (
@@ -1510,7 +1514,7 @@ class FeedDetailScreen extends React.Component {
                           <Text style={styles.btnInvite}>Invite</Text>
                         </TouchableOpacity>
                       : <TouchableOpacity onPress={() => this.handleShare()}>
-                          <AvatarPileComponent avatars={avatars} showPlus={false} />
+                          <AvatarPileComponent avatars={avatars} showPlus={false} showStroke size={29} />
                         </TouchableOpacity>
                     }
                   </View>
@@ -1538,24 +1542,33 @@ class FeedDetailScreen extends React.Component {
                 transform: [{ scale: this.animatedSelectCard}],
               }
             ]}
-          >     
+          >
               <View style={styles.detailView} onLayout={this.onLayoutScroll}>
                 {!_.isEmpty(currentFeed) && !isVisibleLongHoldMenu && (
-                  <View style={styles.collapseView}>
-                    <FeedCollapseComponent
-                      feedData={currentFeed}
-                      longHold={isVisibleLongHoldMenu}
-                      onEditFeed={() => {
-                        this.setState({ feedoViewMode: CONSTANTS.FEEDO_FROM_COLLAPSE })
-                        this.handleEdit(currentFeed.id)
-                      }}
-                      onOpenCreationTag={this.onOpenCreationTag}
-                      onAddMedia={this.onAddMedia}
-                      onAddDocument={this.onAddDocument}
-                      deleteFile={this.onDeleteFile}
-                    />
+                  <View style={styles.titleContainer}>
+                    <View style={styles.collapseView}>
+                      <FeedCollapseComponent
+                        feedData={currentFeed}
+                        longHold={isVisibleLongHoldMenu}
+                        onEditFeed={() => {
+                          this.setState({ feedoViewMode: CONSTANTS.FEEDO_FROM_COLLAPSE })
+                          this.handleEdit(currentFeed.id)
+                        }}
+                        onOpenCreationTag={this.onOpenCreationTag}
+                        onAddMedia={this.onAddMedia}
+                        onAddDocument={this.onAddDocument}
+                        deleteFile={this.onDeleteFile}
+                      />
+                    </View>
+                    <TouchableOpacity style={styles.filterIconView} onPress={this.handleFilter}>
+                      <Image source={filterShowType === 'all' ? images.filterGrey : images.filterBlue} style={styles.filterIcon} />
+                    </TouchableOpacity>
                   </View>
                 )}
+
+                {filterShowType === 'like' && 
+                  <TapRemoveComponent onPress={() => this.onFilterShow('all')} />
+                }
 
                 {!_.isEmpty(currentFeed) && currentFeed.metadata.myInviteStatus === 'INVITED' && (
                   <View style={styles.buttonContainer}>
@@ -1798,6 +1811,7 @@ class FeedDetailScreen extends React.Component {
           show={this.state.showFilterModal}
           onFilterShow={this.onFilterShow}
           onFilterSort={this.onFilterSort}
+          filterShowType={filterShowType}
           onClose={() => this.setState({ showFilterModal: false }) }
         />
 

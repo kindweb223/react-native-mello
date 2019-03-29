@@ -175,7 +175,8 @@ class LikeComponent extends React.Component {
     } = this.state;
     const {
       longHold,
-      type
+      type,
+      smallIcon
     } = this.props
 
     const animatedMove1 = this.animatedShow.interpolate({
@@ -223,7 +224,7 @@ class LikeComponent extends React.Component {
                 }
               ]}
             >
-              <Image source={FAV_ICON_R} />
+              <Image source={FAV_ICON_R} style={smallIcon ? styles.favIcon : null} />
             </Animated.View>
             <Animated.View 
               style={[
