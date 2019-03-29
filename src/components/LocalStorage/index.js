@@ -265,7 +265,7 @@ class LocalStorage extends React.Component {
     componentDidMount(): void {
         const { user } = this.props
         console.log('RNFS try and do stuff when user is ', user )
-        
+
     }
 
     storeIdeasAndFiles = () => {
@@ -346,8 +346,6 @@ class LocalStorage extends React.Component {
         // console.log('RNFS feeds are ', feedo.feedoList)
         return (
             <View>
-                <Button title="List Files" onPress={this.listFiles}>List Files</Button>
-                {/*<Text>Blah and {ideas.length} vs {files.length}</Text>*/}
             </View>
         )
     }
