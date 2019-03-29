@@ -181,7 +181,7 @@ class HomeScreen extends React.Component {
     AsyncStorage.getItem(key)
     .then((result) => {
       const feeds = JSON.parse(result)
-      feeds.shift()
+      // feeds.shift()
       console.log('GFL async result', feeds)
       this.props.setFeedoListFromStorage(feeds)
     })

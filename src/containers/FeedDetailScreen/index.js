@@ -31,6 +31,7 @@ import { DocumentPicker, DocumentPickerUtil } from 'react-native-document-picker
 import Permissions from 'react-native-permissions'
 import * as mime from 'react-native-mime-types'
 import GestureRecognizer from 'react-native-swipe-gestures'
+import { NetworkConsumer } from 'react-native-offline'
 import Masonry from '../../components/MasonryComponent'
 
 import DashboardActionBar from '../../navigations/DashboardActionBar'
@@ -54,6 +55,7 @@ import LoadingScreen from '../LoadingScreen'
 import EmptyStateComponent from '../../components/EmptyStateComponent'
 import SpeechBubbleComponent from '../../components/SpeechBubbleComponent'
 import FollowMemberScreen from '../FollowMembersScreen'
+import OfflineIndicator from '../../components/LocalStorage/OfflineIndicator'
 
 
 import {
@@ -1450,28 +1452,33 @@ class FeedDetailScreen extends React.Component {
     return (
       <SafeAreaView style={styles.safeArea}>
         <View style={[styles.container, isVisibleLongHoldMenu && { paddingBottom: 0 }]}>
+          <OfflineIndicator/>
           {!isVisibleLongHoldMenu && (
             <View style={styles.navBar}>
               <TouchableOpacity style={styles.backView} onPress={this.backToDashboard}>
                 <Ionicons name="ios-arrow-back" size={32} color={COLORS.PURPLE} />
               </TouchableOpacity>
-              <View style={styles.rightHeader}>
-                {!_.isEmpty(currentFeed) && !COMMON_FUNC.isMelloTipFeed(currentFeed) && (
-                  <View style={styles.avatarView}>
-                    {COMMON_FUNC.isFeedOwner(currentFeed) && COMMON_FUNC.isFeedOwnerOnlyInvitee(currentFeed)
-                      ? <TouchableOpacity onPress={() => this.handleShare()}>
-                          <Text style={styles.btnInvite}>Invite</Text>
-                        </TouchableOpacity>
-                      : <TouchableOpacity onPress={() => this.handleShare()}>
-                          <AvatarPileComponent avatars={avatars} showPlus={false} />
-                        </TouchableOpacity>
-                    }
-                  </View>
-                )}
-                <View style={styles.settingView}>
-                  <FeedNavbarSettingComponent handleSetting={() => this.handleSetting()} />
-                </View>
-              </View>
+              <NetworkConsumer>
+                {({ isConnected }) => (isConnected ? (<View style={styles.rightHeader}>
+                      {!_.isEmpty(currentFeed) && !COMMON_FUNC.isMelloTipFeed(currentFeed) && (
+                          <View style={styles.avatarView}>
+                            {COMMON_FUNC.isFeedOwner(currentFeed) && COMMON_FUNC.isFeedOwnerOnlyInvitee(currentFeed)
+                                ? <TouchableOpacity onPress={() => this.handleShare()}>
+                                  <Text style={styles.btnInvite}>Invite</Text>
+                                </TouchableOpacity>
+                                : <TouchableOpacity onPress={() => this.handleShare()}>
+                                  <AvatarPileComponent avatars={avatars} showPlus={false} />
+                                </TouchableOpacity>
+                            }
+                          </View>
+                      )}
+                      <View style={styles.settingView}>
+                        <FeedNavbarSettingComponent handleSetting={() => this.handleSetting()} />
+                      </View>
+                    </View>
+                ) : null)}
+              </NetworkConsumer>
+
             </View>
           )}
 
@@ -1825,7 +1832,7 @@ const mapDispatchToProps = dispatch => ({
       console.log('Async A')
       AsyncStorage.setItem('flow/'+data, JSON.stringify(success.result.data))
         .then(asuccess => {
-          
+
         })})
     .catch(error => {
       AsyncStorage.getItem('flow/'+data)
