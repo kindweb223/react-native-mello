@@ -34,6 +34,7 @@ const styles = StyleSheet.create({
     top: 0,
     bottom: 0,
     backgroundColor: COLORS.MODAL_BACKGROUND,
+    paddingBottom: ifIphoneX(22, 0)
   },
   emptyView: {
     flex: 1,
@@ -91,7 +92,7 @@ const styles = StyleSheet.create({
     alignItems: 'center'
   },
   settingIconView: {
-    width: 60,
+    width: 38,
     alignItems: 'flex-end',
     marginRight: 12
   },
