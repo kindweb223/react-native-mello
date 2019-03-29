@@ -76,6 +76,7 @@
   },
   "devDependencies": {
     "mime-types": "^2.1.22",
-    "react-native-fs": "^2.13.3"
+    "react-native-fs": "^2.13.3",
+    "react-native-offline": "^4.3.1"
   }
 }

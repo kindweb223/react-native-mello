@@ -22,6 +22,7 @@ import axios from 'axios'
 import CONSTANTS from './src/service/constants'
 import { BASE_URL, BUGSNAG_KEY, APP_LOCALE, APP_NAME, APP_STORE_ID, PLAY_STORE_ID } from './src/service/api'
 import pubnub from './src/lib/pubnub'
+import { NetworkProvider } from 'react-native-offline'
 
 const config = new Configuration(BUGSNAG_KEY);
 config.appVersion = require('./package.json').version;
@@ -345,7 +346,6 @@ export default class Root extends React.Component {
         <Scene key="CropImageScreen" component={ CropImageScreen } hideNavBar panHandlers={null} />
       </Lightbox>
     );
-
     if (this.state.loading) {
       return (
         <View style={styles.loadingContainer}>
@@ -362,9 +362,12 @@ export default class Root extends React.Component {
       )
     } else {
       return (
-        <Provider store={store}>
-          <Router scenes={scenes} />
-        </Provider>
+
+        <NetworkProvider>/* for offline/online status detection */
+          <Provider store={store}>
+            <Router scenes={scenes} />
+          </Provider>
+        </NetworkProvider>
       )
     }
   }
