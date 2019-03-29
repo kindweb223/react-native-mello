@@ -20,7 +20,7 @@ const styles = StyleSheet.create({
     flex: 1,
     flexDirection: 'row',
     alignItems: 'center',
-    paddingVertical: 8,
+    paddingVertical: 6,
     borderRadius: 18,
   },
   itemSelectBackgroundContainer: {
@@ -32,7 +32,7 @@ const styles = StyleSheet.create({
     borderRadius: 18,
   },
   leftContentContainer: {
-    marginRight: 12
+    marginRight: 4
   },
   rightContentContainer: {
     flex: 1,
@@ -51,7 +51,8 @@ const styles = StyleSheet.create({
   },
   headerView: {
     paddingVertical: 14,
-    marginHorizontal: 5,
+    marginTop: 5,
+    marginBottom: 12,
     borderBottomWidth: 1,
     borderBottomColor: COLORS.SEPARATOR_GREY,
     alignItems: 'center'
@@ -59,11 +60,12 @@ const styles = StyleSheet.create({
   headerText: {
     fontSize: 12,
     fontWeight: '500',
-    color: COLORS.DARK_GREY
+    color: COLORS.DARK_GREY,
   },
   separator: {
     marginHorizontal: 5,
-    marginVertical: 5,
+    marginTop: 12,
+    marginBottom: 12,
     height: 1,
     backgroundColor: COLORS.SEPARATOR_GREY,
   },
