@@ -5,13 +5,13 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: 'transparent',
-    marginBottom: 24,
+    marginBottom: 21,
   },
   backdropContainer: {
     flex: 1,
   },
   mainContentContainer: {
-    paddingVertical: 15,
+    paddingBottom: 16,
     backgroundColor: '#fff',
     borderRadius: 18,
     paddingHorizontal: 12,
@@ -32,16 +32,16 @@ const styles = StyleSheet.create({
     borderRadius: 18,
   },
   leftContentContainer: {
-    paddingHorizontal: 12,
+    marginRight: 12
   },
   rightContentContainer: {
     flex: 1,
     paddingHorizontal: 12,
   },
   textTitle: {
-    fontSize: 16,
+    fontSize: 18,
     lineHeight: 23,
-    fontWeight: '500',
+    fontWeight: '600',
     color: '#000',
   },
   textDescription: {
@@ -49,6 +49,28 @@ const styles = StyleSheet.create({
     lineHeight: 21,
     color: COLORS.DARK_GREY,
   },
+  headerView: {
+    paddingVertical: 14,
+    marginHorizontal: 5,
+    borderBottomWidth: 1,
+    borderBottomColor: COLORS.SEPARATOR_GREY,
+    alignItems: 'center'
+  },
+  headerText: {
+    fontSize: 12,
+    fontWeight: '500',
+    color: COLORS.DARK_GREY
+  },
+  separator: {
+    marginHorizontal: 5,
+    marginVertical: 5,
+    height: 1,
+    backgroundColor: COLORS.SEPARATOR_GREY,
+  },
+  image: {
+    width: 35,
+    height: 35
+  }
 });
 
 

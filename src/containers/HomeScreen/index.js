@@ -978,7 +978,7 @@ class HomeScreen extends React.Component {
   onSelectNewFeedType(type) {
     this.props.closeClipboardToaster()
 
-    if (type === 'New Card') {
+    if (type === 'ADD_TEXT') {
       Analytics.logEvent('dashboard_new_card', {})
 
       this.setState({
@@ -987,7 +987,7 @@ class HomeScreen extends React.Component {
         cardViewMode: CONSTANTS.CARD_NEW,
         selectedIdeaInvitee: null,
       });
-    } else if (type === 'New Flow') {
+    } else if (type === 'NEW_FLOW') {
       Analytics.logEvent('dashboard_new_feed', {})
 
       this.props.setCurrentFeed({});
@@ -996,6 +996,8 @@ class HomeScreen extends React.Component {
         isVisibleNewFeed: true,
         isEditFeed: false,
       });
+    } else if (type === 'UPLOAD_PHOTO') {
+
     }
   }
 
