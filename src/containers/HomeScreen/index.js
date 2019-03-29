@@ -26,6 +26,7 @@ import { find, filter, orderBy } from 'lodash'
 import DeviceInfo from 'react-native-device-info';
 import Permissions from 'react-native-permissions'
 import Intercom from 'react-native-intercom'
+import ImagePicker from 'react-native-image-picker'
 
 import pubnub from '../../lib/pubnub'
 import Analytics from '../../lib/firebase'
@@ -52,6 +53,7 @@ import COLORS from '../../service/colors'
 import { TIP_SHARE_LINK_URL, ANDROID_PUSH_SENDER_ID, PIN_FEATURE, SEARCH_FEATURE } from '../../service/api'
 import AlertController from '../../components/AlertController'
 import SideMenuComponent from '../../components/SideMenuComponent'
+import * as COMMON_FUNC from '../../service/commonFunc'
 
 const SEARCH_ICON = require('../../../assets/images/Search/Grey.png')
 const SETTING_ICON = require('../../../assets/images/Settings/Grey.png')
@@ -138,6 +140,7 @@ class HomeScreen extends React.Component {
       filterSortType: 'recent',
       isSideMenuOpen: false,
       selectedItemTitle: 'All flows',
+      fileData: null
     };
 
     this.currentRef = null;
@@ -977,6 +980,13 @@ class HomeScreen extends React.Component {
 
   onSelectNewFeedType(type) {
     this.props.closeClipboardToaster()
+    var options = {
+      storageOptions: {
+        skipBackup: true,
+        path: 'feedo'
+      },
+      mediaType: 'mixed'
+    };
 
     if (type === 'ADD_TEXT') {
       Analytics.logEvent('dashboard_new_card', {})
@@ -997,7 +1007,9 @@ class HomeScreen extends React.Component {
         isEditFeed: false,
       });
     } else if (type === 'UPLOAD_PHOTO') {
-
+      this.pickMediaFromLibrary(options);
+    } else if (type === 'TAKE_PHOTO') {
+      this.pickMediaFromCamera(options);
     }
   }
 
@@ -1037,6 +1049,46 @@ class HomeScreen extends React.Component {
 
   userSignOut = () => {
     this.setState({ showProfile: false })
+  }
+
+  pickMediaFromCamera(options) {
+    ImagePicker.launchCamera(options, (response)  => {
+      if (!response.didCancel) {
+        if (response.fileSize > CONSTANTS.MAX_UPLOAD_FILE_SIZE) {
+          COMMON_FUNC.showPremiumAlert()
+        } else {
+          if (!response.fileName) {
+            response.fileName = response.uri.replace(/^.*[\\\/]/, '')
+          }
+          this.handleFile(response)
+        }
+      }
+    });
+  }
+
+  pickMediaFromLibrary(options) {
+    ImagePicker.launchImageLibrary(options, (response)  => {
+      if (!response.didCancel) {
+        if (response.fileSize > CONSTANTS.MAX_UPLOAD_FILE_SIZE) {
+          COMMON_FUNC.showPremiumAlert()
+        } else {
+          this.handleFile(response)
+        }
+      }
+    });
+  }
+
+  handleFile = (file) => {
+    this.setState({
+      fileData: file
+    }, () => {
+      this.setState({
+        isVisibleCreateNewFeedModal: false,
+        isVisibleCard: true,
+        cardViewMode: CONSTANTS.CARD_NEW,
+        selectedIdeaInvitee: null
+      });
+    })
   }
 
   get renderNewFeedModals() {
@@ -1108,7 +1160,8 @@ class HomeScreen extends React.Component {
       duration: CONSTANTS.ANIMATEION_MILLI_SECONDS,
     }).start(() => {
       this.setState({ 
-        isVisibleCard: false
+        isVisibleCard: false,
+        fileData: null
       });
     });
   }
@@ -1132,6 +1185,7 @@ class HomeScreen extends React.Component {
           viewMode={this.state.cardViewMode}
           cardMode={cardMode}
           invitee={this.state.selectedIdeaInvitee}
+          fileData={this.state.fileData}
           shareUrl=""
           prevPage="home"
           onClose={() => this.onCloseCardModal()}

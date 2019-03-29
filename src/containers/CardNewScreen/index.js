@@ -706,6 +706,12 @@ class CardNewScreen extends React.Component {
       this.keyboardDidHideSubscription = Keyboard.addListener('keyboardWillHide', (e) => this.keyboardDidHide(e));
     }
 
+    if (this.props.fileData) {
+      setTimeout(() => {
+        this.handleFile(this.props.fileData);
+      }, 900)
+    }
+
     BackHandler.addEventListener('hardwareBackPress', this.handleBackButton);
   }
 
@@ -1982,7 +1988,8 @@ CardNewScreen.defaultProps = {
   shareImageUrls: [],
   shareText: '',
   onClose: () => {},
-  isClipboard: false
+  isClipboard: false,
+  fileData: {}
 }
 
 
@@ -1998,6 +2005,7 @@ CardNewScreen.propTypes = {
   shareText: PropTypes.string,
   onClose: PropTypes.func,
   isClipboard: PropTypes.bool,
+  fileData: PropTypes.object
 }
 
 
