@@ -363,7 +363,7 @@ export default class Root extends React.Component {
     } else {
       return (
 
-        <NetworkProvider>/* for offline/online status detection */
+        <NetworkProvider>
           <Provider store={store}>
             <Router scenes={scenes} />
           </Provider>

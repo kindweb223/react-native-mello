@@ -52,6 +52,7 @@ const SEARCH_ICON = require('../../../assets/images/Search/Grey.png')
 const SETTING_ICON = require('../../../assets/images/Settings/Grey.png')
 
 import LocalStorage from '../../components/LocalStorage'
+import OfflineIndicator from '../../components/LocalStorage/OfflineIndicator'
 
 
 import {
@@ -170,7 +171,7 @@ class HomeScreen extends React.Component {
 
   getFeedsFromStorage = () => {
     console.log('GFL calling gffs')
-    const { user } = this.props 
+    const { user } = this.props
 
     console.log('GFL user is ', user)
     const key = user.userInfo.id + '/flows'
@@ -1245,6 +1246,7 @@ class HomeScreen extends React.Component {
 
     return (
       <SafeAreaView style={styles.safeArea}>
+        <OfflineIndicator />
         <View feedAction="null" />
         <View style={styles.container}>
           {Platform.OS === 'ios' && <StatusBar barStyle="dark-content" backgroundColor="blue" />}
