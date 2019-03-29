@@ -95,6 +95,7 @@ class FeedCardExtendComponent extends React.Component {
                   longHold={longHold}
                   isOnlyInvitee={isOnlyInvitee}
                   prevPage={this.props.prevPage}
+                  smallIcon={false}
                   type="all"
                 />
                 {COMMENT_FEATURE && (
@@ -104,6 +105,7 @@ class FeedCardExtendComponent extends React.Component {
                     isOnlyInvitee={isOnlyInvitee}
                     currentFeed={feedo.currentFeed}
                     onComment={this.props.onComment}
+                    smallIcon={false}
                     prevPage={this.props.prevPage}
                   />
                 )}

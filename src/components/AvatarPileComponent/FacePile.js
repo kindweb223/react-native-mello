@@ -32,14 +32,15 @@ class Circle extends React.Component {
     imageStyle: PropTypes.objectOf(PropTypes.any),
     circleSize: PropTypes.number.isRequired,
     face: PropTypes.objectOf(PropTypes.any).isRequired,
-    offset: PropTypes.number.isRequired
+    offset: PropTypes.number.isRequired,
+    showStroke: PropTypes.bool
   }
   static defaultProps = {
     imageStyle: {},
   }
 
   render () {
-    const { circleSize, face, offset } = this.props
+    const { circleSize, face, offset, showStroke } = this.props
     const marginRight = (circleSize * offset) - circleSize / 1.6 - 3
 
     return (
@@ -49,6 +50,7 @@ class Circle extends React.Component {
         <UserAvatarComponent
           user={face}
           size={circleSize}
+          showStroke={showStroke}
           color="#F5F5F5"
           textColor="#A2A5AE"
         />
@@ -95,7 +97,8 @@ export default class FacePile extends React.Component {
     numFaces: PropTypes.number,
     showPlus: PropTypes.bool,
     offset: PropTypes.number,
-    isOwner: PropTypes.bool
+    isOwner: PropTypes.bool,
+    showStroke: PropTypes.bool
   }
 
   static defaultProps = {
@@ -104,7 +107,8 @@ export default class FacePile extends React.Component {
     offset: 1,
     hideOverflow: false,
     isOwner: true,
-    showPlus: true
+    showPlus: true,
+    showStroke: false
   }
 
   _renderOverflowCircle = overflow => {
@@ -112,10 +116,14 @@ export default class FacePile extends React.Component {
       circleStyle,
       overflowStyle,
       overflowLabelStyle,
-      circleSize,
       offset,
+      showStroke
     } = this.props
-    
+    let { circleSize } = this.props
+    if (showStroke) {
+      circleSize = circleSize - 5
+    }
+
     const innerCircleSize = circleSize * 1.8
     const marginLeft = (circleSize * offset) - circleSize * 1.3
 
@@ -194,7 +202,7 @@ export default class FacePile extends React.Component {
   }
 
   _renderFace = (face) => {
-    const { circleStyle, circleSize, offset } = this.props
+    const { circleStyle, circleSize, offset, showStroke } = this.props
 
     return (
       <Circle
@@ -202,6 +210,7 @@ export default class FacePile extends React.Component {
         face={face}
         circleStyle={circleStyle}
         circleSize={circleSize}
+        showStroke={showStroke}
         offset={offset}
       />
     )

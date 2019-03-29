@@ -19,6 +19,9 @@ const images = {
     iconPerson: require('../../assets/images/IconPerson/IconsMediumPersonWhite.png'),
     iconPersonGrey: require('../../assets/images/IconPerson/IconsMediumPersonGrey.png'),
     iconMello: require('../../assets/images/IconMello/IconMelloMediumWhite.png'),
+    filterGrey: require('../../assets/images/Filter/Grey.png'),
+    filterBlue: require('../../assets/images/Filter/Blue.png'),
+    closeWhite: require('../../assets/images/Close/White.png')
 }
 
 export default images
