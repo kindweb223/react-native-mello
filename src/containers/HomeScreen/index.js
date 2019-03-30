@@ -178,11 +178,12 @@ class HomeScreen extends React.Component {
 
     console.log('GFL user is ', user, ' key is ', key)
 
+    console.log('AS get ', key)
     AsyncStorage.getItem(key)
     .then((result) => {
       const feeds = JSON.parse(result)
       // feeds.shift()
-      console.log('GFL async result', feeds)
+      console.log('AS get async result', feeds)
       this.props.setFeedoListFromStorage(feeds)
     })
     .catch((error) => console.log('GFL async error', error))
@@ -253,7 +254,6 @@ class HomeScreen extends React.Component {
     Intercom.handlePushMessage();
 
     this.props.getFeedoList(null, this.getFeedsFromStorage, this.getFeedsFromStorage)
-    console.log('GFL called on HomeScreen.js')
 
     this.props.getInvitedFeedList()
     this.props.getActivityFeed(this.props.user.userInfo.id, { page: 0, size: PAGE_COUNT })
@@ -1466,9 +1466,11 @@ const mapStateToProps = ({ user, feedo, card }) => ({
 
 const mapDispatchToProps = dispatch => ({
   getFeedoList: (index, successAction, errorAction) => dispatch(getFeedoList(index))
-  .then(success => {
-    console.log('GFL success on HS')
-    successAction(success)
+  .then(result => {
+    console.log('GFL resolves on HS, success looks like ', result)
+    if(result.error){
+      errorAction(error)
+    }
   })
   .catch(error => {
     console.log('GFL error on HS')
