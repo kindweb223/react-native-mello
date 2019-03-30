@@ -193,6 +193,7 @@ class LocalStorage extends React.Component {
             const allIdeas = []
             const { feedo, user } = this.props
             const { feedoList } = feedo
+            console.log('AS set ', (user.userInfo.id + '/flows'), ' to ', JSON.stringify(feedoList))
             AsyncStorage.setItem(user.userInfo.id + '/flows', JSON.stringify(feedoList))
             console.log('RNFS feedoList is ', feedo, feedoList)
             let waitForAll;
