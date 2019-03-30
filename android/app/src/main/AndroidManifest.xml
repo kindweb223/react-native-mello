@@ -65,7 +65,7 @@
           <category android:name="android.intent.category.DEFAULT" />
           <category android:name="android.intent.category.BROWSABLE" />
           <data android:scheme="https" android:host="demos.solvers.io"/>
-          <!--<data android:scheme="https" android:host="my.melloapp.com"/>-->
+          <data android:scheme="https" android:host="my.melloapp.com"/>
         </intent-filter>
 
       </activity>

@@ -227,7 +227,7 @@ class CardNewShareScreen extends React.Component {
     if (this.props.feedo.loading !== feedoTypes.UPDATE_FEED_FULFILLED && nextProps.feedo.loading === feedoTypes.UPDATE_FEED_FULFILLED) {
       this.setState({ loading: false })
       if (!this.state.isVisibleSelectFeedoModal) {
-        Actions.ShareSuccessScreen({type: 'replace'});
+        Actions.ShareSuccessScreen({type: 'replace', prev_scene: this.props.prev_scene});
       }
     }
 
@@ -441,7 +441,7 @@ class CardNewShareScreen extends React.Component {
         this.props.updateFeed(id, headline || 'New flow', summary || '', tags, files);
       } else {
         this.setState({ loading: false })
-        Actions.ShareSuccessScreen({type: 'replace'})
+        Actions.ShareSuccessScreen({type: 'replace', prev_scene: this.props.prev_scene});
       }
     }
   }
@@ -703,6 +703,7 @@ CardNewShareScreen.defaultProps = {
   shareImageUrls: [],
   shareText: '',
   onClose: () => {},
+  prev_scene: '',
 }
 
 
@@ -712,6 +713,7 @@ CardNewShareScreen.propTypes = {
   shareImageUrls: PropTypes.array,
   shareText: PropTypes.string,
   onClose: PropTypes.func,
+  prev_scene: PropTypes.string,
 }
 
 
