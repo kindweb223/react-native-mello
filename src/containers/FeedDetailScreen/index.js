@@ -1828,12 +1828,23 @@ const mapStateToProps = ({ feedo, user, card }) => ({
 
 const mapDispatchToProps = dispatch => ({
   getFeedDetail: data => dispatch(getFeedDetail(data))
-    .then(success => {
-      console.log('Async A')
-      AsyncStorage.setItem('flow/'+data, JSON.stringify(success.result.data))
-        .then(asuccess => {
+    .then(response => {
+      if(response.error){
+        console.log('Async A')
+        AsyncStorage.getItem('flow/'+data)
+            .then(success => {
+              const feed = JSON.parse(success)
+              console.log('Async Feed for  ', data, ' is ', feed)
+              dispatch(setFeedDetailFromStorage(feed))
+            })
+      } else {
+        AsyncStorage.setItem('flow/'+data, JSON.stringify(success.result.data))
+            .then(response => {
+            })
 
-        })})
+      }
+
+    })
     .catch(error => {
       AsyncStorage.getItem('flow/'+data)
         .then(success => {
