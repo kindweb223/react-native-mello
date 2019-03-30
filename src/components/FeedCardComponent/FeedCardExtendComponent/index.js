@@ -9,7 +9,6 @@ import { connect } from 'react-redux'
 
 import _ from 'lodash'
 
-import FastImage from "react-native-fast-image";
 import Autolink from 'react-native-autolink';
 
 import styles from './styles'
@@ -20,6 +19,7 @@ import UserAvatarComponent from '../../UserAvatarComponent';
 import CONSTANTS from '../../../service/constants'
 import { COMMENT_FEATURE } from '../../../service/api'
 import ExFastImage from '../../ExFastImage';
+import * as COMMON_FUNC from '../../../service/commonFunc'
 
 class FeedCardExtendComponent extends React.Component {
   constructor(props) {
@@ -30,7 +30,7 @@ class FeedCardExtendComponent extends React.Component {
   }
 
   render() {
-    const { invitees, idea, feedo, cardType, longSelected, longHold } = this.props;
+    const { invitees, idea, feedo, cardType, longSelected, longHold, imageHeight } = this.props;
 
     const invitee = _.find(invitees, item => item.id === idea.inviteeId)
     let isOnlyInvitee = false
@@ -39,24 +39,14 @@ class FeedCardExtendComponent extends React.Component {
       isOnlyInvitee = true
     }
 
-    let hasCoverImage = idea.coverImage && idea.coverImage.length > 0
-    let cardHeight = 0
-    if (hasCoverImage) {
-      const coverImageData = _.find(idea.files, file => (file.accessUrl === idea.coverImage || file.thumbnailUrl === idea.coverImage))
-      const cardWidth = (CONSTANTS.SCREEN_SUB_WIDTH - 16) / 2
-      if (coverImageData.metadata) {
-        const ratio = coverImageData.metadata.width / cardWidth
-        cardHeight = coverImageData.metadata.height / ratio
-      } else {
-        cardHeight = cardWidth / 2
-      }
-    }
+    const hasCoverImage = idea.coverImage && idea.coverImage.length > 0
+    const viewMode = COMMON_FUNC.getCardViewMode(feedo.currentFeed, idea)
 
     return (
-      <View style={[styles.container, longSelected && styles.selected]}>
+      <View style={[styles.container, longSelected && styles.selected, longHold && viewMode === CONSTANTS.CARD_VIEW && { opacity: 0.4 }]}>
         <View style={styles.subContainer}>
           {hasCoverImage &&
-            <View style={[styles.thumbnailsView, { height: cardHeight }]}>
+            <View style={[styles.thumbnailsView, { height: imageHeight }]}>
               <ExFastImage
                 style={styles.thumbnails}
                 source={{ uri: idea.coverImage }}
@@ -105,6 +95,7 @@ class FeedCardExtendComponent extends React.Component {
                   longHold={longHold}
                   isOnlyInvitee={isOnlyInvitee}
                   prevPage={this.props.prevPage}
+                  smallIcon={false}
                   type="all"
                 />
                 {COMMENT_FEATURE && (
@@ -114,6 +105,7 @@ class FeedCardExtendComponent extends React.Component {
                     isOnlyInvitee={isOnlyInvitee}
                     currentFeed={feedo.currentFeed}
                     onComment={this.props.onComment}
+                    smallIcon={false}
                     prevPage={this.props.prevPage}
                   />
                 )}

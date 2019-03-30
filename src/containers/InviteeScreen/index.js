@@ -35,6 +35,7 @@ import styles from './styles'
 import Analytics from '../../lib/firebase'
 import CardFilterComponent from '../../components/CardFilterComponent';
 import Button from '../../components/Button'
+import AlertController from '../../components/AlertController'
 
 const CLOSE_ICON = require('../../../assets/images/Close/Blue.png')
 
@@ -79,7 +80,7 @@ class InviteeScreen extends React.Component {
 
     if (this.props.feedo.loading === 'INVITE_HUNT_PENDING' && feedo.loading === 'INVITE_HUNT_FULFILLED') {
       if (this.props.feedo.error) {
-        Alert.alert(
+        AlertController.shared.showAlert(
           'Error',
           feedo.error
         )

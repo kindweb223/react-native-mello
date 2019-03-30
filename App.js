@@ -89,7 +89,7 @@ import ShareModalScreen from './src/share/ShareModalScreen'
 import ChooseLinkImageFromExtension from './src/share/ChooseLinkImageFromExtension'
 import ShareSuccessScreen from './src/share/ShareSuccessScreen'
 
-import { 
+import {
   getCardComments,
   getCard
 } from './src/redux/card/actions'
@@ -102,7 +102,9 @@ import {
   pubnubDeleteInvitee,
   pubnubDeleteOtherInvitee,
   pubnubMoveIdea,
-  getFeedoList
+  getFeedoList,
+  pubnubUserInvited,
+  getFeedDetail
 } from './src/redux/feedo/actions'
 
 const SPLASH_LOGO = require('./assets/images/Splash/splashLogo.png')
@@ -114,7 +116,8 @@ export default class Root extends React.Component {
     super(props)
     this.state = {
       loading: true,
-      userInfo: null
+      userInfo: null,
+      loginState: 0
     }
 
     this.handleOpenURL = this.handleOpenURL.bind(this)
@@ -158,7 +161,7 @@ export default class Root extends React.Component {
         }
         if (response.message.action === 'USER_INVITED_TO_HUNT') {
           store.dispatch(getInvitedFeedList())
-          store.dispatch(pubnubGetFeedDetail(response.message.data.huntId))
+          store.dispatch(pubnubUserInvited())
         }
         if (response.message.action === 'USER_JOINED_HUNT') {
           store.dispatch(pubnubGetFeedDetail(response.message.data.huntId))
@@ -198,16 +201,19 @@ export default class Root extends React.Component {
 
       if (xAuthToken && userInfo) {
         axios.defaults.headers['x-auth-token'] = xAuthToken
-        Actions.HomeScreen()
+        this.setState({ loginState: 2 })
       } else {
         const userBackInfo = await AsyncStorage.getItem('userBackInfo')
         if (userBackInfo) {
-          Actions.LoginScreen()
+          this.setState({ loginState: 1 })
+        } else {
+          this.setState({ loginState: 0 })
         }
       }
       this.setState({ loading: false })
     } catch(error) {
       this.setState({ loading: false })
+      this.setState({ loginState: 0 })
     }
 
     AsyncStorage.getItem("AndroidShareExtension").then((value) => {
@@ -275,7 +281,7 @@ export default class Root extends React.Component {
 
               if (userInfo) {
                 if (Actions.currentScene === 'FeedDetailScreen') {                  
-                  Actions.FeedDetailScreen({ type: 'replace', data, isDeepLink: true });
+                  store.dispatch(getFeedDetail(data.id));
                 } 
                 else {
                   Actions.FeedDetailScreen({ data, isDeepLink: true })
@@ -288,7 +294,7 @@ export default class Root extends React.Component {
             catch (e) {
             }
         }
-        
+
         SharedGroupPreferences.getItem(CONSTANTS.ANDROID_SHARE_EXTENTION_FLAG, CONSTANTS.APP_GROUP_SHARE_EXTENSION).then((flag) => {
 
           const isAndroidShareExtension = flag
@@ -313,7 +319,7 @@ export default class Root extends React.Component {
               } else {
                 console.log('error: wrong share link')
               }
-  
+
               var value = ''
               for (i = searchIndex+2; i < params.length; i ++)
               {
@@ -325,7 +331,7 @@ export default class Root extends React.Component {
                 }
               }
               console.log('path: ', type, value)
-  
+
               AsyncStorage.getItem("xAuthToken").then((token) => {
                 if (token) {
                   const currentScene = Actions.currentScene
@@ -355,19 +361,21 @@ export default class Root extends React.Component {
   }
 
   render() {
+    const { loginState } = this.state
     const isAndroid = Platform.OS === 'android'
+
     const scenes = Actions.create(
       <Lightbox>
         <Modal hideNavBar>
           <Tabs key="tabs" tabBarComponent={TabbarContainer}>
             <Scene key="root">
-              <Scene key="TutorialScreen" component={ TutorialScreen } hideNavBar panHandlers={null} />
+              <Scene key="TutorialScreen" component={ TutorialScreen } hideNavBar panHandlers={null} initial={loginState === 0} />
               <Scene key="TermsAndConditionsConfirmScreen" component={ TermsAndConditionsConfirmScreen } hideNavBar panHandlers={null} />
-              <Scene key="LoginScreen" component={ LoginScreen } navigationBarStyle={styles.emptyBorderNavigationBar} />
+              <Scene key="LoginScreen" component={ LoginScreen } navigationBarStyle={styles.emptyBorderNavigationBar} initial={loginState === 1} />
               <Scene key="SignUpScreen" component={ SignUpScreen } navigationBarStyle={styles.emptyBorderNavigationBar} />
               <Scene key="SignUpConfirmScreen" component={ SignUpConfirmScreen } panHandlers={null} navigationBarStyle={styles.emptyBorderNavigationBar} />
               <Scene key="TermsAndConditionsScreen" component={ TermsAndConditionsScreen } navigationBarStyle={styles.emptyBorderNavigationBar} />
-              <Scene key="HomeScreen" component={ HomeScreen } hideNavBar panHandlers={null} />
+              <Scene key="HomeScreen" component={ HomeScreen } hideNavBar panHandlers={null} initial={loginState === 2} />
               <Scene key="FeedDetailScreen" component={ FeedDetailScreen } clone hideNavBar />
               <Scene key="DocumentSliderScreen" component={ DocumentSliderScreen } hideNavBar />
               <Scene key="LikesListScreen" component={ LikesListScreen } navigationBarStyle={styles.defaultNavigationBar} />
@@ -382,7 +390,7 @@ export default class Root extends React.Component {
               <Scene key={isAndroid ? "ShareCardScreen" : "none2"} component={ShareCardScreen} hideNavBar panHandlers={null} />
               <Scene key={isAndroid ? "ShareSuccessScreen" : "none3"} component={ShareSuccessScreen}  hideNavBar panHandlers={null} />
               <Scene key={isAndroid ? "ShareModalScreen" : "none4"} component={ShareModalScreen} okLabel='Sign In' hideNavBar panHandlers={null} />
-              
+
             </Scene>
           </Tabs>
           <Stack key="ProfileScreen" hideNavBar>
@@ -438,12 +446,12 @@ export default class Root extends React.Component {
 const styles = StyleSheet.create({
   defaultNavigationBar: {
     height: 54,
-    paddingHorizontal: 6,
+    marginHorizontal: 0,
     backgroundColor: '#FEFEFE'
   },
   emptyBorderNavigationBar: {
     height: 54,
-    paddingHorizontal: 6,
+    marginHorizontal: 0,
     backgroundColor: '#fff',
     borderBottomWidth: 0
   },

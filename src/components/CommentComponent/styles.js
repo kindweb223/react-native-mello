@@ -12,6 +12,10 @@ const styles = StyleSheet.create({
     fontSize: 14,
     color: COLORS.MEDIUM_GREY,
     marginLeft: 5
+  },
+  commentIcon: {
+    width: 15,
+    height: 13
   }
 })
 

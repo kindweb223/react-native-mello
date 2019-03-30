@@ -78,6 +78,7 @@ class TabbarContainer extends React.Component {
               invitee={null}
               prevPage={clipboardToasterPrevpage}
               shareUrl={clipboardToasterContent}
+              isClipboard={true}
               onClose={() => this.onCloseCardModal()}
             />
           </Animated.View>

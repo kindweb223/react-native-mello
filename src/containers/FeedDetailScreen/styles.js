@@ -69,12 +69,26 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     marginLeft: 2
   },
+  titleContainer: {
+    flexDirection: 'row'
+  },
   collapseView: {
-    width: '100%',
-    marginBottom: 25,
+    flex: 1,
+    marginBottom: 16,
     paddingTop: 0,
     backgroundColor: '#fff',
     zIndex: 11
+  },
+  filterIconView: {
+    justifyContent: 'center',
+    alignItems: 'flex-end',
+    marginRight: 16,
+    width: 40,
+    height: 30
+  },
+  filterIcon: {
+    width: 18,
+    height: 14
   },
   collpaseSeparator: {
     marginTop: 16
@@ -174,7 +188,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: CONSTANTS.PADDING,
     position: 'absolute',
     right: 0,
-    top: CONSTANTS.STATUSBAR_HEIGHT,
+    top: Platform.OS === 'ios' ? CONSTANTS.STATUSBAR_HEIGHT : 0,
     paddingTop: 8,
     alignItems: 'flex-end',
     backgroundColor: '#fff'
@@ -188,9 +202,11 @@ const styles = StyleSheet.create({
     alignItems: 'center'
   },
   btnDoneText: {
-    color: '#fff',
-    fontSize: 15,
-    fontWeight: '500'
+    paddingTop: 10,
+    fontSize: 16,
+    lineHeight: 22,
+    fontWeight: '600',
+    textAlign: 'center',
   },
   btnInvite: {
     color: COLORS.PURPLE,

@@ -30,6 +30,8 @@ import Intercom from 'react-native-intercom'
 import pubnub from '../../lib/pubnub'
 import Analytics from '../../lib/firebase'
 
+import SideMenu from 'react-native-side-menu'
+
 import DashboardActionBar from '../../navigations/DashboardActionBar'
 import FeedoListContainer from '../FeedoListContainer'
 import NewFeedScreen from '../NewFeedScreen'
@@ -48,6 +50,9 @@ import styles from './styles'
 import CONSTANTS from '../../service/constants';
 import COLORS from '../../service/colors'
 import { TIP_SHARE_LINK_URL, ANDROID_PUSH_SENDER_ID, PIN_FEATURE, SEARCH_FEATURE } from '../../service/api'
+import AlertController from '../../components/AlertController'
+import SideMenuComponent from '../../components/SideMenuComponent'
+
 const SEARCH_ICON = require('../../../assets/images/Search/Grey.png')
 const SETTING_ICON = require('../../../assets/images/Settings/Grey.png')
 
@@ -82,8 +87,9 @@ import {
 import { 
   getCard,
 } from '../../redux/card/actions'
+import { images } from '../../themes';
 
-const TOASTER_DURATION = 5000
+const TOASTER_DURATION = 3000
 const PAGE_COUNT = 50
 
 class HomeScreen extends React.Component {
@@ -129,7 +135,9 @@ class HomeScreen extends React.Component {
       showShareConfirmModal: false,
       showFilterModal: false,
       filterShowType: 'all',
-      filterSortType: 'recent'
+      filterSortType: 'recent',
+      isSideMenuOpen: false,
+      selectedItemTitle: 'All flows',
     };
 
     this.currentRef = null;
@@ -273,8 +281,12 @@ class HomeScreen extends React.Component {
     const { feedo, card, user } = nextProps
 
     if (feedo.loading === 'GET_FEED_DETAIL_REJECTED') {
-      if (feedo.error.code === 'error.hunt.not.found' || feedo.error.code === 'error.hunt.access.denied') {
-        Alert.alert('Error', 'This flow is no longer available')
+      if (feedo.error.code === 'error.hunt.not.found') {
+        AlertController.shared.showAlert('Error', 'This flow no longer exists')
+      }
+
+      if (feedo.error.code === 'error.hunt.access.denied') {
+        AlertController.shared.showAlert('Error', 'You don\'t have access to this flow')
       }
     }
 
@@ -292,8 +304,8 @@ class HomeScreen extends React.Component {
       (feedo.loading === 'UPDATE_CARD_FULFILLED') || (feedo.loading === 'GET_CARD_FULFILLED') ||
       (feedo.loading === 'DEL_DUMMY_CARD') || (feedo.loading === 'MOVE_DUMMY_CARD') ||
       (feedo.loading === 'PUBNUB_DELETE_INVITEE_FULFILLED') || (feedo.loading === 'GET_FEED_DETAIL_REJECTED') ||
-      (feedo.loading === 'SAVE_FLOW_PREFERENCE_FULFILLED') ||
-      (feedo.loading === 'UPDATE_PROFILE_FULFILLED') ||
+      (feedo.loading === 'SAVE_FLOW_PREFERENCE_FULFILLED') || (feedo.loading === 'GET_INVITED_FEEDO_LIST_FULFILLED') ||
+      (feedo.loading === 'UPDATE_PROFILE_FULFILLED') || (feedo.loading === 'GET_FEED_DETAIL_FULFILLED') ||
       (feedo.loading === 'PUBNUB_DELETE_FEED' &&
                           Actions.currentScene !== 'FeedDetailScreen' && 
                           Actions.currentScene !== 'CommentScreen' && Actions.currentScene !== 'ActivityCommentScreen' &&
@@ -328,7 +340,8 @@ class HomeScreen extends React.Component {
           )
         })
 
-        if ((feedo.loading !== 'UPDATE_CARD_FULFILLED' || !feedo.isCreateCard)) {
+        // refresh list if card addedd or card moved
+        if ((feedo.loading !== 'UPDATE_CARD_FULFILLED' || !feedo.isCreateCard, feedo.loading !== 'MOVE_CARD_FULFILLED')) {
           const { filterSortType, filterShowType } = prevState
 
           const feedoFullList = filter(feedoList, item => item.status === 'PUBLISHED' && item.metadata.myInviteStatus !== 'INVITED')
@@ -337,7 +350,7 @@ class HomeScreen extends React.Component {
           feedoPinnedList = filter(feedoFullList, item => item.pinned !== null);
           feedoUnPinnedList = filter(feedoFullList, item => item.pinned === null);
           feedoList = HomeScreen.getFilteredFeeds(feedoPinnedList, feedoUnPinnedList, filterShowType, filterSortType);
-        } else {
+        } else {          
           nextProps.getFeedoList()
         }
       }
@@ -405,6 +418,7 @@ class HomeScreen extends React.Component {
         feedo.loading === 'GET_CARD_FULFILLED' && Actions.currentScene !== 'FeedDetailScreen' ||
         feedo.loading === 'PUBNUB_LIKE_CARD_FULFILLED' && Actions.currentScene !== 'FeedDetailScreen' ||
         feedo.loading === 'PUBNUB_UNLIKE_CARD_FULFILLED' && Actions.currentScene !== 'FeedDetailScreen' ||
+        feedo.loading === 'PUBNUB_USER_INVITED_FULFILLED' ||
         (feedo.loading === 'GET_CARD_COMMENTS_FULFILLED' &&
                           Actions.currentScene !== 'FeedDetailScreen' && 
                           Actions.currentScene !== 'CommentScreen' && Actions.currentScene !== 'ActivityCommentScreen' &&
@@ -979,7 +993,7 @@ class HomeScreen extends React.Component {
   onSelectNewFeedType(type) {
     this.props.closeClipboardToaster()
 
-    if (type === 'New Card') {
+    if (type === 'ADD_TEXT') {
       Analytics.logEvent('dashboard_new_card', {})
 
       this.setState({
@@ -988,7 +1002,7 @@ class HomeScreen extends React.Component {
         cardViewMode: CONSTANTS.CARD_NEW,
         selectedIdeaInvitee: null,
       });
-    } else if (type === 'New Flow') {
+    } else if (type === 'NEW_FLOW') {
       Analytics.logEvent('dashboard_new_feed', {})
 
       this.props.setCurrentFeed({});
@@ -997,6 +1011,8 @@ class HomeScreen extends React.Component {
         isVisibleNewFeed: true,
         isEditFeed: false,
       });
+    } else if (type === 'UPLOAD_PHOTO') {
+
     }
   }
 
@@ -1153,8 +1169,8 @@ class HomeScreen extends React.Component {
     this.setState({ showShareTipsModal: false })
   };
 
-  onFilterShow = (type) => {
-    this.setState({ filterShowType: type }, () => {
+  onFilterShow = (type, selectedItemTitle) => {
+    this.setState({ filterShowType: type, selectedItemTitle, isSideMenuOpen: false }, () => {
       this.filterFeeds()
     })
   }
@@ -1221,6 +1237,14 @@ class HomeScreen extends React.Component {
     this.setState({ feedoList });
   }
 
+  toggleSideMenu = () => {
+    this.setState({ isSideMenuOpen: !this.state.isSideMenuOpen });
+  }
+
+  updateMenuState(isSideMenuOpen) {
+    this.setState({ isSideMenuOpen });
+  }
+
   render () {
     const {
       loading,
@@ -1229,10 +1253,19 @@ class HomeScreen extends React.Component {
       badgeCount,
       showFeedInvitedNewUserBubble,
       feedClickEvent,
-      selectedLongHoldFeedoIndex
+      selectedLongHoldFeedoIndex,
+      isSideMenuOpen,
+      filterShowType,
+      selectedItemTitle
     } = this.state
+    const menu = <SideMenuComponent onItemSelected={this.onFilterShow} selectedItem={filterShowType} />
 
     return (
+      <SideMenu
+        menu={menu}
+        isOpen={isSideMenuOpen}
+        onChange={isOpen => this.updateMenuState(isOpen)}
+      >
       <SafeAreaView style={styles.safeArea}>
         <View feedAction="null" />
         <View style={styles.container}>
@@ -1243,13 +1276,23 @@ class HomeScreen extends React.Component {
 
           <View style={styles.headerView}>
             <TouchableOpacity
+              style={styles.menuIconView}
+              activeOpacity={0.7}
+              onPress={this.toggleSideMenu}
+            >
+              <Image source={images.iconMenu} style={styles.menuIcon} />
+            </TouchableOpacity>
+            <Text style={styles.title}>
+              {selectedItemTitle}
+            </Text>
+            {/* <TouchableOpacity
               style={styles.searchIconView}
               onPress={() => SEARCH_FEATURE ? this.onSearch() : {}}
             >
               {SEARCH_FEATURE && (
                 <Image style={styles.searchIcon} source={SEARCH_ICON} />
               )}
-            </TouchableOpacity>
+            </TouchableOpacity> */}
             <View style={styles.settingIconView}>
               <TouchableOpacity onPress={() => this.handleSetting()}>
                 <Image source={SETTING_ICON} />
@@ -1272,7 +1315,16 @@ class HomeScreen extends React.Component {
               </View>
             )}
 
-            {feedoList.length === 0 && (
+            {filterShowType === 'shared' && invitedFeedList.length === 0 && feedoList.length === 0 &&
+              <View>
+                <SpeechBubbleComponent
+                  page="shared"
+                  title="Flows can be shared with friends and colleagues for collaboration. Flows you've been invited to will appear here."
+                  subTitle="All you need to know about sharing in 15 secs "
+                />
+              </View>
+            }
+            {filterShowType !== 'shared' && feedoList.length === 0 && (
               <View style={styles.emptyView}>
                 {!loading && (
                   <View style={showFeedInvitedNewUserBubble ? styles.emptyInnerSubView : styles.emptyInnerView}>
@@ -1326,10 +1378,12 @@ class HomeScreen extends React.Component {
         {!this.state.isLongHoldMenuVisible && (
           <DashboardActionBar
             showList={true}
+            showSearch
             listType={this.props.user.listHomeType}
             onAddFeed={this.onOpenNewFeedModal.bind(this)}
             handleFilter={() => this.handleFilter()}
             handleList={() => this.handleList()}
+            handleSearch={() => SEARCH_FEATURE ? this.onSearch() : {}}
             filterType={this.state.filterShowType}
             sortType={this.state.filterSortType}
             badgeCount={badgeCount}
@@ -1356,9 +1410,7 @@ class HomeScreen extends React.Component {
         {this.state.isLongHoldMenuVisible && (
           <View style={styles.topButtonView}>
             <TouchableOpacity onPress={() => this.closeLongHoldMenu()}>
-              <View style={styles.btnDoneView}>
-                <Text style={styles.btnDoneText}>Done</Text>
-              </View>
+              <Text style={[styles.btnDoneText, { color: COLORS.PURPLE }]}>Done</Text>
             </TouchableOpacity>
           </View>
         )}
@@ -1437,8 +1489,8 @@ class HomeScreen extends React.Component {
           onFilterSort={this.onFilterSort}
           onClose={() => this.setState({ showFilterModal: false }) }
         />
-
       </SafeAreaView>
+      </SideMenu>
     )
   }
 }

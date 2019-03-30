@@ -3,6 +3,9 @@ package io.solvers.feedo;
 import android.app.Application;
 
 import com.facebook.react.ReactApplication;
+import com.rnfs.RNFSPackage;
+import com.vinzscam.reactnativefileviewer.RNFileViewerPackage;
+import com.github.amarcruz.rntextsize.RNTextSizePackage;
 import com.robinpowered.react.Intercom.IntercomPackage;
 import io.intercom.android.sdk.Intercom;
 import org.devio.rn.splashscreen.SplashScreenReactPackage;
@@ -49,31 +52,34 @@ public class MainApplication extends Application implements ReactApplication {
     protected List<ReactPackage> getPackages() {
       return Arrays.<ReactPackage>asList(
           new MainReactPackage(),
-          new SharePackage(),
-          new IntercomPackage(),
-          new SplashScreenReactPackage(),
-          new RNImgToBase64Package(),
-          new RNThumbnailPackage(),
-          new RNGoogleSigninPackage(),
-          new RNReactNativeHapticFeedbackPackage(),
-          new RNInAppBrowserPackage(),
-          new RNFirebasePackage(),
-          new RNFirebaseAnalyticsPackage(),
-          new SvgPackage(),
-          new RNDeviceInfo(),
-          BugsnagReactNative.getPackage(),
-          new LottiePackage(),
-          new ReactVideoPackage(),
-          new RNVersionNumberPackage(),
-          new ReactNativePushNotificationPackage(),
-          new RNReactNativeSharedGroupPreferencesPackage(),
-          new RNFetchBlobPackage(),
-          new ImageResizerPackage(),
-          new LinearGradientPackage(),
-          new FastImageViewPackage(),
-          new ReactNativeDocumentPicker(),
-          new ImagePickerPackage(),
-          new VectorIconsPackage()
+            new RNFSPackage(),
+            new RNFileViewerPackage(),
+            new RNTextSizePackage(),
+            new SharePackage(),
+            new IntercomPackage(),
+            new SplashScreenReactPackage(),
+            new RNImgToBase64Package(),
+            new RNThumbnailPackage(),
+            new RNGoogleSigninPackage(),
+            new RNReactNativeHapticFeedbackPackage(),
+            new RNInAppBrowserPackage(),
+            new RNFirebasePackage(),
+            new RNFirebaseAnalyticsPackage(),
+            new SvgPackage(),
+            new RNDeviceInfo(),
+            BugsnagReactNative.getPackage(),
+            new LottiePackage(),
+            new ReactVideoPackage(),
+            new RNVersionNumberPackage(),
+            new ReactNativePushNotificationPackage(),
+            new RNReactNativeSharedGroupPreferencesPackage(),
+            new RNFetchBlobPackage(),
+            new ImageResizerPackage(),
+            new LinearGradientPackage(),
+            new FastImageViewPackage(),
+            new ReactNativeDocumentPicker(),
+            new ImagePickerPackage(),
+            new VectorIconsPackage()
       );
     }
 
