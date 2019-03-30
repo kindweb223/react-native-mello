@@ -18,14 +18,35 @@ import CONSTANTS from '../../service/constants'
 
 const CreateItems = [
   {
-    title: 'New Card',
-    description: 'Quickly add a card to a flow',
-    icon: require('../../../assets/images/Add/Blue.png')
+    // Header
   },
   {
-    title: 'New Flow',
-    description: 'Start a new flow',
-    icon: require('../../../assets/images/Feed/Blue.png')
+    title: 'Take a photo',
+    icon: require('../../../assets/images/Camera/IconMediumCameraBlue.png'),
+    type: 'TAKE_PHOTO'
+  },
+  {
+    title: 'Upload photo',
+    icon: require('../../../assets/images/Image/Blue.png'),
+    type: 'UPLOAD_PHOTO'
+  },
+  {
+    title: 'Add text',
+    icon: require('../../../assets/images/Text/IconMediumAaBlue.png'),
+    type: 'ADD_TEXT'
+  },
+  {
+    title: 'Attach files',
+    icon: require('../../../assets/images/Attachment/Blue.png'),
+    type: 'ATTACH_FILE'
+  },
+  {
+    // Separator
+  },
+  {
+    title: 'Create new flow',
+    icon: require('../../../assets/images/IconFlow/IconMediumFlowBlue.png'),
+    type: 'NEW_FLOW'
   },
 ]
 
@@ -80,7 +101,7 @@ export default class CreateNewFeedComponent extends React.Component {
         duration: CONSTANTS.ANIMATEION_MILLI_SECONDS,
       }).start(() => {
         if (this.props.onSelect) {
-          this.props.onSelect(item.title);
+          this.props.onSelect(item.type);
         }
       });
     });
@@ -106,6 +127,18 @@ export default class CreateNewFeedComponent extends React.Component {
   }
 
   renderItem({item, index}) {
+    if (index === 0) {
+      return (
+        <View style={styles.headerView}>
+          <Text style={styles.headerText}>Add item</Text>
+        </View>
+      )
+    } else if (index === 5) {
+      return (
+        <View style={styles.separator} />
+      )
+    }
+
     return (
       <TouchableWithoutFeedback
         onPressIn={() => this.onSelectItem(item, index)}
@@ -113,11 +146,10 @@ export default class CreateNewFeedComponent extends React.Component {
         <View style={styles.itemContainer}>
           {this.renderItemBackground(index)}
           <View style={styles.leftContentContainer}> 
-            <Image source={item.icon} resizeMode='contain' />
+            <Image source={item.icon} style={styles.image} resizeMode="contain" />
           </View>
           <View style={styles.rightContentContainer}>
             <Text style={styles.textTitle}>{item.title}</Text>
-            <Text style={styles.textDescription}>{item.description}</Text>
           </View>
         </View>
       </TouchableWithoutFeedback>

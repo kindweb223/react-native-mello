@@ -25,6 +25,7 @@ import resolveError from '../../service/resolveError'
 import styles from './styles'
 
 import Analytics from '../../lib/firebase'
+import AlertController from '../../components/AlertController'
 
 const PASSWORD_PROGRESS = [
   { color: COLORS.RED, text: 'Weak' },
@@ -96,7 +97,7 @@ class ProfileUpdateScreen extends React.Component {
       if (this.props.user.loading === 'UPDATE_PASSWORD_PENDING' && user.loading === 'UPDATE_PASSWORD_REJECTED') {
         this.setState({ loading: false }, () => {
           if (user.error) {
-            Alert.alert('Error', resolveError(user.error.code, user.error.message));
+            AlertController.shared.showAlert('Error', resolveError(user.error.code, user.error.message));
           }
         })
       }
