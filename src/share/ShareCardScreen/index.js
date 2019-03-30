@@ -42,23 +42,15 @@ export default class ShareCardScreen extends React.Component {
 
     return (
       <View style={styles.container}>
-        <CardNewScreen
-          cardMode={CONSTANTS.SHARE_EXTENTION_CARD}
-          shareUrl={shareUrl}
-          shareImageUrls={imageUrls}
-          shareText={notesText}
-          onClose={() => this.onClosed()}
-          prevPage={'shareExtension'}
-          prev_scene={prev_scene}
-        />
-
-        {/* {shareUrl !== ''
+        {shareUrl !== ''
         ? <CardNewShareScreen
             cardMode={CONSTANTS.SHARE_EXTENTION_CARD}
             shareUrl={shareUrl}
             shareImageUrls={imageUrls}
             shareText={notesText}
             onClose={() => this.onClosed()}
+            prevPage={'shareExtension'}
+            prev_scene={prev_scene}
           />
         : <CardNewScreen
             cardMode={CONSTANTS.SHARE_EXTENTION_CARD}
@@ -67,8 +59,9 @@ export default class ShareCardScreen extends React.Component {
             shareText={notesText}
             onClose={() => this.onClosed()}
             prevPage={'shareExtension'}
+            prev_scene={prev_scene}
           />
-        }  */}
+        }
       </View>
     );
   }

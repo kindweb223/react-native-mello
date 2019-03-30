@@ -33,6 +33,9 @@ export default class Share extends Component {
       if (type === '' || value === '')
       {
         console.log('empty share data:')
+        setTimeout(() => {
+          ShareExtension.close();
+        }, 10)
         return;
       }
       
@@ -45,7 +48,6 @@ export default class Share extends Component {
       setTimeout(() => {
         Linking.openURL('https://' + SCHEME + `share/${type}/${value}`)
       }, 100); 
-
 
     } catch(error) {
       console.log('error : ', error)
