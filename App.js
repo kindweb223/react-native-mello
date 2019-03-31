@@ -342,6 +342,9 @@ export default class Root extends React.Component {
                   AsyncStorage.setItem('AndroidShareExtension', JSON.stringify(data));
                   Actions.ChooseLinkImageFromExtension({mode: type, value: value, prev_scene: currentScene});
                 }
+                else {
+                  Actions.LoginScreen()
+                }
               });
             }
           }
