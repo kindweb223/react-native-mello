@@ -52,6 +52,7 @@
 		4C3C63F62199E8BC00B68196 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 4C3C63F52199E8BC00B68196 /* GoogleService-Info.plist */; };
 		4C6D85F821FE088100455C94 /* libRNSVG.a in Frameworks */ = {isa = PBXBuildFile; fileRef = A49C3621219230EA00AA0AFD /* libRNSVG.a */; };
 		4C6D85F921FE08AB00455C94 /* libRNSVG.a in Frameworks */ = {isa = PBXBuildFile; fileRef = A49C3621219230EA00AA0AFD /* libRNSVG.a */; };
+		4CB988CD224BAE8400A905DA /* libRNFS.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 4CB988BD224BAE6D00A905DA /* libRNFS.a */; };
 		4CBE8102222932090023FAE7 /* libRNIntercom.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 4C246BB6222793AD00FD052A /* libRNIntercom.a */; };
 		4CC861B921933F8F00481DED /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 4CC8617A21933F8A00481DED /* GoogleService-Info.plist */; };
 		4CF0DB4F2199BBA6000ED175 /* libRNFirebase.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 4CC8621D2193408300481DED /* libRNFirebase.a */; };
@@ -400,6 +401,20 @@
 			remoteGlobalIDString = 134814201AA4EA6300B7C361;
 			remoteInfo = RNTextSize;
 		};
+		4CB988BC224BAE6D00A905DA /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 4CB9887E224BAE6C00A905DA /* RNFS.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = F12AFB9B1ADAF8F800E0535D;
+			remoteInfo = RNFS;
+		};
+		4CB988BE224BAE6D00A905DA /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 4CB9887E224BAE6C00A905DA /* RNFS.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 6456441F1EB8DA9100672408;
+			remoteInfo = "RNFS-tvOS";
+		};
 		4CC8621C2193408300481DED /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 2866BBFC826843B8A6FFB69C /* RNFirebase.xcodeproj */;
@@ -728,6 +743,7 @@
 		4A542F7F6D91BEC591EF445A /* libPods-MelloEx.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-MelloEx.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		4C246B77222793AD00FD052A /* RNIntercom.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RNIntercom.xcodeproj; path = "../node_modules/react-native-intercom/iOS/RNIntercom.xcodeproj"; sourceTree = "<group>"; };
 		4C3C63F52199E8BC00B68196 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
+		4CB9887E224BAE6C00A905DA /* RNFS.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RNFS.xcodeproj; path = "../node_modules/react-native-fs/RNFS.xcodeproj"; sourceTree = "<group>"; };
 		4CC8617A21933F8A00481DED /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		4CF0DB4C219983A6000ED175 /* libFirebaseCore.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; path = libFirebaseCore.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		4CF315F422270F2B00A7A104 /* SplashScreen.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = SplashScreen.xcodeproj; path = "../node_modules/react-native-splash-screen/ios/SplashScreen.xcodeproj"; sourceTree = "<group>"; };
@@ -825,6 +841,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				4CB988CD224BAE8400A905DA /* libRNFS.a in Frameworks */,
 				A4BF285821234CFE0054D7A9 /* CloudKit.framework in Frameworks */,
 				A46C2E1421497101007E54FA /* libRCTPushNotification.a in Frameworks */,
 				ADBDB9381DFEBF1600ED6528 /* libRCTBlob.a in Frameworks */,
@@ -1127,6 +1144,15 @@
 			name = Products;
 			sourceTree = "<group>";
 		};
+		4CB9887F224BAE6C00A905DA /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				4CB988BD224BAE6D00A905DA /* libRNFS.a */,
+				4CB988BF224BAE6D00A905DA /* libRNFS.a */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
 		4CC862192193408300481DED /* Products */ = {
 			isa = PBXGroup;
 			children = (
@@ -1199,6 +1225,7 @@
 		832341AE1AAA6A7D00B99B32 /* Libraries */ = {
 			isa = PBXGroup;
 			children = (
+				4CB9887E224BAE6C00A905DA /* RNFS.xcodeproj */,
 				4C246B77222793AD00FD052A /* RNIntercom.xcodeproj */,
 				4CF315F422270F2B00A7A104 /* SplashScreen.xcodeproj */,
 				A46C2DDB214970D5007E54FA /* RCTPushNotification.xcodeproj */,
@@ -1747,6 +1774,10 @@
 					ProjectRef = 2866BBFC826843B8A6FFB69C /* RNFirebase.xcodeproj */;
 				},
 				{
+					ProductGroup = 4CB9887F224BAE6C00A905DA /* Products */;
+					ProjectRef = 4CB9887E224BAE6C00A905DA /* RNFS.xcodeproj */;
+				},
+				{
 					ProductGroup = A48B0096210F6C68001C33B5 /* Products */;
 					ProjectRef = DDF2F7A8F2BB4EE4B265F759 /* RNImagePicker.xcodeproj */;
 				},
@@ -2053,6 +2084,20 @@
 			fileType = archive.ar;
 			path = libRNTextSize.a;
 			remoteRef = 4C96B855223AD4570069FDDC /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		4CB988BD224BAE6D00A905DA /* libRNFS.a */ = {
+			isa = PBXReferenceProxy;
+			fileType = archive.ar;
+			path = libRNFS.a;
+			remoteRef = 4CB988BC224BAE6D00A905DA /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		4CB988BF224BAE6D00A905DA /* libRNFS.a */ = {
+			isa = PBXReferenceProxy;
+			fileType = archive.ar;
+			path = libRNFS.a;
+			remoteRef = 4CB988BE224BAE6D00A905DA /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
 		4CC8621D2193408300481DED /* libRNFirebase.a */ = {

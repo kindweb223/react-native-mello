@@ -17,32 +17,13 @@ class FeedLongHoldMenuScreen extends React.Component {
   constructor(props) {
     super(props)
     this.state = {
-      isShowShare: false,
-      currentFeed: {}
+      isShowShare: false
     }
-  }
-
-  componentDidMount() {
-    const { feedData } = this.props
-    this.setState({ currentFeed: feedData })
-    this.props.getFeedDetail(feedData.id)
-  }
-
-  static getDerivedStateFromProps(nextProps, prevState) {
-    if (nextProps.feedo.currentFeed !== prevState.currentFeed && (
-        nextProps.feedo.loading === 'GET_FEED_DETAIL_FULFILLED' ||
-        nextProps.feedo.loading === 'DELETE_INVITEE_FULFILLED' ||
-        nextProps.feedo.loading === 'UPDATE_SHARING_PREFERENCES_FULFILLED' ||
-        nextProps.feedo.loading === 'UPDATE_INVITEE_PERMISSION_FULFILLED' ||
-        nextProps.feedo.loading === 'INVITE_HUNT_FULFILLED')) {
-      return {
-        currentFeed: nextProps.feedo.currentFeed,
-      }
-    }
-    return null
   }
 
   handleSetting = (item) => {
+    const { selectedFeedList } = this.props
+
     switch(item) {
       case 'Delete':
         setTimeout(() => {
@@ -50,31 +31,33 @@ class FeedLongHoldMenuScreen extends React.Component {
         }, 200)
         return
       case 'Archive':
-        this.props.handleArchiveFeed(this.props.feedData.id)
+        this.props.handleArchiveFeed(selectedFeedList)
         return
       case 'Duplicate':
-        this.props.handleDuplicateFeed(this.props.feedData.id)
+        this.props.handleDuplicateFeed(selectedFeedList)
         return
       case 'Edit':
-        this.props.handleEditFeed(this.props.feedData.id)
+        this.props.handleEditFeed(selectedFeedList)
         return;
       case 'Leave Flow':
-        this.props.handleLeaveFeed(this.props.feedData.id)
+        this.props.handleLeaveFeed(selectedFeedList)
         return;
     }
   }
 
   onTapActionSheet = (index) => {
     if (index === 0) {
-      this.props.handleDeleteFeed(this.props.feedData.id)
+      this.props.handleDeleteFeed(this.props.selectedFeedList)
     }
   }
 
   handlePin = () => {
-    if (this.props.feedData.pinned) {
-      this.props.handleUnpinFeed(this.props.feedData.id)
+    const { selectedFeedList } = this.props
+
+    if (selectedFeedList[0].feed.pinned) {
+      this.props.handleUnpinFeed(selectedFeedList)
     } else {
-      this.props.handlePinFeed(this.props.feedData.id)
+      this.props.handlePinFeed(selectedFeedList)
     }
   }
 
@@ -89,10 +72,7 @@ class FeedLongHoldMenuScreen extends React.Component {
   }
 
   render () {
-    const { feedData, showLongHoldActionBar } = this.props
-    const { currentFeed } = this.state
-
-    const pinFlag = feedData.pinned ? true : false
+    const { selectedFeedList, showLongHoldActionBar } = this.props
 
     if (!showLongHoldActionBar) {
       return null
@@ -104,8 +84,8 @@ class FeedLongHoldMenuScreen extends React.Component {
         handlePin={this.handlePin}
         handleShare={this.openShareModal}
         handleSetting={this.handleSetting}
-        data={feedData}
-        pinFlag={pinFlag}
+        selectedFeedList={selectedFeedList}
+        handleDelete={() => this.handleSetting('Delete')}
       />,
       <ActionSheet
         key="3"
@@ -134,7 +114,7 @@ class FeedLongHoldMenuScreen extends React.Component {
         onBackdropPress={() => this.closeShareModal()}
         onBackButtonPress={() => this.closeShareModal()}
       >
-        <ShareScreen onClose={() => this.closeShareModal()} data={currentFeed} />
+        <ShareScreen onClose={() => this.closeShareModal()} data={selectedFeedList.length > 0 ? selectedFeedList[0].feed : {}} />
       </Modal>
     ]
   }
@@ -149,7 +129,7 @@ const mapDispatchToProps = dispatch => ({
 })
 
 FeedLongHoldMenuScreen.propTypes = {
-  feedData: PropTypes.objectOf(PropTypes.any).isRequired,
+  selectedFeedList: PropTypes.arrayOf(PropTypes.any).isRequired,
   handleArchiveFeed: PropTypes.func.isRequired,
   handleDeleteFeed: PropTypes.func.isRequired,
   handlePinFeed: PropTypes.func.isRequired,
