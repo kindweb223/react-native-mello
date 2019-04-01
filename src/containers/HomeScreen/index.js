@@ -27,6 +27,7 @@ import DeviceInfo from 'react-native-device-info';
 import Permissions from 'react-native-permissions'
 import Intercom from 'react-native-intercom'
 import ImagePicker from 'react-native-image-picker'
+import { DocumentPicker, DocumentPickerUtil } from 'react-native-document-picker'
 
 import pubnub from '../../lib/pubnub'
 import Analytics from '../../lib/firebase'
@@ -1010,6 +1011,8 @@ class HomeScreen extends React.Component {
       this.pickMediaFromLibrary(options);
     } else if (type === 'TAKE_PHOTO') {
       this.pickMediaFromCamera(options);
+    } else if (type === 'ATTACH_FILE') {
+      this.onAddDocument();
     }
   }
 
@@ -1076,6 +1079,43 @@ class HomeScreen extends React.Component {
         }
       }
     });
+  }
+
+  onAddDocument() {
+    if (Platform.OS === 'ios') {
+      this.PickerDocumentShow();
+    }
+    else {
+      Permissions.check('storage').then(response => { //'storage' permission doesn't support on iOS
+        if (response === 'authorized') {
+          //permission already allowed
+          this.PickerDocumentShow();
+        }
+        else {
+          Permissions.request('storage').then(response => {
+            if (response === 'authorized') {
+              //storage permission was authorized
+              this.PickerDocumentShow();
+            }
+          });
+        }
+      });
+    }
+  }
+
+  PickerDocumentShow () {
+    DocumentPicker.show({
+      filetype: [DocumentPickerUtil.allFiles()],
+    },(error, response) => {
+      if (error === null) {
+        if (response.fileSize > CONSTANTS.MAX_UPLOAD_FILE_SIZE) {
+          COMMON_FUNC.showPremiumAlert()
+        } else {
+          this.handleFile(response)
+        }
+      }
+    });
+    return;
   }
 
   handleFile = (file) => {
