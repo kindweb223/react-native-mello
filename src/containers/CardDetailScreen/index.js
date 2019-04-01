@@ -42,7 +42,7 @@ import * as Animatable from 'react-native-animatable';
 
 import { COMMENT_FEATURE } from '../../service/api'
 
-import { 
+import {
   createCard,
   getCard,
   updateCard,
@@ -56,7 +56,7 @@ import {
   deleteLink,
   resetCardError,
 } from '../../redux/card/actions'
-import { 
+import {
   createFeed,
   setCurrentFeed,
   getFeedoList,
@@ -96,7 +96,7 @@ class CardDetailScreen extends React.Component {
       coverImage: '',
       links: [],
       textByCursor: '',
-      
+
       loading: false,
       // isFullScreenCard: false,
       originalCardTopY: this.props.intialLayout.py,
@@ -243,7 +243,7 @@ class CardDetailScreen extends React.Component {
           metadata = {
             width: this.base64FileWidth,
             height: this.base64FileHeight
-          }  
+          }
         }
         this.props.addFile(id, this.selectedFileType, fileType, this.selectedFileName, objectKey, metadata, this.base64String);
       }
@@ -284,7 +284,7 @@ class CardDetailScreen extends React.Component {
           favicon,
         } = this.openGraphLinksInfo[this.indexForAddedLinks ++];
         this.props.addLink(id, url, title, description, image, favicon);
-      } else if (this.allLinkImages.length > 0 
+      } else if (this.allLinkImages.length > 0
         && (this.props.card.currentCard.links === null || this.props.card.currentCard.links.length === 0)) {
         this.setState({
           isVisibleChooseLinkImagesModal: true,
@@ -363,9 +363,9 @@ class CardDetailScreen extends React.Component {
         image: nextProps.card.currentOpneGraph.image,
         favicon: nextProps.card.currentOpneGraph.favicon
       });
-      
+
       this.indexForOpenGraph ++;
-      
+
       if (this.indexForOpenGraph < this.linksForOpenGraph.length) {
         this.props.getOpenGraph(this.linksForOpenGraph[this.indexForOpenGraph]);
       } else {
@@ -450,9 +450,9 @@ class CardDetailScreen extends React.Component {
               image: nextProps.card.currentOpneGraph.image,
               favicon: nextProps.card.currentOpneGraph.favicon
             });
-            
+
             this.indexForOpenGraph ++;
-            
+
             if (this.indexForOpenGraph < this.linksForOpenGraph.length) {
               this.props.getOpenGraph(this.linksForOpenGraph[this.indexForOpenGraph]);
             } else {
@@ -797,7 +797,7 @@ class CardDetailScreen extends React.Component {
     return false;
   }
 
-  onClose() {    
+  onClose() {
     if (this.props.viewMode === CONSTANTS.CARD_EDIT) {
       this.onUpdateCard()
     }
@@ -914,7 +914,7 @@ class CardDetailScreen extends React.Component {
         setTimeout(() => {
           this.imagePickerActionSheetRef.show()
         }, 200)
-    
+
       }
       else {
         Permissions.request('camera').then(response => {
@@ -927,7 +927,7 @@ class CardDetailScreen extends React.Component {
               }
               else if (Platform.OS === 'ios') {
                 Permissions.openSettings();
-              }    
+              }
             });
           }
           else if (Platform.OS === 'ios') {
@@ -1063,7 +1063,7 @@ class CardDetailScreen extends React.Component {
       },
       mediaType: 'mixed'
     };
-        
+
     if (index === 0) {
       // from camera
       this.pickMediaFromCamera(options);
@@ -1180,7 +1180,7 @@ class CardDetailScreen extends React.Component {
 
   onSaveLinkImages(selectedImages) {
     const {
-      id, 
+      id,
     } = this.props.card.currentCard;
     this.onCloseLinkImages();
     this.selectedLinkImages = selectedImages;
@@ -1289,7 +1289,7 @@ class CardDetailScreen extends React.Component {
       this.setState({
         textByCursor,
       });
-    }, 0);    
+    }, 0);
   }
 
   onLayoutTextInput({nativeEvent: {layout}}) {
@@ -1307,7 +1307,7 @@ class CardDetailScreen extends React.Component {
       if (Platform.OS === 'android') {
         setTimeout(() => {
           this.setState({ showEditScreen: true })
-        }, 10)  
+        }, 10)
       } else {
         this.setState({ showEditScreen: true })
       }
@@ -1339,7 +1339,7 @@ class CardDetailScreen extends React.Component {
     const { links } = this.props.card.currentCard;
     const { coverImage, isOpeningCard } = this.state
     const { viewMode } = this.props
-  
+
     let marginTop = 24
     marginTop = coverImage ? 24 : 65
     if (links && links.length > 0) {
@@ -1379,7 +1379,7 @@ class CardDetailScreen extends React.Component {
               <TextInput
                 style={styles.textInputIdea}
                 multiline={true}
-                pointerEvents="none" 
+                pointerEvents="none"
                 placeholder={'Let your ideas flow. Type text, paste a link, add an image, video or audio'}/>
               :
               <Autolink
@@ -1466,7 +1466,7 @@ class CardDetailScreen extends React.Component {
 
   get renderHeader() {
     return this.state.isOpeningCard && (
-      <TouchableOpacity 
+      <TouchableOpacity
         style={styles.headerContainer}
         activeOpacity={0.7}
         onPress={() => this.onBack()}
@@ -1628,7 +1628,7 @@ class CardDetailScreen extends React.Component {
 
   get renderAddComment() {
     return (
-      <TouchableOpacity 
+      <TouchableOpacity
         style={styles.rowContainer}
         activeOpacity={0.6}
         onPress={this.onAddComment}
@@ -1656,7 +1656,7 @@ class CardDetailScreen extends React.Component {
 
           <View style={styles.likeView}>
             {viewMode === CONSTANTS.CARD_EDIT && (
-              <TouchableOpacity 
+              <TouchableOpacity
                 style={styles.threeDotButtonWrapper}
                 activeOpacity={0.6}
                 onPress={() => this.onPressMoreActions()}
@@ -1693,7 +1693,7 @@ class CardDetailScreen extends React.Component {
     }
 
     return (
-      <Animated.View 
+      <Animated.View
         style={[
           styles.cardContainer,
           cardStyle
@@ -1716,6 +1716,7 @@ class CardDetailScreen extends React.Component {
 
     return (
       <View style={styles.container}>
+        //TODO: add a "is online" condition to this check, inform user if they can't do stuff
         {showEditScreen
           ? <CardEditScreen
               {...this.props}
@@ -1779,7 +1780,7 @@ class CardDetailScreen extends React.Component {
           </Animated.View>
         </Modal>
 
-        <Modal 
+        <Modal
           style={styles.shareScreenContainer}
           isVisible={this.state.isVisibleChooseLinkImagesModal}
           onBackButtonPress={() => this.onCloseLinkImages()}
