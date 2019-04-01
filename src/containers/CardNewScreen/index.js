@@ -417,7 +417,7 @@ class CardNewScreen extends React.Component {
 
       this.setState({
         coverImage: nextProps.card.currentCard.coverImage,
-        // imageUploading: false
+        imageUploadStarted: false
       }, () => {
         if (this.props.cardMode === CONSTANTS.SHARE_EXTENTION_CARD) {
           setTimeout(() => {
