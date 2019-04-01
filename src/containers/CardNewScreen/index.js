@@ -246,6 +246,10 @@ class CardNewScreen extends React.Component {
           idea: this.props.shareUrl,
         }, () => {
           this.checkUrls();
+          // Upload file received from Dashboard
+          if (this.props.fileData) {
+            this.handleFile(this.props.fileData);
+          }
         });
       }
       else {
@@ -704,12 +708,6 @@ class CardNewScreen extends React.Component {
       // Alert.alert('NOT', 'CLIPBOARD')
       this.keyboardDidShowSubscription = Keyboard.addListener('keyboardWillShow', (e) => this.keyboardDidShow(e));
       this.keyboardDidHideSubscription = Keyboard.addListener('keyboardWillHide', (e) => this.keyboardDidHide(e));
-    }
-
-    if (this.props.fileData) {
-      setTimeout(() => {
-        this.handleFile(this.props.fileData);
-      }, 900)
     }
 
     BackHandler.addEventListener('hardwareBackPress', this.handleBackButton);
