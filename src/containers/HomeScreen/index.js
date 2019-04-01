@@ -329,7 +329,9 @@ class HomeScreen extends React.Component {
         })
 
         // refresh list if card addedd or card moved
-        if ((feedo.loading !== 'UPDATE_CARD_FULFILLED' || !feedo.isCreateCard, feedo.loading !== 'MOVE_CARD_FULFILLED')) {
+        if ((feedo.loading === 'UPDATE_CARD_FULFILLED' || feedo.isCreateCard || feedo.loading === 'MOVE_CARD_FULFILLED')) {
+          nextProps.getFeedoList()
+        } else {
           const { filterSortType, filterShowType } = prevState
 
           const feedoFullList = filter(feedoList, item => item.status === 'PUBLISHED' && item.metadata.myInviteStatus !== 'INVITED')
@@ -338,8 +340,6 @@ class HomeScreen extends React.Component {
           feedoPinnedList = filter(feedoFullList, item => item.pinned !== null);
           feedoUnPinnedList = filter(feedoFullList, item => item.pinned === null);
           feedoList = HomeScreen.getFilteredFeeds(feedoPinnedList, feedoUnPinnedList, filterShowType, filterSortType);
-        } else {          
-          nextProps.getFeedoList()
         }
       }
 
