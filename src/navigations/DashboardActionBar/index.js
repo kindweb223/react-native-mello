@@ -84,7 +84,7 @@ class DashboardActionBar extends React.Component {
 
         <View style={styles.rightContainer}>
           {!(!_.isEmpty(feed) && COMMON_FUNC.isFeedGuest(feed)) && (
-              <NetworkConsumer>
+              <NetworkConsumer  pingInterval={2000}>
                 {({ isConnected }) => isConnected ? (
                     <TouchableWithoutFeedback
                         onPressIn={this.onPressInAddFeed.bind(this)}

@@ -27,7 +27,7 @@ export default function user(state = initialState, action = {}) {
   switch (action.type) {
     case 'NETWORK_FAILED':
       // TODO: replace with something nicer looking
-      Alert.alert('Error', 'No Internet Connection')
+      // Alert.alert('Error', 'No Internet Connection')
       return {
         ...state,
         error: null
