@@ -314,6 +314,7 @@ class CardDetailScreen extends React.Component {
       this.coverImageHeight = height
       this.setState({
         coverImage: nextProps.card.currentCard.coverImage,
+        imageUploadStarted: false
       });
       this.checkUrls();
 
