@@ -26,6 +26,7 @@ import { find, filter, orderBy } from 'lodash'
 import DeviceInfo from 'react-native-device-info';
 import Permissions from 'react-native-permissions'
 import Intercom from 'react-native-intercom'
+import { NetworkConsumer } from 'react-native-offline'
 
 import pubnub from '../../lib/pubnub'
 import Analytics from '../../lib/firebase'
@@ -1253,22 +1254,27 @@ class HomeScreen extends React.Component {
           {Platform.OS === 'android' && (
             <View style={styles.statusBarUnderlay} />
           )}
-
-          <View style={styles.headerView}>
-            <TouchableOpacity
-              style={styles.searchIconView}
-              onPress={() => SEARCH_FEATURE ? this.onSearch() : {}}
-            >
-              {SEARCH_FEATURE && (
-                <Image style={styles.searchIcon} source={SEARCH_ICON} />
-              )}
-            </TouchableOpacity>
-            <View style={styles.settingIconView}>
-              <TouchableOpacity onPress={() => this.handleSetting()}>
-                <Image source={SETTING_ICON} />
-              </TouchableOpacity>
-            </View>
-          </View>
+          <NetworkConsumer pingInterval={2000}>
+            {({ isConnected }) => (
+                isConnected ? (
+                    <View style={styles.headerView}>
+                      <TouchableOpacity
+                          style={styles.searchIconView}
+                          onPress={() => SEARCH_FEATURE ? this.onSearch() : {}}
+                      >
+                        {SEARCH_FEATURE && (
+                            <Image style={styles.searchIcon} source={SEARCH_ICON} />
+                        )}
+                      </TouchableOpacity>
+                      <View style={styles.settingIconView}>
+                        <TouchableOpacity onPress={() => this.handleSetting()}>
+                          <Image source={SETTING_ICON} />
+                        </TouchableOpacity>
+                      </View>
+                    </View>
+                ) : null
+            )}
+          </NetworkConsumer>
 
           <View
             style={[!this.state.isLongHoldMenuVisible ? styles.feedListContainer : styles.feedListContainerLongHold, feedClickEvent === 'normal' && { paddingBottom: 30 }]}

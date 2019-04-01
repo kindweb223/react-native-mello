@@ -10,6 +10,7 @@ import {
 } from 'react-native'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
+import { NetworkConsumer } from 'react-native-offline'
 
 import Slideshow from '../../components/Slideshow'
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons'
@@ -56,12 +57,12 @@ class ImageSliderScreen extends React.Component {
       // setting a file as cover image
       this.setState({updatingCoverImage: true})
     } else if (this.props.card.loading !== cardTypes.SET_COVER_IMAGE_FULFILLED && nextProps.card.loading === cardTypes.SET_COVER_IMAGE_FULFILLED) {
-      // success in setting a file as cover image      
+      // success in setting a file as cover image
       setTimeout(() => {
         this.setState({updatingCoverImage: false})
       }, 300)
-  
-    } 
+
+    }
 
     this.setState({
       loading,
@@ -107,7 +108,7 @@ class ImageSliderScreen extends React.Component {
     const {
       mediaFiles,
     } = this.props;
-    
+
     if (this.props.onSetCoverImage) {
       this.setState({setCoveredIndex: this.state.imageIndex})
       this.props.onSetCoverImage(mediaFiles[this.state.imageIndex].id);
@@ -145,7 +146,7 @@ class ImageSliderScreen extends React.Component {
 
     return (
       <View style={styles.container}>
-        <Slideshow 
+        <Slideshow
           position={this.state.position}
           mediaFiles={mediaFiles}
           width={CONSTANTS.SCREEN_WIDTH}
@@ -157,7 +158,7 @@ class ImageSliderScreen extends React.Component {
           currentImageIndex={this.state.imageIndex}
         />
 
-        <Animated.View 
+        <Animated.View
           style={[styles.closeButtonWrapper, { opacity: this.buttonOpacity }]}
         >
           <TouchableOpacity
@@ -169,12 +170,12 @@ class ImageSliderScreen extends React.Component {
           </TouchableOpacity>
         </Animated.View>
         {
-          
+
           this.props.removal && this.props.isSetCoverImage &&
-          <Animated.View 
+          <Animated.View
             style={[styles.coverButton, { opacity: this.buttonOpacity }]}
           >
-            <TouchableOpacity 
+            <TouchableOpacity
               activeOpacity={0.6}
               disabled={isCoveredImage ? true: false}
               onPress={() => this.onSetCoverImage()}
@@ -192,11 +193,11 @@ class ImageSliderScreen extends React.Component {
           </Animated.View>
         }
         {
-          this.props.removal && 
-          <Animated.View 
+          this.props.removal &&
+          <Animated.View
             style={[styles.deleteButton, { opacity: this.buttonOpacity }]}
           >
-            <TouchableOpacity 
+            <TouchableOpacity
               activeOpacity={0.6}
               onPress={() => this.onDelete()}
             >
