@@ -1087,6 +1087,7 @@ class HomeScreen extends React.Component {
       <Animated.View 
         style={[
           styles.modalContainer,
+          styles.quickActionModalContainer,
           { opacity: this.animatedOpacity }
         ]}
       >
