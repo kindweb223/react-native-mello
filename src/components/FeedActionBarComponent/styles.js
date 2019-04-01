@@ -19,7 +19,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    backgroundColor: COLORS.PURPLE,
+    backgroundColor: COLORS.TOASTER_GREY,
     borderRadius: 18,
     paddingHorizontal: 20
   },
