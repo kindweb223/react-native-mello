@@ -26,6 +26,8 @@ import { find, filter, orderBy } from 'lodash'
 import DeviceInfo from 'react-native-device-info';
 import Permissions from 'react-native-permissions'
 import Intercom from 'react-native-intercom'
+import ImagePicker from 'react-native-image-picker'
+import { DocumentPicker, DocumentPickerUtil } from 'react-native-document-picker'
 
 import pubnub from '../../lib/pubnub'
 import Analytics from '../../lib/firebase'
@@ -52,6 +54,7 @@ import COLORS from '../../service/colors'
 import { TIP_SHARE_LINK_URL, ANDROID_PUSH_SENDER_ID, PIN_FEATURE, SEARCH_FEATURE } from '../../service/api'
 import AlertController from '../../components/AlertController'
 import SideMenuComponent from '../../components/SideMenuComponent'
+import * as COMMON_FUNC from '../../service/commonFunc'
 
 import * as COMMON_FUNC from '../../service/commonFunc'
 
@@ -141,6 +144,7 @@ class HomeScreen extends React.Component {
       unSelectFeed: false,
       isSideMenuOpen: false,
       selectedItemTitle: 'All flows',
+      fileData: null
     };
 
     this.currentRef = null;
@@ -1014,6 +1018,13 @@ class HomeScreen extends React.Component {
 
   onSelectNewFeedType(type) {
     this.props.closeClipboardToaster()
+    var options = {
+      storageOptions: {
+        skipBackup: true,
+        path: 'feedo'
+      },
+      mediaType: 'mixed'
+    };
 
     if (type === 'ADD_TEXT') {
       Analytics.logEvent('dashboard_new_card', {})
@@ -1034,7 +1045,11 @@ class HomeScreen extends React.Component {
         isEditFeed: false,
       });
     } else if (type === 'UPLOAD_PHOTO') {
-
+      this.pickMediaFromLibrary(options);
+    } else if (type === 'TAKE_PHOTO') {
+      this.pickMediaFromCamera(options);
+    } else if (type === 'ATTACH_FILE') {
+      this.onAddDocument();
     }
   }
 
@@ -1074,6 +1089,83 @@ class HomeScreen extends React.Component {
 
   userSignOut = () => {
     this.setState({ showProfile: false })
+  }
+
+  pickMediaFromCamera(options) {
+    ImagePicker.launchCamera(options, (response)  => {
+      if (!response.didCancel) {
+        if (response.fileSize > CONSTANTS.MAX_UPLOAD_FILE_SIZE) {
+          COMMON_FUNC.showPremiumAlert()
+        } else {
+          if (!response.fileName) {
+            response.fileName = response.uri.replace(/^.*[\\\/]/, '')
+          }
+          this.handleFile(response)
+        }
+      }
+    });
+  }
+
+  pickMediaFromLibrary(options) {
+    ImagePicker.launchImageLibrary(options, (response)  => {
+      if (!response.didCancel) {
+        if (response.fileSize > CONSTANTS.MAX_UPLOAD_FILE_SIZE) {
+          COMMON_FUNC.showPremiumAlert()
+        } else {
+          this.handleFile(response)
+        }
+      }
+    });
+  }
+
+  onAddDocument() {
+    if (Platform.OS === 'ios') {
+      this.PickerDocumentShow();
+    }
+    else {
+      Permissions.check('storage').then(response => { //'storage' permission doesn't support on iOS
+        if (response === 'authorized') {
+          //permission already allowed
+          this.PickerDocumentShow();
+        }
+        else {
+          Permissions.request('storage').then(response => {
+            if (response === 'authorized') {
+              //storage permission was authorized
+              this.PickerDocumentShow();
+            }
+          });
+        }
+      });
+    }
+  }
+
+  PickerDocumentShow () {
+    DocumentPicker.show({
+      filetype: [DocumentPickerUtil.allFiles()],
+    },(error, response) => {
+      if (error === null) {
+        if (response.fileSize > CONSTANTS.MAX_UPLOAD_FILE_SIZE) {
+          COMMON_FUNC.showPremiumAlert()
+        } else {
+          this.handleFile(response)
+        }
+      }
+    });
+    return;
+  }
+
+  handleFile = (file) => {
+    this.setState({
+      fileData: file
+    }, () => {
+      this.setState({
+        isVisibleCreateNewFeedModal: false,
+        isVisibleCard: true,
+        cardViewMode: CONSTANTS.CARD_NEW,
+        selectedIdeaInvitee: null
+      });
+    })
   }
 
   get renderNewFeedModals() {
@@ -1146,7 +1238,8 @@ class HomeScreen extends React.Component {
       duration: CONSTANTS.ANIMATEION_MILLI_SECONDS,
     }).start(() => {
       this.setState({ 
-        isVisibleCard: false
+        isVisibleCard: false,
+        fileData: null
       });
     });
   }
@@ -1170,6 +1263,7 @@ class HomeScreen extends React.Component {
           viewMode={this.state.cardViewMode}
           cardMode={cardMode}
           invitee={this.state.selectedIdeaInvitee}
+          fileData={this.state.fileData}
           shareUrl=""
           prevPage="home"
           onClose={() => this.onCloseCardModal()}
