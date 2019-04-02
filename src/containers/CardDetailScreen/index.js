@@ -13,6 +13,7 @@ import {
   SafeAreaView,
   Platform,
   BackHandler,
+  NetInfo
 } from 'react-native'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
@@ -39,6 +40,7 @@ import Autolink from 'react-native-autolink';
 import SafariView from "react-native-safari-view";
 import SharedGroupPreferences from 'react-native-shared-group-preferences';
 import * as Animatable from 'react-native-animatable';
+import { NetworkConsumer } from 'react-native-offline'
 
 import { COMMENT_FEATURE } from '../../service/api'
 
@@ -125,6 +127,7 @@ class CardDetailScreen extends React.Component {
       slideInUpAnimation: 'slideInUp',
       cardMode: 'CardDetailSingle',
       imageUploading: false,
+      online: false,
     };
 
     this.selectedFile = null;
@@ -652,9 +655,36 @@ class CardDetailScreen extends React.Component {
     BackHandler.removeEventListener('hardwareBackPress', this.handleBackButton);
   }
 
+  componentDidUpdate(prevProps, prevState) {
+  }
+
   handleBackButton = () => {
     this.onBack(this);
     return true;
+  }
+
+  checkOffline = () => {
+    const offlineStatus = this.state.offline
+    console.log('CDU ', prevProps.network, this.props.network)
+    NetInfo.getConnectionInfo().then((connectionInfo) => {
+      console.log(
+        'CDU: Initial, type: ' +
+          connectionInfo.type +
+          ', effectiveType: ' +
+          connectionInfo.effectiveType, connectionInfo
+      );
+      if(connectionInfo.type === 'none'){
+        if(!offlineStatus){
+          this.setState({ offline: true})
+        }
+        return true
+      }else{
+        if(offlineStatus){
+          this.setState({ offline: false})
+        }
+        return false
+      }
+    });
   }
 
   getImageSize(uri) {
@@ -1302,15 +1332,18 @@ class CardDetailScreen extends React.Component {
   }
 
   onPressIdea() {
-    if (this.props.viewMode === CONSTANTS.CARD_EDIT) {
-      // Android, 3 dots -> edit note (keyboard does not appear so need to add timeout)
-      if (Platform.OS === 'android') {
-        setTimeout(() => {
+    if (!this.checkOffline()){ 
+      if (this.props.viewMode === CONSTANTS.CARD_EDIT) {
+        // Android, 3 dots -> edit note (keyboard does not appear so need to add timeout)
+        if (Platform.OS === 'android') {
+          setTimeout(() => {
+            this.setState({ showEditScreen: true })
+          }, 10)
+        } else {
           this.setState({ showEditScreen: true })
-        }, 10)
-      } else {
-        this.setState({ showEditScreen: true })
+        }
       }
+
     }
   }
 
@@ -1640,37 +1673,45 @@ class CardDetailScreen extends React.Component {
 
   get renderFooter() {
     const { feedo, viewMode } = this.props;
+    const { offline } = this.state
     const idea = _.find(this.props.feedo.currentFeed.ideas, idea => idea.id === this.props.card.currentCard.id)
 
     return (
-      <Animatable.View
-        duration={CONSTANTS.ANIMATABLE_DURATION + 200}
-        animation={this.state.slideInUpAnimation}
-      >
-        <View style={[styles.footerContainer, { opacity: this.state.isOpeningCard ? 1 : 0 }]}>
-          {COMMENT_FEATURE && !COMMON_FUNC.isFeedGuest(feedo.currentFeed) &&
-            <View style={styles.addCommentView}>
-              {this.renderAddComment}
-            </View>
-          }
+      <NetworkConsumer pingInterval={15000}>
+        {({ isConnected }) => (
+           (isConnected) ? (
+            <Animatable.View
+              duration={CONSTANTS.ANIMATABLE_DURATION + 200}
+              animation={this.state.slideInUpAnimation}
+            >
+              <View style={[styles.footerContainer, { opacity: this.state.isOpeningCard ? 1 : 0 }]}>
+                {COMMENT_FEATURE && !COMMON_FUNC.isFeedGuest(feedo.currentFeed) &&
+                  <View style={styles.addCommentView}>
+                    {this.renderAddComment}
+                  </View>
+                }
+  
+                <View style={styles.likeView}>
+                  {viewMode === CONSTANTS.CARD_EDIT && (
+                    <TouchableOpacity
+                      style={styles.threeDotButtonWrapper}
+                      activeOpacity={0.6}
+                      onPress={() => this.onPressMoreActions()}
+                    >
+                    <Entypo name="dots-three-horizontal" size={20} color={COLORS.MEDIUM_GREY} />
+                    </TouchableOpacity>
+                  )}
+  
+                  {idea && (
+                    <LikeComponent idea={idea} prevPage={this.props.prevPage} type="icon" />
+                  )}
+                </View>
+              </View>
+            </Animatable.View>
 
-          <View style={styles.likeView}>
-            {viewMode === CONSTANTS.CARD_EDIT && (
-              <TouchableOpacity
-                style={styles.threeDotButtonWrapper}
-                activeOpacity={0.6}
-                onPress={() => this.onPressMoreActions()}
-              >
-              <Entypo name="dots-three-horizontal" size={20} color={COLORS.MEDIUM_GREY} />
-              </TouchableOpacity>
-            )}
-
-            {idea && (
-              <LikeComponent idea={idea} prevPage={this.props.prevPage} type="icon" />
-            )}
-          </View>
-        </View>
-      </Animatable.View>
+           ) : null
+        )}
+      </NetworkConsumer>
     )
   }
 
@@ -1712,12 +1753,13 @@ class CardDetailScreen extends React.Component {
   }
 
   render () {
-    const { showEditScreen, idea, loading } = this.state
+    const { showEditScreen, idea, loading, offline } = this.state
+    const { network } = this.props
+    console.log('network is ', network)
 
     return (
       <View style={styles.container}>
-        //TODO: add a "is online" condition to this check, inform user if they can't do stuff
-        {showEditScreen
+        {(showEditScreen)
           ? <CardEditScreen
               {...this.props}
               idea={idea}
@@ -1845,10 +1887,11 @@ CardDetailScreen.propTypes = {
 }
 
 
-const mapStateToProps = ({ card, feedo, user, }) => ({
+const mapStateToProps = ({ card, feedo, user, network }) => ({
   card,
   feedo,
   user,
+  network,
 })
 
 
