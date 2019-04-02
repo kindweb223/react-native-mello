@@ -210,6 +210,11 @@ const styles = StyleSheet.create({
   },
   loadingIcon: {
     marginRight: 10
+  },
+  ckEditorBtnText: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    color: COLORS.DARK_GREY
   }
 })
 

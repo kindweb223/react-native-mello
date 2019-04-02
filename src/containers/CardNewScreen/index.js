@@ -81,6 +81,7 @@ import SelectHuntScreen from '../SelectHuntScreen';
 import Analytics from '../../lib/firebase'
 import ToasterComponent from '../../components/ToasterComponent'
 import AlertController from '../../components/AlertController'
+import CKEditor from '../../components/CKEditor'
 
 import * as COMMON_FUNC from '../../service/commonFunc'
 const ATTACHMENT_ICON = require('../../../assets/images/Attachment/Blue.png')
@@ -92,7 +93,7 @@ class CardNewScreen extends React.Component {
     super(props);
 
     let coverImage = '';
-    let idea = '';
+    let idea = 'TEST';
 
     if (props.cardMode === CONSTANTS.SHARE_EXTENTION_CARD && props.shareUrl !== '') {
       const openGraph = props.card.currentOpneGraph;
@@ -126,7 +127,8 @@ class CardNewScreen extends React.Component {
       fileType: '',
       isSaving: false,
       uploadProgress: 0,
-      bottomButtonsPadding: 0
+      bottomButtonsPadding: 0,
+      showCKEditorToolbar: false
     };
 
     this.imageUploading = false;
@@ -580,7 +582,7 @@ class CardNewScreen extends React.Component {
     if (this.props.card.loading !== nextProps.card.loading || this.props.feedo.loading !== nextProps.feedo.loading) {
       if (nextProps.card.error || nextProps.feedo.error) {
 
-        if (nextProps.card.error.code === 'error.hunt.not.found') {
+        if (nextProps.card.error && nextProps.card.error.code === 'error.hunt.not.found') {
           this.props.resetCardError();
           this.props.createFeed();
           return
@@ -677,7 +679,7 @@ class CardNewScreen extends React.Component {
   }
 
   async componentDidMount() {
-    this.textInputIdeaRef.focus();
+    // this.textInputIdeaRef.focus();
 
     Animated.timing(this.animatedShow, {
       toValue: 1,
@@ -1281,7 +1283,7 @@ class CardNewScreen extends React.Component {
   // }
   
   onChangeIdea(text) {
-    // console.log('TextInput - onChangeIdea : ', text);
+    console.log('TextInput - onChangeIdea : ', text);
     this.setState({
       idea: text,
     }, async () => {
@@ -1499,6 +1501,14 @@ class CardNewScreen extends React.Component {
     const { cardMode } = this.props;
 
     return (
+      <CKEditor
+        ref={c => this.refCKEditor = c}
+        content={this.state.idea}
+        onChange={value => this.onChangeIdea(value)}
+      />
+    )
+
+    return (
       <TouchableOpacity
         onLayout={this.onLayoutTextInput.bind(this)}
         onPress={() => this.textInputIdeaRef.focus()}
@@ -1637,15 +1647,38 @@ class CardNewScreen extends React.Component {
     )
   }
 
+  handleCKEditorToolbar = () => {
+    this.setState({ showCKEditorToolbar: true })
+  }
+
+  setCKEditorTextStyle = (type) => {
+    this.refCKEditor.setTextType(type)
+  }
+
   get renderBottomAttachmentButtons() {
     const { viewMode, cardMode } = this.props;
-    const { bottomButtonsPadding } = this.state;
+    const { bottomButtonsPadding, showCKEditorToolbar } = this.state;
 
     if (cardMode === CONSTANTS.SHARE_EXTENTION_CARD) {
       return;
     } else if (viewMode !== CONSTANTS.CARD_NEW) {
       return;
     }
+
+    if (showCKEditorToolbar) {
+      return (
+        <View style={[styles.attachmentButtonsContainer, { paddingHorizontal: 16, marginVertical: 16, paddingBottom: bottomButtonsPadding }]}>
+          <TouchableOpacity 
+            style={styles.iconView}
+            activeOpacity={0.6}
+            onPress={() => this.setCKEditorTextStyle('bold')}
+          >
+            <Text style={styles.ckEditorBtnText}>T</Text>
+          </TouchableOpacity>
+        </View>
+      )
+    }
+
     return (
       <View style={[styles.attachmentButtonsContainer, { paddingHorizontal: 16, marginVertical: 16, paddingBottom: bottomButtonsPadding }]}>
         <TouchableOpacity 
@@ -1661,6 +1694,13 @@ class CardNewScreen extends React.Component {
           onPress={this.onAddDocument.bind(this)}
         >
           <Image source={ATTACHMENT_ICON} />
+        </TouchableOpacity>
+        <TouchableOpacity 
+          style={styles.iconView}
+          activeOpacity={0.6}
+          onPress={this.handleCKEditorToolbar}
+        >
+          <Text style={styles.ckEditorBtnText}>Aa</Text>
         </TouchableOpacity>
         {this.renderSelectFeedo}
       </View>

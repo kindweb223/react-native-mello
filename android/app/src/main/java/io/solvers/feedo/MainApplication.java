@@ -3,6 +3,7 @@ package io.solvers.feedo;
 import android.app.Application;
 
 import com.facebook.react.ReactApplication;
+import com.reactnativecommunity.webview.RNCWebViewPackage;
 import com.rnfs.RNFSPackage;
 import com.vinzscam.reactnativefileviewer.RNFileViewerPackage;
 import com.github.amarcruz.rntextsize.RNTextSizePackage;
@@ -51,6 +52,7 @@ public class MainApplication extends Application implements ReactApplication {
     protected List<ReactPackage> getPackages() {
       return Arrays.<ReactPackage>asList(
           new MainReactPackage(),
+            new RNCWebViewPackage(),
             new RNFSPackage(),
             new RNFileViewerPackage(),
             new RNTextSizePackage(),
