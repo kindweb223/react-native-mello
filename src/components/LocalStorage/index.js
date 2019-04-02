@@ -1,6 +1,6 @@
 import React from "react";
 import RNFS, {downloadFile} from 'react-native-fs';
-import { Button, FlatList, ScrollView, View, Text, ViewPropTypes, AsyncStorage } from "react-native";
+import { Button, FlatList, ScrollView, View, Text, ViewPropTypes, AsyncStorage, NetInfo } from "react-native";
 import mime from 'mime-types'
 import {connect} from "react-redux";
 import axios from 'axios'
@@ -134,7 +134,7 @@ function checkAndStore(file, userId) {
                                     const locString = fileStoreLocation.toString()
                                     AsyncStorage.setItem(locKey, locString)
                                     .then(aresult => {
-                                        console.log('RNFS async - ', aresult, fileStoreLocation)
+                                        console.log('RNFSR async - ', aresult, fileStoreLocation)
                                         resolve({
                                             result,
                                             fileStoreLocation,
@@ -176,7 +176,10 @@ class LocalStorage extends React.Component {
             ideas: [],
             feeds: this.props.feedo.feedoList,
             startDelay: 0,
-            fileDelay: 200,
+            storageDelay: 2000,
+            storageInterval: 1000,
+            lastStoredIdea: 0,
+            
         };
     }
 
@@ -267,55 +270,101 @@ class LocalStorage extends React.Component {
     componentDidMount(): void {
         const { user } = this.props
         console.log('RNFS try and do stuff when user is ', user )
+        NetInfo.getConnectionInfo().then((connectionInfo) => {
+          if(connectionInfo.type !== 'wifi'){
+          }else{              
+            this.setState({ 
+                storageDelay: 500,
+                storageInterval: 10
+            })
+          }
+          console.log('RNFSR - Connection is ', connectionInfo)
+        })
 
+    }
+
+    recursiveShout = null
+
+    updateRecursiveShout(index, delay) {
+        clearTimeout(this.recursiveShout)
+        this.recursiveShout = setTimeout(()=>{
+            this.recursiveStoreFiles(index)
+        }, delay)
+    }
+
+
+    recursiveStoreFiles = (ideaIndex = 0) => {
+        const { user } = this.props
+        const { ideas, storageInterval } = this.state
+        console.log('RNFSR run on ', ideaIndex, ' of ', ideas.length)
+        const delay = storageInterval
+
+        if(ideaIndex === (ideas.length)){
+            return
+        }
+
+
+        const files = ideas[ideaIndex].files
+
+        if(!files){
+            this.updateRecursiveShout(++ideaIndex, delay)
+            return
+        }
+
+        files.map((file, fileIndex) => {
+            AsyncStorage.getItem('file/'+file.id)
+            .then(ares => {
+                if(ares !== null){
+                    file.accessUrl = 'file:///'+ares
+                    console.log('RNFSR file found in store ', ares);
+                    ((fileIndex + 1) === files.length) && this.updateRecursiveShout(++ideaIndex, 0)
+                    
+                }
+                else{
+                    checkAndStore(file, user.userInfo.id)
+                        .then(result => {
+                            console.log('RNFSR batch, files, ', file.accessUrl, result.fileStoreLocation)
+                            const localUrl = 'file:///'+result.fileStoreLocation
+                            if(file.accessUrl === ideas[ideaIndex].coverImage ){
+                                ideas[ideaIndex].coverImage = localUrl
+                            }
+                            file.accessUrl = localUrl;
+                            ((fileIndex + 1) === files.length) && this.updateRecursiveShout(++ideaIndex, delay)
+    
+                        })
+                        .catch(err => console.log('RNFSR batch - can not store file because ', err))
+                        ((fileIndex + 1) === files.length) && this.updateRecursiveShout(++ideaIndex, delay)
+    
+                }
+            })
+            .catch(() => {
+                checkAndStore(file, user.userInfo.id)
+                    .then(result => {
+                        console.log('RNFSR batch, files, ', file.accessUrl, result.fileStoreLocation)
+                        const localUrl = 'file:///'+result.fileStoreLocation
+                        if(file.accessUrl === ideas[ideaIndex].coverImage ){
+                            ideas[ideaIndex].coverImage = localUrl
+                        }
+                        file.accessUrl = localUrl;
+                        ((fileIndex + 1) === files.length) && this.updateRecursiveShout(++ideaIndex, delay)
+    
+                    })
+                    .catch(err => {
+                        console.log('RNFSR batch - can not store file because ', err);
+                        ((fileIndex + 1) === files.length) && this.updateRecursiveShout(++ideaIndex, delay)
+                    })
+    
+            })
+
+        })
     }
 
     storeIdeasAndFiles = () => {
         const { user } = this.props
-        const { ideas } = this.state
-        console.log('RNFS batch - there are now ', this.state.ideas.length, ' in state')
-        ideas.map(idea => {
-
-            AsyncStorage.setItem('idea/'+idea.id, JSON.stringify(idea))
-            idea.files && idea.files.map(file => {
-                AsyncStorage.getItem('file/'+file.id)
-                .then(ares => {
-                    if(ares !== null){
-                        file.accessUrl = 'file:///'+ares
-                        console.log('RNFS file found in store ', ares)
-                    }
-                    else{
-                        checkAndStore(file, user.userInfo.id)
-                            .then(result => {
-                                console.log('RNFS batch, files, ', file.accessUrl, result.fileStoreLocation)
-                                const localUrl = 'file:///'+result.fileStoreLocation
-                                if(file.accessUrl === idea.coverImage){
-                                    idea.coverImage = localUrl
-                                }
-                                file.accessUrl = localUrl
-
-                            })
-                            .catch(err => console.log('RNFS batch - can not store file because ', err))
-
-                    }
-                })
-                .catch(() => {
-                    checkAndStore(file, user.userInfo.id)
-                        .then(result => {
-                            console.log('RNFS batch, files, ', file.accessUrl, result.fileStoreLocation)
-                            const localUrl = 'file:///'+result.fileStoreLocation
-                            if(file.accessUrl === idea.coverImage){
-                                idea.coverImage = localUrl
-                            }
-                            file.accessUrl = localUrl
-
-                        })
-                        .catch(err => console.log('RNFS batch - can not store file because ', err))
-
-                })
-
-            })
-        })
+        const { ideas, storageDelay } = this.state
+        setTimeout(()=>{
+            this.recursiveStoreFiles()
+        }, storageDelay)
     }
 
     componentDidUpdate(prevProps: Readonly<P>, prevState: Readonly<S>, snapshot: SS): void {
