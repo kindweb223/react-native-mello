@@ -295,10 +295,10 @@ export default class Root extends React.Component {
             }
         }
 
-        SharedGroupPreferences.getItem(CONSTANTS.ANDROID_SHARE_EXTENTION_FLAG, CONSTANTS.APP_GROUP_SHARE_EXTENSION).then((flag) => {
+        AsyncStorage.getItem(CONSTANTS.ANDROID_SHARE_EXTENTION_FLAG).then((flag) => {
 
           const isAndroidShareExtension = flag
-          SharedGroupPreferences.setItem(CONSTANTS.ANDROID_SHARE_EXTENTION_FLAG, null, CONSTANTS.APP_GROUP_SHARE_EXTENSION)
+          AsyncStorage.setItem(CONSTANTS.ANDROID_SHARE_EXTENTION_FLAG, null)
 
           if (isAndroidShareExtension === true) {
             var searchIndex = -1;
