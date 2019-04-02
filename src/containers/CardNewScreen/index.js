@@ -82,11 +82,12 @@ import Analytics from '../../lib/firebase'
 import ToasterComponent from '../../components/ToasterComponent'
 import AlertController from '../../components/AlertController'
 import CKEditor from '../../components/CKEditor'
+import CKEditorToolbar from '../../components/CKEditor/Toolbar'
 
 import * as COMMON_FUNC from '../../service/commonFunc'
 const ATTACHMENT_ICON = require('../../../assets/images/Attachment/Blue.png')
 const IMAGE_ICON = require('../../../assets/images/Image/Blue.png')
-
+const CKEDITOR_TOOLBAR_ICON =require('../../../assets/images/Text/IconMediumAaBlue.png')
 
 class CardNewScreen extends React.Component {
   constructor(props) {
@@ -1647,8 +1648,8 @@ class CardNewScreen extends React.Component {
     )
   }
 
-  handleCKEditorToolbar = () => {
-    this.setState({ showCKEditorToolbar: true })
+  handleCKEditorToolbar = (showCKEditorToolbar) => {
+    this.setState({ showCKEditorToolbar })
   }
 
   setCKEditorTextStyle = (type) => {
@@ -1668,13 +1669,10 @@ class CardNewScreen extends React.Component {
     if (showCKEditorToolbar) {
       return (
         <View style={[styles.attachmentButtonsContainer, { paddingHorizontal: 16, marginVertical: 16, paddingBottom: bottomButtonsPadding }]}>
-          <TouchableOpacity 
-            style={styles.iconView}
-            activeOpacity={0.6}
-            onPress={() => this.setCKEditorTextStyle('bold')}
-          >
-            <Text style={styles.ckEditorBtnText}>T</Text>
-          </TouchableOpacity>
+          <CKEditorToolbar
+            handleCKEditorToolbar={() => this.handleCKEditorToolbar(false)}
+            setCKEditorTextStyle={this.setCKEditorTextStyle}
+          />
         </View>
       )
     }
@@ -1698,9 +1696,9 @@ class CardNewScreen extends React.Component {
         <TouchableOpacity 
           style={styles.iconView}
           activeOpacity={0.6}
-          onPress={this.handleCKEditorToolbar}
+          onPress={() => this.handleCKEditorToolbar(true)}
         >
-          <Text style={styles.ckEditorBtnText}>Aa</Text>
+          <Image source={CKEDITOR_TOOLBAR_ICON} />
         </TouchableOpacity>
         {this.renderSelectFeedo}
       </View>
