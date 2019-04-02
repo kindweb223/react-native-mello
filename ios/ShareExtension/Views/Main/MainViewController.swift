@@ -215,7 +215,7 @@ class MainViewController: UIViewController {
     
     @IBAction func didTapBottomButton(_ sender: UIButton) {
         if let imagePicker = navController.viewControllersStack.last as? ImagePickerViewController {
-            let linkVC = LinkViewController(selectedAssets: [], parsedURL: imagePicker.parsedURL)
+            let linkVC = LinkViewController(selectedAssets: [], parsedURL: imagePicker.parsedURL, hideImage: true)
             linkVC.delegate = self
             navController.hideBottomButton()
             navController.push(fromVC: navController.viewControllersStack.last!, toViewController: linkVC)
@@ -223,7 +223,7 @@ class MainViewController: UIViewController {
     }
     
     private func showLinkVC(_ parsedURL: ParsedURL) {
-        let linkVC = LinkViewController(parsedURL: parsedURL)
+        let linkVC = LinkViewController(parsedURL: parsedURL, hideImage: false)
         linkVC.delegate = self
         navController.presentInitial(vc: linkVC)
     }
@@ -382,7 +382,7 @@ extension MainViewController: ImagePickerViewControllerDelegate {
     
     func imagePickerViewController(_ vc: ImagePickerViewController, didSelectAssets assets: [AssetLoader], fromParsedURL parsedURL: ParsedURL) {
         navController.hideBottomButton()
-        let linkVC = LinkViewController(selectedAssets: assets, parsedURL: parsedURL)
+        let linkVC = LinkViewController(selectedAssets: assets, parsedURL: parsedURL, hideImage: false)
         linkVC.delegate = self
         navController.push(fromVC: vc, toViewController: linkVC)
     }
