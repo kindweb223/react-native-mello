@@ -13,6 +13,7 @@ import { SCHEME } from '../service/api'
 import ShareExtension from './shareExtension'
 import LoadingScreen from '../containers/LoadingScreen';
 import CONSTANTS from '../service/constants'
+import AlertController from '../components/AlertController';
 
 export default class Share extends Component {
   constructor(props) {
@@ -34,9 +35,12 @@ export default class Share extends Component {
       if (type === '' || value === '')
       {
         console.log('empty share data:')
-        setTimeout(() => {
-          ShareExtension.close();
-        }, 10)
+        AlertController.shared.showAlert('Error', 'Oops, we hit an issue \nPlease try sharing again', [
+          {
+            text: 'Ok',
+            onPress: () => ShareExtension.close() 
+          },
+        ])
         return;
       }
       
