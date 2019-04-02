@@ -6,7 +6,8 @@ import {
   Image,
   Alert,
   Animated,
-  ActivityIndicator
+  ActivityIndicator,
+  NetInfo
 } from 'react-native'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
@@ -35,13 +36,34 @@ class ImageSliderScreen extends React.Component {
       isTouch: false,
       imageIndex: this.props.position,
       setCoveredIndex: this.props.position,
-      updatingCoverImage: false
+      updatingCoverImage: false,
+      offline: false,
     };
     this.buttonOpacity = new Animated.Value(1)
   }
 
   componentDidMount() {
     Analytics.setCurrentScreen('ImageSliderScreen')
+    const offlineStatus = this.state.offline
+    NetInfo.getConnectionInfo().then((connectionInfo) => {
+      console.log(
+        'CDU: Initial, type: ' +
+          connectionInfo.type +
+          ', effectiveType: ' +
+          connectionInfo.effectiveType, connectionInfo
+      );
+      if(connectionInfo.type === 'none'){
+        if(!offlineStatus){
+          this.setState({ offline: true})
+        }
+        return true
+      }else{
+        if(offlineStatus){
+          this.setState({ offline: false})
+        }
+        return false
+      }
+    });
   }
 
   UNSAFE_componentWillReceiveProps(nextProps) {
@@ -141,6 +163,7 @@ class ImageSliderScreen extends React.Component {
 
   render () {
     const { mediaFiles, isFastImage } = this.props;
+    const { offline } = this.state
 
     const isCoveredImage = this.state.setCoveredIndex === this.state.imageIndex
 
@@ -171,7 +194,7 @@ class ImageSliderScreen extends React.Component {
         </Animated.View>
         {
 
-          this.props.removal && this.props.isSetCoverImage &&
+          this.props.removal && this.props.isSetCoverImage && !offline &&
           <Animated.View
             style={[styles.coverButton, { opacity: this.buttonOpacity }]}
           >
@@ -193,7 +216,7 @@ class ImageSliderScreen extends React.Component {
           </Animated.View>
         }
         {
-          this.props.removal &&
+          this.props.removal && !offline &&
           <Animated.View
             style={[styles.deleteButton, { opacity: this.buttonOpacity }]}
           >
