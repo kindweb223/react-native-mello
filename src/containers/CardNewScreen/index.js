@@ -246,6 +246,10 @@ class CardNewScreen extends React.Component {
           idea: this.props.shareUrl,
         }, () => {
           this.checkUrls();
+          // Upload file received from Dashboard
+          if (this.props.fileData) {
+            this.handleFile(this.props.fileData);
+          }
         });
       }
       else {
@@ -1981,7 +1985,8 @@ CardNewScreen.defaultProps = {
   shareImageUrls: [],
   shareText: '',
   onClose: () => {},
-  isClipboard: false
+  isClipboard: false,
+  fileData: {}
 }
 
 
@@ -1997,6 +2002,7 @@ CardNewScreen.propTypes = {
   shareText: PropTypes.string,
   onClose: PropTypes.func,
   isClipboard: PropTypes.bool,
+  fileData: PropTypes.object
 }
 
 
