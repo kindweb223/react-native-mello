@@ -1,7 +1,8 @@
 import React, { Component } from 'react'
 import {
   YellowBox,
-  Linking
+  Linking,
+  AsyncStorage
 } from 'react-native'
 import _ from 'lodash'
 
@@ -42,7 +43,7 @@ export default class Share extends Component {
       if (type === 'text/plain')
         type = 'url'
 
-      SharedGroupPreferences.setItem(CONSTANTS.ANDROID_SHARE_EXTENTION_FLAG, true, CONSTANTS.APP_GROUP_SHARE_EXTENSION)
+      AsyncStorage.setItem(CONSTANTS.ANDROID_SHARE_EXTENTION_FLAG, true)
       
       console.log('share data:', type, value)
       setTimeout(() => {
