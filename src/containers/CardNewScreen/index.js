@@ -367,7 +367,6 @@ class CardNewScreen extends React.Component {
         this.setState({ imageUploading: false });
         this.imageUploading = false;
       }
-      this.setState({ imageUploadStarted: false })
 
       this.currentSelectedLinkImageIndex ++;
       if (this.currentSelectedLinkImageIndex < this.selectedLinkImages.length) {
@@ -418,7 +417,7 @@ class CardNewScreen extends React.Component {
 
       this.setState({
         coverImage: nextProps.card.currentCard.coverImage,
-        // imageUploading: false
+        imageUploadStarted: false
       }, () => {
         if (this.props.cardMode === CONSTANTS.SHARE_EXTENTION_CARD) {
           setTimeout(() => {
