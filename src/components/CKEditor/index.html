@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <title>CKEditor</title>
+    <script src="https://cdn.ckeditor.com/ckeditor5/12.0.0/decoupled-document/ckeditor.js"></script>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+</head>
+
+<body>
+<div name="content" id="editor"></div>
+<script>
+  document.addEventListener("message", function(event) {
+    CKEditor.setData(event.data)
+    // if (event.data.type === 'text') {
+    //   editor.setData(event.data.content)
+    // } else {
+    //   editor.setData(event.data.content)
+    // }
+  })
+
+  DecoupledEditor
+    .create(document.querySelector('#editor'), {
+      placeholder: 'Type text or paste a link',
+      focus: true
+    })
+    .then(editor => {
+      window.CKEditor = editor;
+
+      editor.model.document.on( 'change', function() {
+        window.postMessage(editor.getData(), '*')
+      });
+    })
+    .catch(error => {
+      console.error(error);
+    });
+</script>
+</body>
+
+</html>
