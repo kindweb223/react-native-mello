@@ -296,7 +296,7 @@ class MainViewController: UIViewController {
         
         API.shared.newCard(parsedURL: withParsedUrl, selectedImageUrls: imagesWithSize, text: description, inFlow: flow) { success in
           if success {
-            loadingVC.update(.success)
+            loadingVC.update(.success(flow: flow, imageUrl: imagesWithSize.first?.url))
           } else {
             loadingVC.update(.error)
           }
@@ -432,7 +432,7 @@ extension MainViewController: LocalImageViewControllerDelegate {
           loadingVC.update(.step(count: count, total: total), animated: false)
         }) { success in
           if success {
-            loadingVC.update(.success)
+            loadingVC.update(.success(flow: createdFlow, imageUrl: nil))
           } else {
             loadingVC.update(.error)
           }
@@ -548,7 +548,7 @@ extension MainViewController: TextViewControllerDelegate {
             return
           }
           API.shared.publishCard(cardId, text: text, flowId: createdFlow.id, completion: {
-            loadingVC.update(.success)
+            loadingVC.update(.success(flow: createdFlow, imageUrl: nil))
           })
         })
         
