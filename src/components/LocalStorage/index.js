@@ -9,7 +9,7 @@ const makeUserDir = (id, resolve, reject) => {
     const userDir = RNFS.DocumentDirectoryPath + '/' + id
     RNFS.mkdir(userDir)
         .then((result)=>{
-            console.log('RNFS - made user dir', result)
+            //console.log('RNFS - made user dir', result)
             resolve(true)
         })
         .catch((error)=>{
@@ -23,14 +23,14 @@ const userDirMustExist = (userId) => {
         RNFS.stat(userDir)
             .then((result) => {
                 if(result.isDirectory()){
-                    console.log('RNFS - User dir exists at ', RNFS.DocumentDirectoryPath + '/' + userId)
+                    //console.log('RNFS - User dir exists at ', RNFS.DocumentDirectoryPath + '/' + userId)
                     resolve(true)
                 } else {
                     RNFS.unlink(userDir)
                         .then(()=>{
                             RNFS.mkdir(RNFS.DocumentDirectoryPath + '/' + userId)
                                 .then((result)=>{
-                                    console.log('RNFS - made user dir', result)
+                                    //console.log('RNFS - made user dir', result)
                                     resolve(true)
                                 })
                                 .catch((error)=>{
@@ -52,14 +52,14 @@ function checkDirectories() {
     return new Promise((resolve, reject) => {
         RNFS.readDir(RNFS.DocumentDirectoryPath) // On Android, use "RNFS.DocumentDirectoryPath" (MainBundlePath is not defined)
             .then((result) => {
-                // console.log('RNFS - GOT RESULT', result);
+                // //console.log('RNFS - GOT RESULT', result);
 
                 // stat the first file
                 // return Promise.all([RNFS.stat(result[0].path), result[0].path]);
                 resolve(result)
             })
             .catch((err) => {
-                // console.log('RNFS - there\'s an error')
+                // //console.log('RNFS - there\'s an error')
                 console.log(err.message, err.code);
                 reject()
             });
@@ -69,11 +69,11 @@ function checkDirectories() {
 }
 
 function checkAndStore(file, userId) {
-    // console.log('RNFS - CAS', file, userId)
+    // //console.log('RNFS - CAS', file, userId)
     const fileExt = '.'+mime.extension(file.contentType)
     const fileStoreLocation = RNFS.DocumentDirectoryPath + '/' + userId + '/' + file.id + fileExt
     const fileDownloadLocation = RNFS.DocumentDirectoryPath + '/' + userId + '/'
-    // console.log('RNFS - file location is ' + fileDownloadLocation)
+    // //console.log('RNFS - file location is ' + fileDownloadLocation)
     return new Promise((resolve, reject) => {
 
         if ( fileExt === null){
@@ -82,32 +82,32 @@ function checkAndStore(file, userId) {
 
         // await AsyncStorage.getItem('file/'+file.id)
         //     .then(result => {
-        //         console.log('RNFS - result of async get is ', result)
+        //         //console.log('RNFS - result of async get is ', result)
         //         resolve({
         //             fileStoredLocally: true,
         //             result,
         //        })
         //     })
         //     .catch(err => {
-        //         console.log('RNFS file not in store')
+        //         //console.log('RNFS file not in store')
         //     })
 
         RNFS.exists(fileStoreLocation)
             .then((result) => {
                 if(result) {
-                    console.log('RNFS - we stored that file already')
+                    //console.log('RNFS - we stored that file already')
                     resolve({
                         fileStoredLocally: true,
                         fileDownloadLocation,
                         fileStoreLocation,
                     })
                 } else {
-                    console.log('RNFS - not stored, try to store at ', fileStoreLocation, file)
+                    //console.log('RNFS - not stored, try to store at ', fileStoreLocation, file)
 
                             let downloadedFileExt = ''
                             const updateFileExt = (args) => {
                                 const contentType =  args.headers['Content-Type']
-                                console.log('RNFS - headers:', args.statusCode)
+                                //console.log('RNFS - headers:', args.statusCode)
                                 downloadedFileExt = '.'+mime.extension(contentType)
                             }
 
@@ -116,9 +116,9 @@ function checkAndStore(file, userId) {
                                 toFile: fileStoreLocation,
                                 begin: updateFileExt,
                             }).promise.then((result) => {
-                                // console.log('RNFS download: ', result, fileDownloadLocation, fileStoreLocation, file.accessUrl, ' ext=',downloadedFileExt)
+                                // //console.log('RNFS download: ', result, fileDownloadLocation, fileStoreLocation, file.accessUrl, ' ext=',downloadedFileExt)
                                 if(downloadedFileExt !== fileExt){
-                                    console.log('RNFS - mismatch:', downloadedFileExt, ' vs ', fileExt, file, result)
+                                    //console.log('RNFS - mismatch:', downloadedFileExt, ' vs ', fileExt, file, result)
                                     //TODO if 404/3 reject
                                     //TODO if there's a mismatch, move to have downloaded file ext
                                     //TODO if there's a mismatch, update file entry on DB to have correct filetype
@@ -134,7 +134,7 @@ function checkAndStore(file, userId) {
                                     const locString = fileStoreLocation.toString()
                                     AsyncStorage.setItem(locKey, locString)
                                     .then(aresult => {
-                                        console.log('RNFSR async - ', aresult, fileStoreLocation)
+                                        //console.log('RNFSR async - ', aresult, fileStoreLocation)
                                         resolve({
                                             result,
                                             fileStoreLocation,
@@ -143,13 +143,13 @@ function checkAndStore(file, userId) {
 
                                     })
                                     .catch(err => {
-                                        console.log('RNFS async set error -', err)
+                                        //console.log('RNFS async set error -', err)
                                     })
                                 }
 
                             })
                                 .catch((error) => {
-                                    console.log('RNFS error ', error, fileStoreLocation, file.accessUrl)
+                                    //console.log('RNFS error ', error, fileStoreLocation, file.accessUrl)
                                     // TODO handle 404s and so on here
                                     reject({
                                         fileStoredLocally: false,
@@ -161,7 +161,7 @@ function checkAndStore(file, userId) {
                 }
             })
             .catch(err => {
-                // console.log('RNFS file store location does not exist ', err)
+                // //console.log('RNFS file store location does not exist ', err)
                 reject(err)
             })
     })
@@ -185,11 +185,11 @@ class LocalStorage extends React.Component {
 
     listFiles = () => {
         const { user } = this.props
-        // console.log('RNFS - listFiles called')
+        // //console.log('RNFS - listFiles called')
         const dir = RNFS.DocumentDirectoryPath + '/' + user.userInfo.id
         RNFS.readDir(dir)
-            .then(result => console.log('RNFS o- ', result))
-            .catch(error => console.log('RNFS o- ',  error))
+            .then(result => //console.log('RNFS o- ', result))
+            .catch(error => //console.log('RNFS o- ',  error))
     }
 
     flattenIdeas = () => {
@@ -198,11 +198,11 @@ class LocalStorage extends React.Component {
             const { feedoList } = feedo
             console.log('AS set ', (user.userInfo.id + '/flows'), ' to ', JSON.stringify(feedoList))
             AsyncStorage.setItem(user.userInfo.id + '/flows', JSON.stringify(feedoList))
-            console.log('RNFS feedoList is ', feedo, feedoList)
+            //console.log('RNFS feedoList is ', feedo, feedoList)
             let waitForAll;
             feedoList.map((feed, index) => {
                 // allIdeas.push(...feed.ideas)
-                console.log('RNFS one feeds ideas are ', ...feed.ideas)
+                //console.log('RNFS one feeds ideas are ', ...feed.ideas)
                 axios({
                     method: 'get',
                     url: 'hunts/'+feed.id
@@ -210,10 +210,10 @@ class LocalStorage extends React.Component {
                     .then(response => {
                         this.saveImagesOnCurrentFeed(response.data)
                         let ideas = response.data.ideas
-                        console.log('RNFS flat - ',Object.keys(response.data))
-                        console.log('RNFS flat - ideas -', ideas)
+                        //console.log('RNFS flat - ',Object.keys(response.data))
+                        //console.log('RNFS flat - ideas -', ideas)
                         allIdeas.push(...ideas)
-                        console.log('RNFS - allideas is now ', allIdeas.length, ' long')
+                        //console.log('RNFS - allideas is now ', allIdeas.length, ' long')
                         // if(index === (feeds.length - 1)){
                             clearTimeout(waitForAll)
                             waitForAll = setTimeout(()=>{
@@ -223,8 +223,8 @@ class LocalStorage extends React.Component {
                         // }
                     })
             })
-            console.log('RNFS there are a total of ', allIdeas.length, ' ideas this user has access to')
-            console.log('RNFS ', allIdeas[0], allIdeas[1], allIdeas[2])
+            //console.log('RNFS there are a total of ', allIdeas.length, ' ideas this user has access to')
+            //console.log('RNFS ', allIdeas[0], allIdeas[1], allIdeas[2])
 
     }
 
@@ -236,16 +236,16 @@ class LocalStorage extends React.Component {
             .then(result => this.setState({files: result}))
         userDirMustExist(user.userInfo.id)
             .then(() => {
-                console.log('RNFS - ideas are: ', ideas.length)
-                // console.log('RNFS - first idea has: ', ideas[0].files.length)
+                //console.log('RNFS - ideas are: ', ideas.length)
+                // //console.log('RNFS - first idea has: ', ideas[0].files.length)
                 ideas.map((idea, ideaIndex) => {
                     idea.files && idea.files.map((file, fileIndex) => {
-                        console.log('RNFS - start of CAS')
+                        //console.log('RNFS - start of CAS')
 
                         checkAndStore(file, user.userInfo.id)
                             .then(result => {
-                                console.log('RNFS cas-> ', result)
-                                // console.log('RNFS, files, ', file.accessUrl, result.fileStoreLocation)
+                                //console.log('RNFS cas-> ', result)
+                                // //console.log('RNFS, files, ', file.accessUrl, result.fileStoreLocation)
                                 const localUrl = 'file:///'+result.fileStoreLocation
                                 if(file.accessUrl === idea.coverImage){
                                     idea.coverImage = localUrl
@@ -253,23 +253,23 @@ class LocalStorage extends React.Component {
                                 file.accessUrl = localUrl
                                 if(ideaIndex === (ideas.length - 1)){
                                     setTimeout(()=>{
-                                        console.log('RNFS saved flow will be ', feed)
+                                        //console.log('RNFS saved flow will be ', feed)
                                         AsyncStorage.setItem('flow/'+flow.id, JSON.stringify(feed))
                                     }, 2000)
                                 }
 
                             })
-                            .catch(err => console.log('RNFS - can not store file because ', err))
+                            .catch(err => //console.log('RNFS - can not store file because ', err))
                     })
                 })
 
             })
-            .catch(err => console.log('RNFS - no user dir and no resolution - ', err))
+            .catch(err => //console.log('RNFS - no user dir and no resolution - ', err))
     }
 
     componentDidMount(): void {
         const { user } = this.props
-        console.log('RNFS try and do stuff when user is ', user )
+        //console.log('RNFS try and do stuff when user is ', user )
         NetInfo.getConnectionInfo().then((connectionInfo) => {
           if(connectionInfo.type !== 'wifi'){
           }else{              
@@ -278,7 +278,7 @@ class LocalStorage extends React.Component {
                 storageInterval: 10
             })
           }
-          console.log('RNFSR - Connection is ', connectionInfo)
+          //console.log('RNFSR - Connection is ', connectionInfo)
         })
 
     }
@@ -296,7 +296,7 @@ class LocalStorage extends React.Component {
     recursiveStoreFiles = (ideaIndex = 0) => {
         const { user } = this.props
         const { ideas, storageInterval } = this.state
-        console.log('RNFSR run on ', ideaIndex, ' of ', ideas.length)
+        //console.log('RNFSR run on ', ideaIndex, ' of ', ideas.length)
         const delay = storageInterval
 
         if(ideaIndex === (ideas.length)){
@@ -316,14 +316,14 @@ class LocalStorage extends React.Component {
             .then(ares => {
                 if(ares !== null){
                     file.accessUrl = 'file:///'+ares
-                    console.log('RNFSR file found in store ', ares);
+                    //console.log('RNFSR file found in store ', ares);
                     ((fileIndex + 1) === files.length) && this.updateRecursiveShout(++ideaIndex, 0)
                     
                 }
                 else{
                     checkAndStore(file, user.userInfo.id)
                         .then(result => {
-                            console.log('RNFSR batch, files, ', file.accessUrl, result.fileStoreLocation)
+                            //console.log('RNFSR batch, files, ', file.accessUrl, result.fileStoreLocation)
                             const localUrl = 'file:///'+result.fileStoreLocation
                             if(file.accessUrl === ideas[ideaIndex].coverImage ){
                                 ideas[ideaIndex].coverImage = localUrl
@@ -332,7 +332,7 @@ class LocalStorage extends React.Component {
                             ((fileIndex + 1) === files.length) && this.updateRecursiveShout(++ideaIndex, delay)
     
                         })
-                        .catch(err => console.log('RNFSR batch - can not store file because ', err))
+                        .catch(err => //console.log('RNFSR batch - can not store file because ', err))
                         ((fileIndex + 1) === files.length) && this.updateRecursiveShout(++ideaIndex, delay)
     
                 }
@@ -340,7 +340,7 @@ class LocalStorage extends React.Component {
             .catch(() => {
                 checkAndStore(file, user.userInfo.id)
                     .then(result => {
-                        console.log('RNFSR batch, files, ', file.accessUrl, result.fileStoreLocation)
+                        //console.log('RNFSR batch, files, ', file.accessUrl, result.fileStoreLocation)
                         const localUrl = 'file:///'+result.fileStoreLocation
                         if(file.accessUrl === ideas[ideaIndex].coverImage ){
                             ideas[ideaIndex].coverImage = localUrl
@@ -350,7 +350,7 @@ class LocalStorage extends React.Component {
     
                     })
                     .catch(err => {
-                        console.log('RNFSR batch - can not store file because ', err);
+                        //console.log('RNFSR batch - can not store file because ', err);
                         ((fileIndex + 1) === files.length) && this.updateRecursiveShout(++ideaIndex, delay)
                     })
     
@@ -374,14 +374,14 @@ class LocalStorage extends React.Component {
         if((prevProps.feedo.feedoList === null || prevProps.feedo.feedoList.length === 0) && (feedo.feedoList && feedo.feedoList.length > 0)){
             userDirMustExist(user.userInfo.id)
             .then(()=>{
-                console.log('RNFS try and do stuff')
+                //console.log('RNFS try and do stuff')
                 this.flattenIdeas()
             })
         }
 
 
         if(prevProps.feedo.currentFeed.id !== this.props.feedo.currentFeed.id){
-            console.log('RNFS - feed changed to ', this.props.feed, this.props, this.state)
+            //console.log('RNFS - feed changed to ', this.props.feed, this.props, this.state)
         }
         if (prevState.ideas.length < this.state.ideas.length) {
             this.storeIdeasAndFiles()
@@ -393,8 +393,8 @@ class LocalStorage extends React.Component {
         const { files } =  this.state
         const { feedo } = this.props
         const ideas = feedo.currentFeed.ideas
-        // console.log('RNFS feed is ', Object.keys(feedo))
-        // console.log('RNFS feeds are ', feedo.feedoList)
+        // //console.log('RNFS feed is ', Object.keys(feedo))
+        // //console.log('RNFS feeds are ', feedo.feedoList)
         return (
             <View>
             </View>
