@@ -4,10 +4,12 @@ import {
   Alert,
   StyleSheet,
   View,
-  Platform
+  Platform,
+  WebView
 } from 'react-native';
+import _ from 'lodash';
 
-import { WebView } from 'react-native-webview'
+// import { WebView } from 'react-native-webview'
 
 const webapp = require('./index.html');
 
@@ -20,17 +22,12 @@ const patchPostMessageJsCode = `(${String(function() {
   patchedPostMessage.toString = function() {
     return String(Object.hasOwnProperty).replace('hasOwnProperty', 'postMessage');
   };
-  console.log('patchedPostMessage: ', patchedPostMessage)
   window.postMessage = patchedPostMessage;
 })})();`;
 
 class CKEditor extends React.Component {
   constructor(props) {
     super(props);
-
-    this.state = {
-      loading: true
-    };
   }
 
   onError = error => {
@@ -63,30 +60,24 @@ class CKEditor extends React.Component {
   };
 
   onWebViewLoaded = () => {
-    this.setState({ loading: false });
-    this.postMessage(this.props.content);
+    // data = 'placeholder: ' + this.props.content;
+    data = 'placeholder: ' + 'My TEST';
+    this.postMessage(data);
   };
 
-  showLoadingIndicator = () => {
-    return (
-      <View style={styles.activityIndicatorContainer}>
-        <ActivityIndicator size="large" animating={this.state.loading} color="#4A00CD" />
-      </View>
-    );
-  };
-
-  setTextType = (type) => {
-    console.log('TYPE: ', { type: 'style', content: type })
-    this.postMessage({ type: 'style', content: type });
+  executeCommand = (command) => {
+    data = 'execute: ' + command;
+    this.postMessage(data);
   }
 
   render() {
     return (
       <WebView
-        ref={ c => this.webview = c}
+        ref={c => this.webview = c}
         injectedJavaScript={patchPostMessageJsCode}
         style={styles.webviewStyle}
-        // scrollEnabled={false}
+        useWebKit={true}
+        scrollEnabled={false}
         hideKeyboardAccessoryView={true}
         source={webapp}
         onError={this.onError}
@@ -94,7 +85,6 @@ class CKEditor extends React.Component {
         javaScriptEnabled
         onLoadEnd={this.onWebViewLoaded}
         onMessage={this.handleMessage}
-        renderLoading={this.showLoadingIndicator}
         mixedContentMode="always"
       />
     );

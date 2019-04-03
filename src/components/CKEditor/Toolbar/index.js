@@ -45,33 +45,33 @@ class CKEditorToolbar extends React.Component {
           ? <View style={styles.firstToolbarView}>
               <TouchableOpacity
                 activeOpacity={0.6}
-                onPress={() => this.props.setCKEditorTextStyle('bold')}
+                onPress={() => this.props.executeCKEditorCommand('bold')}
               >
                 <Image source={HEADLINE_ICON} />
               </TouchableOpacity>
               <View style={styles.toolbarBorderView}>
                 <TouchableOpacity
                   activeOpacity={0.6}
-                  onPress={() => this.props.handleCKEditorToolbar()}
+                  onPress={() => this.props.executeCKEditorCommand('bulletedList')}
                 >
                   <Image source={BULLET_ICON} />
                 </TouchableOpacity>
                 <TouchableOpacity
                   activeOpacity={0.6}
-                  onPress={() => this.props.setCKEditorTextStyle('bold')}
+                  onPress={() => this.props.executeCKEditorCommand('numberedList')}
                 >
                   <Image source={NUMBER_ICON} />
                 </TouchableOpacity>
                 <TouchableOpacity
                   activeOpacity={0.6}
-                  onPress={() => this.props.setCKEditorTextStyle('bold')}
+                  onPress={() => this.props.executeCKEditorCommand('bold')}
                 >
                   <Image source={CHECKBOX_ICON} />
                 </TouchableOpacity>
               </View>
               <TouchableOpacity
                 activeOpacity={0.6}
-                onPress={() => this.props.setCKEditorTextStyle('bold')}
+                onPress={() => this.props.executeCKEditorCommand('bold')}
               >
                 <Image source={BOLD_ICON} />
               </TouchableOpacity>
@@ -80,21 +80,21 @@ class CKEditorToolbar extends React.Component {
               <TouchableOpacity
                 activeOpacity={0.6}
                 style={styles.toolView}
-                onPress={() => this.props.setCKEditorTextStyle('bold')}
+                onPress={() => this.props.executeCKEditorCommand('underline')}
               >
                 <Image source={UNDERLINE_ICON} />
               </TouchableOpacity>
               <TouchableOpacity
                 activeOpacity={0.6}
                 style={styles.toolView}
-                onPress={() => this.props.setCKEditorTextStyle('bold')}
+                onPress={() => this.props.executeCKEditorCommand('italic')}
               >
                 <Image source={ITALIC_ICON} />
               </TouchableOpacity>
               <TouchableOpacity
                 activeOpacity={0.6}
                 style={styles.toolView}
-                onPress={() => this.props.setCKEditorTextStyle('bold')}
+                onPress={() => this.props.executeCKEditorCommand('strikethrough')}
               >
                 <Image source={STRIKETHROUGH_ICON} />
               </TouchableOpacity>

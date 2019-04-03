@@ -750,7 +750,7 @@ class CardNewScreen extends React.Component {
         return;
       }
 
-      this.textInputIdeaRef.focus();
+      // this.textInputIdeaRef.focus();
     });
   }
 
@@ -1109,7 +1109,7 @@ class CardNewScreen extends React.Component {
   async uploadFile(currentCard, file, type) {
     this.selectedFile = file;
     this.imageUploading = type === 'MEDIA';
-    this.textInputIdeaRef.focus(); // To show progress bar for long image
+    // this.textInputIdeaRef.focus(); // To show progress bar for long image
     let imageFiles = _.filter(currentCard.files, file => file.fileType === 'MEDIA');
     this.setState({
       imageUploadStarted: type === 'MEDIA',
@@ -1164,7 +1164,7 @@ class CardNewScreen extends React.Component {
   onTapMediaPickerActionSheet(index) {
     this.setState({ imageUploading: false });
     this.imageUploading = false;
-    this.textInputIdeaRef.blur(); // To show progress bar for long image
+    // this.textInputIdeaRef.blur(); // To show progress bar for long image
     var options = {
       storageOptions: {
         skipBackup: true,
@@ -1382,7 +1382,7 @@ class CardNewScreen extends React.Component {
     }
     this.prevFeedo = null;
     if(this.textInputIdeaRef) {
-      this.textInputIdeaRef.focus();
+      // this.textInputIdeaRef.focus();
     }
   }
 
@@ -1652,8 +1652,8 @@ class CardNewScreen extends React.Component {
     this.setState({ showCKEditorToolbar })
   }
 
-  setCKEditorTextStyle = (type) => {
-    this.refCKEditor.setTextType(type)
+  executeCKEditorCommand = (command) => {
+    this.refCKEditor.executeCommand(command)
   }
 
   get renderBottomAttachmentButtons() {
@@ -1671,7 +1671,7 @@ class CardNewScreen extends React.Component {
         <View style={[styles.attachmentButtonsContainer, { paddingHorizontal: 16, marginVertical: 16, paddingBottom: bottomButtonsPadding }]}>
           <CKEditorToolbar
             handleCKEditorToolbar={() => this.handleCKEditorToolbar(false)}
-            setCKEditorTextStyle={this.setCKEditorTextStyle}
+            executeCKEditorCommand={this.executeCKEditorCommand}
           />
         </View>
       )
