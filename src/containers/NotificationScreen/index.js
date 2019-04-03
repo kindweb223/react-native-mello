@@ -24,6 +24,7 @@ import FontAwesome from 'react-native-vector-icons/FontAwesome'
 import Analytics from '../../lib/firebase'
 import NotificationItemComponent from '../../components/NotificationItemComponent'
 import ActivityFeedComponent from '../../components/ActivityFeedComponent'
+import ActivityFeedGroupComponent from '../../components/ActivityFeedComponent/ActivityFeedGroupComponent'
 import CardDetailScreen from '../CardDetailScreen'
 import SelectHuntScreen from '../SelectHuntScreen'
 import ToasterComponent from '../../components/ToasterComponent'
@@ -104,6 +105,7 @@ class NotificationScreen extends React.Component {
       invitedFeedList: [],
       activityFeedList: [],
       notificationList: [],
+      singleNotificationList: [],
       selectedActivity: {},
       isVisibleCard: false,
       cardViewMode: CONSTANTS.CARD_NONE,
@@ -112,7 +114,8 @@ class NotificationScreen extends React.Component {
       isVisibleSelectFeedo: false,
       isShowInviteToaster: false,
       inviteToasterTitle: '',
-      apiLoading: false
+      apiLoading: false,
+      singleNotification: false
     };
     this.animatedOpacity = new Animated.Value(0)
     this.userActions = []
@@ -419,8 +422,8 @@ class NotificationScreen extends React.Component {
           style={styles.itemContainer}
           autoClose={true}
           right={swipeoutBtns}
-        > 
-          <ActivityFeedComponent user={this.props.user} data={data} onReadActivity={() => this.onReadActivity(data)} />
+        >
+          <ActivityFeedGroupComponent user={this.props.user} data={data} onReadActivity={() => this.onReadActivity(data)} />
         </Swipeout>
       </View>
     );
@@ -480,11 +483,15 @@ class NotificationScreen extends React.Component {
   }
 
   renderItem({ item }) {
-    if (item.hasOwnProperty('activityTypeEnum')) {
+    if (item.hasOwnProperty('activities')) {
       return this.renderActivityFeedItem(item)
     } else {
       return this.renderInvitedFeedItem(item)
     }
+  }
+
+  renderSingleNotificationItem({ item }) {
+    return this.renderActivityFeedItem(item)
   }
 
   renderFooter = () => {
@@ -502,14 +509,14 @@ class NotificationScreen extends React.Component {
   )
   
   render () {
-    const { notificationList, loading } = this.state
+    const { notificationList, loading, singleNotification } = this.state
 
     return (
       <View style={styles.container}>
         <SafeAreaView style={{ flex: 1 }}>
           {this.renderHeader}
 
-          {notificationList.length > 0
+          {!singleNotification && (notificationList.length > 0
           ? <FlatList
               style={styles.flatList}
               contentContainerStyle={styles.contentFlatList}
@@ -537,7 +544,28 @@ class NotificationScreen extends React.Component {
               <Text style={styles.subTitle}>Invite a friend to your flows and </Text>
               <Text style={styles.subTitle}>you'll see their activity here 👇.</Text>
             </View>
-          }
+          )}
+
+          {singleNotification && (
+            <FlatList
+              style={styles.flatList}
+              contentContainerStyle={styles.contentFlatList}
+              data={notificationList}
+              keyExtractor={item => item.id}
+              automaticallyAdjustContentInsets={true}
+              renderItem={this.renderSingleNotificationItem.bind(this)}
+              ListFooterComponent={this.renderFooter}
+              refreshControl={
+                <RefreshControl 
+                  refreshing={this.state.refreshing}
+                  onRefresh={this.handleRefresh}
+                  tintColor={COLORS.PURPLE}
+                />
+              }
+              onEndReached={this.handleLoadMore}
+              onEndReachedThreshold={0}
+            />
+          )}
 
           {loading && <LoadingScreen />}
 
