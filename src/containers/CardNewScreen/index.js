@@ -249,6 +249,10 @@ class CardNewScreen extends React.Component {
           idea: this.props.shareUrl,
         }, () => {
           this.checkUrls();
+          // Upload file received from Dashboard
+          if (this.props.fileData) {
+            this.handleFile(this.props.fileData);
+          }
         });
       }
       else {
@@ -370,7 +374,6 @@ class CardNewScreen extends React.Component {
         this.setState({ imageUploading: false });
         this.imageUploading = false;
       }
-      this.setState({ imageUploadStarted: false })
 
       this.currentSelectedLinkImageIndex ++;
       if (this.currentSelectedLinkImageIndex < this.selectedLinkImages.length) {
@@ -421,7 +424,7 @@ class CardNewScreen extends React.Component {
 
       this.setState({
         coverImage: nextProps.card.currentCard.coverImage,
-        // imageUploading: false
+        imageUploadStarted: false
       }, () => {
         if (this.props.cardMode === CONSTANTS.SHARE_EXTENTION_CARD) {
           setTimeout(() => {
@@ -1987,6 +1990,7 @@ CardNewScreen.defaultProps = {
   onClose: () => {},
   isClipboard: false,
   prev_scene: '',
+  fileData: {}
 }
 
 
@@ -2003,6 +2007,7 @@ CardNewScreen.propTypes = {
   onClose: PropTypes.func,
   isClipboard: PropTypes.bool,
   prev_scene: PropTypes.string,
+  fileData: PropTypes.object
 }
 
 

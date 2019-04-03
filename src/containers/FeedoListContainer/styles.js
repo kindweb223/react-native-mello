@@ -16,7 +16,7 @@ const styles = StyleSheet.create({
     borderColor: '#fff',
     borderRadius: 18
   },
-  feedoSelectItem: {
+  feedoSelectInnerItem: {
     borderWidth: 1,
     borderColor: COLORS.PURPLE,
     borderRadius: 18

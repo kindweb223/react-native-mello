@@ -115,30 +115,36 @@ export const unpinFeed = (feedId) => {
 /**
  * Delete Feed
  */
-export const deleteFeed = (feedId) => {
-  let url = `hunts/${feedId}`
+export const deleteFeed = (feedList) => {
+  let url = 'hunts'
+
+  const data = feedList.map(item => {
+    return { 'id': item.feed.id }
+  })
 
   return {
     types: [types.DEL_FEED_PENDING, types.DEL_FEED_FULFILLED, types.DEL_FEED_REJECTED],
-    promise: axios.delete(url),
-    payload: 'empty'
+    promise: axios.delete(url, { data }),
+    payload: { flag: 'delete', backFeedList: feedList }
   };
 }
 
 /**
  * Archive Feed
  */
-export const archiveFeed = (feedId) => {
-  let url = `hunts/${feedId}`
+export const archiveFeed = (feedList) => {
+  let url = 'hunts/archive'
+  const data = feedList.map(item => {
+    return { 'id': item.feed.id }
+  })
 
   return {
     types: [types.ARCHIVE_FEED_PENDING, types.ARCHIVE_FEED_FULFILLED, types.ARCHIVE_FEED_REJECTED],
     promise: axios({
-      method: 'put',
+      method: 'post',
       url: url,
-      data: { status: 'ARCHIVED' }
-    }),
-    payload: feedId
+      data
+    })
   };
 }
 
@@ -162,29 +168,38 @@ export const restoreArchiveFeed = (feedId) => {
 /**
  * Duplicate Feed
  */
-export const duplicateFeed = (feedId) => {
-  let url = `hunts/${feedId}/duplicate`
+export const duplicateFeed = (feedList) => {
+  let url = 'hunts/duplicate'
+
+  const data = feedList.map(item => {
+    return { 'id': item.feed.id }
+  })
 
   return {
     types: [types.DUPLICATE_FEED_PENDING, types.DUPLICATE_FEED_FULFILLED, types.DUPLICATE_FEED_REJECTED],
     promise: axios({
       method: 'post',
-      url: url
+      url: url,
+      data
     }),
-    payload: feedId
+    payload: feedList
   };
 }
 
 /**
  * Delete Duplicated Feed
  */
-export const deleteDuplicatedFeed = (feedId) => {
-  let url = `hunts/${feedId}`
+export const deleteDuplicatedFeed = (feedList) => {
+  let url = 'hunts'
+
+  const data = feedList.map(item => {
+    return { 'id': item.feed.id }
+  })
 
   return {
     types: [types.DEL_FEED_PENDING, types.DEL_FEED_FULFILLED, types.DEL_FEED_REJECTED],
-    promise: axios.delete(url),
-    payload: feedId
+    promise: axios.delete(url, { data }),
+    payload: { flag: 'duplicate', backFeedList: data }
   };
 }
 
