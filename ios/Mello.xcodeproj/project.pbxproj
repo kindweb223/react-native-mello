@@ -86,6 +86,7 @@
 		396C1950225285A1001297F6 /* FLAnimatedImageView.m in Sources */ = {isa = PBXBuildFile; fileRef = 396C194E225285A1001297F6 /* FLAnimatedImageView.m */; };
 		396C1CD72253A321001297F6 /* APIError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 396C1CD62253A321001297F6 /* APIError.swift */; };
 		3984D08B22527DD000042F75 /* ShareExtension.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = 3984D08122527DD000042F75 /* ShareExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		39C6257C2254EB6F001FBD79 /* KeyboardHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 39C6257B2254EB6F001FBD79 /* KeyboardHelper.swift */; };
 		45A806F94F774736BDFCF564 /* libBugsnagReactNative.a in Frameworks */ = {isa = PBXBuildFile; fileRef = D9E1BD18BB5B4D62B4263950 /* libBugsnagReactNative.a */; };
 		47CA4A9854C645189A59042C /* libRNDocumentPicker.a in Frameworks */ = {isa = PBXBuildFile; fileRef = CEF9CE0D4C3B419DAD8284A6 /* libRNDocumentPicker.a */; };
 		4C030DDBB9734D8CB1045CEB /* libBVLinearGradient.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 1AE0342E1F8E4EB593320F3B /* libBVLinearGradient.a */; };
@@ -781,6 +782,7 @@
 		396C1CD422539C11001297F6 /* ShareExtension.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = ShareExtension.entitlements; sourceTree = "<group>"; };
 		396C1CD62253A321001297F6 /* APIError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = APIError.swift; sourceTree = "<group>"; };
 		3984D08122527DD000042F75 /* ShareExtension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = ShareExtension.appex; sourceTree = BUILT_PRODUCTS_DIR; };
+		39C6257B2254EB6F001FBD79 /* KeyboardHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeyboardHelper.swift; sourceTree = "<group>"; };
 		44C268ED8ACC4BCE9CDA61FC /* libRNDeviceInfo.a */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = archive.ar; path = libRNDeviceInfo.a; sourceTree = "<group>"; };
 		47BA3513B6514BE58476D7B4 /* libRNImagePicker.a */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = archive.ar; path = libRNImagePicker.a; sourceTree = "<group>"; };
 		48E815D86AC4450E91A11738 /* libRNImgToBase64.a */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = archive.ar; path = libRNImgToBase64.a; sourceTree = "<group>"; };
@@ -1147,6 +1149,7 @@
 		396C17DF22527E68001297F6 /* Helpers */ = {
 			isa = PBXGroup;
 			children = (
+				39C6257B2254EB6F001FBD79 /* KeyboardHelper.swift */,
 				396C1951225285A8001297F6 /* FLAnimatedImage */,
 				396C17F022527ECF001297F6 /* AssetLoader.swift */,
 				396C17F122527ECF001297F6 /* UIImageCompression.swift */,
@@ -2819,6 +2822,7 @@
 				396C180C22527F8C001297F6 /* MainNavigationController.swift in Sources */,
 				396C17DD22527E5D001297F6 /* ParsedURL.swift in Sources */,
 				396C17EF22527EBB001297F6 /* ShareNavigationable.swift in Sources */,
+				39C6257C2254EB6F001FBD79 /* KeyboardHelper.swift in Sources */,
 				396C183022528007001297F6 /* FlowCell.swift in Sources */,
 				396C17DE22527E5D001297F6 /* Flow.swift in Sources */,
 				396C180F22527F93001297F6 /* LocalImageViewController.swift in Sources */,
@@ -3472,6 +3476,7 @@
 				MTL_ENABLE_DEBUG_INFO = YES;
 				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = iphoneos;
+				SWIFT_VERSION = 4.2;
 			};
 			name = Debug;
 		};
@@ -3506,6 +3511,7 @@
 				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				SDKROOT = iphoneos;
+				SWIFT_VERSION = 4.2;
 				VALIDATE_PRODUCT = YES;
 			};
 			name = Release;
