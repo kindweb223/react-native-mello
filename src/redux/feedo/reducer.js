@@ -1247,11 +1247,11 @@ export default function feedo(state = initialState, action = {}) {
 
       let activityFeedList = []
       if (data.first) {
-        activityFeedList = data.content
+        activityFeedList = data.huntActivities
       } else {
         activityFeedList = [
           ...state.activityFeedList,
-          ...data.content
+          ...data.huntActivities
         ]
       }
 

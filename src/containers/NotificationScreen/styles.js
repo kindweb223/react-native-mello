@@ -14,18 +14,21 @@ const styles = StyleSheet.create({
     borderBottomColor: COLORS.LIGHT_GREY_PLACEHOLDER
   },
   buttonWrapper: {
-    flexDirection: 'row',
-    alignItems: 'flex-start',
     paddingHorizontal: 10,
     paddingVertical: 5,
-    width: 50
+    width: 80
+  },
+  doneButton: {
+    fontSize: 16,
+    fontWeight: 'normal',
+    color: COLORS.PURPLE
   },
   textTitle: {
     fontSize: 16,
     lineHeight: 23,
-    fontWeight: '500',
+    fontWeight: '600',
     textAlign: 'center',
-    marginBottom: 5,
+    marginBottom: 1,
   },
   container: {
     flex: 1,

@@ -20,6 +20,7 @@ import PropTypes from 'prop-types'
 import Swipeout from 'react-native-swipeout'
 import _ from 'lodash'
 import FontAwesome from 'react-native-vector-icons/FontAwesome'
+import Ionicons from 'react-native-vector-icons/Ionicons'
 
 import Analytics from '../../lib/firebase'
 import NotificationItemComponent from '../../components/NotificationItemComponent'
@@ -88,11 +89,19 @@ class NotificationScreen extends React.Component {
   get renderHeader() {
     return (
       <View style={styles.headerContainer}>
-        <TouchableOpacity activeOpacity={0.6} onPress={() => Actions.pop()} style={styles.buttonWrapper}>
-          <Image source={CLOSE_ICON} />
+        <TouchableOpacity
+          activeOpacity={0.6}
+          onPress={() => this.setState({ singleNotification: false, title: 'Notifications' })}
+          style={styles.buttonWrapper}
+        >
+          {this.state.singleNotification && <Ionicons name="ios-arrow-back" size={32} color={COLORS.PURPLE} />}
         </TouchableOpacity>
-        <Text style={styles.textTitle}>Notifications</Text>
-        <View style={styles.buttonWrapper} />
+        <Text style={styles.textTitle}>{this.state.title}</Text>
+        <TouchableOpacity activeOpacity={0.6} onPress={() => Actions.pop()} style={[styles.buttonWrapper, { alignItems: 'flex-end' }]}>
+          <Text style={styles.doneButton}>
+            Done
+          </Text>
+        </TouchableOpacity>
       </View>
     );
   }
@@ -100,6 +109,7 @@ class NotificationScreen extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
+      title: 'Notifications',
       refreshing: false,
       loading: false,
       invitedFeedList: [],
@@ -397,6 +407,18 @@ class NotificationScreen extends React.Component {
     })
   }
 
+  onGroupItemSelect = (data) => {
+    this.setState({
+      title: data.headline,
+      singleNotification: true,
+      singleNotificationList: data.activities
+    })
+
+    if (!data.read) {
+      this.props.readActivityFeed(this.props.user.userInfo.id, data.id)
+    }
+  }
+
   get renderDeleteComponent() {
     return (
       <View style={styles.swipeItemContainer}>
@@ -417,13 +439,16 @@ class NotificationScreen extends React.Component {
     ];
 
     return (
-      <View style={[styles.activityItem, data.read === true && { backgroundColor: '#fff' }]}>
+      <View>
         <Swipeout
           style={styles.itemContainer}
           autoClose={true}
           right={swipeoutBtns}
         >
-          <ActivityFeedGroupComponent user={this.props.user} data={data} onReadActivity={() => this.onReadActivity(data)} />
+          {this.state.singleNotification
+            ? <ActivityFeedComponent user={this.props.user} data={data} onReadActivity={() => this.onReadActivity(data)} />
+            : <ActivityFeedGroupComponent user={this.props.user} data={data} onGroupItemSelect={() => this.onGroupItemSelect(data)} />
+          }
         </Swipeout>
       </View>
     );
@@ -507,9 +532,9 @@ class NotificationScreen extends React.Component {
   renderSeparator = () => (
     <View style={styles.separator} /> 
   )
-  
+
   render () {
-    const { notificationList, loading, singleNotification } = this.state
+    const { notificationList, singleNotificationList, loading, singleNotification } = this.state
 
     return (
       <View style={styles.container}>
@@ -546,11 +571,11 @@ class NotificationScreen extends React.Component {
             </View>
           )}
 
-          {singleNotification && (
+          {singleNotification && singleNotificationList.length > 0 && (
             <FlatList
               style={styles.flatList}
               contentContainerStyle={styles.contentFlatList}
-              data={notificationList}
+              data={singleNotificationList}
               keyExtractor={item => item.id}
               automaticallyAdjustContentInsets={true}
               renderItem={this.renderSingleNotificationItem.bind(this)}
