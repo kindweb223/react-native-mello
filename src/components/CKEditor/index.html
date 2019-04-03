@@ -9,16 +9,25 @@
     <meta name="viewport" content="width=device-width,initial-scale=1">
 </head>
 
-<body>
+<style>
+  body {
+    -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+  }
+</style>
+
+<body id="body">
 <div name="content" id="editor"></div>
 <script>
   document.addEventListener("message", function(event) {
-    CKEditor.setData(event.data)
-    // if (event.data.type === 'text') {
-    //   editor.setData(event.data.content)
-    // } else {
-    //   editor.setData(event.data.content)
-    // }
+    if (event.data.includes('placeholder: ')) {
+      // Show inital content
+      content = event.data.split('placeholder: ')[1];
+      CKEditor.setData(content);
+    } else {
+      // Execute editor commands
+      content = event.data.split('execute: ')[1];
+      CKEditor.execute(content);
+    }
   })
 
   DecoupledEditor
