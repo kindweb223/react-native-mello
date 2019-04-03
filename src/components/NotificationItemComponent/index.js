@@ -35,6 +35,9 @@ const NotificationItemComponent = ({ data, hideTumbnail, updateInvitation, prevP
     }
   }
 
+  if (!data.owner) {
+    return null
+  }
   const name = `${data.owner.firstName} ${data.owner.lastName}`
 
   return (
