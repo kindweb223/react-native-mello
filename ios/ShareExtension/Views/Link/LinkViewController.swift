@@ -221,6 +221,8 @@ extension LinkViewController: ShareNavigationable {
     var imagesWithSize: [ImageURLWithSize] = []
     if let selectedAssets = selectedAssets {
       imagesWithSize = selectedAssets.map({ (url: $0.url, size: $0.size) })
+    } else if !hideImage, parsedURL.images.count > 0, let size = imageView.image?.size {
+      imagesWithSize = [( url: parsedURL.images.first!, size: size )]
     }
     
     delegate?.linkViewController(self, didTapCreateCard: parsedURL, description: textView.text ?? "", imagesWithSize: imagesWithSize, selectedFlow: selectedFlow())

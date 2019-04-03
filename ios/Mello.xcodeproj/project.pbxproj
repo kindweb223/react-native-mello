@@ -1868,7 +1868,7 @@
 					13B07F861A680F5B00A75B9A = {
 						DevelopmentTeam = B2TWZYTK2Q;
 						LastSwiftMigration = 1010;
-						ProvisioningStyle = Manual;
+						ProvisioningStyle = Automatic;
 						SystemCapabilities = {
 							com.apple.ApplicationGroups.iOS = {
 								enabled = 1;
@@ -2989,10 +2989,10 @@
 				CODE_SIGN_ENTITLEMENTS = Mello/Mello.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
-				CODE_SIGN_STYLE = Manual;
+				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEAD_CODE_STRIPPING = NO;
-				DEVELOPMENT_TEAM = B2TWZYTK2Q;
+				DEVELOPMENT_TEAM = "";
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)",
@@ -3035,7 +3035,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = io.solvers.feedo;
 				PRODUCT_NAME = Mello;
 				PROVISIONING_PROFILE = "f246c801-94fd-49d5-ac01-1a96b8ac7b8a";
-				PROVISIONING_PROFILE_SPECIFIER = "Feedo Dev";
+				PROVISIONING_PROFILE_SPECIFIER = "";
 				SWIFT_OBJC_BRIDGING_HEADER = "Mello-Bridging-Header.h";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 4.2;
@@ -3053,9 +3053,9 @@
 				CODE_SIGN_ENTITLEMENTS = Mello/Mello.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution";
-				CODE_SIGN_STYLE = Manual;
+				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = B2TWZYTK2Q;
+				DEVELOPMENT_TEAM = "";
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)",
@@ -3098,7 +3098,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = io.solvers.feedo;
 				PRODUCT_NAME = Mello;
 				PROVISIONING_PROFILE = "ee85223c-26f6-476e-9dcd-2659d75c232d";
-				PROVISIONING_PROFILE_SPECIFIER = "Feedo Dist";
+				PROVISIONING_PROFILE_SPECIFIER = "";
 				SWIFT_OBJC_BRIDGING_HEADER = "Mello-Bridging-Header.h";
 				SWIFT_VERSION = 4.2;
 				VERSIONING_SYSTEM = "apple-generic";

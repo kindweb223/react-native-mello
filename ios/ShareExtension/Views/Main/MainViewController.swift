@@ -112,8 +112,8 @@ class MainViewController: UIViewController {
             switch codedItem {
             case let url as URL:
               if url.isFileURL {
-                let imageFormats = ["gif", "jpeg", "png", "gif"]
-                if imageFormats.contains((url.absoluteString as NSString).pathExtension) {
+                let imageFormats = ["gif", "jpg", "jpeg", "png", "gif"]
+                if imageFormats.contains((url.absoluteString as NSString).pathExtension.lowercased()) {
                   self.showLocalImage([provider])
                   return
                 } else {
@@ -302,29 +302,20 @@ class MainViewController: UIViewController {
     loadingVC.delegate = self
     present(loadingVC, animated: true, completion: nil)
     dismissAnimated {
-      if let selectedFlow = selectedFlow {
-        API.shared.newCard(parsedURL: withParsedUrl, selectedImageUrls: imagesWithSize, text: description, inFlow: selectedFlow) { success in
+      self.createFlowIfNeeded(selectedFlow, completion: { flow in
+        guard let flow = flow else {
+          loadingVC.update(.error)
+          return
+        }
+        
+        API.shared.newCard(parsedURL: withParsedUrl, selectedImageUrls: imagesWithSize, text: description, inFlow: flow) { success in
           if success {
             loadingVC.update(.success)
           } else {
             loadingVC.update(.error)
           }
         }
-      } else {
-        API.shared.newFlow(Flow(name: "New flow", description: "")) { flowCreated in
-          guard let flowCreated = flowCreated else {
-            loadingVC.update(.error)
-            return
-          }
-          API.shared.newCard(parsedURL: withParsedUrl, selectedImageUrls: imagesWithSize, text: description, inFlow: flowCreated) { success in
-            if success {
-              loadingVC.update(.success)
-            } else {
-              loadingVC.update(.error)
-            }
-          }
-        }
-      }
+      })
     }
   }
   
@@ -382,6 +373,7 @@ extension MainViewController: ShareNavigationable {
   }
 }
 
+// MARK: Link Delegate
 extension MainViewController: LinkViewControllerDelegate {
   func linkViewControllerDidTapCloseButton(_ vc: LinkViewController) {
     dismissAnimated {
