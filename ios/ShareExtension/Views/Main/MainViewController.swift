@@ -179,6 +179,18 @@ class MainViewController: UIViewController {
       } else if provider.hasItemConformingToTypeIdentifier(String(kUTTypeImage)) {
         print("Image found")
         imageProviders.append(provider)
+      } else if provider.hasItemConformingToTypeIdentifier(String(kUTTypeMovie)) {
+        print("Movie found")
+        provider.loadItem(forTypeIdentifier: String(kUTTypeMovie), options: nil) { codedItem, error in
+          DispatchQueue.main.async {
+            switch codedItem {
+            case let url as URL:
+              self.showText("", withAttachement: url)
+            default:
+              self.showErrorAndClose("Could not share this file type")
+            }
+          }
+        }
       }
     }
     
@@ -211,6 +223,8 @@ class MainViewController: UIViewController {
         textProvider = provider
       } else if provider.hasItemConformingToTypeIdentifier(String(kUTTypeImage)) {
         imageProviders.append(provider)
+      } else if provider.hasItemConformingToTypeIdentifier(String(kUTTypeMovie)) {
+        return [provider]
       }
     }
     

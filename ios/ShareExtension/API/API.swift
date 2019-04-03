@@ -149,7 +149,7 @@ class API {
   }
   
   // MARK: Auth
-  /*func login(completion: @escaping (_ success: Bool) -> ()) {
+  func login(completion: @escaping (_ success: Bool) -> ()) {
     let username = "aramiquelmateu@gmail.com"
     let password = "gugmib-Qeckyt-xegco1"
     
@@ -165,7 +165,7 @@ class API {
           completion(false)
           return
       }
-      
+      print(token)
       guard let data = data else {
         return
       }
@@ -176,7 +176,7 @@ class API {
       
       completion(true)
       }.resume()
-  }*/
+  }
   
   // MARK: Flow
   func getFlows(_ completion: @escaping (_ flows: [Flow]?) -> Void) {
