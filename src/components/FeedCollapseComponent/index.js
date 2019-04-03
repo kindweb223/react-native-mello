@@ -193,7 +193,7 @@ class FeedCollapseComponent extends React.Component {
         )}
 
         <View style={styles.footerView}>
-          <View>
+          {/* <View>
             {COMMON_FUNC.isFeedOwnerEditor(feedData) && (
               <View style={styles.footerLeftBtnView}>
                 {TAGS_FEATURE && (
@@ -205,7 +205,7 @@ class FeedCollapseComponent extends React.Component {
                   <Image source={TAG_ICON} />
                 </TouchableOpacity>
                 )}
-                {/* <TouchableOpacity
+                <TouchableOpacity
                   style={styles.btnView}
                   activeOpacity={0.6}
                   onPress={this.props.onAddMedia}
@@ -218,10 +218,10 @@ class FeedCollapseComponent extends React.Component {
                   onPress={this.props.onAddDocument}
                 >
                   <Image source={ATTACHMENT_ICON} />
-                </TouchableOpacity> */}
+                </TouchableOpacity>
               </View>
             )}
-          </View>
+          </View> */}
           <TouchableOpacity onPress={this.closeCollapse}>
             <View style={styles.collapseIconView}>
               <Feather name="chevron-up" size={25} color={COLORS.MEDIUM_GREY} />
@@ -273,26 +273,20 @@ class FeedCollapseComponent extends React.Component {
 
     return (
       <View style={styles.collapseView}>
-        <TouchableOpacity activeOpacity={0.9} onPress={() => longHold ? {} : this.handleCollapse()}>
-          <View style={styles.collpaseHeader}>
-            {isCollapse
-              ? <Text style={styles.headerTitle} numberOfLines={1} ellipsizeMode="tail">{feedData.headline}</Text>
-              : <TouchableOpacity
-                  activeOpacity={0.9}
-                  onPress={() => this.onPressText() }
-                >
-                  <Text style={styles.headerTitle}>{feedData.headline}</Text>
-                </TouchableOpacity>
-            }
-
-            {isCollapse && !longHold && (
-              <Animated.View style={{ marginLeft: 10, transform: [{ rotate: spin }] }}>
-                {!this.state.hideArrow && (
-                  <Feather name="chevron-down" size={25} color={COLORS.MEDIUM_GREY} />
-                )}
-              </Animated.View>
-            )}
-          </View>
+        <TouchableOpacity
+          activeOpacity={0.9}
+          onPress={() => longHold ? {} : this.handleCollapse()}
+          onLongPress={() => this.onPressText()}
+        >
+          <Text style={styles.headerTitle} numberOfLines={1} ellipsizeMode="tail">{feedData.headline}</Text>
+          {isCollapse && feedData.summary && feedData.summary.length > 0
+            ? <View style={styles.collpaseHeader}>
+                <Text style={styles.summaryText} numberOfLines={1} ellipsizeMode="tail">
+                  {feedData.summary}
+                </Text>
+              </View>
+            : null
+          }
         </TouchableOpacity>
 
         <Collapsible collapsed={isCollapse} align="top" duration={500}>

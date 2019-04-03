@@ -12,6 +12,7 @@ import {
 import PropTypes from 'prop-types'
 import Octicons from 'react-native-vector-icons/Octicons'
 import Entypo from 'react-native-vector-icons/Entypo'
+import Feather from 'react-native-vector-icons/Feather'
 import styles from './styles'
 import Analytics from '../../lib/firebase'
 
@@ -21,6 +22,7 @@ import { SHARE_LINK_URL } from "../../service/api"
 import * as COMMON_FUNC from '../../service/commonFunc'
 import Modal from "react-native-modal"
 import { PIN_FEATURE } from '../../service/api'
+import AlertController from '../AlertController';
 
 const SELECT_NONE = 0;
 const SELECT_PIN_UNPIN = 1;
@@ -62,15 +64,15 @@ class FeedActionBarComponent extends React.Component {
   }
 
   onPressShare = () => {
-    const {data} = this.props
+    const {selectedFeedList} = this.props
 
     Analytics.logEvent('dashboard_share', {})
 
-    if (COMMON_FUNC.isSharingEnabled(data)) {
-      COMMON_FUNC.handleShareFeed(data)
+    if (COMMON_FUNC.isSharingEnabled(selectedFeedList[0].feed)) {
+      COMMON_FUNC.handleShareFeed(selectedFeedList[0].feed)
     } 
     else {
-      Alert.alert('Warning', 'Sharing is not enabled for this flow')
+      AlertController.shared.showAlert('Warning', 'Sharing is not enabled for this flow')
     }
   }
 
@@ -102,35 +104,50 @@ class FeedActionBarComponent extends React.Component {
   }
 
   render() {
-    const { data, pinFlag } = this.props
+    const { selectedFeedList } = this.props
+
+    const pinFlag = selectedFeedList.length === 1 && selectedFeedList[0].feed.pinned
 
     let MENU_ITEMS = []
-    if (COMMON_FUNC.isFeedOwner(data)) {
-      MENU_ITEMS = ['Duplicate', 'Edit', 'Archive', 'Delete']
-    }
-
-    if (COMMON_FUNC.isFeedEditor(data)) {
-      MENU_ITEMS = ['Duplicate', 'Edit', 'Leave Flow']
-    }
-
-    if (COMMON_FUNC.isFeedContributorGuest(data)) {
-      MENU_ITEMS = ['Leave Flow']
-    }
-
-    if (COMMON_FUNC.isMelloTipFeed(data)) {
-      MENU_ITEMS = ['Leave Flow']
-    }
 
     let settingMenuMargin = (CONSTANTS.SCREEN_WIDTH - BAR_WIDTH_UNPIN) / 2
     let actionBarWidth = BAR_WIDTH_UNPIN
-    if (pinFlag) {
-      settingMenuMargin = (CONSTANTS.SCREEN_WIDTH - BAR_WIDTH_PIN) / 2
-      actionBarWidth = BAR_WIDTH_PIN
-    }
 
-    if (!PIN_FEATURE) {
-      actionBarWidth = 170 
-      settingMenuMargin = (CONSTANTS.SCREEN_WIDTH - 170) / 2
+    if (selectedFeedList.length === 1) {
+      const data = selectedFeedList[0].feed
+      // Single select
+      if (COMMON_FUNC.isFeedOwner(data)) {
+        MENU_ITEMS = ['Duplicate', 'Edit', 'Archive', 'Delete']
+      }
+
+      if (COMMON_FUNC.isFeedEditor(data)) {
+        MENU_ITEMS = ['Duplicate', 'Edit', 'Leave Flow']
+      }
+
+      if (COMMON_FUNC.isFeedContributorGuest(data)) {
+        MENU_ITEMS = ['Leave Flow']
+      }
+
+      if (COMMON_FUNC.isMelloTipFeed(data)) {
+        MENU_ITEMS = ['Leave Flow']
+      }
+
+      if (pinFlag) {
+        settingMenuMargin = (CONSTANTS.SCREEN_WIDTH - BAR_WIDTH_PIN) / 2
+        actionBarWidth = BAR_WIDTH_PIN
+      }
+
+      if (!PIN_FEATURE) {
+        actionBarWidth = 170
+        settingMenuMargin = (CONSTANTS.SCREEN_WIDTH - 170) / 2
+      }
+    } else {
+      // Multiple select
+      MENU_ITEMS = ['Duplicate', 'Archive']
+      if (!PIN_FEATURE) {
+        actionBarWidth = 170
+        settingMenuMargin = (CONSTANTS.SCREEN_WIDTH - 170) / 2
+      }
     }
 
     return (
@@ -188,6 +205,7 @@ class FeedActionBarComponent extends React.Component {
               </TouchableOpacity>
             </Animated.View>
           )}
+
           <Animated.View
             style={
               this.state.selectedButton === SELECT_SHARE &&
@@ -198,14 +216,24 @@ class FeedActionBarComponent extends React.Component {
               }
             }
           >
-            <TouchableOpacity 
-              style={styles.buttonView}
-              activeOpacity={0.7}
-              onPress={this.onPressShare}
-            >
-              <Entypo name="share-alternative" style={styles.shareIcon} size={22} color="#fff" />
-              <Text style={styles.buttonText}>Share</Text>
-            </TouchableOpacity>
+            {selectedFeedList.length === 1
+              ? <TouchableOpacity 
+                  style={styles.buttonView}
+                  activeOpacity={0.7}
+                  onPress={this.onPressShare}
+                >
+                  <Entypo name="share-alternative" style={styles.shareIcon} size={22} color="#fff" />
+                  <Text style={styles.buttonText}>Share</Text>
+                </TouchableOpacity>
+              : <TouchableOpacity 
+                  style={styles.buttonView}
+                  activeOpacity={0.7}
+                  onPress={() => this.props.handleDelete()}
+                >
+                  <Feather name="trash-2" style={styles.shareIcon} size={22} color="#fff" />
+                  <Text style={styles.buttonText}>Delete</Text>
+                </TouchableOpacity>
+            }
           </Animated.View>
 
           {MENU_ITEMS.length > 0 && (
@@ -234,13 +262,17 @@ class FeedActionBarComponent extends React.Component {
   }
 }
 
+FeedActionBarComponent.defaultProps = {
+  handleDelete: () => {}
+}
+
 FeedActionBarComponent.propTypes = {
   handlePin: PropTypes.func.isRequired,
   handleShare: PropTypes.func.isRequired,
   handleSetting: PropTypes.func.isRequired,
-  data: PropTypes.objectOf(PropTypes.any).isRequired,
-  pinFlag: PropTypes.bool.isRequired,
-  userInfo: PropTypes.object
+  selectedFeedList: PropTypes.arrayOf(PropTypes.any).isRequired,
+  userInfo: PropTypes.object,
+  handleDelete: PropTypes.func
 }
 
 export default FeedActionBarComponent

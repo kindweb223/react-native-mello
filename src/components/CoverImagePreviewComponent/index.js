@@ -36,8 +36,12 @@ export default class CoverImagePreviewComponent extends React.Component {
 
   UNSAFE_componentWillReceiveProps(nextProps) {
     this.setState({ files: nextProps.files })
-    if (nextProps.imageUploading) {
-      this.setState({ 
+    if (this.props.imageUploading && !nextProps.imageUploading) {
+      this.setState({ progress: 0 });
+    }
+
+    if (nextProps.imageUploading && this.state.progress === 0) {
+      this.setState({
         progress: 0,
       }, () => {
         this.animateProgressBar();
@@ -49,20 +53,27 @@ export default class CoverImagePreviewComponent extends React.Component {
     this.setState({ isPreview: true, position: index })
   }
 
+  onLoadEnd = () => {
+    this.setState({
+      loadEnd: true,
+      progress: 0
+    });
+  }
+
   animateProgressBar() {
     let progress = 0;
     let animateProgressInterval = setInterval(() => {
       progress += 0.1;
-      if (progress >= 0.9) {
-        this.setState({ progress: 0.9 });
-      } else {
+      if (progress <= 0.9) {
         this.setState({ progress });
       }
     }, 200);
-    setTimeout(() => clearInterval(animateProgressInterval), 6000);
+    setTimeout(() => clearInterval(animateProgressInterval), 2000);
   }
 
   get renderProgressBar() {
+    const { progress, useRealProgress } = this.props
+
     if (this.props.cardMode === 'CardNewSingle' && this.state.loadEnd) {
       return;
     }
@@ -75,7 +86,7 @@ export default class CoverImagePreviewComponent extends React.Component {
       <View style={[styles.progressView, this.state.files.length > 0 && { backgroundColor: 'transparent' } ]}>
         <View style={styles.progressContainer}>
           <Progress.Bar
-            progress={this.state.progress}
+            progress={useRealProgress === true ? progress : this.state.progress}
             indeterminate={this.state.indeterminate}
             color='white'
             unfilledColor='#A1A5AE'
@@ -98,7 +109,7 @@ export default class CoverImagePreviewComponent extends React.Component {
             style={styles.imageCover}
             source={{ uri: coverImage }}
             resizeMode={isShareExtension ? 'cover' : 'cover'}
-            onLoadEnd={() => this.setState({ loadEnd: true })}
+            onLoadEnd={this.onLoadEnd}
           />
           {
             files.length > 1 && 
@@ -121,7 +132,7 @@ export default class CoverImagePreviewComponent extends React.Component {
           style={styles.imageCover}
           source={{ uri: coverImage }}
           resizeMode={isShareExtension ? 'cover' : 'contain'}
-          onLoadEnd={() => this.setState({ loadEnd: true })}
+          onLoadEnd={this.onLoadEnd}
         />
         {
             files && files.length > 1 &&
@@ -150,27 +161,27 @@ export default class CoverImagePreviewComponent extends React.Component {
       <View style={styles.container}>
         {this.renderCoverImage(files, coverImage, position)}
         {this.renderProgressBar}
-        <Modal 
-          isVisible={this.state.isPreview}
-          style={styles.previewModal}
-          backdropColor='rgba(0, 0, 0, 0.9)'
-          animationIn='fadeIn'
-          animationOut='fadeOut'
-          animationInTiming={100}
-          animationOutTiming={100}
-          onBackButtonPress={() => this.setState({ isPreview: false })}
-        >
-          <ImageSliderScreen 
-            mediaFiles={files}
-            position={position}
-            removal={this.props.editable}
-            isSetCoverImage={this.props.isSetCoverImage}
-            isFastImage={isFastImage}
-            onRemove={(id) => this.props.onRemove(id)}
-            onSetCoverImage={(id) => this.props.onSetCoverImage(id)}
-            onClose={() => this.setState({ isPreview: false })}
-          />
-        </Modal>
+          <Modal 
+            isVisible={this.state.isPreview}
+            style={styles.previewModal}
+            backdropColor='rgba(0, 0, 0, 0.9)'
+            animationIn='fadeIn'
+            animationOut='fadeOut'
+            animationInTiming={100}
+            animationOutTiming={100}
+            onBackButtonPress={() => this.setState({ isPreview: false })}
+          >
+            <ImageSliderScreen 
+              mediaFiles={files}
+              position={position}
+              removal={this.props.editable}
+              isSetCoverImage={this.props.isSetCoverImage}
+              isFastImage={isFastImage}
+              onRemove={(id) => this.props.onRemove(id)}
+              onSetCoverImage={(id) => this.props.onSetCoverImage(id)}
+              onClose={() => this.setState({ isPreview: false })}
+            />
+          </Modal>
       </View>
     );
   }
@@ -186,6 +197,8 @@ CoverImagePreviewComponent.defaultProps = {
   isShareExtension: false,
   onRemove: () => {},
   onSetCoverImage: () => {},
+  progress: 0,
+  useRealProgress: true
 }
 
 
@@ -197,5 +210,7 @@ CoverImagePreviewComponent.propTypes = {
   isFastImage: PropTypes.bool,
   isShareExtension: PropTypes.bool,
   onRemove: PropTypes.func,
-  onSetCoverImage: PropTypes.func
+  onSetCoverImage: PropTypes.func,
+  progress: PropTypes.number,
+  useRealProgress: PropTypes.bool
 }

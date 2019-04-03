@@ -80,6 +80,7 @@ import CoverImagePreviewComponent from '../../components/CoverImagePreviewCompon
 import SelectHuntScreen from '../SelectHuntScreen';
 import Analytics from '../../lib/firebase'
 import ToasterComponent from '../../components/ToasterComponent'
+import AlertController from '../../components/AlertController'
 
 import * as COMMON_FUNC from '../../service/commonFunc'
 const ATTACHMENT_ICON = require('../../../assets/images/Attachment/Blue.png')
@@ -122,7 +123,10 @@ class CardNewScreen extends React.Component {
       copiedLink: null,
       imageUploading: false,
       cardMode: 'CardNewSingle',
-      isSaving: false
+      fileType: '',
+      isSaving: false,
+      uploadProgress: 0,
+      bottomButtonsPadding: 0
     };
 
     this.imageUploading = false;
@@ -191,11 +195,24 @@ class CardNewScreen extends React.Component {
     this.props.setCurrentCard({})
   }
 
+  updateUploadProgress = (value) => {
+    this.setState({ uploadProgress: value })
+  }
+
   async UNSAFE_componentWillReceiveProps(nextProps) {
     let loading = false;
     if (this.props.card.loading !== types.CREATE_CARD_PENDING && nextProps.card.loading === types.CREATE_CARD_PENDING) {
       // loading = true;
     } else if (this.props.card.loading !== types.CREATE_CARD_FULFILLED && nextProps.card.loading === types.CREATE_CARD_FULFILLED) {
+      // Hide tops on detail page
+      if (nextProps.user && nextProps.user.userInfo && nextProps.user.userInfo.id) {
+        const cardBubbleData = {
+          userId: nextProps.user.userInfo.id,
+          state: 'false'
+        }
+        AsyncStorage.setItem('CardBubbleState', JSON.stringify(cardBubbleData));
+      }
+
       // If share extension and a url has been passed
       if (this.props.cardMode === CONSTANTS.SHARE_EXTENTION_CARD && this.props.shareUrl !== '') {
         const openGraph = this.props.card.currentOpneGraph;
@@ -229,6 +246,10 @@ class CardNewScreen extends React.Component {
           idea: this.props.shareUrl,
         }, () => {
           this.checkUrls();
+          // Upload file received from Dashboard
+          if (this.props.fileData) {
+            this.handleFile(this.props.fileData);
+          }
         });
       }
       else {
@@ -281,18 +302,21 @@ class CardNewScreen extends React.Component {
             }
           }
 
+          this.updateUploadProgress(0);
           ImageResizer.createResizedImage(this.selectedFile.uri, actualWidth, actualHeight, CONSTANTS.IMAGE_COMPRESS_FORMAT, CONSTANTS.IMAGE_COMPRESS_QUALITY, 0, null)
             .then((response) => {
               console.log('Image compress Success!');
-              this.props.uploadFileToS3(nextProps.card.fileUploadUrl.uploadUrl, response.uri, this.selectedFileName, fileType);
+              this.props.uploadFileToS3(nextProps.card.fileUploadUrl.uploadUrl, response.uri, this.selectedFileName, fileType, this.updateUploadProgress);
             }).catch((error) => {
               console.log('Image compress error: ', error);
-              this.props.uploadFileToS3(nextProps.card.fileUploadUrl.uploadUrl, this.selectedFile.uri, this.selectedFileName, fileType);
+              this.props.uploadFileToS3(nextProps.card.fileUploadUrl.uploadUrl, this.selectedFile.uri, this.selectedFileName, fileType, this.updateUploadProgress);
             });
           return;
         }
       }
-      this.props.uploadFileToS3(nextProps.card.fileUploadUrl.uploadUrl, this.selectedFile.uri, this.selectedFileName, fileType);
+
+      this.updateUploadProgress(0);
+      this.props.uploadFileToS3(nextProps.card.fileUploadUrl.uploadUrl, this.selectedFile.uri, this.selectedFileName, fileType, this.updateUploadProgress);
     } else if (this.props.card.loading !== types.UPLOAD_FILE_PENDING && nextProps.card.loading === types.UPLOAD_FILE_PENDING) {
       // uploading a file
       loading = true;
@@ -343,9 +367,10 @@ class CardNewScreen extends React.Component {
       }
 
       // Set uploading false
-      // To handle non image files so will pass isValidCard
+      if (newImageFiles.length > 1) {
         this.setState({ imageUploading: false });
         this.imageUploading = false;
+      }
 
       this.currentSelectedLinkImageIndex ++;
       if (this.currentSelectedLinkImageIndex < this.selectedLinkImages.length) {
@@ -396,7 +421,7 @@ class CardNewScreen extends React.Component {
 
       this.setState({
         coverImage: nextProps.card.currentCard.coverImage,
-        // imageUploading: false
+        imageUploadStarted: false
       }, () => {
         if (this.props.cardMode === CONSTANTS.SHARE_EXTENTION_CARD) {
           setTimeout(() => {
@@ -557,6 +582,12 @@ class CardNewScreen extends React.Component {
     // showing error alert
     if (this.props.card.loading !== nextProps.card.loading || this.props.feedo.loading !== nextProps.feedo.loading) {
       if (nextProps.card.error || nextProps.feedo.error) {
+
+        if (nextProps.card.error.code === 'error.hunt.not.found') {
+          this.props.resetCardError();
+          this.props.createFeed();
+          return
+        }
         let error = null;
         if ((nextProps.card.error && nextProps.card.error.error) || (nextProps.feedo.error && nextProps.feedo.error.error)) {
           error = (nextProps.card.error && nextProps.card.error.error) || (nextProps.feedo.error && nextProps.feedo.error.error);
@@ -624,8 +655,10 @@ class CardNewScreen extends React.Component {
           }
           if (!this.isVisibleErrorDialog) {
             this.isVisibleErrorDialog = true;
-            Alert.alert('Error', error, [
-              {text: 'Close', onPress: () => this.isVisibleErrorDialog = false},
+            AlertController.shared.showAlert('Error', error, [
+              {text: 'Close', onPress: () => {
+                this.isVisibleErrorDialog = false;
+              }},
             ]);
           }
         }
@@ -663,19 +696,27 @@ class CardNewScreen extends React.Component {
       }
     });
 
-    this.keyboardWillShowSubscription = Keyboard.addListener('keyboardWillShow', (e) => this.keyboardWillShow(e));
-    this.keyboardWillHideSubscription = Keyboard.addListener('keyboardWillHide', (e) => this.keyboardWillHide(e));
     if (Platform.OS === 'ios') {
       this.safariViewShowSubscription = SafariView.addEventListener('onShow', () => this.safariViewShow());
       this.safariViewDismissSubscription = SafariView.addEventListener('onDismiss', () => this.safariViewDismiss());
+    }
+
+    if (Platform.OS === 'android' && this.props.isClipboard === true) {
+      this.keyboardDidShowSubscription = Keyboard.addListener('keyboardDidShow', (e) => this.keyboardDidShow(e));
+      this.keyboardDidHideSubscription = Keyboard.addListener('keyboardDidHide', (e) => this.keyboardDidHide(e));
+    }
+    else {
+      // Alert.alert('NOT', 'CLIPBOARD')
+      this.keyboardDidShowSubscription = Keyboard.addListener('keyboardWillShow', (e) => this.keyboardDidShow(e));
+      this.keyboardDidHideSubscription = Keyboard.addListener('keyboardWillHide', (e) => this.keyboardDidHide(e));
     }
 
     BackHandler.addEventListener('hardwareBackPress', this.handleBackButton);
   }
 
   componentWillUnmount() {
-    this.keyboardWillShowSubscription.remove();
-    this.keyboardWillHideSubscription.remove();
+    this.keyboardDidShowSubscription.remove();
+    this.keyboardDidHideSubscription.remove();
     if (Platform.OS === 'ios') {
       this.safariViewShowSubscription.remove();
       this.safariViewDismissSubscription.remove();
@@ -695,26 +736,36 @@ class CardNewScreen extends React.Component {
     return true;
   }
 
-  keyboardWillShow(e) {
+  keyboardDidShow(e) {
+    // Padding issue with Android in clipboard mode
+    if(Platform.OS === 'android' && this.props.isClipboard === true) {
+      this.setState({bottomButtonsPadding: 24})
+    }
+
     Animated.timing(
       this.animatedKeyboardHeight, {
         toValue: e.endCoordinates.height,
-        duration: e.duration,
+        duration: Platform.OS === 'android' && this.props.isClipboard === true ? 30 : e.duration,
       }
     ).start(() => {
       if (this.isDisabledKeyboard === true || !this.textInputIdeaRef) {
         return;
       }
-      
+
       this.textInputIdeaRef.focus();
     });
   }
 
-  keyboardWillHide(e) {
+  keyboardDidHide(e) {
+    // Padding issue with Android in clipboard mode
+    if(Platform.OS === 'android' && this.props.isClipboard === true) {
+      this.setState({bottomButtonsPadding: 0})
+    }
+
     Animated.timing(
       this.animatedKeyboardHeight, {
         toValue: 0,
-        duration: e.duration,
+        duration: Platform.OS === 'android' && this.props.isClipboard === true ? 30 : e.duration,
       }
     ).start();
   }
@@ -919,7 +970,7 @@ class CardNewScreen extends React.Component {
       const cardName = '';
       this.props.updateCard(this.props.feedo.currentFeed.id, id, cardName, this.state.idea, this.state.coverImage, files, true);
     } else {
-      Alert.alert('Error', 'Enter some text or add an image')
+      AlertController.shared.showAlert('Error', 'Enter some text or add an image')
     }
   }
 
@@ -930,7 +981,9 @@ class CardNewScreen extends React.Component {
    * @param {*} files 
    */
   isCardValid(idea, files) {
-    if (this.imageUploading) {
+    if (this.state.fileType === 'MEDIA' && // To handle non image files so will pass isValidCard
+        this.imageUploading
+    ) {
       return false;
     }
     return idea.length > 0 || (files && files.length > 0) ? true : false
@@ -1057,12 +1110,12 @@ class CardNewScreen extends React.Component {
 
   async uploadFile(currentCard, file, type) {
     this.selectedFile = file;
-    this.imageUploading = true;
+    this.imageUploading = type === 'MEDIA';
     this.textInputIdeaRef.focus(); // To show progress bar for long image
     let imageFiles = _.filter(currentCard.files, file => file.fileType === 'MEDIA');
     this.setState({
-      imageUploadStarted: true,
-      imageUploading: true,
+      imageUploadStarted: type === 'MEDIA',
+      imageUploading: type === 'MEDIA',
       cardMode: imageFiles.length > 0 ? 'CardNewMulti' : 'CardNewSingle'
     });
 
@@ -1155,34 +1208,42 @@ class CardNewScreen extends React.Component {
   }
 
   handleFile = (file) => {
-    this.coverImageWidth = file.width;
-    this.coverImageHeight = file.height;
+    this.updateUploadProgress(0);
+    let imageFiles = _.filter(this.props.card.currentCard.files, file => file.fileType === 'MEDIA');
+    if (imageFiles.length === 0) { // To keep size of first cover image
+      this.coverImageWidth = file.width;
+      this.coverImageHeight = file.height;
+    }
     const mimeType = (Platform.OS === 'ios') ? mime.lookup(file.uri) : file.type;
 
     let type = 'FILE';
     if (mimeType !== false) {
+      console.log('mimeType is not false')
       if (mimeType.indexOf('image') !== -1 || mimeType.indexOf('video') !== -1) {
         type = 'MEDIA';
       }
-    }
 
-    if (mimeType.indexOf('video') !== -1) {
-      if (Platform.OS === 'ios') {
-        // Important - files containing spaces break, need to uri decode the url before passing to RNThumbnail
-        // https://github.com/wkh237/react-native-fetch-blob/issues/248#issuecomment-297988317
-        let fileUri = decodeURI(file.uri)
-        this.getThumbnailUrl(file, fileUri)
+      this.setState({ fileType: type });
+
+      if (mimeType.indexOf('video') !== -1) {
+        if (Platform.OS === 'ios') {
+          // Important - files containing spaces break, need to uri decode the url before passing to RNThumbnail
+          // https://github.com/wkh237/react-native-fetch-blob/issues/248#issuecomment-297988317
+          let fileUri = decodeURI(file.uri)
+          this.getThumbnailUrl(file, fileUri)
+        } else {
+          this.setState({ loading: true })
+          RNFetchBlob.fs
+          .stat(file.uri)
+          .then(stats => {
+            filepath = stats.path;
+            this.getThumbnailUrl(file, filepath)
+          })
+        }
       } else {
-        this.setState({ loading: true })
-        RNFetchBlob.fs
-        .stat(file.uri)
-        .then(stats => {
-          filepath = stats.path;
-          this.getThumbnailUrl(file, filepath)
-        })
+        this.uploadFile(this.props.card.currentCard, file, type);
       }
-    }
-    else {
+    } else {
       this.uploadFile(this.props.card.currentCard, file, type);
     }
   }
@@ -1333,7 +1394,7 @@ class CardNewScreen extends React.Component {
     } = this.props.card.currentCard;
     const { idea } = this.state
     if (!this.isCardValid(idea, files)) {
-      Alert.alert('Error', 'Enter some text or add an image')
+      AlertController.shared.showAlert('Error', 'Enter some text or add an image')
       return;
     }
     if (this.draftFeedo) {
@@ -1377,7 +1438,7 @@ class CardNewScreen extends React.Component {
     let imageFiles = _.filter(this.props.card.currentCard.files, file => file.fileType === 'MEDIA');
 
     const ratio = CONSTANTS.SCREEN_WIDTH / this.coverImageWidth
-    if (this.state.imageUploadStarted) {
+    if (this.state.coverImage || this.state.imageUploadStarted) {
       return (
         <View
           style={
@@ -1397,6 +1458,7 @@ class CardNewScreen extends React.Component {
             isSetCoverImage={true}
             onRemove={(fileId) => this.onRemoveFile(fileId)}
             onSetCoverImage={(fileId) => this.onSetCoverImage(fileId)}
+            progress={this.state.uploadProgress}
           />
         </View>
       );
@@ -1442,9 +1504,10 @@ class CardNewScreen extends React.Component {
     const { cardMode } = this.props;
 
     return (
-      <View 
-        style={{ flex: 1 }}
+      <TouchableOpacity
         onLayout={this.onLayoutTextInput.bind(this)}
+        onPress={() => this.textInputIdeaRef.focus()}
+        activeOpacity={1.0}
       >
         <TextInput
           style={[styles.textInputIdea, {
@@ -1476,7 +1539,7 @@ class CardNewScreen extends React.Component {
           selectionColor={Platform.OS === 'ios' ? COLORS.PURPLE : COLORS.LIGHT_PURPLE}
           textAlignVertical={'top'}
         />
-      </View>
+      </TouchableOpacity>
     )
   }
 
@@ -1546,6 +1609,7 @@ class CardNewScreen extends React.Component {
   get renderMainContent() {
     return (
       <ScrollView
+        contentContainerStyle={{ flexGrow: 1 }}
         ref={ref => this.scrollViewRef = ref}
         onLayout={this.onLayoutScrollView.bind(this)}
       >
@@ -1580,13 +1644,15 @@ class CardNewScreen extends React.Component {
 
   get renderBottomAttachmentButtons() {
     const { viewMode, cardMode } = this.props;
+    const { bottomButtonsPadding } = this.state;
+
     if (cardMode === CONSTANTS.SHARE_EXTENTION_CARD) {
       return;
     } else if (viewMode !== CONSTANTS.CARD_NEW) {
       return;
     }
     return (
-      <View style={[styles.attachmentButtonsContainer, { paddingHorizontal: 16, marginVertical: 16 }]}>
+      <View style={[styles.attachmentButtonsContainer, { paddingHorizontal: 16, marginVertical: 16, paddingBottom: bottomButtonsPadding }]}>
         <TouchableOpacity 
           style={styles.iconView}
           activeOpacity={0.6}
@@ -1864,7 +1930,7 @@ class CardNewScreen extends React.Component {
         />
 
         {
-          this.state.loading && 
+          this.state.loading && this.state.fileType === 'FILE' &&
             <LoadingScreen containerStyle={this.props.cardMode === CONSTANTS.SHARE_EXTENTION_CARD ? {marginBottom: CONSTANTS.SCREEN_VERTICAL_MIN_MARGIN + 100} : {}} />
         }
         <Modal 
@@ -1921,6 +1987,8 @@ CardNewScreen.defaultProps = {
   shareImageUrls: [],
   shareText: '',
   onClose: () => {},
+  isClipboard: false,
+  fileData: {}
 }
 
 
@@ -1935,6 +2003,8 @@ CardNewScreen.propTypes = {
   shareImageUrls: PropTypes.array,
   shareText: PropTypes.string,
   onClose: PropTypes.func,
+  isClipboard: PropTypes.bool,
+  fileData: PropTypes.object
 }
 
 
@@ -1957,7 +2027,7 @@ const mapDispatchToProps = dispatch => ({
   getCard: (ideaId) => dispatch(getCard(ideaId)),
   updateCard: (huntId, ideaId, title, idea, coverImage, files, isCreateCard) => dispatch(updateCard(huntId, ideaId, title, idea, coverImage, files, isCreateCard)),
   getFileUploadUrl: (huntId, ideaId) => dispatch(getFileUploadUrl(huntId, ideaId)),
-  uploadFileToS3: (signedUrl, file, fileName, mimeType) => dispatch(uploadFileToS3(signedUrl, file, fileName, mimeType)),
+  uploadFileToS3: (signedUrl, file, fileName, mimeType, uploadProgress) => dispatch(uploadFileToS3(signedUrl, file, fileName, mimeType, uploadProgress)),
   addFile: (ideaId, fileType, contentType, name, objectKey, metadata, base64String) => dispatch(addFile(ideaId, fileType, contentType, name, objectKey, metadata, base64String)),
   deleteFile: (ideaId, fileId) => dispatch(deleteFile(ideaId, fileId)),
   setCoverImage: (ideaId, fileId) => dispatch(setCoverImage(ideaId, fileId)),

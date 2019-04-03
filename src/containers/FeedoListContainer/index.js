@@ -17,6 +17,7 @@ import NotificationItemComponent from '../../components/NotificationItemComponen
 import COLORS from '../../service/colors'
 import CONSTANTS from '../../service/constants'
 import styles from './styles'
+import * as COMMON_FUNC from '../../service/commonFunc'
 
 class FeedoListContainer extends React.Component {
   constructor(props) {
@@ -44,9 +45,9 @@ class FeedoListContainer extends React.Component {
   }
 
   renderItem(item, index) {
-    const { feedoList, feedClickEvent, selectedLongHoldFeedoIndex } = this.props
+    const { feedoList, feedClickEvent, selectedFeedList, unSelectFeed, isLongHoldMenuVisible } = this.props
     const { listHomeType } = this.props
-    const paddingVertical = listHomeType === 'LIST' ? 15 : 12
+    const paddingVertical = listHomeType === 'LIST' ? 12 : 9
 
     return (
       <View key={index}>
@@ -56,15 +57,28 @@ class FeedoListContainer extends React.Component {
               <View style={[styles.separator]} />
             )}
 
-            <View style={[selectedLongHoldFeedoIndex === index ? styles.feedoSelectItem : styles.feedoItem, { paddingVertical }]}>
-              <TouchableOpacity
-                activeOpacity={0.8}
-                delayLongPress={1000}
-                onLongPress={() => this.onLongPressFeedo(index, item)}
-                onPress={() => this.onPressFeedo(index, item)}
+            <View
+              style={[
+                isLongHoldMenuVisible && _.find(selectedFeedList, item => item.index === index) ? styles.feedoSelectItem : styles.feedoItem,
+                { paddingVertical: 3 },
+                unSelectFeed && !COMMON_FUNC.isFeedOwner(item) ? { opacity: 0.4 } : { opacity: 1 }
+              ]}
+            >
+              <View
+                style={[
+                  { paddingVertical },
+                  isLongHoldMenuVisible && _.find(selectedFeedList, item => item.index === index) ? styles.feedoSelectInnerItem : styles.feedoInnerItem
+                ]}
               >
-                <FeedItemComponent item={item} pinFlag={item.pinned ? true : false} page={this.props.page} listType={listHomeType} />
-              </TouchableOpacity>
+                <TouchableOpacity
+                  activeOpacity={0.8}
+                  delayLongPress={1000}
+                  onLongPress={() => this.onLongPressFeedo(index, item)}
+                  onPress={() => this.onPressFeedo(index, item)}
+                >
+                  <FeedItemComponent item={item} pinFlag={item.pinned ? true : false} page={this.props.page} listType={listHomeType} />
+                </TouchableOpacity>
+              </View>
             </View>
 
             {this.props.feedoList.length > 0 && (
@@ -77,9 +91,17 @@ class FeedoListContainer extends React.Component {
   }
 
   render() {
-    const { loading, refresh, feedClickEvent, feedoList, invitedFeedList, animatedSelectFeed } = this.props;
-    if (loading) return <FeedLoadingStateComponent animating />
+    const {
+      loading,
+      refresh,
+      feedClickEvent,
+      feedoList,
+      invitedFeedList,
+      animatedSelectFeed
+    } = this.props;
 
+    if (loading) return <FeedLoadingStateComponent animating />
+    
     return (
       <Animated.ScrollView
         showsVerticalScrollIndicator={false}
@@ -135,7 +157,10 @@ FeedoListContainer.defaultProps = {
   isRefresh: false,
   selectedLongHoldFeedoIndex: -1,
   feedClickEvent: 'normal',
-  invitedFeedList: []
+  invitedFeedList: [],
+  selectedFeedList: [],
+  unSelectFeed: false,
+  isLongHoldMenuVisible: false
 }
 
 FeedoListContainer.propTypes = {
@@ -145,9 +170,11 @@ FeedoListContainer.propTypes = {
   feedoList: PropTypes.arrayOf(PropTypes.any).isRequired,
   handleLongHoldMenu: PropTypes.func,
   page: PropTypes.string,
-  selectedLongHoldFeedoIndex: PropTypes.number,
   feedClickEvent: PropTypes.string,
-  invitedFeedList: PropTypes.arrayOf(PropTypes.any)
+  invitedFeedList: PropTypes.arrayOf(PropTypes.any),
+  selectedFeedList: PropTypes.arrayOf(PropTypes.any),
+  unSelectFeed: PropTypes.bool,
+  isLongHoldMenuVisible: PropTypes.bool
 }
 
 const mapStateToProps = ({ user }) => ({
