@@ -166,10 +166,10 @@ export default function user(state = initialState, action = {}) {
       }
     }
     case types.GET_USER_SESSION_REJECTED: {
-      AsyncStorage.removeItem('userInfo')
-      AsyncStorage.removeItem('xAuthToken')
-      SharedGroupPreferences.setItem('xAuthToken', null, CONSTANTS.APP_GROUP_TOKEN_IDENTIFIER)
-      SharedGroupPreferences.setItem('userInfo', null, CONSTANTS.APP_GROUP_USER_IDENTIFIER)
+      // AsyncStorage.removeItem('userInfo')
+      // AsyncStorage.removeItem('xAuthToken')
+      // SharedGroupPreferences.setItem('xAuthToken', null, CONSTANTS.APP_GROUP_TOKEN_IDENTIFIER)
+      // SharedGroupPreferences.setItem('userInfo', null, CONSTANTS.APP_GROUP_USER_IDENTIFIER)
 
       return {
         ...state,
