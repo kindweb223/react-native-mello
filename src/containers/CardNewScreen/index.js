@@ -1380,7 +1380,7 @@ class CardNewScreen extends React.Component {
       this.props.setCurrentFeed(this.prevFeedo);
     }
     if (this.prevFeedo.id !== this.props.feedo.currentFeed.id) {
-      this.props.moveCard(this.props.card.currentCard.id, this.props.feedo.currentFeed.id);
+      this.props.moveCard([{ 'idea': this.props.card.currentCard }], this.props.feedo.currentFeed.id);
     }
     this.prevFeedo = null;
     if(this.textInputIdeaRef) {
