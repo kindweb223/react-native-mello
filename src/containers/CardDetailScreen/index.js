@@ -328,9 +328,6 @@ class CardDetailScreen extends React.Component {
     } else if (this.props.card.loading !== types.UPDATE_CARD_FULFILLED && nextProps.card.loading === types.UPDATE_CARD_FULFILLED) {
       // success in updating a card
       this.onCancelEditCard()
-      if (this.props.cardMode === CONSTANTS.MAIN_APP_CARD_FROM_DASHBOARD) {
-        this.saveFeedId();
-      }
     } else if (this.props.card.loading !== types.DELETE_FILE_PENDING && nextProps.card.loading === types.DELETE_FILE_PENDING) {
       // deleting a file
       loading = true;
@@ -705,11 +702,10 @@ class CardDetailScreen extends React.Component {
     const { cardMode, viewMode } = this.props;
     if (cardMode === CONSTANTS.MAIN_APP_CARD_FROM_DASHBOARD) {
       try {
-        const strFeedoInfo = await SharedGroupPreferences.getItem(CONSTANTS.CARD_SAVED_LAST_FEEDO_INFO, CONSTANTS.APP_GROUP_LAST_USED_FEEDO);
+        const strFeedoInfo = await COMMON_FUNC.getLastFeed();
         if (strFeedoInfo) {
           const feedoInfo = JSON.parse(strFeedoInfo);
-          const diffHours = moment().diff(moment(feedoInfo.time, 'LLL'), 'hours');
-          if (diffHours < 1) {
+          if (COMMON_FUNC.useLastFeed(feedoInfo)) {
             const currentFeed = _.find(currentProps.feedo.feedoList, feed => feed.id === feedoInfo.feedoId)
             if (currentFeed) {
               this.props.setCurrentFeed(currentFeed);
@@ -723,15 +719,6 @@ class CardDetailScreen extends React.Component {
       }
       this.props.createFeed();
     }
-  }
-
-  saveFeedId() {
-    const feedoInfo = {
-      time: moment().format('LLL'),
-      feedoId: this.props.feedo.currentFeed.id,
-      currentFeed: this.props.feedo.currentFeed
-    }
-    SharedGroupPreferences.setItem(CONSTANTS.CARD_SAVED_LAST_FEEDO_INFO, JSON.stringify(feedoInfo), CONSTANTS.APP_GROUP_LAST_USED_FEEDO)
   }
 
   compareUrls(linkUrl, currentUrl) {

@@ -27,6 +27,7 @@ import _ from 'lodash';
 import moment from 'moment'
 import SafariView from "react-native-safari-view";
 import SharedGroupPreferences from 'react-native-shared-group-preferences';
+import * as COMMON_FUNC from '../../service/commonFunc'
 
 import {
   getOpenGraph,
@@ -189,11 +190,10 @@ class CardNewShareScreen extends React.Component {
       this.setState({cachedFeedList: nextProps.feedo.feedoList, createEnabled: true})
 
       try {
-        const strFeedoInfo = await SharedGroupPreferences.getItem(CONSTANTS.CARD_SAVED_LAST_FEEDO_INFO, CONSTANTS.APP_GROUP_LAST_USED_FEEDO);
+        const strFeedoInfo = await COMMON_FUNC.getLastFeed();
         if (strFeedoInfo) {
           const feedoInfo = JSON.parse(strFeedoInfo);
-          const diffHours = moment().diff(moment(feedoInfo.time, 'LLL'), 'hours');
-          if (diffHours < 1) {
+          if (COMMON_FUNC.useLastFeed(feedoInfo)) {
             const currentFeed = _.find(nextProps.feedo.feedoList, feed => feed.id === feedoInfo.feedoId)
             if (currentFeed) {
               this.props.setCurrentFeed(currentFeed);
@@ -270,11 +270,10 @@ class CardNewShareScreen extends React.Component {
     });
 
     try {
-      const strFeedoInfo = await SharedGroupPreferences.getItem(CONSTANTS.CARD_SAVED_LAST_FEEDO_INFO, CONSTANTS.APP_GROUP_LAST_USED_FEEDO);
+      const strFeedoInfo = await COMMON_FUNC.getLastFeed();
       if (strFeedoInfo) {
         const feedoInfo = JSON.parse(strFeedoInfo);
-        const diffHours = moment().diff(moment(feedoInfo.time, 'LLL'), 'hours');
-        if (diffHours < 1) {
+        if (COMMON_FUNC.useLastFeed(feedoInfo)) {
           this.props.setCurrentFeed(feedoInfo.currentFeed);
           this.draftFeedo = feedoInfo.currentFeed
         }
@@ -338,12 +337,7 @@ class CardNewShareScreen extends React.Component {
   }
 
   saveFeedId() {
-    const feedoInfo = {
-      time: moment().format('LLL'),
-      feedoId: this.props.feedo.currentFeed.id,
-      currentFeed: this.props.feedo.currentFeed
-    }
-    SharedGroupPreferences.setItem(CONSTANTS.CARD_SAVED_LAST_FEEDO_INFO, JSON.stringify(feedoInfo), CONSTANTS.APP_GROUP_LAST_USED_FEEDO)
+    COMMON_FUNC.setLastFeed(this.props.feedo.currentFeed)
   }
 
   compareUrls(linkUrl, currentUrl) {
