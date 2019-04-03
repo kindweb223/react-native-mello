@@ -9,6 +9,7 @@
 import UIKit
 import Social
 import MobileCoreServices
+import AVFoundation
 
 class MainViewController: UIViewController {
   
@@ -51,6 +52,9 @@ class MainViewController: UIViewController {
     bottomButton.setTitleColor(#colorLiteral(red: 0.2901960784, green: 0, blue: 0.8, alpha: 1), for: .normal)
     bottomButton.alpha = 0
     
+    API.shared.login { _ in
+      
+    }
     API.shared.getFlows { flows in }
   }
   
@@ -509,7 +513,7 @@ extension MainViewController: LocalImageViewControllerDelegate {
           return
         }
         API.shared.saveImage(image, inURL: tempFileUrl.uploadUrl, completion: {
-          API.shared.addFile("image\(images.index(of: image)!)", toCardId: cardId, mimeType: "image/png", fileType: .media, tempFileUrl: tempFileUrl, size: image.size, completion: { fileId in
+          API.shared.addFile("image\(images.index(of: image)!)", toCardId: cardId, mimeType: "image/png", fileType: .media, tempFileUrl: tempFileUrl, size: image.size, thumbnail: nil, completion: { fileId in
             guard let fileId = fileId else {
               stepper(loadingCount, images.count)
               loadingCount += 1
@@ -595,8 +599,21 @@ extension MainViewController: TextViewControllerDelegate {
           completion(nil)
           return
         }
+        
+        var thumbnail: UIImage? = nil
+        
+        if filePath.mimeType().contains("video") {
+          let asset = AVURLAsset(url: filePath, options: nil)
+          let imgGenerator = AVAssetImageGenerator(asset: asset)
+          let cgImage = try? imgGenerator.copyCGImage(at: CMTimeMake(value: 0, timescale: 1), actualTime: nil)
+          // !! check the error before proceeding
+          if let cgImage = cgImage {
+            thumbnail = UIImage(cgImage: cgImage).compressImage()
+          }
+        }
+        
         API.shared.saveFile(filePath, inURL: tempFileUrl.uploadUrl, completion: {
-          API.shared.addFile(filePath.lastPathComponent, toCardId: cardId, mimeType: filePath.mimeType(), fileType: .file, tempFileUrl: tempFileUrl, size: nil, completion: { fileId in
+          API.shared.addFile(filePath.lastPathComponent, toCardId: cardId, mimeType: filePath.mimeType(), fileType: .file, tempFileUrl: tempFileUrl, size: nil, thumbnail: thumbnail, completion: { fileId in
             completion(cardId)
           })
         })
