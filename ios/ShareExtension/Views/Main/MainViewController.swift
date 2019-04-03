@@ -22,8 +22,7 @@ class MainViewController: UIViewController {
   @IBOutlet weak var bottomButton: UIButton!
   
   private var navController: MainNavigationController!
-  
-  private var keyboardHeight: CGFloat? = nil
+  private var keyboardHelper: KeyboardHelper!
   
   override func viewDidLoad() {
     super.viewDidLoad()
@@ -43,19 +42,14 @@ class MainViewController: UIViewController {
     modalPresentationStyle = .overCurrentContext
     view.isUserInteractionEnabled = true
     
-    
-    NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillShow(_:)), name: UIResponder.keyboardWillShowNotification, object: nil)
-    NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillDismiss(_:)), name: UIResponder.keyboardWillHideNotification, object: nil)
-    
     bottomButton.backgroundColor = UIColor.white.withAlphaComponent(0.94)
     bottomButton.layer.cornerRadius = 10
     bottomButton.setTitleColor(#colorLiteral(red: 0.2901960784, green: 0, blue: 0.8, alpha: 1), for: .normal)
     bottomButton.alpha = 0
     
-    API.shared.login { _ in
-      
-    }
     API.shared.getFlows { flows in }
+    
+    keyboardHelper = KeyboardHelper(viewController: self, heightConstraint: containerViewCenterConstraint)
   }
   
   override func viewWillAppear(_ animated: Bool) {
@@ -274,32 +268,6 @@ class MainViewController: UIViewController {
     let textVC = TextViewController(text: text, attachementPath: attachementPath)
     textVC.delegate = self
     navController.presentInitial(vc: textVC)
-  }
-  
-  @objc func keyboardWillShow(_ notification: Notification) {
-    var height: CGFloat = 300
-    if let keyboardHeight = keyboardHeight {
-      height = keyboardHeight
-    } else {
-      if let keyboardInfo = notification.userInfo?[UIResponder.keyboardFrameBeginUserInfoKey] as? NSValue {
-        keyboardHeight = keyboardInfo.cgRectValue.size.height
-        height = keyboardHeight!
-      }
-    }
-    
-    view.layoutIfNeeded()
-    UIView.animate(withDuration: 0.35) {
-      self.containerViewCenterConstraint.constant -= (height / 2)
-      self.view.layoutIfNeeded()
-    }
-  }
-  
-  @objc func keyboardWillDismiss(_ notification: Notification) {
-    view.layoutIfNeeded()
-    UIView.animate(withDuration: 0.35) {
-      self.containerViewCenterConstraint.constant += ((self.keyboardHeight ?? 300) / 2)
-      self.view.layoutIfNeeded()
-    }
   }
   
   private func dismissAnimated(_ completion: @escaping () -> Void) {
