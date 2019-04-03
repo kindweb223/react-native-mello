@@ -268,7 +268,6 @@ class CardDetailScreen extends React.Component {
       if (newImageFiles.length > 1) { // Need to stop image uploading state here for 2nd Image
         this.setState({ imageUploading: false });
       }
-      this.setState({ imageUploadStarted: false })
 
       this.currentSelectedLinkImageIndex ++;
       if (this.currentSelectedLinkImageIndex < this.selectedLinkImages.length) {
@@ -315,6 +314,7 @@ class CardDetailScreen extends React.Component {
       this.coverImageHeight = height
       this.setState({
         coverImage: nextProps.card.currentCard.coverImage,
+        imageUploadStarted: false
       });
       this.checkUrls();
 
