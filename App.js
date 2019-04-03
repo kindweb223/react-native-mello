@@ -220,6 +220,7 @@ export default class Root extends React.Component {
       AsyncStorage.removeItem('AndroidShareExtension');
     });
 
+    await AsyncStorage.setItem(CONSTANTS.ANDROID_SHARE_EXTENTION_FLAG, 'false')
   }
 
   componentDidMount() {
@@ -296,12 +297,12 @@ export default class Root extends React.Component {
             }
         }
 
-        AsyncStorage.getItem(CONSTANTS.ANDROID_SHARE_EXTENTION_FLAG).then((flag) => {
+        AsyncStorage.getItem(CONSTANTS.ANDROID_SHARE_EXTENTION_FLAG, (error, result) => {
 
-          const isAndroidShareExtension = flag === null ? true : flag
-          AsyncStorage.setItem(CONSTANTS.ANDROID_SHARE_EXTENTION_FLAG, null)
+          const isAndroidShareExtension = result === null ? 'true' : result
+          AsyncStorage.setItem(CONSTANTS.ANDROID_SHARE_EXTENTION_FLAG, 'false')
 
-          if (isAndroidShareExtension) {
+          if (isAndroidShareExtension === 'true') {
             var searchIndex = -1;
             for (i = 3; i < params.length; i ++)
             {

@@ -54,7 +54,7 @@ export default class Share extends Component {
       if (type === 'text/plain')
         type = 'url'
 
-      AsyncStorage.setItem(CONSTANTS.ANDROID_SHARE_EXTENTION_FLAG, true)
+      AsyncStorage.setItem(CONSTANTS.ANDROID_SHARE_EXTENTION_FLAG, 'true')
       
       console.log('share data:', type, value)
       setTimeout(() => {
