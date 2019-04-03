@@ -644,9 +644,20 @@ extension MainViewController: NewFlowViewControllerDelegate {
   }
 }
 
+// MARK: BottomStatus Delegate
 extension MainViewController: BottomStatusViewControllerDelegate {
   func bottomStatusViewControllerDidDismiss(_ vc: BottomStatusViewController) {
     extensionContext?.completeRequest(returningItems: nil, completionHandler: nil)
+  }
+  
+  func bottomStatusViewController(_ vc: BottomStatusViewController, wantsToOpenFlow flow: Flow) {
+    #if DEBUG
+    let url = URL(string: "demos.solvers.io://flow/\(flow.id)")!
+    #else
+    let url = URL(string: "my.melloapp.com://flow/\(flow.id)")!
+    #endif
+    
+    openURL(url: url as NSURL)
   }
 }
 

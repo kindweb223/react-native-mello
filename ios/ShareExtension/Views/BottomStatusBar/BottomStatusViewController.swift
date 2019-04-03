@@ -10,6 +10,7 @@ import UIKit
 
 protocol BottomStatusViewControllerDelegate: class {
   func bottomStatusViewControllerDidDismiss(_ vc: BottomStatusViewController)
+  func bottomStatusViewController(_ vc: BottomStatusViewController, wantsToOpenFlow flow: Flow)
 }
 
 class BottomStatusViewController: UIViewController {
@@ -26,8 +27,8 @@ class BottomStatusViewController: UIViewController {
   @IBOutlet var labelLeftConstraint: NSLayoutConstraint!
   
   private var assetLoader: AssetLoader? = nil
-  
   private var state: State
+  private var flow: Flow?
   
   weak var delegate: BottomStatusViewControllerDelegate?
   
@@ -63,10 +64,10 @@ class BottomStatusViewController: UIViewController {
   
   @objc func didTapView(_ sender: UITapGestureRecognizer) {
     switch state {
-    case .loading:
+    case .loading, .step(_, _):
       return
     default:
-      dismiss()
+      dismiss(didTap: true)
     }
   }
   
@@ -96,6 +97,7 @@ class BottomStatusViewController: UIViewController {
       labelLeftConstraint.isActive = false
       labelCenterConstraint.isActive = true
     case .success(let flow, let imageUrl):
+      self.flow = flow
       let savedTo = NSMutableAttributedString(string: "Saved to ", attributes: [.font: UIFont.systemFont(ofSize: 20),
                                                                                 .foregroundColor: UIColor.white])
       let flowName = NSAttributedString(string: flow.name, attributes: [.font: UIFont.boldSystemFont(ofSize: 20),
@@ -129,13 +131,17 @@ class BottomStatusViewController: UIViewController {
     }
   }
   
-  func dismiss() {
+  func dismiss(didTap: Bool = false) {
     self.view.layoutIfNeeded()
     UIView.animate(withDuration: 0.3, animations: { [weak self] in
       self?.bottomConstraint.constant = -100
       self?.view.layoutIfNeeded()
     }) { _ in
-      self.delegate?.bottomStatusViewControllerDidDismiss(self)
+      if didTap, let flow = self.flow {
+        self.delegate?.bottomStatusViewController(self, wantsToOpenFlow: flow)
+      } else {
+        self.delegate?.bottomStatusViewControllerDidDismiss(self)
+      }
     }
   }
 }
