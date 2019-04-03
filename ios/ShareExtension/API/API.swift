@@ -73,7 +73,7 @@ class API {
     request.httpBody = body
     request.httpMethod = method.rawValue
     request.allHTTPHeaderFields = ["x-mobile-api": "true",
-                                   "x-auth-token": token ?? "",
+                                   "x-auth-token": "a8b64fdf-0b5a-4b3b-93a1-6e7a490ce5ad",//token ?? "",
                                    "Content-Type": "application/json",
                                    "Accept": "application/json",
                                    "Access-Control-Allow-Credentials": "true",
@@ -364,7 +364,7 @@ class API {
     case file = "FILE"
   }
   
-  func addFile(_ fileName: String, toCardId: String, mimeType: String, fileType: FileType, tempFileUrl: TempFileURL, size: CGSize?, completion: @escaping (_ fileId: String?) -> Void) {
+  func addFile(_ fileName: String, toCardId: String, mimeType: String, fileType: FileType, tempFileUrl: TempFileURL, size: CGSize?, thumbnail: UIImage?, completion: @escaping (_ fileId: String?) -> Void) {
     var bodyDict: [String: Any] = ["name": fileName,
                                    "contentType": mimeType,
                                    "objectKey": tempFileUrl.objectKey.absoluteString,
@@ -373,6 +373,11 @@ class API {
     if let size = size {
       bodyDict["metadata"] = ["height": size.height,
                               "width": size.width]
+    }
+    
+    if let thumbnail = thumbnail,
+      let data = thumbnail.jpegData(compressionQuality: 0.9) {
+      bodyDict["thumbnailUrl"] = ("'data:image/png;base64,'" + data.base64EncodedString())
     }
     
     let dataBody = try? JSONSerialization.data(withJSONObject: bodyDict, options: .prettyPrinted)
