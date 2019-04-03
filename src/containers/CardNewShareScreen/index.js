@@ -92,7 +92,8 @@ class CardNewShareScreen extends React.Component {
 
     this.parsingErrorLinks = [];
 
-    this.draftFeedo = null;
+    // On Android as extension is part of main app current feed may already be set
+    this.draftFeedo = _.isEmpty(this.props.feedo.currentFeed) ? null : this.props.feedo.currentFeed;
 
     this.scrollViewHeight = 0;
     this.textInputPositionY = 0;

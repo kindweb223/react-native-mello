@@ -226,6 +226,7 @@ export default class Root extends React.Component {
     YellowBox.ignoreWarnings(['Module RNDocumentPicker'])
     YellowBox.ignoreWarnings(['Module ReactNativeShareExtension'])
     YellowBox.ignoreWarnings(['Setting a timer']);
+    YellowBox.ignoreWarnings(['`createNavigationContainer()` has been deprecated']);
   }
 
   componentWillUnmount() {
@@ -297,10 +298,10 @@ export default class Root extends React.Component {
 
         AsyncStorage.getItem(CONSTANTS.ANDROID_SHARE_EXTENTION_FLAG).then((flag) => {
 
-          const isAndroidShareExtension = flag
+          const isAndroidShareExtension = flag === null ? true : flag
           AsyncStorage.setItem(CONSTANTS.ANDROID_SHARE_EXTENTION_FLAG, null)
 
-          if (isAndroidShareExtension === true) {
+          if (isAndroidShareExtension) {
             var searchIndex = -1;
             for (i = 3; i < params.length; i ++)
             {

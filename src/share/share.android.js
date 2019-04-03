@@ -8,7 +8,7 @@ import _ from 'lodash'
 
 import SharedGroupPreferences from 'react-native-shared-group-preferences'
 import { SCHEME } from '../service/api'
-
+import { Actions } from 'react-native-router-flux'
 
 import ShareExtension from './shareExtension'
 import LoadingScreen from '../containers/LoadingScreen';
@@ -22,6 +22,13 @@ export default class Share extends Component {
       initialized: false,
     }
     YellowBox.ignoreWarnings(['RCTBridge'])
+  }
+
+  handleError() {
+    Actions.pop()
+    setTimeout(() => {
+      ShareExtension.close();
+    }, 10)
   }
 
   async componentDidMount() {
@@ -38,7 +45,7 @@ export default class Share extends Component {
         AlertController.shared.showAlert('Error', 'Oops, we hit an issue \nPlease try sharing again', [
           {
             text: 'Ok',
-            onPress: () => ShareExtension.close() 
+            onPress: () => this.handleError()
           },
         ])
         return;
