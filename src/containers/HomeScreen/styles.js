@@ -12,6 +12,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff'
   },
   container: {
+    backgroundColor: 'white',
     flex: 1,
     paddingTop: Platform.OS === 'ios' ? ifIphoneX(0, 10) : 8
   },
@@ -24,7 +25,7 @@ const styles = StyleSheet.create({
     flex: 1
   },
   feedListContainerLongHold: {
-    marginTop: -32
+    marginTop: Platform.OS === 'ios' ? -56 : -48
   },
   modalContainer: {
     position: 'absolute',
@@ -33,6 +34,9 @@ const styles = StyleSheet.create({
     top: 0,
     bottom: 0,
     backgroundColor: COLORS.MODAL_BACKGROUND,
+  },
+  quickActionModalContainer: {
+    paddingBottom: ifIphoneX(22, 0)
   },
   emptyView: {
     flex: 1,
@@ -55,7 +59,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: CONSTANTS.PADDING,
     position: 'absolute',
     right: 0,
-    top: CONSTANTS.STATUSBAR_HEIGHT,
+    top: Platform.OS === 'ios' ? CONSTANTS.STATUSBAR_HEIGHT : 0,
     paddingTop: 8,
     alignItems: 'flex-end',
     backgroundColor: '#fff'
@@ -69,9 +73,11 @@ const styles = StyleSheet.create({
     alignItems: 'center'
   },
   btnDoneText: {
-    color: '#fff',
-    fontSize: 15,
-    fontWeight: '500'
+    paddingTop: 10,
+    fontSize: 16,
+    lineHeight: 22,
+    fontWeight: '600',
+    textAlign: 'center',
   },
   headerView: {
     width: CONSTANTS.SCREEN_WIDTH,
@@ -88,11 +94,22 @@ const styles = StyleSheet.create({
     alignItems: 'center'
   },
   settingIconView: {
-    width: 60,
-    justifyContent: 'center',
+    width: 38,
     alignItems: 'flex-end',
-    position: 'absolute',
-    right: 12
+    marginRight: 12
+  },
+  menuIconView: {
+    padding: 10,
+    marginLeft: 12
+  },
+  menuIcon: {
+    width: 18,
+    height: 14
+  },
+  title: {
+    fontWeight: '500',
+    fontSize: 18,
+    color: 'rgba(102, 104, 115, 1)'
   }
 })
 

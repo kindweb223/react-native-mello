@@ -14,6 +14,8 @@ class ShareExtensionTip: UIView {
 
   let tipView: UIView = UIView()
   
+  private let initialAnimationOffset: CGFloat = 100
+  
   @objc var onDismiss: RCTDirectEventBlock?
 
   override init(frame: CGRect) {
@@ -21,13 +23,14 @@ class ShareExtensionTip: UIView {
 
     // Define UIActivityViewController
     let items = ["https://melloapp.com"]
-    let ac = UIActivityViewController(activityItems: items, applicationActivities: nil)
+    let ac = CustomActivityViewController(activityItems: items, applicationActivities: nil)
     ac.view.backgroundColor = backgroundcolor
     ac.view.tintColor = backgroundcolor
+    ac.delegate = self
     
     ac.completionWithItemsHandler = {
       (activity, success, items, error) in
-      self.tipView.removeFromSuperview()
+      
       if self.onDismiss != nil {
         self.onDismiss!(["dismiss" : true])
       }
@@ -40,6 +43,8 @@ class ShareExtensionTip: UIView {
     if ac.view.frame.maxY > 736 {
       offset = CGFloat(508)
     }
+    
+    offset -= initialAnimationOffset
     
     let view1: UIView = UIView()
     view1.frame=CGRect(x: 8, y:ac.view.frame.maxY - offset, width:ac.view.frame.width - 16, height: 138)
@@ -113,9 +118,14 @@ class ShareExtensionTip: UIView {
     view1.addSubview(imageView3)
 
     tipView.addSubview(view1)
+    tipView.alpha = 0
 
     // Add tip view as subview so appears above background / backdrop
     UIApplication.shared.keyWindow?.addSubview(tipView)
+    UIView.animate(withDuration: 0.3) {
+      self.tipView.alpha = 1
+      self.tipView.center = CGPoint(x: self.tipView.center.x, y: self.tipView.center.y - self.initialAnimationOffset)
+    }
     
     var rootViewController = UIApplication.shared.keyWindow?.rootViewController
     if let navigationController = rootViewController as? UINavigationController {
@@ -132,4 +142,29 @@ class ShareExtensionTip: UIView {
     fatalError("init(coder:) has not been implemented")
   }
     
+}
+
+extension ShareExtensionTip: CustomActivityViewControllerDelegate {
+  func customActivityViewController(_ vc: CustomActivityViewController, willDisappear animated: Bool) {
+    UIView.animate(withDuration: 0.3, animations: {
+      self.tipView.alpha = 0
+      self.tipView.center = CGPoint(x: self.tipView.center.x, y: self.tipView.center.y + self.initialAnimationOffset)
+    }, completion: { _ in
+      self.tipView.removeFromSuperview()
+    })
+  }
+}
+
+protocol CustomActivityViewControllerDelegate: class {
+  func customActivityViewController(_ vc: CustomActivityViewController, willDisappear animated: Bool)
+}
+
+class CustomActivityViewController: UIActivityViewController {
+  weak var delegate: CustomActivityViewControllerDelegate?
+  
+  override func viewWillDisappear(_ animated: Bool) {
+    super.viewWillDisappear(animated)
+    
+    delegate?.customActivityViewController(self, willDisappear: animated)
+  }
 }

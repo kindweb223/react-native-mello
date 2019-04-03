@@ -18,6 +18,8 @@ import { uploadFileToS3 } from '../../redux/user/actions'
 import LoadingScreen from '../LoadingScreen'
 import styles from './styles'
 import Analytics from '../../lib/firebase'
+import AlertController from '../../components/AlertController'
+
 const CLOSE_ICON = require('../../../assets/images/Close/Blue.png')
 
 class CropImageScreen extends React.Component {
@@ -57,7 +59,7 @@ class CropImageScreen extends React.Component {
 
       if (user.loading === 'UPLOAD_FILE_REJECTED' || user.loading === 'UPDATE_PROFILE_REJECTED') {
         this.setState({ loading: false }, () => {
-          Alert.alert('Error', 'Server is failed')
+          AlertController.shared.showAlert('Error', 'Server is failed')
         })
       }
     }
@@ -75,7 +77,7 @@ class CropImageScreen extends React.Component {
       this.props.uploadFileToS3(baseUrl, fileUrl, fileName, fileType);
     } else {
       this.setState({ loading: false }, () => {
-        Alert.alert('Error', 'Cropping is failed')
+        AlertController.shared.showAlert('Error', 'Cropping is failed')
       })
     }
   }

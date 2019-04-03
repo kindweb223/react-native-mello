@@ -9,6 +9,7 @@ import _ from 'lodash'
 import { SHARE_LINK_URL } from "../service/api"
 import COLORS from '../service/colors'
 import CONSTANTS from '../service/constants'
+import AlertController from '../components/AlertController'
 
 /**
  * If the user is the invitee, return true
@@ -28,7 +29,8 @@ const isFeedOwner = (feed) => {
 }
 
 const isFeedOwnerOnlyInvitee = (feed) => {
-  return feed.invitees.length === 1 && isInviteeOwner(feed, feed.invitees[0])
+  const invitees = filterRemovedInvitees(feed.invitees)
+  return invitees.length === 1 && isInviteeOwner(feed, feed.invitees[0])
 }
 /**
  * If the invitee is feed owner, return true
@@ -127,7 +129,7 @@ const handleShareFeed = (feed) => {
 }
 
 const showPremiumAlert = () => {
-  Alert.alert(
+  AlertController.shared.showAlert(
     '',
     CONSTANTS.PREMIUM_10MB_ALERT_MESSAGE,
     [
@@ -152,6 +154,14 @@ const checkVideoCoverImage = (images, coverImage) => {
   return _.find(images, image => image.thumbnailUrl === coverImage)
 }
 
+const getCardViewMode = (feed, idea) => {
+  let viewMode = CONSTANTS.CARD_VIEW
+  if (isFeedOwnerEditor(feed) || (isFeedContributor(feed) && isCardOwner(idea))) {
+    viewMode = CONSTANTS.CARD_EDIT
+  }
+  return viewMode
+}
+
 export {
   checkUserIsInvitee,
   isFeedOwner,
@@ -171,5 +181,6 @@ export {
   showPremiumAlert,
   isMelloTipFeed,
   checkVideoCoverImage,
-  isFeedOwnerOnlyInvitee
+  isFeedOwnerOnlyInvitee,
+  getCardViewMode
 }

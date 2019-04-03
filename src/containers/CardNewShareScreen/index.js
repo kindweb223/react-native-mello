@@ -49,6 +49,7 @@ import WebMetaList from '../../components/WebMetaListComponent';
 import CoverImagePreviewComponent from '../../components/CoverImagePreviewComponent';
 import SelectHuntScreen from '../SelectHuntScreen';
 import Analytics from '../../lib/firebase'
+import AlertController from '../../components/AlertController'
 
 class CardNewShareScreen extends React.Component {
   constructor(props) {
@@ -155,7 +156,7 @@ class CardNewShareScreen extends React.Component {
     if (this.props.shareImageUrls.length > 0) {
       const file = this.props.shareImageUrls[0]
       this.selectedFile = file;
-      this.selectedFileMimeType = mime.lookup(file);
+      this.selectedFileMimeType = mime.lookup(file) || 'image/png';
       this.selectedFileName = file.replace(/^.*[\\\/]/, '')
       this.selectedFileType = 'MEDIA';
 
@@ -243,7 +244,7 @@ class CardNewShareScreen extends React.Component {
         }
         if (error) {
           console.log('ERROR: ', error)
-          Alert.alert('Error', error)
+          AlertController.shared.showAlert('Error', error)
         }
         this.props.resetCardError();
         return;

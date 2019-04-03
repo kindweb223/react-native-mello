@@ -101,7 +101,7 @@ android {
         applicationId "io.solvers.feedo"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode 66
+        versionCode 68
         versionName "1.0"
         multiDexEnabled true
         ndk {
@@ -147,6 +147,9 @@ android {
 }
 
 dependencies {
+    compile project(':react-native-fs')
+    compile project(':react-native-file-viewer')
+    compile project(':react-native-text-size')
     compile project(':react-native-intercom')
     compile project(':react-native-image-base64')
     compile project(':react-native-thumbnail')
@@ -173,7 +176,6 @@ dependencies {
     compile fileTree(dir: "libs", include: ["*.jar"])
     compile "com.android.support:appcompat-v7:${rootProject.ext.supportLibVersion}"
     compile "com.facebook.react:react-native:+"  // From node_modules
-    compile project(':react-native-fs')
 
     compile 'io.intercom.android:intercom-sdk:5.+'
     compile 'io.intercom.android:intercom-sdk-fcm:5.+'

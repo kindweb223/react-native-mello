@@ -99,7 +99,9 @@ import {
   pubnubDeleteInvitee,
   pubnubDeleteOtherInvitee,
   pubnubMoveIdea,
-  getFeedoList
+  getFeedoList,
+  pubnubUserInvited,
+  getFeedDetail
 } from './src/redux/feedo/actions'
 
 const SPLASH_LOGO = require('./assets/images/Splash/splashLogo.png')
@@ -111,7 +113,8 @@ export default class Root extends React.Component {
     super(props)
     this.state = {
       loading: true,
-      userInfo: null
+      userInfo: null,
+      loginState: 0
     }
 
     this.handleOpenURL = this.handleOpenURL.bind(this)
@@ -155,7 +158,7 @@ export default class Root extends React.Component {
         }
         if (response.message.action === 'USER_INVITED_TO_HUNT') {
           store.dispatch(getInvitedFeedList())
-          store.dispatch(pubnubGetFeedDetail(response.message.data.huntId))
+          store.dispatch(pubnubUserInvited())
         }
         if (response.message.action === 'USER_JOINED_HUNT') {
           store.dispatch(pubnubGetFeedDetail(response.message.data.huntId))
@@ -195,16 +198,19 @@ export default class Root extends React.Component {
 
       if (xAuthToken && userInfo) {
         axios.defaults.headers['x-auth-token'] = xAuthToken
-        Actions.HomeScreen()
+        this.setState({ loginState: 2 })
       } else {
         const userBackInfo = await AsyncStorage.getItem('userBackInfo')
         if (userBackInfo) {
-          Actions.LoginScreen()
+          this.setState({ loginState: 1 })
+        } else {
+          this.setState({ loginState: 0 })
         }
       }
       this.setState({ loading: false })
     } catch(error) {
       this.setState({ loading: false })
+      this.setState({ loginState: 0 })
     }
   }
 
@@ -267,9 +273,9 @@ export default class Root extends React.Component {
               console.log('GFL called on App.js')
 
               if (userInfo) {
-                if (Actions.currentScene === 'FeedDetailScreen') {
-                  Actions.FeedDetailScreen({ type: 'replace', data, isDeepLink: true });
-                }
+                if (Actions.currentScene === 'FeedDetailScreen') {                  
+                  store.dispatch(getFeedDetail(data.id));
+                } 
                 else {
                   Actions.FeedDetailScreen({ data, isDeepLink: true })
                 }
@@ -297,18 +303,20 @@ export default class Root extends React.Component {
   }
 
   render() {
+    const { loginState } = this.state
+
     const scenes = Actions.create(
       <Lightbox>
         <Modal hideNavBar>
           <Tabs key="tabs" tabBarComponent={TabbarContainer}>
             <Scene key="root">
-              <Scene key="TutorialScreen" component={ TutorialScreen } hideNavBar panHandlers={null} />
+              <Scene key="TutorialScreen" component={ TutorialScreen } hideNavBar panHandlers={null} initial={loginState === 0} />
               <Scene key="TermsAndConditionsConfirmScreen" component={ TermsAndConditionsConfirmScreen } hideNavBar panHandlers={null} />
-              <Scene key="LoginScreen" component={ LoginScreen } navigationBarStyle={styles.emptyBorderNavigationBar} />
+              <Scene key="LoginScreen" component={ LoginScreen } navigationBarStyle={styles.emptyBorderNavigationBar} initial={loginState === 1} />
               <Scene key="SignUpScreen" component={ SignUpScreen } navigationBarStyle={styles.emptyBorderNavigationBar} />
               <Scene key="SignUpConfirmScreen" component={ SignUpConfirmScreen } panHandlers={null} navigationBarStyle={styles.emptyBorderNavigationBar} />
               <Scene key="TermsAndConditionsScreen" component={ TermsAndConditionsScreen } navigationBarStyle={styles.emptyBorderNavigationBar} />
-              <Scene key="HomeScreen" component={ HomeScreen } hideNavBar panHandlers={null} />
+              <Scene key="HomeScreen" component={ HomeScreen } hideNavBar panHandlers={null} initial={loginState === 2} />
               <Scene key="FeedDetailScreen" component={ FeedDetailScreen } clone hideNavBar />
               <Scene key="DocumentSliderScreen" component={ DocumentSliderScreen } hideNavBar />
               <Scene key="LikesListScreen" component={ LikesListScreen } navigationBarStyle={styles.defaultNavigationBar} />
@@ -376,12 +384,12 @@ export default class Root extends React.Component {
 const styles = StyleSheet.create({
   defaultNavigationBar: {
     height: 54,
-    paddingHorizontal: 6,
+    marginHorizontal: 0,
     backgroundColor: '#FEFEFE'
   },
   emptyBorderNavigationBar: {
     height: 54,
-    paddingHorizontal: 6,
+    marginHorizontal: 0,
     backgroundColor: '#fff',
     borderBottomWidth: 0
   },
