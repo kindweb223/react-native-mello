@@ -188,15 +188,15 @@ class LocalStorage extends React.Component {
         // //console.log('RNFS - listFiles called')
         const dir = RNFS.DocumentDirectoryPath + '/' + user.userInfo.id
         RNFS.readDir(dir)
-            .then(result => //console.log('RNFS o- ', result))
-            .catch(error => //console.log('RNFS o- ',  error))
+            .then(result => {}) //console.log('RNFS o- ', result))
+            .catch(error => {}) //console.log('RNFS o- ',  error))
     }
 
     flattenIdeas = () => {
             const allIdeas = []
             const { feedo, user } = this.props
             const { feedoList } = feedo
-            console.log('AS set ', (user.userInfo.id + '/flows'), ' to ', JSON.stringify(feedoList))
+            // console.log('AS set ', (user.userInfo.id + '/flows'), ' to ', JSON.stringify(feedoList))
             AsyncStorage.setItem(user.userInfo.id + '/flows', JSON.stringify(feedoList))
             //console.log('RNFS feedoList is ', feedo, feedoList)
             let waitForAll;
@@ -259,12 +259,12 @@ class LocalStorage extends React.Component {
                                 }
 
                             })
-                            .catch(err => //console.log('RNFS - can not store file because ', err))
+                            .catch(err => {})//console.log('RNFS - can not store file because ', err))
                     })
                 })
 
             })
-            .catch(err => //console.log('RNFS - no user dir and no resolution - ', err))
+            .catch(err => {})//console.log('RNFS - no user dir and no resolution - ', err))
     }
 
     componentDidMount(): void {
@@ -332,7 +332,7 @@ class LocalStorage extends React.Component {
                             ((fileIndex + 1) === files.length) && this.updateRecursiveShout(++ideaIndex, delay)
     
                         })
-                        .catch(err => //console.log('RNFSR batch - can not store file because ', err))
+                        .catch(err => {})//console.log('RNFSR batch - can not store file because ', err))
                         ((fileIndex + 1) === files.length) && this.updateRecursiveShout(++ideaIndex, delay)
     
                 }
