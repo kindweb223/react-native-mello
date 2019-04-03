@@ -56,8 +56,6 @@ import AlertController from '../../components/AlertController'
 import SideMenuComponent from '../../components/SideMenuComponent'
 import * as COMMON_FUNC from '../../service/commonFunc'
 
-import * as COMMON_FUNC from '../../service/commonFunc'
-
 const SEARCH_ICON = require('../../../assets/images/Search/Grey.png')
 const SETTING_ICON = require('../../../assets/images/Settings/Grey.png')
 
