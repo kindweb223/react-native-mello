@@ -5,11 +5,11 @@ import {
   StyleSheet,
   View,
   Platform,
-  WebView
+  // WebView
 } from 'react-native';
 import _ from 'lodash';
 
-// import { WebView } from 'react-native-webview'
+import { WebView } from 'react-native-webview'
 
 const webapp = require('./index.html');
 
