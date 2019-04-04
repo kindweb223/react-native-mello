@@ -21,6 +21,7 @@ import Swipeout from 'react-native-swipeout'
 import _ from 'lodash'
 import FontAwesome from 'react-native-vector-icons/FontAwesome'
 import Ionicons from 'react-native-vector-icons/Ionicons'
+import * as Animatable from 'react-native-animatable'
 
 import Analytics from '../../lib/firebase'
 import NotificationItemComponent from '../../components/NotificationItemComponent'
@@ -39,6 +40,7 @@ import {
   alreadyReadActivityFeed,
   deleteActivityFeed,
   readAllActivityFeed,
+  readActivityGroup,
   setCurrentFeed,
   getInvitedFeedList,
   getActivityFeedVisited,
@@ -125,7 +127,8 @@ class NotificationScreen extends React.Component {
       isShowInviteToaster: false,
       inviteToasterTitle: '',
       apiLoading: false,
-      singleNotification: false
+      singleNotification: false,
+      animationType: 'slideInLeft',
     };
     this.animatedOpacity = new Animated.Value(0)
     this.userActions = []
@@ -415,7 +418,7 @@ class NotificationScreen extends React.Component {
     })
 
     if (!data.read) {
-      this.props.readActivityFeed(this.props.user.userInfo.id, data.id)
+      this.props.readActivityGroup(this.props.user.userInfo.id, data.id)
     }
   }
 
@@ -572,24 +575,26 @@ class NotificationScreen extends React.Component {
           )}
 
           {singleNotification && singleNotificationList.length > 0 && (
-            <FlatList
-              style={styles.flatList}
-              contentContainerStyle={styles.contentFlatList}
-              data={singleNotificationList}
-              keyExtractor={item => item.id}
-              automaticallyAdjustContentInsets={true}
-              renderItem={this.renderSingleNotificationItem.bind(this)}
-              ListFooterComponent={this.renderFooter}
-              refreshControl={
-                <RefreshControl 
-                  refreshing={this.state.refreshing}
-                  onRefresh={this.handleRefresh}
-                  tintColor={COLORS.PURPLE}
-                />
-              }
-              onEndReached={this.handleLoadMore}
-              onEndReachedThreshold={0}
-            />
+            <Animatable.View animation={this.state.animationType} duration={500}>
+              <FlatList
+                style={styles.flatList}
+                contentContainerStyle={styles.contentFlatList}
+                data={singleNotificationList}
+                keyExtractor={item => item.id}
+                automaticallyAdjustContentInsets={true}
+                renderItem={this.renderSingleNotificationItem.bind(this)}
+                // ListFooterComponent={this.renderFooter}
+                refreshControl={
+                  <RefreshControl 
+                    refreshing={this.state.refreshing}
+                    onRefresh={this.handleRefresh}
+                    tintColor={COLORS.PURPLE}
+                  />
+                }
+                onEndReached={this.handleLoadMore}
+                onEndReachedThreshold={0}
+              />
+            </Animatable.View>
           )}
 
           {loading && <LoadingScreen />}
@@ -822,6 +827,7 @@ const mapDispatchToProps = dispatch => ({
   getActivityFeed: (userId, param) => dispatch(getActivityFeed(userId, param)),
   readAllActivityFeed: (userId) => dispatch(readAllActivityFeed(userId)),
   readActivityFeed: (userId, activityId) => dispatch(readActivityFeed(userId, activityId)),
+  readActivityGroup: (userId, activityGroupId) => dispatch(readActivityGroup(userId, activityGroupId)),
   alreadyReadActivityFeed: (activityId) => dispatch(alreadyReadActivityFeed(activityId)),
   deleteActivityFeed: (userId, activityId) => dispatch(deleteActivityFeed(userId, activityId)),
   getFeedDetail: (feedId) => dispatch(getFeedDetail(feedId)),

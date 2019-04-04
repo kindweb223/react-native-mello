@@ -1246,14 +1246,7 @@ export default function feedo(state = initialState, action = {}) {
       }
 
       let activityFeedList = []
-      if (data.first) {
-        activityFeedList = data.huntActivities
-      } else {
-        activityFeedList = [
-          ...state.activityFeedList,
-          ...data.huntActivities
-        ]
-      }
+      activityFeedList = data.huntActivities
 
       return {
         ...state,

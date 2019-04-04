@@ -22,12 +22,8 @@ class ActivityFeedGroupComponent extends React.Component {
     let updatesData = ''
     let otherUpdates = 0
 
-    if (comments) {
-      updatesData = `${comments} comments`
-    }
-    if (mentions) {
-      updatesData = updatesData ? `${updatesData}, ` : updatesData
-      updatesData = `${updatesData}${mentions} mentions`
+    if (comments || mentions) {
+      updatesData = `${comments + mentions} comments`
     }
     if (likes) {
       updatesData = updatesData ? `${updatesData}, ` : updatesData
@@ -35,32 +31,32 @@ class ActivityFeedGroupComponent extends React.Component {
     }
 
     if (userPermissionsChanged) {
-      otherUpdates++
+      otherUpdates += userPermissionsChanged
     }
     if (usersInvitedToHunt) {
-      otherUpdates++
+      otherUpdates += usersInvitedToHunt
     }
     if (usersJoinedHunt) {
-      otherUpdates++
+      otherUpdates += usersJoinedHunt
     }
     if (updatesToHunt) {
-      otherUpdates++
+      otherUpdates += updatesToHunt
     }
     if (ideasMoved) {
-      otherUpdates++
+      otherUpdates += ideasMoved
     }
     if (updatesToIdeas) {
-      otherUpdates++
+      otherUpdates += updatesToIdeas
     }
     if (huntDeleted) {
-      otherUpdates++
+      otherUpdates += huntDeleted
     }
     if (ideasDeleted) {
-      otherUpdates++
+      otherUpdates += ideasDeleted
     }
     if (otherUpdates) {
       updatesData = updatesData ? `${updatesData}, ` : updatesData
-      let upStr = updatesData ? 'other updates' : 'updates'
+      let upStr = updatesData ? 'other updates' : 'Updates'
       updatesData = `${updatesData}${otherUpdates} ${upStr}`
     }
 
