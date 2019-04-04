@@ -60,7 +60,7 @@ class MainViewController: UIViewController {
     containerView.alpha = 0
     containerViewCenterConstraint.constant += 100
     
-    setupNavigationBar(backButton: false, title: "Loading...", rightButton: nil)
+    setupNavigationBar(backButton: false, title: "Searching for images...", rightButton: nil)
   }
   
   override func viewDidAppear(_ animated: Bool) {
@@ -124,7 +124,7 @@ class MainViewController: UIViewController {
                     self.showErrorAndClose("Could not read the provided link")
                     return
                   }
-                  if parsedURL.images.count > 1 {
+                  if parsedURL.images.count > 0 {
                     self.showImagePickerVC(parsedURL)
                     return
                   } else {
