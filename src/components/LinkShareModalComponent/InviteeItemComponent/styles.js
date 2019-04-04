@@ -37,9 +37,8 @@ const styles = StyleSheet.create({
     alignItems: 'center'
   },
   viewText: {
-    fontSize: 14,
-    marginHorizontal: 5,
-    fontWeight: '600',
+    fontSize: 13,
+    fontWeight: 'normal',
     textTransform: 'capitalize'
   },
   viewEnableText: {

@@ -172,12 +172,30 @@ class InviteeScreen extends React.Component {
   }
 
   onSelectMember = (item) => {
-    const { user, data } = this.props
-    if (data.owner && data.owner.email === item.userProfile.email) return // if selected contact is feed owner
-    this.setState({
-      selectedContact: item,
-      isRemoveModal: true
-    })
+    const { user, data, inviteToHunt } = this.props
+    const { id, email, firstName, lastName } = item.userProfile
+    if (data.owner && data.owner.email === email) return // if selected contact is feed owner
+
+    if (item.inviteStatus !== 'ACCEPTED') {
+      let inviteeEmails = []
+      inviteeEmails.push({
+        text: firstName + ' ' + lastName,
+        email,
+        name: firstName + ' ' + lastName,
+        userProfileId: id
+      })
+      const params = {
+        message: '',
+        invitees: inviteeEmails,
+        permissions: item.permissions
+      }
+      inviteToHunt(data.id, params)
+    } else {
+      this.setState({
+        selectedContact: item,
+        isRemoveModal: true
+      })
+    }
   }
 
   onSelectContact = (contact) => {
