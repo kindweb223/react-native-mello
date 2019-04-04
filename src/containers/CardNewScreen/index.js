@@ -280,7 +280,6 @@ class CardNewScreen extends React.Component {
         let imgRatio = actualWidth/actualHeight;
         let maxRatio = maxWidth/maxHeight;
 
-        console.log(this.selectedFile, actualHeight, actualWidth);
         if (actualHeight !== undefined && actualWidth !== undefined)
         {
           if (actualHeight > maxHeight || actualWidth > maxWidth) {
@@ -997,7 +996,7 @@ class CardNewScreen extends React.Component {
     //   cardName = '';
     // }
     const cardName = '';
-    this.props.updateCard(this.props.feedo.currentFeed.id, id, cardName, this.state.idea, this.state.coverImage, files, true);
+    this.props.updateCard(this.props.feedo.currentFeed.id, id, cardName, this.state.idea, this.state.coverImage, files, false);
   }
 
   onAddMedia() {
@@ -1216,7 +1215,6 @@ class CardNewScreen extends React.Component {
 
     let type = 'FILE';
     if (mimeType !== false) {
-      console.log('mimeType is not false')
       if (mimeType.indexOf('image') !== -1 || mimeType.indexOf('video') !== -1) {
         type = 'MEDIA';
       }
@@ -1284,7 +1282,6 @@ class CardNewScreen extends React.Component {
   // }
   
   onChangeIdea(text) {
-    // console.log('TextInput - onChangeIdea : ', text);
     this.setState({
       idea: text,
     }, async () => {
@@ -1378,7 +1375,7 @@ class CardNewScreen extends React.Component {
       this.props.setCurrentFeed(this.prevFeedo);
     }
     if (this.prevFeedo.id !== this.props.feedo.currentFeed.id) {
-      this.props.moveCard(this.props.card.currentCard.id, this.props.feedo.currentFeed.id);
+      this.props.moveCard([{ 'idea': this.props.card.currentCard }], this.props.feedo.currentFeed.id);
     }
     this.prevFeedo = null;
     if(this.textInputIdeaRef) {

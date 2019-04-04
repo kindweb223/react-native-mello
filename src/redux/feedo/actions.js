@@ -19,6 +19,8 @@ export const getFeedoList = (index = 0, isForCardMove = false) => {
   // }
   let url = 'hunts'
 
+  console.log('GFL has been called')
+
   return {
     types: [types.GET_FEEDO_LIST_PENDING, types.GET_FEEDO_LIST_FULFILLED, types.GET_FEEDO_LIST_REJECTED],
     promise:
@@ -29,6 +31,15 @@ export const getFeedoList = (index = 0, isForCardMove = false) => {
     payload: isForCardMove
   };
 }
+
+export const setFeedoListFromStorage = (feedoList) => {
+  console.log('FL here is ', feedoList)
+  return {
+    type: types.SET_FEEDO_LIST_FROM_STORAGE,
+    feedoList,
+  }
+}
+
 
 /**
  * Get feedo list
@@ -45,6 +56,8 @@ export const getInvitedFeedList = () => {
       })
   };
 }
+
+
 
 /**
  * Update feed invitation (accept, ignore)
@@ -81,6 +94,16 @@ export const getFeedDetail = (feedId) => {
     payload: feedId
   };
 }
+
+
+export const setFeedDetailFromStorage = (feed) => {
+  console.log('FL feed here is ', feed)
+  return {
+    type: types.SET_FEED_DETAIL_FROM_STORAGE,
+    feed,
+  }
+}
+
 
 /**
  * Pin Feed
