@@ -1,33 +1,30 @@
 import React from 'react';
 import {
-  ActivityIndicator,
   Alert,
   StyleSheet,
   View,
+  Text,
   Platform,
   // WebView
 } from 'react-native';
 import _ from 'lodash';
 
 import { WebView } from 'react-native-webview'
+var editor = require('./ckeditor.html')
 
-const webapp = require('./index.html');
-
-// fix https://github.com/facebook/react-native/issues/10865
 const patchPostMessageJsCode = `(${String(function() {
-  var originalPostMessage = window.postMessage;
-  var patchedPostMessage = function(message, targetOrigin, transfer) {
-    originalPostMessage(message, targetOrigin, transfer);
-  };
-  patchedPostMessage.toString = function() {
-    return String(Object.hasOwnProperty).replace('hasOwnProperty', 'postMessage');
-  };
-  window.postMessage = patchedPostMessage;
+  window.postMessage = function(data) {
+    window.ReactNativeWebView.postMessage(data)
+  }
 })})();`;
 
 class CKEditor extends React.Component {
   constructor(props) {
     super(props);
+
+    this.state = {
+      height: 100
+    }
   }
 
   onError = error => {
@@ -61,7 +58,7 @@ class CKEditor extends React.Component {
 
   onWebViewLoaded = () => {
     // data = 'placeholder: ' + this.props.content;
-    data = 'placeholder: ' + 'My TEST';
+    data = 'placeholder: ' + 'TEST';
     this.postMessage(data);
   };
 
@@ -79,13 +76,21 @@ class CKEditor extends React.Component {
         useWebKit={true}
         scrollEnabled={false}
         hideKeyboardAccessoryView={true}
-        source={webapp}
-        onError={this.onError}
-        renderError={this.renderError}
+        source={Platform.OS === 'ios' ? editor : { uri: 'file:///android_asset/ckeditor/index.html' }}
+        // source={{ uri: Platform.OS === 'ios' ? 'https://demos.solvers.io/solvers/melloapp-landing/ckeditor_ios.html' : 'https://demos.solvers.io/solvers/melloapp-landing/ckeditor_android.html' }}
+        // onError={this.onError}
+        // renderError={this.renderError}
         javaScriptEnabled
+        startInLoadingState={true}  
         onLoadEnd={this.onWebViewLoaded}
         onMessage={this.handleMessage}
+        domStorageEnabled={false}
+        cacheEnabled={false}
+        thirdPartyCookiesEnabled={false}
+        incognito={true}
+        saveFormDataDisabled={true}
         mixedContentMode="always"
+        scrollEnabled
       />
     );
   }

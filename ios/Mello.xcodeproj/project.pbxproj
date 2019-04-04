@@ -1038,8 +1038,8 @@
 		13B07FAE1A68108700A75B9A /* Mello */ = {
 			isa = PBXGroup;
 			children = (
-				A48B0150210F8F9C001C33B5 /* Mello.entitlements */,
 				008F07F21AC5B25A0029DE68 /* main.jsbundle */,
+				A48B0150210F8F9C001C33B5 /* Mello.entitlements */,
 				13B07FAF1A68108700A75B9A /* AppDelegate.h */,
 				13B07FB01A68108700A75B9A /* AppDelegate.m */,
 				13B07FB51A68108700A75B9A /* Images.xcassets */,
