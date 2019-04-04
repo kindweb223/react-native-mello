@@ -557,17 +557,44 @@ export const getActivityFeed = (userId, data) => {
 }
 
 /**
+ * Read activity group
+ */
+export const readActivityGroup = (userId, activityGroupId) => {
+  let url = `users/${userId}/huntActivityGroup/${activityGroupId}`
+
+  const data = {
+    read: true
+  }
+
+  return {
+    types: [types.READ_ACTIVITY_GROUP_PENDING, types.READ_ACTIVITY_GROUP_FULLFILLED, types.READ_ACTIVITY_GROUP_REJECTED],
+    promise:
+      axios({
+        method: 'put',
+        url: url,
+        data
+      }),
+    payload: activityGroupId
+  };
+}
+
+/**
  * Read all activity feed
  */
 export const readAllActivityFeed = (userId) => {
   let url = `users/${userId}/activityFeed`
+
+  const data = {
+    read: true
+  }
 
   return {
     types: [types.READ_ALL_ACTIVITY_FEED_PENDING, types.READ_ALL_ACTIVITY_FEED_FULFILLED, types.READ_ALL_ACTIVITY_FEED_REJECTED],
     promise:
       axios({
         method: 'put',
-        url: url
+        url: url,
+        data
       })
   };
 }
