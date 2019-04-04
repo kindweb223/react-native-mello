@@ -19,12 +19,23 @@ class CKEditorToolbar extends React.Component {
     super(props);
 
     this.state = {
-      isFirstToolbar: true
+      isFirstToolbar: true,
+      fontSize: 'small'
     }
   }
 
   moveNextToolbar = (isFirstToolbar) => {
     this.setState({ isFirstToolbar: !isFirstToolbar })
+  }
+
+  setFontSize = () => {
+    if (this.state.fontSize === 'normal') {
+      this.setState({ fontSize: 'small' })
+      this.props.executeCKEditorCommand('fontSize_small')
+    } else {
+      this.setState({ fontSize: 'normal' })
+      this.props.executeCKEditorCommand('fontSize_normal')
+    }
   }
 
   render() {
@@ -45,7 +56,7 @@ class CKEditorToolbar extends React.Component {
           ? <View style={styles.firstToolbarView}>
               <TouchableOpacity
                 activeOpacity={0.6}
-                onPress={() => this.props.executeCKEditorCommand('bold')}
+                onPress={() => this.setFontSize()}
               >
                 <Image source={HEADLINE_ICON} />
               </TouchableOpacity>
@@ -64,9 +75,9 @@ class CKEditorToolbar extends React.Component {
                 </TouchableOpacity>
                 <TouchableOpacity
                   activeOpacity={0.6}
-                  onPress={() => this.props.executeCKEditorCommand('bold')}
+                  onPress={() => this.props.executeCKEditorCommand('underline')}
                 >
-                  <Image source={CHECKBOX_ICON} />
+                  <Image source={UNDERLINE_ICON} />
                 </TouchableOpacity>
               </View>
               <TouchableOpacity
@@ -77,13 +88,6 @@ class CKEditorToolbar extends React.Component {
               </TouchableOpacity>
             </View>
           : <View style={styles.secondToolbarView}>
-              <TouchableOpacity
-                activeOpacity={0.6}
-                style={styles.toolView}
-                onPress={() => this.props.executeCKEditorCommand('underline')}
-              >
-                <Image source={UNDERLINE_ICON} />
-              </TouchableOpacity>
               <TouchableOpacity
                 activeOpacity={0.6}
                 style={styles.toolView}

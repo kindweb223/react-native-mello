@@ -10,15 +10,15 @@ const styles = StyleSheet.create({
   },
   firstToolbarView: {
     flex: 1,
-    paddingHorizontal: 32,
+    paddingHorizontal: 25,
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center'
   },
   toolbarBorderView: {
     flex: 1,
-    paddingHorizontal: 32,
-    marginHorizontal: 32,
+    paddingHorizontal: 25,
+    marginHorizontal: 25,
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
