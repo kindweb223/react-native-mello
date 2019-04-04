@@ -7,10 +7,12 @@ import {
   Alert,
   Animated,
   ActivityIndicator,
+  NetInfo,
   Platform
 } from 'react-native'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
+import { NetworkConsumer } from 'react-native-offline'
 
 import Slideshow from '../../components/Slideshow'
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons'
@@ -37,6 +39,7 @@ class ImageSliderScreen extends React.Component {
       imageIndex: this.props.position,
       setCoveredIndex: this.props.position,
       updatingCoverImage: false,
+      offline: false,
       isFileDeleted: false
     };
     this.buttonOpacity = new Animated.Value(1)
@@ -44,6 +47,26 @@ class ImageSliderScreen extends React.Component {
 
   componentDidMount() {
     Analytics.setCurrentScreen('ImageSliderScreen')
+    const offlineStatus = this.state.offline
+    NetInfo.getConnectionInfo().then((connectionInfo) => {
+      // console.log(
+      //   'CDU: Initial, type: ' +
+      //     connectionInfo.type +
+      //     ', effectiveType: ' +
+      //     connectionInfo.effectiveType, connectionInfo
+      // );
+      if(connectionInfo.type === 'none'){
+        if(!offlineStatus){
+          this.setState({ offline: true})
+        }
+        return true
+      }else{
+        if(offlineStatus){
+          this.setState({ offline: false})
+        }
+        return false
+      }
+    });
   }
 
   UNSAFE_componentWillReceiveProps(nextProps) {
@@ -68,12 +91,12 @@ class ImageSliderScreen extends React.Component {
       // setting a file as cover image
       this.setState({updatingCoverImage: true})
     } else if (this.props.card.loading !== cardTypes.SET_COVER_IMAGE_FULFILLED && nextProps.card.loading === cardTypes.SET_COVER_IMAGE_FULFILLED) {
-      // success in setting a file as cover image      
+      // success in setting a file as cover image
       setTimeout(() => {
         this.setState({updatingCoverImage: false})
       }, 300)
-  
-    } 
+
+    }
 
     this.setState({
       loading,
@@ -119,7 +142,7 @@ class ImageSliderScreen extends React.Component {
     const {
       mediaFiles,
     } = this.props;
-    
+
     if (this.props.onSetCoverImage) {
       this.setState({setCoveredIndex: this.state.imageIndex})
       this.props.onSetCoverImage(mediaFiles[this.state.imageIndex].id);
@@ -152,12 +175,13 @@ class ImageSliderScreen extends React.Component {
 
   render () {
     const { mediaFiles, isFastImage } = this.props;
+    const { offline } = this.state
 
     const isCoveredImage = this.state.setCoveredIndex === this.state.imageIndex
 
     return (
       <View style={styles.container}>
-        <Slideshow 
+        <Slideshow
           position={this.state.position}
           mediaFiles={mediaFiles}
           width={CONSTANTS.SCREEN_WIDTH}
@@ -171,7 +195,7 @@ class ImageSliderScreen extends React.Component {
           updateStatus={() => this.setState({ isFileDeleted: false })}
         />
 
-        <Animated.View 
+        <Animated.View
           style={[styles.closeButtonWrapper, { opacity: this.buttonOpacity }]}
         >
           <TouchableOpacity
@@ -183,12 +207,12 @@ class ImageSliderScreen extends React.Component {
           </TouchableOpacity>
         </Animated.View>
         {
-          
-          this.props.removal && this.props.isSetCoverImage &&
-          <Animated.View 
+
+          this.props.removal && this.props.isSetCoverImage && !offline &&
+          <Animated.View
             style={[styles.coverButton, { opacity: this.buttonOpacity }]}
           >
-            <TouchableOpacity 
+            <TouchableOpacity
               activeOpacity={0.6}
               disabled={isCoveredImage ? true: false}
               onPress={() => this.onSetCoverImage()}
@@ -206,11 +230,11 @@ class ImageSliderScreen extends React.Component {
           </Animated.View>
         }
         {
-          this.props.removal && 
-          <Animated.View 
+          this.props.removal && !offline &&
+          <Animated.View
             style={[styles.deleteButton, { opacity: this.buttonOpacity }]}
           >
-            <TouchableOpacity 
+            <TouchableOpacity
               activeOpacity={0.6}
               onPress={() => this.onDelete()}
             >
