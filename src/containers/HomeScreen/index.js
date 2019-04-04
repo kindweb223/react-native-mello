@@ -362,7 +362,7 @@ class HomeScreen extends React.Component {
         })
 
         // refresh list if card addedd or card moved
-        if ((feedo.loading === 'UPDATE_CARD_FULFILLED' || feedo.isCreateCard || feedo.loading === 'MOVE_CARD_FULFILLED')) {
+        if ((feedo.loading === 'UPDATE_CARD_FULFILLED' || feedo.loading === 'MOVE_CARD_FULFILLED') && feedo.isCreateCard) {
           nextProps.getFeedoList()
         } else {
           const { filterSortType, filterShowType } = prevState

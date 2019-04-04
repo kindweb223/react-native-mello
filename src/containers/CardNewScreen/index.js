@@ -999,7 +999,7 @@ class CardNewScreen extends React.Component {
     //   cardName = '';
     // }
     const cardName = '';
-    this.props.updateCard(this.props.feedo.currentFeed.id, id, cardName, this.state.idea, this.state.coverImage, files, true);
+    this.props.updateCard(this.props.feedo.currentFeed.id, id, cardName, this.state.idea, this.state.coverImage, files, false);
   }
 
   onAddMedia() {
