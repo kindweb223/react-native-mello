@@ -93,7 +93,7 @@ class NotificationScreen extends React.Component {
       <View style={styles.headerContainer}>
         <TouchableOpacity
           activeOpacity={0.6}
-          onPress={() => this.setState({ singleNotification: false, title: 'Notifications' })}
+          onPress={() => this.animateOutSingleNotificationView()}
           style={styles.buttonWrapper}
         >
           {this.state.singleNotification && <Ionicons name="ios-arrow-back" size={32} color={COLORS.PURPLE} />}
@@ -128,6 +128,7 @@ class NotificationScreen extends React.Component {
       inviteToasterTitle: '',
       apiLoading: false,
       singleNotification: false,
+      animTransformSingleNotificationView: new Animated.Value(CONSTANTS.SCREEN_WIDTH),
       animationType: 'slideInLeft',
     };
     this.animatedOpacity = new Animated.Value(0)
@@ -416,10 +417,34 @@ class NotificationScreen extends React.Component {
       singleNotification: true,
       singleNotificationList: data.activities
     })
+    this.animateInSingleNotificationView()
 
     if (!data.read) {
       this.props.readActivityGroup(this.props.user.userInfo.id, data.id)
     }
+  }
+
+  animateInSingleNotificationView() {
+    const parallel = Animated.parallel
+    const timing = Animated.timing
+
+    parallel([
+      timing(this.state.animTransformSingleNotificationView, {
+        toValue: 0,
+        duration: 400
+      })
+    ]).start()
+  }
+
+  animateOutSingleNotificationView() {
+    const timing = Animated.timing
+
+    timing(this.state.animTransformSingleNotificationView, {
+      toValue: CONSTANTS.SCREEN_WIDTH,
+      duration: 400
+    }).start(() => {
+      this.setState({ singleNotification: false, title: 'Notifications' })
+    })
   }
 
   get renderDeleteComponent() {
@@ -575,7 +600,11 @@ class NotificationScreen extends React.Component {
           )}
 
           {singleNotification && singleNotificationList.length > 0 && (
-            <Animatable.View animation={this.state.animationType} duration={500}>
+            <Animated.View
+              style={{
+                transform: [{ translateX: this.state.animTransformSingleNotificationView }],
+              }}
+            >
               <FlatList
                 style={styles.flatList}
                 contentContainerStyle={styles.contentFlatList}
@@ -594,7 +623,7 @@ class NotificationScreen extends React.Component {
                 onEndReached={this.handleLoadMore}
                 onEndReachedThreshold={0}
               />
-            </Animatable.View>
+            </Animated.View>
           )}
 
           {loading && <LoadingScreen />}
