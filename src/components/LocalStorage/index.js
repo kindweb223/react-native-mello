@@ -4,6 +4,7 @@ import { Button, FlatList, ScrollView, View, Text, ViewPropTypes, AsyncStorage, 
 import mime from 'mime-types'
 import {connect} from "react-redux";
 import axios from 'axios'
+import ToasterComponent from '../../components/ToasterComponent'
 
 const makeUserDir = (id, resolve, reject) => {
     const userDir = RNFS.DocumentDirectoryPath + '/' + id
@@ -179,6 +180,7 @@ class LocalStorage extends React.Component {
             storageDelay: 2000,
             storageInterval: 1000,
             lastStoredIdea: 0,
+            downloadComplete: false,
             
         };
     }
@@ -225,6 +227,19 @@ class LocalStorage extends React.Component {
             })
             //console.log('RNFS there are a total of ', allIdeas.length, ' ideas this user has access to')
             //console.log('RNFS ', allIdeas[0], allIdeas[1], allIdeas[2])
+
+    }
+
+    signalBackupComplete = (show = true) => {
+        console.log('SBC - called change to state')
+        this.setState({
+            downloadComplete: show
+        })
+        setTimeout(()=>{
+            this.setState({
+                downloadComplete: false
+            })
+        }, 2000)
 
     }
 
@@ -300,6 +315,7 @@ class LocalStorage extends React.Component {
         const delay = storageInterval
 
         if(ideaIndex === (ideas.length)){
+            this.signalBackupComplete()
             return
         }
 
@@ -374,8 +390,12 @@ class LocalStorage extends React.Component {
         if((prevProps.feedo.feedoList === null || prevProps.feedo.feedoList.length === 0) && (feedo.feedoList && feedo.feedoList.length > 0)){
             userDirMustExist(user.userInfo.id)
             .then(()=>{
-                //console.log('RNFS try and do stuff')
-                this.flattenIdeas()
+                if(user.userInfo.hasOwnProperty('plan') && user.userInfo.plan.type === 'FREE'){
+                    //user is not on premium plan
+                }else{
+                    //console.log('RNFS try and do stuff')
+                    this.flattenIdeas()
+                }
             })
         }
 
@@ -386,13 +406,21 @@ class LocalStorage extends React.Component {
 
 
     render() {
-        const { files } =  this.state
+        const { files, downloadComplete } =  this.state
         const { feedo } = this.props
         // const ideas = feedo.currentFeed.ideas
         // //console.log('RNFS feed is ', Object.keys(feedo))
         // //console.log('RNFS feeds are ', feedo.feedoList)
         return (
             <View>
+                {downloadComplete && (
+                    <ToasterComponent
+                        isVisible={this.state.downloadComplete}
+                        title={'Backup Complete'}
+                        onPressButton={() => {this.signalBackupComplete(false)}}
+                        buttonTitle="OK"
+                    />
+                    )}
             </View>
         )
     }
