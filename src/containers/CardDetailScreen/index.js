@@ -650,8 +650,6 @@ class CardDetailScreen extends React.Component {
       if (feedo.feedoList.length == 0) {
         this.isGettingFeedoList = true;
         this.props.getFeedoList(0);
-
-        console.log('GFL called on CardDetailScreen.js')
       } else {
         this.createCard(this.props);
       }
@@ -683,14 +681,14 @@ class CardDetailScreen extends React.Component {
 
   checkOffline = () => {
     const offlineStatus = this.state.offline
-    console.log('CDU ', prevProps.network, this.props.network)
+    // console.log('CDU ', prevProps.network, this.props.network)
     NetInfo.getConnectionInfo().then((connectionInfo) => {
-      console.log(
-        'CDU: Initial, type: ' +
-          connectionInfo.type +
-          ', effectiveType: ' +
-          connectionInfo.effectiveType, connectionInfo
-      );
+      // console.log(
+      //   'CDU: Initial, type: ' +
+      //     connectionInfo.type +
+      //     ', effectiveType: ' +
+      //     connectionInfo.effectiveType, connectionInfo
+      // );
       if(connectionInfo.type === 'none'){
         if(!offlineStatus){
           this.setState({ offline: true})

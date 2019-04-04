@@ -321,10 +321,10 @@ class FeedDetailScreen extends React.Component {
 
       currentFeed.ideas.map(idea => {
         idea.files && idea.files.map((file) => {
-          console.log('OXO lets see if we already stored ', file.id, ' which is like ', file)
+          // console.log('OXO lets see if we already stored ', file.id, ' which is like ', file)
           AsyncStorage.getItem('file/'+file.id)
           .then(success => {
-            console.log('OXO it was a ', success)
+            // console.log('OXO it was a ', success)
             const newUrl = 'file:///'+success
             if(file.accessUrl === idea.coverImage){
               idea.coverImage = newUrl
@@ -1874,11 +1874,10 @@ const mapDispatchToProps = dispatch => ({
   getFeedDetail: data => dispatch(getFeedDetail(data))
     .then(response => {
       if(response.error){
-        console.log('Async A')
         AsyncStorage.getItem('flow/'+data)
             .then(success => {
               const feed = JSON.parse(success)
-              console.log('Async Feed for  ', data, ' is ', feed)
+              // console.log('Async Feed for  ', data, ' is ', feed)
               dispatch(setFeedDetailFromStorage(feed))
             })
       } else {
@@ -1893,7 +1892,7 @@ const mapDispatchToProps = dispatch => ({
       AsyncStorage.getItem('flow/'+data)
         .then(success => {
           const feed = JSON.parse(success)
-          console.log('Async Feed for  ', data, ' is ', feed)
+          // console.log('Async Feed for  ', data, ' is ', feed)
           dispatch(setFeedDetailFromStorage(feed))
         })
     }),

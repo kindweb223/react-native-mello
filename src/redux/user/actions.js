@@ -385,7 +385,6 @@ export const closeClipboardToaster = () => {
  * User signin with Google
  */
 export const userGoogleSigin = (token) => {
-  console.log('TOKEN: ', token)
   const url = 'auth/googleLogin'
 
   return {
