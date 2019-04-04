@@ -1227,8 +1227,7 @@ class HomeScreen extends React.Component {
 
   onSearch = () => {
     Analytics.logEvent('dashboard_search', {})
-
-    console.log("Did tap on search")
+    
     this.setState({ isVisibleSelectFeedoModal: true })
   }
 
