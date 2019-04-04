@@ -27,7 +27,6 @@ const initialState = {
 export default function user(state = initialState, action = {}) {
   switch (action.type) {
     case 'NETWORK_FAILED':
-    console.log('error for internet')
       // AlertController.shared.showAlert('Error', 'No Internet Connection')
       return {
         ...state,
@@ -557,7 +556,6 @@ export default function user(state = initialState, action = {}) {
         loading: types.ADD_DEVICE_TOKEN_PENDING,
       }
     case types.ADD_DEVICE_TOKEN_FULFILLED: {
-      console.log('ADD_DEVICE_TOKEN_FULFILLED : ', action.result)
       AsyncStorage.setItem(CONSTANTS.USER_DEVICE_TOKEN, JSON.stringify(action.result.data))
       return {
         ...state,
@@ -565,7 +563,6 @@ export default function user(state = initialState, action = {}) {
       }
     }
     case types.ADD_DEVICE_TOKEN_REJECTED: {
-      console.log('ADD_DEVICE_TOKEN_REJECTED : ', action.error)
       return {
         ...state,
         loading: types.ADD_DEVICE_TOKEN_REJECTED,
@@ -582,7 +579,6 @@ export default function user(state = initialState, action = {}) {
         loading: types.UPDATE_DEVICE_TOKEN_PENDING,
       }
     case types.UPDATE_DEVICE_TOKEN_FULFILLED: {
-      console.log('UPDATE_DEVICE_TOKEN_FULFILLED : ', action.result)
       AsyncStorage.setItem(CONSTANTS.USER_DEVICE_TOKEN, JSON.stringify(action.result.data))
       return {
         ...state,
@@ -590,7 +586,6 @@ export default function user(state = initialState, action = {}) {
       }
     }
     case types.UPDATE_DEVICE_TOKEN_REJECTED: {
-      console.log('UPDATE_DEVICE_TOKEN_REJECTED : ', action.error)
       return {
         ...state,
         loading: types.UPDATE_DEVICE_TOKEN_REJECTED,

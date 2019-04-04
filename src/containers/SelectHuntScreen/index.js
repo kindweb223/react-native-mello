@@ -55,7 +55,6 @@ class SelectHuntScreen extends React.Component {
 
     if (cachedFeedList.length == 0) {
       this.props.getFeedoList(3, true);
-      console.log('OD - first get feeds')
     }
 
     const animationType = this.props.direction === 'left' ? 'slideInRight' : 'slideInUp'
