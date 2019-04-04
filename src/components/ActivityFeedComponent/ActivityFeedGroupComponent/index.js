@@ -16,20 +16,26 @@ class ActivityFeedGroupComponent extends React.Component {
     super(props);
   }
 
+  returnPlural(count, baseString) {
+    return count === 1 ? baseString : baseString + 's'
+  }
+
   getUpdatesData() {
     const { updates } = this.props.data
-    let { likes, comments, userPermissionsChanged, usersInvitedToHunt, usersJoinedHunt, updatesToHunt, ideasMoved, updatesToIdeas, huntDeleted, ideasDeleted, mentions} = updates
+    let { likes, comments, ideas, userPermissionsChanged, usersInvitedToHunt, usersJoinedHunt, updatesToHunt, ideasMoved, updatesToIdeas, huntDeleted, ideasDeleted, mentions} = updates
     let updatesData = ''
     let otherUpdates = 0
 
     if (comments || mentions) {
-      updatesData = `${comments + mentions} comments`
+      updatesData = `${comments + mentions} ${this.returnPlural(comments + mentions, 'comment')}`
     }
     if (likes) {
       updatesData = updatesData ? `${updatesData}, ` : updatesData
-      updatesData = `${updatesData}${likes} likes`
+      updatesData = `${updatesData}${likes} ${this.returnPlural(likes, 'like')}`
     }
-
+    if (ideas) {
+      updatesData = `${ideas} ${this.returnPlural(ideas, 'card')}`
+    }
     if (userPermissionsChanged) {
       otherUpdates += userPermissionsChanged
     }
@@ -56,7 +62,7 @@ class ActivityFeedGroupComponent extends React.Component {
     }
     if (otherUpdates) {
       updatesData = updatesData ? `${updatesData}, ` : updatesData
-      let upStr = updatesData ? 'other updates' : 'Updates'
+      let upStr = updatesData ? this.returnPlural(otherUpdates, 'other update') : this.returnPlural(otherUpdates, 'update')
       updatesData = `${updatesData}${otherUpdates} ${upStr}`
     }
 
