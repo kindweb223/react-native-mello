@@ -188,8 +188,13 @@ class LocalStorage extends React.Component {
         // //console.log('RNFS - listFiles called')
         const dir = RNFS.DocumentDirectoryPath + '/' + user.userInfo.id
         RNFS.readDir(dir)
+<<<<<<< HEAD
             .then(result => {}) //console.log('RNFS o- ', result))
             .catch(error => {}) //console.log('RNFS o- ',  error))
+=======
+            .then(result => {/*console.log('RNFS o- ', result)*/})
+            .catch(error => {/*console.log('RNFS o- ',  error)*/})
+>>>>>>> prototype/store-GETs
     }
 
     flattenIdeas = () => {
@@ -259,12 +264,20 @@ class LocalStorage extends React.Component {
                                 }
 
                             })
+<<<<<<< HEAD
                             .catch(err => {})//console.log('RNFS - can not store file because ', err))
+=======
+                            .catch(err => {/*console.log('RNFS - can not store file because ', err)*/})
+>>>>>>> prototype/store-GETs
                     })
                 })
 
             })
+<<<<<<< HEAD
             .catch(err => {})//console.log('RNFS - no user dir and no resolution - ', err))
+=======
+            .catch(err => {/*console.log('RNFS - no user dir and no resolution - ', err)*/})
+>>>>>>> prototype/store-GETs
     }
 
     componentDidMount(): void {
@@ -332,7 +345,11 @@ class LocalStorage extends React.Component {
                             ((fileIndex + 1) === files.length) && this.updateRecursiveShout(++ideaIndex, delay)
     
                         })
+<<<<<<< HEAD
                         .catch(err => {})//console.log('RNFSR batch - can not store file because ', err))
+=======
+                        .catch(err => {/*console.log('RNFSR batch - can not store file because ', err)*/})
+>>>>>>> prototype/store-GETs
                         ((fileIndex + 1) === files.length) && this.updateRecursiveShout(++ideaIndex, delay)
     
                 }
@@ -379,10 +396,6 @@ class LocalStorage extends React.Component {
             })
         }
 
-
-        if(prevProps.feedo.currentFeed.id !== this.props.feedo.currentFeed.id){
-            //console.log('RNFS - feed changed to ', this.props.feed, this.props, this.state)
-        }
         if (prevState.ideas.length < this.state.ideas.length) {
             this.storeIdeasAndFiles()
         }
@@ -392,7 +405,7 @@ class LocalStorage extends React.Component {
     render() {
         const { files } =  this.state
         const { feedo } = this.props
-        const ideas = feedo.currentFeed.ideas
+        // const ideas = feedo.currentFeed.ideas
         // //console.log('RNFS feed is ', Object.keys(feedo))
         // //console.log('RNFS feeds are ', feedo.feedoList)
         return (
