@@ -1229,10 +1229,6 @@ class HomeScreen extends React.Component {
     Analytics.logEvent('dashboard_search', {})
 
     console.log("Did tap on search")
-    /*
-    Actions.FeedFilterScreen({
-      initialTag: []
-    })*/
     this.setState({ isVisibleSelectFeedoModal: true })
   }
 
@@ -1630,12 +1626,12 @@ class HomeScreen extends React.Component {
   }
 
   get renderSelectHunt() {
-    const { cachedFeedList } = this.state
+    const { feedoList } = this.state
 
     if (this.state.isVisibleSelectFeedoModal) {
       return (
         <SearchScreen
-          cachedFeedList={cachedFeedList}
+          cachedFeedList={ feedoList }
           onClosed={ () => this.setState({ isVisibleSelectFeedoModal: false }) }
         />
       );
