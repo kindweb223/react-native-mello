@@ -7,13 +7,20 @@ const SEARCHBAR_HEIGHT = 40
 const NAV_BAR_HEIGHT = 55
 
 const styles = StyleSheet.create({
+  container: {
+    width: '100%',
+    height: '100%',
+    backgroundColor: 'transparent',
+    justifyContent: 'center',
+  },
   safeArea: {
     flex: 1,
     backgroundColor: '#fff'
   },
   container: {
     backgroundColor: 'white',
-    flex: 1,
+    width: '100%',
+    height: '100%',
     paddingTop: Platform.OS === 'ios' ? ifIphoneX(0, 10) : 8
   },
   statusBarUnderlay: {
