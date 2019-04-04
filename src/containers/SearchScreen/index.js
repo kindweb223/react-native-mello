@@ -5,47 +5,55 @@ import {
   View,
   TouchableOpacity,
   Animated,
+  Image,
   Keyboard,
 } from 'react-native'
 import { connect } from 'react-redux'
 import * as Animatable from 'react-native-animatable'
 import _ from 'lodash'
 import Search from 'react-native-search-box';
-
-import { 
-  setCurrentFeed,
-  getFeedoList,
-} from '../../redux/feedo/actions'
+import PropTypes from 'prop-types'
+import { Actions } from 'react-native-router-flux'
 
 import COLORS from '../../service/colors';
 import CONSTANTS from '../../service/constants';
 import styles from './styles';
 import LoadingScreen from '../LoadingScreen';
 
+const FEED_ICON = require('../../../assets/images/IconFlow/IconsMediumFlowGrey.png')
+
 class SearchScreen extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-          loading: false,
-          isKeyboardShow: false,
+          keyboardHeight: 0,
           cachedFeedList: props.cachedFeedList,
           animationType: 'slideInUp'
         };
-        this.animatedShow = new Animated.Value(0);
         this.animatedMove = new Animated.Value(0);
-        this.animatedKeyboardHeight = new Animated.Value(0);
     }
+
+    componentDidMount() {
+        this.keyboardWillShowSubscription = Keyboard.addListener('keyboardWillShow', (keyboard) => this.keyboardWillShow(keyboard));
+        this.keyboardWillHideSubscription = Keyboard.addListener('keyboardWillHide', (keyboard) => this.keyboardWillHide(keyboard));
+    }
+
+    keyboardWillShow(keyboard) {
+        this.setState({ keyboardHeight: keyboard.endCoordinates.height })
+      }
+    
+      keyboardWillHide(keyboard) {
+        this.setState({ keyboardHeight: 0 })
+      }
 
     renderItem({item, index}) {
         return (
         <TouchableOpacity 
             style={styles.itemContainer}
             activeOpacity={0.7}
-            onPress={() => this.onSelectFeedo(item)}
+            onPress={() => this.onSelectFeed(item)}
         >
-            <View style={styles.avatarContainer}>
-            {this.renderAvatar(item)}
-            </View>
+            <Image source={FEED_ICON} />
             <Text style={styles.textItemTitle} numberOfLines={1}>{item.headline}</Text>
         </TouchableOpacity>
         )
@@ -55,24 +63,31 @@ class SearchScreen extends React.Component {
         this.props.onClosed()
     }
 
+    onSelectFeed(item) {
+        Keyboard.dismiss()
+        Actions.FeedDetailScreen({
+            data: item
+        })
+    }
+
     render () {
-        const { animationType, onClosed } = this.state
+        const { animationType, cachedFeedList, keyboardHeight } = this.state
     
         const animatedMove  = this.animatedMove.interpolate({
           inputRange: [0, 1],
           outputRange: [CONSTANTS.SCREEN_WIDTH, 0],
         });
     
-        // let feedoList = cachedFeedList;
-        // if (this.props.hiddenFeedoId) {
-        //   feedoList = _.filter(feedoList, feedo => feedo.id !== this.props.hiddenFeedoId);
-        // }
-        // feedoList = _.filter(feedoList, feedo => feedo.status === 'PUBLISHED');
-        // if (feedoList && feedoList.length > 0 && this.state.filterText) {
-        //   feedoList = _.filter(feedoList, feedo => feedo.headline && feedo.headline.toLowerCase().indexOf(this.state.filterText.toLowerCase()) !== -1);
-        // }
-        // feedoList = _.filter(feedoList, feedo => feedo.status === 'PUBLISHED' && feedo.metadata.myInviteStatus === 'ACCEPTED');
-        // feedoList = _.orderBy(feedoList, [feedo => feedo.headline.toLowerCase()], 'asc')
+        let feedoList = cachedFeedList;
+        if (this.props.hiddenFeedoId) {
+          feedoList = _.filter(feedoList, feedo => feedo.id !== this.props.hiddenFeedoId);
+        }
+        feedoList = _.filter(feedoList, feedo => feedo.status === 'PUBLISHED');
+        if (feedoList && feedoList.length > 0 && this.state.filterText) {
+          feedoList = _.filter(feedoList, feedo => feedo.headline && feedo.headline.toLowerCase().indexOf(this.state.filterText.toLowerCase()) !== -1);
+        }
+        feedoList = _.filter(feedoList, feedo => feedo.status === 'PUBLISHED' && feedo.metadata.myInviteStatus === 'ACCEPTED');
+        feedoList = _.orderBy(feedoList, [feedo => feedo.headline.toLowerCase()], 'asc')
     
         return (
           <View style={[styles.container]}>
@@ -118,10 +133,10 @@ class SearchScreen extends React.Component {
                   />
                 </View>
                 <FlatList
-                  style={{marginTop: 11}}
+                  style={{marginTop: 11 }}
                   keyboardShouldPersistTaps='handled'
-                  contentContainerStyle={{ paddingHorizontal: 13, paddingBottom: 26 }}
-                  data={[]}
+                  contentContainerStyle={{ paddingHorizontal: 13, paddingBottom: 26 + keyboardHeight }}
+                  data={feedoList}
                   renderItem={this.renderItem.bind(this)}
                   keyExtractor={(item, index) => index.toString()}
                   extraData={this.state}
@@ -134,15 +149,24 @@ class SearchScreen extends React.Component {
     }
 }
 
+SearchScreen.defaultProps = {
+    keyboardHeight: 0,
+    selectMode: CONSTANTS.FEEDO_SELECT_FROM_MAIN,
+    onClosed: () => {},
+    cachedFeedList: []
+}
+  
+  
+SearchScreen.propTypes = {
+    keyboardHeight: PropTypes.number,
+    selectMode: PropTypes.number,
+    onClosed: PropTypes.func,
+    cachedFeedList: PropTypes.array,
+}
+  
+
 const mapStateToProps = ({ feedo }) => ({
     feedo,
-  })
-  
-  
-  const mapDispatchToProps = dispatch => ({
-    setCurrentFeed: (data) => dispatch(setCurrentFeed(data)),
-    getFeedoList: (index, isForCardMove) => dispatch(getFeedoList(index, isForCardMove)),
-  })
-  
-  
-  export default connect(mapStateToProps, mapDispatchToProps)(SearchScreen)
+})
+
+export default connect()(SearchScreen)
