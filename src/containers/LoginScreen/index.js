@@ -112,7 +112,6 @@ class LoginScreen extends React.Component {
                   {
                     text: 'Reset Password',
                     onPress: () => {
-                      console.log("did press onforgotpassword")
                       this.onForgotPassword()
                     }
                   }

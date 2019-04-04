@@ -184,20 +184,18 @@ class HomeScreen extends React.Component {
   }
 
   getFeedsFromStorage = () => {
-    console.log('GFL calling gffs')
     const { user } = this.props
 
-    console.log('GFL user is ', user)
     const key = user.userInfo.id + '/flows'
 
-    console.log('GFL user is ', user, ' key is ', key)
+    // console.log('GFL user is ', user, ' key is ', key)
 
-    console.log('AS get ', key)
+    // console.log('AS get ', key)
     AsyncStorage.getItem(key)
     .then((result) => {
       const feeds = JSON.parse(result)
       // feeds.shift()
-      console.log('AS get async result', feeds)
+      // console.log('AS get async result', feeds)
       this.props.setFeedoListFromStorage(feeds)
     })
     .catch((error) => console.log('GFL async error', error))
@@ -241,7 +239,7 @@ class HomeScreen extends React.Component {
     }
 
     // Subscribe to comments channel for new comments and updates
-    console.log("Subscribe to: ", this.props.user.userInfo.eventSubscriptionToken)
+    console.log("Subscribing to events")
     pubnub.subscribe({
       channels: [this.props.user.userInfo.eventSubscriptionToken]
     });
@@ -334,7 +332,7 @@ class HomeScreen extends React.Component {
       let feedoPinnedList = [];
       let feedoUnPinnedList = [];
 
-      console.log('FL = ', feedo.loading, feedo)
+      // console.log('FL = ', feedo.loading, feedo)
 
       if (feedo.feedoList && feedo.feedoList.length > 0) {
         feedoList = feedo.feedoList.map(item => {
@@ -1657,13 +1655,13 @@ const mapStateToProps = ({ user, feedo, card }) => ({
 const mapDispatchToProps = dispatch => ({
   getFeedoList: (index, successAction, errorAction) => dispatch(getFeedoList(index))
   .then(result => {
-    console.log('GFL resolves on HS, success looks like ', result)
+    // console.log('GFL resolves on HS, success looks like ', result)
     if(result.error){
       errorAction(error)
     }
   })
   .catch(error => {
-    console.log('GFL error on HS')
+    // console.log('GFL error on HS')
     errorAction(error)
   }),
   setFeedoListFromStorage: (feeds) => dispatch(setFeedoListFromStorage(feeds)),

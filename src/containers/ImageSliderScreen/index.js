@@ -49,12 +49,12 @@ class ImageSliderScreen extends React.Component {
     Analytics.setCurrentScreen('ImageSliderScreen')
     const offlineStatus = this.state.offline
     NetInfo.getConnectionInfo().then((connectionInfo) => {
-      console.log(
-        'CDU: Initial, type: ' +
-          connectionInfo.type +
-          ', effectiveType: ' +
-          connectionInfo.effectiveType, connectionInfo
-      );
+      // console.log(
+      //   'CDU: Initial, type: ' +
+      //     connectionInfo.type +
+      //     ', effectiveType: ' +
+      //     connectionInfo.effectiveType, connectionInfo
+      // );
       if(connectionInfo.type === 'none'){
         if(!offlineStatus){
           this.setState({ offline: true})

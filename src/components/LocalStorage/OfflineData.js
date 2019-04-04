@@ -2,7 +2,7 @@ import { AsyncStorage } from "react-native";
 
 class OfflineData {
   getResult = (result) => {
-    console.log('OD - ', result)
+    // console.log('OD - ', result)
   }
   isStored = (entryId, userId = null, recordType) => {
     let key = ''

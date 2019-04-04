@@ -300,7 +300,6 @@ export const uploadFileToS3 = (signedUrl, file, fileName, mimeType, uploadProgre
  * Add a file
  */
 export const addFile = (ideaId, fileType, contentType, name, objectKey, metadata, base64String = '') => {
-  console.log('METADAT: ', metadata)
   let url = `ideas/${ideaId}/files`
   let data = {
     fileType,
@@ -403,7 +402,7 @@ export const getOpenGraph = (urlPath, isSharing = false) => {
     isSharing,
   };
 
-  console.log("getOpenGraph data: ", data)
+  console.log("getOpenGraph: ", data)
   return {
     types: [types.GET_OPEN_GRAPH_PENDING, types.GET_OPEN_GRAPH_FULFILLED, types.GET_OPEN_GRAPH_REJECTED],
     promise: axios({
