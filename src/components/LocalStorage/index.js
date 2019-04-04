@@ -390,7 +390,7 @@ class LocalStorage extends React.Component {
         if((prevProps.feedo.feedoList === null || prevProps.feedo.feedoList.length === 0) && (feedo.feedoList && feedo.feedoList.length > 0)){
             userDirMustExist(user.userInfo.id)
             .then(()=>{
-                if(user.userInfo.hasOwnProperty('plan') && user.userInfo.plan.type === 'FREE'){
+                if(user.userInfo.hasOwnProperty('plan') && user.userInfo.plan.type === 'UNFREE'){
                     //user is not on premium plan
                 }else{
                     //console.log('RNFS try and do stuff')
