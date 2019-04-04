@@ -55,8 +55,8 @@ import { TIP_SHARE_LINK_URL, ANDROID_PUSH_SENDER_ID, PIN_FEATURE, SEARCH_FEATURE
 import AlertController from '../../components/AlertController'
 import SideMenuComponent from '../../components/SideMenuComponent'
 import * as COMMON_FUNC from '../../service/commonFunc'
+import SearchScreen from '../SearchScreen';
 
-import * as COMMON_FUNC from '../../service/commonFunc'
 
 const SEARCH_ICON = require('../../../assets/images/Search/Grey.png')
 const SETTING_ICON = require('../../../assets/images/Settings/Grey.png')
@@ -93,6 +93,7 @@ import {
   getCard,
 } from '../../redux/card/actions'
 import { images } from '../../themes';
+import Search from 'react-native-search-box';
 
 const TOASTER_DURATION = 3000
 const PAGE_COUNT = 50
@@ -144,7 +145,8 @@ class HomeScreen extends React.Component {
       unSelectFeed: false,
       isSideMenuOpen: false,
       selectedItemTitle: 'All flows',
-      fileData: null
+      fileData: null,
+      isVisibleSelectFeedoModal: false
     };
 
     this.currentRef = null;
@@ -1226,9 +1228,12 @@ class HomeScreen extends React.Component {
   onSearch = () => {
     Analytics.logEvent('dashboard_search', {})
 
+    console.log("Did tap on search")
+    /*
     Actions.FeedFilterScreen({
       initialTag: []
-    })
+    })*/
+    this.setState({ isVisibleSelectFeedoModal: true })
   }
 
   onCloseCardModal() {
@@ -1296,6 +1301,14 @@ class HomeScreen extends React.Component {
     this.setState({ filterSortType: type }, () => {
       this.filterFeeds()
     })
+  }
+
+  onCloseSelectHunt() {
+    this.isDisabledKeyboard = false;
+    this.setState({ isVisibleSelectFeedoModal: false })
+    if (!this.props.feedo.currentFeed.id) {
+      this.props.setCurrentFeed(this.draftFeedo);
+    }
   }
 
   static getFilteredFeeds = (feedoPinnedList, feedoUnPinnedList, filterShowType, filterSortType) => {
@@ -1386,6 +1399,8 @@ class HomeScreen extends React.Component {
         isOpen={isSideMenuOpen}
         onChange={isOpen => this.updateMenuState(isOpen)}
       >
+      { this.renderSelectHunt }
+      <View style={styles.container}>
       <SafeAreaView style={styles.safeArea}>
         <View feedAction="null" />
         <View style={styles.container}>
@@ -1393,7 +1408,6 @@ class HomeScreen extends React.Component {
           {Platform.OS === 'android' && (
             <View style={styles.statusBarUnderlay} />
           )}
-
           <View style={styles.headerView}>
             <TouchableOpacity
               style={styles.menuIconView}
@@ -1610,8 +1624,22 @@ class HomeScreen extends React.Component {
           onClose={() => this.setState({ showFilterModal: false }) }
         />
       </SafeAreaView>
+      </View>
       </SideMenu>
     )
+  }
+
+  get renderSelectHunt() {
+    const { cachedFeedList } = this.state
+
+    if (this.state.isVisibleSelectFeedoModal) {
+      return (
+        <SearchScreen
+          cachedFeedList={cachedFeedList}
+          onClosed={ () => this.setState({ isVisibleSelectFeedoModal: false }) }
+        />
+      );
+    }
   }
 }
 

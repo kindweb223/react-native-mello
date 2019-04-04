@@ -156,6 +156,8 @@ class SelectHuntScreen extends React.Component {
       return this.renderHeaderFromMain;
     } else if (selectMode === CONSTANTS.FEEDO_SELECT_FROM_MOVE_CARD) {
       return this.renderHeaderFromMoveCard;
+    } else if (selectMode === CONSTANTS.FEEDO_SELECT_FOR_SEARCH) {
+
     }
     return this.renderHeaderFromExtension;
   }
@@ -216,6 +218,21 @@ class SelectHuntScreen extends React.Component {
         </View>
         <Text style={[styles.textItemTitle, {color: COLORS.PURPLE}]}>Create new flow</Text>
       </TouchableOpacity>
+    )
+  }
+
+  get renderFullScreen() {
+    return (
+      <View style={[styles.topContainer, styles.extensionTopContainer]}>
+        <Text style={styles.textTitle}>Choose flow</Text>
+        <TouchableOpacity 
+          style={styles.backButtonContainer}
+          activeOpacity={0.6}
+          onPress={this.onBack.bind(this)}
+        >
+          <Ionicons name="ios-arrow-back" size={28} color={COLORS.PURPLE} />
+        </TouchableOpacity>
+      </View>
     )
   }
 
