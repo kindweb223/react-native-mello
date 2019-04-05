@@ -146,8 +146,8 @@ class NotificationScreen extends React.Component {
     const { feedo } = this.props
     let { invitedFeedList, activityFeedList } = feedo
 
-    invitedFeedList = _.orderBy(invitedFeedList, ['metadata.myLastActivityDate'], ['desc'])
-    activityFeedList = _.orderBy(activityFeedList, ['latestActivityTime'], ['desc'])
+    // invitedFeedList = _.orderBy(invitedFeedList, ['metadata.myLastActivityDate'], ['desc'])
+    // activityFeedList = _.orderBy(activityFeedList, ['latestActivityTime'], ['desc'])
 
     this.setState({ invitedFeedList, activityFeedList })
     this.setActivityFeeds(activityFeedList, invitedFeedList)
@@ -498,6 +498,9 @@ class NotificationScreen extends React.Component {
 
     if (data.id === 'empty_activity_feed_key') {
       return (
+        _.isEmpty(this.state.invitedFeedList) ?
+        null
+        :
         <View style={styles.sectionView}>
           <Text style={styles.sectionTitle}>
             Updates
