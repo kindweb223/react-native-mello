@@ -21,7 +21,7 @@ class ActivityFeedGroupComponent extends React.Component {
   }
 
   getUpdatesData() {
-    const { updates } = this.props.data
+    const { updates, read } = this.props.data
     let { likes, comments, ideas, userPermissionsChanged, usersInvitedToHunt, usersJoinedHunt, updatesToHunt, ideasMoved, updatesToIdeas, huntDeleted, ideasDeleted, mentions} = updates
     let updatesData = ''
     let otherUpdates = 0
@@ -68,6 +68,10 @@ class ActivityFeedGroupComponent extends React.Component {
 
     if (!updatesData) {
       updatesData = 'No updates'
+    }
+
+    if (read) {
+      updatesData = "No updates"
     }
 
     return updatesData
