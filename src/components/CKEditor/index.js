@@ -23,7 +23,7 @@ class CKEditor extends React.Component {
     super(props);
 
     this.state = {
-      height: 100
+      webviewHeight: 200
     }
   }
 
@@ -49,6 +49,7 @@ class CKEditor extends React.Component {
   handleMessage = event => {
     try {
       const msgData = event.nativeEvent.data;
+      // this.setState({ webviewHeight: parseInt(msgData)})
       this.props.onChange(msgData);
     } catch (err) {
       console.warn(err);
@@ -68,41 +69,41 @@ class CKEditor extends React.Component {
   }
 
   render() {
+    const { webviewHeight } = this.state;
+    console.log('webviewHeight: ', webviewHeight)
+
     return (
-      <WebView
-        ref={c => this.webview = c}
-        injectedJavaScript={patchPostMessageJsCode}
-        style={styles.webviewStyle}
-        useWebKit={true}
-        scrollEnabled={false}
-        hideKeyboardAccessoryView={true}
-        source={Platform.OS === 'ios' ? editor : { uri: 'file:///android_asset/ckeditor/index.html' }}
-        // source={{ uri: Platform.OS === 'ios' ? 'https://demos.solvers.io/solvers/melloapp-landing/ckeditor_ios.html' : 'https://demos.solvers.io/solvers/melloapp-landing/ckeditor_android.html' }}
-        // onError={this.onError}
-        // renderError={this.renderError}
-        javaScriptEnabled
-        startInLoadingState={true}  
-        onLoadEnd={this.onWebViewLoaded}
-        onMessage={this.handleMessage}
-        domStorageEnabled={false}
-        cacheEnabled={false}
-        thirdPartyCookiesEnabled={false}
-        incognito={true}
-        saveFormDataDisabled={true}
-        mixedContentMode="always"
-        scrollEnabled
-      />
+      <View style={{ height: webviewHeight }}>
+        <WebView
+          ref={c => this.webview = c}
+          injectedJavaScript={patchPostMessageJsCode}
+          style={styles.webviewStyle}
+          useWebKit={true}
+          scrollEnabled={false}
+          hideKeyboardAccessoryView={true}
+          source={Platform.OS === 'ios' ? editor : { uri: 'file:///android_asset/ckeditor/index.html' }}
+          // source={{ uri: Platform.OS === 'ios' ? 'https://demos.solvers.io/solvers/melloapp-landing/ckeditor_ios.html' : 'https://demos.solvers.io/solvers/melloapp-landing/ckeditor_android.html' }}
+          // onError={this.onError}
+          // renderError={this.renderError}
+          javaScriptEnabled
+          startInLoadingState={true}  
+          onLoadEnd={this.onWebViewLoaded}
+          onMessage={this.handleMessage}
+          automaticallyAdjustContentInsets={true}
+          domStorageEnabled={false}
+          cacheEnabled={false}
+          thirdPartyCookiesEnabled={false}
+          incognito={true}
+          saveFormDataDisabled={true}
+          mixedContentMode="always"
+          scrollEnabled
+        />
+      </View>
     );
   }
 }
 
 const styles = StyleSheet.create({
-  activityIndicatorContainer: {
-    flex: 1,
-    padding: 10,
-    justifyContent: 'center',
-    alignItems: 'center'
-  },
   webviewStyle: {
     width: '100%',
     marginTop: Platform.OS === 'ios' ? 8 : 0

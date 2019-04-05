@@ -161,7 +161,7 @@ export default class ImageList extends React.Component {
           onLongPress={() => this.onLongPressImage(index)}
           onPress={() => this.onPressImage(index)}
         >
-          <FastImage 
+          <Image 
             style={styles.imageFeed}
             source={{uri: item.accessUrl}} 
             onLoadEnd={() => this.onLoadEnd()}
