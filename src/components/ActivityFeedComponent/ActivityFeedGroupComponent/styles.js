@@ -6,7 +6,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     paddingHorizontal: CONSTANTS.PADDING,
-    backgroundColor: COLORS.LIGHT_PURPLE_BACKGROUND,
+    backgroundColor: '#fff',
     flexDirection: 'row',
     paddingVertical: 12
   },

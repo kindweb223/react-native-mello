@@ -9,9 +9,7 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     alignItems: 'center',
     height: 54,
-    paddingHorizontal: 6,
-    borderBottomWidth: 1,
-    borderBottomColor: COLORS.LIGHT_GREY_PLACEHOLDER
+    paddingHorizontal: 6
   },
   buttonWrapper: {
     paddingHorizontal: 10,
@@ -106,6 +104,17 @@ const styles = StyleSheet.create({
   subTitle: {
     fontSize: 14,
     lineHeight: 20
+  },
+  sectionView: {
+    borderBottomColor: COLORS.LIGHT_GREY_PLACEHOLDER,
+    borderBottomWidth: 1,
+    marginHorizontal: 16,
+    paddingVertical: 5
+  },
+  sectionTitle: {
+    fontSize: 14,
+    fontWeight: 'normal',
+    color: COLORS.DARK_GREY
   }
 })
 
