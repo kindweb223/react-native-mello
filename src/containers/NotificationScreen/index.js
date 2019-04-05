@@ -379,6 +379,25 @@ class NotificationScreen extends React.Component {
   }
 
   setActivityFeeds = (activityFeedList, invitedFeedList) => {
+    if (activityFeedList.length > 0) {
+      if(activityFeedList[0].id !== 'empty_activity_feed_key') {
+        let empty = [{
+          id: 'empty_activity_feed_key',
+          activities: null
+        }]
+        activityFeedList = empty.concat(activityFeedList)
+      }
+    }
+
+    if (invitedFeedList.length > 0) {
+      if(invitedFeedList[0].id !== 'empty_invited_feed_key') {
+        let empty = [{
+          id: 'empty_invited_feed_key'
+        }]
+        invitedFeedList = empty.concat(invitedFeedList)
+      }
+    }
+
     let notificationList = [
       ...invitedFeedList,
       ...activityFeedList
@@ -387,6 +406,16 @@ class NotificationScreen extends React.Component {
   }
 
   renderInvitedFeedItem = (data) => {
+    if (data.id === 'empty_invited_feed_key') {
+      return (
+        <View style={styles.sectionView}>
+          <Text style={styles.sectionTitle}>
+            Invitations
+          </Text>
+        </View>
+      )
+    }
+
     return (
       <View style={styles.itemView}>
         <NotificationItemComponent data={data} hideTumbnail={true} showTime />
@@ -466,6 +495,16 @@ class NotificationScreen extends React.Component {
         onPress: () => this.onDeleteActivity(data),
       }
     ];
+
+    if (data.id === 'empty_activity_feed_key') {
+      return (
+        <View style={styles.sectionView}>
+          <Text style={styles.sectionTitle}>
+            Updates
+          </Text>
+        </View>
+      )
+    }
 
     return (
       <View>
@@ -571,32 +610,25 @@ class NotificationScreen extends React.Component {
           {this.renderHeader}
 
           {!singleNotification && (notificationList.length > 0
-          ? <View style={{ flex: 1 }}>
-              <View style={styles.sectionView}>
-                <Text style={styles.sectionTitle}>
-                  Invitations
-                </Text>
-              </View>
-              <FlatList
-                style={styles.flatList}
-                contentContainerStyle={styles.contentFlatList}
-                data={notificationList}
-                keyExtractor={item => item.id}
-                automaticallyAdjustContentInsets={true}
-                renderItem={this.renderItem.bind(this)}
-                // ItemSeparatorComponent={this.renderSeparator}
-                ListFooterComponent={this.renderFooter}
-                refreshControl={
-                  <RefreshControl 
-                    refreshing={this.state.refreshing}
-                    onRefresh={this.handleRefresh}
-                    tintColor={COLORS.PURPLE}
-                  />
-                }
-                onEndReached={this.handleLoadMore}
-                onEndReachedThreshold={0}
-              />
-            </View>  
+          ? <FlatList
+              style={styles.flatList}
+              contentContainerStyle={styles.contentFlatList}
+              data={notificationList}
+              keyExtractor={item => item.id}
+              automaticallyAdjustContentInsets={true}
+              renderItem={this.renderItem.bind(this)}
+              // ItemSeparatorComponent={this.renderSeparator}
+              ListFooterComponent={this.renderFooter}
+              refreshControl={
+                <RefreshControl 
+                  refreshing={this.state.refreshing}
+                  onRefresh={this.handleRefresh}
+                  tintColor={COLORS.PURPLE}
+                />
+              }
+              onEndReached={this.handleLoadMore}
+              onEndReachedThreshold={0}
+            />
           : <View style={styles.emptyView}>
               <Image
                 source={NOTIFICATION_EMPTY_ICON}

@@ -109,7 +109,7 @@ const styles = StyleSheet.create({
     borderBottomColor: COLORS.LIGHT_GREY_PLACEHOLDER,
     borderBottomWidth: 1,
     marginHorizontal: 16,
-    paddingVertical: 5
+    paddingVertical: 7
   },
   sectionTitle: {
     fontSize: 14,
