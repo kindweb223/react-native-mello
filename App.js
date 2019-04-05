@@ -22,6 +22,7 @@ import axios from 'axios'
 import CONSTANTS from './src/service/constants'
 import { BASE_URL, BUGSNAG_KEY, APP_LOCALE, APP_NAME, APP_STORE_ID, PLAY_STORE_ID } from './src/service/api'
 import pubnub from './src/lib/pubnub'
+import { NetworkProvider } from 'react-native-offline'
 
 const config = new Configuration(BUGSNAG_KEY);
 config.appVersion = require('./package.json').version;
@@ -39,6 +40,7 @@ axios.interceptors.response.use(
     response
   ),
   (error) => {
+    // TODO add handling for offline use
     if (error.response && (
       (error.response.status === 401 && error.response.data.code === 'session.expired') ||
       (error.response.status === 403 && error.response.data.code === 'error.user.not.authenticated')
@@ -84,7 +86,7 @@ import TabbarContainer from './src/navigations/TabbarContainer'
 import TermsAndConditionsConfirmScreen from './src/containers/TermsAndConditionsConfirmScreen'
 import ProfilePremiumScreen from './src/containers/ProfilePremiumScreen'
 
-import { 
+import {
   getCardComments,
   getCard
 } from './src/redux/card/actions'
@@ -230,7 +232,7 @@ export default class Root extends React.Component {
         const path = params[params.length - 2]
         console.log('UNIVERSAL_LINK: ', decodeURIComponent(url_), ' Path: ', path)
 
-        if (path) {  
+        if (path) {
           const lastParam = params[params.length - 1]
           const paramArray = lastParam.split(/[?\=&]/)
           const type = paramArray[0]
@@ -238,7 +240,7 @@ export default class Root extends React.Component {
           if (type === 'signup') {  // Signup via invite
             const token = paramArray[2]
             const userEmail = paramArray[4]
-            
+
             Actions.SignUpScreen({
               userEmail,
               token,
@@ -268,6 +270,7 @@ export default class Root extends React.Component {
             try {
               const userInfo = AsyncStorage.getItem('userInfo')
               store.dispatch(getFeedoList())
+              console.log('GFL called on App.js')
 
               if (userInfo) {
                 if (Actions.currentScene === 'FeedDetailScreen') {                  
@@ -276,11 +279,11 @@ export default class Root extends React.Component {
                 else {
                   Actions.FeedDetailScreen({ data, isDeepLink: true })
                 }
-              } 
+              }
               else {
                 Actions.LoginScreen()
               }
-            } 
+            }
             catch (e) {
             }
         }
@@ -351,11 +354,10 @@ export default class Root extends React.Component {
         <Scene key="CropImageScreen" component={ CropImageScreen } hideNavBar panHandlers={null} />
       </Lightbox>
     );
-
     if (this.state.loading) {
       return (
         <View style={styles.loadingContainer}>
-          {/* <ActivityIndicator 
+          {/* <ActivityIndicator
             animating
             size="large"
             color={COLORS.PURPLE}
@@ -368,9 +370,12 @@ export default class Root extends React.Component {
       )
     } else {
       return (
-        <Provider store={store}>
-          <Router scenes={scenes} />
-        </Provider>
+
+        <NetworkProvider>
+          <Provider store={store}>
+            <Router scenes={scenes} />
+          </Provider>
+        </NetworkProvider>
       )
     }
   }

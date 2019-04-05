@@ -41,6 +41,7 @@ export default function feedo(state = initialState, action = {}) {
         loading: types.GET_FEEDO_LIST_PENDING,
       }
     case types.GET_FEEDO_LIST_FULFILLED: {
+      // console.log('action is ', action, ' state is ', state)
       const { data } = action.result
       const isForCardMove = action.payload;
       if (!isForCardMove) {
@@ -55,6 +56,15 @@ export default function feedo(state = initialState, action = {}) {
         loading: types.GET_FEEDO_LIST_FULFILLED,
         feedoListForCardMove: data.content,
       }
+    }
+    case types.SET_FEEDO_LIST_FROM_STORAGE: {
+      // console.log('action is ', action, ' state is ', state)
+      const { feedoList } = action
+        return {
+          ...state,
+          loading: types.SET_FEEDO_LIST_FROM_STORAGE,
+          feedoList,
+        }
     }
     case types.GET_FEEDO_LIST_REJECTED: {
       return {
@@ -218,6 +228,14 @@ export default function feedo(state = initialState, action = {}) {
         feedoList: restFeedoList
       }
     }
+    case types.SET_FEED_DETAIL_FROM_STORAGE: {
+      const { feed } = action
+      return {
+        ...state,
+        loading: types.SET_FEED_DETAIL_FROM_STORAGE,
+        currentFeed: feed,
+      }
+    } 
     /**
      * Pin Feed
      */

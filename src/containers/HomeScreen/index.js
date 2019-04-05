@@ -26,6 +26,9 @@ import { find, filter, orderBy } from 'lodash'
 import DeviceInfo from 'react-native-device-info';
 import Permissions from 'react-native-permissions'
 import Intercom from 'react-native-intercom'
+import { NetworkConsumer } from 'react-native-offline'
+import ImagePicker from 'react-native-image-picker'
+import { DocumentPicker, DocumentPickerUtil } from 'react-native-document-picker'
 
 import pubnub from '../../lib/pubnub'
 import Analytics from '../../lib/firebase'
@@ -52,11 +55,14 @@ import COLORS from '../../service/colors'
 import { TIP_SHARE_LINK_URL, ANDROID_PUSH_SENDER_ID, PIN_FEATURE, SEARCH_FEATURE } from '../../service/api'
 import AlertController from '../../components/AlertController'
 import SideMenuComponent from '../../components/SideMenuComponent'
-
 import * as COMMON_FUNC from '../../service/commonFunc'
 
 const SEARCH_ICON = require('../../../assets/images/Search/Grey.png')
 const SETTING_ICON = require('../../../assets/images/Settings/Grey.png')
+
+import LocalStorage from '../../components/LocalStorage'
+import OfflineIndicator from '../../components/LocalStorage/OfflineIndicator'
+
 
 import {
   getFeedoList,
@@ -72,10 +78,11 @@ import {
   setCurrentFeed,
   deleteInvitee,
   getInvitedFeedList,
-  getActivityFeed
+  getActivityFeed,
+  setFeedoListFromStorage
 } from '../../redux/feedo/actions'
 
-import { 
+import {
   setUserInfo,
   addDeviceToken,
   updateDeviceToken,
@@ -86,7 +93,7 @@ import {
   closeClipboardToaster
 } from '../../redux/user/actions'
 
-import { 
+import {
   getCard,
 } from '../../redux/card/actions'
 import { images } from '../../themes';
@@ -141,6 +148,7 @@ class HomeScreen extends React.Component {
       unSelectFeed: false,
       isSideMenuOpen: false,
       selectedItemTitle: 'All flows',
+      fileData: null
     };
 
     this.currentRef = null;
@@ -154,7 +162,7 @@ class HomeScreen extends React.Component {
     // If we haven't asked to enable share extension before
     if (!permissionInfo) {
         this.setState({ showSharePermissionModal: true })
-    } 
+    }
   }
 
   onCloseSharePermissionModal = () => {
@@ -175,6 +183,25 @@ class HomeScreen extends React.Component {
     this.setState({ showSharePermissionModal: false, enableShareWidget: true })
   }
 
+  getFeedsFromStorage = () => {
+    const { user } = this.props
+
+    const key = user.userInfo.id + '/flows'
+
+    // console.log('GFL user is ', user, ' key is ', key)
+
+    // console.log('AS get ', key)
+    AsyncStorage.getItem(key)
+    .then((result) => {
+      const feeds = JSON.parse(result)
+      // feeds.shift()
+      // console.log('AS get async result', feeds)
+      this.props.setFeedoListFromStorage(feeds)
+    })
+    .catch((error) => console.log('GFL async error', error))
+
+  }
+
   async componentDidMount() {
     Analytics.setCurrentScreen('DashboardScreen')
 
@@ -192,7 +219,7 @@ class HomeScreen extends React.Component {
               // Then show share widget tip
               this.showSharePermissionModal(permissionInfo)
             });
-          } 
+          }
           // If notification permissions already asked, show share widget tip
           else {
             this.showSharePermissionModal(permissionInfo)
@@ -212,7 +239,7 @@ class HomeScreen extends React.Component {
     }
 
     // Subscribe to comments channel for new comments and updates
-    console.log("Subscribe to: ", this.props.user.userInfo.eventSubscriptionToken)
+    console.log("Subscribing to events")
     pubnub.subscribe({
       channels: [this.props.user.userInfo.eventSubscriptionToken]
     });
@@ -238,7 +265,8 @@ class HomeScreen extends React.Component {
     }
     Intercom.handlePushMessage();
 
-    this.props.getFeedoList()
+    this.props.getFeedoList(null, this.getFeedsFromStorage, this.getFeedsFromStorage)
+
     this.props.getInvitedFeedList()
     this.props.getActivityFeed(this.props.user.userInfo.id, { page: 0, size: PAGE_COUNT })
 
@@ -286,22 +314,25 @@ class HomeScreen extends React.Component {
       (feedo.loading === 'PIN_FEED_FULFILLED') || (feedo.loading === 'UNPIN_FEED_FULFILLED') ||
       (feedo.loading === 'RESTORE_ARCHIVE_FEED_FULFILLED') || (feedo.loading === 'ADD_DUMMY_FEED'))) ||
       (feedo.loading === 'DEL_FEED_FULFILLED') || (feedo.loading === 'ARCHIVE_FEED_FULFILLED') || (feedo.loading === 'LEAVE_FEED_FULFILLED') ||
-      (feedo.loading === 'PUBNUB_GET_FEED_DETAIL_FULFILLED') || (feedo.loading === 'DELETE_CARD_FULFILLED') || 
+      (feedo.loading === 'PUBNUB_GET_FEED_DETAIL_FULFILLED') || (feedo.loading === 'DELETE_CARD_FULFILLED') ||
       (feedo.loading === 'PUBNUB_MOVE_IDEA_FULFILLED') || (feedo.loading === 'MOVE_CARD_FULFILLED') ||
       (feedo.loading === 'READ_ACTIVITY_FEED_FULFILLED') || (feedo.loading === 'DEL_ACTIVITY_FEED_FULFILLED') ||
       (feedo.loading === 'UPDATE_CARD_FULFILLED') || (feedo.loading === 'GET_CARD_FULFILLED') ||
       (feedo.loading === 'DEL_DUMMY_CARD') || (feedo.loading === 'MOVE_DUMMY_CARD') ||
       (feedo.loading === 'PUBNUB_DELETE_INVITEE_FULFILLED') || (feedo.loading === 'GET_FEED_DETAIL_REJECTED') ||
-      (feedo.loading === 'SAVE_FLOW_PREFERENCE_FULFILLED') || (feedo.loading === 'GET_INVITED_FEEDO_LIST_FULFILLED') ||
+      (feedo.loading === 'SAVE_FLOW_PREFERENCE_FULFILLED') || (feedo.loading === 'SET_FEEDO_LIST_FROM_STORAGE') ||
+      (feedo.loading === 'GET_INVITED_FEEDO_LIST_FULFILLED') ||
       (feedo.loading === 'UPDATE_PROFILE_FULFILLED') || (feedo.loading === 'GET_FEED_DETAIL_FULFILLED') ||
       (feedo.loading === 'PUBNUB_DELETE_FEED' &&
-                          Actions.currentScene !== 'FeedDetailScreen' && 
+                          Actions.currentScene !== 'FeedDetailScreen' &&
                           Actions.currentScene !== 'CommentScreen' && Actions.currentScene !== 'ActivityCommentScreen' &&
                           Actions.currentScene !== 'LikesListScreen' && Actions.currentScene !== 'ActivityLikesListScreen'))
     {
       let feedoList = [];
       let feedoPinnedList = [];
       let feedoUnPinnedList = [];
+
+      // console.log('FL = ', feedo.loading, feedo)
 
       if (feedo.feedoList && feedo.feedoList.length > 0) {
         feedoList = feedo.feedoList.map(item => {
@@ -329,7 +360,9 @@ class HomeScreen extends React.Component {
         })
 
         // refresh list if card addedd or card moved
-        if ((feedo.loading !== 'UPDATE_CARD_FULFILLED' || !feedo.isCreateCard, feedo.loading !== 'MOVE_CARD_FULFILLED')) {
+        if ((feedo.loading === 'UPDATE_CARD_FULFILLED' || feedo.loading === 'MOVE_CARD_FULFILLED') && feedo.isCreateCard) {
+          nextProps.getFeedoList()
+        } else {
           const { filterSortType, filterShowType } = prevState
 
           const feedoFullList = filter(feedoList, item => item.status === 'PUBLISHED' && item.metadata.myInviteStatus !== 'INVITED')
@@ -338,10 +371,11 @@ class HomeScreen extends React.Component {
           feedoPinnedList = filter(feedoFullList, item => item.pinned !== null);
           feedoUnPinnedList = filter(feedoFullList, item => item.pinned === null);
           feedoList = HomeScreen.getFilteredFeeds(feedoPinnedList, feedoUnPinnedList, filterShowType, filterSortType);
-        } else {          
-          nextProps.getFeedoList()
-        }
+        } 
+      } else {
+          nextProps.getFeedoList(null, this.getFeedsFromStorage, this.getFeedsFromStorage)
       }
+      
 
       if (prevState.feedClickEvent === 'long' && feedoList.length === 0) {
         return {
@@ -389,7 +423,7 @@ class HomeScreen extends React.Component {
         Actions.currentScene !== 'NotificationScreen' && Actions.currentScene !== 'FeedDetailScreen'
     ) {
       this.setState({ isShowInviteToaster: true })
-      
+
       if (feedo.inviteUpdateType) {
         this.setState({ inviteToasterTitle: 'Invitation accepted' })
       } else {
@@ -407,11 +441,11 @@ class HomeScreen extends React.Component {
         feedo.loading === 'PUBNUB_UNLIKE_CARD_FULFILLED' && Actions.currentScene !== 'FeedDetailScreen' ||
         feedo.loading === 'PUBNUB_USER_INVITED_FULFILLED' ||
         (feedo.loading === 'GET_CARD_COMMENTS_FULFILLED' &&
-                          Actions.currentScene !== 'FeedDetailScreen' && 
+                          Actions.currentScene !== 'FeedDetailScreen' &&
                           Actions.currentScene !== 'CommentScreen' && Actions.currentScene !== 'ActivityCommentScreen' &&
                           Actions.currentScene !== 'LikesListScreen' && Actions.currentScene !== 'ActivityLikesListScreen') ||
         (feedo.loading === 'PUBNUB_DELETE_FEED' &&
-                          Actions.currentScene !== 'FeedDetailScreen' && 
+                          Actions.currentScene !== 'FeedDetailScreen' &&
                           Actions.currentScene !== 'CommentScreen' && Actions.currentScene !== 'ActivityCommentScreen' &&
                           Actions.currentScene !== 'LikesListScreen' && Actions.currentScene !== 'ActivityLikesListScreen')
     ) {
@@ -435,7 +469,7 @@ class HomeScreen extends React.Component {
         (prevProps.feedo.loading !== 'DEL_FEED_FULFILLED' && feedo.loading === 'DEL_FEED_FULFILLED') ||
         (prevProps.feedo.loading !== 'ARCHIVE_FEED_FULFILLED' && feedo.loading === 'ARCHIVE_FEED_FULFILLED') ||
         (feedo.loading === 'PUBNUB_DELETE_FEED' &&
-                          Actions.currentScene !== 'FeedDetailScreen' && 
+                          Actions.currentScene !== 'FeedDetailScreen' &&
                           Actions.currentScene !== 'CommentScreen' && Actions.currentScene !== 'ActivityCommentScreen' &&
                           Actions.currentScene !== 'LikesListScreen' && Actions.currentScene !== 'ActivityLikesListScreen')) {
       this.setState({ isRefreshing: false })
@@ -485,7 +519,7 @@ class HomeScreen extends React.Component {
         Actions.FeedDetailScreen({
           type: 'replace',
           data: this.state.currentPushNotificationData
-        })  
+        })
       } else {
         Actions.FeedDetailScreen({
           data: this.state.currentPushNotificationData
@@ -504,11 +538,11 @@ class HomeScreen extends React.Component {
       });
     } else if (prevProps.feedo.loading !== 'UPDATE_CARD_FULFILLED' && feedo.loading === 'UPDATE_CARD_FULFILLED' && Actions.currentScene === 'HomeScreen') {
       this.setState({ isShowCardAddedToaster: true, cardAddedToasterTitle: 'Card added to ' + feedo.currentFeed.headline })
-  
+
       setTimeout(() => {
         this.setState({ isShowCardAddedToaster: false })
       }, TOASTER_DURATION)
-    }   
+    }
   }
 
   async setBubbles(feedoList) {
@@ -539,7 +573,7 @@ class HomeScreen extends React.Component {
           this.setState({ showFeedInvitedNewUserBubble: false })
         }
       }
-    }    
+    }
 
     if (feedoList && ownFeedoList.length === 0) {
       this.setState({ showEmptyBubble: true })
@@ -575,14 +609,14 @@ class HomeScreen extends React.Component {
     if (this.state.appState.match(/inactive|background/) && nextAppState === 'active') {
       appOpened(this.props.user.userInfo.id);
       if (Actions.currentScene === 'HomeScreen') {
-        this.props.getFeedoList();
+        this.props.getFeedoList(null, this.getFeedsFromStorage, this.getFeedsFromStorage)
 
         // TEMPORARY: REMOVE WITH PUBNUB INTEGRATION
         // this.props.getInvitedFeedList()
-        // this.props.getActivityFeed(this.props.user.userInfo.id, { page: 0, size: PAGE_COUNT })            
-      }  
+        // this.props.getActivityFeed(this.props.user.userInfo.id, { page: 0, size: PAGE_COUNT })
+      }
       this.showClipboardToast();
-      
+
       if (Actions.currentScene !== 'TutorialScreen' && Actions.currentScene !== 'LoginScreen') {
         this.props.getUserSession()
       }
@@ -619,7 +653,7 @@ class HomeScreen extends React.Component {
             currentPushNotificationType: CONSTANTS.USER_INVITED_TO_HUNT,
             currentPushNotificationData: huntId
           });
-          this.props.getFeedoList();
+          this.props.getFeedoList(null, this.getFeedsFromStorage, this.getFeedsFromStorage);
           this.props.getInvitedFeedList()
         }
         break;
@@ -699,7 +733,7 @@ class HomeScreen extends React.Component {
             currentPushNotificationType: CONSTANTS.USER_JOINED_HUNT,
             currentPushNotificationData: huntId,
           });
-          this.props.getFeedoList();
+          this.props.getFeedoList(null, this.getFeedsFromStorage, this.getFeedsFromStorage);
         }
         break;
       }
@@ -718,7 +752,7 @@ class HomeScreen extends React.Component {
             currentPushNotificationType: CONSTANTS.USER_INVITED_TO_HUNT,
             currentPushNotificationData: huntId,
           });
-          this.props.getFeedoList();
+          this.props.getFeedoList(null, this.getFeedsFromStorage, this.getFeedsFromStorage);
         }
         break;
       }
@@ -816,6 +850,7 @@ class HomeScreen extends React.Component {
 
   closeLongHoldMenu = () => {
     this.setState({
+      selectedLongHoldFeedoIndex: -1,
       selectedFeedList: [],
       feedClickEvent: 'normal',
       isLongHoldMenuVisible: false,
@@ -938,7 +973,7 @@ class HomeScreen extends React.Component {
       this.duplicateFeed()
     }, TOASTER_DURATION + 5)
   }
-  
+
   duplicateFeed = () => {
     if (this.state.isDuplicate) {
       Analytics.logEvent('dashboard_duplicate_feed', {})
@@ -1014,6 +1049,13 @@ class HomeScreen extends React.Component {
 
   onSelectNewFeedType(type) {
     this.props.closeClipboardToaster()
+    var options = {
+      storageOptions: {
+        skipBackup: true,
+        path: 'feedo'
+      },
+      mediaType: 'mixed'
+    };
 
     if (type === 'ADD_TEXT') {
       Analytics.logEvent('dashboard_new_card', {})
@@ -1028,13 +1070,17 @@ class HomeScreen extends React.Component {
       Analytics.logEvent('dashboard_new_feed', {})
 
       this.props.setCurrentFeed({});
-      this.setState({ 
+      this.setState({
         isVisibleCreateNewFeedModal: false,
         isVisibleNewFeed: true,
         isEditFeed: false,
       });
     } else if (type === 'UPLOAD_PHOTO') {
-
+      this.pickMediaFromLibrary(options);
+    } else if (type === 'TAKE_PHOTO') {
+      this.pickMediaFromCamera(options);
+    } else if (type === 'ATTACH_FILE') {
+      this.onAddDocument();
     }
   }
 
@@ -1044,12 +1090,12 @@ class HomeScreen extends React.Component {
       toValue: 0,
       duration: CONSTANTS.ANIMATEION_MILLI_SECONDS,
     }).start(() => {
-      this.setState({ 
+      this.setState({
         isVisibleCreateNewFeedModal: false,
       });
     });
   }
-  
+
   onCloseNewFeedModal(data) {
     // Ignore discarding feed
     // if (data.currentFeed) {
@@ -1076,6 +1122,83 @@ class HomeScreen extends React.Component {
     this.setState({ showProfile: false })
   }
 
+  pickMediaFromCamera(options) {
+    ImagePicker.launchCamera(options, (response)  => {
+      if (!response.didCancel) {
+        if (response.fileSize > CONSTANTS.MAX_UPLOAD_FILE_SIZE) {
+          COMMON_FUNC.showPremiumAlert()
+        } else {
+          if (!response.fileName) {
+            response.fileName = response.uri.replace(/^.*[\\\/]/, '')
+          }
+          this.handleFile(response)
+        }
+      }
+    });
+  }
+
+  pickMediaFromLibrary(options) {
+    ImagePicker.launchImageLibrary(options, (response)  => {
+      if (!response.didCancel) {
+        if (response.fileSize > CONSTANTS.MAX_UPLOAD_FILE_SIZE) {
+          COMMON_FUNC.showPremiumAlert()
+        } else {
+          this.handleFile(response)
+        }
+      }
+    });
+  }
+
+  onAddDocument() {
+    if (Platform.OS === 'ios') {
+      this.PickerDocumentShow();
+    }
+    else {
+      Permissions.check('storage').then(response => { //'storage' permission doesn't support on iOS
+        if (response === 'authorized') {
+          //permission already allowed
+          this.PickerDocumentShow();
+        }
+        else {
+          Permissions.request('storage').then(response => {
+            if (response === 'authorized') {
+              //storage permission was authorized
+              this.PickerDocumentShow();
+            }
+          });
+        }
+      });
+    }
+  }
+
+  PickerDocumentShow () {
+    DocumentPicker.show({
+      filetype: [DocumentPickerUtil.allFiles()],
+    },(error, response) => {
+      if (error === null) {
+        if (response.fileSize > CONSTANTS.MAX_UPLOAD_FILE_SIZE) {
+          COMMON_FUNC.showPremiumAlert()
+        } else {
+          this.handleFile(response)
+        }
+      }
+    });
+    return;
+  }
+
+  handleFile = (file) => {
+    this.setState({
+      fileData: file
+    }, () => {
+      this.setState({
+        isVisibleCreateNewFeedModal: false,
+        isVisibleCard: true,
+        cardViewMode: CONSTANTS.CARD_NEW,
+        selectedIdeaInvitee: null
+      });
+    })
+  }
+
   get renderNewFeedModals() {
     const { isEditFeed, isVisibleNewFeed, isVisibleCreateNewFeedModal, selectedFeedList } = this.state
 
@@ -1084,7 +1207,7 @@ class HomeScreen extends React.Component {
     }
 
     return (
-      <Animated.View 
+      <Animated.View
         style={[
           styles.modalContainer,
           styles.quickActionModalContainer,
@@ -1092,7 +1215,7 @@ class HomeScreen extends React.Component {
         ]}
       >
         {isVisibleCreateNewFeedModal && (
-          <CreateNewFeedComponent 
+          <CreateNewFeedComponent
             onSelect={(type) => this.onSelectNewFeedType(type)}
             onClose={() => this.onCloseCreateNewFeedModal()}
           />
@@ -1106,7 +1229,7 @@ class HomeScreen extends React.Component {
             viewMode={CONSTANTS.FEEDO_FROM_MAIN}
 
             // feedoMode={CONSTANTS.SHARE_EXTENTION_FEEDO}
-          />  
+          />
         )}
       </Animated.View>
     );
@@ -1146,7 +1269,8 @@ class HomeScreen extends React.Component {
       duration: CONSTANTS.ANIMATEION_MILLI_SECONDS,
     }).start(() => {
       this.setState({ 
-        isVisibleCard: false
+        isVisibleCard: false,
+        fileData: null
       });
     });
   }
@@ -1160,16 +1284,17 @@ class HomeScreen extends React.Component {
       cardMode = CONSTANTS.MAIN_APP_CARD_FROM_DASHBOARD;
     }
     return (
-      <Animated.View 
+      <Animated.View
         style={[
           styles.modalContainer,
           {opacity: this.animatedOpacity}
         ]}
       >
-        <CardNewScreen 
+        <CardNewScreen
           viewMode={this.state.cardViewMode}
           cardMode={cardMode}
           invitee={this.state.selectedIdeaInvitee}
+          fileData={this.state.fileData}
           shareUrl=""
           prevPage="home"
           onClose={() => this.onCloseCardModal()}
@@ -1184,7 +1309,6 @@ class HomeScreen extends React.Component {
 
   onRefreshFeed = () => {
     this.setState({ isRefreshing: true })
-    this.props.getFeedoList()
     this.props.getInvitedFeedList()
   }
 
@@ -1293,38 +1417,36 @@ class HomeScreen extends React.Component {
         onChange={isOpen => this.updateMenuState(isOpen)}
       >
       <SafeAreaView style={styles.safeArea}>
+        <OfflineIndicator />
         <View feedAction="null" />
         <View style={styles.container}>
           {Platform.OS === 'ios' && <StatusBar barStyle="dark-content" backgroundColor="blue" />}
           {Platform.OS === 'android' && (
             <View style={styles.statusBarUnderlay} />
           )}
-
-          <View style={styles.headerView}>
-            <TouchableOpacity
-              style={styles.menuIconView}
-              activeOpacity={0.7}
-              onPress={this.toggleSideMenu}
-            >
-              <Image source={images.iconMenu} style={styles.menuIcon} />
-            </TouchableOpacity>
-            <Text style={styles.title}>
-              {selectedItemTitle}
-            </Text>
-            {/* <TouchableOpacity
-              style={styles.searchIconView}
-              onPress={() => SEARCH_FEATURE ? this.onSearch() : {}}
-            >
-              {SEARCH_FEATURE && (
-                <Image style={styles.searchIcon} source={SEARCH_ICON} />
-              )}
-            </TouchableOpacity> */}
-            <View style={styles.settingIconView}>
-              <TouchableOpacity onPress={() => this.handleSetting()}>
-                <Image source={SETTING_ICON} />
-              </TouchableOpacity>
-            </View>
-          </View>
+          <NetworkConsumer pingInterval={2000}>
+            {({ isConnected }) => (
+                isConnected ? (
+                  <View style={styles.headerView}>
+                  <TouchableOpacity
+                    style={styles.menuIconView}
+                    activeOpacity={0.7}
+                    onPress={this.toggleSideMenu}
+                  >
+                    <Image source={images.iconMenu} style={styles.menuIcon} />
+                  </TouchableOpacity>
+                  <Text style={styles.title}>
+                    {selectedItemTitle}
+                  </Text>
+                  <View style={styles.settingIconView}>
+                    <TouchableOpacity onPress={() => this.handleSetting()}>
+                      <Image source={SETTING_ICON} />
+                    </TouchableOpacity>
+                  </View>
+                </View>
+                ) : null
+            )}
+          </NetworkConsumer>
 
           <View
             style={[!isLongHoldMenuVisible ? styles.feedListContainer : styles.feedListContainerLongHold, feedClickEvent === 'normal' && { paddingBottom: 30 }]}
@@ -1469,7 +1591,7 @@ class HomeScreen extends React.Component {
           />
         )}
 
-        <Modal 
+        <Modal
           isVisible={this.state.showSharePermissionModal}
           style={{ margin: 8 }}
           backdropColor={COLORS.MODAL_BACKDROP}
@@ -1492,8 +1614,8 @@ class HomeScreen extends React.Component {
               ref={ref => (this.ref = ref)}
             />
         }
-        
-        <Modal 
+
+        <Modal
           isVisible={this.state.showShareConfirmModal}
           animationIn="fadeIn"
           animationOut="fadeOut"
@@ -1515,6 +1637,9 @@ class HomeScreen extends React.Component {
           onFilterSort={this.onFilterSort}
           onClose={() => this.setState({ showFilterModal: false }) }
         />
+
+        <LocalStorage />
+
       </SafeAreaView>
       </SideMenu>
     )
@@ -1528,7 +1653,18 @@ const mapStateToProps = ({ user, feedo, card }) => ({
 })
 
 const mapDispatchToProps = dispatch => ({
-  getFeedoList: (index) => dispatch(getFeedoList(index)),
+  getFeedoList: (index, successAction, errorAction) => dispatch(getFeedoList(index))
+  .then(result => {
+    // console.log('GFL resolves on HS, success looks like ', result)
+    if(result.error){
+      errorAction(error)
+    }
+  })
+  .catch(error => {
+    // console.log('GFL error on HS')
+    errorAction(error)
+  }),
+  setFeedoListFromStorage: (feeds) => dispatch(setFeedoListFromStorage(feeds)),
   pinFeed: (data) => dispatch(pinFeed(data)),
   unpinFeed: (data) => dispatch(unpinFeed(data)),
   deleteFeed: (data) => dispatch(deleteFeed(data)),
@@ -1554,6 +1690,7 @@ const mapDispatchToProps = dispatch => ({
 
 HomeScreen.propTypes = {
   getFeedoList: PropTypes.func.isRequired,
+  setFeedoListFromStorage: PropTypes.func.isRequired,
   feedo: PropTypes.objectOf(PropTypes.any),
   pinFeed: PropTypes.func.isRequired,
   unpinFeed: PropTypes.func.isRequired,
