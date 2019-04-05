@@ -388,7 +388,7 @@ class NotificationScreen extends React.Component {
   renderInvitedFeedItem = (data) => {
     return (
       <View style={styles.itemView}>
-        <NotificationItemComponent data={data} avatarSize={58} />
+        <NotificationItemComponent data={data} hideTumbnail={true} showTime />
       </View>
     )
   }
@@ -570,25 +570,32 @@ class NotificationScreen extends React.Component {
           {this.renderHeader}
 
           {!singleNotification && (notificationList.length > 0
-          ? <FlatList
-              style={styles.flatList}
-              contentContainerStyle={styles.contentFlatList}
-              data={notificationList}
-              keyExtractor={item => item.id}
-              automaticallyAdjustContentInsets={true}
-              renderItem={this.renderItem.bind(this)}
-              // ItemSeparatorComponent={this.renderSeparator}
-              ListFooterComponent={this.renderFooter}
-              refreshControl={
-                <RefreshControl 
-                  refreshing={this.state.refreshing}
-                  onRefresh={this.handleRefresh}
-                  tintColor={COLORS.PURPLE}
-                />
-              }
-              onEndReached={this.handleLoadMore}
-              onEndReachedThreshold={0}
-            />
+          ? <View style={{ flex: 1 }}>
+              <View style={styles.sectionView}>
+                <Text style={styles.sectionTitle}>
+                  Invitations
+                </Text>
+              </View>
+              <FlatList
+                style={styles.flatList}
+                contentContainerStyle={styles.contentFlatList}
+                data={notificationList}
+                keyExtractor={item => item.id}
+                automaticallyAdjustContentInsets={true}
+                renderItem={this.renderItem.bind(this)}
+                // ItemSeparatorComponent={this.renderSeparator}
+                ListFooterComponent={this.renderFooter}
+                refreshControl={
+                  <RefreshControl 
+                    refreshing={this.state.refreshing}
+                    onRefresh={this.handleRefresh}
+                    tintColor={COLORS.PURPLE}
+                  />
+                }
+                onEndReached={this.handleLoadMore}
+                onEndReachedThreshold={0}
+              />
+            </View>  
           : <View style={styles.emptyView}>
               <Image
                 source={NOTIFICATION_EMPTY_ICON}

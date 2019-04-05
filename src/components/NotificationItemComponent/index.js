@@ -13,12 +13,13 @@ import R from 'ramda'
 
 import FeedCoverImageComponent from '../FeedItemComponent/FeedCoverImageComponent'
 import UserAvatarComponent from '../../components/UserAvatarComponent'
+import { getFullDurationFromNow } from '../../service/dateUtils'
 import {
   updateInvitation
 } from '../../redux/feedo/actions'
 import styles from './styles'
 
-const NotificationItemComponent = ({ data, hideTumbnail, updateInvitation, prevPage, avatarSize }) => {
+const NotificationItemComponent = ({ data, hideTumbnail, updateInvitation, prevPage, avatarSize, showTime }) => {
   const filteredIdeas = _.orderBy(
     _.filter(data.ideas, idea => idea.coverImage !== null && idea.coverImage !== ''),
     ['publishedDate'],
@@ -76,6 +77,13 @@ const NotificationItemComponent = ({ data, hideTumbnail, updateInvitation, prevP
               <Text style={[styles.buttonText, styles.ignoreButtonText]}>Ignore</Text>
             </View>
           </TouchableOpacity>
+          {showTime &&
+            <View style={styles.timeView}>
+              <Text style={styles.text}>
+                {getFullDurationFromNow(data.publishedDate)}
+              </Text>
+            </View>
+          }
         </View>
       </View>
     </View>

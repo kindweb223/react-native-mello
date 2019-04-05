@@ -33,7 +33,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     height: 30,
     width: 90,
-    borderRadius: 15,
+    borderRadius: 7,
     marginRight: 15
   },
   acceptButtonView: {
@@ -51,7 +51,16 @@ const styles = StyleSheet.create({
   },
   ignoreButtonText: {
     color: '#fff'
-  }
+  },
+  timeView: {
+    flex: 1,
+    justifyContent: 'flex-end',
+    alignItems: 'flex-end',
+  },
+  text: {
+    fontSize: 12,
+    color: COLORS.DARK_GREY
+  },
 })
 
 export default styles
