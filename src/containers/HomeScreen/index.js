@@ -427,7 +427,7 @@ class HomeScreen extends React.Component {
       if (feedo.inviteUpdateType) {
         this.setState({ inviteToasterTitle: 'Invitation accepted' })
       } else {
-        this.setState({ inviteToasterTitle: 'Invitation ignored' })
+        this.setState({ inviteToasterTitle: 'Invitation declined' })
       }
       setTimeout(() => {
         this.setState({ isShowInviteToaster: false })
