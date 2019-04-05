@@ -21,23 +21,10 @@ const patchPostMessageJsCode = `(${String(function() {
 class CKEditor extends React.Component {
   constructor(props) {
     super(props);
-
     this.state = {
-      webviewHeight: 200
+      webVewHeight: 101
     }
   }
-
-  onError = error => {
-    Alert.alert('WebView onError', error, [
-      { text: 'OK', onPress: () => console.log('OK Pressed') }
-    ]);
-  };
-
-  renderError = error => {
-    Alert.alert('WebView renderError', error, [
-      { text: 'OK', onPress: () => console.log('OK Pressed') }
-    ]);
-  };
 
   postMessage = payload => {
     // only send message when webview is loaded
@@ -49,8 +36,11 @@ class CKEditor extends React.Component {
   handleMessage = event => {
     try {
       const msgData = event.nativeEvent.data;
-      // this.setState({ webviewHeight: parseInt(msgData)})
-      this.props.onChange(msgData);
+      const webVewHeight = parseInt(msgData.split('>>>!hunt!<<<')[0]) + 20;
+      const content = msgData.split('>>>!hunt!<<<')[1];
+      this.setState({ webVewHeight });
+
+      this.props.onChange(content);
     } catch (err) {
       console.warn(err);
       return;
@@ -58,8 +48,7 @@ class CKEditor extends React.Component {
   };
 
   onWebViewLoaded = () => {
-    // data = 'placeholder: ' + this.props.content;
-    data = 'placeholder: ' + 'TEST';
+    data = 'placeholder: ' + this.props.content;
     this.postMessage(data);
   };
 
@@ -69,38 +58,36 @@ class CKEditor extends React.Component {
   }
 
   render() {
-    const { webviewHeight } = this.state;
-    console.log('webviewHeight: ', webviewHeight)
-
     return (
-      <View style={{ height: webviewHeight }}>
+      <View style={{ height: this.state.webVewHeight }}>
         <WebView
+          {...this.props}
           ref={c => this.webview = c}
           injectedJavaScript={patchPostMessageJsCode}
-          style={styles.webviewStyle}
-          useWebKit={true}
-          scrollEnabled={false}
-          hideKeyboardAccessoryView={true}
-          source={Platform.OS === 'ios' ? editor : { uri: 'file:///android_asset/ckeditor/index.html' }}
-          // source={{ uri: Platform.OS === 'ios' ? 'https://demos.solvers.io/solvers/melloapp-landing/ckeditor_ios.html' : 'https://demos.solvers.io/solvers/melloapp-landing/ckeditor_android.html' }}
-          // onError={this.onError}
-          // renderError={this.renderError}
-          javaScriptEnabled
-          startInLoadingState={true}  
           onLoadEnd={this.onWebViewLoaded}
           onMessage={this.handleMessage}
-          automaticallyAdjustContentInsets={true}
-          domStorageEnabled={false}
-          cacheEnabled={false}
-          thirdPartyCookiesEnabled={false}
-          incognito={true}
-          saveFormDataDisabled={true}
-          mixedContentMode="always"
-          scrollEnabled
+          source={Platform.OS === 'ios' ? editor : { uri: 'file:///android_asset/ckeditor/index.html' }}
+          // source={{ uri: Platform.OS === 'ios' ? 'https://demos.solvers.io/solvers/melloapp-landing/ckeditor_ios.html' : 'https://demos.solvers.io/solvers/melloapp-landing/ckeditor_android.html' }}
+          style={styles.webviewStyle}
         />
       </View>
     );
   }
+}
+
+CKEditor.defaultProps = {
+  startInLoadingState: true,
+  useWebKit: true,
+  hideKeyboardAccessoryView: false,
+  automaticallyAdjustContentInsets: true,
+  domStorageEnabled: false,
+  cacheEnabled: false,
+  thirdPartyCookiesEnabled: false,
+  incognito: true,
+  saveFormDataDisabled: true,
+  mixedContentMode: "always",
+  scrollEnabled: true,
+  javascriptEnable: true
 }
 
 const styles = StyleSheet.create({

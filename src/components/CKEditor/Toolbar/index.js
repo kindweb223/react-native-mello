@@ -20,7 +20,7 @@ class CKEditorToolbar extends React.Component {
 
     this.state = {
       isFirstToolbar: true,
-      fontSize: 'small'
+      fontSize: 'normal'
     }
   }
 
