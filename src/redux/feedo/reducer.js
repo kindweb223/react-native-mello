@@ -1285,6 +1285,40 @@ export default function feedo(state = initialState, action = {}) {
       }
     }
     /**
+     * Read acitivty group
+     */
+    case types.READ_ACTIVITY_GROUP_PENDING:
+      return {
+        ...state,
+        loading: types.READ_ACTIVITY_GROUP_PENDING,
+      }
+    case types.READ_ACTIVITY_GROUP_FULLFILLED: {
+      const activityGroupId = action.payload
+      const { activityFeedList, activityData } = state
+
+      const currentActivityFeedList = filter(activityFeedList, feed => feed.id === activityGroupId)
+      const restActivityFeedList = filter(activityFeedList, feed => feed.id !== activityGroupId)
+
+      return {
+        ...state,
+        loading: types.READ_ACTIVITY_GROUP_FULLFILLED,
+        activityFeedList: [
+          ...restActivityFeedList,
+          {
+            ...currentActivityFeedList[0],
+            read: true
+          }
+        ]
+      }
+    }
+    case types.READ_ACTIVITY_GROUP_REJECTED: {
+      return {
+        ...state,
+        loading: types.READ_ACTIVITY_GROUP_REJECTED,
+        error: action.error.response,
+      }
+    }
+    /**
      * Read acitivty
      */
     case types.READ_ACTIVITY_FEED_PENDING:

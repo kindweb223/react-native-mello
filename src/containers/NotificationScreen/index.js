@@ -147,7 +147,7 @@ class NotificationScreen extends React.Component {
     let { invitedFeedList, activityFeedList } = feedo
 
     invitedFeedList = _.orderBy(invitedFeedList, ['metadata.myLastActivityDate'], ['desc'])
-    activityFeedList = _.orderBy(activityFeedList, ['activityTime'], ['desc'])
+    activityFeedList = _.orderBy(activityFeedList, ['latestActivityTime'], ['desc'])
 
     this.setState({ invitedFeedList, activityFeedList })
     this.setActivityFeeds(activityFeedList, invitedFeedList)
@@ -174,9 +174,10 @@ class NotificationScreen extends React.Component {
 
     if ((this.props.feedo.loading !== 'GET_ACTIVITY_FEED_FULFILLED' && feedo.loading === 'GET_ACTIVITY_FEED_FULFILLED') ||
         (this.props.feedo.loading !== 'READ_ACTIVITY_FEED_FULFILLED' && feedo.loading === 'READ_ACTIVITY_FEED_FULFILLED') ||
+        (this.props.feedo.loading !== 'READ_ACTIVITY_GROUP_FULLFILLED' && feedo.loading === 'READ_ACTIVITY_GROUP_FULLFILLED') ||
         (this.props.feedo.loading !== 'DEL_ACTIVITY_FEED_FULFILLED' && feedo.loading === 'DEL_ACTIVITY_FEED_FULFILLED'))
     {
-      let activityFeedList = _.orderBy(feedo.activityFeedList, ['activityTime'], ['desc'])
+      let activityFeedList = _.orderBy(feedo.activityFeedList, ['latestActivityTime'], ['desc'])
       this.setState({ refreshing: false, activityFeedList })
       this.setActivityFeeds(activityFeedList, this.state.invitedFeedList)
     }
