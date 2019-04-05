@@ -34,7 +34,7 @@ class FeedCardListComponent extends React.Component {
     const invitee = _.find(invitees, item => item.id === idea.inviteeId)
     let isOnlyInvitee = false
     
-    if (invitees.length === 1 && invitee) {
+    if (invitee && invitees.length === 1) {
       isOnlyInvitee = true
     }
 
@@ -64,7 +64,7 @@ class FeedCardListComponent extends React.Component {
               </View>
             )}
 
-            {idea.idea !== null && idea.idea.length > 0 && (
+            {idea.idea && idea.idea !== null && idea.idea.length > 0 && (
               <View style={styles.subView}>
                 <Autolink
                   style={styles.title}
