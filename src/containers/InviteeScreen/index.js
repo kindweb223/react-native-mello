@@ -84,7 +84,7 @@ class InviteeScreen extends React.Component {
           'Error',
           feedo.error
         )
-      } else {
+      } else if (!this.state.isReinviting){
         this.props.onClose()
       }
     }
@@ -176,26 +176,11 @@ class InviteeScreen extends React.Component {
     const { id, email, firstName, lastName } = item.userProfile
     if (data.owner && data.owner.email === email) return // if selected contact is feed owner
 
-    if (item.inviteStatus !== 'ACCEPTED') {
-      let inviteeEmails = []
-      inviteeEmails.push({
-        text: firstName + ' ' + lastName,
-        email,
-        name: firstName + ' ' + lastName,
-        userProfileId: id
-      })
-      const params = {
-        message: '',
-        invitees: inviteeEmails,
-        permissions: item.permissions
-      }
-      inviteToHunt(data.id, params)
-    } else {
-      this.setState({
-        selectedContact: item,
-        isRemoveModal: true
-      })
-    }
+    this.setState({
+      selectedContact: item,
+      isRemoveModal: true,
+      isReinviting: item.inviteStatus !== 'ACCEPTED'
+    })
   }
 
   onSelectContact = (contact) => {
@@ -240,6 +225,25 @@ class InviteeScreen extends React.Component {
         inviteToHunt(data.id, params)
       }
     }
+  }
+
+  onInvitetoHunt() {
+    const { data, inviteToHunt } = this.props
+    const { id, email, firstName, lastName } = this.state.selectedContact.userProfile
+
+    let inviteeEmails = []
+    inviteeEmails.push({
+      text: firstName + ' ' + lastName,
+      email,
+      name: firstName + ' ' + lastName,
+      userProfileId: id
+    })
+    const params = {
+      message: '',
+      invitees: inviteeEmails,
+      permissions: this.state.selectedContact.permissions
+    }
+    inviteToHunt(data.id, params)
   }
 
   handlePermissionOption = (index) => {
@@ -309,7 +313,8 @@ class InviteeScreen extends React.Component {
       selectedContact,
       isInvalidEmail,
       invalidEmail,
-      isInput
+      isInput,
+      isReinviting
     } = this.state
     const { data } = this.props
 
@@ -419,8 +424,8 @@ class InviteeScreen extends React.Component {
           animationIn="slideInUp"
           animationOut="slideOutDown"
           animationInTiming={500}
-          onBackdropPress={() => this.setState({ isRemoveModal: false })}
-          onBackButtonPress={() => this.setState({ isRemoveModal: false })}
+          onBackdropPress={() => this.setState({ isRemoveModal: false, isReinviting: false })}
+          onBackButtonPress={() => this.setState({ isRemoveModal: false, isReinviting: false })}
         >
           <View style={styles.removeModal}>
             {
@@ -430,17 +435,32 @@ class InviteeScreen extends React.Component {
                 isShowSeparator={false}
               />
             }
-            <Button
-              style={{ marginTop: 28 }}
-              color='rgba(255, 0, 0, 0.1)'
-              labelColor={COLORS.RED}
-              label="Remove"
-              borderRadius={14}
-              onPress={() => {
-                this.setState({ isRemoveModal: false })
-                this.props.deleteInvitee(selectedContact)
-              }}
-            />
+            <View style={styles.actionButtons}>
+              <Button
+                style={{ marginTop: 28 }}
+                color='rgba(255, 0, 0, 0.1)'
+                labelColor={COLORS.RED}
+                label="Remove"
+                borderRadius={14}
+                onPress={() => {
+                  this.setState({ isRemoveModal: false })
+                  this.props.deleteInvitee(selectedContact)
+                }}
+              />
+              {isReinviting &&
+                <Button
+                  style={{ marginTop: 10 }}
+                  color='rgba(255, 0, 0, 0.1)'
+                  labelColor={COLORS.RED}
+                  label="Invite"
+                  borderRadius={14}
+                  onPress={() => {
+                    this.setState({ isRemoveModal: false })
+                    this.onInvitetoHunt(selectedContact)
+                  }}
+                />
+              }
+            </View>
           </View>
         </Modal>
 

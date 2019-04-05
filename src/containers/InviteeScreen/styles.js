@@ -160,5 +160,8 @@ export default {
         elevation: 20
       }
     })
+  },
+  actionButtons: {
+    flexDirection: 'column'
   }
 }
