@@ -451,13 +451,14 @@ class InviteeScreen extends React.Component {
             : (!isInput && currentMembers && currentMembers.length > 0) && (
                 <View style={styles.inviteeListView}>
                   <View style={styles.titleView}>
-                    <Text style={styles.h3}>Current members</Text>
+                    <Text style={styles.titleText}>Current members</Text>
                   </View>
+                  <View style={styles.separator} />
                   <ScrollView style={styles.inviteeList} keyboardShouldPersistTaps="handled">
                     {currentMembers.map(item => (
                       <TouchableOpacity key={item.id} onPress={() => this.onSelectMember(item)}>
                         <View style={styles.inviteeItem}>
-                          <InviteeItemComponent invitee={item} />
+                          <InviteeItemComponent invitee={item} isShowSeparator={false} />
                         </View>
                       </TouchableOpacity>
                     ))}
