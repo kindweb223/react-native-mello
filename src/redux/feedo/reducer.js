@@ -7,6 +7,7 @@ import { filter, find, findIndex, isEmpty } from 'lodash'
 import resolveError from './../../service/resolveError'
 import { restoreArchiveFeed } from './actions';
 import { setRemovedInvitees } from './operations'
+import _ from 'lodash'
 
 const initialState = {
   loading: null,
@@ -1307,22 +1308,22 @@ export default function feedo(state = initialState, action = {}) {
       }
     case types.READ_ACTIVITY_GROUP_FULLFILLED: {
       const activityGroupId = action.payload
-      const { activityFeedList, activityData } = state
+      let { activityFeedList, activityData } = state
 
-      const currentActivityFeedList = filter(activityFeedList, feed => feed.id === activityGroupId)
-      const restActivityFeedList = filter(activityFeedList, feed => feed.id !== activityGroupId)
+      activityFeedList = activityFeedList.map(item => {        
+        if (item.id === activityGroupId) {
+          item.read = true
+        }
+        return item
+      })
+
+      activityFeedList = _.orderBy(activityFeedList, ['read', 'latestActivityTime'], ['asc', 'desc'])
 
       return {
         ...state,
         activeActivityGroupId: activityGroupId,
         loading: types.READ_ACTIVITY_GROUP_FULLFILLED,
-        activityFeedList: [
-          ...restActivityFeedList,
-          {
-            ...currentActivityFeedList[0],
-            read: true
-          }
-        ]
+        activityFeedList
       }
     }
     case types.READ_ACTIVITY_GROUP_REJECTED: {
