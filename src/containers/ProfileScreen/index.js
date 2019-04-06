@@ -1,7 +1,7 @@
 import React from 'react'
 import {
   View,
-  Text, 
+  Text,
   TouchableOpacity,
   Image,
   ScrollView,
@@ -32,6 +32,7 @@ import COLORS from '../../service/colors'
 import styles from './styles'
 import Analytics from '../../lib/firebase'
 import { TIP_SHARE_LINK_URL } from '../../service/api'
+import OfflineIndicator from '../../components/LocalStorage/OfflineIndicator'
 
 const CLOSE_ICON = require('../../../assets/images/Close/Blue.png')
 const TRASH_ICON = require('../../../assets/images/Trash/Blue.png')
@@ -62,30 +63,30 @@ class ProfileScreen extends React.Component {
       icon: <Image source={PROFILE_ICON} style={styles.leftIcon} />,
       title: 'Profile'
     })
-    
+
     this.SETTING_ITEMS.push({
       icon: <Image source={LOCK_ICON} style={styles.leftIcon} />,
       title: 'Security'
     })
-    
+
     this.SETTING_ITEMS.push({
       icon: <Image source={TRASH_ICON} style={styles.leftIcon} />,
       title: 'Archived flows'
     })
-    
+
     if(Platform.OS === 'ios') {
       this.SETTING_ITEMS.push({
         icon: <Image source={SHARE_ICON} style={styles.leftIcon} />,
         title: 'Enable share extention'
-      })  
+      })
     }
 
     this.SETTING_ITEMS.push({
       icon: <Image source={PREMIUM_ICON} style={styles.leftIcon} />,
       title: 'Upgrade to Mello Premium'
-    })  
+    })
   }
-  
+
   componentDidMount() {
     Analytics.setCurrentScreen('ProfileScren')
 
@@ -103,7 +104,7 @@ class ProfileScreen extends React.Component {
     return true;
   }
 
-  
+
   UNSAFE_componentWillReceiveProps(nextProps) {
     const { user } = nextProps
 
@@ -130,7 +131,7 @@ class ProfileScreen extends React.Component {
         }, 2000)
       }
 
-      if (this.props.user.loading === 'DELETE_PROFILE_PHOTO_REQUEST' && 
+      if (this.props.user.loading === 'DELETE_PROFILE_PHOTO_REQUEST' &&
         (user.loading === 'DELETE_PROFILE_PHOTO_FULFILLED' || user.loading === 'DELETE_PROFILE_PHOTO_REJECTED')) {
         this.setState({ loading: false })
       }
@@ -182,7 +183,7 @@ class ProfileScreen extends React.Component {
         path: 'feedo'
       }
     };
-        
+
     if (index === 1) {
       // from camera
        this.pickMediaFromCamera(options);
@@ -218,7 +219,7 @@ class ProfileScreen extends React.Component {
               }
               else if (Platform.OS === 'ios') {
                 Permissions.openSettings();
-              }    
+              }
             });
           }
           else if (Platform.OS === 'ios') {
@@ -285,6 +286,7 @@ class ProfileScreen extends React.Component {
       <View style={styles.overlay}>
         {userInfo && (
           <ScrollView style={styles.scrollView}>
+            <OfflineIndicator/>
             <View style={styles.body}>
               <TouchableOpacity onPress={() => Actions.pop()} style={styles.closeButton}>
                 <Image source={CLOSE_ICON} />
@@ -302,7 +304,7 @@ class ProfileScreen extends React.Component {
                       textColor={COLORS.PURPLE}
                     />
                   </TouchableOpacity>
-                  <TouchableOpacity 
+                  <TouchableOpacity
                     style={styles.editView}
                     onPress={() => this.updatePhoto()}>
                     <Image source={EDIT_ICON} style={styles.editIcon} />
@@ -442,7 +444,7 @@ class ProfileScreen extends React.Component {
         )}
 
         {
-          this.state.showShareTipsModal && 
+          this.state.showShareTipsModal &&
             <ShareExtensionTip
               onDismiss={this.dismiss}
               ref={ref => (this.ref = ref)}

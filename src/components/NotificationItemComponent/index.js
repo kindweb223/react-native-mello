@@ -74,7 +74,7 @@ const NotificationItemComponent = ({ data, hideTumbnail, updateInvitation, prevP
           </TouchableOpacity>
           <TouchableOpacity onPress={() => updateInvitation(data.id, false)} activeOpacity={0.8}>
             <View style={[styles.buttonView, styles.ignoreButtonView]}>
-              <Text style={[styles.buttonText, styles.ignoreButtonText]}>Ignore</Text>
+              <Text style={[styles.buttonText, styles.ignoreButtonText]}>Decline</Text>
             </View>
           </TouchableOpacity>
           {showTime &&

@@ -262,6 +262,7 @@ class CardNewShareScreen extends React.Component {
     }).start(() => {
       if (this.props.feedo.feedoList.length == 0) {
         this.props.getFeedoList(0);
+
       }
       else {
         this.setState({createEnabled: true})
