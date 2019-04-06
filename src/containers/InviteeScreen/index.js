@@ -71,7 +71,10 @@ class InviteeScreen extends React.Component {
     this.isMount = true
     this.setState({ loading: true })
     this.props.getContactList(userInfo.id)
-    this.setState({ currentMembers: COMMON_FUNC.filterRemovedInvitees(this.props.data.invitees) })
+
+    let filteredMembers = COMMON_FUNC.filterRemovedInvitees(this.props.data.invitees)
+    filteredMembers = COMMON_FUNC.removeDuplicatedItems(filteredMembers)
+    this.setState({ currentMembers:  filteredMembers })
     this.setState({isEnableShare: COMMON_FUNC.isSharingEnabled(this.props.data)})
   }
 
