@@ -251,7 +251,6 @@ class NewFeedScreen extends React.Component {
   }
 
   handleBackButton = () => {
-    console.log('handleBackButton')
     this.onOpenActionSheet()
     return true;
   }

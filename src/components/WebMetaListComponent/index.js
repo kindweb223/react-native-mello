@@ -62,7 +62,6 @@ export default class WebMetaList extends React.Component {
         }))
         .catch(error => {
           // Fallback WebView code for iOS 8 and earlier
-          console.log('ERROR: ', error)
           Linking.canOpenURL(url)
             .then(supported => {
               if (!supported) {
@@ -73,7 +72,6 @@ export default class WebMetaList extends React.Component {
             })
             .catch(error => {
               console.error('An error occurred', error)
-              console.log('ERROR1: ', error)
             });
         });
     } else {

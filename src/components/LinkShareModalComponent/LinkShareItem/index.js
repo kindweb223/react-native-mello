@@ -36,7 +36,7 @@ const LinkShareItem = ({ isViewOnly, feed, handleLinkSharing, isEnableShare, onP
               : `Anyone with the link can ${changeToCapital(feed.sharingPreferences.permissions)}`
             }
           </Text>
-          <View style={styles.separator} />
+          {/* <View style={styles.separator} /> */}
         </View>
       </TouchableOpacity>
 
