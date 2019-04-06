@@ -162,6 +162,17 @@ const getCardViewMode = (feed, idea) => {
   return viewMode
 }
 
+const removeDuplicatedItems = (array) => {
+  var obj = {};
+  for (var i = 0, len = array.length; i < len; i++)
+    obj[array[i]['id']] = array[i];
+
+  array = new Array();
+  for (var key in obj)
+  array.push(obj[key]);
+  return array
+}
+
 export {
   checkUserIsInvitee,
   isFeedOwner,
@@ -182,5 +193,6 @@ export {
   isMelloTipFeed,
   checkVideoCoverImage,
   isFeedOwnerOnlyInvitee,
-  getCardViewMode
+  getCardViewMode,
+  removeDuplicatedItems
 }

@@ -1612,7 +1612,7 @@ class FeedDetailScreen extends React.Component {
                     </TouchableOpacity>
                     <TouchableOpacity onPress={() => this.onUpdateInvitation(currentFeed.id, false)} activeOpacity={0.8}>
                       <View style={[styles.buttonView, styles.ignoreButtonView]}>
-                        <Text style={[styles.buttonText, styles.ignoreButtonText]}>Ignore</Text>
+                        <Text style={[styles.buttonText, styles.ignoreButtonText]}>Decline</Text>
                       </View>
                     </TouchableOpacity>
                   </View>

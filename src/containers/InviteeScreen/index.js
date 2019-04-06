@@ -36,8 +36,18 @@ import Analytics from '../../lib/firebase'
 import CardFilterComponent from '../../components/CardFilterComponent';
 import Button from '../../components/Button'
 import AlertController from '../../components/AlertController'
+import ToasterComponent from '../../components/ToasterComponent'
+import ActionSheet from 'react-native-actionsheet'
 
 const CLOSE_ICON = require('../../../assets/images/Close/Blue.png')
+
+const MEMBER_ACTIONS = {
+  CAN_EDIT: 'Can edit',
+  CAN_ADD: 'Can add',
+  CAN_VIEW: 'Can view',
+  RESEND_INVITE: 'Resend invite',
+  REMOVE: 'Remove',
+}
 
 class InviteeScreen extends React.Component {
   constructor(props) {
@@ -60,6 +70,7 @@ class InviteeScreen extends React.Component {
       loading: false,
       tagText: '',
       isEnableShare: false,
+      memberActions: []
     }
     this.isMount = false
   }
@@ -71,7 +82,10 @@ class InviteeScreen extends React.Component {
     this.isMount = true
     this.setState({ loading: true })
     this.props.getContactList(userInfo.id)
-    this.setState({ currentMembers: COMMON_FUNC.filterRemovedInvitees(this.props.data.invitees) })
+
+    let filteredMembers = COMMON_FUNC.filterRemovedInvitees(this.props.data.invitees)
+    filteredMembers = COMMON_FUNC.removeDuplicatedItems(filteredMembers)
+    this.setState({ currentMembers:  filteredMembers })
     this.setState({isEnableShare: COMMON_FUNC.isSharingEnabled(this.props.data)})
   }
 
@@ -84,6 +98,11 @@ class InviteeScreen extends React.Component {
           'Error',
           feedo.error
         )
+      } else if (this.state.isReinviting) {
+        this.setState({ isShowInviteToaster: true, inviteToasterTitle: 'Invitation sent - Collaboration is cooking!' })
+        setTimeout(() => {
+          this.setState({ isShowInviteToaster: false })
+        }, 3000)
       } else {
         this.props.onClose()
       }
@@ -172,12 +191,23 @@ class InviteeScreen extends React.Component {
   }
 
   onSelectMember = (item) => {
-    const { user, data } = this.props
-    if (data.owner && data.owner.email === item.userProfile.email) return // if selected contact is feed owner
+    const { user, data, inviteToHunt } = this.props
+    const { id, email, firstName, lastName } = item.userProfile
+    if (data.owner && data.owner.email === email) return // if selected contact is feed owner
+
+    let memberActions = [MEMBER_ACTIONS.REMOVE, 'Cancel']
+
+    if (item.inviteStatus === 'DECLINED' || item.inviteStatus === 'INVITED') {
+      memberActions.unshift(MEMBER_ACTIONS.RESEND_INVITE)
+    }
+
     this.setState({
-      selectedContact: item,
-      isRemoveModal: true
-    })
+        selectedContact: item,
+        memberActions,
+        isReinviting: item.inviteStatus !== 'ACCEPTED'
+      }, () => {
+        this.ActionSheet.show()
+      });
   }
 
   onSelectContact = (contact) => {
@@ -222,6 +252,25 @@ class InviteeScreen extends React.Component {
         inviteToHunt(data.id, params)
       }
     }
+  }
+
+  onInvitetoHunt() {
+    const { data, inviteToHunt } = this.props
+    const { id, email, firstName, lastName } = this.state.selectedContact.userProfile
+
+    let inviteeEmails = []
+    inviteeEmails.push({
+      text: firstName + ' ' + lastName,
+      email,
+      name: firstName + ' ' + lastName,
+      userProfileId: id
+    })
+    const params = {
+      message: '',
+      invitees: inviteeEmails,
+      permissions: this.state.selectedContact.permissions
+    }
+    inviteToHunt(data.id, params)
   }
 
   handlePermissionOption = (index) => {
@@ -278,6 +327,29 @@ class InviteeScreen extends React.Component {
     }
   }
 
+  onTapActionSheet = (index) => {
+    const { memberActions, selectedContact } = this.state
+
+    let action = memberActions[index]
+
+    console.log(action)
+
+    switch(action) {
+      case MEMBER_ACTIONS.CAN_EDIT:
+        break
+      case  MEMBER_ACTIONS.CAN_ADD:
+        break
+      case MEMBER_ACTIONS.CAN_VIEW:
+        break
+      case MEMBER_ACTIONS.RESEND_INVITE:
+        this.onInvitetoHunt(selectedContact)
+        break
+      case MEMBER_ACTIONS.REMOVE:
+        this.props.deleteInvitee(selectedContact)
+        break
+    }
+  }
+
   render () {
     const {
       isAddInvitee,
@@ -291,7 +363,9 @@ class InviteeScreen extends React.Component {
       selectedContact,
       isInvalidEmail,
       invalidEmail,
-      isInput
+      isInput,
+      isReinviting,
+      memberActions
     } = this.state
     const { data } = this.props
 
@@ -377,13 +451,14 @@ class InviteeScreen extends React.Component {
             : (!isInput && currentMembers && currentMembers.length > 0) && (
                 <View style={styles.inviteeListView}>
                   <View style={styles.titleView}>
-                    <Text style={styles.h3}>Current members</Text>
+                    <Text style={styles.titleText}>Current members</Text>
                   </View>
+                  <View style={styles.separator} />
                   <ScrollView style={styles.inviteeList} keyboardShouldPersistTaps="handled">
                     {currentMembers.map(item => (
                       <TouchableOpacity key={item.id} onPress={() => this.onSelectMember(item)}>
                         <View style={styles.inviteeItem}>
-                          <InviteeItemComponent invitee={item} />
+                          <InviteeItemComponent invitee={item} isShowSeparator={false} />
                         </View>
                       </TouchableOpacity>
                     ))}
@@ -393,7 +468,19 @@ class InviteeScreen extends React.Component {
           }
         </View>
 
-        <Modal
+        <ActionSheet
+          key="1"
+          ref={ref => this.ActionSheet = ref}
+          title={selectedContact && `${selectedContact.userProfile.firstName} ${selectedContact.userProfile.lastName}`}
+          options={memberActions}
+          cancelButtonIndex={memberActions.length - 1}
+          destructiveButtonIndex={memberActions.length - 2}
+          tintColor={COLORS.PURPLE}
+          onPress={(index) => this.onTapActionSheet(index)}
+        />
+
+        {/* Old actionsheet version */}
+        {/* <Modal
           isVisible={isRemoveModal}
           style={{ margin: 0 }}
           backdropColor={COLORS.MODAL_BACKDROP}
@@ -401,8 +488,8 @@ class InviteeScreen extends React.Component {
           animationIn="slideInUp"
           animationOut="slideOutDown"
           animationInTiming={500}
-          onBackdropPress={() => this.setState({ isRemoveModal: false })}
-          onBackButtonPress={() => this.setState({ isRemoveModal: false })}
+          onBackdropPress={() => this.setState({ isRemoveModal: false, isReinviting: false })}
+          onBackButtonPress={() => this.setState({ isRemoveModal: false, isReinviting: false })}
         >
           <View style={styles.removeModal}>
             {
@@ -412,19 +499,34 @@ class InviteeScreen extends React.Component {
                 isShowSeparator={false}
               />
             }
-            <Button
-              style={{ marginTop: 28 }}
-              color='rgba(255, 0, 0, 0.1)'
-              labelColor={COLORS.RED}
-              label="Remove"
-              borderRadius={14}
-              onPress={() => {
-                this.setState({ isRemoveModal: false })
-                this.props.deleteInvitee(selectedContact)
-              }}
-            />
+            <View style={styles.actionButtons}>
+              <Button
+                style={{ marginTop: 28 }}
+                color='rgba(255, 0, 0, 0.1)'
+                labelColor={COLORS.RED}
+                label="Remove"
+                borderRadius={14}
+                onPress={() => {
+                  this.setState({ isRemoveModal: false })
+                  this.props.deleteInvitee(selectedContact)
+                }}
+              />
+              {isReinviting &&
+                <Button
+                  style={{ marginTop: 10 }}
+                  color='rgba(255, 0, 0, 0.1)'
+                  labelColor={COLORS.RED}
+                  label="Resend Invite"
+                  borderRadius={14}
+                  onPress={() => {
+                    this.setState({ isRemoveModal: false })
+                    this.onInvitetoHunt(selectedContact)
+                  }}
+                />
+              }
+            </View>
           </View>
-        </Modal>
+        </Modal> */}
 
         <Modal
           isVisible={isPermissionModal}
@@ -442,6 +544,15 @@ class InviteeScreen extends React.Component {
             handleShareOption={this.handlePermissionOption}
           />
         </Modal>
+
+        {this.state.isShowInviteToaster && (
+          <ToasterComponent
+            isVisible={this.state.isShowInviteToaster}
+            title={this.state.inviteToasterTitle}
+            buttonTitle="OK"
+            onPressButton={() => this.setState({ isShowInviteToaster: false })}
+          />
+        )}
       </View>
     )
   }

@@ -4,6 +4,7 @@ import {
   Animated,
   View,
   FlatList,
+  Image,
 } from 'react-native'
 import PropTypes from 'prop-types'
 
