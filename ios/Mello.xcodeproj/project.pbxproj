@@ -479,13 +479,6 @@
 			remoteGlobalIDString = F12AFB9B1ADAF8F800E0535D;
 			remoteInfo = RNFS;
 		};
-		8093C63622439C6E00FE1619 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 8093C5F722439C6D00FE1619 /* RNFS.xcodeproj */;
-			proxyType = 2;
-			remoteGlobalIDString = 6456441F1EB8DA9100672408;
-			remoteInfo = "RNFS-tvOS";
-		};
 		832341B41AAA6A8300B99B32 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 832341B01AAA6A8300B99B32 /* RCTText.xcodeproj */;
@@ -1239,15 +1232,6 @@
 			name = Products;
 			sourceTree = "<group>";
 		};
-		8093C5F822439C6D00FE1619 /* Products */ = {
-			isa = PBXGroup;
-			children = (
-				8093C63522439C6E00FE1619 /* libRNFS.a */,
-				8093C63722439C6E00FE1619 /* libRNFS.a */,
-			);
-			name = Products;
-			sourceTree = "<group>";
-		};
 		832341AE1AAA6A7D00B99B32 /* Libraries */ = {
 			isa = PBXGroup;
 			children = (
@@ -1495,6 +1479,7 @@
 				48E815D86AC4450E91A11738 /* libRNImgToBase64.a */,
 				D737F6C3F4964BBBB207DE7B /* libRNTextSize.a */,
 				D08D21C89C284CC8B72878F0 /* libRNFileViewer.a */,
+				8093C63522439C6E00FE1619 /* libRNFS.a */,
 			);
 			name = "Recovered References";
 			sourceTree = "<group>";
@@ -2187,13 +2172,6 @@
 			fileType = archive.ar;
 			path = libRNFS.a;
 			remoteRef = 8093C63422439C6E00FE1619 /* PBXContainerItemProxy */;
-			sourceTree = BUILT_PRODUCTS_DIR;
-		};
-		8093C63722439C6E00FE1619 /* libRNFS.a */ = {
-			isa = PBXReferenceProxy;
-			fileType = archive.ar;
-			path = libRNFS.a;
-			remoteRef = 8093C63622439C6E00FE1619 /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
 		832341B51AAA6A8300B99B32 /* libRCTText.a */ = {

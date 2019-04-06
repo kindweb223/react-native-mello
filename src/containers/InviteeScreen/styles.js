@@ -51,12 +51,16 @@ export default {
   },
   inviteeListView: {
     flex: 1,
-    marginTop: 24,
-    marginBottom: 5
+    marginTop: 50,
+    marginBottom: 0
   },
   titleView: {
     paddingBottom: 5,
     paddingHorizontal: CONSTANTS.PADDING
+  },
+  titleText: {
+    fontSize: 14,
+    color: COLORS.DARK_GREY    
   },
   cancelText: {
     ...fonts.style.h3,
@@ -64,7 +68,7 @@ export default {
     fontWeight: 'normal'
   },
   inviteeList: {
-    marginTop: 15
+    marginTop: 9
   },
   listItem: {
     flexDirection: 'row',
@@ -74,7 +78,7 @@ export default {
     marginTop: 10,
   },
   inviteeItem: {
-    paddingVertical: 7,
+    paddingVertical: 11,
     paddingHorizontal: CONSTANTS.PADDING
   },
   inputFieldView: {
@@ -160,5 +164,13 @@ export default {
         elevation: 20
       }
     })
-  }
+  },
+  actionButtons: {
+    flexDirection: 'column'
+  },
+  separator: {
+    borderBottomWidth: 1,
+    borderBottomColor: COLORS.SEPARATOR_GREY,
+    marginHorizontal: 16
+  },
 }
