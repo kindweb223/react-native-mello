@@ -36,6 +36,7 @@ import Analytics from '../../lib/firebase'
 import CardFilterComponent from '../../components/CardFilterComponent';
 import Button from '../../components/Button'
 import AlertController from '../../components/AlertController'
+import ToasterComponent from '../../components/ToasterComponent'
 
 const CLOSE_ICON = require('../../../assets/images/Close/Blue.png')
 
@@ -87,7 +88,12 @@ class InviteeScreen extends React.Component {
           'Error',
           feedo.error
         )
-      } else if (!this.state.isReinviting){
+      } else if (this.state.isReinviting) {
+        this.setState({ isShowInviteToaster: true, inviteToasterTitle: 'Invitation sent - Collaboration is cooking!' })
+        setTimeout(() => {
+          this.setState({ isShowInviteToaster: false })
+        }, 3000)
+      } else {
         this.props.onClose()
       }
     }
@@ -483,6 +489,15 @@ class InviteeScreen extends React.Component {
             handleShareOption={this.handlePermissionOption}
           />
         </Modal>
+
+        {this.state.isShowInviteToaster && (
+          <ToasterComponent
+            isVisible={this.state.isShowInviteToaster}
+            title={this.state.inviteToasterTitle}
+            buttonTitle="OK"
+            onPressButton={() => this.setState({ isShowInviteToaster: false })}
+          />
+        )}
       </View>
     )
   }
