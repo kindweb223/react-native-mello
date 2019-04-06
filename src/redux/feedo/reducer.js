@@ -26,7 +26,8 @@ const initialState = {
   dummyMoveCard: {},
   badgeCount: 0,
   isCreateCard: false,
-  duplicatedFeedList: []
+  duplicatedFeedList: [],
+  activeActivityGroupId: ''
 };
 
 export default function feedo(state = initialState, action = {}) {
@@ -1301,6 +1302,7 @@ export default function feedo(state = initialState, action = {}) {
 
       return {
         ...state,
+        activeActivityGroupId: activityGroupId,
         loading: types.READ_ACTIVITY_GROUP_FULLFILLED,
         activityFeedList: [
           ...restActivityFeedList,
@@ -1328,21 +1330,25 @@ export default function feedo(state = initialState, action = {}) {
       }
     case types.READ_ACTIVITY_FEED_FULFILLED: {
       const activityId = action.payload
-      const { activityFeedList, activityData } = state
+      let { activityFeedList, activeActivityGroupId } = state
 
-      const currentActivityFeedList = filter(activityFeedList, feed => feed.id === activityId)
-      const restActivityFeedList = filter(activityFeedList, feed => feed.id !== activityId)
+      activityFeedList = activityFeedList.map(item => {
+        if (item.id === activeActivityGroupId) {
+          let activities = item.activities
+          activities = activities.map(item => {
+            if (item.id === activityId) {
+              item.read = true
+            }
+            return item
+          })
+        }
+        return item
+      })
 
       return {
         ...state,
         loading: types.READ_ACTIVITY_FEED_FULFILLED,
-        activityFeedList: [
-          ...restActivityFeedList,
-          {
-            ...currentActivityFeedList[0],
-            read: true
-          }
-        ]
+        activityFeedList
       }
     }
     case types.READ_ACTIVITY_FEED_REJECTED: {
