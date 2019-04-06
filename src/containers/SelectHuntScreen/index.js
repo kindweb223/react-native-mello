@@ -157,6 +157,7 @@ class SelectHuntScreen extends React.Component {
     } else if (selectMode === CONSTANTS.FEEDO_SELECT_FROM_MOVE_CARD) {
       return this.renderHeaderFromMoveCard;
     }
+
     return this.renderHeaderFromExtension;
   }
 

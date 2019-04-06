@@ -56,6 +56,7 @@ import { TIP_SHARE_LINK_URL, ANDROID_PUSH_SENDER_ID, PIN_FEATURE, SEARCH_FEATURE
 import AlertController from '../../components/AlertController'
 import SideMenuComponent from '../../components/SideMenuComponent'
 import * as COMMON_FUNC from '../../service/commonFunc'
+import SearchScreen from '../SearchScreen';
 
 const SEARCH_ICON = require('../../../assets/images/Search/Grey.png')
 const SETTING_ICON = require('../../../assets/images/Settings/Grey.png')
@@ -97,6 +98,7 @@ import {
   getCard,
 } from '../../redux/card/actions'
 import { images } from '../../themes';
+import Search from 'react-native-search-box';
 
 const TOASTER_DURATION = 3000
 const PAGE_COUNT = 50
@@ -148,7 +150,8 @@ class HomeScreen extends React.Component {
       unSelectFeed: false,
       isSideMenuOpen: false,
       selectedItemTitle: 'All flows',
-      fileData: null
+      fileData: null,
+      isVisibleSelectFeedoModal: false
     };
 
     this.currentRef = null;
@@ -463,16 +466,18 @@ class HomeScreen extends React.Component {
       }
     }
 
+
     if ((prevProps.feedo.loading !== 'GET_FEEDO_LIST_FULFILLED' && feedo.loading === 'GET_FEEDO_LIST_FULFILLED') ||
         (prevProps.feedo.loading !== 'UPDATE_FEED_FULFILLED' && feedo.loading === 'UPDATE_FEED_FULFILLED') ||
         (prevProps.feedo.loading !== 'FEED_FULFILLED' && feedo.loading === 'FEED_FULFILLED') ||
         (prevProps.feedo.loading !== 'DEL_FEED_FULFILLED' && feedo.loading === 'DEL_FEED_FULFILLED') ||
         (prevProps.feedo.loading !== 'ARCHIVE_FEED_FULFILLED' && feedo.loading === 'ARCHIVE_FEED_FULFILLED') ||
+        (prevProps.feedo.loading !== 'GET_INVITED_FEEDO_LIST_FULFILLED' && feedo.loading === 'GET_INVITED_FEEDO_LIST_FULFILLED') ||
         (feedo.loading === 'PUBNUB_DELETE_FEED' &&
                           Actions.currentScene !== 'FeedDetailScreen' &&
                           Actions.currentScene !== 'CommentScreen' && Actions.currentScene !== 'ActivityCommentScreen' &&
                           Actions.currentScene !== 'LikesListScreen' && Actions.currentScene !== 'ActivityLikesListScreen')) {
-      this.setState({ isRefreshing: false })
+      this.state.isRefreshing && this.setState({ isRefreshing: false })                   
       await this.setBubbles(feedoList)
     }
 
@@ -1256,10 +1261,8 @@ class HomeScreen extends React.Component {
 
   onSearch = () => {
     Analytics.logEvent('dashboard_search', {})
-
-    Actions.FeedFilterScreen({
-      initialTag: []
-    })
+    
+    this.setState({ isVisibleSelectFeedoModal: true })
   }
 
   onCloseCardModal() {
@@ -1326,6 +1329,14 @@ class HomeScreen extends React.Component {
     this.setState({ filterSortType: type }, () => {
       this.filterFeeds()
     })
+  }
+
+  onCloseSelectHunt() {
+    this.isDisabledKeyboard = false;
+    this.setState({ isVisibleSelectFeedoModal: false })
+    if (!this.props.feedo.currentFeed.id) {
+      this.props.setCurrentFeed(this.draftFeedo);
+    }
   }
 
   static getFilteredFeeds = (feedoPinnedList, feedoUnPinnedList, filterShowType, filterSortType) => {
@@ -1416,6 +1427,8 @@ class HomeScreen extends React.Component {
         isOpen={isSideMenuOpen}
         onChange={isOpen => this.updateMenuState(isOpen)}
       >
+      { this.renderSelectHunt }
+      <View style={styles.container}>
       <SafeAreaView style={styles.safeArea}>
         <OfflineIndicator />
         <View feedAction="null" />
@@ -1424,29 +1437,37 @@ class HomeScreen extends React.Component {
           {Platform.OS === 'android' && (
             <View style={styles.statusBarUnderlay} />
           )}
-          <NetworkConsumer pingInterval={2000}>
+            <NetworkConsumer pingInterval={2000}>
             {({ isConnected }) => (
-                isConnected ? (
-                  <View style={styles.headerView}>
-                  <TouchableOpacity
-                    style={styles.menuIconView}
-                    activeOpacity={0.7}
-                    onPress={this.toggleSideMenu}
-                  >
-                    <Image source={images.iconMenu} style={styles.menuIcon} />
-                  </TouchableOpacity>
-                  <Text style={styles.title}>
-                    {selectedItemTitle}
-                  </Text>
-                  <View style={styles.settingIconView}>
-                    <TouchableOpacity onPress={() => this.handleSetting()}>
-                      <Image source={SETTING_ICON} />
-                    </TouchableOpacity>
-                  </View>
-                </View>
-                ) : null
-            )}
-          </NetworkConsumer>
+                                   isConnected ? (
+          <View style={styles.headerView}>
+            <TouchableOpacity
+              style={styles.menuIconView}
+              activeOpacity={0.7}
+              onPress={this.toggleSideMenu}
+            >
+              <Image source={images.iconMenu} style={styles.menuIcon} />
+            </TouchableOpacity>
+            <Text style={styles.title}>
+              {selectedItemTitle}
+            </Text>
+            {/* <TouchableOpacity
+              style={styles.searchIconView}
+              onPress={() => SEARCH_FEATURE ? this.onSearch() : {}}
+            >
+              {SEARCH_FEATURE && (
+                <Image style={styles.searchIcon} source={SEARCH_ICON} />
+              )}
+            </TouchableOpacity> */}
+            <View style={styles.settingIconView}>
+              <TouchableOpacity onPress={() => this.handleSetting()}>
+                <Image source={SETTING_ICON} />
+              </TouchableOpacity>
+            </View>
+          </View>
+          ) : null
+          )}
+        </NetworkConsumer>
 
           <View
             style={[!isLongHoldMenuVisible ? styles.feedListContainer : styles.feedListContainerLongHold, feedClickEvent === 'normal' && { paddingBottom: 30 }]}
@@ -1641,8 +1662,22 @@ class HomeScreen extends React.Component {
         <LocalStorage />
 
       </SafeAreaView>
+      </View>
       </SideMenu>
     )
+  }
+
+  get renderSelectHunt() {
+    const { feedoList } = this.state
+
+    if (this.state.isVisibleSelectFeedoModal) {
+      return (
+        <SearchScreen
+          cachedFeedList={ feedoList }
+          onClosed={ () => this.setState({ isVisibleSelectFeedoModal: false }) }
+        />
+      );
+    }
   }
 }
 
