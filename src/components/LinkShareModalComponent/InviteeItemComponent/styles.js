@@ -17,13 +17,14 @@ const styles = StyleSheet.create({
     marginRight: 15,
   },
   title: {
-    fontSize: 16,
+    fontSize: 14,
     fontWeight: '600',
+    paddingBottom: 6,
     color: '#000'
   },
   subtitle: {
-    fontSize: 14,
-    color: COLORS.MEDIUM_GREY,
+    fontSize: 12,
+    color: COLORS.DARK_GREY,
     marginRight: 17
   },
   cardView: {
@@ -31,15 +32,14 @@ const styles = StyleSheet.create({
   },
   rightView: {
     position: 'absolute',
-    top: 8,
+    top: 20,
     right: 0,
     justifyContent: 'center',
     alignItems: 'center'
   },
   viewText: {
-    fontSize: 14,
-    marginHorizontal: 5,
-    fontWeight: '600',
+    fontSize: 13,
+    fontWeight: 'normal',
     textTransform: 'capitalize'
   },
   viewEnableText: {
