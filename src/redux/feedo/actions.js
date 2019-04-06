@@ -19,8 +19,6 @@ export const getFeedoList = (index = 0, isForCardMove = false) => {
   // }
   let url = 'hunts'
 
-  console.log('GFL has been called')
-
   return {
     types: [types.GET_FEEDO_LIST_PENDING, types.GET_FEEDO_LIST_FULFILLED, types.GET_FEEDO_LIST_REJECTED],
     promise:
@@ -40,7 +38,6 @@ export const setFeedoListFromStorage = (feedoList) => {
   }
 }
 
-
 /**
  * Get feedo list
  */
@@ -56,8 +53,6 @@ export const getInvitedFeedList = () => {
       })
   };
 }
-
-
 
 /**
  * Update feed invitation (accept, ignore)
@@ -94,16 +89,6 @@ export const getFeedDetail = (feedId) => {
     payload: feedId
   };
 }
-
-
-export const setFeedDetailFromStorage = (feed) => {
-  console.log('FL feed here is ', feed)
-  return {
-    type: types.SET_FEED_DETAIL_FROM_STORAGE,
-    feed,
-  }
-}
-
 
 /**
  * Pin Feed
@@ -222,7 +207,7 @@ export const deleteDuplicatedFeed = (feedList) => {
   return {
     types: [types.DEL_FEED_PENDING, types.DEL_FEED_FULFILLED, types.DEL_FEED_REJECTED],
     promise: axios.delete(url, { data }),
-    payload: { flag: 'duplicate', backFeedList: data }
+    payload: { flag: 'duplicate', backFeedList: feedList }
   };
 }
 
@@ -657,20 +642,20 @@ export const pubnubDeleteFeed = (feedId) => {
 /*
  * Delete dummy card until toaster is hidden
  */
-export const deleteDummyCard = (deletedIdeaList, type) => {
+export const deleteDummyCard = (ideaId, type) => {
   return {
     type: types.DEL_DUMMY_CARD,
-    payload: { deletedIdeaList, type }
+    payload: { ideaId, type }
   };
 }
 
 /**
  * Move dummy card until toaster is hidden
  */
-export const moveDummyCard = (movedIdeaList, huntId, type) => {
+export const moveDummyCard = (ideaId, huntId, type) => {
   return {
     type: types.MOVE_DUMMY_CARD,
-    payload: { movedIdeaList, huntId, type }
+    payload: { ideaId, huntId, type }
   };
 }
 
