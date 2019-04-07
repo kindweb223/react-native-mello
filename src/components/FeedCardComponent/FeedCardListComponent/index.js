@@ -39,6 +39,7 @@ class FeedCardListComponent extends React.Component {
     }
 
     const viewMode = COMMON_FUNC.getCardViewMode(feedo.currentFeed, idea)
+    console.log('IDEA: ', idea)
 
     return (
       <View style={[styles.container, longSelected && styles.selected, longHold && viewMode === CONSTANTS.CARD_VIEW && { opacity: 0.4 }]}>
@@ -64,8 +65,7 @@ class FeedCardListComponent extends React.Component {
               </View>
             )}
 
-            {/* idea.idea && idea.idea !== null causes https://cl.ly/04b100153d1c */}
-            {(idea.idea || idea.idea !== null) && idea.idea.length > 0 && (
+            {_.has(idea, 'idea') && idea.idea.length !== null && idea.idea.length > 0 && (
               <View style={styles.subView}>
                 <Autolink
                   style={styles.title}
