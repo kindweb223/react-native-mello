@@ -71,7 +71,7 @@ class FeedCardExtendComponent extends React.Component {
                 </View>
               )}
 
-              {idea.idea && idea.idea !== null && idea.idea.length > 0 && (
+              {_.has(idea, 'idea') && idea.idea.length !== null && idea.idea.length > 0 && (
                 <View style={styles.subView}>
                   <Autolink
                     style={styles.title}

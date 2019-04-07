@@ -11,8 +11,15 @@ import UserAvatarComponent from '../../UserAvatarComponent';
 
 
 const InviteeItemComponent = ({ invitee, isViewOnly, isOwnerInvitee, isOnlyTitle, hideLike, isShowSeparator }) => {
-  const { userProfile } = invitee
+  const { userProfile, inviteStatus } = invitee
   const userName = userProfile.newUser ? userProfile.email : `${userProfile.firstName} ${userProfile.lastName}`
+
+  let statusTxt
+  if (inviteStatus === 'INVITED') {
+    statusTxt = 'Pending'
+  } else if (inviteStatus === 'DECLINED') {
+    statusTxt = 'Declined'
+  }
 
   return (
     <View style={styles.container}>
@@ -73,6 +80,14 @@ const InviteeItemComponent = ({ invitee, isViewOnly, isOwnerInvitee, isOnlyTitle
             </Text>
             <Entypo name="cog" style={[styles.cogIcon, styles.cogEnableIcon]} />
           </View>
+      )}
+
+      {inviteStatus !== 'ACCEPTED' && (
+        <View style={styles.rightView}>
+          <Text style={[styles.viewText, { color: inviteStatus === 'INVITED' ? COLORS.DARK_GREY : 'red' }]}>
+            {statusTxt}
+          </Text>
+        </View>
       )}
     </View>
   )
