@@ -170,6 +170,8 @@ class NotificationScreen extends React.Component {
 
     if (this.props.feedo.loading !== 'DEL_ACTIVITY_FEED_FULFILLED' && feedo.loading === 'DEL_ACTIVITY_FEED_FULFILLED') {
       Analytics.logEvent('notification_delete_activity', {})
+      const activityGroup = _.filter(feedo.activityFeedList, feed => feed.id === feedo.activeActivityGroupId)
+      this.setState({ singleNotificationList: activityGroup[0].activities })
     }
 
     if ((this.props.feedo.loading !== 'GET_ACTIVITY_FEED_FULFILLED' && feedo.loading === 'GET_ACTIVITY_FEED_FULFILLED') ||
@@ -449,9 +451,7 @@ class NotificationScreen extends React.Component {
     })
     this.animateInSingleNotificationView()
 
-    if (!data.read) {
-      this.props.readActivityGroup(this.props.user.userInfo.id, data.id)
-    }
+    this.props.readActivityGroup(this.props.user.userInfo.id, data.id)
   }
 
   animateInSingleNotificationView() {
