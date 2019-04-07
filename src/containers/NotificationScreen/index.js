@@ -514,6 +514,7 @@ class NotificationScreen extends React.Component {
         <Swipeout
           style={styles.itemContainer}
           autoClose={true}
+          disabled={!this.state.singleNotification}
           right={swipeoutBtns}
         >
           {this.state.singleNotification
