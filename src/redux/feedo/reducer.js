@@ -7,6 +7,7 @@ import { filter, find, findIndex, isEmpty } from 'lodash'
 import resolveError from './../../service/resolveError'
 import { restoreArchiveFeed } from './actions';
 import { setRemovedInvitees } from './operations'
+import _ from 'lodash'
 
 const initialState = {
   loading: null,
@@ -26,7 +27,8 @@ const initialState = {
   dummyMoveCard: {},
   badgeCount: 0,
   isCreateCard: false,
-  duplicatedFeedList: []
+  duplicatedFeedList: [],
+  activeActivityGroupId: ''
 };
 
 export default function feedo(state = initialState, action = {}) {
@@ -1258,14 +1260,7 @@ export default function feedo(state = initialState, action = {}) {
       }
 
       let activityFeedList = []
-      if (data.first) {
-        activityFeedList = data.content
-      } else {
-        activityFeedList = [
-          ...state.activityFeedList,
-          ...data.content
-        ]
-      }
+      activityFeedList = data.huntActivities
 
       return {
         ...state,
@@ -1304,6 +1299,43 @@ export default function feedo(state = initialState, action = {}) {
       }
     }
     /**
+     * Read acitivty group
+     */
+    case types.READ_ACTIVITY_GROUP_PENDING:
+      return {
+        ...state,
+        loading: types.READ_ACTIVITY_GROUP_PENDING,
+      }
+    case types.READ_ACTIVITY_GROUP_FULLFILLED: {
+      const activityGroupId = action.payload
+      let { activityFeedList, activityData } = state
+
+      activityFeedList = activityFeedList.map(item => {
+        if (item.id === activityGroupId) {
+          item.read = true
+        }
+        return item
+      })
+
+      activityFeedList = _.orderBy(activityFeedList, ['read', 'latestActivityTime'], ['asc', 'desc'])
+
+      return {
+        ...state,
+        activeActivityGroupId: activityGroupId,
+        loading: types.READ_ACTIVITY_GROUP_FULLFILLED,
+        activityFeedList
+      }
+    }
+    case types.READ_ACTIVITY_GROUP_REJECTED: {
+      const activityGroupId = action.payload
+      return {
+        ...state,
+        activeActivityGroupId: activityGroupId,
+        loading: types.READ_ACTIVITY_GROUP_REJECTED,
+        error: action.error.response,
+      }
+    }
+    /**
      * Read acitivty
      */
     case types.READ_ACTIVITY_FEED_PENDING:
@@ -1313,21 +1345,25 @@ export default function feedo(state = initialState, action = {}) {
       }
     case types.READ_ACTIVITY_FEED_FULFILLED: {
       const activityId = action.payload
-      const { activityFeedList, activityData } = state
+      let { activityFeedList, activeActivityGroupId } = state
 
-      const currentActivityFeedList = filter(activityFeedList, feed => feed.id === activityId)
-      const restActivityFeedList = filter(activityFeedList, feed => feed.id !== activityId)
+      activityFeedList = activityFeedList.map(item => {
+        if (item.id === activeActivityGroupId) {
+          let activities = item.activities
+          activities = activities.map(item => {
+            if (item.id === activityId) {
+              item.read = true
+            }
+            return item
+          })
+        }
+        return item
+      })
 
       return {
         ...state,
         loading: types.READ_ACTIVITY_FEED_FULFILLED,
-        activityFeedList: [
-          ...restActivityFeedList,
-          {
-            ...currentActivityFeedList[0],
-            read: true
-          }
-        ]
+        activityFeedList
       }
     }
     case types.READ_ACTIVITY_FEED_REJECTED: {
@@ -1347,14 +1383,21 @@ export default function feedo(state = initialState, action = {}) {
       }
     case types.DEL_ACTIVITY_FEED_FULFILLED: {
       const activityId = action.payload
-      const { activityFeedList, activityData } = state
+      let { activityFeedList, activeActivityGroupId } = state
 
-      const restActivityFeedList = filter(activityFeedList, feed => feed.id !== activityId)
+      activityFeedList = activityFeedList.map(item => {
+        if (item.id === activeActivityGroupId) {
+          let activities = item.activities
+          activities = filter(activities, activity => activity.id !== activityId)
+          item.activities = activities
+        }
+        return item
+      })
 
       return {
         ...state,
         loading: types.DEL_ACTIVITY_FEED_FULFILLED,
-        activityFeedList: restActivityFeedList
+        activityFeedList
       }
     }
     case types.DEL_ACTIVITY_FEED_REJECTED: {
