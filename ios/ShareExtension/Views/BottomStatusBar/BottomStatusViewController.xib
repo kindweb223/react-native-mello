@@ -17,6 +17,7 @@
                 <outlet property="labelCenterConstraint" destination="WEX-1v-yFg" id="4Xx-hl-vxp"/>
                 <outlet property="labelLeftConstraint" destination="s59-Yn-Ymw" id="mZG-dt-NsN"/>
                 <outlet property="messageContainerView" destination="hbS-WL-nVt" id="HSN-QP-EfZ"/>
+                <outlet property="messageContainerViewCenterConstraint" destination="4Gi-pm-407" id="MlS-Ez-YRN"/>
                 <outlet property="titleLabel" destination="vlR-iw-jBK" id="fX6-OQ-Q6e"/>
                 <outlet property="view" destination="i5M-Pr-FkT" id="sfx-zR-JGt"/>
             </connections>
@@ -27,10 +28,10 @@
             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
             <subviews>
                 <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="hbS-WL-nVt">
-                    <rect key="frame" x="16" y="758" width="382" height="72"/>
+                    <rect key="frame" x="18" y="758" width="378" height="72"/>
                     <subviews>
                         <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Saving..." textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="vlR-iw-jBK">
-                            <rect key="frame" x="72" y="25.5" width="238" height="21"/>
+                            <rect key="frame" x="72" y="25.5" width="234" height="21"/>
                             <fontDescription key="fontDescription" type="system" pointSize="17"/>
                             <nil key="textColor"/>
                             <nil key="highlightedColor"/>
@@ -57,9 +58,9 @@
             </subviews>
             <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
             <constraints>
-                <constraint firstItem="hbS-WL-nVt" firstAttribute="leading" secondItem="fnl-2z-Ty3" secondAttribute="leading" constant="16" id="1im-3E-kdh"/>
+                <constraint firstItem="hbS-WL-nVt" firstAttribute="centerX" secondItem="i5M-Pr-FkT" secondAttribute="centerX" id="4Gi-pm-407"/>
+                <constraint firstItem="hbS-WL-nVt" firstAttribute="width" secondItem="i5M-Pr-FkT" secondAttribute="width" constant="-36" id="C4w-94-iYM"/>
                 <constraint firstItem="fnl-2z-Ty3" firstAttribute="bottom" secondItem="hbS-WL-nVt" secondAttribute="bottom" constant="32" id="HZZ-Pb-Nmb"/>
-                <constraint firstItem="fnl-2z-Ty3" firstAttribute="trailing" secondItem="hbS-WL-nVt" secondAttribute="trailing" constant="16" id="vZb-E6-nMz"/>
             </constraints>
             <viewLayoutGuide key="safeArea" id="fnl-2z-Ty3"/>
             <point key="canvasLocation" x="47.826086956521742" y="35.491071428571423"/>
