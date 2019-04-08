@@ -41,7 +41,7 @@ class CKEditor extends React.Component {
 
   handleMessage = event => {
     try {
-      console.log('aa: ',  event.nativeEvent)
+      console.log('DATA: ',  event.nativeEvent.data)
       const msgData = event.nativeEvent.data;
       const webVewHeight = parseInt(msgData.split('>>>!hunt!<<<')[0]) + 20;
       const content = msgData.split('>>>!hunt!<<<')[1];

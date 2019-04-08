@@ -1493,12 +1493,14 @@ class CardNewScreen extends React.Component {
     const { cardMode } = this.props;
 
     return (
-      <CKEditor
-        ref={c => this.refCKEditor = c}
-        content={this.state.idea}
-        placeholder={cardMode === CONSTANTS.SHARE_EXTENTION_CARD ? 'Add a note' : 'Let your ideas flow. Type text, paste a link, add an image, video or audio'}
-        onChange={value => this.onChangeIdea(value)}
-      />
+      <View style={{ paddingHorizontal: 10 }}>
+        <CKEditor
+          ref={c => this.refCKEditor = c}
+          content={this.state.idea}
+          placeholder={cardMode === CONSTANTS.SHARE_EXTENTION_CARD ? 'Add a note' : 'Let your ideas flow. Type text, paste a link, add an image, video or audio'}
+          onChange={value => this.onChangeIdea(value)}
+        />
+      </View>
     )
   }
 
