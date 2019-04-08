@@ -183,7 +183,7 @@ class MainViewController: UIViewController {
           DispatchQueue.main.async {
             switch codedItem {
             case let url as URL:
-              self.showText("", withAttachement: url)
+              self.showVideo(url)
             default:
               self.showErrorAndClose("Could not share this file type")
             }
@@ -268,6 +268,12 @@ class MainViewController: UIViewController {
     let textVC = TextViewController(text: text, attachementPath: attachementPath)
     textVC.delegate = self
     navController.presentInitial(vc: textVC)
+  }
+  
+  private func showVideo(_ videoURL: URL) {
+    let videoVC = VideoViewController(url: videoURL)
+    videoVC.delegate = self
+    navController.presentInitial(vc: videoVC)
   }
   
   private func dismissAnimated(_ completion: @escaping () -> Void) {
@@ -557,6 +563,14 @@ extension MainViewController: TextViewControllerDelegate {
   }
   
   func uploadFileToNewCard(_ flow: Flow, filePath: URL, completion: @escaping (_ cardId: String?) -> Void) {
+    
+    func fileTypeForMimeType(_ mimeType: String) -> API.FileType {
+      if mimeType.contains("video") || mimeType.contains("image") {
+        return .media
+      }
+      return .file
+    }
+    
     API.shared.newTempCard(forFlow: flow) { cardId in
       guard let cardId = cardId else {
         completion(nil)
@@ -581,11 +595,56 @@ extension MainViewController: TextViewControllerDelegate {
         }
         
         API.shared.saveFile(filePath, inURL: tempFileUrl.uploadUrl, completion: {
-          API.shared.addFile(filePath.lastPathComponent, toCardId: cardId, mimeType: filePath.mimeType(), fileType: .file, tempFileUrl: tempFileUrl, size: nil, thumbnail: thumbnail, completion: { fileId in
+          API.shared.addFile(filePath.lastPathComponent, toCardId: cardId, mimeType: filePath.mimeType(),
+                             fileType: fileTypeForMimeType(filePath.mimeType()), tempFileUrl: tempFileUrl,
+                             size: nil, thumbnail: thumbnail, completion: { fileId in
             completion(cardId)
           })
         })
       })
+    }
+  }
+}
+
+// MARK: Video Delegate
+extension MainViewController: VideoViewControllerDelegate {
+  func videoViewControllerDidTapCancel(_ vc: VideoViewController) {
+    dismissAnimated {
+      self.extensionContext?.completeRequest(returningItems: nil, completionHandler: nil)
+    }
+  }
+  
+  func videoViewController(_ vc: VideoViewController, wantsToCreateCard videoUrl: URL, text: String, flow: Flow?) {
+    dismissAnimated {
+      let loadingVC = BottomStatusViewController(state: .loading)
+      loadingVC.delegate = self
+      self.present(loadingVC, animated: true, completion: nil)
+      
+      self.createFlowIfNeeded(flow, completion: { createdFlow in
+        guard let createdFlow = createdFlow else {
+          loadingVC.update(.error)
+          return
+        }
+        
+        self.uploadFileToNewCard(createdFlow, filePath: videoUrl, completion: { cardId in
+          guard let cardId = cardId else {
+            loadingVC.update(.error)
+            return
+          }
+          API.shared.publishCard(cardId, text: text, flowId: createdFlow.id, completion: {
+            loadingVC.update(.success(flow: createdFlow, imageUrl: nil))
+          })
+        })
+        
+      })
+    }
+  }
+  
+  func videoViewControllerDidTapFlows(_ vc: VideoViewController) {
+    AllFlows.shared.get { flows in
+      let flowSelectorVC = FlowSelectorViewController(flows: flows)
+      flowSelectorVC.delegate = self
+      self.navController.push(fromVC: vc, toViewController: flowSelectorVC)
     }
   }
 }
