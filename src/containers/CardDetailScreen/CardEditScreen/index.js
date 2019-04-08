@@ -16,10 +16,10 @@ import {
 
 import _ from 'lodash';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons'
-
+import CKEditor from '../../../components/CKEditor'
+import CKEditorToolbar from '../../../components/CKEditor/Toolbar'
 import COLORS from '../../../service/colors';
 import CONSTANTS from '../../../service/constants';
-import Button from '../../../components/Button';
 import styles from './styles';
 
 class CardEditScreen extends React.Component {
@@ -28,7 +28,8 @@ class CardEditScreen extends React.Component {
     this.state = {
       isShowKeyboardButton: false,
       textByCursor: '',
-      idea: props.idea
+      idea: props.idea,
+      bottomButtonsPadding: Platform.OS === 'android' ? 24 : 0
     }
 
     this.animatedShow = new Animated.Value(0);
@@ -36,17 +37,23 @@ class CardEditScreen extends React.Component {
   }
 
   async componentDidMount() {
-    this.textInputIdeaRef.focus();
-    this.keyboardWillShowSubscription = Keyboard.addListener('keyboardWillShow', (e) => this.keyboardWillShow(e))
-    this.keyboardWillHideSubscription = Keyboard.addListener('keyboardWillHide', (e) => this.keyboardWillHide(e))
+    if (Platform.OS === 'android') {
+      this.keyboardDidShowSubscription = Keyboard.addListener('keyboardDidShow', (e) => this.keyboardDidlShow(e));
+      this.keyboardDidHideSubscription = Keyboard.addListener('keyboardDidHide', (e) => this.keyboardDidHide(e));
+    }
+    else {
+      this.keyboardDidShowSubscription = Keyboard.addListener('keyboardWillShow', (e) => this.keyboardDidlShow(e));
+      this.keyboardDidHideSubscription = Keyboard.addListener('keyboardWillHide', (e) => this.keyboardDidHide(e));
+    }
+
     BackHandler.addEventListener('hardwareBackPress', this.handleBackButton);
 
     this.scrollViewRef.scrollToEnd()
   }
 
   componentWillUnmount() {
-    this.keyboardWillShowSubscription.remove();
-    this.keyboardWillHideSubscription.remove();
+    this.keyboardDidShowSubscription.remove();
+    this.keyboardDidHideSubscription.remove();
     BackHandler.removeEventListener('hardwareBackPress', this.handleBackButton);
   }
 
@@ -55,20 +62,20 @@ class CardEditScreen extends React.Component {
     return true;
   }
 
-  keyboardWillShow(e) {
+  keyboardDidlShow(e) {
     Animated.timing(
       this.animatedKeyboardHeight, {
         toValue: e.endCoordinates.height,
-        duration: e.duration,
+        duration: Platform.OS === 'android' ? 30 : e.duration,
       }
     ).start();
   }
 
-  keyboardWillHide(e) {
+  keyboardDidHide(e) {
     Animated.timing(
       this.animatedKeyboardHeight, {
         toValue: 0,
-        duration: e.duration,
+        duration: Platform.OS === 'android' ? 30 : e.duration,
       }
     ).start();
   }
@@ -146,8 +153,33 @@ class CardEditScreen extends React.Component {
     this.scrollContent();
   }
 
+  executeCKEditorCommand = (command) => {
+    this.refCKEditor.executeCommand(command)
+  }
+
+  get renderFooter() {
+    return (
+      <View style={[styles.footerContainer, { marginBottom: this.state.bottomButtonsPadding }]}>
+        <CKEditorToolbar
+          isEdit={false}
+          handleCKEditorToolbar={() => {}}
+          executeCKEditorCommand={this.executeCKEditorCommand}
+        />
+      </View>
+    )
+  }
+
   get renderText() {
     const { idea } = this.props
+
+    return (
+      <CKEditor
+        ref={c => this.refCKEditor = c}
+        content={idea}
+        initHeight={CONSTANTS.SCREEN_HEIGHT - 120}
+        onChange={value => this.onChangeIdea(value)}
+      />
+    )
 
     return (
       <TouchableOpacity
@@ -219,7 +251,8 @@ class CardEditScreen extends React.Component {
   get renderMainContent() { 
     return (
       <ScrollView
-        contentContainerStyle={{ flexGrow: 1 }}
+        style={{ paddingHorizontal: 10 }}
+        // contentContainerStyle={{ flexGrow: 1 }}
         ref={ref => this.scrollViewRef = ref}
         onLayout={this.onLayoutScrollView.bind(this)}
       >
@@ -246,6 +279,7 @@ class CardEditScreen extends React.Component {
           <SafeAreaView style={styles.cardContainer}>
             {this.renderHeader}
             {this.renderMainContent}
+            {this.renderFooter}
 
             {Platform.OS === 'ios' && this.state.isShowKeyboardButton && (
               <Animated.View style={styles.keyboardContainer}>

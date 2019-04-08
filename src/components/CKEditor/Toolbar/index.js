@@ -43,17 +43,19 @@ class CKEditorToolbar extends React.Component {
   
     return (
       <View style={styles.container}>
-        <View style={styles.iconView}>
-          <TouchableOpacity
-            activeOpacity={0.6}
-            onPress={() => this.props.handleCKEditorToolbar()}
-          >
-            <Image source={CLOSE_ICON} />
-          </TouchableOpacity>
-        </View>
+        {this.props.isNew && (
+          <View style={styles.iconView}>
+            <TouchableOpacity
+              activeOpacity={0.6}
+              onPress={() => this.props.handleCKEditorToolbar()}
+            >
+              <Image source={CLOSE_ICON} />
+            </TouchableOpacity>
+          </View>
+        )}
 
         {isFirstToolbar
-          ? <View style={styles.firstToolbarView}>
+          ? <View style={[styles.firstToolbarView, this.props.isNew ? { paddingLeft: 25 } : { paddingLeft: 10 }]}>
               <TouchableOpacity
                 activeOpacity={0.6}
                 onPress={() => this.setFontSize()}

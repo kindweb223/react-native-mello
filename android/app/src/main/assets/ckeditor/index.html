@@ -3,7 +3,7 @@
 
 <head>
     <meta charset="utf-8">
-    <title>CKEditor Android</title>
+    <title>CKEditor iOS</title>
     <script src="https://cdn.ckeditor.com/ckeditor5/12.0.0/decoupled-document/ckeditor.js"></script>
     <meta charset="utf-8">
     <meta http-equiv="Cache-Control" content="no-cache">
@@ -62,11 +62,12 @@
     .then(editor => {
       window.CKEditor = editor;
 
-      editor.model.document.on( 'change', function() {
+      editor.model.document.on('change', function() {
+        var value = document.getElementById('editor').textContent;
         var height = document.getElementById('editor').offsetHeight;
-
-        window.postMessage(height + '>>>!hunt!<<<' + editor.getData(), '*')
-        // window.ReactNativeWebView.postMessage(editor.getData());
+        if (value.length > 0) {
+          window.postMessage(height + '>>>!hunt!<<<' + editor.getData(), '*')
+        }
       });
     })
     .catch(error => {

@@ -94,7 +94,7 @@ class CardNewScreen extends React.Component {
     super(props);
 
     let coverImage = '';
-    let idea = 'TEST';
+    let idea = '';
 
     if (props.cardMode === CONSTANTS.SHARE_EXTENTION_CARD && props.shareUrl !== '') {
       const openGraph = props.card.currentOpneGraph;
@@ -682,8 +682,6 @@ class CardNewScreen extends React.Component {
   }
 
   async componentDidMount() {
-    // this.textInputIdeaRef.focus();
-
     Animated.timing(this.animatedShow, {
       toValue: 1,
       duration: CONSTANTS.ANIMATEION_MILLI_SECONDS,
@@ -739,7 +737,7 @@ class CardNewScreen extends React.Component {
   keyboardDidShow(e) {
     // Padding issue with Android in clipboard mode
     if(Platform.OS === 'android' && this.props.isClipboard === true) {
-      this.setState({bottomButtonsPadding: 24})
+      this.setState({ bottomButtonsPadding: 24 })
     }
 
     Animated.timing(
@@ -748,18 +746,16 @@ class CardNewScreen extends React.Component {
         duration: Platform.OS === 'android' && this.props.isClipboard === true ? 30 : e.duration,
       }
     ).start(() => {
-      if (this.isDisabledKeyboard === true || !this.textInputIdeaRef) {
+      if (this.isDisabledKeyboard === true) {
         return;
       }
-
-      // this.textInputIdeaRef.focus();
     });
   }
 
   keyboardDidHide(e) {
     // Padding issue with Android in clipboard mode
     if(Platform.OS === 'android' && this.props.isClipboard === true) {
-      this.setState({bottomButtonsPadding: 0})
+      this.setState({ bottomButtonsPadding: 0 })
     }
 
     Animated.timing(
@@ -1111,7 +1107,6 @@ class CardNewScreen extends React.Component {
   async uploadFile(currentCard, file, type) {
     this.selectedFile = file;
     this.imageUploading = type === 'MEDIA';
-    // this.textInputIdeaRef.focus(); // To show progress bar for long image
     let imageFiles = _.filter(currentCard.files, file => file.fileType === 'MEDIA');
     this.setState({
       imageUploadStarted: type === 'MEDIA',
@@ -1166,7 +1161,6 @@ class CardNewScreen extends React.Component {
   onTapMediaPickerActionSheet(index) {
     this.setState({ imageUploading: false });
     this.imageUploading = false;
-    // this.textInputIdeaRef.blur(); // To show progress bar for long image
     var options = {
       storageOptions: {
         skipBackup: true,
@@ -1381,9 +1375,6 @@ class CardNewScreen extends React.Component {
       this.props.moveCard([{ 'idea': this.props.card.currentCard }], this.props.feedo.currentFeed.id);
     }
     this.prevFeedo = null;
-    if(this.textInputIdeaRef) {
-      // this.textInputIdeaRef.focus();
-    }
   }
 
   onUpdateFeed() {
@@ -1505,47 +1496,9 @@ class CardNewScreen extends React.Component {
       <CKEditor
         ref={c => this.refCKEditor = c}
         content={this.state.idea}
+        placeholder={cardMode === CONSTANTS.SHARE_EXTENTION_CARD ? 'Add a note' : 'Let your ideas flow. Type text, paste a link, add an image, video or audio'}
         onChange={value => this.onChangeIdea(value)}
       />
-    )
-
-    return (
-      <TouchableOpacity
-        onLayout={this.onLayoutTextInput.bind(this)}
-        onPress={() => this.textInputIdeaRef.focus()}
-        activeOpacity={1.0}
-      >
-        <TextInput
-          style={[styles.textInputIdea, {
-            position: 'absolute',
-            left: 0,
-            right: 0,
-            top: 0,
-            opacity: 0,
-          }]}
-          autoCorrect={false}
-          multiline={true}
-          underlineColorAndroid='transparent'
-          value={this.state.textByCursor}
-          onContentSizeChange={this.onContentSizeChange.bind(this)}
-        />
-        <TextInput
-          ref={ref => this.textInputIdeaRef = ref}
-          style={styles.textInputIdea}
-          autoCorrect={true}
-          placeholder={cardMode === CONSTANTS.SHARE_EXTENTION_CARD ? 'Add a note' : 'Let your ideas flow. Type text, paste a link, add an image, video or audio'}
-          multiline={true}
-          underlineColorAndroid='transparent'
-          value={this.state.idea}
-          onChangeText={(value) => this.onChangeIdea(value)}
-          onKeyPress={this.onKeyPressIdea.bind(this)}
-          onFocus={() => this.onFocus()}
-          onBlur={() => this.onBlurIdea()}
-          onSelectionChange={this.onSelectionChange.bind(this)}
-          selectionColor={Platform.OS === 'ios' ? COLORS.PURPLE : COLORS.LIGHT_PURPLE}
-          textAlignVertical={'top'}
-        />
-      </TouchableOpacity>
     )
   }
 
@@ -1670,6 +1623,7 @@ class CardNewScreen extends React.Component {
       return (
         <View style={[styles.attachmentButtonsContainer, { paddingHorizontal: 16, marginVertical: 16, paddingBottom: bottomButtonsPadding }]}>
           <CKEditorToolbar
+            isNew={true}
             handleCKEditorToolbar={() => this.handleCKEditorToolbar(false)}
             executeCKEditorCommand={this.executeCKEditorCommand}
           />

@@ -10,7 +10,7 @@ const styles = StyleSheet.create({
   },
   firstToolbarView: {
     flex: 1,
-    paddingHorizontal: 25,
+    paddingRight: 25,
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center'
