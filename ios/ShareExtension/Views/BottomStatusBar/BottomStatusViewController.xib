@@ -31,7 +31,7 @@
                     <rect key="frame" x="18" y="758" width="378" height="72"/>
                     <subviews>
                         <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Saving..." textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="vlR-iw-jBK">
-                            <rect key="frame" x="72" y="25.5" width="234" height="21"/>
+                            <rect key="frame" x="72" y="26" width="234" height="20.5"/>
                             <fontDescription key="fontDescription" type="system" pointSize="17"/>
                             <nil key="textColor"/>
                             <nil key="highlightedColor"/>
@@ -48,8 +48,10 @@
                     <constraints>
                         <constraint firstAttribute="height" constant="72" id="GPv-bO-Dni"/>
                         <constraint firstItem="Xgb-BK-4Db" firstAttribute="leading" secondItem="hbS-WL-nVt" secondAttribute="leading" constant="16" id="Lsg-ZX-MvF"/>
-                        <constraint firstItem="vlR-iw-jBK" firstAttribute="centerX" secondItem="hbS-WL-nVt" secondAttribute="centerX" id="WEX-1v-yFg"/>
+                        <constraint firstItem="vlR-iw-jBK" firstAttribute="centerX" secondItem="hbS-WL-nVt" secondAttribute="centerX" priority="750" id="WEX-1v-yFg"/>
+                        <constraint firstItem="vlR-iw-jBK" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="hbS-WL-nVt" secondAttribute="leading" constant="16" id="YvJ-2J-Aem"/>
                         <constraint firstItem="Xgb-BK-4Db" firstAttribute="top" secondItem="hbS-WL-nVt" secondAttribute="top" constant="16" id="eoQ-Pd-7md"/>
+                        <constraint firstAttribute="trailing" relation="greaterThanOrEqual" secondItem="vlR-iw-jBK" secondAttribute="trailing" constant="16" id="foP-uN-3vp"/>
                         <constraint firstItem="vlR-iw-jBK" firstAttribute="leading" secondItem="Xgb-BK-4Db" secondAttribute="trailing" constant="16" id="s59-Yn-Ymw"/>
                         <constraint firstItem="vlR-iw-jBK" firstAttribute="centerY" secondItem="hbS-WL-nVt" secondAttribute="centerY" id="wXQ-Mk-gdg"/>
                         <constraint firstAttribute="bottom" secondItem="Xgb-BK-4Db" secondAttribute="bottom" constant="16" id="yGq-cO-zUE"/>
