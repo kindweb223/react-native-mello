@@ -25,10 +25,13 @@ class BottomStatusViewController: UIViewController {
   @IBOutlet weak var imageView: FLAnimatedImageView!
   @IBOutlet var labelCenterConstraint: NSLayoutConstraint!
   @IBOutlet var labelLeftConstraint: NSLayoutConstraint!
-  
-  private var assetLoader: AssetLoader? = nil
+  @IBOutlet weak var messageContainerViewCenterConstraint: NSLayoutConstraint!
+    
+    private var assetLoader: AssetLoader? = nil
   private var state: State
   private var flow: Flow?
+  
+  private var startingPositionX: CGFloat?
   
   weak var delegate: BottomStatusViewControllerDelegate?
   
@@ -58,6 +61,8 @@ class BottomStatusViewController: UIViewController {
     imageView.layer.masksToBounds = true
     imageView.contentMode = .scaleAspectFill
     imageView.layer.cornerRadius = 7
+    
+    messageContainerView.isUserInteractionEnabled = true
     
     update(state, animated: false)
   }
@@ -112,7 +117,7 @@ class BottomStatusViewController: UIViewController {
         labelLeftConstraint.isActive = true
         labelCenterConstraint.isActive = false
       }
-      
+
       Timer.scheduledTimer(withTimeInterval: 3, repeats: false) { [weak self] _ in
         self?.dismiss()
       }
@@ -142,6 +147,70 @@ class BottomStatusViewController: UIViewController {
       } else {
         self.delegate?.bottomStatusViewControllerDidDismiss(self)
       }
+    }
+  }
+  
+  override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
+    switch state {
+    case .success, .error:
+      guard let touch = touches.first else { return }
+      let touchLocation = touch.location(in: view)
+      
+      if messageContainerView.frame.contains(touchLocation) {
+        startingPositionX = touchLocation.x
+      }
+    default: return
+    }
+  }
+  
+  override func touchesMoved(_ touches: Set<UITouch>, with event: UIEvent?) {
+    guard let touch = touches.first,
+      let startingPositionX = startingPositionX else { return }
+    let touchLocation = touch.location(in: view)
+    
+    let diff = startingPositionX - touchLocation.x
+    
+
+      self.messageContainerViewCenterConstraint.constant = -diff
+      self.view.layoutIfNeeded()
+  }
+  
+  override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?) {
+    guard let _ = startingPositionX else { return }
+    self.startingPositionX = nil
+    
+    touchesEnded()
+  }
+  
+  override func touchesCancelled(_ touches: Set<UITouch>, with event: UIEvent?) {
+    guard let _ = startingPositionX else { return }
+    self.startingPositionX = nil
+    
+    touchesEnded()
+  }
+  
+  func touchesEnded() {
+    self.view.layoutIfNeeded()
+    
+    if self.messageContainerViewCenterConstraint.constant > 75 {
+      UIView.animate(withDuration: 0.3, delay: 0, options: .curveEaseIn, animations: {
+        self.messageContainerViewCenterConstraint.constant = 600
+        self.view.layoutIfNeeded()
+      }, completion: { _ in
+        self.delegate?.bottomStatusViewControllerDidDismiss(self)
+      })
+    } else if self.messageContainerViewCenterConstraint.constant < -75 {
+      UIView.animate(withDuration: 0.3, delay: 0, options: .curveEaseIn, animations: {
+        self.messageContainerViewCenterConstraint.constant = -600
+        self.view.layoutIfNeeded()
+      }, completion: { _ in
+        self.delegate?.bottomStatusViewControllerDidDismiss(self)
+      })
+    } else {
+      UIView.animate(withDuration: 0.3, delay: 0, options: .curveEaseOut, animations: {
+        self.messageContainerViewCenterConstraint.constant = 0
+        self.view.layoutIfNeeded()
+      }, completion: nil)
     }
   }
 }
