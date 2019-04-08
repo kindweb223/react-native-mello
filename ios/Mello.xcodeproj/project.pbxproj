@@ -45,6 +45,8 @@
 		2D2CBD90DAC84BB8A182DAEB /* libRNThumbnail.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 37CA782AC31D47CCBB55CA40 /* libRNThumbnail.a */; };
 		2DCD954D1E0B4F2C00145EB5 /* MelloTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 00E356F21AD99517003FC87E /* MelloTests.m */; };
 		2DF0FFEE2056DD460020B375 /* libReact.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 3DAD3EA31DF850E9000B6D8A /* libReact.a */; };
+		3930117A225B3F64000649DB /* VideoViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 39301178225B3F64000649DB /* VideoViewController.swift */; };
+		3930117B225B3F64000649DB /* VideoViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 39301179225B3F64000649DB /* VideoViewController.xib */; };
 		396C17D922527E4C001297F6 /* API.swift in Sources */ = {isa = PBXBuildFile; fileRef = 396C17D822527E4C001297F6 /* API.swift */; };
 		396C17DD22527E5D001297F6 /* ParsedURL.swift in Sources */ = {isa = PBXBuildFile; fileRef = 396C17DB22527E5D001297F6 /* ParsedURL.swift */; };
 		396C17DE22527E5D001297F6 /* Flow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 396C17DC22527E5D001297F6 /* Flow.swift */; };
@@ -735,6 +737,8 @@
 		33BD4A274A84484B97C217E8 /* RNFetchBlob.xcodeproj */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = "wrapper.pb-project"; name = RNFetchBlob.xcodeproj; path = "../node_modules/rn-fetch-blob/ios/RNFetchBlob.xcodeproj"; sourceTree = "<group>"; };
 		33EEAF2950654496843997B1 /* LottieReactNative.xcodeproj */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = "wrapper.pb-project"; name = LottieReactNative.xcodeproj; path = "../node_modules/lottie-react-native/src/ios/LottieReactNative.xcodeproj"; sourceTree = "<group>"; };
 		37CA782AC31D47CCBB55CA40 /* libRNThumbnail.a */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = archive.ar; path = libRNThumbnail.a; sourceTree = "<group>"; };
+		39301178225B3F64000649DB /* VideoViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VideoViewController.swift; sourceTree = "<group>"; };
+		39301179225B3F64000649DB /* VideoViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = VideoViewController.xib; sourceTree = "<group>"; };
 		396C17D822527E4C001297F6 /* API.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = API.swift; sourceTree = "<group>"; };
 		396C17DB22527E5D001297F6 /* ParsedURL.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ParsedURL.swift; sourceTree = "<group>"; };
 		396C17DC22527E5D001297F6 /* Flow.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Flow.swift; sourceTree = "<group>"; };
@@ -1120,6 +1124,15 @@
 			name = Products;
 			sourceTree = "<group>";
 		};
+		3930112F225B3F3B000649DB /* Video */ = {
+			isa = PBXGroup;
+			children = (
+				39301178225B3F64000649DB /* VideoViewController.swift */,
+				39301179225B3F64000649DB /* VideoViewController.xib */,
+			);
+			path = Video;
+			sourceTree = "<group>";
+		};
 		395FDA06224A385B00ED92B1 /* Products */ = {
 			isa = PBXGroup;
 			children = (
@@ -1207,6 +1220,7 @@
 		396C17FB22527F0B001297F6 /* Views */ = {
 			isa = PBXGroup;
 			children = (
+				3930112F225B3F3B000649DB /* Video */,
 				396C180322527F68001297F6 /* BottomStatusBar */,
 				396C180222527F60001297F6 /* Main */,
 				396C180122527F4B001297F6 /* LocalImage */,
@@ -2665,6 +2679,7 @@
 				396C18382252801B001297F6 /* NewFlowViewController.xib in Resources */,
 				396C181422527FA6001297F6 /* LinkView.xib in Resources */,
 				396C182222527FCB001297F6 /* AssetCell.xib in Resources */,
+				3930117B225B3F64000649DB /* VideoViewController.xib in Resources */,
 				396C183122528007001297F6 /* FlowCell.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -2808,6 +2823,7 @@
 			files = (
 				396C182522527FD1001297F6 /* ImagePickerViewController.swift in Sources */,
 				396C17F322527ECF001297F6 /* UIImageCompression.swift in Sources */,
+				3930117A225B3F64000649DB /* VideoViewController.swift in Sources */,
 				396C194F225285A1001297F6 /* FLAnimatedImage.m in Sources */,
 				396C182122527FCB001297F6 /* AssetCell.swift in Sources */,
 				396C180A22527F86001297F6 /* MainViewController.swift in Sources */,
