@@ -62,11 +62,12 @@
     .then(editor => {
       window.CKEditor = editor;
 
-      editor.model.document.on( 'change', function() {
+      editor.model.document.on('change', function() {
+        var value = document.getElementById('editor').textContent;
         var height = document.getElementById('editor').offsetHeight;
-
-        window.postMessage(height + '>>>!hunt!<<<' + editor.getData(), '*')
-        // window.ReactNativeWebView.postMessage(editor.getData());
+        if (value.length > 0) {
+          window.postMessage(height + '>>>!hunt!<<<' + editor.getData(), '*')
+        }
       });
     })
     .catch(error => {

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { document } from 'react';
 import {
   Alert,
   StyleSheet,
@@ -8,8 +8,8 @@ import {
   // WebView
 } from 'react-native';
 import _ from 'lodash';
-
 import { WebView } from 'react-native-webview'
+
 var editor = require('./ckeditor.html')
 
 const patchPostMessageJsCode = `(${String(function() {
@@ -22,8 +22,14 @@ class CKEditor extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      webVewHeight: 101
+      webVewHeight: 101,
+      placeholder: ''
     }
+  }
+
+  componentWillMount() {
+    const { placeholder, initHeight } = this.props;
+    this.setState({ placeholder, webVewHeight: initHeight })
   }
 
   postMessage = payload => {
@@ -35,11 +41,12 @@ class CKEditor extends React.Component {
 
   handleMessage = event => {
     try {
+      console.log('aa: ',  event.nativeEvent)
       const msgData = event.nativeEvent.data;
       const webVewHeight = parseInt(msgData.split('>>>!hunt!<<<')[0]) + 20;
       const content = msgData.split('>>>!hunt!<<<')[1];
-      this.setState({ webVewHeight });
 
+      this.setState({ webVewHeight });
       this.props.onChange(content);
     } catch (err) {
       console.warn(err);
@@ -47,7 +54,7 @@ class CKEditor extends React.Component {
     }
   };
 
-  onWebViewLoaded = () => {
+  onWebViewLoaded = async () => {
     data = 'placeholder: ' + this.props.content;
     this.postMessage(data);
   };
@@ -66,8 +73,8 @@ class CKEditor extends React.Component {
           injectedJavaScript={patchPostMessageJsCode}
           onLoadEnd={this.onWebViewLoaded}
           onMessage={this.handleMessage}
-          // source={Platform.OS === 'ios' ? editor : { uri: 'file:///android_asset/ckeditor/index.html' }}
-          source={{ uri: Platform.OS === 'ios' ? 'https://demos.solvers.io/solvers/melloapp-landing/ckeditor_ios.html' : 'https://demos.solvers.io/solvers/melloapp-landing/ckeditor_android.html' }}
+          source={Platform.OS === 'ios' ? editor : { uri: 'file:///android_asset/ckeditor/index.html' }}
+          // source={{ uri: Platform.OS === 'ios' ? 'https://demos.solvers.io/solvers/melloapp-landing/ckeditor_ios.html' : 'https://demos.solvers.io/solvers/melloapp-landing/ckeditor_android.html' }}
           style={styles.webviewStyle}
         />
       </View>
@@ -87,7 +94,9 @@ CKEditor.defaultProps = {
   saveFormDataDisabled: true,
   mixedContentMode: "always",
   scrollEnabled: true,
-  javascriptEnable: true
+  javascriptEnable: true,
+  placeholder: 'Add a note',
+  initHeight: 101
 }
 
 const styles = StyleSheet.create({

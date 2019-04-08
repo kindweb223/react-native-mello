@@ -64,6 +64,12 @@ const styles = StyleSheet.create({
   },
   loadingIcon: {
     marginRight: 10
+  },
+  footerContainer: {
+    width: '100%',
+    backgroundColor: '#fff',
+    paddingHorizontal: CONSTANTS.PADDING,
+    height: 55
   }
 })
 
