@@ -30,8 +30,8 @@ class CKEditorToolbar extends React.Component {
 
   setFontSize = () => {
     if (this.state.fontSize === 'normal') {
-      this.setState({ fontSize: 'small' })
-      this.props.executeCKEditorCommand('fontSize_small')
+      this.setState({ fontSize: 'big' })
+      this.props.executeCKEditorCommand('fontSize_big')
     } else {
       this.setState({ fontSize: 'normal' })
       this.props.executeCKEditorCommand('fontSize_normal')
