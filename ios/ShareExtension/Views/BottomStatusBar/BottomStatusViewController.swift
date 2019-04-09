@@ -72,7 +72,7 @@ class BottomStatusViewController: UIViewController {
     case .loading, .step(_, _):
       return
     default:
-      dismiss(didTap: true)
+      dismiss(didTap: messageContainerView.frame.contains(sender.location(in: view)))
     }
   }
   
@@ -122,7 +122,7 @@ class BottomStatusViewController: UIViewController {
         self?.dismiss()
       }
     case .error:
-      titleLabel.text = "Error"
+      titleLabel.text = "Oops! Something went wrong"
       labelLeftConstraint.isActive = false
       labelCenterConstraint.isActive = true
       

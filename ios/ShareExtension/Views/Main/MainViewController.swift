@@ -469,18 +469,19 @@ extension MainViewController: LocalImageViewControllerDelegate {
         return
       }
       
-      self.addImagesToTempCard(images, cardId: cardId, forFlow: flow, stepper: stepper, completion: {
+      self.addImagesToTempCard(images, cardId: cardId, forFlow: flow, stepper: stepper, completion: { hadErrors in
         API.shared.publishCard(cardId, text: text, flowId: flow.id, completion: {
           API.shared.setDefaultFlow(flow: flow)
-          completion(true)
+          completion(!hadErrors)
         })
       })
     })
   }
   
-  func addImagesToTempCard(_ images: [UIImage], cardId: String, forFlow flow: Flow, stepper: @escaping Stepper, completion: @escaping () -> Void) {
+  func addImagesToTempCard(_ images: [UIImage], cardId: String, forFlow flow: Flow, stepper: @escaping Stepper, completion: @escaping (_ hadErrors: Bool) -> Void) {
     let queue = DispatchGroup()
     var loadingCount = 1
+    var hadErrors: Bool = false
     for image in images {
       queue.enter()
       API.shared.getTempFileUrl(forFlow: flow, cardId: cardId) { tempFileUrl in
@@ -490,16 +491,27 @@ extension MainViewController: LocalImageViewControllerDelegate {
           queue.leave()
           return
         }
-        API.shared.saveImage(image, inURL: tempFileUrl.uploadUrl, completion: {
+        API.shared.saveImage(image, inURL: tempFileUrl.uploadUrl, completion: { success in
+          guard success else {
+            stepper(loadingCount, images.count)
+            loadingCount += 1
+            hadErrors = true
+            queue.leave()
+            return
+          }
           API.shared.addFile("image\(images.index(of: image)!)", toCardId: cardId, mimeType: "image/png", fileType: .media, tempFileUrl: tempFileUrl, size: image.size, thumbnail: nil, completion: { fileId in
             guard let fileId = fileId else {
               stepper(loadingCount, images.count)
               loadingCount += 1
+              hadErrors = true
               queue.leave()
               return
             }
             if images.index(of: image)! == 0 {
-              API.shared.setCoverImage(forCardId: cardId, fileId: fileId, completion: {
+              API.shared.setCoverImage(forCardId: cardId, fileId: fileId, completion: { success in
+                if !success {
+                  hadErrors = true
+                }
                 stepper(loadingCount, images.count)
                 loadingCount += 1
                 queue.leave()
@@ -515,7 +527,7 @@ extension MainViewController: LocalImageViewControllerDelegate {
     }
     queue.resume()
     queue.notify(queue: .main) {
-      completion()
+      completion(hadErrors)
     }
   }
 }
@@ -599,7 +611,11 @@ extension MainViewController: TextViewControllerDelegate {
           }
         }
         
-        API.shared.saveFile(filePath, inURL: tempFileUrl.uploadUrl, completion: {
+        API.shared.saveFile(filePath, inURL: tempFileUrl.uploadUrl, completion: { success in
+          if !success {
+            completion(nil)
+            return
+          }
           API.shared.addFile(filePath.lastPathComponent, toCardId: cardId, mimeType: filePath.mimeType(),
                              fileType: fileTypeForMimeType(filePath.mimeType()), tempFileUrl: tempFileUrl,
                              size: nil, thumbnail: thumbnail, completion: { fileId in
