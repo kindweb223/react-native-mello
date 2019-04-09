@@ -85,6 +85,7 @@
                         <outlet property="bottomButtonTopConstraint" destination="bZq-v7-ANj" id="vOs-zu-a5M"/>
                         <outlet property="containerView" destination="H0S-4J-lYY" id="uiB-Ds-Gb3"/>
                         <outlet property="containerViewCenterConstraint" destination="I19-uV-N5B" id="lOM-lt-ucQ"/>
+                        <outlet property="containerViewHeightConstraint" destination="Wr9-Gm-KSr" id="LQs-2V-SX9"/>
                         <outlet property="navigationBarContainerView" destination="KoG-35-1vW" id="NR4-qS-fie"/>
                         <outletCollection property="ghostViews" destination="bpa-7g-SWP" collectionClass="NSMutableArray" id="0ZX-4A-YAV"/>
                         <outletCollection property="ghostViews" destination="LlE-KO-VAD" collectionClass="NSMutableArray" id="XNe-si-g8V"/>

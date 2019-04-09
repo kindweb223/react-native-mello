@@ -12,12 +12,19 @@ class KeyboardHelper {
   
   private var keyboardHeight: CGFloat? = nil
   let viewController: UIViewController
+  let centerConstraint: NSLayoutConstraint
   let heightConstraint: NSLayoutConstraint
-  private var didShow = false
   
-  init(viewController: UIViewController, heightConstraint: NSLayoutConstraint) {
+  private var didShow = false
+  private var normalHeight: CGFloat = UIScreen.main.bounds.height / 4 * 3
+  
+  init(viewController: UIViewController, centerConstraint: NSLayoutConstraint, heightConstraint: NSLayoutConstraint) {
     self.viewController = viewController
+    self.centerConstraint = centerConstraint
     self.heightConstraint = heightConstraint
+    
+    self.heightConstraint.constant = normalHeight
+    self.viewController.view.layoutIfNeeded()
     
     NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillShow(_:)), name: UIResponder.keyboardWillShowNotification, object: nil)
     NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillDismiss(_:)), name: UIResponder.keyboardWillHideNotification, object: nil)
@@ -45,7 +52,9 @@ class KeyboardHelper {
     
     viewController.view.layoutIfNeeded()
     UIView.animate(withDuration: 0.35) {
-      self.heightConstraint.constant -= (height / 2)
+      self.centerConstraint.constant -= (height / 2)
+      let safeArea = (UIApplication.shared.keyWindow?.safeAreaInsets.top ?? 0) + (UIApplication.shared.keyWindow?.safeAreaInsets.bottom ?? 0)
+      self.heightConstraint.constant = UIScreen.main.bounds.height - height - 32 - safeArea
       self.viewController.view.layoutIfNeeded()
     }
   }
@@ -58,7 +67,8 @@ class KeyboardHelper {
     
     viewController.view.layoutIfNeeded()
     UIView.animate(withDuration: 0.35) {
-      self.heightConstraint.constant += ((self.keyboardHeight ?? 300) / 2)
+      self.centerConstraint.constant += ((self.keyboardHeight ?? 300) / 2)
+      self.heightConstraint.constant = self.normalHeight
       self.viewController.view.layoutIfNeeded()
     }
   }
