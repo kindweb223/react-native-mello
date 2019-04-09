@@ -62,7 +62,6 @@ class VideoViewController: UIViewController {
   override func viewWillAppear(_ animated: Bool) {
     super.viewWillAppear(animated)
     
-    updateFooterView(selectedFlow: nil)
   }
   
   func loadImage() {

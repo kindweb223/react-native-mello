@@ -72,12 +72,6 @@ class TextViewController: UIViewController {
         
         textViewDidChange(textView)
     }
-    
-    override func viewWillAppear(_ animated: Bool) {
-        super.viewWillAppear(animated)
-        
-        updateFooterView(selectedFlow: nil)
-    }
 }
 
 extension TextViewController: UITextViewDelegate {

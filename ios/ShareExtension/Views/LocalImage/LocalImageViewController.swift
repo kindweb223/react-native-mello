@@ -69,7 +69,6 @@ class LocalImageViewController: UIViewController {
   override func viewWillAppear(_ animated: Bool) {
     super.viewWillAppear(animated)
     
-    updateFooterView(selectedFlow: nil)
   }
   
   override func viewDidAppear(_ animated: Bool) {
