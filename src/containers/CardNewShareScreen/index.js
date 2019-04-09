@@ -190,9 +190,8 @@ class CardNewShareScreen extends React.Component {
       this.setState({cachedFeedList: nextProps.feedo.feedoList, createEnabled: true})
 
       try {
-        const strFeedoInfo = await COMMON_FUNC.getLastFeed();
-        if (strFeedoInfo) {
-          const feedoInfo = JSON.parse(strFeedoInfo);
+        const feedoInfo = await COMMON_FUNC.getLastFeed();
+        if (feedoInfo) {
           if (COMMON_FUNC.useLastFeed(feedoInfo)) {
             const currentFeed = _.find(nextProps.feedo.feedoList, feed => feed.id === feedoInfo.feedoId)
             if (currentFeed) {
@@ -271,9 +270,8 @@ class CardNewShareScreen extends React.Component {
     });
 
     try {
-      const strFeedoInfo = await COMMON_FUNC.getLastFeed();
-      if (strFeedoInfo) {
-        const feedoInfo = JSON.parse(strFeedoInfo);
+      const feedoInfo = await COMMON_FUNC.getLastFeed();
+      if (feedoInfo) {
         if (COMMON_FUNC.useLastFeed(feedoInfo)) {
           this.props.setCurrentFeed(feedoInfo.currentFeed);
           this.draftFeedo = feedoInfo.currentFeed
