@@ -100,10 +100,8 @@ class CardEditScreen extends React.Component {
     this.setState({ idea });
   }
 
-  onKeyPressIdea(event) {
-    if (event.nativeEvent.key === ' ' || event.nativeEvent.key === ',' || event.nativeEvent.key === 'Enter') {
-      this.props.checkUrls();
-    }
+  onKeyPressIdea() {
+    this.props.checkUrls();
   }
 
   onFocus = () => {
@@ -178,6 +176,7 @@ class CardEditScreen extends React.Component {
         content={idea}
         initHeight={CONSTANTS.SCREEN_HEIGHT - 120}
         onChange={value => this.onChangeIdea(value)}
+        handleKeydown={() => this.onKeyPressIdea()}
       />
     )
 

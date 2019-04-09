@@ -786,6 +786,7 @@ class CardDetailScreen extends React.Component {
     //   return true;
     // }
     const allUrls = this.state.idea && this.state.idea.match(/(http(s)?:\/\/.)?(www\.)?[-a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,6}\b([-a-zA-Z0-9@:%_\+.~#?&//=]*)/gi);
+
     if (allUrls) {
       let newUrls = [];
       const {
