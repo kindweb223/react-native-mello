@@ -173,6 +173,19 @@ const removeDuplicatedItems = (array) => {
   return array
 }
 
+const htmlToPlainText = (html = '') => {
+  let myHtml = html
+
+  myHtml = myHtml
+    .replace(/<br\/?>/gi, '\n')
+    .replace(/&nbsp;/gi, ' ')
+    .replace(/<h2.*?>(.*?)<\/h2>/gi, '\n$1\n')
+    .replace(/<p.*?>(.*?)<\/p>/gi, '\n$1\n')
+    .replace(/<(?:.|\s)*?>/g, '')
+
+  return myHtml
+}
+
 export {
   checkUserIsInvitee,
   isFeedOwner,
@@ -194,5 +207,6 @@ export {
   checkVideoCoverImage,
   isFeedOwnerOnlyInvitee,
   getCardViewMode,
-  removeDuplicatedItems
+  removeDuplicatedItems,
+  htmlToPlainText
 }

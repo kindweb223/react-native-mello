@@ -33,6 +33,7 @@ import Permissions from 'react-native-permissions'
 import * as mime from 'react-native-mime-types'
 import GestureRecognizer from 'react-native-swipe-gestures'
 import { NetworkConsumer } from 'react-native-offline'
+var striptags = require('striptags')
 import Masonry from '../../components/MasonryComponent'
 import rnTextSize from 'react-native-text-size'
 import MasonryList from '../../components/MasonryComponent'
@@ -538,8 +539,9 @@ class FeedDetailScreen extends React.Component {
         const idea = ideas[index]
         const cardWidth = (CONSTANTS.SCREEN_SUB_WIDTH - 16) / 2
 
+        const text = striptags(idea.idea)
         const textSize = await rnTextSize.measure({
-          text: idea.idea,
+          text: text,
           width: cardWidth - 16,
           ...fontSpecs
         })

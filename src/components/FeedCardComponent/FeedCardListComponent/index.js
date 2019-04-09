@@ -8,6 +8,8 @@ import { connect } from 'react-redux'
 
 import Entypo from 'react-native-vector-icons/Entypo'
 import _ from 'lodash'
+import HTML from 'react-native-render-html'
+var striptags = require('striptags')
 
 import { getDurationFromNow } from '../../../service/dateUtils'
 import styles from './styles'
@@ -39,7 +41,6 @@ class FeedCardListComponent extends React.Component {
     }
 
     const viewMode = COMMON_FUNC.getCardViewMode(feedo.currentFeed, idea)
-    console.log('IDEA: ', idea)
 
     return (
       <View style={[styles.container, longSelected && styles.selected, longHold && viewMode === CONSTANTS.CARD_VIEW && { opacity: 0.4 }]}>
@@ -70,13 +71,19 @@ class FeedCardListComponent extends React.Component {
                 <Autolink
                   style={styles.title}
                   linkStyle={styles.linkStyle}
-                  text={idea.idea}
+                  text={striptags(idea.idea)}
                   numberOfLines={2}
                   ellipsizeMode="tail"
                   onPress={() => longHold ? {} : this.props.onLinkPress()}
                   onLongPress={() => longHold ? {} : this.props.onLinkLongPress()}
                   suppressHighlighting={true}
                 />
+                {/* <HTML
+                  html={idea.idea}
+                  style={styles.title}
+                  classesStyles={{ 'text-big': { fontSize: 20 } }}
+                  onLinkPress={(evt, href) => this.onPressLink(href)}
+                /> */}
               </View>
             )}
           </View>
