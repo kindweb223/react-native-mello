@@ -41,6 +41,7 @@ import SafariView from "react-native-safari-view";
 import SharedGroupPreferences from 'react-native-shared-group-preferences';
 import * as Animatable from 'react-native-animatable';
 import { NetworkConsumer } from 'react-native-offline'
+import HTML from 'react-native-render-html'
 
 import { COMMENT_FEATURE } from '../../service/api'
 import COMMON_STYLES from '../../themes/styles'
@@ -1481,17 +1482,22 @@ class CardDetailScreen extends React.Component {
             animation={this.state.fadeInUpAnimation}
           >
             {!this.state.idea && viewMode === CONSTANTS.CARD_EDIT
-              ?
-              <TextInput
-                style={styles.textInputIdea}
-                multiline={true}
-                pointerEvents="none" 
-                placeholder={'Add a note'}/>
-              :
-              <Autolink
-                style={styles.textInputIdea}
-                text={this.state.idea}
-                onPress={(url, match) => this.onPressLink(url)}/>
+              ? <TextInput
+                  style={styles.textInputIdea}
+                  multiline={true}
+                  pointerEvents="none" 
+                  placeholder={'Add a note'}
+                />
+              : <HTML
+                  html={this.state.idea}
+                  containerStyle={styles.textHtmlIdea}
+                  classesStyles={{ 'text-big': { fontSize: 20 } }}
+                  onLinkPress={(evt, href) => this.onPressLink(href)}
+                />
+              // <Autolink
+              //   style={styles.textInputIdea}
+              //   text={this.state.idea}
+              //   onPress={(url, match) => this.onPressLink(url)}/>
             }
           </Animatable.View>
         </Animated.View>

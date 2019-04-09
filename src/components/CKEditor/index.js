@@ -41,7 +41,7 @@ class CKEditor extends React.Component {
 
   handleMessage = event => {
     try {
-      console.log('DATA: ',  event.nativeEvent.data)
+      // console.log('CKEDITR_DATA: ',  event.nativeEvent.data)
       const msgData = event.nativeEvent.data;
       const keyCode = msgData.split('>>>!hunt!<<<')[0];
 
@@ -52,7 +52,6 @@ class CKEditor extends React.Component {
         this.setState({ webVewHeight });
         this.props.onChange(content);
       } else {
-        console.log('keyCODE: ', keyCode)
         this.props.handleKeydown();
       }
     } catch (err) {
