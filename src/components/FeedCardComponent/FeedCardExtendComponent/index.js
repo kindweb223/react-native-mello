@@ -8,7 +8,8 @@ import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 
 import _ from 'lodash'
-
+import HTML from 'react-native-render-html'
+var striptags = require('striptags')
 import Autolink from 'react-native-autolink';
 
 import styles from './styles'
@@ -73,10 +74,16 @@ class FeedCardExtendComponent extends React.Component {
 
               {_.has(idea, 'idea') && idea.idea.length !== null && idea.idea.length > 0 && (
                 <View style={styles.subView}>
+                  {/* <HTML
+                    html={idea.idea}
+                    style={styles.title}
+                    classesStyles={{ 'text-big': { fontSize: 20 } }}
+                    onLinkPress={(evt, href) => this.onPressLink(href)}
+                  /> */}
                   <Autolink
                     style={styles.title}
                     linkStyle={styles.linkStyle}
-                    text={idea.idea}
+                    text={striptags(idea.idea)}
                     numberOfLines={hasCoverImage ? 4 : 10}
                     ellipsizeMode="tail"
                     onPress={() => longHold ? {} : this.props.onLinkPress()}
