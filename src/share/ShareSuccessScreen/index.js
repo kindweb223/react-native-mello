@@ -134,8 +134,7 @@ class ShareSuccessScreen extends React.Component {
           ShareExtension.goToMainApp(SCHEME + `flow/${this.props.feedo.currentFeed.id}`);
           ShareExtension.close();
         }
-        else
-        {
+        else {
           const data = {
             id: this.props.feedo.currentFeed.id
           }
@@ -153,7 +152,8 @@ class ShareSuccessScreen extends React.Component {
             Actions.LoginScreen()
           }
         }
-      } else {
+      } 
+      else {
         if (Platform.OS === 'ios')
           ShareExtension.close();
         else {
