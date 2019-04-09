@@ -1310,7 +1310,7 @@ export default function feedo(state = initialState, action = {}) {
       const activityGroupId = action.payload
       let { activityFeedList, activityData } = state
 
-      activityFeedList = activityFeedList.map(item => {        
+      activityFeedList = activityFeedList.map(item => {
         if (item.id === activityGroupId) {
           item.read = true
         }
@@ -1327,8 +1327,10 @@ export default function feedo(state = initialState, action = {}) {
       }
     }
     case types.READ_ACTIVITY_GROUP_REJECTED: {
+      const activityGroupId = action.payload
       return {
         ...state,
+        activeActivityGroupId: activityGroupId,
         loading: types.READ_ACTIVITY_GROUP_REJECTED,
         error: action.error.response,
       }
@@ -1381,14 +1383,21 @@ export default function feedo(state = initialState, action = {}) {
       }
     case types.DEL_ACTIVITY_FEED_FULFILLED: {
       const activityId = action.payload
-      const { activityFeedList, activityData } = state
+      let { activityFeedList, activeActivityGroupId } = state
 
-      const restActivityFeedList = filter(activityFeedList, feed => feed.id !== activityId)
+      activityFeedList = activityFeedList.map(item => {
+        if (item.id === activeActivityGroupId) {
+          let activities = item.activities
+          activities = filter(activities, activity => activity.id !== activityId)
+          item.activities = activities
+        }
+        return item
+      })
 
       return {
         ...state,
         loading: types.DEL_ACTIVITY_FEED_FULFILLED,
-        activityFeedList: restActivityFeedList
+        activityFeedList
       }
     }
     case types.DEL_ACTIVITY_FEED_REJECTED: {
