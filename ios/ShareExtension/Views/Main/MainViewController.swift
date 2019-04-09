@@ -18,6 +18,7 @@ class MainViewController: UIViewController {
   @IBOutlet weak var navigationBarContainerView: UIView!
   @IBOutlet var ghostViews: [UIView]!
   
+  @IBOutlet weak var containerViewHeightConstraint: NSLayoutConstraint!
   @IBOutlet weak var bottomButtonTopConstraint: NSLayoutConstraint!
   @IBOutlet weak var bottomButton: UIButton!
   
@@ -49,7 +50,7 @@ class MainViewController: UIViewController {
     
     API.shared.getFlows { flows in }
     
-    keyboardHelper = KeyboardHelper(viewController: self, heightConstraint: containerViewCenterConstraint)
+    keyboardHelper = KeyboardHelper(viewController: self, centerConstraint: containerViewCenterConstraint, heightConstraint: containerViewHeightConstraint)
   }
   
   override func viewWillAppear(_ animated: Bool) {
@@ -602,7 +603,7 @@ extension MainViewController: TextViewControllerDelegate {
           API.shared.addFile(filePath.lastPathComponent, toCardId: cardId, mimeType: filePath.mimeType(),
                              fileType: fileTypeForMimeType(filePath.mimeType()), tempFileUrl: tempFileUrl,
                              size: nil, thumbnail: thumbnail, completion: { fileId in
-            completion(cardId)
+                              completion(cardId)
           })
         })
       })

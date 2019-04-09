@@ -3368,6 +3368,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 936747101172421F417588E3 /* Pods-ShareExtension.debug.xcconfig */;
 			buildSettings = {
+				APPLICATION_EXTENSION_API_ONLY = NO;
 				CLANG_ANALYZER_NONNULL = YES;
 				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
@@ -3414,6 +3415,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = D69B4B27A49D922CD8229D42 /* Pods-ShareExtension.release.xcconfig */;
 			buildSettings = {
+				APPLICATION_EXTENSION_API_ONLY = NO;
 				CLANG_ANALYZER_NONNULL = YES;
 				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
