@@ -864,6 +864,7 @@ class CardNewScreen extends React.Component {
     //   return true;
     // }
     const allUrls = this.state.idea && this.state.idea.match(/(http(s)?:\/\/.)?(www\.)?[-a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,6}\b([-a-zA-Z0-9@:%_\+.~#?&//=]*)/gi);
+
     if (allUrls) {
       let newUrls = [];
       const {
@@ -1294,10 +1295,8 @@ class CardNewScreen extends React.Component {
     });
   }
 
-  onKeyPressIdea(event) {
-    if (event.nativeEvent.key === ' ' || event.nativeEvent.key === ',' || event.nativeEvent.key === 'Enter') {
-      this.checkUrls();
-    }
+  onKeyPressIdea() {
+    this.checkUrls();
   }
 
   onFocus() {
@@ -1499,6 +1498,7 @@ class CardNewScreen extends React.Component {
           content={this.state.idea}
           placeholder={cardMode === CONSTANTS.SHARE_EXTENTION_CARD ? 'Add a note' : 'Let your ideas flow. Type text, paste a link, add an image, video or audio'}
           onChange={value => this.onChangeIdea(value)}
+          handleKeydown={() => this.onKeyPressIdea()}
         />
       </View>
     )

@@ -43,11 +43,18 @@ class CKEditor extends React.Component {
     try {
       console.log('DATA: ',  event.nativeEvent.data)
       const msgData = event.nativeEvent.data;
-      const webVewHeight = parseInt(msgData.split('>>>!hunt!<<<')[0]) + 20;
-      const content = msgData.split('>>>!hunt!<<<')[1];
+      const keyCode = msgData.split('>>>!hunt!<<<')[0];
 
-      this.setState({ webVewHeight });
-      this.props.onChange(content);
+      if (keyCode === 'NO_KEYCODE') {
+        const webVewHeight = parseInt(msgData.split('>>>!hunt!<<<')[1]) + 20;
+        const content = msgData.split('>>>!hunt!<<<')[2];
+
+        this.setState({ webVewHeight });
+        this.props.onChange(content);
+      } else {
+        console.log('keyCODE: ', keyCode)
+        this.props.handleKeydown();
+      }
     } catch (err) {
       console.warn(err);
       return;
@@ -83,6 +90,7 @@ class CKEditor extends React.Component {
 }
 
 CKEditor.defaultProps = {
+  scrollEnabled: false,
   startInLoadingState: true,
   useWebKit: true,
   hideKeyboardAccessoryView: false,
@@ -93,7 +101,6 @@ CKEditor.defaultProps = {
   incognito: true,
   saveFormDataDisabled: true,
   mixedContentMode: "always",
-  scrollEnabled: true,
   javascriptEnable: true,
   placeholder: 'Add a note',
   initHeight: 101

@@ -66,7 +66,13 @@
         var value = document.getElementById('editor').textContent;
         var height = document.getElementById('editor').offsetHeight;
         if (value.length > 0) {
-          window.postMessage(height + '>>>!hunt!<<<' + editor.getData(), '*')
+          window.postMessage('NO_KEYCODE>>>!hunt!<<<' + height + '>>>!hunt!<<<' + editor.getData(), '*')
+        }
+      });
+
+      editor.editing.view.document.on('keydown', (data, evt) => {
+        if (evt.keyCode === 13 || evt.keyCode === 32 || evt.keyCode === 188) {
+          window.postMessage(evt.keyCode + '>>>!hunt!<<<', '*')
         }
       });
     })
