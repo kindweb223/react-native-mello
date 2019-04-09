@@ -92,6 +92,7 @@ class API {
   private func perform(_ request: AuthenticatedRequest, completion: @escaping (_ json: JSON?, _ error: Error?) -> Void) {
     URLSession.shared.dataTask(with: request) { [weak self] data, response, error in
       guard let data = data else {
+        completion(nil, nil)
         return
       }
       
@@ -126,7 +127,7 @@ class API {
           completion(nil, nil)
         }
       }
-      }.resume()
+    }.resume()
   }
   
   func parseURL(_ url: URL, completion: @escaping (_ parsedURL: ParsedURL?) -> Void) {
@@ -138,6 +139,7 @@ class API {
         guard let data = data,
           let jsonOptional = try? JSONSerialization.jsonObject(with: data, options: JSONSerialization.ReadingOptions.allowFragments),
           let json = jsonOptional as? [String: Any] else {
+            completion(nil)
             return
         }
         
@@ -167,6 +169,7 @@ class API {
       }
       print(token)
       guard let data = data else {
+        completion(false)
         return
       }
       
@@ -175,7 +178,7 @@ class API {
       }
       
       completion(true)
-      }.resume()
+    }.resume()
   }
   
   // MARK: Flow
@@ -323,7 +326,7 @@ class API {
     }
   }
   
-  func saveFile(_ filePath: URL, inURL url: URL, completion: @escaping () -> Void) {
+  func saveFile(_ filePath: URL, inURL url: URL, completion: @escaping (_ success: Bool) -> Void) {
     do {
       let fileData = try Data(contentsOf: filePath)
       
@@ -334,18 +337,20 @@ class API {
       request.setValue("\(fileData.count)", forHTTPHeaderField: "Content-Length")
       
       URLSession.shared.dataTask(with: request) { data, response, error in
-        completion()
-        }.resume()
-      
-    } catch let _ {
-      //TODO: @Aram handle error
-      completion()
+        if let _ = error {
+          completion(false)
+        } else if let httpResponse = response as? HTTPURLResponse {
+          completion(httpResponse.statusCode >= 200 && httpResponse.statusCode < 300)
+        } else {
+          completion(false)
+        }
+      }.resume()
+    } catch {
+      completion(false)
     }
-    
-    
   }
   
-  func saveImage(_ image: UIImage, inURL url: URL, completion: @escaping () -> Void) {
+  func saveImage(_ image: UIImage, inURL url: URL, completion: @escaping (_ success: Bool) -> Void) {
     var request = URLRequest(url: url)
     request.httpMethod = "PUT"
     
@@ -355,8 +360,14 @@ class API {
     request.setValue("\(imageData.count)", forHTTPHeaderField: "Content-Length")
     
     URLSession.shared.dataTask(with: request) { data, response, error in
-      completion()
-      }.resume()
+      if let _ = error {
+        completion(false)
+      } else if let httpResponse = response as? HTTPURLResponse {
+        completion(httpResponse.statusCode >= 200 && httpResponse.statusCode < 300)
+      } else {
+        completion(false)
+      }
+    }.resume()
   }
   
   enum FileType: String {
@@ -388,13 +399,17 @@ class API {
     }
   }
   
-  func setCoverImage(forCardId cardId: String, fileId: String, completion: @escaping () -> Void) {
+  func setCoverImage(forCardId cardId: String, fileId: String, completion: @escaping (_ success: Bool) -> Void) {
     let bodyDict = ["ideaId": cardId,
                     "fileId": fileId]
     let dataBody = try? JSONSerialization.data(withJSONObject: bodyDict, options: .prettyPrinted)
     let request = authenticatedRequest(withPath: .setCoverImage, replacements: ["{ideaId}": cardId, "{fileId}": fileId], method: .put, body: dataBody)
     perform(request) { json, error in
-      completion()
+      if let _ = error {
+        completion(false)
+      } else {
+        completion(true)
+      }
     }
   }
   
