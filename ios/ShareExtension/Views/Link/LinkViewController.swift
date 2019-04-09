@@ -95,7 +95,6 @@ class LinkViewController: UIViewController {
     super.viewWillAppear(animated)
     
     updateTextView(parsedURL.description)
-    updateFooterView(selectedFlow: nil)
   }
   
   private func updateImages(_ assets: [AssetLoader]) {

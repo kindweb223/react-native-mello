@@ -5,6 +5,7 @@
 	<key>com.apple.security.application-groups</key>
 	<array>
 		<string>group.hunt.mobile.token</string>
+		<string>group.hunt.mobile.last.feedo</string>
 	</array>
 </dict>
 </plist>
