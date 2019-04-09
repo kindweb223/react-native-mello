@@ -201,7 +201,7 @@ const useLastFeed = (feed) => {
   //   return false
   // }
 
-  return 
+  return true
 }
 
 const removeDuplicatedItems = (array) => {

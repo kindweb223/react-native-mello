@@ -745,7 +745,7 @@ class CardNewScreen extends React.Component {
     Animated.timing(
       this.animatedKeyboardHeight, {
         toValue: e.endCoordinates.height,
-        duration: Platform.OS === 'android' && (this.props.isClipboard === true || this.props.cardMode === CONSTANTS.SHARE_EXTENTION_CARD) ? 30 : e.duration,
+        duration: Platform.OS === 'android' && (this.props.isClipboard === true || this.props.cardMode === CONSTANTS.SHARE_EXTENTION_CARD) ? CONSTANTS.ANIMATEION_MILLI_SECONDS : e.duration,
       }
     ).start(() => {
       if (this.isDisabledKeyboard === true || !this.textInputIdeaRef) {
@@ -765,7 +765,7 @@ class CardNewScreen extends React.Component {
     Animated.timing(
       this.animatedKeyboardHeight, {
         toValue: 0,
-        duration: Platform.OS === 'android' && (this.props.isClipboard === true || this.props.cardMode === CONSTANTS.SHARE_EXTENTION_CARD) ? 30 : e.duration,
+        duration: Platform.OS === 'android' && (this.props.isClipboard === true || this.props.cardMode === CONSTANTS.SHARE_EXTENTION_CARD) ? CONSTANTS.ANIMATEION_MILLI_SECONDS : e.duration,
       }
     ).start();
   }

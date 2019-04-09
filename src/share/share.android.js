@@ -39,8 +39,7 @@ export default class Share extends Component {
     try {
       let { type, value } = await ShareExtension.data();
 
-      if (type === '' || value === '')
-      {
+      if (type === '' || value === '') {
         console.log('empty share data:')
         AlertController.shared.showAlert('Error', 'Oops, we hit an issue \nPlease try sharing again', [
           {

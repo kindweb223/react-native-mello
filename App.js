@@ -300,60 +300,63 @@ export default class Root extends React.Component {
             }
         }
 
-        AsyncStorage.getItem(CONSTANTS.ANDROID_SHARE_EXTENTION_FLAG, (error, result) => {
+        // Share extension for Android
+        if (Platform.OS === 'android') {
+          AsyncStorage.getItem(CONSTANTS.ANDROID_SHARE_EXTENTION_FLAG, (error, result) => {
 
-          const isAndroidShareExtension = result === null ? 'true' : result
-          AsyncStorage.setItem(CONSTANTS.ANDROID_SHARE_EXTENTION_FLAG, 'false')
+            const isAndroidShareExtension = result === null ? 'true' : result
+            AsyncStorage.setItem(CONSTANTS.ANDROID_SHARE_EXTENTION_FLAG, 'false')
 
-          if (isAndroidShareExtension === 'true') {
-            var searchIndex = -1;
-            for (i = 3; i < params.length; i ++)
-            {
-              if (params[i] === 'share') {
-                searchIndex = i
-                break;
-              }
-            }
-            if (Platform.OS === 'android' && searchIndex !== -1) { //share extension for Android
-              var type = '';
-              if (params[searchIndex + 1] === 'image') {
-                type = 'images'
-                searchIndex ++;
-              } else if (params[searchIndex + 1] === 'url') {
-                type = 'url'
-              } else {
-                console.log('error: wrong share link')
-              }
-
-              var value = ''
-              for (i = searchIndex+2; i < params.length; i ++)
-              {
-                if (params[i] !== '') {
-                  if (i === params.length - 1)
-                    value += `${params[i]}`
-                  else
-                    value += `${params[i]}/`
+            if (isAndroidShareExtension === 'true') {
+              var searchIndex = -1;
+              for (i = 3; i < params.length; i ++) {
+                if (params[i] === 'share') {
+                  searchIndex = i
+                  break;
                 }
               }
-              console.log('path: ', type, value)
+              if (searchIndex !== -1) {
+                var type = '';
+                if (params[searchIndex + 1] === 'image') {
+                  type = 'images'
+                  searchIndex ++;
+                } else if (params[searchIndex + 1] === 'url') {
+                  type = 'url'
+                } else {
+                  console.log('error: wrong share link')
+                }
 
-              AsyncStorage.getItem("xAuthToken").then((token) => {
-                if (token) {
-                  const currentScene = Actions.currentScene
-                  const data = {
-                    type,
-                    value,
+                var value = ''
+                for (i = searchIndex+2; i < params.length; i ++)
+                {
+                  if (params[i] !== '') {
+                    if (i === params.length - 1)
+                      value += `${params[i]}`
+                    else
+                      value += `${params[i]}/`
                   }
-                  AsyncStorage.setItem('AndroidShareExtension', JSON.stringify(data));
-                  Actions.ChooseLinkImageFromExtension({mode: type, value: value, prev_scene: currentScene});
                 }
-                else {
-                  Actions.LoginScreen()
-                }
-              });
+                console.log('path: ', type, value)
+
+                AsyncStorage.getItem("xAuthToken").then((token) => {
+                  if (token) {
+                    const currentScene = Actions.currentScene
+                    const data = {
+                      type,
+                      value,
+                    }
+                    AsyncStorage.setItem('AndroidShareExtension', JSON.stringify(data));
+                    Actions.ChooseLinkImageFromExtension({mode: type, value: value, prev_scene: currentScene});
+                  }
+                  else {
+                    Actions.LoginScreen()
+                  }
+                });
+              }
             }
-          }
-        })
+          })
+        }
+
       } else {
         if (Platform.OS === 'ios') {
           Linking.openURL(`https://itunes.apple.com/${APP_LOCALE}/app/${APP_NAME}/id${APP_STORE_ID}`)
