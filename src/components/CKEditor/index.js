@@ -47,6 +47,7 @@ class CKEditor extends React.Component {
 
       if (keyCode === 'NO_KEYCODE') {
         const webVewHeight = parseInt(msgData.split('>>>!hunt!<<<')[1]) + 20;
+        console.log('HEIGHT: ', webVewHeight)
         const content = msgData.split('>>>!hunt!<<<')[2];
 
         this.setState({ webVewHeight });

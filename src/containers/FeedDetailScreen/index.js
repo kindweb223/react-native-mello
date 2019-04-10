@@ -124,8 +124,7 @@ const PAGE_COUNT = 50
 
 const fontSpecs = {
   fontFamily: undefined,
-  fontSize: 13,
-  fontWeight: '500'
+  fontSize: 14
 }
 
 class FeedDetailScreen extends React.Component {
@@ -532,38 +531,73 @@ class FeedDetailScreen extends React.Component {
     })
   }
 
+  getHtmlHeight = async html => {
+    const htmlArray = COMMON_FUNC.splitHtmlToArray(_.trim(html))
+
+    let length = 0
+
+    const cardWidth = (CONSTANTS.SCREEN_SUB_WIDTH - 16) / 2
+
+    for (let i = 0; i < htmlArray.length; i ++) {
+      if (htmlArray[i].length > 0) {
+        const textSize = await rnTextSize.measure({
+          text: htmlArray[i],
+          width: cardWidth - 16,
+          ...fontSpecs
+        })
+        length += parseInt(textSize.height)
+      }
+    }
+    return { textSize: length, lineCount: htmlArray.length }
+  }
+
   setMasonryData = async (ideas) => {
     let MasonryListData = []
     if (ideas) {
       for (let index = 0 ; index < ideas.length; index ++) {
         const idea = ideas[index]
         const cardWidth = (CONSTANTS.SCREEN_SUB_WIDTH - 16) / 2
-
-        const text = striptags(idea.idea)
-        const textSize = await rnTextSize.measure({
-          text: text,
-          width: cardWidth - 16,
-          ...fontSpecs
-        })
+        
+        const { textSize, lineCount } = await this.getHtmlHeight(idea.idea)
 
         let hasCoverImage = idea.coverImage && idea.coverImage.length > 0
         let cardHeight = 0
         let contentHeight = 0
         let imageHeight = 0
 
-        if (hasCoverImage) {
-          if (textSize.lineCount > 3) {
-            contentHeight = 80 + (textSize.height / textSize.lineCount * 4)
-          } else {
-            contentHeight = 80 + textSize.height
-          }
-        } else {
-          if (textSize.lineCount > 9) {
-            contentHeight = 80 + (textSize.height / textSize.lineCount * 10)
-          } else {
-            contentHeight = 80 + textSize.height
-          }
-        }
+        // if (hasCoverImage) {
+        //   if (lineCount > 3) {
+        //     contentHeight = 80 + (textSize / lineCount * 4)
+        //   } else {
+        //     contentHeight = 80 + textSize
+        //   }
+        // } else {
+        //   if (lineCount > 9) {
+        //     contentHeight = 80 + (textSize / lineCount * 10)
+        //   } else {
+        //     contentHeight = 80 + textSize
+        //   }
+        // }
+        contentHeight = 80 + textSize
+
+        // let hasCoverImage = idea.coverImage && idea.coverImage.length > 0
+        // let cardHeight = 0
+        // let contentHeight = 0
+        // let imageHeight = 0
+
+        // if (hasCoverImage) {
+        //   if (textSize.lineCount > 3) {
+        //     contentHeight = 80 + (textSize.height / textSize.lineCount * 4)
+        //   } else {
+        //     contentHeight = 80 + textSize.height
+        //   }
+        // } else {
+        //   if (textSize.lineCount > 9) {
+        //     contentHeight = 80 + (textSize.height / textSize.lineCount * 10)
+        //   } else {
+        //     contentHeight = 80 + textSize.height
+        //   }
+        // }
 
         if (hasCoverImage) {
           const coverImageData = _.find(idea.files, file => (file.accessUrl === idea.coverImage || file.thumbnailUrl === idea.coverImage))

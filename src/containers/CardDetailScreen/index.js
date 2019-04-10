@@ -1491,13 +1491,15 @@ class CardDetailScreen extends React.Component {
               : <HTML
                   html={this.state.idea}
                   containerStyle={styles.textHtmlIdea}
-                  classesStyles={{ 'text-big': { fontSize: 20 } }}
+                  classesStyles={CONSTANTS.HTML_CLASS_STYLES}
+                  tagsStyles={CONSTANTS.HTML_TAGS_STYLE}
                   onLinkPress={(evt, href) => this.onPressLink(href)}
                 />
-              // <Autolink
-              //   style={styles.textInputIdea}
-              //   text={this.state.idea}
-              //   onPress={(url, match) => this.onPressLink(url)}/>
+                /* <Autolink
+                  style={styles.textInputIdea}
+                  text={this.state.idea}
+                  onPress={(url, match) => this.onPressLink(url)}
+                /> */
             }
           </Animatable.View>
         </Animated.View>

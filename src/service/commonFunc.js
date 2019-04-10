@@ -186,6 +186,12 @@ const htmlToPlainText = (html = '') => {
   return myHtml
 }
 
+const splitHtmlToArray = (html) => {
+  var separators = ['\\\<p>', '\\\<li>', '\\\<br />', '\\\<br/>'];
+  var htmlArray = html.split(new RegExp(separators.join('|'), 'g'));
+  return htmlArray;
+}
+
 export {
   checkUserIsInvitee,
   isFeedOwner,
@@ -208,5 +214,6 @@ export {
   isFeedOwnerOnlyInvitee,
   getCardViewMode,
   removeDuplicatedItems,
-  htmlToPlainText
+  htmlToPlainText,
+  splitHtmlToArray
 }
