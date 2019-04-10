@@ -1840,6 +1840,13 @@ export default function feedo(state = initialState, action = {}) {
         loading: types.PUBNUB_USER_INVITED_FULFILLED
       }
     }
+    case types.SET_FEED_DETAIL_FROM_STORAGE: {
+      return {
+        ...state,
+        loading: types.SET_FEED_DETAIL_FROM_STORAGE,
+        currentFeed: action.payload
+      }
+    }
     default:
       return state;
   }

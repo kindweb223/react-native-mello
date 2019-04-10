@@ -269,7 +269,7 @@ class FeedDetailScreen extends React.Component {
     if (card.loading === 'CREATE_CARD_FULFILLED') {
       this.setState({ showBubble: false })
     }
-    
+
     if ((this.props.feedo.loading !== 'GET_FEED_DETAIL_FULFILLED' && feedo.loading === 'GET_FEED_DETAIL_FULFILLED') ||
         (this.props.feedo.loading !== 'SET_FEED_DETAIL_FROM_STORAGE') ||
         (this.props.feedo.loading === 'DELETE_INVITEE_PENDING' && feedo.loading === 'DELETE_INVITEE_FULFILLED') ||
@@ -290,6 +290,10 @@ class FeedDetailScreen extends React.Component {
         (feedo.loading === 'PUBNUB_LIKE_CARD_FULFILLED') || (feedo.loading === 'PUBNUB_UNLIKE_CARD_FULFILLED') ||
         (feedo.loading === 'GET_CARD_FULFILLED') || (feedo.loading === 'GET_CARD_COMMENTS_FULFILLED') ||
         (feedo.loading === 'PUBNUB_DELETE_INVITEE_FULFILLED') || (feedo.loading === 'DEL_DUMMY_CARD')) {
+
+      if (_.isEmpty(feedo.currentFeed)) {
+        return;
+      }
 
       if (feedo.currentFeed.metadata.myInviteStatus === 'DECLINED') {
         Actions.pop()

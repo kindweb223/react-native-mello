@@ -785,3 +785,10 @@ export const pubnubUserInvited = () => {
     type: types.PUBNUB_USER_INVITED_FULFILLED
   };
 }
+
+export const setFeedDetailFromStorage = (feed) => {
+  return {
+    type: types.SET_FEED_DETAIL_FROM_STORAGE,
+    feed
+  }
+}
