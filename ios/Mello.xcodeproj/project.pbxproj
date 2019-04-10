@@ -45,6 +45,7 @@
 		2D2CBD90DAC84BB8A182DAEB /* libRNThumbnail.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 37CA782AC31D47CCBB55CA40 /* libRNThumbnail.a */; };
 		2DCD954D1E0B4F2C00145EB5 /* MelloTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 00E356F21AD99517003FC87E /* MelloTests.m */; };
 		2DF0FFEE2056DD460020B375 /* libReact.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 3DAD3EA31DF850E9000B6D8A /* libReact.a */; };
+		391C11A6225DF496009A0106 /* SharedPreferences.swift in Sources */ = {isa = PBXBuildFile; fileRef = 391C11A5225DF496009A0106 /* SharedPreferences.swift */; };
 		3930117A225B3F64000649DB /* VideoViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 39301178225B3F64000649DB /* VideoViewController.swift */; };
 		3930117B225B3F64000649DB /* VideoViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 39301179225B3F64000649DB /* VideoViewController.xib */; };
 		396C17D922527E4C001297F6 /* API.swift in Sources */ = {isa = PBXBuildFile; fileRef = 396C17D822527E4C001297F6 /* API.swift */; };
@@ -109,7 +110,6 @@
 		707DC7BF4F8B460B91F782CD /* libRNImagePicker.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 47BA3513B6514BE58476D7B4 /* libRNImagePicker.a */; };
 		78013DF309004327808619F3 /* libRNVersionNumber-tvOS.a in Frameworks */ = {isa = PBXBuildFile; fileRef = B3A57268A8CF4DC8B8159490 /* libRNVersionNumber-tvOS.a */; };
 		7FB80209559F4EEBB4029DF3 /* MaterialIcons.ttf in Resources */ = {isa = PBXBuildFile; fileRef = C7747C3163BF42E093C0FFE0 /* MaterialIcons.ttf */; };
-		8093C64422439CD300FE1619 /* libRNFS.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 8093C63522439C6E00FE1619 /* libRNFS.a */; settings = {ATTRIBUTES = (Required, ); }; };
 		8279C7EF12BA49AAA09783C7 /* Foundation.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 967ED53775644A5E9E9E82CB /* Foundation.ttf */; };
 		832341BD1AAA6AB300B99B32 /* libRCTText.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 832341B51AAA6A8300B99B32 /* libRCTText.a */; };
 		8D2B584D1B954CA58C0936B6 /* SimpleLineIcons.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 2E7C184AF38D495CA598BB2B /* SimpleLineIcons.ttf */; };
@@ -745,6 +745,7 @@
 		33BD4A274A84484B97C217E8 /* RNFetchBlob.xcodeproj */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = "wrapper.pb-project"; name = RNFetchBlob.xcodeproj; path = "../node_modules/rn-fetch-blob/ios/RNFetchBlob.xcodeproj"; sourceTree = "<group>"; };
 		33EEAF2950654496843997B1 /* LottieReactNative.xcodeproj */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = "wrapper.pb-project"; name = LottieReactNative.xcodeproj; path = "../node_modules/lottie-react-native/src/ios/LottieReactNative.xcodeproj"; sourceTree = "<group>"; };
 		37CA782AC31D47CCBB55CA40 /* libRNThumbnail.a */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = archive.ar; path = libRNThumbnail.a; sourceTree = "<group>"; };
+		391C11A5225DF496009A0106 /* SharedPreferences.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SharedPreferences.swift; sourceTree = "<group>"; };
 		39301178225B3F64000649DB /* VideoViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VideoViewController.swift; sourceTree = "<group>"; };
 		39301179225B3F64000649DB /* VideoViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = VideoViewController.xib; sourceTree = "<group>"; };
 		396C17D822527E4C001297F6 /* API.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = API.swift; sourceTree = "<group>"; };
@@ -1177,6 +1178,7 @@
 				396C17F122527ECF001297F6 /* UIImageCompression.swift */,
 				396C17E022527E70001297F6 /* FlowFooter */,
 				396C17E122527E76001297F6 /* Navigation */,
+				391C11A5225DF496009A0106 /* SharedPreferences.swift */,
 			);
 			path = Helpers;
 			sourceTree = "<group>";
@@ -2853,6 +2855,7 @@
 				396C1950225285A1001297F6 /* FLAnimatedImageView.m in Sources */,
 				396C181C22527FB7001297F6 /* TextViewController.swift in Sources */,
 				396C180C22527F8C001297F6 /* MainNavigationController.swift in Sources */,
+				391C11A6225DF496009A0106 /* SharedPreferences.swift in Sources */,
 				396C17DD22527E5D001297F6 /* ParsedURL.swift in Sources */,
 				396C17EF22527EBB001297F6 /* ShareNavigationable.swift in Sources */,
 				39C6257C2254EB6F001FBD79 /* KeyboardHelper.swift in Sources */,

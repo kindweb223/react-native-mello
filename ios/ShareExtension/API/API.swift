@@ -425,23 +425,6 @@ class API {
       completion()
     }
   }
-  
-  func setDefaultFlow(flow: Flow) {
-    let formatter = DateFormatter()
-    formatter.dateFormat = "EEEE, MMM d, yyyy hh:mm a"
-    let time = formatter.string(from: Date())
-    
-    let dict: JSON = ["time": time ?? "",
-                      "feedoId": flow.id,
-                      "currentFeed": flow.originalJSON]
-    
-    guard let data = try? JSONSerialization.data(withJSONObject: dict, options: .prettyPrinted),
-      let string = String(data: data, encoding: .utf8) else {
-        return
-    }
-    
-    UserDefaults(suiteName: "group.hunt.mobile.last.feedo")?.set(string, forKey: "CARD_SAVED_LAST_FEEDO_INFO")
-  }
 }
 
 extension URL {
