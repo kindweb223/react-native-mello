@@ -76,7 +76,7 @@ class FeedCardExtendComponent extends React.Component {
                 <View style={styles.subView}>
                   <HTML
                     html={idea.idea}
-                    style={styles.title}
+                    containerStyle={styles.textHtmlIdea}
                     onLinkPress={(evt, href) => this.onPressLink(href)}
                     classesStyles={CONSTANTS.HTML_CLASS_STYLES}
                     tagsStyles={CONSTANTS.HTML_TAGS_STYLE}

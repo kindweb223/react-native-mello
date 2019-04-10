@@ -554,6 +554,7 @@ class FeedDetailScreen extends React.Component {
         length += parseInt(textSize.height)
       }
     }
+
     return { textSize: length, lineCount: htmlArray.length }
   }
 
@@ -630,7 +631,7 @@ class FeedDetailScreen extends React.Component {
         })
       }
     }
-
+    console.log('MasonryListData: ', MasonryListData)
     this.setState({ MasonryListData })
   }
 
