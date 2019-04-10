@@ -237,8 +237,16 @@ class NewFeedScreen extends React.Component {
         this.props.createFeed();
       }
     });
-    this.keyboardWillShowSubscription = Keyboard.addListener('keyboardWillShow', (e) => this.keyboardWillShow(e));
-    this.keyboardWillHideSubscription = Keyboard.addListener('keyboardWillHide', (e) => this.keyboardWillHide(e));
+
+    if (Platform.OS === 'ios') {
+      this.keyboardWillShowSubscription = Keyboard.addListener('keyboardWillShow', (e) => this.keyboardWillShow(e));
+      this.keyboardWillHideSubscription = Keyboard.addListener('keyboardWillHide', (e) => this.keyboardWillHide(e));
+    }
+    else {
+      this.keyboardWillShowSubscription = Keyboard.addListener('keyboardDidShow', (e) => this.keyboardWillShow(e));
+      this.keyboardWillHideSubscription = Keyboard.addListener('keyboardDidHide', (e) => this.keyboardWillHide(e));
+    }
+
     this.textInputFeedNameRef.focus();
 
     BackHandler.addEventListener('hardwareBackPress', this.handleBackButton);
@@ -251,7 +259,6 @@ class NewFeedScreen extends React.Component {
   }
 
   handleBackButton = () => {
-    console.log('handleBackButton')
     this.onOpenActionSheet()
     return true;
   }
@@ -261,7 +268,7 @@ class NewFeedScreen extends React.Component {
     Animated.timing(
       this.animatedKeyboardHeight, {
         toValue: e.endCoordinates.height,
-        duration: e.duration,
+        duration: Platform.OS === 'ios' ? e.duration : CONSTANTS.ANIMATEION_MILLI_SECONDS,
       }
     ).start();
   }
@@ -271,7 +278,7 @@ class NewFeedScreen extends React.Component {
     Animated.timing(
       this.animatedKeyboardHeight, {
         toValue: 0,
-        duration: e.duration,
+        duration: Platform.OS === 'ios' ? e.duration : CONSTANTS.ANIMATEION_MILLI_SECONDS,
       }
     ).start();
   }
@@ -695,7 +702,7 @@ class NewFeedScreen extends React.Component {
           </TouchableOpacity> */}
         </View>
 
-        {this.state.isKeyboardShow && (
+        {Platform.OS === 'ios' && this.state.isKeyboardShow && (
           <View style={styles.bottomRightCotainer}>
             <TouchableOpacity
               style={styles.keyboardIconView}

@@ -6,6 +6,7 @@ import {
   TouchableOpacity,
   Animated,
   Keyboard,
+  Platform,
 } from 'react-native'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
@@ -68,8 +69,15 @@ class SelectHuntScreen extends React.Component {
       toValue: 1,
       duration: CONSTANTS.ANIMATEION_MILLI_SECONDS * 1.5,
     }).start();
-    this.keyboardWillShowSubscription = Keyboard.addListener('keyboardWillShow', (e) => this.keyboardWillShow(e));
-    this.keyboardWillHideSubscription = Keyboard.addListener('keyboardWillHide', (e) => this.keyboardWillHide(e));
+
+    if (Platform.OS === 'ios') {
+      this.keyboardWillShowSubscription = Keyboard.addListener('keyboardWillShow', (e) => this.keyboardWillShow(e));
+      this.keyboardWillHideSubscription = Keyboard.addListener('keyboardWillHide', (e) => this.keyboardWillHide(e));
+    }
+    else {
+      this.keyboardWillShowSubscription = Keyboard.addListener('keyboardDidShow', (e) => this.keyboardWillShow(e));
+      this.keyboardWillHideSubscription = Keyboard.addListener('keyboardDidHide', (e) => this.keyboardWillHide(e));
+    }
   }
 
   componentWillUnmount() {
@@ -88,7 +96,7 @@ class SelectHuntScreen extends React.Component {
     Animated.timing(
       this.animatedKeyboardHeight, {
         toValue: e.endCoordinates.height,
-        duration: e.duration,
+        duration: Platform.OS === 'ios' ? e.duration : CONSTANTS.ANIMATEION_MILLI_SECONDS,
       }
     ).start();
   }
@@ -98,7 +106,7 @@ class SelectHuntScreen extends React.Component {
     Animated.timing(
       this.animatedKeyboardHeight, {
         toValue: 0,
-        duration: e.duration,
+        duration: Platform.OS === 'ios' ? e.duration : CONSTANTS.ANIMATEION_MILLI_SECONDS,
       }
     ).start();
   }
@@ -157,6 +165,7 @@ class SelectHuntScreen extends React.Component {
     } else if (selectMode === CONSTANTS.FEEDO_SELECT_FROM_MOVE_CARD) {
       return this.renderHeaderFromMoveCard;
     }
+
     return this.renderHeaderFromExtension;
   }
 

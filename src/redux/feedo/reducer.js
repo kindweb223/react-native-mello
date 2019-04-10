@@ -7,6 +7,7 @@ import { filter, find, findIndex, isEmpty } from 'lodash'
 import resolveError from './../../service/resolveError'
 import { restoreArchiveFeed } from './actions';
 import { setRemovedInvitees } from './operations'
+import _ from 'lodash'
 
 const initialState = {
   loading: null,
@@ -26,7 +27,8 @@ const initialState = {
   dummyMoveCard: {},
   badgeCount: 0,
   isCreateCard: false,
-  duplicatedFeedList: []
+  duplicatedFeedList: [],
+  activeActivityGroupId: ''
 };
 
 export default function feedo(state = initialState, action = {}) {
@@ -55,6 +57,15 @@ export default function feedo(state = initialState, action = {}) {
         loading: types.GET_FEEDO_LIST_FULFILLED,
         feedoListForCardMove: data.content,
       }
+    }
+    case types.SET_FEEDO_LIST_FROM_STORAGE: {
+      // console.log('action is ', action, ' state is ', state)
+      const { feedoList } = action
+        return {
+          ...state,
+          loading: types.SET_FEEDO_LIST_FROM_STORAGE,
+          feedoList,
+        }
     }
     case types.GET_FEEDO_LIST_REJECTED: {
       return {
@@ -377,14 +388,15 @@ export default function feedo(state = initialState, action = {}) {
     case types.DUPLICATE_FEED_FULFILLED: {
       const { feedoList } = state
       const { data } = action.result
+      const backFeedList = action.payload
 
       return {
         ...state,
         feedoList: [
           ...feedoList,
-          ...data
+          data
         ],
-        duplicatedFeedList: data,
+        duplicatedFeedList: backFeedList,
         loading: types.DUPLICATE_FEED_FULFILLED,
       }
     }
@@ -416,8 +428,10 @@ export default function feedo(state = initialState, action = {}) {
           ]
         }
       } else if (flag === 'archive') {
+        console.log('backFeedList: ', backFeedList)
         for (let i = 0; i < backFeedList.length; i ++) {
           const index = findIndex(feedoList, feed => feed.id === backFeedList[i].id)
+          console.log('INDX: ', index)
           if (index !== -1) {
             feedoList[index] = Object.assign({}, feedoList[index], { status: 'ARCHIVED' })
           }
@@ -513,6 +527,7 @@ export default function feedo(state = initialState, action = {}) {
      */
     case types.SET_FEED_DETAIL_ACTION: {
       const feedDetailAction = action.payload
+      console.log('feedDetailAction: ', feedDetailAction)
       return {
         ...state,
         loading: types.SET_FEED_DETAIL_ACTION,
@@ -1098,17 +1113,16 @@ export default function feedo(state = initialState, action = {}) {
      */
     case cardTypes.MOVE_CARD_FULFILLED: {
       const { currentFeed } = state
-      const data = action.payload
+      const { ideaId } = action.payload;
 
-      const restIdeas = filter(currentFeed.ideas, idea => findIndex(data, card => card.ideaId === idea.id ) === -1)
-      const ideasSubmitted = currentFeed.metadata.ideasSubmitted - data.length
-
+      const ideas = filter(currentFeed.ideas, idea => idea.id !== ideaId);
+      const ideasSubmitted = currentFeed.metadata.ideasSubmitted - 1
       return {
         ...state,
         loading: 'MOVE_CARD_FULFILLED',
         currentFeed: {
           ...currentFeed,
-          ideas: restIdeas,
+          ideas,
           metadata: Object.assign({}, currentFeed.metadata, { ideasSubmitted })
         }
       }
@@ -1246,14 +1260,7 @@ export default function feedo(state = initialState, action = {}) {
       }
 
       let activityFeedList = []
-      if (data.first) {
-        activityFeedList = data.content
-      } else {
-        activityFeedList = [
-          ...state.activityFeedList,
-          ...data.content
-        ]
-      }
+      activityFeedList = data.huntActivities
 
       return {
         ...state,
@@ -1292,6 +1299,43 @@ export default function feedo(state = initialState, action = {}) {
       }
     }
     /**
+     * Read acitivty group
+     */
+    case types.READ_ACTIVITY_GROUP_PENDING:
+      return {
+        ...state,
+        loading: types.READ_ACTIVITY_GROUP_PENDING,
+      }
+    case types.READ_ACTIVITY_GROUP_FULLFILLED: {
+      const activityGroupId = action.payload
+      let { activityFeedList, activityData } = state
+
+      activityFeedList = activityFeedList.map(item => {
+        if (item.id === activityGroupId) {
+          item.read = true
+        }
+        return item
+      })
+
+      activityFeedList = _.orderBy(activityFeedList, ['read', 'latestActivityTime'], ['asc', 'desc'])
+
+      return {
+        ...state,
+        activeActivityGroupId: activityGroupId,
+        loading: types.READ_ACTIVITY_GROUP_FULLFILLED,
+        activityFeedList
+      }
+    }
+    case types.READ_ACTIVITY_GROUP_REJECTED: {
+      const activityGroupId = action.payload
+      return {
+        ...state,
+        activeActivityGroupId: activityGroupId,
+        loading: types.READ_ACTIVITY_GROUP_REJECTED,
+        error: action.error.response,
+      }
+    }
+    /**
      * Read acitivty
      */
     case types.READ_ACTIVITY_FEED_PENDING:
@@ -1301,21 +1345,25 @@ export default function feedo(state = initialState, action = {}) {
       }
     case types.READ_ACTIVITY_FEED_FULFILLED: {
       const activityId = action.payload
-      const { activityFeedList, activityData } = state
+      let { activityFeedList, activeActivityGroupId } = state
 
-      const currentActivityFeedList = filter(activityFeedList, feed => feed.id === activityId)
-      const restActivityFeedList = filter(activityFeedList, feed => feed.id !== activityId)
+      activityFeedList = activityFeedList.map(item => {
+        if (item.id === activeActivityGroupId) {
+          let activities = item.activities
+          activities = activities.map(item => {
+            if (item.id === activityId) {
+              item.read = true
+            }
+            return item
+          })
+        }
+        return item
+      })
 
       return {
         ...state,
         loading: types.READ_ACTIVITY_FEED_FULFILLED,
-        activityFeedList: [
-          ...restActivityFeedList,
-          {
-            ...currentActivityFeedList[0],
-            read: true
-          }
-        ]
+        activityFeedList
       }
     }
     case types.READ_ACTIVITY_FEED_REJECTED: {
@@ -1335,14 +1383,21 @@ export default function feedo(state = initialState, action = {}) {
       }
     case types.DEL_ACTIVITY_FEED_FULFILLED: {
       const activityId = action.payload
-      const { activityFeedList, activityData } = state
+      let { activityFeedList, activeActivityGroupId } = state
 
-      const restActivityFeedList = filter(activityFeedList, feed => feed.id !== activityId)
+      activityFeedList = activityFeedList.map(item => {
+        if (item.id === activeActivityGroupId) {
+          let activities = item.activities
+          activities = filter(activities, activity => activity.id !== activityId)
+          item.activities = activities
+        }
+        return item
+      })
 
       return {
         ...state,
         loading: types.DEL_ACTIVITY_FEED_FULFILLED,
-        activityFeedList: restActivityFeedList
+        activityFeedList
       }
     }
     case types.DEL_ACTIVITY_FEED_REJECTED: {
@@ -1354,35 +1409,27 @@ export default function feedo(state = initialState, action = {}) {
     }
     case types.DEL_DUMMY_CARD: {
       const { currentFeed, feedoList } = state
-      const { deletedIdeaList , type } = action.payload;
+      const { ideaId , type } = action.payload;
 
-      let originalFeed = {}
-      let deletedDummyCards = []
+      let newCurrentFeed = {}
+      let dummyDelCard = {}
       if (type === 0) { //delete
-        const restIdeas = filter(currentFeed.ideas, idea => findIndex(deletedIdeaList, card => card.idea.id === idea.id ) === -1)
-
-        for (let i = 0; i < deletedIdeaList.length; i ++) {
-          const card = find(currentFeed.ideas, idea => idea.id === deletedIdeaList[i].idea.id)
-          deletedDummyCards.push(card)
-        }
-
-        const ideasSubmitted = currentFeed.metadata.ideasSubmitted - deletedIdeaList.length
-        originalFeed = {
+        const ideas = filter(currentFeed.ideas, idea => idea.id !== ideaId);
+        dummyDelCard = filter(currentFeed.ideas, idea => idea.id === ideaId);
+        const ideasSubmitted = currentFeed.metadata.ideasSubmitted - 1
+        newCurrentFeed = {
           ...currentFeed,
-          ideas: restIdeas,
+          ideas,
           metadata: Object.assign({}, currentFeed.metadata, { ideasSubmitted })
         }
       } else {  //restore
-        currentFeed.ideas = [
-          ...currentFeed.ideas,
-          ...state.deletedDummyCards
-        ]
-        const ideasSubmitted = currentFeed.metadata.ideasSubmitted + state.deletedDummyCards.length
-        originalFeed = {
+        currentFeed.ideas.push(state.dummyDelCard[0])
+        dummyDelCard = {}
+        const ideasSubmitted = currentFeed.metadata.ideasSubmitted + 1
+        newCurrentFeed = {
           ...currentFeed,
           metadata: Object.assign({}, currentFeed.metadata, { ideasSubmitted })
         }
-        deletedDummyCards = []
       }
 
       const restFeedoList = filter(feedoList, feed => feed.id !== currentFeed.id)
@@ -1390,11 +1437,11 @@ export default function feedo(state = initialState, action = {}) {
       return {
         ...state,
         loading: types.DEL_DUMMY_CARD,
-        deletedDummyCards,
-        currentFeed: originalFeed,
+        dummyDelCard,
+        currentFeed: newCurrentFeed,
         feedoList: [
-          originalFeed,
-          ...restFeedoList
+          ...restFeedoList,
+          newCurrentFeed
         ]
       }
     }
@@ -1403,71 +1450,59 @@ export default function feedo(state = initialState, action = {}) {
      */
     case types.MOVE_DUMMY_CARD: {
       const { currentFeed, feedoList } = state
-      const { movedIdeaList, huntId, type } = action.payload;
+      const { ideaId, huntId, type } = action.payload;
 
       let dummyMoveCard = {}
       let newFeedList = []
-      let originalFeed = {}
+      let newCurrentFeed = {}
       let restFeedoList = []
 
       if (type === 0) {
-        // Move
         restFeedoList = filter(feedoList, feed => feed.id !== currentFeed.id)
 
-        const restIdeas = filter(currentFeed.ideas, idea => findIndex(movedIdeaList, card => card.idea.id === idea.id ) === -1)
-       
+        const ideas = filter(currentFeed.ideas, idea => idea.id !== ideaId)
+        const movedCard = find(currentFeed.ideas, idea => idea.id === ideaId)
+        
         const moveToFeedIndex = findIndex(restFeedoList, feed => feed.id === huntId)
         
-        const movedDummyCards = []
-
         if (moveToFeedIndex !== -1) {
-          for (let i = 0; i < movedIdeaList.length; i ++) {
-            const card = find(currentFeed.ideas, idea => idea.id === movedIdeaList[i].idea.id)
-            movedDummyCards.push(card)
-
-            restFeedoList[moveToFeedIndex].ideas.push(card);
-          }
-          restFeedoList[moveToFeedIndex].metadata.ideasSubmitted =
-              restFeedoList[moveToFeedIndex].metadata.ideasSubmitted + movedIdeaList.length
+          restFeedoList[moveToFeedIndex].ideas.push(movedCard);
+          restFeedoList[moveToFeedIndex].metadata.ideasSubmitted = restFeedoList[moveToFeedIndex].metadata.ideasSubmitted + 1
         }
 
-        originalFeed = {
+        newCurrentFeed = {
           ...currentFeed,
-          ideas: restIdeas
+          ideas
         }
-        originalFeed.metadata.ideasSubmitted = originalFeed.metadata.ideasSubmitted - movedIdeaList.length
-
+        newCurrentFeed.metadata.ideasSubmitted = newCurrentFeed.metadata.ideasSubmitted - 1
 
         newFeedList = [
-          originalFeed,
-          ...restFeedoList
+          ...restFeedoList,
+          newCurrentFeed
         ]       
 
-        dummyMoveCard = { movedIdeaList, feedId: huntId, oldFeed: currentFeed, newFeed: restFeedoList[moveToFeedIndex], movedDummyCards }
+        dummyMoveCard = { ideaId, feedId: huntId, oldFeed: currentFeed, newFeed: restFeedoList[moveToFeedIndex], movedCard }
       } else {
-        // Undo
         dummyMoveCard = state.dummyMoveCard
         restFeedoList = filter(feedoList, feed => feed.id !== dummyMoveCard.feedId)
 
-        const restIdeas = filter(dummyMoveCard.newFeed.ideas, idea => findIndex(dummyMoveCard.movedIdeaList, card => card.idea.id === idea.id) === -1)
-
+        const ideas = filter(dummyMoveCard.newFeed.ideas, idea => idea.id !== dummyMoveCard.ideaId)
         let movedFeed = {
           ...dummyMoveCard.newFeed,
-          ideas: restIdeas
+          ideas
         }
-        movedFeed.metadata.ideasSubmitted = movedFeed.metadata.ideasSubmitted - dummyMoveCard.movedIdeaList.length
+        movedFeed.metadata.ideasSubmitted = movedFeed.metadata.ideasSubmitted - 1
         
         const originalFeedIndex = findIndex(restFeedoList, feed => feed.id === currentFeed.id)
 
         if (originalFeedIndex !== -1) {
-          restFeedoList[originalFeedIndex].ideas.push(dummyMoveCard.movedDummyCards);
-          restFeedoList[originalFeedIndex].metadata.ideasSubmitted =
-            restFeedoList[originalFeedIndex].metadata.ideasSubmitted + dummyMoveCard.movedIdeaList.length
+          restFeedoList[originalFeedIndex].ideas.push(dummyMoveCard.movedCard);
+          restFeedoList[originalFeedIndex].metadata.ideasSubmitted = restFeedoList[originalFeedIndex].metadata.ideasSubmitted + 1
         }
 
         newFeedList = [
-          movedFeed,
-          ...restFeedoList
+          ...restFeedoList,
+          movedFeed
         ]
 
         dummyMoveCard = {}

@@ -109,6 +109,7 @@
 		707DC7BF4F8B460B91F782CD /* libRNImagePicker.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 47BA3513B6514BE58476D7B4 /* libRNImagePicker.a */; };
 		78013DF309004327808619F3 /* libRNVersionNumber-tvOS.a in Frameworks */ = {isa = PBXBuildFile; fileRef = B3A57268A8CF4DC8B8159490 /* libRNVersionNumber-tvOS.a */; };
 		7FB80209559F4EEBB4029DF3 /* MaterialIcons.ttf in Resources */ = {isa = PBXBuildFile; fileRef = C7747C3163BF42E093C0FFE0 /* MaterialIcons.ttf */; };
+		8093C64422439CD300FE1619 /* libRNFS.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 8093C63522439C6E00FE1619 /* libRNFS.a */; settings = {ATTRIBUTES = (Required, ); }; };
 		8279C7EF12BA49AAA09783C7 /* Foundation.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 967ED53775644A5E9E9E82CB /* Foundation.ttf */; };
 		832341BD1AAA6AB300B99B32 /* libRCTText.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 832341B51AAA6A8300B99B32 /* libRCTText.a */; };
 		8D2B584D1B954CA58C0936B6 /* SimpleLineIcons.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 2E7C184AF38D495CA598BB2B /* SimpleLineIcons.ttf */; };
@@ -479,6 +480,13 @@
 			remoteGlobalIDString = 134814201AA4EA6300B7C361;
 			remoteInfo = RCTLinking;
 		};
+		8093C63422439C6E00FE1619 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 8093C5F722439C6D00FE1619 /* RNFS.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = F12AFB9B1ADAF8F800E0535D;
+			remoteInfo = RNFS;
+		};
 		832341B41AAA6A8300B99B32 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 832341B01AAA6A8300B99B32 /* RCTText.xcodeproj */;
@@ -815,6 +823,7 @@
 		78C398B01ACF4ADC00677621 /* RCTLinking.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RCTLinking.xcodeproj; path = "../node_modules/react-native/Libraries/LinkingIOS/RCTLinking.xcodeproj"; sourceTree = "<group>"; };
 		78F9B7C6AC83469A950CD8B2 /* FastImage.xcodeproj */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = "wrapper.pb-project"; name = FastImage.xcodeproj; path = "../node_modules/react-native-fast-image/ios/FastImage.xcodeproj"; sourceTree = "<group>"; };
 		7FF9F77D31634DD9B9D15601 /* libz.tbd */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libz.tbd; path = usr/lib/libz.tbd; sourceTree = SDKROOT; };
+		8093C5F722439C6D00FE1619 /* RNFS.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RNFS.xcodeproj; path = "../node_modules/react-native-fs/RNFS.xcodeproj"; sourceTree = "<group>"; };
 		832341B01AAA6A8300B99B32 /* RCTText.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RCTText.xcodeproj; path = "../node_modules/react-native/Libraries/Text/RCTText.xcodeproj"; sourceTree = "<group>"; };
 		83A3A57F49D18643DC5B7A36 /* Pods-Mello.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Mello.debug.xcconfig"; path = "Pods/Target Support Files/Pods-Mello/Pods-Mello.debug.xcconfig"; sourceTree = "<group>"; };
 		88B878D7356F3D2796D7E02F /* Pods-MelloEx.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-MelloEx.debug.xcconfig"; path = "Pods/Target Support Files/Pods-MelloEx/Pods-MelloEx.debug.xcconfig"; sourceTree = "<group>"; };
@@ -1738,6 +1747,7 @@
 				48E815D86AC4450E91A11738 /* libRNImgToBase64.a */,
 				D737F6C3F4964BBBB207DE7B /* libRNTextSize.a */,
 				D08D21C89C284CC8B72878F0 /* libRNFileViewer.a */,
+				8093C63522439C6E00FE1619 /* libRNFS.a */,
 			);
 			name = "Recovered References";
 			sourceTree = "<group>";
@@ -2421,6 +2431,13 @@
 			fileType = archive.ar;
 			path = libRCTLinking.a;
 			remoteRef = 78C398B81ACF4ADC00677621 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		8093C63522439C6E00FE1619 /* libRNFS.a */ = {
+			isa = PBXReferenceProxy;
+			fileType = archive.ar;
+			path = libRNFS.a;
+			remoteRef = 8093C63422439C6E00FE1619 /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
 		832341B51AAA6A8300B99B32 /* libRCTText.a */ = {

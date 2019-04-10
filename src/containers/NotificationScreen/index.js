@@ -20,10 +20,13 @@ import PropTypes from 'prop-types'
 import Swipeout from 'react-native-swipeout'
 import _ from 'lodash'
 import FontAwesome from 'react-native-vector-icons/FontAwesome'
+import Ionicons from 'react-native-vector-icons/Ionicons'
+import * as Animatable from 'react-native-animatable'
 
 import Analytics from '../../lib/firebase'
 import NotificationItemComponent from '../../components/NotificationItemComponent'
 import ActivityFeedComponent from '../../components/ActivityFeedComponent'
+import ActivityFeedGroupComponent from '../../components/ActivityFeedComponent/ActivityFeedGroupComponent'
 import CardDetailScreen from '../CardDetailScreen'
 import SelectHuntScreen from '../SelectHuntScreen'
 import ToasterComponent from '../../components/ToasterComponent'
@@ -37,6 +40,7 @@ import {
   alreadyReadActivityFeed,
   deleteActivityFeed,
   readAllActivityFeed,
+  readActivityGroup,
   setCurrentFeed,
   getInvitedFeedList,
   getActivityFeedVisited,
@@ -87,11 +91,19 @@ class NotificationScreen extends React.Component {
   get renderHeader() {
     return (
       <View style={styles.headerContainer}>
-        <TouchableOpacity activeOpacity={0.6} onPress={() => Actions.pop()} style={styles.buttonWrapper}>
-          <Image source={CLOSE_ICON} />
+        <TouchableOpacity
+          activeOpacity={0.6}
+          onPress={() => this.animateOutSingleNotificationView()}
+          style={styles.buttonWrapper}
+        >
+          {this.state.singleNotification && <Ionicons name="ios-arrow-back" size={32} color={COLORS.PURPLE} />}
         </TouchableOpacity>
-        <Text style={styles.textTitle}>Notifications</Text>
-        <View style={styles.buttonWrapper} />
+        <Text style={styles.textTitle}>{this.state.title}</Text>
+        <TouchableOpacity activeOpacity={0.6} onPress={() => Actions.pop()} style={[styles.buttonWrapper, { alignItems: 'flex-end' }]}>
+          <Text style={styles.doneButton}>
+            Done
+          </Text>
+        </TouchableOpacity>
       </View>
     );
   }
@@ -99,11 +111,13 @@ class NotificationScreen extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
+      title: 'Notifications',
       refreshing: false,
       loading: false,
       invitedFeedList: [],
       activityFeedList: [],
       notificationList: [],
+      singleNotificationList: [],
       selectedActivity: {},
       isVisibleCard: false,
       cardViewMode: CONSTANTS.CARD_NONE,
@@ -112,7 +126,10 @@ class NotificationScreen extends React.Component {
       isVisibleSelectFeedo: false,
       isShowInviteToaster: false,
       inviteToasterTitle: '',
-      apiLoading: false
+      apiLoading: false,
+      singleNotification: false,
+      animTransformSingleNotificationView: new Animated.Value(CONSTANTS.SCREEN_WIDTH),
+      animationType: 'slideInLeft',
     };
     this.animatedOpacity = new Animated.Value(0)
     this.userActions = []
@@ -130,7 +147,7 @@ class NotificationScreen extends React.Component {
     let { invitedFeedList, activityFeedList } = feedo
 
     invitedFeedList = _.orderBy(invitedFeedList, ['metadata.myLastActivityDate'], ['desc'])
-    activityFeedList = _.orderBy(activityFeedList, ['activityTime'], ['desc'])
+    activityFeedList = _.orderBy(activityFeedList, ['read', 'latestActivityTime'], ['asc', 'desc'])
 
     this.setState({ invitedFeedList, activityFeedList })
     this.setActivityFeeds(activityFeedList, invitedFeedList)
@@ -153,13 +170,16 @@ class NotificationScreen extends React.Component {
 
     if (this.props.feedo.loading !== 'DEL_ACTIVITY_FEED_FULFILLED' && feedo.loading === 'DEL_ACTIVITY_FEED_FULFILLED') {
       Analytics.logEvent('notification_delete_activity', {})
+      const activityGroup = _.filter(feedo.activityFeedList, feed => feed.id === feedo.activeActivityGroupId)
+      this.setState({ singleNotificationList: activityGroup[0].activities })
     }
 
     if ((this.props.feedo.loading !== 'GET_ACTIVITY_FEED_FULFILLED' && feedo.loading === 'GET_ACTIVITY_FEED_FULFILLED') ||
         (this.props.feedo.loading !== 'READ_ACTIVITY_FEED_FULFILLED' && feedo.loading === 'READ_ACTIVITY_FEED_FULFILLED') ||
+        (this.props.feedo.loading !== 'READ_ACTIVITY_GROUP_FULLFILLED' && feedo.loading === 'READ_ACTIVITY_GROUP_FULLFILLED') ||
         (this.props.feedo.loading !== 'DEL_ACTIVITY_FEED_FULFILLED' && feedo.loading === 'DEL_ACTIVITY_FEED_FULFILLED'))
     {
-      let activityFeedList = _.orderBy(feedo.activityFeedList, ['activityTime'], ['desc'])
+      let activityFeedList = _.orderBy(feedo.activityFeedList, ['read', 'latestActivityTime'], ['asc', 'desc'])
       this.setState({ refreshing: false, activityFeedList })
       this.setActivityFeeds(activityFeedList, this.state.invitedFeedList)
     }
@@ -320,7 +340,7 @@ class NotificationScreen extends React.Component {
         if (feedo.inviteUpdateType) {
           this.setState({ inviteToasterTitle: 'Invitation accepted' })
         } else {
-          this.setState({ inviteToasterTitle: 'Invitation ignored' })
+          this.setState({ inviteToasterTitle: 'Invitation declined' })
         }
         setTimeout(() => {
           this.setState({ isShowInviteToaster: false })
@@ -361,6 +381,25 @@ class NotificationScreen extends React.Component {
   }
 
   setActivityFeeds = (activityFeedList, invitedFeedList) => {
+    if (activityFeedList.length > 0) {
+      if(activityFeedList[0].id !== 'empty_activity_feed_key') {
+        let empty = [{
+          id: 'empty_activity_feed_key',
+          activities: null
+        }]
+        activityFeedList = empty.concat(activityFeedList)
+      }
+    }
+
+    if (invitedFeedList.length > 0) {
+      if(invitedFeedList[0].id !== 'empty_invited_feed_key') {
+        let empty = [{
+          id: 'empty_invited_feed_key'
+        }]
+        invitedFeedList = empty.concat(invitedFeedList)
+      }
+    }
+
     let notificationList = [
       ...invitedFeedList,
       ...activityFeedList
@@ -369,9 +408,19 @@ class NotificationScreen extends React.Component {
   }
 
   renderInvitedFeedItem = (data) => {
+    if (data.id === 'empty_invited_feed_key') {
+      return (
+        <View style={styles.sectionView}>
+          <Text style={styles.sectionTitle}>
+            Invitations
+          </Text>
+        </View>
+      )
+    }
+
     return (
       <View style={styles.itemView}>
-        <NotificationItemComponent data={data} avatarSize={58} />
+        <NotificationItemComponent data={data} hideTumbnail={true} showTime />
       </View>
     )
   }
@@ -394,6 +443,40 @@ class NotificationScreen extends React.Component {
     })
   }
 
+  onGroupItemSelect = (data) => {
+    this.setState({
+      title: data.headline,
+      singleNotification: true,
+      singleNotificationList: data.activities
+    })
+    this.animateInSingleNotificationView()
+
+    this.props.readActivityGroup(this.props.user.userInfo.id, data.id)
+  }
+
+  animateInSingleNotificationView() {
+    const parallel = Animated.parallel
+    const timing = Animated.timing
+
+    parallel([
+      timing(this.state.animTransformSingleNotificationView, {
+        toValue: 0,
+        duration: 400
+      })
+    ]).start()
+  }
+
+  animateOutSingleNotificationView() {
+    const timing = Animated.timing
+
+    timing(this.state.animTransformSingleNotificationView, {
+      toValue: CONSTANTS.SCREEN_WIDTH,
+      duration: 400
+    }).start(() => {
+      this.setState({ singleNotification: false, title: 'Notifications' })
+    })
+  }
+
   get renderDeleteComponent() {
     return (
       <View style={styles.swipeItemContainer}>
@@ -413,14 +496,31 @@ class NotificationScreen extends React.Component {
       }
     ];
 
+    if (data.id === 'empty_activity_feed_key') {
+      return (
+        _.isEmpty(this.state.invitedFeedList) ?
+        null
+        :
+        <View style={styles.sectionView}>
+          <Text style={styles.sectionTitle}>
+            Updates
+          </Text>
+        </View>
+      )
+    }
+
     return (
-      <View style={[styles.activityItem, data.read === true && { backgroundColor: '#fff' }]}>
+      <View>
         <Swipeout
           style={styles.itemContainer}
           autoClose={true}
+          disabled={!this.state.singleNotification}
           right={swipeoutBtns}
-        > 
-          <ActivityFeedComponent user={this.props.user} data={data} onReadActivity={() => this.onReadActivity(data)} />
+        >
+          {this.state.singleNotification
+            ? <ActivityFeedComponent user={this.props.user} data={data} onReadActivity={() => this.onReadActivity(data)} />
+            : <ActivityFeedGroupComponent user={this.props.user} data={data} onGroupItemSelect={() => this.onGroupItemSelect(data)} />
+          }
         </Swipeout>
       </View>
     );
@@ -480,11 +580,15 @@ class NotificationScreen extends React.Component {
   }
 
   renderItem({ item }) {
-    if (item.hasOwnProperty('activityTypeEnum')) {
+    if (item.hasOwnProperty('activities')) {
       return this.renderActivityFeedItem(item)
     } else {
       return this.renderInvitedFeedItem(item)
     }
+  }
+
+  renderSingleNotificationItem({ item }) {
+    return this.renderActivityFeedItem(item)
   }
 
   renderFooter = () => {
@@ -500,16 +604,16 @@ class NotificationScreen extends React.Component {
   renderSeparator = () => (
     <View style={styles.separator} /> 
   )
-  
+
   render () {
-    const { notificationList, loading } = this.state
+    const { notificationList, singleNotificationList, loading, singleNotification } = this.state
 
     return (
       <View style={styles.container}>
         <SafeAreaView style={{ flex: 1 }}>
           {this.renderHeader}
 
-          {notificationList.length > 0
+          {!singleNotification && (notificationList.length > 0
           ? <FlatList
               style={styles.flatList}
               contentContainerStyle={styles.contentFlatList}
@@ -537,7 +641,34 @@ class NotificationScreen extends React.Component {
               <Text style={styles.subTitle}>Invite a friend to your flows and </Text>
               <Text style={styles.subTitle}>you'll see their activity here 👇.</Text>
             </View>
-          }
+          )}
+
+          {singleNotification && singleNotificationList.length > 0 && (
+            <Animated.View
+              style={{
+                transform: [{ translateX: this.state.animTransformSingleNotificationView }],
+              }}
+            >
+              <FlatList
+                style={styles.flatList}
+                contentContainerStyle={styles.contentFlatList}
+                data={singleNotificationList}
+                keyExtractor={item => item.id}
+                automaticallyAdjustContentInsets={true}
+                renderItem={this.renderSingleNotificationItem.bind(this)}
+                // ListFooterComponent={this.renderFooter}
+                refreshControl={
+                  <RefreshControl 
+                    refreshing={this.state.refreshing}
+                    onRefresh={this.handleRefresh}
+                    tintColor={COLORS.PURPLE}
+                  />
+                }
+                onEndReached={this.handleLoadMore}
+                onEndReachedThreshold={0}
+              />
+            </Animated.View>
+          )}
 
           {loading && <LoadingScreen />}
 
@@ -769,6 +900,7 @@ const mapDispatchToProps = dispatch => ({
   getActivityFeed: (userId, param) => dispatch(getActivityFeed(userId, param)),
   readAllActivityFeed: (userId) => dispatch(readAllActivityFeed(userId)),
   readActivityFeed: (userId, activityId) => dispatch(readActivityFeed(userId, activityId)),
+  readActivityGroup: (userId, activityGroupId) => dispatch(readActivityGroup(userId, activityGroupId)),
   alreadyReadActivityFeed: (activityId) => dispatch(alreadyReadActivityFeed(activityId)),
   deleteActivityFeed: (userId, activityId) => dispatch(deleteActivityFeed(userId, activityId)),
   getFeedDetail: (feedId) => dispatch(getFeedDetail(feedId)),

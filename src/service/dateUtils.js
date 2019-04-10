@@ -30,17 +30,27 @@ const getFullDurationFromNow = (date) => {
   // Return days if over 24 hours
   if (hours > 24) {
     const days = now.diff(date, 'days')
-    return days + ' day'
+
+    if (days === 1)
+      return days + ' day'
+
+    return days + ' days'
   }
   // Return hours over an hour and less than a day
   else if (hours > 0) {
-    return hours + ' hour'
+    if (hours === 1)
+      return hours + ' hour'
+
+    return hours + ' hours'
   }
   // Return minutes if less then an hour
   else {
     const minutes = now.diff(date, 'minutes')
     if (minutes > 0) {
-      return minutes + ' min'
+      if (minutes === 1)
+        return minutes + ' min'
+  
+      return minutes + ' mins'
     }
     return 'just now'
   }
