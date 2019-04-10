@@ -45,11 +45,11 @@ axios.interceptors.response.use(
       (error.response.status === 401 && error.response.data.code === 'session.expired') ||
       (error.response.status === 403 && error.response.data.code === 'error.user.not.authenticated')
     )) {
-      AsyncStorage.removeItem('xAuthToken')
-      SharedGroupPreferences.setItem('xAuthToken', null, CONSTANTS.APP_GROUP_TOKEN_IDENTIFIER)
+        AsyncStorage.removeItem('xAuthToken')
+        SharedGroupPreferences.setItem('xAuthToken', null, CONSTANTS.APP_GROUP_TOKEN_IDENTIFIER)
 
-      if (Actions.currentScene !== 'TutorialScreen') {
-        Actions.LoginScreen({ type: 'replace' })
+        if (Actions.currentScene !== 'TutorialScreen') {
+          Actions.LoginScreen({ type: 'replace' })
       }
       return
     }
@@ -85,6 +85,11 @@ import NotificationScreen from './src/containers/NotificationScreen'
 import TabbarContainer from './src/navigations/TabbarContainer'
 import TermsAndConditionsConfirmScreen from './src/containers/TermsAndConditionsConfirmScreen'
 import ProfilePremiumScreen from './src/containers/ProfilePremiumScreen'
+
+import ShareCardScreen from './src/share/ShareCardScreen'
+import ShareModalScreen from './src/share/ShareModalScreen'
+import ChooseLinkImageFromExtension from './src/share/ChooseLinkImageFromExtension'
+import ShareSuccessScreen from './src/share/ShareSuccessScreen'
 
 import {
   getCardComments,
@@ -212,12 +217,19 @@ export default class Root extends React.Component {
       this.setState({ loading: false })
       this.setState({ loginState: 0 })
     }
+
+    AsyncStorage.getItem("AndroidShareExtension").then((value) => {
+      AsyncStorage.removeItem('AndroidShareExtension');
+    });
+
+    await AsyncStorage.setItem(CONSTANTS.ANDROID_SHARE_EXTENTION_FLAG, 'false')
   }
 
   componentDidMount() {
     YellowBox.ignoreWarnings(['Module RNDocumentPicker'])
     YellowBox.ignoreWarnings(['Module ReactNativeShareExtension'])
     YellowBox.ignoreWarnings(['Setting a timer']);
+    YellowBox.ignoreWarnings(['`createNavigationContainer()` has been deprecated']);
   }
 
   componentWillUnmount() {
@@ -288,6 +300,63 @@ export default class Root extends React.Component {
             }
         }
 
+        // Share extension for Android
+        if (Platform.OS === 'android') {
+          AsyncStorage.getItem(CONSTANTS.ANDROID_SHARE_EXTENTION_FLAG, (error, result) => {
+
+            const isAndroidShareExtension = result === null ? 'true' : result
+            AsyncStorage.setItem(CONSTANTS.ANDROID_SHARE_EXTENTION_FLAG, 'false')
+
+            if (isAndroidShareExtension === 'true') {
+              var searchIndex = -1;
+              for (i = 3; i < params.length; i ++) {
+                if (params[i] === 'share') {
+                  searchIndex = i
+                  break;
+                }
+              }
+              if (searchIndex !== -1) {
+                var type = '';
+                if (params[searchIndex + 1] === 'image') {
+                  type = 'images'
+                  searchIndex ++;
+                } else if (params[searchIndex + 1] === 'url') {
+                  type = 'url'
+                } else {
+                  console.log('error: wrong share link')
+                }
+
+                var value = ''
+                for (i = searchIndex+2; i < params.length; i ++)
+                {
+                  if (params[i] !== '') {
+                    if (i === params.length - 1)
+                      value += `${params[i]}`
+                    else
+                      value += `${params[i]}/`
+                  }
+                }
+                console.log('path: ', type, value)
+
+                AsyncStorage.getItem("xAuthToken").then((token) => {
+                  if (token) {
+                    const currentScene = Actions.currentScene
+                    const data = {
+                      type,
+                      value,
+                    }
+                    AsyncStorage.setItem('AndroidShareExtension', JSON.stringify(data));
+                    Actions.ChooseLinkImageFromExtension({mode: type, value: value, prev_scene: currentScene});
+                  }
+                  else {
+                    Actions.LoginScreen()
+                  }
+                });
+              }
+            }
+          })
+        }
+
       } else {
         if (Platform.OS === 'ios') {
           Linking.openURL(`https://itunes.apple.com/${APP_LOCALE}/app/${APP_NAME}/id${APP_STORE_ID}`)
@@ -304,6 +373,7 @@ export default class Root extends React.Component {
 
   render() {
     const { loginState } = this.state
+    const isAndroid = Platform.OS === 'android'
 
     const scenes = Actions.create(
       <Lightbox>
@@ -327,6 +397,11 @@ export default class Root extends React.Component {
               <Scene key="ResetPasswordSuccessScreen" component={ ResetPasswordSuccessScreen } hideNavBar panHandlers={null} />
               <Scene key="FeedFilterScreen" component={ FeedFilterScreen } hideNavBar />
               <Scene key="PremiumScreen" component={ ProfilePremiumScreen } navigationBarStyle={styles.defaultNavigationBar} />
+              <Scene key={isAndroid ? "ChooseLinkImageFromExtension" : "none1"} component={ChooseLinkImageFromExtension} hideNavBar panHandlers={null}/>
+              <Scene key={isAndroid ? "ShareCardScreen" : "none2"} component={ShareCardScreen} hideNavBar panHandlers={null} />
+              <Scene key={isAndroid ? "ShareSuccessScreen" : "none3"} component={ShareSuccessScreen}  hideNavBar panHandlers={null} />
+              <Scene key={isAndroid ? "ShareModalScreen" : "none4"} component={ShareModalScreen} okLabel='Sign In' hideNavBar panHandlers={null} />
+
             </Scene>
           </Tabs>
           <Stack key="ProfileScreen" hideNavBar>

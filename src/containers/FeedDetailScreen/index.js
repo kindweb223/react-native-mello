@@ -313,10 +313,12 @@ class FeedDetailScreen extends React.Component {
 
       const currentFeed = feedo.currentFeed
       let filterIdeas = currentFeed.ideas
+
       for (let i = 0; i < this.userActions.length; i ++) {
         const cardInfo = this.userActions[i];
         filterIdeas = _.filter(filterIdeas, idea => _.findIndex(cardInfo.cardList, card => card.idea.id === idea.id ) === -1)
       }
+
       currentFeed.ideas = filterIdeas;
 
       currentFeed.ideas.map(idea => {

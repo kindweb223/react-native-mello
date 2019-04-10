@@ -278,6 +278,21 @@ class HomeScreen extends React.Component {
     AppState.addEventListener('change', this.onHandleAppStateChange.bind(this));
     appOpened(this.props.user.userInfo.id);
 
+    //for android share extension when app launched at first
+    if (Platform.OS === 'android') {
+      AsyncStorage.getItem("AndroidShareExtension").then((value) => {
+        let shareExtData = JSON.parse(value)
+        console.log('shareExtensionData', shareExtData)
+        if (shareExtData !== null && shareExtData.type !== '' && shareExtData.value !== '') {
+          setTimeout(() => {
+            Actions.ChooseLinkImageFromExtension({mode: shareExtData.type, value: shareExtData.value, prev_scene: 'HomeScreen'});
+          }, 100)
+        }
+
+        AsyncStorage.removeItem('AndroidShareExtension');
+      });
+    }
+
     BackHandler.addEventListener('hardwareBackPress', this.handleBackButton);
   }
 
@@ -1536,6 +1551,7 @@ class HomeScreen extends React.Component {
               animatedSelectFeed={this.animatedSelectFeed}
               updateSelectIndex={this.updateSelectedFeedList}
               handleLongHoldMenu={this.handleLongHoldMenu}
+              clearCurrentFeed={() => this.props.setCurrentFeed({})}
               page="home"
               isRefreshing={this.state.isRefreshing}
               onRefreshFeed={() => this.onRefreshFeed()}

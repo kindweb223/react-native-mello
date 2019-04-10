@@ -11,6 +11,7 @@ import com.robinpowered.react.Intercom.IntercomPackage;
 import io.intercom.android.sdk.Intercom;
 import org.devio.rn.splashscreen.SplashScreenReactPackage;
 import fr.snapp.imagebase64.RNImgToBase64Package;
+import io.solvers.feedo.shareextension.SharePackage;
 import me.hauvo.thumbnail.RNThumbnailPackage;
 import co.apptailor.googlesignin.RNGoogleSigninPackage;
 import com.mkuczera.RNReactNativeHapticFeedbackPackage;
@@ -56,6 +57,7 @@ public class MainApplication extends Application implements ReactApplication {
             new RNFSPackage(),
             new RNFileViewerPackage(),
             new RNTextSizePackage(),
+            new SharePackage(),
             new IntercomPackage(),
             new SplashScreenReactPackage(),
             new RNImgToBase64Package(),

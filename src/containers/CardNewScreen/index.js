@@ -179,11 +179,14 @@ class CardNewScreen extends React.Component {
       props.shareImageUrls.forEach( async(imageUri, index) => {
         const fileName = imageUri.substring(imageUri.lastIndexOf("/") + 1, imageUri.length);
         const {width, height} = await this.getImageSize(imageUri);
+        const type = mime.lookup(imageUri) || 'image/jpeg';
+
         this.shareImageUrls.push({
           uri: imageUri,
           fileName,
           width,
           height,
+          type,
         });
         if (index === 0 && this.state.coverImage === '') {
           this.setState({
@@ -442,7 +445,7 @@ class CardNewScreen extends React.Component {
         this.saveFeedId();
       }
       if (this.props.cardMode === CONSTANTS.SHARE_EXTENTION_CARD) {
-        Actions.ShareSuccessScreen({type: 'replace'});
+        Actions.ShareSuccessScreen({type: 'replace', prev_scene: this.props.prev_scene});
         return;
       }
       this.onClose();
@@ -699,7 +702,7 @@ class CardNewScreen extends React.Component {
       this.safariViewDismissSubscription = SafariView.addEventListener('onDismiss', () => this.safariViewDismiss());
     }
 
-    if (Platform.OS === 'android' && this.props.isClipboard === true) {
+    if (Platform.OS === 'android' && (this.props.isClipboard === true || this.props.cardMode === CONSTANTS.SHARE_EXTENTION_CARD)) {
       this.keyboardDidShowSubscription = Keyboard.addListener('keyboardDidShow', (e) => this.keyboardDidShow(e));
       this.keyboardDidHideSubscription = Keyboard.addListener('keyboardDidHide', (e) => this.keyboardDidHide(e));
     }
@@ -736,14 +739,14 @@ class CardNewScreen extends React.Component {
 
   keyboardDidShow(e) {
     // Padding issue with Android in clipboard mode
-    if(Platform.OS === 'android' && this.props.isClipboard === true) {
-      this.setState({ bottomButtonsPadding: 24 })
+    if(Platform.OS === 'android' && (this.props.isClipboard === true || this.props.cardMode === CONSTANTS.SHARE_EXTENTION_CARD)) {
+      this.setState({bottomButtonsPadding: 24})
     }
 
     Animated.timing(
       this.animatedKeyboardHeight, {
         toValue: e.endCoordinates.height,
-        duration: Platform.OS === 'android' && this.props.isClipboard === true ? 30 : e.duration,
+        duration: Platform.OS === 'android' && (this.props.isClipboard === true || this.props.cardMode === CONSTANTS.SHARE_EXTENTION_CARD) ? CONSTANTS.ANIMATEION_MILLI_SECONDS : e.duration,
       }
     ).start(() => {
       if (this.isDisabledKeyboard === true) {
@@ -754,14 +757,14 @@ class CardNewScreen extends React.Component {
 
   keyboardDidHide(e) {
     // Padding issue with Android in clipboard mode
-    if(Platform.OS === 'android' && this.props.isClipboard === true) {
-      this.setState({ bottomButtonsPadding: 0 })
+    if(Platform.OS === 'android' && (this.props.isClipboard === true || this.props.cardMode === CONSTANTS.SHARE_EXTENTION_CARD)) {
+      this.setState({bottomButtonsPadding: 0})
     }
 
     Animated.timing(
       this.animatedKeyboardHeight, {
         toValue: 0,
-        duration: Platform.OS === 'android' && this.props.isClipboard === true ? 30 : e.duration,
+        duration: Platform.OS === 'android' && (this.props.isClipboard === true || this.props.cardMode === CONSTANTS.SHARE_EXTENTION_CARD) ? CONSTANTS.ANIMATEION_MILLI_SECONDS : e.duration,
       }
     ).start();
   }
@@ -780,11 +783,11 @@ class CardNewScreen extends React.Component {
     const { cardMode, viewMode, prevPage } = this.props;
     if (prevPage !== 'card' && (cardMode === CONSTANTS.MAIN_APP_CARD_FROM_DASHBOARD) || (cardMode === CONSTANTS.SHARE_EXTENTION_CARD)) {
       try {
-        const strFeedoInfo = await SharedGroupPreferences.getItem(CONSTANTS.CARD_SAVED_LAST_FEEDO_INFO, CONSTANTS.APP_GROUP_LAST_USED_FEEDO);
+        const strFeedoInfo = await COMMON_FUNC.getLastFeed();
         if (strFeedoInfo) {
           const feedoInfo = JSON.parse(strFeedoInfo);
-          const diffHours = moment().diff(moment(feedoInfo.time, 'LLL'), 'hours');
-          if (diffHours < 1) {
+          
+          if (COMMON_FUNC.useLastFeed(feedoInfo)) {
             const currentFeed = _.find(currentProps.feedo.feedoList, feed => feed.id === feedoInfo.feedoId)
             if (currentFeed) {
               this.props.setCurrentFeed(currentFeed);
@@ -814,12 +817,7 @@ class CardNewScreen extends React.Component {
   }
 
   saveFeedId() {
-    const feedoInfo = {
-      time: moment().format('LLL'),
-      feedoId: this.props.feedo.currentFeed.id,
-      currentFeed: this.props.feedo.currentFeed
-    }
-    SharedGroupPreferences.setItem(CONSTANTS.CARD_SAVED_LAST_FEEDO_INFO, JSON.stringify(feedoInfo), CONSTANTS.APP_GROUP_LAST_USED_FEEDO)
+    COMMON_FUNC.setLastFeed(this.props.feedo.currentFeed)
   }
 
   // checkUrl(content) {
@@ -1816,7 +1814,7 @@ class CardNewScreen extends React.Component {
     if (cardMode === CONSTANTS.SHARE_EXTENTION_CARD) {
       let bottomMargin = CONSTANTS.SCREEN_VERTICAL_MIN_MARGIN;
       if (this.state.isShowKeyboardButton) {
-        bottomMargin = 20;
+        bottomMargin = Platform.OS === 'ios' ? 20 : 40;
       }
       contentContainerStyle = {
         height: Animated.subtract(CONSTANTS.SCREEN_HEIGHT - CONSTANTS.SCREEN_VERTICAL_MIN_MARGIN - bottomMargin, this.animatedKeyboardHeight),
@@ -1977,6 +1975,7 @@ CardNewScreen.defaultProps = {
   shareText: '',
   onClose: () => {},
   isClipboard: false,
+  prev_scene: '',
   fileData: {}
 }
 
@@ -1993,6 +1992,7 @@ CardNewScreen.propTypes = {
   shareText: PropTypes.string,
   onClose: PropTypes.func,
   isClipboard: PropTypes.bool,
+  prev_scene: PropTypes.string,
   fileData: PropTypes.object
 }
 
