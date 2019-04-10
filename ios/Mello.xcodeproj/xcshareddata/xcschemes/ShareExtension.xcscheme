@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Scheme
-   LastUpgradeVersion = "1010"
+   LastUpgradeVersion = "1020"
    wasCreatedForAppExtension = "YES"
    version = "2.0">
    <BuildAction
@@ -15,9 +15,9 @@
             buildForAnalyzing = "YES">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "A4CD668D2139B67F00874CB1"
-               BuildableName = "MelloEx.appex"
-               BlueprintName = "MelloEx"
+               BlueprintIdentifier = "3984D08022527DD000042F75"
+               BuildableName = "ShareExtension.appex"
+               BlueprintName = "ShareExtension"
                ReferencedContainer = "container:Mello.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
@@ -47,9 +47,9 @@
       <MacroExpansion>
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "A4CD668D2139B67F00874CB1"
-            BuildableName = "MelloEx.appex"
-            BlueprintName = "MelloEx"
+            BlueprintIdentifier = "3984D08022527DD000042F75"
+            BuildableName = "ShareExtension.appex"
+            BlueprintName = "ShareExtension"
             ReferencedContainer = "container:Mello.xcodeproj">
          </BuildableReference>
       </MacroExpansion>
@@ -81,13 +81,12 @@
             ReferencedContainer = "container:Mello.xcodeproj">
          </BuildableReference>
       </MacroExpansion>
-      <EnvironmentVariables>
-         <EnvironmentVariable
-            key = "OS_ACTIVITY_MODE"
-            value = "disable"
+      <CommandLineArguments>
+         <CommandLineArgument
+            argument = " -FIRAnalyticsDebugEnabled"
             isEnabled = "YES">
-         </EnvironmentVariable>
-      </EnvironmentVariables>
+         </CommandLineArgument>
+      </CommandLineArguments>
       <AdditionalOptions>
       </AdditionalOptions>
    </LaunchAction>
