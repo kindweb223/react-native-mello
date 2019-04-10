@@ -36,6 +36,8 @@ class FeedoListContainer extends React.Component {
     const { feedClickEvent } = this.props
 
     if (feedClickEvent === 'normal') {
+      this.props.clearCurrentFeed()
+
       Actions.FeedDetailScreen({
         data: item
       })
