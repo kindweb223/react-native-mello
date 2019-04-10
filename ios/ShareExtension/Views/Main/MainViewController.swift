@@ -302,7 +302,7 @@ class MainViewController: UIViewController {
         }
         
         API.shared.newCard(parsedURL: withParsedUrl, selectedImageUrls: imagesWithSize, text: description, inFlow: flow) { success in
-          API.shared.setDefaultFlow(flow: flow)
+          SharedPreferences().setRecentFlow(flow: flow)
           if success {
             loadingVC.update(.success(flow: flow, imageUrl: imagesWithSize.first?.url))
           } else {
@@ -439,7 +439,7 @@ extension MainViewController: LocalImageViewControllerDelegate {
         self.uploadImagesToNewCard(images, withText: text, forFlow: createdFlow, stepper: { count, total in
           loadingVC.update(.step(count: count, total: total), animated: false)
         }) { success in
-          API.shared.setDefaultFlow(flow: createdFlow)
+          SharedPreferences().setRecentFlow(flow: createdFlow)
           if success {
             loadingVC.update(.success(flow: createdFlow, imageUrl: nil))
           } else {
@@ -471,7 +471,7 @@ extension MainViewController: LocalImageViewControllerDelegate {
       
       self.addImagesToTempCard(images, cardId: cardId, forFlow: flow, stepper: stepper, completion: { hadErrors in
         API.shared.publishCard(cardId, text: text, flowId: flow.id, completion: {
-          API.shared.setDefaultFlow(flow: flow)
+          SharedPreferences().setRecentFlow(flow: flow)
           completion(!hadErrors)
         })
       })
@@ -570,7 +570,7 @@ extension MainViewController: TextViewControllerDelegate {
             return
           }
           API.shared.publishCard(cardId, text: text, flowId: createdFlow.id, completion: {
-            API.shared.setDefaultFlow(flow: createdFlow)
+            SharedPreferences().setRecentFlow(flow: createdFlow)
             loadingVC.update(.success(flow: createdFlow, imageUrl: nil))
           })
         })
@@ -653,7 +653,7 @@ extension MainViewController: VideoViewControllerDelegate {
             return
           }
           API.shared.publishCard(cardId, text: text, flowId: createdFlow.id, completion: {
-            API.shared.setDefaultFlow(flow: createdFlow)
+            SharedPreferences().setRecentFlow(flow: createdFlow)
             loadingVC.update(.success(flow: createdFlow, imageUrl: nil))
           })
         })

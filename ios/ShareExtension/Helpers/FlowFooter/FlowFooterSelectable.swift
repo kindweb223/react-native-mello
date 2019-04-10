@@ -39,7 +39,7 @@ extension FlowFooterSelectable {
       self?.flowSelectorDidReceiveTap(self?.footerView)
     }
     
-    updateFooterView(selectedFlow: getDefault())
+    updateFooterView(selectedFlow: SharedPreferences().getRecentFlow())
   }
   
   func updateFooterView(selectedFlow: Flow?) {
@@ -62,20 +62,6 @@ extension FlowFooterSelectable {
         // This is in case we have just created a flow, the ID might be updated async
         return AllFlows.shared.flows?.filter({ $0.name == selectedFlow.name }).first
       }
-    }
-    
-    return nil
-  }
-  
-  func getDefault() -> Flow? {
-    if let defaultsString = UserDefaults(suiteName: "group.hunt.mobile.last.feedo")?.string(forKey: "CARD_SAVED_LAST_FEEDO_INFO"),
-      let data = defaultsString.data(using: .utf8),
-      let stringOptional = try? JSONSerialization.jsonObject(with: data, options: .allowFragments) as? String,
-      let jsonData = stringOptional?.data(using: .utf8),
-      let jsonOptional = try? JSONSerialization.jsonObject(with: jsonData, options: .allowFragments) as? JSON,
-      let flowJson = jsonOptional?["currentFeed"] as? JSON,
-      let flow = Flow(json: flowJson) {
-      return flow
     }
     
     return nil
