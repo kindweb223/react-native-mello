@@ -27,6 +27,7 @@ import _ from 'lodash';
 import moment from 'moment'
 import SafariView from "react-native-safari-view";
 import SharedGroupPreferences from 'react-native-shared-group-preferences';
+import * as COMMON_FUNC from '../../service/commonFunc'
 
 import {
   getOpenGraph,
@@ -92,7 +93,8 @@ class CardNewShareScreen extends React.Component {
 
     this.parsingErrorLinks = [];
 
-    this.draftFeedo = null;
+    // On Android as extension is part of main app current feed may already be set
+    this.draftFeedo = _.isEmpty(this.props.feedo.currentFeed) ? null : this.props.feedo.currentFeed;
 
     this.scrollViewHeight = 0;
     this.textInputPositionY = 0;
@@ -188,11 +190,10 @@ class CardNewShareScreen extends React.Component {
       this.setState({cachedFeedList: nextProps.feedo.feedoList, createEnabled: true})
 
       try {
-        const strFeedoInfo = await SharedGroupPreferences.getItem(CONSTANTS.CARD_SAVED_LAST_FEEDO_INFO, CONSTANTS.APP_GROUP_LAST_USED_FEEDO);
+        const strFeedoInfo = await COMMON_FUNC.getLastFeed();
         if (strFeedoInfo) {
           const feedoInfo = JSON.parse(strFeedoInfo);
-          const diffHours = moment().diff(moment(feedoInfo.time, 'LLL'), 'hours');
-          if (diffHours < 1) {
+          if (COMMON_FUNC.useLastFeed(feedoInfo)) {
             const currentFeed = _.find(nextProps.feedo.feedoList, feed => feed.id === feedoInfo.feedoId)
             if (currentFeed) {
               this.props.setCurrentFeed(currentFeed);
@@ -228,7 +229,7 @@ class CardNewShareScreen extends React.Component {
     if (this.props.feedo.loading !== feedoTypes.UPDATE_FEED_FULFILLED && nextProps.feedo.loading === feedoTypes.UPDATE_FEED_FULFILLED) {
       this.setState({ loading: false })
       if (!this.state.isVisibleSelectFeedoModal) {
-        Actions.ShareSuccessScreen({type: 'replace'});
+        Actions.ShareSuccessScreen({type: 'replace', prev_scene: this.props.prev_scene});
       }
     }
 
@@ -270,11 +271,10 @@ class CardNewShareScreen extends React.Component {
     });
 
     try {
-      const strFeedoInfo = await SharedGroupPreferences.getItem(CONSTANTS.CARD_SAVED_LAST_FEEDO_INFO, CONSTANTS.APP_GROUP_LAST_USED_FEEDO);
+      const strFeedoInfo = await COMMON_FUNC.getLastFeed();
       if (strFeedoInfo) {
         const feedoInfo = JSON.parse(strFeedoInfo);
-        const diffHours = moment().diff(moment(feedoInfo.time, 'LLL'), 'hours');
-        if (diffHours < 1) {
+        if (COMMON_FUNC.useLastFeed(feedoInfo)) {
           this.props.setCurrentFeed(feedoInfo.currentFeed);
           this.draftFeedo = feedoInfo.currentFeed
         }
@@ -284,11 +284,15 @@ class CardNewShareScreen extends React.Component {
 
     }
 
-    this.keyboardWillShowSubscription = Keyboard.addListener('keyboardWillShow', (e) => this.keyboardWillShow(e));
-    this.keyboardWillHideSubscription = Keyboard.addListener('keyboardWillHide', (e) => this.keyboardWillHide(e));
     if (Platform.OS === 'ios') {
+      this.keyboardWillShowSubscription = Keyboard.addListener('keyboardWillShow', (e) => this.keyboardWillShow(e));
+      this.keyboardWillHideSubscription = Keyboard.addListener('keyboardWillHide', (e) => this.keyboardWillHide(e));
       this.safariViewShowSubscription = SafariView.addEventListener('onShow', () => this.safariViewShow());
       this.safariViewDismissSubscription = SafariView.addEventListener('onDismiss', () => this.safariViewDismiss());
+    }
+    else {
+      this.keyboardWillShowSubscription = Keyboard.addListener('keyboardDidShow', (e) => this.keyboardWillShow(e));
+      this.keyboardWillHideSubscription = Keyboard.addListener('keyboardDidHide', (e) => this.keyboardWillHide(e));
     }
   }
 
@@ -305,7 +309,7 @@ class CardNewShareScreen extends React.Component {
     Animated.timing(
       this.animatedKeyboardHeight, {
         toValue: e.endCoordinates.height,
-        duration: e.duration,
+        duration: Platform.OS === 'ios' ? e.duration : CONSTANTS.ANIMATEION_MILLI_SECONDS,
       }
     ).start(() => {
       if (this.isDisabledKeyboard === true || !this.textInputIdeaRef) {
@@ -320,7 +324,7 @@ class CardNewShareScreen extends React.Component {
     Animated.timing(
       this.animatedKeyboardHeight, {
         toValue: 0,
-        duration: e.duration,
+        duration: Platform.OS === 'ios' ? e.duration : CONSTANTS.ANIMATEION_MILLI_SECONDS,
       }
     ).start();
   }
@@ -334,12 +338,7 @@ class CardNewShareScreen extends React.Component {
   }
 
   saveFeedId() {
-    const feedoInfo = {
-      time: moment().format('LLL'),
-      feedoId: this.props.feedo.currentFeed.id,
-      currentFeed: this.props.feedo.currentFeed
-    }
-    SharedGroupPreferences.setItem(CONSTANTS.CARD_SAVED_LAST_FEEDO_INFO, JSON.stringify(feedoInfo), CONSTANTS.APP_GROUP_LAST_USED_FEEDO)
+    COMMON_FUNC.setLastFeed(this.props.feedo.currentFeed)
   }
 
   compareUrls(linkUrl, currentUrl) {
@@ -439,7 +438,7 @@ class CardNewShareScreen extends React.Component {
         this.props.updateFeed(id, headline || 'New flow', summary || '', tags, files);
       } else {
         this.setState({ loading: false })
-        Actions.ShareSuccessScreen({type: 'replace'})
+        Actions.ShareSuccessScreen({type: 'replace', prev_scene: this.props.prev_scene});
       }
     }
   }
@@ -636,7 +635,7 @@ class CardNewShareScreen extends React.Component {
     let contentContainerStyle = {};
     let bottomMargin = CONSTANTS.SCREEN_VERTICAL_MIN_MARGIN;
     if (this.state.isShowKeyboardButton) {
-      bottomMargin = 20;
+      bottomMargin = Platform.OS === 'ios' ? 20 : 40;
     }
 
     contentContainerStyle = {
@@ -701,6 +700,7 @@ CardNewShareScreen.defaultProps = {
   shareImageUrls: [],
   shareText: '',
   onClose: () => {},
+  prev_scene: '',
 }
 
 
@@ -710,6 +710,7 @@ CardNewShareScreen.propTypes = {
   shareImageUrls: PropTypes.array,
   shareText: PropTypes.string,
   onClose: PropTypes.func,
+  prev_scene: PropTypes.string,
 }
 
 

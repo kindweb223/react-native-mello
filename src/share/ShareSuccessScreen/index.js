@@ -1,9 +1,10 @@
 import React from 'react'
-import { View, Text, Animated, PanResponder, Image } from 'react-native'
+import { View, Text, Animated, PanResponder, Image, AsyncStorage, Platform } from 'react-native'
 import { connect } from 'react-redux'
 import * as mime from 'react-native-mime-types';
 import SVGImage from 'react-native-remote-svg';
 import SvgUri from 'react-native-svg-uri';
+import { Actions } from 'react-native-router-flux'
 
 import { SCHEME } from '../../service/api'
 import ShareExtension from '../shareExtension'
@@ -128,10 +129,42 @@ class ShareSuccessScreen extends React.Component {
         this.showClipboardTimeout = null;
       }
       if (isSelect) {
-        ShareExtension.goToMainApp(SCHEME + `flow/${this.props.feedo.currentFeed.id}`);
-        ShareExtension.close();
-      } else {
-        ShareExtension.close();
+        console.log('FEED_ID: ', this.props.feedo.currentFeed.id)
+        if (Platform.OS === 'ios') {
+          ShareExtension.goToMainApp(SCHEME + `flow/${this.props.feedo.currentFeed.id}`);
+          ShareExtension.close();
+        }
+        else {
+          const data = {
+            id: this.props.feedo.currentFeed.id
+          }
+          const userInfo = AsyncStorage.getItem('userInfo')
+          console.log('data: ', data, userInfo)
+          // store.dispatch(getFeedoList())
+          if (userInfo) {
+            if (Actions.currentScene === 'FeedDetailScreen') {
+              Actions.FeedDetailScreen({type: 'replace', data, isDeepLink: true});
+            } else {
+              Actions.FeedDetailScreen({data, isDeepLink: true})
+            }
+          }
+          else {
+            Actions.LoginScreen()
+          }
+        }
+      } 
+      else {
+        if (Platform.OS === 'ios')
+          ShareExtension.close();
+        else {
+          //go to previous scene
+          if (this.props.prev_scene !== '') {
+            Actions.popTo(this.props.prev_scene)
+          }
+          setTimeout(() => {
+            ShareExtension.close();
+          }, 10)
+        }
       }
     })
   }

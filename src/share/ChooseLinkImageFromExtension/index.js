@@ -5,10 +5,12 @@ import {
   TouchableOpacity,
   FlatList,
   Image,
+  Platform,
 } from 'react-native'
 import { connect } from 'react-redux'
 import { Actions } from 'react-native-router-flux'
 import Ionicons from 'react-native-vector-icons/Ionicons';
+import PropTypes from 'prop-types'
 
 import styles from './styles'
 import { 
@@ -39,31 +41,48 @@ class ChooseLinkImageFromExtension extends React.Component {
 
   async componentDidMount() {
     try {
-      const { type, value } = await ShareExtension.data();
-      console.log('SHARE_DATA: ', type, value)
-      if (type === 'url') {
+      var type_, value_;
+
+      if (Platform.OS === 'ios') {
+        const { type, value } = await ShareExtension.data();
+        type_ = type
+        value_ = value
+      }
+      else 
+      {
+        type_ = this.props.mode
+        value_ = this.props.value
+      }
+      console.log('SHARE_DATA: ', type_, value_)
+      
+      if (type_ === 'url') {
         this.setState({initialized: true});
-        const urls = value.match(/(http(s)?:\/\/.)?(www\.)?[-a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,6}\b([-a-zA-Z0-9@:%_\+.~#?&//=]*)/gi);
+        const urls = value_.match(/(http(s)?:\/\/.)?(www\.)?[-a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,6}\b([-a-zA-Z0-9@:%_\+.~#?&//=]*)/gi);
         if (urls === null)
         {
-          const text = value;
+          const text = value_;
           if (text !== '') {
             Actions.ShareCardScreen({
               notesText: text,
+              prev_scene: this.props.prev_scene
             });
           }
         } else {
           this.shareUrl = urls[0]
           this.props.getOpenGraph(urls[0], true)
         }
-      } else if (type === 'images') {
-        const images = value.split(" , ");
+      } else if (type_ === 'images') {
+        const images = value_.split(" , ");
         if (images.length > 0) {
           Actions.ShareCardScreen({
             imageUrls: images,
+            prev_scene: this.props.prev_scene
           });
         }
       } 
+      else {
+        console.log('error: wrong share link', type_, value_)
+      }
     } catch(error) {
       console.log('error : ', error)
     }
@@ -127,16 +146,25 @@ class ChooseLinkImageFromExtension extends React.Component {
     Actions.ShareCardScreen({
       imageUrls: [imageUrl],
       shareUrl: this.shareUrl,
+      prev_scene: this.props.prev_scene
     });
   }
 
   onCancel() {
-    ShareExtension.close();
+    if (Platform.OS === 'ios')
+      ShareExtension.close();
+    else {
+      Actions.pop()
+      setTimeout(() => {
+        ShareExtension.close();
+      }, 10)
+    }
   }
 
   onSkip() {
     Actions.ShareCardScreen({
       shareUrl: this.shareUrl,
+      prev_scene: this.props.prev_scene
     });
   }
 
@@ -239,10 +267,16 @@ class ChooseLinkImageFromExtension extends React.Component {
 
 
 ChooseLinkImageFromExtension.defaultProps = {
+  mode: '',
+  value: '',
+  prev_scene: '',
 }
 
 
 ChooseLinkImageFromExtension.propTypes = {
+  mode: PropTypes.string,
+  value: PropTypes.string,
+  prev_scene: PropTypes.string,
 }
 
 

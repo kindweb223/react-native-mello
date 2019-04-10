@@ -3,6 +3,7 @@ import {
   View,
   TouchableOpacity,
   Text,
+  Platform
 } from 'react-native'
 import PropTypes from 'prop-types'
 
@@ -12,6 +13,7 @@ import Modal from 'react-native-modalbox'
 import CONSTANTS from '../../service/constants'
 import COLORS from '../../service/colors'
 import { SCHEME } from '../../service/api'
+import { Actions } from 'react-native-router-flux'
 
 
 export default class ShareModalScreen extends React.Component {
@@ -26,7 +28,14 @@ export default class ShareModalScreen extends React.Component {
   }
 
   onClosed() {
-    ShareExtension.close();
+    if (Platform.OS === 'ios')
+      ShareExtension.close();
+    else {
+      Actions.pop()
+      setTimeout(() => {
+        ShareExtension.close();
+      }, 10)
+    }
   }
 
   onPressOk() {
@@ -119,7 +128,10 @@ ShareModalScreen.defaultProps = {
   buttons: CONSTANTS.MODAL_OK | CONSTANTS.MODAL_CLOSE,
   okLabel: 'OK',
   onOk: () => {
-    ShareExtension.goToMainApp(SCHEME);
+    if (Platform.OS === 'ios')
+      ShareExtension.goToMainApp(SCHEME);
+    else 
+      Actions.HomeScreen();
   },
   onClose: () => {},
 }
