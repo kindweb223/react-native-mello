@@ -1,6 +1,6 @@
 {
   "name": "Mello",
-  "version": "1.0.69",
+  "version": "1.0.70",
   "private": true,
   "scripts": {
     "start": "node node_modules/react-native/local-cli/cli.js start",

@@ -783,10 +783,8 @@ class CardNewScreen extends React.Component {
     const { cardMode, viewMode, prevPage } = this.props;
     if (prevPage !== 'card' && (cardMode === CONSTANTS.MAIN_APP_CARD_FROM_DASHBOARD) || (cardMode === CONSTANTS.SHARE_EXTENTION_CARD)) {
       try {
-        const strFeedoInfo = await COMMON_FUNC.getLastFeed();
-        if (strFeedoInfo) {
-          const feedoInfo = JSON.parse(strFeedoInfo);
-          
+        const feedoInfo = await COMMON_FUNC.getLastFeed();        
+        if (feedoInfo) {          
           if (COMMON_FUNC.useLastFeed(feedoInfo)) {
             const currentFeed = _.find(currentProps.feedo.feedoList, feed => feed.id === feedoInfo.feedoId)
             if (currentFeed) {
