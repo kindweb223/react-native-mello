@@ -91,7 +91,7 @@ class CKEditor extends React.Component {
 
 CKEditor.defaultProps = {
   scrollEnabled: false,
-  startInLoadingState: true,
+  startInLoadingState: false,
   useWebKit: true,
   hideKeyboardAccessoryView: false,
   automaticallyAdjustContentInsets: true,

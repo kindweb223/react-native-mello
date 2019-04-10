@@ -78,13 +78,6 @@ class FeedCardListComponent extends React.Component {
                   onLongPress={() => longHold ? {} : this.props.onLinkLongPress()}
                   suppressHighlighting={true}
                 />
-                {/* <HTML
-                  html={idea.idea}
-                  style={styles.title}
-                  classesStyles={CONSTANTS.HTML_CLASS_STYLES}
-                  tagsStyles={CONSTANTS.HTML_TAGS_STYLE}
-                  onLinkPress={(evt, href) => this.onPressLink(href)}
-                /> */}
               </View>
             )}
           </View>
