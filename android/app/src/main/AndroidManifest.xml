@@ -1,4 +1,5 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     package="io.solvers.feedo">
 
     <uses-permission android:name="android.permission.INTERNET" />
@@ -34,6 +35,7 @@
       android:roundIcon="@mipmap/ic_launcher_round"
       android:allowBackup="false"
       android:theme="@style/AppTheme"
+      tools:ignore="GoogleAppIndexingWarning"
       xmlns:tools="http://schemas.android.com/tools">
 
       <activity
@@ -52,6 +54,7 @@
         android:launchMode="singleTask"
         android:configChanges="keyboard|keyboardHidden|orientation|screenSize"
         android:windowSoftInputMode="adjustResize"
+        android:documentLaunchMode="never"
         android:exported="true"
         android:screenOrientation="portrait">
         <intent-filter>
@@ -64,8 +67,26 @@
           <data android:scheme="https" android:host="demos.solvers.io"/>
           <data android:scheme="https" android:host="my.melloapp.com"/>
         </intent-filter>
+
       </activity>
       <activity android:name="com.facebook.react.devsupport.DevSettingsActivity" />
+
+      <!--Share Extension-->
+      <activity
+        android:noHistory="true"
+        android:name=".share.ShareActivity"
+        android:configChanges="orientation"
+        android:label="@string/title_activity_share"
+        android:screenOrientation="portrait"
+        android:theme="@style/Theme.Share.Transparent" >
+        <intent-filter>
+            <action android:name="android.intent.action.SEND" />
+            <category android:name="android.intent.category.DEFAULT" />
+            <data android:mimeType="text/plain" />
+            <data android:mimeType="image/*" />
+        </intent-filter>
+      </activity>
+      <!--Share Extension-->
 
         <meta-data  android:name="com.dieam.reactnativepushnotification.notification_channel_name"
             android:value="Mello Notification"/>
@@ -85,7 +106,7 @@
         <meta-data
             android:name="com.google.firebase.messaging.default_notification_color"
             android:resource="@color/purple" />
-            
+
         <!-- < Only if you're using GCM or localNotificationSchedule() > -->
         <receiver
             android:name="com.google.android.gms.gcm.GcmReceiver"

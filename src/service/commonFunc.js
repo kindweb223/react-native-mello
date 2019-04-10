@@ -1,7 +1,8 @@
 import {
   Share,
   Platform,
-  Alert
+  Alert,
+  AsyncStorage
 } from 'react-native'
 
 import { Actions } from 'react-native-router-flux'
@@ -10,6 +11,8 @@ import { SHARE_LINK_URL } from "../service/api"
 import COLORS from '../service/colors'
 import CONSTANTS from '../service/constants'
 import AlertController from '../components/AlertController'
+import SharedGroupPreferences from 'react-native-shared-group-preferences'
+import moment from 'moment'
 
 /**
  * If the user is the invitee, return true
@@ -162,6 +165,56 @@ const getCardViewMode = (feed, idea) => {
   return viewMode
 }
 
+const setLastFeed = async (feed) => {
+  const feedoInfo = {
+    time: moment().format('LLL'),
+    feedoId: feed.id,
+    currentFeed: feed
+  }
+
+  if(Platform.OS === 'ios') {
+    await SharedGroupPreferences.setItem(CONSTANTS.CARD_SAVED_LAST_FEEDO_INFO, JSON.stringify(feedoInfo), CONSTANTS.APP_GROUP_LAST_USED_FEEDO);
+  } else {
+    await AsyncStorage.setItem(CONSTANTS.CARD_SAVED_LAST_FEEDO_INFO, JSON.stringify(feedoInfo));
+  }
+}
+
+const getLastFeed = async () => {
+  let strFeedoInfo = null;
+  
+  if(Platform.OS === 'ios') {
+    strFeedoInfo = await SharedGroupPreferences.getItem(CONSTANTS.CARD_SAVED_LAST_FEEDO_INFO, CONSTANTS.APP_GROUP_LAST_USED_FEEDO);
+  } else {
+    strFeedoInfo = await AsyncStorage.getItem(CONSTANTS.CARD_SAVED_LAST_FEEDO_INFO);
+  }
+
+  return strFeedoInfo;
+}
+
+const useLastFeed = (feed) => {
+  // If feed time is less than an hour
+  // if (feed) {
+  //   const diffHours = moment().diff(moment(feed.time, 'LLL'), 'hours');
+  //   return diffHours < 1
+  // }
+  // else {
+  //   return false
+  // }
+
+  return true
+}
+
+const removeDuplicatedItems = (array) => {
+  var obj = {};
+  for (var i = 0, len = array.length; i < len; i++)
+    obj[array[i]['id']] = array[i];
+
+  array = new Array();
+  for (var key in obj)
+    array.push(obj[key]);
+  return array
+}
+
 export {
   checkUserIsInvitee,
   isFeedOwner,
@@ -182,5 +235,9 @@ export {
   isMelloTipFeed,
   checkVideoCoverImage,
   isFeedOwnerOnlyInvitee,
-  getCardViewMode
+  getCardViewMode,
+  removeDuplicatedItems,
+  setLastFeed,
+  getLastFeed,
+  useLastFeed,
 }

@@ -105,7 +105,7 @@ class FollowMemberScreen extends React.Component {
                 <ScrollView style={styles.inviteeList} keyboardShouldPersistTaps="handled">
                   {currentMembers.map(item => (
                     <View key={item.id} style={styles.inviteeItem}>
-                      <InviteeItemComponent invitee={item} />
+                      <InviteeItemComponent invitee={item} isShowSeparator={false}/>
                     </View>
                   ))}
                 </ScrollView>

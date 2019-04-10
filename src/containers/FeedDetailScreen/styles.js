@@ -162,15 +162,16 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     height: 30,
-    width: 90,
-    borderRadius: 15,
-    marginRight: 15
+    width: 68,
+    borderRadius: 6,
+    marginRight: 10,
+    paddingHorizontal: 10,
   },
   acceptButtonView: {
     backgroundColor: COLORS.PURPLE
   },
   ignoreButtonView: {
-    backgroundColor: COLORS.MEDIUM_GREY
+    backgroundColor: COLORS.LIGHT_SOFT_GREY
   },
   buttonText: {
     fontSize: 14,
@@ -180,7 +181,7 @@ const styles = StyleSheet.create({
     color: '#fff'
   },
   ignoreButtonText: {
-    color: '#fff'
+    color: COLORS.PRIMARY_BLACK
   },
   topButtonView: {
     width: '100%',

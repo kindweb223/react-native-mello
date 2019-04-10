@@ -59,7 +59,7 @@ class TermsAndConditionsScreen extends React.Component {
     })
     .catch((errorMessage, statusCode) => {
       this.setState({ loading: false })
-      console.log('errorMessage: ', errorMessage)
+      console.log('Error fetching terms of service: ', errorMessage)
     })
   }
 

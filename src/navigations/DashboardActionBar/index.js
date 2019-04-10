@@ -13,6 +13,7 @@ import PropTypes from 'prop-types'
 import _ from 'lodash'
 import styles from './styles'
 import * as COMMON_FUNC from '../../service/commonFunc'
+import { NetworkConsumer } from 'react-native-offline'
 
 const BELL_ICON_B = require('../../../assets/images/Bell/Blue.png')
 const BELL_ICON_G = require('../../../assets/images/Bell/Grey.png')
@@ -89,16 +90,19 @@ class DashboardActionBar extends React.Component {
 
         <View style={styles.rightContainer}>
           {!(!_.isEmpty(feed) && COMMON_FUNC.isFeedGuest(feed)) && (
-            <TouchableWithoutFeedback
-              onPressIn={this.onPressInAddFeed.bind(this)}
-              onPressOut={this.onPressOutAddFeed.bind(this)}
-            >
-              <Animated.View
-                style={[styles.plusButton, { transform: [{ scale: this.animatedPlusButton }] }]}
-              >
-                <Image source={PLUS_ICON} />
-              </Animated.View>
-            </TouchableWithoutFeedback>
+              <NetworkConsumer  pingInterval={2000}>
+                {({ isConnected }) => isConnected ? (
+                    <TouchableWithoutFeedback
+                        onPressIn={this.onPressInAddFeed.bind(this)}
+                        onPressOut={this.onPressOutAddFeed.bind(this)}
+                    >
+                      <Animated.View
+                          style={[styles.plusButton, { transform: [{ scale: this.animatedPlusButton }] }]}
+                      >
+                        <Image source={PLUS_ICON} />
+                      </Animated.View>
+                    </TouchableWithoutFeedback>) : null}
+              </NetworkConsumer>
           )}
 
         </View>
@@ -112,7 +116,7 @@ DashboardActionBar.defaultProps = {
   showList: false,
   showSearch: false,
   listType: 'LIST',
-  filtering: true,  
+  filtering: true,
   filterType: 'all',
   sortType: 'date',
   notifications: true,

@@ -22,6 +22,7 @@ import axios from 'axios'
 import CONSTANTS from './src/service/constants'
 import { BASE_URL, BUGSNAG_KEY, APP_LOCALE, APP_NAME, APP_STORE_ID, PLAY_STORE_ID } from './src/service/api'
 import pubnub from './src/lib/pubnub'
+import { NetworkProvider } from 'react-native-offline'
 
 const config = new Configuration(BUGSNAG_KEY);
 config.appVersion = require('./package.json').version;
@@ -39,15 +40,16 @@ axios.interceptors.response.use(
     response
   ),
   (error) => {
+    // TODO add handling for offline use
     if (error.response && (
       (error.response.status === 401 && error.response.data.code === 'session.expired') ||
       (error.response.status === 403 && error.response.data.code === 'error.user.not.authenticated')
     )) {
-      AsyncStorage.removeItem('xAuthToken')
-      SharedGroupPreferences.setItem('xAuthToken', null, CONSTANTS.APP_GROUP_TOKEN_IDENTIFIER)
+        AsyncStorage.removeItem('xAuthToken')
+        SharedGroupPreferences.setItem('xAuthToken', null, CONSTANTS.APP_GROUP_TOKEN_IDENTIFIER)
 
-      if (Actions.currentScene !== 'TutorialScreen') {
-        Actions.LoginScreen({ type: 'replace' })
+        if (Actions.currentScene !== 'TutorialScreen') {
+          Actions.LoginScreen({ type: 'replace' })
       }
       return
     }
@@ -84,7 +86,12 @@ import TabbarContainer from './src/navigations/TabbarContainer'
 import TermsAndConditionsConfirmScreen from './src/containers/TermsAndConditionsConfirmScreen'
 import ProfilePremiumScreen from './src/containers/ProfilePremiumScreen'
 
-import { 
+import ShareCardScreen from './src/share/ShareCardScreen'
+import ShareModalScreen from './src/share/ShareModalScreen'
+import ChooseLinkImageFromExtension from './src/share/ChooseLinkImageFromExtension'
+import ShareSuccessScreen from './src/share/ShareSuccessScreen'
+
+import {
   getCardComments,
   getCard
 } from './src/redux/card/actions'
@@ -210,12 +217,19 @@ export default class Root extends React.Component {
       this.setState({ loading: false })
       this.setState({ loginState: 0 })
     }
+
+    AsyncStorage.getItem("AndroidShareExtension").then((value) => {
+      AsyncStorage.removeItem('AndroidShareExtension');
+    });
+
+    await AsyncStorage.setItem(CONSTANTS.ANDROID_SHARE_EXTENTION_FLAG, 'false')
   }
 
   componentDidMount() {
     YellowBox.ignoreWarnings(['Module RNDocumentPicker'])
     YellowBox.ignoreWarnings(['Module ReactNativeShareExtension'])
     YellowBox.ignoreWarnings(['Setting a timer']);
+    YellowBox.ignoreWarnings(['`createNavigationContainer()` has been deprecated']);
   }
 
   componentWillUnmount() {
@@ -230,7 +244,7 @@ export default class Root extends React.Component {
         const path = params[params.length - 2]
         console.log('UNIVERSAL_LINK: ', decodeURIComponent(url_), ' Path: ', path)
 
-        if (path) {  
+        if (path) {
           const lastParam = params[params.length - 1]
           const paramArray = lastParam.split(/[?\=&]/)
           const type = paramArray[0]
@@ -238,7 +252,7 @@ export default class Root extends React.Component {
           if (type === 'signup') {  // Signup via invite
             const token = paramArray[2]
             const userEmail = paramArray[4]
-            
+
             Actions.SignUpScreen({
               userEmail,
               token,
@@ -268,6 +282,7 @@ export default class Root extends React.Component {
             try {
               const userInfo = AsyncStorage.getItem('userInfo')
               store.dispatch(getFeedoList())
+              console.log('GFL called on App.js')
 
               if (userInfo) {
                 if (Actions.currentScene === 'FeedDetailScreen') {                  
@@ -276,13 +291,70 @@ export default class Root extends React.Component {
                 else {
                   Actions.FeedDetailScreen({ data, isDeepLink: true })
                 }
-              } 
+              }
               else {
                 Actions.LoginScreen()
               }
-            } 
+            }
             catch (e) {
             }
+        }
+
+        // Share extension for Android
+        if (Platform.OS === 'android') {
+          AsyncStorage.getItem(CONSTANTS.ANDROID_SHARE_EXTENTION_FLAG, (error, result) => {
+
+            const isAndroidShareExtension = result === null ? 'true' : result
+            AsyncStorage.setItem(CONSTANTS.ANDROID_SHARE_EXTENTION_FLAG, 'false')
+
+            if (isAndroidShareExtension === 'true') {
+              var searchIndex = -1;
+              for (i = 3; i < params.length; i ++) {
+                if (params[i] === 'share') {
+                  searchIndex = i
+                  break;
+                }
+              }
+              if (searchIndex !== -1) {
+                var type = '';
+                if (params[searchIndex + 1] === 'image') {
+                  type = 'images'
+                  searchIndex ++;
+                } else if (params[searchIndex + 1] === 'url') {
+                  type = 'url'
+                } else {
+                  console.log('error: wrong share link')
+                }
+
+                var value = ''
+                for (i = searchIndex+2; i < params.length; i ++)
+                {
+                  if (params[i] !== '') {
+                    if (i === params.length - 1)
+                      value += `${params[i]}`
+                    else
+                      value += `${params[i]}/`
+                  }
+                }
+                console.log('path: ', type, value)
+
+                AsyncStorage.getItem("xAuthToken").then((token) => {
+                  if (token) {
+                    const currentScene = Actions.currentScene
+                    const data = {
+                      type,
+                      value,
+                    }
+                    AsyncStorage.setItem('AndroidShareExtension', JSON.stringify(data));
+                    Actions.ChooseLinkImageFromExtension({mode: type, value: value, prev_scene: currentScene});
+                  }
+                  else {
+                    Actions.LoginScreen()
+                  }
+                });
+              }
+            }
+          })
         }
 
       } else {
@@ -301,6 +373,7 @@ export default class Root extends React.Component {
 
   render() {
     const { loginState } = this.state
+    const isAndroid = Platform.OS === 'android'
 
     const scenes = Actions.create(
       <Lightbox>
@@ -324,6 +397,11 @@ export default class Root extends React.Component {
               <Scene key="ResetPasswordSuccessScreen" component={ ResetPasswordSuccessScreen } hideNavBar panHandlers={null} />
               <Scene key="FeedFilterScreen" component={ FeedFilterScreen } hideNavBar />
               <Scene key="PremiumScreen" component={ ProfilePremiumScreen } navigationBarStyle={styles.defaultNavigationBar} />
+              <Scene key={isAndroid ? "ChooseLinkImageFromExtension" : "none1"} component={ChooseLinkImageFromExtension} hideNavBar panHandlers={null}/>
+              <Scene key={isAndroid ? "ShareCardScreen" : "none2"} component={ShareCardScreen} hideNavBar panHandlers={null} />
+              <Scene key={isAndroid ? "ShareSuccessScreen" : "none3"} component={ShareSuccessScreen}  hideNavBar panHandlers={null} />
+              <Scene key={isAndroid ? "ShareModalScreen" : "none4"} component={ShareModalScreen} okLabel='Sign In' hideNavBar panHandlers={null} />
+
             </Scene>
           </Tabs>
           <Stack key="ProfileScreen" hideNavBar>
@@ -351,11 +429,10 @@ export default class Root extends React.Component {
         <Scene key="CropImageScreen" component={ CropImageScreen } hideNavBar panHandlers={null} />
       </Lightbox>
     );
-
     if (this.state.loading) {
       return (
         <View style={styles.loadingContainer}>
-          {/* <ActivityIndicator 
+          {/* <ActivityIndicator
             animating
             size="large"
             color={COLORS.PURPLE}
@@ -368,9 +445,12 @@ export default class Root extends React.Component {
       )
     } else {
       return (
-        <Provider store={store}>
-          <Router scenes={scenes} />
-        </Provider>
+
+        <NetworkProvider>
+          <Provider store={store}>
+            <Router scenes={scenes} />
+          </Provider>
+        </NetworkProvider>
       )
     }
   }

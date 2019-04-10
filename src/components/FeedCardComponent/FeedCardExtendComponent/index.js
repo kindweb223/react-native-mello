@@ -18,7 +18,6 @@ import UserAvatarComponent from '../../UserAvatarComponent';
 
 import CONSTANTS from '../../../service/constants'
 import { COMMENT_FEATURE } from '../../../service/api'
-import ExFastImage from '../../ExFastImage';
 import * as COMMON_FUNC from '../../../service/commonFunc'
 
 class FeedCardExtendComponent extends React.Component {
@@ -34,8 +33,8 @@ class FeedCardExtendComponent extends React.Component {
 
     const invitee = _.find(invitees, item => item.id === idea.inviteeId)
     let isOnlyInvitee = false
-    
-    if (invitees.length === 1 && invitee) {
+
+    if (invitee && invitees.length === 1) {
       isOnlyInvitee = true
     }
 
@@ -47,7 +46,7 @@ class FeedCardExtendComponent extends React.Component {
         <View style={styles.subContainer}>
           {hasCoverImage &&
             <View style={[styles.thumbnailsView, { height: imageHeight }]}>
-              <ExFastImage
+              <Image
                 style={styles.thumbnails}
                 source={{ uri: idea.coverImage }}
               />
@@ -72,7 +71,7 @@ class FeedCardExtendComponent extends React.Component {
                 </View>
               )}
 
-              {idea.idea.length > 0 && (
+              {_.has(idea, 'idea') && idea.idea.length !== null && idea.idea.length > 0 && (
                 <View style={styles.subView}>
                   <Autolink
                     style={styles.title}

@@ -109,7 +109,6 @@ class CommentScreen extends React.Component {
   
   UNSAFE_componentWillReceiveProps(nextProps) {
     // if (nextProps.feedo.loading === 'PUBNUB_DELETE_FEED') {
-    //   console.log('CCCCC')
     //   this.props.getFeedoList()
     //   Actions.popTo('HomeScreen')
     // }
