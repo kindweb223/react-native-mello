@@ -291,6 +291,10 @@ class FeedDetailScreen extends React.Component {
         (feedo.loading === 'GET_CARD_FULFILLED') || (feedo.loading === 'GET_CARD_COMMENTS_FULFILLED') ||
         (feedo.loading === 'PUBNUB_DELETE_INVITEE_FULFILLED') || (feedo.loading === 'DEL_DUMMY_CARD')) {
 
+      if (_.isEmpty(feedo.currentFeed)) {
+        return;
+      }
+
       if (feedo.currentFeed.metadata.myInviteStatus === 'DECLINED') {
         Actions.pop()
       }
