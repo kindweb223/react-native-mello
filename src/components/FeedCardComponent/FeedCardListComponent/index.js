@@ -81,7 +81,8 @@ class FeedCardListComponent extends React.Component {
                 {/* <HTML
                   html={idea.idea}
                   style={styles.title}
-                  classesStyles={{ 'text-big': { fontSize: 20 } }}
+                  classesStyles={CONSTANTS.HTML_CLASS_STYLES}
+                  tagsStyles={CONSTANTS.HTML_TAGS_STYLE}
                   onLinkPress={(evt, href) => this.onPressLink(href)}
                 /> */}
               </View>

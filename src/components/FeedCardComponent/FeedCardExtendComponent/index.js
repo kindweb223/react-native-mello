@@ -74,13 +74,14 @@ class FeedCardExtendComponent extends React.Component {
 
               {_.has(idea, 'idea') && idea.idea.length !== null && idea.idea.length > 0 && (
                 <View style={styles.subView}>
-                  {/* <HTML
+                  <HTML
                     html={idea.idea}
                     style={styles.title}
-                    classesStyles={{ 'text-big': { fontSize: 20 } }}
                     onLinkPress={(evt, href) => this.onPressLink(href)}
-                  /> */}
-                  <Autolink
+                    classesStyles={CONSTANTS.HTML_CLASS_STYLES}
+                    tagsStyles={CONSTANTS.HTML_TAGS_STYLE}
+                  />
+                  {/* <Autolink
                     style={styles.title}
                     linkStyle={styles.linkStyle}
                     text={striptags(idea.idea)}
@@ -89,7 +90,7 @@ class FeedCardExtendComponent extends React.Component {
                     onPress={() => longHold ? {} : this.props.onLinkPress()}
                     onLongPress={() => longHold ? {} : this.props.onLinkLongPress()}
                     suppressHighlighting={true}
-                  />
+                  /> */}
                 </View>
               )}
             </View>
