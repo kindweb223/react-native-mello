@@ -1551,6 +1551,7 @@ class HomeScreen extends React.Component {
               animatedSelectFeed={this.animatedSelectFeed}
               updateSelectIndex={this.updateSelectedFeedList}
               handleLongHoldMenu={this.handleLongHoldMenu}
+              clearCurrentFeed={() => this.props.setCurrentFeed({})}
               page="home"
               isRefreshing={this.state.isRefreshing}
               onRefreshFeed={() => this.onRefreshFeed()}
