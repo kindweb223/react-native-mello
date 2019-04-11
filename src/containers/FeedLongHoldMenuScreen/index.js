@@ -92,10 +92,10 @@ class FeedLongHoldMenuScreen extends React.Component {
         ref={ref => this.ActionSheet = ref}
         title={
           Platform.OS === 'ios'
-          ? 'Are you sure you want to delete this flow, everything will be gone ...'
-          : <Text style={COMMON_STYLES.actionSheetTitleText}>Are you sure you want to delete this flow, everything will be gone ...</Text>
+          ? selectedFeedList.length > 1 ? 'Are you sure you want to delete? All your content in the flows will be gone' : 'Are you sure you want to delete? All your content in this flow will be gone'
+          : selectedFeedList.length > 1 ? <Text style={COMMON_STYLES.actionSheetTitleText}>Are you sure you want to delete? All your content in the flows will be gone</Text> : <Text style={COMMON_STYLES.actionSheetTitleText}>Are you sure you want to delete this flow, everything will be gone ...</Text>
         }
-        options={['Delete flow', 'Cancel']}
+        options={ selectedFeedList.length > 1 ? ['Delete flows', 'Cancel'] : ['Delete flow', 'Cancel']}
         cancelButtonIndex={1}
         destructiveButtonIndex={0}
         tintColor={COLORS.PURPLE}
