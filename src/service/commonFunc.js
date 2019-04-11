@@ -13,6 +13,7 @@ import CONSTANTS from '../service/constants'
 import AlertController from '../components/AlertController'
 import SharedGroupPreferences from 'react-native-shared-group-preferences'
 import moment from 'moment'
+import rnTextSize from 'react-native-text-size'
 
 /**
  * If the user is the invitee, return true
@@ -234,6 +235,32 @@ const splitHtmlToArray = (html) => {
   return htmlArray;
 }
 
+const fontSpecs = {
+  fontFamily: undefined,
+  fontSize: 14
+}
+
+const getHtmlHeight = async (html, width) => {
+  const htmlArray = splitHtmlToArray(_.trim(html))
+
+  let length = 0
+
+  const cardWidth = width
+
+  for (let i = 0; i < htmlArray.length; i ++) {
+    if (htmlArray[i].length > 0) {
+      const textSize = await rnTextSize.measure({
+        text: htmlArray[i],
+        width: cardWidth - 16,
+        ...fontSpecs
+      })
+      length += parseInt(textSize.height)
+    }
+  }
+
+  return { textSize: length, lineCount: htmlArray.length }
+}
+
 export {
   checkUserIsInvitee,
   isFeedOwner,
@@ -261,4 +288,5 @@ export {
   setLastFeed,
   getLastFeed,
   useLastFeed,
+  getHtmlHeight
 }

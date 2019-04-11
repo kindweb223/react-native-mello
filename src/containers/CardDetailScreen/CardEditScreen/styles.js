@@ -7,26 +7,7 @@ const styles = StyleSheet.create({
     width: CONSTANTS.SCREEN_WIDTH,
     height: CONSTANTS.SCREEN_HEIGHT,
     backgroundColor: 'transparent',
-    justifyContent: 'center',
     backgroundColor: '#fff'
-  },
-  cardContainer: {
-    flex: 1,
-    backgroundColor: '#fff'
-  },
-  ideaContentView: {
-    marginTop: 8,
-  },
-  textInputIdea: {
-    fontSize: 16,
-    lineHeight: CONSTANTS.TEXT_INPUT_LINE_HEIGHT,
-    marginTop: 16,
-    marginBottom: 16,
-    marginHorizontal: 16,
-    paddingLeft: 0,
-    paddingRight: 0,
-    paddingTop: 0,
-    paddingBottom: 0,
   },
   headerContainer: {
     marginTop: 5,
@@ -49,21 +30,12 @@ const styles = StyleSheet.create({
     fontWeight: '500',
     textAlign: 'center',
   },
-  keyboardContainer: {
-    position: 'absolute',
-    right: 16,
-    bottom: 16,
-  },
-  keyboardButtonView: {
-    width: 32,
-    height: 32,
-    backgroundColor: COLORS.PURPLE,
-    borderRadius: 8,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
   loadingIcon: {
     marginRight: 10
+  },
+  mainContainer: {
+    flex: 1,
+    padding: 8
   },
   footerContainer: {
     width: '100%',

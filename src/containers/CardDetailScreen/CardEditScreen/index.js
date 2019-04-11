@@ -20,16 +20,16 @@ import CKEditor from '../../../components/CKEditor'
 import CKEditorToolbar from '../../../components/CKEditor/Toolbar'
 import COLORS from '../../../service/colors';
 import CONSTANTS from '../../../service/constants';
+import * as COMMON_FUNC from '../../../service/commonFunc'
 import styles from './styles';
 
 class CardEditScreen extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      isShowKeyboardButton: false,
-      textByCursor: '',
       idea: props.idea,
-      bottomButtonsPadding: Platform.OS === 'android' ? 24 : 0
+      bottomButtonsPadding: Platform.OS === 'android' ? 24 : 0,
+      initHeight: 0
     }
 
     this.animatedShow = new Animated.Value(0);
@@ -48,7 +48,8 @@ class CardEditScreen extends React.Component {
 
     BackHandler.addEventListener('hardwareBackPress', this.handleBackButton);
 
-    this.scrollViewRef.scrollToEnd()
+    const { textSize, lineCount } = await COMMON_FUNC.getHtmlHeight(this.props.idea, CONSTANTS.SCREEN_SUB_WIDTH)
+    this.setState({ initHeight: textSize + 300 })
   }
 
   componentWillUnmount() {
@@ -104,60 +105,13 @@ class CardEditScreen extends React.Component {
     this.props.checkUrls();
   }
 
-  onFocus = () => {
-    this.setState({
-      isShowKeyboardButton: true
-    });
-  }
-
-  onBlurIdea = () => {
-    this.setState({
-      isShowKeyboardButton: false
-    });
-  }
-
-  // scroll functions for TextInput
-  scrollContent() {
-    const yPosition = this.textInputPositionY + this.textInputHeightByCursor;
-    if (this.scrollViewHeight > 0 && yPosition > this.scrollViewHeight) {
-      this.scrollViewRef.scrollTo({ x: 0, y: yPosition - this.scrollViewHeight + CONSTANTS.TEXT_INPUT_LINE_HEIGHT });
-    }
-  }
-
-  onContentSizeChange({nativeEvent}) {
-    const height = nativeEvent.contentSize.height;
-    if (this.textInputHeightByCursor !== height) {
-      this.textInputHeightByCursor = height;
-      this.scrollContent();
-    }
-  }
-
-  onSelectionChange({nativeEvent}) {
-    const cursorPosition = nativeEvent.selection.end;
-    setTimeout(() => {
-      const textByCursor = this.state.idea && this.state.idea.substring(0, cursorPosition);
-      this.setState({
-        textByCursor,
-      });
-    }, 0);    
-  }
-
-  onLayoutTextInput({nativeEvent: { layout }}) {
-    this.textInputPositionY = layout.y;
-  }
-
-  onLayoutScrollView({nativeEvent: {layout}}) {
-    this.scrollViewHeight = layout.height;
-    this.scrollContent();
-  }
-
   executeCKEditorCommand = (command) => {
     this.refCKEditor.executeCommand(command)
   }
 
   get renderFooter() {
     return (
-      <View style={[styles.footerContainer, { marginBottom: this.state.bottomButtonsPadding }]}>
+      <View style={[styles.footerContainer, { marginBottom: this.state.bottomButtonsPadding + CONSTANTS.STATUS_BOTTOM_BAR_HEIGHT }]}>
         <CKEditorToolbar
           isEdit={false}
           handleCKEditorToolbar={() => {}}
@@ -175,49 +129,11 @@ class CardEditScreen extends React.Component {
         ref={c => this.refCKEditor = c}
         content={idea}
         initHeight={CONSTANTS.SCREEN_HEIGHT - 120}
+        height={this.state.initHeight}
         onChange={value => this.onChangeIdea(value)}
         handleKeydown={() => this.onKeyPressIdea()}
       />
     )
-
-    return (
-      <TouchableOpacity
-        style={{ flex: 1 }}
-        onLayout={this.onLayoutTextInput.bind(this)}
-        onPress={() => this.textInputIdeaRef.focus()}
-        activeOpacity={1.0}
-      >
-        <TextInput
-          style={[styles.textInputIdea, {
-            position: 'absolute',
-            left: 0,
-            right: 0,
-            top: 0,
-            opacity: 0,
-          }]}
-          autoCorrect={false}
-          multiline={true}
-          underlineColorAndroid='transparent'
-          value={this.state.textByCursor}
-          onContentSizeChange={this.onContentSizeChange.bind(this)}
-        />
-        <TextInput
-          ref={ref => this.textInputIdeaRef = ref}
-          style={styles.textInputIdea}
-          autoCorrect={true}
-          placeholder='Add a note'
-          multiline={true}
-          underlineColorAndroid='transparent'
-          defaultValue={idea}
-          onChangeText={(idea) => this.onChangeIdea(idea)}
-          onKeyPress={this.onKeyPressIdea.bind(this)}
-          onFocus={this.onFocus}
-          onBlur={this.onBlurIdea}
-          onSelectionChange={this.onSelectionChange.bind(this)}
-          selectionColor={Platform.OS === 'ios' ? COLORS.PURPLE : COLORS.LIGHT_PURPLE}
-        />
-      </TouchableOpacity>
-    );
   }
 
   get renderHeader() {
@@ -249,12 +165,7 @@ class CardEditScreen extends React.Component {
 
   get renderMainContent() { 
     return (
-      <ScrollView
-        style={{ paddingHorizontal: 10 }}
-        // contentContainerStyle={{ flexGrow: 1 }}
-        ref={ref => this.scrollViewRef = ref}
-        onLayout={this.onLayoutScrollView.bind(this)}
-      >
+      <ScrollView ref={c => this.scrollViewRef = c} style={styles.mainContainer}>
         {this.renderText}
       </ScrollView>
     );
@@ -266,33 +177,18 @@ class CardEditScreen extends React.Component {
 
   render () {
     const contentContainerStyle = {
-      paddingTop: 0,
-      paddingBottom: this.animatedKeyboardHeight,
-      height: CONSTANTS.SCREEN_HEIGHT,
-      backgroundColor: '#fff',
+      paddingTop: CONSTANTS.STATUSBAR_HEIGHT,
+      height: Animated.subtract(CONSTANTS.SCREEN_HEIGHT - 55 - this.state.bottomButtonsPadding - CONSTANTS.STATUS_BOTTOM_BAR_HEIGHT, this.animatedKeyboardHeight)
     }
 
     return (
       <View style={styles.container}>
         <Animated.View style={contentContainerStyle}>
-          <SafeAreaView style={styles.cardContainer}>
-            {this.renderHeader}
-            {this.renderMainContent}
-            {this.renderFooter}
-
-            {Platform.OS === 'ios' && this.state.isShowKeyboardButton && (
-              <Animated.View style={styles.keyboardContainer}>
-                <TouchableOpacity
-                  style={styles.keyboardButtonView}
-                  activeOpacity={0.6}
-                  onPress={() => this.onHideKeyboard()}
-                >
-                  <MaterialCommunityIcons name="keyboard-close" size={20} color={'#fff'} />
-                </TouchableOpacity>
-              </Animated.View>
-            )}
-          </SafeAreaView>
+          {this.renderHeader}
+          {this.renderMainContent}
         </Animated.View>
+
+        {this.renderFooter}
       </View>
     );
   }
