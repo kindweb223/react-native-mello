@@ -23,13 +23,21 @@ class CKEditor extends React.Component {
     super(props);
     this.state = {
       webVewHeight: 101,
-      placeholder: ''
+      placeholder: '',
+      init: false
     }
   }
 
   componentWillMount() {
     const { placeholder, initHeight } = this.props;
     this.setState({ placeholder, webVewHeight: initHeight })
+  }
+
+  componentWillReceiveProps(nextProps) {
+    console.log('nextProps.height: ', nextProps.height)
+    if (this.state.init === false) {
+      this.setState({ webVewHeight: nextProps.height })
+    }
   }
 
   postMessage = payload => {
@@ -47,10 +55,9 @@ class CKEditor extends React.Component {
 
       if (keyCode === 'NO_KEYCODE') {
         const webVewHeight = parseInt(msgData.split('>>>!hunt!<<<')[1]) + 20;
-        console.log('HEIGHT: ', webVewHeight)
         const content = msgData.split('>>>!hunt!<<<')[2];
 
-        this.setState({ webVewHeight });
+        this.setState({ webVewHeight, init: true });
         this.props.onChange(content);
       } else {
         this.props.handleKeydown();
@@ -103,7 +110,8 @@ CKEditor.defaultProps = {
   mixedContentMode: "always",
   javascriptEnable: true,
   placeholder: 'Add a note',
-  initHeight: 101
+  initHeight: 101,
+  height: 101
 }
 
 const styles = StyleSheet.create({

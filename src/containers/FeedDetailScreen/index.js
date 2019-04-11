@@ -33,9 +33,6 @@ import Permissions from 'react-native-permissions'
 import * as mime from 'react-native-mime-types'
 import GestureRecognizer from 'react-native-swipe-gestures'
 import { NetworkConsumer } from 'react-native-offline'
-var striptags = require('striptags')
-import Masonry from '../../components/MasonryComponent'
-import rnTextSize from 'react-native-text-size'
 import MasonryList from '../../components/MasonryComponent'
 
 import DashboardActionBar from '../../navigations/DashboardActionBar'
@@ -121,11 +118,6 @@ const FeedDetailMode = 1;
 const TagCreateMode = 2;
 
 const PAGE_COUNT = 50
-
-const fontSpecs = {
-  fontFamily: undefined,
-  fontSize: 14
-}
 
 class FeedDetailScreen extends React.Component {
   constructor(props) {
@@ -537,27 +529,6 @@ class FeedDetailScreen extends React.Component {
     })
   }
 
-  getHtmlHeight = async html => {
-    const htmlArray = COMMON_FUNC.splitHtmlToArray(_.trim(html))
-
-    let length = 0
-
-    const cardWidth = (CONSTANTS.SCREEN_SUB_WIDTH - 16) / 2
-
-    for (let i = 0; i < htmlArray.length; i ++) {
-      if (htmlArray[i].length > 0) {
-        const textSize = await rnTextSize.measure({
-          text: htmlArray[i],
-          width: cardWidth - 16,
-          ...fontSpecs
-        })
-        length += parseInt(textSize.height)
-      }
-    }
-
-    return { textSize: length, lineCount: htmlArray.length }
-  }
-
   setMasonryData = async (ideas) => {
     let MasonryListData = []
     if (ideas) {
@@ -565,7 +536,7 @@ class FeedDetailScreen extends React.Component {
         const idea = ideas[index]
         const cardWidth = (CONSTANTS.SCREEN_SUB_WIDTH - 16) / 2
         
-        const { textSize, lineCount } = await this.getHtmlHeight(idea.idea)
+        const { textSize, lineCount } = await COMMON_FUNC.getHtmlHeight(idea.idea, (CONSTANTS.SCREEN_SUB_WIDTH - 16) / 2)
 
         let hasCoverImage = idea.coverImage && idea.coverImage.length > 0
         let cardHeight = 0
@@ -631,7 +602,7 @@ class FeedDetailScreen extends React.Component {
         })
       }
     }
-    console.log('MasonryListData: ', MasonryListData)
+
     this.setState({ MasonryListData })
   }
 
