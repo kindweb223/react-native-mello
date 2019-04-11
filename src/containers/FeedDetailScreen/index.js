@@ -1566,11 +1566,13 @@ class FeedDetailScreen extends React.Component {
           <Animated.ScrollView
             showsVerticalScrollIndicator={false}
             refreshControl={
-              <RefreshControl
-                tintColor={COLORS.PURPLE}
-                refreshing={this.state.isRefreshing}
-                onRefresh={() => this.onRefreshFeed()}
-              />
+              !isVisibleLongHoldMenu && (
+                <RefreshControl
+                  tintColor={COLORS.PURPLE}
+                  refreshing={this.state.isRefreshing}
+                  onRefresh={() => this.onRefreshFeed()}
+                />
+              )
             }
             scrollEventThrottle={16}
             style={[
