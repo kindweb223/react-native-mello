@@ -413,14 +413,14 @@ class LocalStorage extends React.Component {
         // //console.log('RNFS feeds are ', feedo.feedoList)
         return (
             <View>
-                {downloadComplete && (
+                {/* {downloadComplete && (
                     <ToasterComponent
                         isVisible={this.state.downloadComplete}
                         title={'Backup Complete'}
                         onPressButton={() => {this.signalBackupComplete(false)}}
                         buttonTitle="OK"
                     />
-                    )}
+                    )} */}
             </View>
         )
     }
