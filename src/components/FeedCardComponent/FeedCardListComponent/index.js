@@ -39,7 +39,6 @@ class FeedCardListComponent extends React.Component {
     }
 
     const viewMode = COMMON_FUNC.getCardViewMode(feedo.currentFeed, idea)
-    console.log('IDEA: ', idea)
 
     return (
       <View style={[styles.container, longSelected && styles.selected, longHold && viewMode === CONSTANTS.CARD_VIEW && { opacity: 0.4 }]}>
