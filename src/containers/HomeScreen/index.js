@@ -1327,6 +1327,7 @@ class HomeScreen extends React.Component {
 
   onRefreshFeed = () => {
     this.setState({ isRefreshing: true })
+    this.props.getFeedoList(null, this.getFeedsFromStorage, this.getFeedsFromStorage)
     this.props.getInvitedFeedList()
   }
 
