@@ -1576,11 +1576,13 @@ class FeedDetailScreen extends React.Component {
           <Animated.ScrollView
             showsVerticalScrollIndicator={false}
             refreshControl={
-              <RefreshControl
-                tintColor={COLORS.PURPLE}
-                refreshing={this.state.isRefreshing}
-                onRefresh={() => this.onRefreshFeed()}
-              />
+              !isVisibleLongHoldMenu && (
+                <RefreshControl
+                  tintColor={COLORS.PURPLE}
+                  refreshing={this.state.isRefreshing}
+                  onRefresh={() => this.onRefreshFeed()}
+                />
+              )
             }
             scrollEventThrottle={16}
             style={[
@@ -1758,7 +1760,7 @@ class FeedDetailScreen extends React.Component {
             ? 'Are you sure you want to delete? All your content in this flow will be gone'
             : <Text style={COMMON_STYLES.actionSheetTitleText}>Are you sure you want to delete? All your content in this flow will be gone</Text>
           }
-          options={['Delete Flow', 'Cancel']}
+          options={ ['Delete Flow', 'Cancel'] }
           cancelButtonIndex={1}
           destructiveButtonIndex={0}
           tintColor={COLORS.PURPLE}
