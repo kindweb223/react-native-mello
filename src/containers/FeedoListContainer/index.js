@@ -99,7 +99,8 @@ class FeedoListContainer extends React.Component {
       feedClickEvent,
       feedoList,
       invitedFeedList,
-      animatedSelectFeed
+      animatedSelectFeed,
+      isLongHoldMenuVisible
     } = this.props;
 
     if (loading) return <FeedLoadingStateComponent animating />
@@ -108,11 +109,13 @@ class FeedoListContainer extends React.Component {
       <Animated.ScrollView
         showsVerticalScrollIndicator={false}
         refreshControl={
-          <RefreshControl
-            tintColor={COLORS.PURPLE}
-            refreshing={this.props.isRefreshing}
-            onRefresh={() => refresh ? this.props.onRefreshFeed() : {}}
-          />
+          !isLongHoldMenuVisible && (
+            <RefreshControl
+              tintColor={COLORS.PURPLE}
+              refreshing={this.props.isRefreshing}
+              onRefresh={() => refresh ? this.props.onRefreshFeed() : {}}
+            />
+          )
         }
         style={[
           styles.container,
