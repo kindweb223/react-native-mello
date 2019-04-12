@@ -1843,8 +1843,7 @@ export default function feedo(state = initialState, action = {}) {
     case types.SET_FEED_DETAIL_FROM_STORAGE: {
       return {
         ...state,
-        // loading: types.SET_FEED_DETAIL_FROM_STORAGE,
-        // currentFeed: action.payload
+        loading: types.SET_FEED_DETAIL_FROM_STORAGE
       }
     }
     default:

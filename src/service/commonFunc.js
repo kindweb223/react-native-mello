@@ -174,9 +174,9 @@ const setLastFeed = async (feed) => {
   }
 
   if(Platform.OS === 'ios') {
-    await SharedGroupPreferences.setItem(CONSTANTS.CARD_SAVED_LAST_FEEDO_INFO, JSON.stringify(feedoInfo), CONSTANTS.APP_GROUP_LAST_USED_FEEDO);
+    await SharedGroupPreferences.setItem(CONSTANTS.CARD_SAVED_LAST_FEEDO_INFO, feedoInfo, CONSTANTS.APP_GROUP_LAST_USED_FEEDO);
   } else {
-    await AsyncStorage.setItem(CONSTANTS.CARD_SAVED_LAST_FEEDO_INFO, feedoInfo);
+    await AsyncStorage.setItem(CONSTANTS.CARD_SAVED_LAST_FEEDO_INFO, JSON.stringify(feedoInfo));
   }
 }
 
@@ -187,6 +187,7 @@ const getLastFeed = async () => {
     strFeedoInfo = await SharedGroupPreferences.getItem(CONSTANTS.CARD_SAVED_LAST_FEEDO_INFO, CONSTANTS.APP_GROUP_LAST_USED_FEEDO);
   } else {
     strFeedoInfo = await AsyncStorage.getItem(CONSTANTS.CARD_SAVED_LAST_FEEDO_INFO);
+    strFeedoInfo = JSON.parse(strFeedoInfo)
   }
 
   return strFeedoInfo;
