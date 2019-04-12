@@ -18,10 +18,14 @@ import COLORS from '../../service/colors'
 import CONSTANTS from '../../service/constants'
 import styles from './styles'
 import * as COMMON_FUNC from '../../service/commonFunc'
+import TouchableDebounce from '../../components/TouchableDebounce';
 
 class FeedoListContainer extends React.Component {
   constructor(props) {
     super(props)
+    this.state = {
+      didTap: false
+    }
   }
 
   onLongPressFeedo(index, item) {
@@ -72,14 +76,14 @@ class FeedoListContainer extends React.Component {
                   isLongHoldMenuVisible && _.find(selectedFeedList, item => item.index === index) ? styles.feedoSelectInnerItem : styles.feedoInnerItem
                 ]}
               >
-                <TouchableOpacity
+                <TouchableDebounce
                   activeOpacity={0.8}
                   delayLongPress={1000}
                   onLongPress={() => this.onLongPressFeedo(index, item)}
-                  onPress={() => this.onPressFeedo(index, item)}
+                  onPress={() => this.onPressFeedo(index, item) }
                 >
                   <FeedItemComponent item={item} pinFlag={item.pinned ? true : false} page={this.props.page} listType={listHomeType} />
-                </TouchableOpacity>
+                </TouchableDebounce>
               </View>
             </View>
 
@@ -99,8 +103,7 @@ class FeedoListContainer extends React.Component {
       feedClickEvent,
       feedoList,
       invitedFeedList,
-      animatedSelectFeed,
-      isLongHoldMenuVisible
+      animatedSelectFeed
     } = this.props;
 
     if (loading) return <FeedLoadingStateComponent animating />
@@ -109,13 +112,11 @@ class FeedoListContainer extends React.Component {
       <Animated.ScrollView
         showsVerticalScrollIndicator={false}
         refreshControl={
-          !isLongHoldMenuVisible && (
-            <RefreshControl
-              tintColor={COLORS.PURPLE}
-              refreshing={this.props.isRefreshing}
-              onRefresh={() => refresh ? this.props.onRefreshFeed() : {}}
-            />
-          )
+          <RefreshControl
+            tintColor={COLORS.PURPLE}
+            refreshing={this.props.isRefreshing}
+            onRefresh={() => refresh ? this.props.onRefreshFeed() : {}}
+          />
         }
         style={[
           styles.container,
