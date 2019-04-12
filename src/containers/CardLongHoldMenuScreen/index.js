@@ -52,6 +52,8 @@ class CardLongHoldMenuScreen extends React.Component {
       return null;
     }
 
+    let plural = cardList.length > 1 ? 'these cards?' : 'this card?'
+
     return [
       <CardActionBarComponent
         key='1'
@@ -61,7 +63,7 @@ class CardLongHoldMenuScreen extends React.Component {
       <ActionSheet
         key="2"
         ref={ref => this.ActionSheet = ref}
-        title={'Cards are the start of great ideas. Are you sure want to delete?'}
+        title={'Cards are the start of great ideas. Are you sure want to delete ' + plural}
         options={['Delete', 'Cancel']}
         cancelButtonIndex={1}
         destructiveButtonIndex={0}
