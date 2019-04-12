@@ -4,7 +4,7 @@ import {
   Image,
 } from 'react-native'
 import PropTypes from 'prop-types'
-import UserAvatar from 'react-native-user-avatar'
+import UserAvatar from './CustomAvatar'
 
 import EvilIcons from 'react-native-vector-icons/EvilIcons'
 import styles from './styles'
@@ -39,7 +39,7 @@ export default class UserAvatarComponent extends React.Component {
       const avatarSize = showStroke ? size - 5 : size
       if (user.imageUrl) {
         return (
-          <View style={[styles.container, { width: size, height: size, borderRadius: size / 2, paddingBottom: 2 }]}>
+          <View style={[styles.container, { width: size, height: size, borderRadius: size / 2 }]}>
             <UserAvatar
               size={avatarSize}
               name={name}
