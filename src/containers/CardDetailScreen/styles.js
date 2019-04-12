@@ -97,7 +97,7 @@ const styles = StyleSheet.create({
     color: COLORS.DARK_GREY,
   },
   footerContainer: {
-    marginBottom: Platform.OS === 'android' ? 5 : 0,
+    marginBottom: Platform.OS === 'android' ? 4 : 0,
     paddingVertical: 5,
     height: FOOTER_HEIGHT,
     backgroundColor: '#fff',
