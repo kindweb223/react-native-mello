@@ -322,13 +322,14 @@ class FeedDetailScreen extends React.Component {
           // console.log('OXO lets see if we already stored ', file.id, ' which is like ', file)
           AsyncStorage.getItem('file/'+file.id)
           .then(success => {
+            if(success) {
             // console.log('OXO it was a ', success)
-            const newUrl = 'file:///'+success
-            if(file.accessUrl === idea.coverImage){
-              idea.coverImage = newUrl
+              const newUrl = 'file:///'+success
+              if(file.accessUrl === idea.coverImage){
+                idea.coverImage = newUrl
+              }
+              file.accessUrl = newUrl
             }
-            file.accessUrl = newUrl
-
           })
         })
       })
@@ -1576,7 +1577,7 @@ class FeedDetailScreen extends React.Component {
           <Animated.ScrollView
             showsVerticalScrollIndicator={false}
             refreshControl={
-              !isVisibleLongHoldMenu && (
+              isVisibleLongHoldMenu ? null : (
                 <RefreshControl
                   tintColor={COLORS.PURPLE}
                   refreshing={this.state.isRefreshing}
