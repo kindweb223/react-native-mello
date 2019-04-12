@@ -270,7 +270,6 @@ class HomeScreen extends React.Component {
 
     this.props.getFeedoList(null, this.getFeedsFromStorage, this.getFeedsFromStorage)
 
-    this.props.getInvitedFeedList()
     this.props.getActivityFeed(this.props.user.userInfo.id, { page: 0, size: PAGE_COUNT })
 
     Intercom.addEventListener(Intercom.Notifications.UNREAD_COUNT, this._onUnreadIntercomChange);
@@ -478,6 +477,8 @@ class HomeScreen extends React.Component {
       if (!this.isInitialized) {
         this.isInitialized = true;
         this.showClipboardToast();
+
+        this.props.getInvitedFeedList();
       }
     }
 
