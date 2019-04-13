@@ -20,8 +20,7 @@ const styles = StyleSheet.create({
   container: {
     backgroundColor: 'white',
     width: '100%',
-    height: '100%',
-    paddingTop: Platform.OS === 'ios' ? ifIphoneX(0, 10) : 8
+    height: '100%'
   },
   statusBarUnderlay: {
     height: 0,
@@ -91,7 +90,8 @@ const styles = StyleSheet.create({
     height: 45,
     flexDirection: 'row',
     justifyContent: 'space-between',
-    alignItems: 'center'
+    alignItems: 'center',
+    paddingTop: Platform.OS === 'ios' ? 0 : 8
   },
   searchIconView: {
     paddingHorizontal: 12,

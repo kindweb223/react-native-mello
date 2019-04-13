@@ -124,16 +124,18 @@ class FeedCollapseComponent extends React.Component {
           ? <TouchableOpacity
               activeOpacity={0.9}
               style={styles.summaryView}
-              onPress={() => this.onPressText()}
+              onPress={() => this.closeCollapse()}
+              onLongPress={() => this.onPressText()}
             >
               <Text style={styles.summaryText}>{feedData.summary}</Text>
             </TouchableOpacity>
           : <TouchableOpacity
               activeOpacity={0.9}
               style={styles.summaryView}
-              onPress={() => this.onPressText()}
+              onPress={() => this.closeCollapse()}
+              onLongPress={() => this.onPressText()}
             >
-              <Text style={styles.summaryPlaceHolderText}>Tap to give this flow a description</Text>
+              <Text style={styles.summaryPlaceHolderText}>Long hold to add a description</Text>
             </TouchableOpacity>
         }
 
@@ -275,7 +277,7 @@ class FeedCollapseComponent extends React.Component {
       <View style={styles.collapseView}>
         <TouchableOpacity
           activeOpacity={0.9}
-          onPress={() => longHold ? {} : this.handleCollapse()}
+          onPress={() => isCollapse ? this.handleCollapse() : this.closeCollapse()}
           onLongPress={() => this.onPressText()}
         >
           <Text style={styles.headerTitle} numberOfLines={1} ellipsizeMode="tail">{feedData.headline}</Text>
