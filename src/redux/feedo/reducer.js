@@ -925,15 +925,17 @@ export default function feedo(state = initialState, action = {}) {
     case types.DELETE_INVITEE_FULFILLED: {
       const { currentFeed } = state
       const inviteeId = action.payload
-      const restInviteeList = currentFeed.invitees.map(invitee => setRemovedInvitees(invitee, inviteeId))
+      const restInviteeList = _.isEmpty(currentFeed) ? null :  currentFeed.invitees.map(invitee => setRemovedInvitees(invitee, inviteeId))
 
       return {
         ...state,
         loading: types.DELETE_INVITEE_FULFILLED,
-        currentFeed: {
-          ...currentFeed,
-          invitees: restInviteeList
-        }
+        currentFeed: restInviteeList
+          ? {
+              ...currentFeed,
+              invitees: restInviteeList
+            }
+          : {}
       }
     }
     case types.DELETE_INVITEE_REJECTED: {
