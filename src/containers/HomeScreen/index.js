@@ -1034,8 +1034,8 @@ class HomeScreen extends React.Component {
       this.props.removeDummyFeed({ backFeedList: this.state.backFeedList, flag: 'archive' })
     } else if (this.state.isDuplicate) {
       if (this.props.feedo.duplicatedFeedList.length > 0) {
-        const data = this.props.feedo.duplicatedFeedList.map((feed, index) => {
-          return { 'id': index, feed }
+        const data = this.props.feedo.duplicatedFeedList.map((item, index) => {
+          return { 'id': index, feed: item.feed }
         })
         this.props.deleteDuplicatedFeed(data)
       }
