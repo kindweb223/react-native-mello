@@ -619,7 +619,21 @@ extension MainViewController: TextViewControllerDelegate {
           API.shared.addFile(filePath.lastPathComponent, toCardId: cardId, mimeType: filePath.mimeType(),
                              fileType: fileTypeForMimeType(filePath.mimeType()), tempFileUrl: tempFileUrl,
                              size: nil, thumbnail: thumbnail, completion: { fileId in
-                              completion(cardId)
+            if let _ = thumbnail {
+              guard let fileId = fileId else {
+                completion(nil)
+                return
+              }
+              API.shared.setCoverImage(forCardId: cardId, fileId: fileId, completion: { success in
+                if success {
+                  completion(cardId)
+                } else {
+                  completion(nil)
+                }
+              })
+            } else {
+              completion(cardId)
+            }
           })
         })
       })
