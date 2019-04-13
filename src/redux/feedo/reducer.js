@@ -1409,17 +1409,18 @@ export default function feedo(state = initialState, action = {}) {
     }
     case types.DEL_DUMMY_CARD: {
       const { currentFeed, feedoList } = state
-      const { deletedIdeaList , type } = action.payload;
+      const { deletedIdeaList, type } = action.payload
 
       let originalFeed = {}
       let deletedDummyCards = []
       if (type === 0) { //delete
-        const restIdeas = filter(currentFeed.ideas, idea => findIndex(deletedIdeaList, card => card.idea.id === idea.id) === -1);
+        const restIdeas = filter(currentFeed.ideas, idea => findIndex(deletedIdeaList, card => card.idea.id === idea.id ) === -1)
 
         for (let i = 0; i < deletedIdeaList.length; i ++) {
           const card = find(currentFeed.ideas, idea => idea.id === deletedIdeaList[i].idea.id)
           deletedDummyCards.push(card)
         }
+
         const ideasSubmitted = currentFeed.metadata.ideasSubmitted - deletedIdeaList.length
         originalFeed = {
           ...currentFeed,
@@ -1468,13 +1469,12 @@ export default function feedo(state = initialState, action = {}) {
         // Move
         restFeedoList = filter(feedoList, feed => feed.id !== currentFeed.id)
 
-        const ideas = filter(currentFeed.ideas, idea => idea.id !== ideaId)
-        const movedCard = find(currentFeed.ideas, idea => idea.id === ideaId)
-
-        const restIdeas = filter(currentFeed.ideas, idea => findIndex(movedIdeaList, card => card.idea.id === idea.id) === -1)
+        const restIdeas = filter(currentFeed.ideas, idea => findIndex(movedIdeaList, card => card.idea.id === idea.id ) === -1)
+       
         const moveToFeedIndex = findIndex(restFeedoList, feed => feed.id === huntId)
-        const movedDummyCards = []
         
+        const movedDummyCards = []
+
         if (moveToFeedIndex !== -1) {
           for (let i = 0; i < movedIdeaList.length; i ++) {
             const card = find(currentFeed.ideas, idea => idea.id === movedIdeaList[i].idea.id)
@@ -1483,7 +1483,7 @@ export default function feedo(state = initialState, action = {}) {
             restFeedoList[moveToFeedIndex].ideas.push(card);
           }
           restFeedoList[moveToFeedIndex].metadata.ideasSubmitted =
-            restFeedoList[moveToFeedIndex].metadata.ideasSubmitted + movedIdeaList.length
+              restFeedoList[moveToFeedIndex].metadata.ideasSubmitted + movedIdeaList.length
         }
 
         originalFeed = {
@@ -1491,6 +1491,7 @@ export default function feedo(state = initialState, action = {}) {
           ideas: restIdeas
         }
         originalFeed.metadata.ideasSubmitted = originalFeed.metadata.ideasSubmitted - movedIdeaList.length
+
 
         newFeedList = [
           originalFeed,
@@ -1501,27 +1502,33 @@ export default function feedo(state = initialState, action = {}) {
       } else {
         // Undo
         dummyMoveCard = state.dummyMoveCard
+
         restFeedoList = filter(feedoList, feed => feed.id !== dummyMoveCard.feedId)
 
-        const restIdeas = filter(dummyMoveCard.newFeed.ideas, idea => findIndex(dummyMoveCard.movedIdeaList, card => card.idea.is === idea.id) === -1)
+        const restIdeas = filter(dummyMoveCard.newFeed.ideas, idea => findIndex(dummyMoveCard.movedIdeaList, card => card.idea.id === idea.id) === -1)
+
         let movedFeed = {
           ...dummyMoveCard.newFeed,
           ideas: restIdeas
-        }
+        }        
         movedFeed.metadata.ideasSubmitted = movedFeed.metadata.ideasSubmitted - dummyMoveCard.movedIdeaList.length
         
         const originalFeedIndex = findIndex(restFeedoList, feed => feed.id === currentFeed.id)
 
         if (originalFeedIndex !== -1) {
-          restFeedoList[originalFeedIndex].ideas.push(dummyMoveCard.movedDummyCards);
-          restFeedoList[originalFeedIndex].metadata.ideasSubmitted = restFeedoList[originalFeedIndex].metadata.ideasSubmitted + dummyMoveCard.movedIdeaList.length
+          let oldFeed = dummyMoveCard.oldFeed
+          oldFeed.ideas = [
+            ...oldFeed.ideas,
+            ...dummyMoveCard.movedDummyCards
+          ]
+          oldFeed.metadata.ideasSubmitted += dummyMoveCard.movedIdeaList.length
+          restFeedoList[originalFeedIndex] = oldFeed
         }
 
         newFeedList = [
           movedFeed,
           ...restFeedoList
         ]
-
         dummyMoveCard = {}
       }
 
