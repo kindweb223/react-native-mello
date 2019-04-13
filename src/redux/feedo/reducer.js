@@ -312,7 +312,7 @@ export default function feedo(state = initialState, action = {}) {
           loading: types.DEL_FEED_FULFILLED,
         }
       } else {  // Delete duplicated Feed
-        const restFeedoList = filter(feedoList, feed => findIndex(data.backFeedList, item => item.id === feed.id) === -1)
+        const restFeedoList = filter(feedoList, feed => findIndex(data.backFeedList, item => item.feed.id === feed.id) === -1)
         return {
           ...state,
           loading: types.DEL_FEED_FULFILLED,
@@ -394,7 +394,7 @@ export default function feedo(state = initialState, action = {}) {
         ...state,
         feedoList: [
           ...feedoList,
-          data
+          ...data
         ],
         duplicatedFeedList: backFeedList,
         loading: types.DUPLICATE_FEED_FULFILLED,
@@ -428,7 +428,6 @@ export default function feedo(state = initialState, action = {}) {
           ]
         }
       } else if (flag === 'archive') {
-        console.log('backFeedList: ', backFeedList)
         for (let i = 0; i < backFeedList.length; i ++) {
           const index = findIndex(feedoList, feed => feed.id === backFeedList[i].id)
           console.log('INDX: ', index)
