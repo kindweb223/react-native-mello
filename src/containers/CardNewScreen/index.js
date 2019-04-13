@@ -253,7 +253,7 @@ class CardNewScreen extends React.Component {
         }, () => {
           this.checkUrls();
           // Upload file received from Dashboard
-          if (this.props.fileData) {
+          if (this.props.fileData && !_.isEmpty(this.props.fileData)) {
             this.handleFile(this.props.fileData);
           }
         });

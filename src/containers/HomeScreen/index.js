@@ -349,8 +349,6 @@ class HomeScreen extends React.Component {
       let feedoPinnedList = [];
       let feedoUnPinnedList = [];
 
-      // console.log('FL = ', feedo.loading, feedo)
-
       if (feedo.feedoList && feedo.feedoList.length > 0) {
         feedoList = feedo.feedoList.map(item => {
           const filteredIdeas = orderBy(
@@ -1034,8 +1032,8 @@ class HomeScreen extends React.Component {
       this.props.removeDummyFeed({ backFeedList: this.state.backFeedList, flag: 'archive' })
     } else if (this.state.isDuplicate) {
       if (this.props.feedo.duplicatedFeedList.length > 0) {
-        const data = this.props.feedo.duplicatedFeedList.map((feed, index) => {
-          return { 'id': index, feed }
+        const data = this.props.feedo.duplicatedFeedList.map((item, index) => {
+          return { 'id': index, feed: item.feed }
         })
         this.props.deleteDuplicatedFeed(data)
       }

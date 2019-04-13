@@ -32,7 +32,9 @@ import { DocumentPicker, DocumentPickerUtil } from 'react-native-document-picker
 import Permissions from 'react-native-permissions'
 import * as mime from 'react-native-mime-types'
 import GestureRecognizer from 'react-native-swipe-gestures'
-import { NetworkConsumer } from 'react-native-offline'
+import { NetworkConsumer, checkInternetConnection } from 'react-native-offline'
+import Masonry from '../../components/MasonryComponent'
+import rnTextSize from 'react-native-text-size'
 import MasonryList from '../../components/MasonryComponent'
 
 import DashboardActionBar from '../../navigations/DashboardActionBar'
@@ -317,22 +319,26 @@ class FeedDetailScreen extends React.Component {
 
       currentFeed.ideas = filterIdeas;
 
-      currentFeed.ideas.map(idea => {
-        idea.files && idea.files.map((file) => {
-          // console.log('OXO lets see if we already stored ', file.id, ' which is like ', file)
-          AsyncStorage.getItem('file/'+file.id)
-          .then(success => {
-            if(success) {
-            // console.log('OXO it was a ', success)
-              const newUrl = 'file:///'+success
-              if(file.accessUrl === idea.coverImage){
-                idea.coverImage = newUrl
+      // If not connected to the internet, use offline images/files
+      const isConnected = await checkInternetConnection();
+      if(!isConnected) {
+        currentFeed.ideas.map(idea => {
+          idea.files && idea.files.map((file) => {
+            // console.log('OXO lets see if we already stored ', file.id, ' which is like ', file)
+            AsyncStorage.getItem('file/'+file.id)
+            .then(success => {
+              if(success) {
+              // console.log('OXO it was a ', success)
+                const newUrl = 'file:///'+success
+                if(file.accessUrl === idea.coverImage){
+                  idea.coverImage = newUrl
+                }
+                file.accessUrl = newUrl
               }
-              file.accessUrl = newUrl
-            }
+            })
           })
         })
-      })
+      }
 
       this.setBubbles(currentFeed)
       this.setState({
@@ -1927,8 +1933,8 @@ const mapDispatchToProps = dispatch => ({
   deleteFile: (feedId, fileId) => dispatch(deleteFile(feedId, fileId)),
   setCurrentFeed: (data) => dispatch(setCurrentFeed(data)),
   updateInvitation: (feedId, type) => dispatch(updateInvitation(feedId, type)),
-  deleteDummyCard: (ideaId, type) => dispatch(deleteDummyCard(ideaId, type)),
-  moveDummyCard: (ideaId, feedId, type) => dispatch(moveDummyCard(ideaId, feedId, type)),
+  deleteDummyCard: (cardList, type) => dispatch(deleteDummyCard(cardList, type)),
+  moveDummyCard: (cardList, feedId, type) => dispatch(moveDummyCard(cardList, feedId, type)),
   getActivityFeed: (userId, param) => dispatch(getActivityFeed(userId, param)),
   getFeedoList: () => dispatch(getFeedoList()),
   updateSharingPreferences: (feedId, data) => dispatch(updateSharingPreferences(feedId, data)),

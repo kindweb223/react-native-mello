@@ -18,6 +18,7 @@ import COLORS from '../../service/colors'
 import CONSTANTS from '../../service/constants'
 import styles from './styles'
 import * as COMMON_FUNC from '../../service/commonFunc'
+import TouchableDebounce from '../../components/TouchableDebounce';
 
 class FeedoListContainer extends React.Component {
   constructor(props) {
@@ -72,14 +73,14 @@ class FeedoListContainer extends React.Component {
                   isLongHoldMenuVisible && _.find(selectedFeedList, item => item.index === index) ? styles.feedoSelectInnerItem : styles.feedoInnerItem
                 ]}
               >
-                <TouchableOpacity
+                <TouchableDebounce
                   activeOpacity={0.8}
                   delayLongPress={1000}
                   onLongPress={() => this.onLongPressFeedo(index, item)}
-                  onPress={() => this.onPressFeedo(index, item)}
+                  onPress={() => this.onPressFeedo(index, item) }
                 >
                   <FeedItemComponent item={item} pinFlag={item.pinned ? true : false} page={this.props.page} listType={listHomeType} />
-                </TouchableOpacity>
+                </TouchableDebounce>
               </View>
             </View>
 
