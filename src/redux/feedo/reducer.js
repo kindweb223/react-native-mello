@@ -388,7 +388,10 @@ export default function feedo(state = initialState, action = {}) {
     case types.DUPLICATE_FEED_FULFILLED: {
       const { feedoList } = state
       const { data } = action.result
-      const backFeedList = action.payload
+
+      let duplicatedFeedList = data.map((item, index) => {
+        return { index: index + 1, feed: item }
+      })
 
       return {
         ...state,
@@ -396,7 +399,7 @@ export default function feedo(state = initialState, action = {}) {
           ...feedoList,
           ...data
         ],
-        duplicatedFeedList: backFeedList,
+        duplicatedFeedList,
         loading: types.DUPLICATE_FEED_FULFILLED,
       }
     }
