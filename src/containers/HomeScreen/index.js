@@ -270,7 +270,6 @@ class HomeScreen extends React.Component {
 
     this.props.getFeedoList(null, this.getFeedsFromStorage, this.getFeedsFromStorage)
 
-    this.props.getInvitedFeedList()
     this.props.getActivityFeed(this.props.user.userInfo.id, { page: 0, size: PAGE_COUNT })
 
     Intercom.addEventListener(Intercom.Notifications.UNREAD_COUNT, this._onUnreadIntercomChange);
@@ -350,12 +349,10 @@ class HomeScreen extends React.Component {
       let feedoPinnedList = [];
       let feedoUnPinnedList = [];
 
-      // console.log('FL = ', feedo.loading, feedo)
-
       if (feedo.feedoList && feedo.feedoList.length > 0) {
         feedoList = feedo.feedoList.map(item => {
           const filteredIdeas = orderBy(
-            filter(item.ideas, idea => idea != null && idea.coverImage !== null && idea.coverImage !== ''),
+            filter(item.ideas, idea => idea !== null && idea.coverImage !== null && idea.coverImage !== ''),
             ['publishedDate'],
             ['desc']
           )
@@ -478,6 +475,8 @@ class HomeScreen extends React.Component {
       if (!this.isInitialized) {
         this.isInitialized = true;
         this.showClipboardToast();
+
+        this.props.getInvitedFeedList();
       }
     }
 
@@ -1327,6 +1326,7 @@ class HomeScreen extends React.Component {
 
   onRefreshFeed = () => {
     this.setState({ isRefreshing: true })
+    this.props.getFeedoList(null, this.getFeedsFromStorage, this.getFeedsFromStorage)
     this.props.getInvitedFeedList()
   }
 

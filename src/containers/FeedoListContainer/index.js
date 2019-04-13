@@ -110,7 +110,7 @@ class FeedoListContainer extends React.Component {
       <Animated.ScrollView
         showsVerticalScrollIndicator={false}
         refreshControl={
-          !isLongHoldMenuVisible && (
+          isLongHoldMenuVisible ? null : (
             <RefreshControl
               tintColor={COLORS.PURPLE}
               refreshing={this.props.isRefreshing}

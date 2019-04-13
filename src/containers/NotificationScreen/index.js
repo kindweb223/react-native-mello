@@ -184,6 +184,21 @@ class NotificationScreen extends React.Component {
       this.setActivityFeeds(activityFeedList, this.state.invitedFeedList)
     }
 
+    if (this.props.feedo.loading !== 'UPDATE_FEED_INVITATION_FULFILLED' && feedo.loading === 'UPDATE_FEED_INVITATION_FULFILLED') {
+      let invitedFeedList = _.orderBy(feedo.invitedFeedList, ['metadata.myLastActivityDate'], ['desc'])
+      this.setState({ invitedFeedList, isShowInviteToaster: true })
+      this.setActivityFeeds(this.state.activityFeedList, invitedFeedList)
+      
+      if (feedo.inviteUpdateType) {
+        this.setState({ inviteToasterTitle: 'Invitation accepted' })
+      } else {
+        this.setState({ inviteToasterTitle: 'Invitation declined' })
+      }
+      setTimeout(() => {
+        this.setState({ isShowInviteToaster: false })
+      }, TOASTER_DURATION)
+    }
+
     // If current scene is not NotificationScreen then bugger off
     // If !selectedActivity handles pubnub updates and other users making updates
     if(Actions.currentScene !== 'NotificationScreen' || _.isEmpty(selectedActivity)) {
@@ -330,21 +345,6 @@ class NotificationScreen extends React.Component {
           }
           break;
       }
-    }
-
-    if (this.props.feedo.loading !== 'UPDATE_FEED_INVITATION_FULFILLED' && feedo.loading === 'UPDATE_FEED_INVITATION_FULFILLED') {
-        let invitedFeedList = _.orderBy(feedo.invitedFeedList, ['metadata.myLastActivityDate'], ['desc'])
-        this.setState({ invitedFeedList, isShowInviteToaster: true })
-        this.setActivityFeeds(this.state.activityFeedList, invitedFeedList)
-        
-        if (feedo.inviteUpdateType) {
-          this.setState({ inviteToasterTitle: 'Invitation accepted' })
-        } else {
-          this.setState({ inviteToasterTitle: 'Invitation declined' })
-        }
-        setTimeout(() => {
-          this.setState({ isShowInviteToaster: false })
-        }, TOASTER_DURATION)
     }
 
     // Handle rejections

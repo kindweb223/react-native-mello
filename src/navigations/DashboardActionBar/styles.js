@@ -17,16 +17,18 @@ const styles = StyleSheet.create({
   },
   leftContainer: {
     flexDirection: 'row',
-    marginLeft: 16
+    marginLeft: 8
   },
   iconView: {
     height: 42,
-    marginRight: 30,
+    width: 42,
+    marginRight: 4,
     justifyContent: 'center',
     alignItems: 'center'
   },
   notificationView: {
     height: 42,
+    width: 42,
     flexDirection: 'row',
     justifyContent: 'center',
     alignItems: 'center'

@@ -66,10 +66,12 @@ export default {
   skipButtonView: {
     position: 'absolute',
     right: 0,
-    bottom: Platform.OS === 'ios' ? ifIphoneX(36, 27) : 48
+    bottom: Platform.OS === 'ios' ? ifIphoneX(31, 22) : 43
   },
   skipButton: {
-    paddingHorizontal: CONSTANTS.PADDING * 2
+    paddingHorizontal: CONSTANTS.PADDING,
+    marginRight: CONSTANTS.PADDING,
+    paddingVertical: 5
   },
   skipButtonText: {
     color: '#000',

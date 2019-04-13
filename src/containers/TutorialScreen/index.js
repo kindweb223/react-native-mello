@@ -51,7 +51,7 @@ class TutorialScreen extends React.Component {
   constructor(props) {
     super(props)
     this.state = {
-      position: 6,
+      position: this.props.prevPage === 'login' ? 6 : 0,
       loading: false,
       video1Paused: true,
       video2Paused: true,
@@ -368,10 +368,8 @@ class TutorialScreen extends React.Component {
 
           {(position !== 6) && (
             <View style={styles.skipButtonView}>
-              <TouchableOpacity onPress={() => this.onNext(true)} activeOpacity={0.8}>
-                <View style={styles.skipButton}>
+              <TouchableOpacity style={styles.skipButton} onPress={() => this.onNext(true)} activeOpacity={0.8}>
                   <Text style={styles.skipButtonText} onPress={() => this.onNext(true)} suppressHighlighting={true}>Next</Text>
-                </View>
               </TouchableOpacity>
             </View>
           )}

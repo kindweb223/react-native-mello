@@ -21,7 +21,7 @@ class OfflineIndicator extends React.Component {
 
     render(){
         return (
-            <NetworkConsumer pingInterval={2000}>
+            <NetworkConsumer pingInterval={5000}>
                 {({ isConnected }) => (
                     isConnected ? null : (
                         <View style={offlineStyle}>

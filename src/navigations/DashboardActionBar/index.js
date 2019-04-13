@@ -58,7 +58,7 @@ class DashboardActionBar extends React.Component {
       <View style={styles.container}>
         <View style={styles.leftContainer}>
           {showSearch && (
-            <TouchableOpacity style={[styles.iconView, { marginRight: 25 }]} onPress={handleSearch}>
+            <TouchableOpacity style={[styles.iconView]} onPress={handleSearch}>
               <Image source={SEARCH_ICON} style={styles.searchIcon} />
             </TouchableOpacity>
           )}

@@ -15,6 +15,7 @@ import styles from './styles'
 import LikeComponent from '../../LikeComponent';
 import CommentComponent from '../../CommentComponent';
 import UserAvatarComponent from '../../UserAvatarComponent';
+import ExFastImage from '../../ExFastImage';
 
 import CONSTANTS from '../../../service/constants'
 import { COMMENT_FEATURE } from '../../../service/api'
@@ -41,12 +42,14 @@ class FeedCardExtendComponent extends React.Component {
     const hasCoverImage = idea.coverImage && idea.coverImage.length > 0
     const viewMode = COMMON_FUNC.getCardViewMode(feedo.currentFeed, idea)
 
+    console.log('IDEA: ', idea)
+
     return (
       <View style={[styles.container, longSelected && styles.selected, longHold && viewMode === CONSTANTS.CARD_VIEW && { opacity: 0.4 }]}>
         <View style={styles.subContainer}>
           {hasCoverImage &&
             <View style={[styles.thumbnailsView, { height: imageHeight }]}>
-              <Image
+              <ExFastImage
                 style={styles.thumbnails}
                 source={{ uri: idea.coverImage }}
               />

@@ -31,6 +31,8 @@ const styles = StyleSheet.create({
   timeView: {
     flexDirection: 'row',
     alignItems: 'flex-end',
+    justifyContent: 'flex-end',
+    width: 50
   },
   text: {
     fontSize: 12,
@@ -45,7 +47,8 @@ const styles = StyleSheet.create({
   },
   contentView: {
     flexDirection: 'column',
-    paddingRight: 15
+    paddingRight: 15,
+    flex: 1
   }
 })
 
