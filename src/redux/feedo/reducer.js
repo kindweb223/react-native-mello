@@ -1731,7 +1731,7 @@ export default function feedo(state = initialState, action = {}) {
       const restFeedoList = filter(feedoList, feedo => feedo.id !== huntId)
       
       const restInvitees = selectFeed ? selectFeed.invitees.map(invitee => setRemovedInvitees(invitee, inviteeId)) : null
-      const currentRestInvitees = currentFeed.invitees.map(invitee => setRemovedInvitees(invitee, inviteeId))
+      const currentRestInvitees = _.isEmpty(currentFeed) ? null : currentFeed.invitees.map(invitee => setRemovedInvitees(invitee, inviteeId))
 
       const newFeedoList = selectFeed ? [ ...restFeedoList, { ...selectFeed, invitees: restInvitees } ] : [ ...restFeedoList ]
 
@@ -1739,10 +1739,12 @@ export default function feedo(state = initialState, action = {}) {
         ...state,
         loading: types.PUBNUB_DELETE_INVITEE_FULFILLED,
         feedoList: newFeedoList,
-        currentFeed: {
-          ...currentFeed,
-          invitees: currentRestInvitees
-        }
+        currentFeed: currentRestInvitees
+          ? {
+              ...currentFeed,
+              invitees: currentRestInvitees
+            }
+          : {}
       }
     }
     /**
