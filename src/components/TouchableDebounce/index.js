@@ -25,6 +25,9 @@ class TouchableDebounce extends Component {
             this.setState({ isAvailable: false })
             this.onPressDelayed();
         }}
+        onLongPress={ () => {
+            this.props.onLongPress()
+        }}
       >
         {this.props.children}
       </TouchableOpacity>
