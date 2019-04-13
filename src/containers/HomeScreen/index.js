@@ -349,8 +349,6 @@ class HomeScreen extends React.Component {
       let feedoPinnedList = [];
       let feedoUnPinnedList = [];
 
-      // console.log('FL = ', feedo.loading, feedo)
-
       if (feedo.feedoList && feedo.feedoList.length > 0) {
         feedoList = feedo.feedoList.map(item => {
           const filteredIdeas = orderBy(
