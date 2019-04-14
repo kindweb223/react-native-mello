@@ -19,8 +19,9 @@ export default {
   STATUS_BOTTOM_BAR_HEIGHT: Platform.OS === 'ios' ? ifIphoneX(40, 0) : 0,
   TAB_BAR_HEIGHT: 45,
   ANIMATEION_MILLI_SECONDS: 200,
+  ANIMATABLE_DURATION: 400,
   SCREEN_VERTICAL_MIN_MARGIN: Math.round(height * 0.145),
-  TEXT_INPUT_LINE_HEIGHT: 23,
+  TEXT_INPUT_LINE_HEIGHT: 22,
   CLIPBOARD_DATA_CONFIRM_DURATION: 6000,
   IMAGE_COMPRESS_DIMENSION_RATIO: 4,
   IMAGE_COMPRESS_QUALITY: 50,
@@ -61,6 +62,7 @@ export default {
   APP_GROUP_USER_IDENTIFIER: 'group.hunt.mobile.user.info',
   APP_GROUP_TOKEN_IDENTIFIER: 'group.hunt.mobile.token',
   APP_GROUP_LAST_USED_FEEDO: 'group.hunt.mobile.last.feedo',
+  APP_GROUP_SHARE_STATE: 'group.hunt.mobile.share.state',
 
   // Push Notification
   UNKOWN_PUSH_NOTIFICATION: 'UNKOWN_PUSH_NOTIFICATION',
@@ -75,11 +77,19 @@ export default {
 
   USER_DEVICE_TOKEN: 'USER_DEVICE_TOKEN',
   CARD_SAVED_LAST_FEEDO_INFO: 'CARD_SAVED_LAST_FEEDO_INFO',
+  ANDROID_SHARE_EXTENTION_FLAG: 'ANDROID_SHARE_EXTENTION_FLAG',
 
   CLIPBOARD_DATA: 'CLIPBOARD_DATA',
 
   // share extension modal buttons
   MODAL_OK: 1,
   MODAL_CLOSE: 2,
-  
+
+  PREMIUM_10MB_ALERT_MESSAGE: 'Oops you need to have a premium account to upload more than 10MB.',
+  // 10MB
+  MAX_UPLOAD_FILE_SIZE: 1024 * 1024 * 10,
+
+  // file path in DocumentDirectoryPath
+  PRIVACY_POLICE: '/MELLO_PRIVACY_POLICY.txt',
+  TERMS_CONDITIONS: '/MELLO_TERMS_CONDITIONS.txt',
 }

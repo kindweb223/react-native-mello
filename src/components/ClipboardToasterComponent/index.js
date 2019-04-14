@@ -2,17 +2,27 @@ import React from 'react'
 import { View, Text, Animated, PanResponder } from 'react-native'
 import PropTypes from 'prop-types'
 import Ionicons from 'react-native-vector-icons/Ionicons'
+import * as Animatable from 'react-native-animatable'
 
 import styles from './styles'
 import CONSTANTS from '../../service/constants';
 const CloseVelocity = 1.25;
 const SelectDelta = 2;
-
+const FADE_IN_TIME = 750;
+const FADE_OUT_TIME = 500;
+const FADE_OUT_DOWN_TIME = 1000;
+const SLIDE_OUT_TIME = 1250;
+const SLIDE_OUT_TIME_MIN = 600;
 
 class ClipboardToasterComponent extends React.Component {
   constructor(props) {
     super(props);
-    
+
+    this.state = {
+      animationType: 'slideInUp',
+      animationDuration: FADE_IN_TIME,
+    }
+
     this.animatedFade = new Animated.Value(0),
     this.animatedMoveX = new Animated.Value(0),
     this.showClipboardTimeout = null;
@@ -27,9 +37,19 @@ class ClipboardToasterComponent extends React.Component {
         this.isClosed = false;
       },
       onPanResponderMove: (evt, gestureState) => {
+        clearTimeout(this.showClipboardTimeout);
+        this.showClipboardTimeout = null;
         if (Math.abs(gestureState.vx) > CloseVelocity) {
-          this.isClosed = true;
-          this.closeView(false);
+          // Need to check close hasnt already been initiated
+          if (!this.isClosed) {
+            this.setState({
+              animationType: gestureState.vx < 0 ? 'slideOutLeft' : 'slideOutRight',
+              animationDuration: SLIDE_OUT_TIME / Math.abs(gestureState.vx) < SLIDE_OUT_TIME_MIN ? SLIDE_OUT_TIME_MIN : SLIDE_OUT_TIME / Math.abs(gestureState.vx) 
+            }, () => {
+              this.isClosed = true;
+              this.closeView(false);
+            });  
+          }
         } else {
           this.animatedMoveX.setValue(gestureState.moveX - gestureState.x0);
         }
@@ -38,7 +58,7 @@ class ClipboardToasterComponent extends React.Component {
       onPanResponderRelease: (evt, gestureState) => {
         if (Math.abs(gestureState.dx) < SelectDelta) {
           this.onSelect();
-        } else if (this.isClosed == false) {
+        } else if (this.isClosed === false) {
           Animated.timing(
             this.animatedMoveX, {
               toValue: 0,
@@ -59,12 +79,17 @@ class ClipboardToasterComponent extends React.Component {
     Animated.timing(
       this.animatedFade, {
         toValue: 1,
-        duration: 750
+        duration: FADE_IN_TIME
       }
     ).start(() => {
       this.showClipboardTimeout = setTimeout(() => {
         this.showClipboardTimeout = null;
-        this.closeView(false);
+        this.setState({
+          animationType: 'fadeOutDownBig',
+          animationDuration: FADE_OUT_DOWN_TIME
+        }, () => {
+          this.closeView(false);
+        });
       }, CONSTANTS.CLIPBOARD_DATA_CONFIRM_DURATION);
     })
   }
@@ -77,7 +102,12 @@ class ClipboardToasterComponent extends React.Component {
   }
 
   onSelect() {
-    this.closeView(true);
+    this.setState({
+      animationType: 'fadeOut',
+      animationDuration: FADE_OUT_TIME
+    }, () => {
+      this.closeView(true);
+    });
   }
 
   closeView(isSelect=true) {
@@ -85,7 +115,7 @@ class ClipboardToasterComponent extends React.Component {
     Animated.timing(
       this.animatedFade, {
         toValue: 0,
-        duration: 750
+        duration: this.state.animationDuration
       }
     ).start(() => {
       if (this.showClipboardTimeout) {
@@ -103,7 +133,7 @@ class ClipboardToasterComponent extends React.Component {
   render() {
     const { title, description } = this.props
     return (
-      <Animated.View style={[styles.container, { opacity: this.animatedFade }]}>
+      <Animatable.View animation={this.state.animationType} duration={this.state.animationDuration} style={[styles.container, { opacity: this.animatedFade }]}>
         <Animated.View
           style={[
             styles.mainContainer,
@@ -112,14 +142,14 @@ class ClipboardToasterComponent extends React.Component {
           {...this._panResponder.panHandlers}
         >
           <View style={styles.buttonContainer}>
-            <Ionicons name="md-add" size={28} color={'#FFFFFF'} />
+            <Ionicons name="md-add" size={32} color={'#FFFFFF'} />
             <View style={styles.textsContainer}>
               <Text style={styles.textTitle} numberOfLines={1}>{title}</Text>
               <Text style={styles.textDescription} numberOfLines={1}>{description}</Text>
             </View>
           </View>
         </Animated.View>
-      </Animated.View>
+      </Animatable.View>
     )
   }
 }

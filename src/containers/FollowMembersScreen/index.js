@@ -18,6 +18,7 @@ import styles from './styles'
 import COLORS from '../../service/colors'
 import * as COMMON_FUNC from '../../service/commonFunc'
 import Analytics from '../../lib/firebase'
+import AlertController from '../../components/AlertController'
 
 class FollowMemberScreen extends React.Component {
   constructor(props) {
@@ -46,7 +47,7 @@ class FollowMemberScreen extends React.Component {
 
     if (this.props.feedo.loading === 'INVITE_HUNT_PENDING' && feedo.loading === 'INVITE_HUNT_FULFILLED') {
       if (this.props.feedo.error) {
-        Alert.alert(
+        AlertController.shared.showAlert(
           'Error',
           feedo.error
         )
@@ -104,7 +105,7 @@ class FollowMemberScreen extends React.Component {
                 <ScrollView style={styles.inviteeList} keyboardShouldPersistTaps="handled">
                   {currentMembers.map(item => (
                     <View key={item.id} style={styles.inviteeItem}>
-                      <InviteeItemComponent invitee={item} />
+                      <InviteeItemComponent invitee={item} isShowSeparator={false}/>
                     </View>
                   ))}
                 </ScrollView>
@@ -112,14 +113,17 @@ class FollowMemberScreen extends React.Component {
             )
         }
 
-        <Button
-          style={styles.button}
-          color='#F4F4F4'
-          labelColor={COLORS.PURPLE}
-          borderRadius={14}
-          label="Leave flow"
-          onPress={() => this.props.deleteInvitee()}
-        />
+        <View style={styles.buttonView}>
+          <Button
+            style={styles.button}
+            color='#F4F4F4'
+            labelColor={COLORS.PURPLE}
+            borderRadius={14}
+            label="Leave flow"
+            isLoading={this.props.feedo.loading === 'DELETE_INVITEE_PENDING'}
+            onPress={() => this.props.deleteInvitee()}
+          />
+        </View>
       </View>
     )
   }

@@ -1,96 +1,235 @@
 import React from 'react'
-import {
-  Text,
-  View,
-  TouchableOpacity,
-  Animated,
-} from 'react-native'
+import { View, Text, Animated, PanResponder, Image, AsyncStorage, Platform } from 'react-native'
 import { connect } from 'react-redux'
+import * as mime from 'react-native-mime-types';
+import SVGImage from 'react-native-remote-svg';
+import SvgUri from 'react-native-svg-uri';
+import { Actions } from 'react-native-router-flux'
 
-import MaterialCommunityIcons from 'react-native-vector-icons/Octicons'
-
-import styles from './styles'
-import COLORS from '../../service/colors'
-import CONSTANTS from '../../service/constants'
+import { SCHEME } from '../../service/api'
 import ShareExtension from '../shareExtension'
+import styles from './styles'
+import * as Animatable from 'react-native-animatable'
 
+const CloseVelocity = 1.25;
+const SelectDelta = 2;
+const FADE_IN_TIME = 750;
+const FADE_OUT_TIME = 0;
+const FADE_OUT_DOWN_TIME = 1000;
+const SLIDE_OUT_TIME = 1250;
+const SLIDE_OUT_TIME_MIN = 600;
 
 class ShareSuccessScreen extends React.Component {
   constructor(props) {
-    super(props)
+    super(props);
+    
+    this.animatedFade = new Animated.Value(0),
+    this.animatedMoveX = new Animated.Value(0),
+    this.showClipboardTimeout = null;
+    this.isClosed = false;
+
     this.state = {
-    };
-    this.animatedShow = new Animated.Value(0);
+      animationType: 'slideInUp',
+      animationDuration: FADE_IN_TIME
+    }
+
+    this._panResponder = PanResponder.create({
+      onStartShouldSetPanResponder: (evt, gestureState) => true,
+      onStartShouldSetPanResponderCapture: (evt, gestureState) => true,
+      onMoveShouldSetPanResponder: (evt, gestureState) => true,
+      onMoveShouldSetPanResponderCapture: (evt, gestureState) => true,
+      onPanResponderGrant: (evt, gestureState) => {
+        this.isClosed = false;
+      },
+      onPanResponderMove: (evt, gestureState) => {
+        clearTimeout(this.showClipboardTimeout);
+        this.showClipboardTimeout = null;
+        if (Math.abs(gestureState.vx) > CloseVelocity) {
+          // Need to check close hasnt already been initiated
+          if (!this.isClosed) {
+            this.setState({
+              animationType: gestureState.vx < 0 ? 'slideOutLeft' : 'slideOutRight',
+              animationDuration: SLIDE_OUT_TIME / Math.abs(gestureState.vx) < SLIDE_OUT_TIME_MIN ? SLIDE_OUT_TIME_MIN : SLIDE_OUT_TIME / Math.abs(gestureState.vx) 
+            }, () => {
+              this.isClosed = true;
+              this.closeView(false);
+            });
+          }
+        } else {
+          this.animatedMoveX.setValue(gestureState.moveX - gestureState.x0);
+        }
+      },
+      onPanResponderTerminationRequest: (evt, gestureState) => true,
+      onPanResponderRelease: (evt, gestureState) => {
+        if (Math.abs(gestureState.dx) < SelectDelta) {
+          this.onSelect();
+        } else if (this.isClosed === false) {
+          Animated.timing(
+            this.animatedMoveX, {
+              toValue: 0,
+              duration: Math.abs(gestureState.moveX - gestureState.x0),
+            }
+          ).start();
+        }
+      },
+      onPanResponderTerminate: (evt, gestureState) => {
+      },
+      onShouldBlockNativeResponder: (evt, gestureState) => {
+        return true;
+      },
+    });
   }
 
   componentDidMount() {
-    Animated.timing(this.animatedShow, {
-      toValue: 1,
-      duration: CONSTANTS.ANIMATEION_MILLI_SECONDS,
-    }).start(() => {
-      setTimeout(() => {
-        this.onClose();
-      }, 3000);
+    Animated.timing(
+      this.animatedFade, {
+        toValue: 1,
+        duration: FADE_IN_TIME
+      }
+    ).start(() => {
+      this.showClipboardTimeout = setTimeout(() => {
+        this.showClipboardTimeout = null;
+        this.setState({
+          animationType: 'fadeOutDownBig',
+          animationDuration: FADE_OUT_DOWN_TIME
+        }, () => {
+          this.closeView(false);
+        });
+      }, 2500);
+    })
+  }
+
+  componentWillMount() {
+    if (this.showClipboardTimeout) {
+      clearTimeout(this.showClipboardTimeout);
+      this.showClipboardTimeout = null;
+    }
+  }
+
+  // No animation and 0 milliseconds for instant open
+  onSelect() {
+    this.setState({
+      animationType: '',
+      animationDuration: FADE_OUT_TIME
+    }, () => {
+      this.closeView(true);
     });
   }
 
-  openFeedo() {
-    ShareExtension.goToMainApp(`demos.solvers.io://feed/${this.props.feedo.currentFeed.id}`);
-    ShareExtension.close();
+  closeView(isSelect = true) {
+    this.animatedFade.setValue(1);
+    Animated.timing(
+      this.animatedFade, {
+        toValue: 0,
+        duration: this.state.animationDuration
+      }
+    ).start(() => {
+      if (this.showClipboardTimeout) {
+        clearTimeout(this.showClipboardTimeout);
+        this.showClipboardTimeout = null;
+      }
+      if (isSelect) {
+        console.log('FEED_ID: ', this.props.feedo.currentFeed.id)
+        if (Platform.OS === 'ios') {
+          ShareExtension.goToMainApp(SCHEME + `flow/${this.props.feedo.currentFeed.id}`);
+          ShareExtension.close();
+        }
+        else {
+          const data = {
+            id: this.props.feedo.currentFeed.id
+          }
+          const userInfo = AsyncStorage.getItem('userInfo')
+          console.log('data: ', data, userInfo)
+          // store.dispatch(getFeedoList())
+          if (userInfo) {
+            if (Actions.currentScene === 'FeedDetailScreen') {
+              Actions.FeedDetailScreen({type: 'replace', data, isDeepLink: true});
+            } else {
+              Actions.FeedDetailScreen({data, isDeepLink: true})
+            }
+          }
+          else {
+            Actions.LoginScreen()
+          }
+        }
+      } 
+      else {
+        if (Platform.OS === 'ios')
+          ShareExtension.close();
+        else {
+          //go to previous scene
+          if (this.props.prev_scene !== '') {
+            Actions.popTo(this.props.prev_scene)
+          }
+          setTimeout(() => {
+            ShareExtension.close();
+          }, 10)
+        }
+      }
+    })
   }
 
-  onClose() {
-    this.animatedShow.setValue(1);
-    Animated.timing(this.animatedShow, {
-      toValue: 0,
-      duration: CONSTANTS.ANIMATEION_MILLI_SECONDS,
-    }).start(() => {
-      ShareExtension.close();
-    });
+  renderImage(item) {
+    if (item.coverImage) {
+      if (item.coverImage.indexOf('data:image/svg+xml;base64') !== -1) {
+        return (
+          <SvgUri
+            width="55"
+            height="55"
+            source={{ uri: item.coverImage }}
+            style={styles.imageCover}
+          />
+        );
+      }
+      const mimeType = mime.lookup(item.coverImage);
+      if (mimeType !== false && mimeType.indexOf('svg') !== -1) {
+        return (
+          <SVGImage
+            style={styles.imageCover}
+            source={{ uri: item.coverImage }}
+          />
+        );
+      }
+      return (
+        <Image style={styles.imageCover} source={{ uri: item.coverImage }} resizeMode='cover' />
+      );
+    }
   }
 
   render() {
+    const { feedo, card } = this.props
+
     return (
-      <TouchableOpacity
-        activeOpacity={1}
-        onPress={this.onClose.bind(this)}
-      >
-        <Animated.View style={[
-          styles.container,
-          {opacity: this.animatedShow}
-        ]}>
-          <View style={styles.checkContainer}>
-            <MaterialCommunityIcons name="check" size={90} color={COLORS.PURPLE} />
-          </View>
-          <TouchableOpacity
-            style={styles.openFeedoButtonContainer}
-            activeOpacity={0.7}
-            onPress={this.openFeedo.bind(this)}
+      <View style={styles.container}>
+        <Animatable.View animation={this.state.animationType} duration={this.state.animationDuration} style={[styles.toasterContainer, { opacity: this.animatedFade }]}>
+          <Animated.View
+            style={[
+              styles.mainContainer,
+              { transform: [{ translateX: this.animatedMoveX }]}
+            ]}
+            {...this._panResponder.panHandlers}
           >
-            <Text style={styles.textButton}>Open Mello</Text>
-          </TouchableOpacity>
-        </Animated.View>
-      </TouchableOpacity>
-    );
+            <View style={styles.buttonContainer}>
+              {card.currentCard && card.currentCard.coverImage && (
+                this.renderImage(card.currentCard)
+              )}
+              <View style={(card.currentCard && card.currentCard.coverImage) ? styles.textsContainer : styles.textsContainerNoImage}>
+                <Text style={styles.textTitle} numberOfLines={1} ellipsizeMode="tail">
+                  Saved to <Text style={styles.feedTitle}>{feedo.currentFeed.headline}</Text>
+                </Text>
+              </View>
+            </View>
+          </Animated.View>
+        </Animatable.View>
+      </View>
+    )
   }
 }
 
 
-ShareSuccessScreen.defaultProps = {
-}
-
-
-ShareSuccessScreen.propTypes = {
-}
-
-
-const mapStateToProps = ({ feedo, }) => ({
+const mapStateToProps = ({ feedo, card }) => ({
   feedo,
+  card
 })
 
-
-const mapDispatchToProps = dispatch => ({
-})
-
-
-export default connect(mapStateToProps, mapDispatchToProps)(ShareSuccessScreen)
+export default connect(mapStateToProps, null)(ShareSuccessScreen)

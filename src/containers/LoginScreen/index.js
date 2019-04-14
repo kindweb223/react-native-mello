@@ -7,7 +7,8 @@ import {
   Image,
   Alert,
   Keyboard,
-  AsyncStorage
+  AsyncStorage,
+  Platform,
 } from 'react-native'
 
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
@@ -15,17 +16,21 @@ import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
 import { Actions } from 'react-native-router-flux'
 import Ionicons from 'react-native-vector-icons/Ionicons'
+import { GoogleSignin, statusCodes } from 'react-native-google-signin'
 import _ from 'lodash'
+
 import LoadingScreen from '../LoadingScreen'
 import TextInputComponent from '../../components/TextInputComponent'
 import Analytics from '../../lib/firebase'
-import { userSignIn, getUserSession, sendResetPasswordEmail } from '../../redux/user/actions'
+import { userSignIn, getUserSession, sendResetPasswordEmail, userGoogleSigin } from '../../redux/user/actions'
 import COLORS from '../../service/colors'
 import resolveError from '../../service/resolveError'
 import * as COMMON_FUNC from '../../service/commonFunc'
 import styles from './styles'
+import AlertController from '../../components/AlertController';
 
 const LOGO = require('../../../assets/images/Login/icon_40pt.png')
+const GOOGLE_ICON = require('../../../assets/images/Login/iconMediumGoogle.png')
 
 class LoginScreen extends React.Component {
   static renderLeftButton(props) {
@@ -36,8 +41,12 @@ class LoginScreen extends React.Component {
         onPress={() => {
           if (props.prevPage === 'signup') {
             Actions.pop()
+          } else if (props.prevPage === 'loggedOut') {
+            Actions.TutorialScreen({ type: 'replace', prevPage: 'login' })
+          } else if (props.prevPage === 'tutorial') {
+            Actions.pop()
           } else {
-            Actions.pop({ refresh: { prevPage: 'login' } } )
+            Actions.TutorialScreen({ type: 'replace', prevPage: 'login' })
           }
         }}
       >
@@ -91,7 +100,54 @@ class LoginScreen extends React.Component {
       if (this.props.user.loading === 'USER_SIGNIN_PENDING' && user.loading === 'USER_SIGNIN_REJECTED') {
         this.setState({ loading: false }, () => {
           if (user.error) {
-            Alert.alert(
+            if (user.error.code === 'error.login.disabled') {
+              AlertController.shared.showAlert(
+                'Oops',
+                resolveError(user.error.code, user.error.message),
+                [
+                  {
+                    text: 'Try Again Later',
+                    style: 'cancel',
+                  },
+                  {
+                    text: 'Reset Password',
+                    onPress: () => {
+                      this.onForgotPassword()
+                    }
+                  }
+                ]
+              )
+            }
+            else {
+              AlertController.shared.showAlert(
+                'Oops',
+                resolveError(user.error.code, user.error.message),
+                [
+                  {
+                    text: 'Try Again',
+                    style: 'cancel',
+                  },
+                  {
+                    text: 'Forgot Password',
+                    onPress: () => {
+                      this.onForgotPassword()
+                    }
+                  }
+                ]
+              )
+            }
+          }
+        })
+      }
+
+      if (this.props.user.loading === 'USER_GOOGLE_SIGNIN_PENDING' && user.loading === 'USER_GOOGLE_SIGNIN_FULFILLED') {
+        this.props.getUserSession()
+      }
+  
+      if (this.props.user.loading === 'USER_GOOGLE_SIGNIN_PENDING' && user.loading === 'USER_GOOGLE_SIGNIN_REJECTED') {
+        this.setState({ loading: false }, () => {
+          if (user.error) {
+            AlertController.shared.showAlert(
               'Warning',
               resolveError(user.error.code, user.error.message)
             )
@@ -145,9 +201,9 @@ class LoginScreen extends React.Component {
     Analytics.logEvent('login_reset_password', {})
 
     if (userEmail.length === 0) {
-      Alert.alert('Error', 'Email is required')
+      AlertController.shared.showAlert('Error', 'Email is required')
     } else if (!COMMON_FUNC.validateEmail(userEmail)) {
-      Alert.alert('Error', 'Email is invalid')
+      AlertController.shared.showAlert('Error', 'Please enter a valid email address')
     } else {
       const param = {
         email: userEmail
@@ -184,7 +240,7 @@ class LoginScreen extends React.Component {
           {
             code: 'com.signup.email.invalid',
             field: 'email',
-            message: 'Email is invalid'
+            message: 'Please enter a valid email address'
           }
         ]
       }
@@ -222,6 +278,38 @@ class LoginScreen extends React.Component {
     Actions.SignUpScreen()
   }
 
+  onGoogleSignIn = async () => {
+    try {
+      await GoogleSignin.hasPlayServices()
+      // google services are available
+
+      try {
+        this.setState({ loading: true })
+        const userInfo = await GoogleSignin.signIn()
+        this.props.userGoogleSigin(userInfo.idToken)
+      } catch(error) {
+        this.setState({ loading: false })
+        if (error.code === statusCodes.SIGN_IN_CANCELLED) {
+          // user cancelled the login flow
+        } 
+        else if (error.code === statusCodes.IN_PROGRESS) {
+          // operation (f.e. sign in) is in progress already
+          AlertController.shared.showAlert('Error', 'Sign in is in progress already')
+        } 
+        else if (error.code === statusCodes.PLAY_SERVICES_NOT_AVAILABLE) {
+          // play services not available or outdated
+          AlertController.shared.showAlert('Error', 'You must enable Play Services to Sign in with Google')
+        } 
+        else {
+          // some other error happened
+          AlertController.shared.showAlert('Error', 'Sign in with Google failed')
+        }
+      }
+    } catch (err) {
+      AlertController.shared.showAlert('Error', 'You must enable Play Services to Sign in with Google')
+    }
+  }
+
   render () {
     const {
       fieldErrors,
@@ -237,7 +325,7 @@ class LoginScreen extends React.Component {
           <View style={styles.innerContainer}>
             <TextInputComponent
               ref={ref => this.emailRef = ref}
-              placeholder="E-mail"
+              placeholder="Email"
               value={this.state.userEmail}
               isError={emailError.length > 0 ? true : false}
               errorText={emailError.length > 0 ? resolveError(emailError[0].code, emailError[0].message) : ''}
@@ -257,7 +345,7 @@ class LoginScreen extends React.Component {
               errorText={passwordError.length > 0 ? resolveError(passwordError[0].code, passwordError[0].message) : ''}
               handleChange={text => this.changePassword(text)}
               onSubmitEditing={() => this.onSignIn()}
-              selectionColor={COLORS.PURPLE}
+              selectionColor={Platform.OS === 'ios' ? COLORS.PURPLE : COLORS.LIGHT_PURPLE}
             >
               <TouchableOpacity onPress={() => this.onForgotPassword()} activeOpacity={0.8}>
                 <View style={styles.forgotView}>
@@ -272,10 +360,17 @@ class LoginScreen extends React.Component {
               </View>
             </TouchableOpacity>
 
+            <TouchableOpacity onPress={() => this.onGoogleSignIn()} activeOpacity={0.8}>
+              <View style={styles.googleButtonView}>
+                <Image source={GOOGLE_ICON} />
+                <Text style={styles.googelButtonText}>Sign in with Google</Text>
+              </View>
+            </TouchableOpacity>
+
             <View style={styles.signupButtonView}>
               <Text style={[styles.btnSend, { color: COLORS.MEDIUM_GREY }]}>Don't have an account? </Text>
               <TouchableOpacity onPress={() => this.onSignUp()}>
-                <Text style={[styles.btnSend, { color: COLORS.PURPLE }]}>Sign up.</Text>
+                <Text onPress={() => this.onSignUp()} suppressHighlightin={true} style={[styles.btnSend, { color: COLORS.PURPLE }]}>Sign up.</Text>
               </TouchableOpacity>
             </View>
           </View>
@@ -305,6 +400,7 @@ const mapDispatchToProps = dispatch => ({
   userSignIn: (data) => dispatch(userSignIn(data)),
   getUserSession: () => dispatch(getUserSession()),
   sendResetPasswordEmail: (data) => dispatch(sendResetPasswordEmail(data)),
+  userGoogleSigin: (token) => dispatch(userGoogleSigin(token)),
 })
 
 export default connect(

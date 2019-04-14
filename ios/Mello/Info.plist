@@ -36,9 +36,28 @@
 				<string>demos.solvers.io</string>
 			</array>
 		</dict>
+		<dict>
+			<key>CFBundleTypeRole</key>
+			<string>Editor</string>
+			<key>CFBundleURLSchemes</key>
+			<array>
+				<string>com.googleusercontent.apps.887924189900-cp9g9c2c4144b3o8uf5nr33dgf0mehod</string>
+			</array>
+		</dict>
+		<dict>
+			<key>CFBundleTypeRole</key>
+			<string>Editor</string>
+			<key>CFBundleURLName</key>
+			<string>my.melloapp.com</string>
+			<key>CFBundleURLSchemes</key>
+			<array>
+				<string>my.melloapp.com</string>
+			</array>
+		</dict>
+		<dict/>
 	</array>
 	<key>CFBundleVersion</key>
-	<string>52</string>
+	<string>72</string>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
 	<key>NSAppTransportSecurity</key>
@@ -55,7 +74,7 @@
 	<key>NSCalendarsUsageDescription</key>
 	<string>description</string>
 	<key>NSCameraUsageDescription</key>
-	<string>$(PRODUCT_NAME) would like to use your camera</string>
+	<string>Use your camera to save pictures to $(PRODUCT_NAME)</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
 	<string>$(PRODUCT_NAME) would like to access your location</string>
 	<key>NSMicrophoneUsageDescription</key>
@@ -65,7 +84,7 @@
 	<key>NSPhotoLibraryAddUsageDescription</key>
 	<string>$(PRODUCT_NAME) would like to save photos to your photo gallery</string>
 	<key>NSPhotoLibraryUsageDescription</key>
-	<string>$(PRODUCT_NAME) would like access to your photo gallery</string>
+	<string>Save pictures to $(PRODUCT_NAME) from your photo gallery</string>
 	<key>NSSpeechRecognitionUsageDescription</key>
 	<string>description</string>
 	<key>UIAppFonts</key>

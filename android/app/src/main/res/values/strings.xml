@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">Mello</string>
+    <string name="title_activity_share">Mello</string>
 </resources>

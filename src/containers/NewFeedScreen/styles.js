@@ -1,4 +1,4 @@
-import { StyleSheet } from 'react-native'
+import { StyleSheet, Platform } from 'react-native'
 import COLORS from '../../service/colors'
 import CONSTANTS from '../../service/constants'
 
@@ -53,10 +53,10 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   textButton: {
-    color: '#fff',
-    fontSize: 15,
-    fontWeight: '500',
-    textAlign: 'center',
+    fontSize: 16,
+    lineHeight: 22,
+    fontWeight: '600',
+    textAlign: 'center'
   },
   mainContentContainer: {
     flex: 1,
@@ -66,13 +66,14 @@ const styles = StyleSheet.create({
     fontWeight: '500',
     lineHeight: 26,
     marginHorizontal: 16,
-    marginVertical: 8,
+    marginTop: 8,
+    marginBottom: Platform.OS === 'ios' ? 8 : 0
   },
   textInputNote: {
     fontSize: 16,
     lineHeight: 23,
     marginHorizontal: 16,
-    marginTop: 8,
+    marginTop: Platform.OS === 'ios' ? 8 : 0
   },
   bottomContainer: {
     flexDirection: 'row',
@@ -101,6 +102,23 @@ const styles = StyleSheet.create({
   attachView: {
     marginLeft: 6,
     marginTop: 20
+  },
+  mainHeaderContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: 10,
+    marginTop: Platform.OS === 'ios' ? 0 : 10
+  },
+  btnClose: {
+    width: 90,
+    height: 34,
+    paddingHorizontal: CONSTANTS.PADDING,
+    justifyContent: 'center',
+    alignItems: 'flex-start'
+  },
+  loadingIcon: {
+    marginRight: 10
   }
 })
 

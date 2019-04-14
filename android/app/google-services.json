@@ -15,6 +15,22 @@
       },
       "oauth_client": [
         {
+          "client_id": "887924189900-gp3eq7l5mvtrik9n9hbchtn9oafamfe0.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "io.solvers.feedo",
+            "certificate_hash": "d781fb97a4bc18d8c791fd36b410e8b612ab7bfd"
+          }
+        },
+        {
+          "client_id": "887924189900-1kfj9o8r9dn0vjb4gc3868ao41po99hm.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "io.solvers.feedo",
+            "certificate_hash": "5ee0d80f674b1ef1b026ec7c462e3a3c97ce5a9d"
+          }
+        },
+        {
           "client_id": "887924189900-rar93hbeqrsr8bd4a1bhrf7gkdosfqqm.apps.googleusercontent.com",
           "client_type": 3
         }
@@ -29,8 +45,21 @@
           "status": 1
         },
         "appinvite_service": {
-          "status": 1,
-          "other_platform_oauth_client": []
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "887924189900-rar93hbeqrsr8bd4a1bhrf7gkdosfqqm.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "887924189900-cp9g9c2c4144b3o8uf5nr33dgf0mehod.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "io.solvers.feedo",
+                "app_store_id": "1426601338"
+              }
+            }
+          ]
         },
         "ads_service": {
           "status": 2

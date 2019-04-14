@@ -2,6 +2,7 @@
 
 buildscript {
     repositories {
+        google()
         jcenter()
         maven {
             url 'https://maven.google.com/'
@@ -9,7 +10,8 @@ buildscript {
         }
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:2.3.3'
+        classpath 'com.android.tools.build:gradle:3.2.1'
+        classpath 'com.google.gms:google-services:4.0.1'
 
         // NOTE: Do not place your application dependencies here; they belong
         // in the individual module build.gradle files
@@ -19,6 +21,7 @@ buildscript {
 allprojects {
     repositories {
         mavenLocal()
+        google()
         jcenter()
         maven {
             // All of React Native (JS, Obj-C sources, Android binaries) is installed from npm
@@ -32,9 +35,25 @@ allprojects {
 }
 
 ext {
-    buildToolsVersion = "26.0.3"
-    minSdkVersion = 16
-    compileSdkVersion = 26
-    targetSdkVersion = 26
-    supportLibVersion = "26.1.0"
+    buildToolsVersion = "28.0.3"
+    minSdkVersion = 19
+    compileSdkVersion = 28
+    targetSdkVersion = 27
+    supportLibVersion = "27.1.1"
+}
+
+subprojects {
+    afterEvaluate {project ->
+        if (project.hasProperty("android")) {
+            android {
+                compileSdkVersion 28 // <-- match this to your project's compileSdkVersion
+                buildToolsVersion '28.0.3' // <-- match this to your project's buildToolsVersion
+                 configurations.all {
+                    resolutionStrategy {
+                        force 'com.airbnb.android:lottie:2.5.5'
+                    }
+                }
+            }
+        }
+    }
 }

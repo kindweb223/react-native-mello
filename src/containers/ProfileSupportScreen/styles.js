@@ -25,16 +25,17 @@ export default {
     marginBottom: 5
   },
   itemView: {
-    paddingHorizontal: CONSTANTS.PADDING,
+    paddingLeft: CONSTANTS.PADDING,
     width: '100%'
   },
   supportItem: {
+    paddingRight: CONSTANTS.PADDING,
     paddingVertical: 15,
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
     borderBottomWidth: 1,
-    borderColor: COLORS.LIGHT_GREY_LINE,
+    borderColor: COLORS.LIGHT_GREY_BORDER_LINE,
     width: '100%'
   },
   title: {

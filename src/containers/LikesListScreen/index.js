@@ -6,6 +6,7 @@ import {
   FlatList,
   Alert,
   TouchableOpacity,
+  BackHandler,
 } from 'react-native'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
@@ -24,6 +25,7 @@ import {
 } from '../../redux/card/actions'
 import { getDurationFromNow } from '../../service/dateUtils'
 import UserAvatarComponent from '../../components/UserAvatarComponent';
+import AlertController from '../../components/AlertController'
 
 import Analytics from '../../lib/firebase'
 
@@ -62,6 +64,16 @@ class LikesListScreen extends React.Component {
       loading: true,
     });
     this.props.getCardLikes(this.props.idea.id);
+    BackHandler.addEventListener('hardwareBackPress', this.handleBackButton);
+  }
+
+  componentWillUnmount() {
+    BackHandler.removeEventListener('hardwareBackPress', this.handleBackButton);
+  }
+
+  handleBackButton = () => {
+    Actions.pop()
+    return true;
   }
 
   UNSAFE_componentWillReceiveProps(nextProps) {
@@ -88,7 +100,7 @@ class LikesListScreen extends React.Component {
         errorMessage = error.message;
       }
       if (errorMessage) {
-        Alert.alert('Error', errorMessage, [
+        AlertController.shared.showAlert('Error', errorMessage, [
           {text: 'Close'},
         ]);
       }

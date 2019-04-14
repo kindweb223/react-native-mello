@@ -35,7 +35,7 @@ const styles = StyleSheet.create({
   button: {
     borderRadius: 14,
     width: '100%',
-    height: 60,
+    height: 61,
     marginTop: 10,
     backgroundColor: COLORS.PURPLE,
     alignItems: 'center',

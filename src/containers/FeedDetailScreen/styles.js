@@ -34,8 +34,6 @@ const styles = StyleSheet.create({
   navBar: {
     width: '100%',
     height: NAV_BAR_HEIGHT,
-    paddingRight: CONSTANTS.PADDING,
-    backgroundColor: '#fff',
     zIndex: 11,
     flexDirection: 'row',
     justifyContent: 'space-between',
@@ -59,7 +57,6 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     backgroundColor: '#fff',
-    paddingBottom: 10
   },
   avatarView: {
     height: '100%',
@@ -70,14 +67,28 @@ const styles = StyleSheet.create({
     height: '100%',
     justifyContent: 'center',
     alignItems: 'center',
-    marginLeft: 13
+    marginLeft: 2
+  },
+  titleContainer: {
+    flexDirection: 'row'
   },
   collapseView: {
-    width: '100%',
-    marginBottom: 25,
+    flex: 1,
+    marginBottom: 16,
     paddingTop: 0,
     backgroundColor: '#fff',
     zIndex: 11
+  },
+  filterIconView: {
+    justifyContent: 'center',
+    alignItems: 'flex-end',
+    marginRight: 16,
+    width: 40,
+    height: 30
+  },
+  filterIcon: {
+    width: 18,
+    height: 14
   },
   collpaseSeparator: {
     marginTop: 16
@@ -94,13 +105,15 @@ const styles = StyleSheet.create({
     right: 0,
     top: 0,
     bottom: 0,
-    backgroundColor: COLORS.LIGHT_GREY_MODAL_BACKGROUND,
+    zIndex: 15,
+    backgroundColor: 'transparent',
   },
   settingMenuView: {
     borderRadius: 20,
     backgroundColor: '#fff',
     width: 220,
-    paddingVertical: 10,
+    paddingTop: 10,
+    paddingBottom: 15,
     position: 'absolute',
     right: CONSTANTS.PADDING,
     top: CONSTANTS.STATUSBAR_HEIGHT + ifIphoneX(70, 60),
@@ -149,15 +162,16 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     height: 30,
-    width: 90,
-    borderRadius: 15,
-    marginRight: 15
+    width: 68,
+    borderRadius: 6,
+    marginRight: 10,
+    paddingHorizontal: 10,
   },
   acceptButtonView: {
     backgroundColor: COLORS.PURPLE
   },
   ignoreButtonView: {
-    backgroundColor: COLORS.MEDIUM_GREY
+    backgroundColor: COLORS.LIGHT_SOFT_GREY
   },
   buttonText: {
     fontSize: 14,
@@ -167,7 +181,7 @@ const styles = StyleSheet.create({
     color: '#fff'
   },
   ignoreButtonText: {
-    color: '#fff'
+    color: COLORS.PRIMARY_BLACK
   },
   topButtonView: {
     width: '100%',
@@ -175,7 +189,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: CONSTANTS.PADDING,
     position: 'absolute',
     right: 0,
-    top: CONSTANTS.STATUSBAR_HEIGHT,
+    top: Platform.OS === 'ios' ? CONSTANTS.STATUSBAR_HEIGHT : 0,
     paddingTop: 8,
     alignItems: 'flex-end',
     backgroundColor: '#fff'
@@ -189,8 +203,15 @@ const styles = StyleSheet.create({
     alignItems: 'center'
   },
   btnDoneText: {
-    color: '#fff',
-    fontSize: 15,
+    paddingTop: 10,
+    fontSize: 16,
+    lineHeight: 22,
+    fontWeight: '600',
+    textAlign: 'center',
+  },
+  btnInvite: {
+    color: COLORS.PURPLE,
+    fontSize: 16,
     fontWeight: '500'
   }
 })

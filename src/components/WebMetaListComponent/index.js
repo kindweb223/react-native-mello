@@ -6,14 +6,16 @@ import {
   Image,
   Text,
   Linking,
+  Platform,
 } from 'react-native'
 import PropTypes from 'prop-types'
 
 import SafariView from "react-native-safari-view";
+import InAppBrowser from 'react-native-inappbrowser-reborn'
 import * as mime from 'react-native-mime-types';
 import SVGImage from 'react-native-remote-svg';
 import SvgUri from 'react-native-svg-uri';
-
+import _ from 'lodash'
 
 import styles from './styles'
 import COLORS from '../../service/colors'
@@ -45,25 +47,46 @@ export default class WebMetaList extends React.Component {
     }
   }
 
-  onPressLink(index) {
-    const url = this.props.links[index].originalUrl;
-    SafariView.isAvailable()
-      .then(SafariView.show({
-        url: url,
-        tintColor: COLORS.PURPLE
-      }))
-      .catch(error => {
-        // Fallback WebView code for iOS 8 and earlier
-        Linking.canOpenURL(url)
-          .then(supported => {
-            if (!supported) {
-              console.log('Can\'t handle url: ' + url);
-            } else {
-              return Linking.openURL(url);
-            }
-          })
-          .catch(error => console.error('An error occurred', error));
-      });
+  async onPressLink(index) {
+    let url = this.props.links[index].originalUrl;
+
+    if (_.startsWith(_.toLower(url), 'http') === false) {
+      url = `http://${url}`
+    }
+
+    if (Platform.OS === 'ios') {
+      SafariView.isAvailable()
+        .then(SafariView.show({
+          url: url,
+          tintColor: COLORS.PURPLE
+        }))
+        .catch(error => {
+          // Fallback WebView code for iOS 8 and earlier
+          Linking.canOpenURL(url)
+            .then(supported => {
+              if (!supported) {
+                console.log('Can\'t handle url: ' + url);
+              } else {
+                return Linking.openURL(url);
+              }
+            })
+            .catch(error => {
+              console.error('An error occurred', error)
+            });
+        });
+    } else {
+      // Android 
+      try {
+        await InAppBrowser.isAvailable()
+        InAppBrowser.open(url, {
+          toolbarColor: COLORS.PURPLE,
+        }).then((result) => {
+          console.log(result);
+        })
+      } catch (error) {
+        console.log(error);
+      }
+    }
   }
 
   onLongPressLink(index) {
@@ -86,7 +109,7 @@ export default class WebMetaList extends React.Component {
       if (mimeType !== false && mimeType.indexOf('svg') !== -1) {
         return (
           <SVGImage
-            style={styles.imageCover}
+            style={[styles.imageCover]}
             source={{uri: item.faviconUrl}}
           />
         );

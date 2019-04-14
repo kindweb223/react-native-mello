@@ -1,35 +1,175 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.mello">
+    xmlns:tools="http://schemas.android.com/tools"
+    package="io.solvers.feedo">
 
     <uses-permission android:name="android.permission.INTERNET" />
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" /> 
     <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW"/>
     <uses-permission android:name="android.permission.CAMERA" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
+    <uses-permission android:name="android.permission.DOWNLOAD_WITHOUT_NOTIFICATION"/>
+    <uses-permission android:name="android.permission.MANAGE_DOCUMENTS"/>
+
+    <!--for android badge-->
+    <uses-permission android:name="com.android.launcher.permission.READ_SETTINGS"/>
+    <uses-permission android:name="com.android.launcher.permission.WRITE_SETTINGS"/>
+
+    <!--for Samsung badge-->
+    <uses-permission android:name="com.sec.android.provider.badge.permission.READ"/>
+    <uses-permission android:name="com.sec.android.provider.badge.permission.WRITE"/>
+
+    <!--for htc badge-->
+    <uses-permission android:name="com.htc.launcher.permission.READ_SETTINGS"/>
+    <uses-permission android:name="com.htc.launcher.permission.UPDATE_SHORTCUT"/>
+
+    <!--for sony badge-->
+    <uses-permission android:name="com.sonyericsson.home.permission.BROADCAST_BADGE"/>
+
+    <!--for apex badge-->
+    <uses-permission android:name="com.anddoes.launcher.permission.UPDATE_COUNT"/>
 
     <application
       android:name=".MainApplication"
       android:label="@string/app_name"
       android:icon="@mipmap/ic_launcher"
+      android:roundIcon="@mipmap/ic_launcher_round"
       android:allowBackup="false"
-      android:theme="@style/AppTheme">
+      android:theme="@style/AppTheme"
+      tools:ignore="GoogleAppIndexingWarning"
+      xmlns:tools="http://schemas.android.com/tools">
+
       <activity
-        android:name=".MainActivity"
-        android:label="@string/app_name"
-        android:configChanges="keyboard|keyboardHidden|orientation|screenSize"
-        android:windowSoftInputMode="adjustResize">
+        android:name=".SplashActivity"
+        android:theme="@style/SplashTheme"
+        android:label="@string/app_name">
         <intent-filter>
             <action android:name="android.intent.action.MAIN" />
             <category android:name="android.intent.category.LAUNCHER" />
-            <action android:name="android.intent.action.DOWNLOAD_COMPLETE"/>
-            <action android:name="android.intent.action.VIEW" />
-            <action android:name="android.intent.category.DEFAULT" />
-            <action android:name="android.intent.category.BROWSABLE" />
-            <data android:scheme="http" android:host="demos.solvers.io" />
         </intent-filter>
       </activity>
+
+      <activity
+        android:name=".MainActivity"
+        android:label="@string/app_name"
+        android:launchMode="singleTask"
+        android:configChanges="keyboard|keyboardHidden|orientation|screenSize"
+        android:windowSoftInputMode="adjustResize"
+        android:documentLaunchMode="never"
+        android:exported="true"
+        android:screenOrientation="portrait">
+        <intent-filter>
+          <action android:name="android.intent.action.DOWNLOAD_COMPLETE"/>
+        </intent-filter>
+        <intent-filter>
+          <action android:name="android.intent.action.VIEW" />
+          <category android:name="android.intent.category.DEFAULT" />
+          <category android:name="android.intent.category.BROWSABLE" />
+          <data android:scheme="https" android:host="demos.solvers.io"/>
+          <data android:scheme="https" android:host="my.melloapp.com"/>
+        </intent-filter>
+
+      </activity>
       <activity android:name="com.facebook.react.devsupport.DevSettingsActivity" />
+
+      <!--Share Extension-->
+      <activity
+        android:noHistory="true"
+        android:name=".share.ShareActivity"
+        android:configChanges="orientation"
+        android:label="@string/title_activity_share"
+        android:screenOrientation="portrait"
+        android:theme="@style/Theme.Share.Transparent" >
+        <intent-filter>
+            <action android:name="android.intent.action.SEND" />
+            <category android:name="android.intent.category.DEFAULT" />
+            <data android:mimeType="text/plain" />
+            <data android:mimeType="image/*" />
+        </intent-filter>
+      </activity>
+      <!--Share Extension-->
+
+        <meta-data  android:name="com.dieam.reactnativepushnotification.notification_channel_name"
+            android:value="Mello Notification"/>
+        <meta-data  android:name="com.dieam.reactnativepushnotification.notification_channel_description"
+            android:value="Mello Notification"/>
+        <!-- Change the resource name to your App's accent color - or any other color you want -->
+        <meta-data  android:name="com.dieam.reactnativepushnotification.notification_color"
+            android:resource="@color/purple"/>
+
+        <!-- Set custom default icon. This is used when no icon is set for incoming notification messages.
+            See README(https://goo.gl/l4GJaQ) for more. -->
+        <meta-data
+            android:name="com.google.firebase.messaging.default_notification_icon"
+            android:resource="@drawable/ic_stat_ic_notification" />
+        <!-- Set color used with incoming notification messages. This is used when no color is set for the incoming
+            notification message. See README(https://goo.gl/6BKBk7) for more. -->
+        <meta-data
+            android:name="com.google.firebase.messaging.default_notification_color"
+            android:resource="@color/purple" />
+
+        <!-- < Only if you're using GCM or localNotificationSchedule() > -->
+        <receiver
+            android:name="com.google.android.gms.gcm.GcmReceiver"
+            android:exported="true"
+            android:permission="com.google.android.c2dm.permission.SEND" >
+            <intent-filter>
+                <action android:name="com.google.android.c2dm.intent.RECEIVE" />
+                <category android:name="${applicationId}" />
+            </intent-filter>
+        </receiver>
+        <!-- < Only if you're using GCM or localNotificationSchedule() > -->
+
+        <receiver android:name="com.dieam.reactnativepushnotification.modules.RNPushNotificationPublisher" />
+        <receiver android:name="com.dieam.reactnativepushnotification.modules.RNPushNotificationBootEventReceiver">
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
+            </intent-filter>
+        </receiver>
+        <service android:name="com.dieam.reactnativepushnotification.modules.RNPushNotificationRegistrationService"/>
+
+        <!-- < Only if you're using GCM or localNotificationSchedule() > -->
+        <!--<service-->
+            <!--android:name="com.dieam.reactnativepushnotification.modules.RNPushNotificationListenerServiceGcm"-->
+            <!--android:exported="false" >-->
+            <!--<intent-filter>-->
+                <!--<action android:name="com.google.android.c2dm.intent.RECEIVE" />-->
+            <!--</intent-filter>-->
+        <!--</service>-->
+        <!-- </ Only if you're using GCM or localNotificationSchedule() > -->
+
+        <!-- < Else > -->
+        <service
+            android:name="com.dieam.reactnativepushnotification.modules.RNPushNotificationListenerService"
+            android:exported="false" >
+            <intent-filter>
+                <action android:name="com.google.firebase.MESSAGING_EVENT" />
+            </intent-filter>
+        </service>
+
+        <service
+            android:name=".MainMessagingService"
+            android:enabled="true"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="com.google.firebase.MESSAGING_EVENT" />
+            </intent-filter>
+        </service>
+        <receiver
+            android:name="io.intercom.android.sdk.push.IntercomPushBroadcastReceiver"
+            tools:replace="android:exported"
+            android:exported="true" />
+
     </application>
+
+    <!-- < Only if you're using GCM or localNotificationSchedule() > -->
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
+    <permission
+        android:name="${applicationId}.permission.C2D_MESSAGE"
+        android:protectionLevel="signature" />
+    <uses-permission android:name="${applicationId}.permission.C2D_MESSAGE" />
+    <!-- < Only if you're using GCM or localNotificationSchedule() > -->
+
+    <uses-permission android:name="android.permission.VIBRATE" />
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED"/>
 
 </manifest>

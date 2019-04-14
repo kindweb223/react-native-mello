@@ -58,8 +58,8 @@ export default class CommentComponent extends React.Component {
         onPress={() => this.onComment()}
       >
         {comments > 0
-          ? <Image source={COMMENT_ICON_B} style={styles.commentIcon} />
-          : <Image source={COMMENT_ICON_G} style={styles.commentIcon} />
+          ? <Image source={COMMENT_ICON_B} style={this.props.smallIcon ? styles.commentIcon : null} />
+          : <Image source={COMMENT_ICON_G} style={this.props.smallIcon ? styles.commentIcon : null} />
         }
         {!this.props.isOnlyInvitee && (
           <Text style={styles.iconText}>{comments}</Text>
