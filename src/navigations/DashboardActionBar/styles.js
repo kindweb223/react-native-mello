@@ -16,17 +16,19 @@ const styles = StyleSheet.create({
     alignItems: 'flex-start'
   },
   leftContainer: {
-    flexDirection: 'row'
+    flexDirection: 'row',
+    marginLeft: 8
   },
   iconView: {
     height: 42,
-    paddingHorizontal: CONSTANTS.PADDING,
+    width: 42,
+    marginRight: 4,
     justifyContent: 'center',
     alignItems: 'center'
   },
   notificationView: {
-    paddingHorizontal: 16,
-    height: 42,    
+    height: 42,
+    width: 42,
     flexDirection: 'row',
     justifyContent: 'center',
     alignItems: 'center'
@@ -45,6 +47,18 @@ const styles = StyleSheet.create({
   },
   plusButton: {
     paddingHorizontal: CONSTANTS.PADDING
+  },
+  searchIcon: {
+    width: 28,
+    height: 28
+  },
+  listIcon: {
+    width: 18,
+    height: 15
+  },
+  notificationIcon: {
+    width: 17,
+    height: 26
   }
 })
 

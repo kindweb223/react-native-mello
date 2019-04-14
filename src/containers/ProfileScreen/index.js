@@ -1,11 +1,14 @@
 import React from 'react'
 import {
   View,
-  Text, 
+  Text,
   TouchableOpacity,
   Image,
   ScrollView,
-  FlatList
+  FlatList,
+  Platform,
+  BackHandler,
+  Share
 } from 'react-native'
 import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
@@ -17,7 +20,10 @@ import Permissions from 'react-native-permissions'
 import ImagePicker from 'react-native-image-picker'
 import ActionSheet from 'react-native-actionsheet'
 import VersionNumber from 'react-native-version-number'
+import { GoogleSignin } from 'react-native-google-signin';
+import Modal from "react-native-modal"
 import _ from 'lodash'
+import ShareExtensionTip from '../../components/ShareExtensionTip'
 import ToasterComponent from '../../components/ToasterComponent'
 import UserAvatarComponent from '../../components/UserAvatarComponent'
 import LoadingScreen from '../LoadingScreen'
@@ -25,32 +31,20 @@ import { userSignOut, deleteProfilePhoto } from '../../redux/user/actions'
 import COLORS from '../../service/colors'
 import styles from './styles'
 import Analytics from '../../lib/firebase'
+import { TIP_SHARE_LINK_URL } from '../../service/api'
+import OfflineIndicator from '../../components/LocalStorage/OfflineIndicator'
 
 const CLOSE_ICON = require('../../../assets/images/Close/Blue.png')
 const TRASH_ICON = require('../../../assets/images/Trash/Blue.png')
 const LOCK_ICON = require('../../../assets/images/Lock/Blue.png')
 const EDIT_ICON = require('../../../assets/images/Edit/Blue.png')
 const PROFILE_ICON = require('../../../assets/images/Profile/Blue.png')
+const PREMIUM_ICON = require('../../../assets/images/Premium/IconMediumStarGold.png')
+const SHARE_ICON = require('../../../assets/images/Share/Blue.png')
 
 const ABOUT_ITEMS = [
   'Support',
-  'Privacy Policy',
-  'Terms & Conditions'
-]
-
-const SETTING_ITEMS = [
-  {
-    icon: <Image source={PROFILE_ICON} style={styles.leftIcon} />,
-    title: 'Profile'
-  },
-  {
-    icon: <Image source={LOCK_ICON} style={styles.leftIcon} />,
-    title: 'Security'
-  },
-  {
-    icon: <Image source={TRASH_ICON} style={styles.leftIcon} />,
-    title: 'Archived flows'
-  }
+  'Terms of Service'
 ]
 
 class ProfileScreen extends React.Component {
@@ -59,15 +53,57 @@ class ProfileScreen extends React.Component {
     this.state = {
       isShowToaster: false,
       toasterText: '',
-      loading: false
+      loading: false,
+      showShareTipsModal: false
     }
+
+    this.SETTING_ITEMS = []
+
+    this.SETTING_ITEMS.push({
+      icon: <Image source={PROFILE_ICON} style={styles.leftIcon} />,
+      title: 'Profile'
+    })
+
+    this.SETTING_ITEMS.push({
+      icon: <Image source={LOCK_ICON} style={styles.leftIcon} />,
+      title: 'Security'
+    })
+
+    this.SETTING_ITEMS.push({
+      icon: <Image source={TRASH_ICON} style={styles.leftIcon} />,
+      title: 'Archived flows'
+    })
+
+    if(Platform.OS === 'ios') {
+      this.SETTING_ITEMS.push({
+        icon: <Image source={SHARE_ICON} style={styles.leftIcon} />,
+        title: 'Enable share extention'
+      })
+    }
+
+    this.SETTING_ITEMS.push({
+      icon: <Image source={PREMIUM_ICON} style={styles.leftIcon} />,
+      title: 'Upgrade to Mello Premium'
+    })
   }
 
   componentDidMount() {
     Analytics.setCurrentScreen('ProfileScren')
 
     this.setState({ userInfo: this.props.user.userInfo })
+
+    BackHandler.addEventListener('hardwareBackPress', this.handleBackButton);
   }
+
+  componentWillUnmount() {
+    BackHandler.removeEventListener('hardwareBackPress', this.handleBackButton);
+  }
+
+  handleBackButton = () => {
+    Actions.pop()
+    return true;
+  }
+
 
   UNSAFE_componentWillReceiveProps(nextProps) {
     const { user } = nextProps
@@ -85,7 +121,7 @@ class ProfileScreen extends React.Component {
 
     if (Actions.currentScene === 'ProfileScreen') {
       if (this.props.user.loading === 'USER_SIGNOUT_PENDING' && user.loading === 'USER_SIGNOUT_FULFILLED') {
-        Actions.LoginScreen()
+        Actions.LoginScreen({ type: 'replace', prevPage: 'loggedOut' })
       }
 
       if (this.props.user.loading === 'UPDATE_PASSWORD_PENDING' && user.loading === 'UPDATE_PASSWORD_FULFILLED') {
@@ -95,17 +131,25 @@ class ProfileScreen extends React.Component {
         }, 2000)
       }
 
-      if (this.props.user.loading === 'DELETE_PROFILE_PHOTO_REQUEST' && 
+      if (this.props.user.loading === 'DELETE_PROFILE_PHOTO_REQUEST' &&
         (user.loading === 'DELETE_PROFILE_PHOTO_FULFILLED' || user.loading === 'DELETE_PROFILE_PHOTO_REJECTED')) {
         this.setState({ loading: false })
       }
     }
   }
 
-  onTapActionSheet = (index) => {
+  onTapActionSheet = async (index) => {
     if (index === 0) {
       Analytics.logEvent('profile_signout', {})
+      isSignedIn = await GoogleSignin.isSignedIn()
 
+      if (isSignedIn) {
+        try {
+          await GoogleSignin.signOut()
+        } catch (error ) {
+          console.error(error)
+        }
+      }
       this.props.userSignOut()
     }
   }
@@ -139,37 +183,15 @@ class ProfileScreen extends React.Component {
         path: 'feedo'
       }
     };
-        
+
     if (index === 1) {
       // from camera
-      Permissions.check('camera').then(response => {
-        if (response === 'authorized') {
-          this.pickMediaFromCamera(options);
-        } else if (response === 'undetermined') {
-          Permissions.request('camera').then(response => {
-            if (response === 'authorized') {
-              this.pickMediaFromCamera(options);
-            }
-          });
-        } else {
-          Permissions.openSettings();
-        }
-      });
+       this.pickMediaFromCamera(options);
+
     } else if (index === 0) {
       // from library
-      Permissions.check('photo').then(response => {
-        if (response === 'authorized') {
-          this.pickMediaFromLibrary(options);
-        } else if (response === 'undetermined') {
-          Permissions.request('photo').then(response => {
-            if (response === 'authorized') {
-              this.pickMediaFromLibrary(options);
-            }
-          });
-        } else {
-          Permissions.openSettings();
-        }
-      });
+      this.pickMediaFromLibrary(options);
+
     } else if (index === 2) {
       // delete profile photo
       const { user } = this.props
@@ -181,7 +203,35 @@ class ProfileScreen extends React.Component {
   }
 
   updatePhoto = () => {
-    this.imagePickerActionSheetRef.show();
+    Permissions.checkMultiple(['camera', 'photo']).then(response => {
+      if (response.camera === 'authorized' && response.photo === 'authorized') {
+        //permission already allowed
+        this.imagePickerActionSheetRef.show();
+      }
+      else {
+        Permissions.request('camera').then(response => {
+          if (response === 'authorized') {
+            //camera permission was authorized
+            Permissions.request('photo').then(response => {
+              if (response === 'authorized') {
+                //photo permission was authorized
+                this.imagePickerActionSheetRef.show();
+              }
+              else if (Platform.OS === 'ios') {
+                Permissions.openSettings();
+              }
+            });
+          }
+          else if (Platform.OS === 'ios') {
+            Permissions.openSettings();
+          }
+        });
+      }
+    });
+  }
+
+  showShareExtension = () => {
+    this.setState({ showShareTipsModal: true })
   }
 
   handleSettingItem = (index) => {
@@ -198,6 +248,16 @@ class ProfileScreen extends React.Component {
       case 3: // Archived feeds
         Actions.ArchivedFeedScreen()
         return
+      case 4: // Show share extension
+        if (Platform.OS === 'ios') {
+          this.showShareExtension()
+        } else {
+          Actions.ProfilePremiumScreen()
+        }
+        return
+      case 5: // Premium screen
+        Actions.ProfilePremiumScreen()
+        return
       default:
         return
     }
@@ -209,9 +269,6 @@ class ProfileScreen extends React.Component {
         Actions.ProfileSupportScreen()
         return
       case 1:
-        Actions.ProfilePrivacyPolicyScreen()
-        return
-      case 2:
         Actions.ProfileTermsAndConditionsScreen()
         return
       default:
@@ -219,13 +276,17 @@ class ProfileScreen extends React.Component {
     }
   }
 
+  dismiss = (e) => {
+    this.setState({ showShareTipsModal: false })
+  };
+
   render () {
     const { userInfo } = this.state
-
     return (
       <View style={styles.overlay}>
         {userInfo && (
           <ScrollView style={styles.scrollView}>
+            <OfflineIndicator/>
             <View style={styles.body}>
               <TouchableOpacity onPress={() => Actions.pop()} style={styles.closeButton}>
                 <Image source={CLOSE_ICON} />
@@ -242,9 +303,11 @@ class ProfileScreen extends React.Component {
                       color="#fff"
                       textColor={COLORS.PURPLE}
                     />
-                    <View style={styles.editView}>
-                        <Image source={EDIT_ICON} style={styles.editIcon} />
-                    </View>
+                  </TouchableOpacity>
+                  <TouchableOpacity
+                    style={styles.editView}
+                    onPress={() => this.updatePhoto()}>
+                    <Image source={EDIT_ICON} style={styles.editIcon} />
                   </TouchableOpacity>
                 </View>
                 <Text style={styles.name}>
@@ -274,7 +337,7 @@ class ProfileScreen extends React.Component {
                   </TouchableOpacity>
                 </View> */}
                 {
-                  SETTING_ITEMS.map((item, key) => (
+                  this.SETTING_ITEMS.map((item, key) => (
                     <View key={key} style={styles.settingItem}>
                       <TouchableOpacity
                         onPress={() => this.handleSettingItem(key + 1)}
@@ -339,9 +402,9 @@ class ProfileScreen extends React.Component {
               <View style={styles.bottomView}>
                 <Text style={styles.version}>Version {VersionNumber.appVersion}.{VersionNumber.buildVersion}</Text>
                 <View style={styles.bottomItemView}>
-                  <Text style={styles.version}>Crafted with</Text>
+                  <Text style={styles.version}>Made with</Text>
                   <MaterialIcons name='favorite' size={12} color={COLORS.MEDIUM_GREY} style={styles.favicon}/>
-                  <Text style={styles.version}>in Dublin</Text>
+                  <Text style={styles.version}>in Solvers</Text>
                 </View>
               </View>
             </View>
@@ -379,6 +442,14 @@ class ProfileScreen extends React.Component {
             onPressButton={() => this.setState({ isShowToaster: false })}
           />
         )}
+
+        {
+          this.state.showShareTipsModal &&
+            <ShareExtensionTip
+              onDismiss={this.dismiss}
+              ref={ref => (this.ref = ref)}
+            />
+        }
 
       </View>
     )

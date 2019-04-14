@@ -5,7 +5,8 @@ import {
   TouchableOpacity,
   Image,
   Alert,
-  Keyboard
+  Keyboard,
+  Platform
 } from 'react-native'
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
 import { connect } from 'react-redux'
@@ -13,6 +14,7 @@ import PropTypes from 'prop-types'
 import { Actions } from 'react-native-router-flux'
 import Ionicons from 'react-native-vector-icons/Ionicons'
 import * as Progress from 'react-native-progress'
+import Permissions from 'react-native-permissions'
 import CheckBox from '../../components/CheckBoxComponent'
 import zxcvbn from 'zxcvbn'
 import _ from 'lodash'
@@ -25,6 +27,7 @@ import CONSTANTS from '../../service/constants'
 import resolveError from '../../service/resolveError'
 import * as COMMON_FUNC from '../../service/commonFunc'
 import styles from './styles'
+import AlertController from '../../components/AlertController'
 
 const LOGO = require('../../../assets/images/Login/icon_40pt.png')
 
@@ -109,9 +112,19 @@ class SignUpScreen extends React.Component {
       if (prevProps.user.loading === 'USER_SIGNUP_PENDING' && this.props.user.loading === 'USER_SIGNUP_REJECTED') {
         const { error } = this.props.user
         this.setState({ loading: false }, () => {
-          Alert.alert(
-            'Error',
-            error.message
+          AlertController.shared.showAlert(
+            'Oops',
+            resolveError(error.code, error.message),
+            [
+              {
+                text: 'OK',
+                style: 'cancel'
+              },
+              {
+                text: 'Login',
+                onPress: () => Actions.LoginScreen()
+              }
+            ]
           )
         })
       }
@@ -124,7 +137,7 @@ class SignUpScreen extends React.Component {
         // Invitation has expired
         const { error } = this.props.user
         this.setState({ loading: false, isInvite: false })
-        Alert.alert(
+        AlertController.shared.showAlert(
           'Error',
           error.message
         )
@@ -138,7 +151,7 @@ class SignUpScreen extends React.Component {
       if (prevProps.user.loading === 'COMPLETE_INVITE_PENDING' && this.props.user.loading === 'COMPLETE_INVITE_REJECTED') {
         const { error } = this.props.user
         this.setState({ loading: false, isInvite: false })
-        Alert.alert(
+        AlertController.shared.showAlert(
           'Error',
           error.message
         )
@@ -198,6 +211,30 @@ class SignUpScreen extends React.Component {
   }
 
   onSignUp = () => {
+    this.signUp();
+
+    // if (Platform.OS === 'ios') {
+    //   this.signUp();
+    // }
+    // else {
+    //   Permissions.check('storage').then(response => { //'storage' permission doesn't support on iOS
+    //     if (response === 'authorized') {
+    //       //permission already allowed
+    //       this.signUp();
+    //     }
+    //     else {
+    //       Permissions.request('storage').then(response => {
+    //         if (response === 'authorized') {
+    //           //storage permission was authorized
+    //           this.signUp();
+    //         }
+    //       });
+    //     }
+    //   });
+    // }
+  }
+
+  signUp() {
     Analytics.logEvent('signup_signup', {})
 
     const {
@@ -248,7 +285,7 @@ class SignUpScreen extends React.Component {
           {
             code: 'com.signup.email.invalid',
             field: 'email',
-            message: 'Email is invalid'
+            message: 'Please enter a valid email address'
           }
         ]
       }
@@ -269,7 +306,7 @@ class SignUpScreen extends React.Component {
         {
           code: 'com.signup.password.invalid',
           field: 'password',
-          message: 'Password must have at least 6 characters'
+          message: 'Password must be at least 6 characters'
         }
       ]
     }
@@ -377,6 +414,7 @@ class SignUpScreen extends React.Component {
                 ContainerStyle={{ marginBottom: 0 }}
                 isErrorView={false}
                 isError={passwordError.length > 0 ? true : false}
+                value={this.state.password}
                 handleChange={text => this.changePassword(text)}
                 onFocus={() => this.onPasswordFocus(true)}
                 onBlur={() => this.onPasswordFocus(false)}
@@ -427,12 +465,12 @@ class SignUpScreen extends React.Component {
                 rightText="I'll accept the "
               >
                 <TouchableOpacity onPress={() => Actions.TermsAndConditionsScreen()}>
-                  <Text style={styles.termsText}>terms & conditions</Text>
+                  <Text style={styles.termsText}>terms of service</Text>
                 </TouchableOpacity>
               </CheckBox>
               <View style={styles.errorTncView}>
                 {this.state.showTncError && (
-                  <Text style={styles.errorText}>You must accept the Terms and Conditions</Text>
+                  <Text style={styles.errorText}>You must accept the Terms of Service to proceed</Text>
                 )}
               </View>
             </View>
@@ -446,7 +484,7 @@ class SignUpScreen extends React.Component {
             <View style={styles.loginButtonView}>
               <Text style={[styles.btnSend, { color: COLORS.MEDIUM_GREY }]}>Already have an account? </Text>
               <TouchableOpacity onPress={() => this.onSignIn()}>
-                <Text style={[styles.btnSend, { color: COLORS.PURPLE }]}>Sign in.</Text>
+                <Text onPress={() => this.onSignIn()} suppressHighlighting={true} style={[styles.btnSend, { color: COLORS.PURPLE }]}>Sign in.</Text>
               </TouchableOpacity>
             </View>
           </View>

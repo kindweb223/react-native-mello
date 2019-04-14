@@ -5,7 +5,8 @@ import {
   TouchableOpacity,
   Image,
   Share,
-  ScrollView
+  ScrollView,
+  Platform
 } from 'react-native'
 import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
@@ -111,15 +112,7 @@ class ShareScreen extends React.Component {
   showShareModal = () => {
     const { data } = this.props
 
-    Share.share({
-      message: data.summary || '',
-      url: `${SHARE_LINK_URL}${data.id}`,
-      title: data.headline
-    },{
-      dialogTitle: data.headline,
-      tintColor: COLORS.PURPLE,
-      subject: data.headline
-    })
+    COMMON_FUNC.handleShareFeed(data)
   }
 
   handleShareOption = (index) => {
@@ -282,12 +275,13 @@ class ShareScreen extends React.Component {
           <Modal 
             isVisible={linkShareModal}
             style={{ margin: 0 }}
-            backdropColor='#e0e0e0'
-            backdropOpacity={0.9}
+            backdropColor={COLORS.MODAL_BACKDROP}
+            backdropOpacity={0.4}
             animationIn="slideInUp"
             animationOut="slideOutDown"
             animationInTiming={500}
             onBackdropPress={() => this.setState({ linkShareModal: false })}
+            onBackButtonPress={() => this.setState({ linkShareModal: false })}
           >
             <LinkShareModalComponent
               shareModalType={shareModalType}
@@ -300,14 +294,15 @@ class ShareScreen extends React.Component {
           <Modal
             isVisible={this.state.isInviteeModal}
             style={{ margin: 0 }}
-            backdropColor='#f5f5f5'
-            backdropOpacity={0.9}
+            backdropColor={COLORS.MODAL_BACKDROP}
+            backdropOpacity={0.4}
             animationIn="slideInUp"
             animationOut="slideOutDown"
             animationInTiming={800}
             animationOutTiming={100}
             onModalHide={() => {}}
             onBackdropPress={() => this.setState({ isInviteeModal: false })}
+            onBackButtonPress={() => this.setState({ isInviteeModal: false })}
           >
             <InviteeScreen
               data={data}

@@ -3,7 +3,8 @@ import {
   View,
   Text,
   TouchableOpacity,
-  Image
+  Image,
+  Alert
 } from 'react-native'
 import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
@@ -14,6 +15,7 @@ import { sendResetPasswordEmail } from '../../redux/user/actions'
 import COLORS from '../../service/colors'
 import styles from './styles'
 import Analytics from '../../lib/firebase'
+import AlertController from '../../components/AlertController'
 
 const LOGO = require('../../../assets/images/Login/icon_40pt.png')
 const MAIL_ICON = require('../../../assets/images/Success/iconMailBig.png')
@@ -65,6 +67,11 @@ class ResetPasswordConfirmScreen extends React.Component {
       email: this.props.userEmail
     }
     this.props.sendResetPasswordEmail(param)
+
+    AlertController.shared.showAlert(
+      '',
+      'Email resent to ' + param.email,
+    )
   }
 
   render () {
@@ -79,11 +86,10 @@ class ResetPasswordConfirmScreen extends React.Component {
         <View style={styles.innerContainer}>
           <Image source={MAIL_ICON} style={styles.mailIcon} />
 
-          <Text style={styles.title}>Reset</Text>
-          <Text style={styles.title}>password</Text>
+          <Text style={styles.title}>Almost done!</Text>
           <View style={styles.subTitleView}>
-            <Text style={styles.subTitle}>We have sent instructions to</Text>
-            <Text style={styles.subTitle}>{userEmail}</Text>
+            <Text style={styles.subTitle}>Please follow the instructions sent to </Text>
+            <Text style={styles.subTitle}>{userEmail} to reset your password</Text>
           </View>
 
           <TouchableOpacity onPress={() => this.onResend()} style={styles.buttonView}>

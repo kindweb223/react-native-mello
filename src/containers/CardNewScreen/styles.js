@@ -4,13 +4,10 @@ import CONSTANTS from '../../service/constants'
 
 const styles = StyleSheet.create({
   container: {
-    width: CONSTANTS.SCREEN_WIDTH,
-    height: CONSTANTS.SCREEN_HEIGHT,
+    width: '100%',
+    height: '100%',
     backgroundColor: 'transparent',
     justifyContent: 'center',
-  },
-  backdropContainer: {
-    flex: 1,
   },
   cardContainer: {
     position: 'absolute',
@@ -23,6 +20,7 @@ const styles = StyleSheet.create({
   textInputIdea: {
     fontSize: 16,
     lineHeight: CONSTANTS.TEXT_INPUT_LINE_HEIGHT,
+    minHeight: 40,
     marginTop: 16,
     marginBottom: 16,
     marginHorizontal: 16,
@@ -79,7 +77,8 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    marginBottom: 10
+    marginBottom: 10,
+    marginTop: Platform.OS === 'ios' ? 0 : 10
   },
   extensionHeaderContainer: {
     flexDirection: 'row',
@@ -208,6 +207,9 @@ const styles = StyleSheet.create({
   successText: {
     fontSize: 15,
     color: COLORS.PURPLE
+  },
+  loadingIcon: {
+    marginRight: 10
   }
 })
 

@@ -23,7 +23,7 @@ export default {
   },
   title: {
     fontSize: 28,
-    lineHeight: 29,
+    lineHeight: 34,
     fontWeight: 'bold',
     marginBottom: 14
   },

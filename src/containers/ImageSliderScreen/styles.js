@@ -1,4 +1,4 @@
-import { StyleSheet } from 'react-native'
+import { StyleSheet, Platform } from 'react-native'
 import COLORS from '../../service/colors'
 import CONSTANTS from '../../service/constants'
 
@@ -24,19 +24,14 @@ const styles = StyleSheet.create({
     paddingTop: 8
   },
   coverButton: {
-    bottom: 36,
+    bottom: Platform.OS === 'ios' ? 32 : 20,
     left: 20,
     alignItems: 'center',
     justifyContent: 'center',
     position: 'absolute'
   },
-  coverText: {
-    color: '#fff'
-  },
   deleteButton: {
-    height: 30,
-    width: 30,
-    bottom: 30,
+    bottom: Platform.OS === 'ios' ? 30 : 20,
     right: 20,
     alignItems: 'center',
     justifyContent: 'center',

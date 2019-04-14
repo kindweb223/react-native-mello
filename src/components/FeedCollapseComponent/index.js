@@ -6,7 +6,8 @@ import {
   TouchableOpacity,
   ScrollView,
   Animated,
-  Image
+  Image,
+  NetInfo
 } from 'react-native'
 import { Actions } from 'react-native-router-flux'
 import Collapsible from 'react-native-collapsible'
@@ -40,7 +41,8 @@ class FeedCollapseComponent extends React.Component {
       feedData: {},
       isPreview: false,
       images: [],
-      position: 0
+      position: 0,
+      offline: false,
     }
   }
 
@@ -53,6 +55,10 @@ class FeedCollapseComponent extends React.Component {
       }
     }
     return null
+  }
+
+  componentDidUpdate(){
+    this.checkOffline()
   }
 
   onImagePreview = (key) => {
@@ -75,6 +81,39 @@ class FeedCollapseComponent extends React.Component {
     }
   }
 
+  checkOffline = () => {
+    return new Promise ((resolve, reject) => {
+      const offlineStatus = this.state.offline
+      NetInfo.getConnectionInfo().then((connectionInfo) => {
+        if(connectionInfo.type === 'none'){
+          if(!offlineStatus){
+            this.setState({ offline: true})
+          }
+          resolve(true)
+        }else{
+          if(offlineStatus){
+            this.setState({ offline: false})
+          }
+          resolve(false)
+        }
+      })
+
+    })
+  }
+
+  onPressText = () => {
+    const { feedData } =  this.state 
+    this.checkOffline()
+    .then(offline => {
+      if(!offline){
+        if(COMMON_FUNC.isFeedOwnerEditor(feedData) && !offline){
+          this.props.onEditFeed()
+        }
+        
+      }
+    })
+  }
+
   renderContent = (feedData) => {
     const images = _.filter(feedData.files, data => data.contentType.includes('image/'))
     const files = _.filter(feedData.files, data => !data.contentType.includes('image/'))
@@ -85,16 +124,18 @@ class FeedCollapseComponent extends React.Component {
           ? <TouchableOpacity
               activeOpacity={0.9}
               style={styles.summaryView}
-              onPress={() => COMMON_FUNC.isFeedOwnerEditor(feedData) ? this.props.onEditFeed() : {}}
+              onPress={() => this.closeCollapse()}
+              onLongPress={() => this.onPressText()}
             >
               <Text style={styles.summaryText}>{feedData.summary}</Text>
             </TouchableOpacity>
           : <TouchableOpacity
               activeOpacity={0.9}
               style={styles.summaryView}
-              onPress={() => COMMON_FUNC.isFeedOwnerEditor(feedData) ? this.props.onEditFeed() : {}}
+              onPress={() => this.closeCollapse()}
+              onLongPress={() => this.onPressText()}
             >
-              <Text style={styles.summaryPlaceHolderText}>Tap to add description</Text>
+              <Text style={styles.summaryPlaceHolderText}>Long hold to add a description</Text>
             </TouchableOpacity>
         }
 
@@ -154,7 +195,7 @@ class FeedCollapseComponent extends React.Component {
         )}
 
         <View style={styles.footerView}>
-          <View>
+          {/* <View>
             {COMMON_FUNC.isFeedOwnerEditor(feedData) && (
               <View style={styles.footerLeftBtnView}>
                 {TAGS_FEATURE && (
@@ -166,7 +207,7 @@ class FeedCollapseComponent extends React.Component {
                   <Image source={TAG_ICON} />
                 </TouchableOpacity>
                 )}
-                {/* <TouchableOpacity
+                <TouchableOpacity
                   style={styles.btnView}
                   activeOpacity={0.6}
                   onPress={this.props.onAddMedia}
@@ -179,10 +220,10 @@ class FeedCollapseComponent extends React.Component {
                   onPress={this.props.onAddDocument}
                 >
                   <Image source={ATTACHMENT_ICON} />
-                </TouchableOpacity> */}
+                </TouchableOpacity>
               </View>
             )}
-          </View>
+          </View> */}
           <TouchableOpacity onPress={this.closeCollapse}>
             <View style={styles.collapseIconView}>
               <Feather name="chevron-up" size={25} color={COLORS.MEDIUM_GREY} />
@@ -234,26 +275,20 @@ class FeedCollapseComponent extends React.Component {
 
     return (
       <View style={styles.collapseView}>
-        <TouchableOpacity activeOpacity={0.9} onPress={() => longHold ? {} : this.handleCollapse()}>
-          <View style={styles.collpaseHeader}>
-            {isCollapse
-              ? <Text style={styles.headerTitle} numberOfLines={1} ellipsizeMode="tail">{feedData.headline}</Text>
-              : <TouchableOpacity
-                  activeOpacity={0.9}
-                  onPress={() => COMMON_FUNC.isFeedOwnerEditor(feedData) ? this.props.onEditFeed() : {}}
-                >
-                  <Text style={styles.headerTitle}>{feedData.headline}</Text>
-                </TouchableOpacity>
-            }
-
-            {isCollapse && !longHold && (
-              <Animated.View style={{ marginLeft: 10, transform: [{ rotate: spin }] }}>
-                {!this.state.hideArrow && (
-                  <Feather name="chevron-down" size={25} color={COLORS.MEDIUM_GREY} />
-                )}
-              </Animated.View>
-            )}
-          </View>
+        <TouchableOpacity
+          activeOpacity={0.9}
+          onPress={() => isCollapse ? this.handleCollapse() : this.closeCollapse()}
+          onLongPress={() => this.onPressText()}
+        >
+          <Text style={styles.headerTitle} numberOfLines={1} ellipsizeMode="tail">{feedData.headline}</Text>
+          {isCollapse && feedData.summary && feedData.summary.length > 0
+            ? <View style={styles.collpaseHeader}>
+                <Text style={styles.summaryText} numberOfLines={1} ellipsizeMode="tail">
+                  {feedData.summary}
+                </Text>
+              </View>
+            : null
+          }
         </TouchableOpacity>
 
         <Collapsible collapsed={isCollapse} align="top" duration={500}>

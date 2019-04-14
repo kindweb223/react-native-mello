@@ -9,23 +9,24 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     alignItems: 'center',
     height: 54,
-    paddingHorizontal: 6,
-    borderBottomWidth: 1,
-    borderBottomColor: COLORS.LIGHT_GREY_PLACEHOLDER
+    paddingHorizontal: 6
   },
   buttonWrapper: {
-    flexDirection: 'row',
-    alignItems: 'flex-start',
     paddingHorizontal: 10,
     paddingVertical: 5,
-    width: 50
+    width: 80
+  },
+  doneButton: {
+    fontSize: 16,
+    fontWeight: 'normal',
+    color: COLORS.PURPLE
   },
   textTitle: {
     fontSize: 16,
     lineHeight: 23,
-    fontWeight: '500',
+    fontWeight: '600',
     textAlign: 'center',
-    marginBottom: 5,
+    marginBottom: 1,
   },
   container: {
     flex: 1,
@@ -85,6 +86,35 @@ const styles = StyleSheet.create({
         elevation: 20
       }
     })
+  },
+  emptyView: {
+    width: '100%',
+    height: '100%',
+    justifyContent: 'center',
+    alignItems: 'center'
+  },
+  title: {
+    fontSize: 18,
+    lineHeight: 22,
+    letterSpacing: 0.34,
+    fontWeight: '600',
+    marginTop: 38,
+    marginBottom: 10
+  },
+  subTitle: {
+    fontSize: 14,
+    lineHeight: 20
+  },
+  sectionView: {
+    borderBottomColor: COLORS.LIGHT_GREY_PLACEHOLDER,
+    borderBottomWidth: 1,
+    marginHorizontal: 16,
+    paddingVertical: 7
+  },
+  sectionTitle: {
+    fontSize: 14,
+    fontWeight: 'normal',
+    color: COLORS.DARK_GREY
   }
 })
 

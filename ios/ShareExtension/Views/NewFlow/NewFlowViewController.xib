@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="14490.70" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+    <device id="retina6_1" orientation="portrait">
+        <adaptation id="fullscreen"/>
+    </device>
+    <dependencies>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="14490.49"/>
+        <capability name="Safe area layout guides" minToolsVersion="9.0"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <objects>
+        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="NewFlowViewController" customModule="ShareExtension" customModuleProvider="target">
+            <connections>
+                <outlet property="descriptionTextView" destination="mUQ-wx-Y9M" id="dBD-3x-Cip"/>
+                <outlet property="descriptionTextViewHeightConstraint" destination="9C0-aj-cjh" id="uRk-zz-uBN"/>
+                <outlet property="nameTextView" destination="SbF-m5-2tc" id="b0L-ZI-pCS"/>
+                <outlet property="nameTextViewHeightConstraint" destination="HIF-Vg-3wi" id="Tbi-dq-6l9"/>
+                <outlet property="navigationBarContainerView" destination="EDQ-Rg-ojv" id="mAU-4p-XNe"/>
+                <outlet property="scrollView" destination="nwU-UX-iZP" id="bH0-pW-rOg"/>
+                <outlet property="view" destination="i5M-Pr-FkT" id="sfx-zR-JGt"/>
+            </connections>
+        </placeholder>
+        <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
+        <view clearsContextBeforeDrawing="NO" contentMode="scaleToFill" id="i5M-Pr-FkT">
+            <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
+            <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+            <subviews>
+                <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="EDQ-Rg-ojv">
+                    <rect key="frame" x="0.0" y="0.0" width="414" height="44"/>
+                    <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                    <constraints>
+                        <constraint firstAttribute="height" constant="44" id="FEi-s5-yd4"/>
+                    </constraints>
+                </view>
+                <scrollView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="nwU-UX-iZP">
+                    <rect key="frame" x="0.0" y="44" width="414" height="852"/>
+                    <subviews>
+                        <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="3iX-xZ-rQJ">
+                            <rect key="frame" x="0.0" y="0.0" width="414" height="96"/>
+                            <subviews>
+                                <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" scrollEnabled="NO" text="Name your flow" textAlignment="natural" translatesAutoresizingMaskIntoConstraints="NO" id="SbF-m5-2tc">
+                                    <rect key="frame" x="16" y="16" width="382" height="36"/>
+                                    <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                    <constraints>
+                                        <constraint firstAttribute="height" constant="36" id="HIF-Vg-3wi"/>
+                                    </constraints>
+                                    <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                                    <textInputTraits key="textInputTraits" autocapitalizationType="sentences"/>
+                                </textView>
+                                <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" scrollEnabled="NO" text="Tap to give this flow a description" textAlignment="natural" translatesAutoresizingMaskIntoConstraints="NO" id="mUQ-wx-Y9M">
+                                    <rect key="frame" x="16" y="52" width="382" height="36"/>
+                                    <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                    <constraints>
+                                        <constraint firstAttribute="height" constant="36" id="9C0-aj-cjh"/>
+                                    </constraints>
+                                    <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                                    <textInputTraits key="textInputTraits" autocapitalizationType="sentences"/>
+                                </textView>
+                            </subviews>
+                            <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                            <constraints>
+                                <constraint firstAttribute="trailing" secondItem="mUQ-wx-Y9M" secondAttribute="trailing" constant="16" id="Ppd-sY-nNz"/>
+                                <constraint firstItem="mUQ-wx-Y9M" firstAttribute="leading" secondItem="3iX-xZ-rQJ" secondAttribute="leading" constant="16" id="YbL-qq-bXi"/>
+                                <constraint firstItem="SbF-m5-2tc" firstAttribute="leading" secondItem="3iX-xZ-rQJ" secondAttribute="leading" constant="16" id="ZQk-zn-PzZ"/>
+                                <constraint firstItem="SbF-m5-2tc" firstAttribute="top" secondItem="3iX-xZ-rQJ" secondAttribute="top" constant="16" id="hDk-Ob-jfi"/>
+                                <constraint firstAttribute="bottom" secondItem="mUQ-wx-Y9M" secondAttribute="bottom" constant="8" id="nil-hq-KL2"/>
+                                <constraint firstItem="mUQ-wx-Y9M" firstAttribute="top" secondItem="SbF-m5-2tc" secondAttribute="bottom" id="oEg-Ic-ePA"/>
+                                <constraint firstAttribute="trailing" secondItem="SbF-m5-2tc" secondAttribute="trailing" constant="16" id="u37-O3-MPf"/>
+                            </constraints>
+                        </view>
+                    </subviews>
+                    <constraints>
+                        <constraint firstAttribute="trailing" secondItem="3iX-xZ-rQJ" secondAttribute="trailing" id="6pm-qN-xpJ"/>
+                        <constraint firstAttribute="bottom" secondItem="3iX-xZ-rQJ" secondAttribute="bottom" id="7jY-1F-wGL"/>
+                        <constraint firstItem="3iX-xZ-rQJ" firstAttribute="width" secondItem="nwU-UX-iZP" secondAttribute="width" id="WvC-ZT-Ynz"/>
+                        <constraint firstItem="3iX-xZ-rQJ" firstAttribute="leading" secondItem="nwU-UX-iZP" secondAttribute="leading" id="hDh-X5-qZb"/>
+                        <constraint firstItem="3iX-xZ-rQJ" firstAttribute="top" secondItem="nwU-UX-iZP" secondAttribute="top" id="kMi-qJ-yUN"/>
+                    </constraints>
+                </scrollView>
+            </subviews>
+            <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+            <constraints>
+                <constraint firstItem="EDQ-Rg-ojv" firstAttribute="leading" secondItem="fnl-2z-Ty3" secondAttribute="leading" id="AsX-Ej-o6d"/>
+                <constraint firstItem="fnl-2z-Ty3" firstAttribute="trailing" secondItem="nwU-UX-iZP" secondAttribute="trailing" id="BaF-zp-eam"/>
+                <constraint firstAttribute="bottom" secondItem="nwU-UX-iZP" secondAttribute="bottom" id="Uw6-1h-k5L"/>
+                <constraint firstItem="nwU-UX-iZP" firstAttribute="top" secondItem="EDQ-Rg-ojv" secondAttribute="bottom" id="dNg-2Q-jLz"/>
+                <constraint firstItem="EDQ-Rg-ojv" firstAttribute="top" secondItem="i5M-Pr-FkT" secondAttribute="top" id="lcI-6p-GZQ"/>
+                <constraint firstItem="nwU-UX-iZP" firstAttribute="leading" secondItem="fnl-2z-Ty3" secondAttribute="leading" id="vWF-Tp-KDR"/>
+                <constraint firstItem="fnl-2z-Ty3" firstAttribute="trailing" secondItem="EDQ-Rg-ojv" secondAttribute="trailing" id="zu6-f3-Uju"/>
+            </constraints>
+            <freeformSimulatedSizeMetrics key="simulatedDestinationMetrics"/>
+            <viewLayoutGuide key="safeArea" id="fnl-2z-Ty3"/>
+            <point key="canvasLocation" x="47.826086956521742" y="35.491071428571423"/>
+        </view>
+    </objects>
+</document>

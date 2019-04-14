@@ -25,7 +25,7 @@ export const createCard = (huntId) => {
 /**
  * Update a card
  */
-export const updateCard = (huntId, ideaId, title, idea, coverImage, files) => {
+export const updateCard = (huntId, ideaId, title, idea, coverImage, files, isCreateCard) => {
   let url = `ideas/${ideaId}`
   const data = {
     status: 'PUBLISHED',
@@ -42,6 +42,7 @@ export const updateCard = (huntId, ideaId, title, idea, coverImage, files) => {
       url: url,
       data,
     }),
+    payload: isCreateCard
   };
 }
 
@@ -82,26 +83,43 @@ export const resetCardError = () => {
 /**
  * Delete a card
  */
-export const deleteCard = (id) => {
-  let url = `ideas/${id}`
+export const deleteCard = (deletedIdeaList) => {
+  // let url = `ideas/${id}`
+  let url = 'ideas'
+  const data = []
+  for (let i = 0; i < deletedIdeaList.length; i ++) {
+    data.push(
+      {
+        'id': deletedIdeaList[i].idea.id
+      }
+    )
+  }
   return {
     types: [types.DELETE_CARD_PENDING, types.DELETE_CARD_FULFILLED, types.DELETE_CARD_REJECTED],
     promise: axios({
       method: 'delete',
       url: url,
-    }),
-    payload: id,
+      data: data
+    })
   };
 }
 
 /**
  * Move a card
  */
-export const moveCard = (ideaId, huntId) => {
-  let url = `ideas/${ideaId}/move`
-  const data = {
-    huntId,
+export const moveCard = (movedIdeaList, huntId) => {
+  // let url = `ideas/${ideaId}/move`
+  let url = 'ideas/move'
+  const data = []
+  for (let i = 0; i < movedIdeaList.length; i ++) {
+    data.push(
+      {
+        'ideaId': movedIdeaList[i].idea.id,
+        'huntId': huntId
+      }
+    )
   }
+
   return {
     types: [types.MOVE_CARD_PENDING, types.MOVE_CARD_FULFILLED, types.MOVE_CARD_REJECTED],
     promise: axios({
@@ -109,10 +127,7 @@ export const moveCard = (ideaId, huntId) => {
       url: url,
       data,
     }),
-    payload: {
-      ideaId,
-      huntId,
-    },
+    payload: data
   };
 }
 
@@ -249,7 +264,7 @@ export const getFileUploadUrl = (huntId, ideaId ) => {
 /**
  * Upload a file
  */
-export const uploadFileToS3 = (signedUrl, file, fileName, mimeType) => {
+export const uploadFileToS3 = (signedUrl, file, fileName, mimeType, uploadProgress) => {
   const fileData = {
     uri: file,
     name: fileName,
@@ -262,6 +277,11 @@ export const uploadFileToS3 = (signedUrl, file, fileName, mimeType) => {
       new Promise((resolve, reject) => {
         const xhr = new XMLHttpRequest();
         xhr.open('PUT', signedUrl);
+        xhr.setRequestHeader("Content-type", mimeType); 
+        xhr.upload.onprogress = function(progress) {
+          var percentComplete = Math.ceil((progress.loaded / progress.total) * 100);
+          uploadProgress(percentComplete)
+        }
         xhr.onreadystatechange = function() {
           if (xhr.readyState === 4) {
             if (xhr.status === 200) {
@@ -279,13 +299,21 @@ export const uploadFileToS3 = (signedUrl, file, fileName, mimeType) => {
 /**
  * Add a file
  */
-export const addFile = (ideaId, fileType, contentType, name, objectKey) => {
+export const addFile = (ideaId, fileType, contentType, name, objectKey, metadata, base64String = '') => {
   let url = `ideas/${ideaId}/files`
-  const data = {
+  let data = {
     fileType,
     contentType,
     name,
     objectKey,
+    metadata
+  }
+
+  if (base64String) {
+    data = {
+      ...data,
+      thumbnailUrl: base64String
+    }
   }
   return {
     types: [types.ADD_FILE_PENDING, types.ADD_FILE_FULFILLED, types.ADD_FILE_REJECTED],
@@ -374,13 +402,37 @@ export const getOpenGraph = (urlPath, isSharing = false) => {
     isSharing,
   };
 
-  console.log("getOpenGraph data: ", data)
+  console.log("getOpenGraph: ", data)
   return {
     types: [types.GET_OPEN_GRAPH_PENDING, types.GET_OPEN_GRAPH_FULFILLED, types.GET_OPEN_GRAPH_REJECTED],
     promise: axios({
       method: 'post',
       baseURL: LAMBDA_BASE_URL,
       url,
+      data,
+    }),
+    originalUrl: urlPath
+  };
+}
+
+/**
+ * Add a card in share extesnsion
+ */
+export const addSharExtensionCard = (huntId, idea, links, files, status) => {
+  let url = 'ideas/shareExtension'
+  const data = {
+    huntId,
+    idea,
+    links,
+    files,
+    status
+  }
+
+  return {
+    types: [types.ADD_SHARE_EXTENSION_CARD_PENDING, types.ADD_SHARE_EXTENSION_CARD_FULFILLED, types.ADD_SHARE_EXTENSION_CARD_REJECTED],
+    promise: axios({
+      method: 'post',
+      url: url,
       data,
     }),
   };
