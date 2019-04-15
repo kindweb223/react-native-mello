@@ -96,7 +96,9 @@ export default {
     'text-big': { fontSize: 18 }
   },
   HTML_TAGS_STYLE: {
-    'p': { backgroundColor: 'transparent', marginBottom: 5 },
+    'span': { backgroundColor: 'transparent', fontSize: 16 },
+    'span_masonry': { backgroundColor: 'transparent', fontSize: 14 },
+    'p': { backgroundColor: 'transparent', marginBottom: 5, fontSize: 16 },
     'ul': { paddingLeft: 0, marginTop: 5, marginBottom: 0 },
     'ol': { paddingLeft: 0, marginTop: 5, marginBottom: 0 },
     'h1': { backgroundColor: 'transparent' },

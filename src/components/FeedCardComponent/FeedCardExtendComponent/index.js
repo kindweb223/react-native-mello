@@ -74,7 +74,7 @@ class FeedCardExtendComponent extends React.Component {
               {_.has(idea, 'idea') && idea.idea.length !== null && idea.idea.length > 0 && (
                 <View style={styles.subView}>
                   <HTML
-                    html={idea.idea}
+                    html={'<span_masonry>' + idea.idea + '</span_masonry>'}
                     containerStyle={styles.textHtmlIdea}
                     // onLinkPress={(evt, href) => this.onPressLink(href)}
                     // onPress={() => longHold ? {} : this.props.onLinkPress()}
