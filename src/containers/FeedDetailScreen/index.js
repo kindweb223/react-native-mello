@@ -1644,7 +1644,7 @@ class FeedDetailScreen extends React.Component {
                   ? this.state.viewPreference === 'LIST'
                     ? currentFeed.ideas.length > 0
                       ? <View
-                          style={{ paddingHorizontal: 8, marginTop: Platform.OS === 'android' && isVisibleLongHoldMenu ? 30 : 0}}
+                          style={{ paddingHorizontal: 8, marginTop: Platform.OS === 'android' && isVisibleLongHoldMenu ? 0 : 0}}
                         >
                           {currentFeed.ideas.map((item, index) => (
                           <View
@@ -1680,7 +1680,7 @@ class FeedDetailScreen extends React.Component {
                         </View>
                     : currentFeed.ideas.length > 0
                       ? <View
-                          style={{ paddingHorizontal: currentFeed.ideas.length > 0 ? 8 : 0, marginTop: Platform.OS === 'android' && isVisibleLongHoldMenu ? 30 : 0}}
+                          style={{ paddingHorizontal: currentFeed.ideas.length > 0 ? 8 : 0, marginTop: Platform.OS === 'android' && isVisibleLongHoldMenu ? 0 : 0}}
                         >
                           <MasonryList
                             data={MasonryListData}
