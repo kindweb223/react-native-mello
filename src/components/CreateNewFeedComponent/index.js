@@ -140,11 +140,11 @@ export default class CreateNewFeedComponent extends React.Component {
     }
 
     return (
-      <TouchableWithoutFeedback
+      <TouchableOpacity
         onPressIn={() => this.onSelectItem(item, index)}
       >
         <View style={styles.itemContainer}>
-          {this.renderItemBackground(index)}
+          {/* {this.renderItemBackground(index)} */}
           <View style={styles.leftContentContainer}> 
             <Image source={item.icon} style={styles.image} resizeMode="contain" />
           </View>
@@ -152,7 +152,7 @@ export default class CreateNewFeedComponent extends React.Component {
             <Text style={styles.textTitle}>{item.title}</Text>
           </View>
         </View>
-      </TouchableWithoutFeedback>
+      </TouchableOpacity>
     );
   }
 
