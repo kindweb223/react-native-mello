@@ -8,8 +8,7 @@ import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 
 import _ from 'lodash'
-
-import Autolink from 'react-native-autolink';
+import HTML from 'react-native-render-html'
 
 import styles from './styles'
 import LikeComponent from '../../LikeComponent';
@@ -41,8 +40,6 @@ class FeedCardExtendComponent extends React.Component {
 
     const hasCoverImage = idea.coverImage && idea.coverImage.length > 0
     const viewMode = COMMON_FUNC.getCardViewMode(feedo.currentFeed, idea)
-
-    console.log('IDEA: ', idea)
 
     return (
       <View style={[styles.container, longSelected && styles.selected, longHold && viewMode === CONSTANTS.CARD_VIEW && { opacity: 0.4 }]}>
@@ -76,15 +73,14 @@ class FeedCardExtendComponent extends React.Component {
 
               {_.has(idea, 'idea') && idea.idea.length !== null && idea.idea.length > 0 && (
                 <View style={styles.subView}>
-                  <Autolink
-                    style={styles.title}
-                    linkStyle={styles.linkStyle}
-                    text={idea.idea}
-                    numberOfLines={hasCoverImage ? 4 : 10}
-                    ellipsizeMode="tail"
-                    onPress={() => longHold ? {} : this.props.onLinkPress()}
-                    onLongPress={() => longHold ? {} : this.props.onLinkLongPress()}
-                    suppressHighlighting={true}
+                  <HTML
+                    html={idea.idea}
+                    containerStyle={styles.textHtmlIdea}
+                    // onLinkPress={(evt, href) => this.onPressLink(href)}
+                    // onPress={() => longHold ? {} : this.props.onLinkPress()}
+                    // onLongPress={() => longHold ? {} : this.props.onLinkLongPress()}
+                    classesStyles={CONSTANTS.HTML_CLASS_STYLES}
+                    tagsStyles={CONSTANTS.HTML_TAGS_STYLE}
                   />
                 </View>
               )}

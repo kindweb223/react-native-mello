@@ -121,12 +121,6 @@ const TagCreateMode = 2;
 
 const PAGE_COUNT = 50
 
-const fontSpecs = {
-  fontFamily: undefined,
-  fontSize: 13,
-  fontWeight: '500'
-}
-
 class FeedDetailScreen extends React.Component {
   constructor(props) {
     super(props);
@@ -547,30 +541,14 @@ class FeedDetailScreen extends React.Component {
         const idea = ideas[index]
         const cardWidth = (CONSTANTS.SCREEN_SUB_WIDTH - 16) / 2
 
-        const textSize = await rnTextSize.measure({
-          text: idea.idea,
-          width: cardWidth - 16,
-          ...fontSpecs
-        })
+        const { textSize, lineCount } = await COMMON_FUNC.getHtmlHeight(idea.idea, (CONSTANTS.SCREEN_SUB_WIDTH - 16) / 2)
 
         let hasCoverImage = idea.coverImage && idea.coverImage.length > 0
         let cardHeight = 0
         let contentHeight = 0
         let imageHeight = 0
 
-        if (hasCoverImage) {
-          if (textSize.lineCount > 3) {
-            contentHeight = 80 + (textSize.height / textSize.lineCount * 4)
-          } else {
-            contentHeight = 80 + textSize.height
-          }
-        } else {
-          if (textSize.lineCount > 9) {
-            contentHeight = 80 + (textSize.height / textSize.lineCount * 10)
-          } else {
-            contentHeight = 80 + textSize.height
-          }
-        }
+        contentHeight = 80 + textSize
 
         if (hasCoverImage) {
           const coverImageData = _.find(idea.files, file => (file.accessUrl === idea.coverImage || file.thumbnailUrl === idea.coverImage))

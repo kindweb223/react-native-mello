@@ -24,7 +24,6 @@ const styles = StyleSheet.create({
     backgroundColor: 'transparent',
   },
   textInputIdea: {
-    fontSize: 16,
     fontWeight: 'normal',
     color: 'black',
     lineHeight: CONSTANTS.TEXT_INPUT_LINE_HEIGHT,
@@ -34,6 +33,15 @@ const styles = StyleSheet.create({
     paddingRight: 0,
     paddingTop: 0,
     paddingBottom: 0,
+  },
+  textHtmlIdea: {
+    marginBottom: 0,
+    marginHorizontal: 16,
+    paddingLeft: 0,
+    paddingRight: 0,
+    paddingTop: 0,
+    paddingBottom: 0,
+    width: '100%'
   },
   rowContainer: {
     flexDirection: 'row',
