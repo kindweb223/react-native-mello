@@ -22,7 +22,6 @@ class CKEditor extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      webVewHeight: 101,
       placeholder: '',
       init: false
     }
@@ -30,14 +29,7 @@ class CKEditor extends React.Component {
 
   componentWillMount() {
     const { placeholder, initHeight } = this.props;
-    this.setState({ placeholder, webVewHeight: initHeight })
-  }
-
-  componentWillReceiveProps(nextProps) {
-    console.log('nextProps.height: ', nextProps.height)
-    if (this.state.init === false) {
-      this.setState({ webVewHeight: nextProps.height })
-    }
+    this.setState({ placeholder })
   }
 
   postMessage = payload => {
@@ -49,15 +41,11 @@ class CKEditor extends React.Component {
 
   handleMessage = event => {
     try {
-      // console.log('CKEDITR_DATA: ',  event.nativeEvent.data)
       const msgData = event.nativeEvent.data;
       const keyCode = msgData.split('>>>!hunt!<<<')[0];
 
       if (keyCode === 'NO_KEYCODE') {
-        const webVewHeight = parseInt(msgData.split('>>>!hunt!<<<')[1]) + 20;
         const content = msgData.split('>>>!hunt!<<<')[2];
-
-        this.setState({ webVewHeight, init: true });
         this.props.onChange(content);
       } else {
         this.props.handleKeydown();
@@ -80,7 +68,7 @@ class CKEditor extends React.Component {
 
   render() {
     return (
-      <View style={{ height: this.state.webVewHeight }}>
+      <View style={{ flex: 1 }}>
         <WebView
           {...this.props}
           ref={c => this.webview = c}
@@ -117,7 +105,7 @@ CKEditor.defaultProps = {
 const styles = StyleSheet.create({
   webviewStyle: {
     width: '100%',
-    marginTop: Platform.OS === 'ios' ? 8 : 0
+    flex: 1
   }
 });
 

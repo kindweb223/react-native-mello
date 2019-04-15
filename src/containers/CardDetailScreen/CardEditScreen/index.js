@@ -29,7 +29,8 @@ class CardEditScreen extends React.Component {
     this.state = {
       idea: props.idea,
       bottomButtonsPadding: Platform.OS === 'android' ? 24 : 0,
-      initHeight: 0
+      initHeight: 0,
+      keyboardHeight: 0
     }
 
     this.animatedShow = new Animated.Value(0);
@@ -64,6 +65,7 @@ class CardEditScreen extends React.Component {
   }
 
   keyboardDidlShow(e) {
+    this.setState({ keyboardHeight: e.endCoordinates.height })
     Animated.timing(
       this.animatedKeyboardHeight, {
         toValue: e.endCoordinates.height,
@@ -73,6 +75,7 @@ class CardEditScreen extends React.Component {
   }
 
   keyboardDidHide(e) {
+    this.setState({ keyboardHeight: 0 })
     Animated.timing(
       this.animatedKeyboardHeight, {
         toValue: 0,
@@ -98,7 +101,9 @@ class CardEditScreen extends React.Component {
   }
 
   onChangeIdea(idea) {
+    console.log("IDEA = " + idea)
     this.setState({ idea });
+    this.refCKEditor.config.height = '800px'
   }
 
   onKeyPressIdea() {
@@ -111,7 +116,7 @@ class CardEditScreen extends React.Component {
 
   get renderFooter() {
     return (
-      <View style={[styles.footerContainer, { marginBottom: this.state.bottomButtonsPadding + CONSTANTS.STATUS_BOTTOM_BAR_HEIGHT }]}>
+      <View style={[styles.footerContainer]}>
         <CKEditorToolbar
           isEdit={false}
           handleCKEditorToolbar={() => {}}
@@ -128,10 +133,14 @@ class CardEditScreen extends React.Component {
       <CKEditor
         ref={c => this.refCKEditor = c}
         content={idea}
-        initHeight={CONSTANTS.SCREEN_HEIGHT - 120}
-        height={this.state.initHeight}
+        backgroundColor={'white'}
         onChange={value => this.onChangeIdea(value)}
         handleKeydown={() => this.onKeyPressIdea()}
+        hideKeyboardAccessoryView={true}
+        scrollEnabled={true}
+        automaticallyAdjustContentInsets={true}
+        style={{ flex: 1 }}
+        //height={ CONSTANTS.SCREEN_HEIGHT - this.state.keyboardHeight - 175 }
       />
     )
   }
@@ -163,14 +172,6 @@ class CardEditScreen extends React.Component {
     )
   }
 
-  get renderMainContent() { 
-    return (
-      <ScrollView ref={c => this.scrollViewRef = c} style={styles.mainContainer}>
-        {this.renderText}
-      </ScrollView>
-    );
-  }
-
   onHideKeyboard() {
     Keyboard.dismiss();
   }
@@ -178,18 +179,19 @@ class CardEditScreen extends React.Component {
   render () {
     const contentContainerStyle = {
       paddingTop: CONSTANTS.STATUSBAR_HEIGHT,
-      height: Animated.subtract(CONSTANTS.SCREEN_HEIGHT - 55 - this.state.bottomButtonsPadding - CONSTANTS.STATUS_BOTTOM_BAR_HEIGHT, this.animatedKeyboardHeight)
+      top: 0,
+      position: 'absolute',
+      height: Animated.subtract(CONSTANTS.SCREEN_HEIGHT, this.animatedKeyboardHeight)
     }
 
     return (
-      <View style={styles.container}>
-        <Animated.View style={contentContainerStyle}>
+      <Animated.View style={[contentContainerStyle]}>
+        <View style={styles.container}>
           {this.renderHeader}
-          {this.renderMainContent}
-        </Animated.View>
-
-        {this.renderFooter}
-      </View>
+          {this.renderText}
+          {this.renderFooter}
+        </View>
+      </Animated.View>
     );
   }
 }

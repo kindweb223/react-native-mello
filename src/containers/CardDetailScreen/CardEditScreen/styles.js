@@ -4,10 +4,10 @@ import CONSTANTS from '../../../service/constants'
 
 const styles = StyleSheet.create({
   container: {
+    top: 0,
     width: CONSTANTS.SCREEN_WIDTH,
-    height: CONSTANTS.SCREEN_HEIGHT,
-    backgroundColor: 'transparent',
-    backgroundColor: '#fff'
+    flex: 1,
+    backgroundColor: 'white'
   },
   headerContainer: {
     marginTop: 5,
@@ -15,7 +15,8 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
     flexDirection: 'row',
     justifyContent: 'space-between',
-    alignItems: 'center'
+    alignItems: 'center',
+    height: 55
   },
   closeButtonView: {
     paddingHorizontal: 10,
@@ -33,15 +34,12 @@ const styles = StyleSheet.create({
   loadingIcon: {
     marginRight: 10
   },
-  mainContainer: {
-    flex: 1,
-    padding: 8
-  },
   footerContainer: {
     width: '100%',
-    backgroundColor: '#fff',
+    backgroundColor: 'transparent',
     paddingHorizontal: CONSTANTS.PADDING,
-    height: 55
+    height: 55,
+    bottom: 0,
   }
 })
 
