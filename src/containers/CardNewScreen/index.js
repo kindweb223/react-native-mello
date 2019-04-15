@@ -252,6 +252,10 @@ class CardNewScreen extends React.Component {
           // Upload file received from Dashboard
           if (this.props.fileData && !_.isEmpty(this.props.fileData)) {
             this.handleFile(this.props.fileData);
+
+            setTimeout(() => {
+              this.scrollViewRef.scrollToEnd();
+            }, 10);
           }
         });
       }
