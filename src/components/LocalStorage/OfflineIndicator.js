@@ -5,6 +5,7 @@ import {
     Button,
 } from 'react-native'
 import { NetworkConsumer } from 'react-native-offline'
+import ToasterComponent from '../ToasterComponent';
 
 const offlineStyle = {
     backgroundColor: '#cc1234',
@@ -24,9 +25,11 @@ class OfflineIndicator extends React.Component {
             <NetworkConsumer pingInterval={5000}>
                 {({ isConnected }) => (
                     isConnected ? null : (
-                        <View style={offlineStyle}>
-                            <Text style={offlineText}>Device is offline</Text>
-                        </View>
+                        <ToasterComponent
+                            isVisible={!isConnected}
+                            title="Device is offline"
+                            buttonTitle=""
+                        />
                     )
                 )}
             </NetworkConsumer>
