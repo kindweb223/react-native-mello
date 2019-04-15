@@ -45,6 +45,7 @@ import HTML from 'react-native-render-html'
 
 import { COMMENT_FEATURE } from '../../service/api'
 import COMMON_STYLES from '../../themes/styles'
+var striptags = require('striptags')
 
 import {
   createCard,
@@ -1474,7 +1475,7 @@ class CardDetailScreen extends React.Component {
                   placeholder={'Add a note'}
                 />
               : <HTML
-                  html={this.state.idea}
+                  html={'<span>' + this.state.idea + '</span>'}
                   containerStyle={styles.textHtmlIdea}
                   classesStyles={CONSTANTS.HTML_CLASS_STYLES}
                   tagsStyles={CONSTANTS.HTML_TAGS_STYLE}
@@ -1821,7 +1822,7 @@ class CardDetailScreen extends React.Component {
         {(showEditScreen)
           ? <CardEditScreen
               {...this.props}
-              idea={idea}
+              idea={COMMON_FUNC.htmlToPlainText(striptags(idea))}
               checkUrls={() => this.checkUrls()}
               // onDoneEditCard={() => this.onDoneEditCard()}
               onCancelEditCard={() => this.onCloseEditCard()}
