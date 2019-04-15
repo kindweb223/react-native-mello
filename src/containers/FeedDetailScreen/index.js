@@ -1543,7 +1543,7 @@ class FeedDetailScreen extends React.Component {
               <TouchableOpacity style={styles.backView} onPress={this.backToDashboard}>
                 <Ionicons name="ios-arrow-back" size={32} color={COLORS.PURPLE} />
               </TouchableOpacity>
-              <NetworkConsumer pingInterval={2000}>
+              <NetworkConsumer pingInterval={CONSTANTS.NETWORK_CONSUMER_PING_INTERVAL}>
                 {({ isConnected }) => (isConnected ? (<View style={styles.rightHeader}>
                       {!_.isEmpty(currentFeed) && !COMMON_FUNC.isMelloTipFeed(currentFeed) && (
                           <View style={styles.avatarView}>
