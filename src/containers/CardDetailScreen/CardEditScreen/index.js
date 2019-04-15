@@ -101,7 +101,6 @@ class CardEditScreen extends React.Component {
   }
 
   onChangeIdea(idea) {
-    console.log("IDEA = " + idea)
     this.setState({ idea });
     this.refCKEditor.config.height = '800px'
   }

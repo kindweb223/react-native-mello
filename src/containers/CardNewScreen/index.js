@@ -1488,13 +1488,18 @@ class CardNewScreen extends React.Component {
     const { cardMode } = this.props;
 
     return (
-      <View style={{ paddingHorizontal: 10 }}>
+      <View style={{ flex: 1, marginTop: 15 }}>
         <CKEditor
           ref={c => this.refCKEditor = c}
           content={this.state.idea}
+          backgroundColor={'white'}
           placeholder={cardMode === CONSTANTS.SHARE_EXTENTION_CARD ? 'Add a note' : 'Let your ideas flow. Type text, paste a link, add an image, video or audio'}
           onChange={value => this.onChangeIdea(value)}
           handleKeydown={() => this.onKeyPressIdea()}
+          hideKeyboardAccessoryView={true}
+          scrollEnabled={true}
+          automaticallyAdjustContentInsets={true}
+          style={{ flex: 1 }}
         />
       </View>
     )
@@ -1573,7 +1578,6 @@ class CardNewScreen extends React.Component {
         {this.renderCoverImage}
         {this.renderWebMeta}
         {this.renderText}
-        {this.renderDocuments}
       </ScrollView>
     );
   }
