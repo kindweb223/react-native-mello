@@ -48,7 +48,7 @@ class API {
     case hunts = "hunts"
     case newIdea = "ideas/shareExtension"
     case newTempIdea = "ideas"
-    case newFileUploadUrl = "/hunts/{huntId}/ideas/{ideaId}/fileUpload"
+    case newFileUploadUrl = "hunts/{huntId}/ideas/{ideaId}/fileUpload"
     case addFile = "ideas/{ideaId}/files"
     case setCoverImage = "ideas/{ideaId}/cover-image/{fileId}"
     case updateIdea = "ideas/{ideaId}"
