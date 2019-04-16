@@ -7,7 +7,7 @@ const styles = StyleSheet.create({
   container: {
     backgroundColor: 'rgba(46, 46, 46, 1)',
     flex: 1,
-    paddingTop: ifIphoneX(60, 38),
+    paddingTop: Platform.OS === 'ios' ? ifIphoneX(60, 36) : 20,
     paddingLeft: 10,
     paddingRight: 10
   },
