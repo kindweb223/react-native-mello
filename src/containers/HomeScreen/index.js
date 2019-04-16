@@ -1445,7 +1445,6 @@ class HomeScreen extends React.Component {
       { this.renderSelectHunt }
       <View style={styles.container}>
       <SafeAreaView style={styles.safeArea}>
-        <OfflineIndicator />
         <View feedAction="null" />
         <View style={styles.container}>
           {Platform.OS === 'ios' && <StatusBar barStyle="dark-content" backgroundColor="blue" />}
@@ -1556,6 +1555,8 @@ class HomeScreen extends React.Component {
               isRefreshing={this.state.isRefreshing}
               onRefreshFeed={() => this.onRefreshFeed()}
             />
+
+            <OfflineIndicator />
           </View>
 
         </View>
