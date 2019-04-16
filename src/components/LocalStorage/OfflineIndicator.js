@@ -21,19 +21,37 @@ const offlineText = {
 
 class OfflineIndicator extends React.Component {
 
-    render(){
+    constructor(){
+        super()
+        this.state = {
+            show: true
+        }
+    }
+
+    hide = () => {
+        this.setState({ show: false })
+    }
+
+    render() {
+        const { show }  = this.state
         return (
-            <NetworkConsumer pingInterval={CONSTANTS.NETWORK_CONSUMER_PING_INTERVAL}>
-                {({ isConnected }) => (
-                    isConnected ? null : (
-                        <ToasterComponent
-                            isVisible={!isConnected}
-                            title="Device is offline"
-                            buttonTitle=""
-                        />
-                    )
+            <View>
+                {show && (
+                    <NetworkConsumer pingInterval={CONSTANTS.NETWORK_CONSUMER_PING_INTERVAL}>
+                        {({ isConnected }) => (
+                            isConnected ? null : (
+                                <ToasterComponent
+                                    isVisible={!isConnected}
+                                    title="Device is offline"
+                                    buttonTitle="OK"
+                                    onPressButton={this.hide}
+                                    style={{zIndex: 10}}
+                                />
+                            )
+                        )}
+                    </NetworkConsumer>
                 )}
-            </NetworkConsumer>
+            </View>         
         )
     }
 }
