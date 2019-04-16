@@ -44,6 +44,7 @@ class FeedCollapseComponent extends React.Component {
       position: 0,
       offline: false,
     }
+    this.collapseView = new Animated.Value(0)
   }
 
   static getDerivedStateFromProps(nextProps, prevState) {
@@ -237,18 +238,19 @@ class FeedCollapseComponent extends React.Component {
   handleCollapse = () => {
     const { isCollapse } = this.state
 
+    Animated.timing(
+      this.collapseView,
+      {
+        toValue: 1,
+        duration: 0,
+      }
+    ).start((animation) => {
+      if (animation.finished) {
+        this.setState({ hideArrow: true })
+      }
+    })
+
     if (isCollapse) {
-      Animated.timing(
-        this.state.spinValue,
-        {
-          toValue: 1,
-          duration: 500,
-        }
-      ).start((animation) => {
-        if (animation.finished) {
-          this.setState({ hideArrow: true })
-        }
-      })
       this.setState({ isCollapse: false })
     }
   }
@@ -256,10 +258,10 @@ class FeedCollapseComponent extends React.Component {
   closeCollapse = () => {
     this.setState({ isCollapse: true, hideArrow: false })
     Animated.timing(
-      this.state.spinValue,
+      this.collapseView,
       {
         toValue: 0,
-        duration: 500,
+        duration: 0,
       }
     ).start()
   }
@@ -268,9 +270,9 @@ class FeedCollapseComponent extends React.Component {
     const { feedData, isCollapse, isPreview, images } = this.state
     const { longHold } = this.props
 
-    const spin = this.state.spinValue.interpolate({
+    const animatedHeight = this.collapseView.interpolate({
       inputRange: [0, 1],
-      outputRange: ['0deg', '180deg'],
+      outputRange: [1, 0],
     })
 
     return (
@@ -281,12 +283,12 @@ class FeedCollapseComponent extends React.Component {
           onLongPress={() => this.onPressText()}
         >
           <Text style={styles.headerTitle} numberOfLines={1} ellipsizeMode="tail">{feedData.headline}</Text>
-          {isCollapse && feedData.summary && feedData.summary.length > 0
-            ? <View style={styles.collpaseHeader}>
+          {feedData.summary && feedData.summary.length > 0
+            ? <Animated.View style={[styles.collpaseHeader, { opacity: animatedHeight }]}>
                 <Text style={styles.summaryText} numberOfLines={1} ellipsizeMode="tail">
                   {feedData.summary}
                 </Text>
-              </View>
+              </Animated.View>
             : null
           }
         </TouchableOpacity>

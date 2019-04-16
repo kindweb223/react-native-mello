@@ -749,6 +749,8 @@ class CardNewScreen extends React.Component {
         duration: Platform.OS === 'android' && (this.props.isClipboard === true || this.props.cardMode === CONSTANTS.SHARE_EXTENTION_CARD) ? CONSTANTS.ANIMATEION_MILLI_SECONDS : e.duration,
       }
     ).start(() => {
+      this.scrollViewRef.scrollToEnd()
+      this.setState({ isShowKeyboardButton: true })
       if (this.isDisabledKeyboard === true) {
         return;
       }
@@ -766,7 +768,9 @@ class CardNewScreen extends React.Component {
         toValue: 0,
         duration: Platform.OS === 'android' && (this.props.isClipboard === true || this.props.cardMode === CONSTANTS.SHARE_EXTENTION_CARD) ? CONSTANTS.ANIMATEION_MILLI_SECONDS : e.duration,
       }
-    ).start();
+    ).start(() => {
+      this.setState({ isShowKeyboardButton: false })
+    });
   }
 
   safariViewShow() {
@@ -1065,6 +1069,7 @@ class CardNewScreen extends React.Component {
     if (cardMode === CONSTANTS.SHARE_EXTENTION_CARD) {
       return;
     }
+    this.refCKEditor.hideKeyboard()
     Keyboard.dismiss();
   }
 
@@ -1480,8 +1485,11 @@ class CardNewScreen extends React.Component {
   }
 
   onLayoutScrollView({ nativeEvent: { layout } }) {
+    if (this.scrollViewHeight < layout.height) {
+      this.scrollViewRef.scrollToEnd()
+    }
     this.scrollViewHeight = layout.height;
-    this.scrollContent();
+    // this.scrollContent();
   }
 
   get renderText() {
@@ -1497,9 +1505,8 @@ class CardNewScreen extends React.Component {
           onChange={value => this.onChangeIdea(value)}
           handleKeydown={() => this.onKeyPressIdea()}
           hideKeyboardAccessoryView={true}
-          // scrollEnabled={true}
+          scrollEnabled={true}
           automaticallyAdjustContentInsets={true}
-          style={{ flex: 1 }}
         />
       </View>
     )
@@ -1572,7 +1579,7 @@ class CardNewScreen extends React.Component {
     return (
       <ScrollView
         style={{ flex: 1 }}
-        contentContainerStyle={{ flexGrow: 1 }}
+        contentContainerStyle={{ paddingBottom: 50 }}
         ref={ref => this.scrollViewRef = ref}
         onLayout={this.onLayoutScrollView.bind(this)}
       >
@@ -1853,7 +1860,7 @@ class CardNewScreen extends React.Component {
             {this.renderBottomContent}
             {
               // If show keyboard button, and not quick add card from dashboard as interferes with change Feed https://cl.ly/ba004cb3a34b
-              Platform.OS === 'ios' && viewMode === CONSTANTS.CARD_NEW && this.state.isShowKeyboardButton && cardMode !== CONSTANTS.MAIN_APP_CARD_FROM_DASHBOARD && cardMode !== CONSTANTS.SHARE_EXTENTION_CARD &&
+              Platform.OS === 'ios' && viewMode === CONSTANTS.CARD_NEW && this.state.isShowKeyboardButton && cardMode !== CONSTANTS.SHARE_EXTENTION_CARD &&
               <Animated.View style={styles.hideKeyboardContainer}>
                 <TouchableOpacity
                   style={[

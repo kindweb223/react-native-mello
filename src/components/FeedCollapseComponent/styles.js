@@ -13,8 +13,9 @@ const styles = StyleSheet.create({
   },
   collpaseHeader: {
     width: '100%',
-    marginTop: 10,
-    paddingLeft: 16
+    paddingLeft: 16,
+    position: 'absolute',
+    top: 28
   },
   headerTitle: {
     flex: 1,
@@ -30,7 +31,7 @@ const styles = StyleSheet.create({
   },
   summaryView: {
     paddingHorizontal: CONSTANTS.PADDING,
-    marginTop: 10
+    // marginTop: 10
   },
   summaryText: {
     fontSize: 14,

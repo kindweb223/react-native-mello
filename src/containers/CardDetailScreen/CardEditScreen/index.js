@@ -30,7 +30,8 @@ class CardEditScreen extends React.Component {
       idea: props.idea,
       bottomButtonsPadding: Platform.OS === 'android' ? 24 : 0,
       initHeight: 0,
-      keyboardHeight: 0
+      keyboardHeight: 0,
+      isShowKeyboardButton: false
     }
 
     this.animatedShow = new Animated.Value(0);
@@ -71,7 +72,11 @@ class CardEditScreen extends React.Component {
         toValue: e.endCoordinates.height,
         duration: Platform.OS === 'android' ? 30 : e.duration,
       }
-    ).start();
+    ).start(() => {
+      this.setState({
+        isShowKeyboardButton: true,
+      });
+    });
   }
 
   keyboardDidHide(e) {
@@ -81,7 +86,11 @@ class CardEditScreen extends React.Component {
         toValue: 0,
         duration: Platform.OS === 'android' ? 30 : e.duration,
       }
-    ).start();
+    ).start(() => {
+      this.setState({
+        isShowKeyboardButton: false,
+      });
+    });
   }
 
   onDoneEditCard() {
@@ -172,6 +181,7 @@ class CardEditScreen extends React.Component {
   }
 
   onHideKeyboard() {
+    this.refCKEditor.hideKeyboard()
     Keyboard.dismiss();
   }
 
@@ -189,6 +199,24 @@ class CardEditScreen extends React.Component {
           {this.renderHeader}
           {this.renderText}
           {this.renderFooter}
+
+          {this.state.isShowKeyboardButton && (
+            <View style={styles.hideKeyboardContainer}>
+              <TouchableOpacity
+                style={[
+                  styles.buttonItemContainer,
+                  {
+                    backgroundColor: COLORS.PURPLE,
+                    borderRadius: 8,
+                  },
+                ]}
+                activeOpacity={0.6}
+                onPress={this.onHideKeyboard.bind(this)}
+              >
+                <MaterialCommunityIcons name="keyboard-close" size={20} color={'#fff'} />
+              </TouchableOpacity>
+            </View>
+          )}
         </View>
       </Animated.View>
     );

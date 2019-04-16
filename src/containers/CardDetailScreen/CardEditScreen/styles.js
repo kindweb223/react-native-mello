@@ -40,7 +40,18 @@ const styles = StyleSheet.create({
     paddingHorizontal: CONSTANTS.PADDING,
     height: 55,
     bottom: 0,
-  }
+  },
+  hideKeyboardContainer: {
+    position: 'absolute',
+    right: 16,
+    bottom: 58,
+  },
+  buttonItemContainer: {
+    width: 32,
+    height: 32,
+    alignItems: 'center',
+    justifyContent: 'center'
+  },
 })
 
 
