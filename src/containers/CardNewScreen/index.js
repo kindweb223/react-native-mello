@@ -1497,7 +1497,7 @@ class CardNewScreen extends React.Component {
           onChange={value => this.onChangeIdea(value)}
           handleKeydown={() => this.onKeyPressIdea()}
           hideKeyboardAccessoryView={true}
-          scrollEnabled={true}
+          // scrollEnabled={true}
           automaticallyAdjustContentInsets={true}
           style={{ flex: 1 }}
         />
@@ -1571,6 +1571,7 @@ class CardNewScreen extends React.Component {
   get renderMainContent() {
     return (
       <ScrollView
+        style={{ flex: 1 }}
         contentContainerStyle={{ flexGrow: 1 }}
         ref={ref => this.scrollViewRef = ref}
         onLayout={this.onLayoutScrollView.bind(this)}
@@ -1847,6 +1848,7 @@ class CardNewScreen extends React.Component {
           <SafeAreaView style={{ flex: 1 }}>
             {this.renderHeader}
             {this.renderMainContent}
+            {this.renderDocuments}
             {this.renderBottomAttachmentButtons}
             {this.renderBottomContent}
             {
