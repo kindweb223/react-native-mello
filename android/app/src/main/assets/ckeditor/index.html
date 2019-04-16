@@ -41,6 +41,8 @@
       // Show inital content
       content = event.data.split('placeholder: ')[1];
       CKEditor.setData(content);
+    } else if (event.data.includes('hidekeyboard: ')) {
+      document.activeElement && document.activeElement.blur();
     } else {
       // Execute editor commands
       content = event.data.split('execute: ')[1];

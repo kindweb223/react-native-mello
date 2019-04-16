@@ -66,6 +66,11 @@ class CKEditor extends React.Component {
     this.postMessage(data);
   }
 
+  hideKeyboard = () => {
+    data = 'hidekeyboard: ';
+    this.postMessage(data);
+  }
+
   render() {
     return (
       <View style={{ flex: 1 }}>
