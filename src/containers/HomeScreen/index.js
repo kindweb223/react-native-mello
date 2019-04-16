@@ -1452,7 +1452,7 @@ class HomeScreen extends React.Component {
           {Platform.OS === 'android' && (
             <View style={styles.statusBarUnderlay} />
           )}
-            <NetworkConsumer pingInterval={2000}>
+            <NetworkConsumer pingInterval={CONSTANTS.NETWORK_CONSUMER_PING_INTERVAL}>
             {({ isConnected }) => (
                                    isConnected ? (
           <View style={styles.headerView}>

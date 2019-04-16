@@ -226,7 +226,8 @@ extension LinkViewController: ShareNavigationable {
       imagesWithSize = [( url: parsedURL.images.first!, size: size )]
     }
     
-    delegate?.linkViewController(self, didTapCreateCard: parsedURL, description: textView.text ?? "", imagesWithSize: imagesWithSize, selectedFlow: selectedFlow())
+    let text = textView.text == placeholder ? "" : textView.text
+    delegate?.linkViewController(self, didTapCreateCard: parsedURL, description: text ?? "", imagesWithSize: imagesWithSize, selectedFlow: selectedFlow())
   }
 }
 
