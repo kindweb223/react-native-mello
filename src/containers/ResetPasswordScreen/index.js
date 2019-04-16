@@ -24,6 +24,8 @@ import CONSTANTS from '../../service/constants'
 import resolveError from '../../service/resolveError'
 import styles from './styles'
 import Analytics from '../../lib/firebase'
+import AlertController from '../../components/AlertController'
+
 const LOGO = require('../../../assets/images/Login/icon_40pt.png')
 
 const PASSWORD_PROGRESS = [
@@ -87,7 +89,7 @@ class ResetPasswordScreen extends React.Component {
 
     if (this.props.user.loading === 'RESET_PASSWORD_PENDING' && user.loading === 'RESET_PASSWORD_REJECTED') {
       this.setState({ loading: false })
-      Alert.alert(
+      AlertController.shared.showAlert(
         'Error',
         user.error.message,
         [{
@@ -135,7 +137,7 @@ class ResetPasswordScreen extends React.Component {
         {
           code: 'com.signup.password.invalid',
           field: 'password',
-          message: 'Password must have at least 6 characters'
+          message: 'Password must be at least 6 characters'
         }
       ]
     }
@@ -176,6 +178,7 @@ class ResetPasswordScreen extends React.Component {
                 isSecure={this.state.isSecure}
                 ContainerStyle={{ marginBottom: 0 }}
                 isErrorView={false}
+                value={this.state.password}
                 handleChange={text => this.changePassword(text)}
                 onFocus={() => this.onPasswordFocus(true)}
                 onBlur={() => this.onPasswordFocus(false)}

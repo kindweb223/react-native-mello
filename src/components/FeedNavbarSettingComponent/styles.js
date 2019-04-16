@@ -1,5 +1,6 @@
 import { StyleSheet } from 'react-native'
 import COLORS from '../../service/colors'
+import CONSTANTS from '../../service/constants'
 
 const styles = StyleSheet.create({
   settingView: {
@@ -8,34 +9,15 @@ const styles = StyleSheet.create({
     alignItems: 'center'
   },
   button: {
-    width: 34,
     height: 34,
-    backgroundColor: COLORS.PURPLE,
-    borderRadius: 17,
     justifyContent: 'center',
-    alignItems: 'center',
+    alignItems: 'flex-end',
     paddingTop: 2,
-    paddingLeft: 1
+    paddingHorizontal: CONSTANTS.PADDING
   },
   settingIcon: {
     fontSize: 20,
-    color: '#fff',
-  },
-  zapButton: {
-    marginRight: 10
-  },
-  zapButtonView: {
-    width: 34,
-    height: 34,
-    backgroundColor: COLORS.PURPLE,
-    borderRadius: 17,
-    justifyContent: 'center',
-    marginLeft: 10
-  },
-  zapIcon: {
-    fontSize: 20,
-    color: '#fff',
-    marginLeft: 10
+    color: COLORS.ACTION_SHEET_TITLE
   }
 })
 

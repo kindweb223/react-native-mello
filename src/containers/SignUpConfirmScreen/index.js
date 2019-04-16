@@ -15,6 +15,7 @@ import { confirmAccount, resendConfirmationEmail, getUserSession } from '../../r
 import COLORS from '../../service/colors'
 import styles from './styles'
 import Analytics from '../../lib/firebase'
+import AlertController from '../../components/AlertController'
 
 const LOGO = require('../../../assets/images/Login/icon_40pt.png')
 const MAIL_ICON = require('../../../assets/images/Success/iconMailBig.png')
@@ -60,12 +61,13 @@ class SignUpConfirmScreen extends React.Component {
 
   UNSAFE_componentWillReceiveProps(nextProps) {
     const { user, deepLinking } = nextProps
+    const { userEmail } = this.props
 
     if (Actions.currentScene === 'SignUpConfirmScreen') {
       if (this.props.user.loading !== 'RESEND_CONFIRMATION_EMAIL_FULFILLED' && user.loading === 'RESEND_CONFIRMATION_EMAIL_FULFILLED') {
         this.setState({ loading: false }, () => {
-          Alert.alert(
-            "We've resent a confirmation email"
+          AlertController.shared.showAlert(
+            "Confirmation resent to " + userEmail
           )
         })
       }
@@ -89,7 +91,7 @@ class SignUpConfirmScreen extends React.Component {
         if (user.userInfo) {
           Actions.HomeScreen()
         } else {
-          Alert.alert(
+          AlertController.shared.showAlert(
             "Error", "Your confirmation token is no longer valid.\nJust tap resend and we will send you another one"
           )
         }
@@ -143,11 +145,11 @@ class SignUpConfirmScreen extends React.Component {
 
           {deepLinking
             ? <View style={styles.subTitleView}>
-                <Text style={styles.subTitle}>We have sent you a confirmation email</Text>
+                <Text style={styles.subTitle}>Almost done!</Text>
               </View>
             : <View style={styles.subTitleView}>
-                <Text style={styles.subTitle}>We have sent a confirmation</Text>
-                <Text style={styles.subTitle}>email to {userEmail}</Text>
+                <Text style={styles.subTitle}>Please validate your email in the </Text>
+                <Text style={styles.subTitle}>confirmation email sent to {userEmail}</Text>
               </View>
           }
 

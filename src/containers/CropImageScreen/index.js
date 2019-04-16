@@ -4,7 +4,8 @@ import {
   Text,
   TouchableOpacity,
   Image,
-  Alert
+  Alert,
+  Platform
 } from 'react-native'
 import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
@@ -17,6 +18,8 @@ import { uploadFileToS3 } from '../../redux/user/actions'
 import LoadingScreen from '../LoadingScreen'
 import styles from './styles'
 import Analytics from '../../lib/firebase'
+import AlertController from '../../components/AlertController'
+
 const CLOSE_ICON = require('../../../assets/images/Close/Blue.png')
 
 class CropImageScreen extends React.Component {
@@ -56,7 +59,7 @@ class CropImageScreen extends React.Component {
 
       if (user.loading === 'UPLOAD_FILE_REJECTED' || user.loading === 'UPDATE_PROFILE_REJECTED') {
         this.setState({ loading: false }, () => {
-          Alert.alert('Error', 'Server is failed')
+          AlertController.shared.showAlert('Error', 'Server is failed')
         })
       }
     }
@@ -74,7 +77,7 @@ class CropImageScreen extends React.Component {
       this.props.uploadFileToS3(baseUrl, fileUrl, fileName, fileType);
     } else {
       this.setState({ loading: false }, () => {
-        Alert.alert('Error', 'Cropping is failed')
+        AlertController.shared.showAlert('Error', 'Cropping is failed')
       })
     }
   }
@@ -82,14 +85,24 @@ class CropImageScreen extends React.Component {
   onSave = () => {
     const { userImageUrlData } = this.props.user
 
-    this.imageCrop.crop().then((uri) => {
-      this.setState({ cropUrl: uri }, () => {
-        if (userImageUrlData) {
-          this.setState({ loading: true })
-          this.uploadImage(userImageUrlData)
-        }
+    this.imageCrop.crop()
+      .then((uri) => {
+        this.setState({ cropUrl: uri }, () => {
+          if (userImageUrlData) {
+            this.setState({ loading: true })
+            this.uploadImage(userImageUrlData)
+          }
+        })
       })
-    })
+      .catch(error => {
+        console.log('Error cropping image', error)
+        this.setState({ cropUrl: this.state.avatarFile }, () => {
+          if (userImageUrlData) {
+            this.setState({ loading: true })
+            this.uploadImage(userImageUrlData)
+          }
+        })
+    });
   }
 
   render () {
@@ -101,7 +114,7 @@ class CropImageScreen extends React.Component {
           <View style={styles.imageView}>
             <ImageCrop
               ref={c => this.imageCrop = c}
-              source={{ uri: avatarFile.uri }}
+              source={{ uri: Platform.OS === 'ios' ? avatarFile.uri : 'file://' + avatarFile.path }}
             />
           </View>
           {/* <Image
@@ -112,7 +125,7 @@ class CropImageScreen extends React.Component {
 
           <View style={styles.headerView}>
             <View style={styles.closeButton} />
-            <Text style={styles.title}>Update avatar</Text>
+            <Text style={styles.title}>Update Profile Photo</Text>
             <TouchableOpacity onPress={() => Actions.pop()} style={styles.closeButton}>
               <Image source={CLOSE_ICON} />
             </TouchableOpacity>

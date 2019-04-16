@@ -5,6 +5,7 @@ import {
   Text,
   TextInput,
   TouchableOpacity,
+  Platform,
 } from 'react-native';
 
 import Tag from './Tag';
@@ -138,7 +139,7 @@ class Tags extends React.Component {
             onSubmitEditing={() => this.onSubmitEditing()}
             onFocus={this.props.onFocus}
             onBlur={this.props.onBlur}
-            selectionColor={COLORS.PURPLE}
+            selectionColor={Platform.OS === 'ios' ? COLORS.PURPLE : COLORS.LIGHT_PURPLE}
           />
           {
             this.state.isHideCursor &&

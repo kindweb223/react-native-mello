@@ -192,7 +192,8 @@ export default function card(state = initialState, action = {}) {
         }
       } else {
         return {
-          ...state
+          ...state,
+          loading: feedTypes.PUBNUB_LIKE_CARD_FULFILLED
         }
       }
     }
@@ -214,7 +215,8 @@ export default function card(state = initialState, action = {}) {
         }
       } else {
         return {
-          ...state
+          ...state,
+          loading: feedTypes.PUBNUB_UNLIKE_CARD_FULFILLED
         }
       }
     }
@@ -455,7 +457,7 @@ export default function card(state = initialState, action = {}) {
       const deletedFile = _.find(state.currentCard.files, file => file.id === fileId);
       const files = _.filter(state.currentCard.files, file => file.id !== fileId);
       let coverImage = state.currentCard.coverImage;
-      if (coverImage === deletedFile.accessUrl) {
+      if (coverImage === deletedFile.accessUrl || coverImage === deletedFile.thumbnailUrl) {
         coverImage = null;
       }
 
@@ -488,12 +490,15 @@ export default function card(state = initialState, action = {}) {
     case types.SET_COVER_IMAGE_FULFILLED: {
       const fileId = action.payload;
       const file = _.find(state.currentCard.files, file => file.id === fileId);
+
+      const isImage = file.contentType.toLowerCase().indexOf('image') !== -1;
+
       return {
         ...state,
         loading: types.SET_COVER_IMAGE_FULFILLED,
         currentCard: {
           ...state.currentCard,
-          coverImage: file.accessUrl,
+          coverImage: isImage ? file.accessUrl : file.thumbnailUrl,
         }
       }
     }
@@ -608,7 +613,6 @@ export default function card(state = initialState, action = {}) {
       }
     }
     case types.ADD_SHARE_EXTENSION_CARD_FULFILLED: {
-      console.log('ADD_SHARE_EXTENSION_CARD_FULFILLED', action.result)
       return {
         ...state,
         loading: types.ADD_SHARE_EXTENSION_CARD_FULFILLED,

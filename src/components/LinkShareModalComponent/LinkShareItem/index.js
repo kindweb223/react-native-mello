@@ -12,8 +12,7 @@ const changeToCapital = str => {
   return str[0].toUpperCase() + str.substr(1).toLowerCase()
 }
 
-const LinkShareItem = ({ isViewOnly, feed, handleLinkSharing, onPress }) => {
-  let isEnableShare = feed.sharingPreferences.level === 'INVITEES_ONLY' ? false : true
+const LinkShareItem = ({ isViewOnly, feed, handleLinkSharing, isEnableShare, onPress }) => {
   let isEnableShareAllowed = COMMON_FUNC.isFeedOwner(feed) || COMMON_FUNC.isFeedEditor(feed)
 
   return (
@@ -37,7 +36,7 @@ const LinkShareItem = ({ isViewOnly, feed, handleLinkSharing, onPress }) => {
               : `Anyone with the link can ${changeToCapital(feed.sharingPreferences.permissions)}`
             }
           </Text>
-          <View style={styles.separator} />
+          {/* <View style={styles.separator} /> */}
         </View>
       </TouchableOpacity>
 

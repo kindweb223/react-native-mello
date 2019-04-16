@@ -5,6 +5,20 @@ import CONSTANTS from '../../service/constants'
 const styles = StyleSheet.create({
   menuContainer: {
   },
+  switchView: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    paddingHorizontal: 10,
+    marginVertical: 5
+  },
+  switchTextView: {
+    flexDirection: 'row',
+    alignItems: 'center'    
+  },
+  switch: {
+    transform: Platform.OS === 'ios' ? [{ scaleX: 0.7 }, { scaleY: 0.7 }] : [{ scaleX: 1 }, { scaleY: 1 }]
+  },
   settingItem: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -19,20 +33,6 @@ const styles = StyleSheet.create({
   deleteButtonText: {
     color: COLORS.RED,
     fontSize: 14,
-  },
-  buttonView: {
-    width: 92,
-    height: 34,
-    borderRadius: 17,
-    backgroundColor: COLORS.PURPLE,
-    paddingHorizontal: 12,
-    flexDirection: 'row',
-    justifyContent: 'space-around',
-    alignItems: 'center',
-    marginBottom: 15
-  },
-  buttonShareView: {
-    marginBottom: 5
   },
   menuIcon: {
     width: 24,

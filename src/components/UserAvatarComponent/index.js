@@ -4,11 +4,11 @@ import {
   Image,
 } from 'react-native'
 import PropTypes from 'prop-types'
-import UserAvatar from 'react-native-user-avatar'
+import UserAvatar from './CustomAvatar'
 
 import EvilIcons from 'react-native-vector-icons/EvilIcons'
 import styles from './styles'
-import FastImage from "react-native-fast-image";
+import ExFastImage from '../ExFastImage';
 
 
 export default class UserAvatarComponent extends React.Component {
@@ -32,19 +32,38 @@ export default class UserAvatarComponent extends React.Component {
       color,
       textColor,
       isFastImage,
+      showStroke
     } = this.props;
     if (user && (user.imageUrl || user.firstName || user.lastName)) {
       const name = `${this.capitalizeFirstLetter(user.firstName)} ${this.capitalizeFirstLetter(user.lastName)}`;
-      return (
-        <UserAvatar
-          size={size}
-          name={name}
-          color={color}
-          textColor={textColor}
-          component={isFastImage ? FastImage : Image}
-          src={user.imageUrl}
-        />
-      );
+      const avatarSize = showStroke ? size - 5 : size
+      if (user.imageUrl) {
+        return (
+          <View style={[styles.container, { width: size, height: size, borderRadius: size / 2 }]}>
+            <UserAvatar
+              size={avatarSize}
+              name={name}
+              color={color}
+              textColor={textColor}
+              component={isFastImage ? ExFastImage : Image}
+              src={user.imageUrl}
+            />
+          </View>
+        );
+      } else {
+        return (
+          <View style={[styles.container, { width: size, height: size, borderRadius: size / 2 }]}>
+            <UserAvatar
+              size={avatarSize}
+              name={name}
+              color={color}
+              textColor={textColor}
+              component={isFastImage ? ExFastImage : Image}
+              src={user.imageUrl}
+            />
+          </View>
+        );
+      }
     }
     return (
       <View 
@@ -69,6 +88,7 @@ UserAvatarComponent.defaultProps = {
   color: '#000',
   textColor: '#fff',
   isFastImage: true,
+  showStroke: false
 }
 
 
@@ -78,4 +98,5 @@ UserAvatarComponent.propTypes = {
   color: PropTypes.string,
   textColor: PropTypes.string,
   isFastImage: PropTypes.bool,
+  showStroke: PropTypes.bool
 }

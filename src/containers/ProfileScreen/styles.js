@@ -9,7 +9,7 @@ export default {
     right: 0,
     left: 0,
     bottom: 0,
-    paddingTop: CONSTANTS.STATUSBAR_HEIGHT,
+    paddingTop: Platform.OS === 'ios' ? CONSTANTS.STATUSBAR_HEIGHT - 4 : 0,
     backgroundColor: COLORS.SOFT_GREY
   },
   closeButton: {

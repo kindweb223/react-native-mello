@@ -41,6 +41,7 @@ import * as COMMON_FUNC from '../../service/commonFunc'
 
 import Analytics from '../../lib/firebase'
 import pubnub from '../../lib/pubnub'
+import AlertController from '../../components/AlertController'
 
 const PAGE_COUNT = 50
 
@@ -108,7 +109,6 @@ class CommentScreen extends React.Component {
   
   UNSAFE_componentWillReceiveProps(nextProps) {
     // if (nextProps.feedo.loading === 'PUBNUB_DELETE_FEED') {
-    //   console.log('CCCCC')
     //   this.props.getFeedoList()
     //   Actions.popTo('HomeScreen')
     // }
@@ -170,8 +170,10 @@ class CommentScreen extends React.Component {
         errorMessage = error.message;
       }
       if (errorMessage) {
-        Alert.alert('Error', errorMessage, [
-          {text: 'Close'},
+        AlertController.shared.showAlert('Error', errorMessage, [
+          {
+            text: 'Close',
+          },
         ]);
       }
       return;
@@ -239,12 +241,17 @@ class CommentScreen extends React.Component {
   }
 
   onConfirmDelete(index) {
-    Alert.alert(
+    AlertController.shared.showAlert(
       '',
       'Are you sure you want to delete this comment?',
       [
-        {text: 'No', onPress: () => console.log('Cancel Pressed'), style: 'cancel'},
-        {text: 'Yes', onPress: () => this.onDelete(index)},
+        { text: 'No', 
+          style: 'cancel' },
+        { text: 'Yes', 
+          onPress: () => {
+            this.onDelete(index);
+          }
+        },
       ],
       { cancelable: false }
     )

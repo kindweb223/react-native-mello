@@ -5,6 +5,7 @@
 	};
 	objectVersion = 46;
 	objects = {
+
 /* Begin PBXBuildFile section */
 		00C302E51ABCBA2D00DB3ED1 /* libRCTActionSheet.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 00C302AC1ABCB8CE00DB3ED1 /* libRCTActionSheet.a */; };
 		00C302E71ABCBA2D00DB3ED1 /* libRCTGeolocation.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 00C302BA1ABCB90400DB3ED1 /* libRCTGeolocation.a */; };
@@ -26,9 +27,11 @@
 		1FB598891B6543C3940754FF /* FontAwesome5_Solid.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 212DE1171C3D4A89BC6BDD44 /* FontAwesome5_Solid.ttf */; };
 		20504C6986E442B6BC42E6D8 /* libLottie.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 6B464A25DB9D4E45B976C1EC /* libLottie.a */; };
 		2096340DEE6C489AAB0A472E /* libRNDeviceInfo-tvOS.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 8A848E2C3FF045DE85911225 /* libRNDeviceInfo-tvOS.a */; };
+		20D03234C800BE7AD647D202 /* libPods-ShareExtension.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 5E07B5885521CA4449078589 /* libPods-ShareExtension.a */; };
 		216584875F9441649E350DA0 /* libRNReactNativeSharedGroupPreferences.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 5394A3ED34ED4B6EB2B6B100 /* libRNReactNativeSharedGroupPreferences.a */; };
 		26FCA873A8C140D9AFCE7D32 /* libRNSVG-tvOS.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 9505C59301A84E59BFF300C6 /* libRNSVG-tvOS.a */; };
 		2BBFA89F708F4265BE6D4888 /* libRNVersionNumber.a in Frameworks */ = {isa = PBXBuildFile; fileRef = AFF5A900043B4725B0ECE784 /* libRNVersionNumber.a */; };
+		2D00C17B22609C860060EA8E /* libRNFS.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 2D00C17A22609C860060EA8E /* libRNFS.a */; };
 		2D02E4BC1E0B4A80006451C7 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB01A68108700A75B9A /* AppDelegate.m */; };
 		2D02E4BD1E0B4A84006451C7 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 13B07FB51A68108700A75B9A /* Images.xcassets */; };
 		2D02E4BF1E0B4AB3006451C7 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB71A68108700A75B9A /* main.m */; };
@@ -40,19 +43,59 @@
 		2D02E4C71E0B4AEC006451C7 /* libRCTText-tvOS.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 3DAD3E941DF850E9000B6D8A /* libRCTText-tvOS.a */; };
 		2D02E4C81E0B4AEC006451C7 /* libRCTWebSocket-tvOS.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 3DAD3E991DF850E9000B6D8A /* libRCTWebSocket-tvOS.a */; };
 		2D16E6881FA4F8E400B85C8A /* libReact.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 2D16E6891FA4F8E400B85C8A /* libReact.a */; };
-		2D52C42B218E625B003C52C8 /* libBugsnagReactNative.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 4CD459EE218C8D3600E5AD2F /* libBugsnagReactNative.a */; };
+		2D2CBD90DAC84BB8A182DAEB /* libRNThumbnail.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 37CA782AC31D47CCBB55CA40 /* libRNThumbnail.a */; };
 		2DCD954D1E0B4F2C00145EB5 /* MelloTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 00E356F21AD99517003FC87E /* MelloTests.m */; };
 		2DF0FFEE2056DD460020B375 /* libReact.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 3DAD3EA31DF850E9000B6D8A /* libReact.a */; };
+		391C11A6225DF496009A0106 /* SharedPreferences.swift in Sources */ = {isa = PBXBuildFile; fileRef = 391C11A5225DF496009A0106 /* SharedPreferences.swift */; };
+		3930117A225B3F64000649DB /* VideoViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 39301178225B3F64000649DB /* VideoViewController.swift */; };
+		3930117B225B3F64000649DB /* VideoViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 39301179225B3F64000649DB /* VideoViewController.xib */; };
+		396C17D922527E4C001297F6 /* API.swift in Sources */ = {isa = PBXBuildFile; fileRef = 396C17D822527E4C001297F6 /* API.swift */; };
+		396C17DD22527E5D001297F6 /* ParsedURL.swift in Sources */ = {isa = PBXBuildFile; fileRef = 396C17DB22527E5D001297F6 /* ParsedURL.swift */; };
+		396C17DE22527E5D001297F6 /* Flow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 396C17DC22527E5D001297F6 /* Flow.swift */; };
+		396C17E422527E99001297F6 /* FlowFooterSelectable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 396C17E322527E98001297F6 /* FlowFooterSelectable.swift */; };
+		396C17E722527EA0001297F6 /* FlowSelectorFooter.xib in Resources */ = {isa = PBXBuildFile; fileRef = 396C17E522527EA0001297F6 /* FlowSelectorFooter.xib */; };
+		396C17E822527EA0001297F6 /* FlowSelectorFooter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 396C17E622527EA0001297F6 /* FlowSelectorFooter.swift */; };
+		396C17EC22527EB8001297F6 /* ShareNavigationBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 396C17EA22527EB8001297F6 /* ShareNavigationBar.swift */; };
+		396C17ED22527EB8001297F6 /* ShareNavigationBar.xib in Resources */ = {isa = PBXBuildFile; fileRef = 396C17EB22527EB8001297F6 /* ShareNavigationBar.xib */; };
+		396C17EF22527EBB001297F6 /* ShareNavigationable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 396C17EE22527EBB001297F6 /* ShareNavigationable.swift */; };
+		396C17F222527ECF001297F6 /* AssetLoader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 396C17F022527ECF001297F6 /* AssetLoader.swift */; };
+		396C17F322527ECF001297F6 /* UIImageCompression.swift in Sources */ = {isa = PBXBuildFile; fileRef = 396C17F122527ECF001297F6 /* UIImageCompression.swift */; };
+		396C17F922527EFF001297F6 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 396C17F722527EFF001297F6 /* Assets.xcassets */; };
+		396C17FA22527EFF001297F6 /* MainInterface.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 396C17F822527EFF001297F6 /* MainInterface.storyboard */; };
+		396C180622527F73001297F6 /* BottomStatusViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 396C180422527F73001297F6 /* BottomStatusViewController.xib */; };
+		396C180722527F73001297F6 /* BottomStatusViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 396C180522527F73001297F6 /* BottomStatusViewController.swift */; };
+		396C180A22527F86001297F6 /* MainViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 396C180922527F86001297F6 /* MainViewController.swift */; };
+		396C180C22527F8C001297F6 /* MainNavigationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 396C180B22527F8B001297F6 /* MainNavigationController.swift */; };
+		396C180F22527F93001297F6 /* LocalImageViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 396C180D22527F93001297F6 /* LocalImageViewController.swift */; };
+		396C181022527F93001297F6 /* LocalImageViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 396C180E22527F93001297F6 /* LocalImageViewController.xib */; };
+		396C181422527FA6001297F6 /* LinkView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 396C181222527FA6001297F6 /* LinkView.xib */; };
+		396C181522527FA6001297F6 /* LinkView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 396C181322527FA6001297F6 /* LinkView.swift */; };
+		396C181822527FAC001297F6 /* LinkViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 396C181622527FAC001297F6 /* LinkViewController.swift */; };
+		396C181922527FAC001297F6 /* LinkViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 396C181722527FAC001297F6 /* LinkViewController.xib */; };
+		396C181C22527FB7001297F6 /* TextViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 396C181A22527FB7001297F6 /* TextViewController.swift */; };
+		396C181D22527FB7001297F6 /* TextViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 396C181B22527FB7001297F6 /* TextViewController.xib */; };
+		396C182122527FCB001297F6 /* AssetCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 396C181F22527FCB001297F6 /* AssetCell.swift */; };
+		396C182222527FCB001297F6 /* AssetCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 396C182022527FCB001297F6 /* AssetCell.xib */; };
+		396C182522527FD1001297F6 /* ImagePickerViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 396C182322527FD1001297F6 /* ImagePickerViewController.swift */; };
+		396C182622527FD1001297F6 /* ImagePickerViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 396C182422527FD1001297F6 /* ImagePickerViewController.xib */; };
+		396C182C22528001001297F6 /* NewFlowCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 396C182A22528001001297F6 /* NewFlowCell.xib */; };
+		396C182D22528001001297F6 /* NewFlowCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 396C182B22528001001297F6 /* NewFlowCell.swift */; };
+		396C183022528007001297F6 /* FlowCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 396C182E22528007001297F6 /* FlowCell.swift */; };
+		396C183122528007001297F6 /* FlowCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 396C182F22528007001297F6 /* FlowCell.xib */; };
+		396C18342252800F001297F6 /* FlowSelectorViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 396C18322252800F001297F6 /* FlowSelectorViewController.swift */; };
+		396C18352252800F001297F6 /* FlowSelectorViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 396C18332252800F001297F6 /* FlowSelectorViewController.xib */; };
+		396C18382252801B001297F6 /* NewFlowViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 396C18362252801B001297F6 /* NewFlowViewController.xib */; };
+		396C18392252801B001297F6 /* NewFlowViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 396C18372252801B001297F6 /* NewFlowViewController.swift */; };
+		396C194F225285A1001297F6 /* FLAnimatedImage.m in Sources */ = {isa = PBXBuildFile; fileRef = 396C194B225285A0001297F6 /* FLAnimatedImage.m */; };
+		396C1950225285A1001297F6 /* FLAnimatedImageView.m in Sources */ = {isa = PBXBuildFile; fileRef = 396C194E225285A1001297F6 /* FLAnimatedImageView.m */; };
+		396C1CD72253A321001297F6 /* APIError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 396C1CD62253A321001297F6 /* APIError.swift */; };
+		3984D08B22527DD000042F75 /* ShareExtension.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = 3984D08122527DD000042F75 /* ShareExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		39C6257C2254EB6F001FBD79 /* KeyboardHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 39C6257B2254EB6F001FBD79 /* KeyboardHelper.swift */; };
 		45A806F94F774736BDFCF564 /* libBugsnagReactNative.a in Frameworks */ = {isa = PBXBuildFile; fileRef = D9E1BD18BB5B4D62B4263950 /* libBugsnagReactNative.a */; };
 		47CA4A9854C645189A59042C /* libRNDocumentPicker.a in Frameworks */ = {isa = PBXBuildFile; fileRef = CEF9CE0D4C3B419DAD8284A6 /* libRNDocumentPicker.a */; };
 		4C030DDBB9734D8CB1045CEB /* libBVLinearGradient.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 1AE0342E1F8E4EB593320F3B /* libBVLinearGradient.a */; };
-		4C3145432191BCE8009A40C5 /* libRNDeviceInfo.a in Frameworks */ = {isa = PBXBuildFile; fileRef = A46A87CD2190EE9D009D3FB3 /* libRNDeviceInfo.a */; };
-		4C3C63F62199E8BC00B68196 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 4C3C63F52199E8BC00B68196 /* GoogleService-Info.plist */; };
 		4C6D85F821FE088100455C94 /* libRNSVG.a in Frameworks */ = {isa = PBXBuildFile; fileRef = A49C3621219230EA00AA0AFD /* libRNSVG.a */; };
-		4C6D85F921FE08AB00455C94 /* libRNSVG.a in Frameworks */ = {isa = PBXBuildFile; fileRef = A49C3621219230EA00AA0AFD /* libRNSVG.a */; };
 		4CC861B921933F8F00481DED /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 4CC8617A21933F8A00481DED /* GoogleService-Info.plist */; };
-		4CD904DC21F8A7C200258740 /* libRNSVG.a in Frameworks */ = {isa = PBXBuildFile; fileRef = A49C3621219230EA00AA0AFD /* libRNSVG.a */; };
-		4CF0DB4F2199BBA6000ED175 /* libRNFirebase.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 4CC8621D2193408300481DED /* libRNFirebase.a */; };
 		4D155804DAC84ABD8370724D /* FontAwesome5_Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 9AFE45238BF344909F881B0C /* FontAwesome5_Regular.ttf */; };
 		4DF31AFCC7DA42929C8B67CC /* libLottieReactNative.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 1BBE45B3BBA8440189B9842C /* libLottieReactNative.a */; };
 		4F7697CE36E840CDA629D4D2 /* Entypo.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 49E66C7627DA4206B745FC76 /* Entypo.ttf */; };
@@ -61,6 +104,7 @@
 		5D4845C5F9C349359FEE44B4 /* libRNFetchBlob.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 644B2D9A94784859B6ECCCD3 /* libRNFetchBlob.a */; };
 		5E9157361DD0AC6A00FF2AA8 /* libRCTAnimation.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 5E9157331DD0AC6500FF2AA8 /* libRCTAnimation.a */; };
 		616841DB94F14927B791ECFB /* libFastImage.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 77E9C8AEA81B42B39062B950 /* libFastImage.a */; };
+		630C8F6D277640E0AC78F336 /* libRNTextSize.a in Frameworks */ = {isa = PBXBuildFile; fileRef = D737F6C3F4964BBBB207DE7B /* libRNTextSize.a */; };
 		6938B943A0AE484E9E5A8DCD /* Octicons.ttf in Resources */ = {isa = PBXBuildFile; fileRef = C01A3DFF0BBD47CA8E552943 /* Octicons.ttf */; };
 		6EBDD815484C4CB6A8095806 /* libRNDeviceInfo.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 44C268ED8ACC4BCE9CDA61FC /* libRNDeviceInfo.a */; };
 		707DC7BF4F8B460B91F782CD /* libRNImagePicker.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 47BA3513B6514BE58476D7B4 /* libRNImagePicker.a */; };
@@ -71,51 +115,14 @@
 		8D2B584D1B954CA58C0936B6 /* SimpleLineIcons.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 2E7C184AF38D495CA598BB2B /* SimpleLineIcons.ttf */; };
 		9984E80312CC41B9AA567B8E /* EvilIcons.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 6DDC407B5B624A7C8F6AD515 /* EvilIcons.ttf */; };
 		9CD6677E73B85E6F01711321 /* libPods-Mello.a in Frameworks */ = {isa = PBXBuildFile; fileRef = EA8FF63A41537B5124E94788 /* libPods-Mello.a */; };
-		A43342992142AF80005EE6DE /* libFastImage.a in Frameworks */ = {isa = PBXBuildFile; fileRef = A40B3D5C2110EB62002B5EDB /* libFastImage.a */; };
-		A450133E2139BEE600A78D65 /* libRCTActionSheet.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 00C302AC1ABCB8CE00DB3ED1 /* libRCTActionSheet.a */; };
-		A450133F2139BEE600A78D65 /* libRCTAnimation.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 5E9157331DD0AC6500FF2AA8 /* libRCTAnimation.a */; };
-		A45013422139BEE600A78D65 /* libRCTGeolocation.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 00C302BA1ABCB90400DB3ED1 /* libRCTGeolocation.a */; };
-		A45013432139BEE700A78D65 /* libRCTImage.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 00C302C01ABCB91800DB3ED1 /* libRCTImage.a */; };
-		A45013442139BEE700A78D65 /* libRCTLinking.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 78C398B91ACF4ADC00677621 /* libRCTLinking.a */; };
-		A45013452139BEE700A78D65 /* libRCTNetwork.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 00C302DC1ABCB9D200DB3ED1 /* libRCTNetwork.a */; };
-		A45013462139BEE700A78D65 /* libRCTSettings.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 139105C11AF99BAD00B5F7CC /* libRCTSettings.a */; };
-		A45013472139BEE700A78D65 /* libRCTText.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 832341B51AAA6A8300B99B32 /* libRCTText.a */; };
-		A45013482139BEE700A78D65 /* libRCTVibration.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 00C302E41ABCB9EE00DB3ED1 /* libRCTVibration.a */; };
-		A45013492139BEE700A78D65 /* libRCTWebSocket.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 139FDEF41B06529B00C62182 /* libRCTWebSocket.a */; };
-		A450134A2139BEE700A78D65 /* libReact.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 146834041AC3E56700842450 /* libReact.a */; };
-		A450134D2139BFA200A78D65 /* libRCTBlob.a in Frameworks */ = {isa = PBXBuildFile; fileRef = ADBDB9271DFEBF0700ED6528 /* libRCTBlob.a */; };
-		A450134E2139BFA200A78D65 /* libRNFetchBlob.a in Frameworks */ = {isa = PBXBuildFile; fileRef = B547AE5721370AB60004D6D5 /* libRNFetchBlob.a */; };
 		A46C2E1421497101007E54FA /* libRCTPushNotification.a in Frameworks */ = {isa = PBXBuildFile; fileRef = A46C2DF1214970D5007E54FA /* libRCTPushNotification.a */; };
-		A46C2ECA2149A212007E54FA /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 13B07FB51A68108700A75B9A /* Images.xcassets */; };
-		A480B7432154DD4700634D8B /* libSafariViewManager.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 2D2167F421511EA40039FBE7 /* libSafariViewManager.a */; };
-		A480B7442154DD9B00634D8B /* libRCTPushNotification.a in Frameworks */ = {isa = PBXBuildFile; fileRef = A46C2DF1214970D5007E54FA /* libRCTPushNotification.a */; };
 		A4BF285821234CFE0054D7A9 /* CloudKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A4BF285721234CFE0054D7A9 /* CloudKit.framework */; };
-		A4CD66952139B68000874CB1 /* MainInterface.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = A4CD66932139B68000874CB1 /* MainInterface.storyboard */; };
-		A4CD66992139B68000874CB1 /* MelloEx.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = A4CD668E2139B67F00874CB1 /* MelloEx.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
-		A4D2256A21408E8300539042 /* libRNReactNativeSharedGroupPreferences.a in Frameworks */ = {isa = PBXBuildFile; fileRef = A466CC352140042C00B3430F /* libRNReactNativeSharedGroupPreferences.a */; };
-		A4EB9CC8213F0FE300C598B8 /* libRNVectorIcons.a in Frameworks */ = {isa = PBXBuildFile; fileRef = B554B64B210DFC7800A36A10 /* libRNVectorIcons.a */; };
-		A4EB9CF8213F114300C598B8 /* Entypo.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 49E66C7627DA4206B745FC76 /* Entypo.ttf */; };
-		A4EB9CF9213F114300C598B8 /* EvilIcons.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 6DDC407B5B624A7C8F6AD515 /* EvilIcons.ttf */; };
-		A4EB9CFA213F114300C598B8 /* Feather.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 6DCC07EC76FC4C7FB3BBECE6 /* Feather.ttf */; };
-		A4EB9CFB213F114300C598B8 /* FontAwesome.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 7574CA4FAF3A401FBE3E75F4 /* FontAwesome.ttf */; };
-		A4EB9CFC213F114300C598B8 /* FontAwesome5_Brands.ttf in Resources */ = {isa = PBXBuildFile; fileRef = B9577B0B9C0042FEBD2572D5 /* FontAwesome5_Brands.ttf */; };
-		A4EB9CFD213F114300C598B8 /* FontAwesome5_Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 9AFE45238BF344909F881B0C /* FontAwesome5_Regular.ttf */; };
-		A4EB9CFE213F114300C598B8 /* FontAwesome5_Solid.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 212DE1171C3D4A89BC6BDD44 /* FontAwesome5_Solid.ttf */; };
-		A4EB9CFF213F114300C598B8 /* Foundation.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 967ED53775644A5E9E9E82CB /* Foundation.ttf */; };
-		A4EB9D00213F114300C598B8 /* Ionicons.ttf in Resources */ = {isa = PBXBuildFile; fileRef = D09AE13BB9DB4E5887135009 /* Ionicons.ttf */; };
-		A4EB9D01213F114300C598B8 /* MaterialCommunityIcons.ttf in Resources */ = {isa = PBXBuildFile; fileRef = A91519045FC74D37A0B5D694 /* MaterialCommunityIcons.ttf */; };
-		A4EB9D02213F114300C598B8 /* MaterialIcons.ttf in Resources */ = {isa = PBXBuildFile; fileRef = C7747C3163BF42E093C0FFE0 /* MaterialIcons.ttf */; };
-		A4EB9D03213F114300C598B8 /* Octicons.ttf in Resources */ = {isa = PBXBuildFile; fileRef = C01A3DFF0BBD47CA8E552943 /* Octicons.ttf */; };
-		A4EB9D04213F114300C598B8 /* SimpleLineIcons.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 2E7C184AF38D495CA598BB2B /* SimpleLineIcons.ttf */; };
-		A4EB9D05213F114300C598B8 /* Zocial.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 6ABC6722E2BF4E8E89696E69 /* Zocial.ttf */; };
-		A4EB9D09213F42DA00C598B8 /* ShareExtensionViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = A4EB9D08213F42DA00C598B8 /* ShareExtensionViewController.m */; };
 		ADBDB9381DFEBF1600ED6528 /* libRCTBlob.a in Frameworks */ = {isa = PBXBuildFile; fileRef = ADBDB9271DFEBF0700ED6528 /* libRCTBlob.a */; };
+		B3D57745142749959D22BCDA /* libRNFileViewer.a in Frameworks */ = {isa = PBXBuildFile; fileRef = D08D21C89C284CC8B72878F0 /* libRNFileViewer.a */; };
 		B509BBF321778AA6006ED535 /* Lottie.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B509BBE9217788E0006ED535 /* Lottie.framework */; };
 		B509BBF421778AA6006ED535 /* Lottie.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = B509BBE9217788E0006ED535 /* Lottie.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
-		B5C9088721735F2200C3CD9A /* libRCTVideo.a in Frameworks */ = {isa = PBXBuildFile; fileRef = B5C9088421735EE900C3CD9A /* libRCTVideo.a */; };
 		BB896AB9E6414964B0B4FC39 /* Zocial.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 6ABC6722E2BF4E8E89696E69 /* Zocial.ttf */; };
 		BDF2DA279A484FA7B04A157F /* FontAwesome.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 7574CA4FAF3A401FBE3E75F4 /* FontAwesome.ttf */; };
-		BE54F4BFC1F6E6C82EFDB59C /* libPods-MelloEx.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 4A542F7F6D91BEC591EF445A /* libPods-MelloEx.a */; };
 		C42873B476E444FCB67126E3 /* libRCTVideo.a in Frameworks */ = {isa = PBXBuildFile; fileRef = D1563032C77F49209E54DB70 /* libRCTVideo.a */; };
 		C7AF4BF1CB6546ADBC6BF01B /* Ionicons.ttf in Resources */ = {isa = PBXBuildFile; fileRef = D09AE13BB9DB4E5887135009 /* Ionicons.ttf */; };
 		D5CD4B10CDF14C0989676146 /* MaterialCommunityIcons.ttf in Resources */ = {isa = PBXBuildFile; fileRef = A91519045FC74D37A0B5D694 /* MaterialCommunityIcons.ttf */; };
@@ -123,9 +130,9 @@
 		D6B8B28322109B4200F9788D /* ShareExtensionTipManager.m in Sources */ = {isa = PBXBuildFile; fileRef = D6B8B28222109B4200F9788D /* ShareExtensionTipManager.m */; };
 		D6B8B2852210C3EE00F9788D /* ShareExtensionTip.swift in Sources */ = {isa = PBXBuildFile; fileRef = D6B8B2842210C3EE00F9788D /* ShareExtensionTip.swift */; };
 		E06DCBF3DAFF4764976798B1 /* FontAwesome5_Brands.ttf in Resources */ = {isa = PBXBuildFile; fileRef = B9577B0B9C0042FEBD2572D5 /* FontAwesome5_Brands.ttf */; };
-		E6EDBAD855664F82928CCBE0 /* Lottie.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C71C50B610D14398A80BB51C /* Lottie.framework */; };
 		E96ADD5AF9B04571AC141FE4 /* libReactNativePermissions.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 697061CC3ED34A79AE97EFA1 /* libReactNativePermissions.a */; };
 		EDE5891B255E490C98FF3E06 /* libRNFirebase.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 74503380E51C466EAD133FB9 /* libRNFirebase.a */; };
+		F4F899BFA10D4129B959DAE8 /* libRNImgToBase64.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 48E815D86AC4450E91A11738 /* libRNImgToBase64.a */; };
 		F813916842244B2EBA820B46 /* libRNVectorIcons.a in Frameworks */ = {isa = PBXBuildFile; fileRef = A4ED2C5426FB4A1DAD19663F /* libRNVectorIcons.a */; };
 /* End PBXBuildFile section */
 
@@ -284,6 +291,20 @@
 			remoteGlobalIDString = 9936F32F1F5F2E5B0010BF04;
 			remoteInfo = "privatedata-tvOS";
 		};
+		395FDA09224A385C00ED92B1 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 658B1949A1544A798719B1BA /* RNFileViewer.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 134814201AA4EA6300B7C361;
+			remoteInfo = RNFileViewer;
+		};
+		3984D08922527DD000042F75 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 83CBB9F71A601CBA00E9B192 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 3984D08022527DD000042F75;
+			remoteInfo = ShareExtension;
+		};
 		3DAD3E831DF850E9000B6D8A /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 00C302BB1ABCB91800DB3ED1 /* RCTImage.xcodeproj */;
@@ -375,6 +396,34 @@
 			remoteGlobalIDString = 3D3CD9181DE5FBD800167DC4;
 			remoteInfo = "jschelpers-tvOS";
 		};
+		4C246BB5222793AD00FD052A /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 4C246B77222793AD00FD052A /* RNIntercom.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 112EE36D1CC0AB8A00BF6BB8;
+			remoteInfo = RNIntercom;
+		};
+		4C96B855223AD4570069FDDC /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 9FE2ECE3EA2740B890191BF7 /* RNTextSize.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 134814201AA4EA6300B7C361;
+			remoteInfo = RNTextSize;
+		};
+		4CB988BC224BAE6D00A905DA /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 4CB9887E224BAE6C00A905DA /* RNFS.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = F12AFB9B1ADAF8F800E0535D;
+			remoteInfo = RNFS;
+		};
+		4CB988BE224BAE6D00A905DA /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 4CB9887E224BAE6C00A905DA /* RNFS.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 6456441F1EB8DA9100672408;
+			remoteInfo = "RNFS-tvOS";
+		};
 		4CC8621C2193408300481DED /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 2866BBFC826843B8A6FFB69C /* RNFirebase.xcodeproj */;
@@ -388,6 +437,13 @@
 			proxyType = 2;
 			remoteGlobalIDString = 8AD256131D6DE5F600C7D842;
 			remoteInfo = BugsnagReactNative;
+		};
+		4CF315F822270F2B00A7A104 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 4CF315F422270F2B00A7A104 /* SplashScreen.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 3D7682761D8E76B80014119E;
+			remoteInfo = SplashScreen;
 		};
 		5E9157321DD0AC6500FF2AA8 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
@@ -403,12 +459,33 @@
 			remoteGlobalIDString = 2D2A28201D9B03D100D4039D;
 			remoteInfo = "RCTAnimation-tvOS";
 		};
+		7183840F2208A6F500A76E12 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = F5D07B917BD8461AA104117F /* RNThumbnail.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 134814201AA4EA6300B7C361;
+			remoteInfo = RNThumbnail;
+		};
+		718384BE2208BAC900A76E12 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = D2974AD2940A4DED8393FE7F /* RNImgToBase64.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 134814201AA4EA6300B7C361;
+			remoteInfo = RNImgToBase64;
+		};
 		78C398B81ACF4ADC00677621 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 78C398B01ACF4ADC00677621 /* RCTLinking.xcodeproj */;
 			proxyType = 2;
 			remoteGlobalIDString = 134814201AA4EA6300B7C361;
 			remoteInfo = RCTLinking;
+		};
+		8093C63422439C6E00FE1619 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 8093C5F722439C6D00FE1619 /* RNFS.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = F12AFB9B1ADAF8F800E0535D;
+			remoteInfo = RNFS;
 		};
 		832341B41AAA6A8300B99B32 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
@@ -493,13 +570,6 @@
 			proxyType = 2;
 			remoteGlobalIDString = 94DDAC5C1F3D024300EED511;
 			remoteInfo = "RNSVG-tvOS";
-		};
-		A4CD66972139B68000874CB1 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 83CBB9F71A601CBA00E9B192 /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = A4CD668D2139B67F00874CB1;
-			remoteInfo = MelloEx;
 		};
 		ADBDB9261DFEBF0700ED6528 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
@@ -622,7 +692,7 @@
 			dstPath = "";
 			dstSubfolderSpec = 13;
 			files = (
-				A4CD66992139B68000874CB1 /* MelloEx.appex in Embed App Extensions */,
+				3984D08B22527DD000042F75 /* ShareExtension.appex in Embed App Extensions */,
 			);
 			name = "Embed App Extensions";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -667,6 +737,7 @@
 		1BBE45B3BBA8440189B9842C /* libLottieReactNative.a */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = archive.ar; path = libLottieReactNative.a; sourceTree = "<group>"; };
 		212DE1171C3D4A89BC6BDD44 /* FontAwesome5_Solid.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = FontAwesome5_Solid.ttf; path = "../node_modules/react-native-vector-icons/Fonts/FontAwesome5_Solid.ttf"; sourceTree = "<group>"; };
 		2866BBFC826843B8A6FFB69C /* RNFirebase.xcodeproj */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = "wrapper.pb-project"; name = RNFirebase.xcodeproj; path = "../node_modules/react-native-firebase/ios/RNFirebase.xcodeproj"; sourceTree = "<group>"; };
+		2D00C17A22609C860060EA8E /* libRNFS.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; path = libRNFS.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		2D02E47B1E0B4A5D006451C7 /* Mello-tvOS.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Mello-tvOS.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		2D02E4901E0B4A5D006451C7 /* Mello-tvOSTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "Mello-tvOSTests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		2D16E6891FA4F8E400B85C8A /* libReact.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; path = libReact.a; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -674,17 +745,74 @@
 		2F28E02440D142FE96E32D75 /* RCTVideo.xcodeproj */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = "wrapper.pb-project"; name = RCTVideo.xcodeproj; path = "../node_modules/react-native-video/ios/RCTVideo.xcodeproj"; sourceTree = "<group>"; };
 		33BD4A274A84484B97C217E8 /* RNFetchBlob.xcodeproj */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = "wrapper.pb-project"; name = RNFetchBlob.xcodeproj; path = "../node_modules/rn-fetch-blob/ios/RNFetchBlob.xcodeproj"; sourceTree = "<group>"; };
 		33EEAF2950654496843997B1 /* LottieReactNative.xcodeproj */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = "wrapper.pb-project"; name = LottieReactNative.xcodeproj; path = "../node_modules/lottie-react-native/src/ios/LottieReactNative.xcodeproj"; sourceTree = "<group>"; };
+		37CA782AC31D47CCBB55CA40 /* libRNThumbnail.a */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = archive.ar; path = libRNThumbnail.a; sourceTree = "<group>"; };
+		391C11A5225DF496009A0106 /* SharedPreferences.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SharedPreferences.swift; sourceTree = "<group>"; };
+		39301178225B3F64000649DB /* VideoViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VideoViewController.swift; sourceTree = "<group>"; };
+		39301179225B3F64000649DB /* VideoViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = VideoViewController.xib; sourceTree = "<group>"; };
+		396C17D822527E4C001297F6 /* API.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = API.swift; sourceTree = "<group>"; };
+		396C17DB22527E5D001297F6 /* ParsedURL.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ParsedURL.swift; sourceTree = "<group>"; };
+		396C17DC22527E5D001297F6 /* Flow.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Flow.swift; sourceTree = "<group>"; };
+		396C17E322527E98001297F6 /* FlowFooterSelectable.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FlowFooterSelectable.swift; sourceTree = "<group>"; };
+		396C17E522527EA0001297F6 /* FlowSelectorFooter.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = FlowSelectorFooter.xib; sourceTree = "<group>"; };
+		396C17E622527EA0001297F6 /* FlowSelectorFooter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FlowSelectorFooter.swift; sourceTree = "<group>"; };
+		396C17EA22527EB8001297F6 /* ShareNavigationBar.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ShareNavigationBar.swift; sourceTree = "<group>"; };
+		396C17EB22527EB8001297F6 /* ShareNavigationBar.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = ShareNavigationBar.xib; sourceTree = "<group>"; };
+		396C17EE22527EBB001297F6 /* ShareNavigationable.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ShareNavigationable.swift; sourceTree = "<group>"; };
+		396C17F022527ECF001297F6 /* AssetLoader.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AssetLoader.swift; sourceTree = "<group>"; };
+		396C17F122527ECF001297F6 /* UIImageCompression.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UIImageCompression.swift; sourceTree = "<group>"; };
+		396C17F522527EF6001297F6 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		396C17F722527EFF001297F6 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		396C17F822527EFF001297F6 /* MainInterface.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = MainInterface.storyboard; sourceTree = "<group>"; };
+		396C180422527F73001297F6 /* BottomStatusViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = BottomStatusViewController.xib; sourceTree = "<group>"; };
+		396C180522527F73001297F6 /* BottomStatusViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BottomStatusViewController.swift; sourceTree = "<group>"; };
+		396C180922527F86001297F6 /* MainViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MainViewController.swift; sourceTree = "<group>"; };
+		396C180B22527F8B001297F6 /* MainNavigationController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MainNavigationController.swift; sourceTree = "<group>"; };
+		396C180D22527F93001297F6 /* LocalImageViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LocalImageViewController.swift; sourceTree = "<group>"; };
+		396C180E22527F93001297F6 /* LocalImageViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = LocalImageViewController.xib; sourceTree = "<group>"; };
+		396C181222527FA6001297F6 /* LinkView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = LinkView.xib; sourceTree = "<group>"; };
+		396C181322527FA6001297F6 /* LinkView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LinkView.swift; sourceTree = "<group>"; };
+		396C181622527FAC001297F6 /* LinkViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LinkViewController.swift; sourceTree = "<group>"; };
+		396C181722527FAC001297F6 /* LinkViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = LinkViewController.xib; sourceTree = "<group>"; };
+		396C181A22527FB7001297F6 /* TextViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TextViewController.swift; sourceTree = "<group>"; };
+		396C181B22527FB7001297F6 /* TextViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = TextViewController.xib; sourceTree = "<group>"; };
+		396C181F22527FCB001297F6 /* AssetCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AssetCell.swift; sourceTree = "<group>"; };
+		396C182022527FCB001297F6 /* AssetCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = AssetCell.xib; sourceTree = "<group>"; };
+		396C182322527FD1001297F6 /* ImagePickerViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ImagePickerViewController.swift; sourceTree = "<group>"; };
+		396C182422527FD1001297F6 /* ImagePickerViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = ImagePickerViewController.xib; sourceTree = "<group>"; };
+		396C182A22528001001297F6 /* NewFlowCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = NewFlowCell.xib; sourceTree = "<group>"; };
+		396C182B22528001001297F6 /* NewFlowCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NewFlowCell.swift; sourceTree = "<group>"; };
+		396C182E22528007001297F6 /* FlowCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FlowCell.swift; sourceTree = "<group>"; };
+		396C182F22528007001297F6 /* FlowCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = FlowCell.xib; sourceTree = "<group>"; };
+		396C18322252800F001297F6 /* FlowSelectorViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FlowSelectorViewController.swift; sourceTree = "<group>"; };
+		396C18332252800F001297F6 /* FlowSelectorViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = FlowSelectorViewController.xib; sourceTree = "<group>"; };
+		396C18362252801B001297F6 /* NewFlowViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = NewFlowViewController.xib; sourceTree = "<group>"; };
+		396C18372252801B001297F6 /* NewFlowViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NewFlowViewController.swift; sourceTree = "<group>"; };
+		396C190022528377001297F6 /* libFLAnimatedImage.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; path = libFLAnimatedImage.a; sourceTree = BUILT_PRODUCTS_DIR; };
+		396C194A2252859F001297F6 /* ShareExtension-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "ShareExtension-Bridging-Header.h"; sourceTree = "<group>"; };
+		396C194B225285A0001297F6 /* FLAnimatedImage.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FLAnimatedImage.m; sourceTree = "<group>"; };
+		396C194C225285A0001297F6 /* FLAnimatedImageView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FLAnimatedImageView.h; sourceTree = "<group>"; };
+		396C194D225285A1001297F6 /* FLAnimatedImage.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FLAnimatedImage.h; sourceTree = "<group>"; };
+		396C194E225285A1001297F6 /* FLAnimatedImageView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FLAnimatedImageView.m; sourceTree = "<group>"; };
+		396C1CD422539C11001297F6 /* ShareExtension.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = ShareExtension.entitlements; sourceTree = "<group>"; };
+		396C1CD62253A321001297F6 /* APIError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = APIError.swift; sourceTree = "<group>"; };
+		3984D08122527DD000042F75 /* ShareExtension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = ShareExtension.appex; sourceTree = BUILT_PRODUCTS_DIR; };
+		39C6257B2254EB6F001FBD79 /* KeyboardHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeyboardHelper.swift; sourceTree = "<group>"; };
 		44C268ED8ACC4BCE9CDA61FC /* libRNDeviceInfo.a */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = archive.ar; path = libRNDeviceInfo.a; sourceTree = "<group>"; };
 		47BA3513B6514BE58476D7B4 /* libRNImagePicker.a */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = archive.ar; path = libRNImagePicker.a; sourceTree = "<group>"; };
+		48E815D86AC4450E91A11738 /* libRNImgToBase64.a */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = archive.ar; path = libRNImgToBase64.a; sourceTree = "<group>"; };
 		49E66C7627DA4206B745FC76 /* Entypo.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = Entypo.ttf; path = "../node_modules/react-native-vector-icons/Fonts/Entypo.ttf"; sourceTree = "<group>"; };
 		4A542F7F6D91BEC591EF445A /* libPods-MelloEx.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-MelloEx.a"; sourceTree = BUILT_PRODUCTS_DIR; };
-		4C3C63F52199E8BC00B68196 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
+		4C246B77222793AD00FD052A /* RNIntercom.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RNIntercom.xcodeproj; path = "../node_modules/react-native-intercom/iOS/RNIntercom.xcodeproj"; sourceTree = "<group>"; };
+		4CB9887E224BAE6C00A905DA /* RNFS.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RNFS.xcodeproj; path = "../node_modules/react-native-fs/RNFS.xcodeproj"; sourceTree = "<group>"; };
 		4CC8617A21933F8A00481DED /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		4CF0DB4C219983A6000ED175 /* libFirebaseCore.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; path = libFirebaseCore.a; sourceTree = BUILT_PRODUCTS_DIR; };
+		4CF315F422270F2B00A7A104 /* SplashScreen.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = SplashScreen.xcodeproj; path = "../node_modules/react-native-splash-screen/ios/SplashScreen.xcodeproj"; sourceTree = "<group>"; };
 		5394A3ED34ED4B6EB2B6B100 /* libRNReactNativeSharedGroupPreferences.a */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = archive.ar; path = libRNReactNativeSharedGroupPreferences.a; sourceTree = "<group>"; };
 		5604B7BB394C40CF89F6501C /* RNDeviceInfo.xcodeproj */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = "wrapper.pb-project"; name = RNDeviceInfo.xcodeproj; path = "../node_modules/react-native-device-info/ios/RNDeviceInfo.xcodeproj"; sourceTree = "<group>"; };
+		5E07B5885521CA4449078589 /* libPods-ShareExtension.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-ShareExtension.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		5E91572D1DD0AC6500FF2AA8 /* RCTAnimation.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RCTAnimation.xcodeproj; path = "../node_modules/react-native/Libraries/NativeAnimation/RCTAnimation.xcodeproj"; sourceTree = "<group>"; };
 		644B2D9A94784859B6ECCCD3 /* libRNFetchBlob.a */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = archive.ar; path = libRNFetchBlob.a; sourceTree = "<group>"; };
+		658B1949A1544A798719B1BA /* RNFileViewer.xcodeproj */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = "wrapper.pb-project"; name = RNFileViewer.xcodeproj; path = "../node_modules/react-native-file-viewer/ios/RNFileViewer.xcodeproj"; sourceTree = "<group>"; };
 		697061CC3ED34A79AE97EFA1 /* libReactNativePermissions.a */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = archive.ar; path = libReactNativePermissions.a; sourceTree = "<group>"; };
 		6ABC6722E2BF4E8E89696E69 /* Zocial.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = Zocial.ttf; path = "../node_modules/react-native-vector-icons/Fonts/Zocial.ttf"; sourceTree = "<group>"; };
 		6B464A25DB9D4E45B976C1EC /* libLottie.a */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = archive.ar; path = libLottie.a; sourceTree = "<group>"; };
@@ -697,16 +825,19 @@
 		78C398B01ACF4ADC00677621 /* RCTLinking.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RCTLinking.xcodeproj; path = "../node_modules/react-native/Libraries/LinkingIOS/RCTLinking.xcodeproj"; sourceTree = "<group>"; };
 		78F9B7C6AC83469A950CD8B2 /* FastImage.xcodeproj */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = "wrapper.pb-project"; name = FastImage.xcodeproj; path = "../node_modules/react-native-fast-image/ios/FastImage.xcodeproj"; sourceTree = "<group>"; };
 		7FF9F77D31634DD9B9D15601 /* libz.tbd */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libz.tbd; path = usr/lib/libz.tbd; sourceTree = SDKROOT; };
+		8093C5F722439C6D00FE1619 /* RNFS.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RNFS.xcodeproj; path = "../node_modules/react-native-fs/RNFS.xcodeproj"; sourceTree = "<group>"; };
 		832341B01AAA6A8300B99B32 /* RCTText.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RCTText.xcodeproj; path = "../node_modules/react-native/Libraries/Text/RCTText.xcodeproj"; sourceTree = "<group>"; };
 		83A3A57F49D18643DC5B7A36 /* Pods-Mello.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Mello.debug.xcconfig"; path = "Pods/Target Support Files/Pods-Mello/Pods-Mello.debug.xcconfig"; sourceTree = "<group>"; };
 		88B878D7356F3D2796D7E02F /* Pods-MelloEx.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-MelloEx.debug.xcconfig"; path = "Pods/Target Support Files/Pods-MelloEx/Pods-MelloEx.debug.xcconfig"; sourceTree = "<group>"; };
 		8A848E2C3FF045DE85911225 /* libRNDeviceInfo-tvOS.a */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = archive.ar; path = "libRNDeviceInfo-tvOS.a"; sourceTree = "<group>"; };
+		936747101172421F417588E3 /* Pods-ShareExtension.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ShareExtension.debug.xcconfig"; path = "Pods/Target Support Files/Pods-ShareExtension/Pods-ShareExtension.debug.xcconfig"; sourceTree = "<group>"; };
 		94856EBACEF342CC8953358A /* libSafariViewManager.a */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = archive.ar; path = libSafariViewManager.a; sourceTree = "<group>"; };
 		94BDD0529B2B41739DBEBD1D /* SafariViewManager.xcodeproj */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = "wrapper.pb-project"; name = SafariViewManager.xcodeproj; path = "../node_modules/react-native-safari-view/SafariViewManager.xcodeproj"; sourceTree = "<group>"; };
 		9505C59301A84E59BFF300C6 /* libRNSVG-tvOS.a */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = archive.ar; path = "libRNSVG-tvOS.a"; sourceTree = "<group>"; };
 		967ED53775644A5E9E9E82CB /* Foundation.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = Foundation.ttf; path = "../node_modules/react-native-vector-icons/Fonts/Foundation.ttf"; sourceTree = "<group>"; };
 		9AFE45238BF344909F881B0C /* FontAwesome5_Regular.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = FontAwesome5_Regular.ttf; path = "../node_modules/react-native-vector-icons/Fonts/FontAwesome5_Regular.ttf"; sourceTree = "<group>"; };
 		9F983F5C323D41389ED0DD7F /* libRNSVG.a */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = archive.ar; path = libRNSVG.a; sourceTree = "<group>"; };
+		9FE2ECE3EA2740B890191BF7 /* RNTextSize.xcodeproj */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = "wrapper.pb-project"; name = RNTextSize.xcodeproj; path = "../node_modules/react-native-text-size/ios/RNTextSize.xcodeproj"; sourceTree = "<group>"; };
 		A43563E0213837A200A6D4EA /* libSDWebImage iOS static.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; path = "libSDWebImage iOS static.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		A43563E2213837A200A6D4EA /* libSDWebImage watchOS static.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; path = "libSDWebImage watchOS static.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		A43563E4213837A200A6D4EA /* SDWebImage.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = SDWebImage.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -716,14 +847,8 @@
 		A46C2DDB214970D5007E54FA /* RCTPushNotification.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RCTPushNotification.xcodeproj; path = "../node_modules/react-native/Libraries/PushNotificationIOS/RCTPushNotification.xcodeproj"; sourceTree = "<group>"; };
 		A48B0150210F8F9C001C33B5 /* Mello.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; name = Mello.entitlements; path = Mello/Mello.entitlements; sourceTree = "<group>"; };
 		A4BF285721234CFE0054D7A9 /* CloudKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CloudKit.framework; path = System/Library/Frameworks/CloudKit.framework; sourceTree = SDKROOT; };
-		A4CD668E2139B67F00874CB1 /* MelloEx.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = MelloEx.appex; sourceTree = BUILT_PRODUCTS_DIR; };
-		A4CD66942139B68000874CB1 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/MainInterface.storyboard; sourceTree = "<group>"; };
-		A4CD66962139B68000874CB1 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		A4CD76AA21198ECA002BE387 /* AssetsLibrary.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AssetsLibrary.framework; path = System/Library/Frameworks/AssetsLibrary.framework; sourceTree = SDKROOT; };
 		A4CD76D821198ED8002BE387 /* QuickLook.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuickLook.framework; path = System/Library/Frameworks/QuickLook.framework; sourceTree = SDKROOT; };
-		A4EB9D06213F41D300C598B8 /* MelloEx.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = MelloEx.entitlements; sourceTree = "<group>"; };
-		A4EB9D07213F42DA00C598B8 /* ShareExtensionViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ShareExtensionViewController.h; sourceTree = "<group>"; };
-		A4EB9D08213F42DA00C598B8 /* ShareExtensionViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ShareExtensionViewController.m; sourceTree = "<group>"; };
 		A4ED2C5426FB4A1DAD19663F /* libRNVectorIcons.a */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = archive.ar; path = libRNVectorIcons.a; sourceTree = "<group>"; };
 		A91519045FC74D37A0B5D694 /* MaterialCommunityIcons.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = MaterialCommunityIcons.ttf; path = "../node_modules/react-native-vector-icons/Fonts/MaterialCommunityIcons.ttf"; sourceTree = "<group>"; };
 		ADBDB91F1DFEBF0600ED6528 /* RCTBlob.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RCTBlob.xcodeproj; path = "../node_modules/react-native/Libraries/Blob/RCTBlob.xcodeproj"; sourceTree = "<group>"; };
@@ -737,14 +862,18 @@
 		C71C50B610D14398A80BB51C /* Lottie.framework */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = wrapper.framework; name = Lottie.framework; path = System/Library/Frameworks/Lottie.framework; sourceTree = SDKROOT; };
 		C7747C3163BF42E093C0FFE0 /* MaterialIcons.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = MaterialIcons.ttf; path = "../node_modules/react-native-vector-icons/Fonts/MaterialIcons.ttf"; sourceTree = "<group>"; };
 		CEF9CE0D4C3B419DAD8284A6 /* libRNDocumentPicker.a */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = archive.ar; path = libRNDocumentPicker.a; sourceTree = "<group>"; };
+		D08D21C89C284CC8B72878F0 /* libRNFileViewer.a */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = archive.ar; path = libRNFileViewer.a; sourceTree = "<group>"; };
 		D09AE13BB9DB4E5887135009 /* Ionicons.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = Ionicons.ttf; path = "../node_modules/react-native-vector-icons/Fonts/Ionicons.ttf"; sourceTree = "<group>"; };
 		D1563032C77F49209E54DB70 /* libRCTVideo.a */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = archive.ar; path = libRCTVideo.a; sourceTree = "<group>"; };
 		D210E3B691F245F2BC9636EF /* RNVersionNumber.xcodeproj */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = "wrapper.pb-project"; name = RNVersionNumber.xcodeproj; path = "../node_modules/react-native-version-number/ios/RNVersionNumber.xcodeproj"; sourceTree = "<group>"; };
+		D2974AD2940A4DED8393FE7F /* RNImgToBase64.xcodeproj */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = "wrapper.pb-project"; name = RNImgToBase64.xcodeproj; path = "../node_modules/react-native-image-base64/ios/RNImgToBase64.xcodeproj"; sourceTree = "<group>"; };
 		D430FA82BA004D78B4B43DEB /* BugsnagReactNative.xcodeproj */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = "wrapper.pb-project"; name = BugsnagReactNative.xcodeproj; path = "../node_modules/bugsnag-react-native/cocoa/BugsnagReactNative.xcodeproj"; sourceTree = "<group>"; };
+		D69B4B27A49D922CD8229D42 /* Pods-ShareExtension.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ShareExtension.release.xcconfig"; path = "Pods/Target Support Files/Pods-ShareExtension/Pods-ShareExtension.release.xcconfig"; sourceTree = "<group>"; };
 		D6B8B23F22109AB900F9788D /* Mello-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "Mello-Bridging-Header.h"; sourceTree = "<group>"; };
 		D6B8B24022109ABA00F9788D /* ShareExtensionTipManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShareExtensionTipManager.swift; sourceTree = "<group>"; };
 		D6B8B28222109B4200F9788D /* ShareExtensionTipManager.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ShareExtensionTipManager.m; sourceTree = "<group>"; };
 		D6B8B2842210C3EE00F9788D /* ShareExtensionTip.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShareExtensionTip.swift; sourceTree = "<group>"; };
+		D737F6C3F4964BBBB207DE7B /* libRNTextSize.a */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = archive.ar; path = libRNTextSize.a; sourceTree = "<group>"; };
 		D987827413CAB2D1572A10CA /* Pods-Mello.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Mello.release.xcconfig"; path = "Pods/Target Support Files/Pods-Mello/Pods-Mello.release.xcconfig"; sourceTree = "<group>"; };
 		D9E1BD18BB5B4D62B4263950 /* libBugsnagReactNative.a */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = archive.ar; path = libBugsnagReactNative.a; sourceTree = "<group>"; };
 		DDF2F7A8F2BB4EE4B265F759 /* RNImagePicker.xcodeproj */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = "wrapper.pb-project"; name = RNImagePicker.xcodeproj; path = "../node_modules/react-native-image-picker/ios/RNImagePicker.xcodeproj"; sourceTree = "<group>"; };
@@ -753,6 +882,7 @@
 		E57D5DDA7F1640AB94755FB9 /* BVLinearGradient.xcodeproj */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = "wrapper.pb-project"; name = BVLinearGradient.xcodeproj; path = "../node_modules/react-native-linear-gradient/BVLinearGradient.xcodeproj"; sourceTree = "<group>"; };
 		EA8FF63A41537B5124E94788 /* libPods-Mello.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-Mello.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		F392C297832F4FAFB46C1123 /* RNDocumentPicker.xcodeproj */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = "wrapper.pb-project"; name = RNDocumentPicker.xcodeproj; path = "../node_modules/react-native-document-picker/ios/RNDocumentPicker.xcodeproj"; sourceTree = "<group>"; };
+		F5D07B917BD8461AA104117F /* RNThumbnail.xcodeproj */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = "wrapper.pb-project"; name = RNThumbnail.xcodeproj; path = "../node_modules/react-native-thumbnail/ios/RNThumbnail.xcodeproj"; sourceTree = "<group>"; };
 		F89F93B2A8EF63BAB20E0016 /* libPods-MelloTests.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-MelloTests.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
@@ -769,6 +899,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				2D00C17B22609C860060EA8E /* libRNFS.a in Frameworks */,
 				A4BF285821234CFE0054D7A9 /* CloudKit.framework in Frameworks */,
 				A46C2E1421497101007E54FA /* libRCTPushNotification.a in Frameworks */,
 				ADBDB9381DFEBF1600ED6528 /* libRCTBlob.a in Frameworks */,
@@ -797,7 +928,6 @@
 				0D5D373B6936457E95E37A56 /* libSafariViewManager.a in Frameworks */,
 				2BBFA89F708F4265BE6D4888 /* libRNVersionNumber.a in Frameworks */,
 				C42873B476E444FCB67126E3 /* libRCTVideo.a in Frameworks */,
-				E6EDBAD855664F82928CCBE0 /* Lottie.framework in Frameworks */,
 				B509BBF321778AA6006ED535 /* Lottie.framework in Frameworks */,
 				20504C6986E442B6BC42E6D8 /* libLottie.a in Frameworks */,
 				4DF31AFCC7DA42929C8B67CC /* libLottieReactNative.a in Frameworks */,
@@ -806,6 +936,10 @@
 				6EBDD815484C4CB6A8095806 /* libRNDeviceInfo.a in Frameworks */,
 				EDE5891B255E490C98FF3E06 /* libRNFirebase.a in Frameworks */,
 				9CD6677E73B85E6F01711321 /* libPods-Mello.a in Frameworks */,
+				2D2CBD90DAC84BB8A182DAEB /* libRNThumbnail.a in Frameworks */,
+				F4F899BFA10D4129B959DAE8 /* libRNImgToBase64.a in Frameworks */,
+				630C8F6D277640E0AC78F336 /* libRNTextSize.a in Frameworks */,
+				B3D57745142749959D22BCDA /* libRNFileViewer.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -835,35 +969,11 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		A4CD668B2139B67F00874CB1 /* Frameworks */ = {
+		3984D07E22527DD000042F75 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				4CD904DC21F8A7C200258740 /* libRNSVG.a in Frameworks */,
-				4CF0DB4F2199BBA6000ED175 /* libRNFirebase.a in Frameworks */,
-				4C3145432191BCE8009A40C5 /* libRNDeviceInfo.a in Frameworks */,
-				2D52C42B218E625B003C52C8 /* libBugsnagReactNative.a in Frameworks */,
-				B5C9088721735F2200C3CD9A /* libRCTVideo.a in Frameworks */,
-				A450134D2139BFA200A78D65 /* libRCTBlob.a in Frameworks */,
-				A450134E2139BFA200A78D65 /* libRNFetchBlob.a in Frameworks */,
-				A450133E2139BEE600A78D65 /* libRCTActionSheet.a in Frameworks */,
-				A450133F2139BEE600A78D65 /* libRCTAnimation.a in Frameworks */,
-				A45013422139BEE600A78D65 /* libRCTGeolocation.a in Frameworks */,
-				A45013432139BEE700A78D65 /* libRCTImage.a in Frameworks */,
-				A45013442139BEE700A78D65 /* libRCTLinking.a in Frameworks */,
-				A45013452139BEE700A78D65 /* libRCTNetwork.a in Frameworks */,
-				A45013462139BEE700A78D65 /* libRCTSettings.a in Frameworks */,
-				A45013472139BEE700A78D65 /* libRCTText.a in Frameworks */,
-				A45013482139BEE700A78D65 /* libRCTVibration.a in Frameworks */,
-				A45013492139BEE700A78D65 /* libRCTWebSocket.a in Frameworks */,
-				A450134A2139BEE700A78D65 /* libReact.a in Frameworks */,
-				A4EB9CC8213F0FE300C598B8 /* libRNVectorIcons.a in Frameworks */,
-				A43342992142AF80005EE6DE /* libFastImage.a in Frameworks */,
-				A4D2256A21408E8300539042 /* libRNReactNativeSharedGroupPreferences.a in Frameworks */,
-				A480B7432154DD4700634D8B /* libSafariViewManager.a in Frameworks */,
-				A480B7442154DD9B00634D8B /* libRCTPushNotification.a in Frameworks */,
-				4C6D85F921FE08AB00455C94 /* libRNSVG.a in Frameworks */,
-				BE54F4BFC1F6E6C82EFDB59C /* libPods-MelloEx.a in Frameworks */,
+				20D03234C800BE7AD647D202 /* libPods-ShareExtension.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -995,6 +1105,8 @@
 		2D16E6871FA4F8E400B85C8A /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				2D00C17A22609C860060EA8E /* libRNFS.a */,
+				396C190022528377001297F6 /* libFLAnimatedImage.a */,
 				4CF0DB4C219983A6000ED175 /* libFirebaseCore.a */,
 				A43563E0213837A200A6D4EA /* libSDWebImage iOS static.a */,
 				A43563E2213837A200A6D4EA /* libSDWebImage watchOS static.a */,
@@ -1011,6 +1123,7 @@
 				13FCFEF276102F879641FBDF /* libPods-Mello-tvOSTests.a */,
 				4A542F7F6D91BEC591EF445A /* libPods-MelloEx.a */,
 				F89F93B2A8EF63BAB20E0016 /* libPods-MelloTests.a */,
+				5E07B5885521CA4449078589 /* libPods-ShareExtension.a */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -1021,6 +1134,270 @@
 				2D2167F421511EA40039FBE7 /* libSafariViewManager.a */,
 			);
 			name = Products;
+			sourceTree = "<group>";
+		};
+		3930112F225B3F3B000649DB /* Video */ = {
+			isa = PBXGroup;
+			children = (
+				39301178225B3F64000649DB /* VideoViewController.swift */,
+				39301179225B3F64000649DB /* VideoViewController.xib */,
+			);
+			path = Video;
+			sourceTree = "<group>";
+		};
+		395FDA06224A385B00ED92B1 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				395FDA0A224A385C00ED92B1 /* libRNFileViewer.a */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		396C178F22527E43001297F6 /* API */ = {
+			isa = PBXGroup;
+			children = (
+				396C17D822527E4C001297F6 /* API.swift */,
+				396C1CD62253A321001297F6 /* APIError.swift */,
+			);
+			path = API;
+			sourceTree = "<group>";
+		};
+		396C17DA22527E54001297F6 /* Models */ = {
+			isa = PBXGroup;
+			children = (
+				396C17DB22527E5D001297F6 /* ParsedURL.swift */,
+				396C17DC22527E5D001297F6 /* Flow.swift */,
+			);
+			path = Models;
+			sourceTree = "<group>";
+		};
+		396C17DF22527E68001297F6 /* Helpers */ = {
+			isa = PBXGroup;
+			children = (
+				39C6257B2254EB6F001FBD79 /* KeyboardHelper.swift */,
+				396C1951225285A8001297F6 /* FLAnimatedImage */,
+				396C17F022527ECF001297F6 /* AssetLoader.swift */,
+				396C17F122527ECF001297F6 /* UIImageCompression.swift */,
+				396C17E022527E70001297F6 /* FlowFooter */,
+				396C17E122527E76001297F6 /* Navigation */,
+				391C11A5225DF496009A0106 /* SharedPreferences.swift */,
+			);
+			path = Helpers;
+			sourceTree = "<group>";
+		};
+		396C17E022527E70001297F6 /* FlowFooter */ = {
+			isa = PBXGroup;
+			children = (
+				396C17E322527E98001297F6 /* FlowFooterSelectable.swift */,
+				396C17E222527E92001297F6 /* View */,
+			);
+			path = FlowFooter;
+			sourceTree = "<group>";
+		};
+		396C17E122527E76001297F6 /* Navigation */ = {
+			isa = PBXGroup;
+			children = (
+				396C17EE22527EBB001297F6 /* ShareNavigationable.swift */,
+				396C17E922527EAE001297F6 /* View */,
+			);
+			path = Navigation;
+			sourceTree = "<group>";
+		};
+		396C17E222527E92001297F6 /* View */ = {
+			isa = PBXGroup;
+			children = (
+				396C17E622527EA0001297F6 /* FlowSelectorFooter.swift */,
+				396C17E522527EA0001297F6 /* FlowSelectorFooter.xib */,
+			);
+			path = View;
+			sourceTree = "<group>";
+		};
+		396C17E922527EAE001297F6 /* View */ = {
+			isa = PBXGroup;
+			children = (
+				396C17EA22527EB8001297F6 /* ShareNavigationBar.swift */,
+				396C17EB22527EB8001297F6 /* ShareNavigationBar.xib */,
+			);
+			path = View;
+			sourceTree = "<group>";
+		};
+		396C17F422527ED9001297F6 /* UI */ = {
+			isa = PBXGroup;
+			children = (
+				396C17F722527EFF001297F6 /* Assets.xcassets */,
+				396C17F822527EFF001297F6 /* MainInterface.storyboard */,
+			);
+			path = UI;
+			sourceTree = "<group>";
+		};
+		396C17FB22527F0B001297F6 /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				3930112F225B3F3B000649DB /* Video */,
+				396C180322527F68001297F6 /* BottomStatusBar */,
+				396C180222527F60001297F6 /* Main */,
+				396C180122527F4B001297F6 /* LocalImage */,
+				396C180022527F43001297F6 /* Link */,
+				396C17FF22527F3D001297F6 /* Text */,
+				396C17FE22527F36001297F6 /* ImagePicker */,
+				396C17FD22527F2F001297F6 /* FlowSelector */,
+				396C17FC22527F25001297F6 /* NewFlow */,
+			);
+			path = Views;
+			sourceTree = "<group>";
+		};
+		396C17FC22527F25001297F6 /* NewFlow */ = {
+			isa = PBXGroup;
+			children = (
+				396C18372252801B001297F6 /* NewFlowViewController.swift */,
+				396C18362252801B001297F6 /* NewFlowViewController.xib */,
+			);
+			path = NewFlow;
+			sourceTree = "<group>";
+		};
+		396C17FD22527F2F001297F6 /* FlowSelector */ = {
+			isa = PBXGroup;
+			children = (
+				396C18322252800F001297F6 /* FlowSelectorViewController.swift */,
+				396C18332252800F001297F6 /* FlowSelectorViewController.xib */,
+				396C182722527FE4001297F6 /* Cells */,
+			);
+			path = FlowSelector;
+			sourceTree = "<group>";
+		};
+		396C17FE22527F36001297F6 /* ImagePicker */ = {
+			isa = PBXGroup;
+			children = (
+				396C182322527FD1001297F6 /* ImagePickerViewController.swift */,
+				396C182422527FD1001297F6 /* ImagePickerViewController.xib */,
+				396C181E22527FBF001297F6 /* AssetCell */,
+			);
+			path = ImagePicker;
+			sourceTree = "<group>";
+		};
+		396C17FF22527F3D001297F6 /* Text */ = {
+			isa = PBXGroup;
+			children = (
+				396C181A22527FB7001297F6 /* TextViewController.swift */,
+				396C181B22527FB7001297F6 /* TextViewController.xib */,
+			);
+			path = Text;
+			sourceTree = "<group>";
+		};
+		396C180022527F43001297F6 /* Link */ = {
+			isa = PBXGroup;
+			children = (
+				396C181622527FAC001297F6 /* LinkViewController.swift */,
+				396C181722527FAC001297F6 /* LinkViewController.xib */,
+				396C181122527F99001297F6 /* LinkView */,
+			);
+			path = Link;
+			sourceTree = "<group>";
+		};
+		396C180122527F4B001297F6 /* LocalImage */ = {
+			isa = PBXGroup;
+			children = (
+				396C180D22527F93001297F6 /* LocalImageViewController.swift */,
+				396C180E22527F93001297F6 /* LocalImageViewController.xib */,
+			);
+			path = LocalImage;
+			sourceTree = "<group>";
+		};
+		396C180222527F60001297F6 /* Main */ = {
+			isa = PBXGroup;
+			children = (
+				396C180922527F86001297F6 /* MainViewController.swift */,
+				396C180822527F7D001297F6 /* Navigation */,
+			);
+			path = Main;
+			sourceTree = "<group>";
+		};
+		396C180322527F68001297F6 /* BottomStatusBar */ = {
+			isa = PBXGroup;
+			children = (
+				396C180522527F73001297F6 /* BottomStatusViewController.swift */,
+				396C180422527F73001297F6 /* BottomStatusViewController.xib */,
+			);
+			path = BottomStatusBar;
+			sourceTree = "<group>";
+		};
+		396C180822527F7D001297F6 /* Navigation */ = {
+			isa = PBXGroup;
+			children = (
+				396C180B22527F8B001297F6 /* MainNavigationController.swift */,
+			);
+			path = Navigation;
+			sourceTree = "<group>";
+		};
+		396C181122527F99001297F6 /* LinkView */ = {
+			isa = PBXGroup;
+			children = (
+				396C181322527FA6001297F6 /* LinkView.swift */,
+				396C181222527FA6001297F6 /* LinkView.xib */,
+			);
+			path = LinkView;
+			sourceTree = "<group>";
+		};
+		396C181E22527FBF001297F6 /* AssetCell */ = {
+			isa = PBXGroup;
+			children = (
+				396C181F22527FCB001297F6 /* AssetCell.swift */,
+				396C182022527FCB001297F6 /* AssetCell.xib */,
+			);
+			path = AssetCell;
+			sourceTree = "<group>";
+		};
+		396C182722527FE4001297F6 /* Cells */ = {
+			isa = PBXGroup;
+			children = (
+				396C182922527FF8001297F6 /* Flow */,
+				396C182822527FEF001297F6 /* NewFlow */,
+			);
+			path = Cells;
+			sourceTree = "<group>";
+		};
+		396C182822527FEF001297F6 /* NewFlow */ = {
+			isa = PBXGroup;
+			children = (
+				396C182B22528001001297F6 /* NewFlowCell.swift */,
+				396C182A22528001001297F6 /* NewFlowCell.xib */,
+			);
+			path = NewFlow;
+			sourceTree = "<group>";
+		};
+		396C182922527FF8001297F6 /* Flow */ = {
+			isa = PBXGroup;
+			children = (
+				396C182E22528007001297F6 /* FlowCell.swift */,
+				396C182F22528007001297F6 /* FlowCell.xib */,
+			);
+			path = Flow;
+			sourceTree = "<group>";
+		};
+		396C1951225285A8001297F6 /* FLAnimatedImage */ = {
+			isa = PBXGroup;
+			children = (
+				396C194D225285A1001297F6 /* FLAnimatedImage.h */,
+				396C194B225285A0001297F6 /* FLAnimatedImage.m */,
+				396C194C225285A0001297F6 /* FLAnimatedImageView.h */,
+				396C194E225285A1001297F6 /* FLAnimatedImageView.m */,
+			);
+			path = FLAnimatedImage;
+			sourceTree = "<group>";
+		};
+		3984D08222527DD000042F75 /* ShareExtension */ = {
+			isa = PBXGroup;
+			children = (
+				396C1CD422539C11001297F6 /* ShareExtension.entitlements */,
+				396C17F522527EF6001297F6 /* Info.plist */,
+				396C194A2252859F001297F6 /* ShareExtension-Bridging-Header.h */,
+				396C178F22527E43001297F6 /* API */,
+				396C17DA22527E54001297F6 /* Models */,
+				396C17DF22527E68001297F6 /* Helpers */,
+				396C17F422527ED9001297F6 /* UI */,
+				396C17FB22527F0B001297F6 /* Views */,
+			);
+			path = ShareExtension;
 			sourceTree = "<group>";
 		};
 		4836FCAAE7F14E69A4ACF664 /* Resources */ = {
@@ -1044,6 +1421,31 @@
 			name = Resources;
 			sourceTree = "<group>";
 		};
+		4C246B78222793AD00FD052A /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				4C246BB6222793AD00FD052A /* libRNIntercom.a */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		4C96B852223AD4570069FDDC /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				4C96B856223AD4570069FDDC /* libRNTextSize.a */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		4CB9887F224BAE6C00A905DA /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				4CB988BD224BAE6D00A905DA /* libRNFS.a */,
+				4CB988BF224BAE6D00A905DA /* libRNFS.a */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
 		4CC862192193408300481DED /* Products */ = {
 			isa = PBXGroup;
 			children = (
@@ -1060,6 +1462,14 @@
 			name = Products;
 			sourceTree = "<group>";
 		};
+		4CF315F522270F2B00A7A104 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				4CF315F922270F2B00A7A104 /* libSplashScreen.a */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
 		5684B0E0BE49C917AB54FE18 /* Pods */ = {
 			isa = PBXGroup;
 			children = (
@@ -1067,6 +1477,8 @@
 				D987827413CAB2D1572A10CA /* Pods-Mello.release.xcconfig */,
 				88B878D7356F3D2796D7E02F /* Pods-MelloEx.debug.xcconfig */,
 				B9DC685E0A3B033E4BF9FC62 /* Pods-MelloEx.release.xcconfig */,
+				936747101172421F417588E3 /* Pods-ShareExtension.debug.xcconfig */,
+				D69B4B27A49D922CD8229D42 /* Pods-ShareExtension.release.xcconfig */,
 			);
 			name = Pods;
 			sourceTree = "<group>";
@@ -1076,6 +1488,22 @@
 			children = (
 				5E9157331DD0AC6500FF2AA8 /* libRCTAnimation.a */,
 				5E9157351DD0AC6500FF2AA8 /* libRCTAnimation.a */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		7183840C2208A6F500A76E12 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				718384102208A6F500A76E12 /* libRNThumbnail.a */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		718384BB2208BAC900A76E12 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				718384BF2208BAC900A76E12 /* libRNImgToBase64.a */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -1092,6 +1520,9 @@
 		832341AE1AAA6A7D00B99B32 /* Libraries */ = {
 			isa = PBXGroup;
 			children = (
+				4CB9887E224BAE6C00A905DA /* RNFS.xcodeproj */,
+				4C246B77222793AD00FD052A /* RNIntercom.xcodeproj */,
+				4CF315F422270F2B00A7A104 /* SplashScreen.xcodeproj */,
 				A46C2DDB214970D5007E54FA /* RCTPushNotification.xcodeproj */,
 				5E91572D1DD0AC6500FF2AA8 /* RCTAnimation.xcodeproj */,
 				146833FF1AC3E56700842450 /* React.xcodeproj */,
@@ -1123,6 +1554,10 @@
 				5604B7BB394C40CF89F6501C /* RNDeviceInfo.xcodeproj */,
 				2866BBFC826843B8A6FFB69C /* RNFirebase.xcodeproj */,
 				6F3D386719FC416CB3C92A02 /* RNSVG.xcodeproj */,
+				F5D07B917BD8461AA104117F /* RNThumbnail.xcodeproj */,
+				D2974AD2940A4DED8393FE7F /* RNImgToBase64.xcodeproj */,
+				9FE2ECE3EA2740B890191BF7 /* RNTextSize.xcodeproj */,
+				658B1949A1544A798719B1BA /* RNFileViewer.xcodeproj */,
 			);
 			name = Libraries;
 			sourceTree = "<group>";
@@ -1142,7 +1577,7 @@
 				13B07FAE1A68108700A75B9A /* Mello */,
 				832341AE1AAA6A7D00B99B32 /* Libraries */,
 				00E356EF1AD99517003FC87E /* MelloTests */,
-				A4CD668F2139B68000874CB1 /* MelloEx */,
+				3984D08222527DD000042F75 /* ShareExtension */,
 				83CBBA001A601CBA00E9B192 /* Products */,
 				2D16E6871FA4F8E400B85C8A /* Frameworks */,
 				4836FCAAE7F14E69A4ACF664 /* Resources */,
@@ -1161,7 +1596,7 @@
 				00E356EE1AD99517003FC87E /* MelloTests.xctest */,
 				2D02E47B1E0B4A5D006451C7 /* Mello-tvOS.app */,
 				2D02E4901E0B4A5D006451C7 /* Mello-tvOSTests.xctest */,
-				A4CD668E2139B67F00874CB1 /* MelloEx.appex */,
+				3984D08122527DD000042F75 /* ShareExtension.appex */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -1231,19 +1666,6 @@
 				A49C3623219230EA00AA0AFD /* libRNSVG-tvOS.a */,
 			);
 			name = Products;
-			sourceTree = "<group>";
-		};
-		A4CD668F2139B68000874CB1 /* MelloEx */ = {
-			isa = PBXGroup;
-			children = (
-				4C3C63F52199E8BC00B68196 /* GoogleService-Info.plist */,
-				A4EB9D06213F41D300C598B8 /* MelloEx.entitlements */,
-				A4CD66932139B68000874CB1 /* MainInterface.storyboard */,
-				A4EB9D07213F42DA00C598B8 /* ShareExtensionViewController.h */,
-				A4EB9D08213F42DA00C598B8 /* ShareExtensionViewController.m */,
-				A4CD66962139B68000874CB1 /* Info.plist */,
-			);
-			path = MelloEx;
 			sourceTree = "<group>";
 		};
 		ADBDB9201DFEBF0600ED6528 /* Products */ = {
@@ -1325,6 +1747,11 @@
 				74503380E51C466EAD133FB9 /* libRNFirebase.a */,
 				9F983F5C323D41389ED0DD7F /* libRNSVG.a */,
 				9505C59301A84E59BFF300C6 /* libRNSVG-tvOS.a */,
+				37CA782AC31D47CCBB55CA40 /* libRNThumbnail.a */,
+				48E815D86AC4450E91A11738 /* libRNImgToBase64.a */,
+				D737F6C3F4964BBBB207DE7B /* libRNTextSize.a */,
+				D08D21C89C284CC8B72878F0 /* libRNFileViewer.a */,
+				8093C63522439C6E00FE1619 /* libRNFS.a */,
 			);
 			name = "Recovered References";
 			sourceTree = "<group>";
@@ -1391,8 +1818,8 @@
 			buildRules = (
 			);
 			dependencies = (
-				A4CD66982139B68000874CB1 /* PBXTargetDependency */,
 				B509BBF621778AA6006ED535 /* PBXTargetDependency */,
+				3984D08A22527DD000042F75 /* PBXTargetDependency */,
 			);
 			name = Mello;
 			productName = "Hello World";
@@ -1435,23 +1862,22 @@
 			productReference = 2D02E4901E0B4A5D006451C7 /* Mello-tvOSTests.xctest */;
 			productType = "com.apple.product-type.bundle.unit-test";
 		};
-		A4CD668D2139B67F00874CB1 /* MelloEx */ = {
+		3984D08022527DD000042F75 /* ShareExtension */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = A4CD669A2139B68000874CB1 /* Build configuration list for PBXNativeTarget "MelloEx" */;
+			buildConfigurationList = 3984D08C22527DD000042F75 /* Build configuration list for PBXNativeTarget "ShareExtension" */;
 			buildPhases = (
-				F8482088474C5A2FFC624808 /* [CP] Check Pods Manifest.lock */,
-				A4CD668A2139B67F00874CB1 /* Sources */,
-				A4CD668B2139B67F00874CB1 /* Frameworks */,
-				A4CD668C2139B67F00874CB1 /* Resources */,
-				A4CD66F72139B93E00874CB1 /* Bundle React Native code and images */,
+				F330DAD90AB2D6FBA7F8B84F /* [CP] Check Pods Manifest.lock */,
+				3984D07D22527DD000042F75 /* Sources */,
+				3984D07E22527DD000042F75 /* Frameworks */,
+				3984D07F22527DD000042F75 /* Resources */,
 			);
 			buildRules = (
 			);
 			dependencies = (
 			);
-			name = MelloEx;
-			productName = MelloEx;
-			productReference = A4CD668E2139B67F00874CB1 /* MelloEx.appex */;
+			name = ShareExtension;
+			productName = ShareExtension;
+			productReference = 3984D08122527DD000042F75 /* ShareExtension.appex */;
 			productType = "com.apple.product-type.app-extension";
 		};
 /* End PBXNativeTarget section */
@@ -1460,6 +1886,7 @@
 		83CBB9F71A601CBA00E9B192 /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
+				LastSwiftUpdateCheck = 1020;
 				LastUpgradeCheck = 610;
 				ORGANIZATIONNAME = Facebook;
 				TargetAttributes = {
@@ -1472,7 +1899,7 @@
 					13B07F861A680F5B00A75B9A = {
 						DevelopmentTeam = B2TWZYTK2Q;
 						LastSwiftMigration = 1010;
-						ProvisioningStyle = Manual;
+						ProvisioningStyle = Automatic;
 						SystemCapabilities = {
 							com.apple.ApplicationGroups.iOS = {
 								enabled = 1;
@@ -1497,16 +1924,14 @@
 						ProvisioningStyle = Automatic;
 						TestTargetID = 2D02E47A1E0B4A5D006451C7;
 					};
-					A4CD668D2139B67F00874CB1 = {
-						CreatedOnToolsVersion = 9.4.1;
+					3984D08022527DD000042F75 = {
+						CreatedOnToolsVersion = 10.2;
 						DevelopmentTeam = B2TWZYTK2Q;
-						ProvisioningStyle = Manual;
+						LastSwiftMigration = 1020;
+						ProvisioningStyle = Automatic;
 						SystemCapabilities = {
 							com.apple.ApplicationGroups.iOS = {
 								enabled = 1;
-							};
-							com.apple.SafariKeychain = {
-								enabled = 0;
 							};
 						};
 					};
@@ -1517,6 +1942,7 @@
 			developmentRegion = English;
 			hasScannedForEncodings = 0;
 			knownRegions = (
+				English,
 				en,
 				Base,
 			);
@@ -1621,12 +2047,28 @@
 					ProjectRef = 33BD4A274A84484B97C217E8 /* RNFetchBlob.xcodeproj */;
 				},
 				{
+					ProductGroup = 395FDA06224A385B00ED92B1 /* Products */;
+					ProjectRef = 658B1949A1544A798719B1BA /* RNFileViewer.xcodeproj */;
+				},
+				{
 					ProductGroup = 4CC862192193408300481DED /* Products */;
 					ProjectRef = 2866BBFC826843B8A6FFB69C /* RNFirebase.xcodeproj */;
 				},
 				{
+					ProductGroup = 4CB9887F224BAE6C00A905DA /* Products */;
+					ProjectRef = 4CB9887E224BAE6C00A905DA /* RNFS.xcodeproj */;
+				},
+				{
 					ProductGroup = A48B0096210F6C68001C33B5 /* Products */;
 					ProjectRef = DDF2F7A8F2BB4EE4B265F759 /* RNImagePicker.xcodeproj */;
+				},
+				{
+					ProductGroup = 718384BB2208BAC900A76E12 /* Products */;
+					ProjectRef = D2974AD2940A4DED8393FE7F /* RNImgToBase64.xcodeproj */;
+				},
+				{
+					ProductGroup = 4C246B78222793AD00FD052A /* Products */;
+					ProjectRef = 4C246B77222793AD00FD052A /* RNIntercom.xcodeproj */;
 				},
 				{
 					ProductGroup = A466CC312140042B00B3430F /* Products */;
@@ -1635,6 +2077,14 @@
 				{
 					ProductGroup = A49C361C219230EA00AA0AFD /* Products */;
 					ProjectRef = 6F3D386719FC416CB3C92A02 /* RNSVG.xcodeproj */;
+				},
+				{
+					ProductGroup = 4C96B852223AD4570069FDDC /* Products */;
+					ProjectRef = 9FE2ECE3EA2740B890191BF7 /* RNTextSize.xcodeproj */;
+				},
+				{
+					ProductGroup = 7183840C2208A6F500A76E12 /* Products */;
+					ProjectRef = F5D07B917BD8461AA104117F /* RNThumbnail.xcodeproj */;
 				},
 				{
 					ProductGroup = B554B622210DFC7800A36A10 /* Products */;
@@ -1648,6 +2098,10 @@
 					ProductGroup = 2D2167F021511EA40039FBE7 /* Products */;
 					ProjectRef = 94BDD0529B2B41739DBEBD1D /* SafariViewManager.xcodeproj */;
 				},
+				{
+					ProductGroup = 4CF315F522270F2B00A7A104 /* Products */;
+					ProjectRef = 4CF315F422270F2B00A7A104 /* SplashScreen.xcodeproj */;
+				},
 			);
 			projectRoot = "";
 			targets = (
@@ -1655,7 +2109,7 @@
 				00E356ED1AD99517003FC87E /* MelloTests */,
 				2D02E47A1E0B4A5D006451C7 /* Mello-tvOS */,
 				2D02E48F1E0B4A5D006451C7 /* Mello-tvOSTests */,
-				A4CD668D2139B67F00874CB1 /* MelloEx */,
+				3984D08022527DD000042F75 /* ShareExtension */,
 			);
 		};
 /* End PBXProject section */
@@ -1801,6 +2255,13 @@
 			remoteRef = 2DF0FFEC2056DD460020B375 /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
+		395FDA0A224A385C00ED92B1 /* libRNFileViewer.a */ = {
+			isa = PBXReferenceProxy;
+			fileType = archive.ar;
+			path = libRNFileViewer.a;
+			remoteRef = 395FDA09224A385C00ED92B1 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
 		3DAD3E841DF850E9000B6D8A /* libRCTImage-tvOS.a */ = {
 			isa = PBXReferenceProxy;
 			fileType = archive.ar;
@@ -1892,6 +2353,34 @@
 			remoteRef = 3DAD3EAE1DF850E9000B6D8A /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
+		4C246BB6222793AD00FD052A /* libRNIntercom.a */ = {
+			isa = PBXReferenceProxy;
+			fileType = archive.ar;
+			path = libRNIntercom.a;
+			remoteRef = 4C246BB5222793AD00FD052A /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		4C96B856223AD4570069FDDC /* libRNTextSize.a */ = {
+			isa = PBXReferenceProxy;
+			fileType = archive.ar;
+			path = libRNTextSize.a;
+			remoteRef = 4C96B855223AD4570069FDDC /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		4CB988BD224BAE6D00A905DA /* libRNFS.a */ = {
+			isa = PBXReferenceProxy;
+			fileType = archive.ar;
+			path = libRNFS.a;
+			remoteRef = 4CB988BC224BAE6D00A905DA /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		4CB988BF224BAE6D00A905DA /* libRNFS.a */ = {
+			isa = PBXReferenceProxy;
+			fileType = archive.ar;
+			path = libRNFS.a;
+			remoteRef = 4CB988BE224BAE6D00A905DA /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
 		4CC8621D2193408300481DED /* libRNFirebase.a */ = {
 			isa = PBXReferenceProxy;
 			fileType = archive.ar;
@@ -1904,6 +2393,13 @@
 			fileType = archive.ar;
 			path = libBugsnagReactNative.a;
 			remoteRef = 4CD459ED218C8D3600E5AD2F /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		4CF315F922270F2B00A7A104 /* libSplashScreen.a */ = {
+			isa = PBXReferenceProxy;
+			fileType = archive.ar;
+			path = libSplashScreen.a;
+			remoteRef = 4CF315F822270F2B00A7A104 /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
 		5E9157331DD0AC6500FF2AA8 /* libRCTAnimation.a */ = {
@@ -1920,11 +2416,32 @@
 			remoteRef = 5E9157341DD0AC6500FF2AA8 /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
+		718384102208A6F500A76E12 /* libRNThumbnail.a */ = {
+			isa = PBXReferenceProxy;
+			fileType = archive.ar;
+			path = libRNThumbnail.a;
+			remoteRef = 7183840F2208A6F500A76E12 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		718384BF2208BAC900A76E12 /* libRNImgToBase64.a */ = {
+			isa = PBXReferenceProxy;
+			fileType = archive.ar;
+			path = libRNImgToBase64.a;
+			remoteRef = 718384BE2208BAC900A76E12 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
 		78C398B91ACF4ADC00677621 /* libRCTLinking.a */ = {
 			isa = PBXReferenceProxy;
 			fileType = archive.ar;
 			path = libRCTLinking.a;
 			remoteRef = 78C398B81ACF4ADC00677621 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		8093C63522439C6E00FE1619 /* libRNFS.a */ = {
+			isa = PBXReferenceProxy;
+			fileType = archive.ar;
+			path = libRNFS.a;
+			remoteRef = 8093C63422439C6E00FE1619 /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
 		832341B51AAA6A8300B99B32 /* libRCTText.a */ = {
@@ -2165,27 +2682,26 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		A4CD668C2139B67F00874CB1 /* Resources */ = {
+		3984D07F22527DD000042F75 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				A4EB9CF8213F114300C598B8 /* Entypo.ttf in Resources */,
-				A46C2ECA2149A212007E54FA /* Images.xcassets in Resources */,
-				A4EB9CF9213F114300C598B8 /* EvilIcons.ttf in Resources */,
-				A4EB9CFA213F114300C598B8 /* Feather.ttf in Resources */,
-				A4EB9CFB213F114300C598B8 /* FontAwesome.ttf in Resources */,
-				A4EB9CFC213F114300C598B8 /* FontAwesome5_Brands.ttf in Resources */,
-				A4EB9CFD213F114300C598B8 /* FontAwesome5_Regular.ttf in Resources */,
-				A4EB9CFE213F114300C598B8 /* FontAwesome5_Solid.ttf in Resources */,
-				A4EB9CFF213F114300C598B8 /* Foundation.ttf in Resources */,
-				A4EB9D00213F114300C598B8 /* Ionicons.ttf in Resources */,
-				A4EB9D01213F114300C598B8 /* MaterialCommunityIcons.ttf in Resources */,
-				A4EB9D02213F114300C598B8 /* MaterialIcons.ttf in Resources */,
-				4C3C63F62199E8BC00B68196 /* GoogleService-Info.plist in Resources */,
-				A4EB9D03213F114300C598B8 /* Octicons.ttf in Resources */,
-				A4EB9D04213F114300C598B8 /* SimpleLineIcons.ttf in Resources */,
-				A4EB9D05213F114300C598B8 /* Zocial.ttf in Resources */,
-				A4CD66952139B68000874CB1 /* MainInterface.storyboard in Resources */,
+				396C182C22528001001297F6 /* NewFlowCell.xib in Resources */,
+				396C17ED22527EB8001297F6 /* ShareNavigationBar.xib in Resources */,
+				396C181D22527FB7001297F6 /* TextViewController.xib in Resources */,
+				396C17FA22527EFF001297F6 /* MainInterface.storyboard in Resources */,
+				396C181922527FAC001297F6 /* LinkViewController.xib in Resources */,
+				396C17E722527EA0001297F6 /* FlowSelectorFooter.xib in Resources */,
+				396C180622527F73001297F6 /* BottomStatusViewController.xib in Resources */,
+				396C18352252800F001297F6 /* FlowSelectorViewController.xib in Resources */,
+				396C182622527FD1001297F6 /* ImagePickerViewController.xib in Resources */,
+				396C181022527F93001297F6 /* LocalImageViewController.xib in Resources */,
+				396C17F922527EFF001297F6 /* Assets.xcassets in Resources */,
+				396C18382252801B001297F6 /* NewFlowViewController.xib in Resources */,
+				396C181422527FA6001297F6 /* LinkView.xib in Resources */,
+				396C182222527FCB001297F6 /* AssetCell.xib in Resources */,
+				3930117B225B3F64000649DB /* VideoViewController.xib in Resources */,
+				396C183122528007001297F6 /* FlowCell.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -2220,20 +2736,6 @@
 			shellPath = /bin/sh;
 			shellScript = "export NODE_BINARY=node\n../node_modules/react-native/scripts/react-native-xcode.sh";
 		};
-		A4CD66F72139B93E00874CB1 /* Bundle React Native code and images */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-			);
-			name = "Bundle React Native code and images";
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "export NODE_BINARY=node\n../bin/react-native-xcode.sh\n";
-		};
 		C272A68C1907409EB7735F34 /* [CP] Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
@@ -2258,30 +2760,38 @@
 			files = (
 			);
 			inputPaths = (
-				"${SRCROOT}/Pods/Target Support Files/Pods-Mello/Pods-Mello-resources.sh",
+				"${PODS_ROOT}/Target Support Files/Pods-Mello/Pods-Mello-resources.sh",
 				"${PODS_ROOT}/GoogleSignIn/Resources/GoogleSignIn.bundle",
+				"${PODS_ROOT}/Intercom/Intercom/Intercom.framework/Versions/A/Resources/Intercom.bundle",
+				"${PODS_ROOT}/Intercom/Intercom/Intercom.framework/Versions/A/Resources/IntercomTranslations.bundle",
 			);
 			name = "[CP] Copy Pods Resources";
 			outputPaths = (
 				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/GoogleSignIn.bundle",
+				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/Intercom.bundle",
+				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/IntercomTranslations.bundle",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-Mello/Pods-Mello-resources.sh\"\n";
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-Mello/Pods-Mello-resources.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
-		F8482088474C5A2FFC624808 /* [CP] Check Pods Manifest.lock */ = {
+		F330DAD90AB2D6FBA7F8B84F /* [CP] Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+			);
+			inputFileListPaths = (
 			);
 			inputPaths = (
 				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
 				"${PODS_ROOT}/Manifest.lock",
 			);
 			name = "[CP] Check Pods Manifest.lock";
+			outputFileListPaths = (
+			);
 			outputPaths = (
-				"$(DERIVED_FILE_DIR)/Pods-MelloEx-checkManifestLockResult.txt",
+				"$(DERIVED_FILE_DIR)/Pods-ShareExtension-checkManifestLockResult.txt",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
@@ -2328,11 +2838,38 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		A4CD668A2139B67F00874CB1 /* Sources */ = {
+		3984D07D22527DD000042F75 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				A4EB9D09213F42DA00C598B8 /* ShareExtensionViewController.m in Sources */,
+				396C182522527FD1001297F6 /* ImagePickerViewController.swift in Sources */,
+				396C17F322527ECF001297F6 /* UIImageCompression.swift in Sources */,
+				3930117A225B3F64000649DB /* VideoViewController.swift in Sources */,
+				396C194F225285A1001297F6 /* FLAnimatedImage.m in Sources */,
+				396C182122527FCB001297F6 /* AssetCell.swift in Sources */,
+				396C180A22527F86001297F6 /* MainViewController.swift in Sources */,
+				396C181822527FAC001297F6 /* LinkViewController.swift in Sources */,
+				396C17F222527ECF001297F6 /* AssetLoader.swift in Sources */,
+				396C17E422527E99001297F6 /* FlowFooterSelectable.swift in Sources */,
+				396C17EC22527EB8001297F6 /* ShareNavigationBar.swift in Sources */,
+				396C18342252800F001297F6 /* FlowSelectorViewController.swift in Sources */,
+				396C180722527F73001297F6 /* BottomStatusViewController.swift in Sources */,
+				396C1950225285A1001297F6 /* FLAnimatedImageView.m in Sources */,
+				396C181C22527FB7001297F6 /* TextViewController.swift in Sources */,
+				396C180C22527F8C001297F6 /* MainNavigationController.swift in Sources */,
+				391C11A6225DF496009A0106 /* SharedPreferences.swift in Sources */,
+				396C17DD22527E5D001297F6 /* ParsedURL.swift in Sources */,
+				396C17EF22527EBB001297F6 /* ShareNavigationable.swift in Sources */,
+				39C6257C2254EB6F001FBD79 /* KeyboardHelper.swift in Sources */,
+				396C183022528007001297F6 /* FlowCell.swift in Sources */,
+				396C17DE22527E5D001297F6 /* Flow.swift in Sources */,
+				396C180F22527F93001297F6 /* LocalImageViewController.swift in Sources */,
+				396C17D922527E4C001297F6 /* API.swift in Sources */,
+				396C182D22528001001297F6 /* NewFlowCell.swift in Sources */,
+				396C181522527FA6001297F6 /* LinkView.swift in Sources */,
+				396C17E822527EA0001297F6 /* FlowSelectorFooter.swift in Sources */,
+				396C1CD72253A321001297F6 /* APIError.swift in Sources */,
+				396C18392252801B001297F6 /* NewFlowViewController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -2349,10 +2886,10 @@
 			target = 2D02E47A1E0B4A5D006451C7 /* Mello-tvOS */;
 			targetProxy = 2D02E4911E0B4A5D006451C7 /* PBXContainerItemProxy */;
 		};
-		A4CD66982139B68000874CB1 /* PBXTargetDependency */ = {
+		3984D08A22527DD000042F75 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			target = A4CD668D2139B67F00874CB1 /* MelloEx */;
-			targetProxy = A4CD66972139B68000874CB1 /* PBXContainerItemProxy */;
+			target = 3984D08022527DD000042F75 /* ShareExtension */;
+			targetProxy = 3984D08922527DD000042F75 /* PBXContainerItemProxy */;
 		};
 		B509BBF621778AA6006ED535 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
@@ -2369,14 +2906,6 @@
 			);
 			name = LaunchScreen.xib;
 			path = Mello;
-			sourceTree = "<group>";
-		};
-		A4CD66932139B68000874CB1 /* MainInterface.storyboard */ = {
-			isa = PBXVariantGroup;
-			children = (
-				A4CD66942139B68000874CB1 /* Base */,
-			);
-			name = MainInterface.storyboard;
 			sourceTree = "<group>";
 		};
 /* End PBXVariantGroup section */
@@ -2414,6 +2943,10 @@
 					"$(SRCROOT)/../node_modules/react-native-device-info/ios/RNDeviceInfo",
 					"$(SRCROOT)/../node_modules/react-native-firebase/ios/RNFirebase/**",
 					"$(SRCROOT)/../node_modules/react-native-svg/ios/**",
+					"$(SRCROOT)/../node_modules/react-native-thumbnail/ios",
+					"$(SRCROOT)/../node_modules/react-native-image-base64/ios",
+					"$(SRCROOT)/../node_modules/react-native-text-size/ios",
+					"$(SRCROOT)/../node_modules/react-native-file-viewer/ios",
 				);
 				INFOPLIST_FILE = MelloTests/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
@@ -2421,6 +2954,8 @@
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					"\"$(SRCROOT)/$(TARGET_NAME)/System/Library/Frameworks\"",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 				);
 				OTHER_LDFLAGS = (
 					"-ObjC",
@@ -2462,6 +2997,10 @@
 					"$(SRCROOT)/../node_modules/react-native-device-info/ios/RNDeviceInfo",
 					"$(SRCROOT)/../node_modules/react-native-firebase/ios/RNFirebase/**",
 					"$(SRCROOT)/../node_modules/react-native-svg/ios/**",
+					"$(SRCROOT)/../node_modules/react-native-thumbnail/ios",
+					"$(SRCROOT)/../node_modules/react-native-image-base64/ios",
+					"$(SRCROOT)/../node_modules/react-native-text-size/ios",
+					"$(SRCROOT)/../node_modules/react-native-file-viewer/ios",
 				);
 				INFOPLIST_FILE = MelloTests/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
@@ -2469,6 +3008,8 @@
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					"\"$(SRCROOT)/$(TARGET_NAME)/System/Library/Frameworks\"",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 				);
 				OTHER_LDFLAGS = (
 					"-ObjC",
@@ -2484,15 +3025,20 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 83A3A57F49D18643DC5B7A36 /* Pods-Mello.debug.xcconfig */;
 			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_ENTITLEMENTS = Mello/Mello.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
-				CODE_SIGN_STYLE = Manual;
+				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEAD_CODE_STRIPPING = NO;
-				DEVELOPMENT_TEAM = B2TWZYTK2Q;
+				DEVELOPMENT_TEAM = "";
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)",
+				);
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(SRCROOT)/../node_modules/react-native-vector-icons/RNVectorIconsManager",
@@ -2514,6 +3060,11 @@
 					"$(SRCROOT)/../node_modules/react-native-device-info/ios/RNDeviceInfo",
 					"$(SRCROOT)/../node_modules/react-native-firebase/ios/RNFirebase/**",
 					"$(SRCROOT)/../node_modules/react-native-svg/ios/**",
+					"$(SRCROOT)/../node_modules/react-native-splash-screen/ios/**",
+					"$(SRCROOT)/../node_modules/react-native-thumbnail/ios",
+					"$(SRCROOT)/../node_modules/react-native-image-base64/ios",
+					"$(SRCROOT)/../node_modules/react-native-text-size/ios",
+					"$(SRCROOT)/../node_modules/react-native-file-viewer/ios",
 				);
 				INFOPLIST_FILE = Mello/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
@@ -2526,7 +3077,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = io.solvers.feedo;
 				PRODUCT_NAME = Mello;
 				PROVISIONING_PROFILE = "f246c801-94fd-49d5-ac01-1a96b8ac7b8a";
-				PROVISIONING_PROFILE_SPECIFIER = "Feedo Dev";
+				PROVISIONING_PROFILE_SPECIFIER = "";
 				SWIFT_OBJC_BRIDGING_HEADER = "Mello-Bridging-Header.h";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 4.2;
@@ -2538,14 +3089,19 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = D987827413CAB2D1572A10CA /* Pods-Mello.release.xcconfig */;
 			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_ENTITLEMENTS = Mello/Mello.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution";
-				CODE_SIGN_STYLE = Manual;
+				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = B2TWZYTK2Q;
+				DEVELOPMENT_TEAM = "";
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)",
+				);
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(SRCROOT)/../node_modules/react-native-vector-icons/RNVectorIconsManager",
@@ -2567,6 +3123,11 @@
 					"$(SRCROOT)/../node_modules/react-native-device-info/ios/RNDeviceInfo",
 					"$(SRCROOT)/../node_modules/react-native-firebase/ios/RNFirebase/**",
 					"$(SRCROOT)/../node_modules/react-native-svg/ios/**",
+					"$(SRCROOT)/../node_modules/react-native-splash-screen/ios/**",
+					"$(SRCROOT)/../node_modules/react-native-thumbnail/ios",
+					"$(SRCROOT)/../node_modules/react-native-image-base64/ios",
+					"$(SRCROOT)/../node_modules/react-native-text-size/ios",
+					"$(SRCROOT)/../node_modules/react-native-file-viewer/ios",
 				);
 				INFOPLIST_FILE = Mello/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
@@ -2579,7 +3140,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = io.solvers.feedo;
 				PRODUCT_NAME = Mello;
 				PROVISIONING_PROFILE = "ee85223c-26f6-476e-9dcd-2659d75c232d";
-				PROVISIONING_PROFILE_SPECIFIER = "Feedo Dist";
+				PROVISIONING_PROFILE_SPECIFIER = "";
 				SWIFT_OBJC_BRIDGING_HEADER = "Mello-Bridging-Header.h";
 				SWIFT_VERSION = 4.2;
 				VERSIONING_SYSTEM = "apple-generic";
@@ -2622,12 +3183,18 @@
 					"$(SRCROOT)/../node_modules/react-native-device-info/ios/RNDeviceInfo",
 					"$(SRCROOT)/../node_modules/react-native-firebase/ios/RNFirebase/**",
 					"$(SRCROOT)/../node_modules/react-native-svg/ios/**",
+					"$(SRCROOT)/../node_modules/react-native-thumbnail/ios",
+					"$(SRCROOT)/../node_modules/react-native-image-base64/ios",
+					"$(SRCROOT)/../node_modules/react-native-text-size/ios",
+					"$(SRCROOT)/../node_modules/react-native-file-viewer/ios",
 				);
 				INFOPLIST_FILE = "Mello-tvOS/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					"\"$(SRCROOT)/$(TARGET_NAME)/System/Library/Frameworks\"",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 				);
 				OTHER_LDFLAGS = (
 					"-ObjC",
@@ -2679,12 +3246,18 @@
 					"$(SRCROOT)/../node_modules/react-native-device-info/ios/RNDeviceInfo",
 					"$(SRCROOT)/../node_modules/react-native-firebase/ios/RNFirebase/**",
 					"$(SRCROOT)/../node_modules/react-native-svg/ios/**",
+					"$(SRCROOT)/../node_modules/react-native-thumbnail/ios",
+					"$(SRCROOT)/../node_modules/react-native-image-base64/ios",
+					"$(SRCROOT)/../node_modules/react-native-text-size/ios",
+					"$(SRCROOT)/../node_modules/react-native-file-viewer/ios",
 				);
 				INFOPLIST_FILE = "Mello-tvOS/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					"\"$(SRCROOT)/$(TARGET_NAME)/System/Library/Frameworks\"",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 				);
 				OTHER_LDFLAGS = (
 					"-ObjC",
@@ -2731,12 +3304,18 @@
 					"$(SRCROOT)/../node_modules/react-native-device-info/ios/RNDeviceInfo",
 					"$(SRCROOT)/../node_modules/react-native-firebase/ios/RNFirebase/**",
 					"$(SRCROOT)/../node_modules/react-native-svg/ios/**",
+					"$(SRCROOT)/../node_modules/react-native-thumbnail/ios",
+					"$(SRCROOT)/../node_modules/react-native-image-base64/ios",
+					"$(SRCROOT)/../node_modules/react-native-text-size/ios",
+					"$(SRCROOT)/../node_modules/react-native-file-viewer/ios",
 				);
 				INFOPLIST_FILE = "Mello-tvOSTests/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					"\"$(SRCROOT)/$(TARGET_NAME)/System/Library/Frameworks\"",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 				);
 				OTHER_LDFLAGS = (
 					"-ObjC",
@@ -2782,12 +3361,18 @@
 					"$(SRCROOT)/../node_modules/react-native-device-info/ios/RNDeviceInfo",
 					"$(SRCROOT)/../node_modules/react-native-firebase/ios/RNFirebase/**",
 					"$(SRCROOT)/../node_modules/react-native-svg/ios/**",
+					"$(SRCROOT)/../node_modules/react-native-thumbnail/ios",
+					"$(SRCROOT)/../node_modules/react-native-image-base64/ios",
+					"$(SRCROOT)/../node_modules/react-native-text-size/ios",
+					"$(SRCROOT)/../node_modules/react-native-file-viewer/ios",
 				);
 				INFOPLIST_FILE = "Mello-tvOSTests/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					"\"$(SRCROOT)/$(TARGET_NAME)/System/Library/Frameworks\"",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 				);
 				OTHER_LDFLAGS = (
 					"-ObjC",
@@ -2798,6 +3383,98 @@
 				SDKROOT = appletvos;
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Mello-tvOS.app/Mello-tvOS";
 				TVOS_DEPLOYMENT_TARGET = 10.1;
+			};
+			name = Release;
+		};
+		3984D08D22527DD000042F75 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 936747101172421F417588E3 /* Pods-ShareExtension.debug.xcconfig */;
+			buildSettings = {
+				APPLICATION_EXTENSION_API_ONLY = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CODE_SIGN_ENTITLEMENTS = ShareExtension/ShareExtension.entitlements;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				CODE_SIGN_STYLE = Automatic;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				DEVELOPMENT_TEAM = B2TWZYTK2Q;
+				ENABLE_TESTABILITY = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_NO_COMMON_BLOCKS = YES;
+				INFOPLIST_FILE = ShareExtension/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @executable_path/../../Frameworks";
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				PRODUCT_BUNDLE_IDENTIFIER = io.solvers.feedo.ShareExtension;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
+				SWIFT_OBJC_BRIDGING_HEADER = "ShareExtension/ShareExtension-Bridging-Header.h";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 4.2;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		3984D08E22527DD000042F75 /* Release */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = D69B4B27A49D922CD8229D42 /* Pods-ShareExtension.release.xcconfig */;
+			buildSettings = {
+				APPLICATION_EXTENSION_API_ONLY = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CODE_SIGN_ENTITLEMENTS = ShareExtension/ShareExtension.entitlements;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution";
+				CODE_SIGN_STYLE = Automatic;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				DEVELOPMENT_TEAM = B2TWZYTK2Q;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_NO_COMMON_BLOCKS = YES;
+				INFOPLIST_FILE = ShareExtension/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @executable_path/../../Frameworks";
+				MTL_FAST_MATH = YES;
+				PRODUCT_BUNDLE_IDENTIFIER = io.solvers.feedo.ShareExtension;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+				SWIFT_OBJC_BRIDGING_HEADER = "ShareExtension/ShareExtension-Bridging-Header.h";
+				SWIFT_OPTIMIZATION_LEVEL = "-Owholemodule";
+				SWIFT_VERSION = 4.2;
+				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Release;
 		};
@@ -2839,6 +3516,7 @@
 				MTL_ENABLE_DEBUG_INFO = YES;
 				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = iphoneos;
+				SWIFT_VERSION = 4.2;
 			};
 			name = Debug;
 		};
@@ -2873,135 +3551,8 @@
 				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				SDKROOT = iphoneos;
+				SWIFT_VERSION = 4.2;
 				VALIDATE_PRODUCT = YES;
-			};
-			name = Release;
-		};
-		A4CD669B2139B68000874CB1 /* Debug */ = {
-			isa = XCBuildConfiguration;
-			baseConfigurationReference = 88B878D7356F3D2796D7E02F /* Pods-MelloEx.debug.xcconfig */;
-			buildSettings = {
-				CLANG_ANALYZER_NONNULL = YES;
-				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
-				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
-				CLANG_ENABLE_OBJC_WEAK = YES;
-				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
-				CLANG_WARN_COMMA = YES;
-				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
-				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
-				CLANG_WARN_INFINITE_RECURSION = YES;
-				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
-				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
-				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
-				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
-				CLANG_WARN_STRICT_PROTOTYPES = YES;
-				CLANG_WARN_SUSPICIOUS_MOVE = YES;
-				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
-				CODE_SIGN_ENTITLEMENTS = MelloEx/MelloEx.entitlements;
-				CODE_SIGN_IDENTITY = "iPhone Developer";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
-				CODE_SIGN_STYLE = Manual;
-				DEBUG_INFORMATION_FORMAT = dwarf;
-				DEVELOPMENT_TEAM = B2TWZYTK2Q;
-				ENABLE_TESTABILITY = YES;
-				GCC_C_LANGUAGE_STANDARD = gnu11;
-				GCC_NO_COMMON_BLOCKS = YES;
-				HEADER_SEARCH_PATHS = (
-					"$(SRCROOT)/../node_modules/react-native-vector-icons/RNVectorIconsManager",
-					"$(SRCROOT)/../node_modules/react-native-shared-group-preferences/ios",
-					"$(SRCROOT)/../node_modules/react-native-safari-view",
-					"$(SRCROOT)/../node_modules/react-native/Libraries",
-					"$(SRCROOT)/../node_modules/react-native-version-number/ios",
-					"$(SRCROOT)/../node_modules/react-native-video/ios",
-					"$(SRCROOT)/../node_modules/lottie-ios/lottie-ios/Classes/**",
-					"$(SRCROOT)/../node_modules/lottie-react-native/src/ios/LottieReactNative",
-					"$(SRCROOT)/../node_modules/bugsnag-react-native/cocoa/**",
-					"$(SRCROOT)/../node_modules/react-native-device-info/ios/RNDeviceInfo",
-					"$(SRCROOT)/../node_modules/react-native-firebase/ios/RNFirebase/**",
-					"$(SRCROOT)/../node_modules/react-native-svg/ios/**",
-				);
-				INFOPLIST_FILE = MelloEx/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @executable_path/../../Frameworks";
-				LIBRARY_SEARCH_PATHS = (
-					"$(inherited)",
-					"\"$(SRCROOT)/$(TARGET_NAME)/System/Library/Frameworks\"",
-				);
-				OTHER_LDFLAGS = (
-					"$(inherited)",
-					"-ObjC",
-					"-lc++",
-				);
-				PRODUCT_BUNDLE_IDENTIFIER = io.solvers.feedo.ex;
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE = "b608c733-5a0b-4ceb-8e94-6c9e4d269aa3";
-				PROVISIONING_PROFILE_SPECIFIER = "Feedo Ex Dev";
-				SKIP_INSTALL = YES;
-				TARGETED_DEVICE_FAMILY = "1,2";
-			};
-			name = Debug;
-		};
-		A4CD669C2139B68000874CB1 /* Release */ = {
-			isa = XCBuildConfiguration;
-			baseConfigurationReference = B9DC685E0A3B033E4BF9FC62 /* Pods-MelloEx.release.xcconfig */;
-			buildSettings = {
-				CLANG_ANALYZER_NONNULL = YES;
-				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
-				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
-				CLANG_ENABLE_OBJC_WEAK = YES;
-				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
-				CLANG_WARN_COMMA = YES;
-				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
-				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
-				CLANG_WARN_INFINITE_RECURSION = YES;
-				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
-				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
-				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
-				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
-				CLANG_WARN_STRICT_PROTOTYPES = YES;
-				CLANG_WARN_SUSPICIOUS_MOVE = YES;
-				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
-				CODE_SIGN_ENTITLEMENTS = MelloEx/MelloEx.entitlements;
-				CODE_SIGN_IDENTITY = "iPhone Developer";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution";
-				CODE_SIGN_STYLE = Manual;
-				COPY_PHASE_STRIP = NO;
-				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
-				DEVELOPMENT_TEAM = B2TWZYTK2Q;
-				GCC_C_LANGUAGE_STANDARD = gnu11;
-				GCC_NO_COMMON_BLOCKS = YES;
-				HEADER_SEARCH_PATHS = (
-					"$(SRCROOT)/../node_modules/react-native-vector-icons/RNVectorIconsManager",
-					"$(SRCROOT)/../node_modules/react-native-shared-group-preferences/ios",
-					"$(SRCROOT)/../node_modules/react-native-safari-view",
-					"$(SRCROOT)/../node_modules/react-native/Libraries",
-					"$(SRCROOT)/../node_modules/react-native-version-number/ios",
-					"$(SRCROOT)/../node_modules/react-native-video/ios",
-					"$(SRCROOT)/../node_modules/lottie-ios/lottie-ios/Classes/**",
-					"$(SRCROOT)/../node_modules/lottie-react-native/src/ios/LottieReactNative",
-					"$(SRCROOT)/../node_modules/bugsnag-react-native/cocoa/**",
-					"$(SRCROOT)/../node_modules/react-native-device-info/ios/RNDeviceInfo",
-					"$(SRCROOT)/../node_modules/react-native-firebase/ios/RNFirebase/**",
-					"$(SRCROOT)/../node_modules/react-native-svg/ios/**",
-				);
-				INFOPLIST_FILE = MelloEx/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @executable_path/../../Frameworks";
-				LIBRARY_SEARCH_PATHS = (
-					"$(inherited)",
-					"\"$(SRCROOT)/$(TARGET_NAME)/System/Library/Frameworks\"",
-				);
-				OTHER_LDFLAGS = (
-					"$(inherited)",
-					"-ObjC",
-					"-lc++",
-				);
-				PRODUCT_BUNDLE_IDENTIFIER = io.solvers.feedo.ex;
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE = "3de6438d-df14-464d-bc54-cb31fd5445de";
-				PROVISIONING_PROFILE_SPECIFIER = "Feedo Ex Dist";
-				SKIP_INSTALL = YES;
-				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Release;
 		};
@@ -3044,20 +3595,20 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
+		3984D08C22527DD000042F75 /* Build configuration list for PBXNativeTarget "ShareExtension" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				3984D08D22527DD000042F75 /* Debug */,
+				3984D08E22527DD000042F75 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
 		83CBB9FA1A601CBA00E9B192 /* Build configuration list for PBXProject "Mello" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				83CBBA201A601CBA00E9B192 /* Debug */,
 				83CBBA211A601CBA00E9B192 /* Release */,
-			);
-			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Release;
-		};
-		A4CD669A2139B68000874CB1 /* Build configuration list for PBXNativeTarget "MelloEx" */ = {
-			isa = XCConfigurationList;
-			buildConfigurations = (
-				A4CD669B2139B68000874CB1 /* Debug */,
-				A4CD669C2139B68000874CB1 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;

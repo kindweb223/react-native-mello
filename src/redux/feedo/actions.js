@@ -30,6 +30,14 @@ export const getFeedoList = (index = 0, isForCardMove = false) => {
   };
 }
 
+export const setFeedoListFromStorage = (feedoList) => {
+  console.log('FL here is ', feedoList)
+  return {
+    type: types.SET_FEEDO_LIST_FROM_STORAGE,
+    feedoList,
+  }
+}
+
 /**
  * Get feedo list
  */
@@ -53,7 +61,7 @@ export const updateInvitation = (feedId, type) => {
   let url = `hunts/${feedId}/invitees/invitation`
 
   return {
-    types: [types.UPDTE_FEED_INVITATION_PENDING, types.UPDTE_FEED_INVITATION_FULFILLED, types.UPDTE_FEED_INVITATION_REJECTED],
+    types: [types.UPDATE_FEED_INVITATION_PENDING, types.UPDATE_FEED_INVITATION_FULFILLED, types.UPDATE_FEED_INVITATION_REJECTED],
     promise: axios({
       method: 'put',
       url: url,
@@ -115,30 +123,36 @@ export const unpinFeed = (feedId) => {
 /**
  * Delete Feed
  */
-export const deleteFeed = (feedId) => {
-  let url = `hunts/${feedId}`
+export const deleteFeed = (feedList) => {
+  let url = 'hunts'
+
+  const data = feedList.map(item => {
+    return { 'id': item.feed.id }
+  })
 
   return {
     types: [types.DEL_FEED_PENDING, types.DEL_FEED_FULFILLED, types.DEL_FEED_REJECTED],
-    promise: axios.delete(url),
-    payload: 'empty'
+    promise: axios.delete(url, { data }),
+    payload: { flag: 'delete', backFeedList: feedList }
   };
 }
 
 /**
  * Archive Feed
  */
-export const archiveFeed = (feedId) => {
-  let url = `hunts/${feedId}`
+export const archiveFeed = (feedList) => {
+  let url = 'hunts/archive'
+  const data = feedList.map(item => {
+    return { 'id': item.feed.id }
+  })
 
   return {
     types: [types.ARCHIVE_FEED_PENDING, types.ARCHIVE_FEED_FULFILLED, types.ARCHIVE_FEED_REJECTED],
     promise: axios({
-      method: 'put',
+      method: 'post',
       url: url,
-      data: { status: 'ARCHIVED' }
-    }),
-    payload: feedId
+      data
+    })
   };
 }
 
@@ -162,29 +176,38 @@ export const restoreArchiveFeed = (feedId) => {
 /**
  * Duplicate Feed
  */
-export const duplicateFeed = (feedId) => {
-  let url = `hunts/${feedId}/duplicate`
+export const duplicateFeed = (feedList) => {
+  let url = 'hunts/duplicate'
+
+  const data = feedList.map(item => {
+    return { 'id': item.feed.id }
+  })
 
   return {
     types: [types.DUPLICATE_FEED_PENDING, types.DUPLICATE_FEED_FULFILLED, types.DUPLICATE_FEED_REJECTED],
     promise: axios({
       method: 'post',
-      url: url
+      url: url,
+      data
     }),
-    payload: feedId
+    payload: feedList
   };
 }
 
 /**
  * Delete Duplicated Feed
  */
-export const deleteDuplicatedFeed = (feedId) => {
-  let url = `hunts/${feedId}`
+export const deleteDuplicatedFeed = (feedList) => {
+  let url = 'hunts'
+
+  const data = feedList.map(item => {
+    return { 'id': item.feed.id }
+  })
 
   return {
     types: [types.DEL_FEED_PENDING, types.DEL_FEED_FULFILLED, types.DEL_FEED_REJECTED],
-    promise: axios.delete(url),
-    payload: feedId
+    promise: axios.delete(url, { data }),
+    payload: { flag: 'duplicate', backFeedList: feedList }
   };
 }
 
@@ -313,7 +336,7 @@ export const uploadFileToS3 = (signedUrl, file, fileName, mimeType) => {
       new Promise((resolve, reject) => {
         const xhr = new XMLHttpRequest();
         xhr.open('PUT', signedUrl);
-        xhr.setRequestHeader("Content-type", "application/json"); 
+        xhr.setRequestHeader("Content-type", mimeType); 
         xhr.onreadystatechange = function() {
           if (xhr.readyState === 4) {
             if (xhr.status === 200) {
@@ -536,9 +559,30 @@ export const getActivityFeed = (userId, data) => {
     promise:
       axios({
         method: 'get',
+        url: url
+      })
+  };
+}
+
+/**
+ * Read activity group
+ */
+export const readActivityGroup = (userId, activityGroupId) => {
+  let url = `users/${userId}/huntActivityGroup/${activityGroupId}`
+
+  const data = {
+    read: true
+  }
+
+  return {
+    types: [types.READ_ACTIVITY_GROUP_PENDING, types.READ_ACTIVITY_GROUP_FULLFILLED, types.READ_ACTIVITY_GROUP_REJECTED],
+    promise:
+      axios({
+        method: 'put',
         url: url,
         data
-      })
+      }),
+    payload: activityGroupId
   };
 }
 
@@ -548,12 +592,17 @@ export const getActivityFeed = (userId, data) => {
 export const readAllActivityFeed = (userId) => {
   let url = `users/${userId}/activityFeed`
 
+  const data = {
+    read: true
+  }
+
   return {
     types: [types.READ_ALL_ACTIVITY_FEED_PENDING, types.READ_ALL_ACTIVITY_FEED_FULFILLED, types.READ_ALL_ACTIVITY_FEED_REJECTED],
     promise:
       axios({
         method: 'put',
-        url: url
+        url: url,
+        data
       })
   };
 }
@@ -576,6 +625,16 @@ export const readActivityFeed = (userId, activityId) => {
         url: url,
         data
       }),
+    payload: activityId
+  };
+}
+
+/**
+ * Read activity feed
+ */
+export const alreadyReadActivityFeed = (activityId) => {
+  return {
+    type: types.READ_ACTIVITY_FEED_FULFILLED,
     payload: activityId
   };
 }
@@ -610,20 +669,20 @@ export const pubnubDeleteFeed = (feedId) => {
 /*
  * Delete dummy card until toaster is hidden
  */
-export const deleteDummyCard = (ideaId, type) => {
+export const deleteDummyCard = (deletedIdeaList, type) => {
   return {
     type: types.DEL_DUMMY_CARD,
-    payload: { ideaId, type }
+    payload: { deletedIdeaList, type }
   };
 }
 
 /**
  * Move dummy card until toaster is hidden
  */
-export const moveDummyCard = (ideaId, huntId, type) => {
+export const moveDummyCard = (movedIdeaList, huntId, type) => {
   return {
     type: types.MOVE_DUMMY_CARD,
-    payload: { ideaId, huntId, type }
+    payload: { movedIdeaList, huntId, type }
   };
 }
 
@@ -719,4 +778,17 @@ export const saveFlowViewPreference = (feedId, inviteeId, preference) => {
       }),
     payload: { feedId, preference }
   }
+}
+
+export const pubnubUserInvited = () => {
+  return {
+    type: types.PUBNUB_USER_INVITED_FULFILLED
+  };
+}
+
+export const setFeedDetailFromStorage = (feed) => {
+  return {
+    type: types.SET_FEED_DETAIL_FROM_STORAGE,
+    feed
+  };
 }

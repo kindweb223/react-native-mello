@@ -4,9 +4,9 @@ import FastImage from "react-native-fast-image"
 import * as types from './types'
 import CONSTANTS from '../../../src/service/constants'
 import SharedGroupPreferences from 'react-native-shared-group-preferences'
-
+import Intercom from 'react-native-intercom'
 import pubnub from '../../lib/pubnub'
-import { Actions } from 'react-native-router-flux';
+import AlertController from '../../components/AlertController'
 
 const initialState = {
   loading: null,
@@ -18,7 +18,7 @@ const initialState = {
   userLookup: null,
   userConfirmed: false,
   cropUrl: null,
-  listHomeType: 'list',
+  listHomeType: 'LIST',
   showClipboardToaster: false,
   clipboardToasterContent: '',
   clipboardToasterPrevpage: 'card'
@@ -27,7 +27,7 @@ const initialState = {
 export default function user(state = initialState, action = {}) {
   switch (action.type) {
     case 'NETWORK_FAILED':
-      Alert.alert('Error', 'No Internet Connection')
+      // AlertController.shared.showAlert('Error', 'No Internet Connection')
       return {
         ...state,
         error: null
@@ -152,7 +152,7 @@ export default function user(state = initialState, action = {}) {
       const xAuthToken = axios.defaults.headers['x-auth-token']
       AsyncStorage.setItem('xAuthToken', xAuthToken)
       SharedGroupPreferences.setItem('xAuthToken', xAuthToken, CONSTANTS.APP_GROUP_TOKEN_IDENTIFIER)
-      
+
       AsyncStorage.setItem('userInfo', JSON.stringify(data))
       AsyncStorage.setItem('userBackInfo', JSON.stringify(data))
       SharedGroupPreferences.setItem('userInfo', JSON.stringify(data), CONSTANTS.APP_GROUP_USER_IDENTIFIER)
@@ -165,10 +165,10 @@ export default function user(state = initialState, action = {}) {
       }
     }
     case types.GET_USER_SESSION_REJECTED: {
-      AsyncStorage.removeItem('userInfo')
-      AsyncStorage.removeItem('xAuthToken')
-      SharedGroupPreferences.setItem('xAuthToken', null, CONSTANTS.APP_GROUP_TOKEN_IDENTIFIER)
-      SharedGroupPreferences.setItem('userInfo', null, CONSTANTS.APP_GROUP_USER_IDENTIFIER)
+      // AsyncStorage.removeItem('userInfo')
+      // AsyncStorage.removeItem('xAuthToken')
+      // SharedGroupPreferences.setItem('xAuthToken', null, CONSTANTS.APP_GROUP_TOKEN_IDENTIFIER)
+      // SharedGroupPreferences.setItem('userInfo', null, CONSTANTS.APP_GROUP_USER_IDENTIFIER)
 
       return {
         ...state,
@@ -233,6 +233,9 @@ export default function user(state = initialState, action = {}) {
 
       // Unsubscribe pubnub channels
       pubnub.unsubscribeAll()
+
+      // Logout intercom
+      Intercom.logout()
 
       return {
         ...state,
@@ -553,7 +556,6 @@ export default function user(state = initialState, action = {}) {
         loading: types.ADD_DEVICE_TOKEN_PENDING,
       }
     case types.ADD_DEVICE_TOKEN_FULFILLED: {
-      console.log('ADD_DEVICE_TOKEN_FULFILLED : ', action.result)
       AsyncStorage.setItem(CONSTANTS.USER_DEVICE_TOKEN, JSON.stringify(action.result.data))
       return {
         ...state,
@@ -561,7 +563,6 @@ export default function user(state = initialState, action = {}) {
       }
     }
     case types.ADD_DEVICE_TOKEN_REJECTED: {
-      console.log('ADD_DEVICE_TOKEN_REJECTED : ', action.error)
       return {
         ...state,
         loading: types.ADD_DEVICE_TOKEN_REJECTED,
@@ -578,7 +579,6 @@ export default function user(state = initialState, action = {}) {
         loading: types.UPDATE_DEVICE_TOKEN_PENDING,
       }
     case types.UPDATE_DEVICE_TOKEN_FULFILLED: {
-      console.log('UPDATE_DEVICE_TOKEN_FULFILLED : ', action.result)
       AsyncStorage.setItem(CONSTANTS.USER_DEVICE_TOKEN, JSON.stringify(action.result.data))
       return {
         ...state,
@@ -586,7 +586,6 @@ export default function user(state = initialState, action = {}) {
       }
     }
     case types.UPDATE_DEVICE_TOKEN_REJECTED: {
-      console.log('UPDATE_DEVICE_TOKEN_REJECTED : ', action.error)
       return {
         ...state,
         loading: types.UPDATE_DEVICE_TOKEN_REJECTED,

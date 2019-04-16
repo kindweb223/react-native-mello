@@ -31,6 +31,7 @@ class LikeComponent extends React.Component {
       liked: this.props.idea.metadata.liked,
       likes: this.props.idea.metadata.likes,
       prevLikes: this.props.idea.metadata.likes,
+      disabled: false
     }
     let animationValue = 0;
     if (this.props.idea.metadata.liked) {
@@ -40,23 +41,14 @@ class LikeComponent extends React.Component {
   }
 
   UNSAFE_componentWillReceiveProps(nextProps) {
-    
     if (this.props.card.loading !== types.LIKE_CARD_FULFILLED && nextProps.card.loading === types.LIKE_CARD_FULFILLED) {
       // success in liking a card
       if (this.props.card.currentCard.id === this.props.idea.id) {
         this.setState({
+          prevLikes: nextProps.idea.metadata.likes,
           liked: nextProps.idea.metadata.liked,
           likes: nextProps.idea.metadata.likes,
-        }, () => {
-          this.animatedShow.setValue(0);
-          Animated.timing(this.animatedShow, {
-            toValue: 1,
-            duration: CONSTANTS.ANIMATEION_MILLI_SECONDS * 1.5,
-          }).start(() => {
-            this.setState({
-              prevLikes: nextProps.idea.metadata.likes,
-            });
-          });
+          disabled: false
         });
       }
     } else if (this.props.card.loading !== types.UNLIKE_CARD_FULFILLED && nextProps.card.loading === types.UNLIKE_CARD_FULFILLED) {
@@ -64,31 +56,44 @@ class LikeComponent extends React.Component {
       if (this.props.card.currentCard.id === this.props.idea.id) {
         this.setState({
           prevLikes: nextProps.idea.metadata.likes,
-        }, () => {
-          this.animatedShow.setValue(1);
-          Animated.timing(this.animatedShow, {
-            toValue: 0,
-            duration: CONSTANTS.ANIMATEION_MILLI_SECONDS * 1.5,
-          }).start(() => {
-            this.setState({
-              liked: nextProps.idea.metadata.liked,
-              likes: nextProps.idea.metadata.likes,
-            });
-          });
+          liked: nextProps.idea.metadata.liked,
+          likes: nextProps.idea.metadata.likes,
+          disabled: false
         });
       }
-    } else {
+    } else if (nextProps.card.loading === 'PUBNUB_LIKE_CARD_FULFILLED' || nextProps.card.loading === 'PUBNUB_UNLIKE_CARD_FULFILLED') {
       this.setState({
         liked: nextProps.idea.metadata.liked,
         likes: nextProps.idea.metadata.likes,
         prevLikes: nextProps.idea.metadata.likes,
-      }, () => {
-        let animationValue = 0;
-        if (nextProps.idea.metadata.liked) {
-          animationValue = 1;
-        }
-        this.animatedShow.setValue(animationValue);
+        disabled: false
       });
+    } else if (this.props.idea !== nextProps.idea) {
+      if (nextProps.idea.metadata.liked) {
+        this.animatedShow.setValue(1);
+      } else {
+        this.animatedShow.setValue(0);
+      }
+
+      this.setState({
+        liked: nextProps.idea.metadata.liked,
+        likes: nextProps.idea.metadata.likes,
+        prevLikes: nextProps.idea.metadata.likes,
+        disabled: false
+      });
+    } else {
+
+      // this.setState({
+      //   liked: nextProps.idea.metadata.liked,
+      //   likes: nextProps.idea.metadata.likes,
+      //   prevLikes: nextProps.idea.metadata.likes,
+      // }, () => {
+      //   let animationValue = 0;
+      //   if (nextProps.idea.metadata.liked) {
+      //     animationValue = 1;
+      //   }
+      //   this.animatedShow.setValue(animationValue);
+      // });
     }
   }
 
@@ -107,7 +112,42 @@ class LikeComponent extends React.Component {
     }
   }
 
+  animateLike() {
+    this.animatedShow.setValue(0);
+    Animated.timing(this.animatedShow, {
+      toValue: 1,
+      duration: CONSTANTS.ANIMATEION_MILLI_SECONDS * 1.5,
+    }).start();
+
+    this.setState({
+      liked: true,
+      likes: this.state.likes + 1,
+      prevLikes: this.state.likes + 1,
+    });
+  }
+
+  animateUnlink() {
+    this.animatedShow.setValue(1);
+    Animated.timing(this.animatedShow, {
+      toValue: 0,
+      duration: CONSTANTS.ANIMATEION_MILLI_SECONDS * 1.5,
+    }).start();
+
+    this.setState({
+      liked: false,
+      likes: this.state.likes - 1,
+      prevLikes: this.state.likes - 1
+    });
+  }
+
   onLike(liked) {
+    if (liked) {
+      this.animateUnlink();
+    } else {
+      this.animateLike();
+    }
+
+    this.setState({ disabled: true });
     // Move to like list for Guest
     if (COMMON_FUNC.isFeedGuest(this.props.feedo.currentFeed)) {
       Analytics.logEvent('feed_detail_show_like_list', {})
@@ -130,11 +170,13 @@ class LikeComponent extends React.Component {
     const {
       liked,
       likes,
-      prevLikes
+      prevLikes,
+      disabled
     } = this.state;
     const {
       longHold,
-      type
+      type,
+      smallIcon
     } = this.props
 
     const animatedMove1 = this.animatedShow.interpolate({
@@ -164,8 +206,9 @@ class LikeComponent extends React.Component {
 
     return (
       <TouchableOpacity
-        style={[styles.container, this.props.isOnlyInvitee ? { width: 25 } : { width: 45 }, type === 'text' && { justifyContent: 'flex-end' }]}
+        style={[styles.container, this.props.isOnlyInvitee ? { width: 45 } : { width: 55 }, type === 'text' && { justifyContent: 'flex-end' }]}
         activeOpacity={0.7}
+        disabled={disabled}
         onPress={() => longHold ? {} : ( type === 'text' ? this.onShowLikes() : this.onLike(liked))}
         onLongPress={() => longHold ? {} : this.onShowLikes()}
       >
@@ -181,7 +224,7 @@ class LikeComponent extends React.Component {
                 }
               ]}
             >
-              <Image source={FAV_ICON_R} />
+              <Image source={FAV_ICON_R} style={smallIcon ? styles.favIcon : null} />
             </Animated.View>
             <Animated.View 
               style={[
@@ -200,16 +243,16 @@ class LikeComponent extends React.Component {
 
         {(type === 'text' || type === 'all') && (
           !this.props.isOnlyInvitee && (
-            <Animated.Text style={[styles.iconText, { top: animatedMove1, opacity: animatedOpacity1 }, type === 'all' && { left: 30 }]}>
-              {prevLikes} {type !== 'all' && ((prevLikes === 1 || prevLikes === 0) ? 'like' : 'likes')}
+            <Animated.Text style={[styles.iconText, { top: animatedMove1, opacity: animatedOpacity1 }, type === 'all' && { left: 40 }]}>
+              {prevLikes} {type !== 'all' && ((prevLikes === 1) ? 'like' : 'likes')}
             </Animated.Text>
           )
         )}
 
         {(type === 'text' || type === 'all') && (
           !this.props.isOnlyInvitee && (
-            <Animated.Text style={[styles.iconText, { top: animatedMove2, opacity: animatedOpacity2 }, type === 'all' && { left: 30 }]}>
-              {likes} {type !== 'all' && ((likes === 1 || likes === 0) ? 'like' : 'likes')}
+            <Animated.Text style={[styles.iconText, { top: animatedMove2, opacity: animatedOpacity2 }, type === 'all' && { left: 40 }]}>
+              {likes} {type !== 'all' && ((likes === 1) ? 'like' : 'likes')}
             </Animated.Text>
           )
         )}

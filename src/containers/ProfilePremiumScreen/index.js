@@ -3,13 +3,14 @@ import {
   View,
   Text, 
   TouchableOpacity,
-  ScrollView
+  ScrollView,
+  Image,
+  BackHandler
 } from 'react-native'
 import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
 import { Actions } from 'react-native-router-flux'
 import Ionicons from 'react-native-vector-icons/Ionicons'
-import SVGImage from 'react-native-remote-svg'
 import Modal from 'react-native-modal'
 import _ from 'lodash'
 import COLORS from '../../service/colors'
@@ -17,43 +18,43 @@ import styles from './styles'
 import Analytics from '../../lib/firebase'
 import PremiumModal from '../../components/PremiumModalComponent'
 
-const UPLOAD_ICON = require('../../../assets/svgs/Upload_10MB.svg')
-const OFFLINE_ICON = require('../../../assets/svgs/MelloOffline.svg')
-const SEARCH_ICON = require('../../../assets/svgs/AdvancedSearch.svg')
-const EDIT_ICON = require('../../../assets/svgs/BetterEditing.svg')
-const TAG_ICON = require('../../../assets/svgs/Tagging.svg')
-const CONTROL_ICON = require('../../../assets/svgs/UserControls.svg')
+const UPLOAD_ICON = require('../../../assets/images/Premium/Upload_10MB.png')
+const OFFLINE_ICON = require('../../../assets/images/Premium/MelloOffline.png')
+const SEARCH_ICON = require('../../../assets/images/Premium/AdvancedSearch.png')
+const EDIT_ICON = require('../../../assets/images/Premium/BetterEditing.png')
+const TAG_ICON = require('../../../assets/images/Premium/Tagging.png')
+const CONTROL_ICON = require('../../../assets/images/Premium/UserControls.png')
 
 const PREMIUM_LIST = [
   {
-    icon: <SVGImage source={UPLOAD_ICON} style={styles.premiumIcon} />,
+    icon: <Image source={UPLOAD_ICON} style={styles.premiumIcon} />,
     title: 'Upload > 10 MB',
-    description: 'Hella narwhal Cosby sweater kitsch before they sold out High Life.'
+    description: 'Upload files greater than 10 MB to your cards.'
   },
   {
-    icon: <SVGImage source={OFFLINE_ICON} style={styles.premiumIcon} />,
+    icon: <Image source={OFFLINE_ICON} style={styles.premiumIcon} />,
     title: 'Work in Mello offline',
-    description: 'Hella narwhal Cosby sweater kitsch before they sold out High Life.'
+    description: 'No internet? No problem. Work on your ideas offline.'
   },
   {
-    icon: <SVGImage source={SEARCH_ICON} style={styles.premiumIcon} />,
+    icon: <Image source={SEARCH_ICON} style={styles.premiumIcon} />,
     title: 'Advanced search',
-    description: 'Hella narwhal Cosby sweater kitsch before they sold out High Life.'
+    description: 'Search your flow titles, descriptions, tags, cards, comments and more.'
   },
   {
-    icon: <SVGImage source={EDIT_ICON} style={styles.premiumIcon} />,
-    title: 'Better text editing',
-    description: 'Hella narwhal Cosby sweater kitsch before they sold out High Life.'
+    icon: <Image source={EDIT_ICON} style={styles.premiumIcon} />,
+    title: 'Style your ideas',
+    description: 'Customize your text with a complete text editor tool.'
   },
   {
-    icon: <SVGImage source={TAG_ICON} style={styles.premiumIcon} />,
-    title: 'Tagging',
-    description: 'Hella narwhal Cosby sweater kitsch before they sold out High Life.'
+    icon: <Image source={TAG_ICON} style={styles.premiumIcon} />,
+    title: 'Become more organised',
+    description: 'Add tags to your flows to group or seperate projects.'
   },
   {
-    icon: <SVGImage source={CONTROL_ICON} style={styles.premiumIcon} />,
-    title: 'Better user controls',
-    description: 'Hella narwhal Cosby sweater kitsch before they sold out High Life.'
+    icon: <Image source={CONTROL_ICON} style={styles.premiumIcon} />,
+    title: 'Have more control',
+    description: 'Decide who can edit and who can only view your flow.'
   }
 ]
 
@@ -85,20 +86,34 @@ class ProfilePremiumScreen extends React.Component {
 
   componentDidMount() {
     Analytics.setCurrentScreen('ProfilePremiumScren')
+    BackHandler.addEventListener('hardwareBackPress', this.handleBackButton);
+  }
+
+  componentWillUnmount() {
+    BackHandler.removeEventListener('hardwareBackPress', this.handleBackButton);
+  }
+
+  handleBackButton = () => {
+    Actions.pop();
+    return true;
   }
 
   upgradeMe() {
     this.setState({ showPremiumModal: true })
   }
 
+  closeModal() {
+    this.setState({ showPremiumModal: false })
+  }
+
   render () {
     return (
       <View style={styles.container}>
-        <ScrollView contentContainerStyle={styles.scrollView}>
+        <ScrollView contentContainerStyle={styles.scrollInnerView} style={styles.scrollView}>
           <View style={styles.topView}>
-            <Text style={styles.title}>Take control of your content with Premium</Text>
-            <Text style={styles.description}>Hella narwhal Cosby sweater kitsch before they sold out High Life.</Text>
-            <Text style={styles.subTitle}>What you can do with Premium:</Text>
+            <Text style={styles.title}>Mello Premium</Text>
+            <Text style={styles.description}>Upgrade to smarter and better collection, reviewing and focusing experiences for your thoughts and ideas for only $29.99 per year</Text>
+            {/* <Text style={styles.subTitle}>What you can do with Premium:</Text> */}
           </View>
 
           <View style={styles.premiumList}>
@@ -117,24 +132,30 @@ class ProfilePremiumScreen extends React.Component {
             }
           </View>
 
-          <TouchableOpacity onPress={() => this.upgradeMe()} style={styles.buttonView}>
-            <View style={styles.button}>
-              <Text style={styles.buttonText}>Upgrade Me</Text>
-            </View>
-          </TouchableOpacity>
+          <View style={styles.topView}>
+            <Text style={styles.description}>Anything you'd like that we haven't mentioned? Let us know [Contact Us]</Text>
+          </View>
+
         </ScrollView>
+
+        <TouchableOpacity onPress={() => this.upgradeMe()} style={styles.buttonView}>
+          <View style={styles.button}>
+            <Text style={styles.buttonText}>Activate Premium for $29.99 py</Text>
+          </View>
+        </TouchableOpacity>
 
         <Modal
           isVisible={this.state.showPremiumModal}
-          backdropColor='#656974'
-          backdropOpacity={0.6}
+          backdropColor={'COLORS.MODAL_BACKDROP'}
+          backdropOpacity={0.4}
           animationIn="slideInUp"
           animationOut="slideOutDown"
           animationInTiming={300}
-          onBackdropPress={() => this.setState({ showPremiumModal: false })}
+          onBackdropPress={() => this.closeModal()}
+          onRequestClose={() => this.closeModal()}
         >
           <PremiumModal
-            onClose={() => this.setState({ showPremiumModal: false })}
+            onClose={() => this.closeModal()}
           />
         </Modal>
       </View>

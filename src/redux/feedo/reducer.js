@@ -2,10 +2,12 @@ import { AsyncStorage } from 'react-native'
 import PushNotification from 'react-native-push-notification'
 import * as types from './types'
 import * as cardTypes from '../card/types'
+import * as userTypes from '../user/types'
 import { filter, find, findIndex, isEmpty } from 'lodash'
 import resolveError from './../../service/resolveError'
 import { restoreArchiveFeed } from './actions';
 import { setRemovedInvitees } from './operations'
+import _ from 'lodash'
 
 const initialState = {
   loading: null,
@@ -14,7 +16,6 @@ const initialState = {
   feedoListForCardMove: [],
   currentFeed: {},
   pinResult: null,
-  duplicaetdId: null,
   feedDetailAction: null,
   fileUploadUrl: {},
   userTags: [],
@@ -22,10 +23,12 @@ const initialState = {
   invitedFeedList: [],
   activityFeedList: [],
   activityData: {},
-  dummyDelCard: {},
+  deletedDummyCards: [],
   dummyMoveCard: {},
   badgeCount: 0,
-  isCreateCard: false
+  isCreateCard: false,
+  duplicatedFeedList: [],
+  activeActivityGroupId: ''
 };
 
 export default function feedo(state = initialState, action = {}) {
@@ -54,6 +57,15 @@ export default function feedo(state = initialState, action = {}) {
         loading: types.GET_FEEDO_LIST_FULFILLED,
         feedoListForCardMove: data.content,
       }
+    }
+    case types.SET_FEEDO_LIST_FROM_STORAGE: {
+      // console.log('action is ', action, ' state is ', state)
+      const { feedoList } = action
+        return {
+          ...state,
+          loading: types.SET_FEEDO_LIST_FROM_STORAGE,
+          feedoList,
+        }
     }
     case types.GET_FEEDO_LIST_REJECTED: {
       return {
@@ -88,14 +100,14 @@ export default function feedo(state = initialState, action = {}) {
     /**
      * Update feedo invitation (accept, ignore)
      */
-    case types.UPDTE_FEED_INVITATION_PENDING:
+    case types.UPDATE_FEED_INVITATION_PENDING:
       return {
         ...state,
-        loading: types.UPDTE_FEED_INVITATION_PENDING,
+        loading: types.UPDATE_FEED_INVITATION_PENDING,
       }
-    case types.UPDTE_FEED_INVITATION_FULFILLED: {
+    case types.UPDATE_FEED_INVITATION_FULFILLED: {
       PushNotification.getApplicationIconBadgeNumber((badgeCount) => {
-        if (badgeCount && badgeCount > 0) {
+        if (badgeCount > 0) {
           PushNotification.setApplicationIconBadgeNumber(badgeCount - 1)
         }
       })
@@ -154,7 +166,7 @@ export default function feedo(state = initialState, action = {}) {
 
       return {
         ...state,
-        loading: types.UPDTE_FEED_INVITATION_FULFILLED,
+        loading: types.UPDATE_FEED_INVITATION_FULFILLED,
         invitedFeedList: restInvitedFeedList,
         feedoList: type ? (updateFeed ? [updateFeed, ...restFeedoList] : restFeedoList) : restFeedoList,
         currentFeed: newCurrentFeed,
@@ -162,10 +174,10 @@ export default function feedo(state = initialState, action = {}) {
         badgeCount: state.badgeCount > 0 ? state.badgeCount - 1 : 0
       }
     }
-    case types.UPDTE_FEED_INVITATION_REJECTED: {
+    case types.UPDATE_FEED_INVITATION_REJECTED: {
       return {
         ...state,
-        loading: types.UPDTE_FEED_INVITATION_REJECTED,
+        loading: types.UPDATE_FEED_INVITATION_REJECTED,
         error: action.error,
       }
     }
@@ -180,6 +192,21 @@ export default function feedo(state = initialState, action = {}) {
       }
     case types.GET_FEED_DETAIL_FULFILLED: {
       const { data } = action.result
+      const { invitedFeedList, feedoList } = state
+      const feedIndex = findIndex(invitedFeedList, feed => feed.id === data.id);
+      if (feedIndex !== -1 && data.metadata.myInviteStatus === 'ACCEPTED') {
+        invitedFeedList.pop(feedIndex)
+        feedoList.push(data)
+
+        return {
+          ...state,
+          loading: types.GET_FEED_DETAIL_FULFILLED,
+          currentFeed: data,
+          feedoList,
+          invitedFeedList
+        }
+      }
+
       return {
         ...state,
         loading: types.GET_FEED_DETAIL_FULFILLED,
@@ -215,14 +242,14 @@ export default function feedo(state = initialState, action = {}) {
       const feedId = action.payload
       const { feedoList } = state
 
-      const currentFeed = filter(feedoList, feed => feed.id === feedId)
+      const currentFeed = find(feedoList, feed => feed.id === feedId)
       const restFeedoList = filter(feedoList, feed => feed.id !== feedId)
 
       return {
         ...state,
         loading: types.PIN_FEED_FULFILLED,
         feedoList: [
-          Object.assign({}, currentFeed[0], { pinned: { pinned: true } }),
+          Object.assign({}, currentFeed, { pinned: { pinned: true } }),
           ...restFeedoList
         ]
       }
@@ -247,14 +274,14 @@ export default function feedo(state = initialState, action = {}) {
       const feedId = action.payload
       const { feedoList } = state
 
-      const currentFeed = filter(feedoList, feed => feed.id === feedId)
+      const currentFeed = find(feedoList, feed => feed.id === feedId)
       const restFeedoList = filter(feedoList, feed => feed.id !== feedId)
 
       return {
         ...state,
         loading: types.UNPIN_FEED_FULFILLED,
         feedoList: [
-          Object.assign({}, currentFeed[0], { pinned: null }),
+          Object.assign({}, currentFeed, { pinned: null }),
           ...restFeedoList
         ]
       }
@@ -277,18 +304,19 @@ export default function feedo(state = initialState, action = {}) {
     }
     case types.DEL_FEED_FULFILLED: {
       const { feedoList } = state
-      const feedId = action.payload
-      if (feedId === 'empty') {
+      const data = action.payload
+
+      if (data.flag === 'delete') {
         return {
           ...state,
           loading: types.DEL_FEED_FULFILLED,
         }
       } else {  // Delete duplicated Feed
-        const restFeedoList = filter(feedoList, feed => feed.id !== feedId)        
+        const restFeedoList = filter(feedoList, feed => findIndex(data.backFeedList, item => item.feed.id === feed.id) === -1)
         return {
           ...state,
           loading: types.DEL_FEED_FULFILLED,
-          duplicatedId: null,
+          duplicatedFeedList: [],
           feedoList: restFeedoList
         }
       }
@@ -353,6 +381,7 @@ export default function feedo(state = initialState, action = {}) {
       return {
         ...state,
         loading: types.DUPLICATE_FEED_PENDING,
+        duplicatedFeedList: [],
         error: null,
       }
     }
@@ -360,13 +389,17 @@ export default function feedo(state = initialState, action = {}) {
       const { feedoList } = state
       const { data } = action.result
 
+      let duplicatedFeedList = data.map((item, index) => {
+        return { index: index + 1, feed: item }
+      })
+
       return {
         ...state,
         feedoList: [
           ...feedoList,
-          data
+          ...data
         ],
-        duplicatedId: data.id,
+        duplicatedFeedList,
         loading: types.DUPLICATE_FEED_FULFILLED,
       }
     }
@@ -374,6 +407,7 @@ export default function feedo(state = initialState, action = {}) {
       return {
         ...state,
         loading: types.DUPLICATE_FEED_REJECTED,
+        duplicatedFeedList: [],
         error: action.error,
       }
     }
@@ -381,35 +415,41 @@ export default function feedo(state = initialState, action = {}) {
      * Append dummy Feed
      */
     case types.ADD_DUMMY_FEED: {
-      const { payload: { feedId, flag } } = action
+      let { payload: { backFeedList, flag } } = action
       let { feedoList } = state
 
-      const currentFeed = filter(feedoList, feed => feed.id === feedId)
-      const restFeedoList = filter(feedoList, feed => feed.id !== feedId)
+      backFeedList = backFeedList.map(item => item.feed)
+      const restFeedoList = filter(feedoList, feed => findIndex(backFeedList, item => item.id === feed.id) === -1)
 
       if (flag === 'delete') {
         return {
           ...state,
           loading: types.DEL_FEED_FULFILLED,
-          deleteFeed: currentFeed,
-          feedoList: restFeedoList
-        }
-      } else if (flag === 'archive') {
-        currentFeedIndex = findIndex(feedoList, feed => feed.id === currentFeed.id);
-        restFeedoList[currentFeedIndex] = Object.assign({}, currentFeed[0], { status: 'ARCHIVED' })
-        return {
-          ...state,
-          loading: types.ARCHIVE_FEED_FULFILLED,
-          archiveFeed: currentFeed,
+          deleteFeedList: backFeedList,
           feedoList: [
             ...restFeedoList
           ]
+        }
+      } else if (flag === 'archive') {
+        for (let i = 0; i < backFeedList.length; i ++) {
+          const index = findIndex(feedoList, feed => feed.id === backFeedList[i].id)
+          console.log('INDX: ', index)
+          if (index !== -1) {
+            feedoList[index] = Object.assign({}, feedoList[index], { status: 'ARCHIVED' })
+          }
+        }
+
+        return {
+          ...state,
+          loading: types.ARCHIVE_FEED_FULFILLED,
+          archiveFeedList: backFeedList,
+          feedoList
         }
       } else if (flag === 'leave') {
         return {
           ...state,
           loading: types.LEAVE_FEED_FULFILLED,
-          leaveFeed: currentFeed,
+          leaveFeedList: backFeedList,
           feedoList: [
             ...restFeedoList
           ]
@@ -424,11 +464,11 @@ export default function feedo(state = initialState, action = {}) {
      * Restore feed when clicking Undo in Toaster
      */
     case types.REMOVE_DUMMY_FEED: {
-      const { payload: { feedId, flag } } = action
-      const { feedoList, pinnedDate, deleteFeed, archiveFeed, leaveFeed } = state
+      let { payload: { backFeedList, flag } } = action
+      const { feedoList, deleteFeedList, archiveFeedList, leaveFeedList } = state
 
-      const currentFeed = filter(feedoList, feed => feed.id === feedId)
-      const restFeedoList = filter(feedoList, feed => feed.id !== feedId)
+      backFeedList = backFeedList.map(item => item.feed)
+      const restFeedoList = filter(feedoList, feed => findIndex(backFeedList, item => item.id === feed.id) === -1)
 
       if (flag === 'pin') {
         return {
@@ -436,7 +476,7 @@ export default function feedo(state = initialState, action = {}) {
           loading: 'FEED_FULFILLED',
           feedoList: [
             ...restFeedoList,
-            Object.assign({}, currentFeed[0], { pinned: null })
+            Object.assign({}, backFeedList[0], { pinned: null })
           ]
         }
       } else if (flag === 'unpin') {
@@ -445,9 +485,8 @@ export default function feedo(state = initialState, action = {}) {
           loading: 'FEED_FULFILLED',
           feedoList: [
             ...restFeedoList,
-            Object.assign({}, currentFeed[0], { pinned: { pinned: true, pinnedDate } })
-          ],
-          pinnedDate: null
+            Object.assign({}, backFeedList[0], { pinned: { pinned: true } })
+          ]
         }
       } else if (flag === 'delete') {
         return {
@@ -455,9 +494,9 @@ export default function feedo(state = initialState, action = {}) {
           loading: 'FEED_FULFILLED',
           feedoList: [
             ...restFeedoList,
-            Object.assign({}, deleteFeed[0])
+            ...deleteFeedList
           ],
-          deleteFeed: null,
+          deleteFeedList: [],
         }
       } else if (flag === 'archive') {
         return {
@@ -465,9 +504,9 @@ export default function feedo(state = initialState, action = {}) {
           loading: 'FEED_FULFILLED',
           feedoList: [
             ...restFeedoList,
-            Object.assign({}, archiveFeed[0])
+            ...archiveFeedList
           ],
-          archiveFeed: null,
+          archiveFeedList: [],
         }
       } else if (flag === 'leave') {
         return {
@@ -475,9 +514,9 @@ export default function feedo(state = initialState, action = {}) {
           loading: 'FEED_FULFILLED',
           feedoList: [
             ...restFeedoList,
-            Object.assign({}, leaveFeed[0])
+            ...leaveFeedList
           ],
-          leaveFeed: null,
+          leaveFeedList: [],
         }
       }
       
@@ -489,11 +528,12 @@ export default function feedo(state = initialState, action = {}) {
      * Set Feed detail action (Delete, Archive, Leave)
      */
     case types.SET_FEED_DETAIL_ACTION: {
-      const { payload } = action
+      const feedDetailAction = action.payload
+      console.log('feedDetailAction: ', feedDetailAction)
       return {
         ...state,
         loading: types.SET_FEED_DETAIL_ACTION,
-        feedDetailAction: payload
+        feedDetailAction
       }
     }
     // create a feed
@@ -883,18 +923,19 @@ export default function feedo(state = initialState, action = {}) {
         error: null,
       }
     case types.DELETE_INVITEE_FULFILLED: {
-      const { data } = action.result
       const { currentFeed } = state
       const inviteeId = action.payload
-      const restInviteeList = currentFeed.invitees.map(invitee => setRemovedInvitees(invitee, inviteeId))
+      const restInviteeList = _.isEmpty(currentFeed) ? null :  currentFeed.invitees.map(invitee => setRemovedInvitees(invitee, inviteeId))
 
       return {
         ...state,
         loading: types.DELETE_INVITEE_FULFILLED,
-        currentFeed: {
-          ...currentFeed,
-          invitees: restInviteeList
-        }
+        currentFeed: restInviteeList
+          ? {
+              ...currentFeed,
+              invitees: restInviteeList
+            }
+          : {}
       }
     }
     case types.DELETE_INVITEE_REJECTED: {
@@ -1072,40 +1113,21 @@ export default function feedo(state = initialState, action = {}) {
     }
 
     /**
-     * delete a card
-     */
-    case cardTypes.DELETE_CARD_FULFILLED: {
-      const { currentFeed } = state
-      const ideaId = action.payload;
-      const ideas = filter(currentFeed.ideas, idea => idea.id !== ideaId);
-
-      const newCurrentFeed = {
-        ...currentFeed,
-        ideas,
-      }
-
-      return {
-        ...state,
-        loading: 'DELETE_CARD_FULFILLED',
-        currentFeed: newCurrentFeed
-      }
-    }
-
-    /**
      * move a card
      */
     case cardTypes.MOVE_CARD_FULFILLED: {
       const { currentFeed } = state
-      const { ideaId } = action.payload;
+      const data = action.payload
 
-      const ideas = filter(currentFeed.ideas, idea => idea.id !== ideaId);
-
+      const restIdeas = filter(currentFeed.ideas, idea => findIndex(data, card => card.ideaId === idea.id) === -1)
+      const ideasSubmitted = currentFeed.metadata.ideasSubmitted - data.length
       return {
         ...state,
         loading: 'MOVE_CARD_FULFILLED',
         currentFeed: {
           ...currentFeed,
-          ideas,
+          ideas: restIdeas,
+          metadata: Object.assign({}, currentFeed.metadata, { ideasSubmitted })
         }
       }
     }
@@ -1237,19 +1259,12 @@ export default function feedo(state = initialState, action = {}) {
     case types.GET_ACTIVITY_FEED_FULFILLED: {
       const { data } = action.result
 
-      if(data.badgeCount) {
+      if(data.badgeCount >= 0) {
         PushNotification.setApplicationIconBadgeNumber(data.badgeCount)
       }
 
       let activityFeedList = []
-      if (data.first) {
-        activityFeedList = data.content
-      } else {
-        activityFeedList = [
-          ...state.activityFeedList,
-          ...data.content
-        ]
-      }
+      activityFeedList = data.huntActivities
 
       return {
         ...state,
@@ -1288,6 +1303,43 @@ export default function feedo(state = initialState, action = {}) {
       }
     }
     /**
+     * Read acitivty group
+     */
+    case types.READ_ACTIVITY_GROUP_PENDING:
+      return {
+        ...state,
+        loading: types.READ_ACTIVITY_GROUP_PENDING,
+      }
+    case types.READ_ACTIVITY_GROUP_FULLFILLED: {
+      const activityGroupId = action.payload
+      let { activityFeedList, activityData } = state
+
+      activityFeedList = activityFeedList.map(item => {
+        if (item.id === activityGroupId) {
+          item.read = true
+        }
+        return item
+      })
+
+      activityFeedList = _.orderBy(activityFeedList, ['read', 'latestActivityTime'], ['asc', 'desc'])
+
+      return {
+        ...state,
+        activeActivityGroupId: activityGroupId,
+        loading: types.READ_ACTIVITY_GROUP_FULLFILLED,
+        activityFeedList
+      }
+    }
+    case types.READ_ACTIVITY_GROUP_REJECTED: {
+      const activityGroupId = action.payload
+      return {
+        ...state,
+        activeActivityGroupId: activityGroupId,
+        loading: types.READ_ACTIVITY_GROUP_REJECTED,
+        error: action.error.response,
+      }
+    }
+    /**
      * Read acitivty
      */
     case types.READ_ACTIVITY_FEED_PENDING:
@@ -1297,21 +1349,25 @@ export default function feedo(state = initialState, action = {}) {
       }
     case types.READ_ACTIVITY_FEED_FULFILLED: {
       const activityId = action.payload
-      const { activityFeedList, activityData } = state
+      let { activityFeedList, activeActivityGroupId } = state
 
-      const currentActivityFeedList = filter(activityFeedList, feed => feed.id === activityId)
-      const restActivityFeedList = filter(activityFeedList, feed => feed.id !== activityId)
+      activityFeedList = activityFeedList.map(item => {
+        if (item.id === activeActivityGroupId) {
+          let activities = item.activities
+          activities = activities.map(item => {
+            if (item.id === activityId) {
+              item.read = true
+            }
+            return item
+          })
+        }
+        return item
+      })
 
       return {
         ...state,
         loading: types.READ_ACTIVITY_FEED_FULFILLED,
-        activityFeedList: [
-          ...restActivityFeedList,
-          {
-            ...currentActivityFeedList[0],
-            read: true
-          }
-        ]
+        activityFeedList
       }
     }
     case types.READ_ACTIVITY_FEED_REJECTED: {
@@ -1331,14 +1387,21 @@ export default function feedo(state = initialState, action = {}) {
       }
     case types.DEL_ACTIVITY_FEED_FULFILLED: {
       const activityId = action.payload
-      const { activityFeedList, activityData } = state
+      let { activityFeedList, activeActivityGroupId } = state
 
-      const restActivityFeedList = filter(activityFeedList, feed => feed.id !== activityId)
+      activityFeedList = activityFeedList.map(item => {
+        if (item.id === activeActivityGroupId) {
+          let activities = item.activities
+          activities = filter(activities, activity => activity.id !== activityId)
+          item.activities = activities
+        }
+        return item
+      })
 
       return {
         ...state,
         loading: types.DEL_ACTIVITY_FEED_FULFILLED,
-        activityFeedList: restActivityFeedList
+        activityFeedList
       }
     }
     case types.DEL_ACTIVITY_FEED_REJECTED: {
@@ -1350,21 +1413,35 @@ export default function feedo(state = initialState, action = {}) {
     }
     case types.DEL_DUMMY_CARD: {
       const { currentFeed, feedoList } = state
-      const { ideaId , type } = action.payload;
+      const { deletedIdeaList, type } = action.payload
 
-      let newCurrentFeed = {}
-      let dummyDelCard = {}
+      let originalFeed = {}
+      let deletedDummyCards = []
       if (type === 0) { //delete
-        const ideas = filter(currentFeed.ideas, idea => idea.id !== ideaId);
-        dummyDelCard = filter(currentFeed.ideas, idea => idea.id === ideaId);
-        newCurrentFeed = {
+        const restIdeas = filter(currentFeed.ideas, idea => findIndex(deletedIdeaList, card => card.idea.id === idea.id ) === -1)
+
+        for (let i = 0; i < deletedIdeaList.length; i ++) {
+          const card = find(currentFeed.ideas, idea => idea.id === deletedIdeaList[i].idea.id)
+          deletedDummyCards.push(card)
+        }
+
+        const ideasSubmitted = currentFeed.metadata.ideasSubmitted - deletedIdeaList.length
+        originalFeed = {
           ...currentFeed,
-          ideas,
+          ideas: restIdeas,
+          metadata: Object.assign({}, currentFeed.metadata, { ideasSubmitted })
         }
       } else {  //restore
-        currentFeed.ideas.push(state.dummyDelCard[0])
-        dummyDelCard = {}
-        newCurrentFeed = currentFeed
+        currentFeed.ideas = [
+          ...currentFeed.ideas,
+          ...state.deletedDummyCards
+        ]
+        const ideasSubmitted = currentFeed.metadata.ideasSubmitted + state.deletedDummyCards.length
+        originalFeed = {
+          ...currentFeed,
+          metadata: Object.assign({}, currentFeed.metadata, { ideasSubmitted })
+        }
+        deletedDummyCards = []
       }
 
       const restFeedoList = filter(feedoList, feed => feed.id !== currentFeed.id)
@@ -1372,11 +1449,11 @@ export default function feedo(state = initialState, action = {}) {
       return {
         ...state,
         loading: types.DEL_DUMMY_CARD,
-        dummyDelCard,
-        currentFeed: newCurrentFeed,
+        deletedDummyCards,
+        currentFeed: originalFeed,
         feedoList: [
-          ...restFeedoList,
-          newCurrentFeed
+          originalFeed,
+          ...restFeedoList
         ]
       }
     }
@@ -1385,57 +1462,77 @@ export default function feedo(state = initialState, action = {}) {
      */
     case types.MOVE_DUMMY_CARD: {
       const { currentFeed, feedoList } = state
-      const { ideaId, huntId, type } = action.payload;
+      const { movedIdeaList, huntId, type } = action.payload;
 
       let dummyMoveCard = {}
       let newFeedList = []
-      let newCurrentFeed = {}
+      let originalFeed = {}
       let restFeedoList = []
 
       if (type === 0) {
+        // Move
         restFeedoList = filter(feedoList, feed => feed.id !== currentFeed.id)
 
-        const ideas = filter(currentFeed.ideas, idea => idea.id !== ideaId)
-        const movedCard = find(currentFeed.ideas, idea => idea.id === ideaId)
-        
+        const restIdeas = filter(currentFeed.ideas, idea => findIndex(movedIdeaList, card => card.idea.id === idea.id ) === -1)
+       
         const moveToFeedIndex = findIndex(restFeedoList, feed => feed.id === huntId)
+        
+        const movedDummyCards = []
 
         if (moveToFeedIndex !== -1) {
-          restFeedoList[moveToFeedIndex].ideas.push(movedCard);
+          for (let i = 0; i < movedIdeaList.length; i ++) {
+            const card = find(currentFeed.ideas, idea => idea.id === movedIdeaList[i].idea.id)
+            movedDummyCards.push(card)
+
+            restFeedoList[moveToFeedIndex].ideas.push(card);
+          }
+          restFeedoList[moveToFeedIndex].metadata.ideasSubmitted =
+              restFeedoList[moveToFeedIndex].metadata.ideasSubmitted + movedIdeaList.length
         }
 
-        newCurrentFeed = {
+        originalFeed = {
           ...currentFeed,
-          ideas
+          ideas: restIdeas
         }
+        originalFeed.metadata.ideasSubmitted = originalFeed.metadata.ideasSubmitted - movedIdeaList.length
+
 
         newFeedList = [
-          ...restFeedoList,
-          newCurrentFeed
+          originalFeed,
+          ...restFeedoList
         ]       
 
-        dummyMoveCard = { ideaId, feedId: huntId, oldFeed: currentFeed, newFeed: restFeedoList[moveToFeedIndex], movedCard }
+        dummyMoveCard = { movedIdeaList, feedId: huntId, oldFeed: currentFeed, newFeed: restFeedoList[moveToFeedIndex], movedDummyCards }
       } else {
+        // Undo
         dummyMoveCard = state.dummyMoveCard
+
         restFeedoList = filter(feedoList, feed => feed.id !== dummyMoveCard.feedId)
 
-        const ideas = filter(dummyMoveCard.newFeed.ideas, idea => idea.id !== dummyMoveCard.ideaId)
-        const movedFeed = {
+        const restIdeas = filter(dummyMoveCard.newFeed.ideas, idea => findIndex(dummyMoveCard.movedIdeaList, card => card.idea.id === idea.id) === -1)
+
+        let movedFeed = {
           ...dummyMoveCard.newFeed,
-          ideas
-        }
+          ideas: restIdeas
+        }        
+        movedFeed.metadata.ideasSubmitted = movedFeed.metadata.ideasSubmitted - dummyMoveCard.movedIdeaList.length
         
         const originalFeedIndex = findIndex(restFeedoList, feed => feed.id === currentFeed.id)
 
         if (originalFeedIndex !== -1) {
-          restFeedoList[originalFeedIndex].ideas.push(dummyMoveCard.movedCard);
+          let oldFeed = dummyMoveCard.oldFeed
+          oldFeed.ideas = [
+            ...oldFeed.ideas,
+            ...dummyMoveCard.movedDummyCards
+          ]
+          oldFeed.metadata.ideasSubmitted += dummyMoveCard.movedIdeaList.length
+          restFeedoList[originalFeedIndex] = oldFeed
         }
 
         newFeedList = [
-          ...restFeedoList,
-          movedFeed
+          movedFeed,
+          ...restFeedoList
         ]
-
         dummyMoveCard = {}
       }
 
@@ -1464,12 +1561,16 @@ export default function feedo(state = initialState, action = {}) {
       const { data } = action.result
       const { feedoList, currentFeed } = state
 
-      const updateFeed = find(feedoList, feed => feed.id === data.huntId )
+      let updateFeed = find(feedoList, feed => feed.id === data.huntId)
 
       if (updateFeed) {
-        const restIdeas = filter(updateFeed.ideas, idea => idea.id !== data.id )
+        if (updateFeed.id === currentFeed.id) {
+          updateFeed = currentFeed
+        }
+
+        const restIdeas = filter(updateFeed.ideas, idea => idea.id !== data.id)
         const newUpdateFeed = {...updateFeed, ideas: [...restIdeas, data]}
-        const restFeedoList = filter(feedoList, feed => feed.id !== data.huntId )
+        const restFeedoList = filter(feedoList, feed => feed.id !== data.huntId)
 
         const newCurrentFeed = (!isEmpty(currentFeed) && currentFeed.id === data.huntId) ? newUpdateFeed : currentFeed
 
@@ -1477,7 +1578,7 @@ export default function feedo(state = initialState, action = {}) {
           ...state,
           loading: 'GET_CARD_FULFILLED',
           feedoList: [...restFeedoList, newUpdateFeed],
-          currentFeed: newCurrentFeed
+          currentFeed: { ...newCurrentFeed }
         }
       } else {
         return {
@@ -1544,10 +1645,12 @@ export default function feedo(state = initialState, action = {}) {
       const restOldIdeas = filter(oldFeed.ideas, idea => idea.id !== ideaId)
 
       let newCurrentFeed = currentFeed
+      const ideasSubmitted = oldFeed.metadata.ideasSubmitted - 1
       if (currentFeed.id === feedId) {
         newCurrentFeed = {
           ...newCurrentFeed,
-          ideas: filter(newCurrentFeed.ideas, idea => idea.id !== ideaId)
+          ideas: filter(newCurrentFeed.ideas, idea => idea.id !== ideaId),
+          metadata: Object.assign({}, currentFeed.metadata, { ideasSubmitted })
         }
       }
 
@@ -1558,7 +1661,8 @@ export default function feedo(state = initialState, action = {}) {
           ...restFeedoList,
           {
             ...oldFeed,
-            ideas: restOldIdeas
+            ideas: restOldIdeas,
+            metadata: Object.assign({}, currentFeed.metadata, { ideasSubmitted })
           }
         ],
         currentFeed: newCurrentFeed
@@ -1631,7 +1735,7 @@ export default function feedo(state = initialState, action = {}) {
       const restFeedoList = filter(feedoList, feedo => feedo.id !== huntId)
       
       const restInvitees = selectFeed ? selectFeed.invitees.map(invitee => setRemovedInvitees(invitee, inviteeId)) : null
-      const currentRestInvitees = currentFeed.invitees.map(invitee => setRemovedInvitees(invitee, inviteeId))
+      const currentRestInvitees = _.isEmpty(currentFeed) ? null : currentFeed.invitees.map(invitee => setRemovedInvitees(invitee, inviteeId))
 
       const newFeedoList = selectFeed ? [ ...restFeedoList, { ...selectFeed, invitees: restInvitees } ] : [ ...restFeedoList ]
 
@@ -1639,10 +1743,12 @@ export default function feedo(state = initialState, action = {}) {
         ...state,
         loading: types.PUBNUB_DELETE_INVITEE_FULFILLED,
         feedoList: newFeedoList,
-        currentFeed: {
-          ...currentFeed,
-          invitees: currentRestInvitees
-        }
+        currentFeed: currentRestInvitees
+          ? {
+              ...currentFeed,
+              invitees: currentRestInvitees
+            }
+          : {}
       }
     }
     /**
@@ -1656,7 +1762,7 @@ export default function feedo(state = initialState, action = {}) {
     case types.GET_ACTIVITY_FEED_VISITED_FULFILLED: {
       const { data } = action.result
 
-      if(data.count) {
+      if(data.count >= 0) {
         PushNotification.setApplicationIconBadgeNumber(data.count)
       }
 
@@ -1729,6 +1835,45 @@ export default function feedo(state = initialState, action = {}) {
         ...state,
         loading: types.SAVE_FLOW_PREFERENCE_REJECTED,
         error: action.error.response,
+      }
+    }
+    case userTypes.USER_SIGNOUT_FULFILLED: {
+      return {
+        ...state,
+        feedoList: [],
+        archivedFeedList: [],
+        invitedFeedList: [],
+        activityFeedList: []
+      }
+    }
+    case userTypes.UPDATE_PROFILE_FULFILLED: {
+      const { feedoList } = state
+      const { data } = action.result
+
+      const updatedFeedList = feedoList.map(feed => {
+        ownerIndex = findIndex(feed.invitees, invitee => invitee.userProfile.id === data.id)
+        if (ownerIndex) {
+          feed.invitees[ownerIndex].userProfile.imageUrl = data.imageUrl
+        }
+        return feed
+      })
+
+      return {
+        ...state,
+        loading: userTypes.UPDATE_PROFILE_FULFILLED,
+        feedoList: [...updatedFeedList]
+      }
+    }
+    case types.PUBNUB_USER_INVITED_FULFILLED: {
+      return {
+        ...state,
+        loading: types.PUBNUB_USER_INVITED_FULFILLED
+      }
+    }
+    case types.SET_FEED_DETAIL_FROM_STORAGE: {
+      return {
+        ...state,
+        loading: types.SET_FEED_DETAIL_FROM_STORAGE
       }
     }
     default:

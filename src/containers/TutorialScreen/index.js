@@ -17,6 +17,7 @@ import LottieView from 'lottie-react-native'
 import { ifIphoneX } from 'react-native-iphone-x-helper'
 import { GoogleSignin, statusCodes } from 'react-native-google-signin'
 import Video from 'react-native-video'
+import SVGImage from 'react-native-remote-svg'
 
 import LoadingScreen from '../LoadingScreen'
 import COLORS from '../../service/colors'
@@ -43,13 +44,14 @@ import VIDEO_REVIEW from '../../../assets/videos/Phone.m4v'
 import VIDEO_SHARE from '../../../assets/videos/Head.m4v'
 import VIDEO_SERVICE from '../../../assets/videos/Services.m4v'
 import VIDEO_PEOPLE from '../../../assets/videos/People.m4v'
+import AlertController from '../../components/AlertController';
 
 
 class TutorialScreen extends React.Component {
   constructor(props) {
     super(props)
     this.state = {
-      position: 0,
+      position: this.props.prevPage === 'login' ? 6 : 0,
       loading: false,
       video1Paused: true,
       video2Paused: true,
@@ -66,6 +68,10 @@ class TutorialScreen extends React.Component {
       webClientId: GOOGLE_WEB_CLIENT_ID,
       offlineAccess: false
     })
+
+    if (this.props.prevPage === 'start') {
+      this.setState({ position: 0 })
+    }
 
     BackHandler.addEventListener('hardwareBackPress', this.handleBackButton);
   }
@@ -87,10 +93,6 @@ class TutorialScreen extends React.Component {
   componentWillReceiveProps(nextProps) {
     const { user } = nextProps
 
-    if (nextProps.prevPage === 'login') {
-      this.onSkip(false)
-    }
-
     if (this.props.user.loading === 'USER_GOOGLE_SIGNIN_PENDING' && user.loading === 'USER_GOOGLE_SIGNIN_FULFILLED') {
       this.props.getUserSession()
     }
@@ -98,7 +100,7 @@ class TutorialScreen extends React.Component {
     if (this.props.user.loading === 'USER_GOOGLE_SIGNIN_PENDING' && user.loading === 'USER_GOOGLE_SIGNIN_REJECTED') {
       this.setState({ loading: false }, () => {
         if (user.error) {
-          Alert.alert(
+          AlertController.shared.showAlert(
             'Warning',
             resolveError(user.error.code, user.error.message)
           )
@@ -124,7 +126,7 @@ class TutorialScreen extends React.Component {
   }
 
   onLogin = () => {
-    Actions.LoginScreen()
+    Actions.LoginScreen({ prevPage: 'tutorial' })
   }
 
   onSignUp = () => {
@@ -147,19 +149,19 @@ class TutorialScreen extends React.Component {
         } 
         else if (error.code === statusCodes.IN_PROGRESS) {
           // operation (f.e. sign in) is in progress already
-          Alert.alert('Error', 'Sign in is in progress already')
+          AlertController.shared.showAlert('Error', 'Sign in is in progress already')
         } 
         else if (error.code === statusCodes.PLAY_SERVICES_NOT_AVAILABLE) {
           // play services not available or outdated
-          Alert.alert('Error', 'You must enable Play Services to Sign in with Google')
+          AlertController.shared.showAlert('Error', 'You must enable Play Services to Sign in with Google')
         } 
         else {
           // some other error happened
-          Alert.alert('Error', 'Sign in with Google failed')
+          AlertController.shared.showAlert('Error', 'Sign in with Google failed')
         }
       }
     } catch (err) {
-      Alert.alert('Error', 'You must enable Play Services to Sign in with Google')
+      AlertController.shared.showAlert('Error', 'You must enable Play Services to Sign in with Google')
     }
   }
 
@@ -167,7 +169,10 @@ class TutorialScreen extends React.Component {
     return (
       <View style={styles.logoViewContainer}>
         <View style={styles.logoView}>
-          <Image style={styles.logo} source={LOGO_TEXT} />
+          <Image
+            source={LOGO_TEXT}
+            style={styles.logo}
+          />
         </View>
         <Text style={styles.subText}>A place to put things that matter to you.</Text>
       </View>
@@ -182,6 +187,8 @@ class TutorialScreen extends React.Component {
             {index === 1 && (
               <Video 
                 ref={(ref) => { this.player1 = ref }}
+                ignoreSilentSwitch={'obey'}
+                muted={true}
                 source={VIDEO_COLLECT}
                 allowsExternalPlayback={false}
                 paused={this.state.video1Paused}
@@ -192,6 +199,8 @@ class TutorialScreen extends React.Component {
             {index === 2 && (
               <Video  
                 ref={(ref) => { this.player2 = ref }}
+                ignoreSilentSwitch={'obey'}
+                muted={true}
                 source={VIDEO_REVIEW}
                 allowsExternalPlayback={false}
                 paused={this.state.video2Paused}
@@ -202,6 +211,8 @@ class TutorialScreen extends React.Component {
             {index === 3 && (
               <Video 
                 ref={(ref) => { this.player3 = ref }}
+                ignoreSilentSwitch={'obey'}
+                muted={true}
                 source={VIDEO_SHARE}
                 allowsExternalPlayback={false}
                 paused={this.state.video3Paused}
@@ -212,6 +223,8 @@ class TutorialScreen extends React.Component {
             {index === 4 && (
               <Video 
                 ref={(ref) => { this.player4 = ref }}
+                ignoreSilentSwitch={'obey'}
+                muted={true}
                 source={VIDEO_SERVICE}
                 allowsExternalPlayback={false}
                 paused={this.state.video4Paused}
@@ -222,6 +235,8 @@ class TutorialScreen extends React.Component {
             {index === 5 && (
               <Video 
                 ref={(ref) => { this.player5 = ref }}
+                ignoreSilentSwitch={'obey'}
+                muted={true}
                 source={VIDEO_PEOPLE}
                 allowsExternalPlayback={false}
                 paused={this.state.video5Paused}
@@ -254,7 +269,7 @@ class TutorialScreen extends React.Component {
           <TouchableOpacity onPress={() => this.onSignUp()} activeOpacity={0.8}>
             <View style={styles.buttonView}>
               <Image source={MAIL_ICON} />
-              <Text style={styles.buttonText}>Sign up with e-mail</Text>
+              <Text style={styles.buttonText}>Sign up with email</Text>
             </View>
           </TouchableOpacity>
 
@@ -279,6 +294,8 @@ class TutorialScreen extends React.Component {
     // this.lottieFourth.reset()
     // this.lottieFifth.reset()
 
+    const seek = 0
+
     // Pause all videos
     this.setState({
       video1Paused: true, 
@@ -286,35 +303,36 @@ class TutorialScreen extends React.Component {
       video3Paused: true, 
       video4Paused: true, 
       video5Paused: true
-    })
+    }, () => {
+      this.player1.seek(seek)
+      this.player2.seek(seek)
+      this.player3.seek(seek)
+      this.player4.seek(seek)
+      this.player5.seek(seek)
+    });
 
     if (context.state.index === 1) {
       this.setState({video1Paused: false})
-      this.player1.seek(0)
       // this.lottieFirst.play()
     } else if (context.state.index === 2) {
       this.setState({video2Paused: false})
-      this.player2.seek(0)
       // this.lottieSecond.play()
     } else if (context.state.index === 3) {
       this.setState({video3Paused: false})
-      this.player3.seek(0)
       // this.lottieThird.play()
     } else if (context.state.index === 4) {
       this.setState({video4Paused: false})
-      this.player4.seek(0)
       // this.lottieFourth.play()
     } else if (context.state.index === 5) {
       this.setState({video5Paused: false})
-      this.player5.seek(0)
       // this.lottieFifth.play()
     }
 
     this.setState({ position: context.state.index })
   }
 
-  onSkip(animated) {
-    this.swiperRef.scrollBy(6 - this.state.position, animated)
+  onNext(animated) {
+    this.swiperRef.scrollBy(1, animated)
   }
 
   render () {
@@ -340,20 +358,18 @@ class TutorialScreen extends React.Component {
             onMomentumScrollEnd={this.onMomentumScrollEnd}
           >
             {this.renderLogoView()}
-            {this.renderLottieView('Save important content from the web.', LOTTIE_COLLECT, 1)}
-            {this.renderLottieView('... or from your camera.', LOTTIE_REVIEW, 2)}
-            {this.renderLottieView('... or just straight out of your brain.', LOTTIE_SHARE, 3)}
-            {this.renderLottieView('... from instagram, Photos, Dropbox, YouTube, Pinterest, Slack... You get the idea.', LOTTIE_SERVICE, 4)}
-            {this.renderLottieView('Collaborate with your teammates and close friends.', LOTTIE_PEOPLE, 5)}
+            {this.renderLottieView('Collect ideas as you browse the web', LOTTIE_COLLECT, 1)}
+            {this.renderLottieView('Take pictures of real things that inspire you', LOTTIE_REVIEW, 2)}
+            {this.renderLottieView('Quickly create a note of your thoughts', LOTTIE_SHARE, 3)}
+            {this.renderLottieView('Save things from apps you use for inspiration', LOTTIE_SERVICE, 4)}
+            {this.renderLottieView('Get feedback and ask your friends to contribute to your ideas', LOTTIE_PEOPLE, 5)}
             {this.renderSignupView()}
           </Swiper>
 
-          {(position !== 0 && position !== 6) && (
+          {(position !== 6) && (
             <View style={styles.skipButtonView}>
-              <TouchableOpacity onPress={() => this.onSkip(true)} activeOpacity={0.8}>
-                <View style={styles.skipButton}>
-                  <Text style={styles.skipButtonText}>Skip</Text>
-                </View>
+              <TouchableOpacity style={styles.skipButton} onPress={() => this.onNext(true)} activeOpacity={0.8}>
+                  <Text style={styles.skipButtonText} onPress={() => this.onNext(true)} suppressHighlighting={true}>Next</Text>
               </TouchableOpacity>
             </View>
           )}

@@ -11,7 +11,9 @@ import FontAwesome from 'react-native-vector-icons/FontAwesome'
 import Modal from 'react-native-modal'
 import _ from 'lodash'
 import COLORS from '../../service/colors'
-import styles from './styles'
+import styles from '../FeedFilterComponent/styles'
+import { COMMENT_FEATURE } from '../../service/api'
+
 const CLOSE_ICON = require('../../../assets/images/Close/Blue.png')
 
 class CardFilterComponent extends React.Component {
@@ -21,6 +23,10 @@ class CardFilterComponent extends React.Component {
       showType: 'all',
       sortType: 'date'
     }
+  }
+
+  componentWillReceiveProps(nextProps) {
+    this.setState({ showType: nextProps.filterShowType })
   }
 
   showCards = (showType) => {
@@ -60,8 +66,8 @@ class CardFilterComponent extends React.Component {
       <Modal
         isVisible={show}
         style={{ margin: 0 }}
-        backdropColor='#e0e0e0'
-        backdropOpacity={0.9}
+        backdropColor={COLORS.MODAL_BACKDROP}
+        backdropOpacity={0.4}
         animationIn="slideInUp"
         animationOut="slideOutDown"
         animationInTiming={500}
@@ -78,7 +84,7 @@ class CardFilterComponent extends React.Component {
 
           <View style={styles.body}>
             <View style={styles.row}>
-              <Text style={styles.countText}>{showText}</Text>
+              <Text style={styles.labelText}>{showText}</Text>
               <View style={styles.buttonGroup}>
                 <TouchableOpacity onPress={() => this.showCards('all')} style={styles.buttonView}>
                   <View style={[styles.button, showType === 'all' ? styles.buttonSelect : styles.buttonDeselect]}>
@@ -92,7 +98,7 @@ class CardFilterComponent extends React.Component {
 
                 <TouchableOpacity onPress={() => this.showCards('like')} style={styles.buttonView}>
                   <View style={[styles.button, showType === 'like' ? styles.buttonSelect : styles.buttonDeselect]}>
-                    <FontAwesome name='heart' size={15} color={COLORS.RED} style={styles.heartIcon} />
+                    {/* <FontAwesome name='heart' size={15} color={COLORS.RED} style={styles.heartIcon} /> */}
                     <Text style={[styles.btnText, showType === 'like' ? styles.btnSelectText : styles.btnDeselectText]}>
                       Show liked
                     </Text>
@@ -102,7 +108,7 @@ class CardFilterComponent extends React.Component {
             </View>
 
             <View style={styles.row}>
-              <Text style={styles.countText}>Sort by</Text>
+              <Text style={styles.labelText}>Sort by</Text>
               <View style={styles.buttonGroup}>
                 <TouchableOpacity onPress={() => this.sortCards('date')} style={styles.buttonView}>
                   <View style={[styles.button, sortType === 'date' ? styles.buttonSelect : styles.buttonDeselect]}>
@@ -124,13 +130,15 @@ class CardFilterComponent extends React.Component {
 
                 <View style={styles.splitter} />
 
-                <TouchableOpacity onPress={() => this.sortCards('comment')} style={styles.buttonView}>
-                  <View style={[styles.button, sortType === 'comment' ? styles.buttonSelect : styles.buttonDeselect]}>
-                    <Text style={[styles.btnText, sortType === 'comment' ? styles.btnSelectText : styles.btnDeselectText]}>
-                      Comments
-                    </Text>
-                  </View>
-                </TouchableOpacity>
+                {COMMENT_FEATURE && (
+                  <TouchableOpacity onPress={() => this.sortCards('comment')} style={styles.buttonView}>
+                    <View style={[styles.button, sortType === 'comment' ? styles.buttonSelect : styles.buttonDeselect]}>
+                      <Text style={[styles.btnText, sortType === 'comment' ? styles.btnSelectText : styles.btnDeselectText]}>
+                        Comments
+                      </Text>
+                    </View>
+                  </TouchableOpacity>
+                )}
 
               </View>
             </View>
