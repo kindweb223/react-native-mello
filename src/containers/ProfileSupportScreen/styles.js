@@ -4,12 +4,8 @@ import CONSTANTS from '../../service/constants'
 
 export default {
   container: {
-    position: 'absolute',
-    top: 0,
-    right: 0,
-    left: 0,
-    bottom: 0,
-    backgroundColor: '#fff'
+    flex: 1,
+    backgroundColor: '#fff',
   },
   buttonWrapper: {
     flexDirection: 'row',
