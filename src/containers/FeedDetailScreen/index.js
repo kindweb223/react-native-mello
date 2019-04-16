@@ -1803,6 +1803,7 @@ class FeedDetailScreen extends React.Component {
                 onClose={() => this.closeShareModal()}
                 deleteInvitee={() => this.leaveFeed(null, currentFeed.id)}
                 data={currentFeed}
+                moveHomeScreen={this.moveHomeScreen}
               />
           }
         </Modal>
@@ -1907,7 +1908,9 @@ const mapDispatchToProps = dispatch => ({
         .then(success => {
           const feed = JSON.parse(success)
           // console.log('Request returns error. Async Feed for  ', data, ' has id ', feed.id)
-          dispatch(setFeedDetailFromStorage(feed))
+          if (feed) {
+            dispatch(setFeedDetailFromStorage(feed))
+          }
         })
         .catch(error => {
           console.log('Error for trying to get ', data, error)
