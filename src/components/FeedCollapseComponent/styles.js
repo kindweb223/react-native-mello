@@ -13,6 +13,7 @@ const styles = StyleSheet.create({
   },
   collpaseHeader: {
     width: '100%',
+    marginTop: 10,
     paddingLeft: 16,
     position: 'absolute',
     top: 28
@@ -38,7 +39,7 @@ const styles = StyleSheet.create({
     color: COLORS.PRIMARY_BLACK
   },
   summaryPlaceHolderText: {
-    fontSize: 16,
+    fontSize: 14,
     color: COLORS.MEDIUM_GREY
   },
   tagView: {
