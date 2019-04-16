@@ -2,8 +2,8 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import FacePile from './FacePile'
 
-const AvatarPileComponent = ({ avatars, numFaces, size, showPlus }) => (
-  <FacePile faces={avatars} circleSize={size} numFaces={numFaces} showPlus={showPlus} />
+const AvatarPileComponent = ({ avatars, numFaces, size, showPlus, showStroke }) => (
+  <FacePile faces={avatars} circleSize={size} numFaces={numFaces} showPlus={showPlus} showStroke={showStroke} />
 )
 
 AvatarPileComponent.defaultProps = {

@@ -2,12 +2,12 @@
 
 buildscript {
     repositories {
+        google()
         jcenter()
         maven {
             url 'https://maven.google.com/'
             name 'Google'
         }
-        google()
     }
     dependencies {
         classpath 'com.android.tools.build:gradle:3.2.1'
@@ -21,6 +21,7 @@ buildscript {
 allprojects {
     repositories {
         mavenLocal()
+        google()
         jcenter()
         maven {
             // All of React Native (JS, Obj-C sources, Android binaries) is installed from npm
@@ -47,6 +48,11 @@ subprojects {
             android {
                 compileSdkVersion 28 // <-- match this to your project's compileSdkVersion
                 buildToolsVersion '28.0.3' // <-- match this to your project's buildToolsVersion
+                 configurations.all {
+                    resolutionStrategy {
+                        force 'com.airbnb.android:lottie:2.5.5'
+                    }
+                }
             }
         }
     }

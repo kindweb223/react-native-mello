@@ -14,6 +14,9 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#fff'
   },
+  ideaContentView: {
+    marginTop: 8,
+  },
   textInputIdea: {
     fontSize: 16,
     lineHeight: CONSTANTS.TEXT_INPUT_LINE_HEIGHT,
@@ -59,6 +62,9 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
+  loadingIcon: {
+    marginRight: 10
+  }
 })
 
 

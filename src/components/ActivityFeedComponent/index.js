@@ -170,7 +170,7 @@ class ActivityFeedComponent extends React.Component {
           <Text>
             <Text style={styles.title}>
               {data.activityTypeEnum === 'USER_INVITED_TO_HUNT'
-                ? data.metadata.INVIEE_NAME
+                ? data.metadata.INVITEE_NAME
                 : `${data.instigatorFirstName} ${data.instigatorLastName}`
               }
             </Text>
@@ -201,7 +201,7 @@ class ActivityFeedComponent extends React.Component {
     }
 
     return (
-      <View style={styles.container}>
+      <View style={[styles.container, data.read === false && { backgroundColor: COLORS.LIGHT_PURPLE_BACKGROUND } ]}>
         <View style={styles.leftContainer}>
           <View style={styles.avatarView}>
             <UserAvatarComponent user={instigatorInfo} size={58} />

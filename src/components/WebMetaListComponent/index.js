@@ -20,7 +20,6 @@ import _ from 'lodash'
 import styles from './styles'
 import COLORS from '../../service/colors'
 import FastImage from "react-native-fast-image";
-import colors from '../../service/colors';
 
 
 export default class WebMetaList extends React.Component {
@@ -63,7 +62,6 @@ export default class WebMetaList extends React.Component {
         }))
         .catch(error => {
           // Fallback WebView code for iOS 8 and earlier
-          console.log('ERROR: ', error)
           Linking.canOpenURL(url)
             .then(supported => {
               if (!supported) {
@@ -74,7 +72,6 @@ export default class WebMetaList extends React.Component {
             })
             .catch(error => {
               console.error('An error occurred', error)
-              console.log('ERROR1: ', error)
             });
         });
     } else {

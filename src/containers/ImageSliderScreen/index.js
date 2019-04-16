@@ -5,10 +5,14 @@ import {
   TouchableOpacity,
   Image,
   Alert,
-  Animated
+  Animated,
+  ActivityIndicator,
+  NetInfo,
+  Platform
 } from 'react-native'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
+import { NetworkConsumer } from 'react-native-offline'
 
 import Slideshow from '../../components/Slideshow'
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons'
@@ -20,7 +24,9 @@ import LoadingScreen from '../LoadingScreen';
 import * as feedTypes from '../../redux/feedo/types'
 import * as cardTypes from '../../redux/card/types'
 import CONSTANTS from '../../service/constants'
+import COLORS from '../../service/colors'
 import Analytics from '../../lib/firebase'
+import AlertController from '../../components/AlertController'
 
 class ImageSliderScreen extends React.Component {
   constructor(props) {
@@ -29,27 +35,37 @@ class ImageSliderScreen extends React.Component {
     this.state = {
       position: this.props.position,
       loading: false,
-      maxImageHeight: 0,
       isTouch: false,
       imageIndex: this.props.position,
-      setCoveredIndex: this.props.position
+      setCoveredIndex: this.props.position,
+      updatingCoverImage: false,
+      offline: false,
+      isFileDeleted: false
     };
     this.buttonOpacity = new Animated.Value(1)
   }
 
   componentDidMount() {
     Analytics.setCurrentScreen('ImageSliderScreen')
-
-    const {
-      mediaFiles,
-    } = this.props;
-
-    let imageHeightList = []
-    mediaFiles.forEach(element => {
-      Image.getSize(element.accessUrl, (width, height) => {
-        imageHeightList = [ ...imageHeightList, CONSTANTS.SCREEN_WIDTH / width * height ];
-        this.setState({ maxImageHeight: max(imageHeightList) })
-      })
+    const offlineStatus = this.state.offline
+    NetInfo.getConnectionInfo().then((connectionInfo) => {
+      // console.log(
+      //   'CDU: Initial, type: ' +
+      //     connectionInfo.type +
+      //     ', effectiveType: ' +
+      //     connectionInfo.effectiveType, connectionInfo
+      // );
+      if(connectionInfo.type === 'none'){
+        if(!offlineStatus){
+          this.setState({ offline: true})
+        }
+        return true
+      }else{
+        if(offlineStatus){
+          this.setState({ offline: false})
+        }
+        return false
+      }
     });
   }
 
@@ -62,12 +78,25 @@ class ImageSliderScreen extends React.Component {
     } else if ((this.props.feedo.loading !== feedTypes.DELETE_FILE_FULFILLED && nextProps.feedo.loading === feedTypes.DELETE_FILE_FULFILLED)
       || (this.props.card.loading !== cardTypes.DELETE_FILE_FULFILLED && nextProps.card.loading === cardTypes.DELETE_FILE_FULFILLED)) {
       // fullfilled in deleting a file
+      if (Platform.OS === 'android') {
+        if (nextProps.mediaFiles.length === 0) {
+          this.props.onClose()
+        } else {
+          if (this.state.imageIndex === nextProps.mediaFiles.length) {
+            this.setState({ isFileDeleted: true, imageIndex: this.state.imageIndex - 1 })
+          }
+        }
+      }
     } else if (this.props.card.loading !== cardTypes.SET_COVER_IMAGE_PENDING && nextProps.card.loading === cardTypes.SET_COVER_IMAGE_PENDING) {
       // setting a file as cover image
-      // loading = true;
+      this.setState({updatingCoverImage: true})
     } else if (this.props.card.loading !== cardTypes.SET_COVER_IMAGE_FULFILLED && nextProps.card.loading === cardTypes.SET_COVER_IMAGE_FULFILLED) {
       // success in setting a file as cover image
-    } 
+      setTimeout(() => {
+        this.setState({updatingCoverImage: false})
+      }, 300)
+
+    }
 
     this.setState({
       loading,
@@ -86,8 +115,8 @@ class ImageSliderScreen extends React.Component {
         errorMessage = error.message;
       }
       if (errorMessage) {
-        Alert.alert('Error', errorMessage, [
-          {text: 'Close'},
+        AlertController.shared.showAlert('Error', errorMessage, [
+          { text: 'Close' }
         ]);
       }
       return;
@@ -113,7 +142,7 @@ class ImageSliderScreen extends React.Component {
     const {
       mediaFiles,
     } = this.props;
-    
+
     if (this.props.onSetCoverImage) {
       this.setState({setCoveredIndex: this.state.imageIndex})
       this.props.onSetCoverImage(mediaFiles[this.state.imageIndex].id);
@@ -145,21 +174,14 @@ class ImageSliderScreen extends React.Component {
   }
 
   render () {
-    const { maxImageHeight } = this.state
     const { mediaFiles, isFastImage } = this.props;
-    let isImage = true;
-    if (mediaFiles.length > 0) {
-      const mediaFile = mediaFiles[this.state.imageIndex];
-      if (mediaFile) {
-        isImage = mediaFile && mediaFile.contentType.toLowerCase().indexOf('image') !== -1;
-      }
-    }
+    const { offline } = this.state
 
-    const isCoveredImage = this.state.setCoveredIndex===this.state.imageIndex
+    const isCoveredImage = this.state.setCoveredIndex === this.state.imageIndex
 
     return (
       <View style={styles.container}>
-        <Slideshow 
+        <Slideshow
           position={this.state.position}
           mediaFiles={mediaFiles}
           width={CONSTANTS.SCREEN_WIDTH}
@@ -169,9 +191,11 @@ class ImageSliderScreen extends React.Component {
           onSwipeDown={this.onSwipeDown}
           setPosition={value => this.setState({ imageIndex: value.pos })}
           currentImageIndex={this.state.imageIndex}
+          isFileDeleted={this.state.isFileDeleted}
+          updateStatus={() => this.setState({ isFileDeleted: false })}
         />
 
-        <Animated.View 
+        <Animated.View
           style={[styles.closeButtonWrapper, { opacity: this.buttonOpacity }]}
         >
           <TouchableOpacity
@@ -183,26 +207,34 @@ class ImageSliderScreen extends React.Component {
           </TouchableOpacity>
         </Animated.View>
         {
-          
-          this.props.removal && this.props.isSetCoverImage && isImage &&
-          <Animated.View 
+
+          this.props.removal && this.props.isSetCoverImage && !offline &&
+          <Animated.View
             style={[styles.coverButton, { opacity: this.buttonOpacity }]}
           >
-            <TouchableOpacity 
+            <TouchableOpacity
               activeOpacity={0.6}
               disabled={isCoveredImage ? true: false}
               onPress={() => this.onSetCoverImage()}
+              style={{padding: 4}}
             >
-              <Text style={{color: isCoveredImage ? '#888' : '#fff'}}>Set Cover Image</Text>
+              { this.state.updatingCoverImage
+                ?
+                <View style={{paddingLeft: 32, justifyContent: 'center', alignItems: 'flex-start' }}>
+                  <ActivityIndicator color={'#fff'} size="small" style={styles.loadingIcon} />
+                </View>
+                :
+                <Text style={{color: isCoveredImage ? '#888' : '#fff'}}>Set Cover Image</Text>
+              }
             </TouchableOpacity>
           </Animated.View>
         }
         {
-          this.props.removal && 
-          <Animated.View 
+          this.props.removal && !offline &&
+          <Animated.View
             style={[styles.deleteButton, { opacity: this.buttonOpacity }]}
           >
-            <TouchableOpacity 
+            <TouchableOpacity
               activeOpacity={0.6}
               onPress={() => this.onDelete()}
             >

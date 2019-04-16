@@ -13,6 +13,7 @@ import PropTypes from 'prop-types'
 import _ from 'lodash'
 import styles from './styles'
 import * as COMMON_FUNC from '../../service/commonFunc'
+import { NetworkConsumer } from 'react-native-offline'
 
 const BELL_ICON_B = require('../../../assets/images/Bell/Blue.png')
 const BELL_ICON_G = require('../../../assets/images/Bell/Grey.png')
@@ -22,6 +23,7 @@ const LIST_ICON = require('../../../assets/images/List/List.png')
 const LIST_ICON_THUMBNAIL = require('../../../assets/images/List/Thumbnail.png')
 const MASONRY_ICON = require('../../../assets/images/List/Masonry.png')
 const PLUS_ICON = require('../../../assets/images/PlusButton/Blue.png')
+const SEARCH_ICON = require('../../../assets/images/Search/Grey.png')
 
 class DashboardActionBar extends React.Component {
 
@@ -50,30 +52,35 @@ class DashboardActionBar extends React.Component {
   }
 
   render () {
-    const { filtering, filterType, sortType, notifications, feed, badgeCount, showList, listType, page } = this.props
+    const { filtering, filterType, sortType, notifications, feed, badgeCount, showList, listType, page, showSearch, handleSearch } = this.props
 
     return (
       <View style={styles.container}>
         <View style={styles.leftContainer}>
+          {showSearch && (
+            <TouchableOpacity style={[styles.iconView]} onPress={handleSearch}>
+              <Image source={SEARCH_ICON} style={styles.searchIcon} />
+            </TouchableOpacity>
+          )}
           {showList && (
             <TouchableOpacity style={styles.iconView} onPress={() => this.props.handleList()}>
               {page === 'detail'
-                ? <Image source={listType === 'LIST' ? MASONRY_ICON : LIST_ICON} />
-                : <Image source={listType === 'LIST' ? LIST_ICON : LIST_ICON_THUMBNAIL} />
+                ? <Image source={listType === 'LIST' ? MASONRY_ICON : LIST_ICON} style={styles.listIcon} />
+                : <Image source={listType === 'LIST' ? LIST_ICON : LIST_ICON_THUMBNAIL} style={styles.listIcon} />
               }
             </TouchableOpacity>
           )}
-          {filtering && (
+          {/* {filtering && (
             <TouchableOpacity style={styles.iconView} onPress={() => this.props.handleFilter()}>
-              <Image source={filterType === 'all' && sortType ==='date' ? FILTER_ICON_G : FILTER_ICON_B} />
+              <Image source={filterType === 'all' && (sortType === 'date' || sortType === 'recent') ? FILTER_ICON_G : FILTER_ICON_B} />
             </TouchableOpacity>
-          )}
+          )} */}
           {notifications &&
             <TouchableOpacity
               style={styles.notificationView}
               onPress={() => Actions.NotificationScreen()}
             >
-              <Image source={badgeCount > 0 ? BELL_ICON_B : BELL_ICON_G} />
+              <Image source={badgeCount > 0 ? BELL_ICON_B : BELL_ICON_G} style={styles.notificationIcon} />
               {badgeCount > 0 && (
                 <Text style={styles.notificationText}>{badgeCount}</Text>
               )}
@@ -83,16 +90,19 @@ class DashboardActionBar extends React.Component {
 
         <View style={styles.rightContainer}>
           {!(!_.isEmpty(feed) && COMMON_FUNC.isFeedGuest(feed)) && (
-            <TouchableWithoutFeedback
-              onPressIn={this.onPressInAddFeed.bind(this)}
-              onPressOut={this.onPressOutAddFeed.bind(this)}
-            >
-              <Animated.View
-                style={[styles.plusButton, { transform: [{ scale: this.animatedPlusButton }] }]}
-              >
-                <Image source={PLUS_ICON} />
-              </Animated.View>
-            </TouchableWithoutFeedback>
+              <NetworkConsumer  pingInterval={2000}>
+                {({ isConnected }) => isConnected ? (
+                    <TouchableWithoutFeedback
+                        onPressIn={this.onPressInAddFeed.bind(this)}
+                        onPressOut={this.onPressOutAddFeed.bind(this)}
+                    >
+                      <Animated.View
+                          style={[styles.plusButton, { transform: [{ scale: this.animatedPlusButton }] }]}
+                      >
+                        <Image source={PLUS_ICON} />
+                      </Animated.View>
+                    </TouchableWithoutFeedback>) : null}
+              </NetworkConsumer>
           )}
 
         </View>
@@ -104,20 +114,23 @@ class DashboardActionBar extends React.Component {
 DashboardActionBar.defaultProps = {
   page: 'home',
   showList: false,
+  showSearch: false,
   listType: 'LIST',
-  filtering: true,  
+  filtering: true,
   filterType: 'all',
   sortType: 'date',
   notifications: true,
   feed: {},
   badgeCount: 0,
   handleList: () => {},
-  handleFilter: () => {}
+  handleFilter: () => {},
+  handleSearch: () => {}
 }
 
 DashboardActionBar.propTypes = {
   page: PropTypes.string,
   showList: PropTypes.bool,
+  showSearch: PropTypes.bool,
   listType: PropTypes.string,
   filterType: PropTypes.string,
   sortType: PropTypes.string,
@@ -125,6 +138,7 @@ DashboardActionBar.propTypes = {
   onAddFeed: PropTypes.func,
   handleList: PropTypes.func,
   handleFilter: PropTypes.func,
+  handleSearch: PropTypes.func,
   notifications: PropTypes.bool,
   feed: PropTypes.object,
   badgeCount: PropTypes.number

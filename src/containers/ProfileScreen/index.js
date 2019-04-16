@@ -1,7 +1,7 @@
 import React from 'react'
 import {
   View,
-  Text, 
+  Text,
   TouchableOpacity,
   Image,
   ScrollView,
@@ -21,7 +21,6 @@ import ImagePicker from 'react-native-image-picker'
 import ActionSheet from 'react-native-actionsheet'
 import VersionNumber from 'react-native-version-number'
 import { GoogleSignin } from 'react-native-google-signin';
-import SVGImage from 'react-native-remote-svg'
 import Modal from "react-native-modal"
 import _ from 'lodash'
 import ShareExtensionTip from '../../components/ShareExtensionTip'
@@ -33,19 +32,19 @@ import COLORS from '../../service/colors'
 import styles from './styles'
 import Analytics from '../../lib/firebase'
 import { TIP_SHARE_LINK_URL } from '../../service/api'
+import OfflineIndicator from '../../components/LocalStorage/OfflineIndicator'
 
 const CLOSE_ICON = require('../../../assets/images/Close/Blue.png')
 const TRASH_ICON = require('../../../assets/images/Trash/Blue.png')
 const LOCK_ICON = require('../../../assets/images/Lock/Blue.png')
 const EDIT_ICON = require('../../../assets/images/Edit/Blue.png')
 const PROFILE_ICON = require('../../../assets/images/Profile/Blue.png')
-const PREMIUM_ICON = require('../../../assets/svgs/IconMediumStarGold.svg')
+const PREMIUM_ICON = require('../../../assets/images/Premium/IconMediumStarGold.png')
 const SHARE_ICON = require('../../../assets/images/Share/Blue.png')
 
 const ABOUT_ITEMS = [
   'Support',
-  'Privacy Policy',
-  'Terms & Conditions'
+  'Terms of Service'
 ]
 
 class ProfileScreen extends React.Component {
@@ -64,30 +63,30 @@ class ProfileScreen extends React.Component {
       icon: <Image source={PROFILE_ICON} style={styles.leftIcon} />,
       title: 'Profile'
     })
-    
+
     this.SETTING_ITEMS.push({
       icon: <Image source={LOCK_ICON} style={styles.leftIcon} />,
       title: 'Security'
     })
-    
+
     this.SETTING_ITEMS.push({
       icon: <Image source={TRASH_ICON} style={styles.leftIcon} />,
       title: 'Archived flows'
     })
-    
+
     if(Platform.OS === 'ios') {
       this.SETTING_ITEMS.push({
         icon: <Image source={SHARE_ICON} style={styles.leftIcon} />,
         title: 'Enable share extention'
-      })  
+      })
     }
 
     this.SETTING_ITEMS.push({
-      icon: <SVGImage source={PREMIUM_ICON} style={styles.leftIcon} />,
+      icon: <Image source={PREMIUM_ICON} style={styles.leftIcon} />,
       title: 'Upgrade to Mello Premium'
-    })  
+    })
   }
-  
+
   componentDidMount() {
     Analytics.setCurrentScreen('ProfileScren')
 
@@ -105,7 +104,7 @@ class ProfileScreen extends React.Component {
     return true;
   }
 
-  
+
   UNSAFE_componentWillReceiveProps(nextProps) {
     const { user } = nextProps
 
@@ -122,7 +121,7 @@ class ProfileScreen extends React.Component {
 
     if (Actions.currentScene === 'ProfileScreen') {
       if (this.props.user.loading === 'USER_SIGNOUT_PENDING' && user.loading === 'USER_SIGNOUT_FULFILLED') {
-        Actions.LoginScreen()
+        Actions.LoginScreen({ type: 'replace', prevPage: 'loggedOut' })
       }
 
       if (this.props.user.loading === 'UPDATE_PASSWORD_PENDING' && user.loading === 'UPDATE_PASSWORD_FULFILLED') {
@@ -132,7 +131,7 @@ class ProfileScreen extends React.Component {
         }, 2000)
       }
 
-      if (this.props.user.loading === 'DELETE_PROFILE_PHOTO_REQUEST' && 
+      if (this.props.user.loading === 'DELETE_PROFILE_PHOTO_REQUEST' &&
         (user.loading === 'DELETE_PROFILE_PHOTO_FULFILLED' || user.loading === 'DELETE_PROFILE_PHOTO_REJECTED')) {
         this.setState({ loading: false })
       }
@@ -184,7 +183,7 @@ class ProfileScreen extends React.Component {
         path: 'feedo'
       }
     };
-        
+
     if (index === 1) {
       // from camera
        this.pickMediaFromCamera(options);
@@ -220,7 +219,7 @@ class ProfileScreen extends React.Component {
               }
               else if (Platform.OS === 'ios') {
                 Permissions.openSettings();
-              }    
+              }
             });
           }
           else if (Platform.OS === 'ios') {
@@ -232,27 +231,7 @@ class ProfileScreen extends React.Component {
   }
 
   showShareExtension = () => {
-    setTimeout(() => {
-      this.setState({ showShareTipsModal: true })
-    }, 100)
-
-    setTimeout(() => {
-      Share.share({
-        message: 'Mello',
-        title: 'Mello',
-        url: TIP_SHARE_LINK_URL
-      },{
-        dialogTitle: 'Mello',
-        subject: 'Mello',
-        excludedActivityTypes: ["com.apple.UIKit.activity.AirDrop"]
-      }).then(result => {
-        if (result.action === Share.dismissedAction) {
-          this.setState({ showShareTipsModal: false })
-        }
-      }).catch(error => {
-        console.log('ERROR: ', error)
-      })
-    }, 200)
+    this.setState({ showShareTipsModal: true })
   }
 
   handleSettingItem = (index) => {
@@ -290,9 +269,6 @@ class ProfileScreen extends React.Component {
         Actions.ProfileSupportScreen()
         return
       case 1:
-        Actions.ProfilePrivacyPolicyScreen()
-        return
-      case 2:
         Actions.ProfileTermsAndConditionsScreen()
         return
       default:
@@ -300,13 +276,17 @@ class ProfileScreen extends React.Component {
     }
   }
 
+  dismiss = (e) => {
+    this.setState({ showShareTipsModal: false })
+  };
+
   render () {
     const { userInfo } = this.state
-
     return (
       <View style={styles.overlay}>
         {userInfo && (
           <ScrollView style={styles.scrollView}>
+            <OfflineIndicator/>
             <View style={styles.body}>
               <TouchableOpacity onPress={() => Actions.pop()} style={styles.closeButton}>
                 <Image source={CLOSE_ICON} />
@@ -324,7 +304,7 @@ class ProfileScreen extends React.Component {
                       textColor={COLORS.PURPLE}
                     />
                   </TouchableOpacity>
-                  <TouchableOpacity 
+                  <TouchableOpacity
                     style={styles.editView}
                     onPress={() => this.updatePhoto()}>
                     <Image source={EDIT_ICON} style={styles.editIcon} />
@@ -422,9 +402,9 @@ class ProfileScreen extends React.Component {
               <View style={styles.bottomView}>
                 <Text style={styles.version}>Version {VersionNumber.appVersion}.{VersionNumber.buildVersion}</Text>
                 <View style={styles.bottomItemView}>
-                  <Text style={styles.version}>Crafted with</Text>
+                  <Text style={styles.version}>Made with</Text>
                   <MaterialIcons name='favorite' size={12} color={COLORS.MEDIUM_GREY} style={styles.favicon}/>
-                  <Text style={styles.version}>in Dublin</Text>
+                  <Text style={styles.version}>in Solvers</Text>
                 </View>
               </View>
             </View>
@@ -464,8 +444,9 @@ class ProfileScreen extends React.Component {
         )}
 
         {
-          this.state.showShareTipsModal && 
+          this.state.showShareTipsModal &&
             <ShareExtensionTip
+              onDismiss={this.dismiss}
               ref={ref => (this.ref = ref)}
             />
         }

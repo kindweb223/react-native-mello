@@ -6,12 +6,15 @@ import {
   TouchableOpacity,
   Animated,
   Keyboard,
+  Platform,
 } from 'react-native'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
+import * as feedoTypes from '../../redux/feedo/types'
 
 import Ionicons from 'react-native-vector-icons/Ionicons'
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons'
+import * as Animatable from 'react-native-animatable'
 
 import _ from 'lodash'
 import Search from 'react-native-search-box';
@@ -38,7 +41,9 @@ class SelectHuntScreen extends React.Component {
       loading: false,
       isVisibleNewFeedScreen: false,
       isKeyboardShow: false,
-      filterText: ''
+      filterText: '',
+      cachedFeedList: props.cachedFeedList,
+      animationType: 'slideInRight'
     };
     this.animatedShow = new Animated.Value(0);
     this.animatedMove = new Animated.Value(0);
@@ -46,8 +51,16 @@ class SelectHuntScreen extends React.Component {
   }
 
   componentDidMount() {
+    const { cachedFeedList } = this.state
     Analytics.setCurrentScreen('SelectHuntScreen')
-    this.props.getFeedoList(3, true);
+
+    if (cachedFeedList.length == 0) {
+      this.props.getFeedoList(3, true);
+    }
+
+    const animationType = this.props.direction === 'left' ? 'slideInRight' : 'slideInUp'
+    this.setState({ animationType })
+
     Animated.timing(this.animatedShow, {
       toValue: 1,
       duration: CONSTANTS.ANIMATEION_MILLI_SECONDS * 1.5,
@@ -56,8 +69,15 @@ class SelectHuntScreen extends React.Component {
       toValue: 1,
       duration: CONSTANTS.ANIMATEION_MILLI_SECONDS * 1.5,
     }).start();
-    this.keyboardWillShowSubscription = Keyboard.addListener('keyboardWillShow', (e) => this.keyboardWillShow(e));
-    this.keyboardWillHideSubscription = Keyboard.addListener('keyboardWillHide', (e) => this.keyboardWillHide(e));
+
+    if (Platform.OS === 'ios') {
+      this.keyboardWillShowSubscription = Keyboard.addListener('keyboardWillShow', (e) => this.keyboardWillShow(e));
+      this.keyboardWillHideSubscription = Keyboard.addListener('keyboardWillHide', (e) => this.keyboardWillHide(e));
+    }
+    else {
+      this.keyboardWillShowSubscription = Keyboard.addListener('keyboardDidShow', (e) => this.keyboardWillShow(e));
+      this.keyboardWillHideSubscription = Keyboard.addListener('keyboardDidHide', (e) => this.keyboardWillHide(e));
+    }
   }
 
   componentWillUnmount() {
@@ -65,12 +85,18 @@ class SelectHuntScreen extends React.Component {
     this.keyboardWillHideSubscription.remove();
   }
 
+  async UNSAFE_componentWillReceiveProps(nextProps) {
+    if (this.props.feedo.loading !== feedoTypes.GET_FEEDO_LIST_FULFILLED && nextProps.feedo.loading === feedoTypes.GET_FEEDO_LIST_FULFILLED) {
+      this.setState({cachedFeedList: nextProps.feedo.feedoListForCardMove})      
+    }
+  }
+  
   keyboardWillShow(e) {
     this.setState({ isKeyboardShow: true })
     Animated.timing(
       this.animatedKeyboardHeight, {
         toValue: e.endCoordinates.height,
-        duration: e.duration,
+        duration: Platform.OS === 'ios' ? e.duration : CONSTANTS.ANIMATEION_MILLI_SECONDS,
       }
     ).start();
   }
@@ -80,7 +106,7 @@ class SelectHuntScreen extends React.Component {
     Animated.timing(
       this.animatedKeyboardHeight, {
         toValue: 0,
-        duration: e.duration,
+        duration: Platform.OS === 'ios' ? e.duration : CONSTANTS.ANIMATEION_MILLI_SECONDS,
       }
     ).start();
   }
@@ -104,6 +130,9 @@ class SelectHuntScreen extends React.Component {
     } else {
       this.animatedShow.setValue(0);
     }
+
+    const animationType = this.props.direction === 'left' ? 'slideOutRight' : 'slideOutDown'
+    this.setState({ animationType })
   }
 
   onBack() {
@@ -136,6 +165,7 @@ class SelectHuntScreen extends React.Component {
     } else if (selectMode === CONSTANTS.FEEDO_SELECT_FROM_MOVE_CARD) {
       return this.renderHeaderFromMoveCard;
     }
+
     return this.renderHeaderFromExtension;
   }
 
@@ -230,12 +260,14 @@ class SelectHuntScreen extends React.Component {
   }
 
   render () {
+    const { cachedFeedList, animationType } = this.state
+
     const animatedMove  = this.animatedMove.interpolate({
       inputRange: [0, 1],
       outputRange: [CONSTANTS.SCREEN_WIDTH, 0],
     });
 
-    let feedoList = this.props.feedo.feedoListForCardMove;
+    let feedoList = cachedFeedList;
     if (this.props.hiddenFeedoId) {
       feedoList = _.filter(feedoList, feedo => feedo.id !== this.props.hiddenFeedoId);
     }
@@ -254,14 +286,10 @@ class SelectHuntScreen extends React.Component {
 
     return (
       <View style={[styles.container, selectMode !== CONSTANTS.FEEDO_SELECT_FROM_SHARE_EXTENSION && {backgroundColor: COLORS.MODAL_BACKGROUND}]}>
-        <Animated.View 
-          style={[
-            styles.feedContainer, {opacity: this.animatedShow},
-            this.props.direction === 'left' && {left: animatedMove},
-            this.props.direction === 'top' && {top: animatedMove} 
-          ]}
-        >
-          <Animated.View 
+        <View style={styles.feedContainer}>
+          <Animatable.View
+            animation={animationType}
+            duration={300}
             style={[
               styles.contentContainer, 
               {
@@ -277,13 +305,13 @@ class SelectHuntScreen extends React.Component {
             <View style={styles.searchContainer}>
               <Search
                 inputStyle={{
-                  backgroundColor: 'rgba(142,142,147,0.12)',
                   padding: 0,
                   paddingRight: 30,
                   marginRight: 10,
                   height: 36,
                   borderRadius: 10,
-                  fontSize: 16
+                  fontSize: 16,
+                  backgroundColor: '#f1f1f2',
                 }}
                 cancelButtonStyle={{
                   alignItems: 'flex-start',
@@ -317,8 +345,8 @@ class SelectHuntScreen extends React.Component {
               extraData={this.state}
             />
             {this.state.loading && <LoadingScreen />}
-          </Animated.View>
-        </Animated.View>
+          </Animatable.View>
+        </View>
         {
           this.state.isVisibleNewFeedScreen && 
             <View style={styles.newFeedContainer}>
@@ -341,6 +369,7 @@ SelectHuntScreen.defaultProps = {
   hiddenFeedoId: null,
   direction: 'left',
   onClosed: () => {},
+  cachedFeedList: []
 }
 
 
@@ -349,6 +378,7 @@ SelectHuntScreen.propTypes = {
   hiddenFeedoId: PropTypes.string,
   direction: PropTypes.string,
   onClosed: PropTypes.func,
+  cachedFeedList: PropTypes.array,
 }
 
 

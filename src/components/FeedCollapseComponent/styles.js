@@ -13,17 +13,15 @@ const styles = StyleSheet.create({
   },
   collpaseHeader: {
     width: '100%',
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    paddingHorizontal: 12
+    marginTop: 10,
+    paddingLeft: 16
   },
   headerTitle: {
     flex: 1,
-    lineHeight: 28,
-    fontSize: 28,
+    lineHeight: 24,
+    fontSize: 24,
     fontWeight: 'bold',
-    marginLeft: 4,
+    marginLeft: 16,
     marginTop: 4,
     color: COLORS.PRIMARY_BLACK
   },
@@ -32,10 +30,11 @@ const styles = StyleSheet.create({
   },
   summaryView: {
     paddingHorizontal: CONSTANTS.PADDING,
-    marginTop: 20
+    marginTop: 10
   },
   summaryText: {
-    fontSize: 16
+    fontSize: 14,
+    color: COLORS.PRIMARY_BLACK
   },
   summaryPlaceHolderText: {
     fontSize: 16,
@@ -73,7 +72,7 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     alignItems: 'center',
     paddingHorizontal: 12,
-    marginTop: 10
+    marginTop: 4
   },
   footerLeftBtnView: {
     flexDirection: 'row'
@@ -87,7 +86,7 @@ const styles = StyleSheet.create({
   collapseIconView: {
     width: 60,
     height: 30,
-    alignItems: 'flex-end',
+    alignItems: 'flex-start',
     justifyContent: 'center',
   },
   previewModal: {

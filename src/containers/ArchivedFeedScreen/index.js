@@ -12,7 +12,6 @@ import { Actions } from 'react-native-router-flux'
 import PropTypes from 'prop-types'
 import _ from 'lodash'
 import Ionicons from 'react-native-vector-icons/Ionicons'
-import SVGImage from 'react-native-remote-svg'
 import ToasterComponent from '../../components/ToasterComponent'
 import ArchivedFeedoListContainer from '../ArchivedFeedoListContainer'
 
@@ -26,7 +25,7 @@ import {
 import COLORS from '../../service/colors'
 import styles from './styles'
 
-const NOTIFICATION_EMPTY_ICON = require('../../../assets/svgs/NotificationEmptyState.svg')
+const NOTIFICATION_EMPTY_ICON = require('../../../assets/images/empty_state/NotificationEmptyState.png')
 
 class ArchivedFeedScreen extends React.Component {
   static renderLeftButton(props) {
@@ -51,9 +50,13 @@ class ArchivedFeedScreen extends React.Component {
     super(props);
     this.state = {
       archivedFeedList: [],
-      originalFeedList: [],
       loading: false
     };
+
+    this.originalFeedList = []
+    this.restoreFeeds = []
+    this.restoreFeedId = null
+    this.restoreActionTimer = null
   }
 
   componentDidMount() {
@@ -69,46 +72,82 @@ class ArchivedFeedScreen extends React.Component {
     if (this.props.feedo.loading === 'GET_ARCHIVED_FEED_PENDING' && feedo.loading === 'GET_ARCHIVED_FEED_FULFILLED') {
       this.setState({
         loading: false,
-        archivedFeedList: feedo.archivedFeedList,
-        originalFeedList: feedo.archivedFeedList
+        archivedFeedList: feedo.archivedFeedList
       })
+      this.originalFeedList = feedo.archivedFeedList
     }
 
     if (this.props.feedo.loading === 'GET_ARCHIVED_FEED_PENDING' && feedo.loading === 'GET_ARCHIVED_FEED_REJECTED') {
       this.setState({
         loading: false,
-        archivedFeedList: [],
-        originalFeedList: []
+        archivedFeedList: []
       })
-    }
-
-    if (this.props.feedo.loading === 'RESTORE_ARCHIVE_FEED_PENDING' && feedo.loading === 'RESTORE_ARCHIVE_FEED_FULFILLED') {
-      this.setState({
-        archivedFeedList: feedo.archivedFeedList,
-        originalFeedList: feedo.archivedFeedList
-      })
+      this.originalFeedList = []
     }
   }
 
   showToaster = (data) => {
-    const { archivedFeedList } = this.state
-    const restFeedoList = _.filter(archivedFeedList, feed => feed.id !== data.feed.id)
-    this.setState({ archivedFeedList: restFeedoList })
     this.setState({ isShowToaster: true }, () => this.restoreFeed(data))
   }
 
   restoreFeed = (data) => {
-    setTimeout(() => {
-      if (this.state.isShowToaster) {
-        this.setState({ isShowToaster: false })
-        this.props.restoreArchiveFeed(data.feed.id)
+    this.restoreFeeds.push(data.feed.id);
+    this.processRestore()
+  }
+
+  processRestore = () => {
+    const { archivedFeedList } = this.state
+
+    if (this.restoreFeeds.length === 0) {
+      this.setState({ isShowToaster: false })
+      return
+    }
+
+    const currentFeedId = this.restoreFeeds[0]
+
+    if (this.restoreFeedId === currentFeedId) {
+      currentFeed = _.find(this.originalFeedList, feed => feed.id === currentFeedId)
+
+      if (currentFeed) {
+        this.restoreFeedId = currentFeedId
+        this.props.restoreArchiveFeed(currentFeedId)
+        this.restoreFeeds.shift();
+
+        const restFeedoList = _.filter(archivedFeedList, feed => feed.id !== currentFeedId)
+        this.setState({ archivedFeedList: restFeedoList })
+
+        const restOriginalFeedoList = _.filter(this.originalFeedList, feed => feed.id !== currentFeedId)
+        this.originalFeedList = restOriginalFeedoList
+
+        this.processRestore();
       }
-    }, 5000)
+    } else {
+      this.restoreActionTimer = setTimeout(() => {
+        if (this.state.isShowToaster) {
+          this.setState({ isShowToaster: false })
+          this.props.restoreArchiveFeed(this.restoreFeedId)
+          this.restoreFeeds.shift();
+
+          const restOriginalFeedoList = _.filter(this.originalFeedList, feed => feed.id !== this.restoreFeedId)
+          this.originalFeedList = restOriginalFeedoList
+
+          this.restoreActionTimer = null
+          this.processRestore();
+        }
+      }, 5000)
+      this.restoreFeedId = currentFeedId
+
+      const restFeedoList = _.filter(archivedFeedList, feed => feed.id !== currentFeedId)
+      this.setState({ archivedFeedList: restFeedoList })
+    }
   }
 
   undoAction = () => {
     this.setState({ isShowToaster: false }, () => {
-      this.setState({ archivedFeedList: this.state.originalFeedList })
+      clearTimeout(this.restoreActionTimer);
+      this.restoreActionTimer = null;
+      this.restoreFeeds = []
+      this.setState({ archivedFeedList: this.originalFeedList })
     })
   }
 
@@ -127,12 +166,11 @@ class ArchivedFeedScreen extends React.Component {
 
         {archivedFeedList.length === 0 && !loading && (
           <View style={styles.emptyView}>
-            <SVGImage
+            <Image
               source={NOTIFICATION_EMPTY_ICON}
             />
-            <Text style={styles.title}>No archived flows</Text>
-            <Text style={styles.subTitle}>Use archive for flows you may want to</Text>
-            <Text style={styles.subTitle}>come back to in the future.</Text>
+            <Text style={styles.title}>Nothing archived yet</Text>
+            <Text style={styles.subTitle}>Archive old flows to clear space for new ones!</Text>
           </View>
         )}
 

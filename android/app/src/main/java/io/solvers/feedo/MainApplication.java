@@ -3,6 +3,15 @@ package io.solvers.feedo;
 import android.app.Application;
 
 import com.facebook.react.ReactApplication;
+import com.rnfs.RNFSPackage;
+import com.vinzscam.reactnativefileviewer.RNFileViewerPackage;
+import com.github.amarcruz.rntextsize.RNTextSizePackage;
+import com.robinpowered.react.Intercom.IntercomPackage;
+import io.intercom.android.sdk.Intercom;
+import org.devio.rn.splashscreen.SplashScreenReactPackage;
+import fr.snapp.imagebase64.RNImgToBase64Package;
+import io.solvers.feedo.shareextension.SharePackage;
+import me.hauvo.thumbnail.RNThumbnailPackage;
 import co.apptailor.googlesignin.RNGoogleSigninPackage;
 import com.mkuczera.RNReactNativeHapticFeedbackPackage;
 import com.proyecto26.inappbrowser.RNInAppBrowserPackage;
@@ -43,6 +52,14 @@ public class MainApplication extends Application implements ReactApplication {
     protected List<ReactPackage> getPackages() {
       return Arrays.<ReactPackage>asList(
           new MainReactPackage(),
+            new RNFSPackage(),
+            new RNFileViewerPackage(),
+            new RNTextSizePackage(),
+            new SharePackage(),
+            new IntercomPackage(),
+            new SplashScreenReactPackage(),
+            new RNImgToBase64Package(),
+            new RNThumbnailPackage(),
             new RNGoogleSigninPackage(),
             new RNReactNativeHapticFeedbackPackage(),
             new RNInAppBrowserPackage(),
@@ -81,5 +98,9 @@ public class MainApplication extends Application implements ReactApplication {
   public void onCreate() {
     super.onCreate();
     SoLoader.init(this, /* native exopackage */ false);
+    // DEV
+    Intercom.initialize(this, "android_sdk-c0adbb1c6817c6370b6138cfb27b821706169733", "spgs5xuc");
+    // PROD
+    // Intercom.initialize(this, "android_sdk-c97fdf20f89a7b0ad1cb02fbed97d182fc3b6e47", "b4x3v190");
   }
 }

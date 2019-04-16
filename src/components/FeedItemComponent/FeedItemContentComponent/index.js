@@ -13,7 +13,7 @@ import AvatarPileComponent from '../../AvatarPileComponent'
 import Tags from "../../../components/FeedTags"
 import styles from './styles'
 import COLORS from '../../../service/colors'
-import { TAGS_FEATURE } from '../../../service/api'
+import { TAGS_FEATURE, PIN_FEATURE } from '../../../service/api'
 
 const CARD_ICON_GREY = require('../../../../assets/images/Card/Grey.png')
 const CARD_ICON_PURPLE = require('../../../../assets/images/Card/Purple.png')
@@ -48,12 +48,12 @@ class FeedItemContentComponent extends React.Component {
         <View style={styles.titleView}>
           <Text style={styles.title} numberOfLines={1} ellipsizeMode="tail">{data.headline}</Text>
           <View style={styles.rightView}>
-            {pinFlag && (
+            {PIN_FEATURE && pinFlag && (
               <Image source={PIN_ICON_PURPLE} />
             )}
             {avatars.length > 0 && (
               <View style={styles.avatarView}>
-                <AvatarPileComponent avatars={avatars} size={24} numFaces={2} showPlus={false} />
+                <AvatarPileComponent avatars={avatars} size={29} numFaces={2} showPlus={false} showStroke />
               </View>
             )}
           </View>
@@ -63,7 +63,7 @@ class FeedItemContentComponent extends React.Component {
           <View style={styles.statsItemView}>
             <Image source={CARD_ICON_GREY} style={styles.cardIcon} />
             <Text style={[styles.feedText, styles.inActive]}>
-              {data.ideas.length}
+              {data.metadata.ideasSubmitted}
             </Text>
           </View>
         </View>

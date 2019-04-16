@@ -1,16 +1,23 @@
 import React from 'react'
-import { View, Text, Animated, PanResponder, Image } from 'react-native'
+import { View, Text, Animated, PanResponder, Image, AsyncStorage, Platform } from 'react-native'
 import { connect } from 'react-redux'
 import * as mime from 'react-native-mime-types';
 import SVGImage from 'react-native-remote-svg';
 import SvgUri from 'react-native-svg-uri';
+import { Actions } from 'react-native-router-flux'
 
+import { SCHEME } from '../../service/api'
 import ShareExtension from '../shareExtension'
 import styles from './styles'
+import * as Animatable from 'react-native-animatable'
 
 const CloseVelocity = 1.25;
 const SelectDelta = 2;
-
+const FADE_IN_TIME = 750;
+const FADE_OUT_TIME = 0;
+const FADE_OUT_DOWN_TIME = 1000;
+const SLIDE_OUT_TIME = 1250;
+const SLIDE_OUT_TIME_MIN = 600;
 
 class ShareSuccessScreen extends React.Component {
   constructor(props) {
@@ -21,6 +28,11 @@ class ShareSuccessScreen extends React.Component {
     this.showClipboardTimeout = null;
     this.isClosed = false;
 
+    this.state = {
+      animationType: 'slideInUp',
+      animationDuration: FADE_IN_TIME
+    }
+
     this._panResponder = PanResponder.create({
       onStartShouldSetPanResponder: (evt, gestureState) => true,
       onStartShouldSetPanResponderCapture: (evt, gestureState) => true,
@@ -30,9 +42,19 @@ class ShareSuccessScreen extends React.Component {
         this.isClosed = false;
       },
       onPanResponderMove: (evt, gestureState) => {
+        clearTimeout(this.showClipboardTimeout);
+        this.showClipboardTimeout = null;
         if (Math.abs(gestureState.vx) > CloseVelocity) {
-          this.isClosed = true;
-          this.closeView(false);
+          // Need to check close hasnt already been initiated
+          if (!this.isClosed) {
+            this.setState({
+              animationType: gestureState.vx < 0 ? 'slideOutLeft' : 'slideOutRight',
+              animationDuration: SLIDE_OUT_TIME / Math.abs(gestureState.vx) < SLIDE_OUT_TIME_MIN ? SLIDE_OUT_TIME_MIN : SLIDE_OUT_TIME / Math.abs(gestureState.vx) 
+            }, () => {
+              this.isClosed = true;
+              this.closeView(false);
+            });
+          }
         } else {
           this.animatedMoveX.setValue(gestureState.moveX - gestureState.x0);
         }
@@ -41,7 +63,7 @@ class ShareSuccessScreen extends React.Component {
       onPanResponderRelease: (evt, gestureState) => {
         if (Math.abs(gestureState.dx) < SelectDelta) {
           this.onSelect();
-        } else if (this.isClosed == false) {
+        } else if (this.isClosed === false) {
           Animated.timing(
             this.animatedMoveX, {
               toValue: 0,
@@ -62,13 +84,18 @@ class ShareSuccessScreen extends React.Component {
     Animated.timing(
       this.animatedFade, {
         toValue: 1,
-        duration: 750
+        duration: FADE_IN_TIME
       }
     ).start(() => {
       this.showClipboardTimeout = setTimeout(() => {
         this.showClipboardTimeout = null;
-        this.closeView(false);
-      }, 3000);
+        this.setState({
+          animationType: 'fadeOutDownBig',
+          animationDuration: FADE_OUT_DOWN_TIME
+        }, () => {
+          this.closeView(false);
+        });
+      }, 2500);
     })
   }
 
@@ -79,8 +106,14 @@ class ShareSuccessScreen extends React.Component {
     }
   }
 
+  // No animation and 0 milliseconds for instant open
   onSelect() {
-    this.closeView(true);
+    this.setState({
+      animationType: '',
+      animationDuration: FADE_OUT_TIME
+    }, () => {
+      this.closeView(true);
+    });
   }
 
   closeView(isSelect = true) {
@@ -88,7 +121,7 @@ class ShareSuccessScreen extends React.Component {
     Animated.timing(
       this.animatedFade, {
         toValue: 0,
-        duration: 750
+        duration: this.state.animationDuration
       }
     ).start(() => {
       if (this.showClipboardTimeout) {
@@ -97,10 +130,41 @@ class ShareSuccessScreen extends React.Component {
       }
       if (isSelect) {
         console.log('FEED_ID: ', this.props.feedo.currentFeed.id)
-        ShareExtension.goToMainApp(`demos.solvers.io://flow/${this.props.feedo.currentFeed.id}`);
-        ShareExtension.close();
-      } else {
-        ShareExtension.close();
+        if (Platform.OS === 'ios') {
+          ShareExtension.goToMainApp(SCHEME + `flow/${this.props.feedo.currentFeed.id}`);
+          ShareExtension.close();
+        }
+        else {
+          const data = {
+            id: this.props.feedo.currentFeed.id
+          }
+          const userInfo = AsyncStorage.getItem('userInfo')
+          console.log('data: ', data, userInfo)
+          // store.dispatch(getFeedoList())
+          if (userInfo) {
+            if (Actions.currentScene === 'FeedDetailScreen') {
+              Actions.FeedDetailScreen({type: 'replace', data, isDeepLink: true});
+            } else {
+              Actions.FeedDetailScreen({data, isDeepLink: true})
+            }
+          }
+          else {
+            Actions.LoginScreen()
+          }
+        }
+      } 
+      else {
+        if (Platform.OS === 'ios')
+          ShareExtension.close();
+        else {
+          //go to previous scene
+          if (this.props.prev_scene !== '') {
+            Actions.popTo(this.props.prev_scene)
+          }
+          setTimeout(() => {
+            ShareExtension.close();
+          }, 10)
+        }
       }
     })
   }
@@ -137,7 +201,7 @@ class ShareSuccessScreen extends React.Component {
 
     return (
       <View style={styles.container}>
-        <Animated.View style={[styles.toasterContainer, { opacity: this.animatedFade }]}>
+        <Animatable.View animation={this.state.animationType} duration={this.state.animationDuration} style={[styles.toasterContainer, { opacity: this.animatedFade }]}>
           <Animated.View
             style={[
               styles.mainContainer,
@@ -150,12 +214,13 @@ class ShareSuccessScreen extends React.Component {
                 this.renderImage(card.currentCard)
               )}
               <View style={(card.currentCard && card.currentCard.coverImage) ? styles.textsContainer : styles.textsContainerNoImage}>
-                <Text style={styles.textTitle}>Saved to</Text>
-                <Text style={styles.feedTitle} numberOfLines={1} ellipsizeMode="tail">{feedo.currentFeed.headline}</Text>
+                <Text style={styles.textTitle} numberOfLines={1} ellipsizeMode="tail">
+                  Saved to <Text style={styles.feedTitle}>{feedo.currentFeed.headline}</Text>
+                </Text>
               </View>
             </View>
           </Animated.View>
-        </Animated.View>
+        </Animatable.View>
       </View>
     )
   }

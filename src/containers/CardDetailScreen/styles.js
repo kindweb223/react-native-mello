@@ -3,7 +3,7 @@ import { ifIphoneX } from 'react-native-iphone-x-helper'
 import COLORS from '../../service/colors'
 import CONSTANTS from '../../service/constants'
 
-const FOOTER_HEIGHT = 55
+const FOOTER_HEIGHT = Platform.OS === 'ios' ? CONSTANTS.SCREEN_WIDTH / 7.5 : CONSTANTS.SCREEN_WIDTH / 7.5 + 5
 
 const styles = StyleSheet.create({
   container: {
@@ -26,7 +26,8 @@ const styles = StyleSheet.create({
   textInputIdea: {
     fontSize: 16,
     fontWeight: 'normal',
-    lineHeight: CONSTANTS.TEXT_INPUT_LINE_HEIGHT - 4,
+    color: 'black',
+    lineHeight: CONSTANTS.TEXT_INPUT_LINE_HEIGHT,
     marginBottom: 0,
     marginHorizontal: 16,
     paddingLeft: 0,
@@ -51,14 +52,12 @@ const styles = StyleSheet.create({
   closeButtonView: {
     justifyContent: 'center',
     alignItems: 'center',
-    width: '100%',
-    height: '100%',
     backgroundColor: COLORS.ACTION_SHEET_TITLE,
     width: 34,
     height: 34,
     borderRadius: 17,
-    paddingTop: 2,
-    paddingLeft: 2,
+    paddingTop: Platform.OS === 'ios' ? 2 : 0,
+    paddingLeft: Platform.OS === 'ios' ? 2 : 0
   },
   coverImageContainer: {
     zIndex: 2
@@ -70,7 +69,7 @@ const styles = StyleSheet.create({
     right: 0,
   },
   ideaContentView: {
-    paddingBottom: 50
+    paddingBottom: 50 // Why padding 50?
   },
   inviteeContainer: {
     flexDirection: 'row',
@@ -98,12 +97,13 @@ const styles = StyleSheet.create({
     color: COLORS.DARK_GREY,
   },
   footerContainer: {
+    marginBottom: Platform.OS === 'android' ? 4 : 0,
     paddingVertical: 5,
     height: FOOTER_HEIGHT,
     backgroundColor: '#fff',
     alignItems: 'center',
-    justifyContent: 'space-between',
-    flexDirection: 'row',
+    justifyContent: 'flex-end',
+    flexDirection: 'row'
   },
   addCommentView: {
     justifyContent: 'center',
@@ -133,6 +133,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
     width: 122,
     paddingVertical: 10,
+    marginBottom: 32,
     position: 'absolute',
     right: 55,
     bottom: CONSTANTS.STATUS_BOTTOM_BAR_HEIGHT + 10,

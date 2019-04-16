@@ -20,24 +20,32 @@ import PropTypes from 'prop-types'
 import Swipeout from 'react-native-swipeout'
 import _ from 'lodash'
 import FontAwesome from 'react-native-vector-icons/FontAwesome'
-import SVGImage from 'react-native-remote-svg'
+import Ionicons from 'react-native-vector-icons/Ionicons'
+import * as Animatable from 'react-native-animatable'
 
 import Analytics from '../../lib/firebase'
 import NotificationItemComponent from '../../components/NotificationItemComponent'
 import ActivityFeedComponent from '../../components/ActivityFeedComponent'
+import ActivityFeedGroupComponent from '../../components/ActivityFeedComponent/ActivityFeedGroupComponent'
 import CardDetailScreen from '../CardDetailScreen'
 import SelectHuntScreen from '../SelectHuntScreen'
 import ToasterComponent from '../../components/ToasterComponent'
+import AlertController from '../../components/AlertController'
+import LoadingScreen from '../LoadingScreen';
 
 import {
   getFeedDetail,
   getActivityFeed,
   readActivityFeed,
+  alreadyReadActivityFeed,
   deleteActivityFeed,
   readAllActivityFeed,
+  readActivityGroup,
   setCurrentFeed,
   getInvitedFeedList,
-  getActivityFeedVisited
+  getActivityFeedVisited,
+  deleteDummyCard,
+  moveDummyCard
 } from '../../redux/feedo/actions'
 import {
   getCard,
@@ -51,11 +59,11 @@ import CONSTANTS from '../../service/constants'
 import styles from './styles'
 
 const CLOSE_ICON = require('../../../assets/images/Close/Blue.png')
-const NOTIFICATION_EMPTY_ICON = require('../../../assets/svgs/NotificationEmptyState.svg')
+const NOTIFICATION_EMPTY_ICON = require('../../../assets/images/empty_state/NotificationEmptyState.png')
 
 const PAGE_COUNT = 50
 
-const TOASTER_DURATION = 5000
+const TOASTER_DURATION = 3000
 
 const ACTION_NONE = 0;
 const ACTION_FEEDO_PIN = 1;
@@ -65,15 +73,37 @@ const ACTION_CARD_MOVE = 4;
 const ACTION_CARD_EDIT = 5;
 const ACTION_CARD_DELETE = 6;
 
+/**
+ * 'IDEA_LIKED' - open the card that was like
+ * 'COMMENT_ADDED' - open the comment screen
+ * 'USER_ACCESS_CHANGED' - open the flow
+ * 'USER_INVITED_TO_HUNT' - open the flow
+ * 'USER_JOINED_HUNT' - open the flow
+ * 'IDEA_ADDED' - open the card
+ * 'HUNT_UPDATED' - open the flow
+ * 'IDEA_MOVED' - open the card
+ * 'IDEA_UPDATED' - open the card
+ * 'HUNT_DELETED' - alert the flow is no longer available
+ * 'IDEA_DELETED' - alert the card is not longer available
+ * 'USER_MENTIONED' - open the comment screen
+ */
 class NotificationScreen extends React.Component {
   get renderHeader() {
     return (
       <View style={styles.headerContainer}>
-        <TouchableOpacity activeOpacity={0.6} onPress={() => Actions.pop()} style={styles.buttonWrapper}>
-          <Image source={CLOSE_ICON} />
+        <TouchableOpacity
+          activeOpacity={0.6}
+          onPress={() => this.animateOutSingleNotificationView()}
+          style={styles.buttonWrapper}
+        >
+          {this.state.singleNotification && <Ionicons name="ios-arrow-back" size={32} color={COLORS.PURPLE} />}
         </TouchableOpacity>
-        <Text style={styles.textTitle}>Notifications</Text>
-        <View style={styles.buttonWrapper} />
+        <Text style={styles.textTitle}>{this.state.title}</Text>
+        <TouchableOpacity activeOpacity={0.6} onPress={() => Actions.pop()} style={[styles.buttonWrapper, { alignItems: 'flex-end' }]}>
+          <Text style={styles.doneButton}>
+            Done
+          </Text>
+        </TouchableOpacity>
       </View>
     );
   }
@@ -81,11 +111,13 @@ class NotificationScreen extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
+      title: 'Notifications',
       refreshing: false,
       loading: false,
       invitedFeedList: [],
       activityFeedList: [],
       notificationList: [],
+      singleNotificationList: [],
       selectedActivity: {},
       isVisibleCard: false,
       cardViewMode: CONSTANTS.CARD_NONE,
@@ -94,12 +126,16 @@ class NotificationScreen extends React.Component {
       isVisibleSelectFeedo: false,
       isShowInviteToaster: false,
       inviteToasterTitle: '',
-      apiLoading: false
+      apiLoading: false,
+      singleNotification: false,
+      animTransformSingleNotificationView: new Animated.Value(CONSTANTS.SCREEN_WIDTH),
+      animationType: 'slideInLeft',
     };
     this.animatedOpacity = new Animated.Value(0)
     this.userActions = []
     this.userActionTimer = null
-    this.prevFeedo = null
+    this.prevFeedo = null,
+    this.moveCardList = []
   }
 
   componentDidMount() {
@@ -111,7 +147,7 @@ class NotificationScreen extends React.Component {
     let { invitedFeedList, activityFeedList } = feedo
 
     invitedFeedList = _.orderBy(invitedFeedList, ['metadata.myLastActivityDate'], ['desc'])
-    activityFeedList = _.orderBy(activityFeedList, ['activityTime'], ['desc'])
+    activityFeedList = _.orderBy(activityFeedList, ['read', 'latestActivityTime'], ['asc', 'desc'])
 
     this.setState({ invitedFeedList, activityFeedList })
     this.setActivityFeeds(activityFeedList, invitedFeedList)
@@ -132,6 +168,48 @@ class NotificationScreen extends React.Component {
     const { feedo, card } = nextProps
     const { selectedActivity } = this.state
 
+    if (this.props.feedo.loading !== 'DEL_ACTIVITY_FEED_FULFILLED' && feedo.loading === 'DEL_ACTIVITY_FEED_FULFILLED') {
+      Analytics.logEvent('notification_delete_activity', {})
+      const activityGroup = _.filter(feedo.activityFeedList, feed => feed.id === feedo.activeActivityGroupId)
+      this.setState({ singleNotificationList: activityGroup[0].activities })
+    }
+
+    if ((this.props.feedo.loading !== 'GET_ACTIVITY_FEED_FULFILLED' && feedo.loading === 'GET_ACTIVITY_FEED_FULFILLED') ||
+        (this.props.feedo.loading !== 'READ_ACTIVITY_FEED_FULFILLED' && feedo.loading === 'READ_ACTIVITY_FEED_FULFILLED') ||
+        (this.props.feedo.loading !== 'READ_ACTIVITY_GROUP_FULLFILLED' && feedo.loading === 'READ_ACTIVITY_GROUP_FULLFILLED') ||
+        (this.props.feedo.loading !== 'DEL_ACTIVITY_FEED_FULFILLED' && feedo.loading === 'DEL_ACTIVITY_FEED_FULFILLED'))
+    {
+      let activityFeedList = _.orderBy(feedo.activityFeedList, ['read', 'latestActivityTime'], ['asc', 'desc'])
+      this.setState({ refreshing: false, activityFeedList })
+      this.setActivityFeeds(activityFeedList, this.state.invitedFeedList)
+    }
+
+    if (this.props.feedo.loading !== 'UPDATE_FEED_INVITATION_FULFILLED' && feedo.loading === 'UPDATE_FEED_INVITATION_FULFILLED') {
+      let invitedFeedList = _.orderBy(feedo.invitedFeedList, ['metadata.myLastActivityDate'], ['desc'])
+      this.setState({ invitedFeedList, isShowInviteToaster: true })
+      this.setActivityFeeds(this.state.activityFeedList, invitedFeedList)
+      
+      if (feedo.inviteUpdateType) {
+        this.setState({ inviteToasterTitle: 'Invitation accepted' })
+      } else {
+        this.setState({ inviteToasterTitle: 'Invitation declined' })
+      }
+      setTimeout(() => {
+        this.setState({ isShowInviteToaster: false })
+      }, TOASTER_DURATION)
+    }
+
+    // If current scene is not NotificationScreen then bugger off
+    // If !selectedActivity handles pubnub updates and other users making updates
+    if(Actions.currentScene !== 'NotificationScreen' || _.isEmpty(selectedActivity)) {
+        return;
+    }
+
+    // Set loading indicator when pending
+    if(feedo.loading === 'GET_FEED_DETAIL_PENDING' || card.loading === 'GET_CARD_PENDING') {
+      this.setState({loading: true})
+    }
+
     if (feedo.loading === 'PUBNUB_GET_FEED_DETAIL_FULFILLED' && Actions.currentScene !== 'FeedDetailScreen' ||
         feedo.loading === 'GET_CARD_FULFILLED' && Actions.currentScene !== 'FeedDetailScreen' ||
         feedo.loading === 'PUBNUB_LIKE_CARD_FULFILLED' && Actions.currentScene !== 'FeedDetailScreen' ||
@@ -150,6 +228,7 @@ class NotificationScreen extends React.Component {
 
     if ((this.props.feedo.loading !== 'GET_INVITED_FEEDO_LIST_FULFILLED' && feedo.loading === 'GET_INVITED_FEEDO_LIST_FULFILLED') ||
         (this.props.feedo.loading !== 'SAVE_FLOW_PREFERENCE_FULFILLED' && feedo.loading === 'SAVE_FLOW_PREFERENCE_FULFILLED') ||
+        (feedo.loading === 'GET_FEED_DETAIL_FULFILLED') ||
         (feedo.loading === 'PUBNUB_DELETE_FEED' &&
         Actions.currentScene !== 'FeedDetailScreen' && 
         Actions.currentScene !== 'CommentScreen' && Actions.currentScene !== 'ActivityCommentScreen' &&
@@ -160,85 +239,140 @@ class NotificationScreen extends React.Component {
       this.setActivityFeeds(this.state.activityFeedList, invitedFeedList)
     }
 
-    if (this.props.feedo.loading !== 'READ_ACTIVITY_FEED_FULFILLED' && feedo.loading === 'READ_ACTIVITY_FEED_FULFILLED') {
+    if (feedo.loading === 'READ_ACTIVITY_FEED_FULFILLED') {
       if (!_.isEmpty(selectedActivity)) {
         Analytics.logEvent('notification_read_activity', {})
-        if (selectedActivity.activityTypeEnum === 'IDEA_ADDED' || selectedActivity.activityTypeEnum === 'IDEA_UPDATED') {
-          this.props.getFeedDetail(selectedActivity.metadata.HUNT_ID)
-        } else if (selectedActivity.activityTypeEnum === 'COMMENT_ADDED') {
-          this.props.getFeedDetail(selectedActivity.metadata.HUNT_ID)
-        } else if (selectedActivity.activityTypeEnum === 'IDEA_LIKED') {
-          this.props.getFeedDetail(selectedActivity.metadata.HUNT_ID)
-        } else if (selectedActivity.activityTypeEnum === 'USER_JOINED_HUNT') {
-          Actions.FeedDetailScreen({ data: { id: selectedActivity.metadata.HUNT_ID }, prevPage: 'activity' })
-        } else if (selectedActivity.activityTypeEnum === 'USER_INVITED_TO_HUNT') {
-          Actions.FeedDetailScreen({ data: { id: selectedActivity.metadata.HUNT_ID }, prevPage: 'activity' })
-        } else if (selectedActivity.activityTypeEnum === 'HUNT_UPDATED') {
-          Actions.FeedDetailScreen({ data: { id: selectedActivity.metadata.HUNT_ID }, prevPage: 'activity' })
+        switch (selectedActivity.activityTypeEnum) {
+          case 'IDEA_LIKED':
+          case 'COMMENT_ADDED':
+          case 'USER_ACCESS_CHANGED':
+          case 'USER_INVITED_TO_HUNT':
+          case 'USER_JOINED_HUNT':
+          case 'IDEA_ADDED':
+          case 'HUNT_UPDATED':
+          case 'IDEA_MOVED':
+          case 'IDEA_UPDATED':
+          case 'USER_MENTIONED':
+            // We call get feed detail first as it might be deleted and we have to show an alert
+            this.props.getFeedDetail(selectedActivity.metadata.HUNT_ID);
+            break;
+          case 'HUNT_DELETED':
+            // Alert the flow has been deleted
+            this.finishLoading()
+            AlertController.shared.showAlert('Error', 'This flow no longer exists')
+            break;
+          case 'IDEA_DELETED':
+            // Alert the card has been deleted
+            this.finishLoading()
+            AlertController.shared.showAlert('Error', 'This card no longer exists')
+            break;
+          default:
+            this.finishLoading()
+            break;
         }
       }
-    }
-
-    if (this.props.feedo.loading !== 'DEL_ACTIVITY_FEED_FULFILLED' && feedo.loading === 'DEL_ACTIVITY_FEED_FULFILLED') {
-      Analytics.logEvent('notification_delete_activity', {})
     }
 
     if (this.props.feedo.loading !== 'GET_FEED_DETAIL_FULFILLED' && feedo.loading === 'GET_FEED_DETAIL_FULFILLED') {
       this.prevFeedo = feedo.currentFeed;
       if (!_.isEmpty(selectedActivity)) {
-        const ideaIndex = _.findIndex(feedo.currentFeed.ideas, idea => idea.id === selectedActivity.metadata.IDEA_ID)        
-        if (ideaIndex !== -1) {
-          this.props.getCard(selectedActivity.metadata.IDEA_ID)
+        switch (selectedActivity.activityTypeEnum) {
+          // Go to the flow
+          case 'USER_ACCESS_CHANGED':
+          case 'USER_INVITED_TO_HUNT':
+          case 'USER_JOINED_HUNT':
+          case 'HUNT_UPDATED':
+            Actions.FeedDetailScreen({ data: { id: selectedActivity.metadata.HUNT_ID }, prevPage: 'activity' })
+            this.finishLoading()
+            break;
+          // Get the card
+          case 'IDEA_LIKED':
+          case 'COMMENT_ADDED':
+          case 'IDEA_ADDED':
+          case 'IDEA_MOVED':
+          case 'IDEA_UPDATED':
+          case 'USER_MENTIONED':
+            // Check the card is in this Flow, it may no longer exist or have been moved
+            const cardExists = _.find(feedo.currentFeed.ideas, (i) => {
+              return (i.id === selectedActivity.metadata.IDEA_ID)
+            })
+
+            if (!cardExists) {
+              this.finishLoading()
+              AlertController.shared.showAlert('Error', 'This card no longer exists')
+            }
+            else {
+              this.props.getCard(selectedActivity.metadata.IDEA_ID);
+            }
+
+            break;
+          default:
+            this.finishLoading()
+            break;
         }
       }
     }
 
     if (this.props.card.loading !== 'GET_CARD_FULFILLED' && card.loading === 'GET_CARD_FULFILLED') {
-      if (selectedActivity.activityTypeEnum === 'COMMENT_ADDED') {
-        this.onSelectNewComment(selectedActivity)
-      } else {
-        const { currentFeed } = feedo
-        if (!this.state.isVisibleCard) {
-          const invitee = _.find(currentFeed.invitees, (o) => {
-            return (o.id === card.currentCard.inviteeId)
-          })
+      switch (selectedActivity.activityTypeEnum) {
+        case 'COMMENT_ADDED':
+        case 'USER_MENTIONED':
+          this.onSelectNewComment(selectedActivity)
+          this.finishLoading()
+          break;
+        // Get the card
+        case 'IDEA_LIKED':
+        case 'IDEA_ADDED':
+        case 'IDEA_MOVED':
+        case 'IDEA_UPDATED':
+          this.finishLoading()
 
-          this.setState({ selectedIdeaInvitee: invitee }, () => {
-            this.onSelectNewCard(card.currentCard)
-          })
-        }
+          const { currentFeed } = feedo
+
+          if (!this.state.isVisibleCard) {
+            const invitee = _.find(currentFeed.invitees, (o) => {
+              return (o.id === card.currentCard.inviteeId)
+            })
+
+            if(invitee) {
+              this.setState({ selectedIdeaInvitee: invitee }, () => {
+                this.onSelectNewCard(card.currentCard)
+              })
+            }
+            else {
+              AlertController.shared.showAlert('Error', 'This card no longer exists')
+            }
+          }
+          break;
       }
+    }
+
+    // Handle rejections
+    if(feedo.loading === 'READ_ACTIVITY_FEED_REJECTED') {
+      this.finishLoading()
+    }
+
+    if (feedo.loading === 'GET_FEED_DETAIL_REJECTED') {
+      // Error alert handled in HomeScreen
+      this.finishLoading()
     }
 
     if (this.props.card.loading !== 'GET_CARD_REJECTED' && card.loading === 'GET_CARD_REJECTED') {
+      this.finishLoading()
+
       if (card.error.code === 'error.idea.not.found') {
-        Alert.alert('Error', card.error.message)
+        AlertController.shared.showAlert('Error', 'This card no longer exists')
       }
     }
 
-    if ((this.props.feedo.loading !== 'GET_ACTIVITY_FEED_FULFILLED' && feedo.loading === 'GET_ACTIVITY_FEED_FULFILLED') ||
-        (this.props.feedo.loading !== 'READ_ACTIVITY_FEED_FULFILLED' && feedo.loading === 'READ_ACTIVITY_FEED_FULFILLED') ||
-        (this.props.feedo.loading !== 'DEL_ACTIVITY_FEED_FULFILLED' && feedo.loading === 'DEL_ACTIVITY_FEED_FULFILLED'))
-    {
-      let activityFeedList = _.orderBy(feedo.activityFeedList, ['activityTime'], ['desc'])
-      this.setState({ refreshing: false, loading: false, activityFeedList })
-      this.setActivityFeeds(activityFeedList, this.state.invitedFeedList)
-    }
+  }
 
-    if (this.props.feedo.loading !== 'UPDTE_FEED_INVITATION_FULFILLED' && feedo.loading === 'UPDTE_FEED_INVITATION_FULFILLED') {
-        let invitedFeedList = _.orderBy(feedo.invitedFeedList, ['metadata.myLastActivityDate'], ['desc'])
-        this.setState({ invitedFeedList, isShowInviteToaster: true })
-        this.setActivityFeeds(this.state.activityFeedList, invitedFeedList)
-        
-        if (feedo.inviteUpdateType) {
-          this.setState({ inviteToasterTitle: 'Invitation accepted' })
-        } else {
-          this.setState({ inviteToasterTitle: 'Invitation ignored' })
-        }
-        setTimeout(() => {
-          this.setState({ isShowInviteToaster: false })
-        }, TOASTER_DURATION)
-    }
+  startLoading() {
+    this.setState({loading: true})
+  }
+
+  finishLoading() {
+    this.setState({loading: false, selectedActivity: {}})
   }
 
   getActivityFeedList = (page, size) => {
@@ -247,6 +381,25 @@ class NotificationScreen extends React.Component {
   }
 
   setActivityFeeds = (activityFeedList, invitedFeedList) => {
+    if (activityFeedList.length > 0) {
+      if(activityFeedList[0].id !== 'empty_activity_feed_key') {
+        let empty = [{
+          id: 'empty_activity_feed_key',
+          activities: null
+        }]
+        activityFeedList = empty.concat(activityFeedList)
+      }
+    }
+
+    if (invitedFeedList.length > 0) {
+      if(invitedFeedList[0].id !== 'empty_invited_feed_key') {
+        let empty = [{
+          id: 'empty_invited_feed_key'
+        }]
+        invitedFeedList = empty.concat(invitedFeedList)
+      }
+    }
+
     let notificationList = [
       ...invitedFeedList,
       ...activityFeedList
@@ -255,9 +408,19 @@ class NotificationScreen extends React.Component {
   }
 
   renderInvitedFeedItem = (data) => {
+    if (data.id === 'empty_invited_feed_key') {
+      return (
+        <View style={styles.sectionView}>
+          <Text style={styles.sectionTitle}>
+            Invitations
+          </Text>
+        </View>
+      )
+    }
+
     return (
       <View style={styles.itemView}>
-        <NotificationItemComponent data={data} avatarSize={58} />
+        <NotificationItemComponent data={data} hideTumbnail={true} showTime />
       </View>
     )
   }
@@ -267,8 +430,51 @@ class NotificationScreen extends React.Component {
   }
 
   onReadActivity = (data) => {
-    this.setState({ selectedActivity: data })
-    this.props.readActivityFeed(this.props.user.userInfo.id, data.id)
+    this.setState({
+      selectedActivity: data
+    }, () => {
+    // If not read then call API, otherwise dummy call
+      if (!data.read) {
+        this.setState({loading: true})
+        this.props.readActivityFeed(this.props.user.userInfo.id, data.id)
+      } else {
+        this.props.alreadyReadActivityFeed(data.id)
+      }
+    })
+  }
+
+  onGroupItemSelect = (data) => {
+    this.setState({
+      title: data.headline,
+      singleNotification: true,
+      singleNotificationList: data.activities
+    })
+    this.animateInSingleNotificationView()
+
+    this.props.readActivityGroup(this.props.user.userInfo.id, data.id)
+  }
+
+  animateInSingleNotificationView() {
+    const parallel = Animated.parallel
+    const timing = Animated.timing
+
+    parallel([
+      timing(this.state.animTransformSingleNotificationView, {
+        toValue: 0,
+        duration: 400
+      })
+    ]).start()
+  }
+
+  animateOutSingleNotificationView() {
+    const timing = Animated.timing
+
+    timing(this.state.animTransformSingleNotificationView, {
+      toValue: CONSTANTS.SCREEN_WIDTH,
+      duration: 400
+    }).start(() => {
+      this.setState({ singleNotification: false, title: 'Notifications' })
+    })
   }
 
   get renderDeleteComponent() {
@@ -290,14 +496,31 @@ class NotificationScreen extends React.Component {
       }
     ];
 
+    if (data.id === 'empty_activity_feed_key') {
+      return (
+        _.isEmpty(this.state.invitedFeedList) ?
+        null
+        :
+        <View style={styles.sectionView}>
+          <Text style={styles.sectionTitle}>
+            Updates
+          </Text>
+        </View>
+      )
+    }
+
     return (
-      <View style={[styles.activityItem, data.read === true && { backgroundColor: '#fff' }]}>
+      <View>
         <Swipeout
           style={styles.itemContainer}
           autoClose={true}
+          disabled={!this.state.singleNotification}
           right={swipeoutBtns}
-        > 
-          <ActivityFeedComponent user={this.props.user} data={data} onReadActivity={() => this.onReadActivity(data)} />
+        >
+          {this.state.singleNotification
+            ? <ActivityFeedComponent user={this.props.user} data={data} onReadActivity={() => this.onReadActivity(data)} />
+            : <ActivityFeedGroupComponent user={this.props.user} data={data} onGroupItemSelect={() => this.onGroupItemSelect(data)} />
+          }
         </Swipeout>
       </View>
     );
@@ -357,11 +580,15 @@ class NotificationScreen extends React.Component {
   }
 
   renderItem({ item }) {
-    if (item.hasOwnProperty('activityTypeEnum')) {
+    if (item.hasOwnProperty('activities')) {
       return this.renderActivityFeedItem(item)
     } else {
       return this.renderInvitedFeedItem(item)
     }
+  }
+
+  renderSingleNotificationItem({ item }) {
+    return this.renderActivityFeedItem(item)
   }
 
   renderFooter = () => {
@@ -377,16 +604,16 @@ class NotificationScreen extends React.Component {
   renderSeparator = () => (
     <View style={styles.separator} /> 
   )
-  
+
   render () {
-    const { notificationList } = this.state
+    const { notificationList, singleNotificationList, loading, singleNotification } = this.state
 
     return (
       <View style={styles.container}>
         <SafeAreaView style={{ flex: 1 }}>
           {this.renderHeader}
 
-          {notificationList.length > 0
+          {!singleNotification && (notificationList.length > 0
           ? <FlatList
               style={styles.flatList}
               contentContainerStyle={styles.contentFlatList}
@@ -407,14 +634,43 @@ class NotificationScreen extends React.Component {
               onEndReachedThreshold={0}
             />
           : <View style={styles.emptyView}>
-              <SVGImage
+              <Image
                 source={NOTIFICATION_EMPTY_ICON}
               />
-              <Text style={styles.title}>No new notifications</Text>
-              <Text style={styles.subTitle}>Updates on collaboration with other</Text>
-              <Text style={styles.subTitle}>Mello users will appear here.</Text>
+              <Text style={styles.title}>It's pretty lonely here</Text>
+              <Text style={styles.subTitle}>Invite a friend to your flows and </Text>
+              <Text style={styles.subTitle}>you'll see their activity here 👇.</Text>
             </View>
-          }
+          )}
+
+          {singleNotification && singleNotificationList.length > 0 && (
+            <Animated.View
+              style={{
+                transform: [{ translateX: this.state.animTransformSingleNotificationView }],
+              }}
+            >
+              <FlatList
+                style={styles.flatList}
+                contentContainerStyle={styles.contentFlatList}
+                data={singleNotificationList}
+                keyExtractor={item => item.id}
+                automaticallyAdjustContentInsets={true}
+                renderItem={this.renderSingleNotificationItem.bind(this)}
+                // ListFooterComponent={this.renderFooter}
+                refreshControl={
+                  <RefreshControl 
+                    refreshing={this.state.refreshing}
+                    onRefresh={this.handleRefresh}
+                    tintColor={COLORS.PURPLE}
+                  />
+                }
+                onEndReached={this.handleLoadMore}
+                onEndReachedThreshold={0}
+              />
+            </Animated.View>
+          )}
+
+          {loading && <LoadingScreen />}
 
           {this.renderCardDetailModal}
 
@@ -466,10 +722,10 @@ class NotificationScreen extends React.Component {
       // this.setState({ isShowToaster: false })
       if (this.state.currentActionType === ACTION_CARD_DELETE) {
         Analytics.logEvent('notification_delete_card', {})
-        this.props.deleteCard(currentCardInfo.ideaId)
+        this.props.deleteCard(currentCardInfo.cardList)
       } else if (this.state.currentActionType === ACTION_CARD_MOVE) {
         Analytics.logEvent('notification_move_card', {})
-        this.props.moveCard(currentCardInfo.ideaId, currentCardInfo.feedoId);
+        this.props.moveCard(currentCardInfo.cardList, currentCardInfo.feedoId);
       }
       this.userActionTimer = null;
       this.userActions.shift();
@@ -483,6 +739,14 @@ class NotificationScreen extends React.Component {
       this.userActionTimer = null;
       this.userActions.shift();
   
+      if (this.state.currentActionType === ACTION_CARD_DELETE) {
+        this.props.deleteDummyCard('null', 1)
+      }
+
+      if (this.state.currentActionType === ACTION_CARD_MOVE) {
+        this.props.moveDummyCard('null', 'null', 1)
+      }
+
       this.processCardActions();
       return;
     }
@@ -493,7 +757,7 @@ class NotificationScreen extends React.Component {
     })
   }
 
-  onDeleteCard = (ideaId) => {
+  onDeleteCard = (cardList) => {
     this.onCloseCardModal();
     this.setState({
       isShowToaster: true
@@ -502,17 +766,20 @@ class NotificationScreen extends React.Component {
     const cardInfo = {};
     cardInfo.currentActionType = ACTION_CARD_DELETE;
     cardInfo.toasterTitle = 'Card deleted';
-    cardInfo.ideaId = ideaId;
+    cardInfo.cardList = cardList;
     this.userActions.push(cardInfo);
+
+    this.props.deleteDummyCard(cardInfo.cardList, 0)
 
     this.processCardActions();
   }
 
-  onMoveCard = (ideaId) => {
+  onMoveCard = (cardList) => {
     this.setState({ 
       currentActionType: ACTION_CARD_MOVE,
+      isVisibleSelectFeedo: true,
     });
-    this.moveCardId = ideaId;
+    this.moveCardList = cardList;
   }
 
   onSelectFeedoToMoveCard(feedoId) {
@@ -526,29 +793,34 @@ class NotificationScreen extends React.Component {
     const cardInfo = {};
     cardInfo.currentActionType = ACTION_CARD_MOVE;
     cardInfo.toasterTitle = 'Card moved';
-    cardInfo.ideaId = this.moveCardId;
+    cardInfo.cardList = this.moveCardList;
     cardInfo.feedoId = feedoId;
     this.userActions.push(cardInfo);
 
+    this.props.moveDummyCard(cardInfo.cardList, cardInfo.feedoId, 0)
+
     this.processCardActions();
-    this.moveCardId = null;
+    this.moveCardList = [];
   }
 
   onCloseSelectFeedoModal() {
-    if (this.prevFeedo.id !== this.props.feedo.currentFeed.id) {
-      const moveToFeedo = this.props.feedo.currentFeed;
-      this.props.setCurrentFeed(this.prevFeedo);
-
-      if (moveToFeedo.id) {
-        this.onSelectFeedoToMoveCard(moveToFeedo.id);
-        return;
+    this.setState({ isVisibleCard: false }, () => {
+      if (this.prevFeedo.id !== this.props.feedo.currentFeed.id) {
+        const moveToFeedo = this.props.feedo.currentFeed;
+        this.props.setCurrentFeed(this.prevFeedo);
+  
+        if (moveToFeedo.id) {
+          this.onSelectFeedoToMoveCard(moveToFeedo.id);
+          return;
+        }
       }
-    }
-    this.prevFeedo = null;
-    this.setState({
-      isVisibleSelectFeedo: false,
-      currentActionType: ACTION_NONE,
-    });
+      this.prevFeedo = null
+  
+      this.setState({
+        isVisibleSelectFeedo: false,
+        currentActionType: ACTION_NONE,
+      });
+    })
   }
 
   get renderSelectHunt() {
@@ -563,14 +835,6 @@ class NotificationScreen extends React.Component {
           />
         </View>
       );
-    }
-  }
-
-  onHiddenLongHoldMenu() {
-    if (this.state.currentActionType === ACTION_CARD_MOVE) {
-      this.setState({
-        isVisibleSelectFeedo: true,
-      });
     }
   }
 
@@ -636,14 +900,18 @@ const mapDispatchToProps = dispatch => ({
   getActivityFeed: (userId, param) => dispatch(getActivityFeed(userId, param)),
   readAllActivityFeed: (userId) => dispatch(readAllActivityFeed(userId)),
   readActivityFeed: (userId, activityId) => dispatch(readActivityFeed(userId, activityId)),
+  readActivityGroup: (userId, activityGroupId) => dispatch(readActivityGroup(userId, activityGroupId)),
+  alreadyReadActivityFeed: (activityId) => dispatch(alreadyReadActivityFeed(activityId)),
   deleteActivityFeed: (userId, activityId) => dispatch(deleteActivityFeed(userId, activityId)),
   getFeedDetail: (feedId) => dispatch(getFeedDetail(feedId)),
   getCard: (ideaId) => dispatch(getCard(ideaId)),
-  moveCard: (ideaId, huntId) => dispatch(moveCard(ideaId, huntId)),
-  deleteCard: (ideaId) => dispatch(deleteCard(ideaId)),
+  moveCard: (cardList, huntId) => dispatch(moveCard(cardList, huntId)),
+  deleteCard: (cardList) => dispatch(deleteCard(cardList)),
   setCurrentFeed: (data) => dispatch(setCurrentFeed(data)),
   getInvitedFeedList: () => dispatch(getInvitedFeedList()),
   getActivityFeedVisited: (userId) => dispatch(getActivityFeedVisited(userId)),
+  moveDummyCard: (cardList, feedId, type) => dispatch(moveDummyCard(cardList, feedId, type)),
+  deleteDummyCard: (cardList, type) => dispatch(deleteDummyCard(cardList, type))
 })
 
 NotificationScreen.propTypes = {

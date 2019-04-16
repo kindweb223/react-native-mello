@@ -12,7 +12,8 @@ import {
   ScrollView,
   AsyncStorage,
   SafeAreaView,
-  Platform
+  Platform,
+  ActivityIndicator
 } from 'react-native'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
@@ -26,6 +27,7 @@ import _ from 'lodash';
 import moment from 'moment'
 import SafariView from "react-native-safari-view";
 import SharedGroupPreferences from 'react-native-shared-group-preferences';
+import * as COMMON_FUNC from '../../service/commonFunc'
 
 import {
   getOpenGraph,
@@ -48,6 +50,7 @@ import WebMetaList from '../../components/WebMetaListComponent';
 import CoverImagePreviewComponent from '../../components/CoverImagePreviewComponent';
 import SelectHuntScreen from '../SelectHuntScreen';
 import Analytics from '../../lib/firebase'
+import AlertController from '../../components/AlertController'
 
 class CardNewShareScreen extends React.Component {
   constructor(props) {
@@ -73,7 +76,9 @@ class CardNewShareScreen extends React.Component {
       
       loading: false,
       isVisibleSelectFeedoModal: false,
-      isShowKeyboardButton: false
+      isShowKeyboardButton: false,
+      cachedFeedList: [],
+      createEnabled: false
     };
 
     this.selectedFile = null;
@@ -88,7 +93,8 @@ class CardNewShareScreen extends React.Component {
 
     this.parsingErrorLinks = [];
 
-    this.draftFeedo = null;
+    // On Android as extension is part of main app current feed may already be set
+    this.draftFeedo = _.isEmpty(this.props.feedo.currentFeed) ? null : this.props.feedo.currentFeed;
 
     this.scrollViewHeight = 0;
     this.textInputPositionY = 0;
@@ -152,7 +158,7 @@ class CardNewShareScreen extends React.Component {
     if (this.props.shareImageUrls.length > 0) {
       const file = this.props.shareImageUrls[0]
       this.selectedFile = file;
-      this.selectedFileMimeType = mime.lookup(file);
+      this.selectedFileMimeType = mime.lookup(file) || 'image/png';
       this.selectedFileName = file.replace(/^.*[\\\/]/, '')
       this.selectedFileType = 'MEDIA';
 
@@ -181,26 +187,30 @@ class CardNewShareScreen extends React.Component {
 
   async UNSAFE_componentWillReceiveProps(nextProps) {
     if (this.props.feedo.loading !== feedoTypes.GET_FEEDO_LIST_FULFILLED && nextProps.feedo.loading === feedoTypes.GET_FEEDO_LIST_FULFILLED) {
+      this.setState({cachedFeedList: nextProps.feedo.feedoList, createEnabled: true})
+
       try {
-        const strFeedoInfo = await SharedGroupPreferences.getItem(CONSTANTS.CARD_SAVED_LAST_FEEDO_INFO, CONSTANTS.APP_GROUP_LAST_USED_FEEDO);
-        if (strFeedoInfo) {
-          const feedoInfo = JSON.parse(strFeedoInfo);
-          const diffHours = moment().diff(moment(feedoInfo.time, 'LLL'), 'hours');
-          if (diffHours < 1) {
+        const feedoInfo = await COMMON_FUNC.getLastFeed();
+        if (feedoInfo) {
+          if (COMMON_FUNC.useLastFeed(feedoInfo)) {
             const currentFeed = _.find(nextProps.feedo.feedoList, feed => feed.id === feedoInfo.feedoId)
             if (currentFeed) {
               this.props.setCurrentFeed(currentFeed);
               this.draftFeedo = currentFeed
               return;
-            } else {
-              this.props.createFeed();
+            }
+            else {
+              this.props.setCurrentFeed({});
+              this.draftFeedo = null
             }
           }
-        } else {
-          this.props.createFeed();
         }
       } catch (error) {
         console.log('error code : ', error);
+      }
+
+      if (!this.props.feedo.currentFeed.id) {
+        this.props.createFeed();
       }
     }
 
@@ -218,7 +228,7 @@ class CardNewShareScreen extends React.Component {
     if (this.props.feedo.loading !== feedoTypes.UPDATE_FEED_FULFILLED && nextProps.feedo.loading === feedoTypes.UPDATE_FEED_FULFILLED) {
       this.setState({ loading: false })
       if (!this.state.isVisibleSelectFeedoModal) {
-        Actions.ShareSuccessScreen();
+        Actions.ShareSuccessScreen({type: 'replace', prev_scene: this.props.prev_scene});
       }
     }
 
@@ -234,7 +244,7 @@ class CardNewShareScreen extends React.Component {
         }
         if (error) {
           console.log('ERROR: ', error)
-          Alert.alert('Error', error)
+          AlertController.shared.showAlert('Error', error)
         }
         this.props.resetCardError();
         return;
@@ -252,24 +262,35 @@ class CardNewShareScreen extends React.Component {
     }).start(() => {
       if (this.props.feedo.feedoList.length == 0) {
         this.props.getFeedoList(0);
+
+      }
+      else {
+        this.setState({createEnabled: true})
       }
     });
 
-    const strFeedoInfo = await SharedGroupPreferences.getItem(CONSTANTS.CARD_SAVED_LAST_FEEDO_INFO, CONSTANTS.APP_GROUP_LAST_USED_FEEDO);
-    if (strFeedoInfo) {
-      const feedoInfo = JSON.parse(strFeedoInfo);
-      const diffHours = moment().diff(moment(feedoInfo.time, 'LLL'), 'hours');
-      if (diffHours < 1) {
-        this.props.setCurrentFeed(feedoInfo.currentFeed);
-        this.draftFeedo = feedoInfo.currentFeed
+    try {
+      const feedoInfo = await COMMON_FUNC.getLastFeed();
+      if (feedoInfo) {
+        if (COMMON_FUNC.useLastFeed(feedoInfo)) {
+          this.props.setCurrentFeed(feedoInfo.currentFeed);
+          this.draftFeedo = feedoInfo.currentFeed
+        }
       }
     }
+    catch(error) {
 
-    this.keyboardWillShowSubscription = Keyboard.addListener('keyboardWillShow', (e) => this.keyboardWillShow(e));
-    this.keyboardWillHideSubscription = Keyboard.addListener('keyboardWillHide', (e) => this.keyboardWillHide(e));
+    }
+
     if (Platform.OS === 'ios') {
+      this.keyboardWillShowSubscription = Keyboard.addListener('keyboardWillShow', (e) => this.keyboardWillShow(e));
+      this.keyboardWillHideSubscription = Keyboard.addListener('keyboardWillHide', (e) => this.keyboardWillHide(e));
       this.safariViewShowSubscription = SafariView.addEventListener('onShow', () => this.safariViewShow());
       this.safariViewDismissSubscription = SafariView.addEventListener('onDismiss', () => this.safariViewDismiss());
+    }
+    else {
+      this.keyboardWillShowSubscription = Keyboard.addListener('keyboardDidShow', (e) => this.keyboardWillShow(e));
+      this.keyboardWillHideSubscription = Keyboard.addListener('keyboardDidHide', (e) => this.keyboardWillHide(e));
     }
   }
 
@@ -286,7 +307,7 @@ class CardNewShareScreen extends React.Component {
     Animated.timing(
       this.animatedKeyboardHeight, {
         toValue: e.endCoordinates.height,
-        duration: e.duration,
+        duration: Platform.OS === 'ios' ? e.duration : CONSTANTS.ANIMATEION_MILLI_SECONDS,
       }
     ).start(() => {
       if (this.isDisabledKeyboard === true || !this.textInputIdeaRef) {
@@ -301,7 +322,7 @@ class CardNewShareScreen extends React.Component {
     Animated.timing(
       this.animatedKeyboardHeight, {
         toValue: 0,
-        duration: e.duration,
+        duration: Platform.OS === 'ios' ? e.duration : CONSTANTS.ANIMATEION_MILLI_SECONDS,
       }
     ).start();
   }
@@ -315,12 +336,7 @@ class CardNewShareScreen extends React.Component {
   }
 
   saveFeedId() {
-    const feedoInfo = {
-      time: moment().format('LLL'),
-      feedoId: this.props.feedo.currentFeed.id,
-      currentFeed: this.props.feedo.currentFeed
-    }
-    SharedGroupPreferences.setItem(CONSTANTS.CARD_SAVED_LAST_FEEDO_INFO, JSON.stringify(feedoInfo), CONSTANTS.APP_GROUP_LAST_USED_FEEDO)
+    COMMON_FUNC.setLastFeed(this.props.feedo.currentFeed)
   }
 
   compareUrls(linkUrl, currentUrl) {
@@ -400,6 +416,9 @@ class CardNewShareScreen extends React.Component {
     if (!this.props.feedo.currentFeed.id) {
       this.props.setCurrentFeed(this.draftFeedo);
     }
+    if(this.textInputIdeaRef) {
+      this.textInputIdeaRef.focus();
+    }
   }
 
   onUpdateFeed() {
@@ -417,7 +436,7 @@ class CardNewShareScreen extends React.Component {
         this.props.updateFeed(id, headline || 'New flow', summary || '', tags, files);
       } else {
         this.setState({ loading: false })
-        Actions.ShareSuccessScreen()
+        Actions.ShareSuccessScreen({type: 'replace', prev_scene: this.props.prev_scene});
       }
     }
   }
@@ -504,7 +523,7 @@ class CardNewShareScreen extends React.Component {
           ref={ref => this.textInputIdeaRef = ref}
           style={styles.textInputIdea}
           autoCorrect={true}
-          placeholder='Type text or paste a link'
+          placeholder='Add a note'
           multiline={true}
           underlineColorAndroid='transparent'
           value={this.state.idea}
@@ -513,7 +532,7 @@ class CardNewShareScreen extends React.Component {
           onFocus={() => this.onFocusIdea()}
           onBlur={() => this.onBlurIdea()}
           onSelectionChange={this.onSelectionChange.bind(this)}
-          selectionColor={COLORS.PURPLE}
+          selectionColor={Platform.OS === 'ios' ? COLORS.PURPLE : COLORS.LIGHT_PURPLE}
         />
       </View>
     )
@@ -567,9 +586,9 @@ class CardNewShareScreen extends React.Component {
         <TouchableOpacity 
           style={styles.closeButtonShareWrapper}
           activeOpacity={0.6}
-          onPress={() => this.onCreateCard()}
+          onPress={() => this.state.createEnabled ? this.onCreateCard() : {}}
         >
-          <Text style={[styles.textButton, { color: COLORS.PURPLE }]}>Create card</Text>
+          <Text style={[styles.textButton, { color: this.state.createEnabled ? COLORS.PURPLE : COLORS.MEDIUM_GREY }]}>Create card</Text>
         </TouchableOpacity>
       </View>
     );
@@ -579,7 +598,9 @@ class CardNewShareScreen extends React.Component {
     return (
       <View style={styles.extensionSelectFeedoContainer}>
         <Text style={[styles.textCreateCardIn, { color: COLORS.PRIMARY_BLACK }]}>Create card in:</Text>
-        <TouchableOpacity
+        {
+          this.state.createEnabled 
+          ? <TouchableOpacity
           style={[styles.selectFeedoButtonContainer, { paddingRight: 3 }]}
           activeOpacity={0.6}
           onPress={() => this.onSelectFeedo()}
@@ -587,6 +608,12 @@ class CardNewShareScreen extends React.Component {
           <Text style={styles.textFeedoName} numberOfLines={1}>{this.props.feedo.currentFeed.headline || 'New flow'}</Text>
           <Entypo name="chevron-right" size={20} color={COLORS.PURPLE} />
         </TouchableOpacity>
+          : <ActivityIndicator 
+              style={[styles.selectFeedoButtonContainer, {paddingRight: 9, width: 50}]}
+              animating
+              color={COLORS.PURPLE}
+            />
+        }
       </View>
     )
   }
@@ -606,7 +633,7 @@ class CardNewShareScreen extends React.Component {
     let contentContainerStyle = {};
     let bottomMargin = CONSTANTS.SCREEN_VERTICAL_MIN_MARGIN;
     if (this.state.isShowKeyboardButton) {
-      bottomMargin = 20;
+      bottomMargin = Platform.OS === 'ios' ? 20 : 40;
     }
 
     contentContainerStyle = {
@@ -638,9 +665,12 @@ class CardNewShareScreen extends React.Component {
   }
 
   get renderSelectHunt() {
+    const { cachedFeedList } = this.state
+
     if (this.state.isVisibleSelectFeedoModal) {
       return (
         <SelectHuntScreen
+          cachedFeedList={cachedFeedList}
           selectMode={CONSTANTS.FEEDO_SELECT_FROM_SHARE_EXTENSION}
           onClosed={() => this.onCloseSelectHunt()}
         />
@@ -668,6 +698,7 @@ CardNewShareScreen.defaultProps = {
   shareImageUrls: [],
   shareText: '',
   onClose: () => {},
+  prev_scene: '',
 }
 
 
@@ -677,6 +708,7 @@ CardNewShareScreen.propTypes = {
   shareImageUrls: PropTypes.array,
   shareText: PropTypes.string,
   onClose: PropTypes.func,
+  prev_scene: PropTypes.string,
 }
 
 
