@@ -270,7 +270,7 @@ class FeedCollapseComponent extends React.Component {
     const { feedData, isCollapse, isPreview, images } = this.state
     const { longHold } = this.props
 
-    const animatedHeight = this.collapseView.interpolate({
+    const animatedOpacity = this.collapseView.interpolate({
       inputRange: [0, 1],
       outputRange: [1, 0],
     })
@@ -284,7 +284,7 @@ class FeedCollapseComponent extends React.Component {
         >
           <Text style={styles.headerTitle} numberOfLines={1} ellipsizeMode="tail">{feedData.headline}</Text>
           {feedData.summary && feedData.summary.length > 0
-            ? <Animated.View style={[styles.collpaseHeader, { opacity: animatedHeight }]}>
+            ? <Animated.View style={[styles.collpaseHeader, { opacity: animatedOpacity }]}>
                 <Text style={styles.summaryText} numberOfLines={1} ellipsizeMode="tail">
                   {feedData.summary}
                 </Text>
