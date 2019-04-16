@@ -1574,6 +1574,7 @@ class HomeScreen extends React.Component {
             sortType={this.state.filterSortType}
             badgeCount={badgeCount}
             page="home"
+            filtering={false}
           />
         )}
 
