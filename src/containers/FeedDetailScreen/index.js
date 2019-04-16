@@ -1537,7 +1537,6 @@ class FeedDetailScreen extends React.Component {
     return (
       <SafeAreaView style={styles.safeArea}>
         <View style={[styles.container, isVisibleLongHoldMenu && { paddingBottom: 0 }]}>
-          <OfflineIndicator/>
           {!isVisibleLongHoldMenu && (
             <View style={styles.navBar}>
               <TouchableOpacity style={styles.backView} onPress={this.backToDashboard}>
@@ -1726,6 +1725,7 @@ class FeedDetailScreen extends React.Component {
                 }
               </View>
           </Animated.ScrollView>
+          <OfflineIndicator/>
         </View>
 
         {TAGS_FEATURE && this.renderCreateTag}
@@ -1888,8 +1888,11 @@ const mapDispatchToProps = dispatch => ({
         AsyncStorage.getItem('flow/'+data)
             .then(success => {
               const feed = JSON.parse(success)
-              // console.log('Async Feed for  ', data, ' is ', feed)
+              // console.log('Response has error. Async Feed for  ', data, ' has id  ', feed.id)
               dispatch(setFeedDetailFromStorage(feed))
+            })
+            .catch(error => {
+              console.log('Error for trying to get ', data, error)
             })
       } else {
         AsyncStorage.setItem('flow/'+data, JSON.stringify(success.result.data))
@@ -1903,8 +1906,11 @@ const mapDispatchToProps = dispatch => ({
       AsyncStorage.getItem('flow/'+data)
         .then(success => {
           const feed = JSON.parse(success)
-          // console.log('Async Feed for  ', data, ' is ', feed)
+          // console.log('Request returns error. Async Feed for  ', data, ' has id ', feed.id)
           dispatch(setFeedDetailFromStorage(feed))
+        })
+        .catch(error => {
+          console.log('Error for trying to get ', data, error)
         })
     }),
   setFeedDetailAction: data => dispatch(setFeedDetailAction(data)),
