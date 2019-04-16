@@ -14,16 +14,16 @@ const styles = StyleSheet.create({
     marginBottom: 24
   },
   btnView: {
-    width: 85,
+    width: 86,
     height: 34,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: COLORS.MEDIUM_GREY,
-    borderRadius: 17,
+    backgroundColor: COLORS.SOFT_GREY,
+    borderRadius: 6,
     marginTop: 8
   },
   btnText: {
-    color: '#fff',
+    color: 'black',
     fontSize: 15,
     fontWeight: '500'
   }
