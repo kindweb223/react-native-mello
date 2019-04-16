@@ -49,7 +49,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: CONSTANTS.PADDING
   },
   searchIcon: {
-    width: 28,
+    width: 18,
     height: 28
   },
   listIcon: {
