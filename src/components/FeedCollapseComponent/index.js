@@ -276,7 +276,7 @@ class FeedCollapseComponent extends React.Component {
     })
 
     return (
-      <View style={styles.collapseView}>
+      <View style={[styles.collapseView, feedData.summary && feedData.summary.length > 0 && { minHeight: 50 }]}>
         <TouchableOpacity
           activeOpacity={0.9}
           onPress={() => isCollapse ? this.handleCollapse() : this.closeCollapse()}
