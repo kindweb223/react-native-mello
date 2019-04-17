@@ -8,8 +8,9 @@ import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 
 import _ from 'lodash'
-
+import HTML from 'react-native-render-html'
 import Autolink from 'react-native-autolink';
+var striptags = require('striptags')
 
 import styles from './styles'
 import LikeComponent from '../../LikeComponent';
@@ -77,7 +78,7 @@ class FeedCardExtendComponent extends React.Component {
                   <Autolink
                     style={styles.title}
                     linkStyle={styles.linkStyle}
-                    text={idea.idea}
+                    text={COMMON_FUNC.htmlToPlainText(striptags(idea.idea))}
                     numberOfLines={hasCoverImage ? 4 : 10}
                     ellipsizeMode="tail"
                     onPress={() => longHold ? {} : this.props.onLinkPress()}
