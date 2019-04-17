@@ -1888,17 +1888,22 @@ const mapDispatchToProps = dispatch => ({
       if(response.error){
         AsyncStorage.getItem('flow/'+data)
             .then(success => {
-              const feed = JSON.parse(success)
-              // console.log('Response has error. Async Feed for  ', data, ' has id  ', feed.id)
-              dispatch(setFeedDetailFromStorage(feed))
+              if(success){
+                const feed = JSON.parse(success)
+                // console.log('Response has error. Async Feed for  ', data, ' has id  ', feed.id)
+                dispatch(setFeedDetailFromStorage(feed))
+              }
             })
             .catch(error => {
               console.log('Error for trying to get ', data, error)
             })
       } else {
-        AsyncStorage.setItem('flow/'+data, JSON.stringify(success.result.data))
-            .then(response => {
-            })
+        if(response.success){
+          AsyncStorage.setItem('flow/'+data, JSON.stringify(success.result.data))
+              .then(response => {
+              })
+
+        }
 
       }
 
@@ -1908,7 +1913,7 @@ const mapDispatchToProps = dispatch => ({
         .then(success => {
           const feed = JSON.parse(success)
           // console.log('Request returns error. Async Feed for  ', data, ' has id ', feed.id)
-          if (feed) {
+          if (success) {
             dispatch(setFeedDetailFromStorage(feed))
           }
         })
