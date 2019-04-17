@@ -1644,7 +1644,7 @@ class FeedDetailScreen extends React.Component {
                   ? this.state.viewPreference === 'LIST'
                     ? currentFeed.ideas.length > 0
                       ? <View
-                          style={{ paddingHorizontal: 8, marginTop: Platform.OS === 'android' && isVisibleLongHoldMenu ? 0 : 0}}
+                          style={{ paddingHorizontal: 8 }}
                         >
                           {currentFeed.ideas.map((item, index) => (
                           <View

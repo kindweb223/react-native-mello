@@ -15,7 +15,7 @@ const styles = StyleSheet.create({
     width: '100%',
     paddingLeft: 16,
     position: 'absolute',
-    top: 38,
+    top: 28
   },
   headerTitle: {
     flex: 1,
@@ -30,8 +30,7 @@ const styles = StyleSheet.create({
     width: '100%'
   },
   summaryView: {
-    paddingHorizontal: CONSTANTS.PADDING,
-    marginTop: 10
+    paddingHorizontal: CONSTANTS.PADDING
   },
   summaryText: {
     fontSize: 14,
