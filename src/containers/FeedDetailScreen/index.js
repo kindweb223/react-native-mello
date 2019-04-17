@@ -35,6 +35,7 @@ import GestureRecognizer from 'react-native-swipe-gestures'
 import { NetworkConsumer, checkInternetConnection } from 'react-native-offline'
 import Masonry from '../../components/MasonryComponent'
 import rnTextSize from 'react-native-text-size'
+var striptags = require('striptags')
 import MasonryList from '../../components/MasonryComponent'
 
 import DashboardActionBar from '../../navigations/DashboardActionBar'
@@ -548,7 +549,7 @@ class FeedDetailScreen extends React.Component {
         const cardWidth = (CONSTANTS.SCREEN_SUB_WIDTH - 16) / 2
 
         const textSize = await rnTextSize.measure({
-          text: idea.idea,
+          text: striptags(idea.idea),
           width: cardWidth - 16,
           ...fontSpecs
         })
