@@ -1486,19 +1486,17 @@ class CardDetailScreen extends React.Component {
             animation={this.state.fadeInUpAnimation}
           >
             {!this.state.idea && viewMode === CONSTANTS.CARD_EDIT
-              ? <TextInput
-                  style={styles.textInputIdea}
-                  multiline={true}
-                  pointerEvents="none" 
-                  placeholder={'Add a note'}
-                />
-              : <HTML
-                  html={'<span>' + this.state.idea + '</span>'}
-                  containerStyle={styles.textHtmlIdea}
-                  classesStyles={CONSTANTS.HTML_CLASS_STYLES}
-                  tagsStyles={CONSTANTS.HTML_TAGS_STYLE}
-                  onLinkPress={(evt, href) => this.onPressLink(href)}
-                />
+              ?
+              <TextInput
+                style={styles.textInputIdea}
+                multiline={true}
+                pointerEvents="none"
+                placeholder={'Add a note'}/>
+              :
+              <Autolink
+                style={styles.textInputIdea}
+                text={COMMON_FUNC.htmlToPlainText(this.state.idea)}
+                onPress={(url, match) => this.onPressLink(url)}/>
             }
           </Animatable.View>
         </Animated.View>
@@ -1840,7 +1838,7 @@ class CardDetailScreen extends React.Component {
         {(showEditScreen)
           ? <CardEditScreen
               {...this.props}
-              idea={COMMON_FUNC.htmlToPlainText(striptags(idea))}
+              idea={COMMON_FUNC.htmlToPlainText((idea))}
               checkUrls={() => this.checkUrls()}
               // onDoneEditCard={() => this.onDoneEditCard()}
               onCancelEditCard={() => this.onCloseEditCard()}
