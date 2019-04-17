@@ -355,6 +355,9 @@ class LocalStorage extends React.Component {
                             if(file.accessUrl === ideas[ideaIndex].coverImage ){
                                 ideas[ideaIndex].coverImage = localUrl
                             }
+                            if(file.accessUrl === ideas[ideaIndex].thumbnailUrl ){
+                                ideas[ideaIndex].thumbnailUrl = localUrl
+                            }
                             file.accessUrl = localUrl;
                             ((fileIndex + 1) === files.length) && this.updateRecursiveShout(++ideaIndex, delay)
     
