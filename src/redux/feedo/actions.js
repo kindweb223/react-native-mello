@@ -90,6 +90,14 @@ export const getFeedDetail = (feedId) => {
   };
 }
 
+
+export const setFeedDetailFromStorage = (feed) => {
+  return {
+    type: types.SET_FEED_DETAIL_FROM_STORAGE,
+    feed
+  };
+}
+
 /**
  * Pin Feed
  */
@@ -783,12 +791,5 @@ export const saveFlowViewPreference = (feedId, inviteeId, preference) => {
 export const pubnubUserInvited = () => {
   return {
     type: types.PUBNUB_USER_INVITED_FULFILLED
-  };
-}
-
-export const setFeedDetailFromStorage = (feed) => {
-  return {
-    type: types.SET_FEED_DETAIL_FROM_STORAGE,
-    feed
   };
 }

@@ -65,6 +65,10 @@ class FollowMemberScreen extends React.Component {
         })
       }
     }
+
+    if (this.props.feedo.loading !== 'DELETE_INVITEE_FULFILLED' && feedo.loading === 'DELETE_INVITEE_FULFILLED') {
+      this.props.moveHomeScreen()
+    }
   }
 
   componentWillUnmount() {

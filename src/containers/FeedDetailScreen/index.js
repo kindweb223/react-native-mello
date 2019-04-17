@@ -1515,13 +1515,12 @@ class FeedDetailScreen extends React.Component {
     return (
       <SafeAreaView style={styles.safeArea}>
         <View style={[styles.container, isVisibleLongHoldMenu && { paddingBottom: 0 }]}>
-          <OfflineIndicator/>
           {!isVisibleLongHoldMenu && (
             <View style={styles.navBar}>
               <TouchableOpacity style={styles.backView} onPress={this.backToDashboard}>
                 <Ionicons name="ios-arrow-back" size={32} color={COLORS.PURPLE} />
               </TouchableOpacity>
-              <NetworkConsumer pingInterval={2000}>
+              <NetworkConsumer pingInterval={CONSTANTS.NETWORK_CONSUMER_PING_INTERVAL}>
                 {({ isConnected }) => (isConnected ? (<View style={styles.rightHeader}>
                       {!_.isEmpty(currentFeed) && !COMMON_FUNC.isMelloTipFeed(currentFeed) && (
                           <View style={styles.avatarView}>
@@ -1622,7 +1621,7 @@ class FeedDetailScreen extends React.Component {
                   ? this.state.viewPreference === 'LIST'
                     ? currentFeed.ideas.length > 0
                       ? <View
-                          style={{ paddingHorizontal: 8, marginTop: Platform.OS === 'android' && isVisibleLongHoldMenu ? 30 : 0}}
+                          style={{ paddingHorizontal: 8, marginTop: Platform.OS === 'android' && isVisibleLongHoldMenu ? 0 : 0}}
                         >
                           {currentFeed.ideas.map((item, index) => (
                           <View
@@ -1658,7 +1657,7 @@ class FeedDetailScreen extends React.Component {
                         </View>
                     : currentFeed.ideas.length > 0
                       ? <View
-                          style={{ paddingHorizontal: currentFeed.ideas.length > 0 ? 8 : 0, marginTop: Platform.OS === 'android' && isVisibleLongHoldMenu ? 30 : 0}}
+                          style={{ paddingHorizontal: currentFeed.ideas.length > 0 ? 8 : 0, marginTop: Platform.OS === 'android' && isVisibleLongHoldMenu ? 0 : 0}}
                         >
                           <MasonryList
                             data={MasonryListData}
@@ -1704,6 +1703,7 @@ class FeedDetailScreen extends React.Component {
                 }
               </View>
           </Animated.ScrollView>
+          <OfflineIndicator/>
         </View>
 
         {TAGS_FEATURE && this.renderCreateTag}
@@ -1781,6 +1781,7 @@ class FeedDetailScreen extends React.Component {
                 onClose={() => this.closeShareModal()}
                 deleteInvitee={() => this.leaveFeed(null, currentFeed.id)}
                 data={currentFeed}
+                moveHomeScreen={this.moveHomeScreen}
               />
           }
         </Modal>
@@ -1866,8 +1867,11 @@ const mapDispatchToProps = dispatch => ({
         AsyncStorage.getItem('flow/'+data)
             .then(success => {
               const feed = JSON.parse(success)
-              // console.log('Async Feed for  ', data, ' is ', feed)
+              // console.log('Response has error. Async Feed for  ', data, ' has id  ', feed.id)
               dispatch(setFeedDetailFromStorage(feed))
+            })
+            .catch(error => {
+              console.log('Error for trying to get ', data, error)
             })
       } else {
         AsyncStorage.setItem('flow/'+data, JSON.stringify(success.result.data))
@@ -1881,8 +1885,13 @@ const mapDispatchToProps = dispatch => ({
       AsyncStorage.getItem('flow/'+data)
         .then(success => {
           const feed = JSON.parse(success)
-          // console.log('Async Feed for  ', data, ' is ', feed)
-          dispatch(setFeedDetailFromStorage(feed))
+          // console.log('Request returns error. Async Feed for  ', data, ' has id ', feed.id)
+          if (feed) {
+            dispatch(setFeedDetailFromStorage(feed))
+          }
+        })
+        .catch(error => {
+          console.log('Error for trying to get ', data, error)
         })
     }),
   setFeedDetailAction: data => dispatch(setFeedDetailAction(data)),
