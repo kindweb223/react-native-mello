@@ -351,6 +351,7 @@ class ProfileUpdateScreen extends React.Component {
               returnKeyType="next"
               handleChange={text => this.changeOldPassword(text)}
               onSubmitEditing={() => this.onNextOldPassword()}
+              value={this.state.oldPassword}
             >
               <TouchableOpacity onPress={() => this.onForgotPassword()} activeOpacity={0.8}>
                 <View style={styles.forgotView}>
@@ -373,6 +374,7 @@ class ProfileUpdateScreen extends React.Component {
               onFocus={() => this.onPasswordFocus(true)}
               onBlur={() => this.onPasswordFocus(false)}
               onSubmitEditing={() => this.onSavePassword()}
+              value={this.state.password}
             >
               <TouchableOpacity onPress={() => this.setState({ isSecure: !isSecure}) } activeOpacity={0.8}>
                 <View style={styles.passwordPreview}>

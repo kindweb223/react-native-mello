@@ -160,7 +160,12 @@ class NotificationScreen extends React.Component {
   }
 
   handleBackButton = () => {
-    Actions.pop()
+    if(this.state.singleNotification) {
+      this.animateOutSingleNotificationView()
+    }
+    else {
+      Actions.pop()
+    }
     return true;
   }
 
