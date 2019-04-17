@@ -78,7 +78,7 @@ class FeedCardExtendComponent extends React.Component {
                   <Autolink
                     style={styles.title}
                     linkStyle={styles.linkStyle}
-                    text={striptags(idea.idea)}
+                    text={COMMON_FUNC.htmlToPlainText(striptags(idea.idea))}
                     numberOfLines={hasCoverImage ? 4 : 10}
                     ellipsizeMode="tail"
                     onPress={() => longHold ? {} : this.props.onLinkPress()}
