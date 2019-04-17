@@ -16,7 +16,9 @@ const styles = StyleSheet.create({
     alignItems: 'flex-start'
   },
   leftContainer: {
+    width: 144,
     flexDirection: 'row',
+    justifyContent: 'space-between',
     marginLeft: 8
   },
   iconView: {
@@ -49,7 +51,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: CONSTANTS.PADDING
   },
   searchIcon: {
-    width: 28,
+    width: 18,
     height: 28
   },
   listIcon: {
@@ -57,7 +59,7 @@ const styles = StyleSheet.create({
     height: 15
   },
   notificationIcon: {
-    width: 17,
+    width: 18,
     height: 26
   }
 })

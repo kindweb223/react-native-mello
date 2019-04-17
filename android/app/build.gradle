@@ -101,7 +101,7 @@ android {
         applicationId "io.solvers.feedo"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode 72
+        versionCode 74
         versionName "1.0"
         multiDexEnabled true
         ndk {
