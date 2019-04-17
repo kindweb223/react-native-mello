@@ -22,6 +22,7 @@ import COLORS from '../../../service/colors';
 import CONSTANTS from '../../../service/constants';
 import * as COMMON_FUNC from '../../../service/commonFunc'
 import styles from './styles';
+import constants from '../../../service/constants';
 
 class CardEditScreen extends React.Component {
   constructor(props) {
@@ -194,31 +195,33 @@ class CardEditScreen extends React.Component {
     }
 
     return (
-      <Animated.View style={[contentContainerStyle]}>
-        <View style={styles.container}>
-          {this.renderHeader}
-          {this.renderText}
-          {this.renderFooter}
+      <View style={[{height: constants.SCREEN_HEIGHT, width: constants.SCREEN_WIDTH, backgroundColor: 'white'}]}>
+        <Animated.View style={[contentContainerStyle]}>
+          <View style={styles.container}>
+            {this.renderHeader}
+            {this.renderText}
+            { this.state.keyboardHeight > 0 && this.renderFooter }
 
-          {this.state.isShowKeyboardButton && (
-            <View style={styles.hideKeyboardContainer}>
-              <TouchableOpacity
-                style={[
-                  styles.buttonItemContainer,
-                  {
-                    backgroundColor: COLORS.PURPLE,
-                    borderRadius: 8,
-                  },
-                ]}
-                activeOpacity={0.6}
-                onPress={this.onHideKeyboard.bind(this)}
-              >
-                <MaterialCommunityIcons name="keyboard-close" size={20} color={'#fff'} />
-              </TouchableOpacity>
-            </View>
-          )}
-        </View>
-      </Animated.View>
+            {this.state.isShowKeyboardButton && (
+              <View style={styles.hideKeyboardContainer}>
+                <TouchableOpacity
+                  style={[
+                    styles.buttonItemContainer,
+                    {
+                      backgroundColor: COLORS.PURPLE,
+                      borderRadius: 8,
+                    },
+                  ]}
+                  activeOpacity={0.6}
+                  onPress={this.onHideKeyboard.bind(this)}
+                >
+                  <MaterialCommunityIcons name="keyboard-close" size={20} color={'#fff'} />
+                </TouchableOpacity>
+              </View>
+            )}
+          </View>
+        </Animated.View>
+      </View>
     );
   }
 }
