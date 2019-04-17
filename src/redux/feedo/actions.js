@@ -31,7 +31,7 @@ export const getFeedoList = (index = 0, isForCardMove = false) => {
 }
 
 export const setFeedoListFromStorage = (feedoList) => {
-  console.log('FL here is ', feedoList)
+  // console.log('FL here is ', feedoList)
   return {
     type: types.SET_FEEDO_LIST_FROM_STORAGE,
     feedoList,

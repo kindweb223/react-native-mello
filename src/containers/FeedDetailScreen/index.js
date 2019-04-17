@@ -1890,7 +1890,7 @@ const mapDispatchToProps = dispatch => ({
             .then(success => {
               if(success){
                 const feed = JSON.parse(success)
-                // console.log('Response has error. Async Feed for  ', data, ' has id  ', feed.id)
+                // console.log('Response has error. Async Feed for  ', data, ' has id  ', feed)
                 dispatch(setFeedDetailFromStorage(feed))
               }
             })

@@ -276,6 +276,13 @@ class LocalStorage extends React.Component {
                             })
                             .catch(err => {/*console.log('RNFS - can not store file because ', err)*/})
                     })
+                    
+                    if(!idea.files && ideaIndex === (ideas.length - 1)){
+                        setTimeout(()=>{
+                            //console.log('RNFS saved flow will be ', feed)
+                            AsyncStorage.setItem('flow/'+flow.id, JSON.stringify(feed))
+                        }, 2000)
+                    }
                 })
 
             })
