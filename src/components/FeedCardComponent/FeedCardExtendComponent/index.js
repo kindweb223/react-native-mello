@@ -9,6 +9,8 @@ import { connect } from 'react-redux'
 
 import _ from 'lodash'
 import HTML from 'react-native-render-html'
+import Autolink from 'react-native-autolink';
+var striptags = require('striptags')
 
 import styles from './styles'
 import LikeComponent from '../../LikeComponent';
@@ -73,14 +75,15 @@ class FeedCardExtendComponent extends React.Component {
 
               {_.has(idea, 'idea') && idea.idea.length !== null && idea.idea.length > 0 && (
                 <View style={styles.subView}>
-                  <HTML
-                    html={'<span_masonry>' + idea.idea + '</span_masonry>'}
-                    containerStyle={styles.textHtmlIdea}
-                    // onLinkPress={(evt, href) => this.onPressLink(href)}
-                    // onPress={() => longHold ? {} : this.props.onLinkPress()}
-                    // onLongPress={() => longHold ? {} : this.props.onLinkLongPress()}
-                    classesStyles={CONSTANTS.HTML_CLASS_STYLES}
-                    tagsStyles={CONSTANTS.HTML_TAGS_STYLE}
+                  <Autolink
+                    style={styles.title}
+                    linkStyle={styles.linkStyle}
+                    text={striptags(idea.idea)}
+                    numberOfLines={hasCoverImage ? 4 : 10}
+                    ellipsizeMode="tail"
+                    onPress={() => longHold ? {} : this.props.onLinkPress()}
+                    onLongPress={() => longHold ? {} : this.props.onLinkLongPress()}
+                    suppressHighlighting={true}
                   />
                 </View>
               )}
