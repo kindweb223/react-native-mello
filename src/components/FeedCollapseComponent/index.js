@@ -242,7 +242,7 @@ class FeedCollapseComponent extends React.Component {
       this.collapseView,
       {
         toValue: 1,
-        duration: 500,
+        duration: 100,
       }
     ).start((animation) => {
       if (animation.finished) {
