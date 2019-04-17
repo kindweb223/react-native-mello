@@ -14,6 +14,7 @@ import _ from 'lodash'
 import styles from './styles'
 import * as COMMON_FUNC from '../../service/commonFunc'
 import { NetworkConsumer } from 'react-native-offline'
+import CONSTANTS from '../../service/constants'
 
 const BELL_ICON_B = require('../../../assets/images/Bell/Blue.png')
 const BELL_ICON_G = require('../../../assets/images/Bell/Grey.png')
@@ -90,7 +91,7 @@ class DashboardActionBar extends React.Component {
 
         <View style={styles.rightContainer}>
           {!(!_.isEmpty(feed) && COMMON_FUNC.isFeedGuest(feed)) && (
-              <NetworkConsumer  pingInterval={2000}>
+              <NetworkConsumer  pingInterval={CONSTANTS.NETWORK_CONSUMER_PING_INTERVAL}>
                 {({ isConnected }) => isConnected ? (
                     <TouchableWithoutFeedback
                         onPressIn={this.onPressInAddFeed.bind(this)}
