@@ -242,7 +242,7 @@ class FeedCollapseComponent extends React.Component {
       this.collapseView,
       {
         toValue: 1,
-        duration: 0,
+        duration: 500,
       }
     ).start((animation) => {
       if (animation.finished) {
@@ -261,7 +261,7 @@ class FeedCollapseComponent extends React.Component {
       this.collapseView,
       {
         toValue: 0,
-        duration: 0,
+        duration: 500,
       }
     ).start()
   }
@@ -272,19 +272,23 @@ class FeedCollapseComponent extends React.Component {
 
     const animatedOpacity = this.collapseView.interpolate({
       inputRange: [0, 1],
-      outputRange: [1, 0],
+      outputRange: [25, 0],
     })
 
     return (
-      <View style={[styles.collapseView, feedData.summary && feedData.summary.length > 0 && { minHeight: 50 }]}>
+      <View style={styles.collapseView}>
         <TouchableOpacity
           activeOpacity={0.9}
+          style={feedData.summary && feedData.summary.length > 0 && { minHeight: 50 }}
           onPress={() => isCollapse ? this.handleCollapse() : this.closeCollapse()}
           onLongPress={() => this.onPressText()}
         >
           <Text style={styles.headerTitle} numberOfLines={1} ellipsizeMode="tail">{feedData.headline}</Text>
+          <Collapsible collapsed={isCollapse} align="top" duration={700}>
+            {this.renderContent(feedData)}
+          </Collapsible>
           {feedData.summary && feedData.summary.length > 0
-            ? <Animated.View style={[styles.collpaseHeader, { opacity: animatedOpacity }]}>
+            ? <Animated.View style={[styles.collpaseHeader, { height: animatedOpacity, backgroundColor: '#fff' }]}>
                 <Text style={styles.summaryText} numberOfLines={1} ellipsizeMode="tail">
                   {feedData.summary}
                 </Text>
@@ -292,10 +296,6 @@ class FeedCollapseComponent extends React.Component {
             : null
           }
         </TouchableOpacity>
-
-        <Collapsible collapsed={isCollapse} align="top" duration={500}>
-          {this.renderContent(feedData)}
-        </Collapsible>
 
         <Modal 
           isVisible={isPreview}
