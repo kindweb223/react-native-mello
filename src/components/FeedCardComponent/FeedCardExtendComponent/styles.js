@@ -4,7 +4,8 @@ import COLORS from '../../../service/colors'
 const styles = StyleSheet.create({
   container: {
     width: '100%',
-    marginBottom: 16
+    marginTop: 10,
+    marginBottom: 6
   },
   selected: {
     borderWidth: 1,
