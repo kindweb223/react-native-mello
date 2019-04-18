@@ -33,7 +33,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff'
   },
   contentFlatList: {
-    paddingBottom: 16
+    paddingBottom: 36
   },
   itemView: {
     paddingTop: 16,
