@@ -66,7 +66,10 @@
 
       editor.model.document.on('change', function() {
         var value = document.getElementById('editor').textContent;
-        var height = document.getElementById('editor').offsetHeight;
+        var height = document.getElementById('editor').clientHeight;
+
+        console.log("CKEditor - Value: ", value)
+        console.log("CKEditor - height: ", height)
         if (value.length > 0) {
           window.postMessage('NO_KEYCODE>>>!hunt!<<<' + height + '>>>!hunt!<<<' + editor.getData(), '*')
         }

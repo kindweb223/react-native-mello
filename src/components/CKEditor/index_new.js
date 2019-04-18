@@ -4,8 +4,7 @@ import {
   StyleSheet,
   View,
   Text,
-  Platform,
-  // WebView
+  Platform
 } from 'react-native';
 import _ from 'lodash';
 import { WebView } from 'react-native-webview'
@@ -51,7 +50,6 @@ class CKEditor extends React.Component {
         const height = parseInt(msgData.split('>>>!hunt!<<<')[1]);
         if (height > this.state.initHeight) {
           this.setState({ height })
-          this.props.handleCKEditorHeight(parseInt(height))
         }
         this.props.onChange(content);
       } else {
@@ -80,7 +78,11 @@ class CKEditor extends React.Component {
 
   render() {
     return (
-      <View style={{ height: this.state.height }}>
+      <View style={{ height: this.state.height }}
+      onLayout={(event) => {
+        const height = event.nativeEvent.layout.height;
+        this.props.handleCKEditorHeight(parseInt(height))
+      }}>
         <WebView
           {...this.props}
           ref={c => this.webview = c}
