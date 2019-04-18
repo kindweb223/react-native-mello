@@ -102,6 +102,7 @@ class CardDetailScreen extends React.Component {
       idea: '',
       coverImage: '',
       links: [],
+      files: [],
       textByCursor: '',
 
       loading: false,
@@ -513,7 +514,7 @@ class CardDetailScreen extends React.Component {
       this.setState({
         idea: nextProps.card.currentCard.idea,
         coverImage: nextProps.card.currentCard.coverImage,
-        links: nextProps.card.currentCard.links,
+        links: nextProps.card.currentCard.links
       })
     }
   }
@@ -551,7 +552,8 @@ class CardDetailScreen extends React.Component {
         idea: card.currentCard.idea,
         coverImage: card.currentCard.coverImage,
         prevCoverImage: card.currentCard.coverImage,
-        links: card.currentCard.links
+        links: card.currentCard.links ? [...card.currentCard.links] : [],
+        files: card.currentCard.files ? [...card.currentCard.files] : []
       });
     }
 
@@ -907,10 +909,10 @@ class CardDetailScreen extends React.Component {
 
   onUpdateCard() {
     const { currentCard } = this.props.card
-    const { id, huntId, files } = currentCard
-    const { idea, prevCoverImage, coverImage, links } = this.state
+    const { id, huntId } = currentCard
+    const { idea, prevCoverImage, coverImage, links, files } = this.state
 
-    if (currentCard.idea !== idea || prevCoverImage !== coverImage || currentCard.links !== links) {
+    if (currentCard.idea !== idea || prevCoverImage !== coverImage || currentCard.links !== links || currentCard.files !== files) {
       this.props.updateCard(huntId, id, '', idea, coverImage, files, false);
     } else {
       this.onCancelEditCard()

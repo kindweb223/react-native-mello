@@ -1569,6 +1569,13 @@ export default function feedo(state = initialState, action = {}) {
       const { data } = action.result
       const { feedoList, currentFeed } = state
 
+      if (data.status === 'TEMP') {
+        return {
+          ...state,
+          loading: 'GET_CARD_FULFILLED'
+        }
+      }
+
       let updateFeed = find(feedoList, feed => feed.id === data.huntId)
 
       if (updateFeed) {
