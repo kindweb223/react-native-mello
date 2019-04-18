@@ -1002,6 +1002,7 @@ class CardNewScreen extends React.Component {
   }
 
   onAddMedia() {
+    this.refCKEditor.hideKeyboard()
     Permissions.checkMultiple(['camera', 'photo']).then(response => {
       if (response.camera === 'authorized' && response.photo === 'authorized') {
         //permission already allowed
@@ -1030,6 +1031,7 @@ class CardNewScreen extends React.Component {
   }
 
   onAddDocument() {
+    this.refCKEditor.hideKeyboard()
     if (Platform.OS === 'ios') {
       this.PickerDocumentShow();
     }
@@ -1596,6 +1598,7 @@ class CardNewScreen extends React.Component {
         {this.renderCoverImage}
         {this.renderWebMeta}
         {this.renderText}
+        {this.renderDocuments}
       </ScrollView>
     );
   }
@@ -1865,7 +1868,6 @@ class CardNewScreen extends React.Component {
           <SafeAreaView style={{ flex: 1 }}>
             {this.renderHeader}
             {this.renderMainContent}
-            {this.renderDocuments}
             {this.renderBottomAttachmentButtons}
             {this.renderBottomContent}
             {
