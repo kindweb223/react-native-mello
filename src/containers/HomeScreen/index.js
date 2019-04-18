@@ -52,7 +52,7 @@ import FeedFilterComponent from '../../components/FeedFilterComponent'
 import styles from './styles'
 import CONSTANTS from '../../service/constants';
 import COLORS from '../../service/colors'
-import { TIP_SHARE_LINK_URL, ANDROID_PUSH_SENDER_ID, PIN_FEATURE, SEARCH_FEATURE } from '../../service/api'
+import { TIP_SHARE_LINK_URL, ANDROID_PUSH_SENDER_ID, PIN_FEATURE } from '../../service/api'
 import AlertController from '../../components/AlertController'
 import SideMenuComponent from '../../components/SideMenuComponent'
 import * as COMMON_FUNC from '../../service/commonFunc'
@@ -1467,11 +1467,9 @@ class HomeScreen extends React.Component {
             </Text>
             {/* <TouchableOpacity
               style={styles.searchIconView}
-              onPress={() => SEARCH_FEATURE ? this.onSearch() : {}}
+              onPress={() => this.onSearch()}
             >
-              {SEARCH_FEATURE && (
-                <Image style={styles.searchIcon} source={SEARCH_ICON} />
-              )}
+              <Image style={styles.searchIcon} source={SEARCH_ICON} />
             </TouchableOpacity> */}
             <View style={styles.settingIconView}>
               <TouchableOpacity onPress={() => this.handleSetting()}>
@@ -1569,7 +1567,7 @@ class HomeScreen extends React.Component {
             onAddFeed={this.onOpenNewFeedModal.bind(this)}
             handleFilter={() => this.handleFilter()}
             handleList={() => this.handleList()}
-            handleSearch={() => SEARCH_FEATURE ? this.onSearch() : {}}
+            handleSearch={() => this.onSearch()}
             filterType={this.state.filterShowType}
             sortType={this.state.filterSortType}
             badgeCount={badgeCount}
