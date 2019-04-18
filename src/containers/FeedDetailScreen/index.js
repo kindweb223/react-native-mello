@@ -179,7 +179,8 @@ class FeedDetailScreen extends React.Component {
       isLeaveFlowClicked: false,
       isEnableShare: false,
       MasonryListData: [],
-      isSearchVisible: false
+      isSearchVisible: false,
+      badgeCount: 0,
     };
     this.animatedOpacity = new Animated.Value(0)
     this.menuOpacity = new Animated.Value(0)
@@ -211,10 +212,10 @@ class FeedDetailScreen extends React.Component {
   }
 
   componentDidMount() {
-    const { data } = this.props
+    const { data, feedo } = this.props
     Analytics.setCurrentScreen('FeedDetailScreen')
 
-    this.setState({ loading: true })
+    this.setState({ loading: true, badgeCount: feedo.badgeCount })
 
     this.props.getFeedDetail(data.id);
     AppState.addEventListener('change', this.onHandleAppStateChange);
@@ -413,6 +414,11 @@ class FeedDetailScreen extends React.Component {
     if (this.props.feedo.loading !== 'GET_FEED_DETAIL_REJECTED' && feedo.loading === 'GET_FEED_DETAIL_REJECTED') {
       Actions.pop()
     }
+
+    if (feedo.loading === 'GET_ACTIVITY_FEED_VISITED_FULFILLED') {
+      this.setState({ badgeCount: feedo.badgeCount })
+    }
+    
   }
 
   onHandleAppStateChange = async(nextAppState) => {
@@ -1553,7 +1559,8 @@ class FeedDetailScreen extends React.Component {
       isVisibleLongHoldMenu,
       invitees,
       MasonryListData,
-      filterShowType
+      filterShowType,
+      badgeCount,
     } = this.state
 
     return (
@@ -1765,6 +1772,7 @@ class FeedDetailScreen extends React.Component {
             listType={this.state.viewPreference}
             page="detail"
             showSearch={true}
+            badgeCount={badgeCount}
             handleSearch={() => this.onSearch()}
           />
         }
