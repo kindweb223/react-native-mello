@@ -60,6 +60,7 @@ import EmptyStateComponent from '../../components/EmptyStateComponent'
 import SpeechBubbleComponent from '../../components/SpeechBubbleComponent'
 import FollowMemberScreen from '../FollowMembersScreen'
 import OfflineIndicator from '../../components/LocalStorage/OfflineIndicator'
+import SearchScreen from '../SearchScreen';
 
 import AlertController from '../../components/AlertController'
 import TapRemoveComponent from '../../components/TapRemoveComponent'
@@ -177,7 +178,8 @@ class FeedDetailScreen extends React.Component {
       viewPreference: 'LIST',
       isLeaveFlowClicked: false,
       isEnableShare: false,
-      MasonryListData: []
+      MasonryListData: [],
+      isSearchVisible: false
     };
     this.animatedOpacity = new Animated.Value(0)
     this.menuOpacity = new Animated.Value(0)
@@ -1411,6 +1413,25 @@ class FeedDetailScreen extends React.Component {
     this.props.saveFlowViewPreference(currentFeed.id, invitee.id, preference)
   }
 
+  onSearch = () => {
+    this.setState({ isSearchVisible: true })
+  }
+
+  get renderSearch() {
+    const { feedo } = this.props
+
+    if (this.state.isSearchVisible) {
+      return (
+        <View style={[styles.modalContainer, {backgroundColor: 'transparent'}]}>
+          <SearchScreen
+            cachedFeedList={ feedo.feedoList }
+            onClosed={ () => this.setState({ isSearchVisible: false }) }
+          />
+        </View>
+      );
+    }
+  }
+
   get renderSelectHunt() {
     if (this.state.isVisibleSelectFeedo) {
       const { currentFeed } = this.state
@@ -1738,16 +1759,19 @@ class FeedDetailScreen extends React.Component {
             handleList={() => this.handleList()}
             filterType={this.state.filterShowType}
             sortType={this.state.filterSortType}
-            notifications={false}
+            notifications={true}
             feed={currentFeed}
             showList={true}
             listType={this.state.viewPreference}
             page="detail"
+            showSearch={true}
+            handleSearch={() => this.onSearch()}
           />
         }
 
         {this.renderNewCardModal}
         {this.renderSelectHunt}
+        {this.renderSearch}
 
         <ActionSheet
           ref={ref => this.feedoActionSheet = ref}
