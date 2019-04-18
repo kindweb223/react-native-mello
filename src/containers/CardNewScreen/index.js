@@ -81,7 +81,7 @@ import SelectHuntScreen from '../SelectHuntScreen';
 import Analytics from '../../lib/firebase'
 import ToasterComponent from '../../components/ToasterComponent'
 import AlertController from '../../components/AlertController'
-import CKEditor from '../../components/CKEditor'
+import CKEditor from '../../components/CKEditor/index_new'
 import CKEditorToolbar from '../../components/CKEditor/Toolbar'
 
 import * as COMMON_FUNC from '../../service/commonFunc'
@@ -174,6 +174,8 @@ class CardNewScreen extends React.Component {
 
     this.coverImageWidth = CONSTANTS.SCREEN_WIDTH
     this.coverImageHeight = CONSTANTS.SCREEN_HEIGHT / 3
+
+    this.ckEditorHeight = 70
 
     if (props.cardMode === CONSTANTS.SHARE_EXTENTION_CARD && props.shareUrl === '' && props.shareImageUrls.length) {
       props.shareImageUrls.forEach( async(imageUri, index) => {
@@ -1484,19 +1486,26 @@ class CardNewScreen extends React.Component {
     this.textInputPositionY = layout.y;
   }
 
-  onLayoutScrollView({ nativeEvent: { layout } }) {
-    if (this.scrollViewHeight < layout.height) {
+  // onLayoutScrollView({ nativeEvent: { layout } }) {
+  //   if (this.scrollViewHeight < layout.height) {
+  //     this.scrollViewRef.scrollToEnd()
+  //   }
+  //   this.scrollViewHeight = layout.height;
+  //   // this.scrollContent();
+  // }
+
+  handleCKEditorHeight = height => {
+    if (height > this.ckEditorHeight) {
       this.scrollViewRef.scrollToEnd()
     }
-    this.scrollViewHeight = layout.height;
-    // this.scrollContent();
+    this.ckEditorHeight = height
   }
 
   get renderText() {
     const { cardMode } = this.props;
 
     return (
-      <View style={{ flex: 1, marginTop: 15 }}>
+      <View style={{ flex: 1 }}>
         <CKEditor
           ref={c => this.refCKEditor = c}
           content={this.state.idea}
@@ -1505,8 +1514,9 @@ class CardNewScreen extends React.Component {
           onChange={value => this.onChangeIdea(value)}
           handleKeydown={() => this.onKeyPressIdea()}
           hideKeyboardAccessoryView={true}
-          scrollEnabled={true}
+          // scrollEnabled={true}
           automaticallyAdjustContentInsets={true}
+          handleCKEditorHeight={this.handleCKEditorHeight}
         />
       </View>
     )
@@ -1581,7 +1591,7 @@ class CardNewScreen extends React.Component {
         style={{ flex: 1 }}
         contentContainerStyle={{ paddingBottom: 50 }}
         ref={ref => this.scrollViewRef = ref}
-        onLayout={this.onLayoutScrollView.bind(this)}
+        // onLayout={this.onLayoutScrollView.bind(this)}
       >
         {this.renderCoverImage}
         {this.renderWebMeta}
