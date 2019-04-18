@@ -101,7 +101,7 @@ import COLORS from '../../service/colors'
 import CONSTANTS from '../../service/constants'
 import * as COMMON_FUNC from '../../service/commonFunc'
 import styles from './styles'
-import { TAGS_FEATURE, SHARE_LINK_URL, SEARCH_FEATURE } from "../../service/api"
+import { TAGS_FEATURE, SHARE_LINK_URL } from "../../service/api"
 
 import COMMON_STYLES from '../../themes/styles'
 
@@ -1765,7 +1765,7 @@ class FeedDetailScreen extends React.Component {
             listType={this.state.viewPreference}
             page="detail"
             showSearch={true}
-            handleSearch={() => SEARCH_FEATURE ? this.onSearch() : {}}
+            handleSearch={() => this.onSearch()}
           />
         }
 
