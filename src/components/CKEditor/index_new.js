@@ -78,11 +78,13 @@ class CKEditor extends React.Component {
 
   render() {
     return (
-      <View style={{ height: this.state.height }}
-      onLayout={(event) => {
-        const height = event.nativeEvent.layout.height;
-        this.props.handleCKEditorHeight(parseInt(height))
-      }}>
+      <View
+        style={{ height: this.state.height }}
+        onLayout={(event) => {
+          const height = event.nativeEvent.layout.height;
+          this.props.handleCKEditorHeight(parseInt(height))
+        }}
+      >
         <WebView
           {...this.props}
           ref={c => this.webview = c}

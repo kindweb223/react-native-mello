@@ -31,6 +31,9 @@
       border: 1px solid transparent;
       box-shadow: none;
   }
+  #editor {
+    font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+  }
 </style>
 
 <body>
@@ -59,7 +62,14 @@
   DecoupledEditor
     .create(document.querySelector('#editor'), {
       placeholder: "Let your ideas flow. Type text, paste a link, add an image, video or audio",
-      focus: true
+      focus: true,
+      fontFamily: {
+        options: [
+          'default',
+          '-apple-system, BlinkMacSystemFont, sans-serif',
+          'Arial, Helvetica, sans-serif'
+        ]
+      }
     })
     .then(editor => {
       window.CKEditor = editor;
