@@ -53,6 +53,9 @@ class CKEditor extends React.Component {
         }
         this.props.onChange(content);
       } else {
+        if (keyCode === '13') {
+          this.props.handleCKEditorHeight(parseInt(this.state.height) + 1)
+        }
         this.props.handleKeydown();
       }
     } catch (err) {
