@@ -68,6 +68,8 @@ class CardEditScreen extends React.Component {
 
   keyboardDidlShow(e) {
     this.setState({ keyboardHeight: e.endCoordinates.height })
+    this.refCKEditorToolbar.refreshCommands(true)
+
     Animated.timing(
       this.animatedKeyboardHeight, {
         toValue: e.endCoordinates.height,
@@ -119,6 +121,11 @@ class CardEditScreen extends React.Component {
     this.props.checkUrls();
   }
 
+  handleReturnKeydown = () => {
+    this.refCKEditorToolbar.refreshCommands()
+    this.props.checkUrls()
+  }
+
   executeCKEditorCommand = (command) => {
     this.refCKEditor.executeCommand(command)
   }
@@ -127,6 +134,7 @@ class CardEditScreen extends React.Component {
     return (
       <View style={[styles.footerContainer]}>
         <CKEditorToolbar
+          ref={c => this.refCKEditorToolbar = c}
           isEdit={false}
           handleCKEditorToolbar={() => {}}
           executeCKEditorCommand={this.executeCKEditorCommand}
@@ -145,6 +153,7 @@ class CardEditScreen extends React.Component {
         backgroundColor={'white'}
         onChange={value => this.onChangeIdea(value)}
         handleKeydown={() => this.onKeyPressIdea()}
+        handleReturnKeydown={() => this.handleReturnKeydown()}
         hideKeyboardAccessoryView={true}
         scrollEnabled={true}
         automaticallyAdjustContentInsets={true}

@@ -48,6 +48,9 @@ class CKEditor extends React.Component {
         const content = msgData.split('>>>!hunt!<<<')[2];
         this.props.onChange(content);
       } else {
+        if (keyCode === '13') {
+          this.props.handleReturnKeydown();
+        }
         this.props.handleKeydown();
       }
     } catch (err) {

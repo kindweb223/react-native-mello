@@ -1,15 +1,23 @@
 import React from 'react'
 import { View, Text, Image, TouchableOpacity } from 'react-native'
+import _ from 'lodash'
 
 const CLOSE_ICON = require('../../../../assets/images/RichEditor/UIButtonRoundedX.png')
 const HEADLINE_ICON = require('../../../../assets/images/RichEditor/IconMediumTtGrey.png')
+const HEADLINE_PURPLE_ICON = require('../../../../assets/images/RichEditor/IconMediumTtPurple.png')
 const BULLET_ICON = require('../../../../assets/images/RichEditor/IconMediumBulletpointsGrey.png')
+const BULLET_PURPLE_ICON = require('../../../../assets/images/RichEditor/IconMediumBulletpointsPurple.png')
 const NUMBER_ICON = require('../../../../assets/images/RichEditor/IconMediumNumbersGrey.png')
+const NUMBER_PURPLE_ICON = require('../../../../assets/images/RichEditor/IconMediumNumbersPurple.png')
 const CHECKBOX_ICON = require('../../../../assets/images/RichEditor/IconMediumCheckboxGrey.png')
 const UNDERLINE_ICON = require('../../../../assets/images/RichEditor/IconMediumUnderlineGrey.png')
+const UNDERLINE_PURPLE_ICON = require('../../../../assets/images/RichEditor/IconMediumUnderlinePurple.png')
 const ITALIC_ICON = require('../../../../assets/images/RichEditor/IconMediumItalicGrey.png')
+const ITALIC_PURPLE_ICON = require('../../../../assets/images/RichEditor/IconMediumItalicPurple.png')
 const STRIKETHROUGH_ICON = require('../../../../assets/images/RichEditor/IconMediumStrikethroughGrey.png')
+const STRIKETHROUGH_PURPLE_ICON = require('../../../../assets/images/RichEditor/IconMediumStrikethroughPurple.png')
 const BOLD_ICON = require('../../../../assets/images/RichEditor/IconMediumBoldGrey.png')
+const BOLD_PURPLE_ICON = require('../../../../assets/images/RichEditor/IconMediumBoldPurple.png')
 const ARROW_ICON = require('../../../../assets/images/RichEditor/UIButtonRoundedNext.png')
 
 import styles from './styles'
@@ -20,7 +28,8 @@ class CKEditorToolbar extends React.Component {
 
     this.state = {
       isFirstToolbar: true,
-      fontSize: 'normal'
+      fontSize: 'normal',
+      commands: []
     }
   }
 
@@ -29,17 +38,56 @@ class CKEditorToolbar extends React.Component {
   }
 
   setFontSize = () => {
+    let { commands } = this.state
+
     if (this.state.fontSize === 'normal') {
       this.setState({ fontSize: 'big' })
       this.props.executeCKEditorCommand('fontSize_big')
+      this.setState({ commands: [...commands, 'fontsize'] })
     } else {
       this.setState({ fontSize: 'normal' })
       this.props.executeCKEditorCommand('fontSize_normal')
+      this.setState({ commands: _.filter(commands, item => item !== 'fontsize') })
+    }
+  }
+
+  setListCommands = (command) => {
+    let { commands } = this.state
+
+    this.props.executeCKEditorCommand(command)
+    let newCommands = _.filter(commands, item => item !== 'numberedList' && item !== 'bulletedList')
+
+    if (_.findIndex(commands, item => item === command) === -1) {
+      this.setState({ commands: [...newCommands, command] })
+    } else {
+      this.setState({ commands: [...newCommands] })
+    }
+  }
+
+  setCommands = (command) => {
+    const { commands } = this.state
+
+    this.props.executeCKEditorCommand(command)
+    if (_.findIndex(commands, item => item === command) === -1) {
+      this.setState({ commands: [...commands, command] })
+    } else {
+      this.setState({ commands: _.filter(commands, item => item !== command) })
+    }
+  }
+
+  refreshCommands = (type) => {
+    const { commands } = this.state
+
+    if (type) {
+      this.setState({ commands: [], fontSize: 'normal' })
+    } else {
+      this.setState({ commands: _.filter(commands, item => item === 'numberedList' || item === 'bulletedList'), fontSize: 'normal' })
     }
   }
 
   render() {
-    const { isFirstToolbar } = this.state;
+    const { isFirstToolbar, commands } = this.state;
+    console.log('COMMANDS: ', commands)
   
     return (
       <View style={styles.container}>
@@ -60,49 +108,49 @@ class CKEditorToolbar extends React.Component {
                 activeOpacity={0.6}
                 onPress={() => this.setFontSize()}
               >
-                <Image source={HEADLINE_ICON} />
+                <Image source={_.findIndex(commands, item => item === 'fontsize') !== -1 ? HEADLINE_PURPLE_ICON : HEADLINE_ICON} />
               </TouchableOpacity>
               <View style={styles.toolbarBorderView}>
                 <TouchableOpacity
                   activeOpacity={0.6}
-                  onPress={() => this.props.executeCKEditorCommand('bulletedList')}
+                  onPress={() => this.setListCommands('bulletedList')}
                 >
-                  <Image source={BULLET_ICON} />
+                  <Image source={_.findIndex(commands, item => item === 'bulletedList') !== -1 ? BULLET_PURPLE_ICON : BULLET_ICON} />
                 </TouchableOpacity>
                 <TouchableOpacity
                   activeOpacity={0.6}
-                  onPress={() => this.props.executeCKEditorCommand('numberedList')}
+                  onPress={() => this.setListCommands('numberedList')}
                 >
-                  <Image source={NUMBER_ICON} />
+                  <Image source={_.findIndex(commands, item => item === 'numberedList') !== -1 ? NUMBER_PURPLE_ICON : NUMBER_ICON} />
                 </TouchableOpacity>
                 <TouchableOpacity
                   activeOpacity={0.6}
-                  onPress={() => this.props.executeCKEditorCommand('bold')}
+                  onPress={() => this.setCommands('bold')}
                 >
-                  <Image source={BOLD_ICON} />
+                  <Image source={_.findIndex(commands, item => item === 'bold') !== -1 ? BOLD_PURPLE_ICON : BOLD_ICON} />
                 </TouchableOpacity>
               </View>
               <TouchableOpacity
                 activeOpacity={0.6}
-                onPress={() => this.props.executeCKEditorCommand('underline')}
+                onPress={() => this.setCommands('underline')}
               >
-                <Image source={UNDERLINE_ICON} />
+                <Image source={_.findIndex(commands, item => item === 'underline') !== -1 ? UNDERLINE_PURPLE_ICON : UNDERLINE_ICON} />
               </TouchableOpacity>
             </View>
           : <View style={styles.secondToolbarView}>
               <TouchableOpacity
                 activeOpacity={0.6}
                 style={styles.toolView}
-                onPress={() => this.props.executeCKEditorCommand('italic')}
+                onPress={() => this.setCommands('italic')}
               >
-                <Image source={ITALIC_ICON} />
+                <Image source={_.findIndex(commands, item => item === 'italic') !== -1 ? ITALIC_PURPLE_ICON : ITALIC_ICON} />
               </TouchableOpacity>
               <TouchableOpacity
                 activeOpacity={0.6}
                 style={styles.toolView}
-                onPress={() => this.props.executeCKEditorCommand('strikethrough')}
+                onPress={() => this.setCommands('strikethrough')}
               >
-                <Image source={STRIKETHROUGH_ICON} />
+                <Image source={_.findIndex(commands, item => item === 'strikethrough') !== -1 ? STRIKETHROUGH_PURPLE_ICON : STRIKETHROUGH_ICON} />
               </TouchableOpacity>
             </View>
         }
