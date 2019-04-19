@@ -49,7 +49,6 @@ class CKEditor extends React.Component {
         this.props.onChange(content);
       } if (keyCode === 'FOCUS_COMMAND') {
         const command = msgData.split('>>>!hunt!<<<')[1];
-        console.log('GET_COMMANDS: ', command.split(':'))
         this.props.handleCommands(command.split(':'))
       } else {
         this.props.handleKeydown();
