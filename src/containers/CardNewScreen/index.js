@@ -765,8 +765,6 @@ class CardNewScreen extends React.Component {
       this.setState({bottomButtonsPadding: 0})
     }
 
-    this.refCKEditorToolbar.refreshCommands(true)
-
     Animated.timing(
       this.animatedKeyboardHeight, {
         toValue: 0,
@@ -1306,9 +1304,10 @@ class CardNewScreen extends React.Component {
     this.checkUrls();
   }
 
-  handleReturnKeydown = () => {
-    this.refCKEditorToolbar.refreshCommands(false)
-    this.checkUrls();
+  handleCommands = (commands) => {
+    if (this.refCKEditorToolbar) {
+      this.refCKEditorToolbar.handleCommands(commands)
+    }
   }
 
   onFocus() {
@@ -1522,7 +1521,7 @@ class CardNewScreen extends React.Component {
           placeholder={cardMode === CONSTANTS.SHARE_EXTENTION_CARD ? 'Add a note' : 'Let your ideas flow. Type text, paste a link, add an image, video or audio'}
           onChange={value => this.onChangeIdea(value)}
           handleKeydown={() => this.onKeyPressIdea()}
-          handleReturnKeydown={() => this.handleReturnKeydown()}
+          handleCommands={this.handleCommands}
           hideKeyboardAccessoryView={true}
           // scrollEnabled={true}
           automaticallyAdjustContentInsets={true}

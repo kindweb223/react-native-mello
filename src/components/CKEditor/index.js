@@ -47,10 +47,11 @@ class CKEditor extends React.Component {
       if (keyCode === 'NO_KEYCODE') {
         const content = msgData.split('>>>!hunt!<<<')[2];
         this.props.onChange(content);
+      } if (keyCode === 'FOCUS_COMMAND') {
+        const command = msgData.split('>>>!hunt!<<<')[1];
+        console.log('GET_COMMANDS: ', command.split(':'))
+        this.props.handleCommands(command.split(':'))
       } else {
-        if (keyCode === '13') {
-          this.props.handleReturnKeydown();
-        }
         this.props.handleKeydown();
       }
     } catch (err) {
