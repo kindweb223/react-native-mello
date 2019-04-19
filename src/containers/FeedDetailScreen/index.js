@@ -107,6 +107,7 @@ import COMMON_STYLES from '../../themes/styles'
 
 import Analytics from '../../lib/firebase'
 import { images } from '../../themes'
+import Button from '../../components/Button';
 
 const TOASTER_DURATION = 3000
 
@@ -128,6 +129,8 @@ const fontSpecs = {
   fontSize: 13,
   fontWeight: '500'
 }
+
+const EMPTY_ICON = require('../../../assets/images/empty_state/NotificationEmptyState.png')
 
 class FeedDetailScreen extends React.Component {
   constructor(props) {
@@ -164,7 +167,6 @@ class FeedDetailScreen extends React.Component {
       feedoMode: 1,
       showBubble: false,
       showBubbleCloseButton: false,
-      isExistingUser: false,
       showEmptyBubble: false,
       feedoViewMode: CONSTANTS.FEEDO_FROM_MAIN,
       isRefreshing: false,
@@ -466,11 +468,6 @@ class FeedDetailScreen extends React.Component {
 
     if (currentFeed.ideas.length === 0) {
       this.setState({ showEmptyBubble: true })
-      if (bubbleFirstCardData && (bubbleFirstCardData.userId === user.userInfo.id && bubbleFirstCardData.state === 'true')) {
-        this.setState({ isExistingUser: true })     // Existing user, no cards
-      } else {
-        this.setState({ isExistingUser: false })    // New user, no cards
-      }
     }
   }
 
@@ -1529,21 +1526,23 @@ class FeedDetailScreen extends React.Component {
     return (
       <View style={styles.emptyInnerView}>
         {this.state.showEmptyBubble && (
-          this.state.isExistingUser
-          ? <EmptyStateComponent
-              page="card_exist"
-              title="Ah, that sense of freshness! Let's start a new day."
-              subTitle="Need a few hints on all awesome ways to create a card?"
-              ctaTitle="Create a card"
-              onCreateNewCard={this.onOpenNewCardModal.bind(this)}
+          <View style={[{justifyContent: 'center'}]}>
+            <Image style={[{alignSelf: 'center'}]}
+              source={EMPTY_ICON}
             />
-          : <EmptyStateComponent
-              page="card"
-              title="It's pretty empty here. Get your creativity working and add some stuff to your flow!"
-              subTitle="Watch a 15 sec video about creating cards"
-              ctaTitle="Create your first card"
-              onCreateNewCard={this.onOpenNewCardModal.bind(this)}
-            />
+            <Text style={[{padding: 28, textAlign: 'center'}]}>
+              It's pretty empty here. Get your creativity and add some stuff to your flow.
+            </Text>
+            <TouchableOpacity
+              style={[styles.closeButtonView, {alignSelf: 'center'}]}
+              activeOpacity={0.7}
+              onPress={() => this.onOpenNewCardModal() }
+            >
+              <View style={[{height: 34, width: 180, backgroundColor:COLORS.PURPLE, borderRadius: 16, justifyContent: 'center'}]}>
+                <Text style={[styles.textButton, { color: 'white', fontSize: 15, textAlign: 'center', fontWeight: 'normal'}]}>Create your first card</Text>
+              </View>
+            </TouchableOpacity>
+          </View>
         )}
       </View>
     )
