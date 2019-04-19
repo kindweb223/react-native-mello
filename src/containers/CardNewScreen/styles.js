@@ -48,8 +48,7 @@ const styles = StyleSheet.create({
   },
   hideKeyboardContainer: {
     position: 'absolute',
-    right: 16,
-    bottom: 58,
+    right: 16
   },
   attachment: {
     transform: [

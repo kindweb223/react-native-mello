@@ -77,16 +77,16 @@ class CKEditorToolbar extends React.Component {
                 </TouchableOpacity>
                 <TouchableOpacity
                   activeOpacity={0.6}
-                  onPress={() => this.props.executeCKEditorCommand('underline')}
+                  onPress={() => this.props.executeCKEditorCommand('bold')}
                 >
-                  <Image source={UNDERLINE_ICON} />
+                  <Image source={BOLD_ICON} />
                 </TouchableOpacity>
               </View>
               <TouchableOpacity
                 activeOpacity={0.6}
-                onPress={() => this.props.executeCKEditorCommand('bold')}
+                onPress={() => this.props.executeCKEditorCommand('underline')}
               >
-                <Image source={BOLD_ICON} />
+                <Image source={UNDERLINE_ICON} />
               </TouchableOpacity>
             </View>
           : <View style={styles.secondToolbarView}>

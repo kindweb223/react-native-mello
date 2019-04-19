@@ -1873,7 +1873,12 @@ class CardNewScreen extends React.Component {
             {
               // If show keyboard button, and not quick add card from dashboard as interferes with change Feed https://cl.ly/ba004cb3a34b
               Platform.OS === 'ios' && viewMode === CONSTANTS.CARD_NEW && this.state.isShowKeyboardButton && cardMode !== CONSTANTS.SHARE_EXTENTION_CARD &&
-              <Animated.View style={styles.hideKeyboardContainer}>
+              <Animated.View
+                style={[
+                  styles.hideKeyboardContainer,
+                  (this.state.showCKEditorToolbar || cardMode === CONSTANTS.MAIN_APP_CARD_FROM_DASHBOARD) ? { bottom: 58 } : { bottom: 20 }
+                ]}
+              >
                 <TouchableOpacity
                   style={[
                     styles.buttonItemContainer,
