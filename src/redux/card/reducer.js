@@ -74,6 +74,7 @@ export default function card(state = initialState, action = {}) {
       }
     case types.GET_CARD_FULFILLED: {
       const { data } = action.result
+
       return {
         ...state,
         loading: types.GET_CARD_FULFILLED,
