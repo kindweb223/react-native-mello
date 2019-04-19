@@ -13,6 +13,7 @@ import CONSTANTS from '../service/constants'
 import AlertController from '../components/AlertController'
 import SharedGroupPreferences from 'react-native-shared-group-preferences'
 import moment from 'moment'
+import rnTextSize from 'react-native-text-size'
 
 /**
  * If the user is the invitee, return true
@@ -154,7 +155,7 @@ const isMelloTipFeed = (feed) => {
 }
 
 const checkVideoCoverImage = (images, coverImage) => {
-  return _.find(images, image => image.thumbnailUrl === coverImage)
+  return _.find(images, image => image.thumbnailUrl === coverImage  && image.contentType.toLowerCase().indexOf('video') !== -1)
 }
 
 const getCardViewMode = (feed, idea) => {
@@ -216,6 +217,51 @@ const removeDuplicatedItems = (array) => {
   return array
 }
 
+const htmlToPlainText = (html = '') => {
+  let myHtml = html
+
+  myHtml = myHtml
+    .replace(/<br\/?>/gi, '\n')
+    .replace(/&nbsp;/gi, ' ')
+    .replace(/<h2.*?>(.*?)<\/h2>/gi, '\n$1\n')
+    .replace(/<p.*?>(.*?)<\/p>/gi, '\n$1\n')
+    .replace(/<(?:.|\s)*?>/g, '')
+
+  return myHtml
+}
+
+const splitHtmlToArray = (html) => {
+  var separators = ['\\\<p>', '\\\<li>', '\\\<br />', '\\\<br/>'];
+  var htmlArray = html.split(new RegExp(separators.join('|'), 'g'));
+  return htmlArray;
+}
+
+const fontSpecs = {
+  fontFamily: undefined,
+  fontSize: 14
+}
+
+const getHtmlHeight = async (html, width) => {
+  const htmlArray = splitHtmlToArray(_.trim(html))
+
+  let length = 0
+
+  const cardWidth = width
+
+  for (let i = 0; i < htmlArray.length; i ++) {
+    if (htmlArray[i].length > 0) {
+      const textSize = await rnTextSize.measure({
+        text: htmlArray[i],
+        width: cardWidth - 16,
+        ...fontSpecs
+      })
+      length += parseInt(textSize.height)
+    }
+  }
+
+  return { textSize: length, lineCount: htmlArray.length }
+}
+
 export {
   checkUserIsInvitee,
   isFeedOwner,
@@ -238,7 +284,10 @@ export {
   isFeedOwnerOnlyInvitee,
   getCardViewMode,
   removeDuplicatedItems,
+  htmlToPlainText,
+  splitHtmlToArray,
   setLastFeed,
   getLastFeed,
   useLastFeed,
+  getHtmlHeight
 }

@@ -31,7 +31,7 @@ export const getFeedoList = (index = 0, isForCardMove = false) => {
 }
 
 export const setFeedoListFromStorage = (feedoList) => {
-  console.log('FL here is ', feedoList)
+  // console.log('FL here is ', feedoList)
   return {
     type: types.SET_FEEDO_LIST_FROM_STORAGE,
     feedoList,
@@ -87,6 +87,14 @@ export const getFeedDetail = (feedId) => {
       url: url
     }),
     payload: feedId
+  };
+}
+
+
+export const setFeedDetailFromStorage = (feed) => {
+  return {
+    type: types.SET_FEED_DETAIL_FROM_STORAGE,
+    feed
   };
 }
 
@@ -783,12 +791,5 @@ export const saveFlowViewPreference = (feedId, inviteeId, preference) => {
 export const pubnubUserInvited = () => {
   return {
     type: types.PUBNUB_USER_INVITED_FULFILLED
-  };
-}
-
-export const setFeedDetailFromStorage = (feed) => {
-  return {
-    type: types.SET_FEED_DETAIL_FROM_STORAGE,
-    feed
   };
 }

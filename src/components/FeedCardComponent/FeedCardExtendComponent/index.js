@@ -8,8 +8,9 @@ import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 
 import _ from 'lodash'
-
+import HTML from 'react-native-render-html'
 import Autolink from 'react-native-autolink';
+var striptags = require('striptags')
 
 import styles from './styles'
 import LikeComponent from '../../LikeComponent';
@@ -41,8 +42,6 @@ class FeedCardExtendComponent extends React.Component {
 
     const hasCoverImage = idea.coverImage && idea.coverImage.length > 0
     const viewMode = COMMON_FUNC.getCardViewMode(feedo.currentFeed, idea)
-
-    console.log('IDEA: ', idea)
 
     return (
       <View style={[styles.container, longSelected && styles.selected, longHold && viewMode === CONSTANTS.CARD_VIEW && { opacity: 0.4 }]}>
@@ -79,7 +78,7 @@ class FeedCardExtendComponent extends React.Component {
                   <Autolink
                     style={styles.title}
                     linkStyle={styles.linkStyle}
-                    text={idea.idea}
+                    text={COMMON_FUNC.htmlToPlainText(striptags(idea.idea))}
                     numberOfLines={hasCoverImage ? 4 : 10}
                     ellipsizeMode="tail"
                     onPress={() => longHold ? {} : this.props.onLinkPress()}

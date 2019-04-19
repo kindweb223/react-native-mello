@@ -37,7 +37,7 @@ class ShareWidgetPermissionModal extends React.Component {
             <Image source={SHARE_ICON} style={styles.shareIcon} />
           </View>
           <Text style={styles.title}>Did you know you can save to Mello from anywhere?</Text>
-          <Text style={styles.subTitle}>Tab the share button and save anything from anwyhere to Mello.</Text>
+          <Text style={styles.subTitle}>Tap the share button and save anything from anwyhere to Mello.</Text>
         </View>
 
         <View style={styles.buttonView}>

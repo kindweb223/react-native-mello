@@ -82,8 +82,9 @@ const styles = StyleSheet.create({
   filterIconView: {
     justifyContent: 'center',
     alignItems: 'flex-end',
-    marginRight: 16,
-    width: 40,
+    marginRight: 8,
+    paddingRight: 8,
+    width: 34,
     height: 30
   },
   filterIcon: {
@@ -162,7 +163,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     height: 30,
-    width: 68,
+    width: 70,
     borderRadius: 6,
     marginRight: 10,
     paddingHorizontal: 10,
