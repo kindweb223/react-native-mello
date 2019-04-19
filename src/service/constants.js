@@ -93,4 +93,20 @@ export default {
   // file path in DocumentDirectoryPath
   PRIVACY_POLICE: '/MELLO_PRIVACY_POLICY.txt',
   TERMS_CONDITIONS: '/MELLO_TERMS_CONDITIONS.txt',
+  HTML_CLASS_STYLES: {
+    'text-big': { fontSize: 18 }
+  },
+  HTML_TAGS_STYLE: {
+    'span': { backgroundColor: 'transparent', fontSize: 16 },
+    'span_masonry': { backgroundColor: 'transparent', fontSize: 14 },
+    'p': { backgroundColor: 'transparent', marginBottom: 5, fontSize: 16 },
+    'ul': { paddingLeft: 0, marginTop: 5, marginBottom: 0 },
+    'ol': { paddingLeft: 0, marginTop: 5, marginBottom: 0 },
+    'h1': { backgroundColor: 'transparent' },
+    'h2': { backgroundColor: 'transparent' },
+    'h3': { backgroundColor: 'transparent' },
+    'h4': { backgroundColor: 'transparent' },
+    'h5': { backgroundColor: 'transparent' },
+    'h6': { backgroundColor: 'transparent' }
+  }
 }

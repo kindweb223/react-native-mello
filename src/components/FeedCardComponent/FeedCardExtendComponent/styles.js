@@ -45,7 +45,8 @@ const styles = StyleSheet.create({
     justifyContent: 'flex-start',
     alignItems: 'center',
     paddingHorizontal: 10,
-    marginBottom: 4
+    marginBottom: 4,
+    width: '100%'
   },
   avatar: {
     marginRight: 8,
@@ -67,6 +68,14 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'flex-start',
     alignItems: 'center'
+  },
+  textHtmlIdea: {
+    marginBottom: 0,
+    paddingLeft: 0,
+    paddingRight: 0,
+    paddingTop: 0,
+    paddingBottom: 0,
+    width: '100%'
   }
 })
 

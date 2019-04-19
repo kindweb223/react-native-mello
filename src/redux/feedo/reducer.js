@@ -229,6 +229,14 @@ export default function feedo(state = initialState, action = {}) {
         feedoList: restFeedoList
       }
     }
+    case types.SET_FEED_DETAIL_FROM_STORAGE: {
+      return {
+        ...state,
+        loading: types.SET_FEED_DETAIL_FROM_STORAGE,
+        currentFeed: action.feed
+      }
+    }
+
     /**
      * Pin Feed
      */
@@ -1561,6 +1569,13 @@ export default function feedo(state = initialState, action = {}) {
       const { data } = action.result
       const { feedoList, currentFeed } = state
 
+      if (data.status === 'TEMP') {
+        return {
+          ...state,
+          loading: 'GET_CARD_FULFILLED'
+        }
+      }
+
       let updateFeed = find(feedoList, feed => feed.id === data.huntId)
 
       if (updateFeed) {
@@ -1868,12 +1883,6 @@ export default function feedo(state = initialState, action = {}) {
       return {
         ...state,
         loading: types.PUBNUB_USER_INVITED_FULFILLED
-      }
-    }
-    case types.SET_FEED_DETAIL_FROM_STORAGE: {
-      return {
-        ...state,
-        loading: types.SET_FEED_DETAIL_FROM_STORAGE
       }
     }
     default:

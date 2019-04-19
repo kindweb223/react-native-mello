@@ -35,6 +35,7 @@ import GestureRecognizer from 'react-native-swipe-gestures'
 import { NetworkConsumer, checkInternetConnection } from 'react-native-offline'
 import Masonry from '../../components/MasonryComponent'
 import rnTextSize from 'react-native-text-size'
+var striptags = require('striptags')
 import MasonryList from '../../components/MasonryComponent'
 
 import DashboardActionBar from '../../navigations/DashboardActionBar'
@@ -59,6 +60,7 @@ import EmptyStateComponent from '../../components/EmptyStateComponent'
 import SpeechBubbleComponent from '../../components/SpeechBubbleComponent'
 import FollowMemberScreen from '../FollowMembersScreen'
 import OfflineIndicator from '../../components/LocalStorage/OfflineIndicator'
+import SearchScreen from '../SearchScreen';
 
 import AlertController from '../../components/AlertController'
 import TapRemoveComponent from '../../components/TapRemoveComponent'
@@ -105,6 +107,7 @@ import COMMON_STYLES from '../../themes/styles'
 
 import Analytics from '../../lib/firebase'
 import { images } from '../../themes'
+import Button from '../../components/Button';
 
 const TOASTER_DURATION = 3000
 
@@ -126,6 +129,8 @@ const fontSpecs = {
   fontSize: 13,
   fontWeight: '500'
 }
+
+const EMPTY_ICON = require('../../../assets/images/empty_state/NotificationEmptyState.png')
 
 class FeedDetailScreen extends React.Component {
   constructor(props) {
@@ -162,7 +167,6 @@ class FeedDetailScreen extends React.Component {
       feedoMode: 1,
       showBubble: false,
       showBubbleCloseButton: false,
-      isExistingUser: false,
       showEmptyBubble: false,
       feedoViewMode: CONSTANTS.FEEDO_FROM_MAIN,
       isRefreshing: false,
@@ -176,7 +180,9 @@ class FeedDetailScreen extends React.Component {
       viewPreference: 'LIST',
       isLeaveFlowClicked: false,
       isEnableShare: false,
-      MasonryListData: []
+      MasonryListData: [],
+      isSearchVisible: false,
+      badgeCount: 0,
     };
     this.animatedOpacity = new Animated.Value(0)
     this.menuOpacity = new Animated.Value(0)
@@ -208,10 +214,10 @@ class FeedDetailScreen extends React.Component {
   }
 
   componentDidMount() {
-    const { data } = this.props
+    const { data, feedo } = this.props
     Analytics.setCurrentScreen('FeedDetailScreen')
 
-    this.setState({ loading: true })
+    this.setState({ loading: true, badgeCount: feedo.badgeCount })
 
     this.props.getFeedDetail(data.id);
     AppState.addEventListener('change', this.onHandleAppStateChange);
@@ -410,6 +416,11 @@ class FeedDetailScreen extends React.Component {
     if (this.props.feedo.loading !== 'GET_FEED_DETAIL_REJECTED' && feedo.loading === 'GET_FEED_DETAIL_REJECTED') {
       Actions.pop()
     }
+
+    if (feedo.loading === 'GET_ACTIVITY_FEED_VISITED_FULFILLED') {
+      this.setState({ badgeCount: feedo.badgeCount })
+    }
+    
   }
 
   onHandleAppStateChange = async(nextAppState) => {
@@ -457,11 +468,6 @@ class FeedDetailScreen extends React.Component {
 
     if (currentFeed.ideas.length === 0) {
       this.setState({ showEmptyBubble: true })
-      if (bubbleFirstCardData && (bubbleFirstCardData.userId === user.userInfo.id && bubbleFirstCardData.state === 'true')) {
-        this.setState({ isExistingUser: true })     // Existing user, no cards
-      } else {
-        this.setState({ isExistingUser: false })    // New user, no cards
-      }
     }
   }
 
@@ -548,7 +554,7 @@ class FeedDetailScreen extends React.Component {
         const cardWidth = (CONSTANTS.SCREEN_SUB_WIDTH - 16) / 2
 
         const textSize = await rnTextSize.measure({
-          text: idea.idea,
+          text: striptags(idea.idea),
           width: cardWidth - 16,
           ...fontSpecs
         })
@@ -1410,6 +1416,25 @@ class FeedDetailScreen extends React.Component {
     this.props.saveFlowViewPreference(currentFeed.id, invitee.id, preference)
   }
 
+  onSearch = () => {
+    this.setState({ isSearchVisible: true })
+  }
+
+  get renderSearch() {
+    const { feedo } = this.props
+
+    if (this.state.isSearchVisible) {
+      return (
+        <View style={[styles.modalContainer, {backgroundColor: 'transparent'}]}>
+          <SearchScreen
+            cachedFeedList={ feedo.feedoList }
+            onClosed={ () => this.setState({ isSearchVisible: false }) }
+          />
+        </View>
+      );
+    }
+  }
+
   get renderSelectHunt() {
     if (this.state.isVisibleSelectFeedo) {
       const { currentFeed } = this.state
@@ -1501,21 +1526,23 @@ class FeedDetailScreen extends React.Component {
     return (
       <View style={styles.emptyInnerView}>
         {this.state.showEmptyBubble && (
-          this.state.isExistingUser
-          ? <EmptyStateComponent
-              page="card_exist"
-              title="Ah, that sense of freshness! Let's start a new day."
-              subTitle="Need a few hints on all awesome ways to create a card?"
-              ctaTitle="Create a card"
-              onCreateNewCard={this.onOpenNewCardModal.bind(this)}
+          <View style={[{justifyContent: 'center'}]}>
+            <Image style={[{alignSelf: 'center'}]}
+              source={EMPTY_ICON}
             />
-          : <EmptyStateComponent
-              page="card"
-              title="It's pretty empty here. Get your creativity working and add some stuff to your flow!"
-              subTitle="Watch a 15 sec video about creating cards"
-              ctaTitle="Create your first card"
-              onCreateNewCard={this.onOpenNewCardModal.bind(this)}
-            />
+            <Text style={[{padding: 28, textAlign: 'center'}]}>
+              It's pretty empty here. Get your creativity and add some stuff to your flow.
+            </Text>
+            <TouchableOpacity
+              style={[styles.closeButtonView, {alignSelf: 'center'}]}
+              activeOpacity={0.7}
+              onPress={() => this.onOpenNewCardModal() }
+            >
+              <View style={[{height: 34, width: 180, backgroundColor:COLORS.PURPLE, borderRadius: 16, justifyContent: 'center'}]}>
+                <Text style={[styles.textButton, { color: 'white', fontSize: 15, textAlign: 'center', fontWeight: 'normal'}]}>Create your first card</Text>
+              </View>
+            </TouchableOpacity>
+          </View>
         )}
       </View>
     )
@@ -1531,13 +1558,13 @@ class FeedDetailScreen extends React.Component {
       isVisibleLongHoldMenu,
       invitees,
       MasonryListData,
-      filterShowType
+      filterShowType,
+      badgeCount,
     } = this.state
 
     return (
       <SafeAreaView style={styles.safeArea}>
         <View style={[styles.container, isVisibleLongHoldMenu && { paddingBottom: 0 }]}>
-          <OfflineIndicator/>
           {!isVisibleLongHoldMenu && (
             <View style={styles.navBar}>
               <TouchableOpacity style={styles.backView} onPress={this.backToDashboard}>
@@ -1644,7 +1671,7 @@ class FeedDetailScreen extends React.Component {
                   ? this.state.viewPreference === 'LIST'
                     ? currentFeed.ideas.length > 0
                       ? <View
-                          style={{ paddingHorizontal: 8, marginTop: Platform.OS === 'android' && isVisibleLongHoldMenu ? 0 : 0}}
+                          style={{ paddingHorizontal: 8 }}
                         >
                           {currentFeed.ideas.map((item, index) => (
                           <View
@@ -1726,6 +1753,7 @@ class FeedDetailScreen extends React.Component {
                 }
               </View>
           </Animated.ScrollView>
+          <OfflineIndicator/>
         </View>
 
         {TAGS_FEATURE && this.renderCreateTag}
@@ -1737,16 +1765,20 @@ class FeedDetailScreen extends React.Component {
             handleList={() => this.handleList()}
             filterType={this.state.filterShowType}
             sortType={this.state.filterSortType}
-            notifications={false}
+            notifications={true}
             feed={currentFeed}
             showList={true}
             listType={this.state.viewPreference}
             page="detail"
+            showSearch={true}
+            badgeCount={badgeCount}
+            handleSearch={() => this.onSearch()}
           />
         }
 
         {this.renderNewCardModal}
         {this.renderSelectHunt}
+        {this.renderSearch}
 
         <ActionSheet
           ref={ref => this.feedoActionSheet = ref}
@@ -1803,6 +1835,7 @@ class FeedDetailScreen extends React.Component {
                 onClose={() => this.closeShareModal()}
                 deleteInvitee={() => this.leaveFeed(null, currentFeed.id)}
                 data={currentFeed}
+                moveHomeScreen={this.moveHomeScreen}
               />
           }
         </Modal>
@@ -1887,14 +1920,22 @@ const mapDispatchToProps = dispatch => ({
       if(response.error){
         AsyncStorage.getItem('flow/'+data)
             .then(success => {
-              const feed = JSON.parse(success)
-              // console.log('Async Feed for  ', data, ' is ', feed)
-              dispatch(setFeedDetailFromStorage(feed))
+              if(success){
+                const feed = JSON.parse(success)
+                // console.log('Response has error. Async Feed for  ', data, ' has id  ', feed)
+                dispatch(setFeedDetailFromStorage(feed))
+              }
+            })
+            .catch(error => {
+              console.log('Error for trying to get ', data, error)
             })
       } else {
-        AsyncStorage.setItem('flow/'+data, JSON.stringify(success.result.data))
-            .then(response => {
-            })
+        if(response.success){
+          AsyncStorage.setItem('flow/'+data, JSON.stringify(success.result.data))
+              .then(response => {
+              })
+
+        }
 
       }
 
@@ -1903,8 +1944,13 @@ const mapDispatchToProps = dispatch => ({
       AsyncStorage.getItem('flow/'+data)
         .then(success => {
           const feed = JSON.parse(success)
-          // console.log('Async Feed for  ', data, ' is ', feed)
-          dispatch(setFeedDetailFromStorage(feed))
+          // console.log('Request returns error. Async Feed for  ', data, ' has id ', feed.id)
+          if (success) {
+            dispatch(setFeedDetailFromStorage(feed))
+          }
+        })
+        .catch(error => {
+          console.log('Error for trying to get ', data, error)
         })
     }),
   setFeedDetailAction: data => dispatch(setFeedDetailAction(data)),
