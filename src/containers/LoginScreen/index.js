@@ -24,6 +24,7 @@ import TextInputComponent from '../../components/TextInputComponent'
 import Analytics from '../../lib/firebase'
 import { userSignIn, getUserSession, sendResetPasswordEmail, userGoogleSigin } from '../../redux/user/actions'
 import COLORS from '../../service/colors'
+import { GOOGLE_WEB_CLIENT_ID } from '../../service/api'
 import resolveError from '../../service/resolveError'
 import * as COMMON_FUNC from '../../service/commonFunc'
 import styles from './styles'
@@ -80,6 +81,11 @@ class LoginScreen extends React.Component {
 
   async UNSAFE_componentWillMount() {
     Analytics.setCurrentScreen('LoginScreen')
+
+    GoogleSignin.configure({
+      webClientId: GOOGLE_WEB_CLIENT_ID,
+      offlineAccess: false
+    })
 
     const userBackInfo = await AsyncStorage.getItem('userBackInfo')
     if (userBackInfo) {

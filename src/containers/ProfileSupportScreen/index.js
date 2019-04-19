@@ -22,8 +22,8 @@ import Analytics from '../../lib/firebase'
 import { TRELLO_URL, FAQS_URL } from '../../service/api'
 
 const SUPPORT_ITEMS = [
-  'FAQs',
-  'Open Issues',
+  // 'FAQs',
+  // 'Open Issues',
   'Contact Us'
 ]
 
@@ -61,13 +61,14 @@ class ProfileSupportScreen extends React.Component {
 
   handleSupportItem = async(index) => {
     switch(index) {
+      // case 0:
+      //   this.openURL(FAQS_URL);
+      //   return
+      // case 1:
+      //   this.openURL(TRELLO_URL);
+      //   return
+      // case 2:
       case 0:
-        this.openURL(FAQS_URL);
-        return
-      case 1:
-        this.openURL(TRELLO_URL);
-        return
-      case 2:
         this.onCallIntercom();
         return
       default:

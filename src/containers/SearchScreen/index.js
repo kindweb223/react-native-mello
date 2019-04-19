@@ -7,6 +7,7 @@ import {
   Animated,
   Image,
   Keyboard,
+  BackHandler,
 } from 'react-native'
 import { connect } from 'react-redux'
 import * as Animatable from 'react-native-animatable'
@@ -32,19 +33,29 @@ class SearchScreen extends React.Component {
         };
         this.animatedMove = new Animated.Value(0);
     }
-
+  
     componentDidMount() {
         this.keyboardWillShowSubscription = Keyboard.addListener('keyboardWillShow', (keyboard) => this.keyboardWillShow(keyboard));
         this.keyboardWillHideSubscription = Keyboard.addListener('keyboardWillHide', (keyboard) => this.keyboardWillHide(keyboard));
+        BackHandler.addEventListener('hardwareBackPress', this.handleBackButton);
     }
 
+    componentWillUnmount() {
+      BackHandler.removeEventListener('hardwareBackPress', this.handleBackButton);
+    }
+
+    handleBackButton = () => {
+      this.onClose();
+      return true;
+    }
+  
     keyboardWillShow(keyboard) {
-        this.setState({ keyboardHeight: keyboard.endCoordinates.height })
-      }
+      this.setState({ keyboardHeight: keyboard.endCoordinates.height })
+    }
     
-      keyboardWillHide(keyboard) {
-        this.setState({ keyboardHeight: 0 })
-      }
+    keyboardWillHide(keyboard) {
+      this.setState({ keyboardHeight: 0 })
+    }
 
     renderItem({item, index}) {
         return (
