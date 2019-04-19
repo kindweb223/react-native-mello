@@ -52,10 +52,12 @@ class CKEditor extends React.Component {
           this.setState({ height })
         }
         this.props.onChange(content);
+      } if (keyCode === 'FOCUS_COMMAND') {
+        const command = (msgData.split('>>>!hunt!<<<')[1]).split(':');
+        this.props.handleCommands(command)
       } else {
         if (keyCode === '13') {
           this.props.handleCKEditorHeight(parseInt(this.state.height) + 1)
-          this.props.handleReturnKeydown();
         }
         this.props.handleKeydown();
       }

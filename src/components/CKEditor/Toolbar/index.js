@@ -28,7 +28,6 @@ class CKEditorToolbar extends React.Component {
 
     this.state = {
       isFirstToolbar: true,
-      fontSize: 'normal',
       commands: []
     }
   }
@@ -40,54 +39,32 @@ class CKEditorToolbar extends React.Component {
   setFontSize = () => {
     let { commands } = this.state
 
-    if (this.state.fontSize === 'normal') {
-      this.setState({ fontSize: 'big' })
+    if (_.findIndex(commands, item => item === 'fontSize,big') === -1 && _.findIndex(commands, item => item === 'fontSize,normal') === -1) {
       this.props.executeCKEditorCommand('fontSize_big')
-      this.setState({ commands: [...commands, 'fontsize'] })
     } else {
-      this.setState({ fontSize: 'normal' })
-      this.props.executeCKEditorCommand('fontSize_normal')
-      this.setState({ commands: _.filter(commands, item => item !== 'fontsize') })
+      if (_.findIndex(commands, item => item === 'fontSize,big') === -1) {
+        this.props.executeCKEditorCommand('fontSize_big')
+      } else {
+        this.props.executeCKEditorCommand('fontSize_normal')
+      }
     }
   }
 
-  setListCommands = (command) => {
-    let { commands } = this.state
-
+  executeCommands = (command) => {
     this.props.executeCKEditorCommand(command)
-    let newCommands = _.filter(commands, item => item !== 'numberedList' && item !== 'bulletedList')
-
-    if (_.findIndex(commands, item => item === command) === -1) {
-      this.setState({ commands: [...newCommands, command] })
-    } else {
-      this.setState({ commands: [...newCommands] })
-    }
   }
 
-  setCommands = (command) => {
-    const { commands } = this.state
-
-    this.props.executeCKEditorCommand(command)
-    if (_.findIndex(commands, item => item === command) === -1) {
-      this.setState({ commands: [...commands, command] })
-    } else {
-      this.setState({ commands: _.filter(commands, item => item !== command) })
-    }
+  handleCommands = (commands) => {
+    console.log('HANDLE: ', commands)
+    this.setState({ commands })
   }
 
-  refreshCommands = (type) => {
-    const { commands } = this.state
-
-    if (type) {
-      this.setState({ commands: [], fontSize: 'normal' })
-    } else {
-      this.setState({ commands: _.filter(commands, item => item === 'numberedList' || item === 'bulletedList'), fontSize: 'normal' })
-    }
+  splitCommand = str => {
+    return { key: str.split(',')[0], type: str.split(',')[1] }
   }
 
   render() {
     const { isFirstToolbar, commands } = this.state;
-    console.log('COMMANDS: ', commands)
   
     return (
       <View style={styles.container}>
@@ -108,49 +85,54 @@ class CKEditorToolbar extends React.Component {
                 activeOpacity={0.6}
                 onPress={() => this.setFontSize()}
               >
-                <Image source={_.findIndex(commands, item => item === 'fontsize') !== -1 ? HEADLINE_PURPLE_ICON : HEADLINE_ICON} />
+                {_.findIndex(commands, item => this.splitCommand(item).key === 'fontSize') === -1
+                  ? <Image source={HEADLINE_ICON} />
+                  : _.findIndex(commands, item => this.splitCommand(item).type === 'big') !== -1
+                    ? <Image source={HEADLINE_PURPLE_ICON} />
+                    : <Image source={HEADLINE_ICON} />
+                }
               </TouchableOpacity>
               <View style={styles.toolbarBorderView}>
                 <TouchableOpacity
                   activeOpacity={0.6}
-                  onPress={() => this.setListCommands('bulletedList')}
+                  onPress={() => this.executeCommands('bulletedList')}
                 >
-                  <Image source={_.findIndex(commands, item => item === 'bulletedList') !== -1 ? BULLET_PURPLE_ICON : BULLET_ICON} />
+                  <Image source={_.findIndex(commands, item => this.splitCommand(item).key === 'bulletedList') !== -1 ? BULLET_PURPLE_ICON : BULLET_ICON} />
                 </TouchableOpacity>
                 <TouchableOpacity
                   activeOpacity={0.6}
-                  onPress={() => this.setListCommands('numberedList')}
+                  onPress={() => this.executeCommands('numberedList')}
                 >
-                  <Image source={_.findIndex(commands, item => item === 'numberedList') !== -1 ? NUMBER_PURPLE_ICON : NUMBER_ICON} />
+                  <Image source={_.findIndex(commands, item => this.splitCommand(item).key === 'numberedList') !== -1 ? NUMBER_PURPLE_ICON : NUMBER_ICON} />
                 </TouchableOpacity>
                 <TouchableOpacity
                   activeOpacity={0.6}
-                  onPress={() => this.setCommands('bold')}
+                  onPress={() => this.executeCommands('bold')}
                 >
-                  <Image source={_.findIndex(commands, item => item === 'bold') !== -1 ? BOLD_PURPLE_ICON : BOLD_ICON} />
+                  <Image source={_.findIndex(commands, item => this.splitCommand(item).key === 'bold') !== -1 ? BOLD_PURPLE_ICON : BOLD_ICON} />
                 </TouchableOpacity>
               </View>
               <TouchableOpacity
                 activeOpacity={0.6}
-                onPress={() => this.setCommands('underline')}
+                onPress={() => this.executeCommands('underline')}
               >
-                <Image source={_.findIndex(commands, item => item === 'underline') !== -1 ? UNDERLINE_PURPLE_ICON : UNDERLINE_ICON} />
+                <Image source={_.findIndex(commands, item => this.splitCommand(item).key === 'underline') !== -1 ? UNDERLINE_PURPLE_ICON : UNDERLINE_ICON} />
               </TouchableOpacity>
             </View>
           : <View style={styles.secondToolbarView}>
               <TouchableOpacity
                 activeOpacity={0.6}
                 style={styles.toolView}
-                onPress={() => this.setCommands('italic')}
+                onPress={() => this.executeCommands('italic')}
               >
-                <Image source={_.findIndex(commands, item => item === 'italic') !== -1 ? ITALIC_PURPLE_ICON : ITALIC_ICON} />
+                <Image source={_.findIndex(commands, item => this.splitCommand(item).key === 'italic') !== -1 ? ITALIC_PURPLE_ICON : ITALIC_ICON} />
               </TouchableOpacity>
               <TouchableOpacity
                 activeOpacity={0.6}
                 style={styles.toolView}
-                onPress={() => this.setCommands('strikethrough')}
+                onPress={() => this.executeCommands('strikethrough')}
               >
-                <Image source={_.findIndex(commands, item => item === 'strikethrough') !== -1 ? STRIKETHROUGH_PURPLE_ICON : STRIKETHROUGH_ICON} />
+                <Image source={_.findIndex(commands, item => this.splitCommand(item).key === 'strikethrough') !== -1 ? STRIKETHROUGH_PURPLE_ICON : STRIKETHROUGH_ICON} />
               </TouchableOpacity>
             </View>
         }
