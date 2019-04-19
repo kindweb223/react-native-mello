@@ -765,6 +765,8 @@ class CardNewScreen extends React.Component {
       this.setState({bottomButtonsPadding: 0})
     }
 
+    this.refCKEditorToolbar.refreshCommands(true)
+
     Animated.timing(
       this.animatedKeyboardHeight, {
         toValue: 0,
@@ -1304,6 +1306,11 @@ class CardNewScreen extends React.Component {
     this.checkUrls();
   }
 
+  handleReturnKeydown = () => {
+    this.refCKEditorToolbar.refreshCommands(false)
+    this.checkUrls();
+  }
+
   onFocus() {
     const { viewMode } = this.props;
     if (viewMode === CONSTANTS.CARD_NEW || viewMode === CONSTANTS.CARD_EDIT) {
@@ -1515,6 +1522,7 @@ class CardNewScreen extends React.Component {
           placeholder={cardMode === CONSTANTS.SHARE_EXTENTION_CARD ? 'Add a note' : 'Let your ideas flow. Type text, paste a link, add an image, video or audio'}
           onChange={value => this.onChangeIdea(value)}
           handleKeydown={() => this.onKeyPressIdea()}
+          handleReturnKeydown={() => this.handleReturnKeydown()}
           hideKeyboardAccessoryView={true}
           // scrollEnabled={true}
           automaticallyAdjustContentInsets={true}
@@ -1646,6 +1654,7 @@ class CardNewScreen extends React.Component {
       return (
         <View style={[styles.attachmentButtonsContainer, { paddingHorizontal: 16, marginVertical: 16, paddingBottom: bottomButtonsPadding }]}>
           <CKEditorToolbar
+            ref={c => this.refCKEditorToolbar = c}
             isNew={true}
             handleCKEditorToolbar={() => this.handleCKEditorToolbar(false)}
             executeCKEditorCommand={this.executeCKEditorCommand}
