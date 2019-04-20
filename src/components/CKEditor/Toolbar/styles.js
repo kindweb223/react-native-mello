@@ -5,35 +5,32 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     flexDirection: 'row',
-    justifyContent: 'space-between',
+    justifyContent: 'space-evenly',
     alignItems: 'center'
   },
   firstToolbarView: {
     flex: 1,
-    paddingRight: 25,
     flexDirection: 'row',
-    justifyContent: 'space-between',
+    justifyContent: 'space-evenly',
     alignItems: 'center'
   },
   toolbarBorderView: {
     flex: 1,
-    paddingHorizontal: 25,
-    marginHorizontal: 25,
     flexDirection: 'row',
-    justifyContent: 'space-between',
+    justifyContent: 'space-evenly',
     alignItems: 'center',
-    borderLeftWidth: 1,
-    borderRightWidth: 1,
+    borderLeftWidth: 2,
     borderColor: COLORS.LIGHT_GREY,
   },
   secondToolbarView: {
     flex: 1,
-    paddingHorizontal: 16,
     flexDirection: 'row',
-    alignItems: 'center'
+    // justifyContent: 'space-evenly',
+    alignItems: 'center',
   },
-  toolView: {
-    paddingHorizontal: 16
+  firstIcon: {
+    paddingLeft: 26,
+    paddingRight: 26
   },
   leftIcon: {
     transform: [

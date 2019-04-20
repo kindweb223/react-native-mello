@@ -69,7 +69,7 @@ class CKEditorToolbar extends React.Component {
     return (
       <View style={styles.container}>
         {this.props.isNew && (
-          <View style={styles.iconView}>
+          <View>
             <TouchableOpacity
               activeOpacity={0.6}
               onPress={() => this.props.handleCKEditorToolbar()}
@@ -80,10 +80,11 @@ class CKEditorToolbar extends React.Component {
         )}
 
         {isFirstToolbar
-          ? <View style={[styles.firstToolbarView, this.props.isNew ? { paddingLeft: 25 } : { paddingLeft: 10 }]}>
+          ? <View style={[styles.firstToolbarView]}>
               <TouchableOpacity
                 activeOpacity={0.6}
                 onPress={() => this.setFontSize()}
+                style={styles.firstIcon}
               >
                 {_.findIndex(commands, item => this.splitCommand(item).key === 'fontSize') === -1
                   ? <Image source={HEADLINE_ICON} />
@@ -105,31 +106,32 @@ class CKEditorToolbar extends React.Component {
                 >
                   <Image source={_.findIndex(commands, item => this.splitCommand(item).key === 'numberedList') !== -1 ? NUMBER_PURPLE_ICON : NUMBER_ICON} />
                 </TouchableOpacity>
+              </View>
+              <View style={styles.toolbarBorderView}>
                 <TouchableOpacity
                   activeOpacity={0.6}
                   onPress={() => this.executeCommands('bold')}
                 >
                   <Image source={_.findIndex(commands, item => this.splitCommand(item).key === 'bold') !== -1 ? BOLD_PURPLE_ICON : BOLD_ICON} />
                 </TouchableOpacity>
+                <TouchableOpacity
+                  activeOpacity={0.6}
+                  onPress={() => this.executeCommands('underline')}
+                >
+                  <Image source={_.findIndex(commands, item => this.splitCommand(item).key === 'underline') !== -1 ? UNDERLINE_PURPLE_ICON : UNDERLINE_ICON} />
+                </TouchableOpacity>
               </View>
-              <TouchableOpacity
-                activeOpacity={0.6}
-                onPress={() => this.executeCommands('underline')}
-              >
-                <Image source={_.findIndex(commands, item => this.splitCommand(item).key === 'underline') !== -1 ? UNDERLINE_PURPLE_ICON : UNDERLINE_ICON} />
-              </TouchableOpacity>
             </View>
           : <View style={styles.secondToolbarView}>
               <TouchableOpacity
                 activeOpacity={0.6}
-                style={styles.toolView}
+                style={styles.firstIcon}
                 onPress={() => this.executeCommands('italic')}
               >
                 <Image source={_.findIndex(commands, item => this.splitCommand(item).key === 'italic') !== -1 ? ITALIC_PURPLE_ICON : ITALIC_ICON} />
               </TouchableOpacity>
               <TouchableOpacity
                 activeOpacity={0.6}
-                style={styles.toolView}
                 onPress={() => this.executeCommands('strikethrough')}
               >
                 <Image source={_.findIndex(commands, item => this.splitCommand(item).key === 'strikethrough') !== -1 ? STRIKETHROUGH_PURPLE_ICON : STRIKETHROUGH_ICON} />
@@ -141,7 +143,7 @@ class CKEditorToolbar extends React.Component {
           <TouchableOpacity
             activeOpacity={0.6}
             onPress={() =>this.moveNextToolbar(isFirstToolbar)}
-          >
+            >
             <Image source={ARROW_ICON} style={isFirstToolbar ? styles.rightIcon : styles.leftIcon} />
           </TouchableOpacity>
         </View>
