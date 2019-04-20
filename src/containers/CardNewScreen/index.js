@@ -87,6 +87,7 @@ import CKEditorToolbar from '../../components/CKEditor/Toolbar'
 import * as COMMON_FUNC from '../../service/commonFunc'
 const ATTACHMENT_ICON = require('../../../assets/images/Attachment/Blue.png')
 const IMAGE_ICON = require('../../../assets/images/Image/Blue.png')
+const ADDITIONAL_ACTION_ICON = require('../../../assets/images/AdditionalActions/Plus.png')
 const CKEDITOR_TOOLBAR_ICON =require('../../../assets/images/Text/IconsMediumAaGrey.png')
 
 class CardNewScreen extends React.Component {
@@ -1001,12 +1002,12 @@ class CardNewScreen extends React.Component {
     this.props.updateCard(this.props.feedo.currentFeed.id, id, cardName, this.state.idea, this.state.coverImage, files, false);
   }
 
-  onAddMedia() {
+  onAddMedia(index) {
     this.refCKEditor.hideKeyboard()
     Permissions.checkMultiple(['camera', 'photo']).then(response => {
       if (response.camera === 'authorized' && response.photo === 'authorized') {
         //permission already allowed
-        this.imagePickerActionSheetRef.show();
+        this.onTapMediaPickerActionSheet(index)
       }
       else {
         Permissions.request('camera').then(response => {
@@ -1015,7 +1016,7 @@ class CardNewScreen extends React.Component {
             Permissions.request('photo').then(response => {
               if (response === 'authorized') {
                 //photo permission was authorized
-                this.imagePickerActionSheetRef.show();
+                this.onTapMediaPickerActionSheet(index)
               }
               else if (Platform.OS === 'ios') {
                 Permissions.openSettings();
@@ -1053,6 +1054,24 @@ class CardNewScreen extends React.Component {
     }
   }
   
+  handleAdditonalAction() {
+    this.additionalActionsActionSheetRef.show();
+  }
+
+  onTapAdditionalActionsActionSheet(index) {
+    switch (index) {
+      case 0:
+        this.onAddMedia(index)
+        break;
+      case 1:
+        this.onAddMedia(index)
+        break;
+      case 2:
+        this.onAddDocument()
+        break;
+    }
+  }
+
   PickerDocumentShow () {
     DocumentPicker.show({
       filetype: [DocumentPickerUtil.allFiles()],
@@ -1667,16 +1686,9 @@ class CardNewScreen extends React.Component {
         <TouchableOpacity 
           style={styles.iconView}
           activeOpacity={0.6}
-          onPress={this.onAddMedia.bind(this)}
+          onPress={() => this.handleAdditonalAction()}
         >
-          <Image source={IMAGE_ICON} />
-        </TouchableOpacity>
-        <TouchableOpacity 
-          style={styles.iconView}
-          activeOpacity={0.6}
-          onPress={this.onAddDocument.bind(this)}
-        >
-          <Image source={ATTACHMENT_ICON} />
+          <Image source={ADDITIONAL_ACTION_ICON} />
         </TouchableOpacity>
         <TouchableOpacity 
           style={styles.iconView}
@@ -1950,6 +1962,14 @@ class CardNewScreen extends React.Component {
           destructiveButtonIndex={1}
           tintColor={COLORS.PURPLE}
           onPress={(index) => this.onTapWebLinkActionSheet(index)}
+        />
+        <ActionSheet
+          ref={ref => this.additionalActionsActionSheetRef = ref}
+          // title='Select a Photo / Video'
+          options={['Take A Photo', 'Select From Photos', 'Add An Attachment', 'Cancel']}
+          cancelButtonIndex={3}
+          tintColor={COLORS.PURPLE}
+          onPress={(index) => this.onTapAdditionalActionsActionSheet(index)}
         />
 
         {
