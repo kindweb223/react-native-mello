@@ -23,6 +23,8 @@ import LoadingScreen from '../LoadingScreen';
 
 const FEED_ICON = require('../../../assets/images/IconFlow/IconsMediumFlowGrey.png')
 
+import { setCurrentFeed } from '../../redux/feedo/actions';
+
 class SearchScreen extends React.Component {
     constructor(props) {
         super(props);
@@ -71,14 +73,15 @@ class SearchScreen extends React.Component {
     }
 
     onClose() {
-        this.props.onClosed()
+      this.props.onClosed()
     }
 
     onSelectFeed(item) {
-        Keyboard.dismiss()
-        Actions.FeedDetailScreen({
-            data: item
-        })
+      this.props.setCurrentFeed({})
+      Keyboard.dismiss()
+      Actions.FeedDetailScreen({
+        data: item
+      })
     }
 
     render () {
@@ -174,10 +177,16 @@ SearchScreen.propTypes = {
     onClosed: PropTypes.func,
     cachedFeedList: PropTypes.array,
 }
-  
 
 const mapStateToProps = ({ feedo }) => ({
-    feedo,
+  feedo,
 })
 
-export default connect()(SearchScreen)
+const mapDispatchToProps = dispatch => ({
+  setCurrentFeed: (data) => dispatch(setCurrentFeed(data)),
+})
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(SearchScreen)

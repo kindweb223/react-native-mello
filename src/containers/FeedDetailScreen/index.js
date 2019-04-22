@@ -1930,8 +1930,8 @@ const mapDispatchToProps = dispatch => ({
               console.log('Error for trying to get ', data, error)
             })
       } else {
-        if(response.success){
-          AsyncStorage.setItem('flow/'+data, JSON.stringify(success.result.data))
+        if(response.result){
+          AsyncStorage.setItem('flow/'+data, JSON.stringify(response.result.data))
               .then(response => {
               })
 
