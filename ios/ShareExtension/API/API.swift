@@ -73,7 +73,7 @@ class API {
     request.httpBody = body
     request.httpMethod = method.rawValue
     request.allHTTPHeaderFields = ["x-mobile-api": "true",
-                                   "x-auth-token": token ?? "",//"a8b64fdf-0b5a-4b3b-93a1-6e7a490ce5ad",//token ?? "",
+                                   "x-auth-token": "a8b64fdf-0b5a-4b3b-93a1-6e7a490ce5ad",//token ?? "",
                                    "Content-Type": "application/json",
                                    "Accept": "application/json",
                                    "Access-Control-Allow-Credentials": "true",
@@ -326,7 +326,7 @@ class API {
     }
   }
   
-  func saveFile(_ filePath: URL, inURL url: URL, completion: @escaping (_ success: Bool) -> Void) {
+  func saveFile(_ filePath: URL, inURL url: URL, completion: @escaping (_ success: Bool, _ permissionErrors: Bool) -> Void) {
     do {
       let fileData = try Data(contentsOf: filePath)
       
@@ -338,15 +338,16 @@ class API {
       
       URLSession.shared.dataTask(with: request) { data, response, error in
         if let _ = error {
-          completion(false)
+          completion(false, false)
         } else if let httpResponse = response as? HTTPURLResponse {
-          completion(httpResponse.statusCode >= 200 && httpResponse.statusCode < 300)
+          completion(httpResponse.statusCode >= 200 && httpResponse.statusCode < 300, false)
         } else {
-          completion(false)
+          completion(false, false)
         }
       }.resume()
     } catch {
-      completion(false)
+      
+      completion(false, true)
     }
   }
   
