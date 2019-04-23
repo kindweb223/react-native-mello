@@ -240,6 +240,7 @@ export default function user(state = initialState, action = {}) {
       return {
         ...state,
         loading: types.USER_SIGNOUT_FULFILLED,
+        showClipboardToaster: false
       }
     }
     case types.USER_SIGNOUT_REJECTED: {
