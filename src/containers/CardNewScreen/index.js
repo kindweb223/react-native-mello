@@ -18,6 +18,7 @@ import {
 } from 'react-native'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
+import RNFS from 'react-native-fs';
 
 import { Actions } from 'react-native-router-flux'
 import Entypo from 'react-native-vector-icons/Entypo'
@@ -324,8 +325,31 @@ class CardNewScreen extends React.Component {
         }
       }
 
-      this.updateUploadProgress(0);
-      this.props.uploadFileToS3(nextProps.card.fileUploadUrl.uploadUrl, this.selectedFile.uri, this.selectedFileName, fileType, this.updateUploadProgress);
+      let attemptUpload = true
+
+      // https://solversio.atlassian.net/browse/FEED-1575
+      // When a file such as a keynote is shared with you we get a permission error
+      // Cannot get a handle on error from xhr.send. We need to protect upload with this check
+      // RNFS.readFile can still return and error, but only if error.code === "EISDIR" do we prevent upload
+      if (Platform.OS === 'ios' && fileType === 'file') {
+        await RNFS.readFile(this.selectedFile.uri)
+          .then((result) => {
+          })
+          .catch((error) => {
+            if (error.code === "EISDIR") {
+              attemptUpload = false
+            }
+          })
+      }
+
+      if (attemptUpload) {
+        this.updateUploadProgress(0);
+        this.props.uploadFileToS3(nextProps.card.fileUploadUrl.uploadUrl, this.selectedFile.uri, this.selectedFileName, fileType, this.updateUploadProgress);      
+      }
+      else {
+        this.fileUploading = false
+        AlertController.shared.showAlert('Error', "We can't upload this file")
+      }
     } else if (this.props.card.loading !== types.GET_FILE_UPLOAD_URL_REJECTED && nextProps.card.loading === types.GET_FILE_UPLOAD_URL_REJECTED) {
       this.fileUploading = false
     } else if (this.props.card.loading !== types.UPLOAD_FILE_PENDING && nextProps.card.loading === types.UPLOAD_FILE_PENDING) {
