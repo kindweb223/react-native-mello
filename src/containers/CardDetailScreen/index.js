@@ -199,11 +199,11 @@ class CardDetailScreen extends React.Component {
       loading = true;
       // Image resizing...
       const fileType = (Platform.OS === 'ios') ? this.selectedFileMimeType : this.selectedFile.type;
-
       if (fileType && fileType.indexOf('image/') !== -1) {
         // https://www.built.io/blog/improving-image-compression-what-we-ve-learned-from-whatsapp
-        let actualHeight = this.selectedFile.height;
-        let actualWidth = this.selectedFile.width;
+        const {width, height} = await this.getImageSize(this.selectedFile.uri);
+        let actualHeight = height;
+        let actualWidth = width;
         const maxHeight = 600.0;
         const maxWidth = 800.0;
         let imgRatio = actualWidth/actualHeight;
@@ -229,14 +229,13 @@ class CardDetailScreen extends React.Component {
         this.updateUploadProgress(0);
         ImageResizer.createResizedImage(this.selectedFile.uri, actualWidth, actualHeight, CONSTANTS.IMAGE_COMPRESS_FORMAT, CONSTANTS.IMAGE_COMPRESS_QUALITY, 0, null)
           .then((response) => {
-            console.log('Image compress Success!');
             this.props.uploadFileToS3(nextProps.card.fileUploadUrl.uploadUrl, response.uri, this.selectedFileName, fileType, this.updateUploadProgress);
           }).catch((error) => {
-            console.log('Image compress error : ', error);
             this.props.uploadFileToS3(nextProps.card.fileUploadUrl.uploadUrl, this.selectedFile.uri, this.selectedFileName, fileType, this.updateUploadProgress);
           });
         return;
       }
+
 
       this.updateUploadProgress(0);
       this.props.uploadFileToS3(nextProps.card.fileUploadUrl.uploadUrl, this.selectedFile.uri, this.selectedFileName, fileType, this.updateUploadProgress);
