@@ -73,7 +73,7 @@ class API {
     request.httpBody = body
     request.httpMethod = method.rawValue
     request.allHTTPHeaderFields = ["x-mobile-api": "true",
-                                   "x-auth-token": "a8b64fdf-0b5a-4b3b-93a1-6e7a490ce5ad",//token ?? "",
+                                   "x-auth-token": token ?? "",//"a8b64fdf-0b5a-4b3b-93a1-6e7a490ce5ad",//token ?? "",
                                    "Content-Type": "application/json",
                                    "Accept": "application/json",
                                    "Access-Control-Allow-Credentials": "true",
