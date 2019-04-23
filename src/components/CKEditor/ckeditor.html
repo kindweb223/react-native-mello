@@ -86,7 +86,8 @@
       // Execute editor commands
       content = event.data.split('execute: ')[1];
       if (content === 'fontSize_big') {
-        CKEditor.execute('fontSize', { value: 'big' });
+        // CKEditor.execute('fontSize', { value: 'big' });
+        CKEditor.execute('heading', { value: 'heading1' });
       } else if (content === 'fontSize_normal') {
         CKEditor.execute('fontSize', { value: 'normal' });
       } else {
