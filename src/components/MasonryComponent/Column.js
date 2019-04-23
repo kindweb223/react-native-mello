@@ -36,6 +36,7 @@ export default class Column extends React.Component {
 				initialNumToRender={this.props.initialNumInColsToRender}
 				removeClippedSubviews={true}
 				renderItem={this._renderItem}
+				scrollEnabled={false}
 			/>
 		);
 	}
