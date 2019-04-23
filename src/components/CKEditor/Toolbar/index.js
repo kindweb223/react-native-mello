@@ -38,6 +38,7 @@ class CKEditorToolbar extends React.Component {
 
   setFontSize = () => {
     let { commands } = this.state
+    console.log('COMMANDS: ', commands)
 
     if (_.findIndex(commands, item => item === 'fontSize,big') === -1 && _.findIndex(commands, item => item === 'fontSize,normal') === -1) {
       this.props.executeCKEditorCommand('fontSize_big')
