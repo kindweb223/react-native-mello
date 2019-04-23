@@ -282,8 +282,7 @@ class CardNewScreen extends React.Component {
       // Image resizing...
       const fileType = (Platform.OS === 'ios') ? this.selectedFileMimeType : this.selectedFile.type;
 
-      if (fileType && fileType.indexOf('image/') !== -1)
-      {
+      if (fileType && fileType.indexOf('image/') !== -1) {
         // https://www.built.io/blog/improving-image-compression-what-we-ve-learned-from-whatsapp
         let actualHeight = this.selectedFile.height;
         let actualWidth = this.selectedFile.width;
@@ -292,8 +291,7 @@ class CardNewScreen extends React.Component {
         let imgRatio = actualWidth/actualHeight;
         let maxRatio = maxWidth/maxHeight;
 
-        if (actualHeight !== undefined && actualWidth !== undefined)
-        {
+        if (actualHeight !== undefined && actualWidth !== undefined) {
           if (actualHeight > maxHeight || actualWidth > maxWidth) {
             if(imgRatio < maxRatio){
                 //adjust width according to maxHeight
@@ -361,6 +359,7 @@ class CardNewScreen extends React.Component {
         this.props.addFile(id, this.selectedFileType, fileType, this.selectedFileName, objectKey, metadata, this.base64String);
       }
     } else if (this.props.card.loading !== types.UPLOAD_FILE_REJECTED && nextProps.card.loading === types.UPLOAD_FILE_REJECTED) {
+      AlertController.shared.showAlert('Error', 'Oops, looks like we can\'t upload this file')
       this.fileUploading = false
     } else if (this.props.card.loading !== types.ADD_FILE_PENDING && nextProps.card.loading === types.ADD_FILE_PENDING) {
       // adding a file
