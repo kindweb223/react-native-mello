@@ -129,6 +129,7 @@ class CardNewScreen extends React.Component {
       bottomButtonsPadding: 0
     };
 
+    this.fileUploading = false,
     this.imageUploading = false;
     this.selectedFile = null;
     this.selectedFileMimeType = null;
@@ -271,6 +272,10 @@ class CardNewScreen extends React.Component {
     } else if (this.props.card.loading !== types.GET_FILE_UPLOAD_URL_PENDING && nextProps.card.loading === types.GET_FILE_UPLOAD_URL_PENDING) {
       // getting a file upload url
       loading = true;
+
+      // Start file loading on GET_FILE_UPLOAD_URL_PENDING
+      // End file loading on ADD_FILE_FULFILLED
+      this.fileUploading = true      
     } else if (this.props.card.loading !== types.GET_FILE_UPLOAD_URL_FULFILLED && nextProps.card.loading === types.GET_FILE_UPLOAD_URL_FULFILLED) {
       // success in getting a file upload url
       loading = true;
@@ -323,6 +328,8 @@ class CardNewScreen extends React.Component {
 
       this.updateUploadProgress(0);
       this.props.uploadFileToS3(nextProps.card.fileUploadUrl.uploadUrl, this.selectedFile.uri, this.selectedFileName, fileType, this.updateUploadProgress);
+    } else if (this.props.card.loading !== types.GET_FILE_UPLOAD_URL_REJECTED && nextProps.card.loading === types.GET_FILE_UPLOAD_URL_REJECTED) {
+      this.fileUploading = false
     } else if (this.props.card.loading !== types.UPLOAD_FILE_PENDING && nextProps.card.loading === types.UPLOAD_FILE_PENDING) {
       // uploading a file
       loading = true;
@@ -353,10 +360,14 @@ class CardNewScreen extends React.Component {
         }
         this.props.addFile(id, this.selectedFileType, fileType, this.selectedFileName, objectKey, metadata, this.base64String);
       }
+    } else if (this.props.card.loading !== types.UPLOAD_FILE_REJECTED && nextProps.card.loading === types.UPLOAD_FILE_REJECTED) {
+      this.fileUploading = false
     } else if (this.props.card.loading !== types.ADD_FILE_PENDING && nextProps.card.loading === types.ADD_FILE_PENDING) {
       // adding a file
       loading = true;
     } else if (this.props.card.loading !== types.ADD_FILE_FULFILLED && nextProps.card.loading === types.ADD_FILE_FULFILLED) {
+      this.fileUploading = false
+
       // success in adding a file
       const {
         id, 
@@ -386,6 +397,8 @@ class CardNewScreen extends React.Component {
       if (this.currentShareImageIndex < this.shareImageUrls.length) {
         this.uploadFile(nextProps.card.currentCard, this.shareImageUrls[this.currentShareImageIndex], 'MEDIA');
       }
+    } else if (this.props.card.loading !== types.ADD_FILE_REJECTED && nextProps.card.loading === types.ADD_FILE_REJECTED) {
+      this.fileUploading = false
     } else if (this.props.card.loading !== types.ADD_LINK_PENDING && nextProps.card.loading === types.ADD_LINK_PENDING) {
       // adding a link
       if (this.props.card.currentCard.links === null || this.props.card.currentCard.links.length === 0) {
@@ -1925,7 +1938,7 @@ class CardNewScreen extends React.Component {
         />
 
         {
-          this.state.loading && this.state.fileType === 'FILE' &&
+          this.fileUploading && this.selectedFileType === 'FILE' &&
             <LoadingScreen containerStyle={this.props.cardMode === CONSTANTS.SHARE_EXTENTION_CARD ? {marginBottom: CONSTANTS.SCREEN_VERTICAL_MIN_MARGIN + 100} : {}} />
         }
         <Modal 
