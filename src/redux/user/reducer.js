@@ -224,8 +224,6 @@ export default function user(state = initialState, action = {}) {
         loading: types.USER_SIGNOUT_PENDING,
       }
     case types.USER_SIGNOUT_FULFILLED: {
-      const { data } = action.result
-
       AsyncStorage.removeItem('xAuthToken')
       AsyncStorage.removeItem('userInfo')
       SharedGroupPreferences.setItem('xAuthToken', null, CONSTANTS.APP_GROUP_TOKEN_IDENTIFIER)
