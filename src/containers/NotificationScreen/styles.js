@@ -6,6 +6,7 @@ import CONSTANTS from '../../service/constants'
 const styles = StyleSheet.create({
   headerContainer: {
     flexDirection: 'row',
+    width: CONSTANTS.SCREEN_WIDTH,
     justifyContent: 'space-between',
     alignItems: 'center',
     height: 54,
@@ -19,7 +20,8 @@ const styles = StyleSheet.create({
   doneButton: {
     fontSize: 16,
     fontWeight: 'normal',
-    color: COLORS.PURPLE
+    color: COLORS.PURPLE,
+    textAlign: 'right'
   },
   textTitle: {
     fontSize: 16,
@@ -27,6 +29,7 @@ const styles = StyleSheet.create({
     fontWeight: '600',
     textAlign: 'center',
     marginBottom: 1,
+    flex: 1
   },
   container: {
     flex: 1,
