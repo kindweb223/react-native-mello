@@ -269,7 +269,7 @@ class HomeScreen extends React.Component {
     }
     Intercom.handlePushMessage();
 
-    this.props.getFeedoList(null, this.getFeedsFromStorage, this.getFeedsFromStorage)
+    this.props.getFeedoList(null, this.getFeedsFromStorage)
 
     this.props.getActivityFeed(this.props.user.userInfo.id, { page: 0, size: PAGE_COUNT })
 
@@ -633,7 +633,7 @@ class HomeScreen extends React.Component {
     if (this.state.appState.match(/inactive|background/) && nextAppState === 'active') {
       appOpened(this.props.user.userInfo.id);
       if (Actions.currentScene === 'HomeScreen') {
-        this.props.getFeedoList(null, this.getFeedsFromStorage, this.getFeedsFromStorage)
+        this.props.getFeedoList(null, this.getFeedsFromStorage)
 
         // TEMPORARY: REMOVE WITH PUBNUB INTEGRATION
         // this.props.getInvitedFeedList()
@@ -677,7 +677,7 @@ class HomeScreen extends React.Component {
             currentPushNotificationType: CONSTANTS.USER_INVITED_TO_HUNT,
             currentPushNotificationData: huntId
           });
-          this.props.getFeedoList(null, this.getFeedsFromStorage, this.getFeedsFromStorage);
+          this.props.getFeedoList(null, this.getFeedsFromStorage);
           this.props.getInvitedFeedList()
         }
         break;
@@ -757,7 +757,7 @@ class HomeScreen extends React.Component {
             currentPushNotificationType: CONSTANTS.USER_JOINED_HUNT,
             currentPushNotificationData: huntId,
           });
-          this.props.getFeedoList(null, this.getFeedsFromStorage, this.getFeedsFromStorage);
+          this.props.getFeedoList(null, this.getFeedsFromStorage);
         }
         break;
       }
@@ -776,7 +776,7 @@ class HomeScreen extends React.Component {
             currentPushNotificationType: CONSTANTS.USER_INVITED_TO_HUNT,
             currentPushNotificationData: huntId,
           });
-          this.props.getFeedoList(null, this.getFeedsFromStorage, this.getFeedsFromStorage);
+          this.props.getFeedoList(null, this.getFeedsFromStorage);
         }
         break;
       }
@@ -1331,7 +1331,7 @@ class HomeScreen extends React.Component {
 
   onRefreshFeed = () => {
     this.setState({ isRefreshing: true })
-    this.props.getFeedoList(null, this.getFeedsFromStorage, this.getFeedsFromStorage)
+    this.props.getFeedoList(null, this.getFeedsFromStorage)
     this.props.getInvitedFeedList()
   }
 
