@@ -2,6 +2,7 @@ import React from 'react'
 import {
   View,
   Animated,
+  Platform,
 } from 'react-native';
 import PropTypes from 'prop-types';
 
@@ -100,7 +101,9 @@ class ExFastImage extends React.Component {
     } = this.state;
 
     return (
-      <View style={{ flex: 1 }}>
+      Platform.OS === "android"
+      ? <FastImage {...this.props} />
+      : <View style={{ flex: 1 }}>
         <AnimatedFastImage
           style={[style, {
             opacity: this.imageOpacity,

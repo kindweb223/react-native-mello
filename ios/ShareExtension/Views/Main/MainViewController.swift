@@ -10,6 +10,8 @@ import UIKit
 import Social
 import MobileCoreServices
 import AVFoundation
+import Crashlytics
+import FirebaseCore
 
 class MainViewController: UIViewController {
   
@@ -27,6 +29,10 @@ class MainViewController: UIViewController {
   
   override func viewDidLoad() {
     super.viewDidLoad()
+    
+    if FirebaseApp.app() == nil {
+      FirebaseApp.configure()
+    }
     
     NotificationCenter.default.addObserver(self,
                                            selector: #selector(didReceiveAPIError(_:)),
@@ -123,6 +129,8 @@ class MainViewController: UIViewController {
                 API.shared.parseURL(url, completion: { parsedURL in
                   guard let parsedURL = parsedURL else {
                     self.showErrorAndClose("Could not read the provided link")
+                    let error = NSError(domain: "io.solvers.feedo.ShareExtension.PARSE_URL_FAILED", code: 1001, userInfo: ["url": url.absoluteString])
+                    Crashlytics.sharedInstance().recordError(error as Error)
                     return
                   }
                   if parsedURL.images.count > 0 {
@@ -564,7 +572,7 @@ extension MainViewController: TextViewControllerDelegate {
           return
         }
         
-        self.uploadFileToNewCard(createdFlow, filePath: attachementPath, completion: { cardId in
+        self.uploadFileToNewCard(createdFlow, filePath: attachementPath, loadingVC: loadingVC, completion: { cardId in
           guard let cardId = cardId else {
             loadingVC.update(.error)
             return
@@ -579,7 +587,7 @@ extension MainViewController: TextViewControllerDelegate {
     }
   }
   
-  func uploadFileToNewCard(_ flow: Flow, filePath: URL, completion: @escaping (_ cardId: String?) -> Void) {
+  func uploadFileToNewCard(_ flow: Flow, filePath: URL, loadingVC: BottomStatusViewController, completion: @escaping (_ cardId: String?) -> Void) {
     
     func fileTypeForMimeType(_ mimeType: String) -> API.FileType {
       if mimeType.contains("video") || mimeType.contains("image") {
@@ -611,8 +619,16 @@ extension MainViewController: TextViewControllerDelegate {
           }
         }
         
-        API.shared.saveFile(filePath, inURL: tempFileUrl.uploadUrl, completion: { success in
+        API.shared.saveFile(filePath, inURL: tempFileUrl.uploadUrl, completion: { success, permissionErrors in
           if !success {
+            if permissionErrors {
+              loadingVC.shouldDismiss = false
+              let alertController = UIAlertController(title: "Oops!", message: "Seems like we can't access your file. Try sharing this file from the original app.", preferredStyle: .alert)
+              alertController.addAction(UIAlertAction(title: "Dismiss", style: .cancel, handler: { _ in
+                loadingVC.dismiss()
+              }))
+              loadingVC.present(alertController, animated: true, completion: nil)
+            }
             completion(nil)
             return
           }
@@ -661,7 +677,7 @@ extension MainViewController: VideoViewControllerDelegate {
           return
         }
         
-        self.uploadFileToNewCard(createdFlow, filePath: videoUrl, completion: { cardId in
+        self.uploadFileToNewCard(createdFlow, filePath: videoUrl, loadingVC: loadingVC, completion: { cardId in
           guard let cardId = cardId else {
             loadingVC.update(.error)
             return
