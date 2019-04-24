@@ -32,6 +32,7 @@ import { DocumentPicker, DocumentPickerUtil } from 'react-native-document-picker
 
 import pubnub from '../../lib/pubnub'
 import Analytics from '../../lib/firebase'
+import bugsnag from '../../lib/bugsnag'
 
 import SideMenu from 'react-native-side-menu'
 
@@ -274,6 +275,8 @@ class HomeScreen extends React.Component {
 
     Intercom.addEventListener(Intercom.Notifications.UNREAD_COUNT, this._onUnreadIntercomChange);
 
+    bugsnag.setUser(this.props.user.userInfo.id)
+
     AppState.addEventListener('change', this.onHandleAppStateChange.bind(this));
     appOpened(this.props.user.userInfo.id);
 
@@ -376,7 +379,7 @@ class HomeScreen extends React.Component {
 
         // refresh list if card addedd or card moved
         if ((feedo.loading === 'UPDATE_CARD_FULFILLED' || feedo.loading === 'MOVE_CARD_FULFILLED') && feedo.isCreateCard) {
-          nextProps.getFeedoList()
+          nextProps.getFeedoList(null, this.getFeedsFromStorage)
         } else {
           const { filterSortType, filterShowType } = prevState
 
@@ -388,7 +391,9 @@ class HomeScreen extends React.Component {
           feedoList = HomeScreen.getFilteredFeeds(feedoPinnedList, feedoUnPinnedList, filterShowType, filterSortType);
         } 
       } else {
-          nextProps.getFeedoList(null, this.getFeedsFromStorage, this.getFeedsFromStorage)
+        if (user.loading !== 'USER_SIGNOUT_FULFILLED') {
+          nextProps.getFeedoList(null, this.getFeedsFromStorage)
+        }
       }
       
 
@@ -1704,7 +1709,7 @@ const mapStateToProps = ({ user, feedo, card }) => ({
 })
 
 const mapDispatchToProps = dispatch => ({
-  getFeedoList: (index, successAction, errorAction) => dispatch(getFeedoList(index))
+  getFeedoList: (index, errorAction) => dispatch(getFeedoList(index))
   .then(result => {
     // console.log('GFL resolves on HS, success looks like ', result)
     if(result.error){
