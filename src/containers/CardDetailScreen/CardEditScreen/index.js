@@ -94,9 +94,10 @@ class CardEditScreen extends React.Component {
   }
 
   onKeyPressIdea(event) {
+    /* Disabled for now, we have to rethink how this logic works (and add parsing / image selection)
     if (event.nativeEvent.key === ' ' || event.nativeEvent.key === ',' || event.nativeEvent.key === 'Enter') {
       this.props.checkUrls();
-    }
+    }*/
   }
 
   onFocus = () => {

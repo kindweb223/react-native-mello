@@ -417,7 +417,7 @@ class FeedDetailScreen extends React.Component {
       Actions.pop()
     }
 
-    if (feedo.loading === 'GET_ACTIVITY_FEED_VISITED_FULFILLED') {
+    if (feedo.loading === 'GET_ACTIVITY_FEED_VISITED_FULFILLED' || feedo.loading === 'GET_ACTIVITY_FEED_FULFILLED') {
       this.setState({ badgeCount: feedo.badgeCount })
     }
     
