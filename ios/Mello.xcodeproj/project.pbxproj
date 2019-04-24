@@ -5,6 +5,7 @@
 	};
 	objectVersion = 46;
 	objects = {
+
 /* Begin PBXBuildFile section */
 		00C302E51ABCBA2D00DB3ED1 /* libRCTActionSheet.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 00C302AC1ABCB8CE00DB3ED1 /* libRCTActionSheet.a */; };
 		00C302E71ABCBA2D00DB3ED1 /* libRCTGeolocation.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 00C302BA1ABCB90400DB3ED1 /* libRCTGeolocation.a */; };
@@ -90,6 +91,7 @@
 		396C1CD72253A321001297F6 /* APIError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 396C1CD62253A321001297F6 /* APIError.swift */; };
 		3984D08B22527DD000042F75 /* ShareExtension.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = 3984D08122527DD000042F75 /* ShareExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		39C6257C2254EB6F001FBD79 /* KeyboardHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 39C6257B2254EB6F001FBD79 /* KeyboardHelper.swift */; };
+		39E179F7226F78E70086ABB4 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 39E179AE226F78E60086ABB4 /* GoogleService-Info.plist */; };
 		45A806F94F774736BDFCF564 /* libBugsnagReactNative.a in Frameworks */ = {isa = PBXBuildFile; fileRef = D9E1BD18BB5B4D62B4263950 /* libBugsnagReactNative.a */; };
 		47CA4A9854C645189A59042C /* libRNDocumentPicker.a in Frameworks */ = {isa = PBXBuildFile; fileRef = CEF9CE0D4C3B419DAD8284A6 /* libRNDocumentPicker.a */; };
 		4C030DDBB9734D8CB1045CEB /* libBVLinearGradient.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 1AE0342E1F8E4EB593320F3B /* libBVLinearGradient.a */; };
@@ -796,6 +798,7 @@
 		396C1CD62253A321001297F6 /* APIError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = APIError.swift; sourceTree = "<group>"; };
 		3984D08122527DD000042F75 /* ShareExtension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = ShareExtension.appex; sourceTree = BUILT_PRODUCTS_DIR; };
 		39C6257B2254EB6F001FBD79 /* KeyboardHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeyboardHelper.swift; sourceTree = "<group>"; };
+		39E179AE226F78E60086ABB4 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		44C268ED8ACC4BCE9CDA61FC /* libRNDeviceInfo.a */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = archive.ar; path = libRNDeviceInfo.a; sourceTree = "<group>"; };
 		47BA3513B6514BE58476D7B4 /* libRNImagePicker.a */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = archive.ar; path = libRNImagePicker.a; sourceTree = "<group>"; };
 		48E815D86AC4450E91A11738 /* libRNImgToBase64.a */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = archive.ar; path = libRNImgToBase64.a; sourceTree = "<group>"; };
@@ -1387,6 +1390,7 @@
 		3984D08222527DD000042F75 /* ShareExtension */ = {
 			isa = PBXGroup;
 			children = (
+				39E179AE226F78E60086ABB4 /* GoogleService-Info.plist */,
 				396C1CD422539C11001297F6 /* ShareExtension.entitlements */,
 				396C17F522527EF6001297F6 /* Info.plist */,
 				396C194A2252859F001297F6 /* ShareExtension-Bridging-Header.h */,
@@ -1869,6 +1873,7 @@
 				3984D07D22527DD000042F75 /* Sources */,
 				3984D07E22527DD000042F75 /* Frameworks */,
 				3984D07F22527DD000042F75 /* Resources */,
+				39E17A92226F7A3C0086ABB4 /* ShellScript */,
 			);
 			buildRules = (
 			);
@@ -2694,6 +2699,7 @@
 				396C180622527F73001297F6 /* BottomStatusViewController.xib in Resources */,
 				396C18352252800F001297F6 /* FlowSelectorViewController.xib in Resources */,
 				396C182622527FD1001297F6 /* ImagePickerViewController.xib in Resources */,
+				39E179F7226F78E70086ABB4 /* GoogleService-Info.plist in Resources */,
 				396C181022527F93001297F6 /* LocalImageViewController.xib in Resources */,
 				396C17F922527EFF001297F6 /* Assets.xcassets in Resources */,
 				396C18382252801B001297F6 /* NewFlowViewController.xib in Resources */,
@@ -2734,6 +2740,24 @@
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
 			shellScript = "export NODE_BINARY=node\n../node_modules/react-native/scripts/react-native-xcode.sh";
+		};
+		39E17A92226F7A3C0086ABB4 /* ShellScript */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+				"$(BUILT_PRODUCTS_DIR)/$(INFOPLIST_PATH)",
+			);
+			outputFileListPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "# Type a script or drag a script file from your workspace to insert its path.\n\"${PODS_ROOT}/Fabric/run\"\n";
 		};
 		C272A68C1907409EB7735F34 /* [CP] Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -3411,7 +3435,7 @@
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				CODE_SIGN_STYLE = Manual;
-				DEBUG_INFORMATION_FORMAT = dwarf;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				DEVELOPMENT_TEAM = B2TWZYTK2Q;
 				ENABLE_TESTABILITY = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu11;
