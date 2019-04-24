@@ -18,7 +18,6 @@ import {
 } from 'react-native'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
-import RNFS from 'react-native-fs';
 
 import { Actions } from 'react-native-router-flux'
 import Entypo from 'react-native-vector-icons/Entypo'
@@ -32,6 +31,7 @@ import ImageResizer from 'react-native-image-resizer';
 import RNThumbnail from 'react-native-thumbnail';
 import ImgToBase64 from 'react-native-image-base64';
 import RNFetchBlob from 'rn-fetch-blob'
+import RNFS from 'react-native-fs';
 
 import { DocumentPicker, DocumentPickerUtil } from 'react-native-document-picker'
 import Permissions from 'react-native-permissions'
@@ -331,7 +331,7 @@ class CardNewScreen extends React.Component {
       // When a file such as a keynote is shared with you we get a permission error
       // Cannot get a handle on error from xhr.send. We need to protect upload with this check
       // RNFS.readFile can still return and error, but only if error.code === "EISDIR" do we prevent upload
-      if (Platform.OS === 'ios' && fileType === 'file') {
+      if (Platform.OS === 'ios' && this.selectedFileType === 'FILE') {
         await RNFS.readFile(this.selectedFile.uri)
           .then((result) => {
           })
