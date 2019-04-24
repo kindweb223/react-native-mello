@@ -10,8 +10,8 @@ import UIKit
 import Social
 import MobileCoreServices
 import AVFoundation
-import Firebase
 import Crashlytics
+import FirebaseCore
 
 class MainViewController: UIViewController {
   
