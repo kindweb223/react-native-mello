@@ -32,6 +32,7 @@ import { DocumentPicker, DocumentPickerUtil } from 'react-native-document-picker
 
 import pubnub from '../../lib/pubnub'
 import Analytics from '../../lib/firebase'
+import bugsnag from '../../lib/bugsnag'
 
 import SideMenu from 'react-native-side-menu'
 
@@ -268,11 +269,13 @@ class HomeScreen extends React.Component {
     }
     Intercom.handlePushMessage();
 
-    this.props.getFeedoList(null, this.getFeedsFromStorage, this.getFeedsFromStorage)
+    this.props.getFeedoList(null, this.getFeedsFromStorage)
 
     this.props.getActivityFeed(this.props.user.userInfo.id, { page: 0, size: PAGE_COUNT })
 
     Intercom.addEventListener(Intercom.Notifications.UNREAD_COUNT, this._onUnreadIntercomChange);
+
+    bugsnag.setUser(this.props.user.userInfo.id)
 
     AppState.addEventListener('change', this.onHandleAppStateChange.bind(this));
     appOpened(this.props.user.userInfo.id);
@@ -376,7 +379,7 @@ class HomeScreen extends React.Component {
 
         // refresh list if card addedd or card moved
         if ((feedo.loading === 'UPDATE_CARD_FULFILLED' || feedo.loading === 'MOVE_CARD_FULFILLED') && feedo.isCreateCard) {
-          nextProps.getFeedoList()
+          nextProps.getFeedoList(null, this.getFeedsFromStorage)
         } else {
           const { filterSortType, filterShowType } = prevState
 
@@ -388,7 +391,9 @@ class HomeScreen extends React.Component {
           feedoList = HomeScreen.getFilteredFeeds(feedoPinnedList, feedoUnPinnedList, filterShowType, filterSortType);
         } 
       } else {
-          nextProps.getFeedoList(null, this.getFeedsFromStorage, this.getFeedsFromStorage)
+        if (user.loading !== 'USER_SIGNOUT_FULFILLED') {
+          nextProps.getFeedoList(null, this.getFeedsFromStorage)
+        }
       }
       
 
@@ -628,7 +633,7 @@ class HomeScreen extends React.Component {
     if (this.state.appState.match(/inactive|background/) && nextAppState === 'active') {
       appOpened(this.props.user.userInfo.id);
       if (Actions.currentScene === 'HomeScreen') {
-        this.props.getFeedoList(null, this.getFeedsFromStorage, this.getFeedsFromStorage)
+        this.props.getFeedoList(null, this.getFeedsFromStorage)
 
         // TEMPORARY: REMOVE WITH PUBNUB INTEGRATION
         // this.props.getInvitedFeedList()
@@ -672,7 +677,7 @@ class HomeScreen extends React.Component {
             currentPushNotificationType: CONSTANTS.USER_INVITED_TO_HUNT,
             currentPushNotificationData: huntId
           });
-          this.props.getFeedoList(null, this.getFeedsFromStorage, this.getFeedsFromStorage);
+          this.props.getFeedoList(null, this.getFeedsFromStorage);
           this.props.getInvitedFeedList()
         }
         break;
@@ -752,7 +757,7 @@ class HomeScreen extends React.Component {
             currentPushNotificationType: CONSTANTS.USER_JOINED_HUNT,
             currentPushNotificationData: huntId,
           });
-          this.props.getFeedoList(null, this.getFeedsFromStorage, this.getFeedsFromStorage);
+          this.props.getFeedoList(null, this.getFeedsFromStorage);
         }
         break;
       }
@@ -771,7 +776,7 @@ class HomeScreen extends React.Component {
             currentPushNotificationType: CONSTANTS.USER_INVITED_TO_HUNT,
             currentPushNotificationData: huntId,
           });
-          this.props.getFeedoList(null, this.getFeedsFromStorage, this.getFeedsFromStorage);
+          this.props.getFeedoList(null, this.getFeedsFromStorage);
         }
         break;
       }
@@ -1326,7 +1331,7 @@ class HomeScreen extends React.Component {
 
   onRefreshFeed = () => {
     this.setState({ isRefreshing: true })
-    this.props.getFeedoList(null, this.getFeedsFromStorage, this.getFeedsFromStorage)
+    this.props.getFeedoList(null, this.getFeedsFromStorage)
     this.props.getInvitedFeedList()
   }
 
@@ -1704,7 +1709,7 @@ const mapStateToProps = ({ user, feedo, card }) => ({
 })
 
 const mapDispatchToProps = dispatch => ({
-  getFeedoList: (index, successAction, errorAction) => dispatch(getFeedoList(index))
+  getFeedoList: (index, errorAction) => dispatch(getFeedoList(index))
   .then(result => {
     // console.log('GFL resolves on HS, success looks like ', result)
     if(result.error){
