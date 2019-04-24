@@ -32,8 +32,9 @@ const styles = StyleSheet.create({
     height: 42,
     width: 42,
     flexDirection: 'row',
-    justifyContent: 'center',
-    alignItems: 'center'
+    justifyContent: 'flex-start',
+    alignItems: 'center',
+    marginLeft: 12
   },
   notificationText: {
     color: COLORS.PURPLE,

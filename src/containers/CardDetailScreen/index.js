@@ -29,6 +29,7 @@ import ImageResizer from 'react-native-image-resizer';
 import RNThumbnail from 'react-native-thumbnail';
 import ImgToBase64 from 'react-native-image-base64';
 import RNFetchBlob from 'rn-fetch-blob'
+import RNFS from 'react-native-fs';
 
 import { DocumentPicker, DocumentPickerUtil } from 'react-native-document-picker'
 import Permissions from 'react-native-permissions'
@@ -136,6 +137,7 @@ class CardDetailScreen extends React.Component {
       uploadProgress: 0
     };
 
+    this.fileUploading = false
     this.selectedFile = null;
     this.selectedFileMimeType = null;
     this.selectedFileType = null;
@@ -189,16 +191,20 @@ class CardDetailScreen extends React.Component {
     if (this.props.card.loading !== types.GET_FILE_UPLOAD_URL_PENDING && nextProps.card.loading === types.GET_FILE_UPLOAD_URL_PENDING) {
       // getting a file upload url
       loading = true;
+
+      // Start file loading on GET_FILE_UPLOAD_URL_PENDING
+      // End file loading on ADD_FILE_FULFILLED
+      this.fileUploading = true
     } else if (this.props.card.loading !== types.GET_FILE_UPLOAD_URL_FULFILLED && nextProps.card.loading === types.GET_FILE_UPLOAD_URL_FULFILLED) {
       // success in getting a file upload url
       loading = true;
       // Image resizing...
       const fileType = (Platform.OS === 'ios') ? this.selectedFileMimeType : this.selectedFile.type;
-
       if (fileType && fileType.indexOf('image/') !== -1) {
         // https://www.built.io/blog/improving-image-compression-what-we-ve-learned-from-whatsapp
-        let actualHeight = this.selectedFile.height;
-        let actualWidth = this.selectedFile.width;
+        const {width, height} = await this.getImageSize(this.selectedFile.uri);
+        let actualHeight = height;
+        let actualWidth = width;
         const maxHeight = 600.0;
         const maxWidth = 800.0;
         let imgRatio = actualWidth/actualHeight;
@@ -224,17 +230,40 @@ class CardDetailScreen extends React.Component {
         this.updateUploadProgress(0);
         ImageResizer.createResizedImage(this.selectedFile.uri, actualWidth, actualHeight, CONSTANTS.IMAGE_COMPRESS_FORMAT, CONSTANTS.IMAGE_COMPRESS_QUALITY, 0, null)
           .then((response) => {
-            console.log('Image compress Success!');
             this.props.uploadFileToS3(nextProps.card.fileUploadUrl.uploadUrl, response.uri, this.selectedFileName, fileType, this.updateUploadProgress);
           }).catch((error) => {
-            console.log('Image compress error : ', error);
             this.props.uploadFileToS3(nextProps.card.fileUploadUrl.uploadUrl, this.selectedFile.uri, this.selectedFileName, fileType, this.updateUploadProgress);
           });
         return;
       }
 
-      this.updateUploadProgress(0);
-      this.props.uploadFileToS3(nextProps.card.fileUploadUrl.uploadUrl, this.selectedFile.uri, this.selectedFileName, fileType, this.updateUploadProgress);
+      let attemptUpload = true
+
+      // https://solversio.atlassian.net/browse/FEED-1575
+      // When a file such as a keynote is shared with you we get a permission error
+      // Cannot get a handle on error from xhr.send. We need to protect upload with this check
+      // RNFS.readFile can still return and error, but only if error.code === "EISDIR" do we prevent upload
+      if (Platform.OS === 'ios' && this.selectedFileType === 'FILE') {
+        await RNFS.readFile(this.selectedFile.uri)
+          .then((result) => {
+          })
+          .catch((error) => {
+            if (error.code === "EISDIR") {
+              attemptUpload = false
+            }
+          })
+      }
+
+      if (attemptUpload) {
+        this.updateUploadProgress(0);
+        this.props.uploadFileToS3(nextProps.card.fileUploadUrl.uploadUrl, this.selectedFile.uri, this.selectedFileName, fileType, this.updateUploadProgress);      
+      }
+      else {
+        this.fileUploading = false
+        AlertController.shared.showAlert('Error', "We can't upload this file")
+      }
+    } else if (this.props.card.loading !== types.GET_FILE_UPLOAD_URL_REJECTED && nextProps.card.loading === types.GET_FILE_UPLOAD_URL_REJECTED) {
+      this.fileUploading = false
     } else if (this.props.card.loading !== types.UPLOAD_FILE_PENDING && nextProps.card.loading === types.UPLOAD_FILE_PENDING) {
       // uploading a file
       loading = true;
@@ -262,9 +291,13 @@ class CardDetailScreen extends React.Component {
         }
         this.props.addFile(id, this.selectedFileType, fileType, this.selectedFileName, objectKey, metadata, this.base64String);
       }
+    } else if (this.props.card.loading !== types.UPLOAD_FILE_REJECTED && nextProps.card.loading === types.UPLOAD_FILE_REJECTED) {
+      this.fileUploading = false
     } else if (this.props.card.loading !== types.ADD_FILE_PENDING && nextProps.card.loading === types.ADD_FILE_PENDING) {
       loading = true;
     } else if (this.props.card.loading !== types.ADD_FILE_FULFILLED && nextProps.card.loading === types.ADD_FILE_FULFILLED) {
+      this.fileUploading = false
+      
       // success in adding a file
       const { id } = this.props.card.currentCard;
       const newImageFiles = _.filter(nextProps.card.currentCard.files, file => file.contentType.indexOf('image') !== -1 || file.contentType.indexOf('video') !== -1);
@@ -283,6 +316,8 @@ class CardDetailScreen extends React.Component {
       if (this.currentShareImageIndex < this.shareImageUrls.length) {
         this.uploadFile(nextProps.card.currentCard, this.shareImageUrls[this.currentShareImageIndex], 'MEDIA');
       }
+    } else if (this.props.card.loading !== types.ADD_FILE_REJECTED && nextProps.card.loading === types.ADD_FILE_REJECTED) {
+      this.fileUploading = false
     } else if (this.props.card.loading !== types.ADD_LINK_PENDING && nextProps.card.loading === types.ADD_LINK_PENDING) {
       // adding a link
       if (this.props.card.currentCard.links === null || this.props.card.currentCard.links.length === 0) {
@@ -1169,27 +1204,29 @@ class CardDetailScreen extends React.Component {
       if (mimeType.indexOf('image') !== -1 || mimeType.indexOf('video') !== -1) {
         type = 'MEDIA';
       }
-    }
-    this.setState({ fileType: type });
 
-    // Generate thumbnail if a video
-    if (mimeType.indexOf('video') !== -1) {
-      if (Platform.OS === 'ios') {
-        // Important - files containing spaces break, need to uri decode the url before passing to RNThumbnail
-        // https://github.com/wkh237/react-native-fetch-blob/issues/248#issuecomment-297988317
-        let fileUri = decodeURI(file.uri)
-        this.getThumbnailUrl(file, fileUri)
+      this.setState({ fileType: type });
+
+      // Generate thumbnail if a video
+      if (mimeType.indexOf('video') !== -1) {
+        if (Platform.OS === 'ios') {
+          // Important - files containing spaces break, need to uri decode the url before passing to RNThumbnail
+          // https://github.com/wkh237/react-native-fetch-blob/issues/248#issuecomment-297988317
+          let fileUri = decodeURI(file.uri)
+          this.getThumbnailUrl(file, fileUri)
+        } else {
+          this.setState({ loading: true })
+          RNFetchBlob.fs
+          .stat(file.uri)
+          .then(stats => {
+            filepath = stats.path;
+            this.getThumbnailUrl(file, filepath)
+          })
+        }
       } else {
-        this.setState({ loading: true })
-        RNFetchBlob.fs
-        .stat(file.uri)
-        .then(stats => {
-          filepath = stats.path;
-          this.getThumbnailUrl(file, filepath)
-        })
+        this.uploadFile(this.props.card.currentCard, file, type);
       }
-    }
-    else {
+    } else {
       this.uploadFile(this.props.card.currentCard, file, type);
     }
   }
@@ -1877,7 +1914,10 @@ class CardDetailScreen extends React.Component {
           onPress={(index) => this.onTapWebLinkActionSheet(index)}
         />
 
-        {loading && fileType === 'FILE' && <LoadingScreen />}
+        {
+          this.fileUploading && this.selectedFileType === 'FILE' &&
+            <LoadingScreen containerStyle={this.props.cardMode === CONSTANTS.SHARE_EXTENTION_CARD ? {marginBottom: CONSTANTS.SCREEN_VERTICAL_MIN_MARGIN + 100} : {}} />
+        }
 
         <Modal
           isVisible={this.state.isVisibleCardOpenMenu}

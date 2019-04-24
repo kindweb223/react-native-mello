@@ -51,7 +51,6 @@ target 'ShareExtension' do
   # use_frameworks!
 
   # Pods for MelloEx
-  #pod 'Firebase/Core'
   #pod 'Intercom'
   
 end

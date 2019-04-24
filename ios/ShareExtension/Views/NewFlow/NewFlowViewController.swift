@@ -110,6 +110,7 @@ extension NewFlowViewController: ShareNavigationable {
     }
     
     func navigationDidTapRightButton() {
-        delegate?.newFlowViewController(self, wantsToCreateFlow: nameTextView.text, description: descriptionTextView.text ?? "")
+        let descriptionText = descriptionTextView.text == descriptionPlaceholder ? "" : descriptionTextView.text
+        delegate?.newFlowViewController(self, wantsToCreateFlow: nameTextView.text, description: descriptionText ?? "")
     }
 }

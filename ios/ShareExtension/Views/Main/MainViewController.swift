@@ -10,6 +10,8 @@ import UIKit
 import Social
 import MobileCoreServices
 import AVFoundation
+import Crashlytics
+import FirebaseCore
 
 class MainViewController: UIViewController {
   
@@ -27,6 +29,10 @@ class MainViewController: UIViewController {
   
   override func viewDidLoad() {
     super.viewDidLoad()
+    
+    if FirebaseApp.app() == nil {
+      FirebaseApp.configure()
+    }
     
     NotificationCenter.default.addObserver(self,
                                            selector: #selector(didReceiveAPIError(_:)),
@@ -123,6 +129,8 @@ class MainViewController: UIViewController {
                 API.shared.parseURL(url, completion: { parsedURL in
                   guard let parsedURL = parsedURL else {
                     self.showErrorAndClose("Could not read the provided link")
+                    let error = NSError(domain: "io.solvers.feedo.ShareExtension.PARSE_URL_FAILED", code: 1001, userInfo: ["url": url.absoluteString])
+                    Crashlytics.sharedInstance().recordError(error as Error)
                     return
                   }
                   if parsedURL.images.count > 0 {
