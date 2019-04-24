@@ -92,6 +92,16 @@
 		3984D08B22527DD000042F75 /* ShareExtension.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = 3984D08122527DD000042F75 /* ShareExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		39C6257C2254EB6F001FBD79 /* KeyboardHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 39C6257B2254EB6F001FBD79 /* KeyboardHelper.swift */; };
 		39E179F7226F78E70086ABB4 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 39E179AE226F78E60086ABB4 /* GoogleService-Info.plist */; };
+		39E17C4F22707D100086ABB4 /* Crashlytics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 39E17BF022706F6D0086ABB4 /* Crashlytics.framework */; };
+		39E17C5022707D100086ABB4 /* Fabric.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 39E17C3922706F6D0086ABB4 /* Fabric.framework */; };
+		39E17C5122707D100086ABB4 /* FIRAnalyticsConnector.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 39E17C44227079ED0086ABB4 /* FIRAnalyticsConnector.framework */; };
+		39E17C5222707D100086ABB4 /* FirebaseAnalytics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 39E17C46227079EE0086ABB4 /* FirebaseAnalytics.framework */; };
+		39E17C5322707D100086ABB4 /* FirebaseCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 39E17C3D2270745B0086ABB4 /* FirebaseCore.framework */; };
+		39E17C5422707D100086ABB4 /* FirebaseCoreDiagnostics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 39E17C41227079EB0086ABB4 /* FirebaseCoreDiagnostics.framework */; };
+		39E17C5522707D100086ABB4 /* FirebaseInstanceID.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 39E17C45227079EE0086ABB4 /* FirebaseInstanceID.framework */; };
+		39E17C5622707D100086ABB4 /* GoogleAppMeasurement.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 39E17C43227079ED0086ABB4 /* GoogleAppMeasurement.framework */; };
+		39E17C5722707D100086ABB4 /* GoogleUtilities.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 39E17C42227079EC0086ABB4 /* GoogleUtilities.framework */; };
+		39E17C5822707D100086ABB4 /* nanopb.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 39E17C40227079EB0086ABB4 /* nanopb.framework */; };
 		45A806F94F774736BDFCF564 /* libBugsnagReactNative.a in Frameworks */ = {isa = PBXBuildFile; fileRef = D9E1BD18BB5B4D62B4263950 /* libBugsnagReactNative.a */; };
 		47CA4A9854C645189A59042C /* libRNDocumentPicker.a in Frameworks */ = {isa = PBXBuildFile; fileRef = CEF9CE0D4C3B419DAD8284A6 /* libRNDocumentPicker.a */; };
 		4C030DDBB9734D8CB1045CEB /* libBVLinearGradient.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 1AE0342E1F8E4EB593320F3B /* libBVLinearGradient.a */; };
@@ -799,6 +809,18 @@
 		3984D08122527DD000042F75 /* ShareExtension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = ShareExtension.appex; sourceTree = BUILT_PRODUCTS_DIR; };
 		39C6257B2254EB6F001FBD79 /* KeyboardHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeyboardHelper.swift; sourceTree = "<group>"; };
 		39E179AE226F78E60086ABB4 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
+		39E17BF022706F6D0086ABB4 /* Crashlytics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = Crashlytics.framework; sourceTree = "<group>"; };
+		39E17C3922706F6D0086ABB4 /* Fabric.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = Fabric.framework; sourceTree = "<group>"; };
+		39E17C3D2270745B0086ABB4 /* FirebaseCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = FirebaseCore.framework; sourceTree = "<group>"; };
+		39E17C3F227079D90086ABB4 /* Firebase.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Firebase.h; sourceTree = "<group>"; };
+		39E17C40227079EB0086ABB4 /* nanopb.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = nanopb.framework; sourceTree = "<group>"; };
+		39E17C41227079EB0086ABB4 /* FirebaseCoreDiagnostics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = FirebaseCoreDiagnostics.framework; sourceTree = "<group>"; };
+		39E17C42227079EC0086ABB4 /* GoogleUtilities.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = GoogleUtilities.framework; sourceTree = "<group>"; };
+		39E17C43227079ED0086ABB4 /* GoogleAppMeasurement.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = GoogleAppMeasurement.framework; sourceTree = "<group>"; };
+		39E17C44227079ED0086ABB4 /* FIRAnalyticsConnector.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = FIRAnalyticsConnector.framework; sourceTree = "<group>"; };
+		39E17C45227079EE0086ABB4 /* FirebaseInstanceID.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = FirebaseInstanceID.framework; sourceTree = "<group>"; };
+		39E17C46227079EE0086ABB4 /* FirebaseAnalytics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = FirebaseAnalytics.framework; sourceTree = "<group>"; };
+		39E17C4E22707A220086ABB4 /* module.modulemap */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = "sourcecode.module-map"; path = module.modulemap; sourceTree = "<group>"; };
 		44C268ED8ACC4BCE9CDA61FC /* libRNDeviceInfo.a */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = archive.ar; path = libRNDeviceInfo.a; sourceTree = "<group>"; };
 		47BA3513B6514BE58476D7B4 /* libRNImagePicker.a */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = archive.ar; path = libRNImagePicker.a; sourceTree = "<group>"; };
 		48E815D86AC4450E91A11738 /* libRNImgToBase64.a */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = archive.ar; path = libRNImgToBase64.a; sourceTree = "<group>"; };
@@ -975,6 +997,16 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				39E17C4F22707D100086ABB4 /* Crashlytics.framework in Frameworks */,
+				39E17C5022707D100086ABB4 /* Fabric.framework in Frameworks */,
+				39E17C5122707D100086ABB4 /* FIRAnalyticsConnector.framework in Frameworks */,
+				39E17C5222707D100086ABB4 /* FirebaseAnalytics.framework in Frameworks */,
+				39E17C5322707D100086ABB4 /* FirebaseCore.framework in Frameworks */,
+				39E17C5422707D100086ABB4 /* FirebaseCoreDiagnostics.framework in Frameworks */,
+				39E17C5522707D100086ABB4 /* FirebaseInstanceID.framework in Frameworks */,
+				39E17C5622707D100086ABB4 /* GoogleAppMeasurement.framework in Frameworks */,
+				39E17C5722707D100086ABB4 /* GoogleUtilities.framework in Frameworks */,
+				39E17C5822707D100086ABB4 /* nanopb.framework in Frameworks */,
 				20D03234C800BE7AD647D202 /* libPods-ShareExtension.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -1390,6 +1422,7 @@
 		3984D08222527DD000042F75 /* ShareExtension */ = {
 			isa = PBXGroup;
 			children = (
+				39E17C3C22706F720086ABB4 /* Frameworks */,
 				39E179AE226F78E60086ABB4 /* GoogleService-Info.plist */,
 				396C1CD422539C11001297F6 /* ShareExtension.entitlements */,
 				396C17F522527EF6001297F6 /* Info.plist */,
@@ -1401,6 +1434,25 @@
 				396C17FB22527F0B001297F6 /* Views */,
 			);
 			path = ShareExtension;
+			sourceTree = "<group>";
+		};
+		39E17C3C22706F720086ABB4 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				39E17C4E22707A220086ABB4 /* module.modulemap */,
+				39E17C44227079ED0086ABB4 /* FIRAnalyticsConnector.framework */,
+				39E17C46227079EE0086ABB4 /* FirebaseAnalytics.framework */,
+				39E17C41227079EB0086ABB4 /* FirebaseCoreDiagnostics.framework */,
+				39E17C45227079EE0086ABB4 /* FirebaseInstanceID.framework */,
+				39E17C43227079ED0086ABB4 /* GoogleAppMeasurement.framework */,
+				39E17C42227079EC0086ABB4 /* GoogleUtilities.framework */,
+				39E17C40227079EB0086ABB4 /* nanopb.framework */,
+				39E17C3F227079D90086ABB4 /* Firebase.h */,
+				39E17C3D2270745B0086ABB4 /* FirebaseCore.framework */,
+				39E17BF022706F6D0086ABB4 /* Crashlytics.framework */,
+				39E17C3922706F6D0086ABB4 /* Fabric.framework */,
+			);
+			path = Frameworks;
 			sourceTree = "<group>";
 		};
 		4836FCAAE7F14E69A4ACF664 /* Resources */ = {
@@ -2757,7 +2809,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "# Type a script or drag a script file from your workspace to insert its path.\n\"${PODS_ROOT}/Fabric/run\"\n";
+			shellScript = "# Type a script or drag a script file from your workspace to insert its path.\n\"${PROJECT_DIR}/ShareExtension/Frameworks/Fabric.framework/run\"\n";
 		};
 		C272A68C1907409EB7735F34 /* [CP] Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -3435,9 +3487,14 @@
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				CODE_SIGN_STYLE = Manual;
-				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				DEBUG_INFORMATION_FORMAT = dwarf;
 				DEVELOPMENT_TEAM = B2TWZYTK2Q;
 				ENABLE_TESTABILITY = YES;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/ShareExtension",
+					"$(PROJECT_DIR)/ShareExtension/Frameworks",
+				);
 				GCC_C_LANGUAGE_STANDARD = gnu11;
 				GCC_NO_COMMON_BLOCKS = YES;
 				INFOPLIST_FILE = ShareExtension/Info.plist;
@@ -3454,6 +3511,7 @@
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 4.2;
 				TARGETED_DEVICE_FAMILY = "1,2";
+				USER_HEADER_SEARCH_PATHS = "\"$(SRCROOT)/ShareExtension/Frameworks/\"";
 			};
 			name = Debug;
 		};
@@ -3484,8 +3542,13 @@
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution";
 				CODE_SIGN_STYLE = Manual;
 				COPY_PHASE_STRIP = NO;
-				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				DEBUG_INFORMATION_FORMAT = dwarf;
 				DEVELOPMENT_TEAM = B2TWZYTK2Q;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/ShareExtension",
+					"$(PROJECT_DIR)/ShareExtension/Frameworks",
+				);
 				GCC_C_LANGUAGE_STANDARD = gnu11;
 				GCC_NO_COMMON_BLOCKS = YES;
 				INFOPLIST_FILE = ShareExtension/Info.plist;
@@ -3500,6 +3563,7 @@
 				SWIFT_OPTIMIZATION_LEVEL = "-Owholemodule";
 				SWIFT_VERSION = 4.2;
 				TARGETED_DEVICE_FAMILY = "1,2";
+				USER_HEADER_SEARCH_PATHS = "\"$(SRCROOT)/ShareExtension/Frameworks/\"";
 			};
 			name = Release;
 		};
