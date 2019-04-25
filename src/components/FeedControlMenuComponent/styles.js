@@ -14,7 +14,7 @@ const styles = StyleSheet.create({
   },
   switchTextView: {
     flexDirection: 'row',
-    alignItems: 'center'    
+    alignItems: 'center'
   },
   switch: {
     transform: Platform.OS === 'ios' ? [{ scaleX: 0.7 }, { scaleY: 0.7 }] : [{ scaleX: 1 }, { scaleY: 1 }]
