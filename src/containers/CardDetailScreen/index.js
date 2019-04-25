@@ -180,6 +180,7 @@ class CardDetailScreen extends React.Component {
     this.coverImageScrollY = 0
     this.closeAnimationTime = CONSTANTS.ANIMATEION_MILLI_SECONDS + 50;
     this.scrollEnabled = true
+    this.ratio = 0
   }
 
   updateUploadProgress = (value) => {
@@ -573,6 +574,7 @@ class CardDetailScreen extends React.Component {
         this.coverImageWidth = coverData.metadata.width
         this.coverImageHeight = coverData.metadata.height
         const ratio = CONSTANTS.SCREEN_WIDTH / coverData.metadata.width
+        this.ratio = ratio
         imageHeight = coverData.metadata.height * ratio
 
         if (isMasonryView) {
@@ -894,6 +896,11 @@ class CardDetailScreen extends React.Component {
       return
     }
 
+    if (Platform.OS === 'android') {
+      this.props.onClose()
+      return
+    }
+    
     this.setState({
       originalCardTopY: this.props.intialLayout.py,
       originalCardBottomY: this.props.intialLayout.py + this.props.intialLayout.height,
@@ -1332,6 +1339,29 @@ class CardDetailScreen extends React.Component {
     let imageFiles = _.filter(card.currentCard.files, file => file.fileType === 'MEDIA');
 
     if (coverImage || imageUploadStarted) {
+      if (Platform.OS === 'android') {
+        return (
+          <View
+            style={[
+              styles.coverImageContainer,
+              { width: CONSTANTS.SCREEN_WIDTH, height: this.coverImageHeight * this.ratio }
+            ]}
+          >
+            <CoverImagePreviewComponent
+              imageUploading={imageUploading}
+              cardMode={cardMode}
+              coverImage={coverImage}
+              files={imageFiles}
+              editable={viewMode !== CONSTANTS.CARD_VIEW}
+              isFastImage={true}
+              isSetCoverImage={true}
+              onRemove={(fileId) => this.onRemoveFile(fileId)}
+              onSetCoverImage={(fileId) => this.onSetCoverImage(fileId)}
+              progress={this.state.uploadProgress}
+            />
+          </View>
+        );
+      }
       return (
         <Animated.View
           style={[
