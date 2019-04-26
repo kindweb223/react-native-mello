@@ -171,6 +171,8 @@ class CardNewScreen extends React.Component {
     this.shareImageUrls = [];
     this.currentShareImageIndex = 0;
 
+    this.startParseUrl = false
+
     this.coverImageWidth = CONSTANTS.SCREEN_WIDTH
     this.coverImageHeight = CONSTANTS.SCREEN_HEIGHT / 3
 
@@ -206,6 +208,7 @@ class CardNewScreen extends React.Component {
 
   async UNSAFE_componentWillReceiveProps(nextProps) {
     let loading = false;
+
     if (this.props.card.loading !== types.CREATE_CARD_PENDING && nextProps.card.loading === types.CREATE_CARD_PENDING) {
       // loading = true;
     } else if (this.props.card.loading !== types.CREATE_CARD_FULFILLED && nextProps.card.loading === types.CREATE_CARD_FULFILLED) {
@@ -415,7 +418,13 @@ class CardNewScreen extends React.Component {
       this.currentSelectedLinkImageIndex ++;
       if (this.currentSelectedLinkImageIndex < this.selectedLinkImages.length) {
         this.addLinkImage(id, this.selectedLinkImages[this.currentSelectedLinkImageIndex]);
+      } else if (this.startParseUrl) {
+        this.startParseUrl = false
+        setTimeout(() => {
+          this.onUpdate();
+        }, 2000)
       }
+
       this.currentShareImageIndex ++;
       if (this.currentShareImageIndex < this.shareImageUrls.length) {
         this.uploadFile(nextProps.card.currentCard, this.shareImageUrls[this.currentShareImageIndex], 'MEDIA');
@@ -443,6 +452,13 @@ class CardNewScreen extends React.Component {
           favicon,
         } = this.openGraphLinksInfo[this.indexForAddedLinks++];
         this.props.addLink(id, url, title, description, image, favicon);
+      } else {
+        if (this.startParseUrl && !this.state.isVisibleChooseLinkImagesModal) {
+          this.startParseUrl = false
+          setTimeout(() => {
+            this.onUpdate();
+          }, 2000)
+        }
       }
     } else if (this.props.card.loading !== types.DELETE_LINK_PENDING && nextProps.card.loading === types.DELETE_LINK_PENDING) {
       // deleting a link
@@ -638,6 +654,7 @@ class CardNewScreen extends React.Component {
         }
 
         if (error) {
+          this.startParseUrl = false
           if (nextProps.card.loading === types.GET_OPEN_GRAPH_REJECTED) {
             // success in getting open graph
             if (this.props.card.currentCard.links === null || this.props.card.currentCard.links.length === 0) {
@@ -761,6 +778,8 @@ class CardNewScreen extends React.Component {
       this.safariViewShowSubscription.remove();
       this.safariViewDismissSubscription.remove();
     }
+
+    this.startParseUrl = false
 
     BackHandler.removeEventListener('hardwareBackPress', this.handleBackButton);
   }
@@ -937,6 +956,11 @@ class CardNewScreen extends React.Component {
         this.linksForOpenGraph = filteredUrls;
         this.props.getOpenGraph(this.linksForOpenGraph[this.indexForOpenGraph]);
       }
+    } else {
+      if (this.startParseUrl) {
+        this.startParseUrl = false
+        this.onUpdate()
+      }
     }
     return false;
   }
@@ -1112,7 +1136,8 @@ class CardNewScreen extends React.Component {
     const { viewMode } = this.props;
 
     if (viewMode === CONSTANTS.CARD_NEW) {
-      this.onUpdate();
+      this.startParseUrl = true
+      this.checkUrls()
       return;
     }
     this.onClose();
@@ -1367,18 +1392,23 @@ class CardNewScreen extends React.Component {
     }
   }
 
-  onCloseLinkImages() {
+  onCloseLinkImages(isIgnoreCoverImage = true) {
     this.allLinkImages = [];
     this.setState({
       isVisibleChooseLinkImagesModal: false,
     });
+
+    if (this.startParseUrl && isIgnoreCoverImage) {
+      this.startParseUrl = false
+      this.onUpdate();
+    }
   }
 
   onSaveLinkImages(selectedImages) {
     const {
       id, 
     } = this.props.card.currentCard;
-    this.onCloseLinkImages();
+    this.onCloseLinkImages(false);
     this.selectedLinkImages = selectedImages;
     this.currentSelectedLinkImageIndex = 0;
     if (this.selectedLinkImages.length > 0) {
