@@ -12,6 +12,7 @@
     <objects>
         <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="NewFlowViewController" customModule="ShareExtension" customModuleProvider="target">
             <connections>
+                <outlet property="containerView" destination="3iX-xZ-rQJ" id="hxP-5O-GHu"/>
                 <outlet property="descriptionTextView" destination="mUQ-wx-Y9M" id="dBD-3x-Cip"/>
                 <outlet property="descriptionTextViewHeightConstraint" destination="9C0-aj-cjh" id="uRk-zz-uBN"/>
                 <outlet property="nameTextView" destination="SbF-m5-2tc" id="b0L-ZI-pCS"/>

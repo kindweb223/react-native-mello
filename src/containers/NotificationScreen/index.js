@@ -823,9 +823,10 @@ class NotificationScreen extends React.Component {
 
           {singleNotification && singleNotificationList.length > 0 && (
             <Animated.View
-              style={{
+              style={[ { flex: 1 },
+                {
                 transform: [{ translateX: this.state.animTransformSingleNotificationView }],
-              }}
+              }]}
             >
               <FlatList
                 style={styles.flatList}
@@ -834,7 +835,7 @@ class NotificationScreen extends React.Component {
                 keyExtractor={item => item.id}
                 automaticallyAdjustContentInsets={true}
                 renderItem={this.renderSingleNotificationItem.bind(this)}
-                // ListFooterComponent={this.renderFooter}
+                //ListFooterComponent={this.renderFooter}
                 refreshControl={
                   <RefreshControl 
                     refreshing={this.state.refreshing}
