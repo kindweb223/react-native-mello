@@ -54,7 +54,9 @@ class MainViewController: UIViewController {
     bottomButton.setTitleColor(#colorLiteral(red: 0.2901960784, green: 0, blue: 0.8, alpha: 1), for: .normal)
     bottomButton.alpha = 0
     
-    API.shared.getFlows { flows in }
+    // Refresh flows on appearing
+    AllFlows.shared.clean()
+    AllFlows.shared.get { _ in }
     
     keyboardHelper = KeyboardHelper(viewController: self, centerConstraint: containerViewCenterConstraint, heightConstraint: containerViewHeightConstraint)
   }
