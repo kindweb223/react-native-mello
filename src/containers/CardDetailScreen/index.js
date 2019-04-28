@@ -1180,8 +1180,8 @@ class CardDetailScreen extends React.Component {
   handleFile = (file) => {
     this.updateUploadProgress(0);
 
-    this.coverImageWidth = file.width;
-    this.coverImageHeight = file.height;
+    this.coverImageWidth = file.width ? file.width : CONSTANTS.SCREEN_WIDTH;
+    this.coverImageHeight = file.height ? file.height : CONSTANTS.SCREEN_WIDTH;
 
     // To fix close animation after add image to text only card
     if(!this.state.coverImage) {
