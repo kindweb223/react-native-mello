@@ -93,7 +93,7 @@ export default {
   PRIVACY_POLICE: '/MELLO_PRIVACY_POLICY.txt',
   TERMS_CONDITIONS: '/MELLO_TERMS_CONDITIONS.txt',
   HTML_CLASS_STYLES: {
-    'text-big': { backgroundColor: 'transparent', fontSize: 24, fontWeight: 'bold', lineHeight: 26, color: 'black' }
+    'text-big': { backgroundColor: 'transparent', fontSize: 24, fontWeight: 'bold', lineHeight: 32, color: 'black' }
   },
   HTML_TAGS_STYLE: {
     'p': { backgroundColor: 'transparent', fontSize: 14, marginTop: 0, marginBottom: 0, lineHeight: 20 },
@@ -101,7 +101,7 @@ export default {
     'ol': { paddingLeft: 0, marginLeft: 15, marginTop: 8, marginBottom: 0, fontSize: 14 },  // backgroundColor: '#F5F5DC'
     'li': { paddingLeft: 0, marginTop: 0, marginBottom: 0, fontSize: 14 },
     'h1': { backgroundColor: 'transparent' },
-    'h2': { backgroundColor: 'transparent', fontSize: 24, fontWeight: 'bold', lineHeight: 26, color: 'black', marginBottom: 20 },
+    'h2': { backgroundColor: 'transparent', fontSize: 24, fontWeight: 'bold', lineHeight: 24, color: 'black', marginBottom: 20 },
     'h3': { backgroundColor: 'transparent' },
     'h4': { backgroundColor: 'transparent' },
     'h5': { backgroundColor: 'transparent' },
