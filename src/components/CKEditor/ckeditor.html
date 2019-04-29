@@ -86,10 +86,9 @@
       // Execute editor commands
       content = event.data.split('execute: ')[1];
       if (content === 'fontSize_big') {
-        // CKEditor.execute('fontSize', { value: 'big' });
         CKEditor.execute('heading', { value: 'heading1' });
       } else if (content === 'fontSize_normal') {
-        CKEditor.execute('fontSize', { value: 'normal' });
+        CKEditor.execute('heading', { value: 'paragraph' });
       } else {
         CKEditor.execute(content);
       }
@@ -121,8 +120,18 @@
           window.postMessage('NO_KEYCODE>>>!hunt!<<<' + height + '>>>!hunt!<<<' + editor.getData(), '*')
         }
 
-        attr = editor.model.document.selection.getAttributes();
-        window.postMessage('FOCUS_COMMAND>>>!hunt!<<<' + Array.from(attr).join(':'), '*')
+        attr = Array.from(editor.model.document.selection.getAttributes());
+
+        attrBlock = Array.from(editor.model.document.selection.getSelectedBlocks())[0];
+        if (attrBlock.name == 'heading1') {
+          if (attr.length > 0) {
+            window.postMessage('FOCUS_COMMAND>>>!hunt!<<<' + 'fontSize,big:' + attr.join(':'), '*')
+          } else {
+            window.postMessage('FOCUS_COMMAND>>>!hunt!<<<' + 'fontSize,big', '*')
+          }
+        } else {
+          window.postMessage('FOCUS_COMMAND>>>!hunt!<<<' + attr.join(':'), '*')
+        }
       });
 
       editor.editing.view.document.on('keydown', (data, evt) => {
