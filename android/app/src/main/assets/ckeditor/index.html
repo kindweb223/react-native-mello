@@ -34,16 +34,41 @@
   #editor {
     font-family: -apple-system, BlinkMacSystemFont, sans-serif;
   }
+  h2 {
+    font-size: 24px;
+    font-weight: bold;
+    line-height: 26px;
+    color: black;
+  }
   .text-big {
     font-size: 24px;
-    font-weight: 600;
+    font-weight: bold;
     line-height: 26px;
+    color: black;
   }
   p {
-    font-size: 16px;
-    line-height: 24px;
+    font-size: 14px;
+    line-height: 20px;
     margin-bottom: 0;
     margin-top: 0;
+  }
+  ul {
+    font-size: 14px;
+    margin-left: 0px;
+    margin-top: 8px;
+    margin-bottom: 8px;
+    background-color: aqua
+  }
+  ol {
+    font-size: 14px;
+    margin-left: 0px;
+    margin-top: 8px;
+    margin-bottom: 8px;
+    background-color: beige
+  }
+  li {
+    font-size: 14px;
+    line-height: 24px;
   }
 </style>
 
@@ -61,9 +86,9 @@
       // Execute editor commands
       content = event.data.split('execute: ')[1];
       if (content === 'fontSize_big') {
-        CKEditor.execute('fontSize', { value: 'big' });
+        CKEditor.execute('heading', { value: 'heading1' });
       } else if (content === 'fontSize_normal') {
-        CKEditor.execute('fontSize', { value: 'normal' });
+        CKEditor.execute('heading', { value: 'paragraph' });
       } else {
         CKEditor.execute(content);
       }
@@ -73,16 +98,39 @@
   DecoupledEditor
     .create(document.querySelector('#editor'), {
       placeholder: "Let your ideas flow. Type text, paste a link, add an image, video or audio",
-      focus: true
+      focus: true,
+      fontFamily: {
+        options: [
+          'default',
+          '-apple-system, BlinkMacSystemFont, sans-serif',
+          'Arial, Helvetica, sans-serif'
+        ]
+      }
     })
     .then(editor => {
       window.CKEditor = editor;
 
       editor.model.document.on('change', function() {
         var value = document.getElementById('editor').textContent;
-        var height = document.getElementById('editor').offsetHeight;
+        var height = document.getElementById('editor').clientHeight;
+
+        console.log("CKEditor - Value: ", value)
+        console.log("CKEditor - height: ", height)
         if (value.length > 0) {
           window.postMessage('NO_KEYCODE>>>!hunt!<<<' + height + '>>>!hunt!<<<' + editor.getData(), '*')
+        }
+
+        attr = Array.from(editor.model.document.selection.getAttributes());
+
+        attrBlock = Array.from(editor.model.document.selection.getSelectedBlocks())[0];
+        if (attrBlock.name == 'heading1') {
+          if (attr.length > 0) {
+            window.postMessage('FOCUS_COMMAND>>>!hunt!<<<' + 'fontSize,big:' + attr.join(':'), '*')
+          } else {
+            window.postMessage('FOCUS_COMMAND>>>!hunt!<<<' + 'fontSize,big', '*')
+          }
+        } else {
+          window.postMessage('FOCUS_COMMAND>>>!hunt!<<<' + attr.join(':'), '*')
         }
       });
 
