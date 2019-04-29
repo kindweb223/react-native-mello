@@ -57,12 +57,23 @@
     margin-left: 0px;
     margin-top: 8px;
     margin-bottom: 8px;
+    padding: 0 20px;
   }
   ol {
     font-size: 14px;
     margin-left: 0px;
     margin-top: 8px;
     margin-bottom: 8px;
+    padding: 0 3px;
+    list-style: none;
+    counter-reset: my-awesome-counter;
+  }
+  ol li {
+    counter-increment: my-awesome-counter;
+  }
+  ol li::before {
+    content: counter(my-awesome-counter) ")";
+    margin-right: 5px;
   }
   li {
     font-size: 14px;

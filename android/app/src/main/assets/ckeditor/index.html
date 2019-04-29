@@ -37,13 +37,13 @@
   h2 {
     font-size: 24px;
     font-weight: bold;
-    line-height: 26px;
+    line-height: 32px;
     color: black;
   }
   .text-big {
     font-size: 24px;
     font-weight: bold;
-    line-height: 26px;
+    line-height: 24px;
     color: black;
   }
   p {
@@ -57,14 +57,23 @@
     margin-left: 0px;
     margin-top: 8px;
     margin-bottom: 8px;
-    background-color: aqua
+    padding: 0 20px;
   }
   ol {
     font-size: 14px;
     margin-left: 0px;
     margin-top: 8px;
     margin-bottom: 8px;
-    background-color: beige
+    padding: 0 3px;
+    list-style: none;
+    counter-reset: my-awesome-counter;
+  }
+  ol li {
+    counter-increment: my-awesome-counter;
+  }
+  ol li::before {
+    content: counter(my-awesome-counter) ")";
+    margin-right: 5px;
   }
   li {
     font-size: 14px;
