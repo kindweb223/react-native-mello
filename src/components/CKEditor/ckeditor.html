@@ -123,13 +123,27 @@
         attr = Array.from(editor.model.document.selection.getAttributes());
 
         attrBlock = Array.from(editor.model.document.selection.getSelectedBlocks())[0];
-        if (attrBlock.name == 'heading1') {
+        if (attrBlock.name == 'listItem') {
+          // BulletedList or NumberList
+          listType = Array.from(attrBlock._attrs)[1][1]
+          if (listType == 0) {
+            listType = Array.from(attrBlock._attrs)[0][1]
+          }
+
+          if (attr.length > 0) {
+            window.postMessage('FOCUS_COMMAND>>>!hunt!<<<' + listType + ',true:' + attr.join(':'), '*')
+          } else {
+            window.postMessage('FOCUS_COMMAND>>>!hunt!<<<' + listType + ',true', '*')
+          }
+        } else if (attrBlock.name == 'heading1') {
+          // Heading1
           if (attr.length > 0) {
             window.postMessage('FOCUS_COMMAND>>>!hunt!<<<' + 'fontSize,big:' + attr.join(':'), '*')
           } else {
             window.postMessage('FOCUS_COMMAND>>>!hunt!<<<' + 'fontSize,big', '*')
           }
         } else {
+          // Paragraph
           window.postMessage('FOCUS_COMMAND>>>!hunt!<<<' + attr.join(':'), '*')
         }
       });
