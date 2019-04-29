@@ -16,6 +16,7 @@ const styles = StyleSheet.create({
   },
   toolbarBorderView: {
     flex: 1,
+    height: 25,
     flexDirection: 'row',
     justifyContent: 'space-evenly',
     alignItems: 'center',

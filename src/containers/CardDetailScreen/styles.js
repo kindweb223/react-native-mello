@@ -41,7 +41,7 @@ const styles = StyleSheet.create({
     paddingRight: 0,
     paddingTop: 0,
     paddingBottom: 0,
-    width: '100%'
+    flex: 1
   },
   rowContainer: {
     flexDirection: 'row',
