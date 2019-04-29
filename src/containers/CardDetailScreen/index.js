@@ -1796,7 +1796,7 @@ class CardDetailScreen extends React.Component {
     };
 
     let contentContainerStyle = {
-      paddingBottom: Platform.OS==='android'? 20: 0,
+      paddingBottom: Platform.OS === 'android'? 20: 0,
       height: CONSTANTS.SCREEN_HEIGHT,
       backgroundColor: '#fff',
     }
