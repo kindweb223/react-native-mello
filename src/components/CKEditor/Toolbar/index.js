@@ -99,13 +99,13 @@ class CKEditorToolbar extends React.Component {
                   activeOpacity={0.6}
                   onPress={() => this.executeCommands('bulletedList')}
                 >
-                  <Image source={_.findIndex(commands, item => this.splitCommand(item).key === 'bulletedList') !== -1 ? BULLET_PURPLE_ICON : BULLET_ICON} />
+                  <Image source={_.findIndex(commands, item => this.splitCommand(item).key === 'bulleted') !== -1 ? BULLET_PURPLE_ICON : BULLET_ICON} />
                 </TouchableOpacity>
                 <TouchableOpacity
                   activeOpacity={0.6}
                   onPress={() => this.executeCommands('numberedList')}
                 >
-                  <Image source={_.findIndex(commands, item => this.splitCommand(item).key === 'numberedList') !== -1 ? NUMBER_PURPLE_ICON : NUMBER_ICON} />
+                  <Image source={_.findIndex(commands, item => this.splitCommand(item).key === 'numbered') !== -1 ? NUMBER_PURPLE_ICON : NUMBER_ICON} />
                 </TouchableOpacity>
               </View>
               <View style={styles.toolbarBorderView}>
