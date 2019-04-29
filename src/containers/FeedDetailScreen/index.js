@@ -1845,9 +1845,11 @@ class FeedDetailScreen extends React.Component {
           style={styles.shareScreenContainer}
           backdropColor='#fff'
           backdropOpacity={0}
+          useNativeDriver={true}
           animationIn="fadeIn"
           animationOut="fadeOut"
-          animationInTiming={500}
+          animationInTiming={Platform.OS === 'ios' ? 500 : 50}
+          animationOutTiming={Platform.OS === 'ios' ? 500 : 1}
           onModalHide={() => this.hideSettingMenu()}
           onBackdropPress={() => this.setState({ openMenu: false })}
           onBackButtonPress={() => this.setState({ openMenu: false })}
