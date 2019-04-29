@@ -90,7 +90,7 @@ import COLORS from '../../service/colors';
 import CONSTANTS from '../../service/constants';
 import styles from './styles';
 
-const FOOTER_HEIGHT = Platform.OS === 'ios' ? CONSTANTS.SCREEN_WIDTH / 7.5 : CONSTANTS.SCREEN_WIDTH / 7.5 + 5
+const FOOTER_HEIGHT = Platform.OS === 'ios' ? CONSTANTS.SCREEN_WIDTH / 7.5 : CONSTANTS.SCREEN_WIDTH / 7.5 + 6
 const FIXED_COMMENT_HEIGHT = 150
 const IDEA_CONTENT_HEIGHT = CONSTANTS.SCREEN_HEIGHT - CONSTANTS.STATUSBAR_HEIGHT - FIXED_COMMENT_HEIGHT - FOOTER_HEIGHT - CONSTANTS.STATUS_BOTTOM_BAR_HEIGHT - ifIphoneX(2, 0)
 
@@ -180,6 +180,7 @@ class CardDetailScreen extends React.Component {
     this.coverImageScrollY = 0
     this.closeAnimationTime = CONSTANTS.ANIMATEION_MILLI_SECONDS + 50;
     this.scrollEnabled = true
+    this.ratio = 0
   }
 
   updateUploadProgress = (value) => {
@@ -573,6 +574,7 @@ class CardDetailScreen extends React.Component {
         this.coverImageWidth = coverData.metadata.width
         this.coverImageHeight = coverData.metadata.height
         const ratio = CONSTANTS.SCREEN_WIDTH / coverData.metadata.width
+        this.ratio = ratio
         imageHeight = coverData.metadata.height * ratio
 
         if (isMasonryView) {
@@ -894,6 +896,11 @@ class CardDetailScreen extends React.Component {
       return
     }
 
+    if (Platform.OS === 'android') {
+      this.props.onClose()
+      return
+    }
+    
     this.setState({
       originalCardTopY: this.props.intialLayout.py,
       originalCardBottomY: this.props.intialLayout.py + this.props.intialLayout.height,
@@ -1332,6 +1339,29 @@ class CardDetailScreen extends React.Component {
     let imageFiles = _.filter(card.currentCard.files, file => file.fileType === 'MEDIA');
 
     if (coverImage || imageUploadStarted) {
+      if (Platform.OS === 'android') {
+        return (
+          <View
+            style={[
+              styles.coverImageContainer,
+              { width: CONSTANTS.SCREEN_WIDTH, height: this.coverImageHeight * this.ratio }
+            ]}
+          >
+            <CoverImagePreviewComponent
+              imageUploading={imageUploading}
+              cardMode={cardMode}
+              coverImage={coverImage}
+              files={imageFiles}
+              editable={viewMode !== CONSTANTS.CARD_VIEW}
+              isFastImage={true}
+              isSetCoverImage={true}
+              onRemove={(fileId) => this.onRemoveFile(fileId)}
+              onSetCoverImage={(fileId) => this.onSetCoverImage(fileId)}
+              progress={this.state.uploadProgress}
+            />
+          </View>
+        );
+      }
       return (
         <Animated.View
           style={[
@@ -1924,9 +1954,11 @@ class CardDetailScreen extends React.Component {
           style={styles.shareScreenContainer}
           backdropColor='#fff'
           backdropOpacity={0}
+          useNativeDriver={true}
           animationIn="fadeIn"
           animationOut="fadeOut"
-          animationInTiming={500}
+          animationInTiming={Platform.OS === 'ios' ? 500 : 50}
+          animationOutTiming={Platform.OS === 'ios' ? 500 : 1}
           onModalHide={this.handleControlMenHide}
           onBackdropPress={() => this.setState({ isVisibleCardOpenMenu: false })}
           onBackButtonPress={() => this.setState({ isVisibleCardOpenMenu: false })}
