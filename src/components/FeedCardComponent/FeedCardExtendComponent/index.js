@@ -77,7 +77,8 @@ class FeedCardExtendComponent extends React.Component {
               {_.has(idea, 'idea') && idea.idea.length !== null && idea.idea.length > 0 && (
                 <View style={styles.subView}>
                   <HTML
-                    html={truncate(idea.idea, hasCoverImage ? 40 : 60, { keepWhiteSpaces: false })}
+                    html={idea.idea}
+                    // html={truncate(idea.idea, hasCoverImage ? 40 : 60, { keepWhiteSpaces: false })}
                     containerStyle={styles.textHtmlIdea}
                     onLinkPress={(evt, href) => this.onPressLink(href)}
                     classesStyles={CONSTANTS.HTML_CLASS_STYLES}
