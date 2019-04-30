@@ -7,6 +7,7 @@ import {
   Animated,
   Image,
   Keyboard,
+  BackHandler,
 } from 'react-native'
 import { connect } from 'react-redux'
 import * as Animatable from 'react-native-animatable'
@@ -22,6 +23,8 @@ import LoadingScreen from '../LoadingScreen';
 
 const FEED_ICON = require('../../../assets/images/IconFlow/IconsMediumFlowGrey.png')
 
+import { setCurrentFeed } from '../../redux/feedo/actions';
+
 class SearchScreen extends React.Component {
     constructor(props) {
         super(props);
@@ -32,19 +35,29 @@ class SearchScreen extends React.Component {
         };
         this.animatedMove = new Animated.Value(0);
     }
-
+  
     componentDidMount() {
         this.keyboardWillShowSubscription = Keyboard.addListener('keyboardWillShow', (keyboard) => this.keyboardWillShow(keyboard));
         this.keyboardWillHideSubscription = Keyboard.addListener('keyboardWillHide', (keyboard) => this.keyboardWillHide(keyboard));
+        BackHandler.addEventListener('hardwareBackPress', this.handleBackButton);
     }
 
+    componentWillUnmount() {
+      BackHandler.removeEventListener('hardwareBackPress', this.handleBackButton);
+    }
+
+    handleBackButton = () => {
+      this.onClose();
+      return true;
+    }
+  
     keyboardWillShow(keyboard) {
-        this.setState({ keyboardHeight: keyboard.endCoordinates.height })
-      }
+      this.setState({ keyboardHeight: keyboard.endCoordinates.height })
+    }
     
-      keyboardWillHide(keyboard) {
-        this.setState({ keyboardHeight: 0 })
-      }
+    keyboardWillHide(keyboard) {
+      this.setState({ keyboardHeight: 0 })
+    }
 
     renderItem({item, index}) {
         return (
@@ -60,14 +73,15 @@ class SearchScreen extends React.Component {
     }
 
     onClose() {
-        this.props.onClosed()
+      this.props.onClosed()
     }
 
     onSelectFeed(item) {
-        Keyboard.dismiss()
-        Actions.FeedDetailScreen({
-            data: item
-        })
+      this.props.setCurrentFeed({})
+      Keyboard.dismiss()
+      Actions.FeedDetailScreen({
+        data: item
+      })
     }
 
     render () {
@@ -163,10 +177,16 @@ SearchScreen.propTypes = {
     onClosed: PropTypes.func,
     cachedFeedList: PropTypes.array,
 }
-  
 
 const mapStateToProps = ({ feedo }) => ({
-    feedo,
+  feedo,
 })
 
-export default connect()(SearchScreen)
+const mapDispatchToProps = dispatch => ({
+  setCurrentFeed: (data) => dispatch(setCurrentFeed(data)),
+})
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(SearchScreen)

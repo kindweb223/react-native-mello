@@ -105,7 +105,7 @@ export default class CoverImagePreviewComponent extends React.Component {
     if (isFastImage) {
       return (
         <TouchableOpacity style={styles.container} activeOpacity={1} onPress={() => this.onPressImage(position)}>
-          <ExFastImage
+          <FastImage
             style={styles.imageCover}
             source={{ uri: coverImage }}
             resizeMode={isShareExtension ? 'cover' : 'cover'}

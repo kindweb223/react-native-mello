@@ -31,6 +31,7 @@ import ImageResizer from 'react-native-image-resizer';
 import RNThumbnail from 'react-native-thumbnail';
 import ImgToBase64 from 'react-native-image-base64';
 import RNFetchBlob from 'rn-fetch-blob'
+import RNFS from 'react-native-fs';
 
 import { DocumentPicker, DocumentPickerUtil } from 'react-native-document-picker'
 import Permissions from 'react-native-permissions'
@@ -133,6 +134,7 @@ class CardNewScreen extends React.Component {
       showCKEditorToolbar: false
     };
 
+    this.fileUploading = false,
     this.imageUploading = false;
     this.selectedFile = null;
     this.selectedFileMimeType = null;
@@ -173,6 +175,8 @@ class CardNewScreen extends React.Component {
     this.shareImageUrls = [];
     this.currentShareImageIndex = 0;
 
+    this.startParseUrl = false
+
     this.coverImageWidth = CONSTANTS.SCREEN_WIDTH
     this.coverImageHeight = CONSTANTS.SCREEN_HEIGHT / 3
 
@@ -210,6 +214,7 @@ class CardNewScreen extends React.Component {
 
   async UNSAFE_componentWillReceiveProps(nextProps) {
     let loading = false;
+
     if (this.props.card.loading !== types.CREATE_CARD_PENDING && nextProps.card.loading === types.CREATE_CARD_PENDING) {
       // loading = true;
     } else if (this.props.card.loading !== types.CREATE_CARD_FULFILLED && nextProps.card.loading === types.CREATE_CARD_FULFILLED) {
@@ -258,6 +263,10 @@ class CardNewScreen extends React.Component {
           // Upload file received from Dashboard
           if (this.props.fileData && !_.isEmpty(this.props.fileData)) {
             this.handleFile(this.props.fileData);
+
+            setTimeout(() => {
+              this.scrollViewRef.scrollToEnd();
+            }, 10);
           }
         });
       }
@@ -273,14 +282,17 @@ class CardNewScreen extends React.Component {
     } else if (this.props.card.loading !== types.GET_FILE_UPLOAD_URL_PENDING && nextProps.card.loading === types.GET_FILE_UPLOAD_URL_PENDING) {
       // getting a file upload url
       loading = true;
+
+      // Start file loading on GET_FILE_UPLOAD_URL_PENDING
+      // End file loading on ADD_FILE_FULFILLED
+      this.fileUploading = true      
     } else if (this.props.card.loading !== types.GET_FILE_UPLOAD_URL_FULFILLED && nextProps.card.loading === types.GET_FILE_UPLOAD_URL_FULFILLED) {
       // success in getting a file upload url
       loading = true;
       // Image resizing...
       const fileType = (Platform.OS === 'ios') ? this.selectedFileMimeType : this.selectedFile.type;
 
-      if (fileType && fileType.indexOf('image/') !== -1)
-      {
+      if (fileType && fileType.indexOf('image/') !== -1) {
         // https://www.built.io/blog/improving-image-compression-what-we-ve-learned-from-whatsapp
         let actualHeight = this.selectedFile.height;
         let actualWidth = this.selectedFile.width;
@@ -289,8 +301,7 @@ class CardNewScreen extends React.Component {
         let imgRatio = actualWidth/actualHeight;
         let maxRatio = maxWidth/maxHeight;
 
-        if (actualHeight !== undefined && actualWidth !== undefined)
-        {
+        if (actualHeight !== undefined && actualWidth !== undefined) {
           if (actualHeight > maxHeight || actualWidth > maxWidth) {
             if(imgRatio < maxRatio){
                 //adjust width according to maxHeight
@@ -323,8 +334,33 @@ class CardNewScreen extends React.Component {
         }
       }
 
-      this.updateUploadProgress(0);
-      this.props.uploadFileToS3(nextProps.card.fileUploadUrl.uploadUrl, this.selectedFile.uri, this.selectedFileName, fileType, this.updateUploadProgress);
+      let attemptUpload = true
+
+      // https://solversio.atlassian.net/browse/FEED-1575
+      // When a file such as a keynote is shared with you we get a permission error
+      // Cannot get a handle on error from xhr.send. We need to protect upload with this check
+      // RNFS.readFile can still return and error, but only if error.code === "EISDIR" do we prevent upload
+      if (Platform.OS === 'ios' && this.selectedFileType === 'FILE') {
+        await RNFS.readFile(this.selectedFile.uri)
+          .then((result) => {
+          })
+          .catch((error) => {
+            if (error.code === "EISDIR") {
+              attemptUpload = false
+            }
+          })
+      }
+
+      if (attemptUpload) {
+        this.updateUploadProgress(0);
+        this.props.uploadFileToS3(nextProps.card.fileUploadUrl.uploadUrl, this.selectedFile.uri, this.selectedFileName, fileType, this.updateUploadProgress);      
+      }
+      else {
+        this.fileUploading = false
+        AlertController.shared.showAlert('Error', "We can't upload this file")
+      }
+    } else if (this.props.card.loading !== types.GET_FILE_UPLOAD_URL_REJECTED && nextProps.card.loading === types.GET_FILE_UPLOAD_URL_REJECTED) {
+      this.fileUploading = false
     } else if (this.props.card.loading !== types.UPLOAD_FILE_PENDING && nextProps.card.loading === types.UPLOAD_FILE_PENDING) {
       // uploading a file
       loading = true;
@@ -355,10 +391,15 @@ class CardNewScreen extends React.Component {
         }
         this.props.addFile(id, this.selectedFileType, fileType, this.selectedFileName, objectKey, metadata, this.base64String);
       }
+    } else if (this.props.card.loading !== types.UPLOAD_FILE_REJECTED && nextProps.card.loading === types.UPLOAD_FILE_REJECTED) {
+      AlertController.shared.showAlert('Error', 'Oops, looks like we can\'t upload this file')
+      this.fileUploading = false
     } else if (this.props.card.loading !== types.ADD_FILE_PENDING && nextProps.card.loading === types.ADD_FILE_PENDING) {
       // adding a file
       loading = true;
     } else if (this.props.card.loading !== types.ADD_FILE_FULFILLED && nextProps.card.loading === types.ADD_FILE_FULFILLED) {
+      this.fileUploading = false
+
       // success in adding a file
       const {
         id, 
@@ -383,11 +424,19 @@ class CardNewScreen extends React.Component {
       this.currentSelectedLinkImageIndex ++;
       if (this.currentSelectedLinkImageIndex < this.selectedLinkImages.length) {
         this.addLinkImage(id, this.selectedLinkImages[this.currentSelectedLinkImageIndex]);
+      } else if (this.startParseUrl) {
+        this.startParseUrl = false
+        setTimeout(() => {
+          this.onUpdate();
+        }, 2000)
       }
+
       this.currentShareImageIndex ++;
       if (this.currentShareImageIndex < this.shareImageUrls.length) {
         this.uploadFile(nextProps.card.currentCard, this.shareImageUrls[this.currentShareImageIndex], 'MEDIA');
       }
+    } else if (this.props.card.loading !== types.ADD_FILE_REJECTED && nextProps.card.loading === types.ADD_FILE_REJECTED) {
+      this.fileUploading = false
     } else if (this.props.card.loading !== types.ADD_LINK_PENDING && nextProps.card.loading === types.ADD_LINK_PENDING) {
       // adding a link
       if (this.props.card.currentCard.links === null || this.props.card.currentCard.links.length === 0) {
@@ -409,6 +458,13 @@ class CardNewScreen extends React.Component {
           favicon,
         } = this.openGraphLinksInfo[this.indexForAddedLinks++];
         this.props.addLink(id, url, title, description, image, favicon);
+      } else {
+        if (this.startParseUrl && !this.state.isVisibleChooseLinkImagesModal) {
+          this.startParseUrl = false
+          setTimeout(() => {
+            this.onUpdate();
+          }, 2000)
+        }
       }
     } else if (this.props.card.loading !== types.DELETE_LINK_PENDING && nextProps.card.loading === types.DELETE_LINK_PENDING) {
       // deleting a link
@@ -604,6 +660,7 @@ class CardNewScreen extends React.Component {
         }
 
         if (error) {
+          this.startParseUrl = false
           if (nextProps.card.loading === types.GET_OPEN_GRAPH_REJECTED) {
             // success in getting open graph
             if (this.props.card.currentCard.links === null || this.props.card.currentCard.links.length === 0) {
@@ -725,6 +782,8 @@ class CardNewScreen extends React.Component {
       this.safariViewShowSubscription.remove();
       this.safariViewDismissSubscription.remove();
     }
+
+    this.startParseUrl = false
 
     BackHandler.removeEventListener('hardwareBackPress', this.handleBackButton);
   }
@@ -903,6 +962,11 @@ class CardNewScreen extends React.Component {
         this.openGraphLinksInfo = [];
         this.linksForOpenGraph = filteredUrls;
         this.props.getOpenGraph(this.linksForOpenGraph[this.indexForOpenGraph]);
+      }
+    } else {
+      if (this.startParseUrl) {
+        this.startParseUrl = false
+        this.onUpdate()
       }
     }
     return false;
@@ -1100,7 +1164,8 @@ class CardNewScreen extends React.Component {
     const { viewMode } = this.props;
 
     if (viewMode === CONSTANTS.CARD_NEW) {
-      this.onUpdate();
+      this.startParseUrl = true
+      this.checkUrls()
       return;
     }
     this.onClose();
@@ -1230,8 +1295,8 @@ class CardNewScreen extends React.Component {
     this.updateUploadProgress(0);
     let imageFiles = _.filter(this.props.card.currentCard.files, file => file.fileType === 'MEDIA');
     if (imageFiles.length === 0) { // To keep size of first cover image
-      this.coverImageWidth = file.width;
-      this.coverImageHeight = file.height;
+      this.coverImageWidth = file.width ? file.width : CONSTANTS.SCREEN_WIDTH;
+      this.coverImageHeight = file.height ? file.height : CONSTANTS.SCREEN_WIDTH;
     }
     const mimeType = (Platform.OS === 'ios') ? mime.lookup(file.uri) : file.type;
 
@@ -1357,18 +1422,23 @@ class CardNewScreen extends React.Component {
     }
   }
 
-  onCloseLinkImages() {
+  onCloseLinkImages(isIgnoreCoverImage = true) {
     this.allLinkImages = [];
     this.setState({
       isVisibleChooseLinkImagesModal: false,
     });
+
+    if (this.startParseUrl && isIgnoreCoverImage) {
+      this.startParseUrl = false
+      this.onUpdate();
+    }
   }
 
   onSaveLinkImages(selectedImages) {
     const {
       id, 
     } = this.props.card.currentCard;
-    this.onCloseLinkImages();
+    this.onCloseLinkImages(false);
     this.selectedLinkImages = selectedImages;
     this.currentSelectedLinkImageIndex = 0;
     if (this.selectedLinkImages.length > 0) {
@@ -1973,7 +2043,7 @@ class CardNewScreen extends React.Component {
         />
 
         {
-          this.state.loading && this.state.fileType === 'FILE' &&
+          this.fileUploading && this.selectedFileType === 'FILE' &&
             <LoadingScreen containerStyle={this.props.cardMode === CONSTANTS.SHARE_EXTENTION_CARD ? {marginBottom: CONSTANTS.SCREEN_VERTICAL_MIN_MARGIN + 100} : {}} />
         }
         <Modal 

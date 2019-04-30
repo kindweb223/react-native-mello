@@ -1,5 +1,5 @@
 import React from 'react'
-import { Animated, TouchableHighlight } from 'react-native'
+import { Animated, TouchableHighlight, Platform } from 'react-native'
 import FeedCardListComponent from './FeedCardListComponent'
 import FeedCardExtendComponent from './FeedCardExtendComponent'
 import PropTypes from 'prop-types'
@@ -14,7 +14,7 @@ class FeedCardComponent extends React.Component {
   onPressInAddFeed() {
     const { longHold } = this.props
 
-    if (!longHold) {
+    if (!longHold && Platform.OS === 'ios') {
       Animated.timing(this.animatedPlusButton, {
         toValue: 0.95,
         duration: 100,
@@ -23,10 +23,12 @@ class FeedCardComponent extends React.Component {
   }
 
   onPressOutAddFeed() {
-    Animated.timing(this.animatedPlusButton, {
-      toValue: 1,
-      duration: 100,
-    }).start();
+    if (Platform.OS === 'ios') {
+      Animated.timing(this.animatedPlusButton, {
+        toValue: 1,
+        duration: 100,
+      }).start();  
+    }
   }
 
   render() {

@@ -276,17 +276,25 @@ class LocalStorage extends React.Component {
                             })
                             .catch(err => {/*console.log('RNFS - can not store file because ', err)*/})
                     })
+                    
+                    if(!idea.files && ideaIndex === (ideas.length - 1)){
+                        setTimeout(()=>{
+                            //console.log('RNFS saved flow will be ', feed)
+                            AsyncStorage.setItem('flow/'+flow.id, JSON.stringify(feed))
+                        }, 2000)
+                    }
                 })
 
             })
             .catch(err => {/*console.log('RNFS - no user dir and no resolution - ', err)*/})
     }
 
-    componentDidMount(): void {
-        const { user } = this.props
+    adjustForConnectionType = () => {
         //console.log('RNFS try and do stuff when user is ', user )
         NetInfo.getConnectionInfo().then((connectionInfo) => {
+            // console.log('SBC connection info is ', connectionInfo);
           if(connectionInfo.type !== 'wifi'){
+
           }else{              
             this.setState({ 
                 storageDelay: 500,
@@ -295,7 +303,11 @@ class LocalStorage extends React.Component {
           }
           //console.log('RNFSR - Connection is ', connectionInfo)
         })
+    }
 
+    componentDidMount(): void {
+        this.adjustForConnectionType(); //will work on Android
+        NetInfo.addEventListener('connectionChange', this.adjustForConnectionType); //will work on iOS
     }
 
     recursiveShout = null
@@ -311,7 +323,6 @@ class LocalStorage extends React.Component {
     recursiveStoreFiles = (ideaIndex = 0) => {
         const { user } = this.props
         const { ideas, storageInterval } = this.state
-        //console.log('RNFSR run on ', ideaIndex, ' of ', ideas.length)
         const delay = storageInterval
 
         if(ideaIndex === (ideas.length)){
@@ -343,6 +354,9 @@ class LocalStorage extends React.Component {
                             const localUrl = 'file:///'+result.fileStoreLocation
                             if(file.accessUrl === ideas[ideaIndex].coverImage ){
                                 ideas[ideaIndex].coverImage = localUrl
+                            }
+                            if(file.accessUrl === ideas[ideaIndex].thumbnailUrl ){
+                                ideas[ideaIndex].thumbnailUrl = localUrl
                             }
                             file.accessUrl = localUrl;
                             ((fileIndex + 1) === files.length) && this.updateRecursiveShout(++ideaIndex, delay)
@@ -409,8 +423,6 @@ class LocalStorage extends React.Component {
         const { files, downloadComplete } =  this.state
         const { feedo } = this.props
         // const ideas = feedo.currentFeed.ideas
-        // //console.log('RNFS feed is ', Object.keys(feedo))
-        // //console.log('RNFS feeds are ', feedo.feedoList)
         return (
             <View>
                 {/* {downloadComplete && (

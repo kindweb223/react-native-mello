@@ -291,6 +291,12 @@ export const uploadFileToS3 = (signedUrl, file, fileName, mimeType, uploadProgre
             }
           }
         };
+        xhr.onerror= function(e) {
+          reject('Could not upload file.');
+        };
+        xhr.onabort= function(e) {
+          reject('Could not upload file.');
+        };
         xhr.send(fileData);
       })
   };

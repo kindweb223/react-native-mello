@@ -32,6 +32,7 @@ import { DocumentPicker, DocumentPickerUtil } from 'react-native-document-picker
 
 import pubnub from '../../lib/pubnub'
 import Analytics from '../../lib/firebase'
+import bugsnag from '../../lib/bugsnag'
 
 import SideMenu from 'react-native-side-menu'
 
@@ -52,7 +53,7 @@ import FeedFilterComponent from '../../components/FeedFilterComponent'
 import styles from './styles'
 import CONSTANTS from '../../service/constants';
 import COLORS from '../../service/colors'
-import { TIP_SHARE_LINK_URL, ANDROID_PUSH_SENDER_ID, PIN_FEATURE, SEARCH_FEATURE } from '../../service/api'
+import { TIP_SHARE_LINK_URL, ANDROID_PUSH_SENDER_ID, PIN_FEATURE } from '../../service/api'
 import AlertController from '../../components/AlertController'
 import SideMenuComponent from '../../components/SideMenuComponent'
 import * as COMMON_FUNC from '../../service/commonFunc'
@@ -268,11 +269,13 @@ class HomeScreen extends React.Component {
     }
     Intercom.handlePushMessage();
 
-    this.props.getFeedoList(null, this.getFeedsFromStorage, this.getFeedsFromStorage)
+    this.props.getFeedoList(null, this.getFeedsFromStorage)
 
     this.props.getActivityFeed(this.props.user.userInfo.id, { page: 0, size: PAGE_COUNT })
 
     Intercom.addEventListener(Intercom.Notifications.UNREAD_COUNT, this._onUnreadIntercomChange);
+
+    bugsnag.setUser(this.props.user.userInfo.id)
 
     AppState.addEventListener('change', this.onHandleAppStateChange.bind(this));
     appOpened(this.props.user.userInfo.id);
@@ -376,7 +379,7 @@ class HomeScreen extends React.Component {
 
         // refresh list if card addedd or card moved
         if ((feedo.loading === 'UPDATE_CARD_FULFILLED' || feedo.loading === 'MOVE_CARD_FULFILLED') && feedo.isCreateCard) {
-          nextProps.getFeedoList()
+          nextProps.getFeedoList(null, this.getFeedsFromStorage)
         } else {
           const { filterSortType, filterShowType } = prevState
 
@@ -388,7 +391,9 @@ class HomeScreen extends React.Component {
           feedoList = HomeScreen.getFilteredFeeds(feedoPinnedList, feedoUnPinnedList, filterShowType, filterSortType);
         } 
       } else {
-          nextProps.getFeedoList(null, this.getFeedsFromStorage, this.getFeedsFromStorage)
+        if (user.loading !== 'USER_SIGNOUT_FULFILLED') {
+          nextProps.getFeedoList(null, this.getFeedsFromStorage)
+        }
       }
       
 
@@ -628,7 +633,7 @@ class HomeScreen extends React.Component {
     if (this.state.appState.match(/inactive|background/) && nextAppState === 'active') {
       appOpened(this.props.user.userInfo.id);
       if (Actions.currentScene === 'HomeScreen') {
-        this.props.getFeedoList(null, this.getFeedsFromStorage, this.getFeedsFromStorage)
+        this.props.getFeedoList(null, this.getFeedsFromStorage)
 
         // TEMPORARY: REMOVE WITH PUBNUB INTEGRATION
         // this.props.getInvitedFeedList()
@@ -672,7 +677,7 @@ class HomeScreen extends React.Component {
             currentPushNotificationType: CONSTANTS.USER_INVITED_TO_HUNT,
             currentPushNotificationData: huntId
           });
-          this.props.getFeedoList(null, this.getFeedsFromStorage, this.getFeedsFromStorage);
+          this.props.getFeedoList(null, this.getFeedsFromStorage);
           this.props.getInvitedFeedList()
         }
         break;
@@ -752,7 +757,7 @@ class HomeScreen extends React.Component {
             currentPushNotificationType: CONSTANTS.USER_JOINED_HUNT,
             currentPushNotificationData: huntId,
           });
-          this.props.getFeedoList(null, this.getFeedsFromStorage, this.getFeedsFromStorage);
+          this.props.getFeedoList(null, this.getFeedsFromStorage);
         }
         break;
       }
@@ -771,7 +776,7 @@ class HomeScreen extends React.Component {
             currentPushNotificationType: CONSTANTS.USER_INVITED_TO_HUNT,
             currentPushNotificationData: huntId,
           });
-          this.props.getFeedoList(null, this.getFeedsFromStorage, this.getFeedsFromStorage);
+          this.props.getFeedoList(null, this.getFeedsFromStorage);
         }
         break;
       }
@@ -1326,7 +1331,7 @@ class HomeScreen extends React.Component {
 
   onRefreshFeed = () => {
     this.setState({ isRefreshing: true })
-    this.props.getFeedoList(null, this.getFeedsFromStorage, this.getFeedsFromStorage)
+    this.props.getFeedoList(null, this.getFeedsFromStorage)
     this.props.getInvitedFeedList()
   }
 
@@ -1445,14 +1450,13 @@ class HomeScreen extends React.Component {
       { this.renderSelectHunt }
       <View style={styles.container}>
       <SafeAreaView style={styles.safeArea}>
-        <OfflineIndicator />
         <View feedAction="null" />
         <View style={styles.container}>
           {Platform.OS === 'ios' && <StatusBar barStyle="dark-content" backgroundColor="blue" />}
           {Platform.OS === 'android' && (
             <View style={styles.statusBarUnderlay} />
           )}
-            <NetworkConsumer pingInterval={2000}>
+            <NetworkConsumer pingInterval={CONSTANTS.NETWORK_CONSUMER_PING_INTERVAL}>
             {({ isConnected }) => (
                                    isConnected ? (
           <View style={styles.headerView}>
@@ -1468,11 +1472,9 @@ class HomeScreen extends React.Component {
             </Text>
             {/* <TouchableOpacity
               style={styles.searchIconView}
-              onPress={() => SEARCH_FEATURE ? this.onSearch() : {}}
+              onPress={() => this.onSearch()}
             >
-              {SEARCH_FEATURE && (
-                <Image style={styles.searchIcon} source={SEARCH_ICON} />
-              )}
+              <Image style={styles.searchIcon} source={SEARCH_ICON} />
             </TouchableOpacity> */}
             <View style={styles.settingIconView}>
               <TouchableOpacity onPress={() => this.handleSetting()}>
@@ -1556,6 +1558,8 @@ class HomeScreen extends React.Component {
               isRefreshing={this.state.isRefreshing}
               onRefreshFeed={() => this.onRefreshFeed()}
             />
+
+            <OfflineIndicator />
           </View>
 
         </View>
@@ -1568,11 +1572,12 @@ class HomeScreen extends React.Component {
             onAddFeed={this.onOpenNewFeedModal.bind(this)}
             handleFilter={() => this.handleFilter()}
             handleList={() => this.handleList()}
-            handleSearch={() => SEARCH_FEATURE ? this.onSearch() : {}}
+            handleSearch={() => this.onSearch()}
             filterType={this.state.filterShowType}
             sortType={this.state.filterSortType}
             badgeCount={badgeCount}
             page="home"
+            filtering={false}
           />
         )}
 
@@ -1704,7 +1709,7 @@ const mapStateToProps = ({ user, feedo, card }) => ({
 })
 
 const mapDispatchToProps = dispatch => ({
-  getFeedoList: (index, successAction, errorAction) => dispatch(getFeedoList(index))
+  getFeedoList: (index, errorAction) => dispatch(getFeedoList(index))
   .then(result => {
     // console.log('GFL resolves on HS, success looks like ', result)
     if(result.error){

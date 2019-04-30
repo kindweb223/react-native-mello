@@ -27,11 +27,13 @@ class BottomStatusViewController: UIViewController {
   @IBOutlet var labelLeftConstraint: NSLayoutConstraint!
   @IBOutlet weak var messageContainerViewCenterConstraint: NSLayoutConstraint!
     
-    private var assetLoader: AssetLoader? = nil
+  private var assetLoader: AssetLoader? = nil
   private var state: State
   private var flow: Flow?
   
   private var startingPositionX: CGFloat?
+  
+  var shouldDismiss = true
   
   weak var delegate: BottomStatusViewControllerDelegate?
   
@@ -119,7 +121,7 @@ class BottomStatusViewController: UIViewController {
       }
 
       Timer.scheduledTimer(withTimeInterval: 3, repeats: false) { [weak self] _ in
-        self?.dismiss()
+        if self?.shouldDismiss ?? false { self?.dismiss() }
       }
     case .error:
       titleLabel.text = "Oops! Something went wrong"
@@ -127,7 +129,7 @@ class BottomStatusViewController: UIViewController {
       labelCenterConstraint.isActive = true
       
       Timer.scheduledTimer(withTimeInterval: 3, repeats: false) { [weak self] _ in
-        self?.dismiss()
+        if self?.shouldDismiss ?? false { self?.dismiss() }
       }
     case .step(let count, let total):
       titleLabel.text = "Uploading \(count) of \(total)..."

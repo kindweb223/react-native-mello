@@ -71,7 +71,7 @@ class FeedCardListComponent extends React.Component {
                 <Autolink
                   style={styles.title}
                   linkStyle={styles.linkStyle}
-                  text={striptags(idea.idea)}
+                  text={COMMON_FUNC.htmlToPlainText(striptags(idea.idea))}
                   numberOfLines={2}
                   ellipsizeMode="tail"
                   onPress={() => longHold ? {} : this.props.onLinkPress()}

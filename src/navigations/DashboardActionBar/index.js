@@ -14,11 +14,11 @@ import _ from 'lodash'
 import styles from './styles'
 import * as COMMON_FUNC from '../../service/commonFunc'
 import { NetworkConsumer } from 'react-native-offline'
+import CONSTANTS from '../../service/constants'
+import { images } from '../../themes'
 
 const BELL_ICON_B = require('../../../assets/images/Bell/Blue.png')
 const BELL_ICON_G = require('../../../assets/images/Bell/Grey.png')
-const FILTER_ICON_B = require('../../../assets/images/Filter/Blue.png')
-const FILTER_ICON_G = require('../../../assets/images/Filter/Grey.png')
 const LIST_ICON = require('../../../assets/images/List/List.png')
 const LIST_ICON_THUMBNAIL = require('../../../assets/images/List/Thumbnail.png')
 const MASONRY_ICON = require('../../../assets/images/List/Masonry.png')
@@ -57,11 +57,6 @@ class DashboardActionBar extends React.Component {
     return (
       <View style={styles.container}>
         <View style={styles.leftContainer}>
-          {showSearch && (
-            <TouchableOpacity style={[styles.iconView]} onPress={handleSearch}>
-              <Image source={SEARCH_ICON} style={styles.searchIcon} />
-            </TouchableOpacity>
-          )}
           {showList && (
             <TouchableOpacity style={styles.iconView} onPress={() => this.props.handleList()}>
               {page === 'detail'
@@ -70,11 +65,11 @@ class DashboardActionBar extends React.Component {
               }
             </TouchableOpacity>
           )}
-          {/* {filtering && (
-            <TouchableOpacity style={styles.iconView} onPress={() => this.props.handleFilter()}>
-              <Image source={filterType === 'all' && (sortType === 'date' || sortType === 'recent') ? FILTER_ICON_G : FILTER_ICON_B} />
+          {showSearch && (
+            <TouchableOpacity style={[styles.iconView]} onPress={handleSearch}>
+              <Image source={SEARCH_ICON} style={styles.searchIcon} />
             </TouchableOpacity>
-          )} */}
+          )}
           {notifications &&
             <TouchableOpacity
               style={styles.notificationView}
@@ -86,11 +81,16 @@ class DashboardActionBar extends React.Component {
               )}
             </TouchableOpacity>
           }
+          {/* {filtering && (
+            <TouchableOpacity style={styles.iconView} onPress={() => this.props.handleFilter()}>
+              <Image source={filterType === 'all' ? images.filterGrey : images.filterBlue} style={styles.filterIcon} />
+            </TouchableOpacity>
+          )} */}
         </View>
 
         <View style={styles.rightContainer}>
           {!(!_.isEmpty(feed) && COMMON_FUNC.isFeedGuest(feed)) && (
-              <NetworkConsumer  pingInterval={2000}>
+              <NetworkConsumer  pingInterval={CONSTANTS.NETWORK_CONSUMER_PING_INTERVAL}>
                 {({ isConnected }) => isConnected ? (
                     <TouchableWithoutFeedback
                         onPressIn={this.onPressInAddFeed.bind(this)}
