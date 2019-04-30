@@ -11,6 +11,7 @@ import _ from 'lodash'
 import HTML from 'react-native-render-html'
 var striptags = require('striptags')
 import Autolink from 'react-native-autolink';
+const truncate = require('truncate-html')
 
 import styles from './styles'
 import LikeComponent from '../../LikeComponent';
@@ -76,7 +77,7 @@ class FeedCardExtendComponent extends React.Component {
               {_.has(idea, 'idea') && idea.idea.length !== null && idea.idea.length > 0 && (
                 <View style={styles.subView}>
                   <HTML
-                    html={idea.idea}
+                    html={truncate(idea.idea, hasCoverImage ? 40 : 60, { keepWhiteSpaces: false })}
                     containerStyle={styles.textHtmlIdea}
                     onLinkPress={(evt, href) => this.onPressLink(href)}
                     classesStyles={CONSTANTS.HTML_CLASS_STYLES}
