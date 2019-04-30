@@ -1914,7 +1914,7 @@ class CardDetailScreen extends React.Component {
         {(showEditScreen)
           ? <CardEditScreen
               {...this.props}
-              idea={COMMON_FUNC.htmlToPlainText((idea))}
+              idea={idea}
               checkUrls={() => this.checkUrls()}
               // onDoneEditCard={() => this.onDoneEditCard()}
               onCancelEditCard={() => this.onCloseEditCard()}

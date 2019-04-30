@@ -109,40 +109,16 @@ class CardEditScreen extends React.Component {
 
   onChangeIdea(idea) {
     this.setState({ idea });
+    // this.refCKEditor.config.height = '800px'
   }
 
-  onKeyPressIdea(event) {
-    /* Disabled for now, we have to rethink how this logic works (and add parsing / image selection)
-    if (event.nativeEvent.key === ' ' || event.nativeEvent.key === ',' || event.nativeEvent.key === 'Enter') {
-      this.props.checkUrls();
-    }*/
+  onKeyPressIdea() {
+    this.props.checkUrls();
   }
 
-  onFocus = () => {
-    this.setState({
-      isShowKeyboardButton: true
-    });
-  }
-
-  onBlurIdea = () => {
-    this.setState({
-      isShowKeyboardButton: false
-    });
-  }
-
-  // scroll functions for TextInput
-  scrollContent() {
-    const yPosition = this.textInputPositionY + this.textInputHeightByCursor;
-    if (this.scrollViewHeight > 0 && yPosition > this.scrollViewHeight) {
-      this.scrollViewRef.scrollTo({ x: 0, y: yPosition - this.scrollViewHeight + CONSTANTS.TEXT_INPUT_LINE_HEIGHT });
-    }
-  }
-
-  onContentSizeChange({nativeEvent}) {
-    const height = nativeEvent.contentSize.height;
-    if (this.textInputHeightByCursor !== height) {
-      this.textInputHeightByCursor = height;
-      this.scrollContent();
+  handleCommands = (commands) => {
+    if (this.refCKEditorToolbar) {
+      this.refCKEditorToolbar.handleCommands(commands)
     }
   }
 
