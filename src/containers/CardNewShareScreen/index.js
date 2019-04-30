@@ -61,8 +61,14 @@ class CardNewShareScreen extends React.Component {
 
     if (props.shareUrl !== '') {
       const openGraph = props.card.currentOpneGraph;
-      coverImage = props.shareImageUrls.length > 0 ? props.shareImageUrls[0] : '',
-      idea = openGraph.title || openGraph.metatags.title || '';
+      coverImage = props.shareImageUrls.length > 0 ? props.shareImageUrls[0] : '';
+      if (openGraph.title) {
+        idea = openGraph.title;
+      } else if (openGraph.metatags) {
+        idea = openGraph.metatags.title || ''
+      } else {
+        idea = ''
+      }
     }
 
     if (props.shareText !== '') {
@@ -133,7 +139,18 @@ class CardNewShareScreen extends React.Component {
       const originalUrl = this.props.shareUrl || openGraph.url || openGraph.metatags['og:url'];
       const title = openGraph.title || openGraph.metatags.title;
       const description = openGraph.description || openGraph.metatags.metatags;
-      const imageUrl =  openGraph.image || openGraph.metatags['og:image'] || (this.props.shareImageUrls.length > 0 && this.props.shareImageUrls[0]);
+      var imageUrl;
+      if (openGraph.image) {
+        imageUrl = openGraph.image
+      } else if (openGraph.metatags) {
+        if (openGraph.metatags['og:image']) {
+          imageUrl = openGraph.metatags['og:image']
+        } else {
+          imageUrl = (this.props.shareImageUrls.length > 0 && this.props.shareImageUrls[0])
+        }
+      } else {
+        imageUrl = (this.props.shareImageUrls.length > 0 && this.props.shareImageUrls[0])
+      }
       const faviconUrl =  openGraph.favicon;
       links = [
         {

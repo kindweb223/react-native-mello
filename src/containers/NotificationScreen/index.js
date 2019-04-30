@@ -88,25 +88,7 @@ const ACTION_CARD_DELETE = 6;
  * 'USER_MENTIONED' - open the comment screen
  */
 class NotificationScreen extends React.Component {
-  get renderHeader() {
-    return (
-      <View style={styles.headerContainer}>
-        <TouchableOpacity
-          activeOpacity={0.6}
-          onPress={() => this.animateOutSingleNotificationView()}
-          style={styles.buttonWrapper}
-        >
-          {this.state.singleNotification && <Ionicons name="ios-arrow-back" size={32} color={COLORS.PURPLE} />}
-        </TouchableOpacity>
-        <Text style={styles.textTitle}>{this.state.title}</Text>
-        <TouchableOpacity activeOpacity={0.6} onPress={() => Actions.pop()} style={[styles.buttonWrapper, { alignItems: 'flex-end' }]}>
-          <Text style={styles.doneButton}>
-            Done
-          </Text>
-        </TouchableOpacity>
-      </View>
-    );
-  }
+
 
   constructor(props) {
     super(props);
@@ -160,7 +142,12 @@ class NotificationScreen extends React.Component {
   }
 
   handleBackButton = () => {
-    Actions.pop()
+    if(this.state.singleNotification) {
+      this.animateOutSingleNotificationView()
+    }
+    else {
+      Actions.pop()
+    }
     return true;
   }
 
@@ -579,125 +566,6 @@ class NotificationScreen extends React.Component {
     }
   }
 
-  renderItem({ item }) {
-    if (item.hasOwnProperty('activities')) {
-      return this.renderActivityFeedItem(item)
-    } else {
-      return this.renderInvitedFeedItem(item)
-    }
-  }
-
-  renderSingleNotificationItem({ item }) {
-    return this.renderActivityFeedItem(item)
-  }
-
-  renderFooter = () => {
-    if (!this.state.loading) return null
-
-    return (
-      <View style={styles.footerView}>
-        <ActivityIndicator animating size='large' color={COLORS.PURPLE} />
-      </View>
-    )
-  }
-
-  renderSeparator = () => (
-    <View style={styles.separator} /> 
-  )
-
-  render () {
-    const { notificationList, singleNotificationList, loading, singleNotification } = this.state
-
-    return (
-      <View style={styles.container}>
-        <SafeAreaView style={{ flex: 1 }}>
-          {this.renderHeader}
-
-          {!singleNotification && (notificationList.length > 0
-          ? <FlatList
-              style={styles.flatList}
-              contentContainerStyle={styles.contentFlatList}
-              data={notificationList}
-              keyExtractor={item => item.id}
-              automaticallyAdjustContentInsets={true}
-              renderItem={this.renderItem.bind(this)}
-              // ItemSeparatorComponent={this.renderSeparator}
-              ListFooterComponent={this.renderFooter}
-              refreshControl={
-                <RefreshControl 
-                  refreshing={this.state.refreshing}
-                  onRefresh={this.handleRefresh}
-                  tintColor={COLORS.PURPLE}
-                />
-              }
-              onEndReached={this.handleLoadMore}
-              onEndReachedThreshold={0}
-            />
-          : <View style={styles.emptyView}>
-              <Image
-                source={NOTIFICATION_EMPTY_ICON}
-              />
-              <Text style={styles.title}>It's pretty lonely here</Text>
-              <Text style={styles.subTitle}>Invite a friend to your flows and </Text>
-              <Text style={styles.subTitle}>you'll see their activity here 👇.</Text>
-            </View>
-          )}
-
-          {singleNotification && singleNotificationList.length > 0 && (
-            <Animated.View
-              style={{
-                transform: [{ translateX: this.state.animTransformSingleNotificationView }],
-              }}
-            >
-              <FlatList
-                style={styles.flatList}
-                contentContainerStyle={styles.contentFlatList}
-                data={singleNotificationList}
-                keyExtractor={item => item.id}
-                automaticallyAdjustContentInsets={true}
-                renderItem={this.renderSingleNotificationItem.bind(this)}
-                // ListFooterComponent={this.renderFooter}
-                refreshControl={
-                  <RefreshControl 
-                    refreshing={this.state.refreshing}
-                    onRefresh={this.handleRefresh}
-                    tintColor={COLORS.PURPLE}
-                  />
-                }
-                onEndReached={this.handleLoadMore}
-                onEndReachedThreshold={0}
-              />
-            </Animated.View>
-          )}
-
-          {loading && <LoadingScreen />}
-
-          {this.renderCardDetailModal}
-
-          {this.renderSelectHunt}
-
-          {this.state.isShowToaster && (
-            <ToasterComponent
-              isVisible={this.state.isShowToaster}
-              title={this.state.toasterTitle}
-              onPressButton={() => this.undoAction()}
-            />
-          )}
-
-          {this.state.isShowInviteToaster && (
-            <ToasterComponent
-              isVisible={this.state.isShowInviteToaster}
-              title={this.state.inviteToasterTitle}
-              buttonTitle="OK"
-              onPressButton={() => this.setState({ isShowInviteToaster: false })}
-            />
-          )}
-
-        </SafeAreaView>
-      </View>
-    )
-  }
-
   processCardActions() {
     if (this.userActionTimer) {
       return;
@@ -886,6 +754,146 @@ class NotificationScreen extends React.Component {
           />
         }
       </Animated.View>
+    );
+  }
+
+  renderItem({ item }) {
+    if (item.hasOwnProperty('activities')) {
+      return this.renderActivityFeedItem(item)
+    } else {
+      return this.renderInvitedFeedItem(item)
+    }
+  }
+
+  renderSingleNotificationItem({ item }) {
+    return this.renderActivityFeedItem(item)
+  }
+
+  renderFooter = () => {
+    if (!this.state.loading) return null
+
+    return (
+      <View style={styles.footerView}>
+        <ActivityIndicator animating size='large' color={COLORS.PURPLE} />
+      </View>
+    )
+  }
+
+  renderSeparator = () => (
+    <View style={styles.separator} /> 
+  )
+
+  render () {
+    const { notificationList, singleNotificationList, loading, singleNotification } = this.state
+
+    return (
+      <View style={styles.container}>
+        <SafeAreaView style={{ flex: 1 }}>
+          {this.renderHeader}
+
+          {!singleNotification && (notificationList.length > 0
+          ? <FlatList
+              style={styles.flatList}
+              contentContainerStyle={styles.contentFlatList}
+              data={notificationList}
+              keyExtractor={item => item.id}
+              automaticallyAdjustContentInsets={true}
+              renderItem={this.renderItem.bind(this)}
+              // ItemSeparatorComponent={this.renderSeparator}
+              ListFooterComponent={this.renderFooter}
+              refreshControl={
+                <RefreshControl 
+                  refreshing={this.state.refreshing}
+                  onRefresh={this.handleRefresh}
+                  tintColor={COLORS.PURPLE}
+                />
+              }
+              onEndReached={this.handleLoadMore}
+              onEndReachedThreshold={0}
+            />
+          : <View style={styles.emptyView}>
+              <Image
+                source={NOTIFICATION_EMPTY_ICON}
+              />
+              <Text style={styles.title}>It's pretty lonely here</Text>
+              <Text style={styles.subTitle}>Invite a friend to your flows and </Text>
+              <Text style={styles.subTitle}>you'll see their activity here 👇.</Text>
+            </View>
+          )}
+
+          {singleNotification && singleNotificationList.length > 0 && (
+            <Animated.View
+              style={[ { flex: 1 },
+                {
+                transform: [{ translateX: this.state.animTransformSingleNotificationView }],
+              }]}
+            >
+              <FlatList
+                style={styles.flatList}
+                contentContainerStyle={styles.contentFlatList}
+                data={singleNotificationList}
+                keyExtractor={item => item.id}
+                automaticallyAdjustContentInsets={true}
+                renderItem={this.renderSingleNotificationItem.bind(this)}
+                //ListFooterComponent={this.renderFooter}
+                refreshControl={
+                  <RefreshControl 
+                    refreshing={this.state.refreshing}
+                    onRefresh={this.handleRefresh}
+                    tintColor={COLORS.PURPLE}
+                  />
+                }
+                onEndReached={this.handleLoadMore}
+                onEndReachedThreshold={0}
+              />
+            </Animated.View>
+          )}
+
+          {loading && <LoadingScreen />}
+
+          {this.renderCardDetailModal}
+
+          {this.renderSelectHunt}
+
+          {this.state.isShowToaster && (
+            <ToasterComponent
+              isVisible={this.state.isShowToaster}
+              title={this.state.toasterTitle}
+              onPressButton={() => this.undoAction()}
+            />
+          )}
+
+          {this.state.isShowInviteToaster && (
+            <ToasterComponent
+              isVisible={this.state.isShowInviteToaster}
+              title={this.state.inviteToasterTitle}
+              buttonTitle="OK"
+              onPressButton={() => this.setState({ isShowInviteToaster: false })}
+            />
+          )}
+
+        </SafeAreaView>
+      </View>
+    )
+  }
+
+  get renderHeader() {
+    return (
+      <View style={styles.headerContainer}>
+        <TouchableOpacity
+          activeOpacity={0.6}
+          onPress={() => this.animateOutSingleNotificationView()}
+          style={styles.buttonWrapper}
+        >
+          {this.state.singleNotification && <Ionicons name="ios-arrow-back" size={32} color={COLORS.PURPLE} />}
+        </TouchableOpacity>
+        <Text style={styles.textTitle} numberOfLines={1} ellipsizeMode="tail">{this.state.title}</Text>
+        <TouchableOpacity activeOpacity={0.6} onPress={() => Actions.pop()} style={[styles.buttonWrapper, { }]}>
+          <Text style={styles.doneButton}>
+            Done
+          </Text>
+        </TouchableOpacity>
+      </View>
     );
   }
 }

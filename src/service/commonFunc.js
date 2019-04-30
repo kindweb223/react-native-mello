@@ -155,7 +155,7 @@ const isMelloTipFeed = (feed) => {
 }
 
 const checkVideoCoverImage = (images, coverImage) => {
-  return _.find(images, image => image.thumbnailUrl === coverImage)
+  return _.find(images, image => image.thumbnailUrl === coverImage  && image.contentType.toLowerCase().indexOf('video') !== -1)
 }
 
 const getCardViewMode = (feed, idea) => {

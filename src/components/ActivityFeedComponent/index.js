@@ -7,6 +7,7 @@ import {
 } from 'react-native'
 import PropTypes from 'prop-types'
 import Entypo from 'react-native-vector-icons/Entypo'
+var striptags = require('striptags')
 import UserAvatarComponent from '../UserAvatarComponent'
 import { getFullDurationFromNow } from '../../service/dateUtils'
 import styles from './styles'
@@ -94,37 +95,37 @@ class ActivityFeedComponent extends React.Component {
     switch(data.activityTypeEnum) {
       case 'IDEA_ADDED':
         comment = ' added the Card '
-        source = data.metadata.IDEA_PREVIEW
+        source = striptags(data.metadata.IDEA_PREVIEW)
         link = ' to '
         target = data.metadata.HUNT_HEADLINE
         break;
       case 'IDEA_LIKED':
         comment = ' liked the Card '
-        source = data.metadata.IDEA_PREVIEW
+        source = striptags(data.metadata.IDEA_PREVIEW)
         link = ' in '
         target = data.metadata.HUNT_HEADLINE
         break;
       case 'COMMENT_ADDED':
         comment = ' commented on the Card '
-        source = data.metadata.IDEA_PREVIEW
+        source = striptags(data.metadata.IDEA_PREVIEW)
         link = ' in '
         target = data.metadata.HUNT_HEADLINE
         break;
       case 'IDEA_UPDATED':
         comment = ' updated the Card '
-        source = data.metadata.IDEA_PREVIEW
+        source = striptags(data.metadata.IDEA_PREVIEW)
         link = ' in '
         target = data.metadata.HUNT_HEADLINE
         break;
       case 'IDEA_MOVED':
         comment = ' moved the Card '
-        source = data.metadata.IDEA_PREVIEW
+        source = striptags(data.metadata.IDEA_PREVIEW)
         link = ' to '
         target = data.metadata.HUNT_HEADLINE
         break;
       case 'IDEA_DELETED':
         comment = ' deleted the Card '
-        source = data.metadata.IDEA_PREVIEW
+        source = striptags(data.metadata.IDEA_PREVIEW)
         link = ' from '
         target = data.metadata.HUNT_HEADLINE
         break;

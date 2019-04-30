@@ -7,7 +7,8 @@ import {
   ScrollView,
   Animated,
   Image,
-  NetInfo
+  NetInfo,
+  Platform
 } from 'react-native'
 import { Actions } from 'react-native-router-flux'
 import Collapsible from 'react-native-collapsible'
@@ -238,11 +239,12 @@ class FeedCollapseComponent extends React.Component {
   handleCollapse = () => {
     const { isCollapse } = this.state
 
+    console.log('1')
     Animated.timing(
       this.collapseView,
       {
         toValue: 1,
-        duration: 0,
+        duration: Platform.OS === 'ios' ? 250 : 500,
       }
     ).start((animation) => {
       if (animation.finished) {
@@ -256,12 +258,14 @@ class FeedCollapseComponent extends React.Component {
   }
 
   closeCollapse = () => {
+    console.log('2')
+
     this.setState({ isCollapse: true, hideArrow: false })
     Animated.timing(
       this.collapseView,
       {
         toValue: 0,
-        duration: 0,
+        duration: 100,
       }
     ).start()
   }
@@ -270,21 +274,25 @@ class FeedCollapseComponent extends React.Component {
     const { feedData, isCollapse, isPreview, images } = this.state
     const { longHold } = this.props
 
-    const animatedHeight = this.collapseView.interpolate({
+    const animatedOpacity = this.collapseView.interpolate({
       inputRange: [0, 1],
-      outputRange: [1, 0],
+      outputRange: [25, 0],
     })
 
     return (
       <View style={styles.collapseView}>
         <TouchableOpacity
           activeOpacity={0.9}
+          style={feedData.summary && feedData.summary.length > 0 && { minHeight: Platform.OS === 'ios' ? 50 : 58 }}
           onPress={() => isCollapse ? this.handleCollapse() : this.closeCollapse()}
           onLongPress={() => this.onPressText()}
         >
           <Text style={styles.headerTitle} numberOfLines={1} ellipsizeMode="tail">{feedData.headline}</Text>
+          <Collapsible collapsed={isCollapse} align="top" duration={500}>
+            {this.renderContent(feedData)}
+          </Collapsible>
           {feedData.summary && feedData.summary.length > 0
-            ? <Animated.View style={[styles.collpaseHeader, { opacity: animatedHeight }]}>
+            ? <Animated.View style={[styles.collpaseHeader, { height: animatedOpacity, backgroundColor: '#fff' }]}>
                 <Text style={styles.summaryText} numberOfLines={1} ellipsizeMode="tail">
                   {feedData.summary}
                 </Text>
@@ -292,10 +300,6 @@ class FeedCollapseComponent extends React.Component {
             : null
           }
         </TouchableOpacity>
-
-        <Collapsible collapsed={isCollapse} align="top" duration={500}>
-          {this.renderContent(feedData)}
-        </Collapsible>
 
         <Modal 
           isVisible={isPreview}

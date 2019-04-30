@@ -24,6 +24,8 @@ const styles = StyleSheet.create({
     backgroundColor: 'transparent',
   },
   textInputIdea: {
+    fontWeight: 'normal',
+    fontSize: 16,
     color: 'black',
     fontWeight: 'normal',
     lineHeight: CONSTANTS.TEXT_INPUT_LINE_HEIGHT,

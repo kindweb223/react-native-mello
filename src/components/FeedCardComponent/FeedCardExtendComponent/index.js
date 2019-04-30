@@ -9,8 +9,8 @@ import { connect } from 'react-redux'
 
 import _ from 'lodash'
 import HTML from 'react-native-render-html'
-var striptags = require('striptags')
 import Autolink from 'react-native-autolink';
+var striptags = require('striptags')
 
 import styles from './styles'
 import LikeComponent from '../../LikeComponent';

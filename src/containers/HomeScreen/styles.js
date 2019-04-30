@@ -31,7 +31,7 @@ const styles = StyleSheet.create({
     flex: 1
   },
   feedListContainerLongHold: {
-    marginTop: Platform.OS === 'ios' ? -56 : -48
+    marginTop: Platform.OS === 'ios' ? ifIphoneX(-48, -40) : -40
   },
   modalContainer: {
     position: 'absolute',

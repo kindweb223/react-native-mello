@@ -44,6 +44,7 @@ class SignUpConfirmScreen extends React.Component {
     this.state = {
       loading: false
     }
+    this.calledApi = false
   }
 
   componentDidMount() {
@@ -53,6 +54,7 @@ class SignUpConfirmScreen extends React.Component {
 
     if (deepLinking) { // from deep_linking (signup confirm)
       this.setState({ loading: true })
+      this.calledApi = true
       this.props.confirmAccount(token)
     } else {
       this.intervalId = setInterval(this.pollSession, 5000)
@@ -61,9 +63,17 @@ class SignUpConfirmScreen extends React.Component {
 
   UNSAFE_componentWillReceiveProps(nextProps) {
     const { user, deepLinking } = nextProps
-    const { userEmail } = this.props
+    const { userEmail, token } = this.props
 
     if (Actions.currentScene === 'SignUpConfirmScreen') {
+      // componentDidMount does not get called when linking here from App.js and deep link for confirmation email
+      // add code here to call the API and track a local variable to track API call has been made
+      if (this.props.deepLinking && this.calledApi === false) {
+        this.setState({ loading: true })  
+        this.calledApi = true
+        this.props.confirmAccount(token)
+      }
+  
       if (this.props.user.loading !== 'RESEND_CONFIRMATION_EMAIL_FULFILLED' && user.loading === 'RESEND_CONFIRMATION_EMAIL_FULFILLED') {
         this.setState({ loading: false }, () => {
           AlertController.shared.showAlert(
