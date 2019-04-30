@@ -31,7 +31,7 @@ const styles = StyleSheet.create({
   },
   summaryView: {
     paddingHorizontal: CONSTANTS.PADDING,
-    // marginTop: 10
+    marginTop: 10
   },
   summaryText: {
     fontSize: 14,
