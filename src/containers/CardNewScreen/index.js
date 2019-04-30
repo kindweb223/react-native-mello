@@ -930,8 +930,6 @@ class CardNewScreen extends React.Component {
 
       if (filteredUrls.length > 0) {
         Analytics.logEvent('new_card_typed_link', {})
-        this.setState({ imageUploading: true })
-
         // this.isOpenGraphForNewCard = false;
         this.indexForOpenGraph = 0;
         this.openGraphLinksInfo = [];

@@ -15,7 +15,6 @@ import { Actions } from 'react-native-router-flux'
 
 import styles from './styles'
 import CONSTANTS from '../../service/constants'
-import { addLink } from '../../redux/card/actions';
 
 const CreateItems = [
   {
@@ -153,9 +152,7 @@ export default class CreateNewFeedComponent extends React.Component {
           </View>
           <View style={styles.rightContentContainer}>
             <Text style={styles.textTitle}>{item.title}</Text>
-            { (typeof(addLinkURL) === 'string' && addLinkURL.length > 0) && (
-              <Text style={styles.link}>{addLinkURL}</Text>
-            )}
+            { addLinkURL && (<Text style={styles.link}>{addLinkURL}</Text>) }
           </View>
         </View>
       </TouchableOpacity>
@@ -241,10 +238,12 @@ export default class CreateNewFeedComponent extends React.Component {
 CreateNewFeedComponent.defaultProps = {
   onSelect: () => {},
   onClose: () => {},
+  addLinkURL: null
 }
 
 
 CreateNewFeedComponent.propTypes = {
   onSelect: PropTypes.func,
   onClose: PropTypes.func,
+  addLinkURL: PropTypes.string
 }
