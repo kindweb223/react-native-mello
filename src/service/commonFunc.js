@@ -256,22 +256,13 @@ const fontBoldSpecs = {
   marginBottom: 20
 }
 
-const getHtmlHeight = async (html, cardWidth, hasCoverImage) => {
+const getHtmlHeight = async (html, hasCoverImage) => {
   console.log('HTML: ', _.trim(html))
   const htmlArray = splitHtmlToArray(_.trim(html))
 
+  const cardWidth = (CONSTANTS.SCREEN_SUB_WIDTH - 16) / 2
   let strLength = 0
   let arrayLength = htmlArray.length
-
-  if (hasCoverImage) {
-    if (arrayLength > 3) {
-      arrayLength = 4
-    }
-  } else {
-    if (arrayLength > 9) {
-      arrayLength = 10
-    }
-  }
 
   for (let i = 0; i < arrayLength; i ++) {
     if (htmlArray[i] !== "" && htmlArray[i].length > 0) {

@@ -35,6 +35,7 @@ import GestureRecognizer from 'react-native-swipe-gestures'
 import { NetworkConsumer, checkInternetConnection } from 'react-native-offline'
 import Masonry from '../../components/MasonryComponent'
 import rnTextSize from 'react-native-text-size'
+const truncate = require('truncate-html')
 import MasonryList from '../../components/MasonryComponent'
 
 import DashboardActionBar from '../../navigations/DashboardActionBar'
@@ -548,7 +549,9 @@ class FeedDetailScreen extends React.Component {
         let contentHeight = 0
         let imageHeight = 0
 
-        const { textSize } = await COMMON_FUNC.getHtmlHeight(idea.idea, (CONSTANTS.SCREEN_SUB_WIDTH - 16) / 2, hasCoverImage)
+        const data = truncate(idea.idea, hasCoverImage ? 20 : 40, { keepWhiteSpaces: false })
+        const { textSize } = await COMMON_FUNC.getHtmlHeight(data, hasCoverImage)
+        console.log('==================')
         contentHeight = 80 + textSize
 
         // let hasCoverImage = idea.coverImage && idea.coverImage.length > 0
