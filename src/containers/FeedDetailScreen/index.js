@@ -562,7 +562,6 @@ class FeedDetailScreen extends React.Component {
         let imageHeight = 0
 
         const { textSize } = await COMMON_FUNC.getHtmlHeight(idea.idea, hasCoverImage)
-        console.log('==================')
         contentHeight = 80 + textSize
 
         // let hasCoverImage = idea.coverImage && idea.coverImage.length > 0

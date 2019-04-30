@@ -257,7 +257,6 @@ const fontBoldSpecs = {
 }
 
 const getHtmlHeight = async (html, hasCoverImage) => {
-  console.log('HTML: ', _.trim(html))
   const htmlArray = splitHtmlToArray(_.trim(html))
 
   const cardWidth = (CONSTANTS.SCREEN_SUB_WIDTH - 16) / 2
