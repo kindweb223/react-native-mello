@@ -30,7 +30,6 @@ class CardEditScreen extends React.Component {
     this.state = {
       idea: props.idea,
       bottomButtonsPadding: Platform.OS === 'android' ? 24 : 0,
-      initHeight: 0,
       keyboardHeight: 0,
       isShowKeyboardButton: false
     }
@@ -50,9 +49,6 @@ class CardEditScreen extends React.Component {
     }
 
     BackHandler.addEventListener('hardwareBackPress', this.handleBackButton);
-
-    const { textSize, lineCount } = await COMMON_FUNC.getHtmlHeight(this.props.idea, CONSTANTS.SCREEN_SUB_WIDTH)
-    this.setState({ initHeight: textSize + 300 })
   }
 
   componentWillUnmount() {

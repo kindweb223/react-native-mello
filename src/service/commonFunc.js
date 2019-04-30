@@ -231,35 +231,66 @@ const htmlToPlainText = (html = '') => {
 }
 
 const splitHtmlToArray = (html) => {
-  var separators = ['\\\<p>', '\\\<li>', '\\\<br />', '\\\<br/>'];
+  var separators = ['\\\<h2>', '\\\<p>', '\\\<li>', '\\\<br />', '\\\<br/>'];
   var htmlArray = html.split(new RegExp(separators.join('|'), 'g'));
   return htmlArray;
 }
 
 const fontSpecs = {
   fontFamily: undefined,
-  fontSize: 14
+  fontSize: 14,
+  lineHeight: 20
 }
 
-const getHtmlHeight = async (html, width) => {
+const fontListSpecs = {
+  fontFamily: undefined,
+  fontSize: 14,
+  lineHeight: 20,
+  marginTop: 8
+}
+
+const fontBoldSpecs = {
+  fontFamily: undefined,
+  fontSize: 24,
+  marginTop: 10,
+  marginBottom: 20
+}
+
+const getHtmlHeight = async (html, hasCoverImage) => {
+  console.log('HTML: ', _.trim(html))
   const htmlArray = splitHtmlToArray(_.trim(html))
 
-  let length = 0
+  const cardWidth = (CONSTANTS.SCREEN_SUB_WIDTH - 16) / 2
+  let strLength = 0
+  let arrayLength = htmlArray.length
 
-  const cardWidth = width
-
-  for (let i = 0; i < htmlArray.length; i ++) {
-    if (htmlArray[i].length > 0) {
-      const textSize = await rnTextSize.measure({
-        text: htmlArray[i],
-        width: cardWidth - 16,
-        ...fontSpecs
-      })
-      length += parseInt(textSize.height)
+  for (let i = 0; i < arrayLength; i ++) {
+    if (htmlArray[i] !== "" && htmlArray[i].length > 0) {
+      let textSize = {}
+      if (_.endsWith(htmlArray[i], '</h2>')) {
+        textSize = await rnTextSize.measure({
+          text: htmlArray[i],
+          width: cardWidth - 20,
+          ...fontBoldSpecs
+        })
+      } else if (_.endsWith(htmlArray[i], '</li>')) {
+        textSize = await rnTextSize.measure({
+          text: htmlArray[i],
+          width: cardWidth - 20,
+          ...fontListSpecs
+        })
+      } else {
+        textSize = await rnTextSize.measure({
+          text: htmlArray[i],
+          width: cardWidth - 20,
+          ...fontSpecs
+        })
+      }
+      strLength += parseInt(textSize.height)
     }
   }
 
-  return { textSize: length, lineCount: htmlArray.length }
+  return { textSize: strLength }
 }
 
 export {
