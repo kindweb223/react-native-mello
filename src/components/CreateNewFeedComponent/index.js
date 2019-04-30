@@ -31,6 +31,11 @@ const CreateItems = [
     type: 'UPLOAD_PHOTO'
   },
   {
+    title: 'Add link',
+    icon: require('../../../assets/images/Link/Blue.png'),
+    type: 'ADD_LINK'
+  },
+  {
     title: 'Add text',
     icon: require('../../../assets/images/Text/IconMediumAaBlue.png'),
     type: 'ADD_TEXT'
@@ -133,7 +138,7 @@ export default class CreateNewFeedComponent extends React.Component {
           <Text style={styles.headerText}>Add item</Text>
         </View>
       )
-    } else if (index === 5) {
+    } else if (index === 6) {
       return (
         <View style={styles.separator} />
       )
