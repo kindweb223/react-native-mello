@@ -1105,6 +1105,16 @@ class HomeScreen extends React.Component {
       this.pickMediaFromCamera(options);
     } else if (type === 'ATTACH_FILE') {
       this.onAddDocument();
+    } else if (type === 'ADD_LINK') {
+      Analytics.logEvent('dashboard_new_card', {})
+
+      this.setState({
+        isVisibleCreateNewFeedModal: false,
+        isVisibleCard: true,
+        cardViewMode: CONSTANTS.CARD_NEW,
+        selectedIdeaInvitee: null,
+        addLinkURL: "https://google.com"
+      });
     }
   }
 
@@ -1317,7 +1327,7 @@ class HomeScreen extends React.Component {
           cardMode={cardMode}
           invitee={this.state.selectedIdeaInvitee}
           fileData={this.state.fileData}
-          shareUrl=""
+          shareUrl={this.state.addLinkURL}
           prevPage="home"
           onClose={() => this.onCloseCardModal()}
 
