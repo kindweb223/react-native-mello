@@ -542,27 +542,13 @@ class FeedDetailScreen extends React.Component {
       for (let index = 0 ; index < ideas.length; index ++) {
         const idea = ideas[index]
         const cardWidth = (CONSTANTS.SCREEN_SUB_WIDTH - 16) / 2
-        
-        const { textSize, lineCount } = await COMMON_FUNC.getHtmlHeight(idea.idea, (CONSTANTS.SCREEN_SUB_WIDTH - 16) / 2)
 
         let hasCoverImage = idea.coverImage && idea.coverImage.length > 0
         let cardHeight = 0
         let contentHeight = 0
         let imageHeight = 0
 
-        // if (hasCoverImage) {
-        //   if (lineCount > 3) {
-        //     contentHeight = 80 + (textSize / lineCount * 4)
-        //   } else {
-        //     contentHeight = 80 + textSize
-        //   }
-        // } else {
-        //   if (lineCount > 9) {
-        //     contentHeight = 80 + (textSize / lineCount * 10)
-        //   } else {
-        //     contentHeight = 80 + textSize
-        //   }
-        // }
+        const { textSize } = await COMMON_FUNC.getHtmlHeight(idea.idea, (CONSTANTS.SCREEN_SUB_WIDTH - 16) / 2, hasCoverImage)
         contentHeight = 80 + textSize
 
         // let hasCoverImage = idea.coverImage && idea.coverImage.length > 0
