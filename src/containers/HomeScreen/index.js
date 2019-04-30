@@ -96,7 +96,7 @@ import {
 } from '../../redux/user/actions'
 
 import {
-  getCard,
+  getCard, addLink,
 } from '../../redux/card/actions'
 import { images } from '../../themes';
 import Search from 'react-native-search-box';
@@ -152,7 +152,8 @@ class HomeScreen extends React.Component {
       isSideMenuOpen: false,
       selectedItemTitle: 'All flows',
       fileData: null,
-      isVisibleSelectFeedoModal: false
+      isVisibleSelectFeedoModal: false,
+      addLinkURL: ''
     };
 
     this.currentRef = null;
@@ -296,6 +297,8 @@ class HomeScreen extends React.Component {
     }
 
     BackHandler.addEventListener('hardwareBackPress', this.handleBackButton);
+
+    const clipboardContent = await Clipboard.getString();
   }
 
   componentWillUnmount() {
@@ -621,12 +624,24 @@ class HomeScreen extends React.Component {
   async showClipboardToast() {
     if (Actions.currentScene !== 'FeedDetailScreen') {
       const clipboardContent = await Clipboard.getString();
+
+      if (clipboardContent !== '') {
+        var allUrls = this.getUrls(clipboardContent)
+        if (allUrls.length > 0) {
+          this.setState({ addLinkURL: allUrls[0] })
+        }
+      }
+
       const lastClipboardData = await AsyncStorage.getItem(CONSTANTS.CLIPBOARD_DATA)
       if (clipboardContent !== '' && clipboardContent !== lastClipboardData) {
         AsyncStorage.setItem(CONSTANTS.CLIPBOARD_DATA, clipboardContent);
         this.props.showClipboardToaster(clipboardContent, 'home')
       }
     }
+  }
+
+  getUrls(text) {
+    return text.match(/(http(s)?:\/\/.)?(www\.)?[-a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,6}\b([-a-zA-Z0-9@:%_\+.~#?&//=]*)/gi);
   }
 
   onHandleAppStateChange = async(nextAppState) => {
@@ -1112,8 +1127,7 @@ class HomeScreen extends React.Component {
         isVisibleCreateNewFeedModal: false,
         isVisibleCard: true,
         cardViewMode: CONSTANTS.CARD_NEW,
-        selectedIdeaInvitee: null,
-        addLinkURL: "https://google.com"
+        selectedIdeaInvitee: null
       });
     }
   }
@@ -1234,7 +1248,7 @@ class HomeScreen extends React.Component {
   }
 
   get renderNewFeedModals() {
-    const { isEditFeed, isVisibleNewFeed, isVisibleCreateNewFeedModal, selectedFeedList } = this.state
+    const { isEditFeed, isVisibleNewFeed, isVisibleCreateNewFeedModal, selectedFeedList, addLinkURL } = this.state
 
     if (!isVisibleNewFeed && !isVisibleCreateNewFeedModal) {
       return;
@@ -1250,6 +1264,7 @@ class HomeScreen extends React.Component {
       >
         {isVisibleCreateNewFeedModal && (
           <CreateNewFeedComponent
+            addLinkURL={addLinkURL}
             onSelect={(type) => this.onSelectNewFeedType(type)}
             onClose={() => this.onCloseCreateNewFeedModal()}
           />

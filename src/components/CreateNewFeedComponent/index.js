@@ -15,6 +15,7 @@ import { Actions } from 'react-native-router-flux'
 
 import styles from './styles'
 import CONSTANTS from '../../service/constants'
+import { addLink } from '../../redux/card/actions';
 
 const CreateItems = [
   {
@@ -61,8 +62,9 @@ export default class CreateNewFeedComponent extends React.Component {
     super(props);
     this.state = {
       listHeight: 0,
-      selectedIndex: -1,
+      selectedIndex: -1
     };
+
     this.animatedShow = new Animated.Value(0);
     this.animatedSelect = new Animated.Value(0);
   }
@@ -132,11 +134,31 @@ export default class CreateNewFeedComponent extends React.Component {
   }
 
   renderItem({item, index}) {
+    const { addLinkURL } = this.props
     if (index === 0) {
       return (
         <View style={styles.headerView}>
           <Text style={styles.headerText}>Add item</Text>
         </View>
+      )
+    } else if (index === 3) {
+      return (
+        <TouchableOpacity
+        onPressIn={() => this.onSelectItem(item, index)}
+      >
+        <View style={styles.itemContainer}>
+          {/* {this.renderItemBackground(index)} */}
+          <View style={styles.leftContentContainer}> 
+            <Image source={item.icon} style={styles.image} resizeMode="contain" />
+          </View>
+          <View style={styles.rightContentContainer}>
+            <Text style={styles.textTitle}>{item.title}</Text>
+            { (typeof(addLinkURL) === 'string' && addLinkURL.length > 0) && (
+              <Text style={styles.link}>{addLinkURL}</Text>
+            )}
+          </View>
+        </View>
+      </TouchableOpacity>
       )
     } else if (index === 6) {
       return (

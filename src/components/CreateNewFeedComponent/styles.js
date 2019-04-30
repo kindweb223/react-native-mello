@@ -44,6 +44,11 @@ const styles = StyleSheet.create({
     fontWeight: '600',
     color: '#000',
   },
+  link: {
+    fontSize: 12,
+    lineHeight: 12,
+    color: 'gray'
+  },
   textDescription: {
     fontSize: 14,
     lineHeight: 21,
