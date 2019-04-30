@@ -116,7 +116,8 @@ const styles = StyleSheet.create({
   title: {
     fontWeight: '500',
     fontSize: 18,
-    color: 'rgba(102, 104, 115, 1)'
+    color: 'rgba(102, 104, 115, 1)',
+    textAlign: 'center'
   }
 })
 
