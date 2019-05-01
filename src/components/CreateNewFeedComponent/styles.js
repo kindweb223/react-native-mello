@@ -45,6 +45,7 @@ const styles = StyleSheet.create({
     color: '#000',
   },
   link: {
+    paddingTop: 4,
     fontSize: 12,
     lineHeight: 12,
     color: 'gray'
