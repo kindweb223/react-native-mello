@@ -174,8 +174,7 @@ class CardNewScreen extends React.Component {
 
     this.shareImageUrls = [];
     this.currentShareImageIndex = 0;
-
-    this.startParseUrl = false
+    this.startParseFirstUrl = false
 
     this.coverImageWidth = CONSTANTS.SCREEN_WIDTH
     this.coverImageHeight = CONSTANTS.SCREEN_HEIGHT / 3
@@ -214,7 +213,6 @@ class CardNewScreen extends React.Component {
 
   async UNSAFE_componentWillReceiveProps(nextProps) {
     let loading = false;
-
     if (this.props.card.loading !== types.CREATE_CARD_PENDING && nextProps.card.loading === types.CREATE_CARD_PENDING) {
       // loading = true;
     } else if (this.props.card.loading !== types.CREATE_CARD_FULFILLED && nextProps.card.loading === types.CREATE_CARD_FULFILLED) {
@@ -424,13 +422,7 @@ class CardNewScreen extends React.Component {
       this.currentSelectedLinkImageIndex ++;
       if (this.currentSelectedLinkImageIndex < this.selectedLinkImages.length) {
         this.addLinkImage(id, this.selectedLinkImages[this.currentSelectedLinkImageIndex]);
-      } else if (this.startParseUrl) {
-        this.startParseUrl = false
-        setTimeout(() => {
-          this.onUpdate();
-        }, 2000)
       }
-
       this.currentShareImageIndex ++;
       if (this.currentShareImageIndex < this.shareImageUrls.length) {
         this.uploadFile(nextProps.card.currentCard, this.shareImageUrls[this.currentShareImageIndex], 'MEDIA');
@@ -458,13 +450,6 @@ class CardNewScreen extends React.Component {
           favicon,
         } = this.openGraphLinksInfo[this.indexForAddedLinks++];
         this.props.addLink(id, url, title, description, image, favicon);
-      } else {
-        if (this.startParseUrl && !this.state.isVisibleChooseLinkImagesModal) {
-          this.startParseUrl = false
-          setTimeout(() => {
-            this.onUpdate();
-          }, 2000)
-        }
       }
     } else if (this.props.card.loading !== types.DELETE_LINK_PENDING && nextProps.card.loading === types.DELETE_LINK_PENDING) {
       // deleting a link
@@ -533,6 +518,7 @@ class CardNewScreen extends React.Component {
       }
     } else if (this.props.card.loading !== types.GET_OPEN_GRAPH_FULFILLED && nextProps.card.loading === types.GET_OPEN_GRAPH_FULFILLED) {
       // success in getting open graph
+      this.startParseFirstUrl = false
       if (this.props.card.currentCard.links === null || this.props.card.currentCard.links.length === 0) {
         loading = true;
       }
@@ -660,7 +646,7 @@ class CardNewScreen extends React.Component {
         }
 
         if (error) {
-          this.startParseUrl = false
+          this.startParseFirstUrl = false
           if (nextProps.card.loading === types.GET_OPEN_GRAPH_REJECTED) {
             // success in getting open graph
             if (this.props.card.currentCard.links === null || this.props.card.currentCard.links.length === 0) {
@@ -783,7 +769,7 @@ class CardNewScreen extends React.Component {
       this.safariViewDismissSubscription.remove();
     }
 
-    this.startParseUrl = false
+    this.startParseFirstUrl = false
 
     BackHandler.removeEventListener('hardwareBackPress', this.handleBackButton);
   }
@@ -925,6 +911,7 @@ class CardNewScreen extends React.Component {
     // if (this.checkUrl(this.state.idea)) {
     //   return true;
     // }
+
     const allUrls = this.state.idea && this.state.idea.match(/(http(s)?:\/\/.)?(www\.)?[-a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,6}\b([-a-zA-Z0-9@:%_\+.~#?&//=]*)/gi);
 
     if (allUrls) {
@@ -957,16 +944,15 @@ class CardNewScreen extends React.Component {
       if (filteredUrls.length > 0) {
         Analytics.logEvent('new_card_typed_link', {})
 
+        if (!links || links.length === 0) {
+          this.startParseFirstUrl = true
+        }
+
         // this.isOpenGraphForNewCard = false;
         this.indexForOpenGraph = 0;
         this.openGraphLinksInfo = [];
         this.linksForOpenGraph = filteredUrls;
         this.props.getOpenGraph(this.linksForOpenGraph[this.indexForOpenGraph]);
-      }
-    } else {
-      if (this.startParseUrl) {
-        this.startParseUrl = false
-        this.onUpdate()
       }
     }
     return false;
@@ -1164,8 +1150,7 @@ class CardNewScreen extends React.Component {
     const { viewMode } = this.props;
 
     if (viewMode === CONSTANTS.CARD_NEW) {
-      this.startParseUrl = true
-      this.checkUrls()
+      this.onUpdate();
       return;
     }
     this.onClose();
@@ -1422,23 +1407,18 @@ class CardNewScreen extends React.Component {
     }
   }
 
-  onCloseLinkImages(isIgnoreCoverImage = true) {
+  onCloseLinkImages() {
     this.allLinkImages = [];
     this.setState({
       isVisibleChooseLinkImagesModal: false,
     });
-
-    if (this.startParseUrl && isIgnoreCoverImage) {
-      this.startParseUrl = false
-      this.onUpdate();
-    }
   }
 
   onSaveLinkImages(selectedImages) {
     const {
       id, 
     } = this.props.card.currentCard;
-    this.onCloseLinkImages(false);
+    this.onCloseLinkImages();
     this.selectedLinkImages = selectedImages;
     this.currentSelectedLinkImageIndex = 0;
     if (this.selectedLinkImages.length > 0) {
@@ -1481,10 +1461,16 @@ class CardNewScreen extends React.Component {
       files,
     } = this.props.card.currentCard;
     const { idea } = this.state
+    
     if (!this.isCardValid(idea, files)) {
       AlertController.shared.showAlert('Error', 'Enter some text or add an image')
       return;
     }
+
+    if (this.startParseFirstUrl) {
+      return;
+    }
+
     if (this.draftFeedo) {
       if (this.draftFeedo.id === this.props.feedo.currentFeed.id) {
         // Update Draft Mello to Publish one
@@ -1854,7 +1840,7 @@ class CardNewScreen extends React.Component {
             <Text style={[styles.textButton, { color: COLORS.PURPLE }]}>Cancel</Text>
           </TouchableOpacity>
           <Text style={styles.textButton}>New card</Text>
-          {this.state.isSaving
+          {this.state.isSaving || this.startParseFirstUrl
             ? <View style={[styles.btnClose, { alignItems: 'flex-end' }]}>
                 <ActivityIndicator color={COLORS.PURPLE} size="small" style={styles.loadingIcon} />
               </View>
