@@ -3,17 +3,15 @@ import {
   View,
   Text, 
   TouchableOpacity,
-  Image,
   TextInput,
   ScrollView,
   ActivityIndicator,
-  Alert,
-  Share,
-  Platform
+  Platform,
+  Animated,
+  Keyboard
 } from 'react-native'
 import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
-import Entypo from 'react-native-vector-icons/Entypo'
 import Modal from 'react-native-modal'
 import _ from 'lodash'
 import InviteeAutoComplete from '../../components/InviteeAutoComplete'
@@ -38,8 +36,7 @@ import Button from '../../components/Button'
 import AlertController from '../../components/AlertController'
 import ToasterComponent from '../../components/ToasterComponent'
 import ActionSheet from 'react-native-actionsheet'
-
-const CLOSE_ICON = require('../../../assets/images/Close/Blue.png')
+import CONSTANTS from '../../service/constants'
 
 const MEMBER_ACTIONS = {
   CAN_EDIT: 'Can edit',
@@ -73,6 +70,7 @@ class InviteeScreen extends React.Component {
       memberActions: []
     }
     this.isMount = false
+    this.animatedKeyboardHeight = new Animated.Value(0);
   }
 
   componentDidMount() {
@@ -87,6 +85,15 @@ class InviteeScreen extends React.Component {
     filteredMembers = COMMON_FUNC.removeDuplicatedItems(filteredMembers)
     this.setState({ currentMembers:  filteredMembers })
     this.setState({isEnableShare: COMMON_FUNC.isSharingEnabled(this.props.data)})
+
+    if (Platform.OS === 'ios') {
+      this.keyboardWillShowSubscription = Keyboard.addListener('keyboardWillShow', (e) => this.keyboardWillShow(e));
+      this.keyboardWillHideSubscription = Keyboard.addListener('keyboardWillHide', (e) => this.keyboardWillHide(e));
+    }
+    else {
+      this.keyboardWillShowSubscription = Keyboard.addListener('keyboardDidShow', (e) => this.keyboardWillShow(e));
+      this.keyboardWillHideSubscription = Keyboard.addListener('keyboardDidHide', (e) => this.keyboardWillHide(e));
+    }
   }
 
   UNSAFE_componentWillReceiveProps(nextProps) {
@@ -125,6 +132,26 @@ class InviteeScreen extends React.Component {
 
   componentWillUnmount() {
     this.isMount = false
+    this.keyboardWillShowSubscription.remove();
+    this.keyboardWillHideSubscription.remove();
+  }
+
+  keyboardWillShow(e) {
+    Animated.timing(
+      this.animatedKeyboardHeight, {
+        toValue: e.endCoordinates.height,
+        duration: Platform.OS === 'ios' ? e.duration : CONSTANTS.ANIMATEION_MILLI_SECONDS,
+      }
+    ).start();
+  }
+
+  keyboardWillHide(e) {
+    Animated.timing(
+      this.animatedKeyboardHeight, {
+        toValue: 0,
+        duration: Platform.OS === 'ios' ? e.duration : CONSTANTS.ANIMATEION_MILLI_SECONDS,
+      }
+    ).start();
   }
 
   getRecentContactList = (feed, contactList) => {
@@ -295,9 +322,14 @@ class InviteeScreen extends React.Component {
   }
 
   renderFilteredContacts = (filteredContacts) => {
+    const contentContainerStyle = {
+      height: Animated.subtract(CONSTANTS.SCREEN_HEIGHT - 60 - 70 - CONSTANTS.STATUS_BOTTOM_BAR_HEIGHT, this.animatedKeyboardHeight),
+      paddingHorizontal: CONSTANTS.PADDING
+    }
+
     if (filteredContacts && filteredContacts.length > 0) {
       return (
-        <ScrollView style={styles.contactList} contentContainerStyle={styles.contactInnerList} keyboardShouldPersistTaps="handled">
+        <Animated.ScrollView style={contentContainerStyle} keyboardShouldPersistTaps="handled">
           {filteredContacts.map(item => (
             <TouchableOpacity onPress={() => this.onSelectContact(item)} key={item.id}>
               <View style={styles.contactItem}>
@@ -305,7 +337,7 @@ class InviteeScreen extends React.Component {
               </View>
             </TouchableOpacity>
           ))}
-        </ScrollView>
+        </Animated.ScrollView>
       );
     } else {
       return (
@@ -460,7 +492,7 @@ class InviteeScreen extends React.Component {
                     <Text style={styles.titleText}>Current members</Text>
                   </View>
                   <View style={styles.separator} />
-                  <ScrollView style={styles.inviteeList} keyboardShouldPersistTaps="handled">
+                  <ScrollView style={styles.inviteeList} contentContainerStyle={styles.inviteeListInnerView} keyboardShouldPersistTaps="handled">
                     {currentMembers.map(item => (
                       <TouchableOpacity key={item.id} onPress={() => this.onSelectMember(item)}>
                         <View style={styles.inviteeItem}>
