@@ -73,6 +73,12 @@ class CKEditor extends React.Component {
   }
 
   render() {
+    const sourceUri = (
+      Platform.OS === 'android' 
+        ? 'file:///android_asset/' 
+        : ''
+    ) + 'Web.bundle/ckeditor.html';
+
     return (
       <View style={{ flex: 1 }}>
         <WebView
