@@ -10,8 +10,6 @@ import {
 import _ from 'lodash';
 import { WebView } from 'react-native-webview'
 
-var editor = require('./ckeditor.html')
-
 const patchPostMessageJsCode = `(${String(function() {
   window.postMessage = function(data) {
     window.ReactNativeWebView.postMessage(data)
@@ -83,8 +81,9 @@ class CKEditor extends React.Component {
           injectedJavaScript={patchPostMessageJsCode}
           onLoadEnd={this.onWebViewLoaded}
           onMessage={this.handleMessage}
-          source={Platform.OS === 'ios' ? editor : { uri: 'file:///android_asset/ckeditor/index.html' }}
-          // source={{ uri: Platform.OS === 'ios' ? 'https://demos.solvers.io/solvers/melloapp-landing/ckeditor_ios.html' : 'https://demos.solvers.io/solvers/melloapp-landing/ckeditor_android.html' }}
+          source={{ uri: sourceUri}}
+          originWhitelist={['*']}
+          allowFileAcces={true}
           style={styles.webviewStyle}
         />
       </View>
