@@ -630,6 +630,9 @@ class HomeScreen extends React.Component {
         if (allUrls && allUrls.length > 0) {
           this.setState({ addLinkURL: allUrls[0] })
         }
+        else {
+          this.setState({ addLinkURL: '' })
+        }
       }
 
       const lastClipboardData = await AsyncStorage.getItem(CONSTANTS.CLIPBOARD_DATA)
