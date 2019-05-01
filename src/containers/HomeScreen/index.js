@@ -96,7 +96,7 @@ import {
 } from '../../redux/user/actions'
 
 import {
-  getCard,
+  getCard, addLink,
 } from '../../redux/card/actions'
 import { images } from '../../themes';
 import Search from 'react-native-search-box';
@@ -152,7 +152,9 @@ class HomeScreen extends React.Component {
       isSideMenuOpen: false,
       selectedItemTitle: 'All flows',
       fileData: null,
-      isVisibleSelectFeedoModal: false
+      isVisibleSelectFeedoModal: false,
+      addLinkURL: '',
+      selectedAddLink: '',  // value to set if the user taps add link
     };
 
     this.currentRef = null;
@@ -296,6 +298,8 @@ class HomeScreen extends React.Component {
     }
 
     BackHandler.addEventListener('hardwareBackPress', this.handleBackButton);
+
+    const clipboardContent = await Clipboard.getString();
   }
 
   componentWillUnmount() {
@@ -621,12 +625,27 @@ class HomeScreen extends React.Component {
   async showClipboardToast() {
     if (Actions.currentScene !== 'FeedDetailScreen') {
       const clipboardContent = await Clipboard.getString();
+
+      if (clipboardContent !== '') {
+        var allUrls = this.getUrls(clipboardContent)
+        if (allUrls && allUrls.length > 0) {
+          this.setState({ addLinkURL: allUrls[0] })
+        }
+        else {
+          this.setState({ addLinkURL: '' })
+        }
+      }
+
       const lastClipboardData = await AsyncStorage.getItem(CONSTANTS.CLIPBOARD_DATA)
       if (clipboardContent !== '' && clipboardContent !== lastClipboardData) {
         AsyncStorage.setItem(CONSTANTS.CLIPBOARD_DATA, clipboardContent);
         this.props.showClipboardToaster(clipboardContent, 'home')
       }
     }
+  }
+
+  getUrls(text) {
+    return text.match(/(http(s)?:\/\/.)?(www\.)?[-a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,6}\b([-a-zA-Z0-9@:%_\+.~#?&//=]*)/gi);
   }
 
   onHandleAppStateChange = async(nextAppState) => {
@@ -1072,6 +1091,8 @@ class HomeScreen extends React.Component {
   }
 
   onSelectNewFeedType(type) {
+    const { addLinkURL } = this.state
+
     this.props.closeClipboardToaster()
     var options = {
       storageOptions: {
@@ -1105,6 +1126,21 @@ class HomeScreen extends React.Component {
       this.pickMediaFromCamera(options);
     } else if (type === 'ATTACH_FILE') {
       this.onAddDocument();
+    } else if (type === 'ADD_LINK') {
+      Analytics.logEvent('dashboard_new_card', {})
+
+      this.setState({
+        isVisibleCreateNewFeedModal: false,
+        isVisibleCard: true,
+        cardViewMode: CONSTANTS.CARD_NEW,
+        selectedIdeaInvitee: null,
+        selectedAddLink: addLinkURL
+      });
+
+      // Clear the selected value for later
+      setTimeout(() => {
+        this.setState({selectedAddLink: ''});
+      }, 5000)
     }
   }
 
@@ -1224,7 +1260,7 @@ class HomeScreen extends React.Component {
   }
 
   get renderNewFeedModals() {
-    const { isEditFeed, isVisibleNewFeed, isVisibleCreateNewFeedModal, selectedFeedList } = this.state
+    const { isEditFeed, isVisibleNewFeed, isVisibleCreateNewFeedModal, selectedFeedList, addLinkURL } = this.state
 
     if (!isVisibleNewFeed && !isVisibleCreateNewFeedModal) {
       return;
@@ -1240,6 +1276,7 @@ class HomeScreen extends React.Component {
       >
         {isVisibleCreateNewFeedModal && (
           <CreateNewFeedComponent
+            addLinkURL={addLinkURL}
             onSelect={(type) => this.onSelectNewFeedType(type)}
             onClose={() => this.onCloseCreateNewFeedModal()}
           />
@@ -1317,7 +1354,7 @@ class HomeScreen extends React.Component {
           cardMode={cardMode}
           invitee={this.state.selectedIdeaInvitee}
           fileData={this.state.fileData}
-          shareUrl=""
+          shareUrl={this.state.selectedAddLink}
           prevPage="home"
           onClose={() => this.onCloseCardModal()}
 
