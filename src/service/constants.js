@@ -97,7 +97,7 @@ export default {
     'text-big': { backgroundColor: 'transparent', fontSize: 24, fontWeight: 'bold', lineHeight: 32, color: 'black' }
   },
   HTML_TAGS_STYLE: {
-    'p': { backgroundColor: 'transparent', fontSize: 14, marginTop: 0, marginBottom: 0, lineHeight: 20 },
+    'p': { backgroundColor: 'transparent', fontSize: 14, marginTop: 0, marginBottom: 0 },
     'ul': { paddingLeft: 0, marginLeft: 0, marginTop: 8, marginBottom: 0, fontSize: 14 },  // backgroundColor: '#0ff'
     'ol': { paddingLeft: 0, marginLeft: 0, marginTop: 8, marginBottom: 0, fontSize: 14 },  // backgroundColor: '#F5F5DC'
     'li': { paddingLeft: 0, marginTop: 0, marginBottom: 0, fontSize: 14 },
