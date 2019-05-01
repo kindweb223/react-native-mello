@@ -33,10 +33,8 @@ import Permissions from 'react-native-permissions'
 import * as mime from 'react-native-mime-types'
 import GestureRecognizer from 'react-native-swipe-gestures'
 import { NetworkConsumer, checkInternetConnection } from 'react-native-offline'
-import Masonry from '../../components/MasonryComponent'
-import rnTextSize from 'react-native-text-size'
-var striptags = require('striptags')
 const truncate = require('truncate-html')
+var clip = require('text-clipper')
 import MasonryList from '../../components/MasonryComponent'
 
 import DashboardActionBar from '../../navigations/DashboardActionBar'
@@ -561,8 +559,16 @@ class FeedDetailScreen extends React.Component {
         let contentHeight = 0
         let imageHeight = 0
 
-        const { textSize } = await COMMON_FUNC.getHtmlHeight(idea.idea, hasCoverImage)
-        contentHeight = 80 + textSize
+        const { limitLine } = await COMMON_FUNC.getHtmlHeight(idea.idea, hasCoverImage)
+
+        const clipText = clip(idea.idea, idea.idea.length, { html: true, maxLines: limitLine === 0 ? 1 : limitLine })
+        const { textSize } = await COMMON_FUNC.getHtmlHeight(clipText, hasCoverImage)
+
+        if (hasCoverImage) {
+          contentHeight = 80 + (textSize > 100 ? 100 : textSize)
+        } else {
+          contentHeight = 80 + (textSize > 180 ? 180 : textSize)
+        }
 
         // let hasCoverImage = idea.coverImage && idea.coverImage.length > 0
         // let cardHeight = 0
@@ -603,6 +609,9 @@ class FeedDetailScreen extends React.Component {
           index,
           width: (CONSTANTS.SCREEN_WIDTH - 16) / 2,
           height: cardHeight,
+          contentHeight,
+          limitLine,
+          clipText,
           imageHeight,
           data: idea
         })
@@ -1733,6 +1742,7 @@ class FeedDetailScreen extends React.Component {
                                   <FeedCardComponent
                                     idea={renderIdea}
                                     imageHeight={item.imageHeight}
+                                    masonryData={MasonryListData[item.index]}
                                     invitees={invitees}
                                     listType={this.state.viewPreference}
                                     cardType="view"
