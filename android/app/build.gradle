@@ -146,9 +146,14 @@ android {
             }
         }
     }
+
+    sourceSets { 
+        main { assets.srcDirs = ['src/main/assets', '../../html'] } 
+    }
 }
 
 dependencies {
+    compile project(':react-native-webview')
     compile project(':react-native-fs')
     compile project(':react-native-file-viewer')
     compile project(':react-native-text-size')
