@@ -1458,7 +1458,6 @@ class HomeScreen extends React.Component {
           )}
             <NetworkConsumer pingInterval={CONSTANTS.NETWORK_CONSUMER_PING_INTERVAL}>
             {({ isConnected }) => (
-                                   isConnected ? (
           <View style={styles.headerView}>
             <TouchableOpacity
               style={styles.menuIconView}
@@ -1478,11 +1477,10 @@ class HomeScreen extends React.Component {
             </TouchableOpacity> */}
             <View style={styles.settingIconView}>
               <TouchableOpacity onPress={() => this.handleSetting()}>
-                <Image source={SETTING_ICON} />
+                { isConnected ? <Image source={SETTING_ICON} /> : null }
               </TouchableOpacity>
             </View>
           </View>
-          ) : null
           )}
         </NetworkConsumer>
 
