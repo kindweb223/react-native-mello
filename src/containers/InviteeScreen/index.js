@@ -297,7 +297,7 @@ class InviteeScreen extends React.Component {
   renderFilteredContacts = (filteredContacts) => {
     if (filteredContacts && filteredContacts.length > 0) {
       return (
-        <ScrollView style={[ styles.contactList ]} keyboardShouldPersistTaps="handled">
+        <ScrollView style={styles.contactList} contentContainerStyle={styles.contactInnerList} keyboardShouldPersistTaps="handled">
           {filteredContacts.map(item => (
             <TouchableOpacity onPress={() => this.onSelectContact(item)} key={item.id}>
               <View style={styles.contactItem}>
@@ -390,22 +390,24 @@ class InviteeScreen extends React.Component {
 
         <View style={styles.body}>
           <View style={styles.inputFieldView}>
-            <View style={styles.tagInputItem}>
-              <InviteeAutoComplete
-                tagText={this.state.tagText}
-                inviteeEmails={inviteeEmails}
-                invalidEmail={invalidEmail}
-                handleInvitees={this.handleInvitees}
-                handleChange={this.handleChange}
-              />
-              {/* <TouchableOpacity onPress={() => this.updatePermission()}>
-                <View style={styles.rightView}>
-                  <Text style={styles.viewText}>
-                    {inviteePermission}
-                  </Text>
-                  <Entypo name="cog" style={styles.cogIcon} />
-                </View>
-              </TouchableOpacity> */}
+            <View style={styles.padding}>
+              <View style={styles.tagInputItem}>
+                <InviteeAutoComplete
+                  tagText={this.state.tagText}
+                  inviteeEmails={inviteeEmails}
+                  invalidEmail={invalidEmail}
+                  handleInvitees={this.handleInvitees}
+                  handleChange={this.handleChange}
+                />
+                {/* <TouchableOpacity onPress={() => this.updatePermission()}>
+                  <View style={styles.rightView}>
+                    <Text style={styles.viewText}>
+                      {inviteePermission}
+                    </Text>
+                    <Entypo name="cog" style={styles.cogIcon} />
+                  </View>
+                </TouchableOpacity> */}
+              </View>
             </View>
 
             {isInput && (
@@ -413,30 +415,34 @@ class InviteeScreen extends React.Component {
             )}
 
             {!isInput && (
-              <View style={styles.messageInputItem}>
-                <TextInput
-                  ref={ref => this.messageRef = ref}
-                  value={this.state.message}
-                  placeholder="Add message"
-                  placeholderTextColor={COLORS.DARK_GREY}
-                  multiline={true}
-                  style={[styles.textInput]}
-                  onChangeText={this.onChangeMessage}
-                  underlineColorAndroid='transparent'
-                  selectionColor={Platform.OS === 'ios' ? COLORS.PURPLE : COLORS.LIGHT_PURPLE}
-                />
+              <View style={styles.padding}>
+                <View style={styles.messageInputItem}>
+                  <TextInput
+                    ref={ref => this.messageRef = ref}
+                    value={this.state.message}
+                    placeholder="Add message"
+                    placeholderTextColor={COLORS.DARK_GREY}
+                    multiline={true}
+                    style={[styles.textInput]}
+                    onChangeText={this.onChangeMessage}
+                    underlineColorAndroid='transparent'
+                    selectionColor={Platform.OS === 'ios' ? COLORS.PURPLE : COLORS.LIGHT_PURPLE}
+                  />
+                </View>
               </View>
             )}
 
             {!isInput &&
-              <View style={styles.listItem}>
-                <LinkShareItem
-                  isViewOnly={false}
-                  feed={data}
-                  onPress={() => this.showShareModal(data)}
-                  isEnableShare={this.state.isEnableShare}
-                  handleLinkSharing={value => this.handleLinkSharing(value, data)}
-                />
+              <View style={styles.padding}>
+                <View style={styles.listItem}>
+                  <LinkShareItem
+                    isViewOnly={false}
+                    feed={data}
+                    onPress={() => this.showShareModal(data)}
+                    isEnableShare={this.state.isEnableShare}
+                    handleLinkSharing={value => this.handleLinkSharing(value, data)}
+                  />
+                </View>
               </View>
             }
           </View>
