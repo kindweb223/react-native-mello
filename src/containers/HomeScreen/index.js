@@ -627,7 +627,7 @@ class HomeScreen extends React.Component {
 
       if (clipboardContent !== '') {
         var allUrls = this.getUrls(clipboardContent)
-        if (allUrls.length > 0) {
+        if (allUrls && allUrls.length > 0) {
           this.setState({ addLinkURL: allUrls[0] })
         }
       }

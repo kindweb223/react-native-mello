@@ -152,7 +152,7 @@ export default class CreateNewFeedComponent extends React.Component {
           </View>
           <View style={styles.rightContentContainer}>
             <Text style={styles.textTitle}>{item.title}</Text>
-            { addLinkURL && (<Text style={styles.link}>{addLinkURL}</Text>) }
+            { addLinkURL ? <Text style={styles.link} numberOfLines={1} ellipsizeMode={'tail'} >{addLinkURL}</Text> : null }
           </View>
         </View>
       </TouchableOpacity>
