@@ -153,7 +153,8 @@ class HomeScreen extends React.Component {
       selectedItemTitle: 'All flows',
       fileData: null,
       isVisibleSelectFeedoModal: false,
-      addLinkURL: ''
+      addLinkURL: '',
+      selectedAddLink: '',  // value to set if the user taps add link
     };
 
     this.currentRef = null;
@@ -1090,6 +1091,8 @@ class HomeScreen extends React.Component {
   }
 
   onSelectNewFeedType(type) {
+    const { addLinkURL } = this.state
+
     this.props.closeClipboardToaster()
     var options = {
       storageOptions: {
@@ -1130,8 +1133,14 @@ class HomeScreen extends React.Component {
         isVisibleCreateNewFeedModal: false,
         isVisibleCard: true,
         cardViewMode: CONSTANTS.CARD_NEW,
-        selectedIdeaInvitee: null
+        selectedIdeaInvitee: null,
+        selectedAddLink: addLinkURL
       });
+
+      // Clear the selected value for later
+      setTimeout(() => {
+        this.setState({selectedAddLink: ''});
+      }, 5000)
     }
   }
 
@@ -1345,7 +1354,7 @@ class HomeScreen extends React.Component {
           cardMode={cardMode}
           invitee={this.state.selectedIdeaInvitee}
           fileData={this.state.fileData}
-          shareUrl={this.state.addLinkURL}
+          shareUrl={this.state.selectedAddLink}
           prevPage="home"
           onClose={() => this.onCloseCardModal()}
 
