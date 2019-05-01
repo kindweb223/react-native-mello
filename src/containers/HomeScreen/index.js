@@ -1466,7 +1466,7 @@ class HomeScreen extends React.Component {
             >
               <Image source={images.iconMenu} style={styles.menuIcon} />
             </TouchableOpacity>
-            <Text style={[styles.title]}>
+            <Text style={styles.title}>
               {selectedItemTitle}
             </Text>
             {/* <TouchableOpacity
