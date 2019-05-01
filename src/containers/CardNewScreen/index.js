@@ -170,6 +170,7 @@ class CardNewScreen extends React.Component {
 
     this.shareImageUrls = [];
     this.currentShareImageIndex = 0;
+    this.startParseFirstUrl = false
 
     this.coverImageWidth = CONSTANTS.SCREEN_WIDTH
     this.coverImageHeight = CONSTANTS.SCREEN_HEIGHT / 3
@@ -511,6 +512,7 @@ class CardNewScreen extends React.Component {
       }
     } else if (this.props.card.loading !== types.GET_OPEN_GRAPH_FULFILLED && nextProps.card.loading === types.GET_OPEN_GRAPH_FULFILLED) {
       // success in getting open graph
+      this.startParseFirstUrl = false
       if (this.props.card.currentCard.links === null || this.props.card.currentCard.links.length === 0) {
         loading = true;
       }
@@ -638,6 +640,7 @@ class CardNewScreen extends React.Component {
         }
 
         if (error) {
+          this.startParseFirstUrl = false
           if (nextProps.card.loading === types.GET_OPEN_GRAPH_REJECTED) {
             // success in getting open graph
             if (this.props.card.currentCard.links === null || this.props.card.currentCard.links.length === 0) {
@@ -761,6 +764,8 @@ class CardNewScreen extends React.Component {
       this.safariViewShowSubscription.remove();
       this.safariViewDismissSubscription.remove();
     }
+
+    this.startParseFirstUrl = false
 
     BackHandler.removeEventListener('hardwareBackPress', this.handleBackButton);
   }
@@ -900,6 +905,7 @@ class CardNewScreen extends React.Component {
     // if (this.checkUrl(this.state.idea)) {
     //   return true;
     // }
+
     const allUrls = this.state.idea && this.state.idea.match(/(http(s)?:\/\/.)?(www\.)?[-a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,6}\b([-a-zA-Z0-9@:%_\+.~#?&//=]*)/gi);
     if (allUrls) {
       let newUrls = [];
@@ -930,6 +936,11 @@ class CardNewScreen extends React.Component {
 
       if (filteredUrls.length > 0) {
         Analytics.logEvent('new_card_typed_link', {})
+
+        if (!links || links.length === 0) {
+          this.startParseFirstUrl = true
+        }
+
         // this.isOpenGraphForNewCard = false;
         this.indexForOpenGraph = 0;
         this.openGraphLinksInfo = [];
@@ -1423,10 +1434,16 @@ class CardNewScreen extends React.Component {
       files,
     } = this.props.card.currentCard;
     const { idea } = this.state
+    
     if (!this.isCardValid(idea, files)) {
       AlertController.shared.showAlert('Error', 'Enter some text or add an image')
       return;
     }
+
+    if (this.startParseFirstUrl) {
+      return;
+    }
+
     if (this.draftFeedo) {
       if (this.draftFeedo.id === this.props.feedo.currentFeed.id) {
         // Update Draft Mello to Publish one
@@ -1784,7 +1801,7 @@ class CardNewScreen extends React.Component {
             <Text style={[styles.textButton, { color: COLORS.PURPLE }]}>Cancel</Text>
           </TouchableOpacity>
           <Text style={styles.textButton}>New card</Text>
-          {this.state.isSaving
+          {this.state.isSaving || this.startParseFirstUrl
             ? <View style={[styles.btnClose, { alignItems: 'flex-end' }]}>
                 <ActivityIndicator color={COLORS.PURPLE} size="small" style={styles.loadingIcon} />
               </View>
