@@ -97,9 +97,9 @@ export default {
     'text-big': { backgroundColor: 'transparent', fontSize: 24, fontWeight: 'bold', lineHeight: 32, color: 'black' }
   },
   HTML_TAGS_STYLE: {
-    'p': { backgroundColor: 'transparent', fontSize: 16, marginTop: 0, marginBottom: 0, lineHeight: 22 },
-    'ul': { paddingLeft: 0, marginLeft: 0, marginTop: 0, marginBottom: 0, fontSize: 16 },  // backgroundColor: '#0ff'
-    'ol': { paddingLeft: 0, marginLeft: 0, marginTop: 0, marginBottom: 0, fontSize: 16 },  // backgroundColor: '#F5F5DC'
+    'p': { backgroundColor: 'transparent', fontSize: 16, marginTop: 0, marginBottom: 0 },
+    'ul': { paddingLeft: 0, marginLeft: 0, marginTop: 0, marginBottom: 0, fontSize: 16 },
+    'ol': { paddingLeft: 0, marginLeft: 0, marginTop: 0, marginBottom: 0, fontSize: 16 },
     'li': { paddingLeft: 0, marginTop: 0, marginBottom: 0, fontSize: 16 },
     'h1': { backgroundColor: 'transparent' },
     'h2': { backgroundColor: 'transparent', fontSize: 24, fontWeight: 'bold', lineHeight: 32, color: 'black', marginTop: 10, marginBottom: 20 },
