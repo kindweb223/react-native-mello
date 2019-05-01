@@ -4,7 +4,7 @@ import COLORS from '../../../service/colors'
 const styles = StyleSheet.create({
   container: {
     width: '100%',
-    marginBottom: 16
+    marginBottom: 16,
   },
   selected: {
     borderWidth: 1,
@@ -28,8 +28,7 @@ const styles = StyleSheet.create({
   contentContainer: {
     width: '100%',
     justifyContent: 'space-between',
-    paddingTop: 10,
-    paddingBottom: 8,
+    paddingTop: 10
   },
   title: {
    fontSize: 13,
@@ -67,15 +66,25 @@ const styles = StyleSheet.create({
     marginLeft: -3,
     flexDirection: 'row',
     justifyContent: 'flex-start',
-    alignItems: 'center'
+    alignItems: 'center',
+    backgroundColor: COLORS.LIGHT_SOFT_GREY,
+    paddingBottom: 8
+  },
+  htmlView: {
+    paddingHorizontal: 10,
+    marginBottom: 4,
+    width: '100%'
   },
   textHtmlIdea: {
+    position: 'absolute',
+    left: 0,
+    top: 0,
     marginBottom: 0,
     paddingLeft: 0,
     paddingRight: 0,
     paddingTop: 0,
     paddingBottom: 0,
-    width: '100%'
+    width: '100%',
   },
 })
 

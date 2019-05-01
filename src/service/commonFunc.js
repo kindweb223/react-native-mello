@@ -239,13 +239,11 @@ const splitHtmlToArray = (html) => {
 const fontSpecs = {
   fontFamily: undefined,
   fontSize: 14,
-  lineHeight: 20
 }
 
 const fontListSpecs = {
   fontFamily: undefined,
   fontSize: 14,
-  lineHeight: 20,
   marginTop: 8
 }
 
@@ -261,9 +259,9 @@ const getHtmlHeight = async (html, hasCoverImage) => {
 
   const cardWidth = (CONSTANTS.SCREEN_SUB_WIDTH - 16) / 2
   let strLength = 0
-  let arrayLength = htmlArray.length
+  let limitLine = 0
 
-  for (let i = 0; i < arrayLength; i ++) {
+  for (let i = 0; i < htmlArray.length; i ++) {
     if (htmlArray[i] !== "" && htmlArray[i].length > 0) {
       let textSize = {}
       if (_.endsWith(htmlArray[i], '</h2>')) {
@@ -286,10 +284,19 @@ const getHtmlHeight = async (html, hasCoverImage) => {
         })
       }
       strLength += parseInt(textSize.height)
+      if (hasCoverImage) {
+        if (strLength < 100) {
+          limitLine = i
+        }
+      } else {
+        if (strLength < 180) {
+          limitLine = i
+        }
+      }
     }
   }
 
-  return { textSize: strLength }
+  return { textSize: strLength, limitLine }
 }
 
 export {
