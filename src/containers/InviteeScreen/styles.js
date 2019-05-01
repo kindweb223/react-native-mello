@@ -16,7 +16,7 @@ export default {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    paddingHorizontal: CONSTANTS.PADDING
+    paddingHorizontal: CONSTANTS.PADDING,
   },
   body: {
     flex: 1,
@@ -53,6 +53,9 @@ export default {
     flex: 1,
     marginTop: 50,
     marginBottom: 0
+  },
+  inviteeListInnerView: {
+    paddingBottom: CONSTANTS.STATUS_BOTTOM_BAR_HEIGHT
   },
   titleView: {
     paddingBottom: 5,
@@ -130,9 +133,6 @@ export default {
     color: COLORS.PURPLE,
   },
   contactList: {
-  },
-  contactInnerList: {
-    paddingHorizontal: CONSTANTS.PADDING,
     paddingBottom: 50
   },
   contactItem: {
