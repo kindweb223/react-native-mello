@@ -238,7 +238,7 @@ export default class CreateNewFeedComponent extends React.Component {
 CreateNewFeedComponent.defaultProps = {
   onSelect: () => {},
   onClose: () => {},
-  addLinkURL: null
+  addLinkURL: ''
 }
 
 
