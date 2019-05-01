@@ -133,7 +133,7 @@ export default {
     color: COLORS.PURPLE,
   },
   contactList: {
-    paddingBottom: 50
+    paddingBottom: 10
   },
   contactItem: {
     paddingVertical: 5,

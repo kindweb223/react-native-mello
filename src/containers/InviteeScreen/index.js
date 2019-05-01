@@ -323,13 +323,13 @@ class InviteeScreen extends React.Component {
 
   renderFilteredContacts = (filteredContacts) => {
     const contentContainerStyle = {
-      height: Animated.subtract(CONSTANTS.SCREEN_HEIGHT - 60 - 70 - CONSTANTS.STATUS_BOTTOM_BAR_HEIGHT, this.animatedKeyboardHeight),
+      height: Animated.subtract(CONSTANTS.SCREEN_HEIGHT - 60 - 40 - CONSTANTS.STATUSBAR_HEIGHT, this.animatedKeyboardHeight),
       paddingHorizontal: CONSTANTS.PADDING
     }
 
     if (filteredContacts && filteredContacts.length > 0) {
       return (
-        <Animated.ScrollView style={contentContainerStyle} keyboardShouldPersistTaps="handled">
+        <Animated.ScrollView style={contentContainerStyle} contentContainerStyle={styles.contactList} keyboardShouldPersistTaps="handled">
           {filteredContacts.map(item => (
             <TouchableOpacity onPress={() => this.onSelectContact(item)} key={item.id}>
               <View style={styles.contactItem}>
