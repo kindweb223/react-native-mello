@@ -1582,7 +1582,7 @@ class CardNewScreen extends React.Component {
     if (height > this.ckEditorHeight) {
       this.scrollViewRef.scrollToEnd()
     }
-    this.ckEditorHeight = height
+    this.ckEditorHeight = height + 20
   }
 
   get renderText() {
