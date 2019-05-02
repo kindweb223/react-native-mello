@@ -113,17 +113,18 @@ export default {
     fontWeight: '600',
     marginLeft: 48
   },
-  signinView: {
-    width: '100%',
-    alignItems: 'center',
+  loginButtonView: {
+    padding: 24,
+    flexDirection: 'row',
     justifyContent: 'center',
-    marginTop: 28,
-    marginBottom: Platform.OS === 'android' ? 13 : 0
+    alignItems: 'center'
   },
-  signinText: {
-    color: COLORS.ACTION_SHEET_TITLE,
+  btnSend: {
     fontSize: 16,
-    lineHeight: 22
+  },
+  touchablePadding: {
+    paddingVertical: 5, 
+    paddingRight: 5
   },
   backgroundVideo: {
     position: 'absolute',

@@ -13,7 +13,8 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'flex-end',
     paddingTop: 2,
-    paddingHorizontal: CONSTANTS.PADDING
+    paddingHorizontal: CONSTANTS.PADDING / 2,
+    marginRight: CONSTANTS.PADDING / 2,
   },
   settingIcon: {
     fontSize: 20,

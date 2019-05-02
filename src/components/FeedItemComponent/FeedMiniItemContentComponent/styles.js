@@ -70,7 +70,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center'
   },
   avatarView: {
-    marginLeft: 15
+    marginLeft: 16
   },
   tagsView: {
     marginTop: 5,
