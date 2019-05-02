@@ -1360,7 +1360,9 @@ class CardNewScreen extends React.Component {
       const { viewMode } = this.props;
       if (viewMode === CONSTANTS.CARD_NEW) {
         const clipboardContent = await Clipboard.getString();
-        if (clipboardContent === text) {
+        const plainText = COMMON_FUNC.htmlToPlainText(text)
+        
+        if (clipboardContent === plainText) {
           if (this.checkUrls()) {
             return;
           }

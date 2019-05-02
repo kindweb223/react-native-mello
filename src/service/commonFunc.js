@@ -223,8 +223,8 @@ const htmlToPlainText = (html = '') => {
   myHtml = myHtml
     .replace(/<br\/?>/gi, '\n')
     .replace(/&nbsp;/gi, ' ')
-    .replace(/<h2.*?>(.*?)<\/h2>/gi, '\n$1\n')
-    .replace(/<p.*?>(.*?)<\/p>/gi, '\n$1\n')
+    .replace(/<h2.*?>(.*?)<\/h2>/gi, '$1')
+    .replace(/<p.*?>(.*?)<\/p>/gi, '$1')
     .replace(/<(?:.|\s)*?>/g, '')
 
   return myHtml
