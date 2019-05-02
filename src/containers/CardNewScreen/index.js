@@ -1370,6 +1370,7 @@ class CardNewScreen extends React.Component {
   }
 
   onKeyPressIdea() {
+    console.log("[CKEditor] checking urls...")
     this.checkUrls();
   }
 
