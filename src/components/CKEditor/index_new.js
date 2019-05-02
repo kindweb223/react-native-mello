@@ -8,6 +8,7 @@ import {
 } from 'react-native';
 import _ from 'lodash';
 import { WebView } from 'react-native-webview'
+var striptags = require('striptags')
 
 const patchPostMessageJsCode = `(${String(function() {
   window.postMessage = function(data) {
