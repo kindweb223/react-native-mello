@@ -93,6 +93,14 @@
       // Show inital content
       content = event.data.split('placeholder: ')[1];
       CKEditor.setData(content);
+
+      var value = document.getElementById('editor').textContent;
+      var height = document.getElementById('editor').clientHeight;
+      
+      if (value.length > 0) {
+        window.postMessage('NO_KEYCODE>>>!hunt!<<<' + height + '>>>!hunt!<<<' + CKEditor.getData(), '*')
+      }
+
     } else if (event.data.includes('hidekeyboard: ')) {
       document.activeElement && document.activeElement.blur();
     } else {
@@ -146,7 +154,7 @@
           if (attr.length > 0) {
             window.postMessage('FOCUS_COMMAND>>>!hunt!<<<' + listType + ',true:' + attr.join(':') + '>>>!hunt!<<<' + height + '>>>!hunt!<<<' + editor.getData(), '*')
           } else {
-            window.postMessage('FOCUS_COMMAND>>>!hunt!<<<' + listType + ',true' + '>>>!hunt!<<<', '*')
+            window.postMessage('FOCUS_COMMAND>>>!hunt!<<<' + listType + ',true' + '>>>!hunt!<<<' + height + '>>>!hunt!<<<' + editor.getData(), '*')
           }
         } else if (attrBlock.name == 'heading1') {
           // Heading1
@@ -168,7 +176,7 @@
       });
 
       editor.editing.view.document.on('paste', (evt) => {
-        document.getElementById('editor').setData(evt.data.dataValue);
+        document.getElementById('editor').setData(evt.data.dataValue.replace(/<(?:.|\n)*?>/gm, ''));
       })
     })
     .catch(error => {
