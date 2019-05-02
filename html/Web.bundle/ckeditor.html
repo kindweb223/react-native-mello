@@ -144,20 +144,20 @@
           }
 
           if (attr.length > 0) {
-            window.postMessage('FOCUS_COMMAND>>>!hunt!<<<' + listType + ',true:' + attr.join(':'), '*')
+            window.postMessage('FOCUS_COMMAND>>>!hunt!<<<' + listType + ',true:' + attr.join(':') + '>>>!hunt!<<<' + height + '>>>!hunt!<<<' + editor.getData(), '*')
           } else {
-            window.postMessage('FOCUS_COMMAND>>>!hunt!<<<' + listType + ',true', '*')
+            window.postMessage('FOCUS_COMMAND>>>!hunt!<<<' + listType + ',true' + '>>>!hunt!<<<', '*')
           }
         } else if (attrBlock.name == 'heading1') {
           // Heading1
           if (attr.length > 0) {
-            window.postMessage('FOCUS_COMMAND>>>!hunt!<<<' + 'fontSize,big:' + attr.join(':'), '*')
+            window.postMessage('FOCUS_COMMAND>>>!hunt!<<<' + 'fontSize,big:' + attr.join(':') + '>>>!hunt!<<<' + height + '>>>!hunt!<<<' + editor.getData(), '*')
           } else {
-            window.postMessage('FOCUS_COMMAND>>>!hunt!<<<' + 'fontSize,big', '*')
+            window.postMessage('FOCUS_COMMAND>>>!hunt!<<<' + 'fontSize,big' + '>>>!hunt!<<<' + height + '>>>!hunt!<<<' + editor.getData(), '*')
           }
         } else {
           // Paragraph
-          window.postMessage('FOCUS_COMMAND>>>!hunt!<<<' + attr.join(':'), '*')
+          window.postMessage('FOCUS_COMMAND>>>!hunt!<<<' + attr.join(':') + '>>>!hunt!<<<' + height + '>>>!hunt!<<<' + editor.getData(), '*')
         }
       });
 
@@ -166,6 +166,10 @@
           window.postMessage(evt.keyCode + '>>>!hunt!<<<', '*')
         }
       });
+
+      editor.editing.view.document.on('paste', (evt) => {
+        document.getElementById('editor').setData(evt.data.dataValue);
+      })
     })
     .catch(error => {
       console.error(error);
