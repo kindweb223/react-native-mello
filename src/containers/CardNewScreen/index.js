@@ -1360,7 +1360,9 @@ class CardNewScreen extends React.Component {
       const { viewMode } = this.props;
       if (viewMode === CONSTANTS.CARD_NEW) {
         const clipboardContent = await Clipboard.getString();
-        if (clipboardContent === text) {
+        const plainText = COMMON_FUNC.htmlToPlainText(text)
+        
+        if (clipboardContent === plainText) {
           if (this.checkUrls()) {
             return;
           }
@@ -1739,7 +1741,7 @@ class CardNewScreen extends React.Component {
     }
 
     return (
-      <View style={[styles.attachmentButtonsContainer, { paddingHorizontal: 16, marginVertical: 16, paddingBottom: bottomButtonsPadding }]}>
+      <View style={[styles.attachmentButtonsContainer, { paddingHorizontal: 16, marginVertical: 13, paddingBottom: bottomButtonsPadding }]}>
         <TouchableOpacity 
           style={styles.iconView}
           activeOpacity={0.6}
