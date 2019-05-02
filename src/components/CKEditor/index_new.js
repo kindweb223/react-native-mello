@@ -8,7 +8,6 @@ import {
 } from 'react-native';
 import _ from 'lodash';
 import { WebView } from 'react-native-webview'
-var striptags = require('striptags')
 
 const patchPostMessageJsCode = `(${String(function() {
   window.postMessage = function(data) {
@@ -63,9 +62,11 @@ class CKEditor extends React.Component {
       } else {
         // Space(32) or Enter(13)
         if (keyCode === '13' || keyCode == '32') {
-          this.props.handleCKEditorHeight(parseInt(this.state.height) + 1)
+          if (keyCode === '13') {
+            this.props.handleCKEditorHeight(parseInt(this.state.height))
+          }
+          this.props.handleKeydown();
         }
-        this.props.handleKeydown();
       }
     } catch (err) {
       console.warn(err);
