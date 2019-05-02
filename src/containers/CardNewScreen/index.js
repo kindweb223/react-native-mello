@@ -1726,7 +1726,7 @@ class CardNewScreen extends React.Component {
 
     if (showCKEditorToolbar) {
       return (
-        <View style={[styles.attachmentButtonsContainer, { paddingHorizontal: 16, marginVertical: 16, paddingBottom: bottomButtonsPadding }]}>
+        <View style={[styles.attachmentButtonsContainer, { paddingHorizontal: 16, marginVertical: 13, paddingBottom: bottomButtonsPadding }]}>
           <CKEditorToolbar
             ref={c => this.refCKEditorToolbar = c}
             isNew={true}
