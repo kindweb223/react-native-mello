@@ -43,7 +43,9 @@ class CKEditor extends React.Component {
       const msgData = event.nativeEvent.data;
       const keyCode = msgData.split('>>>!hunt!<<<')[0];
 
-      if (keyCode === 'NO_KEYCODE') {
+      console.log("[CKEditor] Event = " + keyCode)
+
+      if (keyCode === 'NO_KEYCODE' || keyCode === 'PASTE_COMMAND') {
         const content = msgData.split('>>>!hunt!<<<')[2];
         const height = parseInt(msgData.split('>>>!hunt!<<<')[1]);
         if (height > this.state.initHeight) {
@@ -53,8 +55,13 @@ class CKEditor extends React.Component {
       } if (keyCode === 'FOCUS_COMMAND') {
         const command = (msgData.split('>>>!hunt!<<<')[1]).split(':');
         this.props.handleCommands(command)
+        const height = parseInt(msgData.split('>>>!hunt!<<<')[2]);
+        if (height > this.state.initHeight) {
+          this.setState({ height })
+        }
       } else {
-        if (keyCode === '13') {
+        // Space(32) or Enter(13)
+        if (keyCode === '13' || keyCode == '32') {
           this.props.handleCKEditorHeight(parseInt(this.state.height) + 1)
         }
         this.props.handleKeydown();
