@@ -1512,8 +1512,8 @@ class HomeScreen extends React.Component {
             >
               <Image style={styles.searchIcon} source={SEARCH_ICON} />
             </TouchableOpacity> */}
-            <View style={styles.settingIconView}>
-              <TouchableOpacity onPress={() => this.handleSetting()}>
+            <View>
+              <TouchableOpacity style={styles.settingIconView} onPress={() => this.handleSetting()}>
                 { isConnected ? <Image source={SETTING_ICON} /> : null }
               </TouchableOpacity>
             </View>

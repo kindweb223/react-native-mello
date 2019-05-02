@@ -58,6 +58,10 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     backgroundColor: '#fff',
   },
+  touchablePadding: {
+    paddingVertical: 5, 
+    paddingHorizontal: 5
+  },
   avatarView: {
     height: '100%',
     justifyContent: 'center',

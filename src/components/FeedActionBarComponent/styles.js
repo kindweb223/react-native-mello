@@ -77,6 +77,10 @@ const styles = StyleSheet.create({
   deleteButtonText: {
     color: COLORS.RED,
     fontSize: 14,
+  },
+  btnMenu: {
+    paddingHorizontal: 8,
+    paddingVertical: 4
   }
 })
 

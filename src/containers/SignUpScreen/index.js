@@ -483,8 +483,8 @@ class SignUpScreen extends React.Component {
 
             <View style={styles.loginButtonView}>
               <Text style={[styles.btnSend, { color: COLORS.MEDIUM_GREY }]}>Already have an account? </Text>
-              <TouchableOpacity onPress={() => this.onSignIn()}>
-                <Text onPress={() => this.onSignIn()} suppressHighlighting={true} style={[styles.btnSend, { color: COLORS.PURPLE }]}>Sign in.</Text>
+              <TouchableOpacity style={styles.touchablePadding} onPress={() => this.onSignIn()}>
+                <Text style={[styles.btnSend, { color: COLORS.PURPLE }]}>Sign in.</Text>
               </TouchableOpacity>
             </View>
           </View>
