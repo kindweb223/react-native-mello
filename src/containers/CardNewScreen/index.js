@@ -1739,7 +1739,7 @@ class CardNewScreen extends React.Component {
     }
 
     return (
-      <View style={[styles.attachmentButtonsContainer, { paddingHorizontal: 16, marginVertical: 16, paddingBottom: bottomButtonsPadding }]}>
+      <View style={[styles.attachmentButtonsContainer, { paddingHorizontal: 16, marginVertical: 13, paddingBottom: bottomButtonsPadding }]}>
         <TouchableOpacity 
           style={styles.iconView}
           activeOpacity={0.6}
