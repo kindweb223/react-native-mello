@@ -191,7 +191,7 @@ class InviteeScreen extends React.Component {
   }
 
   contactFilter = value => c => (
-    [`${c.userProfile.firstName.toLowerCase()}`, `${c.userProfile.lastName.toLowerCase()}`, c.userProfile.email.toLowerCase()].join().indexOf(value) !== -1
+    [c.userProfile.firstName, c.userProfile.lastName, c.userProfile.email].join().toLowerCase().indexOf(value.toLowerCase()) !== -1
     && !c.added
   )
 
