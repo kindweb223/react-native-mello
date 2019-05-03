@@ -30,7 +30,7 @@ const styles = StyleSheet.create({
     paddingBottom: 0,
   },
   attachmentButtonsContainer: {
-    height: 40,
+    height: 32,
     flexDirection: 'row',
     alignItems: 'center',
   },
