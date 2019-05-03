@@ -298,8 +298,6 @@ class HomeScreen extends React.Component {
     }
 
     BackHandler.addEventListener('hardwareBackPress', this.handleBackButton);
-
-    const clipboardContent = await Clipboard.getString();
   }
 
   componentWillUnmount() {
