@@ -100,6 +100,7 @@ class LoginScreen extends React.Component {
 
     if (Actions.currentScene === 'LoginScreen') {
       if (this.props.user.loading === 'USER_SIGNIN_PENDING' && user.loading === 'USER_SIGNIN_FULFILLED') {
+        this.setState({password: ''})
         this.props.getUserSession()
       }
 
