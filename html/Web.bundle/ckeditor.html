@@ -88,44 +88,87 @@
 <body>
 <div name="content" id="editor"></div>
 <script>
-  window.addEventListener("message", function(event) {
-    if (event.data.includes('placeholder: ')) {
-      // Show inital content
-      content = event.data.split('placeholder: ')[1];
-      CKEditor.setData(content);
+  var ua = navigator.userAgent.toLowerCase();
+  var isAndroid = ua.indexOf("android") > -1;
+  if(isAndroid) {
+    document.addEventListener("message", function(event) {
+      if (event.data.includes('placeholder: ')) {
+        // Show inital content
+        content = event.data.split('placeholder: ')[1];
+        CKEditor.setData(content);
 
-      var value = document.getElementById('editor').textContent;
-      var height = document.getElementById('editor').clientHeight;
-      
-      if (value.length > 0) {
-        window.postMessage('NO_KEYCODE>>>!hunt!<<<' + height + '>>>!hunt!<<<' + CKEditor.getData(), '*')
-      }
+        var value = document.getElementById('editor').textContent;
+        var height = document.getElementById('editor').clientHeight;
+        
+        if (value.length > 0) {
+          window.postMessage('NO_KEYCODE>>>!hunt!<<<' + height + '>>>!hunt!<<<' + CKEditor.getData(), '*')
+        }
 
-    } else if (event.data.includes('content: ')) {
-      content = event.data.split('content: ')[1];
-      CKEditor.setData(content);
+      } else if (event.data.includes('content: ')) {
+        content = event.data.split('content: ')[1];
+        CKEditor.setData(content);
 
-      var value = document.getElementById('editor').textContent;
-      var height = document.getElementById('editor').clientHeight;
-      
-      if (value.length > 0) {
-        window.postMessage('NO_KEYCODE>>>!hunt!<<<' + height + '>>>!hunt!<<<' + CKEditor.getData(), '*')
-      }
-      
-    } else if (event.data.includes('hidekeyboard: ')) {
-      document.activeElement && document.activeElement.blur();
-    } else {
-      // Execute editor commands
-      content = event.data.split('execute: ')[1];
-      if (content === 'fontSize_big') {
-        CKEditor.execute('heading', { value: 'heading1' });
-      } else if (content === 'fontSize_normal') {
-        CKEditor.execute('heading', { value: 'paragraph' });
+        var value = document.getElementById('editor').textContent;
+        var height = document.getElementById('editor').clientHeight;
+        
+        if (value.length > 0) {
+          window.postMessage('NO_KEYCODE>>>!hunt!<<<' + height + '>>>!hunt!<<<' + CKEditor.getData(), '*')
+        }
+        
+      } else if (event.data.includes('hidekeyboard: ')) {
+        document.activeElement && document.activeElement.blur();
       } else {
-        CKEditor.execute(content);
+        // Execute editor commands
+        content = event.data.split('execute: ')[1];
+        if (content === 'fontSize_big') {
+          CKEditor.execute('heading', { value: 'heading1' });
+        } else if (content === 'fontSize_normal') {
+          CKEditor.execute('heading', { value: 'paragraph' });
+        } else {
+          CKEditor.execute(content);
+        }
       }
-    }
-  })
+    })
+  } else {
+    window.addEventListener("message", function(event) {
+      if (event.data.includes('placeholder: ')) {
+        // Show inital content
+        content = event.data.split('placeholder: ')[1];
+        CKEditor.setData(content);
+
+        var value = document.getElementById('editor').textContent;
+        var height = document.getElementById('editor').clientHeight;
+        
+        if (value.length > 0) {
+          window.postMessage('NO_KEYCODE>>>!hunt!<<<' + height + '>>>!hunt!<<<' + CKEditor.getData(), '*')
+        }
+
+      } else if (event.data.includes('content: ')) {
+        content = event.data.split('content: ')[1];
+        CKEditor.setData(content);
+
+        var value = document.getElementById('editor').textContent;
+        var height = document.getElementById('editor').clientHeight;
+        
+        if (value.length > 0) {
+          window.postMessage('NO_KEYCODE>>>!hunt!<<<' + height + '>>>!hunt!<<<' + CKEditor.getData(), '*')
+        }
+        
+      } else if (event.data.includes('hidekeyboard: ')) {
+        document.activeElement && document.activeElement.blur();
+      } else {
+        // Execute editor commands
+        content = event.data.split('execute: ')[1];
+        if (content === 'fontSize_big') {
+          CKEditor.execute('heading', { value: 'heading1' });
+        } else if (content === 'fontSize_normal') {
+          CKEditor.execute('heading', { value: 'paragraph' });
+        } else {
+          CKEditor.execute(content);
+        }
+      }
+    })
+  }
 
   DecoupledEditor
     .create(document.querySelector('#editor'), {
