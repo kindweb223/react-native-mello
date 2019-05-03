@@ -298,8 +298,6 @@ class HomeScreen extends React.Component {
     }
 
     BackHandler.addEventListener('hardwareBackPress', this.handleBackButton);
-
-    const clipboardContent = await Clipboard.getString();
   }
 
   componentWillUnmount() {
@@ -396,7 +394,7 @@ class HomeScreen extends React.Component {
         } 
       } else {
         if (user.loading !== 'USER_SIGNOUT_FULFILLED') {
-          nextProps.getFeedoList(null, this.getFeedsFromStorage)
+          // nextProps.getFeedoList(null, this.getFeedsFromStorage)
         }
       }
       
