@@ -22,7 +22,7 @@ npm start -- --reset-cache
 react-native unlink react-native-splash-screen
 
 # Production Build
-1. In `MainApplication.java` comment in production for intercom
+Everything should be under a `if DEV { // Dev config } else { // Prod config }` so no manual steps are needed
 
 # Intercom setting
 Update native code for PROD and DEV config
