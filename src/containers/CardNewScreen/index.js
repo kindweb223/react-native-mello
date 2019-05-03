@@ -1909,7 +1909,7 @@ class CardNewScreen extends React.Component {
       });  
       cardStyle = {
         top: animatedMove,
-        opacity: this.animatedShow,
+        // opacity: this.animatedShow,
       };
     } else {
       const animatedTopMove = this.animatedShow.interpolate({
@@ -1918,7 +1918,7 @@ class CardNewScreen extends React.Component {
       });
       cardStyle = {
         top: animatedTopMove,
-        opacity: this.animatedShow,
+        // opacity: this.animatedShow,
       };
     }
 
