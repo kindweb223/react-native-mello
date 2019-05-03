@@ -4,6 +4,7 @@ import COLORS from '../../../service/colors'
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    height: 40,
     flexDirection: 'row',
     justifyContent: 'space-evenly',
     alignItems: 'center'
