@@ -542,6 +542,7 @@ class CardNewScreen extends React.Component {
       }
       
       let currentIdea = this.state.idea;
+      currentIdea = COMMON_FUNC.htmlToPlainText(currentIdea)
       currentIdea = currentIdea.replace(' ', '');
       currentIdea = currentIdea.replace(',', '');
       currentIdea = currentIdea.replace('\n', '');
@@ -549,6 +550,7 @@ class CardNewScreen extends React.Component {
         this.setState({
           idea: nextProps.card.currentOpneGraph.title,
         });
+        this.refCKEditor.postMessage('content: ' + nextProps.card.currentOpneGraph.title);
       }
       this.openGraphLinksInfo.push({
         url: nextProps.card.currentOpneGraph.url,
@@ -665,6 +667,7 @@ class CardNewScreen extends React.Component {
             }
 
             let currentIdea = this.state.idea;
+            currentIdea = COMMON_FUNC.htmlToPlainText(currentIdea)
             currentIdea = currentIdea.replace(' ', '');
             currentIdea = currentIdea.replace(',', '');
             currentIdea = currentIdea.replace('\n', '');
@@ -672,6 +675,7 @@ class CardNewScreen extends React.Component {
               this.setState({
                 idea: nextProps.card.currentOpneGraph.title,
               });
+              this.refCKEditor.postMessage('content: ' + nextProps.card.currentOpneGraph.title);
             }
             this.openGraphLinksInfo.push({
               url: nextProps.card.currentOpneGraph.url,
