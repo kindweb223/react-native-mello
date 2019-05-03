@@ -31,6 +31,11 @@ const CreateItems = [
     type: 'UPLOAD_PHOTO'
   },
   {
+    title: 'Add link',
+    icon: require('../../../assets/images/Link/Blue.png'),
+    type: 'ADD_LINK'
+  },
+  {
     title: 'Add text',
     icon: require('../../../assets/images/Text/IconMediumAaBlue.png'),
     type: 'ADD_TEXT'
@@ -56,8 +61,9 @@ export default class CreateNewFeedComponent extends React.Component {
     super(props);
     this.state = {
       listHeight: 0,
-      selectedIndex: -1,
+      selectedIndex: -1
     };
+
     this.animatedShow = new Animated.Value(0);
     this.animatedSelect = new Animated.Value(0);
   }
@@ -127,13 +133,31 @@ export default class CreateNewFeedComponent extends React.Component {
   }
 
   renderItem({item, index}) {
+    const { addLinkURL } = this.props
     if (index === 0) {
       return (
         <View style={styles.headerView}>
           <Text style={styles.headerText}>Add item</Text>
         </View>
       )
-    } else if (index === 5) {
+    } else if (index === 3) {
+      return (
+        <TouchableOpacity
+        onPressIn={() => this.onSelectItem(item, index)}
+      >
+        <View style={styles.itemContainer}>
+          {/* {this.renderItemBackground(index)} */}
+          <View style={styles.leftContentContainer}> 
+            <Image source={item.icon} style={styles.image} resizeMode="contain" />
+          </View>
+          <View style={styles.rightContentContainer}>
+            <Text style={styles.textTitle}>{item.title}</Text>
+            { addLinkURL ? <Text style={styles.link} numberOfLines={1} ellipsizeMode={'tail'} >{addLinkURL}</Text> : null }
+          </View>
+        </View>
+      </TouchableOpacity>
+      )
+    } else if (index === 6) {
       return (
         <View style={styles.separator} />
       )
@@ -214,10 +238,12 @@ export default class CreateNewFeedComponent extends React.Component {
 CreateNewFeedComponent.defaultProps = {
   onSelect: () => {},
   onClose: () => {},
+  addLinkURL: ''
 }
 
 
 CreateNewFeedComponent.propTypes = {
   onSelect: PropTypes.func,
   onClose: PropTypes.func,
+  addLinkURL: PropTypes.string
 }

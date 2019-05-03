@@ -158,7 +158,8 @@ class FeedActionBarComponent extends React.Component {
           backdropOpacity={0}
           animationIn="fadeIn"
           animationOut="fadeOut"
-          animationInTiming={600}
+          animationInTiming={Platform.OS === 'ios' ? 500 : 50}
+          animationOutTiming={Platform.OS === 'ios' ? 500 : 1}
           onModalHide={this.onSettingMenuHide}
           onBackdropPress={() => this.setState({ isSettingMenu: false })}
           onBackButtonPress={() => this.setState({ isSettingMenu: false })}
