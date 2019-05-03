@@ -101,6 +101,17 @@
         window.postMessage('NO_KEYCODE>>>!hunt!<<<' + height + '>>>!hunt!<<<' + CKEditor.getData(), '*')
       }
 
+    } else if (event.data.includes('content: ')) {
+      content = event.data.split('content: ')[1];
+      CKEditor.setData(content);
+
+      var value = document.getElementById('editor').textContent;
+      var height = document.getElementById('editor').clientHeight;
+      
+      if (value.length > 0) {
+        window.postMessage('NO_KEYCODE>>>!hunt!<<<' + height + '>>>!hunt!<<<' + CKEditor.getData(), '*')
+      }
+      
     } else if (event.data.includes('hidekeyboard: ')) {
       document.activeElement && document.activeElement.blur();
     } else {
