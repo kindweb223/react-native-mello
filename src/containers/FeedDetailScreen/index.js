@@ -867,6 +867,12 @@ class FeedDetailScreen extends React.Component {
 
   onOpenNewCardModal() {
     if (!COMMON_FUNC.isFeedGuest(this.state.currentFeed)) {
+      // this.animatedOpacity.setValue(0);
+      // Animated.timing(this.animatedOpacity, {
+      //   toValue: 1,
+      //   duration: CONSTANTS.ANIMATEION_MILLI_SECONDS,
+      // }).start();
+
       this.props.closeClipboardToaster()
       this.props.setCurrentCard({});
       this.setState({
@@ -874,13 +880,7 @@ class FeedDetailScreen extends React.Component {
         cardViewMode: CONSTANTS.CARD_NEW,
         selectedIdeaInvitee: null,
         selectedIdeaLayout: {},
-      }, () => {
-        this.animatedOpacity.setValue(0);
-        Animated.timing(this.animatedOpacity, {
-          toValue: 1,
-          duration: CONSTANTS.ANIMATEION_MILLI_SECONDS,
-        }).start();
-      });
+      })
     }
   }
 
@@ -1154,10 +1154,9 @@ class FeedDetailScreen extends React.Component {
     }
 
     return (
-      <Animated.View
+      <View
         style={[
           styles.modalContainer,
-          { opacity: this.animatedOpacity }
         ]}
       >
         {
@@ -1194,7 +1193,7 @@ class FeedDetailScreen extends React.Component {
               isNewCard={false}
             />
         }
-      </Animated.View>
+      </View>
     );
   }
 
