@@ -396,7 +396,7 @@ class HomeScreen extends React.Component {
         } 
       } else {
         if (user.loading !== 'USER_SIGNOUT_FULFILLED') {
-          nextProps.getFeedoList(null, this.getFeedsFromStorage)
+          // nextProps.getFeedoList(null, this.getFeedsFromStorage)
         }
       }
       
