@@ -75,6 +75,10 @@ export default {
   btnSend: {
     fontSize: 16,
   },
+  touchablePadding: {
+    paddingVertical: 5, 
+    paddingRight: 5
+  },
   forgotView: {
     height: 50,
     justifyContent: 'center',

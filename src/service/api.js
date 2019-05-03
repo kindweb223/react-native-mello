@@ -1,21 +1,24 @@
-// Demo
-export const BASE_URL = 'https://demos.solvers.io/hunt/api/v1/'
-export const LAMBDA_BASE_URL = 'https://dev-lambda.melloapp.com/'
-export const SHARE_LINK_URL = 'https://demos.solvers.io/solvers/mello-secure-site/flow/'
-export const SCHEME = 'demos.solvers.io://'
 
-// Staging
-// export const BASE_URL = 'https://stageapi.mello.solvers.io/hunt/api/v1/'
-// export const LAMBDA_BASE_URL = 'https://dev-lambda.melloapp.com/'
-// export const SHARE_LINK_URL = 'https://stageapp.mello.solvers.io/flow/'
-// export const SCHEME = 'stageapp.mello.solvers.io://'
 
-// Prod
-// export const BASE_URL = 'https://api.melloapp.com/hunt/api/v1/'
-// export const LAMBDA_BASE_URL = 'https://lambda.melloapp.com/'
-// export const SHARE_LINK_URL = 'https://my.melloapp.com/flow/'
-// export const SCHEME = 'my.melloapp.com://'
+// DEBUG ? Demo : Prod
+export const BASE_URL = __DEV__ ? 'https://demos.solvers.io/hunt/api/v1/' : 'https://api.melloapp.com/hunt/api/v1/'
+export const LAMBDA_BASE_URL = __DEV__ ? 'https://dev-lambda.melloapp.com/' : 'https://lambda.melloapp.com/'
+export const SHARE_LINK_URL = __DEV__ ? 'https://demos.solvers.io/solvers/mello-secure-site/flow/' : 'https://my.melloapp.com/flow/'
+export const SCHEME = __DEV__ ? 'demos.solvers.io://' : 'my.melloapp.com://'
+  
+  // Staging
+  // export const BASE_URL = 'https://stageapi.mello.solvers.io/hunt/api/v1/'
+  // export const LAMBDA_BASE_URL = 'https://dev-lambda.melloapp.com/'
+  // export const SHARE_LINK_URL = 'https://stageapp.mello.solvers.io/flow/'
+  // export const SCHEME = 'stageapp.mello.solvers.io://'
 
+  // Prod
+  // export const BASE_URL = 'https://api.melloapp.com/hunt/api/v1/'
+  // export const LAMBDA_BASE_URL = 'https://lambda.melloapp.com/'
+  // export const SHARE_LINK_URL = 'https://my.melloapp.com/flow/'
+  // export const SCHEME = 'my.melloapp.com://'
+
+  
 // Global
 export const TIP_SHARE_LINK_URL = 'https://melloapp.com'
 

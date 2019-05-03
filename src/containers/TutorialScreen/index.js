@@ -273,14 +273,11 @@ class TutorialScreen extends React.Component {
             </View>
           </TouchableOpacity>
 
-          <View style={styles.signinView}>
-            <Text
-              onPress={() => this.onLogin()}
-              suppressHighlighting={true}
-              style={styles.signinText}
-            >
-              Already have an account? <Text style={{ color: COLORS.PURPLE }}> Sign in.</Text>
-            </Text>
+          <View style={styles.loginButtonView}>
+            <Text style={[styles.btnSend, { color: COLORS.MEDIUM_GREY }]}>Already have an account? </Text>
+            <TouchableOpacity style={styles.touchablePadding} onPress={() => this.onLogin()}>
+              <Text style={[styles.btnSend, { color: COLORS.PURPLE }]}>Sign in.</Text>
+            </TouchableOpacity>
           </View>
         </View>
       </View>

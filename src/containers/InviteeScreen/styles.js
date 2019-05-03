@@ -16,7 +16,7 @@ export default {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    paddingHorizontal: CONSTANTS.PADDING
+    paddingHorizontal: CONSTANTS.PADDING,
   },
   body: {
     flex: 1,
@@ -54,6 +54,9 @@ export default {
     marginTop: 50,
     marginBottom: 0
   },
+  inviteeListInnerView: {
+    paddingBottom: CONSTANTS.STATUS_BOTTOM_BAR_HEIGHT
+  },
   titleView: {
     paddingBottom: 5,
     paddingHorizontal: CONSTANTS.PADDING
@@ -82,6 +85,9 @@ export default {
     paddingHorizontal: CONSTANTS.PADDING
   },
   inputFieldView: {
+    // paddingHorizontal: CONSTANTS.PADDING
+  },
+  padding: {
     paddingHorizontal: CONSTANTS.PADDING
   },
   tagInputItem: {
@@ -90,7 +96,7 @@ export default {
     justifyContent: 'space-between',
     paddingVertical: 3,
     borderBottomWidth: 1,
-    borderColor: COLORS.LIGHT_GREY_LINE,
+    borderColor: COLORS.LIGHT_GREY_LINE
   },
   messageInputItem: {
     flexDirection: 'row',
@@ -127,6 +133,7 @@ export default {
     color: COLORS.PURPLE,
   },
   contactList: {
+    paddingBottom: 10
   },
   contactItem: {
     paddingVertical: 5,
@@ -134,7 +141,6 @@ export default {
   invalidEmail: {
     width: '100%',
     backgroundColor: COLORS.LIGHT_RED,
-    paddingHorizontal: CONSTANTS.PADDING,
     paddingVertical: 10,
     justifyContent: 'center',
     alignItems: 'center'

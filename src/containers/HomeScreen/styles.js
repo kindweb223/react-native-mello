@@ -103,11 +103,12 @@ const styles = StyleSheet.create({
   settingIconView: {
     width: 38,
     alignItems: 'flex-end',
-    marginRight: 12
+    marginRight: 8,
+    paddingRight: 8
   },
   menuIconView: {
-    padding: 10,
-    marginLeft: 12
+    padding: 8,
+    marginLeft: 8
   },
   menuIcon: {
     width: 18,
