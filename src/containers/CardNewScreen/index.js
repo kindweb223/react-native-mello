@@ -148,6 +148,10 @@ class CardNewScreen extends React.Component {
     this.selectedLinkImages = [];
     this.currentSelectedLinkImageIndex = 0;
 
+    Clipboard.getString().then( content => {
+      this.clipboardContent = content
+    });
+
     this.indexForOpenGraph = 0;
     this.linksForOpenGraph = [];
 
@@ -1359,10 +1363,12 @@ class CardNewScreen extends React.Component {
     }, async () => {
       const { viewMode } = this.props;
       if (viewMode === CONSTANTS.CARD_NEW) {
-        const clipboardContent = await Clipboard.getString();
+        // We need to strip HTML to match below
         const plainText = COMMON_FUNC.htmlToPlainText(text)
         
-        if (clipboardContent === plainText) {
+        // This is how we detect a link pasted and to check for a url
+        // If 'text' matches the value in clipboard we got a paste
+        if (this.clipboardContent === plainText) {
           if (this.checkUrls()) {
             return;
           }
