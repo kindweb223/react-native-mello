@@ -27,7 +27,12 @@ class API {
       .string(forKey: Constants.userDefaultsKey.rawValue)?
       .replacingOccurrences(of: "\"", with: "")
   }
+  
+  #if DEBUG
   private let parseURLEndpoint = "https://dev-lambda.melloapp.com/url/parse"
+  #else
+  private let parseURLEndpoint = "https://lambda.melloapp.com/url/parse"
+  #endif
   
   private var debugMode = true
   
