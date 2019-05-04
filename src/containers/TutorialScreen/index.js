@@ -70,7 +70,7 @@ class TutorialScreen extends React.Component {
     })
 
     if (this.props.prevPage === 'start') {
-      this.setState({ position: 6 })
+      this.setState({ position: 0 })
     }
 
     BackHandler.addEventListener('hardwareBackPress', this.handleBackButton);
