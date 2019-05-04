@@ -215,13 +215,13 @@ class ShareScreen extends React.Component {
             {data.sharingPreferences.level === 'INVITEES_ONLY'
               ? <TouchableOpacity onPress={() => this.onLinkShare(data)}>
                   <View style={styles.shareButtonView}>
-                    <Entypo name="share-alternative" size={16} color={COLORS.LIGHT_GREY} />
+                    <Entypo name={Platform.OS === 'ios' ? 'share-alternative' : 'share'} size={16} color={COLORS.LIGHT_GREY} />
                     <Text style={[styles.shareButtonText, { color: COLORS.LIGHT_GREY }]}>Share link</Text>
                   </View>
                 </TouchableOpacity>
               : <TouchableOpacity onPress={() => this.showShareModal()}>
                   <View style={styles.shareButtonView}>
-                    <Entypo name="share-alternative" size={16} color={COLORS.PURPLE} />
+                    <Entypo name={Platform.OS === 'ios' ? 'share-alternative' : 'share'} size={16} color={COLORS.PURPLE} />
                     <Text style={[styles.shareButtonText, { color: COLORS.PURPLE }]}>Share link</Text>
                   </View>
               </TouchableOpacity>
