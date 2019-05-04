@@ -205,6 +205,18 @@ class CommentScreen extends React.Component {
     });
   }
 
+  extendCommentList() {
+    const extendedCommentList = this.state.commentList.map(item => {
+      const user = this.getCommentUser(item);
+      const extend = {
+        ...item,
+        ...user
+      }
+      return extend
+    })
+    this.setState({ extendedCommentList })
+  }
+
   getCommentUser(comment) {
     const { invitees } = this.props.feedo.currentFeed;
     const invitee = _.find(invitees, invitee => invitee.id === comment.huntInviteeId);
@@ -365,6 +377,7 @@ class CommentScreen extends React.Component {
 
   render () {
     const { commentList } = this.state
+    const { invitees } = this.props.feedo.currentFeed
 
     return (
       <View style={styles.container}>
@@ -381,6 +394,7 @@ class CommentScreen extends React.Component {
               ref={ref => this.inputToolbarRef = ref}
               showKeyboard={this.state.isShowKeyboard}
               comment={this.state.comment}
+              dataList={invitees}
               onChangeText={(comment) => this.onChangeText(comment)}
               onSend={() => this.onSend()}
             />
