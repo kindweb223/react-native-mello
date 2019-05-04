@@ -1594,7 +1594,7 @@ class CardNewScreen extends React.Component {
     if (height > this.ckEditorHeight) {
       this.scrollViewRef.scrollToEnd()
     }
-    this.ckEditorHeight = height + 20
+    this.ckEditorHeight = height + 8
   }
 
   get renderText() {
@@ -1686,7 +1686,7 @@ class CardNewScreen extends React.Component {
     return (
       <ScrollView
         style={{ flex: 1 }}
-        contentContainerStyle={{ paddingBottom: 50 }}
+        contentContainerStyle={{ paddingBottom: 0 }}
         ref={ref => this.scrollViewRef = ref}
         // onLayout={this.onLayoutScrollView.bind(this)}
       >

@@ -47,7 +47,7 @@ class CKEditor extends React.Component {
 
       if (keyCode === 'NO_KEYCODE' || keyCode === 'PASTE_COMMAND') {
         const content = msgData.split('>>>!hunt!<<<')[2];
-        const height = parseInt(msgData.split('>>>!hunt!<<<')[1]) + 20;
+        const height = parseInt(msgData.split('>>>!hunt!<<<')[1]) + 8;
         if (height > this.state.initHeight) {
           this.setState({ height })
         }
@@ -55,7 +55,7 @@ class CKEditor extends React.Component {
       } if (keyCode === 'FOCUS_COMMAND') {
         const command = (msgData.split('>>>!hunt!<<<')[1]).split(':');
         this.props.handleCommands(command)
-        const height = parseInt(msgData.split('>>>!hunt!<<<')[2]) + 20;
+        const height = parseInt(msgData.split('>>>!hunt!<<<')[2]) + 8;
         if (height > this.state.initHeight) {
           this.setState({ height })
         }
@@ -63,7 +63,7 @@ class CKEditor extends React.Component {
         // Space(32) or Enter(13)
         if (keyCode === '13' || keyCode == '32') {
           if (keyCode === '13') {
-            this.props.handleCKEditorHeight(parseInt(this.state.height) + 20)
+            this.props.handleCKEditorHeight(parseInt(this.state.height) + 8)
           }
           this.props.handleKeydown();
         }
@@ -98,10 +98,10 @@ class CKEditor extends React.Component {
 
     return (
       <View
-        style={{ height: this.state.height + 20 }}
+        style={{ height: this.state.height + 8 }}
         onLayout={(event) => {
           const height = event.nativeEvent.layout.height;
-          this.props.handleCKEditorHeight(parseInt(height + 20))
+          this.props.handleCKEditorHeight(parseInt(height + 8))
         }}
       >
         <WebView
