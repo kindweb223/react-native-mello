@@ -261,6 +261,7 @@ class CardNewScreen extends React.Component {
           // cardName: this.props.shareUrl,
           idea: this.props.shareUrl,
         }, () => {
+          this.refCKEditor.postMessage('content: ' + this.props.shareUrl);
           this.checkUrls();
           // Upload file received from Dashboard
           if (this.props.fileData && !_.isEmpty(this.props.fileData)) {
