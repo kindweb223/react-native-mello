@@ -1541,7 +1541,6 @@ class CardDetailScreen extends React.Component {
         activeTextStyle = null
       }
     }
-    console.log('IDEA: ', this.state.idea)
 
     return (
       <TouchableOpacity
