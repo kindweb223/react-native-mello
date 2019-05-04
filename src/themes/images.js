@@ -1,3 +1,5 @@
+import { Platform } from 'react-native'
+
 const images = {
     addProfile: require('../../assets/images/Feed_option/AddPeopleGrey.png'),
     archive: require('../../assets/images/Feed_option/ArchiveGrey.png'),
@@ -6,8 +8,8 @@ const images = {
     edit: require('../../assets/images/Feed_option/EditGrey.png'),
     pinGrey: require('../../assets/images/Feed_option/PinGrey.png'),
     pinActive: require('../../assets/images/Feed_option/PinBlue.png'),
-    shareLinkGrey: require('../../assets/images/Feed_option/ShareLinkGrey.png'),
-    shareLinkActive: require('../../assets/images/Feed_option/ShareLinkBlue.png'),
+    shareLinkGrey: Platform.OS === 'ios' ? require('../../assets/images/Feed_option/ShareLinkGrey.png') : require('../../assets/images/Feed_option/ShareLinkGreyAndroid.png'),
+    shareLinkActive: Platform.OS === 'ios' ? require('../../assets/images/Feed_option/ShareLinkBlue.png') : require('../../assets/images/Feed_option/ShareLinkBlueAndroid.png'),
     leave: require('../../assets/images/Feed_option/LeaveGrey.png'),
     placeholder: require('../../assets/images/placeholder.png'),
     iconHashtag: require('../../assets/images/IconHashtag/IconMediumHashtagWhite.png'),
