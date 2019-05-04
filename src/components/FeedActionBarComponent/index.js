@@ -223,7 +223,7 @@ class FeedActionBarComponent extends React.Component {
                   activeOpacity={0.7}
                   onPress={this.onPressShare}
                 >
-                  <Entypo name="share-alternative" style={styles.shareIcon} size={22} color="#fff" />
+                  <Entypo name={Platform.OS === 'ios' ? 'share-alternative' : 'share'} style={styles.shareIcon} size={22} color="#fff" />
                   <Text style={styles.buttonText}>Share</Text>
                 </TouchableOpacity>
               : <TouchableOpacity 
