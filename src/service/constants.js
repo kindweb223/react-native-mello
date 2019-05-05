@@ -97,12 +97,12 @@ export default {
     'text-big': { backgroundColor: 'transparent', fontSize: 24, fontWeight: 'bold', lineHeight: 32, color: 'black' }
   },
   HTML_TAGS_STYLE: {
-    'p': { backgroundColor: 'transparent', fontSize: 16, marginTop: 0, marginBottom: 0, lineHeight: 22 },
-    'ul': { paddingLeft: 0, marginLeft: 0, marginTop: 0, marginBottom: 0, paddingBottom: 8, fontSize: 16 },
-    'ol': { paddingLeft: 0, marginLeft: 0, marginTop: 0, marginBottom: -8, padding: 0, fontSize: 16, lineHeight: 22 },
-    'li': { paddingLeft: 0, marginTop: 0, marginBottom: -8, padding: 0, fontSize: 16, lineHeight: 22 },
+    'p': { backgroundColor: 'transparent', fontSize: 16, marginTop: 0, marginBottom: 15 },
+    'ul': { paddingLeft: 0, marginLeft: 0, marginTop: 0, marginBottom: 10, padding: 0, fontSize: 16 },
+    'ol': { paddingLeft: 0, marginLeft: 0, marginTop: 0, marginBottom: 10, padding: 0, fontSize: 16 },
+    'li': { paddingLeft: 0, marginTop: 0, padding: 0, fontSize: 16 },
     'h1': { backgroundColor: 'transparent' },
-    'h2': { backgroundColor: 'transparent', fontSize: 24, fontWeight: 'bold', lineHeight: 32, color: 'black', marginTop: 16, marginBottom: 20 },
+    'h2': { backgroundColor: 'transparent', fontSize: 24, fontWeight: 'bold', lineHeight: 32, color: 'black', marginBottom: 15 },
     'h3': { backgroundColor: 'transparent' },
     'h4': { backgroundColor: 'transparent' },
     'h5': { backgroundColor: 'transparent' },

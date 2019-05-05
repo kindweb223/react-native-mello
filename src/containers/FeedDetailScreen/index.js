@@ -123,12 +123,6 @@ const TagCreateMode = 2;
 
 const PAGE_COUNT = 50
 
-const fontSpecs = {
-  fontFamily: undefined,
-  fontSize: 13,
-  fontWeight: '500'
-}
-
 const EMPTY_ICON = require('../../../assets/images/empty_state/NotificationEmptyState.png')
 
 class FeedDetailScreen extends React.Component {
@@ -560,15 +554,10 @@ class FeedDetailScreen extends React.Component {
         let imageHeight = 0
 
         const { limitLine } = await COMMON_FUNC.getHtmlHeight(idea.idea, hasCoverImage)
-
         const clipText = clip(idea.idea, idea.idea.length, { html: true, maxLines: limitLine === 0 ? 1 : limitLine })
         const { textSize } = await COMMON_FUNC.getHtmlHeight(clipText, hasCoverImage)
 
-        if (hasCoverImage) {
-          contentHeight = 80 + (textSize > 100 ? 100 : textSize)
-        } else {
-          contentHeight = 80 + (textSize > 180 ? 180 : textSize)
-        }
+        contentHeight = 80 + textSize
 
         // let hasCoverImage = idea.coverImage && idea.coverImage.length > 0
         // let cardHeight = 0

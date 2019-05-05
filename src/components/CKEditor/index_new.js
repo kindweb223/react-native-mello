@@ -44,6 +44,7 @@ class CKEditor extends React.Component {
       const keyCode = msgData.split('>>>!hunt!<<<')[0];
 
       console.log("[CKEditor] Event = " + keyCode)
+      console.log("[CKEditor] Data = " + msgData)
 
       if (keyCode === 'NO_KEYCODE' || keyCode === 'PASTE_COMMAND') {
         const content = msgData.split('>>>!hunt!<<<')[2];
