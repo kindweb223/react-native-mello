@@ -557,7 +557,7 @@ class FeedDetailScreen extends React.Component {
         const clipText = clip(idea.idea, idea.idea.length, { html: true, maxLines: limitLine === 0 ? 1 : limitLine })
         const { textSize } = await COMMON_FUNC.getHtmlHeight(clipText, hasCoverImage)
 
-        contentHeight = 80 + textSize
+        contentHeight = 80 + textSize + 5
 
         // let hasCoverImage = idea.coverImage && idea.coverImage.length > 0
         // let cardHeight = 0
