@@ -71,7 +71,6 @@ const styles = StyleSheet.create({
     paddingBottom: 8
   },
   htmlView: {
-    paddingHorizontal: 10,
     marginBottom: 4,
     width: '100%'
   },
@@ -80,11 +79,11 @@ const styles = StyleSheet.create({
     left: 0,
     top: 0,
     marginBottom: 0,
-    paddingLeft: 0,
-    paddingRight: 0,
+    paddingLeft: 10,
+    paddingRight: 10,
     paddingTop: 0,
     paddingBottom: 0,
-    width: '100%',
+    width: '100%'
   },
 })
 

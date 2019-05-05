@@ -41,6 +41,7 @@ class FeedCardExtendComponent extends React.Component {
 
     const hasCoverImage = idea.coverImage && idea.coverImage.length > 0
     const viewMode = COMMON_FUNC.getCardViewMode(feedo.currentFeed, idea)
+    console.log('masonryData: ', masonryData.clipText)
 
     return (
       <View style={[styles.container, longSelected && styles.selected, longHold && viewMode === CONSTANTS.CARD_VIEW && { opacity: 0.4 }]}>
@@ -73,7 +74,7 @@ class FeedCardExtendComponent extends React.Component {
               )}
 
               {_.has(idea, 'idea') && idea.idea.length !== null && idea.idea.length > 0 && (
-                <ScrollView style={[styles.htmlView, { height: masonryData.contentHeight - 80 }]} scrollEnabled={false}>
+                <View style={[styles.htmlView, { height: masonryData.contentHeight - 80 }]}>
                   <HTML
                     html={masonryData.clipText}
                     containerStyle={styles.textHtmlIdea}
@@ -91,7 +92,7 @@ class FeedCardExtendComponent extends React.Component {
                     onLongPress={() => longHold ? {} : this.props.onLinkLongPress()}
                     suppressHighlighting={true}
                   /> */}
-                </ScrollView>
+                </View>
               )}
             </View>
 
