@@ -15,6 +15,15 @@ import SharedGroupPreferences from 'react-native-shared-group-preferences'
 import moment from 'moment'
 import rnTextSize from 'react-native-text-size'
 
+export const handleFirstFlowTipStorageData = () => {
+  AsyncStorage.setItem('FirstFlowTip', JSON.stringify('true'))
+}
+
+export const handleFirstInviteTipStorageData = () => {
+  AsyncStorage.setItem('FirstInviteTip', JSON.stringify('true'))
+}
+
+
 /**
  * If the user is the invitee, return true
  */

@@ -58,6 +58,7 @@ import AlertController from '../../components/AlertController'
 import SideMenuComponent from '../../components/SideMenuComponent'
 import * as COMMON_FUNC from '../../service/commonFunc'
 import SearchScreen from '../SearchScreen';
+import FirstTimeEntyTipComponent from '../../components/FirstTimeEntyTipComponent'
 
 const SEARCH_ICON = require('../../../assets/images/Search/Grey.png')
 const SETTING_ICON = require('../../../assets/images/Settings/Grey.png')
@@ -154,7 +155,8 @@ class HomeScreen extends React.Component {
       fileData: null,
       isVisibleSelectFeedoModal: false,
       addLinkURL: '',
-      selectedAddLink: '',  // value to set if the user taps add link
+      selectedAddLink: '',  // value to set if the user taps add link,
+      showFirstFlowTip: false
     };
 
     this.currentRef = null;
@@ -164,11 +166,29 @@ class HomeScreen extends React.Component {
     this.animatedSelectFeed = new Animated.Value(1);
   }
 
+  async showFirstFlowTip() {
+    let firstFlowTipAsyncData = await AsyncStorage.getItem('FirstFlowTip')
+    let firstFlowTipData = JSON.parse(firstFlowTipAsyncData)
+
+    if(!firstFlowTipData) {
+      this.setState({ showFirstFlowTip: true })
+    }
+  }
+
   showSharePermissionModal(permissionInfo) {
     // If we haven't asked to enable share extension before
     if (!permissionInfo) {
         this.setState({ showSharePermissionModal: true })
+    } else {
+      // show tip when opening app the second time
+      this.showFirstFlowTip()
     }
+  }
+
+  hideSharePermissionModal() {
+    this.setState({ showSharePermissionModal: false })
+    // hide tip when dismiss the share permission modal
+    this.showFirstFlowTip()
   }
 
   onCloseSharePermissionModal = () => {
@@ -182,6 +202,8 @@ class HomeScreen extends React.Component {
   onSkipShareWidget = () => {
     AsyncStorage.setItem('permissionInfo', JSON.stringify('true'))
     this.setState({ showSharePermissionModal: false, enableShareWidget: false })
+    // hide tip when dismiss the share permission modal
+    this.showFirstFlowTip()
   }
 
   onEnableShareWidget = () => {
@@ -500,6 +522,12 @@ class HomeScreen extends React.Component {
                           Actions.currentScene !== 'LikesListScreen' && Actions.currentScene !== 'ActivityLikesListScreen')) {
       this.state.isRefreshing && this.setState({ isRefreshing: false })                   
       await this.setBubbles(feedoList)
+    }
+
+    if (prevProps.feedo.loading !== 'UPDATE_FEED_FULFILLED' && feedo.loading === 'UPDATE_FEED_FULFILLED') {
+      // Delete Asyncstorage data for firstFlowTip
+      COMMON_FUNC.handleFirstFlowTipStorageData()
+      this.setState({ showFirstFlowTip: false })
     }
 
     if (feedo.loading === 'SET_FEED_DETAIL_ACTION' && prevProps.feedo.feedDetailAction !== feedo.feedDetailAction) {
@@ -1372,6 +1400,7 @@ class HomeScreen extends React.Component {
 
   dismiss = (e) => {
     this.setState({ showShareTipsModal: false })
+    this.showFirstFlowTip()
   };
 
   onFilterShow = (type, selectedItemTitle) => {
@@ -1456,6 +1485,16 @@ class HomeScreen extends React.Component {
 
   updateMenuState(isSideMenuOpen) {
     this.setState({ isSideMenuOpen });
+  }
+
+  onCloseTip = () => {
+    // Delete Asyncstorage data for firstFlowTip
+    COMMON_FUNC.handleFirstFlowTipStorageData()
+    this.setState({ showFirstFlowTip: false })
+  }
+
+  onCreateFlow = () => {
+    this.onOpenNewFeedModal()
   }
 
   render () {
@@ -1614,6 +1653,14 @@ class HomeScreen extends React.Component {
           />
         )}
 
+        {!loading && this.state.showFirstFlowTip && (
+          <FirstTimeEntyTipComponent
+            type={0}
+            onCloseTip={this.onCloseTip}
+            onTapFlow={this.onCreateFlow}
+          />
+        )}
+
         {this.renderNewFeedModals}
 
         {isLongHoldMenuVisible && (
@@ -1672,8 +1719,8 @@ class HomeScreen extends React.Component {
           backdropColor={COLORS.MODAL_BACKDROP}
           backdropOpacity={0.4}
           animationInTiming={500}
-          onBackdropPress={() => this.setState({ showSharePermissionModal: false })}
-          onBackButtonPress={() => this.setState({ showSharePermissionModal: false })}
+          onBackdropPress={() => this.hideSharePermissionModal()}
+          onBackButtonPress={() => this.hideSharePermissionModal()}
           onModalHide={() => this.onCloseSharePermissionModal()}
         >
           <ShareWidgetPermissionModal

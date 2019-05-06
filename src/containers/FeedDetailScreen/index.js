@@ -108,6 +108,7 @@ import COMMON_STYLES from '../../themes/styles'
 import Analytics from '../../lib/firebase'
 import { images } from '../../themes'
 import Button from '../../components/Button';
+import FirstTimeEntyTipComponent from '../../components/FirstTimeEntyTipComponent';
 
 const TOASTER_DURATION = 3000
 
@@ -183,6 +184,7 @@ class FeedDetailScreen extends React.Component {
       MasonryListData: [],
       isSearchVisible: false,
       badgeCount: 0,
+      showFirstInviteTip: false
     };
     this.animatedOpacity = new Animated.Value(0)
     this.menuOpacity = new Animated.Value(0)
@@ -236,7 +238,7 @@ class FeedDetailScreen extends React.Component {
   }
 
   async UNSAFE_componentWillReceiveProps(nextProps) {
-    const { feedo, card } = nextProps
+    const { feedo, card, user } = nextProps
 
     if (this.state.isVisibleSelectFeedo) {
       if (this.props.feedo.loading !== 'GET_FEEDO_LIST_PENDING' && feedo.loading === 'GET_FEEDO_LIST_PENDING') {
@@ -274,6 +276,22 @@ class FeedDetailScreen extends React.Component {
 
     if (card.loading === 'CREATE_CARD_FULFILLED') {
       this.setState({ showBubble: false })
+    }
+
+    if (this.props.card.loading !== 'UPDATE_CARD_FULFILLED' && card.loading === 'UPDATE_CARD_FULFILLED') {
+      let firstInviteAsyncData = await AsyncStorage.getItem('FirstInviteTip')
+      let firstInviteData = JSON.parse(firstInviteAsyncData)
+      let bubbleFirstCardAsyncData = await AsyncStorage.getItem('BubbleFirstCardTimeCreated')
+      let bubbleFirstCardData = JSON.parse(bubbleFirstCardAsyncData)
+      console.log('bubbleFirstCardData: ', bubbleFirstCardData)
+      if (bubbleFirstCardData && (bubbleFirstCardData.userId === user.userInfo.id && bubbleFirstCardData.state === 'true') && !firstInviteData) {
+        this.setState({ showFirstInviteTip: true })
+      }
+    }
+
+    if (this.props.feedo.loading === 'INVITE_HUNT_PENDING' && feedo.loading === 'INVITE_HUNT_FULFILLED') {
+      // hide first invite tip if invited the person to this flow
+      this.onCloseInviteTip()
     }
     
     if ((this.props.feedo.loading !== 'GET_FEED_DETAIL_FULFILLED' && feedo.loading === 'GET_FEED_DETAIL_FULFILLED') ||
@@ -445,8 +463,15 @@ class FeedDetailScreen extends React.Component {
   async setBubbles(currentFeed) {
     const { user } = this.props
 
+    let firstInviteAsyncData = await AsyncStorage.getItem('FirstInviteTip')
+    let firstInviteData = JSON.parse(firstInviteAsyncData)
+
     let bubbleFirstCardAsyncData = await AsyncStorage.getItem('BubbleFirstCardTimeCreated')
     let bubbleFirstCardData = JSON.parse(bubbleFirstCardAsyncData)
+
+    if (bubbleFirstCardData && !firstInviteData) {
+      this.setState({ showFirstInviteTip: true })
+    }
 
     if (currentFeed.ideas.length > 0) {
       const bubbleAsyncData = await AsyncStorage.getItem('CardBubbleState')
@@ -1515,6 +1540,16 @@ class FeedDetailScreen extends React.Component {
     return cardHeight
   }
 
+  onCloseInviteTip = () => {
+    // Delete Asyncstorage data for firstInviteTip
+    COMMON_FUNC.handleFirstInviteTipStorageData()
+    this.setState({ showFirstInviteTip: false })
+  }
+
+  onInviteFlow = () => {
+    this.handleShare()
+  }
+
   renderEmptyView = (loading) => {
     if (loading) {
       return (
@@ -1593,7 +1628,6 @@ class FeedDetailScreen extends React.Component {
 
             </View>
           )}
-
 
           <Animated.ScrollView
             showsVerticalScrollIndicator={false}
@@ -1902,6 +1936,14 @@ class FeedDetailScreen extends React.Component {
           tintColor={COLORS.PURPLE}
           onPress={(index) => this.onTapMediaPickerActionSheet(index)}
         />
+
+        {this.state.showFirstInviteTip && (
+          <FirstTimeEntyTipComponent
+            type={1}
+            onCloseTip={this.onCloseInviteTip}
+            onTapFlow={this.onInviteFlow}
+          />
+        )}
 
         {this.state.apiLoading && <LoadingScreen />}
 
