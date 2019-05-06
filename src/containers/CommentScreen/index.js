@@ -217,6 +217,33 @@ class CommentScreen extends React.Component {
     this.setState({ extendedCommentList })
   }
 
+  convertComment() {
+    let { comment } = this.state
+    const { invitees } = this.props.feedo.currentFeed
+
+    invitees.map(item => {
+      const displayName = `${item.userProfile.firstName} ${item.userProfile.lastName}`
+      if (comment.indexOf(`@${displayName}`) !== -1) {
+        comment = comment.replace(`@${displayName}`, `<@{${item.id}}>`)
+      }
+    })
+
+    return comment
+  }
+
+  revertComment(comment) {
+    const { invitees } = this.props.feedo.currentFeed
+
+    invitees.map(item => {
+      const displayName = `${item.userProfile.firstName} ${item.userProfile.lastName}`
+      if (comment.content.indexOf(item.id) !== -1) {
+        comment.content = comment.content.replace(`<@{${item.id}}>`, `@${displayName}`)
+      }
+    })
+
+    return comment
+  }
+
   getCommentUser(comment) {
     const { invitees } = this.props.feedo.currentFeed;
     const invitee = _.find(invitees, invitee => invitee.id === comment.huntInviteeId);
@@ -285,13 +312,14 @@ class CommentScreen extends React.Component {
   onSend() {
     const { commentList, selectedItemIndex, comment } = this.state
 
+    const updatedComment = this.convertComment()
     if (selectedItemIndex === -1) {
-      this.props.addCardComment(this.props.idea.id, comment);
+      this.props.addCardComment(this.props.idea.id, updatedComment);
     } else {
       this.props.updateCardComment(
         this.props.idea.id, 
         commentList[selectedItemIndex].id,
-        comment
+        updatedComment
       );
     }
     this.setState({ 
@@ -307,6 +335,7 @@ class CommentScreen extends React.Component {
   renderItem({item, index}) {
     const { currentFeed } = this.props.feedo
     user = this.getCommentUser(item);
+    item = this.revertComment(item)
 
     let editable = false
     if (COMMON_FUNC.isFeedOwnerEditor(currentFeed) && user && user.id === this.props.user.userInfo.id) {
