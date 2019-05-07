@@ -21,13 +21,21 @@ class CKEditor extends React.Component {
     super(props);
     this.state = {
       placeholder: '',
-      init: false
+      init: false,
+      didLoadWebview: false
     }
   }
 
   componentWillMount() {
     const { placeholder, initHeight } = this.props;
     this.setState({ placeholder })
+  }
+  
+  shouldComponentUpdate(nextProps, nextState) {
+    if (this.state.didLoadWebview == nextState.didLoadWebview) {
+      return false
+    }
+    return true 
   }
 
   postMessage = payload => {
@@ -45,6 +53,11 @@ class CKEditor extends React.Component {
       if (keyCode === 'NO_KEYCODE') {
         const content = msgData.split('>>>!hunt!<<<')[2];
         this.props.onChange(content);
+
+        // Because the inhability to change the placeholder in CKEditor, we set the opacity to 0 for it until it loads.
+        // Because there was no working event that was only fired on CKEditor finished loading, I had to add it here.
+        // shouldComponentUpdate method prevents multiple rerenders caused by this:
+        this.setState({ didLoadWebview: true })
       } if (keyCode === 'FOCUS_COMMAND') {
         const command = msgData.split('>>>!hunt!<<<')[1];
         this.props.handleCommands(command.split(':'))
@@ -80,7 +93,7 @@ class CKEditor extends React.Component {
     ) + 'Web.bundle/ckeditor.html';
 
     return (
-      <View style={{ flex: 1 }}>
+      <View style={{ flex: 1 }} opacity={ this.state.didLoadWebview ? 1 : 0 }>
         <WebView
           {...this.props}
           ref={c => this.webview = c}
