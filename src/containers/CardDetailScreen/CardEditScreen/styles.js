@@ -1,4 +1,4 @@
-import { StyleSheet } from 'react-native'
+import { StyleSheet, Platform } from 'react-native'
 import COLORS from '../../../service/colors'
 import CONSTANTS from '../../../service/constants'
 
@@ -38,13 +38,17 @@ const styles = StyleSheet.create({
     width: '100%',
     backgroundColor: 'transparent',
     paddingHorizontal: CONSTANTS.PADDING,
-    height: 55,
-    bottom: 0,
+    paddingVertical: CONSTANTS.PADDING,
+    marginBottom: Platform.OS === 'ios' ? 0 : 24,
+    marginVertical: 0,
+    height: Platform.OS === 'ios' ? 40 : 52,
+    flexDirection: 'row',
+    alignItems: 'center'
   },
   hideKeyboardContainer: {
     position: 'absolute',
     right: 16,
-    bottom: 58,
+    bottom: 40,
   },
   buttonItemContainer: {
     width: 32,
