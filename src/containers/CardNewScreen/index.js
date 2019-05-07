@@ -478,6 +478,16 @@ class CardNewScreen extends React.Component {
       // updating a card
       // loading = true;
     } else if (this.props.card.loading !== types.UPDATE_CARD_FULFILLED && nextProps.card.loading === types.UPDATE_CARD_FULFILLED) {
+      // Set Asyncstorage data if create card
+      let firstCardAsyncData = await AsyncStorage.getItem('FirstCardCreated')
+      let firstCardData = JSON.parse(firstCardAsyncData)
+
+      if (!firstCardData) {
+        if (this.props.feedo.currentFeed.metadata.owner) {
+          AsyncStorage.setItem('FirstCardCreated', JSON.stringify('true'))
+        }
+      }
+
       // success in updating a card
       if (this.props.cardMode === CONSTANTS.MAIN_APP_CARD_FROM_DASHBOARD || this.props.cardMode === CONSTANTS.SHARE_EXTENTION_CARD) {
         this.saveFeedId();

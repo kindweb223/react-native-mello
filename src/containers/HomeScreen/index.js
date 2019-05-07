@@ -1658,6 +1658,7 @@ class HomeScreen extends React.Component {
             type={0}
             onCloseTip={this.onCloseTip}
             onTapFlow={this.onCreateFlow}
+            delay={5000}
           />
         )}
 
