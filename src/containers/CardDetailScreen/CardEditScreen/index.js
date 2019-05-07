@@ -195,7 +195,7 @@ class CardEditScreen extends React.Component {
 
   render () {
     const contentContainerStyle = {
-      paddingTop: CONSTANTS.STATUSBAR_HEIGHT,
+      paddingTop: Platform.OS === 'ios' ? CONSTANTS.STATUSBAR_HEIGHT : 0,
       top: 0,
       position: 'absolute',
       height: Animated.subtract(CONSTANTS.SCREEN_HEIGHT, this.animatedKeyboardHeight)
