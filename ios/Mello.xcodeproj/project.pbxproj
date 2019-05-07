@@ -102,6 +102,8 @@
 		39E17C5622707D100086ABB4 /* GoogleAppMeasurement.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 39E17C43227079ED0086ABB4 /* GoogleAppMeasurement.framework */; };
 		39E17C5722707D100086ABB4 /* GoogleUtilities.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 39E17C42227079EC0086ABB4 /* GoogleUtilities.framework */; };
 		39E17C5822707D100086ABB4 /* nanopb.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 39E17C40227079EB0086ABB4 /* nanopb.framework */; };
+		39EB28072281B4840081E3DB /* UIImage+WebPDecoder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 39EB28062281B4830081E3DB /* UIImage+WebPDecoder.swift */; };
+		39EB280B2281B4DB0081E3DB /* WebP.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 39EB280A2281B4DB0081E3DB /* WebP.framework */; };
 		45A806F94F774736BDFCF564 /* libBugsnagReactNative.a in Frameworks */ = {isa = PBXBuildFile; fileRef = D9E1BD18BB5B4D62B4263950 /* libBugsnagReactNative.a */; };
 		47CA4A9854C645189A59042C /* libRNDocumentPicker.a in Frameworks */ = {isa = PBXBuildFile; fileRef = CEF9CE0D4C3B419DAD8284A6 /* libRNDocumentPicker.a */; };
 		4C030DDBB9734D8CB1045CEB /* libBVLinearGradient.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 1AE0342E1F8E4EB593320F3B /* libBVLinearGradient.a */; };
@@ -821,6 +823,8 @@
 		39E17C45227079EE0086ABB4 /* FirebaseInstanceID.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = FirebaseInstanceID.framework; sourceTree = "<group>"; };
 		39E17C46227079EE0086ABB4 /* FirebaseAnalytics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = FirebaseAnalytics.framework; sourceTree = "<group>"; };
 		39E17C4E22707A220086ABB4 /* module.modulemap */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = "sourcecode.module-map"; path = module.modulemap; sourceTree = "<group>"; };
+		39EB28062281B4830081E3DB /* UIImage+WebPDecoder.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UIImage+WebPDecoder.swift"; sourceTree = "<group>"; };
+		39EB280A2281B4DB0081E3DB /* WebP.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = WebP.framework; sourceTree = "<group>"; };
 		44C268ED8ACC4BCE9CDA61FC /* libRNDeviceInfo.a */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = archive.ar; path = libRNDeviceInfo.a; sourceTree = "<group>"; };
 		47BA3513B6514BE58476D7B4 /* libRNImagePicker.a */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = archive.ar; path = libRNImagePicker.a; sourceTree = "<group>"; };
 		48E815D86AC4450E91A11738 /* libRNImgToBase64.a */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = archive.ar; path = libRNImgToBase64.a; sourceTree = "<group>"; };
@@ -997,6 +1001,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				39EB280B2281B4DB0081E3DB /* WebP.framework in Frameworks */,
 				39E17C4F22707D100086ABB4 /* Crashlytics.framework in Frameworks */,
 				39E17C5022707D100086ABB4 /* Fabric.framework in Frameworks */,
 				39E17C5122707D100086ABB4 /* FIRAnalyticsConnector.framework in Frameworks */,
@@ -1208,6 +1213,7 @@
 		396C17DF22527E68001297F6 /* Helpers */ = {
 			isa = PBXGroup;
 			children = (
+				39EB28062281B4830081E3DB /* UIImage+WebPDecoder.swift */,
 				39C6257B2254EB6F001FBD79 /* KeyboardHelper.swift */,
 				396C1951225285A8001297F6 /* FLAnimatedImage */,
 				396C17F022527ECF001297F6 /* AssetLoader.swift */,
@@ -1439,6 +1445,7 @@
 		39E17C3C22706F720086ABB4 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				39EB280A2281B4DB0081E3DB /* WebP.framework */,
 				39E17C4E22707A220086ABB4 /* module.modulemap */,
 				39E17C44227079ED0086ABB4 /* FIRAnalyticsConnector.framework */,
 				39E17C46227079EE0086ABB4 /* FirebaseAnalytics.framework */,
@@ -2942,6 +2949,7 @@
 				396C17D922527E4C001297F6 /* API.swift in Sources */,
 				396C182D22528001001297F6 /* NewFlowCell.swift in Sources */,
 				396C181522527FA6001297F6 /* LinkView.swift in Sources */,
+				39EB28072281B4840081E3DB /* UIImage+WebPDecoder.swift in Sources */,
 				396C17E822527EA0001297F6 /* FlowSelectorFooter.swift in Sources */,
 				396C1CD72253A321001297F6 /* APIError.swift in Sources */,
 				396C18392252801B001297F6 /* NewFlowViewController.swift in Sources */,
@@ -3494,6 +3502,7 @@
 					"$(inherited)",
 					"$(PROJECT_DIR)/ShareExtension",
 					"$(PROJECT_DIR)/ShareExtension/Frameworks",
+					"$(PROJECT_DIR)/ShareExtension/Frameworks/WebP.framework",
 				);
 				GCC_C_LANGUAGE_STANDARD = gnu11;
 				GCC_NO_COMMON_BLOCKS = YES;
@@ -3548,6 +3557,7 @@
 					"$(inherited)",
 					"$(PROJECT_DIR)/ShareExtension",
 					"$(PROJECT_DIR)/ShareExtension/Frameworks",
+					"$(PROJECT_DIR)/ShareExtension/Frameworks/WebP.framework",
 				);
 				GCC_C_LANGUAGE_STANDARD = gnu11;
 				GCC_NO_COMMON_BLOCKS = YES;
