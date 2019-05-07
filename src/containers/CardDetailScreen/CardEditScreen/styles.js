@@ -10,8 +10,6 @@ const styles = StyleSheet.create({
     backgroundColor: 'white'
   },
   headerContainer: {
-    marginTop: 5,
-    paddingHorizontal: 6,
     backgroundColor: '#fff',
     flexDirection: 'row',
     justifyContent: 'space-between',
@@ -19,13 +17,14 @@ const styles = StyleSheet.create({
     height: 55
   },
   closeButtonView: {
-    paddingHorizontal: 10,
+    paddingHorizontal: CONSTANTS.PADDING,
     height: 34,
     width: 90,
     justifyContent: 'center',
     alignItems: 'flex-start'
   },
   textButton: {
+    color: '#000',
     fontSize: 16,
     lineHeight: 22,
     fontWeight: '500',
