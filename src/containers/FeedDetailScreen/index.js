@@ -1540,8 +1540,8 @@ class FeedDetailScreen extends React.Component {
               activeOpacity={0.7}
               onPress={() => this.onOpenNewCardModal() }
             >
-              <View style={[{height: 34, width: 180, backgroundColor:COLORS.PURPLE, borderRadius: 16, justifyContent: 'center'}]}>
-                <Text style={[styles.textButton, { color: 'white', fontSize: 15, textAlign: 'center', fontWeight: 'normal'}]}>Create your first card</Text>
+              <View style={[{height: 32, width: 164, backgroundColor:COLORS.PURPLE, borderRadius: 6, justifyContent: 'center'}]}>
+                <Text style={[styles.textButton, { color: 'white', fontSize: 14, textAlign: 'center', fontWeight: '500'}]}>Create your first card</Text>
               </View>
             </TouchableOpacity>
           </View>
