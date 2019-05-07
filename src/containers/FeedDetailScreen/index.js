@@ -277,20 +277,6 @@ class FeedDetailScreen extends React.Component {
     if (card.loading === 'CREATE_CARD_FULFILLED') {
       this.setState({ showBubble: false })
     }
-
-    // if (this.props.card.loading !== 'UPDATE_CARD_FULFILLED' && card.loading === 'UPDATE_CARD_FULFILLED') {
-    //   let firstCardAsyncData = await AsyncStorage.getItem('FirstCardCreated')
-    //   let firstCardData = JSON.parse(firstCardAsyncData)
-
-    //   if (!firstCardData) {
-    //     AsyncStorage.setItem('FirstCardCreated', JSON.stringify('true'))
-    //   }
-    // }
-
-    if (this.props.feedo.loading === 'INVITE_HUNT_PENDING' && feedo.loading === 'INVITE_HUNT_FULFILLED') {
-      // hide first invite tip if invited the person to this flow
-      this.onCloseInviteTip()
-    }
     
     if ((this.props.feedo.loading !== 'GET_FEED_DETAIL_FULFILLED' && feedo.loading === 'GET_FEED_DETAIL_FULFILLED') ||
         (this.props.feedo.loading !== 'SET_FEED_DETAIL_FROM_STORAGE') ||
@@ -461,22 +447,21 @@ class FeedDetailScreen extends React.Component {
   async setBubbles(currentFeed) {
     const { user } = this.props
 
-    let firstInviteTipAsyncData = await AsyncStorage.getItem('FirstInviteTip')
-    let firstInviteTipData = JSON.parse(firstInviteTipAsyncData)
-    let firstCardAsyncData = await AsyncStorage.getItem('FirstCardCreated')
-    let firstCardData = JSON.parse(firstCardAsyncData)
+    // Show invite tip when create a first acard and never invited anyone to a flow before
+    const firstInviteTipData = await AsyncStorage.getItem('FirstInviteTip')
+    const firstCardData = await AsyncStorage.getItem('FirstCardCreated')
 
     if (!firstInviteTipData && firstCardData) {
-      // show invite tip when create first card and never invited anyone to a flow before
-      if (!this.state.showFilterModal) {
+      if (!this.state.showFirstInviteTip) {
         this.setState({ showFirstInviteTip: true })
       }
     } else {
-      if (this.state.showFilterModal) {
+      if (this.state.showFirstInviteTip) {
         this.setState({ showFirstInviteTip: false })
       }
     }
 
+  
     let bubbleFirstCardAsyncData = await AsyncStorage.getItem('BubbleFirstCardTimeCreated')
     let bubbleFirstCardData = JSON.parse(bubbleFirstCardAsyncData)
 
@@ -1949,7 +1934,7 @@ class FeedDetailScreen extends React.Component {
             type={1}
             onCloseTip={this.onCloseInviteTip}
             onTapFlow={this.onInviteFlow}
-            delay={0}
+            delay={500}
           />
         )}
 

@@ -16,11 +16,15 @@ import moment from 'moment'
 import rnTextSize from 'react-native-text-size'
 
 export const handleFirstFlowTipStorageData = () => {
-  AsyncStorage.setItem('FirstFlowTip', JSON.stringify('true'))
+  AsyncStorage.setItem('FirstFlowTip', JSON.stringify(true))
 }
 
 export const handleFirstInviteTipStorageData = () => {
-  AsyncStorage.setItem('FirstInviteTip', JSON.stringify('true'))
+  AsyncStorage.setItem('FirstInviteTip', JSON.stringify(true))
+}
+
+export const handleProfilePhotoTipStorageData = () => {
+  AsyncStorage.setItem('ProfilePhotoTip', JSON.stringify(true))
 }
 
 
@@ -138,6 +142,11 @@ const handleShareFeed = (feed) => {
   },{
     tintColor: COLORS.PURPLE,
     subject: 'Join my flow on Mello: ' + feed.headline
+  }).then(result => {
+    if (result.action === 'sharedAction') {
+      // Set Asynstorage data when sharing the first flow
+      AsyncStorage.setItem('FirstShareFlow', JSON.stringify(true))
+    }
   })
 }
 

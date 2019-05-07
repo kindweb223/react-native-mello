@@ -156,7 +156,8 @@ class HomeScreen extends React.Component {
       isVisibleSelectFeedoModal: false,
       addLinkURL: '',
       selectedAddLink: '',  // value to set if the user taps add link,
-      showFirstFlowTip: false
+      showFirstFlowTip: false,
+      showProfilePhotoTip: false
     };
 
     this.currentRef = null;
@@ -166,12 +167,32 @@ class HomeScreen extends React.Component {
     this.animatedSelectFeed = new Animated.Value(1);
   }
 
-  async showFirstFlowTip() {
-    let firstFlowTipAsyncData = await AsyncStorage.getItem('FirstFlowTip')
-    let firstFlowTipData = JSON.parse(firstFlowTipAsyncData)
+  // Show tip for first flow
+  async onShowFirstFlowTip() {
+    const firstFlowTipData = await AsyncStorage.getItem('FirstFlowTip')
 
-    if(!firstFlowTipData) {
+    if(firstFlowTipData) {
+      this.setState({ showFirstFlowTip: false })
+    } else {
       this.setState({ showFirstFlowTip: true })
+    }
+  }
+
+  // Show tip for profile photo upload
+  async onShowProfilePhotoTip() {
+    const { user } = this.props
+    const profilePhotoTipData = await AsyncStorage.getItem('ProfilePhotoTip')
+    const FirstInviteFlowData = await AsyncStorage.getItem('FirstInviteTip')
+    const FirstAcceptFlowData = await AsyncStorage.getItem('FirstAcceptFlow')
+
+    if (profilePhotoTipData) {
+      this.setState({ showProfilePhotoTip: false })
+    } else {
+      if ((FirstInviteFlowData || FirstAcceptFlowData) && !user.userInfo.imageUrl) {
+        this.setState({ showProfilePhotoTip: true })
+      } else {
+        this.setState({ showProfilePhotoTip: false })
+      }
     }
   }
 
@@ -180,15 +201,16 @@ class HomeScreen extends React.Component {
     if (!permissionInfo) {
         this.setState({ showSharePermissionModal: true })
     } else {
-      // show tip when opening app the second time
-      this.showFirstFlowTip()
+      // show tips when opening app the second time
+      this.onShowFirstFlowTip()
+      this.onShowProfilePhotoTip()
     }
   }
 
   hideSharePermissionModal() {
     this.setState({ showSharePermissionModal: false })
     // hide tip when dismiss the share permission modal
-    this.showFirstFlowTip()
+    this.onShowFirstFlowTip()
   }
 
   onCloseSharePermissionModal = () => {
@@ -203,7 +225,7 @@ class HomeScreen extends React.Component {
     AsyncStorage.setItem('permissionInfo', JSON.stringify('true'))
     this.setState({ showSharePermissionModal: false, enableShareWidget: false })
     // hide tip when dismiss the share permission modal
-    this.showFirstFlowTip()
+    this.onShowFirstFlowTip()
   }
 
   onEnableShareWidget = () => {
@@ -478,6 +500,33 @@ class HomeScreen extends React.Component {
       }, TOASTER_DURATION)
     }
 
+    if (prevProps.feedo.loading !== 'UPDATE_FEED_INVITATION_FULFILLED' && feedo.loading === 'UPDATE_FEED_INVITATION_FULFILLED') {
+      // Set Asynstorage data when accepting the first flow
+      const FirstAcceptFlowData = await AsyncStorage.getItem('FirstAcceptFlow')
+      if (!FirstAcceptFlowData) {
+        AsyncStorage.setItem('FirstAcceptFlow', JSON.stringify(true))
+        this.onShowProfilePhotoTip()
+      }
+    }
+
+    if (prevProps.feedo.loading !== 'UPDATE_PROFILE_FULFILLED' && feedo.loading === 'UPDATE_PROFILE_FULFILLED') {
+      // Set Asynstorage data when accepting the first flow
+      if (user.userInfo.imageUrl) {
+        this.onCloseProfilePhotoTip()
+      }
+    }
+
+    if (prevProps.feedo.loading !== 'UPDATE_FEED_FULFILLED' && feedo.loading === 'UPDATE_FEED_FULFILLED') {
+      // Close first flow tip
+      this.onCloseFirstFlowTip()
+    }
+
+    if (prevProps.feedo.loading !== 'INVITE_HUNT_FULFILLED' && feedo.loading === 'INVITE_HUNT_FULFILLED') {
+      // hide first invite tip if invited the person to this flow
+      COMMON_FUNC.handleFirstInviteTipStorageData()
+      this.onShowProfilePhotoTip()
+    }
+  
     if (feedo.loading === 'PUBNUB_GET_FEED_DETAIL_FULFILLED' && Actions.currentScene !== 'FeedDetailScreen' ||
         feedo.loading === 'PUBNUB_MOVE_IDEA_FULFILLED' && Actions.currentScene !== 'FeedDetailScreen' ||
         feedo.loading === 'GET_CARD_FULFILLED' && Actions.currentScene !== 'FeedDetailScreen' ||
@@ -509,7 +558,6 @@ class HomeScreen extends React.Component {
       }
     }
 
-
     if ((prevProps.feedo.loading !== 'GET_FEEDO_LIST_FULFILLED' && feedo.loading === 'GET_FEEDO_LIST_FULFILLED') ||
         (prevProps.feedo.loading !== 'UPDATE_FEED_FULFILLED' && feedo.loading === 'UPDATE_FEED_FULFILLED') ||
         (prevProps.feedo.loading !== 'FEED_FULFILLED' && feedo.loading === 'FEED_FULFILLED') ||
@@ -524,11 +572,6 @@ class HomeScreen extends React.Component {
       await this.setBubbles(feedoList)
     }
 
-    if (prevProps.feedo.loading !== 'UPDATE_FEED_FULFILLED' && feedo.loading === 'UPDATE_FEED_FULFILLED') {
-      // Delete Asyncstorage data for firstFlowTip
-      COMMON_FUNC.handleFirstFlowTipStorageData()
-      this.setState({ showFirstFlowTip: false })
-    }
 
     if (feedo.loading === 'SET_FEED_DETAIL_ACTION' && prevProps.feedo.feedDetailAction !== feedo.feedDetailAction) {
       if (feedo.feedDetailAction.action === 'Delete') {
@@ -1104,7 +1147,7 @@ class HomeScreen extends React.Component {
     }
   }
 
-  onOpenNewFeedModal() {
+  onOpenNewFeedModal = () => {
     this.setState({
       isVisibleCreateNewFeedModal: true,
     }, () => {
@@ -1400,7 +1443,7 @@ class HomeScreen extends React.Component {
 
   dismiss = (e) => {
     this.setState({ showShareTipsModal: false })
-    this.showFirstFlowTip()
+    this.onShowFirstFlowTip()
   };
 
   onFilterShow = (type, selectedItemTitle) => {
@@ -1487,14 +1530,16 @@ class HomeScreen extends React.Component {
     this.setState({ isSideMenuOpen });
   }
 
-  onCloseTip = () => {
-    // Delete Asyncstorage data for firstFlowTip
+  onCloseFirstFlowTip = () => {
+    // Delete Asyncstorage data for first flow tip
     COMMON_FUNC.handleFirstFlowTipStorageData()
     this.setState({ showFirstFlowTip: false })
   }
 
-  onCreateFlow = () => {
-    this.onOpenNewFeedModal()
+  onCloseProfilePhotoTip = () => {
+    // Delete Asyncstorage data for profile Photo tip
+    COMMON_FUNC.handleProfilePhotoTipStorageData()
+    this.setState({ showProfilePhotoTip: false })
   }
 
   render () {
@@ -1656,9 +1701,18 @@ class HomeScreen extends React.Component {
         {!loading && this.state.showFirstFlowTip && (
           <FirstTimeEntyTipComponent
             type={0}
-            onCloseTip={this.onCloseTip}
-            onTapFlow={this.onCreateFlow}
+            onCloseTip={this.onCloseFirstFlowTip}
+            onTapFlow={this.onOpenNewFeedModal}
             delay={5000}
+          />
+        )}
+
+        {!loading && this.state.showProfilePhotoTip && (
+          <FirstTimeEntyTipComponent
+            type={2}
+            onCloseTip={this.onCloseProfilePhotoTip}
+            onTapFlow={this.handleSetting}
+            delay={500}
           />
         )}
 
