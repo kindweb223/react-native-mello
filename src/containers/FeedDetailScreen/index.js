@@ -278,16 +278,14 @@ class FeedDetailScreen extends React.Component {
       this.setState({ showBubble: false })
     }
 
-    if (this.props.card.loading !== 'UPDATE_CARD_FULFILLED' && card.loading === 'UPDATE_CARD_FULFILLED') {
-      let firstInviteAsyncData = await AsyncStorage.getItem('FirstInviteTip')
-      let firstInviteData = JSON.parse(firstInviteAsyncData)
-      let bubbleFirstCardAsyncData = await AsyncStorage.getItem('BubbleFirstCardTimeCreated')
-      let bubbleFirstCardData = JSON.parse(bubbleFirstCardAsyncData)
-      console.log('bubbleFirstCardData: ', bubbleFirstCardData)
-      if (bubbleFirstCardData && (bubbleFirstCardData.userId === user.userInfo.id && bubbleFirstCardData.state === 'true') && !firstInviteData) {
-        this.setState({ showFirstInviteTip: true })
-      }
-    }
+    // if (this.props.card.loading !== 'UPDATE_CARD_FULFILLED' && card.loading === 'UPDATE_CARD_FULFILLED') {
+    //   let firstCardAsyncData = await AsyncStorage.getItem('FirstCardCreated')
+    //   let firstCardData = JSON.parse(firstCardAsyncData)
+
+    //   if (!firstCardData) {
+    //     AsyncStorage.setItem('FirstCardCreated', JSON.stringify('true'))
+    //   }
+    // }
 
     if (this.props.feedo.loading === 'INVITE_HUNT_PENDING' && feedo.loading === 'INVITE_HUNT_FULFILLED') {
       // hide first invite tip if invited the person to this flow
@@ -463,15 +461,24 @@ class FeedDetailScreen extends React.Component {
   async setBubbles(currentFeed) {
     const { user } = this.props
 
-    let firstInviteAsyncData = await AsyncStorage.getItem('FirstInviteTip')
-    let firstInviteData = JSON.parse(firstInviteAsyncData)
+    let firstInviteTipAsyncData = await AsyncStorage.getItem('FirstInviteTip')
+    let firstInviteTipData = JSON.parse(firstInviteTipAsyncData)
+    let firstCardAsyncData = await AsyncStorage.getItem('FirstCardCreated')
+    let firstCardData = JSON.parse(firstCardAsyncData)
+
+    if (!firstInviteTipData && firstCardData) {
+      // show invite tip when create first card and never invited anyone to a flow before
+      if (!this.state.showFilterModal) {
+        this.setState({ showFirstInviteTip: true })
+      }
+    } else {
+      if (this.state.showFilterModal) {
+        this.setState({ showFirstInviteTip: false })
+      }
+    }
 
     let bubbleFirstCardAsyncData = await AsyncStorage.getItem('BubbleFirstCardTimeCreated')
     let bubbleFirstCardData = JSON.parse(bubbleFirstCardAsyncData)
-
-    if (bubbleFirstCardData && !firstInviteData) {
-      this.setState({ showFirstInviteTip: true })
-    }
 
     if (currentFeed.ideas.length > 0) {
       const bubbleAsyncData = await AsyncStorage.getItem('CardBubbleState')
@@ -1937,11 +1944,12 @@ class FeedDetailScreen extends React.Component {
           onPress={(index) => this.onTapMediaPickerActionSheet(index)}
         />
 
-        {this.state.showFirstInviteTip && (
+        {!loading && this.state.showFirstInviteTip && (
           <FirstTimeEntyTipComponent
             type={1}
             onCloseTip={this.onCloseInviteTip}
             onTapFlow={this.onInviteFlow}
+            delay={0}
           />
         )}
 
