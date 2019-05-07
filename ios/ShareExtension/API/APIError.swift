@@ -13,12 +13,16 @@ class APIError: Error {
   let message: String
   
   init?(json: JSON?) {
-    guard let code = json?["code"] as? String,
-        let message = json?["message"] as? String else {
-        return nil
+    if let code = json?["code"] as? String,
+        let message = json?["message"] as? String {
+      self.code = code
+      self.message = message
+    } else if let code = json?["status"] as? String,
+      code == "INTERNAL_SERVER_ERROR" {
+      self.code = code
+      self.message = (json?["errors"] as? [String])?.first ?? ""
+    } else {
+      return nil
     }
-    
-    self.code = code
-    self.message = message
   }
 }

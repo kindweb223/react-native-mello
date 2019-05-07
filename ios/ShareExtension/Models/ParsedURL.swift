@@ -30,7 +30,7 @@ class ParsedURL {
         self.images = imageStringArray.compactMap({ URL(string: $0) })
         self.url = url
         self.faviconURL = faviconURL
-        self.description = json["description"] as? String ?? ""
+        self.description = title
         self.title = title
     }
 }
