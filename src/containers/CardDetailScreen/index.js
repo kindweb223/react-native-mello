@@ -1561,7 +1561,7 @@ class CardDetailScreen extends React.Component {
                   placeholder={'Add a note'}
                 />
               : <HTML
-                  html={this.state.idea}
+                  html={this.addExternalParagraphIfNeeded(this.state.idea)}
                   containerStyle={styles.textHtmlIdea}
                   classesStyles={CONSTANTS.HTML_CLASS_STYLES}
                   tagsStyles={CONSTANTS.HTML_TAGS_STYLE}
@@ -2012,6 +2012,15 @@ class CardDetailScreen extends React.Component {
         )}
       </View>
     )
+  }
+
+  // Used for cards with no format
+  addExternalParagraphIfNeeded(text) {
+    if (text.includes('<p>')) {
+      return text
+    } else {
+      return '<p>' + text + '</p>'
+    }
   }
 }
 
