@@ -191,7 +191,6 @@
     })
     .then(editor => {
       window.CKEditor = editor;
-
       editor.model.document.on('change', function() {
         var value = document.getElementById('editor').textContent;
         var height = document.getElementById('editor').clientHeight;
