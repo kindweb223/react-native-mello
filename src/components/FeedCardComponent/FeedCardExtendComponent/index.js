@@ -76,7 +76,7 @@ class FeedCardExtendComponent extends React.Component {
               {_.has(idea, 'idea') && idea.idea.length !== null && idea.idea.length > 0 && (
                 <View style={[styles.htmlView, { height: masonryData.contentHeight - 80 }]}>
                   <HTML
-                    html={this.addExternalDivIfNeeded(masonryData.clipText)}
+                    html={this.addExternalParagraphIfNeeded(masonryData.clipText)}
                     containerStyle={styles.textHtmlIdea}
                     onLinkPress={(evt, href) => this.onPressLink(href)}
                     classesStyles={CONSTANTS.HTML_CLASS_STYLES}
@@ -125,7 +125,8 @@ class FeedCardExtendComponent extends React.Component {
     )
   }
 
-  addExternalDivIfNeeded(text) {
+  // Used for cards with no format
+  addExternalParagraphIfNeeded(text) {
     if (text.includes('<p>')) {
       return text
     } else {
