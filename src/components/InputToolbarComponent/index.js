@@ -100,7 +100,7 @@ export default class InputToolbarComponent extends React.Component {
             textInputMaxHeight={100}
             placeholder='Type comment...'
             trigger={'@'}
-            triggerLocation={'new-word-only'} // 'new-word-only', 'anywhere'
+            triggerLocation={'anywhere'} // 'new-word-only', 'anywhere'
             value={comment}
             onChangeText={(value) => this.onChangeText(value)}
             triggerCallback={this.callback.bind(this)}
