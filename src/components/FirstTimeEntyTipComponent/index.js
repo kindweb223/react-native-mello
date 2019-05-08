@@ -54,6 +54,9 @@ class FirstTimeEntyTipComponent extends React.Component {
   }
 
   get renderTip() {
+    const { type } = this.props
+    const data = TIP_TYPE[type]
+
     return [
       <TouchableOpacity
         key="0"
@@ -88,7 +91,6 @@ class FirstTimeEntyTipComponent extends React.Component {
   render() {
     const { type } = this.props
     const { fadeAnimateOpacity } = this.state
-    const data = TIP_TYPE[type]
 
     if (Platform.OS === 'android') {
       return (
