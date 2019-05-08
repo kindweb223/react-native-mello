@@ -241,43 +241,106 @@ const htmlToPlainText = (html = '') => {
   myHtml = myHtml
     .replace(/<br\/?>/gi, '\n')
     .replace(/&nbsp;/gi, ' ')
-    .replace(/<h2.*?>(.*?)<\/h2>/gi, '\n$1\n')
-    .replace(/<p.*?>(.*?)<\/p>/gi, '\n$1\n')
+    .replace(/<h2.*?>(.*?)<\/h2>/gi, '$1')
+    .replace(/<p.*?>(.*?)<\/p>/gi, '$1')
     .replace(/<(?:.|\s)*?>/g, '')
 
   return myHtml
 }
 
 const splitHtmlToArray = (html) => {
-  var separators = ['\\\<p>', '\\\<li>', '\\\<br />', '\\\<br/>'];
+  var separators = ['\\\<h2>', '\\\<p>', '\\\<ul>', '\\\<ol>', '\\\<li>', '\\\<br />', '\\\<br/>'];
   var htmlArray = html.split(new RegExp(separators.join('|'), 'g'));
   return htmlArray;
 }
 
 const fontSpecs = {
   fontFamily: undefined,
-  fontSize: 14
+  fontSize: 16
 }
 
-const getHtmlHeight = async (html, width) => {
-  const htmlArray = splitHtmlToArray(_.trim(html))
+const fontListParentSpecs = {
+  fontFamily: undefined,
+  fontSize: 16
+}
 
-  let length = 0
+const fontListSpecs = {
+  fontFamily: undefined,
+  fontSize: 16
+}
 
-  const cardWidth = width
+const fontBoldSpecs = {
+  fontFamily: undefined,
+  fontSize: 24,
+  lineHeight: 32
+}
 
-  for (let i = 0; i < htmlArray.length; i ++) {
-    if (htmlArray[i].length > 0) {
-      const textSize = await rnTextSize.measure({
-        text: htmlArray[i],
-        width: cardWidth - 16,
-        ...fontSpecs
-      })
-      length += parseInt(textSize.height)
+const adujstHTMLTagHeight = (text, height, isLastText) => {
+  let adjustedHeight = parseFloat(height)
+  if (text.indexOf('</u>') !== -1 || text.indexOf('</strong>') !== -1 ) {
+    adjustedHeight = height - 15
+  }
+  if (text.indexOf('</h2>') !== -1) {
+    if (height < 45 && isLastText) {
+      adjustedHeight = height - 15
     }
   }
 
-  return { textSize: length, lineCount: htmlArray.length }
+  return adjustedHeight + parseFloat(isLastText === true ? 0 : 15)
+}
+
+const getHtmlHeight = async (html, hasCoverImage) => {
+  let htmlArray = _.compact(splitHtmlToArray(_.trim(html)))
+  htmlArray = _.filter(htmlArray, item => item !== '<ol>' && item !== '<ul>' && item !== '<h2>')
+
+  const cardWidth = (CONSTANTS.SCREEN_SUB_WIDTH - 16) / 2
+  let strLength = 0
+  let limitLine = 0
+
+  for (let i = 0; i < htmlArray.length; i ++) {
+    let textHeight = 0
+    if (_.endsWith(htmlArray[i], '</h2>')) {
+      textSize = await rnTextSize.measure({
+        text: htmlArray[i],
+        width: cardWidth - 20,
+        ...fontBoldSpecs
+      })
+      textHeight = adujstHTMLTagHeight(htmlArray[i], textSize.height, htmlArray.length === (i + 1))
+    } else if (_.endsWith(htmlArray[i], '</ul>') || _.endsWith(htmlArray[i], '</ol>')) {
+      textSize = await rnTextSize.measure({
+        text: htmlArray[i],
+        width: cardWidth - 20,
+        ...fontListParentSpecs
+      })
+      textHeight = adujstHTMLTagHeight(htmlArray[i], textSize.height, htmlArray.length === (i + 1))
+    } else if (_.endsWith(htmlArray[i], '</li>')) {
+      textSize = await rnTextSize.measure({
+        text: htmlArray[i],
+        width: cardWidth - 20,
+        ...fontListSpecs
+      })
+      textHeight = adujstHTMLTagHeight(htmlArray[i], textSize.height, htmlArray.length === (i + 1))
+    } else {
+      textSize = await rnTextSize.measure({
+        text: htmlArray[i],
+        width: cardWidth - 20,
+        ...fontSpecs,
+      })
+      textHeight = adujstHTMLTagHeight(htmlArray[i], textSize.height, htmlArray.length === (i + 1))
+    }
+    strLength += parseFloat(textHeight)
+    if (hasCoverImage) {
+      if (strLength < 101) {
+        limitLine = i
+      }
+    } else {
+      if (strLength < 191) {
+        limitLine = i
+      }
+    }
+  }
+
+  return { textSize: strLength, limitLine: limitLine + 1 }
 }
 
 export {
@@ -307,5 +370,6 @@ export {
   setLastFeed,
   getLastFeed,
   useLastFeed,
-  getHtmlHeight
+  getHtmlHeight,
+  adujstHTMLTagHeight
 }

@@ -82,11 +82,14 @@ import SelectHuntScreen from '../SelectHuntScreen';
 import Analytics from '../../lib/firebase'
 import ToasterComponent from '../../components/ToasterComponent'
 import AlertController from '../../components/AlertController'
+import CKEditor from '../../components/CKEditor'
+import CKEditorToolbar from '../../components/CKEditor/Toolbar'
 
 import * as COMMON_FUNC from '../../service/commonFunc'
 const ATTACHMENT_ICON = require('../../../assets/images/Attachment/Blue.png')
 const IMAGE_ICON = require('../../../assets/images/Image/Blue.png')
-
+const ADDITIONAL_ACTION_ICON = require('../../../assets/images/AdditionalActions/Plus.png')
+const CKEDITOR_TOOLBAR_ICON =require('../../../assets/images/Text/IconsMediumAaGrey.png')
 
 class CardNewScreen extends React.Component {
   constructor(props) {
@@ -127,7 +130,8 @@ class CardNewScreen extends React.Component {
       fileType: '',
       isSaving: false,
       uploadProgress: 0,
-      bottomButtonsPadding: 0
+      bottomButtonsPadding: 0,
+      showCKEditorToolbar: false
     };
 
     this.fileUploading = false,
@@ -143,6 +147,10 @@ class CardNewScreen extends React.Component {
     this.allLinkImages = [];
     this.selectedLinkImages = [];
     this.currentSelectedLinkImageIndex = 0;
+
+    Clipboard.getString().then( content => {
+      this.clipboardContent = content
+    });
 
     this.indexForOpenGraph = 0;
     this.linksForOpenGraph = [];
@@ -174,6 +182,8 @@ class CardNewScreen extends React.Component {
 
     this.coverImageWidth = CONSTANTS.SCREEN_WIDTH
     this.coverImageHeight = CONSTANTS.SCREEN_HEIGHT / 3
+
+    this.ckEditorHeight = 70
 
     if (props.cardMode === CONSTANTS.SHARE_EXTENTION_CARD && props.shareUrl === '' && props.shareImageUrls.length) {
       props.shareImageUrls.forEach( async(imageUri, index) => {
@@ -251,6 +261,7 @@ class CardNewScreen extends React.Component {
           // cardName: this.props.shareUrl,
           idea: this.props.shareUrl,
         }, () => {
+          this.refCKEditor.postMessage('content: ' + this.props.shareUrl);
           this.checkUrls();
           // Upload file received from Dashboard
           if (this.props.fileData && !_.isEmpty(this.props.fileData)) {
@@ -540,6 +551,7 @@ class CardNewScreen extends React.Component {
       }
       
       let currentIdea = this.state.idea;
+      currentIdea = COMMON_FUNC.htmlToPlainText(currentIdea)
       currentIdea = currentIdea.replace(' ', '');
       currentIdea = currentIdea.replace(',', '');
       currentIdea = currentIdea.replace('\n', '');
@@ -547,6 +559,7 @@ class CardNewScreen extends React.Component {
         this.setState({
           idea: nextProps.card.currentOpneGraph.title,
         });
+        this.refCKEditor.postMessage('content: ' + nextProps.card.currentOpneGraph.title);
       }
       this.openGraphLinksInfo.push({
         url: nextProps.card.currentOpneGraph.url,
@@ -635,7 +648,7 @@ class CardNewScreen extends React.Component {
     if (this.props.card.loading !== nextProps.card.loading || this.props.feedo.loading !== nextProps.feedo.loading) {
       if (nextProps.card.error || nextProps.feedo.error) {
 
-        if (nextProps.card.error.code === 'error.hunt.not.found') {
+        if (nextProps.card.error && nextProps.card.error.code === 'error.hunt.not.found') {
           this.props.resetCardError();
           this.props.createFeed();
           return
@@ -663,6 +676,7 @@ class CardNewScreen extends React.Component {
             }
 
             let currentIdea = this.state.idea;
+            currentIdea = COMMON_FUNC.htmlToPlainText(currentIdea)
             currentIdea = currentIdea.replace(' ', '');
             currentIdea = currentIdea.replace(',', '');
             currentIdea = currentIdea.replace('\n', '');
@@ -670,6 +684,7 @@ class CardNewScreen extends React.Component {
               this.setState({
                 idea: nextProps.card.currentOpneGraph.title,
               });
+              this.refCKEditor.postMessage('content: ' + nextProps.card.currentOpneGraph.title);
             }
             this.openGraphLinksInfo.push({
               url: nextProps.card.currentOpneGraph.url,
@@ -707,12 +722,12 @@ class CardNewScreen extends React.Component {
             }
           }
           if (!this.isVisibleErrorDialog) {
-            this.isVisibleErrorDialog = true;
-            AlertController.shared.showAlert('Error', error, [
-              {text: 'Close', onPress: () => {
-                this.isVisibleErrorDialog = false;
-              }},
-            ]);
+            // this.isVisibleErrorDialog = true;
+            // AlertController.shared.showAlert('Error', error, [
+            //   {text: 'Close', onPress: () => {
+            //     this.isVisibleErrorDialog = false;
+            //   }},
+            // ]);
           }
         }
         this.props.resetCardError();
@@ -733,8 +748,6 @@ class CardNewScreen extends React.Component {
   }
 
   async componentDidMount() {
-    this.textInputIdeaRef.focus();
-
     Animated.timing(this.animatedShow, {
       toValue: 1,
       duration: CONSTANTS.ANIMATEION_MILLI_SECONDS,
@@ -801,11 +814,11 @@ class CardNewScreen extends React.Component {
         duration: Platform.OS === 'android' && (this.props.isClipboard === true || this.props.cardMode === CONSTANTS.SHARE_EXTENTION_CARD) ? CONSTANTS.ANIMATEION_MILLI_SECONDS : e.duration,
       }
     ).start(() => {
-      if (this.isDisabledKeyboard === true || !this.textInputIdeaRef) {
+      this.scrollViewRef.scrollToEnd()
+      this.setState({ isShowKeyboardButton: true })
+      if (this.isDisabledKeyboard === true) {
         return;
       }
-
-      this.textInputIdeaRef.focus();
     });
   }
 
@@ -820,7 +833,9 @@ class CardNewScreen extends React.Component {
         toValue: 0,
         duration: Platform.OS === 'android' && (this.props.isClipboard === true || this.props.cardMode === CONSTANTS.SHARE_EXTENTION_CARD) ? CONSTANTS.ANIMATEION_MILLI_SECONDS : e.duration,
       }
-    ).start();
+    ).start(() => {
+      this.setState({ isShowKeyboardButton: false })
+    });
   }
 
   safariViewShow() {
@@ -915,6 +930,7 @@ class CardNewScreen extends React.Component {
     // }
 
     const allUrls = this.state.idea && this.state.idea.match(/(http(s)?:\/\/.)?(www\.)?[-a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,6}\b([-a-zA-Z0-9@:%_\+.~#?&//=]*)/gi);
+
     if (allUrls) {
       let newUrls = [];
       const {
@@ -1053,11 +1069,12 @@ class CardNewScreen extends React.Component {
     this.props.updateCard(this.props.feedo.currentFeed.id, id, cardName, this.state.idea, this.state.coverImage, files, false);
   }
 
-  onAddMedia() {
+  onAddMedia(index) {
+    this.refCKEditor.hideKeyboard()
     Permissions.checkMultiple(['camera', 'photo']).then(response => {
       if (response.camera === 'authorized' && response.photo === 'authorized') {
         //permission already allowed
-        this.imagePickerActionSheetRef.show();
+        this.onTapMediaPickerActionSheet(index)
       }
       else {
         Permissions.request('camera').then(response => {
@@ -1066,7 +1083,7 @@ class CardNewScreen extends React.Component {
             Permissions.request('photo').then(response => {
               if (response === 'authorized') {
                 //photo permission was authorized
-                this.imagePickerActionSheetRef.show();
+                this.onTapMediaPickerActionSheet(index)
               }
               else if (Platform.OS === 'ios') {
                 Permissions.openSettings();
@@ -1082,6 +1099,7 @@ class CardNewScreen extends React.Component {
   }
 
   onAddDocument() {
+    this.refCKEditor.hideKeyboard()
     if (Platform.OS === 'ios') {
       this.PickerDocumentShow();
     }
@@ -1103,6 +1121,24 @@ class CardNewScreen extends React.Component {
     }
   }
   
+  handleAdditonalAction() {
+    this.additionalActionsActionSheetRef.show();
+  }
+
+  onTapAdditionalActionsActionSheet(index) {
+    switch (index) {
+      case 0:
+        this.onAddMedia(index)
+        break;
+      case 1:
+        this.onAddMedia(index)
+        break;
+      case 2:
+        this.onAddDocument()
+        break;
+    }
+  }
+
   PickerDocumentShow () {
     DocumentPicker.show({
       filetype: [DocumentPickerUtil.allFiles()],
@@ -1123,6 +1159,7 @@ class CardNewScreen extends React.Component {
     if (cardMode === CONSTANTS.SHARE_EXTENTION_CARD) {
       return;
     }
+    this.refCKEditor.hideKeyboard()
     Keyboard.dismiss();
   }
 
@@ -1162,7 +1199,6 @@ class CardNewScreen extends React.Component {
   async uploadFile(currentCard, file, type) {
     this.selectedFile = file;
     this.imageUploading = type === 'MEDIA';
-    this.textInputIdeaRef.focus(); // To show progress bar for long image
     let imageFiles = _.filter(currentCard.files, file => file.fileType === 'MEDIA');
     this.setState({
       imageUploadStarted: type === 'MEDIA',
@@ -1217,7 +1253,6 @@ class CardNewScreen extends React.Component {
   onTapMediaPickerActionSheet(index) {
     this.setState({ imageUploading: false });
     this.imageUploading = false;
-    this.textInputIdeaRef.blur(); // To show progress bar for long image
     var options = {
       storageOptions: {
         skipBackup: true,
@@ -1341,8 +1376,12 @@ class CardNewScreen extends React.Component {
     }, async () => {
       const { viewMode } = this.props;
       if (viewMode === CONSTANTS.CARD_NEW) {
-        const clipboardContent = await Clipboard.getString();
-        if (clipboardContent === text) {
+        // We need to strip HTML to match below
+        const plainText = COMMON_FUNC.htmlToPlainText(text)
+        
+        // This is how we detect a link pasted and to check for a url
+        // If 'text' matches the value in clipboard we got a paste
+        if (this.clipboardContent === plainText) {
           if (this.checkUrls()) {
             return;
           }
@@ -1351,9 +1390,14 @@ class CardNewScreen extends React.Component {
     });
   }
 
-  onKeyPressIdea(event) {
-    if (event.nativeEvent.key === ' ' || event.nativeEvent.key === ',' || event.nativeEvent.key === 'Enter') {
-      this.checkUrls();
+  onKeyPressIdea() {
+    console.log("[CKEditor] checking urls...")
+    this.checkUrls();
+  }
+
+  handleCommands = (commands) => {
+    if (this.refCKEditorToolbar) {
+      this.refCKEditorToolbar.handleCommands(commands)
     }
   }
 
@@ -1432,9 +1476,6 @@ class CardNewScreen extends React.Component {
       this.props.moveCard([{ 'idea': this.props.card.currentCard }], this.props.feedo.currentFeed.id);
     }
     this.prevFeedo = null;
-    if(this.textInputIdeaRef) {
-      this.textInputIdeaRef.focus();
-    }
   }
 
   onUpdateFeed() {
@@ -1550,51 +1591,40 @@ class CardNewScreen extends React.Component {
     this.textInputPositionY = layout.y;
   }
 
-  onLayoutScrollView({ nativeEvent: { layout } }) {
-    this.scrollViewHeight = layout.height;
-    this.scrollContent();
+  // onLayoutScrollView({ nativeEvent: { layout } }) {
+  //   if (this.scrollViewHeight < layout.height) {
+  //     this.scrollViewRef.scrollToEnd()
+  //   }
+  //   this.scrollViewHeight = layout.height;
+  //   // this.scrollContent();
+  // }
+
+  handleCKEditorHeight = height => {
+    if (height > this.ckEditorHeight) {
+      this.scrollViewRef.scrollToEnd()
+    }
+    this.ckEditorHeight = height + 8
   }
 
   get renderText() {
     const { cardMode } = this.props;
 
     return (
-      <TouchableOpacity
-        onLayout={this.onLayoutTextInput.bind(this)}
-        onPress={() => this.textInputIdeaRef.focus()}
-        activeOpacity={1.0}
-      >
-        <TextInput
-          style={[styles.textInputIdea, {
-            position: 'absolute',
-            left: 0,
-            right: 0,
-            top: 0,
-            opacity: 0,
-          }]}
-          autoCorrect={false}
-          multiline={true}
-          underlineColorAndroid='transparent'
-          value={this.state.textByCursor}
-          onContentSizeChange={this.onContentSizeChange.bind(this)}
-        />
-        <TextInput
-          ref={ref => this.textInputIdeaRef = ref}
-          style={styles.textInputIdea}
-          autoCorrect={true}
+      <View style={{ flex: 1 }}>
+        <CKEditor
+          ref={c => this.refCKEditor = c}
+          content={this.state.idea}
+          backgroundColor={'white'}
           placeholder={cardMode === CONSTANTS.SHARE_EXTENTION_CARD ? 'Add a note' : 'Let your ideas flow. Type text, paste a link, add an image, video or audio'}
-          multiline={true}
-          underlineColorAndroid='transparent'
-          value={this.state.idea}
-          onChangeText={(value) => this.onChangeIdea(value)}
-          onKeyPress={this.onKeyPressIdea.bind(this)}
-          onFocus={() => this.onFocus()}
-          onBlur={() => this.onBlurIdea()}
-          onSelectionChange={this.onSelectionChange.bind(this)}
-          selectionColor={Platform.OS === 'ios' ? COLORS.PURPLE : COLORS.LIGHT_PURPLE}
-          textAlignVertical={'top'}
+          onChange={value => this.onChangeIdea(value)}
+          handleKeydown={() => this.onKeyPressIdea()}
+          handleCommands={this.handleCommands}
+          hideKeyboardAccessoryView={true}
+          // scrollEnabled={true}
+          automaticallyAdjustContentInsets={true}
+          handleCKEditorHeight={this.handleCKEditorHeight}
         />
-      </TouchableOpacity>
+      </View>
     )
   }
 
@@ -1664,9 +1694,10 @@ class CardNewScreen extends React.Component {
   get renderMainContent() {
     return (
       <ScrollView
-        contentContainerStyle={{ flexGrow: 1 }}
+        style={{ flex: 1 }}
+        contentContainerStyle={{ paddingBottom: 0 }}
         ref={ref => this.scrollViewRef = ref}
-        onLayout={this.onLayoutScrollView.bind(this)}
+        // onLayout={this.onLayoutScrollView.bind(this)}
       >
         {this.renderCoverImage}
         {this.renderWebMeta}
@@ -1697,30 +1728,52 @@ class CardNewScreen extends React.Component {
     )
   }
 
+  handleCKEditorToolbar = (showCKEditorToolbar) => {
+    this.setState({ showCKEditorToolbar })
+  }
+
+  executeCKEditorCommand = (command) => {
+    this.refCKEditor.executeCommand(command)
+  }
+
   get renderBottomAttachmentButtons() {
     const { viewMode, cardMode } = this.props;
-    const { bottomButtonsPadding } = this.state;
+    const { bottomButtonsPadding, showCKEditorToolbar } = this.state;
 
     if (cardMode === CONSTANTS.SHARE_EXTENTION_CARD) {
       return;
     } else if (viewMode !== CONSTANTS.CARD_NEW) {
       return;
     }
+
+    if (showCKEditorToolbar) {
+      return (
+        <View style={[styles.attachmentButtonsContainer, { paddingHorizontal: 16, marginVertical: 13, paddingBottom: bottomButtonsPadding }]}>
+          <CKEditorToolbar
+            ref={c => this.refCKEditorToolbar = c}
+            isNew={true}
+            handleCKEditorToolbar={() => this.handleCKEditorToolbar(false)}
+            executeCKEditorCommand={this.executeCKEditorCommand}
+          />
+        </View>
+      )
+    }
+
     return (
-      <View style={[styles.attachmentButtonsContainer, { paddingHorizontal: 16, marginVertical: 16, paddingBottom: bottomButtonsPadding }]}>
+      <View style={[styles.attachmentButtonsContainer, { paddingHorizontal: 16, marginVertical: 13, paddingBottom: bottomButtonsPadding }]}>
         <TouchableOpacity 
           style={styles.iconView}
           activeOpacity={0.6}
-          onPress={this.onAddMedia.bind(this)}
+          onPress={() => this.handleAdditonalAction()}
         >
-          <Image source={IMAGE_ICON} />
+          <Image source={ADDITIONAL_ACTION_ICON} />
         </TouchableOpacity>
         <TouchableOpacity 
           style={styles.iconView}
           activeOpacity={0.6}
-          onPress={this.onAddDocument.bind(this)}
+          onPress={() => this.handleCKEditorToolbar(true)}
         >
-          <Image source={ATTACHMENT_ICON} />
+          <Image source={CKEDITOR_TOOLBAR_ICON} />
         </TouchableOpacity>
         {this.renderSelectFeedo}
       </View>
@@ -1865,7 +1918,7 @@ class CardNewScreen extends React.Component {
       });  
       cardStyle = {
         top: animatedMove,
-        opacity: this.animatedShow,
+        // opacity: this.animatedShow,
       };
     } else {
       const animatedTopMove = this.animatedShow.interpolate({
@@ -1874,7 +1927,7 @@ class CardNewScreen extends React.Component {
       });
       cardStyle = {
         top: animatedTopMove,
-        opacity: this.animatedShow,
+        // opacity: this.animatedShow,
       };
     }
 
@@ -1917,8 +1970,13 @@ class CardNewScreen extends React.Component {
             {this.renderBottomContent}
             {
               // If show keyboard button, and not quick add card from dashboard as interferes with change Feed https://cl.ly/ba004cb3a34b
-              Platform.OS === 'ios' && viewMode === CONSTANTS.CARD_NEW && this.state.isShowKeyboardButton && cardMode !== CONSTANTS.MAIN_APP_CARD_FROM_DASHBOARD && cardMode !== CONSTANTS.SHARE_EXTENTION_CARD &&
-              <Animated.View style={styles.hideKeyboardContainer}>
+              Platform.OS === 'ios' && viewMode === CONSTANTS.CARD_NEW && this.state.isShowKeyboardButton && cardMode !== CONSTANTS.SHARE_EXTENTION_CARD &&
+              <Animated.View
+                style={[
+                  styles.hideKeyboardContainer,
+                  (this.state.showCKEditorToolbar || cardMode === CONSTANTS.MAIN_APP_CARD_FROM_DASHBOARD) ? { bottom: 58 } : { bottom: 20 }
+                ]}
+              >
                 <TouchableOpacity
                   style={[
                     styles.buttonItemContainer,
@@ -1982,6 +2040,14 @@ class CardNewScreen extends React.Component {
           destructiveButtonIndex={1}
           tintColor={COLORS.PURPLE}
           onPress={(index) => this.onTapWebLinkActionSheet(index)}
+        />
+        <ActionSheet
+          ref={ref => this.additionalActionsActionSheetRef = ref}
+          // title='Select a Photo / Video'
+          options={['Take A Photo', 'Select From Photos', 'Add An Attachment', 'Cancel']}
+          cancelButtonIndex={3}
+          tintColor={COLORS.PURPLE}
+          onPress={(index) => this.onTapAdditionalActionsActionSheet(index)}
         />
 
         {

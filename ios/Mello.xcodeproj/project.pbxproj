@@ -90,6 +90,7 @@
 		396C1CD72253A321001297F6 /* APIError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 396C1CD62253A321001297F6 /* APIError.swift */; };
 		3984D08B22527DD000042F75 /* ShareExtension.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = 3984D08122527DD000042F75 /* ShareExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		39C6257C2254EB6F001FBD79 /* KeyboardHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 39C6257B2254EB6F001FBD79 /* KeyboardHelper.swift */; };
+		39C778442279E74C0013E922 /* Web.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 39C778432279E74C0013E922 /* Web.bundle */; };
 		39E179F7226F78E70086ABB4 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 39E179AE226F78E60086ABB4 /* GoogleService-Info.plist */; };
 		39E17C4F22707D100086ABB4 /* Crashlytics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 39E17BF022706F6D0086ABB4 /* Crashlytics.framework */; };
 		39E17C5022707D100086ABB4 /* Fabric.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 39E17C3922706F6D0086ABB4 /* Fabric.framework */; };
@@ -101,6 +102,8 @@
 		39E17C5622707D100086ABB4 /* GoogleAppMeasurement.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 39E17C43227079ED0086ABB4 /* GoogleAppMeasurement.framework */; };
 		39E17C5722707D100086ABB4 /* GoogleUtilities.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 39E17C42227079EC0086ABB4 /* GoogleUtilities.framework */; };
 		39E17C5822707D100086ABB4 /* nanopb.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 39E17C40227079EB0086ABB4 /* nanopb.framework */; };
+		39EB28072281B4840081E3DB /* UIImage+WebPDecoder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 39EB28062281B4830081E3DB /* UIImage+WebPDecoder.swift */; };
+		39EB280B2281B4DB0081E3DB /* WebP.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 39EB280A2281B4DB0081E3DB /* WebP.framework */; };
 		45A806F94F774736BDFCF564 /* libBugsnagReactNative.a in Frameworks */ = {isa = PBXBuildFile; fileRef = D9E1BD18BB5B4D62B4263950 /* libBugsnagReactNative.a */; };
 		47CA4A9854C645189A59042C /* libRNDocumentPicker.a in Frameworks */ = {isa = PBXBuildFile; fileRef = CEF9CE0D4C3B419DAD8284A6 /* libRNDocumentPicker.a */; };
 		4C030DDBB9734D8CB1045CEB /* libBVLinearGradient.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 1AE0342E1F8E4EB593320F3B /* libBVLinearGradient.a */; };
@@ -807,6 +810,7 @@
 		396C1CD62253A321001297F6 /* APIError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = APIError.swift; sourceTree = "<group>"; };
 		3984D08122527DD000042F75 /* ShareExtension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = ShareExtension.appex; sourceTree = BUILT_PRODUCTS_DIR; };
 		39C6257B2254EB6F001FBD79 /* KeyboardHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeyboardHelper.swift; sourceTree = "<group>"; };
+		39C778432279E74C0013E922 /* Web.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; name = Web.bundle; path = ../html/Web.bundle; sourceTree = "<group>"; };
 		39E179AE226F78E60086ABB4 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		39E17BF022706F6D0086ABB4 /* Crashlytics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = Crashlytics.framework; sourceTree = "<group>"; };
 		39E17C3922706F6D0086ABB4 /* Fabric.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = Fabric.framework; sourceTree = "<group>"; };
@@ -820,6 +824,8 @@
 		39E17C45227079EE0086ABB4 /* FirebaseInstanceID.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = FirebaseInstanceID.framework; sourceTree = "<group>"; };
 		39E17C46227079EE0086ABB4 /* FirebaseAnalytics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = FirebaseAnalytics.framework; sourceTree = "<group>"; };
 		39E17C4E22707A220086ABB4 /* module.modulemap */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = "sourcecode.module-map"; path = module.modulemap; sourceTree = "<group>"; };
+		39EB28062281B4830081E3DB /* UIImage+WebPDecoder.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UIImage+WebPDecoder.swift"; sourceTree = "<group>"; };
+		39EB280A2281B4DB0081E3DB /* WebP.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = WebP.framework; sourceTree = "<group>"; };
 		44C268ED8ACC4BCE9CDA61FC /* libRNDeviceInfo.a */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = archive.ar; path = libRNDeviceInfo.a; sourceTree = "<group>"; };
 		47BA3513B6514BE58476D7B4 /* libRNImagePicker.a */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = archive.ar; path = libRNImagePicker.a; sourceTree = "<group>"; };
 		48E815D86AC4450E91A11738 /* libRNImgToBase64.a */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = archive.ar; path = libRNImgToBase64.a; sourceTree = "<group>"; };
@@ -996,6 +1002,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				39EB280B2281B4DB0081E3DB /* WebP.framework in Frameworks */,
 				39E17C4F22707D100086ABB4 /* Crashlytics.framework in Frameworks */,
 				39E17C5022707D100086ABB4 /* Fabric.framework in Frameworks */,
 				39E17C5122707D100086ABB4 /* FIRAnalyticsConnector.framework in Frameworks */,
@@ -1095,8 +1102,8 @@
 		13B07FAE1A68108700A75B9A /* Mello */ = {
 			isa = PBXGroup;
 			children = (
-				A48B0150210F8F9C001C33B5 /* Mello.entitlements */,
 				008F07F21AC5B25A0029DE68 /* main.jsbundle */,
+				A48B0150210F8F9C001C33B5 /* Mello.entitlements */,
 				13B07FAF1A68108700A75B9A /* AppDelegate.h */,
 				13B07FB01A68108700A75B9A /* AppDelegate.m */,
 				13B07FB51A68108700A75B9A /* Images.xcassets */,
@@ -1207,6 +1214,7 @@
 		396C17DF22527E68001297F6 /* Helpers */ = {
 			isa = PBXGroup;
 			children = (
+				39EB28062281B4830081E3DB /* UIImage+WebPDecoder.swift */,
 				39C6257B2254EB6F001FBD79 /* KeyboardHelper.swift */,
 				396C1951225285A8001297F6 /* FLAnimatedImage */,
 				396C17F022527ECF001297F6 /* AssetLoader.swift */,
@@ -1438,6 +1446,7 @@
 		39E17C3C22706F720086ABB4 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				39EB280A2281B4DB0081E3DB /* WebP.framework */,
 				39E17C4E22707A220086ABB4 /* module.modulemap */,
 				39E17C44227079ED0086ABB4 /* FIRAnalyticsConnector.framework */,
 				39E17C46227079EE0086ABB4 /* FirebaseAnalytics.framework */,
@@ -1628,6 +1637,7 @@
 		83CBB9F61A601CBA00E9B192 = {
 			isa = PBXGroup;
 			children = (
+				39C778432279E74C0013E922 /* Web.bundle */,
 				13B07FAE1A68108700A75B9A /* Mello */,
 				832341AE1AAA6A7D00B99B32 /* Libraries */,
 				00E356EF1AD99517003FC87E /* MelloTests */,
@@ -2718,6 +2728,7 @@
 				7FB80209559F4EEBB4029DF3 /* MaterialIcons.ttf in Resources */,
 				6938B943A0AE484E9E5A8DCD /* Octicons.ttf in Resources */,
 				8D2B584D1B954CA58C0936B6 /* SimpleLineIcons.ttf in Resources */,
+				39C778442279E74C0013E922 /* Web.bundle in Resources */,
 				BB896AB9E6414964B0B4FC39 /* Zocial.ttf in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -2941,6 +2952,7 @@
 				396C17D922527E4C001297F6 /* API.swift in Sources */,
 				396C182D22528001001297F6 /* NewFlowCell.swift in Sources */,
 				396C181522527FA6001297F6 /* LinkView.swift in Sources */,
+				39EB28072281B4840081E3DB /* UIImage+WebPDecoder.swift in Sources */,
 				396C17E822527EA0001297F6 /* FlowSelectorFooter.swift in Sources */,
 				396C1CD72253A321001297F6 /* APIError.swift in Sources */,
 				396C18392252801B001297F6 /* NewFlowViewController.swift in Sources */,
@@ -3028,8 +3040,6 @@
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					"\"$(SRCROOT)/$(TARGET_NAME)/System/Library/Frameworks\"",
-					"\"$(SRCROOT)/$(TARGET_NAME)\"",
-					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 				);
 				OTHER_LDFLAGS = (
 					"-ObjC",
@@ -3082,8 +3092,6 @@
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					"\"$(SRCROOT)/$(TARGET_NAME)/System/Library/Frameworks\"",
-					"\"$(SRCROOT)/$(TARGET_NAME)\"",
-					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 				);
 				OTHER_LDFLAGS = (
 					"-ObjC",
@@ -3267,8 +3275,6 @@
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					"\"$(SRCROOT)/$(TARGET_NAME)/System/Library/Frameworks\"",
-					"\"$(SRCROOT)/$(TARGET_NAME)\"",
-					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 				);
 				OTHER_LDFLAGS = (
 					"-ObjC",
@@ -3330,8 +3336,6 @@
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					"\"$(SRCROOT)/$(TARGET_NAME)/System/Library/Frameworks\"",
-					"\"$(SRCROOT)/$(TARGET_NAME)\"",
-					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 				);
 				OTHER_LDFLAGS = (
 					"-ObjC",
@@ -3388,8 +3392,6 @@
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					"\"$(SRCROOT)/$(TARGET_NAME)/System/Library/Frameworks\"",
-					"\"$(SRCROOT)/$(TARGET_NAME)\"",
-					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 				);
 				OTHER_LDFLAGS = (
 					"-ObjC",
@@ -3445,8 +3447,6 @@
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					"\"$(SRCROOT)/$(TARGET_NAME)/System/Library/Frameworks\"",
-					"\"$(SRCROOT)/$(TARGET_NAME)\"",
-					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 				);
 				OTHER_LDFLAGS = (
 					"-ObjC",
@@ -3493,6 +3493,7 @@
 					"$(inherited)",
 					"$(PROJECT_DIR)/ShareExtension",
 					"$(PROJECT_DIR)/ShareExtension/Frameworks",
+					"$(PROJECT_DIR)/ShareExtension/Frameworks/WebP.framework",
 				);
 				GCC_C_LANGUAGE_STANDARD = gnu11;
 				GCC_NO_COMMON_BLOCKS = YES;
@@ -3547,6 +3548,7 @@
 					"$(inherited)",
 					"$(PROJECT_DIR)/ShareExtension",
 					"$(PROJECT_DIR)/ShareExtension/Frameworks",
+					"$(PROJECT_DIR)/ShareExtension/Frameworks/WebP.framework",
 				);
 				GCC_C_LANGUAGE_STANDARD = gnu11;
 				GCC_NO_COMMON_BLOCKS = YES;

@@ -194,7 +194,8 @@ class TutorialScreen extends React.Component {
                 paused={this.state.video1Paused}
                 style={styles.backgroundVideo}
                 resizeMode="contain" 
-                repeat={true} />            
+                repeat={true}
+                backgroundColor={'white'} />            
             )}
             {index === 2 && (
               <Video  
@@ -206,7 +207,8 @@ class TutorialScreen extends React.Component {
                 paused={this.state.video2Paused}
                 style={styles.backgroundVideo}
                 resizeMode="contain" 
-                repeat={true} />
+                repeat={true}
+                backgroundColor={'white'} />
             )}
             {index === 3 && (
               <Video 
@@ -218,7 +220,8 @@ class TutorialScreen extends React.Component {
                 paused={this.state.video3Paused}
                 style={styles.backgroundVideo}
                 resizeMode="contain" 
-                repeat={true} />
+                repeat={true}
+                backgroundColor={'white'} />
             )}
             {index === 4 && (
               <Video 
@@ -230,7 +233,8 @@ class TutorialScreen extends React.Component {
                 paused={this.state.video4Paused}
                 style={styles.backgroundVideo}
                 resizeMode="contain" 
-                repeat={true} />
+                repeat={true}
+                backgroundColor={'white'} />
             )}
             {index === 5 && (
               <Video 
@@ -242,7 +246,8 @@ class TutorialScreen extends React.Component {
                 paused={this.state.video5Paused}
                 style={styles.backgroundVideo}
                 resizeMode="contain" 
-                repeat={true} />
+                repeat={true}
+                backgroundColor={'white'} />
             )}     
           </View>
         </View>

@@ -94,16 +94,27 @@ export default {
   PRIVACY_POLICE: '/MELLO_PRIVACY_POLICY.txt',
   TERMS_CONDITIONS: '/MELLO_TERMS_CONDITIONS.txt',
   HTML_CLASS_STYLES: {
-    'text-big': { fontSize: 18 }
+    'text-big': { backgroundColor: 'transparent', fontSize: 24, fontWeight: 'bold', lineHeight: 32, color: 'black' }
   },
   HTML_TAGS_STYLE: {
-    'span': { backgroundColor: 'transparent', fontSize: 16 },
-    'span_masonry': { backgroundColor: 'transparent', fontSize: 14 },
-    'p': { backgroundColor: 'transparent', marginBottom: 5, fontSize: 16 },
-    'ul': { paddingLeft: 0, marginTop: 5, marginBottom: 0 },
-    'ol': { paddingLeft: 0, marginTop: 5, marginBottom: 0 },
+    'p': { backgroundColor: 'transparent', fontSize: 16, marginTop: 0, marginBottom: 0, lineHeight: 22 },
+    'ul': { paddingLeft: 0, marginLeft: 0, marginTop: 16, marginBottom: 8, paddingBottom: 0, fontSize: 16 },
+    'ol': { paddingLeft: 0, marginLeft: 0, marginTop: 0, marginBottom: -8, padding: 0, fontSize: 16, lineHeight: 22 },
+    'li': { paddingLeft: 0, marginTop: 0, marginBottom: -8, padding: 0, fontSize: 16, lineHeight: 22 },
     'h1': { backgroundColor: 'transparent' },
-    'h2': { backgroundColor: 'transparent' },
+    'h2': { backgroundColor: 'transparent', fontSize: 24, fontWeight: 'bold', lineHeight: 32, color: 'black', marginTop: 16, marginBottom: 20 },
+    'h3': { backgroundColor: 'transparent' },
+    'h4': { backgroundColor: 'transparent' },
+    'h5': { backgroundColor: 'transparent' },
+    'h6': { backgroundColor: 'transparent' }
+  },
+  HTML_TAGS_STYLE_MASONRY: {
+    'p': { backgroundColor: 'transparent', fontSize: 14, marginTop: 0, marginBottom: 0, lineHeight: 20 },
+    'ul': { paddingLeft: 0, marginLeft: 0, marginTop: 12, marginBottom: 6, paddingBottom: 0, fontSize: 14 },
+    'ol': { paddingLeft: 0, marginLeft: 0, marginTop: 0, marginBottom: -12, padding: 0, fontSize: 14, lineHeight: 20 },
+    'li': { paddingLeft: 0, marginTop: 0, marginBottom: -12, padding: 0, fontSize: 14, lineHeight: 22 },
+    'h1': { backgroundColor: 'transparent' },
+    'h2': { backgroundColor: 'transparent', fontSize: 22, fontWeight: 'bold', lineHeight: 28, color: 'black', marginTop: 8  , marginBottom: 16 },
     'h3': { backgroundColor: 'transparent' },
     'h4': { backgroundColor: 'transparent' },
     'h5': { backgroundColor: 'transparent' },
