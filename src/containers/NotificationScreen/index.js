@@ -45,12 +45,14 @@ import {
   getInvitedFeedList,
   getActivityFeedVisited,
   deleteDummyCard,
+  reportDummyCard,
   moveDummyCard
 } from '../../redux/feedo/actions'
 import {
   getCard,
   moveCard,
-  deleteCard
+  deleteCard,
+  reportCard
 } from '../../redux/card/actions'
 
 import * as COMMON_FUNC from '../../service/commonFunc'
@@ -72,6 +74,7 @@ const ACTION_FEEDO_DUPLICATE = 3;
 const ACTION_CARD_MOVE = 4;
 const ACTION_CARD_EDIT = 5;
 const ACTION_CARD_DELETE = 6;
+const ACTION_CARD_REPORT = 7;
 
 /**
  * 'IDEA_LIKED' - open the card that was like
@@ -105,6 +108,7 @@ class NotificationScreen extends React.Component {
       cardViewMode: CONSTANTS.CARD_NONE,
       selectedLongHoldIdea: {},
       isShowToaster: false,
+      showToasterButtonTitle: true,
       isVisibleSelectFeedo: false,
       isShowInviteToaster: false,
       inviteToasterTitle: '',
@@ -584,6 +588,7 @@ class NotificationScreen extends React.Component {
       currentActionType: currentCardInfo.currentActionType,
       isShowToaster: true,
       toasterTitle: currentCardInfo.toasterTitle,
+      showToasterButtonTitle: true
     });
 
     this.userActionTimer = setTimeout(() => {
@@ -591,9 +596,12 @@ class NotificationScreen extends React.Component {
       if (this.state.currentActionType === ACTION_CARD_DELETE) {
         Analytics.logEvent('notification_delete_card', {})
         this.props.deleteCard(currentCardInfo.cardList)
+      } else if (this.state.currentActionType === ACTION_CARD_REPORT) {
+        Analytics.logEvent('notification_report_card', {})
+        this.props.reportCard(currentCardInfo.cardList, this.props.feedo.currentFeed.id)
       } else if (this.state.currentActionType === ACTION_CARD_MOVE) {
         Analytics.logEvent('notification_move_card', {})
-        this.props.moveCard(currentCardInfo.cardList, currentCardInfo.feedoId);
+        this.props.moveCard(currentCardInfo.cardList, currentCardInfo.feedoId)
       }
       this.userActionTimer = null;
       this.userActions.shift();
@@ -609,6 +617,10 @@ class NotificationScreen extends React.Component {
   
       if (this.state.currentActionType === ACTION_CARD_DELETE) {
         this.props.deleteDummyCard('null', 1)
+      }
+
+      if (this.state.currentActionType === ACTION_CARD_REPORT) {
+        this.props.reportDummyCard('null', 1)
       }
 
       if (this.state.currentActionType === ACTION_CARD_MOVE) {
@@ -640,6 +652,34 @@ class NotificationScreen extends React.Component {
     this.props.deleteDummyCard(cardInfo.cardList, 0)
 
     this.processCardActions();
+  }
+
+  onReportCard = (cardList) => {
+    this.onCloseCardModal();
+    this.setState({
+      isShowToaster: true,
+      toasterTitle: 'Card reported',
+      showToasterButtonTitle: false
+    });
+
+    setTimeout(() => {
+      this.setState({
+        isShowToaster: false,
+        showToasterButtonTitle: true
+      })
+    }, TOASTER_DURATION);
+
+    this.props.reportCard(cardList, this.state.currentFeed.id);
+
+    // const cardInfo = {};
+    // cardInfo.currentActionType = ACTION_CARD_REPORT;
+    // cardInfo.toasterTitle = 'Card reported';
+    // cardInfo.cardList = cardList;
+    // this.userActions.push(cardInfo);
+
+    // this.props.reportDummyCard(cardInfo.cardList, 0)
+
+    // this.processCardActions();
   }
 
   onMoveCard = (cardList) => {
@@ -748,6 +788,7 @@ class NotificationScreen extends React.Component {
             onClose={() => this.onCloseCardModal()}
             onMoveCard={this.onMoveCard}
             onDeleteCard={this.onDeleteCard}
+            onReportCard={this.onReportCard}
             cardImageLayout={cardImageLayout}
             cardTextLayout={cardTextLayout}
             isFromNotification
@@ -859,6 +900,7 @@ class NotificationScreen extends React.Component {
             <ToasterComponent
               isVisible={this.state.isShowToaster}
               title={this.state.toasterTitle}
+              showButtonTitle={this.state.showToasterButtonTitle}
               onPressButton={() => this.undoAction()}
             />
           )}
@@ -915,11 +957,13 @@ const mapDispatchToProps = dispatch => ({
   getCard: (ideaId) => dispatch(getCard(ideaId)),
   moveCard: (cardList, huntId) => dispatch(moveCard(cardList, huntId)),
   deleteCard: (cardList) => dispatch(deleteCard(cardList)),
+  reportCard: (cardList, huntId) => dispatch(reportCard(cardList, huntId)),
   setCurrentFeed: (data) => dispatch(setCurrentFeed(data)),
   getInvitedFeedList: () => dispatch(getInvitedFeedList()),
   getActivityFeedVisited: (userId) => dispatch(getActivityFeedVisited(userId)),
   moveDummyCard: (cardList, feedId, type) => dispatch(moveDummyCard(cardList, feedId, type)),
-  deleteDummyCard: (cardList, type) => dispatch(deleteDummyCard(cardList, type))
+  deleteDummyCard: (cardList, type) => dispatch(deleteDummyCard(cardList, type)),
+  reportDummyCard: (cardList, type) => dispatch(reportDummyCard(cardList, type))
 })
 
 NotificationScreen.propTypes = {

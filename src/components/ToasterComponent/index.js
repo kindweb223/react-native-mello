@@ -20,18 +20,20 @@ class ToasterComponent extends React.Component {
   }
 
   render() {
-    const { title, buttonTitle, isVisible, numberOfLines, ellipsizeMode } = this.props
+    const { title, buttonTitle, isVisible, numberOfLines, ellipsizeMode, showButtonTitle } = this.props
     const { fadeAnimate } = this.state
 
     if (isVisible) {
       return (
         <Animated.View style={[styles.container, { opacity: fadeAnimate }]}>
           <Text style={styles.title} numberOfLines={numberOfLines} ellipsizeMode={ellipsizeMode}>{title}</Text>
-          <TouchableOpacity onPress={() => this.props.onPressButton()}>
-            <View style={styles.buttonView}>
-              <Text style={styles.button}>{buttonTitle}</Text>
-            </View>
-          </TouchableOpacity>
+          {showButtonTitle && (
+            <TouchableOpacity onPress={() => this.props.onPressButton()}>
+              <View style={styles.buttonView}>
+                <Text style={styles.button}>{buttonTitle}</Text>
+              </View>
+            </TouchableOpacity>
+          )}
         </Animated.View>
       )
     } else {
@@ -46,7 +48,8 @@ ToasterComponent.defaultProps = {
   buttonTitle: 'undo',
   isVisible: false,
   numberOfLines: 1,
-  ellipsizeMode: 'tail'
+  ellipsizeMode: 'tail',
+  showButtonTitle: true
 }
 
 ToasterComponent.propTypes = {
@@ -55,7 +58,8 @@ ToasterComponent.propTypes = {
   onPressButton: PropTypes.func,
   isVisible: PropTypes.bool,
   numberOfLines: PropTypes.number,
-  ellipsizeMode: PropTypes.string
+  ellipsizeMode: PropTypes.string,
+  showButtonTitle: PropTypes.bool
 }
 
 export default ToasterComponent
