@@ -1111,7 +1111,7 @@ class FeedDetailScreen extends React.Component {
     this.props.reportCard(cardList, this.state.currentFeed.id);
     this.setState({
       isShowToaster: true,
-      toasterTitle: 'Card reported',
+      toasterTitle: cardList.length > 1 ? 'Cards reported' : 'Card reported',
       showToasterButtonTitle: false
     })
 
