@@ -82,7 +82,7 @@ import SelectHuntScreen from '../SelectHuntScreen';
 import Analytics from '../../lib/firebase'
 import ToasterComponent from '../../components/ToasterComponent'
 import AlertController from '../../components/AlertController'
-import CKEditor from '../../components/CKEditor/index_new'
+import CKEditor from '../../components/CKEditor'
 import CKEditorToolbar from '../../components/CKEditor/Toolbar'
 
 import * as COMMON_FUNC from '../../service/commonFunc'
