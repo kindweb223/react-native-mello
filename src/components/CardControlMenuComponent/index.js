@@ -9,7 +9,7 @@ import PropTypes from 'prop-types'
 import styles from './styles'
 import CONSTANTS from '../../service/constants'
 
-const MENU_ITEMS = ['Edit note', 'Add image', 'Add file', 'Move', 'Delete', 'Report']
+const MENU_ITEMS = ['Edit note', 'Add image', 'Add file', 'Move', 'Delete']
 
 class CardControlMenuComponent extends React.Component {
   onHandleAction(item) {
