@@ -156,8 +156,8 @@ class HomeScreen extends React.Component {
       isVisibleSelectFeedoModal: false,
       addLinkURL: '',
       selectedAddLink: '',  // value to set if the user taps add link,
-      showFirstFlowTip: true,
-      showProfilePhotoTip: true
+      showFirstFlowTip: false,
+      showProfilePhotoTip: false
     };
 
     this.currentRef = null;
@@ -277,8 +277,8 @@ class HomeScreen extends React.Component {
       });
     } else {
       // show tips when opening app the second time
-      // this.onShowFirstFlowTip()
-      // this.onShowProfilePhotoTip()
+      this.onShowFirstFlowTip()
+      this.onShowProfilePhotoTip()
     }
 
     this.setState({ loading: true })
