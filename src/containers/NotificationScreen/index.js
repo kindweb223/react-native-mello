@@ -669,7 +669,7 @@ class NotificationScreen extends React.Component {
       })
     }, TOASTER_DURATION);
 
-    this.props.reportCard(cardList, this.state.currentFeed.id);
+    this.props.reportCard(cardList, this.props.feedo.currentFeed.id);
 
     // const cardInfo = {};
     // cardInfo.currentActionType = ACTION_CARD_REPORT;
