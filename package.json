@@ -72,12 +72,15 @@
     "react-native-version-number": "^0.3.4",
     "react-native-video": "^3.2.1",
     "react-native-view-more-text": "^2.0.1",
+    "react-native-webview": "^5.6.2",
     "react-navigation": "^3.3.2",
     "react-redux": "^5.0.7",
     "redux": "^4.0.0",
     "redux-thunk": "^2.3.0",
     "rn-fetch-blob": "^0.10.13",
     "striptags": "^3.1.1",
+    "text-clipper": "^1.2.3",
+    "truncate-html": "^1.0.2",
     "zxcvbn": "^4.4.2"
   },
   "devDependencies": {

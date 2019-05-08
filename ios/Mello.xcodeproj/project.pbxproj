@@ -91,6 +91,7 @@
 		396C1CD72253A321001297F6 /* APIError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 396C1CD62253A321001297F6 /* APIError.swift */; };
 		3984D08B22527DD000042F75 /* ShareExtension.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = 3984D08122527DD000042F75 /* ShareExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		39C6257C2254EB6F001FBD79 /* KeyboardHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 39C6257B2254EB6F001FBD79 /* KeyboardHelper.swift */; };
+		39C778442279E74C0013E922 /* Web.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 39C778432279E74C0013E922 /* Web.bundle */; };
 		39E179F7226F78E70086ABB4 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 39E179AE226F78E60086ABB4 /* GoogleService-Info.plist */; };
 		39E17C4F22707D100086ABB4 /* Crashlytics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 39E17BF022706F6D0086ABB4 /* Crashlytics.framework */; };
 		39E17C5022707D100086ABB4 /* Fabric.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 39E17C3922706F6D0086ABB4 /* Fabric.framework */; };
@@ -810,6 +811,7 @@
 		396C1CD62253A321001297F6 /* APIError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = APIError.swift; sourceTree = "<group>"; };
 		3984D08122527DD000042F75 /* ShareExtension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = ShareExtension.appex; sourceTree = BUILT_PRODUCTS_DIR; };
 		39C6257B2254EB6F001FBD79 /* KeyboardHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeyboardHelper.swift; sourceTree = "<group>"; };
+		39C778432279E74C0013E922 /* Web.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; name = Web.bundle; path = ../html/Web.bundle; sourceTree = "<group>"; };
 		39E179AE226F78E60086ABB4 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		39E17BF022706F6D0086ABB4 /* Crashlytics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = Crashlytics.framework; sourceTree = "<group>"; };
 		39E17C3922706F6D0086ABB4 /* Fabric.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = Fabric.framework; sourceTree = "<group>"; };
@@ -1101,8 +1103,8 @@
 		13B07FAE1A68108700A75B9A /* Mello */ = {
 			isa = PBXGroup;
 			children = (
-				A48B0150210F8F9C001C33B5 /* Mello.entitlements */,
 				008F07F21AC5B25A0029DE68 /* main.jsbundle */,
+				A48B0150210F8F9C001C33B5 /* Mello.entitlements */,
 				13B07FAF1A68108700A75B9A /* AppDelegate.h */,
 				13B07FB01A68108700A75B9A /* AppDelegate.m */,
 				13B07FB51A68108700A75B9A /* Images.xcassets */,
@@ -1636,6 +1638,7 @@
 		83CBB9F61A601CBA00E9B192 = {
 			isa = PBXGroup;
 			children = (
+				39C778432279E74C0013E922 /* Web.bundle */,
 				13B07FAE1A68108700A75B9A /* Mello */,
 				832341AE1AAA6A7D00B99B32 /* Libraries */,
 				00E356EF1AD99517003FC87E /* MelloTests */,
@@ -2726,6 +2729,7 @@
 				7FB80209559F4EEBB4029DF3 /* MaterialIcons.ttf in Resources */,
 				6938B943A0AE484E9E5A8DCD /* Octicons.ttf in Resources */,
 				8D2B584D1B954CA58C0936B6 /* SimpleLineIcons.ttf in Resources */,
+				39C778442279E74C0013E922 /* Web.bundle in Resources */,
 				BB896AB9E6414964B0B4FC39 /* Zocial.ttf in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -3037,8 +3041,6 @@
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					"\"$(SRCROOT)/$(TARGET_NAME)/System/Library/Frameworks\"",
-					"\"$(SRCROOT)/$(TARGET_NAME)\"",
-					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 				);
 				OTHER_LDFLAGS = (
 					"-ObjC",
@@ -3091,8 +3093,6 @@
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					"\"$(SRCROOT)/$(TARGET_NAME)/System/Library/Frameworks\"",
-					"\"$(SRCROOT)/$(TARGET_NAME)\"",
-					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 				);
 				OTHER_LDFLAGS = (
 					"-ObjC",
@@ -3276,8 +3276,6 @@
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					"\"$(SRCROOT)/$(TARGET_NAME)/System/Library/Frameworks\"",
-					"\"$(SRCROOT)/$(TARGET_NAME)\"",
-					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 				);
 				OTHER_LDFLAGS = (
 					"-ObjC",
@@ -3339,8 +3337,6 @@
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					"\"$(SRCROOT)/$(TARGET_NAME)/System/Library/Frameworks\"",
-					"\"$(SRCROOT)/$(TARGET_NAME)\"",
-					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 				);
 				OTHER_LDFLAGS = (
 					"-ObjC",
@@ -3397,8 +3393,6 @@
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					"\"$(SRCROOT)/$(TARGET_NAME)/System/Library/Frameworks\"",
-					"\"$(SRCROOT)/$(TARGET_NAME)\"",
-					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 				);
 				OTHER_LDFLAGS = (
 					"-ObjC",
@@ -3454,8 +3448,6 @@
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					"\"$(SRCROOT)/$(TARGET_NAME)/System/Library/Frameworks\"",
-					"\"$(SRCROOT)/$(TARGET_NAME)\"",
-					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 				);
 				OTHER_LDFLAGS = (
 					"-ObjC",
