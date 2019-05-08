@@ -53,6 +53,38 @@ class FirstTimeEntyTipComponent extends React.Component {
     }, delay)
   }
 
+  get renderTip() {
+    return [
+      <TouchableOpacity
+        key="0"
+        style={[styles.tipBody, type === 0 ? { marginTop: 0 } : { marginTop: 11 }]}
+        onPress={() => this.props.onTapFlow()} activeOpacity={0.8}
+      >
+        <View style={styles.avatarIconView}>
+          <Image source={data.icon} style={type === 0 && styles.avatarIcon} resizeMode="stretch" />
+        </View>
+        <View style={styles.contentView}>
+          <Text style={styles.title} numberOfLines={1} ellipsizeMode="tail">{data.title}</Text>
+          <Text style={styles.description} numberOfLines={1} ellipsizeMode="tail">{data.description}</Text>
+        </View>
+        <TouchableOpacity onPress={() => this.props.onCloseTip()} style={styles.buttonView}>
+          <MaterialCommunityIcons name="close" size={25} color={COLORS.DARK_GREY} />
+        </TouchableOpacity>
+      </TouchableOpacity>,
+      <View
+        key="1"
+        style={[styles.triangel, type === 0 ? { bottom: 4, right: 20 } : (type === 1 ? { top: 4, right: 60 } : { top: 4, right: 15 })]}
+      >
+        <Triangle
+          width={20}
+          height={9}
+          color={'#fff'}
+          direction={data.arrowDirection}
+        />
+      </View>
+    ]
+  }
+
   render() {
     const { type } = this.props
     const { fadeAnimateOpacity } = this.state
@@ -77,29 +109,7 @@ class FirstTimeEntyTipComponent extends React.Component {
               { flex: 1 }              
             ]}
           >
-            <TouchableOpacity
-              style={[styles.tipBody, type === 0 ? { marginTop: 0 } : { marginTop: 11 }]}
-              onPress={() => this.props.onTapFlow()} activeOpacity={0.8}
-            >
-              <View style={styles.avatarIconView}>
-                <Image source={data.icon} style={type === 0 && styles.avatarIcon} resizeMode="stretch" />
-              </View>
-              <View style={styles.contentView}>
-                <Text style={styles.title} numberOfLines={1} ellipsizeMode="tail">{data.title}</Text>
-                <Text style={styles.description} numberOfLines={1} ellipsizeMode="tail">{data.description}</Text>
-              </View>
-              <TouchableOpacity onPress={() => this.props.onCloseTip()} style={styles.buttonView}>
-                <MaterialCommunityIcons name="close" size={25} color={COLORS.DARK_GREY} />
-              </TouchableOpacity>
-            </TouchableOpacity>
-            <View style={[styles.triangel, type === 0 ? { bottom: 4, right: 20 } : (type === 1 ? { top: 4, right: 60 } : { top: 4, right: 15 })]}>
-              <Triangle
-                width={20}
-                height={9}
-                color={'#fff'}
-                direction={data.arrowDirection}
-              />
-            </View>
+            {this.renderTip}
           </View>
         </LinearGradient>
       )
@@ -112,30 +122,7 @@ class FirstTimeEntyTipComponent extends React.Component {
             { opacity: fadeAnimateOpacity }
           ]}
         >
-            <TouchableOpacity
-              style={[styles.tipBody, type === 0 ? { marginTop: 0 } : { marginTop: 11 }]}
-              onPress={() => this.props.onTapFlow()} activeOpacity={0.8}
-            >
-              <View style={styles.avatarIconView}>
-                <Image source={data.icon} style={type === 0 && styles.avatarIcon} resizeMode="stretch" />
-              </View>
-              <View style={styles.contentView}>
-                <Text style={styles.title} numberOfLines={1} ellipsizeMode="tail">{data.title}</Text>
-                <Text style={styles.description} numberOfLines={1} ellipsizeMode="tail">{data.description}</Text>
-              </View>
-              <TouchableOpacity onPress={() => this.props.onCloseTip()} style={styles.buttonView}>
-                <MaterialCommunityIcons name="close" size={25} color={COLORS.DARK_GREY} />
-              </TouchableOpacity>
-            </TouchableOpacity>
-            <View style={[styles.triangel, type === 0 ? { bottom: 4, right: 20 } : (type === 1 ? { top: 4, right: 60 } : { top: 4, right: 15 })]}>
-              <Triangle
-                width={20}
-                height={9}
-                color={'#fff'}
-                direction={data.arrowDirection}
-              />
-            </View>
-          
+          {this.renderTip}          
         </Animated.View>
       )
     }
