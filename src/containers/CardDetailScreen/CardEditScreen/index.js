@@ -29,7 +29,7 @@ class CardEditScreen extends React.Component {
     super(props);
     this.state = {
       idea: props.idea,
-      bottomButtonsPadding: Platform.OS === 'android' ? 24 : 0,
+      bottomButtonsPadding: Platform.OS === 'android' ? 46 : 0,
       keyboardHeight: 0,
       isShowKeyboardButton: false
     }
@@ -142,6 +142,8 @@ class CardEditScreen extends React.Component {
   }
 
   get renderFooter() {
+    const { bottomButtonsPadding } = this.state
+
     return (
       <View style={[styles.footerContainer]}>
         <CKEditorToolbar
@@ -208,7 +210,7 @@ class CardEditScreen extends React.Component {
 
   render () {
     const contentContainerStyle = {
-      paddingTop: CONSTANTS.STATUSBAR_HEIGHT,
+      paddingTop: Platform.OS === 'ios' ? CONSTANTS.STATUSBAR_HEIGHT : 0,
       top: 0,
       position: 'absolute',
       height: Animated.subtract(CONSTANTS.SCREEN_HEIGHT, this.animatedKeyboardHeight)
@@ -229,7 +231,7 @@ class CardEditScreen extends React.Component {
             </ScrollView>
             { this.state.keyboardHeight > 0 && this.renderFooter }
 
-            {this.state.isShowKeyboardButton && (
+            {Platform.OS === 'ios' && this.state.isShowKeyboardButton && (
               <View style={styles.hideKeyboardContainer}>
                 <TouchableOpacity
                   style={[

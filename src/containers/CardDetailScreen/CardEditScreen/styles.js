@@ -1,4 +1,4 @@
-import { StyleSheet } from 'react-native'
+import { StyleSheet, Platform } from 'react-native'
 import COLORS from '../../../service/colors'
 import CONSTANTS from '../../../service/constants'
 
@@ -10,8 +10,6 @@ const styles = StyleSheet.create({
     backgroundColor: 'white'
   },
   headerContainer: {
-    marginTop: 5,
-    paddingHorizontal: 6,
     backgroundColor: '#fff',
     flexDirection: 'row',
     justifyContent: 'space-between',
@@ -19,13 +17,14 @@ const styles = StyleSheet.create({
     height: 55
   },
   closeButtonView: {
-    paddingHorizontal: 10,
+    paddingHorizontal: CONSTANTS.PADDING,
     height: 34,
     width: 90,
     justifyContent: 'center',
     alignItems: 'flex-start'
   },
   textButton: {
+    color: '#000',
     fontSize: 16,
     lineHeight: 22,
     fontWeight: '500',
@@ -38,13 +37,17 @@ const styles = StyleSheet.create({
     width: '100%',
     backgroundColor: 'transparent',
     paddingHorizontal: CONSTANTS.PADDING,
-    height: 55,
-    bottom: 0,
+    paddingVertical: CONSTANTS.PADDING,
+    marginBottom: Platform.OS === 'ios' ? 0 : 24,
+    marginVertical: 0,
+    height: Platform.OS === 'ios' ? 40 : 52,
+    flexDirection: 'row',
+    alignItems: 'center'
   },
   hideKeyboardContainer: {
     position: 'absolute',
     right: 16,
-    bottom: 58,
+    bottom: 40,
   },
   buttonItemContainer: {
     width: 32,
