@@ -30,6 +30,7 @@ const styles = StyleSheet.create({
     paddingBottom: 0,
   },
   attachmentButtonsContainer: {
+    height: 32,
     flexDirection: 'row',
     alignItems: 'center',
   },
@@ -48,8 +49,7 @@ const styles = StyleSheet.create({
   },
   hideKeyboardContainer: {
     position: 'absolute',
-    right: 16,
-    bottom: 16,
+    right: 16
   },
   attachment: {
     transform: [
@@ -210,6 +210,11 @@ const styles = StyleSheet.create({
   },
   loadingIcon: {
     marginRight: 10
+  },
+  ckEditorBtnText: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    color: COLORS.DARK_GREY
   }
 })
 

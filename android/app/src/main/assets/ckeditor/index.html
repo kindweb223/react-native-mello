@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <title>CKEditor Android</title>
+    <!-- <script src="https://cdn.ckeditor.com/ckeditor5/12.0.0/decoupled-document/ckeditor.js"></script> -->
+    <script src="./ckeditor5/ckeditor.js"></script>
+    <meta charset="utf-8">
+    <meta http-equiv="Cache-Control" content="no-cache">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+</head>
+
+<style>
+  html, body {
+    -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+    margin: 0;
+    padding: 2px;
+  }
+  .ck-rounded-corners .ck.ck-editor__editable:not(.ck-editor__nested-editable), .ck.ck-editor__editable:not(.ck-editor__nested-editable).ck-rounded-corners {
+    outline: none;
+    border: 1px solid transparent;
+    box-shadow: none;
+  }
+  .ck-rounded-corners .ck.ck-editor__editable:not(.ck-editor__nested-editable), .ck.ck-editor__editable:not(.ck-editor__nested-editable).ck-rounded-corners:focus {
+    outline: none;
+    border: 1px solid transparent;
+    box-shadow: none;
+  }
+  .ck-rounded-corners .ck.ck-editor__editable:not(.ck-editor__nested-editable), .ck.ck-editor__editable:not(.ck-editor__nested-editable).ck-rounded-corners:active {
+    outline: none;
+    border: 1px solid transparent;
+    box-shadow: none;
+  }
+  #editor {
+    font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+  }
+  h2 {
+    font-size: 24px;
+    font-weight: bold;
+    line-height: 32px;
+    color: black;
+  }
+  .text-big {
+    font-size: 24px;
+    font-weight: bold;
+    line-height: 24px;
+    color: black;
+  }
+  p {
+    font-size: 16px;
+    line-height: 22px;
+    margin-bottom: 0;
+    margin-top: 0;
+  }
+  ul {
+    font-size: 16px;
+    margin-left: 0px;
+    padding: 20px;
+  }
+  ol {
+    font-size: 16px;
+    margin-left: 0px;
+    padding: 0;
+    list-style: none;
+    counter-reset: my-awesome-counter;
+  }
+  ol li {
+    counter-increment: my-awesome-counter;
+  }
+  ol li::before {
+    content: counter(my-awesome-counter) ")";
+    margin-right: 5px;
+  }
+  li {
+    font-size: 16px;
+    line-height: 22px;
+  }
+</style>
+
+<body>
+<div name="content" id="editor"></div>
+<script>
+  document.addEventListener("message", function(event) {
+    if (event.data.includes('placeholder: ')) {
+      // Show inital content
+      content = event.data.split('placeholder: ')[1];
+      CKEditor.setData(content);
+    } else if (event.data.includes('hidekeyboard: ')) {
+      document.activeElement && document.activeElement.blur();
+    } else {
+      // Execute editor commands
+      content = event.data.split('execute: ')[1];
+      if (content === 'fontSize_big') {
+        CKEditor.execute('heading', { value: 'heading1' });
+      } else if (content === 'fontSize_normal') {
+        CKEditor.execute('heading', { value: 'paragraph' });
+      } else {
+        CKEditor.execute(content);
+      }
+    }
+  })
+
+  DecoupledEditor
+    .create(document.querySelector('#editor'), {
+      placeholder: "Let your ideas flow. Type text, paste a link, add an image, video or audio",
+      focus: true,
+      fontFamily: {
+        options: [
+          'default',
+          '-apple-system, BlinkMacSystemFont, sans-serif',
+          'Arial, Helvetica, sans-serif'
+        ]
+      }
+    })
+    .then(editor => {
+      window.CKEditor = editor;
+
+      editor.model.document.on('change', function() {
+        var value = document.getElementById('editor').textContent;
+        var height = document.getElementById('editor').clientHeight;
+
+        console.log("CKEditor - Value: ", value)
+        console.log("CKEditor - height: ", height)
+        if (value.length > 0) {
+          window.postMessage('NO_KEYCODE>>>!hunt!<<<' + height + '>>>!hunt!<<<' + editor.getData(), '*')
+        }
+
+        attr = Array.from(editor.model.document.selection.getAttributes());
+
+        attrBlock = Array.from(editor.model.document.selection.getSelectedBlocks())[0];
+        if (attrBlock.name == 'listItem') {
+          // BulletedList or NumberList
+          listType = Array.from(attrBlock._attrs)[1][1]
+          if (listType == 0) {
+            listType = Array.from(attrBlock._attrs)[0][1]
+          }
+
+          if (attr.length > 0) {
+            window.postMessage('FOCUS_COMMAND>>>!hunt!<<<' + listType + ',true:' + attr.join(':'), '*')
+          } else {
+            window.postMessage('FOCUS_COMMAND>>>!hunt!<<<' + listType + ',true', '*')
+          }
+        } else if (attrBlock.name == 'heading1') {
+          // Heading1
+          if (attr.length > 0) {
+            window.postMessage('FOCUS_COMMAND>>>!hunt!<<<' + 'fontSize,big:' + attr.join(':'), '*')
+          } else {
+            window.postMessage('FOCUS_COMMAND>>>!hunt!<<<' + 'fontSize,big', '*')
+          }
+        } else {
+          // Paragraph
+          window.postMessage('FOCUS_COMMAND>>>!hunt!<<<' + attr.join(':'), '*')
+        }
+      });
+
+      editor.editing.view.document.on('keydown', (data, evt) => {
+        if (evt.keyCode === 13 || evt.keyCode === 32 || evt.keyCode === 188) {
+          window.postMessage(evt.keyCode + '>>>!hunt!<<<', '*')
+        }
+      });
+    })
+    .catch(error => {
+      console.error(error);
+    });
+</script>
+</body>
+
+</html>

@@ -44,6 +44,8 @@ target 'Mello' do
 
   pod 'RNFS', :path => '../node_modules/react-native-fs'
 
+  pod 'react-native-webview', :path => '../node_modules/react-native-webview'
+
 end
 
 target 'ShareExtension' do
