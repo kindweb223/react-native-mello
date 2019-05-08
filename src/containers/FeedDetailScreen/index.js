@@ -451,15 +451,15 @@ class FeedDetailScreen extends React.Component {
     const firstInviteTipData = await AsyncStorage.getItem('FirstInviteTip')
     const firstCardData = await AsyncStorage.getItem('FirstCardCreated')
 
-    // if (!firstInviteTipData && firstCardData) {
-    //   if (!this.state.showFirstInviteTip) {
-    //     this.setState({ showFirstInviteTip: true })
-    //   }
-    // } else {
-    //   if (this.state.showFirstInviteTip) {
-    //     this.setState({ showFirstInviteTip: false })
-    //   }
-    // }
+    if (!firstInviteTipData && firstCardData) {
+      if (!this.state.showFirstInviteTip) {
+        this.setState({ showFirstInviteTip: true })
+      }
+    } else {
+      if (this.state.showFirstInviteTip) {
+        this.setState({ showFirstInviteTip: false })
+      }
+    }
 
   
     let bubbleFirstCardAsyncData = await AsyncStorage.getItem('BubbleFirstCardTimeCreated')
