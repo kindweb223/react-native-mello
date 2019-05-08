@@ -1056,7 +1056,7 @@ class FeedDetailScreen extends React.Component {
         if (this.reportedCardList !== currentCardInfo.cardList) {
           Analytics.logEvent('feed_detail_report_card', {})
           this.reportedCardList = currentCardInfo.cardList
-          this.props.reportCard(currentCardInfo.cardList, this.props.feedo.currentFeed);
+          this.props.reportCard(currentCardInfo.cardList, this.props.feedo.currentFeed.id);
           this.userActionTimer = null;
           this.setState({ isShowToaster: false })
           this.userActions.shift();
@@ -1108,7 +1108,7 @@ class FeedDetailScreen extends React.Component {
     }
     this.onCloseCardModal();
 
-    this.props.reportCard(cardList, this.state.currentFeed.id);
+    this.props.reportCard(cardList, this.props.feedo.currentFeed.id);
     this.setState({
       isShowToaster: true,
       toasterTitle: cardList.length > 1 ? 'Cards reported' : 'Card reported',
