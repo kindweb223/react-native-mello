@@ -122,6 +122,21 @@ class CardEditScreen extends React.Component {
     }
   }
 
+  handleCKEditorHeight = height => {
+    if (height > this.ckEditorHeight) {
+      this.scrollViewRef.scrollToEnd()
+    }
+    this.ckEditorHeight = height + 8
+  }
+
+  onContentSizeChange({nativeEvent}) {
+    const height = nativeEvent.contentSize.height;
+    if (this.textInputHeightByCursor !== height) {
+      this.textInputHeightByCursor = height;
+      this.scrollContent();
+    }
+  }
+
   executeCKEditorCommand = (command) => {
     this.refCKEditor.executeCommand(command)
   }
@@ -153,7 +168,7 @@ class CardEditScreen extends React.Component {
         hideKeyboardAccessoryView={true}
         scrollEnabled={true}
         automaticallyAdjustContentInsets={true}
-        style={{ flex: 1 }}
+        handleCKEditorHeight={this.handleCKEditorHeight}
         //height={ CONSTANTS.SCREEN_HEIGHT - this.state.keyboardHeight - 175 }
       />
     )
@@ -204,7 +219,14 @@ class CardEditScreen extends React.Component {
         <Animated.View style={[contentContainerStyle]}>
           <View style={styles.container}>
             {this.renderHeader}
-            {this.renderText}
+            <ScrollView
+              style={{ flex: 1 }}
+              contentContainerStyle={{ paddingBottom: 0 }}
+              ref={ref => this.scrollViewRef = ref}
+              // onLayout={this.onLayoutScrollView.bind(this)}
+            >
+              {this.renderText}
+            </ScrollView>
             { this.state.keyboardHeight > 0 && this.renderFooter }
 
             {this.state.isShowKeyboardButton && (
