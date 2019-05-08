@@ -72,11 +72,9 @@ class FirstTimeEntyTipComponent extends React.Component {
           ]}
           style={[styles.androidContainer, type === 0 ? { bottom: BOTTOM_POS - 20 } : { top: TOP_POS - 20 }]}
         >
-          <Animated.View
+          <View
             style={[
-              { flex: 1 },
-              { opacity: fadeAnimateOpacity },
-              
+              { flex: 1 }              
             ]}
           >
             <TouchableOpacity
@@ -102,7 +100,7 @@ class FirstTimeEntyTipComponent extends React.Component {
                 direction={data.arrowDirection}
               />
             </View>
-          </Animated.View>
+          </View>
         </LinearGradient>
       )
     } else {
