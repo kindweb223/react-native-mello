@@ -56,8 +56,7 @@ const styles = StyleSheet.create({
     height: '100%',
     flexDirection: 'row',
     justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: '#fff',
+    alignItems: 'center'
   },
   touchablePadding: {
     paddingVertical: 5, 
