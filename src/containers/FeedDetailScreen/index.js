@@ -78,6 +78,7 @@ import {
   setCurrentFeed,
   updateInvitation,
   deleteDummyCard,
+  reportDummyCard,
   moveDummyCard,
   getActivityFeed,
   getFeedoList,
@@ -90,6 +91,7 @@ import {
   setCurrentCard,
   deleteCard,
   moveCard,
+  reportCard
 } from '../../redux/card/actions'
 import {
   showClipboardToaster,
@@ -117,6 +119,7 @@ const ACTION_FEEDO_DUPLICATE = 3;
 const ACTION_CARD_MOVE = 4;
 const ACTION_CARD_EDIT = 5;
 const ACTION_CARD_DELETE = 6;
+const ACTION_CARD_REPORT = 7;
 
 const FeedDetailMode = 1;
 const TagCreateMode = 2;
@@ -144,6 +147,7 @@ class FeedDetailScreen extends React.Component {
       openMenu: false,
       isShowToaster: false,
       isShowShare: false,
+      showToasterButtonTitle: true,
       pinText: 'Pin',
       selectedIdeaInvitee: null,
       selectedIdeaLayout: {},
@@ -185,6 +189,7 @@ class FeedDetailScreen extends React.Component {
     this.cardItemRefs = [];
     this.moveCardList = [];
     this.deletedCardList = []
+    this.reportedCardList = []
 
     this.animatedTagTransition = new Animated.Value(1)
 
@@ -282,13 +287,14 @@ class FeedDetailScreen extends React.Component {
         (this.props.feedo.loading === 'REMOVE_HUNT_TAG_PENDING' && feedo.loading === 'REMOVE_HUNT_TAG_FULFILLED') ||
         (this.props.card.loading !== 'UPDATE_CARD_FULFILLED' && card.loading === 'UPDATE_CARD_FULFILLED') ||
         (this.props.card.loading !== 'DELETE_CARD_FULFILLED' && card.loading === 'DELETE_CARD_FULFILLED') ||
+        (this.props.card.loading !== 'REPORT_CARD_FULFILLED' && card.loading === 'REPORT_CARD_FULFILLED') ||
         (this.props.card.loading !== 'MOVE_CARD_FULFILLED' && card.loading === 'MOVE_CARD_FULFILLED') ||
         (this.props.feedo.loading === 'UPDATE_FEED_INVITATION_PENDING' && feedo.loading === 'UPDATE_FEED_INVITATION_FULFILLED') ||
         (feedo.loading === 'ADD_CARD_COMMENT_FULFILLED') || (feedo.loading === 'DELETE_CARD_COMMENT_FULFILLED') ||
         (feedo.loading === 'PUBNUB_GET_FEED_DETAIL_FULFILLED') || (feedo.loading === 'PUBNUB_MOVE_IDEA_FULFILLED') ||
         (feedo.loading === 'PUBNUB_LIKE_CARD_FULFILLED') || (feedo.loading === 'PUBNUB_UNLIKE_CARD_FULFILLED') ||
         (feedo.loading === 'GET_CARD_FULFILLED') || (feedo.loading === 'GET_CARD_COMMENTS_FULFILLED') ||
-        (feedo.loading === 'PUBNUB_DELETE_INVITEE_FULFILLED') || (feedo.loading === 'DEL_DUMMY_CARD')) {
+        (feedo.loading === 'PUBNUB_DELETE_INVITEE_FULFILLED') || (feedo.loading === 'DEL_DUMMY_CARD') || (feedo.loading === 'REPORT_DUMMY_CARD')) {
 
       if (_.isEmpty(feedo.currentFeed)) {
         return;
@@ -791,13 +797,17 @@ class FeedDetailScreen extends React.Component {
       if (this.props.feedo.duplicatedFeedList.length > 0) {
         this.props.deleteDuplicatedFeed(this.props.feedo.duplicatedFeedList)
       }
-    } else if (this.state.currentActionType === ACTION_CARD_DELETE || this.state.currentActionType === ACTION_CARD_MOVE) {
+    } else if (this.state.currentActionType === ACTION_CARD_DELETE || this.state.currentActionType === ACTION_CARD_MOVE || this.state.currentActionType === ACTION_CARD_REPORT) {
       clearTimeout(this.userActionTimer);
       this.userActionTimer = null;
       this.userActions.shift();
 
       if (this.state.currentActionType === ACTION_CARD_DELETE) {
         this.props.deleteDummyCard('null', 1)
+      }
+
+      if (this.state.currentActionType === ACTION_CARD_REPORT) {
+        this.props.reportDummyCard('null', 1)
       }
 
       if (this.state.currentActionType === ACTION_CARD_MOVE) {
@@ -890,9 +900,9 @@ class FeedDetailScreen extends React.Component {
     const { currentFeed } = this.state;
 
     if (this.state.isVisibleLongHoldMenu) {
-      if (COMMON_FUNC.getCardViewMode(currentFeed, idea) === CONSTANTS.CARD_VIEW) {
-        return
-      }
+      // if (COMMON_FUNC.getCardViewMode(currentFeed, idea) === CONSTANTS.CARD_VIEW) {
+      //   return
+      // }
 
       let { selectedLongHoldCardList } = this.state
       const selectedCardIndex = _.findIndex(selectedLongHoldCardList, card => card.idea.id === idea.id)
@@ -961,9 +971,9 @@ class FeedDetailScreen extends React.Component {
   onLongPressCard(index, idea, invitees) {
     const { currentFeed } = this.state
 
-    if (COMMON_FUNC.getCardViewMode(currentFeed, idea) === CONSTANTS.CARD_VIEW) {
-      return
-    }
+    // if (COMMON_FUNC.getCardViewMode(currentFeed, idea) === CONSTANTS.CARD_VIEW) {
+    //   return
+    // }
 
     ReactNativeHapticFeedback.trigger('impactHeavy', true);
 
@@ -1020,6 +1030,7 @@ class FeedDetailScreen extends React.Component {
       currentActionType: currentCardInfo.currentActionType,
       isShowToaster: true,
       toasterTitle: currentCardInfo.toasterTitle,
+      showToasterButtonTitle: true
     });
 
     this.userActionTimer = setTimeout(() => {
@@ -1040,6 +1051,16 @@ class FeedDetailScreen extends React.Component {
         this.userActionTimer = null;
         this.setState({ isShowToaster: false })
         this.userActions.shift();
+      } else if (this.state.currentActionType === ACTION_CARD_REPORT) {
+        // Report cards
+        if (this.reportedCardList !== currentCardInfo.cardList) {
+          Analytics.logEvent('feed_detail_report_card', {})
+          this.reportedCardList = currentCardInfo.cardList
+          this.props.reportCard(currentCardInfo.cardList, this.props.feedo.currentFeed);
+          this.userActionTimer = null;
+          this.setState({ isShowToaster: false })
+          this.userActions.shift();
+        }
       }
       this.processCardActions();
     }, TOASTER_DURATION + 50);
@@ -1079,6 +1100,52 @@ class FeedDetailScreen extends React.Component {
     this.props.deleteDummyCard(cardInfo.cardList, 0)
 
     this.processCardActions();
+  }
+
+  onReportCard = (cardList) => {
+    if (this.state.isVisibleLongHoldMenu) {
+      this.onCloseLongHold();
+    }
+    this.onCloseCardModal();
+
+    this.props.reportCard(cardList, this.state.currentFeed.id);
+    this.setState({
+      isShowToaster: true,
+      toasterTitle: 'Card reported',
+      showToasterButtonTitle: false
+    })
+
+    setTimeout(() => {
+      this.setState({
+        isShowToaster: false,
+        showToasterButtonTitle: true
+      })
+    }, TOASTER_DURATION);
+
+    // const cardInfo = {};
+    // cardInfo.currentActionType = ACTION_CARD_REPORT;
+    // cardInfo.toasterTitle = 'Card reported';
+    // cardInfo.cardList = cardList;
+    // this.userActions.push(cardInfo);
+
+    // this.setState((state) => {
+    //   let filterIdeas = state.currentFeed.ideas;
+    //   for(let i = 0; i < this.userActions.length; i ++) {
+    //     const cardInfo = this.userActions[i];
+    //     filterIdeas = _.filter(filterIdeas, idea => _.findIndex(cardInfo.cardList, card => card.idea.id === idea.id) === -1)
+    //   }
+    //   state.currentFeed.ideas = filterIdeas;
+
+    //   this.setMasonryData(filterIdeas)
+
+    //   return state;
+    // }, () => {
+    //   this.setBubbles(this.state.currentFeed)
+    // });
+
+    // this.props.reportDummyCard(cardInfo.cardList, 0)
+
+    // this.processCardActions();
   }
 
   onSelectFeedoToMoveCard(feedoId) {
@@ -1170,6 +1237,7 @@ class FeedDetailScreen extends React.Component {
                 onClose={() => this.onCloseCardModal()}
                 onMoveCard={this.onMoveCard}
                 onDeleteCard={this.onDeleteCard}
+                onReportCard={this.onReportCard}
               />
         )}
         {
@@ -1801,6 +1869,7 @@ class FeedDetailScreen extends React.Component {
           <ToasterComponent
             isVisible={this.state.isShowToaster}
             title={this.state.toasterTitle}
+            showButtonTitle={this.state.showToasterButtonTitle}
             onPressButton={() => this.undoAction()}
           />
         )}
@@ -1874,6 +1943,7 @@ class FeedDetailScreen extends React.Component {
             currentFeed={currentFeed}
             onMove={this.onMoveCard}
             onDelete={this.onDeleteCard}
+            onReport={this.onReportCard}
             onClose={() => this.onCloseLongHold()}
           />
         )}
@@ -1965,6 +2035,7 @@ const mapDispatchToProps = dispatch => ({
   deleteDuplicatedFeed: (data) => dispatch(deleteDuplicatedFeed(data)),
   setCurrentCard: (data) => dispatch(setCurrentCard(data)),
   deleteCard: (ideaId) => dispatch(deleteCard(ideaId)),
+  reportCard: (cardList, feedId) => dispatch(reportCard(cardList, feedId)),
   moveCard: (ideaId, huntId) => dispatch(moveCard(ideaId, huntId)),
   getFileUploadUrl: (id) => dispatch(getFileUploadUrl(id)),
   uploadFileToS3: (signedUrl, file, fileName, mimeType) => dispatch(uploadFileToS3(signedUrl, file, fileName, mimeType)),
@@ -1973,6 +2044,7 @@ const mapDispatchToProps = dispatch => ({
   setCurrentFeed: (data) => dispatch(setCurrentFeed(data)),
   updateInvitation: (feedId, type) => dispatch(updateInvitation(feedId, type)),
   deleteDummyCard: (cardList, type) => dispatch(deleteDummyCard(cardList, type)),
+  reportDummyCard: (cardList, type) => dispatch(reportDummyCard(cardList, type)),
   moveDummyCard: (cardList, feedId, type) => dispatch(moveDummyCard(cardList, feedId, type)),
   getActivityFeed: (userId, param) => dispatch(getActivityFeed(userId, param)),
   getFeedoList: () => dispatch(getFeedoList()),
@@ -2001,6 +2073,7 @@ FeedDetailScreen.propTypes = {
   duplicateFeed: PropTypes.func.isRequired,
   deleteDuplicatedFeed: PropTypes.func.isRequired,
   deleteDummyCard: PropTypes.func,
+  reportDummyCard: PropTypes.func,
   moveDummyCard: PropTypes.func,
   prevPage: PropTypes.string,
   isDeepLink: PropTypes.bool
