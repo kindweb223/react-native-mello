@@ -26,7 +26,13 @@ class ToasterComponent extends React.Component {
     if (isVisible) {
       return (
         <Animated.View style={[styles.container, { opacity: fadeAnimate }]}>
-          <Text style={styles.title} numberOfLines={numberOfLines} ellipsizeMode={ellipsizeMode}>{title}</Text>
+          <Text
+            style={[styles.title, showButtonTitle ? { textAlign: 'left' } : { textAlign: 'center' }]}
+            numberOfLines={numberOfLines}
+            ellipsizeMode={ellipsizeMode}
+          >
+            {title}
+          </Text>
           {showButtonTitle && (
             <TouchableOpacity onPress={() => this.props.onPressButton()}>
               <View style={styles.buttonView}>

@@ -1960,7 +1960,7 @@ class CardDetailScreen extends React.Component {
             ? 'Are you sure you want to report this card? You will no longer see this card'
             : <Text style={COMMON_STYLES.actionSheetTitleText}>Are you sure you want to report this card? You will no longer see this card</Text>
           }
-          options={['Report and Hide', 'Cancel']}
+          options={['Report', 'Cancel']}
           cancelButtonIndex={1}
           destructiveButtonIndex={0}
           tintColor={COLORS.PURPLE}
