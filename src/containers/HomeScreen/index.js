@@ -275,6 +275,10 @@ class HomeScreen extends React.Component {
             this.showSharePermissionModal(permissionInfo)
           }
       });
+    } else {
+      // show tips when opening app the second time
+      this.onShowFirstFlowTip()
+      this.onShowProfilePhotoTip()
     }
 
     this.setState({ loading: true })
