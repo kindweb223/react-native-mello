@@ -3,19 +3,20 @@ import CONSTANTS from '../../service/constants'
 import COLORS from '../../service/colors'
 
 const styles = StyleSheet.create({
-  container: {
+  androidContainer: {
     backgroundColor: 'transparent',
-    ...Platform.select({
-      ios: {
-        shadowColor: '#000',
-        shadowOffset: { height: 5 },
-        shadowOpacity: 0.3,
-        shadowRadius: 30
-      },
-      android: {
-        elevation: 20
-      }
-    }),
+    width: CONSTANTS.SCREEN_WIDTH,
+    paddingVertical: 20,
+    height: 130,
+    position: 'absolute',
+    right: 0
+  },
+  iosContainer: {
+    backgroundColor: 'transparent',
+    shadowColor: '#000',
+    shadowOffset: { height: 5 },
+    shadowOpacity: 0.3,
+    shadowRadius: 30,
     width: CONSTANTS.SCREEN_WIDTH,
     height: 90,
     position: 'absolute',
