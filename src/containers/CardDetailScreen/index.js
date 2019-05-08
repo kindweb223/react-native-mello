@@ -812,6 +812,7 @@ class CardDetailScreen extends React.Component {
     //   return true;
     // }
     const allUrls = this.state.idea && this.state.idea.match(/(http(s)?:\/\/.)?(www\.)?[-a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,6}\b([-a-zA-Z0-9@:%_\+.~#?&//=]*)/gi);
+
     if (allUrls) {
       let newUrls = [];
       const {
@@ -1553,17 +1554,24 @@ class CardDetailScreen extends React.Component {
             animation={this.state.fadeInUpAnimation}
           >
             {!this.state.idea && viewMode === CONSTANTS.CARD_EDIT
-              ?
-              <TextInput
-                style={styles.textInputIdea}
-                multiline={true}
-                pointerEvents="none" 
-                placeholder={'Add a note'}/>
-              :
-              <Autolink
-                style={styles.textInputIdea}
-                text={COMMON_FUNC.htmlToPlainText(this.state.idea)}
-                onPress={(url, match) => this.onPressLink(url)}/>
+              ? <TextInput
+                  style={styles.textInputIdea}
+                  multiline={true}
+                  pointerEvents="none" 
+                  placeholder={'Add a note'}
+                />
+              : <HTML
+                  html={this.addExternalParagraphIfNeeded(this.state.idea)}
+                  containerStyle={styles.textHtmlIdea}
+                  classesStyles={CONSTANTS.HTML_CLASS_STYLES}
+                  tagsStyles={CONSTANTS.HTML_TAGS_STYLE}
+                  onLinkPress={(evt, href) => this.onPressLink(href)}
+                />
+                /* <Autolink
+                  style={styles.textInputIdea}
+                  text={this.state.idea}
+                  onPress={(url, match) => this.onPressLink(url)}
+                /> */
             }
           </Animatable.View>
         </Animated.View>
@@ -1873,7 +1881,7 @@ class CardDetailScreen extends React.Component {
     };
 
     let contentContainerStyle = {
-      paddingBottom: Platform.OS==='android'? 20: 0,
+      paddingBottom: Platform.OS === 'android'? 20: 0,
       height: CONSTANTS.SCREEN_HEIGHT,
       backgroundColor: '#fff',
     }
@@ -1905,7 +1913,7 @@ class CardDetailScreen extends React.Component {
         {(showEditScreen)
           ? <CardEditScreen
               {...this.props}
-              idea={COMMON_FUNC.htmlToPlainText((idea))}
+              idea={idea}
               checkUrls={() => this.checkUrls()}
               // onDoneEditCard={() => this.onDoneEditCard()}
               onCancelEditCard={() => this.onCloseEditCard()}
@@ -2004,6 +2012,15 @@ class CardDetailScreen extends React.Component {
         )}
       </View>
     )
+  }
+
+  // Used for cards with no format
+  addExternalParagraphIfNeeded(text) {
+    if (text.includes('<p>')) {
+      return text
+    } else {
+      return '<p>' + text + '</p>'
+    }
   }
 }
 

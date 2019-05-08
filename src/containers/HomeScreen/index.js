@@ -1565,6 +1565,7 @@ class HomeScreen extends React.Component {
         menu={menu}
         isOpen={isSideMenuOpen}
         onChange={isOpen => this.updateMenuState(isOpen)}
+        bounceBackOnOverdraw={false}
       >
       { this.renderSelectHunt }
       <View style={styles.container}>

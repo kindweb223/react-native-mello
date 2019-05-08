@@ -19,7 +19,7 @@
 	<key>CFBundleShortVersionString</key>
 	<string>1.0</string>
 	<key>CFBundleVersion</key>
-	<string>89</string>
+	<string>91</string>
 	<key>NSAppTransportSecurity</key>
 	<dict>
 		<key>NSAllowsArbitraryLoads</key>
@@ -57,5 +57,7 @@
 		<key>NSExtensionPointIdentifier</key>
 		<string>com.apple.share-services</string>
 	</dict>
+  <key>NSLocationAlwaysUsageDescription</key>
+  <string>We may use your location to give you a faster and better service while using our app</string>
 </dict>
 </plist>
