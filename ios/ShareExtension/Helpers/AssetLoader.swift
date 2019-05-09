@@ -58,7 +58,7 @@ class AssetLoader {
   func loadIfNeeded() {
     guard self.state == State.nothing else { return }
     state = .loading
-    DispatchQueue.global().async {
+    DispatchQueue.global(qos: .userInitiated).async {
       let fileExtension = self.url.pathExtension
       if fileExtension.lowercased() == "gif" {
         self.loadGIF()
@@ -90,8 +90,11 @@ class AssetLoader {
   func loadWebP() {
     do {
       let data = try Data(contentsOf: self.url)
-      let image = UIImage(webpWithData: data as NSData)
-      self.state = .image(image: image)
+      if let image = UIImage(webpWithData: data as NSData) {
+        self.state = .image(image: image)
+      } else {
+        self.state = .error
+      }
     } catch {
       self.state = .error
     }
