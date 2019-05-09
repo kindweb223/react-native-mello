@@ -1119,9 +1119,9 @@ class HomeScreen extends React.Component {
         isEditFeed: false,
       });
     } else if (type === 'UPLOAD_PHOTO') {
-      this.pickMediaFromLibrary(options);
+      this.onAddMedia(1)
     } else if (type === 'TAKE_PHOTO') {
-      this.pickMediaFromCamera(options);
+      this.onAddMedia(0)
     } else if (type === 'ATTACH_FILE') {
       this.onAddDocument();
     } else if (type === 'ADD_LINK') {
@@ -1180,17 +1180,63 @@ class HomeScreen extends React.Component {
     this.setState({ showProfile: false })
   }
 
+  onAddMedia(index) {
+    Permissions.checkMultiple(['camera', 'photo']).then(response => {
+      if (response.camera === 'authorized' && response.photo === 'authorized') {
+        //permission already allowed
+        this.onTapMediaPickerActionSheet(index)
+      }
+      else {
+        Permissions.request('camera').then(response => {
+          if (response === 'authorized') {
+            //camera permission was authorized
+            Permissions.request('photo').then(response => {
+              if (response === 'authorized') {
+                //photo permission was authorized
+                this.onTapMediaPickerActionSheet(index)
+              }
+              else if (Platform.OS === 'ios') {
+                Permissions.openSettings();
+              }    
+            });
+          }
+          else if (Platform.OS === 'ios') {
+            Permissions.openSettings();
+          }
+        });
+      }
+    });
+  }
+
+  onTapMediaPickerActionSheet(index) {
+    var options = {
+      storageOptions: {
+        skipBackup: true,
+        path: 'feedo'
+      },
+      mediaType: 'mixed'
+    };
+        
+    if (index === 0) {
+      // from camera
+      if (DeviceInfo.isEmulator()) {
+        Alert.alert("It's impossible to take a photo on Simulator")
+      } else {
+        this.pickMediaFromCamera(options);
+      }
+    } else if (index === 1) {
+      // from library
+      this.pickMediaFromLibrary(options);
+    }
+  }
+
   pickMediaFromCamera(options) {
     ImagePicker.launchCamera(options, (response)  => {
       if (!response.didCancel) {
-        if (response.fileSize > CONSTANTS.MAX_UPLOAD_FILE_SIZE) {
-          COMMON_FUNC.showPremiumAlert()
-        } else {
-          if (!response.fileName) {
-            response.fileName = response.uri.replace(/^.*[\\\/]/, '')
-          }
-          this.handleFile(response)
+        if (!response.fileName) {
+          response.fileName = response.uri.replace(/^.*[\\\/]/, '')
         }
+        this.handleFile(response)
       }
     });
   }
@@ -1198,11 +1244,7 @@ class HomeScreen extends React.Component {
   pickMediaFromLibrary(options) {
     ImagePicker.launchImageLibrary(options, (response)  => {
       if (!response.didCancel) {
-        if (response.fileSize > CONSTANTS.MAX_UPLOAD_FILE_SIZE) {
-          COMMON_FUNC.showPremiumAlert()
-        } else {
-          this.handleFile(response)
-        }
+        this.handleFile(response)
       }
     });
   }

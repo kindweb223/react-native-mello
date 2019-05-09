@@ -33,6 +33,7 @@ import Permissions from 'react-native-permissions'
 import * as mime from 'react-native-mime-types'
 import GestureRecognizer from 'react-native-swipe-gestures'
 import { NetworkConsumer, checkInternetConnection } from 'react-native-offline'
+import DeviceInfo from 'react-native-device-info';
 const truncate = require('truncate-html')
 var clip = require('text-clipper')
 import MasonryList from '../../components/MasonryComponent'
@@ -1333,7 +1334,11 @@ class FeedDetailScreen extends React.Component {
 
     if (index === 0) {
       // from camera
-      this.pickMediaFromCamera(options);
+      if (DeviceInfo.isEmulator()) {
+        Alert.alert("It's impossible to take a photo on Simulator")
+      } else {
+        this.pickMediaFromCamera(options);
+      }
     } else if (index === 1) {
       // from library
       this.pickMediaFromLibrary(options);
