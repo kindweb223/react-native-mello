@@ -182,6 +182,7 @@ class CardNewScreen extends React.Component {
 
     this.coverImageWidth = CONSTANTS.SCREEN_WIDTH
     this.coverImageHeight = CONSTANTS.SCREEN_HEIGHT / 3
+    this.firstCoverImageHeight = 0
 
     this.ckEditorHeight = 70
 
@@ -328,6 +329,21 @@ class CardNewScreen extends React.Component {
           ImageResizer.createResizedImage(this.selectedFile.uri, actualWidth, actualHeight, CONSTANTS.IMAGE_COMPRESS_FORMAT, CONSTANTS.IMAGE_COMPRESS_QUALITY, 0, null)
             .then((response) => {
               console.log('Image compress Success!');
+              // Scroll the view to show the progressbar
+              if (this.props.viewMode === CONSTANTS.CARD_NEW) {
+                const minHeight = CONSTANTS.SCREEN_HEIGHT - 125
+                renderCoverImageHeight = CONSTANTS.SCREEN_WIDTH / this.selectedFile.width * this.selectedFile.height
+
+                if (this.state.coverImage === '' || !this.state.coverImage) {
+                  if (renderCoverImageHeight > minHeight) {
+                    this.scrollViewRef.scrollTo({ y: renderCoverImageHeight - minHeight + 100 })
+                  }
+                } else {
+                  if (this.firstCoverImageHeight > minHeight) {
+                    this.scrollViewRef.scrollTo({ y: this.firstCoverImageHeight - minHeight + 100 })
+                  }
+                }
+              }
               this.props.uploadFileToS3(nextProps.card.fileUploadUrl.uploadUrl, response.uri, this.selectedFileName, fileType, this.updateUploadProgress);
             }).catch((error) => {
               console.log('Image compress error: ', error);
@@ -469,6 +485,8 @@ class CardNewScreen extends React.Component {
       // loading = true;
     } else if (this.props.card.loading !== types.SET_COVER_IMAGE_FULFILLED && nextProps.card.loading === types.SET_COVER_IMAGE_FULFILLED) {
       const { width, height } = await this.getImageSize(nextProps.card.currentCard.coverImage);
+      this.firstCoverImageHeight = CONSTANTS.SCREEN_WIDTH / this.selectedFile.width * this.selectedFile.height
+      
       this.coverImageWidth = width
       this.coverImageHeight = height
       this.imageUploading = false;
