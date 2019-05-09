@@ -96,8 +96,8 @@ class CardLongHoldMenuScreen extends React.Component {
         ref={ref => this.reportActionSheet = ref}
         title={
           Platform.OS === 'ios'
-          ? 'Are you sure you want to report this card? You will no longer see this card'
-          : <Text style={COMMON_STYLES.actionSheetTitleText}>Are you sure you want to report this card? You will no longer see this card</Text>
+          ? 'Are you sure you want to report this card?'
+          : <Text style={COMMON_STYLES.actionSheetTitleText}>Are you sure you want to report this card?</Text>
         }
         options={['Report', 'Cancel']}
         cancelButtonIndex={1}
