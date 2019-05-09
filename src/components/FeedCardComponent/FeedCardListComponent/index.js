@@ -8,6 +8,7 @@ import { connect } from 'react-redux'
 
 import Entypo from 'react-native-vector-icons/Entypo'
 import _ from 'lodash'
+import HTML from 'react-native-render-html'
 var striptags = require('striptags')
 
 import { getDurationFromNow } from '../../../service/dateUtils'

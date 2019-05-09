@@ -149,6 +149,10 @@ class API {
         }
         
         DispatchQueue.main.async {
+          if self.debugMode {
+            print("[API] response for: [" + request.httpMethod! + "] " + request.url!.absoluteString)
+            print(String(data: try! JSONSerialization.data(withJSONObject: json, options: .prettyPrinted), encoding: .utf8)!)
+          }
           completion(ParsedURL(json: json))
         }
         }.resume()

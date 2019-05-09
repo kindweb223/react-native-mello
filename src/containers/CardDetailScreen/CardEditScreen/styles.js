@@ -1,70 +1,60 @@
-import { StyleSheet } from 'react-native'
+import { StyleSheet, Platform } from 'react-native'
 import COLORS from '../../../service/colors'
 import CONSTANTS from '../../../service/constants'
 
 const styles = StyleSheet.create({
   container: {
+    top: 0,
     width: CONSTANTS.SCREEN_WIDTH,
-    height: CONSTANTS.SCREEN_HEIGHT,
-    backgroundColor: 'transparent',
-    justifyContent: 'center',
-    backgroundColor: '#fff'
-  },
-  cardContainer: {
     flex: 1,
-    backgroundColor: '#fff'
-  },
-  ideaContentView: {
-    marginTop: 8,
-  },
-  textInputIdea: {
-    fontSize: 16,
-    lineHeight: CONSTANTS.TEXT_INPUT_LINE_HEIGHT,
-    marginTop: 16,
-    marginBottom: 16,
-    marginHorizontal: 16,
-    paddingLeft: 0,
-    paddingRight: 0,
-    paddingTop: 0,
-    paddingBottom: 0,
+    backgroundColor: 'white'
   },
   headerContainer: {
-    marginTop: 5,
-    paddingHorizontal: 6,
     backgroundColor: '#fff',
     flexDirection: 'row',
     justifyContent: 'space-between',
-    alignItems: 'center'
+    alignItems: 'center',
+    height: 55
   },
   closeButtonView: {
-    paddingHorizontal: 10,
+    paddingHorizontal: CONSTANTS.PADDING,
     height: 34,
     width: 90,
     justifyContent: 'center',
     alignItems: 'flex-start'
   },
   textButton: {
+    color: '#000',
     fontSize: 16,
     lineHeight: 22,
     fontWeight: '500',
     textAlign: 'center',
   },
-  keyboardContainer: {
-    position: 'absolute',
-    right: 16,
-    bottom: 16,
-  },
-  keyboardButtonView: {
-    width: 32,
-    height: 32,
-    backgroundColor: COLORS.PURPLE,
-    borderRadius: 8,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
   loadingIcon: {
     marginRight: 10
-  }
+  },
+  footerContainer: {
+    width: '100%',
+    backgroundColor: 'transparent',
+    paddingHorizontal: CONSTANTS.PADDING,
+    paddingVertical: CONSTANTS.PADDING,
+    marginBottom: Platform.OS === 'ios' ? 0 : 24,
+    marginVertical: 0,
+    height: Platform.OS === 'ios' ? 40 : 52,
+    flexDirection: 'row',
+    alignItems: 'center'
+  },
+  hideKeyboardContainer: {
+    position: 'absolute',
+    right: 16,
+    bottom: 40,
+  },
+  buttonItemContainer: {
+    width: 32,
+    height: 32,
+    alignItems: 'center',
+    justifyContent: 'center'
+  },
 })
 
 

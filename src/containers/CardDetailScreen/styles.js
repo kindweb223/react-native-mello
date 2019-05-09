@@ -27,6 +27,7 @@ const styles = StyleSheet.create({
     fontWeight: 'normal',
     fontSize: 16,
     color: 'black',
+    fontWeight: 'normal',
     lineHeight: CONSTANTS.TEXT_INPUT_LINE_HEIGHT,
     marginBottom: 0,
     marginHorizontal: 16,
@@ -42,7 +43,7 @@ const styles = StyleSheet.create({
     paddingRight: 0,
     paddingTop: 0,
     paddingBottom: 0,
-    width: '100%'
+    flex: 1
   },
   rowContainer: {
     flexDirection: 'row',

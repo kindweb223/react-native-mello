@@ -105,7 +105,12 @@ extension ImagePickerViewController: UICollectionViewDelegateFlowLayout {
   func collectionView(_ collectionView: UICollectionView,
                       layout collectionViewLayout: UICollectionViewLayout,
                       sizeForItemAt indexPath: IndexPath) -> CGSize {
-    return CGSize(width: collectionView.frame.width / 3, height: collectionView.frame.width / 3)
+    switch cellModels[indexPath.item].asset.state {
+    case .error:
+      return CGSize.zero
+    case .nothing, .loading, .image, .gif:
+      return CGSize(width: collectionView.frame.width / 3, height: collectionView.frame.width / 3)
+    }
   }
   
   func collectionView(_ collectionView: UICollectionView,
@@ -139,6 +144,9 @@ extension ImagePickerViewController: AssetLoaderDelegate {
   func assetLoader(_ assetLoader: AssetLoader, didFinishLoadingWithIndex index: Int) {
     if let cell = self.collectionView.cellForItem(at: IndexPath(row: index, section: 0)) as? AssetCell {
       cell.update(assetLoader, selected: cellModels[index].selected)
+      if assetLoader.state == .error {
+        collectionView.reloadItems(at: [IndexPath(row: index, section: 0)])
+      }
     } else {
       collectionView.reloadItems(at: [IndexPath(row: index, section: 0)])
     }

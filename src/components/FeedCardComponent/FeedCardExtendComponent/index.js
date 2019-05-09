@@ -2,7 +2,8 @@ import React from 'react'
 import {
   View,
   Text,
-  Image
+  Image,
+  ScrollView
 } from 'react-native'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
@@ -10,8 +11,6 @@ import { connect } from 'react-redux'
 import _ from 'lodash'
 import HTML from 'react-native-render-html'
 import Autolink from 'react-native-autolink';
-var striptags = require('striptags')
-
 import styles from './styles'
 import LikeComponent from '../../LikeComponent';
 import CommentComponent from '../../CommentComponent';
@@ -31,7 +30,7 @@ class FeedCardExtendComponent extends React.Component {
   }
 
   render() {
-    const { invitees, idea, feedo, cardType, longSelected, longHold, imageHeight } = this.props;
+    const { invitees, idea, feedo, cardType, longSelected, longHold, imageHeight, masonryData } = this.props;
 
     const invitee = _.find(invitees, item => item.id === idea.inviteeId)
     let isOnlyInvitee = false
@@ -74,17 +73,24 @@ class FeedCardExtendComponent extends React.Component {
               )}
 
               {_.has(idea, 'idea') && idea.idea.length !== null && idea.idea.length > 0 && (
-                <View style={styles.subView}>
-                  <Autolink
+                <View style={[styles.htmlView, { height: masonryData.contentHeight - 80 }]}>
+                  <HTML
+                    html={this.addExternalParagraphIfNeeded(masonryData.clipText)}
+                    containerStyle={styles.textHtmlIdea}
+                    onLinkPress={(evt, href) => this.onPressLink(href)}
+                    classesStyles={CONSTANTS.HTML_CLASS_STYLES}
+                    tagsStyles={CONSTANTS.HTML_TAGS_STYLE_MASONRY}
+                  />
+                  {/* <Autolink
                     style={styles.title}
                     linkStyle={styles.linkStyle}
-                    text={COMMON_FUNC.htmlToPlainText(striptags(idea.idea))}
+                    text={striptags(idea.idea)}
                     numberOfLines={hasCoverImage ? 4 : 10}
                     ellipsizeMode="tail"
                     onPress={() => longHold ? {} : this.props.onLinkPress()}
                     onLongPress={() => longHold ? {} : this.props.onLinkLongPress()}
                     suppressHighlighting={true}
-                  />
+                  /> */}
                 </View>
               )}
             </View>
@@ -116,6 +122,15 @@ class FeedCardExtendComponent extends React.Component {
         </View>
       </View>
     )
+  }
+
+  // Used for cards with no format
+  addExternalParagraphIfNeeded(text) {
+    if (text.includes('<p>')) {
+      return text
+    } else {
+      return '<p>' + text + '</p>'
+    }
   }
 }
 

@@ -96,6 +96,20 @@ extension NewFlowViewController: UITextViewDelegate {
       scrollView.scrollToBottom(animated: false)
     }
   }
+  
+  func textViewDidEndEditing(_ textView: UITextView) {
+    if textView.text.cleaningEmptySpaces() == "" {
+      switch textView {
+      case descriptionTextView:
+        descriptionTextView.text = descriptionPlaceholder
+        descriptionTextView.textColor = .lightGray
+      case nameTextView:
+        nameTextView.text = namePlaceholder
+        nameTextView.textColor = .lightGray
+      default: break
+      }
+    }
+  }
 }
 
 
@@ -111,12 +125,22 @@ extension NewFlowViewController: ShareNavigationable {
   }
   
   func navigationDidTapRightButton() {
-    guard let nameText = nameTextView.text, nameText != "", nameText.replacingOccurrences(of: " ", with: "") != "" else {
+    guard validateFlowName() else {
+      return
+    }
+    let descriptionText = descriptionTextView.text == descriptionPlaceholder ? "" : descriptionTextView.text
+    delegate?.newFlowViewController(self, wantsToCreateFlow: nameTextView.text, description: descriptionText ?? "")
+  }
+  
+  private func validateFlowName() -> Bool {
+    guard let nameText = nameTextView.text, nameText != "",
+      nameText.cleaningEmptySpaces() != "",
+      nameText != namePlaceholder else {
       let label = UILabel(frame: CGRect.zero)
       label.translatesAutoresizingMaskIntoConstraints = false
       label.font = UIFont.systemFont(ofSize: 12)
       label.textColor = .red
-      label.text = "Please enter a valid flow name"
+      label.text = "Please give your flow a name."
       
       containerView.addSubview(label)
       containerView.addConstraints(NSLayoutConstraint.constraints(withVisualFormat: "H:|-20-[label]-16-|", options: [], metrics: nil, views: ["label": label]))
@@ -132,10 +156,14 @@ extension NewFlowViewController: ShareNavigationable {
       }) { _ in
         label.removeFromSuperview()
       }
-      
-      return
+      return false
     }
-    let descriptionText = descriptionTextView.text == descriptionPlaceholder ? "" : descriptionTextView.text
-    delegate?.newFlowViewController(self, wantsToCreateFlow: nameTextView.text, description: descriptionText ?? "")
+    return true
+  }
+}
+
+extension String {
+  func cleaningEmptySpaces() -> String {
+    return self.replacingOccurrences(of: " ", with: "").replacingOccurrences(of: "\n", with: "")
   }
 }

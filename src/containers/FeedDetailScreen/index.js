@@ -33,9 +33,8 @@ import Permissions from 'react-native-permissions'
 import * as mime from 'react-native-mime-types'
 import GestureRecognizer from 'react-native-swipe-gestures'
 import { NetworkConsumer, checkInternetConnection } from 'react-native-offline'
-import Masonry from '../../components/MasonryComponent'
-import rnTextSize from 'react-native-text-size'
-var striptags = require('striptags')
+const truncate = require('truncate-html')
+var clip = require('text-clipper')
 import MasonryList from '../../components/MasonryComponent'
 
 import DashboardActionBar from '../../navigations/DashboardActionBar'
@@ -123,12 +122,6 @@ const FeedDetailMode = 1;
 const TagCreateMode = 2;
 
 const PAGE_COUNT = 50
-
-const fontSpecs = {
-  fontFamily: undefined,
-  fontSize: 13,
-  fontWeight: '500'
-}
 
 const EMPTY_ICON = require('../../../assets/images/empty_state/NotificationEmptyState.png')
 
@@ -275,7 +268,7 @@ class FeedDetailScreen extends React.Component {
     if (card.loading === 'CREATE_CARD_FULFILLED') {
       this.setState({ showBubble: false })
     }
-    
+
     if ((this.props.feedo.loading !== 'GET_FEED_DETAIL_FULFILLED' && feedo.loading === 'GET_FEED_DETAIL_FULFILLED') ||
         (this.props.feedo.loading !== 'SET_FEED_DETAIL_FROM_STORAGE') ||
         (this.props.feedo.loading === 'DELETE_INVITEE_PENDING' && feedo.loading === 'DELETE_INVITEE_FULFILLED') ||
@@ -323,10 +316,12 @@ class FeedDetailScreen extends React.Component {
 
       const currentFeed = feedo.currentFeed
       let filterIdeas = currentFeed.ideas
+
       for (let i = 0; i < this.userActions.length; i ++) {
         const cardInfo = this.userActions[i];
         filterIdeas = _.filter(filterIdeas, idea => _.findIndex(cardInfo.cardList, card => card.idea.id === idea.id ) === -1)
       }
+
       currentFeed.ideas = filterIdeas;
 
       // If not connected to the internet, use offline images/files
@@ -553,30 +548,35 @@ class FeedDetailScreen extends React.Component {
         const idea = ideas[index]
         const cardWidth = (CONSTANTS.SCREEN_SUB_WIDTH - 16) / 2
 
-        const textSize = await rnTextSize.measure({
-          text: striptags(idea.idea),
-          width: cardWidth - 16,
-          ...fontSpecs
-        })
-
         let hasCoverImage = idea.coverImage && idea.coverImage.length > 0
         let cardHeight = 0
         let contentHeight = 0
         let imageHeight = 0
 
-        if (hasCoverImage) {
-          if (textSize.lineCount > 3) {
-            contentHeight = 80 + (textSize.height / textSize.lineCount * 4)
-          } else {
-            contentHeight = 80 + textSize.height
-          }
-        } else {
-          if (textSize.lineCount > 9) {
-            contentHeight = 80 + (textSize.height / textSize.lineCount * 10)
-          } else {
-            contentHeight = 80 + textSize.height
-          }
-        }
+        const { limitLine } = await COMMON_FUNC.getHtmlHeight(idea.idea, hasCoverImage)
+        const clipText = clip(idea.idea, idea.idea.length, { html: true, maxLines: limitLine === 0 ? 1 : limitLine })
+        const { textSize } = await COMMON_FUNC.getHtmlHeight(clipText, hasCoverImage)
+
+        contentHeight = 80 + textSize + 5
+
+        // let hasCoverImage = idea.coverImage && idea.coverImage.length > 0
+        // let cardHeight = 0
+        // let contentHeight = 0
+        // let imageHeight = 0
+
+        // if (hasCoverImage) {
+        //   if (textSize.lineCount > 3) {
+        //     contentHeight = 80 + (textSize.height / textSize.lineCount * 4)
+        //   } else {
+        //     contentHeight = 80 + textSize.height
+        //   }
+        // } else {
+        //   if (textSize.lineCount > 9) {
+        //     contentHeight = 80 + (textSize.height / textSize.lineCount * 10)
+        //   } else {
+        //     contentHeight = 80 + textSize.height
+        //   }
+        // }
 
         if (hasCoverImage) {
           const coverImageData = _.find(idea.files, file => (file.accessUrl === idea.coverImage || file.thumbnailUrl === idea.coverImage))
@@ -598,6 +598,9 @@ class FeedDetailScreen extends React.Component {
           index,
           width: (CONSTANTS.SCREEN_WIDTH - 16) / 2,
           height: cardHeight,
+          contentHeight,
+          limitLine,
+          clipText,
           imageHeight,
           data: idea
         })
@@ -853,6 +856,12 @@ class FeedDetailScreen extends React.Component {
 
   onOpenNewCardModal() {
     if (!COMMON_FUNC.isFeedGuest(this.state.currentFeed)) {
+      // this.animatedOpacity.setValue(0);
+      // Animated.timing(this.animatedOpacity, {
+      //   toValue: 1,
+      //   duration: CONSTANTS.ANIMATEION_MILLI_SECONDS,
+      // }).start();
+
       this.props.closeClipboardToaster()
       this.props.setCurrentCard({});
       this.setState({
@@ -860,13 +869,7 @@ class FeedDetailScreen extends React.Component {
         cardViewMode: CONSTANTS.CARD_NEW,
         selectedIdeaInvitee: null,
         selectedIdeaLayout: {},
-      }, () => {
-        this.animatedOpacity.setValue(0);
-        Animated.timing(this.animatedOpacity, {
-          toValue: 1,
-          duration: CONSTANTS.ANIMATEION_MILLI_SECONDS,
-        }).start();
-      });
+      })
     }
   }
 
@@ -1140,10 +1143,9 @@ class FeedDetailScreen extends React.Component {
     }
 
     return (
-      <Animated.View
+      <View
         style={[
           styles.modalContainer,
-          { opacity: this.animatedOpacity }
         ]}
       >
         {
@@ -1180,7 +1182,7 @@ class FeedDetailScreen extends React.Component {
               isNewCard={false}
             />
         }
-      </Animated.View>
+      </View>
     );
   }
 
@@ -1538,8 +1540,8 @@ class FeedDetailScreen extends React.Component {
               activeOpacity={0.7}
               onPress={() => this.onOpenNewCardModal() }
             >
-              <View style={[{height: 34, width: 180, backgroundColor:COLORS.PURPLE, borderRadius: 16, justifyContent: 'center'}]}>
-                <Text style={[styles.textButton, { color: 'white', fontSize: 15, textAlign: 'center', fontWeight: 'normal'}]}>Create your first card</Text>
+              <View style={[{height: 32, width: 164, backgroundColor:COLORS.PURPLE, borderRadius: 6, justifyContent: 'center'}]}>
+                <Text style={[styles.textButton, { color: 'white', fontSize: 14, textAlign: 'center', fontWeight: '500'}]}>Create your first card</Text>
               </View>
             </TouchableOpacity>
           </View>
@@ -1728,6 +1730,7 @@ class FeedDetailScreen extends React.Component {
                                   <FeedCardComponent
                                     idea={renderIdea}
                                     imageHeight={item.imageHeight}
+                                    masonryData={MasonryListData[item.index]}
                                     invitees={invitees}
                                     listType={this.state.viewPreference}
                                     cardType="view"
