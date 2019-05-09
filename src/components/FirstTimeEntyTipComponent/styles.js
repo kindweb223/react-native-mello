@@ -7,7 +7,7 @@ const styles = StyleSheet.create({
     backgroundColor: 'transparent',
     width: CONSTANTS.SCREEN_WIDTH,
     paddingVertical: 20,
-    height: 130,
+    height: 195,
     position: 'absolute',
     right: 0
   },
@@ -18,21 +18,20 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.3,
     shadowRadius: 30,
     width: CONSTANTS.SCREEN_WIDTH,
-    height: 90,
+    height: 155,
     position: 'absolute',
     right: 0
   },
   tipBody: {
     backgroundColor: '#fff',
     width: CONSTANTS.SCREEN_WIDTH - 16,
-    height: 79,
+    height: 144,
     marginLeft: 8,
-    paddingHorizontal: 14,
-    paddingVertical: 16,
+    paddingHorizontal: 16,
+    paddingVertical: 20,
     borderRadius: 6,
-    flexDirection: 'row',
     justifyContent: 'space-between',
-    alignItems: 'center',
+    alignItems: 'flex-start',
   },
   avatarIconView: {
     width: 47,
@@ -41,7 +40,7 @@ const styles = StyleSheet.create({
     backgroundColor: COLORS.LIGHT_PURPLE_BACKGROUND,
     justifyContent: 'center',
     alignItems: 'center',
-    marginRight: 12
+    marginBottom: 10
   },
   avatarIcon: {
     width: 20,
@@ -49,7 +48,6 @@ const styles = StyleSheet.create({
   },
   contentView: {
     alignItems: 'flex-start',
-    justifyContent: 'space-between',
     flex: 1,
     height: 47,
     paddingVertical: 1
@@ -58,6 +56,7 @@ const styles = StyleSheet.create({
     fontSize: 16,
     lineHeight: 20,
     fontWeight: '600',
+    marginBottom: 6
   },
   description: {
     fontSize: 14,
@@ -67,7 +66,7 @@ const styles = StyleSheet.create({
     position: 'absolute',
     right: 0,
     top: 0,
-    padding: 8
+    padding: 15
   },
   triangel: {
     position: 'absolute'
