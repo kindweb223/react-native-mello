@@ -9,8 +9,8 @@ import styles from './styles'
 import COLORS from '../../service/colors'
 import CONSTANTS from '../../service/constants'
 const FIRST_FLOW_ICON = require('../../../assets/images/IconFlow/IconMediumFlowBlue.png')
-const FIRST_INVITE_ICON = require('../../../assets/images/Feed_option/AddPeopleGrey.png')
-const PROFILE_PHOTO_ICON = require('../../../assets/images/Profile/Blue.png')
+const FIRST_INVITE_ICON = require('../../../assets/images/Tip/user_pic_combined.png')
+const PROFILE_PHOTO_ICON = require('../../../assets/images/Tip/user_pic_4.png')
 
 const BOTTOM_POS = CONSTANTS.ACTION_BAR_HEIGHT - 5
 const TOP_POS = Platform.OS === 'ios' ? ifIphoneX(85, 60) : 50
@@ -63,7 +63,12 @@ class FirstTimeEntyTipComponent extends React.Component {
         style={[styles.tipBody, type === 0 ? { marginTop: 0 } : { marginTop: 11 }]}
         onPress={() => this.props.onTapFlow()} activeOpacity={0.8}
       >
-        <View style={styles.avatarIconView}>
+        <View
+          style={[
+            type === 0 && styles.avatarIconView,
+            type !== 1 ? { marginBottom: 10 } : { marginBottom: 5 }
+          ]}
+        >
           <Image source={data.icon} style={type === 0 && styles.avatarIcon} resizeMode="stretch" />
         </View>
         <View style={styles.contentView}>
@@ -104,7 +109,7 @@ class FirstTimeEntyTipComponent extends React.Component {
             'rgba(220, 220, 220, 0.4)',
             'rgba(220, 220, 220, 0.05)'
           ]}
-          style={[styles.androidContainer, type === 0 ? { bottom: BOTTOM_POS - 20 } : { top: TOP_POS - 20 }]}
+          style={[styles.androidContainer, type === 0 ? { bottom: BOTTOM_POS -20 } : { top: TOP_POS - 20 }]}
         >
           <View
             style={[
