@@ -364,8 +364,6 @@ class InviteeScreen extends React.Component {
 
     let action = memberActions[index]
 
-    console.log(action)
-
     switch(action) {
       case MEMBER_ACTIONS.CAN_EDIT:
         break

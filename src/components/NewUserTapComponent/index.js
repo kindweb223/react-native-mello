@@ -30,6 +30,7 @@ const NewUserTap = ({ inputEmail, onHandleNewUserTap }) => {
         invitee={item}
         isOnlyTitle={true}
         isViewOnly={true}
+        isShowSeparator={false}
       />
     </TouchableOpacity>
   )
