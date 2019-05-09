@@ -60,18 +60,27 @@ class FirstTimeEntyTipComponent extends React.Component {
     return [
       <TouchableOpacity
         key="0"
-        style={[styles.tipBody, type === 0 ? { marginTop: 0 } : { marginTop: 11 }]}
+        style={[
+          styles.tipBody,
+          type === 0 ? { marginTop: 0 } : { marginTop: 11 },
+          type === 1 ? { paddingTop: 15, paddingLeft: 11 } : { paddingTop: 20, paddingLeft: 16 }
+        ]}
         onPress={() => this.props.onTapFlow()} activeOpacity={0.8}
       >
         <View
           style={[
             type === 0 && styles.avatarIconView,
-            type !== 1 ? { marginBottom: 10 } : { marginBottom: 5 }
+            type === 1 ? { marginBottom: 5 } : { marginBottom: 10 }
           ]}
         >
           <Image source={data.icon} style={type === 0 && styles.avatarIcon} resizeMode="stretch" />
         </View>
-        <View style={styles.contentView}>
+        <View
+          style={[
+            styles.contentView,
+            type === 1 ? { marginLeft: 5 } : { marginLeft: 0 }
+          ]}
+        >
           <Text style={styles.title} numberOfLines={1} ellipsizeMode="tail">{data.title}</Text>
           <Text style={styles.description} numberOfLines={1} ellipsizeMode="tail">{data.description}</Text>
         </View>

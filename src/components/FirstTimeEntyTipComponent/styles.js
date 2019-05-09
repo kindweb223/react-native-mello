@@ -27,8 +27,8 @@ const styles = StyleSheet.create({
     width: CONSTANTS.SCREEN_WIDTH - 16,
     height: 144,
     marginLeft: 8,
-    paddingHorizontal: 16,
-    paddingVertical: 20,
+    paddingBottom: 16,
+    paddingRight: 20,
     borderRadius: 6,
     justifyContent: 'space-between',
     alignItems: 'flex-start',
@@ -66,7 +66,8 @@ const styles = StyleSheet.create({
     position: 'absolute',
     right: 0,
     top: 0,
-    padding: 15
+    paddingVertical: 15,
+    paddingHorizontal: 10
   },
   triangel: {
     position: 'absolute'
