@@ -60,7 +60,9 @@ const styles = StyleSheet.create({
     fontSize: 16,
     lineHeight: 23,
   },
-
+  mention: {
+    color: COLORS.PURPLE
+  }
 })
 
 

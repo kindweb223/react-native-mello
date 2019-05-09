@@ -18,6 +18,7 @@ import Entypo from 'react-native-vector-icons/Entypo'
 import FontAwesome from 'react-native-vector-icons/FontAwesome'
 import _ from 'lodash';
 import Swipeout from 'react-native-swipeout';
+import Highlighter from 'react-native-highlight-words';
 
 import styles from './styles'
 import COLORS from '../../service/colors'
@@ -71,7 +72,8 @@ class CommentScreen extends React.Component {
       comment: '',
       loading: false,
       isShowKeyboard: false,
-      commentList: []
+      commentList: [],
+      userNameArray: []
     };
     this.keyboardHeight = new Animated.Value(0);
     this.userInfo = {};
@@ -93,6 +95,8 @@ class CommentScreen extends React.Component {
     }
 
     BackHandler.addEventListener('hardwareBackPress', this.handleBackButton);
+
+    this.getUserNames()
   }
 
   componentWillUnmount() {
@@ -203,6 +207,17 @@ class CommentScreen extends React.Component {
         isShowKeyboard: false,
       });
     });
+  }
+  
+  getUserNames() {
+    const { invitees } = this.props.feedo.currentFeed
+    let userNameArray = []
+
+    invitees.map(item => {
+      const displayName = `${item.userProfile.firstName} ${item.userProfile.lastName}`
+      userNameArray.push(`@${displayName}`)
+    })
+    this.setState({ userNameArray })
   }
 
   extendCommentList() {
@@ -397,7 +412,11 @@ class CommentScreen extends React.Component {
               <Entypo name='dot-single' size={12} color={COLORS.DARK_GREY} />
               <Text style={styles.textItemTime}>{getDurationFromNow(item.created)}</Text>
             </View>
-            <Text style={styles.textItemComment}>{item.content}</Text>
+            <Highlighter
+              highlightStyle={styles.mention}
+              searchWords={this.state.userNameArray}
+              textToHighlight={item.content}
+            />
           </View>
         </View>
       </Swipeout>
