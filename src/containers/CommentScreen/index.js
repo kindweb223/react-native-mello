@@ -413,6 +413,7 @@ class CommentScreen extends React.Component {
               <Text style={styles.textItemTime}>{getDurationFromNow(item.created)}</Text>
             </View>
             <Highlighter
+              style={styles.textItemComment}
               highlightStyle={styles.mention}
               searchWords={this.state.userNameArray}
               textToHighlight={item.content}

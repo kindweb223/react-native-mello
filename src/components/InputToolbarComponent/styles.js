@@ -4,7 +4,6 @@ import CONSTANTS from '../../service/constants'
 
 const styles = StyleSheet.create({
   container: {
-    marginTop: 16,
     marginBottom: CONSTANTS.STATUSBAR_HEIGHT,
     backgroundColor: COLORS.SOFT_GREY,
     borderColor: COLORS.LIGHT_GREY_LINE,
@@ -12,7 +11,6 @@ const styles = StyleSheet.create({
   },
   shadowContainer: {
     marginHorizontal: 0,
-    marginTop: 16,
     marginBottom: 0,
     backgroundColor: '#fff',
     shadowColor: '#000',

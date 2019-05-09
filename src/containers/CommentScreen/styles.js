@@ -61,7 +61,9 @@ const styles = StyleSheet.create({
     lineHeight: 23,
   },
   mention: {
-    color: COLORS.PURPLE
+    color: COLORS.PURPLE,
+    fontWeight: '600',
+    fontSize: 16,
   }
 })
 

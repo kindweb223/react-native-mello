@@ -95,6 +95,7 @@ export default class InputToolbarComponent extends React.Component {
           <MentionsTextInput
             ref={ref => this.textInputRef = ref}
             textInputStyle={styles.textInput}
+            loadingComponent={() => <View style={{ flex: 1 }}></View>}
             suggestionsPanelStyle={{ backgroundColor: 'white' }}
             textInputMinHeight={40}
             textInputMaxHeight={100}
