@@ -44,6 +44,7 @@ import SharedGroupPreferences from 'react-native-shared-group-preferences';
 import * as Animatable from 'react-native-animatable';
 import { NetworkConsumer } from 'react-native-offline'
 import HTML from 'react-native-render-html'
+import DeviceInfo from 'react-native-device-info';
 
 import { COMMENT_FEATURE } from '../../service/api'
 import COMMON_STYLES from '../../themes/styles'
@@ -1155,7 +1156,11 @@ class CardDetailScreen extends React.Component {
 
     if (index === 0) {
       // from camera
-      this.pickMediaFromCamera(options);
+      if (DeviceInfo.isEmulator()) {
+        Alert.alert("It's impossible to take a photo on Simulator")
+      } else {
+        this.pickMediaFromCamera(options);
+      }
     } else if (index === 1) {
       // from library
       this.pickMediaFromLibrary(options);
