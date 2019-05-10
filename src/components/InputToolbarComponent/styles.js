@@ -24,7 +24,7 @@ const styles = StyleSheet.create({
   buttonContainer: {
     position: 'absolute',
     right: 16,
-    bottom: 5,
+    bottom: 8,
     width: 27,
     height: 27,
     borderRadius: 13.5,
@@ -37,7 +37,7 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     paddingLeft: 16,
     paddingRight: 35,
-    paddingTop: 10,
+    paddingTop: 13,
     fontSize: 16
   },
   suggestionsRowContainer: {

@@ -97,7 +97,7 @@ export default class InputToolbarComponent extends React.Component {
             textInputStyle={styles.textInput}
             loadingComponent={() => <View style={{ flex: 1 }}></View>}
             suggestionsPanelStyle={{ backgroundColor: 'white' }}
-            textInputMinHeight={40}
+            textInputMinHeight={45}
             textInputMaxHeight={100}
             placeholder='Type comment...'
             trigger={'@'}
