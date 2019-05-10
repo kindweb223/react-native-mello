@@ -325,13 +325,12 @@ class LocalStorage extends React.Component {
         const { ideas, storageInterval } = this.state
         const delay = storageInterval
 
-        if(ideaIndex === (ideas.length)){
+        if(ideas == null || ideaIndex === (ideas.length) || ideas.length === 0) {
             this.signalBackupComplete()
             return
         }
 
-
-        const files = ideas[ideaIndex].files
+        const files = ideas[ideaIndex].files ? ideas[ideaIndex].files : false
 
         if(!files){
             this.updateRecursiveShout(++ideaIndex, delay)

@@ -67,6 +67,7 @@
     "react-native-tags": "^1.2.1",
     "react-native-text-size": "^3.0.0",
     "react-native-thumbnail": "^1.1.3",
+    "react-native-triangle": "0.0.9",
     "react-native-underline-tabbar": "^1.3.6",
     "react-native-vector-icons": "^5.0.0",
     "react-native-version-number": "^0.3.4",

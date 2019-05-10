@@ -33,6 +33,7 @@ const styles = StyleSheet.create({
   },
   navBar: {
     width: '100%',
+    backgroundColor: '#ff0',
     height: NAV_BAR_HEIGHT,
     zIndex: 11,
     flexDirection: 'row',
@@ -55,8 +56,7 @@ const styles = StyleSheet.create({
     height: '100%',
     flexDirection: 'row',
     justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: '#fff',
+    alignItems: 'center'
   },
   touchablePadding: {
     paddingVertical: 5, 
