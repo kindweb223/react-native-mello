@@ -82,10 +82,10 @@ class ProfileScreen extends React.Component {
       })
     }
 
-    this.SETTING_ITEMS.push({
-      icon: <Image source={PREMIUM_ICON} style={styles.leftIcon} />,
-      title: 'Upgrade to Mello Premium'
-    })
+    // this.SETTING_ITEMS.push({
+    //   icon: <Image source={PREMIUM_ICON} style={styles.leftIcon} />,
+    //   title: 'Upgrade to Mello Premium'
+    // })
   }
 
   componentDidMount() {
