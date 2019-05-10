@@ -28,6 +28,7 @@ import { DocumentPicker, DocumentPickerUtil } from 'react-native-document-picker
 import Permissions from 'react-native-permissions'
 import * as mime from 'react-native-mime-types'
 import _ from 'lodash'
+import DeviceInfo from 'react-native-device-info';
 
 import { 
   createFeed,
@@ -492,7 +493,11 @@ class NewFeedScreen extends React.Component {
         
     if (index === 0) {
       // from camera
-      this.pickMediaFromCamera(options);
+      if (DeviceInfo.isEmulator()) {
+        Alert.alert("It's impossible to take a photo on Simulator")
+      } else {
+        this.pickMediaFromCamera(options);
+      }
     } else if (index === 1) {
       // from library
       this.pickMediaFromLibrary(options);
