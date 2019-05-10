@@ -24,6 +24,7 @@ const initialState = {
   activityFeedList: [],
   activityData: {},
   deletedDummyCards: [],
+  reportedDummyCards: [],
   dummyMoveCard: {},
   badgeCount: 0,
   isCreateCard: false,
@@ -1458,6 +1459,53 @@ export default function feedo(state = initialState, action = {}) {
         ...state,
         loading: types.DEL_DUMMY_CARD,
         deletedDummyCards,
+        currentFeed: originalFeed,
+        feedoList: [
+          originalFeed,
+          ...restFeedoList
+        ]
+      }
+    }
+    // Delete dummy report card
+    case types.REPORT_DUMMY_CARD: {
+      const { currentFeed, feedoList } = state
+      const { reportedIdeaList, type } = action.payload
+
+      let originalFeed = {}
+      let reportedDummyCards = []
+      if (type === 0) { //report
+        const restIdeas = filter(currentFeed.ideas, idea => findIndex(reportedIdeaList, card => card.idea.id === idea.id ) === -1)
+
+        for (let i = 0; i < reportedIdeaList.length; i ++) {
+          const card = find(currentFeed.ideas, idea => idea.id === reportedIdeaList[i].idea.id)
+          reportedDummyCards.push(card)
+        }
+
+        const ideasSubmitted = currentFeed.metadata.ideasSubmitted - reportedIdeaList.length
+        originalFeed = {
+          ...currentFeed,
+          ideas: restIdeas,
+          metadata: Object.assign({}, currentFeed.metadata, { ideasSubmitted })
+        }
+      } else {  //restore
+        currentFeed.ideas = [
+          ...currentFeed.ideas,
+          ...state.reportedDummyCards
+        ]
+        const ideasSubmitted = currentFeed.metadata.ideasSubmitted + state.reportedDummyCards.length
+        originalFeed = {
+          ...currentFeed,
+          metadata: Object.assign({}, currentFeed.metadata, { ideasSubmitted })
+        }
+        reportedDummyCards = []
+      }
+
+      const restFeedoList = filter(feedoList, feed => feed.id !== currentFeed.id)
+
+      return {
+        ...state,
+        loading: types.REPORT_DUMMY_CARD,
+        reportedDummyCards,
         currentFeed: originalFeed,
         feedoList: [
           originalFeed,
