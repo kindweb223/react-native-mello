@@ -131,6 +131,32 @@ export const moveCard = (movedIdeaList, huntId) => {
   };
 }
 
+/**
+ * Report card list
+ */
+export const reportCard = (reportedIdeaList, huntId) => {
+  let url = 'ideas/report'
+  const data = []
+  for (let i = 0; i < reportedIdeaList.length; i ++) {
+    data.push(
+      {
+        'ideaId': reportedIdeaList[i].idea.id,
+        'huntId': huntId
+      }
+    )
+  }
+
+  return {
+    types: [types.REPORT_CARD_PENDING, types.REPORT_CARD_FULFILLED, types.REPORT_CARD_REJECTED],
+    promise: axios({
+      method: 'post',
+      url: url,
+      data,
+    }),
+    payload: data
+  };
+}
+
 
 /**
  * Like a card
