@@ -108,6 +108,29 @@ export default function card(state = initialState, action = {}) {
         error: null,
       }
     }
+
+    // report a card
+    case types.REPORT_CARD_PENDING:
+      return {
+        ...state,
+        loading: types.REPORT_CARD_PENDING,
+        error: null,
+      }
+    case types.REPORT_CARD_FULFILLED: {
+      const data = action.payload;
+      return {
+        ...state,
+        loading: types.REPORT_CARD_FULFILLED,
+      }
+    }
+    case types.REPORT_CARD_REJECTED: {
+      const { data } = action.error.response
+      return {
+        ...state,
+        loading: types.REPORT_CARD_REJECTED,
+        error: data,
+      }
+    }
     
     // delete a card
     case types.DELETE_CARD_PENDING:

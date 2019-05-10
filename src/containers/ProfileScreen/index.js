@@ -22,6 +22,7 @@ import ActionSheet from 'react-native-actionsheet'
 import VersionNumber from 'react-native-version-number'
 import { GoogleSignin } from 'react-native-google-signin';
 import Modal from "react-native-modal"
+import DeviceInfo from 'react-native-device-info';
 import _ from 'lodash'
 import ShareExtensionTip from '../../components/ShareExtensionTip'
 import ToasterComponent from '../../components/ToasterComponent'
@@ -81,10 +82,10 @@ class ProfileScreen extends React.Component {
       })
     }
 
-    this.SETTING_ITEMS.push({
-      icon: <Image source={PREMIUM_ICON} style={styles.leftIcon} />,
-      title: 'Upgrade to Mello Premium'
-    })
+    // this.SETTING_ITEMS.push({
+    //   icon: <Image source={PREMIUM_ICON} style={styles.leftIcon} />,
+    //   title: 'Upgrade to Mello Premium'
+    // })
   }
 
   componentDidMount() {
@@ -186,8 +187,11 @@ class ProfileScreen extends React.Component {
 
     if (index === 1) {
       // from camera
-       this.pickMediaFromCamera(options);
-
+      if (DeviceInfo.isEmulator()) {
+        Alert.alert("It's impossible to take a photo on Simulator")
+      } else {
+        this.pickMediaFromCamera(options);
+      }
     } else if (index === 0) {
       // from library
       this.pickMediaFromLibrary(options);
