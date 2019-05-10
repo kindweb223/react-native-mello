@@ -4,7 +4,8 @@ import CONSTANTS from '../../service/constants'
 
 const styles = StyleSheet.create({
   container: {
-    marginTop: 10
+    marginTop: 10,
+    paddingHorizontal: CONSTANTS.PADDING
   }
 })
 

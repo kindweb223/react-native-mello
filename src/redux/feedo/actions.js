@@ -684,6 +684,16 @@ export const deleteDummyCard = (deletedIdeaList, type) => {
   };
 }
 
+/*
+ * Report dummy card until toaster is hidden
+ */
+export const reportDummyCard = (reportedIdeaList, type) => {
+  return {
+    type: types.REPORT_DUMMY_CARD,
+    payload: { reportedIdeaList, type }
+  };
+}
+
 /**
  * Move dummy card until toaster is hidden
  */

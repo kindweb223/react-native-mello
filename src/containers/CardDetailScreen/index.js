@@ -44,6 +44,7 @@ import SharedGroupPreferences from 'react-native-shared-group-preferences';
 import * as Animatable from 'react-native-animatable';
 import { NetworkConsumer } from 'react-native-offline'
 import HTML from 'react-native-render-html'
+import DeviceInfo from 'react-native-device-info';
 
 import { COMMENT_FEATURE } from '../../service/api'
 import COMMON_STYLES from '../../themes/styles'
@@ -970,6 +971,16 @@ class CardDetailScreen extends React.Component {
     }
   }
 
+  onTapActionReportSheet(index) {
+    if (index === 0) {
+      data = [{
+        'index': 0,
+        'idea': this.props.card.currentCard
+      }]
+      this.props.onReportCard(data)
+    }
+  }
+
   handleControlMenu = type => {
     this.setState({ cardOption: type, isVisibleCardOpenMenu: false })
   }
@@ -992,6 +1003,10 @@ class CardDetailScreen extends React.Component {
     } else if (cardOption === 5) {
       setTimeout(() => {
         this.deleteActionSheet.show()
+      }, 200)
+    } else if (cardOption === 6) {
+      setTimeout(() => {
+        this.reportActionSheet.show()
       }, 200)
     }
     this.setState({ cardOption: 0 })
@@ -1084,9 +1099,7 @@ class CardDetailScreen extends React.Component {
   }
 
   onPressMoreActions() {
-    if (this.props.viewMode === CONSTANTS.CARD_EDIT) {
-      this.setState({ isVisibleCardOpenMenu: true })
-    }
+    this.setState({ isVisibleCardOpenMenu: true })
   }
 
   async uploadFile(currentCard, file, type) {
@@ -1155,7 +1168,11 @@ class CardDetailScreen extends React.Component {
 
     if (index === 0) {
       // from camera
-      this.pickMediaFromCamera(options);
+      if (DeviceInfo.isEmulator()) {
+        Alert.alert("It's impossible to take a photo on Simulator")
+      } else {
+        this.pickMediaFromCamera(options);
+      }
     } else if (index === 1) {
       // from library
       this.pickMediaFromLibrary(options);
@@ -1845,15 +1862,13 @@ class CardDetailScreen extends React.Component {
                 }
   
                 <View style={styles.likeView}>
-                  {viewMode === CONSTANTS.CARD_EDIT && (
-                    <TouchableOpacity
-                      style={styles.threeDotButtonWrapper}
-                      activeOpacity={0.6}
-                      onPress={() => this.onPressMoreActions()}
-                    >
+                  <TouchableOpacity
+                    style={styles.threeDotButtonWrapper}
+                    activeOpacity={0.6}
+                    onPress={() => this.onPressMoreActions()}
+                  >
                     <Entypo name="dots-three-horizontal" size={20} color={COLORS.MEDIUM_GREY} />
-                    </TouchableOpacity>
-                  )}
+                  </TouchableOpacity>
   
                   {idea && (
                     <LikeComponent idea={idea} prevPage={this.props.prevPage} type="icon" />
@@ -1944,6 +1959,19 @@ class CardDetailScreen extends React.Component {
           onPress={(index) => this.onTapActionSheet(index)}
         />
         <ActionSheet
+          ref={ref => this.reportActionSheet = ref}
+          title={
+            Platform.OS === 'ios'
+            ? 'Are you sure you want to report this card?'
+            : <Text style={COMMON_STYLES.actionSheetTitleText}>Are you sure you want to report this card?</Text>
+          }
+          options={['Report', 'Cancel']}
+          cancelButtonIndex={1}
+          destructiveButtonIndex={0}
+          tintColor={COLORS.PURPLE}
+          onPress={(index) => this.onTapActionReportSheet(index)}
+        />
+        <ActionSheet
           ref={ref => this.webLinkActionSheet = ref}
           options={['Copy', 'Delete', 'Cancel']}
           cancelButtonIndex={2}
@@ -1978,6 +2006,8 @@ class CardDetailScreen extends React.Component {
               onAddFile={() => this.handleControlMenu(3)}
               onMove={() => this.handleControlMenu(4)}
               onDelete={() => this.handleControlMenu(5)}
+              onReport={() => this.handleControlMenu(6)}
+              viewMode={this.props.viewMode}
             />
           </Animated.View>
         </Modal>
