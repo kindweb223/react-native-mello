@@ -110,6 +110,7 @@ import COMMON_STYLES from '../../themes/styles'
 import Analytics from '../../lib/firebase'
 import { images } from '../../themes'
 import Button from '../../components/Button';
+import FirstTimeEntyTipComponent from '../../components/FirstTimeEntyTipComponent';
 
 const TOASTER_DURATION = 3000
 
@@ -181,6 +182,7 @@ class FeedDetailScreen extends React.Component {
       MasonryListData: [],
       isSearchVisible: false,
       badgeCount: 0,
+      showFirstInviteTip: false
     };
     this.animatedOpacity = new Animated.Value(0)
     this.menuOpacity = new Animated.Value(0)
@@ -235,7 +237,7 @@ class FeedDetailScreen extends React.Component {
   }
 
   async UNSAFE_componentWillReceiveProps(nextProps) {
-    const { feedo, card } = nextProps
+    const { feedo, card, user } = nextProps
 
     if (this.state.isVisibleSelectFeedo) {
       if (this.props.feedo.loading !== 'GET_FEEDO_LIST_PENDING' && feedo.loading === 'GET_FEEDO_LIST_PENDING') {
@@ -447,6 +449,21 @@ class FeedDetailScreen extends React.Component {
   async setBubbles(currentFeed) {
     const { user } = this.props
 
+    // Show invite tip when create a first acard and never invited anyone to a flow before
+    const firstInviteTipData = await AsyncStorage.getItem('FirstInviteTip')
+    const firstCardData = await AsyncStorage.getItem('FirstCardCreated')
+
+    if (!firstInviteTipData && firstCardData) {
+      if (!this.state.showFirstInviteTip) {
+        this.setState({ showFirstInviteTip: true })
+      }
+    } else {
+      if (this.state.showFirstInviteTip) {
+        this.setState({ showFirstInviteTip: false })
+      }
+    }
+
+  
     let bubbleFirstCardAsyncData = await AsyncStorage.getItem('BubbleFirstCardTimeCreated')
     let bubbleFirstCardData = JSON.parse(bubbleFirstCardAsyncData)
 
@@ -1590,6 +1607,16 @@ class FeedDetailScreen extends React.Component {
     return cardHeight
   }
 
+  onCloseInviteTip = () => {
+    // Delete Asyncstorage data for firstInviteTip
+    COMMON_FUNC.handleFirstInviteTipStorageData()
+    this.setState({ showFirstInviteTip: false })
+  }
+
+  onInviteFlow = () => {
+    this.handleShare()
+  }
+
   renderEmptyView = (loading) => {
     if (loading) {
       return (
@@ -1668,7 +1695,6 @@ class FeedDetailScreen extends React.Component {
 
             </View>
           )}
-
 
           <Animated.ScrollView
             showsVerticalScrollIndicator={false}
@@ -1980,6 +2006,15 @@ class FeedDetailScreen extends React.Component {
           tintColor={COLORS.PURPLE}
           onPress={(index) => this.onTapMediaPickerActionSheet(index)}
         />
+
+        {!loading && this.state.showFirstInviteTip && (
+          <FirstTimeEntyTipComponent
+            type={1}
+            onCloseTip={this.onCloseInviteTip}
+            onTapFlow={this.onInviteFlow}
+            delay={500}
+          />
+        )}
 
         {this.state.apiLoading && <LoadingScreen />}
 
