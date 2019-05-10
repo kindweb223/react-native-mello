@@ -384,11 +384,12 @@ class HomeScreen extends React.Component {
       (feedo.loading === 'PIN_FEED_FULFILLED') || (feedo.loading === 'UNPIN_FEED_FULFILLED') ||
       (feedo.loading === 'RESTORE_ARCHIVE_FEED_FULFILLED') || (feedo.loading === 'ADD_DUMMY_FEED'))) ||
       (feedo.loading === 'DEL_FEED_FULFILLED') || (feedo.loading === 'ARCHIVE_FEED_FULFILLED') || (feedo.loading === 'LEAVE_FEED_FULFILLED') ||
-      (feedo.loading === 'PUBNUB_GET_FEED_DETAIL_FULFILLED') || (feedo.loading === 'DELETE_CARD_FULFILLED') ||
+      (feedo.loading === 'PUBNUB_GET_FEED_DETAIL_FULFILLED') ||  (feedo.loading === 'DELETE_CARD_FULFILLED') ||
+      (feedo.loading === 'REPORT_CARD_FULFILLED') ||
       (feedo.loading === 'PUBNUB_MOVE_IDEA_FULFILLED') || (feedo.loading === 'MOVE_CARD_FULFILLED') ||
       (feedo.loading === 'READ_ACTIVITY_FEED_FULFILLED') || (feedo.loading === 'DEL_ACTIVITY_FEED_FULFILLED') ||
       (feedo.loading === 'UPDATE_CARD_FULFILLED') || (feedo.loading === 'GET_CARD_FULFILLED') ||
-      (feedo.loading === 'DEL_DUMMY_CARD') || (feedo.loading === 'MOVE_DUMMY_CARD') ||
+      (feedo.loading === 'DEL_DUMMY_CARD') || (feedo.loading === 'MOVE_DUMMY_CARD') || (feedo.loading === 'REPORT_DUMMY_CARD') ||
       (feedo.loading === 'PUBNUB_DELETE_INVITEE_FULFILLED') || (feedo.loading === 'GET_FEED_DETAIL_REJECTED') ||
       (feedo.loading === 'SAVE_FLOW_PREFERENCE_FULFILLED') || (feedo.loading === 'SET_FEEDO_LIST_FROM_STORAGE') ||
       (feedo.loading === 'GET_INVITED_FEEDO_LIST_FULFILLED') ||
@@ -1194,9 +1195,9 @@ class HomeScreen extends React.Component {
         isEditFeed: false,
       });
     } else if (type === 'UPLOAD_PHOTO') {
-      this.pickMediaFromLibrary(options);
+      this.onAddMedia(1)
     } else if (type === 'TAKE_PHOTO') {
-      this.pickMediaFromCamera(options);
+      this.onAddMedia(0)
     } else if (type === 'ATTACH_FILE') {
       this.onAddDocument();
     } else if (type === 'ADD_LINK') {
@@ -1255,17 +1256,63 @@ class HomeScreen extends React.Component {
     this.setState({ showProfile: false })
   }
 
+  onAddMedia(index) {
+    Permissions.checkMultiple(['camera', 'photo']).then(response => {
+      if (response.camera === 'authorized' && response.photo === 'authorized') {
+        //permission already allowed
+        this.onTapMediaPickerActionSheet(index)
+      }
+      else {
+        Permissions.request('camera').then(response => {
+          if (response === 'authorized') {
+            //camera permission was authorized
+            Permissions.request('photo').then(response => {
+              if (response === 'authorized') {
+                //photo permission was authorized
+                this.onTapMediaPickerActionSheet(index)
+              }
+              else if (Platform.OS === 'ios') {
+                Permissions.openSettings();
+              }    
+            });
+          }
+          else if (Platform.OS === 'ios') {
+            Permissions.openSettings();
+          }
+        });
+      }
+    });
+  }
+
+  onTapMediaPickerActionSheet(index) {
+    var options = {
+      storageOptions: {
+        skipBackup: true,
+        path: 'feedo'
+      },
+      mediaType: 'mixed'
+    };
+        
+    if (index === 0) {
+      // from camera
+      if (DeviceInfo.isEmulator()) {
+        Alert.alert("It's impossible to take a photo on Simulator")
+      } else {
+        this.pickMediaFromCamera(options);
+      }
+    } else if (index === 1) {
+      // from library
+      this.pickMediaFromLibrary(options);
+    }
+  }
+
   pickMediaFromCamera(options) {
     ImagePicker.launchCamera(options, (response)  => {
       if (!response.didCancel) {
-        if (response.fileSize > CONSTANTS.MAX_UPLOAD_FILE_SIZE) {
-          COMMON_FUNC.showPremiumAlert()
-        } else {
-          if (!response.fileName) {
-            response.fileName = response.uri.replace(/^.*[\\\/]/, '')
-          }
-          this.handleFile(response)
+        if (!response.fileName) {
+          response.fileName = response.uri.replace(/^.*[\\\/]/, '')
         }
+        this.handleFile(response)
       }
     });
   }
@@ -1273,11 +1320,7 @@ class HomeScreen extends React.Component {
   pickMediaFromLibrary(options) {
     ImagePicker.launchImageLibrary(options, (response)  => {
       if (!response.didCancel) {
-        if (response.fileSize > CONSTANTS.MAX_UPLOAD_FILE_SIZE) {
-          COMMON_FUNC.showPremiumAlert()
-        } else {
-          this.handleFile(response)
-        }
+        this.handleFile(response)
       }
     });
   }

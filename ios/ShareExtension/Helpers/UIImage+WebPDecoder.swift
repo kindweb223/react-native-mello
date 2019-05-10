@@ -18,37 +18,62 @@ private func freeWebPData(info: UnsafeMutableRawPointer?, data: UnsafeRawPointer
 extension UIImage {
     
     //MARK: Inits
-    convenience init(webpWithPath path: String) {
-        let data = NSData(contentsOfFile: path)!
-        self.init(cgImage: UIImage.webPDataToCGImage(data: data))
+    convenience init?(webpWithPath path: String) {
+      guard let data = NSData(contentsOfFile: path),
+      let image = UIImage.webPDataToCGImage(data: data) else {
+        return nil
+      }
+      
+      self.init(cgImage: image)
     }
     
-    convenience init(webpWithPath path: String, andOptions options: [String:Int32]) {
-        let data = NSData(contentsOfFile: path)!
-        self.init(cgImage: UIImage.webPDataToCGImage(data: data, withOptions: options))
+    convenience init?(webpWithPath path: String, andOptions options: [String:Int32]) {
+      guard let data = NSData(contentsOfFile: path),
+      let image = UIImage.webPDataToCGImage(data: data, withOptions: options) else {
+        return nil
+      }
+      
+      self.init(cgImage: image)
     }
     
-    convenience init(webpWithURL url: URL) {
-        let data = NSData(contentsOf: url)!
-        self.init(cgImage: UIImage.webPDataToCGImage(data: data))
+    convenience init?(webpWithURL url: URL) {
+      guard let data = NSData(contentsOf: url),
+        let image = UIImage.webPDataToCGImage(data: data) else {
+          return nil
+      }
+      
+      self.init(cgImage: image)
     }
     
-    convenience init(webpWithURL url: URL, andOptions options: [String:Int32]) {
-        let data = NSData(contentsOf: url)!
-        self.init(cgImage: UIImage.webPDataToCGImage(data: data, withOptions: options))
+    convenience init?(webpWithURL url: URL, andOptions options: [String:Int32]) {
+      guard let data = NSData(contentsOf: url),
+        let image = UIImage.webPDataToCGImage(data: data, withOptions: options) else {
+          return nil
+      }
+      
+      self.init(cgImage: image)
     }
     
-    convenience init(webpWithData data: NSData) {
-        self.init(cgImage: UIImage.webPDataToCGImage(data: data))
+    convenience init?(webpWithData data: NSData) {
+      guard let image = UIImage.webPDataToCGImage(data: data) else {
+        return nil
+      }
+      
+      self.init(cgImage: image)
     }
     
-    convenience init(webpWithData data: NSData, andOptions options: [String:Int32]){
-        self.init(cgImage: UIImage.webPDataToCGImage(data: data, withOptions: options))
+    convenience init?(webpWithData data: NSData, andOptions options: [String:Int32]) {
+      guard let image = UIImage.webPDataToCGImage(data: data, withOptions: options) else {
+        return nil
+      }
+      
+      self.init(cgImage: image)
     }
+      
     
     //MARK: WebP Decoder
     //Let's the magic begin
-    class private func webPDataToCGImage(data: NSData) -> CGImage {
+    class private func webPDataToCGImage(data: NSData) -> CGImage? {
         
         var w: CInt = 0
         var h: CInt = 0
@@ -56,7 +81,7 @@ extension UIImage {
         //Get image dimensions
         if (!UIImage.webPInfo(data: data, width: &w, height: &h)){
             print("ERROR",w,h)
-            return UIImage.empty
+            return nil
         }
         
         //Data Provider
@@ -70,32 +95,31 @@ extension UIImage {
         return UIImage.webPProviderToCGImage(provider: provider, width: w, height: h)
     }
     
-    class private func webPDataToCGImage(data: NSData, withOptions options: [String:Int32]) -> CGImage {
+    class private func webPDataToCGImage(data: NSData, withOptions options: [String:Int32]) -> CGImage? {
         
         var w: CInt = 0
         var h: CInt = 0
         
         //Get image dimensions
         if (!UIImage.webPInfo(data: data, width: &w, height: &h)){
-            return UIImage.empty
+            return nil
         }
-        
-        //Data Provider
-        var provider: CGDataProvider
-        
+      
         //Get configs
         var config = UIImage.webPConfig(options: options)
         
         //RGBA by default
         WebPDecode(data.bytes.assumingMemoryBound(to: UInt8.self), data.length, &config)
         
-        provider = CGDataProvider(dataInfo: &config, data: config.output.u.RGBA.rgba, size: (Int(w)*Int(h)*4), releaseData: freeWebPData)!
+        guard let provider = CGDataProvider(dataInfo: &config, data: config.output.u.RGBA.rgba, size: (Int(w)*Int(h)*4), releaseData: freeWebPData) else {
+          return nil
+        }
         
         return UIImage.webPProviderToCGImage(provider: provider, width: w, height: h)
     }
     
     //Generate CGImage from decoded data
-    class private func webPProviderToCGImage(provider: CGDataProvider, width w: CInt, height h: CInt) -> CGImage {
+    class private func webPProviderToCGImage(provider: CGDataProvider, width w: CInt, height h: CInt) -> CGImage? {
         
         let bitmapWithAlpha = CGBitmapInfo(rawValue: CGImageAlphaInfo.last.rawValue)
         
@@ -114,7 +138,7 @@ extension UIImage {
             ) {
             return image
         } else {
-            return UIImage.empty
+            return nil
         }
         
     }
@@ -159,13 +183,4 @@ extension UIImage {
         
         return config
     }
-    
-    //Get empty 1x1 image as fallback
-    static var empty: CGImage{
-        UIGraphicsBeginImageContextWithOptions(CGSize(width: 1, height: 1), false, 0.0)
-        let blank = UIGraphicsGetImageFromCurrentImageContext()!
-        UIGraphicsEndImageContext()
-        return blank.cgImage!
-    }
-    
 }

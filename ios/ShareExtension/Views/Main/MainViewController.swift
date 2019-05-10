@@ -130,9 +130,11 @@ class MainViewController: UIViewController {
               } else {
                 API.shared.parseURL(url, completion: { parsedURL in
                   guard let parsedURL = parsedURL else {
-                    self.showErrorAndClose("Could not read the provided link")
                     let error = NSError(domain: "io.solvers.feedo.ShareExtension.PARSE_URL_FAILED", code: 1001, userInfo: ["url": url.absoluteString])
                     Crashlytics.sharedInstance().recordError(error as Error)
+                    
+                    let parsedURL = ParsedURL(url: url)
+                    self.showLinkVC(parsedURL)
                     return
                   }
                   if parsedURL.images.count > 0 {
