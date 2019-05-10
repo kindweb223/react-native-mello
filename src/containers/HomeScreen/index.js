@@ -1352,11 +1352,7 @@ class HomeScreen extends React.Component {
       filetype: [DocumentPickerUtil.allFiles()],
     },(error, response) => {
       if (error === null) {
-        if (response.fileSize > CONSTANTS.MAX_UPLOAD_FILE_SIZE) {
-          COMMON_FUNC.showPremiumAlert()
-        } else {
-          this.handleFile(response)
-        }
+        this.handleFile(response)
       }
     });
     return;
