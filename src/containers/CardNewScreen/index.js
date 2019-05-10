@@ -42,6 +42,7 @@ import moment from 'moment'
 import SafariView from "react-native-safari-view";
 import InAppBrowser from 'react-native-inappbrowser-reborn'
 import SharedGroupPreferences from 'react-native-shared-group-preferences';
+import DeviceInfo from 'react-native-device-info';
 
 import { 
   createCard,
@@ -507,6 +508,14 @@ class CardNewScreen extends React.Component {
       // updating a card
       // loading = true;
     } else if (this.props.card.loading !== types.UPDATE_CARD_FULFILLED && nextProps.card.loading === types.UPDATE_CARD_FULFILLED) {
+      // Save Asyncstorage data if user create a first card in own flow
+      let firstCardData = await AsyncStorage.getItem('FirstCardCreated')
+      if (!firstCardData) {
+        if (this.props.feedo.currentFeed.metadata.owner) {
+          AsyncStorage.setItem('FirstCardCreated', JSON.stringify(true))
+        }
+      }
+
       // success in updating a card
       if (this.props.cardMode === CONSTANTS.MAIN_APP_CARD_FROM_DASHBOARD || this.props.cardMode === CONSTANTS.SHARE_EXTENTION_CARD) {
         this.saveFeedId();
@@ -1154,11 +1163,7 @@ class CardNewScreen extends React.Component {
       filetype: [DocumentPickerUtil.allFiles()],
     },(error, response) => {
       if (error === null) {
-        if (response.fileSize > CONSTANTS.MAX_UPLOAD_FILE_SIZE) {
-          COMMON_FUNC.showPremiumAlert()
-        } else {
-          this.handleFile(response)
-        }
+        this.handleFile(response)
       }
     });
     return;
@@ -1236,14 +1241,10 @@ class CardNewScreen extends React.Component {
   pickMediaFromCamera(options) {
     ImagePicker.launchCamera(options, (response)  => {
       if (!response.didCancel) {
-        if (response.fileSize > CONSTANTS.MAX_UPLOAD_FILE_SIZE) {
-          COMMON_FUNC.showPremiumAlert()
-        } else {
-          if (!response.fileName) {
-            response.fileName = response.uri.replace(/^.*[\\\/]/, '')
-          }
-          this.handleFile(response)
+        if (!response.fileName) {
+          response.fileName = response.uri.replace(/^.*[\\\/]/, '')
         }
+        this.handleFile(response)
       }
     });
   }
@@ -1251,11 +1252,7 @@ class CardNewScreen extends React.Component {
   pickMediaFromLibrary(options) {
     ImagePicker.launchImageLibrary(options, (response)  => {
       if (!response.didCancel) {
-        if (response.fileSize > CONSTANTS.MAX_UPLOAD_FILE_SIZE) {
-          COMMON_FUNC.showPremiumAlert()
-        } else {
-          this.handleFile(response)
-        }
+        this.handleFile(response)
       }
     });
   }
@@ -1273,7 +1270,11 @@ class CardNewScreen extends React.Component {
         
     if (index === 0) {
       // from camera
-      this.pickMediaFromCamera(options);
+      if (DeviceInfo.isEmulator()) {
+        Alert.alert("It's impossible to take a photo on Simulator")
+      } else {
+        this.pickMediaFromCamera(options);
+      }
     } else if (index === 1) {
       // from library
       this.pickMediaFromLibrary(options);
@@ -2026,14 +2027,6 @@ class CardNewScreen extends React.Component {
       <View style={styles.container}>
         {this.renderCard}
         {this.renderSelectHunt}
-        <ActionSheet
-          ref={ref => this.imagePickerActionSheetRef = ref}
-          title='Select a Photo / Video'
-          options={['Take A Photo', 'Select From Photos', 'Cancel']}
-          cancelButtonIndex={2}
-          tintColor={COLORS.PURPLE}
-          onPress={(index) => this.onTapMediaPickerActionSheet(index)}
-        />
         <ActionSheet
           ref={ref => this.leaveActionSheetRef = ref}
           title='Are you sure you want to cancel?'

@@ -43,7 +43,8 @@ class FeedCardExtendComponent extends React.Component {
     const viewMode = COMMON_FUNC.getCardViewMode(feedo.currentFeed, idea)
 
     return (
-      <View style={[styles.container, longSelected && styles.selected, longHold && viewMode === CONSTANTS.CARD_VIEW && { opacity: 0.4 }]}>
+      // <View style={[styles.container, longSelected && styles.selected, longHold && viewMode === CONSTANTS.CARD_VIEW && { opacity: 0.4 }]}>
+      <View style={[styles.container, longSelected && styles.selected]}>
         <View style={styles.subContainer}>
           {hasCoverImage &&
             <View style={[styles.thumbnailsView, { height: imageHeight }]}>

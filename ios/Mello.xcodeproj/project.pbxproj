@@ -5,7 +5,6 @@
 	};
 	objectVersion = 46;
 	objects = {
-
 /* Begin PBXBuildFile section */
 		00C302E51ABCBA2D00DB3ED1 /* libRCTActionSheet.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 00C302AC1ABCB8CE00DB3ED1 /* libRCTActionSheet.a */; };
 		00C302E71ABCBA2D00DB3ED1 /* libRCTGeolocation.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 00C302BA1ABCB90400DB3ED1 /* libRCTGeolocation.a */; };
@@ -1266,6 +1265,7 @@
 		396C17F422527ED9001297F6 /* UI */ = {
 			isa = PBXGroup;
 			children = (
+				83CBBA001A601CBA00E9B192 /* Products */,
 				396C17F722527EFF001297F6 /* Assets.xcassets */,
 				396C17F822527EFF001297F6 /* MainInterface.storyboard */,
 			);
@@ -1643,7 +1643,6 @@
 				832341AE1AAA6A7D00B99B32 /* Libraries */,
 				00E356EF1AD99517003FC87E /* MelloTests */,
 				3984D08222527DD000042F75 /* ShareExtension */,
-				83CBBA001A601CBA00E9B192 /* Products */,
 				2D16E6871FA4F8E400B85C8A /* Frameworks */,
 				4836FCAAE7F14E69A4ACF664 /* Resources */,
 				B554B621210DFC7100A36A10 /* Recovered References */,
@@ -1664,6 +1663,7 @@
 				3984D08122527DD000042F75 /* ShareExtension.appex */,
 			);
 			name = Products;
+			path = ../..;
 			sourceTree = "<group>";
 		};
 		A40B3D582110EB62002B5EDB /* Products */ = {

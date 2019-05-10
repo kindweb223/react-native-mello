@@ -28,6 +28,7 @@ import { DocumentPicker, DocumentPickerUtil } from 'react-native-document-picker
 import Permissions from 'react-native-permissions'
 import * as mime from 'react-native-mime-types'
 import _ from 'lodash'
+import DeviceInfo from 'react-native-device-info';
 
 import { 
   createFeed,
@@ -361,20 +362,16 @@ class NewFeedScreen extends React.Component {
       filetype: [DocumentPickerUtil.allFiles()],
     },(error, response) => {
       if (error === null) {
-        if (response.fileSize > CONSTANTS.MAX_UPLOAD_FILE_SIZE) {
-          AlertController.shared.showAlert('Warning', 'File size must be less than 10MB')
-        } else {
-          Analytics.logEvent('new_feed_add_file', {})
+        Analytics.logEvent('new_feed_add_file', {})
 
-          let type = 'FILE';
-          const mimeType = (Platform.OS === 'ios') ? mime.lookup(response.uri) : response.type;
-          if (mimeType !== false) {
-            if (mimeType.indexOf('image') !== -1 || mimeType.indexOf('video') !== -1) {
-              type = 'MEDIA';
-            }
+        let type = 'FILE';
+        const mimeType = (Platform.OS === 'ios') ? mime.lookup(response.uri) : response.type;
+        if (mimeType !== false) {
+          if (mimeType.indexOf('image') !== -1 || mimeType.indexOf('video') !== -1) {
+            type = 'MEDIA';
           }
-          this.uploadFile(response, type);
         }
+        this.uploadFile(response, type);
       }
     });
     return;
@@ -454,16 +451,12 @@ class NewFeedScreen extends React.Component {
   pickMediaFromCamera(options) {
     ImagePicker.launchCamera(options, (response)  => {
       if (!response.didCancel) {
-        if (response.fileSize > CONSTANTS.MAX_UPLOAD_FILE_SIZE) {
-          AlertController.shared.showAlert('Warning', 'File size must be less than 10MB')
-        } else {
-          Analytics.logEvent('new_feed_add_camera_image', {})
+        Analytics.logEvent('new_feed_add_camera_image', {})
 
-          if (!response.fileName) {
-            response.fileName = response.uri.replace(/^.*[\\\/]/, '')
-          }
-          this.uploadFile(response, 'MEDIA');
+        if (!response.fileName) {
+          response.fileName = response.uri.replace(/^.*[\\\/]/, '')
         }
+        this.uploadFile(response, 'MEDIA');
       }
     });
   }
@@ -471,13 +464,9 @@ class NewFeedScreen extends React.Component {
   pickMediaFromLibrary(options) {
     ImagePicker.launchImageLibrary(options, (response)  => {
       if (!response.didCancel) {
-        if (response.fileSize > CONSTANTS.MAX_UPLOAD_FILE_SIZE) {
-          AlertController.shared.showAlert('Warning', 'File size must be less than 10MB')
-        } else {
-          Analytics.logEvent('new_feed_add_library_image', {})
+        Analytics.logEvent('new_feed_add_library_image', {})
 
-          this.uploadFile(response, 'MEDIA');
-        }
+        this.uploadFile(response, 'MEDIA');
       }
     });
   }
@@ -492,7 +481,11 @@ class NewFeedScreen extends React.Component {
         
     if (index === 0) {
       // from camera
-      this.pickMediaFromCamera(options);
+      if (DeviceInfo.isEmulator()) {
+        Alert.alert("It's impossible to take a photo on Simulator")
+      } else {
+        this.pickMediaFromCamera(options);
+      }
     } else if (index === 1) {
       // from library
       this.pickMediaFromLibrary(options);
