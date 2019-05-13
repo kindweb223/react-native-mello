@@ -42,29 +42,32 @@ class CKEditor extends React.Component {
     try {
       const msgData = event.nativeEvent.data;
       const keyCode = msgData.split('>>>!hunt!<<<')[0];
+      const height = parseInt(msgData.split('>>>!hunt!<<<')[1]) + 10;
 
-      console.log("[CKEditor] Event = " + keyCode)
-      console.log("[CKEditor] Data = " + msgData)
+      // console.log("[CKEditor] Event = " + keyCode)
+      // console.log("[CKEditor] Data = " + msgData)
 
       if (keyCode === 'NO_KEYCODE' || keyCode === 'PASTE_COMMAND') {
         const content = msgData.split('>>>!hunt!<<<')[2];
-        const height = parseInt(msgData.split('>>>!hunt!<<<')[1]) + 8;
         if (height > this.state.initHeight) {
           this.setState({ height })
         }
         this.props.onChange(content);
-      } if (keyCode === 'FOCUS_COMMAND') {
-        const command = (msgData.split('>>>!hunt!<<<')[1]).split(':');
+      } else if (keyCode === 'FOCUS_COMMAND') {
+        const command = (msgData.split('>>>!hunt!<<<')[2]).split(':');
         this.props.handleCommands(command)
-        const height = parseInt(msgData.split('>>>!hunt!<<<')[2]) + 8;
+
         if (height > this.state.initHeight) {
           this.setState({ height })
+          this.props.handleCKEditorHeight(parseInt(height) + 10)
         }
       } else {
         // Space(32) or Enter(13)
         if (keyCode === '13' || keyCode == '32') {
           if (keyCode === '13') {
-            this.props.handleCKEditorHeight(parseInt(this.state.height) + 8)
+            if (height > this.state.initHeight) {
+              this.setState({ height })
+            }
           }
           this.props.handleKeydown();
         }
@@ -99,10 +102,10 @@ class CKEditor extends React.Component {
 
     return (
       <View
-        style={{ height: this.state.height + 8 }}
+        style={{ height: this.state.height }}
         onLayout={(event) => {
           const height = event.nativeEvent.layout.height;
-          this.props.handleCKEditorHeight(parseInt(height + 8))
+          this.props.handleCKEditorHeight(parseInt(height) + 10)
         }}
       >
         <WebView

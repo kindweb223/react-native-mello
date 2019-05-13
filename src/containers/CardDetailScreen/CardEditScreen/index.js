@@ -36,6 +36,7 @@ class CardEditScreen extends React.Component {
 
     this.animatedShow = new Animated.Value(0);
     this.animatedKeyboardHeight = new Animated.Value(0);
+    this.ckEditorHeight = 70
   }
 
   async componentDidMount() {
@@ -126,7 +127,7 @@ class CardEditScreen extends React.Component {
     if (height > this.ckEditorHeight) {
       this.scrollViewRef.scrollToEnd()
     }
-    this.ckEditorHeight = height + 8
+    this.ckEditorHeight = height
   }
 
   onContentSizeChange({nativeEvent}) {
