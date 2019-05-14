@@ -46,19 +46,25 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   textItemName: {
-    fontSize: 14,
+    fontSize: 16,
     lineHeight: 21,
     fontWeight: '600',
-    color: COLORS.DARK_GREY,
+    color: COLORS.PRIMARY_BLACK,
   },
   textItemTime: {
     fontSize: 14,
     lineHeight: 21,
     color: COLORS.DARK_GREY,
+    marginRight: 10
   },
   textItemComment: {
     fontSize: 16,
     lineHeight: 23,
+  },
+  replyButton: {
+    fontSize: 14,
+    fontWeight: '500',
+    color: COLORS.DARK_GREY,
   },
   mention: {
     color: COLORS.PURPLE,

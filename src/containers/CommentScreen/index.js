@@ -407,17 +407,23 @@ class CommentScreen extends React.Component {
             />
           )}
           <View style={styles.textsContainer}>
+            <Text>
+              <Text style={styles.textItemName}>{name}{" "}</Text>
+              <Highlighter
+                style={styles.textItemComment}
+                highlightStyle={styles.mention}
+                searchWords={this.state.userNameArray}
+                textToHighlight={item.content}
+              />
+            </Text>
             <View style={styles.rowContainer}>
-              <Text style={styles.textItemName}>{name}</Text>
-              <Entypo name='dot-single' size={12} color={COLORS.DARK_GREY} />
-              <Text style={styles.textItemTime}>{getDurationFromNow(item.created)}</Text>
+              <Text style={styles.textItemTime}>{`${getDurationFromNow(item.created)} ago`}</Text>
+              <TouchableOpacity>
+                <Text style={styles.replyButton}>
+                  Reply
+                </Text>
+              </TouchableOpacity>
             </View>
-            <Highlighter
-              style={styles.textItemComment}
-              highlightStyle={styles.mention}
-              searchWords={this.state.userNameArray}
-              textToHighlight={item.content}
-            />
           </View>
         </View>
       </Swipeout>

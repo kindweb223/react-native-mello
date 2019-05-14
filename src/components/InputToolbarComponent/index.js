@@ -50,7 +50,7 @@ export default class InputToolbarComponent extends React.Component {
     const key = keyword.slice(1, keyword.length)
     const data = _.filter(this.props.dataList, item => {
       const displayName = `${item.userProfile.firstName} ${item.userProfile.lastName}`
-      return displayName.includes(key)
+      return displayName.toLowerCase().includes(key.toLowerCase())
     })
     this.setState({ data, keyword })
   }
@@ -76,7 +76,7 @@ export default class InputToolbarComponent extends React.Component {
           />
           <View style={styles.userDetailsBox}>
             <Text style={styles.displayNameText}>{displayName}</Text>
-            <Text style={styles.userNameText}>@{item.userProfile.email}</Text>
+            <Text style={styles.userNameText}>{item.userProfile.email}</Text>
           </View>
         </View>
       </TouchableOpacity>
@@ -88,17 +88,19 @@ export default class InputToolbarComponent extends React.Component {
       showKeyboard,
       comment
     } = this.props;
+    const textInputStyle = showKeyboard ? styles.activeTextInput : styles.textInput;
 
     return (
       <View style={[styles.container, showKeyboard && styles.shadowContainer]}>
         <View style={styles.rowContainer}>
           <MentionsTextInput
             ref={ref => this.textInputRef = ref}
-            textInputStyle={styles.textInput}
+            textInputStyle={textInputStyle}
             loadingComponent={() => <View style={{ flex: 1 }}></View>}
             suggestionsPanelStyle={{ backgroundColor: 'white' }}
             textInputMinHeight={45}
             textInputMaxHeight={100}
+            autoCorrect={false}
             placeholder='Type comment...'
             trigger={'@'}
             triggerLocation={'anywhere'} // 'new-word-only', 'anywhere'
@@ -108,7 +110,7 @@ export default class InputToolbarComponent extends React.Component {
             renderSuggestionsRow={this.renderSuggestionsRow.bind(this)}
             suggestionsData={this.state.data} // array of objects
             keyExtractor={(item, index) => item.id}
-            suggestionRowHeight={100}
+            suggestionRowHeight={75}
             horizontal={false} // defaut is true, change the orientation of the list
             MaxVisibleRowCount={3} // this is required if horizontal={false}
           />

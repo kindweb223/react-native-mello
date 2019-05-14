@@ -685,7 +685,7 @@ class CardDetailScreen extends React.Component {
       }),
       Animated.timing(this.animatedShow, {
         toValue: 1,
-        duration: 0,
+        duration: CONSTANTS.ANIMATEION_MILLI_SECONDS,
       })
     ]).start(() => {
       if (feedo.feedoList.length == 0) {

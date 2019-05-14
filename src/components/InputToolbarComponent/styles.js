@@ -5,9 +5,7 @@ import CONSTANTS from '../../service/constants'
 const styles = StyleSheet.create({
   container: {
     marginBottom: CONSTANTS.STATUSBAR_HEIGHT,
-    backgroundColor: COLORS.SOFT_GREY,
-    borderColor: COLORS.LIGHT_GREY_LINE,
-    borderTopWidth: 1,
+    backgroundColor: 'white',
   },
   shadowContainer: {
     marginHorizontal: 0,
@@ -23,7 +21,7 @@ const styles = StyleSheet.create({
   },
   buttonContainer: {
     position: 'absolute',
-    right: 16,
+    right: 20,
     bottom: 8,
     width: 27,
     height: 27,
@@ -32,9 +30,15 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   textInput: {
+    backgroundColor: COLORS.SOFT_GREY,
+    paddingLeft: 16,
+    paddingRight: 35,
+    marginHorizontal: 16,
+    paddingTop: 13,
+    fontSize: 16
+  },
+  activeTextInput: {
     backgroundColor: 'white',
-    borderColor: COLORS.LIGHT_GREY_LINE,
-    borderWidth: 1,
     paddingLeft: 16,
     paddingRight: 35,
     paddingTop: 13,
