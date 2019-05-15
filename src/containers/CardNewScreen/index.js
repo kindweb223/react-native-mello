@@ -133,7 +133,7 @@ class CardNewScreen extends React.Component {
       uploadProgress: 0,
       bottomButtonsPadding: 0,
       showCKEditorToolbar: false
-    };
+     };
 
     this.fileUploading = false,
     this.imageUploading = false;
@@ -1608,7 +1608,6 @@ class CardNewScreen extends React.Component {
           ref={c => this.refCKEditor = c}
           content={this.state.idea}
           backgroundColor={'white'}
-          placeholder={cardMode === CONSTANTS.SHARE_EXTENTION_CARD ? 'Add a note' : 'Let your ideas flow. Type text, paste a link, add an image, video or audio'}
           onChange={value => this.onChangeIdea(value)}
           handleKeydown={() => this.onKeyPressIdea()}
           handleCommands={this.handleCommands}
