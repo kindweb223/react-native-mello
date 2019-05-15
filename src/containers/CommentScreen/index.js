@@ -88,7 +88,7 @@ class CommentScreen extends React.Component {
     if (this.props.isShowKeyboard) {
       Animated.delay(400).start(() => {
         this.setState({
-          isShowKeyboard: this.props.isShowKeyboard,
+          // isShowKeyboard: this.props.isShowKeyboard,
         });
         this.inputToolbarRef.focus();  
       });
@@ -437,6 +437,9 @@ class CommentScreen extends React.Component {
     return (
       <View style={styles.container}>
         <FlatList
+          ref={ref => this.flatList = ref}
+          onContentSizeChange={() => this.flatList.scrollToEnd({animated: true})}
+          onLayout={() => this.flatList.scrollToEnd({animated: true})}
           contentContainerStyle={{ paddingVertical: 16 }}
           data={commentList}
           renderItem={this.renderItem.bind(this)}
