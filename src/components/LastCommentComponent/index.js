@@ -77,6 +77,19 @@ class LastCommentComponent extends React.Component {
     this.setState({ loading })
   }
 
+  revertComment(comment) {
+    const { invitees } = this.props.feedo.currentFeed
+
+    invitees.map(item => {
+      const displayName = `${item.userProfile.firstName} ${item.userProfile.lastName}`
+      if (comment.content.indexOf(item.id) !== -1) {
+        comment.content = comment.content.replace(`<@{${item.id}}>`, `@${displayName}`)
+      }
+    })
+
+    return comment
+  }
+
   getCommentUser(comment) {
     const { invitees } = this.props.feedo.currentFeed;
     const invitee = _.find(invitees, invitee => invitee.id === comment.huntInviteeId);
@@ -104,6 +117,7 @@ class LastCommentComponent extends React.Component {
 
   renderItem({item, index}) {
     const user = this.getCommentUser(item);
+    item = this.revertComment(item)
     const name = user ? user.firstName || user.lastName : '';
     return (
       <TouchableOpacity
