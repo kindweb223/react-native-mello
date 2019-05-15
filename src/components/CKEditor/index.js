@@ -19,16 +19,10 @@ class CKEditor extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      placeholder: '',
       init: false,
       height: 70,
       initHeight: 70
     }
-  }
-
-  componentWillMount() {
-    const { placeholder } = this.props;
-    this.setState({ placeholder })
   }
 
   postMessage = payload => {
@@ -79,7 +73,7 @@ class CKEditor extends React.Component {
   };
 
   onWebViewLoaded = async () => {
-    data = 'placeholder: ' + this.props.content;
+    data = 'initContent: ' + this.props.content;
     this.postMessage(data);
   };
 
@@ -137,8 +131,7 @@ CKEditor.defaultProps = {
   incognito: true,
   saveFormDataDisabled: true,
   mixedContentMode: "always",
-  javascriptEnable: true,
-  placeholder: 'Add a note'
+  javascriptEnable: true
 }
 
 const styles = StyleSheet.create({
