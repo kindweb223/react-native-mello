@@ -182,6 +182,8 @@ class CardDetailScreen extends React.Component {
     this.closeAnimationTime = CONSTANTS.ANIMATEION_MILLI_SECONDS + 50;
     this.scrollEnabled = true
     this.ratio = 0
+
+    this.firstCoverImageHeight = 0
   }
 
   updateUploadProgress = (value) => {
@@ -232,6 +234,20 @@ class CardDetailScreen extends React.Component {
         this.updateUploadProgress(0);
         ImageResizer.createResizedImage(this.selectedFile.uri, actualWidth, actualHeight, CONSTANTS.IMAGE_COMPRESS_FORMAT, CONSTANTS.IMAGE_COMPRESS_QUALITY, 0, null)
           .then((response) => {
+            // Scroll the view to show the progressbar
+            const minHeight = CONSTANTS.SCREEN_HEIGHT - 70
+            renderCoverImageHeight = CONSTANTS.SCREEN_WIDTH / this.selectedFile.width * this.selectedFile.height
+
+            if (this.state.coverImage === '' || !this.state.coverImage) {
+              if (renderCoverImageHeight > minHeight) {
+                this.scrollViewRef.scrollTo({ y: renderCoverImageHeight - minHeight + 100 })
+              }
+            } else {
+              if (this.firstCoverImageHeight > minHeight) {
+                this.scrollViewRef.scrollTo({ y: this.firstCoverImageHeight - minHeight + 100 })
+              }
+            }
+
             this.props.uploadFileToS3(nextProps.card.fileUploadUrl.uploadUrl, response.uri, this.selectedFileName, fileType, this.updateUploadProgress);
           }).catch((error) => {
             this.props.uploadFileToS3(nextProps.card.fileUploadUrl.uploadUrl, this.selectedFile.uri, this.selectedFileName, fileType, this.updateUploadProgress);
@@ -353,6 +369,8 @@ class CardDetailScreen extends React.Component {
       }, 3000)
     } else if (this.props.card.loading !== types.SET_COVER_IMAGE_FULFILLED && nextProps.card.loading === types.SET_COVER_IMAGE_FULFILLED) {
       const { width, height } = await this.getImageSize(nextProps.card.currentCard.coverImage);
+      this.firstCoverImageHeight = CONSTANTS.SCREEN_WIDTH / this.selectedFile.width * this.selectedFile.height
+
       this.coverImageWidth = width
       this.coverImageHeight = height
       this.setState({
@@ -583,6 +601,8 @@ class CardDetailScreen extends React.Component {
           const masonryRatio = coverData.metadata.width / masonryCardWidth
           imgHeight = coverData.metadata.height / masonryRatio
         }
+
+        this.firstCoverImageHeight = imageHeight
       }
 
       this.setState({
