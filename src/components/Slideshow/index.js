@@ -136,6 +136,7 @@ export default class SlideShow extends React.Component {
           onBuffer={this.onBuffer}
           onLoad={this.onLoad}
           onLoadStart={this.onLoadStart}
+          ignoreSilentSwitch='ignore'
         />
         <ActivityIndicator
           animating
