@@ -74,11 +74,12 @@ export default function card(state = initialState, action = {}) {
       }
     case types.GET_CARD_FULFILLED: {
       const { data } = action.result
+      const { currentCard } = state
 
       return {
         ...state,
         loading: types.GET_CARD_FULFILLED,
-        currentCard: data,
+        currentCard: _.isEmpty(currentCard) ? {} : data.id === currentCard.id ? data : currentCard
       }
     }
     case types.GET_CARD_REJECTED: {

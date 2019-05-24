@@ -753,17 +753,6 @@ class CardNewScreen extends React.Component {
         return;
       }
     }
-    if (this.props.card.loading !== 'GET_CARD_FULFILLED' && nextProps.card.loading === 'GET_CARD_FULFILLED') {
-      const { width, height } = await this.getImageSize(nextProps.card.currentCard.coverImage);
-      this.coverImageWidth = width
-      this.coverImageHeight = height
-
-      this.setState({
-        // cardName: this.props.card.currentCard.title,
-        idea: nextProps.card.currentCard.idea,
-        coverImage: nextProps.card.currentCard.coverImage,
-      })
-    }
   }
 
   async componentDidMount() {
