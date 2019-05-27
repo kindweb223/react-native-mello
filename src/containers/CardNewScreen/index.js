@@ -1614,6 +1614,7 @@ class CardNewScreen extends React.Component {
         <CKEditor
           ref={c => this.refCKEditor = c}
           content={this.state.idea}
+          newCardScreen={true}
           backgroundColor={'white'}
           onChange={value => this.onChangeIdea(value)}
           handleKeydown={() => this.onKeyPressIdea()}

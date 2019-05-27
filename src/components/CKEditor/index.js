@@ -73,7 +73,8 @@ class CKEditor extends React.Component {
   };
 
   onWebViewLoaded = async () => {
-    data = 'initContent: ' + this.props.content;
+    const { newCardScreen } = this.props
+    const data = `initContent: ${this.props.content}initContent: ${newCardScreen ? 'true' : 'false'}`;
     this.postMessage(data);
   };
 
