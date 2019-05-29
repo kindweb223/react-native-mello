@@ -256,7 +256,7 @@ const splitHtmlToArray = (html) => {
 
 const fontSpecs = {
   fontFamily: undefined,
-  fontSize: 16
+  fontSize: 14
 }
 
 const fontListParentSpecs = {
@@ -271,15 +271,8 @@ const fontListSpecs = {
 
 const fontBoldSpecs = {
   fontFamily: undefined,
-  fontSize: 22
-}
-
-const adujstHTMLTagHeight = (textSize) => {
-  let textHeight = textSize.height
-  if (textSize.width > cardWidth) {
-    textHeight = Math.ceil(textSize.width / cardWidth) * textHeight
-  }
-  return textHeight
+  fontSize: 22,
+  fontWeight: 'bold'
 }
 
 const replacingTextArray = [
@@ -316,7 +309,7 @@ const getHtmlHeight = async (html, hasCoverImage, step) => {
     const isLastText = htmlArray.length === (i + 1)
 
     if (htmlArray[i] === '&nbsp;</p>') {
-      textHeight = isLastText ? 0 : 19.5
+      textHeight = isLastText ? 0 : 20
     } else {
       text = _.replace(htmlArray[i], '&nbsp;', ' ')
 
@@ -328,30 +321,38 @@ const getHtmlHeight = async (html, hasCoverImage, step) => {
         textSize = await rnTextSize.measure({
           text,
           ...fontBoldSpecs,
-          width: cardWidth - 10
+          width: cardWidth
         })
-        textHeight = parseFloat(textSize.height) + 24 + 5 * parseFloat(textSize.lineCount)
+        textHeight = 28 * textSize.lineCount + parseFloat(24)
       } else if (_.endsWith(htmlArray[i], '</ul>') || _.endsWith(htmlArray[i], '</ol>')) {
         textSize = await rnTextSize.measure({
           text,
-          ...fontListParentSpecs
+          ...fontListParentSpecs,
+          width: cardWidth
         })
-        textHeight = adujstHTMLTagHeight(textSize)
-        textHeight = parseFloat(textHeight) + parseFloat(18) * Math.ceil(textSize.width / cardWidth)
+        textHeight = 22 * textSize.lineCount + parseFloat(18)
       } else if (_.endsWith(htmlArray[i], '</li>')) {
         textSize = await rnTextSize.measure({
           text,
           ...fontListSpecs,
-          width: cardWidth - 10
+          width: cardWidth
         })
-        textHeight = parseFloat(textSize.height) + parseFloat(isLastText ? 0 : 10)
+        textHeight = 22 * textSize.lineCount
+      } else if (_.endsWith(htmlArray[i], '</strong></p>')) {
+        textSize = await rnTextSize.measure({
+          text,
+          ...fontSpecs,
+          fontWeight: 'bold',
+          width: cardWidth
+        })
+        textHeight = 20 * textSize.lineCount
       } else {
         textSize = await rnTextSize.measure({
           text,
           ...fontSpecs,
           width: cardWidth
         })
-        textHeight = parseFloat(textSize.height)
+        textHeight = 20 * textSize.lineCount
       }
     }
 
