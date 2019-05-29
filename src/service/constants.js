@@ -114,7 +114,7 @@ export default {
     'ol': { paddingLeft: 0, marginLeft: 0, marginTop: 0, marginBottom: -12, padding: 0, fontSize: 14, lineHeight: 20 },
     'li': { paddingLeft: 0, marginTop: 0, marginBottom: -12, padding: 0, fontSize: 14, lineHeight: 22 },
     'h1': { backgroundColor: 'transparent' },
-    'h2': { backgroundColor: 'transparent', fontSize: 22, fontWeight: 'bold', lineHeight: 28, color: 'black', marginTop: 8  , marginBottom: 16 },
+    'h2': { backgroundColor: 'transparent', fontSize: 22, fontWeight: 'bold', lineHeight: 28, color: 'black', marginTop: 8, marginBottom: 16 },
     'h3': { backgroundColor: 'transparent' },
     'h4': { backgroundColor: 'transparent' },
     'h5': { backgroundColor: 'transparent' },

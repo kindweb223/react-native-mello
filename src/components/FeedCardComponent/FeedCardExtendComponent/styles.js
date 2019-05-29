@@ -71,7 +71,7 @@ const styles = StyleSheet.create({
     paddingBottom: 8
   },
   htmlView: {
-    marginBottom: 4,
+    // marginBottom: 4,
     width: '100%'
   },
   textHtmlIdea: {

@@ -577,30 +577,11 @@ class FeedDetailScreen extends React.Component {
         let contentHeight = 0
         let imageHeight = 0
 
-        const { limitLine } = await COMMON_FUNC.getHtmlHeight(idea.idea, hasCoverImage)
+        const { limitLine } = await COMMON_FUNC.getHtmlHeight(idea.idea, hasCoverImage, 0)
         const clipText = clip(idea.idea, idea.idea.length, { html: true, maxLines: limitLine === 0 ? 1 : limitLine })
-        const { textSize } = await COMMON_FUNC.getHtmlHeight(clipText, hasCoverImage)
+        const { textSize } = await COMMON_FUNC.getHtmlHeight(clipText, hasCoverImage, 1)
 
         contentHeight = 80 + textSize + 5
-
-        // let hasCoverImage = idea.coverImage && idea.coverImage.length > 0
-        // let cardHeight = 0
-        // let contentHeight = 0
-        // let imageHeight = 0
-
-        // if (hasCoverImage) {
-        //   if (textSize.lineCount > 3) {
-        //     contentHeight = 80 + (textSize.height / textSize.lineCount * 4)
-        //   } else {
-        //     contentHeight = 80 + textSize.height
-        //   }
-        // } else {
-        //   if (textSize.lineCount > 9) {
-        //     contentHeight = 80 + (textSize.height / textSize.lineCount * 10)
-        //   } else {
-        //     contentHeight = 80 + textSize.height
-        //   }
-        // }
 
         if (hasCoverImage) {
           const coverImageData = _.find(idea.files, file => (file.accessUrl === idea.coverImage || file.thumbnailUrl === idea.coverImage))

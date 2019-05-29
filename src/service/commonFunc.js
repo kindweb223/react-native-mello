@@ -256,91 +256,122 @@ const splitHtmlToArray = (html) => {
 
 const fontSpecs = {
   fontFamily: undefined,
-  fontSize: 16
+  fontSize: 14
 }
 
 const fontListParentSpecs = {
   fontFamily: undefined,
-  fontSize: 16
+  fontSize: 14
 }
 
 const fontListSpecs = {
   fontFamily: undefined,
-  fontSize: 16
+  fontSize: 14
 }
 
 const fontBoldSpecs = {
   fontFamily: undefined,
-  fontSize: 24,
-  lineHeight: 32
+  fontSize: 22,
+  fontWeight: 'bold'
 }
 
-const adujstHTMLTagHeight = (text, height, isLastText) => {
-  let adjustedHeight = parseFloat(height)
-  if (text.indexOf('</u>') !== -1 || text.indexOf('</strong>') !== -1 ) {
-    adjustedHeight = height - 15
-  }
-  if (text.indexOf('</h2>') !== -1) {
-    if (height < 45 && isLastText) {
-      adjustedHeight = height - 15
-    }
-  }
+const replacingTextArray = [
+  '<ul>',
+  '</ul>',
+  '<ol>',
+  '</ol>',
+  '<li>',
+  '</li>',
+  '<p>',
+  '</p>',
+  '<u>',
+  '</u>',
+  '<s>',
+  '</s>',
+  '<i>',
+  '</i>',
+  '<h2>',
+  '</h2>',
+  '<strong>',
+  '</strong>'
+]
+const cardWidth = (CONSTANTS.SCREEN_SUB_WIDTH - 16) / 2 - 20
 
-  return adjustedHeight + parseFloat(isLastText === true ? 0 : 15)
-}
+const getHtmlHeight = async (html, hasCoverImage, step) => {
+  let totalLength = 0
+  let limitLine = 0
 
-const getHtmlHeight = async (html, hasCoverImage) => {
   let htmlArray = _.compact(splitHtmlToArray(_.trim(html)))
   htmlArray = _.filter(htmlArray, item => item !== '<ol>' && item !== '<ul>' && item !== '<h2>')
 
-  const cardWidth = (CONSTANTS.SCREEN_SUB_WIDTH - 16) / 2
-  let strLength = 0
-  let limitLine = 0
-
   for (let i = 0; i < htmlArray.length; i ++) {
     let textHeight = 0
-    if (_.endsWith(htmlArray[i], '</h2>')) {
-      textSize = await rnTextSize.measure({
-        text: htmlArray[i],
-        width: cardWidth - 20,
-        ...fontBoldSpecs
-      })
-      textHeight = adujstHTMLTagHeight(htmlArray[i], textSize.height, htmlArray.length === (i + 1))
-    } else if (_.endsWith(htmlArray[i], '</ul>') || _.endsWith(htmlArray[i], '</ol>')) {
-      textSize = await rnTextSize.measure({
-        text: htmlArray[i],
-        width: cardWidth - 20,
-        ...fontListParentSpecs
-      })
-      textHeight = adujstHTMLTagHeight(htmlArray[i], textSize.height, htmlArray.length === (i + 1))
-    } else if (_.endsWith(htmlArray[i], '</li>')) {
-      textSize = await rnTextSize.measure({
-        text: htmlArray[i],
-        width: cardWidth - 20,
-        ...fontListSpecs
-      })
-      textHeight = adujstHTMLTagHeight(htmlArray[i], textSize.height, htmlArray.length === (i + 1))
+    const isLastText = htmlArray.length === (i + 1)
+
+    if (htmlArray[i] === '&nbsp;</p>') {
+      textHeight = isLastText ? 0 : 20
     } else {
-      textSize = await rnTextSize.measure({
-        text: htmlArray[i],
-        width: cardWidth - 20,
-        ...fontSpecs,
-      })
-      textHeight = adujstHTMLTagHeight(htmlArray[i], textSize.height, htmlArray.length === (i + 1))
-    }
-    strLength += parseFloat(textHeight)
-    if (hasCoverImage) {
-      if (strLength < 101) {
-        limitLine = i
+      text = _.replace(htmlArray[i], '&nbsp;', ' ')
+
+      for (let j = 0; j < replacingTextArray.length; j ++) {
+        text = _.replace(text, replacingTextArray[j], '')
       }
-    } else {
-      if (strLength < 191) {
-        limitLine = i
+
+      if (_.endsWith(htmlArray[i], '</h2>')) {
+        textSize = await rnTextSize.measure({
+          text,
+          ...fontBoldSpecs,
+          width: cardWidth
+        })
+        textHeight = 28 * textSize.lineCount + parseFloat(24)
+      } else if (_.endsWith(htmlArray[i], '</ul>') || _.endsWith(htmlArray[i], '</ol>')) {
+        textSize = await rnTextSize.measure({
+          text,
+          ...fontListParentSpecs,
+          width: cardWidth
+        })
+        textHeight = 22 * textSize.lineCount + parseFloat(18)
+      } else if (_.endsWith(htmlArray[i], '</li>')) {
+        textSize = await rnTextSize.measure({
+          text,
+          ...fontListSpecs,
+          width: cardWidth
+        })
+        textHeight = 22 * textSize.lineCount
+      } else if (_.endsWith(htmlArray[i], '</strong></p>')) {
+        textSize = await rnTextSize.measure({
+          text,
+          ...fontSpecs,
+          fontWeight: 'bold',
+          width: cardWidth
+        })
+        textHeight = 20 * textSize.lineCount
+      } else {
+        textSize = await rnTextSize.measure({
+          text,
+          ...fontSpecs,
+          width: cardWidth
+        })
+        textHeight = 20 * textSize.lineCount
+      }
+    }
+
+    totalLength += parseFloat(textHeight)
+
+    if (step === 0) {
+      if (hasCoverImage) {
+        if (totalLength < 101) {
+          limitLine = i
+        }
+      } else {
+        if (totalLength < 191) {
+          limitLine = i
+        }
       }
     }
   }
 
-  return { textSize: strLength, limitLine: limitLine + 1 }
+  return { textSize: totalLength, limitLine: limitLine + 1 }
 }
 
 export {
@@ -370,6 +401,5 @@ export {
   setLastFeed,
   getLastFeed,
   useLastFeed,
-  getHtmlHeight,
-  adujstHTMLTagHeight
+  getHtmlHeight
 }

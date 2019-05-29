@@ -108,10 +108,11 @@
     if (event.data.includes('initContent: ')) {
         // Show inital content
         initContent = event.data.split('initContent: ')[1];
+        newCardScreen = event.data.split('initContent: ')[2];
 
         DecoupledEditor
         .create(document.querySelector('#editor'), {
-          placeholder: initContent == "" ? "Let your ideas flow. Type text, paste a link, add an image, video or audio" : "Add a note",
+          placeholder: newCardScreen == 'true' ? 'Let your ideas flow. Type text, paste a link, add an image, video or audio' : 'Add a note',
           focus: true,
           fontFamily: {
             options: [
