@@ -223,7 +223,7 @@ class ImageSliderScreen extends React.Component {
             >
               { this.state.updatingCoverImage
                 ?
-                <View style={{paddingLeft: 32, justifyContent: 'center', alignItems: 'flex-start' }}>
+                <View style={{justifyContent: 'center', alignItems: 'center'}}>
                   <ActivityIndicator color={'#fff'} size="small" style={styles.loadingIcon} />
                 </View>
                 :

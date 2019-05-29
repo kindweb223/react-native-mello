@@ -374,7 +374,9 @@ class CardDetailScreen extends React.Component {
       }, 3000)
     } else if (this.props.card.loading !== types.SET_COVER_IMAGE_FULFILLED && nextProps.card.loading === types.SET_COVER_IMAGE_FULFILLED) {
       const { width, height } = await this.getImageSize(nextProps.card.currentCard.coverImage);
-      this.firstCoverImageHeight = CONSTANTS.SCREEN_WIDTH / this.selectedFile.width * this.selectedFile.height
+      if (this.selectedFile) {
+        this.firstCoverImageHeight = CONSTANTS.SCREEN_WIDTH / this.selectedFile.width * this.selectedFile.height
+      }
 
       this.coverImageWidth = width
       this.coverImageHeight = height
