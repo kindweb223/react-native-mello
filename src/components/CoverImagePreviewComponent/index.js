@@ -161,7 +161,7 @@ export default class CoverImagePreviewComponent extends React.Component {
       <View style={styles.container}>
         {this.renderCoverImage(files, coverImage, position)}
         {this.renderProgressBar}
-          {/* <Modal 
+          <Modal
             isVisible={this.state.isPreview}
             style={styles.previewModal}
             backdropColor='rgba(0, 0, 0, 0.9)'
@@ -181,7 +181,7 @@ export default class CoverImagePreviewComponent extends React.Component {
               onSetCoverImage={(id) => this.props.onSetCoverImage(id)}
               onClose={() => this.setState({ isPreview: false })}
             />
-          </Modal> */}
+          </Modal>
       </View>
     );
   }

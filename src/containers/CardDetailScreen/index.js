@@ -727,7 +727,7 @@ class CardDetailScreen extends React.Component {
 
     BackHandler.addEventListener('hardwareBackPress', this.handleBackButton);
 
-    let imageFiles = _.filter(card.currentCard.files, file => file.fileType === 'MEDIA');
+    // let imageFiles = _.filter(card.currentCard.files, file => file.fileType === 'MEDIA');
     // Get local image path
     // imageFiles.map(item => {
     //   CacheableImage.cacheFile('https://i.redd.it/17ymhqwgbswz.jpg')
@@ -736,7 +736,7 @@ class CardDetailScreen extends React.Component {
     //     item.localFileInfo = localFileInfo;
     //   })
     // });
-    this.setState({ imageFiles });
+    // this.setState({ imageFiles });
   }
 
   componentWillUnmount() {
@@ -2068,7 +2068,7 @@ class CardDetailScreen extends React.Component {
           />
         )}
 
-        <Modalbox
+        {/* <Modalbox
           ref={"previewModal"}
           swipeToClose={true}
           backdropColor='rgba(0, 0, 0, 0.9)'
@@ -2083,7 +2083,7 @@ class CardDetailScreen extends React.Component {
             onSetCoverImage={(fileId) => this.onSetCoverImage(fileId)}
             onClose={() => this.refs.previewModal.close()}
           />
-        </Modalbox>
+        </Modalbox> */}
       </View>
     )
   }

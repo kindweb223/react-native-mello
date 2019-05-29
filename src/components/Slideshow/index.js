@@ -1,7 +1,7 @@
 import React from 'react'
 import { ScrollView, View, Image, TouchableOpacity, Animated, ActivityIndicator, Platform } from 'react-native'
 import GestureRecognizer from 'react-native-swipe-gestures'
-import PhotoView from 'react-native-photo-view'
+import ImageZoom from 'react-native-image-pan-zoom';
 
 import styles from './styles'
 import FastImage from "react-native-fast-image";
@@ -115,18 +115,20 @@ export default class SlideShow extends React.Component {
           activeOpacity={1}
           onPress={() => this.handleImage()}
         >
-          {/* {
-            isFastImage ? 
-              <FastImage source={{uri: item.accessUrl}} resizeMode="contain" style={{ width, height: '100%' }} />
-            : 
-              <Image source={{uri: item.accessUrl}} resizeMode="contain" style={{ width, height: '100%' }} />
-          } */}
-          <PhotoView
-            source={{uri: item.accessUrl}}
-            minimumZoomScale={1}
-            maximumZoomScale={3}
-            androidScaleType="center"
-            style={{ width, height: '100%' }} />
+          <ImageZoom
+            enableSwipeDown={true}
+            cropWidth={CONSANTS.SCREEN_WIDTH}
+            cropHeight={CONSANTS.SCREEN_HEIGHT}
+            imageWidth={width}
+            imageHeight={CONSANTS.SCREEN_HEIGHT - 100}
+            onSwipeDown={() => this.props.onSwipeDown()}>
+            {
+              isFastImage ? 
+                <FastImage source={{uri: item.accessUrl}} resizeMode="contain" style={{ width, height: '100%' }} />
+              : 
+                <Image source={{uri: item.accessUrl}} resizeMode="contain" style={{ width, height: '100%' }} />
+            }
+          </ImageZoom>
         </TouchableOpacity>
       );
     }
