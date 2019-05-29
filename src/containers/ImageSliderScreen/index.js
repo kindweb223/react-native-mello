@@ -178,6 +178,7 @@ class ImageSliderScreen extends React.Component {
     const { offline } = this.state
 
     const isCoveredImage = this.state.setCoveredIndex === this.state.imageIndex
+    const headerTitle = `${this.state.imageIndex + 1} of ${mediaFiles.length} items`
 
     return (
       <View style={styles.container}>
@@ -196,8 +197,11 @@ class ImageSliderScreen extends React.Component {
         />
 
         <Animated.View
-          style={[styles.closeButtonWrapper, { opacity: this.buttonOpacity }]}
+          style={[styles.headerView, { opacity: this.buttonOpacity }]}
         >
+          <Text style={styles.headerTitle}>
+            {headerTitle}
+          </Text>
           <TouchableOpacity
             style={styles.closeButtonView}
             activeOpacity={0.6}
@@ -210,13 +214,12 @@ class ImageSliderScreen extends React.Component {
 
           this.props.removal && this.props.isSetCoverImage && !offline &&
           <Animated.View
-            style={[styles.coverButton, { opacity: this.buttonOpacity }]}
+            style={[styles.button, { left: 17, opacity: this.buttonOpacity }]}
           >
             <TouchableOpacity
               activeOpacity={0.6}
               disabled={isCoveredImage ? true: false}
               onPress={() => this.onSetCoverImage()}
-              style={{padding: 4}}
             >
               { this.state.updatingCoverImage
                 ?
@@ -232,13 +235,13 @@ class ImageSliderScreen extends React.Component {
         {
           this.props.removal && !offline &&
           <Animated.View
-            style={[styles.deleteButton, { opacity: this.buttonOpacity }]}
+            style={[styles.button, { right: 17, opacity: this.buttonOpacity }]}
           >
             <TouchableOpacity
               activeOpacity={0.6}
               onPress={() => this.onDelete()}
             >
-              <Feather name="trash-2" size={25} color={'#fff'} />
+              <Text style={{color: '#fff'}}>Delete</Text>
             </TouchableOpacity>
           </Animated.View >
         }

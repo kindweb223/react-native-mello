@@ -36,6 +36,7 @@ import Permissions from 'react-native-permissions'
 import * as mime from 'react-native-mime-types'
 import _ from 'lodash';
 import Modal from 'react-native-modal';
+import Modalbox from 'react-native-modalbox';
 import moment from 'moment'
 import Autolink from 'react-native-autolink';
 import SafariView from "react-native-safari-view";
@@ -45,6 +46,8 @@ import * as Animatable from 'react-native-animatable';
 import { NetworkConsumer } from 'react-native-offline'
 import HTML from 'react-native-render-html'
 import DeviceInfo from 'react-native-device-info';
+import imageCacheHoc from 'react-native-image-cache-hoc';
+const CacheableImage = imageCacheHoc(Image);
 
 import { COMMENT_FEATURE } from '../../service/api'
 import COMMON_STYLES from '../../themes/styles'
@@ -85,6 +88,7 @@ import CardEditScreen from './CardEditScreen'
 import CardControlMenuComponent from '../../components/CardControlMenuComponent'
 import ToasterComponent from '../../components/ToasterComponent'
 import AlertController from '../../components/AlertController'
+import ImageSliderScreen from '../ImageSliderScreen'
 
 import * as COMMON_FUNC from '../../service/commonFunc'
 import COLORS from '../../service/colors';
@@ -135,7 +139,8 @@ class CardDetailScreen extends React.Component {
       cardMode: 'CardDetailSingle',
       imageUploading: false,
       online: false,
-      uploadProgress: 0
+      uploadProgress: 0,
+      imageFiles: []
     };
 
     this.fileUploading = false
@@ -721,6 +726,17 @@ class CardDetailScreen extends React.Component {
     }
 
     BackHandler.addEventListener('hardwareBackPress', this.handleBackButton);
+
+    let imageFiles = _.filter(card.currentCard.files, file => file.fileType === 'MEDIA');
+    // Get local image path
+    // imageFiles.map(item => {
+    //   CacheableImage.cacheFile('https://i.redd.it/17ymhqwgbswz.jpg')
+    //   .then(localFileInfo => {
+    //     localFileInfo.localFilePath = 'file://' + localFileInfo.localFilePath;
+    //     item.localFileInfo = localFileInfo;
+    //   })
+    // });
+    this.setState({ imageFiles });
   }
 
   componentWillUnmount() {
@@ -1929,7 +1945,10 @@ class CardDetailScreen extends React.Component {
   }
 
   render () {
-    const { showEditScreen, idea, loading, fileType } = this.state
+    const { showEditScreen, idea, loading, fileType, coverImage, imageFiles } = this.state
+    const { viewMode, card } = this.props
+
+    const position = _.findIndex(imageFiles, file => (file.accessUrl === coverImage || file.thumbnailUrl === coverImage))
 
     return (
       <View style={styles.container}>
@@ -2048,6 +2067,23 @@ class CardDetailScreen extends React.Component {
             onPressButton={() => this.setState({ isDeleteLink: false })}
           />
         )}
+
+        <Modalbox
+          ref={"previewModal"}
+          swipeToClose={true}
+          backdropColor='rgba(0, 0, 0, 0.9)'
+        >
+          <ImageSliderScreen
+            mediaFiles={imageFiles}
+            position={position}
+            removal={viewMode !== CONSTANTS.CARD_VIEW}
+            isSetCoverImage={true}
+            isFastImage={true}
+            onRemove={(fileId) => this.onRemoveFile(fileId)}
+            onSetCoverImage={(fileId) => this.onSetCoverImage(fileId)}
+            onClose={() => this.refs.previewModal.close()}
+          />
+        </Modalbox>
       </View>
     )
   }

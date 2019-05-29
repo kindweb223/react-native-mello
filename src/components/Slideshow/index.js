@@ -1,6 +1,8 @@
 import React from 'react'
 import { ScrollView, View, Image, TouchableOpacity, Animated, ActivityIndicator, Platform } from 'react-native'
 import GestureRecognizer from 'react-native-swipe-gestures'
+import PhotoView from 'react-native-photo-view'
+
 import styles from './styles'
 import FastImage from "react-native-fast-image";
 import Video from 'react-native-video'
@@ -113,12 +115,18 @@ export default class SlideShow extends React.Component {
           activeOpacity={1}
           onPress={() => this.handleImage()}
         >
-          {
+          {/* {
             isFastImage ? 
               <FastImage source={{uri: item.accessUrl}} resizeMode="contain" style={{ width, height: '100%' }} />
             : 
               <Image source={{uri: item.accessUrl}} resizeMode="contain" style={{ width, height: '100%' }} />
-          }
+          } */}
+          <PhotoView
+            source={{uri: item.accessUrl}}
+            minimumZoomScale={1}
+            maximumZoomScale={3}
+            androidScaleType="center"
+            style={{ width, height: '100%' }} />
         </TouchableOpacity>
       );
     }
@@ -183,7 +191,7 @@ export default class SlideShow extends React.Component {
               <GestureRecognizer
                 key={index}
                 style={[styles.mainContentContainer, {width, height}]}
-                onSwipeDown={() => this.props.onSwipeDown()}
+                onSwipeDown={() => {}}
                 config={{
                   velocityThreshold: 0.3,
                   directionalOffsetThreshold: 80
@@ -193,7 +201,7 @@ export default class SlideShow extends React.Component {
               </GestureRecognizer>
             ))
           }
-        </ScrollView>        
+        </ScrollView>
         <Animated.View style={[styles.renderButtonWrapper, { opacity: this.buttonOpacity }]}>
           {this.renderBubbles()}
         </Animated.View>

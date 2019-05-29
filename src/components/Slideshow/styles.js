@@ -9,7 +9,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   renderButtonWrapper: {
-    marginBottom: -30
+    marginBottom: 8
   },
   bubbleView: {
     flexDirection: 'row',
