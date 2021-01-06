@@ -8,7 +8,7 @@
     "generate-android-bundle": "react-native bundle --platform android --dev false --entry-file index.js --bundle-output android-release.bundle --sourcemap-output android-release.bundle.map"
   },
   "dependencies": {
-    "axios": "^0.18.0",
+    "axios": "^0.21.1",
     "bugsnag-react-native": "^2.12.1",
     "data.task": "^3.1.2",
     "initials": "^3.0.1",
