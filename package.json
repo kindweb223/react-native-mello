@@ -12,7 +12,7 @@
     "bugsnag-react-native": "^2.12.1",
     "data.task": "^3.1.2",
     "initials": "^3.0.1",
-    "lodash": "^4.17.10",
+    "lodash": "^4.17.21",
     "lottie-react-native": "^2.5.11",
     "moment": "^2.22.2",
     "path": "^0.12.7",
