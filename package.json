@@ -27,7 +27,7 @@
     "react-native-collapsible": "^0.13.0",
     "react-native-device-info": "^0.24.3",
     "react-native-document-picker": "^2.1.0",
-    "react-native-fast-image": "^5.2.0",
+    "react-native-fast-image": "^8.3.0",
     "react-native-file-viewer": "^1.0.14",
     "react-native-firebase": "^5.1.0",
     "react-native-fs": "^2.11.17",
