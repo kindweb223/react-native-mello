@@ -79,7 +79,7 @@
     "redux": "^4.0.0",
     "redux-thunk": "^2.3.0",
     "rn-fetch-blob": "^0.10.13",
-    "striptags": "^3.1.1",
+    "striptags": "^3.2.0",
     "text-clipper": "^1.2.3",
     "truncate-html": "^1.0.2",
     "zxcvbn": "^4.4.2"
